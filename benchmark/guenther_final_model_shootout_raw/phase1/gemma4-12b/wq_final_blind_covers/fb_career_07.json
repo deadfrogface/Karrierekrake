@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_07",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 90.617,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung im Bereich Handwerk Montage bringe ich die notwendigen praktischen Grundlagen mit, um das Team der BuildCare SE im Facility Support tatkräftig zu unterstützen. \n\nIn meiner bisherigen Tätigkeit im Handwerk konnte ich fundierte Kenntnisse in der Montage und technischen Abläufen sammeln. Diese praktischen Fähigkeiten ermöglichen es mir, Aufgaben in der Instandhaltung effizient und lösungsorientiert anzugehen. Da ich bereits Erfahrung in handwerklichen Prozessen gesammelt habe, kann ich diese Kompetenzen direkt auf die Anforderungen der Facility-Betreuung übertragen und sicherstellen, dass Instandhaltungsaufgaben zuverlässig ausgeführt werden.\n\nIch freue mich darauf, meine handwerkliche Expertise in Ihr Team einzubringen und die Infrastruktur der BuildCare SE mitzuverantworten.\n\nMit freundlichen Grüßen\nJulia Craft",
+  "subject": "Bewerbung als Facility Support - Julia Craft",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Facility Support - Julia Craft",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung im Bereich Handwerk Montage bringe ich die notwendigen praktischen Grundlagen mit, um das Team der BuildCare SE im Facility Support tatkräftig zu unterstützen. \n\nIn meiner bisherigen Tätigkeit im Handwerk konnte ich fundierte Kenntnisse in der Montage und technischen Abläufen sammeln. Diese praktischen Fähigkeiten ermöglichen es mir, Aufgaben in der Instandhaltung effizient und lösungsorientiert anzugehen. Da ich bereits Erfahrung in handwerklichen Prozessen gesammelt habe, kann ich diese Kompetenzen direkt auf die Anforderungen der Facility-Betreuung übertragen und sicherstellen, dass Instandhaltungsaufgaben zuverlässig ausgeführt werden.\n\nIch freue mich darauf, meine handwerkliche Expertise in Ihr Team einzubringen und die Infrastruktur der BuildCare SE mitzuverantworten.\n\nMit freundlichen Grüßen\nJulia Craft",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

@@ -1,0 +1,40 @@
+{
+  "id": "fi_16",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 97.321,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie sieht Ihr täglicher Ablauf im Fallmanagement aus?",
+      "Wie gehen Sie mit schwierigen oder eskalierenden Situationen in der Sozialarbeit um?",
+      "Welche Methoden nutzen Sie zur Dokumentation und Überwachung von Fallfortschritten?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung in der Sozialarbeit",
+      "Erfahrung im Bereich Fallmanagement",
+      "Fachliche Qualifikation für die Arbeit bei Beratung Plus"
+    ],
+    "gap_notes": [
+      "No specific achievements or detailed project descriptions provided in the profile.",
+      "Lack of specific methodology or software experience in social work."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Sozialarbeit",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Fallmanagement",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

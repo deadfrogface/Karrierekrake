@@ -1,0 +1,45 @@
+{
+  "id": "fi_02",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 113.966,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie vor, wenn ein Benutzer Probleme mit dem Zugriff auf ein Active Directory-Objekt meldet?",
+      "Wie priorisieren Sie Ihre Aufgaben, wenn mehrere Tickets gleichzeitig eingehen?",
+      "Beschreiben Sie Ihre Erfahrung im Umgang mit Windows-basierten Support-Anfragen."
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im IT-Support",
+      "Erfahrung im Umgang mit Windows-Systemen",
+      "Kenntnisse in der Bearbeitung von Tickets"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekterfolge oder detaillierten Zertifizierungen in den Evidenzen vorhanden.",
+      "Fehlende Details zu spezifischen Ticket-Systemen oder komplexen Problemstellungen."
+    ],
+    "anchors_used": [
+      {
+        "text": "Windows",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Tickets",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "3 Jahre IT-Support",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

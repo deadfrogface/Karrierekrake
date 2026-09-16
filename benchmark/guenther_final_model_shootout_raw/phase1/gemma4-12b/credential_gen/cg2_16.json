@@ -1,0 +1,13 @@
+{
+  "id": "cg2_16",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "WRITING_BLOCKED_HARD_REQUIREMENT",
+    "HARD_REQUIREMENT_NOT_MET",
+    "WRONG_COMPANY"
+  ],
+  "model_id": "gemma4-12b"
+}

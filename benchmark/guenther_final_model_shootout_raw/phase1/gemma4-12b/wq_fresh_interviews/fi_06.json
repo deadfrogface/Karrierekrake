@@ -1,0 +1,43 @@
+{
+  "id": "fi_06",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 97.019,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie bei der Bearbeitung von Kreditorenrechnungen in DATEV vor?",
+      "Können Sie uns von Ihrem Arbeitsalltag in der Buchhaltung in den letzten 3 Jahren erzählen?",
+      "Wie gehen Sie vor, wenn es Unstimmigkeiten in der Kreditorenbuchhaltung gibt?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung in der Buchhaltung",
+      "Fundierte Kenntnisse in der Software DATEV"
+    ],
+    "gap_notes": [
+      "No specific achievements or detailed task descriptions provided in the profile."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Buchhaltung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kreditoren",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "DATEV",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

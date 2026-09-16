@@ -1,0 +1,39 @@
+{
+  "id": "fi_10",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 107.549,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Erzählen Sie uns von Ihrer Erfahrung in der Wartung von Schaltschränken.",
+      "Wie gehen Sie bei der Fehlersuche in komplexen Schaltschränken vor?",
+      "Welche Sicherheitsmaßnahmen halten Sie bei Wartungsarbeiten für am wichtigsten?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung als Elektroniker im Bereich Schaltschrankbau und Wartung.",
+      "Fachkenntnisse in der Wartung von elektrischen Anlagen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekte oder messbaren Erfolge im Profil hinterlegt.",
+      "Fehlende Details zu spezifischen verwendeten Werkzeugen oder Software."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Elektroniker",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schaltschrank, Wartung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

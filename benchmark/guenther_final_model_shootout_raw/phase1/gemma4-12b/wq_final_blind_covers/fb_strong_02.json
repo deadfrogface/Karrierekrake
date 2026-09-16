@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 86.327,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner fundierten Erfahrung in der Entgeltabrechnung möchte ich das Team der PayRight AG verstärken. In den letzten vier Jahren habe ich mich intensiv auf die DATEV Lohn-Software spezialisiert und komplexe Abrechnungen sicher abgewickelt.\n\nDiese Expertise ermöglicht es mir, die Anforderungen an die Lohnbuchhaltung bei der PayRight AG effizient und präzise umzusetzen. Ich bringe die notwendige Routine mit, um Ihre Prozesse zuverlässig zu unterstützen und eine fehlerfreie Abrechnung sicherzustellen.\n\nIch freue mich darauf, meine Kenntnisse in Ihr Unternehmen einzubringen und stehe Ihnen für ein persönliches Gespräch gerne zur Verfügung.\\n\nMit freundlichen Grüßen\nLars Payroll",
+  "subject": "Bewerbung als Lohnbuchhalter - Lars Payroll",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Lohnbuchhalter - Lars Payroll",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner fundierten Erfahrung in der Entgeltabrechnung möchte ich das Team der PayRight AG verstärken. In den letzten vier Jahren habe ich mich intensiv auf die DATEV Lohn-Software spezialisiert und komplexe Abrechnungen sicher abgewickelt.\n\nDiese Expertise ermöglicht es mir, die Anforderungen an die Lohnbuchhaltung bei der PayRight AG effizient und präzise umzusetzen. Ich bringe die notwendige Routine mit, um Ihre Prozesse zuverlässig zu unterstützen und eine fehlerfreie Abrechnung sicherzustellen.\n\nIch freue mich darauf, meine Kenntnisse in Ihr Unternehmen einzubringen und stehe Ihnen für ein persönliches Gespräch gerne zur Verfügung.\\n\nMit freundlichen Grüßen\nLars Payroll",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

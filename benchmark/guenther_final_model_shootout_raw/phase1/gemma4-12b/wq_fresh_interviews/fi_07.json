@@ -1,0 +1,40 @@
+{
+  "id": "fi_07",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 110.145,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie Ihre Erfahrung im Bereich CMS und Content Management in den letzten 3 Jahren konkret eingesetzt?",
+      "Welche SEO-Strategien haben Sie bisher erfolgreich umgesetzt, um die Sichtbarkeit von Inhalten zu verbessern?",
+      "Wie gehen Sie vor, wenn Sie Content für verschiedene Zielgruppen gleichzeitig optimieren müssen?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im Marketingbereich",
+      "Fachkenntnisse im Bereich Content Management Systeme (CMS)",
+      "Expertise in Suchmaschinenoptimierung (SEO) und Content-Erstellung"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekterfolge oder messbaren Kennzahlen in den Evidenzdaten vorhanden.",
+      "Fehlende Details zu spezifischen verwendeten CMS-Tools oder SEO-Software."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Marketing",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "CMS, SEO, Content",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

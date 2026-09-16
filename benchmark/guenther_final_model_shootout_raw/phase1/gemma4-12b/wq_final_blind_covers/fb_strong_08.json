@@ -1,0 +1,52 @@
+{
+  "id": "fb_strong_08",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 87.212,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Kundenbetreuung und der Erstellung von Angeboten bringe ich die passenden Grundlagen für die Position im Vertriebsinnendienst bei der SalesDesk AG mit.\n\nIn meiner bisherigen Tätigkeit habe ich fundierte Kenntnisse im Umgang mit CRM-Systemen sowie in der professionellen Abwicklung von Kundentelefonaten gesammelt. Diese Erfahrung ermöglicht es mir, Kundenanfragen effizient zu bearbeiten und den Verkaufsprozess strukturiert zu unterstützen. Durch die Erstellung von Angeboten bin ich mit den administrativen Abläufen im Vertrieb vertraut und kann diese sicher in Ihr Team einbringen.\n\nIch freue mich darauf, meine Kompetenzen in der Kundenkommunikation gewinnbringend für die SalesDesk AG einzusetzen.\\n\nMit freundlichen Grüßen\nUlla Sales",
+  "subject": "Bewerbung als Mitarbeiter im Vertriebsinnendienst",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Mitarbeiter im Vertriebsinnendienst",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Kundenbetreuung und der Erstellung von Angeboten bringe ich die passenden Grundlagen für die Position im Vertriebsinnendienst bei der SalesDesk AG mit.\n\nIn meiner bisherigen Tätigkeit habe ich fundierte Kenntnisse im Umgang mit CRM-Systemen sowie in der professionellen Abwicklung von Kundentelefonaten gesammelt. Diese Erfahrung ermöglicht es mir, Kundenanfragen effizient zu bearbeiten und den Verkaufsprozess strukturiert zu unterstützen. Durch die Erstellung von Angeboten bin ich mit den administrativen Abläufen im Vertrieb vertraut und kann diese sicher in Ihr Team einbringen.\n\nIch freue mich darauf, meine Kompetenzen in der Kundenkommunikation gewinnbringend für die SalesDesk AG einzusetzen.\\n\nMit freundlichen Grüßen\nUlla Sales",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

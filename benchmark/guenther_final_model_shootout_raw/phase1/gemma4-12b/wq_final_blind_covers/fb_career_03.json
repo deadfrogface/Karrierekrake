@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 94.113,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Empfangstätigkeit und der Terminplanung bringe ich die organisatorischen Grundlagen mit, um das Team der HireFast KG als Junior Recruiter zu unterstützen. \n\nIn meiner bisherigen Tätigkeit habe ich gelernt, Anfragen strukturiert zu bearbeiten und Termine effizient zu koordinieren. Diese Erfahrung in der direkten Kommunikation mit Anfragesteller:innen bildet die ideale Basis, um nun den Prozess der Kandidatensuche und -betreuung professionell zu begleiten. Ich verstehe die Bedeutung einer präzisen Organisation für einen reibungslosen Recruiting-Ablauf und möchte diese Kompetenzen gezielt in die Personalbeschaffung einbringen.\n\nIch freue mich darauf, meine organisatorischen Stärken bei der HireFast KG einzusetzen und mich in die spezifischeneiche des Recruitings einzuarbeiten.\n\nMit freundlichen Grüßen\nFiona Pivot",
+  "subject": "Bewerbung als Junior Recruiter - Fiona Pivot",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Junior Recruiter - Fiona Pivot",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Empfangstätigkeit und der Terminplanung bringe ich die organisatorischen Grundlagen mit, um das Team der HireFast KG als Junior Recruiter zu unterstützen. \n\nIn meiner bisherigen Tätigkeit habe ich gelernt, Anfragen strukturiert zu bearbeiten und Termine effizient zu koordinieren. Diese Erfahrung in der direkten Kommunikation mit Anfragesteller:innen bildet die ideale Basis, um nun den Prozess der Kandidatensuche und -betreuung professionell zu begleiten. Ich verstehe die Bedeutung einer präzisen Organisation für einen reibungslosen Recruiting-Ablauf und möchte diese Kompetenzen gezielt in die Personalbeschaffung einbringen.\n\nIch freue mich darauf, meine organisatorischen Stärken bei der HireFast KG einzusetzen und mich in die spezifischeneiche des Recruitings einzuarbeiten.\n\nMit freundlichen Grüßen\nFiona Pivot",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

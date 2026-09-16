@@ -23,7 +23,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | phi4-mini | RUNTIME_OK | 2.32 | 5611.4 | 30.335 | 7.75 | 7.737 | 84.21 | 90.0 | 100.0 | 0.0 | 0.0 | 8.215 | 0 | CONSUMER_STANDARD | MIT |
 | qwen35-9b | RUNTIME_OK | 5.29 | 10517.1 | 72.283 | 7.3 | 7.474 | 71.05 | 90.0 | 100.0 | 0.0 | 0.0 | 6.655 | 0 | CONSUMER_HIGH | Apache-2.0 |
-| gemma4-12b | RUNTIME_OK | 7.14 | 14476.4 | None | None | None | None | None | None | None | None | None | 0 | ENTHUSIAST | Gemma Terms of Use |
+| gemma4-12b | RUNTIME_OK | 7.14 | 14465.8 | 96.471 | 7.5 | 7.474 | 73.68 | 92.5 | 100.0 | 0.0 | 0.0 | 8.25 | 0 | ENTHUSIAST | Gemma Terms of Use |
 | qwen3-14b | RUNTIME_OK | 8.38 | 14492.2 | None | None | None | None | None | None | None | None | None | 0 | ENTHUSIAST | Apache-2.0 |
 | qwen35-27b | NOT_RUN_HARDWARE | 15.59 | 0.0 | None | None | None | None | None | None | None | None | None | 0 | IMPRACTICAL_FOR_DEFAULT | Apache-2.0 |
 

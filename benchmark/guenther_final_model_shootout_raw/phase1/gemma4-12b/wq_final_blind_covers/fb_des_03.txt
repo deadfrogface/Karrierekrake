@@ -1,0 +1,12 @@
+SUBJECT: Bewerbung als Systemadministrator - Nina Linux
+
+Sehr geehrte Damen und Herren,
+
+mit meiner fundierten Erfahrung in der Administration von Linux-Systemen und der Automatisierung mittels Bash möchte ich Ihr Team bei der InfraWorks GmbH verstärken. 
+
+In meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der Linux-Umgebung sowie in der effizienten Skriptprogrammierung mit Bash gesammelt. Diese technischen Grundlagen ermöglichen es mir, Systemprozesse stabil zu verwalten und zu optimieren. Da ich zwar kein AWS-Zertifikat besitze, bringe ich jedoch die notwendige Erfahrung in der Linux-Infrastruktur mit, um mich schnell in Ihre Cloud-Umgebungen einzuarbeiten und die Anforderungen der Systemadministration zuverlässig zu erfüllen.
+
+Ich freue mich darauf, meine technischen Fähigkeiten in die Praxis bei der InfraWorks GmbH einzubringen und bin motiviert, die Infrastruktur gemeinsam mit Ihnen weiterzuentwickeln.
+
+Mit freundlichen Grüßen
+Nina Linux

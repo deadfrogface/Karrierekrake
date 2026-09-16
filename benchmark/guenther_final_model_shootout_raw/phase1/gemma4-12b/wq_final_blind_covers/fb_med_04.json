@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 86.872,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung im Bestellwesen und in der Lieferantenkommunikation bringe ich die passenden Grundlagen mit, um das Team der ProcureEast KG tatkräftig zu unterstützen. \n\nIn meiner bisherigen Tätigkeit habe ich fundierte Kenntnisse in der Abwicklung von Bestellprozessen sowie in der direkten Abstimmung mit Lieferanten gesammelt. Diese Erfahrung ermöglicht es mir, die administrativen Abläufe in der Einkaufsassistenz effizient zu begleiten und eine reibungslose Kommunikation sicherzustellen. \n\nIch freue mich darauf, meine Kompetenzen in die Prozesse der ProcureEast KG einzubringen und die Abteilung durch Zuverlässigkeit und strukturierte Arbeitsweise zu entlasten.\n\nÜber die Gelegenheit zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nYara Buy",
+  "subject": "Bewerbung als Einkaufsassistenz - Yara Buy",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Einkaufsassistenz - Yara Buy",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung im Bestellwesen und in der Lieferantenkommunikation bringe ich die passenden Grundlagen mit, um das Team der ProcureEast KG tatkräftig zu unterstützen. \n\nIn meiner bisherigen Tätigkeit habe ich fundierte Kenntnisse in der Abwicklung von Bestellprozessen sowie in der direkten Abstimmung mit Lieferanten gesammelt. Diese Erfahrung ermöglicht es mir, die administrativen Abläufe in der Einkaufsassistenz effizient zu begleiten und eine reibungslose Kommunikation sicherzustellen. \n\nIch freue mich darauf, meine Kompetenzen in die Prozesse der ProcureEast KG einzubringen und die Abteilung durch Zuverlässigkeit und strukturierte Arbeitsweise zu entlasten.\n\nÜber die Gelegenheit zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nYara Buy",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

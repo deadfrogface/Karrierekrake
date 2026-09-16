@@ -1,0 +1,50 @@
+{
+  "id": "fb_des_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 98.404,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner fundierten Erfahrung in der Administration von Linux-Systemen und der Automatisierung mittels Bash möchte ich Ihr Team bei der InfraWorks GmbH verstärken. \n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der Linux-Umgebung sowie in der effizienten Skriptprogrammierung mit Bash gesammelt. Diese technischen Grundlagen ermöglichen es mir, Systemprozesse stabil zu verwalten und zu optimieren. Da ich zwar kein AWS-Zertifikat besitze, bringe ich jedoch die notwendige Erfahrung in der Linux-Infrastruktur mit, um mich schnell in Ihre Cloud-Umgebungen einzuarbeiten und die Anforderungen der Systemadministration zuverlässig zu erfüllen.\n\nIch freue mich darauf, meine technischen Fähigkeiten in die Praxis bei der InfraWorks GmbH einzubringen und bin motiviert, die Infrastruktur gemeinsam mit Ihnen weiterzuentwickeln.\n\nMit freundlichen Grüßen\nNina Linux",
+  "subject": "Bewerbung als Systemadministrator - Nina Linux",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Systemadministrator - Nina Linux",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner fundierten Erfahrung in der Administration von Linux-Systemen und der Automatisierung mittels Bash möchte ich Ihr Team bei der InfraWorks GmbH verstärken. \n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der Linux-Umgebung sowie in der effizienten Skriptprogrammierung mit Bash gesammelt. Diese technischen Grundlagen ermöglichen es mir, Systemprozesse stabil zu verwalten und zu optimieren. Da ich zwar kein AWS-Zertifikat besitze, bringe ich jedoch die notwendige Erfahrung in der Linux-Infrastruktur mit, um mich schnell in Ihre Cloud-Umgebungen einzuarbeiten und die Anforderungen der Systemadministration zuverlässig zu erfüllen.\n\nIch freue mich darauf, meine technischen Fähigkeiten in die Praxis bei der InfraWorks GmbH einzubringen und bin motiviert, die Infrastruktur gemeinsam mit Ihnen weiterzuentwickeln.\n\nMit freundlichen Grüßen\nNina Linux",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

@@ -1,0 +1,39 @@
+{
+  "id": "fi_17",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 113.96,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie Ihre Erfahrung mit Firewalls und VPNs in den letzten 3 Jahren im Netzwerkbereich eingesetzt?",
+      "Welche spezifischen Herausforderungen gab es bei der Konfiguration von VPN-Verbindungen in Ihrem bisherigen Umfeld?",
+      "Wie gehen Sie vor, wenn eine Firewall-Regel zu einem unerwarteten Netzwerkverhalten führt?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im Bereich Netzwerktechnik.",
+      "Erfahrung im Bereich VPN-Technologien."
+    ],
+    "gap_notes": [
+      "No specific project achievements or detailed technical certifications provided in the profile.",
+      "Lack of specific vendor experience (e.g., Cisco, Fortinet, Palo Alto)."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Netzwerk",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Firewall, VPN",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

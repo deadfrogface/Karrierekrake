@@ -1,0 +1,12 @@
+{
+  "id": "cg1_rel_50",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "HARD_REQUIREMENT_NOT_MET",
+    "WRONG_COMPANY"
+  ],
+  "model_id": "gemma4-12b"
+}

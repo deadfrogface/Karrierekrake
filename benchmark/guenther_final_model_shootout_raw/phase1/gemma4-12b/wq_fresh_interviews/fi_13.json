@@ -1,0 +1,44 @@
+{
+  "id": "fi_13",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 62.86,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie vor, wenn Sie einen Bug in Jira melden und die Entwicklung das Ticket als 'nicht reproduzierbar' markiert?",
+      "Beschreiben Sie Ihren Prozess für die Durchführung von manuellen Regressionstests nach einem Release.",
+      "Wie priorisieren Sie Ihre Testfälle, wenn die Zeit für einen Testzyklus begrenzt ist?"
+    ],
+    "talking_points": [
+      "3 Jahre Erfahrung in der Qualitätssicherung (QA)",
+      "Fundierte Kenntnisse in der Durchführung manueller Tests",
+      "Erfahrung im Umgang mit Jira zur Fehlerverwaltung und Ticket-Tracking"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekterfolge oder detaillierten Methodiken im Profil vorhanden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre QA",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Manuelle Tests",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Jira",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  }
+}

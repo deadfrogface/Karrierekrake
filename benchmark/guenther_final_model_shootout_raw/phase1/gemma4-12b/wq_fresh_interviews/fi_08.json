@@ -1,0 +1,45 @@
+{
+  "id": "fi_08",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 117.289,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie vor, wenn Sie bei der Kommissionierung einen Fehler im Auftrag feststellen?",
+      "In welchen Situationen haben Sie Ihren Staplerschein in der Praxis bereits angewendet?",
+      "Wie stellen Sie sicher, dass die Qualitätsstandards bei der Warenbewegung eingehalten werden?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im Bereich Lagerlogistik",
+      "Fundierte Kenntnisse in der Kommissionierung",
+      "Vorhandener Staplerschein für den Einsatz von Flurförderzeugen"
+    ],
+    "gap_notes": [
+      "Profil enthält keine spezifischen Details zu bisherigen Erfolgen oder Aufgaben in der Lagerlogistik.",
+      "Keine konkreten Erfahrungen oder Zertifizierungen im Profil gelistet."
+    ],
+    "anchors_used": [
+      {
+        "text": "Kommissionierung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Staplerschein",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "3 Jahre Lager",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "fi_11",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 102.465,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie strukturieren Sie den Onboarding-Prozess für neue Mitarbeiter?",
+      "Welche Maßnahmen ergreifen Sie zur Sicherstellung der korrekten Führung von Personalakten?",
+      "Wie gehen Sie mit sensiblen Daten in der Personalverwaltung um?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im Bereich HR",
+      "Kenntnisse im Bereich Onboarding-Prozesse"
+    ],
+    "gap_notes": [
+      "No specific achievements or projects listed in the profile.",
+      "Lack of detailed evidence regarding specific HR tools or software used."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre HR",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Onboarding, Personalakte",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "fi_01",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 122.211,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie methodisch vor, wenn Sie komplexe Daten in Excel für das Reporting aufbereiten?",
+      "Können Sie uns ein Beispiel geben, wie Sie bei der Kostenrechnung Abweichungen identifiziert haben?",
+      "Wie stellen Sie sicher, dass Ihre Reports für die Geschäftsführung präzise und verständlich sind?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung als Controller im Bereich Reporting und Kostenrechnung.",
+      "Fundierte Kenntnisse in der Arbeit mit Excel zur Datenaufbereitung."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekterfolge oder detaillierten Aufgabenbeschreibungen in der Evidenz vorhanden.",
+      "Fehlende Details zu spezifischen Branchenerfahrungen oder verwendeten ERP-Systemen."
+    ],
+    "anchors_used": [
+      {
+        "text": "Reporting",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Excel",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kostenrechnung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "3 Jahre Controller",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

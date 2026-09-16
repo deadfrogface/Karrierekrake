@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_06",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 89.261,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Erstellung von Excel-Auswertungen und dem Reporting bringe ich die passenden Grundlagen mit, um das Team der InsightLab AG als Junior Data Analyst zu unterstützen.\n\nIn meiner bisherigen Tätigkeit habe ich komplexe Datenstrukturen in Excel strukturiert und aussagekräftige Reports erstellt. Diese Erfahrung ermöglicht es mir, Daten effizient aufzubereiten und relevante Erkenntnisse für die Analyse bereitzustellen. Da ich kein Studium in Data Science absolviert habe, konzentriere ich mich auf die präzise Anwendung meiner vorhandenen analytischen Fähigkeiten in der praktischen Datenverarbeitung.\n\nIch freue mich darauf, meine Kompetenzen in der Datenaufbereitung bei der InsightLab AG einzubringen und gemeinsam mit Ihnen fundierte Analysen zu erstellen.\\n\nMit freundlichen Grüßen\nIvan Excel",
+  "subject": "Bewerbung als Junior Data Analyst - Ivan Excel",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Junior Data Analyst - Ivan Excel",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Erstellung von Excel-Auswertungen und dem Reporting bringe ich die passenden Grundlagen mit, um das Team der InsightLab AG als Junior Data Analyst zu unterstützen.\n\nIn meiner bisherigen Tätigkeit habe ich komplexe Datenstrukturen in Excel strukturiert und aussagekräftige Reports erstellt. Diese Erfahrung ermöglicht es mir, Daten effizient aufzubereiten und relevante Erkenntnisse für die Analyse bereitzustellen. Da ich kein Studium in Data Science absolviert habe, konzentriere ich mich auf die präzise Anwendung meiner vorhandenen analytischen Fähigkeiten in der praktischen Datenverarbeitung.\n\nIch freue mich darauf, meine Kompetenzen in der Datenaufbereitung bei der InsightLab AG einzubringen und gemeinsam mit Ihnen fundierte Analysen zu erstellen.\\n\nMit freundlichen Grüßen\nIvan Excel",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}
