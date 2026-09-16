@@ -124,3 +124,5 @@ Recommend only after another writing-quality iteration: still **PHI_DEFAULT_QWEN
 - New claim-semantics tests: PASS  
 - Full `pytest`: **401 passed**  
 - CI / Windows Smoke: see latest PR checks after push
+- **CI:** PASS (commit `aaecb02`)
+- **Windows Smoke:** PASS (commit `aaecb02`)
