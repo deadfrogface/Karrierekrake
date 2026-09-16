@@ -1,0 +1,90 @@
+{
+  "cv": {
+    "ok": true,
+    "capability": "cv_extract",
+    "suggestion": {
+      "full_name": "Tom Probe",
+      "emails": [
+        "tom.probe@example.com"
+      ],
+      "phones": [
+        "+49 171 2222002"
+      ],
+      "skills": [
+        "MS Office",
+        "Excel",
+        "Personio Grundlagen",
+        "Deutsch Muttersprache",
+        "Englisch B2"
+      ],
+      "languages": [],
+      "experience_titles": [
+        "Sachbearbeiter Personal",
+        "Office Manager"
+      ],
+      "education": [
+        "2013 – 2016  Kaufmann für Büromanagement, IHK Köln"
+      ],
+      "certificates": [],
+      "confidence": "high",
+      "notes": [],
+      "invented_flag": false
+    },
+    "fallback_reason": "",
+    "provider_status": "ready",
+    "model_id": "qwen2.5-7b-instruct",
+    "validated": true,
+    "safety_notes": []
+  },
+  "jobs": [
+    {
+      "id": "ho_job_hr",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [],
+          "red_flags": [],
+          "summary": "",
+          "confidence": "low"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen2.5-7b-instruct",
+        "validated": true,
+        "safety_notes": []
+      }
+    },
+    {
+      "id": "ho_job_pflege",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [
+            {
+              "requirement": "Pflegeausbildung, Intensivstation, Approbation nicht nötig",
+              "kind": "unknown",
+              "confidence": "low"
+            },
+            {
+              "requirement": "Patientenversorgung Pflicht",
+              "kind": "hard",
+              "confidence": "medium"
+            }
+          ],
+          "red_flags": [],
+          "summary": "",
+          "confidence": "low"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen2.5-7b-instruct",
+        "validated": true,
+        "safety_notes": []
+      }
+    }
+  ]
+}

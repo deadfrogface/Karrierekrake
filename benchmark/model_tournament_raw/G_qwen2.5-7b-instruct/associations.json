@@ -1,0 +1,168 @@
+[
+  {
+    "id": "ho_assoc_clear",
+    "deterministic": {
+      "case_id": "ho-case-lit-hr",
+      "ambiguous": false,
+      "reason": "auto_match"
+    },
+    "envelope": {
+      "ok": true,
+      "capability": "association",
+      "suggestion": {
+        "case_id": "ho-case-lit-hr",
+        "confidence": "high",
+        "ambiguous": false,
+        "candidate_case_ids": [],
+        "reason": "subject and sender match",
+        "match_status": "linked"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": []
+    },
+    "eval": {
+      "false_confident": false,
+      "correct_clear": true,
+      "unnecessary_ambiguity": false,
+      "correct_ambiguous": null
+    }
+  },
+  {
+    "id": "ho_assoc_same_co_two_jobs",
+    "deterministic": {
+      "case_id": null,
+      "ambiguous": true,
+      "reason": "near_tie_scores"
+    },
+    "envelope": {
+      "ok": true,
+      "capability": "association",
+      "suggestion": {
+        "case_id": null,
+        "confidence": "low",
+        "ambiguous": true,
+        "candidate_case_ids": [
+          "ho-case-lit-hr",
+          "ho-case-lit-pay"
+        ],
+        "reason": "near_tie_scores",
+        "match_status": "ambiguous"
+      },
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": [
+        "llm_invalid_used_deterministic_assoc"
+      ]
+    },
+    "eval": {
+      "false_confident": false,
+      "correct_clear": null,
+      "unnecessary_ambiguity": false,
+      "correct_ambiguous": true
+    }
+  },
+  {
+    "id": "ho_assoc_recruiter_multi",
+    "deterministic": {
+      "case_id": null,
+      "ambiguous": true,
+      "reason": "recruiter_multi_case_no_signal"
+    },
+    "envelope": {
+      "ok": true,
+      "capability": "association",
+      "suggestion": {
+        "case_id": null,
+        "confidence": "low",
+        "ambiguous": true,
+        "candidate_case_ids": [
+          "ho-case-lit-hr",
+          "ho-case-lit-pay",
+          "ho-case-adv"
+        ],
+        "reason": "recruiter_multi_case_no_signal",
+        "match_status": "ambiguous"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": [
+        "deterministic_ambiguous_wins"
+      ]
+    },
+    "eval": {
+      "false_confident": false,
+      "correct_clear": null,
+      "unnecessary_ambiguity": false,
+      "correct_ambiguous": true
+    }
+  },
+  {
+    "id": "ho_assoc_ref_ok",
+    "deterministic": {
+      "case_id": "ho-case-lit-pay",
+      "ambiguous": false,
+      "reason": "auto_match"
+    },
+    "envelope": {
+      "ok": true,
+      "capability": "association",
+      "suggestion": {
+        "case_id": "ho-case-lit-pay",
+        "confidence": "low",
+        "ambiguous": false,
+        "candidate_case_ids": [],
+        "reason": "subject and body contain reference number matching the deterministic case",
+        "match_status": "linked"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": []
+    },
+    "eval": {
+      "false_confident": false,
+      "correct_clear": true,
+      "unnecessary_ambiguity": false,
+      "correct_ambiguous": null
+    }
+  },
+  {
+    "id": "ho_assoc_malformed",
+    "deterministic": {
+      "case_id": null,
+      "ambiguous": false,
+      "reason": "no_candidate"
+    },
+    "envelope": {
+      "ok": true,
+      "capability": "association",
+      "suggestion": {
+        "case_id": null,
+        "confidence": "low",
+        "ambiguous": true,
+        "candidate_case_ids": [],
+        "reason": "no_clear_match",
+        "match_status": "ambiguous"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": []
+    },
+    "eval": {
+      "false_confident": false,
+      "correct_clear": null,
+      "unnecessary_ambiguity": false,
+      "correct_ambiguous": true
+    }
+  }
+]

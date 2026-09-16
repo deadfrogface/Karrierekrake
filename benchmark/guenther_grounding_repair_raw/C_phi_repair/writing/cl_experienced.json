@@ -1,0 +1,63 @@
+{
+  "id": "cl_experienced",
+  "subject": "Senior Buchhaltung / Teamleitung — Northwind AG",
+  "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Position des Senior Buchhaltungsteamsleiters bei Northwind AG auszudrücken. Mit meiner umfangreichen Erfahrung in der Buchhaltung, insbesondere im Bereich der Jahresabschluss-Unterstützung und Prozessoptimierung, glaube ich, dass ich eine wertvolle Bereicherung für Ihr Team sein könnte. Während meiner Zeit bei Contoso Süd (Team 4) habe ich mit DATEV gearbeitet und konnte Prozesse verbessern, die Kreditoren und Debitoren betreffen. Meine Kenntnisse in DATEV, SAP FI und Excel, zusammen mit meiner IHK-Bilanzbuchhalter-Bildung, haben mir die Fähigkeiten verliehen, die für diese Rolle erforderlich sind.\n\nIch freue mich darauf, meine Erfahrungen und Fähigkeiten mit Ihnen zu besprechen, wie sie zur erfolgreichen Führung Ihres Buchhaltungsteams beitragen könnten. Ich freue mich auf die Möglichkeit, meine Bewerbung näher zu betrachten.\n\nMit freundlichen Grüßen,\nKlaus",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Senior Buchhaltung / Teamleitung — Northwind AG",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Position des Senior Buchhaltungsteamsleiters bei Northwind AG auszudrücken. Mit meiner umfangreichen Erfahrung in der Buchhaltung, insbesondere im Bereich der Jahresabschluss-Unterstützung und Prozessoptimierung, glaube ich, dass ich eine wertvolle Bereicherung für Ihr Team sein könnte. Während meiner Zeit bei Contoso Süd (Team 4) habe ich mit DATEV gearbeitet und konnte Prozesse verbessern, die Kreditoren und Debitoren betreffen. Meine Kenntnisse in DATEV, SAP FI und Excel, zusammen mit meiner IHK-Bilanzbuchhalter-Bildung, haben mir die Fähigkeiten verliehen, die für diese Rolle erforderlich sind.\n\nIch freue mich darauf, meine Erfahrungen und Fähigkeiten mit Ihnen zu besprechen, wie sie zur erfolgreichen Führung Ihres Buchhaltungsteams beitragen könnten. Ich freue mich auf die Möglichkeit, meine Bewerbung näher zu betrachten.\n\nMit freundlichen Grüßen,\nKlaus",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [
+      {
+        "claim": {
+          "text": "IHK-Bilanzbuchhalter-Bildung",
+          "kind": "credential",
+          "span": "IHK-Bilanzbuchhalter-Bildung",
+          "requires_direct": true,
+          "meta": {
+            "family": "IHK"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "IHK-Bilanzbuchhalter-Bildung",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

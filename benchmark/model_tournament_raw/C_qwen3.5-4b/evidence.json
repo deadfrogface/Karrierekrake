@@ -1,0 +1,153 @@
+[
+  {
+    "id": "ho_claim_tempt_pflege",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Reports",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_degree",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kaufmann für Büromanagement",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Master Informatik",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_employer",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Adventure Works Köln",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_1",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "06.2019 – heute  Sachbearbeiter Personal, Adventure Works Köln - Excel-Reports für HR",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "CERN Fellow",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_2",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "06.2019 – heute  Sachbearbeiter Personal, Adventure Works Köln - Excel-Reports für HR",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Bundeswehr General",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    }
+  }
+]

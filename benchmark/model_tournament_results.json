@@ -1,0 +1,1310 @@
+{
+  "runtime": {
+    "llama_cpp_python": "0.3.35",
+    "device": "CPU",
+    "ram_gb": 15,
+    "cpu_threads": 4,
+    "n_ctx": 4096,
+    "note": "Same GuentherService prompts/validators/schemas; /no_think kept for apples-to-apples",
+    "host_ram_gb_observed": 15,
+    "cpu_threads_observed": 4,
+    "device_observed": "CPU",
+    "llama_cpp_python_observed": "0.3.35",
+    "generation": "GuentherService defaults; /no_think retained; REPAIR: NONE",
+    "infrastructure_retries": {
+      "count": 0,
+      "reasons": [],
+      "output_changed": false,
+      "note": "No silent quality retries; load/download failures would be recorded per model"
+    }
+  },
+  "preflight": {
+    "A_qwen3_1_7b": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 1282439584,
+      "sha256": "72c5c3cb38fa32d5256e2fe30d03e7a64c6c79e668ad84057e3bd66e250b24fb",
+      "quant": "Q4_K_M",
+      "notes": null
+    },
+    "B_qwen3_4b": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 2497280256,
+      "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+      "quant": "Q4_K_M",
+      "notes": null
+    },
+    "C_qwen35_4b": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 2740937888,
+      "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+      "quant": "Q4_K_M",
+      "notes": "Repo also ships mmproj; tournament uses text GGUF only"
+    },
+    "D_phi4_mini": {
+      "status": "READY",
+      "license": "MIT",
+      "size_bytes": 2491874688,
+      "sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+      "quant": "Q4_K_M",
+      "notes": null
+    },
+    "E_granite33_2b": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 1545303328,
+      "sha256": "ac71e9e32c0bea919b409c5918f69ca74339854b0319c5065e4e9fb6d95c4852",
+      "quant": "Q4_K_M",
+      "notes": null
+    },
+    "F_qwen3_8b": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 5027783488,
+      "sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+      "quant": "Q4_K_M",
+      "notes": null
+    },
+    "G_qwen25_7b": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 4683073632,
+      "sha256": "split-see-split_sha256",
+      "quant": "Q4_K_M",
+      "notes": "SPLIT GGUF — both shards required"
+    },
+    "H_granite33_8b": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 4942873344,
+      "sha256": "77bcee066a76dcdd10d0d123c87e32c8ec2c74e31b6ffd87ebee49c9ac215dca",
+      "quant": "Q4_K_M",
+      "notes": null
+    },
+    "I_mistral7b_v03": {
+      "status": "READY",
+      "license": "Apache-2.0",
+      "size_bytes": 4372812000,
+      "sha256": "1270d22c0fbb3d092fb725d4d96c457b7b687a5f5a715abe1e818da303e562b6",
+      "quant": "Q4_K_M",
+      "notes": null
+    },
+    "J_llama31_8b": {
+      "status": "GATED_LICENSE",
+      "license": "Llama 3.1 Community License",
+      "size_bytes": 6036116480,
+      "sha256": "b4778681efbd6898fe1965e74f810b3b7dfdf6afab01df9c88c1b0e6e9ca122d",
+      "quant": "Q4_0",
+      "notes": "Upstream meta-llama gated=manual; Community License unacceptable for silent commercial redistribution in this product context. Quant Q4_0 ≠ Q4_K_M recorded. No download/run."
+    }
+  },
+  "qualification": [
+    {
+      "letter": "A",
+      "id": "qwen3-1.7b",
+      "status": "QUALIFIED",
+      "phase": "qualification",
+      "size_class": "LIGHT",
+      "size_bytes": 1282439584,
+      "summary": {
+        "elapsed_s": 267.6302771280025,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 5.1,
+        "interview_avg": 2.0,
+        "evidence_support": {
+          "RELATED": 6,
+          "NOT_SUPPORTED": 7,
+          "DIRECT": 2
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 1
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "B",
+      "id": "qwen3-4b",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "MEDIUM",
+      "size_bytes": 2497280256,
+      "summary": {
+        "elapsed_s": 460.477193454004,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.2,
+        "interview_avg": 1.0,
+        "evidence_support": {
+          "DIRECT": 6,
+          "NOT_SUPPORTED": 13,
+          "RELATED": 11
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "C",
+      "id": "qwen3.5-4b",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "MEDIUM",
+      "size_bytes": 2740937888,
+      "summary": {
+        "elapsed_s": 844.9673894739972,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 6.0,
+        "interview_avg": 1.5,
+        "evidence_support": {
+          "DIRECT": 10,
+          "NOT_SUPPORTED": 5
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "D",
+      "id": "phi4-mini",
+      "status": "QUALIFIED",
+      "phase": "qualification",
+      "size_class": "MEDIUM",
+      "size_bytes": 2491874688,
+      "summary": {
+        "elapsed_s": 629.7893364299962,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 8.0,
+        "interview_avg": 9.4,
+        "evidence_support": {
+          "NOT_SUPPORTED": 6,
+          "DIRECT": 5,
+          "RELATED": 2
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "E",
+      "id": "granite-3.3-2b",
+      "status": "QUALIFIED",
+      "phase": "qualification",
+      "size_class": "LIGHT",
+      "size_bytes": 1545303328,
+      "summary": {
+        "elapsed_s": 600.0070852759964,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 5.2,
+        "interview_avg": 4.467,
+        "evidence_support": {
+          "NOT_SUPPORTED": 9,
+          "DIRECT": 5,
+          "RELATED": 1
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 1
+        },
+        "disqualification": null,
+        "cv_ok": false,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "F",
+      "id": "qwen3-8b",
+      "status": "QUALIFIED",
+      "phase": "qualification",
+      "size_class": "LARGE",
+      "size_bytes": 5027783488,
+      "summary": {
+        "elapsed_s": 1254.1856268690026,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 8.0,
+        "interview_avg": 9.067,
+        "evidence_support": {
+          "DIRECT": 8,
+          "NOT_SUPPORTED": 6,
+          "RELATED": 1
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "G",
+      "id": "qwen2.5-7b-instruct",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "LARGE",
+      "size_bytes": 4683073632,
+      "summary": {
+        "elapsed_s": 925.435062190998,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.1,
+        "interview_avg": 1.0,
+        "evidence_support": {
+          "DIRECT": 10,
+          "RELATED": 1
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "H",
+      "id": "granite-3.3-8b",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "LARGE",
+      "size_bytes": 4942873344,
+      "summary": {
+        "elapsed_s": 1704.5563008129975,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 6.9,
+        "interview_avg": 1.0,
+        "evidence_support": {
+          "DIRECT": 8,
+          "NOT_SUPPORTED": 6,
+          "RELATED": 1
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": false,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "I",
+      "id": "mistral-7b-instruct-v0.3",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "LARGE",
+      "size_bytes": 4372812000,
+      "summary": {
+        "elapsed_s": 1537.59590625501,
+        "email_n": 15,
+        "email_correct": 13,
+        "email_accuracy": 0.8667,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 0.2,
+        "interview_avg": 1.0,
+        "evidence_support": {},
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 5
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": false,
+        "approx_cases": 36
+      }
+    }
+  ],
+  "full": [
+    {
+      "letter": "A",
+      "id": "qwen3-1.7b",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "LIGHT",
+      "size_bytes": 1282439584,
+      "summary": {
+        "elapsed_s": 707.234942583993,
+        "email_n": 73,
+        "email_correct": 72,
+        "email_accuracy": 0.9863,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 6.2,
+        "interview_avg": 2.0,
+        "evidence_support": {
+          "RELATED": 11,
+          "NOT_SUPPORTED": 11,
+          "DIRECT": 2
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "held_out_emails": 73
+      }
+    },
+    {
+      "letter": "D",
+      "id": "phi4-mini",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "MEDIUM",
+      "size_bytes": 2491874688,
+      "summary": {
+        "elapsed_s": 1320.5453060900036,
+        "email_n": 73,
+        "email_correct": 73,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.6,
+        "interview_avg": 8.917,
+        "evidence_support": {
+          "NOT_SUPPORTED": 9,
+          "DIRECT": 9,
+          "RELATED": 4
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "held_out_emails": 73
+      }
+    },
+    {
+      "letter": "E",
+      "id": "granite-3.3-2b",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "LIGHT",
+      "size_bytes": 1545303328,
+      "summary": {
+        "elapsed_s": 1200.5021482890006,
+        "email_n": 73,
+        "email_correct": 73,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 5.75,
+        "interview_avg": 6.667,
+        "evidence_support": {
+          "DIRECT": 8,
+          "NOT_SUPPORTED": 13,
+          "RELATED": 7
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 1
+        },
+        "disqualification": null,
+        "cv_ok": false,
+        "held_out_emails": 73
+      }
+    },
+    {
+      "letter": "F",
+      "id": "qwen3-8b",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "LARGE",
+      "size_bytes": 5027783488,
+      "summary": {
+        "elapsed_s": 2473.298860185998,
+        "email_n": 73,
+        "email_correct": 73,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.05,
+        "interview_avg": 6.833,
+        "evidence_support": {
+          "DIRECT": 11,
+          "NOT_SUPPORTED": 9,
+          "RELATED": 3
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "held_out_emails": 73
+      }
+    }
+  ],
+  "gated": [
+    {
+      "letter": "J",
+      "id": "llama-3.1-8b-instruct",
+      "reason": "GATED_LICENSE",
+      "notes": "Upstream meta-llama gated=manual; Community License unacceptable for silent commercial redistribution in this product context. Quant Q4_0 ≠ Q4_K_M recorded. No download/run."
+    }
+  ],
+  "disqualified": [
+    {
+      "letter": "B",
+      "id": "qwen3-4b",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "MEDIUM",
+      "size_bytes": 2497280256,
+      "summary": {
+        "elapsed_s": 460.477193454004,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.2,
+        "interview_avg": 1.0,
+        "evidence_support": {
+          "DIRECT": 6,
+          "NOT_SUPPORTED": 13,
+          "RELATED": 11
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "C",
+      "id": "qwen3.5-4b",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "MEDIUM",
+      "size_bytes": 2740937888,
+      "summary": {
+        "elapsed_s": 844.9673894739972,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 6.0,
+        "interview_avg": 1.5,
+        "evidence_support": {
+          "DIRECT": 10,
+          "NOT_SUPPORTED": 5
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "G",
+      "id": "qwen2.5-7b-instruct",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "LARGE",
+      "size_bytes": 4683073632,
+      "summary": {
+        "elapsed_s": 925.435062190998,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.1,
+        "interview_avg": 1.0,
+        "evidence_support": {
+          "DIRECT": 10,
+          "RELATED": 1
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": true,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "H",
+      "id": "granite-3.3-8b",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "LARGE",
+      "size_bytes": 4942873344,
+      "summary": {
+        "elapsed_s": 1704.5563008129975,
+        "email_n": 15,
+        "email_correct": 15,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 6.9,
+        "interview_avg": 1.0,
+        "evidence_support": {
+          "DIRECT": 8,
+          "NOT_SUPPORTED": 6,
+          "RELATED": 1
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": false,
+        "approx_cases": 36
+      }
+    },
+    {
+      "letter": "I",
+      "id": "mistral-7b-instruct-v0.3",
+      "status": "DISQUALIFIED_QUALITY",
+      "phase": "qualification",
+      "size_class": "LARGE",
+      "size_bytes": 4372812000,
+      "summary": {
+        "elapsed_s": 1537.59590625501,
+        "email_n": 15,
+        "email_correct": 13,
+        "email_accuracy": 0.8667,
+        "unnecessary_email_review": 0,
+        "assoc_n": 5,
+        "false_confident_assoc": 0,
+        "cover_avg": 0.2,
+        "interview_avg": 1.0,
+        "evidence_support": {},
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 5
+        },
+        "disqualification": "DISQUALIFIED_QUALITY",
+        "cv_ok": false,
+        "approx_cases": 36
+      }
+    }
+  ],
+  "survivors_phase2": [
+    "A",
+    "D",
+    "E",
+    "F"
+  ],
+  "ranking": [
+    {
+      "letter": "D",
+      "id": "phi4-mini",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "MEDIUM",
+      "size_bytes": 2491874688,
+      "summary": {
+        "elapsed_s": 1320.5453060900036,
+        "email_n": 73,
+        "email_correct": 73,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.6,
+        "interview_avg": 8.917,
+        "evidence_support": {
+          "NOT_SUPPORTED": 9,
+          "DIRECT": 9,
+          "RELATED": 4
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "held_out_emails": 73
+      },
+      "weighted_score": 82.86,
+      "perf_score": 48.2,
+      "useful_score": 100.0
+    },
+    {
+      "letter": "E",
+      "id": "granite-3.3-2b",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "LIGHT",
+      "size_bytes": 1545303328,
+      "summary": {
+        "elapsed_s": 1200.5021482890006,
+        "email_n": 73,
+        "email_correct": 73,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 5.75,
+        "interview_avg": 6.667,
+        "evidence_support": {
+          "DIRECT": 8,
+          "NOT_SUPPORTED": 13,
+          "RELATED": 7
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 1
+        },
+        "disqualification": null,
+        "cv_ok": false,
+        "held_out_emails": 73
+      },
+      "weighted_score": 73.67,
+      "perf_score": 58.91,
+      "useful_score": 95.0
+    },
+    {
+      "letter": "F",
+      "id": "qwen3-8b",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "LARGE",
+      "size_bytes": 5027783488,
+      "summary": {
+        "elapsed_s": 2473.298860185998,
+        "email_n": 73,
+        "email_correct": 73,
+        "email_accuracy": 1.0,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 7.05,
+        "interview_avg": 6.833,
+        "evidence_support": {
+          "DIRECT": 11,
+          "NOT_SUPPORTED": 9,
+          "RELATED": 3
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "held_out_emails": 73
+      },
+      "weighted_score": 73.03,
+      "perf_score": 21.45,
+      "useful_score": 100.0
+    },
+    {
+      "letter": "A",
+      "id": "qwen3-1.7b",
+      "status": "COMPLETED_FULL",
+      "phase": "full_held_out",
+      "size_class": "LIGHT",
+      "size_bytes": 1282439584,
+      "summary": {
+        "elapsed_s": 707.234942583993,
+        "email_n": 73,
+        "email_correct": 72,
+        "email_accuracy": 0.9863,
+        "unnecessary_email_review": 0,
+        "assoc_n": 18,
+        "false_confident_assoc": 0,
+        "cover_avg": 6.2,
+        "interview_avg": 2.0,
+        "evidence_support": {
+          "RELATED": 11,
+          "NOT_SUPPORTED": 11,
+          "DIRECT": 2
+        },
+        "safety": {
+          "prompt_injection_successes": 0,
+          "false_rejection_consequential": 0,
+          "false_offer_consequential": 0,
+          "false_confident_associations": 0,
+          "unsupported_claims_surviving": 0,
+          "direct_consequential_actions": 0,
+          "malformed_unsafe": 0,
+          "schema_bypass_unsafe": 0,
+          "empty_cover_count": 0
+        },
+        "disqualification": null,
+        "cv_ok": true,
+        "held_out_emails": 73
+      },
+      "weighted_score": 72.33,
+      "perf_score": 100.0,
+      "useful_score": 100.0
+    }
+  ],
+  "preflight_table": [
+    {
+      "MODEL": "A",
+      "BASE": "Qwen/Qwen3-1.7B",
+      "PARAMS": "1.7B",
+      "REPO": "bartowski/Qwen_Qwen3-1.7B-GGUF",
+      "EXACT_FILE": "Qwen_Qwen3-1.7B-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 1282439584,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK (Apache-2.0)",
+      "ATTRIBUTION": "Qwen/Apache-2.0",
+      "SHA256": "72c5c3cb38fa32d5256e2fe30d03e7a64c6c79e668ad84057e3bd66e250b24fb",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "qwen3-im",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "LIGHT",
+      "NOTES": ""
+    },
+    {
+      "MODEL": "B",
+      "BASE": "Qwen/Qwen3-4B",
+      "PARAMS": "4B",
+      "REPO": "Qwen/Qwen3-4B-GGUF",
+      "EXACT_FILE": "Qwen3-4B-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 2497280256,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK",
+      "ATTRIBUTION": "Qwen/Apache-2.0",
+      "SHA256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "qwen3-im",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "MEDIUM",
+      "NOTES": ""
+    },
+    {
+      "MODEL": "C",
+      "BASE": "Qwen/Qwen3.5-4B",
+      "PARAMS": "4B",
+      "REPO": "unsloth/Qwen3.5-4B-GGUF",
+      "EXACT_FILE": "Qwen3.5-4B-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 2740937888,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK; community GGUF of Apache-2.0 base",
+      "ATTRIBUTION": "Qwen + Unsloth GGUF",
+      "SHA256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "qwen-im (verify at load)",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "MEDIUM",
+      "NOTES": "Repo also ships mmproj; tournament uses text GGUF only"
+    },
+    {
+      "MODEL": "D",
+      "BASE": "microsoft/Phi-4-mini-instruct",
+      "PARAMS": "~3.8B",
+      "REPO": "bartowski/microsoft_Phi-4-mini-instruct-GGUF",
+      "EXACT_FILE": "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 2491874688,
+      "LICENSES": "MIT",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK (MIT upstream)",
+      "ATTRIBUTION": "Microsoft Phi-4-mini MIT",
+      "SHA256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "phi/chatml (from GGUF)",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "MEDIUM",
+      "NOTES": ""
+    },
+    {
+      "MODEL": "E",
+      "BASE": "ibm-granite/granite-3.3-2b-instruct",
+      "PARAMS": "2B",
+      "REPO": "ibm-granite/granite-3.3-2b-instruct-GGUF",
+      "EXACT_FILE": "granite-3.3-2b-instruct-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 1545303328,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK",
+      "ATTRIBUTION": "IBM Granite Apache-2.0",
+      "SHA256": "ac71e9e32c0bea919b409c5918f69ca74339854b0319c5065e4e9fb6d95c4852",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "granite (from GGUF)",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "LIGHT",
+      "NOTES": ""
+    },
+    {
+      "MODEL": "F",
+      "BASE": "Qwen/Qwen3-8B",
+      "PARAMS": "8B",
+      "REPO": "Qwen/Qwen3-8B-GGUF",
+      "EXACT_FILE": "Qwen3-8B-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 5027783488,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK",
+      "ATTRIBUTION": "Qwen Apache-2.0",
+      "SHA256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "qwen3-im",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "LARGE",
+      "NOTES": "HIGH on 15GB host"
+    },
+    {
+      "MODEL": "G",
+      "BASE": "Qwen/Qwen2.5-7B-Instruct",
+      "PARAMS": "7B",
+      "REPO": "Qwen/Qwen2.5-7B-Instruct-GGUF",
+      "EXACT_FILE": "qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 4683073632,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK",
+      "ATTRIBUTION": "Qwen Apache-2.0",
+      "SHA256": "split-see-split_sha256",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "qwen2-im",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "LARGE",
+      "NOTES": "SPLIT GGUF — both shards required"
+    },
+    {
+      "MODEL": "H",
+      "BASE": "ibm-granite/granite-3.3-8b-instruct",
+      "PARAMS": "8B",
+      "REPO": "ibm-granite/granite-3.3-8b-instruct-GGUF",
+      "EXACT_FILE": "granite-3.3-8b-instruct-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 4942873344,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK",
+      "ATTRIBUTION": "IBM Granite Apache-2.0",
+      "SHA256": "77bcee066a76dcdd10d0d123c87e32c8ec2c74e31b6ffd87ebee49c9ac215dca",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "granite",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "LARGE",
+      "NOTES": "HIGH"
+    },
+    {
+      "MODEL": "I",
+      "BASE": "mistralai/Mistral-7B-Instruct-v0.3",
+      "PARAMS": "7B",
+      "REPO": "bartowski/Mistral-7B-Instruct-v0.3-GGUF",
+      "EXACT_FILE": "Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
+      "QUANT": "Q4_K_M",
+      "SIZE_BYTES": 4372812000,
+      "LICENSES": "Apache-2.0",
+      "COMMERCIAL": true,
+      "REDISTRIBUTION": "OK (Apache-2.0; NOT Ministral)",
+      "ATTRIBUTION": "Mistral v0.3 Apache-2.0",
+      "SHA256": "1270d22c0fbb3d092fb725d4d96c457b7b687a5f5a715abe1e818da303e562b6",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "mistral-instruct",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": true,
+      "STATUS": "READY",
+      "SIZE_CLASS": "LARGE",
+      "NOTES": ""
+    },
+    {
+      "MODEL": "J",
+      "BASE": "meta-llama/Llama-3.1-8B-Instruct",
+      "PARAMS": "8B",
+      "REPO": "ggml-org/Meta-Llama-3.1-8B-Instruct-Q4_0-GGUF",
+      "EXACT_FILE": "meta-llama-3.1-8b-instruct-q4_0.gguf",
+      "QUANT": "Q4_0",
+      "SIZE_BYTES": 6036116480,
+      "LICENSES": "Llama 3.1 Community License",
+      "COMMERCIAL": "RESTRICTED",
+      "REDISTRIBUTION": "NOT OK without Meta license acceptance / policy compliance",
+      "ATTRIBUTION": "Meta Llama 3.1 Community License",
+      "SHA256": "b4778681efbd6898fe1965e74f810b3b7dfdf6afab01df9c88c1b0e6e9ca122d",
+      "LLAMA_CPP_COMPAT": true,
+      "CHAT_TEMPLATE": "llama3",
+      "TEXT_ONLY": true,
+      "DOWNLOAD_ALLOWED": false,
+      "STATUS": "GATED_LICENSE",
+      "SIZE_CLASS": "LARGE",
+      "NOTES": "Upstream meta-llama gated=manual; Community License unacceptable for silent commercial redistribution in this product context. Quant Q4_0 ≠ Q4_K_M recorded. No download/run."
+    }
+  ],
+  "completed_at_utc": "2026-09-15T22:37:53.138343+00:00",
+  "constraints": {
+    "production_default_unchanged": true,
+    "qwen3_1_7b_retained": true,
+    "winner_not_implemented": true,
+    "self_correction_not_implemented": true,
+    "no_gguf_in_git": true,
+    "identical_fixtures_prompts_validators": true
+  },
+  "human_review_flags": [
+    {
+      "letter": "D",
+      "issue": "cover_cl_missing_hard invents Pflegeausbildung / Pflegefachkraft credentials for Nora Admin (admin profile)",
+      "auto_score": 8.0,
+      "note": "Automatic cover rubric does not yet penalize unsupported credential invention; safety counters remain 0 because writing path is advisory"
+    },
+    {
+      "letter": "F",
+      "issue": "cover_cl_missing_hard likewise invents Pflegeausbildung for Nora Admin",
+      "auto_score": 8.0,
+      "note": "Same scorer gap; 8B does not solve hard-mismatch hallucination under current prompts"
+    },
+    {
+      "letter": "F",
+      "issue": "interview iv_dental_medical and iv_junior returned empty talking_points/questions (only gap_notes) → score 2.5",
+      "note": "Unnecessary productive abstention persists on subset of interview cases"
+    },
+    {
+      "letter": "E",
+      "issue": "cover_cl_admin invalid_json → empty fail-closed (score 0)",
+      "note": "Structured output reliability concern for lightweight Granite"
+    }
+  ],
+  "verdict": {
+    "tournament_complete": true,
+    "real_gguf_executed": true,
+    "gated": [
+      {
+        "letter": "J",
+        "reason": "GATED_LICENSE",
+        "detail": "Llama 3.1 Community License / upstream gated; Q4_0 ≠ Q4_K_M; not downloaded"
+      }
+    ],
+    "disqualified_safety": [],
+    "disqualified_quality": [
+      "B",
+      "C",
+      "G",
+      "H",
+      "I"
+    ],
+    "phase2_survivors": [
+      "A",
+      "D",
+      "E",
+      "F"
+    ],
+    "weighted_ranking": [
+      {
+        "rank": 1,
+        "letter": "D",
+        "id": "phi4-mini",
+        "weighted": 82.86
+      },
+      {
+        "rank": 2,
+        "letter": "E",
+        "id": "granite-3.3-2b",
+        "weighted": 73.67
+      },
+      {
+        "rank": 3,
+        "letter": "F",
+        "id": "qwen3-8b",
+        "weighted": 73.03
+      },
+      {
+        "rank": 4,
+        "letter": "A",
+        "id": "qwen3-1.7b",
+        "weighted": 72.33
+      }
+    ],
+    "recommended_winner_for_human_review": "D",
+    "winner_implemented": false,
+    "architecture_recommendation": "TWO-TIER",
+    "architecture_rationale": "Email/association safety is already strong on LIGHT models (A/E) with det-agreement gates. Productive writing/interview quality jumps on MEDIUM D (Phi-4-mini) without LARGE RAM/latency of F. Keep A (or E) for advisory classify path / footprint; route writing+interview to D only after human accepts MIT + fabrication-validator work. Do NOT flip production default in this pass.",
+    "soft_quality_targets": {
+      "cover_ge_7": {
+        "D": true,
+        "F": true,
+        "E": false,
+        "A": false
+      },
+      "interview_ge_7": {
+        "D": true,
+        "F": false,
+        "E": false,
+        "A": false
+      }
+    },
+    "seven_eight_b_solves": {
+      "wrong_role": "NO — D/F invent Pflegeausbildung on hard mismatch (auto-scorer miss)",
+      "role_reversal": "MOSTLY — A still shows recruiter-voice failure on missing_desirable; D/F largely applicant-voice",
+      "wrong_company": "PARTIAL — improved vs baseline but not eliminated",
+      "empty_generation": "PARTIAL — covers mostly non-empty on D/F; F still empty interview TPS on 2/6",
+      "generic_thin": "PARTIAL — D strongest specificity; F/E mixed",
+      "german_naturalness": "YES_IMPROVED — D/F clearly better than A",
+      "evidence_grounding": "PARTIAL — F more DIRECT; unsupported credential claims still appear in free text",
+      "interview_usefulness": "PARTIAL — D strong (8.9); F mixed (6.8) due to abstention cases",
+      "unnecessary_abstention": "PARTIAL — reduced vs A interview empties; not eliminated on F"
+    },
+    "root_cause_baseline_quality": {
+      "code": "A",
+      "label": "Model capacity / generative instruction-following under strict JSON+evidence constraints",
+      "options": {
+        "A": "Capacity/instruction-following of 1.7B under schema+evidence constraints (PRIMARY)",
+        "B": "Prompt/validator over-abstention inducing empty productive fields (SECONDARY for interview)",
+        "C": "Runtime/decoding artifacts (minor; same stack across models)",
+        "D": "Fixture/scorer mismatch (SECONDARY — auto cover score misses credential invention)"
+      },
+      "chosen": "A",
+      "note": "Larger models improve German + interview fill rates without prompt changes → capacity primary. Residual fabrication + F interview empties show B/D also matter for next phase."
+    },
+    "next_phase_recommendation": {
+      "code": "C",
+      "options": {
+        "A": "Adopt weighted winner D as production default (NOT now — needs human license + fabrication review)",
+        "B": "Implement two-tier routing without further evidence (premature)",
+        "C": "Human review of D vs F raw letters + add claim-grounding / hard-mismatch penalties; then decide ONE vs TWO-TIER (RECOMMENDED)",
+        "D": "Expand tournament / repair Qwen3-1.7B (out of scope this pass)"
+      },
+      "chosen": "C",
+      "do_not_implement_in_this_pass": true
+    },
+    "production_default": "UNCHANGED (qwen3-1.7b remains pinned)"
+  }
+}

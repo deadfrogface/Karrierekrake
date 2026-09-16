@@ -1,0 +1,320 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Die Kenntnis von Personio wird nicht unterstützt, was die Erfassung von HR-Unterstützung beeinflusst.",
+          "Die Erfassung von HR-Unterstützung ist nicht explizit erwähnt, obwohl sie in der Position relevant ist."
+        ],
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Listen und Terminplanung",
+            "support": "RELATED",
+            "note": "Die Erfahrung mit Excel-Listen und Terminplanung wird durch die Beschreibung der Tätigkeiten im Job (Terminplanung, Korrespondenz, Excel-Listen) unterstützt. Der Einsatz von Excel ist in der Arbeit erwähnt, und dies ist ein relevanter Bereich für die Stelle.",
+            "anchors": []
+          },
+          {
+            "claim": "Personio",
+            "support": "NOT_SUPPORTED",
+            "note": "Es wird erwähnt, dass Personio von Vorteil ist, aber es wird nicht genauer erklärt, ob dies eine Kenntnis oder eine Nutzung ist. Es ist nicht möglich, die Evidenz zu bewerten, da die Anweisung nicht klar ist, ob es sich um eine Kenntnis oder eine Nutzung handelt.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "DATEV Kreditorenbuchhaltung",
+            "support": "DIRECT",
+            "note": "Die Erwähnung von DATEV Kreditorenbuchhaltung im Profil ist direkt belegt.",
+            "anchors": []
+          },
+          {
+            "claim": "SAP FI Grundlagen",
+            "support": "RELATED",
+            "note": "Die Kenntnis von SAP FI Grundlagen wird im Profil erwähnt, aber es wird nicht explizit belegt, dass dies ein zentraler Fokus ist.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Die Unterstützung für die Terminorganisation im Büro ist nicht vorhanden.",
+          "Es wird keine klare Belege für Kundenorientierung erwünscht genannt."
+        ],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kundenberatung und Beschwerdemanagement",
+            "support": "RELATED",
+            "note": "Die Erfahrung in der Kundenberatung und Beschwerdemanagement wird in beiden Profilen erwähnt, aber die Evidenz ist nicht direkt belegt. Die Unterstützung ist indirekt belegt, aber nicht direkt.",
+            "anchors": []
+          },
+          {
+            "claim": "Terminorganisation im Büro",
+            "support": "NOT_SUPPORTED",
+            "note": "Es gibt keine direkten Belege für die Terminorganisation im Büro. Die Evidenz ist nicht belegt.",
+            "anchors": []
+          }
+        ],
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Die Erfahrung mit der Pflegeausbildung ist nicht unterstützt.",
+          "Die Kenntnisse in der Praxissoftware und Excel sind nicht vollständig erwähnt."
+        ],
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminvergabe und Patientenaufnahme",
+            "support": "DIRECT",
+            "note": "Die Erwähnung von Terminvergabe und Patientenaufnahme im Profil ist direkt belegt.",
+            "anchors": []
+          },
+          {
+            "claim": "GOÄ-Abrechnung Grundlagen",
+            "support": "RELATED",
+            "note": "Die Kenntnis von GOÄ-Grundlagen wird im Profil erwähnt, was eine relevante Erfahrung ist.",
+            "anchors": []
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "Es wird keine Belege für eine Pflegeausbildung gegeben, was die Evidenz nicht unterstützt.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Die Erfahrung als Azubi in Terminorganisation ist nicht explizit erwähnt.",
+          "Es wird keine Führungserfahrung erwähnt."
+        ],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminorganisation als Azubi",
+            "support": "NOT_SUPPORTED",
+            "note": "Die Aussage 'Terminorganisation als Azubi' ist nicht direkt belegt und wird in der Datenphase nicht erwähnt.",
+            "anchors": []
+          },
+          {
+            "claim": "Führungserfahrung",
+            "support": "NOT_SUPPORTED",
+            "note": "Die Aussage 'Führungserfahrung' ist nicht direkt belegt und wird in der Datenphase nicht erwähnt.",
+            "anchors": []
+          }
+        ],
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "First-Level Ticketbearbeitung",
+            "support": "NOT_SUPPORTED",
+            "note": "Die Bewerbung enthält keine expliziten Informationen über die Ticketbearbeitung, aber sie bezieht sich auf 'IT-Helpdesk' und 'First-Level-Support'. Diese Beziehungen sind nicht direkt belegt, da keine konkreten Fähigkeiten oder Erfahrungen genannt wurden.",
+            "anchors": []
+          },
+          {
+            "claim": "Active Directory Grundlagen",
+            "support": "RELATED",
+            "note": "Die Bewerbung erwähnt 'Active Directory Grundlagen' als Kenntnisbereich, was eine relevante Erfahrung darstellt. Es ist jedoch nicht direkt belegt, ob die Kenntnisse in diesem Bereich in der Praxis angewendet wurden.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  }
+]

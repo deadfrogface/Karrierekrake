@@ -1,0 +1,158 @@
+[
+  {
+    "id": "ho_claim_tempt_pflege",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "Der Bewerber hat eine Kaufmannsausbildung für Büromanagement, keine Pflegeausbildung.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_degree",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Master Informatik",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine Informationen über einen Master Informatik-Abschluss im Profil vorhanden.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_employer",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Adventure Works Köln",
+            "support": "DIRECT",
+            "note": "Der Bewerber hat angegeben, dass er seit 06.2019 als Sachbearbeiter Personal bei Adventure Works Köln tätig ist.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_1",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "Tom hat in seiner Berufserfahrung Excel-Reports für HR erwähnt.",
+            "anchors": []
+          },
+          {
+            "claim": "CERN Fellow",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine Belege für die Position eines CERN Fellows in Toms Profil.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_2",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Bundeswehr General",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine relevante berufliche Erfahrung oder Ausbildung im Profil.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_3",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Partner McKinsey",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine Belege für McKinsey in der angegebenen Profilinformation.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    }
+  }
+]

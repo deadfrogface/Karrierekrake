@@ -1,0 +1,56 @@
+{
+  "id": "bi_06",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit Kundenberatung erzählen?",
+      "Welche Strategien verwenden Sie, um Kunden in Woodgrove zu unterstützen?",
+      "Wie messen Sie den Erfolg Ihrer Kundenberatungstätigkeiten?"
+    ],
+    "talking_points": [
+      "Kundenberatung"
+    ],
+    "gap_notes": [
+      "Erforderliche Details zu Saras Erfahrung mit Woodgrove fehlen.",
+      "Keine Informationen über Saras Rolle als Kundendienstassistentin."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Kundenberatung"
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrungen mit Kundenberatung erzählen?",
+            "Welche Strategien verwenden Sie, um Kunden in Woodgrove zu unterstützen?",
+            "Wie messen Sie den Erfolg Ihrer Kundenberatungstätigkeiten?"
+          ],
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

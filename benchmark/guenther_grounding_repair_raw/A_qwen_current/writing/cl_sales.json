@@ -1,0 +1,47 @@
+{
+  "id": "cl_sales",
+  "subject": "Kundenbetreuung Innendienst – Fabrikam Retail",
+  "body": "Guten Tag, ich bin Paul Service, ein Kundenberater im Callcenter von Contoso Service. Meine Erfahrung umfasst Inbound-Beratung, Ticket-Systeme und Beschwerdeeskalation. Ich verfüge über grundlegende Kenntnisse im CRM-System und habe Deutsch und Englisch B2. Ich bin bereit, meine Kompetenzen in einem neuen Umfeld zu nutzen. Ich freue mich auf Ihre Anfrage.",
+  "model_id": "qwen3-1.7b",
+  "architecture": "qwen_only",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Kundenbetreuung Innendienst – Fabrikam Retail",
+          "body": "Guten Tag, ich bin Paul Service, ein Kundenberater im Callcenter von Contoso Service. Meine Erfahrung umfasst Inbound-Beratung, Ticket-Systeme und Beschwerdeeskalation. Ich verfüge über grundlegende Kenntnisse im CRM-System und habe Deutsch und Englisch B2. Ich bin bereit, meine Kompetenzen in einem neuen Umfeld zu nutzen. Ich freue mich auf Ihre Anfrage.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

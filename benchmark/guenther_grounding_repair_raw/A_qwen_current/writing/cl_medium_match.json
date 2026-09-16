@@ -1,0 +1,215 @@
+{
+  "id": "cl_medium_match",
+  "subject": "HR Sachbearbeitung – Litware SE",
+  "body": "Guten Tag, ich bin Jonas Probe aus Hamburg. In den letzten Jahren habe ich in der Büroverwaltung und im Handel mit Excel-Listen, Terminplanung und Korrespondenz gearbeitet. Meine Ausbildung als Kaufmann Büromanagement hat mich in der Organisation von Personalakten und Excel-Reports gut ausgebildet. Ich habe Kenntnisse in MS Office, Excel und Deutsch/B1 Englisch. Ich freue mich auf eine mögliche Zusammenarbeit.",
+  "model_id": "qwen3-1.7b",
+  "architecture": "qwen_only",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "HR Sachbearbeitung – Litware SE",
+          "body": "Guten Tag, ich bin Jonas Probe aus Hamburg. Ich habe in den letzten Jahren in der Büroverwaltung und im Handel mit Excel-Listen, Terminplanung und Korrespondenz gearbeitet. Meine Ausbildung als Kaufmann Büromanagement hat mich in der Organisation von Personalakten und Excel-Reports gut ausgebildet. Ich habe Kenntnisse in MS Office, Excel und Deutsch/B1 Englisch. Ich freue mich auf eine mögliche Zusammenarbeit.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "HR Sachbearbeitung – Litware SE",
+          "body": "Guten Tag, ich bin Jonas Probe aus Hamburg. In den letzten Jahren habe ich in der Büroverwaltung und im Handel mit Excel-Listen, Terminplanung und Korrespondenz gearbeitet. Meine Ausbildung als Kaufmann Büromanagement hat mich in der Organisation von Personalakten und Excel-Reports gut ausgebildet. Ich habe Kenntnisse in MS Office, Excel und Deutsch/B1 Englisch. Ich freue mich auf eine mögliche Zusammenarbeit.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "HR Sachbearbeitung – Litware SE",
+          "body": "Guten Tag, ich bin Jonas Probe aus Hamburg. In den letzten Jahren habe ich in der Büroverwaltung und im Handel mit Excel-Listen, Terminplanung und Korrespondenz gearbeitet. Meine Ausbildung als Kaufmann Büromanagement hat mich in der Organisation von Personalakten und Excel-Reports gut ausgebildet. Ich habe Kenntnisse in MS Office, Excel und Deutsch/B1 Englisch. Ich freue mich auf eine mögliche Zusammenarbeit.",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+          "kind": "credential",
+          "span": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in der",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung als Kaufmann Büromanagement hat mich in",
+          "kind": "credential",
+          "span": "Ausbildung als Kaufmann Büromanagement hat mich in",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kaufmann Büromanagement hat mich in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kaufmann Büromanagement hat mich in",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [
+        {
+          "text": "personio",
+          "kind": "desirable",
+          "family": "personio",
+          "status": "NOT_MET",
+          "note": "desirable_missing_ok"
+        }
+      ],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

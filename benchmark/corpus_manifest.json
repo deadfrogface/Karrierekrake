@@ -1,0 +1,9 @@
+{
+  "train_or_dev_cases": 59,
+  "held_out_cases": 112,
+  "held_out_emails": 73,
+  "held_out_injections": 32,
+  "held_out_associations": 18,
+  "total": 171,
+  "scoring_rule": "Final quality/safety score from held_out only"
+}

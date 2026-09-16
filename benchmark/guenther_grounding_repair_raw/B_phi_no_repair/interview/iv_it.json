@@ -1,0 +1,76 @@
+{
+  "id": "iv_it",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrung mit der Ticketbearbeitung erzählen?",
+      "Wie gehen Sie vor, wenn Sie mit einem Windows-Benutzerproblem konfrontiert sind?",
+      "Welche Strategien verwenden Sie, um die Dokumentation in der Wiki zu verbessern?"
+    ],
+    "talking_points": [
+      "Erfahrung in der First-Level-Ticketbearbeitung bei Adventure IT.",
+      "Kenntnisse im Umgang mit Windows und Office.",
+      "Fähigkeiten im Active Directory und Excel."
+    ],
+    "gap_notes": [
+      "Erweiterte Fähigkeiten im Ticketsystem von Litware Digital benötigen.",
+      "Mögliche Lücken in der Erfahrung mit dem Ticketsystem und der dokumentationssicheren Praxis."
+    ],
+    "anchors_used": [
+      {
+        "text": "First-Level-Ticketbearbeitung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Active Directory Grundlagen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Dokumentation in Wiki",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erfahrung in der First-Level-Ticketbearbeitung bei Adventure IT.",
+            "Kenntnisse im Umgang mit Windows und Office.",
+            "Fähigkeiten im Active Directory und Excel."
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrung mit der Ticketbearbeitung erzählen?",
+            "Wie gehen Sie vor, wenn Sie mit einem Windows-Benutzerproblem konfrontiert sind?",
+            "Welche Strategien verwenden Sie, um die Dokumentation in der Wiki zu verbessern?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

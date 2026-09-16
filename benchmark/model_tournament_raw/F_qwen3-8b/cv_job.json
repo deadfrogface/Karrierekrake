@@ -1,0 +1,127 @@
+{
+  "cv": {
+    "ok": true,
+    "capability": "cv_extract",
+    "suggestion": {
+      "full_name": "Tom Probe",
+      "emails": [
+        "tom.probe@example.com"
+      ],
+      "phones": [
+        "+49 171 2222002"
+      ],
+      "skills": [
+        "Excel",
+        "MS Office",
+        "Personio Grundlagen"
+      ],
+      "languages": [
+        "Deutsch Muttersprache",
+        "Englisch B2"
+      ],
+      "experience_titles": [
+        "Sachbearbeiter Personal",
+        "Office Manager"
+      ],
+      "education": [
+        "Kaufmann für Büromanagement"
+      ],
+      "certificates": [],
+      "confidence": "medium",
+      "notes": [],
+      "invented_flag": false
+    },
+    "fallback_reason": "",
+    "provider_status": "ready",
+    "model_id": "qwen3-8b",
+    "validated": true,
+    "safety_notes": []
+  },
+  "jobs": [
+    {
+      "id": "ho_job_hr",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [
+            {
+              "requirement": "Personalakten",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Excel-Reports",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Onboarding",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Personio von Vorteil",
+              "kind": "desirable",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Deutsch Muttersprache",
+              "kind": "hard",
+              "confidence": "high"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Die Stelle erfordert Erfahrung mit Personalakten, Excel-Reports und Onboarding. Vorteilhaft ist die Nutzung von Personio. Deutsch ist eine Muttersprache.",
+          "confidence": "high"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen3-8b",
+        "validated": true,
+        "safety_notes": []
+      }
+    },
+    {
+      "id": "ho_job_pflege",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [
+            {
+              "requirement": "Pflegeausbildung",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Intensivstation",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Approbation nicht nötig",
+              "kind": "desirable",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Patientenversorgung Pflicht",
+              "kind": "hard",
+              "confidence": "high"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Die Stelle erfordert eine Pflegeausbildung und Erfahrung auf der Intensivstation. Approbation ist nicht erforderlich, aber Patientenversorgung ist Pflicht.",
+          "confidence": "high"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen3-8b",
+        "validated": true,
+        "safety_notes": []
+      }
+    }
+  ]
+}

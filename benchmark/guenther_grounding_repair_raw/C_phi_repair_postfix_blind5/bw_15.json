@@ -1,0 +1,98 @@
+{
+  "id": "bw_15",
+  "body": "Ich bringe meine Erfahrung im Finanzwesen und meine Fähigkeiten im Datenmanagement ein, um die Kontrollen des Northwind-Stores zu verbessern. Mit meinem Hintergrund in der Finanzverwaltung und meinem Engagement für Datenintegrität bin ich zuversichtlich, dass ich einen wertvollen Beitrag zum Team von Contoso DATEV leisten kann.",
+  "bad_tokens": [],
+  "blocked": false,
+  "repairs": 1,
+  "codes": [
+    "HARD_REQUIREMENT_NOT_MET"
+  ],
+  "validator_errors": [
+    {
+      "code": "HARD_REQUIREMENT_NOT_MET",
+      "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+      "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+      "claim_text": "controlling-studium",
+      "severity": "warning",
+      "meta": {
+        "family": "studium",
+        "hard_status": "NOT_MET"
+      }
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Studium",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+            "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "controlling-studium",
+            "severity": "block",
+            "meta": {
+              "family": "studium"
+            }
+          },
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "controlling-studium",
+            "severity": "block",
+            "meta": {
+              "family": "studium",
+              "hard_status": "NOT_MET"
+            }
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Eingestellte Position im Finanzwesen",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "controlling-studium",
+            "severity": "warning",
+            "meta": {
+              "family": "studium",
+              "hard_status": "NOT_MET"
+            }
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Kontrolle des Northwind-Stores",
+          "body": "Ich bringe meine Erfahrung im Finanzwesen und meine Fähigkeiten im Datenmanagement ein, um die Kontrollen des Northwind-Stores zu verbessern. Mit meinem Hintergrund in der Finanzverwaltung und meinem Engagement für Datenintegrität bin ich zuversichtlich, dass ich einen wertvollen Beitrag zum Team von Contoso DATEV leisten kann.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

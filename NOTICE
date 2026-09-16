@@ -75,3 +75,35 @@ React/Django/Next stacks were not adopted as core dependencies.
 STATUS_RANK / ambiguous-inbox ideas referenced only.
 
 **job-track-os** — MIT + Commons Clause: **no code copied**.
+
+### Günther die Krake — local AI (2026-09)
+
+Optional on-device intelligence. No cloud AI required. Model weights are
+downloaded by the user into %%LOCALAPPDATA%%\\Karrierekrake\\models and are
+**not** redistributed inside Karrierekrake.exe.
+
+**llama.cpp** (MIT) — https://github.com/ggerganov/llama.cpp  
+**llama-cpp-python** (MIT) — https://github.com/abetlen/llama-cpp-python  
+Copyright (c) 2023 Andrei Betlen — optional embedded runtime WRAP.
+
+**Ollama** — optional developer/benchmark HTTP backend only; not required for
+end users.
+
+Model weight licenses (downloaded separately, never in git/EXE):
+
+- **Qwen3 1.7B Q4_K_M (LIGHT)** — base `Qwen/Qwen3-1.7B` **Apache-2.0**;
+  GGUF file from `bartowski/Qwen_Qwen3-1.7B-GGUF`
+  (`Qwen_Qwen3-1.7B-Q4_K_M.gguf`, SHA256
+  `72c5c3cb38fa32d5256e2fe30d03e7a64c6c79e668ad84057e3bd66e250b24fb`,
+  ~1.28 GB). Official Qwen GGUF currently publishes Q8_0 only for 1.7B.
+- **Qwen3 4B Q4_K_M (STANDARD)** — official `Qwen/Qwen3-4B-GGUF`
+  (`Qwen3-4B-Q4_K_M.gguf`, SHA256
+  `7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5`,
+  ~2.50 GB) **Apache-2.0**.
+- **Phi-4-mini-instruct** — MIT weights; **download URL deferred**
+  (REVIEW REQUIRED) until a pinned GGUF+SHA is chosen.
+- **Gemma 3** — not a default Autopick model (Gemma Terms of Use flow-down;
+  see docs/guenther-reuse-license-audit.md).
+
+Pydantic (MIT) is already a Karrierekrake runtime dependency and is used for
+structured contract validation of untrusted model output.

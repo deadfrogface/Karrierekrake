@@ -1,0 +1,526 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Können Sie konkret beschreiben, wie Sie mit Excel-Listen und Terminplanung in Ihrem Job bei Fabrikam AG umgegangen sind?",
+          "Wie haben Sie Ihre Kommunikationsfähigkeiten in der Vergangenheit in der Praxis gezeigt?"
+        ],
+        "talking_points": [
+          "Terminplanung und Korrespondenz",
+          "Verwaltung von Excel-Listen",
+          "Kenntnisse in MS Office und Excel",
+          "Sprachkenntnisse in Deutsch und Englisch B1"
+        ],
+        "gap_notes": [
+          "Die Verwendung von Personio wurde nicht unterstützt und kann daher nicht als Erfolg bewertet werden."
+        ],
+        "anchors_used": [
+          {
+            "text": "Excel-Listen und Terminplanung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "MS Office",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch B1",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Listen und Terminplanung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2020–heute Office Manager, Fabrikam AG",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "- Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Personio",
+            "support": "NOT_SUPPORTED",
+            "note": "Nur Daten, keine Anweisungen",
+            "anchors": [
+              {
+                "text": "Personalakten, Excel-Reports, Onboarding. Personio von Vorteil.",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 8.8,
+    "score_notes": []
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Können Sie erläutern, wie Sie mit DATEV in der Kreditorenbuchhaltung gearbeitet haben?",
+          "Wie haben Sie den Monatabschluss in Ihrem vorherigen Job gestaltet?",
+          "Können Sie Beispiele für Ihre Excel-Auswertungen nennen?",
+          "Wie haben Sie mit Abstimmungen zwischen den Fachbereichen umgegangen?",
+          "Welche Erfahrungen haben Sie mit SAP FI Grundlagen gesammelt?"
+        ],
+        "talking_points": [
+          "Erfahrung mit DATEV-Kreditorenbuchhaltung und Monatabschluss",
+          "Kenntnisse in Excel und Auswertungen",
+          "Praxiserfahrung mit Abstimmungen zwischen Fachbereichen",
+          "Grundlagenkenntnisse in SAP FI",
+          "Sprachkenntnisse in Deutsch und Englisch B2"
+        ],
+        "gap_notes": [
+          "Keine konkreten Beispiele für SAP FI Grundlagen in der Evidenz",
+          "Keine Details zu den Excel-Auswertungen"
+        ],
+        "anchors_used": [
+          {
+            "text": "DATEV Kreditorenbuchhaltung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel-Auswertungen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Abstimmung mit Fachbereichen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "SAP FI Grundlagen",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "DATEV Kreditorenbuchhaltung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2019–heute Buchhalterin Kreditoren, Contoso Nord GmbH",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "DATEV Kreditorenbuchhaltung, Monatabschluss, Excel-Auswertungen",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "SAP FI Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Kenntnisse: DATEV, Excel, SAP FI Grundlagen, Deutsch, Englisch B2",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 10.0,
+    "score_notes": []
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Können Sie beschreiben, wie Sie in der Vergangenheit Kundenberatung und Beschwerdemanagement im Einzelhandel praktiziert haben?",
+          "Wie haben Sie in der Vergangenheit Terminorganisation im Büro umgesetzt?",
+          "Können Sie Beispiele nennen, in denen Sie Kundenorientierung in Ihrem vorherigen Job gezeigt haben?"
+        ],
+        "talking_points": [
+          "Sara hat Erfahrung in Kundenberatung und Beschwerdemanagement im Einzelhandel.",
+          "Es gibt keine klare Evidenz für Terminorganisation im Büro.",
+          "Die Stelle als Kaufmännische Assistenz erfordert Kundenorientierung, was in der bisherigen Beschreibung nicht ausreichend detailliert ist."
+        ],
+        "gap_notes": [
+          "Die Unterstützung für 'Terminorganisation im Büro' ist nicht bestätigt, was eine Lücke in der Bewerberprofil-Information darstellt."
+        ],
+        "anchors_used": [
+          {
+            "text": "Kundenberatung und Beschwerdemanagement",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kundenberatung und Beschwerdemanagement",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2018–heute Verkäuferin Einzelhandel, Adventure Mart",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Kundenberatung, Kasse, Beschwerdemanagement",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Terminorganisation im Büro",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine direkte Evidenz für Terminorganisation im Büro.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 8.6,
+    "score_notes": []
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Pflegeausbildung wird nicht unterstützt und kann daher nicht als relevante Qualifikation berücksichtigt werden"
+        ],
+        "anchors_used": [
+          {
+            "text": "Terminvergabe und Patientenaufnahme",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "GOÄ-Abrechnung Grundlagen",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminvergabe und Patientenaufnahme",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2019–heute Verwaltungsassistenz Arztpraxis Mustermann",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Terminvergabe, Abrechnung GOÄ-Grundlagen, Patientenaufnahme am Empfang",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "GOÄ-Abrechnung Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2019–heute Verwaltungsassistenz Arztpraxis Mustermann",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Terminvergabe, Abrechnung GOÄ-Grundlagen, Patientenaufnahme am Empfang",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine Belege für eine Pflegeausbildung in den Profildaten",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Führungserfahrung ist nicht belegt und kann daher nicht als Stärke hervorgehoben werden"
+        ],
+        "anchors_used": [
+          {
+            "text": "Terminorganisation als Azubi",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminorganisation als Azubi",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2024–heute Azubi Kauffrau Büromanagement, Litware SE (3. Lehrjahr)",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Posteingang, Termine, Excel-Tabellen, Telefonzentrale",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Führungserfahrung",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Können Sie bitte erläutern, wie Sie die Ticketbearbeitung in Ihrem Unternehmen organisiert haben?",
+          "Wie haben Sie die Dokumentation in Ihrem Wiki gestaltet und welche Vorteile hat das für die Teamarbeit?",
+          "Können Sie ein konkretes Beispiel nennen, in dem Sie Active Directory Grundlagen angewandt haben?"
+        ],
+        "talking_points": [
+          "Erfahrung mit First-Level-Support und Ticketbearbeitung",
+          "Kenntnisse in Windows und Active Directory",
+          "Dokumentationsfähigkeiten in einem Wiki-System"
+        ],
+        "gap_notes": [
+          "Keine konkreten Beispiele für Active Directory Grundlagen",
+          "Keine Details zur Dokumentationsstrategie im Wiki"
+        ],
+        "anchors_used": [
+          {
+            "text": "First-Level Ticketbearbeitung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Active Directory Grundlagen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Dokumentation in Wiki",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "First-Level Ticketbearbeitung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2020–heute IT-Support First Level, Adventure IT",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Ticketbearbeitung, Nutzerberatung Windows/Office, Dokumentation in Wiki",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Active Directory Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Kenntnisse: Windows, Active Directory Grundlagen, Excel",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 8.6,
+    "score_notes": []
+  }
+]

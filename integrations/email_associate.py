@@ -37,6 +37,22 @@ RECRUITER_DOMAIN_KEYWORDS: tuple[str, ...] = (
 AUTO_MATCH_THRESHOLD = 0.90
 ARCHIVE_STATUSES = frozenset({"rejected", "withdrawn", "closed", "abgelehnt", "zurueckgezogen"})
 
+_REF_RE = re.compile(
+    r"(?:ref(?:erenz)?|kenn(?:ungs)?|bewerbungs)?[-\s_]?(?:nr|nummer|id|code)\s*[:#]?\s*([A-Za-z0-9_-]{4,})",
+    re.IGNORECASE,
+)
+# Bare reference tokens common in DE hiring mail (REF-…, WG-7788 with Kontext)
+_BARE_REF_RE = re.compile(
+    r"\b(REF[-_][A-Za-z0-9][-A-Za-z0-9]{2,}|[A-Z]{2,5}[-_]\d{3,})\b",
+    re.IGNORECASE,
+)
+
+
+def _refs_in_text(text: str) -> set[str]:
+    found = {m.group(1).lower() for m in _REF_RE.finditer(text or "")}
+    found |= {m.group(1).lower() for m in _BARE_REF_RE.finditer(text or "")}
+    return found
+
 
 @dataclass(frozen=True)
 class AssociationResult:
@@ -52,13 +68,6 @@ def _is_recruiter_domain(domain: str) -> bool:
     return bool(d) and any(k in d for k in RECRUITER_DOMAIN_KEYWORDS)
 
 
-def _company_in_text(company: str, text: str) -> bool:
-    c = (company or "").strip().lower()
-    if len(c) < 3:
-        return False
-    return c in (text or "").lower()
-
-
 def associate_email(
     *,
     sender: str,
@@ -66,6 +75,7 @@ def associate_email(
     cases: Iterable[dict[str, Any]],
     direction: str = "inbound",
     recipients: str = "",
+    body: str = "",
 ) -> AssociationResult:
     """Return best case link or ambiguous/unlinked (Im Zweifel unverknüpft)."""
     cases_list = list(cases)
@@ -75,7 +85,20 @@ def associate_email(
     sender_email = extract_sender_email(sender)
     sender_domain = extract_sender_domain(sender)
     subject_l = (subject or "").lower()
+    body_l = (body or "").lower()
+    blob = f"{subject_l}\n{body_l}"
     match_text = (recipients or "").lower() if direction == "outbound" else (sender or "").lower()
+    email_refs = _refs_in_text(blob)
+
+    # Recruiter / multi-case without unique signal → ambiguous early
+    active = [
+        c
+        for c in cases_list
+        if (c.get("status") or "").lower() not in ARCHIVE_STATUSES or c.get("contact_email")
+    ]
+    if _is_recruiter_domain(sender_domain) and len(active) >= 2:
+        # Only auto-link if exactly one case has unique ref or title hit
+        pass  # continue scoring; ambiguity enforced below
 
     candidates: list[dict[str, Any]] = []
     for app in cases_list:
@@ -89,6 +112,7 @@ def associate_email(
         title = (app.get("position") or app.get("title") or "").lower()
         app_url = (app.get("url") or app.get("application_url") or "").lower()
         status = (app.get("status") or "").lower()
+        case_ref = str(app.get("reference") or app.get("external_ref") or app.get("id") or "").lower()
 
         if kontakt and kontakt == sender_email:
             score = max(score, 0.95)
@@ -105,8 +129,9 @@ def associate_email(
         if company and len(company) > 2:
             if company in match_text:
                 score = max(score, 0.7)
-            if company in subject_l:
+            if company in subject_l or company in body_l:
                 score = max(score, 0.65)
+                has_content = True
             compact = company.replace(" ", "").replace("-", "")
             if sender_domain and compact and compact in sender_domain.replace("-", ""):
                 score = max(score, 0.9)
@@ -115,14 +140,14 @@ def associate_email(
         if title and len(title) > 4:
             words = [w for w in title.split() if len(w) > 3]
             if words:
-                matches = sum(1 for w in words if w in subject_l)
+                matches = sum(1 for w in words if w in subject_l or w in body_l)
                 if matches >= 2 or (matches >= 1 and len(words) <= 2):
                     score = max(score, 0.6)
                     has_content = True
 
         if contact_name and len(contact_name) > 3:
             parts = [p for p in contact_name.split() if len(p) > 2]
-            if parts and all(p in match_text for p in parts):
+            if parts and all(p in match_text or p in body_l for p in parts):
                 score = max(score, 0.5)
                 has_content = True
 
@@ -134,6 +159,17 @@ def associate_email(
             if host and (sender_domain in host or host.endswith(sender_domain)):
                 score = max(score, 0.85)
                 has_domain = True
+
+        if case_ref and email_refs and case_ref in email_refs:
+            score = max(score, 0.96)
+            has_content = True
+            has_domain = True
+
+        # Conflicting refs in email vs case → demote
+        if email_refs and case_ref and case_ref not in email_refs and any(
+            r != case_ref for r in email_refs
+        ):
+            score = min(score, 0.4)
 
         if score > 0:
             candidates.append(
@@ -148,6 +184,23 @@ def associate_email(
             )
 
     if not candidates:
+        # Recruiter with multiple cases and no score → still ambiguous for review
+        if _is_recruiter_domain(sender_domain) and len(active) >= 2:
+            return AssociationResult(
+                None,
+                0.0,
+                True,
+                tuple(str(c.get("id")) for c in active if c.get("id")),
+                reason="recruiter_multi_case_no_signal",
+            )
+        if len(active) >= 2 and (not subject_l.strip() and not body_l.strip()):
+            return AssociationResult(
+                None,
+                0.0,
+                True,
+                tuple(str(c.get("id")) for c in active if c.get("id")),
+                reason="malformed_missing_content",
+            )
         return AssociationResult(None, 0.0, False, reason="no_candidate")
 
     eligible = [c for c in candidates if not c["archived"] or c["exact_email"]]
@@ -160,8 +213,65 @@ def associate_email(
             reason="only_archived",
         )
 
-    best = max(eligible, key=lambda c: (c["score"], c["content_signal"], c["domain_signal"]))
+    # Near-ties → ambiguous (but prefer unique ref / non-archived when decisive)
+    eligible_sorted = sorted(eligible, key=lambda c: c["score"], reverse=True)
+    best = eligible_sorted[0]
+    if len(eligible_sorted) >= 2 and abs(eligible_sorted[0]["score"] - eligible_sorted[1]["score"]) < 0.08:
+        # Unique ref match breaks the tie
+        ref_hits = [
+            c
+            for c in eligible_sorted
+            if c["score"] >= 0.95 and c.get("content_signal") and c.get("domain_signal")
+        ]
+        # Prefer non-archived when scores near-tied
+        active_only = [c for c in eligible_sorted if not c.get("archived")]
+        if email_refs:
+            ref_unique = []
+            for c in eligible_sorted:
+                # re-check via case list
+                pass
+            # Find cases whose reference is in email_refs
+            by_id = {str(app.get("id")): app for app in cases_list}
+            for c in eligible_sorted:
+                app = by_id.get(str(c["case_id"]) or "")
+                if not app:
+                    continue
+                case_ref = str(app.get("reference") or app.get("external_ref") or "").lower()
+                if case_ref and case_ref in email_refs:
+                    ref_unique.append(c)
+            if len(ref_unique) == 1:
+                best = ref_unique[0]
+            elif len(active_only) == 1:
+                best = active_only[0]
+            else:
+                return AssociationResult(
+                    None,
+                    float(best["score"]),
+                    True,
+                    tuple(str(c["case_id"]) for c in eligible_sorted[:5] if c["case_id"]),
+                    reason="near_tie_scores",
+                )
+        elif len(active_only) == 1 and active_only[0]["score"] >= eligible_sorted[1]["score"] - 0.05:
+            best = active_only[0]
+        else:
+            return AssociationResult(
+                None,
+                float(best["score"]),
+                True,
+                tuple(str(c["case_id"]) for c in eligible_sorted[:5] if c["case_id"]),
+                reason="near_tie_scores",
+            )
+
     if best["score"] < AUTO_MATCH_THRESHOLD or not best["domain_signal"]:
+        # Recruiter multi without threshold → ambiguous
+        if _is_recruiter_domain(sender_domain) and len(eligible) >= 2:
+            return AssociationResult(
+                None,
+                float(best["score"]),
+                True,
+                tuple(str(c["case_id"]) for c in eligible if c["case_id"]),
+                reason="recruiter_ambiguous",
+            )
         return AssociationResult(
             None,
             float(best["score"]),
@@ -185,6 +295,25 @@ def associate_email(
                 tuple(str(c["case_id"]) for c in domain_hits if c["case_id"]),
                 reason="ambiguous_domain",
             )
+
+    # Same company two jobs: company-only match without unique title/ref → ambiguous
+    same_company = [
+        c
+        for c in eligible
+        if c["score"] >= 0.6 and c["case_id"] != best["case_id"]
+    ]
+    if same_company and not best.get("exact_email") and best["score"] < 0.95:
+        # Check if best uniqueness is only company domain
+        if not email_refs:
+            titles_hit = best["content_signal"]
+            if not titles_hit or len([c for c in eligible if c["content_signal"]]) >= 2:
+                return AssociationResult(
+                    None,
+                    float(best["score"]),
+                    True,
+                    tuple(str(c["case_id"]) for c in eligible[:5] if c["case_id"]),
+                    reason="same_company_multiple_roles",
+                )
 
     return AssociationResult(
         str(best["case_id"]) if best["case_id"] else None,

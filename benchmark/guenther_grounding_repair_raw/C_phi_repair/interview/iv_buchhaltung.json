@@ -1,0 +1,84 @@
+{
+  "id": "iv_buchhaltung",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit DATEV-Kreditorenbuchhaltung erzählen?",
+      "Wie gehen Sie mit Excel-Auswertungen um, und welche spezifischen Funktionen nutzen Sie?",
+      "Welche Art von Abstimmungen üben Sie typischerweise mit anderen Fachbereichen?"
+    ],
+    "talking_points": [
+      "DATEV-Kreditorenbuchhaltung",
+      "Excel-Auswertungen",
+      "Abstimmung mit Fachbereichen",
+      "SAP FI Grundlagen"
+    ],
+    "gap_notes": [
+      "Erforderliche Erfahrungen mit DATEV-Kreditorenbuchhaltung",
+      "Erforderliche Excel-Kenntnisse",
+      "Erforderliche Deutschkenntnisse für Verhandlungen"
+    ],
+    "anchors_used": [
+      {
+        "text": "DATEV-Kreditorenbuchhaltung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Excel-Auswertungen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "SAP FI Grundlagen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Deutsch verhandlungssicher",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "DATEV-Kreditorenbuchhaltung",
+            "Excel-Auswertungen",
+            "Abstimmung mit Fachbereichen",
+            "SAP FI Grundlagen"
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrungen mit DATEV-Kreditorenbuchhaltung erzählen?",
+            "Wie gehen Sie mit Excel-Auswertungen um, und welche spezifischen Funktionen nutzen Sie?",
+            "Welche Art von Abstimmungen üben Sie typischerweise mit anderen Fachbereichen?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

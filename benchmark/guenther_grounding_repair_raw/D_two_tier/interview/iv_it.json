@@ -1,0 +1,73 @@
+{
+  "id": "iv_it",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrung mit First-Level-Ticketbearbeitung erzählen?",
+      "Wie gehen Sie bei der Dokumentation in einem Wiki um?",
+      "Welche Strategien verwenden Sie, um den Support-Nutzer zu beruhigen und zu unterstützen?",
+      "Wie pflegen Sie Ihre Kenntnisse im Active Directory?",
+      "Können Sie ein Beispiel für eine komplexe Ticketlösung geben, die Sie bearbeitet haben?",
+      "Wie nutzen Sie Excel in Ihrem Support-Arbeit?"
+    ],
+    "talking_points": [
+      "Erfahrung in der First-Level-Ticketbearbeitung",
+      "Dokumentationsfähigkeiten in einem Wiki",
+      "Strategien für den Nutzer-Support",
+      "Aktive Kenntnisse im Active Directory",
+      "Erfahrung mit Excel im Support-Kontext"
+    ],
+    "gap_notes": [
+      "Erforderliche Windows-Kenntnisse für den Job",
+      "Erforderliche Dokumentationsfähigkeiten",
+      "Erforderliche Strategien für den Nutzer-Support",
+      "Erforderliche Kenntnisse im Active Directory",
+      "Erforderliche Excel-Fähigkeiten im Support-Kontext"
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erfahrung in der First-Level-Ticketbearbeitung",
+            "Dokumentationsfähigkeiten in einem Wiki",
+            "Strategien für den Nutzer-Support",
+            "Aktive Kenntnisse im Active Directory",
+            "Erfahrung mit Excel im Support-Kontext"
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrung mit First-Level-Ticketbearbeitung erzählen?",
+            "Wie gehen Sie bei der Dokumentation in einem Wiki um?",
+            "Welche Strategien verwenden Sie, um den Support-Nutzer zu beruhigen und zu unterstützen?",
+            "Wie pflegen Sie Ihre Kenntnisse im Active Directory?",
+            "Können Sie ein Beispiel für eine komplexe Ticketlösung geben, die Sie bearbeitet haben?",
+            "Wie nutzen Sie Excel in Ihrem Support-Arbeit?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

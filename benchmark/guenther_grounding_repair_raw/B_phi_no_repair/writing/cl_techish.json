@@ -1,0 +1,74 @@
+{
+  "id": "cl_techish",
+  "subject": "Erwartung auf Ihre Bewerbung für die IT-Helpdesk-Rolle bei Litware Digital",
+  "body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Bewerbung für die IT-Helpdesk-Rolle bei Litware Digital anzubieten. Mit meiner Erfahrung im IT-Support, insbesondere im First-Level-Support, und meinen Fähigkeiten im Umgang mit dem Ticketsystem und Windows-Kenntnissen bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. \n\nIm Laufe meiner Zeit bei Adventure IT habe ich mich mit der Ticketbearbeitung, der Nutzerberatung und der Dokumentation in Wiki beschäftigt, was meine Fähigkeit zur effektiven Kommunikation und Problemlösung unterstreicht. Mein Hintergrund im Fachinformatiker Systemintegration und meine Kenntnisse in Excel ergänzen meine technischen Fähigkeiten und ermöglichen es mir, komplexe Probleme effizient zu lösen. \n\nIch freue mich darauf, meine Fähigkeiten und meine Leidenschaft für IT-Support in die Rolle bei Litware Digital einzubringen. Ich bin zuversichtlich, dass meine Erfahrung und Fähigkeiten gut zu den Anforderungen Ihrer IT-Helpdesk-Rolle passen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung weiter zu besprechen. \n\nMit freundlichen Grüßen, \nRita Tech",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "ROLE_REVERSAL",
+      "message_de": "Der Text spricht aus Arbeitgeber-/Prüfer-Perspektive statt als Bewerber/in.",
+      "repair_instruction": "Schreibe aus Bewerberperspektive (Ich-Form). Keine Formulierungen wie „Ihre Bewerbung prüfen“.",
+      "claim_text": "role_reversal",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "ROLE_REVERSAL",
+            "message_de": "Der Text spricht aus Arbeitgeber-/Prüfer-Perspektive statt als Bewerber/in.",
+            "repair_instruction": "Schreibe aus Bewerberperspektive (Ich-Form). Keine Formulierungen wie „Ihre Bewerbung prüfen“.",
+            "claim_text": "role_reversal",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Erwartung auf Ihre Bewerbung für die IT-Helpdesk-Rolle bei Litware Digital",
+          "body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Bewerbung für die IT-Helpdesk-Rolle bei Litware Digital anzubieten. Mit meiner Erfahrung im IT-Support, insbesondere im First-Level-Support, und meinen Fähigkeiten im Umgang mit dem Ticketsystem und Windows-Kenntnissen bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. \n\nIm Laufe meiner Zeit bei Adventure IT habe ich mich mit der Ticketbearbeitung, der Nutzerberatung und der Dokumentation in Wiki beschäftigt, was meine Fähigkeit zur effektiven Kommunikation und Problemlösung unterstreicht. Mein Hintergrund im Fachinformatiker Systemintegration und meine Kenntnisse in Excel ergänzen meine technischen Fähigkeiten und ermöglichen es mir, komplexe Probleme effizient zu lösen. \n\nIch freue mich darauf, meine Fähigkeiten und meine Leidenschaft für IT-Support in die Rolle bei Litware Digital einzubringen. Ich bin zuversichtlich, dass meine Erfahrung und Fähigkeiten gut zu den Anforderungen Ihrer IT-Helpdesk-Rolle passen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung weiter zu besprechen. \n\nMit freundlichen Grüßen, \nRita Tech",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "ROLE_REVERSAL",
+        "message_de": "Der Text spricht aus Arbeitgeber-/Prüfer-Perspektive statt als Bewerber/in.",
+        "repair_instruction": "Schreibe aus Bewerberperspektive (Ich-Form). Keine Formulierungen wie „Ihre Bewerbung prüfen“.",
+        "claim_text": "role_reversal",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

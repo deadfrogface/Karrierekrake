@@ -1,0 +1,118 @@
+{
+  "id": "iv_buchhaltung",
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen hast du in der Kreditorenbuchhaltung mit DATEV?"
+    ],
+    "talking_points": [
+      "Ich habe mehrjährige Erfahrung in der Kreditorenbuchhaltung mit DATEV-Kenntnissen.",
+      "Ich verfüge über gute Excel-Kenntnisse und kann Daten aus Excel in DATEV importieren."
+    ],
+    "gap_notes": [
+      "Die Evidenz für DATEV Kreditorenbuchhaltung ist direkt belegt, aber keine konkreten Erfolge oder Projekte sind erwähnt.",
+      "Die Kenntnis von SAP FI Grundlagen ist als 'RELATED' belegt, aber keine direkten Belege oder Erfolge sind angegeben."
+    ],
+    "anchors_used": [
+      {
+        "text": "DATEV",
+        "source": "profile",
+        "quote": "DATEV Kreditorenbuchhaltung"
+      },
+      {
+        "text": "SAP FI Grundlagen",
+        "source": "profile",
+        "quote": "SAP FI Grundlagen"
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "qwen3-1.7b",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "EMPTY_TALKING_POINTS",
+            "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [],
+          "invented_flag": false
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung mit Schwerpunkt Büromanagement absolvier“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung mit Schwerpunkt Büromanagement absolvier",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "EMPTY_INTERVIEW_QUESTIONS",
+            "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+            "claim_text": "",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [
+            "Ich habe mehrjährige Erfahrung in der Kreditorenbuchhaltung mit DATEV-Kenntnissen.",
+            "Ich verfüge über gute Excel-Kenntnisse und kann Daten aus Excel in DATEV importieren."
+          ],
+          "questions": [],
+          "invented_flag": false
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [
+            "Ich habe mehrjährige Erfahrung in der Kreditorenbuchhaltung mit DATEV-Kenntnissen.",
+            "Ich verfüge über gute Excel-Kenntnisse und kann Daten aus Excel in DATEV importieren."
+          ],
+          "questions": [
+            "Welche Erfahrungen hast du in der Kreditorenbuchhaltung mit DATEV?"
+          ],
+          "invented_flag": false
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 2,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

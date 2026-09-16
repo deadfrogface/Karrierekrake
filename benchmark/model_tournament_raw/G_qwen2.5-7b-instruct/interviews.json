@@ -1,0 +1,207 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Listen und Terminplanung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Personio",
+            "support": "RELATED",
+            "note": "Personio wird erwähnt, aber keine spezifischen Anwendungen sind genannt.",
+            "anchors": []
+          }
+        ],
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  }
+]

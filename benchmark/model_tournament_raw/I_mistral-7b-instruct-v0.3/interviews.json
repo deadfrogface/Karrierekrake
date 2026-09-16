@@ -1,0 +1,188 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "mistral-7b-instruct-v0.3",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  }
+]

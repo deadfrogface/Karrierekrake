@@ -1,0 +1,147 @@
+{
+  "id": "bi_03",
+  "suggestion": {
+    "questions": [],
+    "talking_points": [],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [
+    {
+      "code": "EMPTY_TALKING_POINTS",
+      "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+      "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+      "claim_text": "",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "EMPTY_INTERVIEW_QUESTIONS",
+      "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+      "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+      "claim_text": "",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung in berufliche Rollen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung in berufliche Rollen",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung in Ihrem aktuellen oder vorherigen Job i“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung in Ihrem aktuellen oder vorherigen Job i",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erfahrung mit der Terminvergabe in der Praxisverwaltung."
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrungen mit der Terminvergabe in der Praxisverwaltung erzählen?",
+            "Wie haben Sie Ihre Pflegeausbildung in Ihrem aktuellen oder vorherigen Job integriert?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "SCHEMA_INVALID",
+            "message_de": "Die Modellausgabe entsprach nicht dem erwarteten Schema.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [],
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "EMPTY_TALKING_POINTS",
+            "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "EMPTY_INTERVIEW_QUESTIONS",
+            "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [],
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "EMPTY_TALKING_POINTS",
+        "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+        "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "EMPTY_INTERVIEW_QUESTIONS",
+        "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+        "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

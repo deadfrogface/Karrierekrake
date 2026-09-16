@@ -1,0 +1,321 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Bewerber behauptet Kenntnisse in Personio, aber es gibt keine direkte Evidenz im Profil. Dies muss als Lücke markiert werden, um die Authentizität zu prüfen."
+        ],
+        "anchors_used": [
+          {
+            "text": "Excel-Listen und Terminplanung (DIRECT EVIDENCE)",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen3.5-4b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "SAP FI Grundlagen",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "DATEV Kreditorenbuchhaltung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Excel-Kenntnisse",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Deutsch verhandlungssicher",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kundenberatung und Beschwerdemanagement",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2018–heute Verkäuferin Einzelhandel, Adventure Mart - Kundenberatung, Kasse, Beschwerdemanagement",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Terminorganisation im Büro",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [
+          "Fehlende direkte Evidenz für Pflegeausbildung (nur 'NOT_SUPPORTED' im Profil), was die Glaubwürdigkeit der Behauptung in der Stellenanzeige senkt."
+        ],
+        "anchors_used": [
+          {
+            "text": "DIRECT EVIDENCE für Terminvergabe und Patientenaufnahme aus dem Profil; RELATED EVIDENZ für GOÄ-Grundlagen; EXPLICIT REJECTION für Pflegeausbildung",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminvergabe und Patientenaufnahme",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2019–heute Verwaltungsassistenz Arztpraxis Mustermann",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "GOÄ-Abrechnung Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2019–heute Verwaltungsassistenz Arztpraxis Mustermann",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 2.5,
+    "score_notes": [
+      "empty_tps_questions_but_gaps"
+    ]
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminorganisation als Azubi",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Führungserfahrung",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3.5-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen3.5-4b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  }
+]

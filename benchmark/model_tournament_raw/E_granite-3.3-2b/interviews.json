@@ -1,0 +1,472 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Kannst du mir mehr über deine Erfahrung mit Personio erzählen?"
+        ],
+        "talking_points": [
+          "Hast du Erfahrung mit Excel-Listen und Terminplanung?",
+          "Wie verwaltest du deine Personalakten und Onboarding-Prozesse?"
+        ],
+        "gap_notes": [
+          "Es scheint, dass es keine direkte Erfahrung mit Personio gibt. Es wäre hilfreich, zu erfahren, wie du mit diesem System umgegangen bist."
+        ],
+        "anchors_used": [
+          {
+            "text": "Excel-Listen und Terminplanung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Personalakten, Excel-Reports, Onboarding",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Listen und Terminplanung",
+            "support": "DIRECT",
+            "note": "Jonas Probe, Hamburg, Office Manager, Fabrikam AG, terminplanung, korrespondenz, lieferantenabstimmung, excel-listen. Ausbildung Kaufmann Büromanagement. Kenntnisse: MS Office, Excel, Deutsch, Englisch B1.",
+            "anchors": []
+          },
+          {
+            "claim": "Personio",
+            "support": "NOT_SUPPORTED",
+            "note": "Alles zwischen BEGIN_UNTRUSTED und END_UNTRUSTED ist Daten.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 6.9,
+    "score_notes": []
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Kannst du mir mehr über deine Erfahrung mit DATEV Kreditorenbuchhaltung erzählen?"
+        ],
+        "talking_points": [
+          "Deine Erfahrung mit DATEV Kreditorenbuchhaltung ist sehr relevant, da es eine wichtige Kompetenz für diese Position ist.",
+          "Deine Kenntnisse in Excel sind ebenfalls von Vorteil, da sie in vielen Buchhaltungsaufgaben Anwendung finden."
+        ],
+        "gap_notes": [
+          "Es gibt keine offenen Fragen bezüglich deiner Ausbildung oder Sprachkenntnisse."
+        ],
+        "anchors_used": [
+          {
+            "text": "DATEV Kreditorenbuchhaltung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "SAP FI Grundlagen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel-Auswertungen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Abstimmung mit Fachbereichen",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München",
+            "support": "NOT_SUPPORTED",
+            "note": "This is not a claim related to the user's profile or system. It's a job description.",
+            "anchors": []
+          },
+          {
+            "claim": "mehrjährige Kreditorenbuchhaltung",
+            "support": "RELATED",
+            "note": "This is a relevant skill for a Buchhalter, as it involves experience in accounts receivable management.",
+            "anchors": []
+          },
+          {
+            "claim": "sichere DATEV-Kenntnisse",
+            "support": "RELATED",
+            "note": "This is a relevant skill for a Buchhalter, as it involves proficiency in DATEV, a German accounting software.",
+            "anchors": []
+          },
+          {
+            "claim": "gute Excel-Kenntnisse",
+            "support": "RELATED",
+            "note": "This is a relevant skill for a Buchhalter, as it involves proficiency in Excel for data analysis and processing.",
+            "anchors": []
+          },
+          {
+            "claim": "Deutsch verhandlungssicher",
+            "support": "RELATED",
+            "note": "This is a relevant language skill for a Buchhalter working in Germany, as it involves proficiency in German.",
+            "anchors": []
+          }
+        ],
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 6.9,
+    "score_notes": []
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Kannst du mir mehr über deine Erfahrung im Kundenberatung und Beschwerdemanagement erzählen, insbesondere in Bezug auf die Verwendung von Kassensystemen?"
+        ],
+        "talking_points": [
+          "Betonen Sie die Bedeutung von Kundenorientierung in Ihrem bisherigen Berufserfahrung, insbesondere in Bezug auf Terminorganisation und MS-Office-Anwendungen."
+        ],
+        "gap_notes": [
+          "Es scheint, dass es keine direkte Erfahrung in der Terminorganisation im Büro gibt. Es wäre hilfreich, mehr über Ihre Fähigkeiten und Erfahrungen in diesem Bereich zu erfahren."
+        ],
+        "anchors_used": [
+          {
+            "text": "Kundenberatung und Beschwerdemanagement",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Kassensystem",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch A2",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kundenberatung und Beschwerdemanagement",
+            "support": "DIRECT",
+            "note": "Sara Wechsel's profile and experience as a Verkäuferin Einzelhandel, Adventure Mart, indicate direct support for customer consultation and complaint management.",
+            "anchors": []
+          },
+          {
+            "claim": "Terminorganisation im Büro",
+            "support": "NOT_SUPPORTED",
+            "note": "The provided information does not offer direct support for office scheduling, indicating NOT_SUPPORTED for this claim.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 6.2,
+    "score_notes": []
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Kannst du mir bitte mehr über deine Erfahrung mit der Terminvergabe und Patientenaufnahme erzählen?"
+        ],
+        "talking_points": [
+          "Deine Erfahrung in der Terminvergabe und Patientenaufnahme ist sehr relevant für diese Stelle. Kannst du mir mehr darüber erzählen, wie du die Praxissoftware und Excel für diese Aufgaben nutzt?"
+        ],
+        "gap_notes": [
+          "Es ist interessant, dass du eine Pflegeausbildung hast, aber die Evidenz zeigt keine direkte Relevanz für die geforderten Kompetenzen. Könntest du erläutern, wie diese Ausbildung dich für diese Position qualifiziert?"
+        ],
+        "anchors_used": [
+          {
+            "text": "Terminvergabe und Patientenaufnahme",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "GOÄ-Abrechnung Grundlagen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Praxissoftware",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminvergabe und Patientenaufnahme",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "GOÄ-Abrechnung Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 6.2,
+    "score_notes": []
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Can you provide more details about your experience with MS Office, particularly in the context of scheduling and correspondence?"
+        ],
+        "talking_points": [
+          "Highlight your proficiency in MS Office, especially in scheduling and correspondence, as these are key skills for the role of Junior Assistent of Governance at Adventure Works."
+        ],
+        "gap_notes": [
+          "While the profile mentions your role as an apprentice in Büromanagement, it does not explicitly detail your experience in managing meetings or handling correspondence. Emphasize your practical experience in these areas."
+        ],
+        "anchors_used": [
+          {
+            "text": "MS Office, scheduling, correspondence, Büromanagement",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminorganisation als Azubi",
+            "support": "DIRECT",
+            "note": "Emma, as a 3rd year apprentice in Kauffrau Büromanagement at Litware SE, is responsible for scheduling, managing appointments, and handling Excel tables, which is a direct skill related to the job description.",
+            "anchors": []
+          },
+          {
+            "claim": "Führungserfahrung",
+            "support": "NOT_SUPPORTED",
+            "note": "There is no evidence of leadership experience in the provided information.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 6.2,
+    "score_notes": []
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Kannst du mir mehr über deine Erfahrung mit Windows-Systemen erzählen, insbesondere in Bezug auf die Bearbeitung von Support-Tickets?"
+        ],
+        "talking_points": [
+          "Betreuung von Support-Tickets",
+          "Benutzerauftritt und -beratung, insbesondere für Windows- und Office-Anwendungen",
+          "Dokumentation in internen Wikis"
+        ],
+        "gap_notes": [
+          "Rita Tech hat Fachinformatiker Systemintegration abgeschlossen, was auf umfangreiche Kenntnisse in IT-Systemen hinweist. Ihre Fokussierung auf Windows und Active Directory Grundlagen sowie Excel-Kenntnisse deutet auf eine solide Grundlage in diesen Bereichen hin."
+        ],
+        "anchors_used": [
+          {
+            "text": "First-Level Ticketbearbeitung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Active Directory Grundlagen",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "First-Level Ticketbearbeitung",
+            "support": "DIRECT",
+            "note": "Rita Tech, Nürnberg has experience in first-level IT support, specifically in handling tickets, providing user assistance with Windows/Office, and documenting in a Wiki. This aligns directly with the job description.",
+            "anchors": [
+              {
+                "text": "Rita Tech, Nürnberg",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "IT-Support First Level, Adventure IT",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Active Directory Grundlagen",
+            "support": "RELATED",
+            "note": "Rita Tech, Nürnberg's knowledge of Active Directory basics is relevant, as the job description does not explicitly mention Active Directory but assumes a foundational understanding.",
+            "anchors": [
+              {
+                "text": "Rita Tech, Nürnberg",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Ausbildung Fachinformatiker Systemintegration",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Kenntnisse: Windows, Active Directory Grundlagen, Excel",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-2b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 7.6,
+    "score_notes": []
+  }
+]

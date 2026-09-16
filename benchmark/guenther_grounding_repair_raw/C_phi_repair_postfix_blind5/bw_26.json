@@ -1,0 +1,203 @@
+{
+  "id": "bw_26",
+  "body": "",
+  "bad_tokens": [],
+  "blocked": true,
+  "repairs": 2,
+  "codes": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "WRITING_BLOCKED_HARD_REQUIREMENT",
+    "HARD_REQUIREMENT_NOT_MET",
+    "WRONG_COMPANY"
+  ],
+  "validator_errors": [
+    {
+      "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+      "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+      "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+      "claim_text": "ISTQB",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+      "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+      "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+      "claim_text": "istqb",
+      "severity": "block",
+      "meta": {
+        "family": "istqb"
+      }
+    },
+    {
+      "code": "HARD_REQUIREMENT_NOT_MET",
+      "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+      "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+      "claim_text": "istqb",
+      "severity": "block",
+      "meta": {
+        "family": "istqb",
+        "hard_status": "NOT_MET"
+      }
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "message_de": "Zielunternehmen fehlt oder ist falsch.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Litware",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "ISTQB",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+            "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "istqb",
+            "severity": "block",
+            "meta": {
+              "family": "istqb"
+            }
+          },
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "istqb",
+            "severity": "block",
+            "meta": {
+              "family": "istqb",
+              "hard_status": "NOT_MET"
+            }
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Litware",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Angebot zur Mitarbeit im QA-Bereich",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "ISTQB",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+            "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "istqb",
+            "severity": "block",
+            "meta": {
+              "family": "istqb"
+            }
+          },
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "istqb",
+            "severity": "block",
+            "meta": {
+              "family": "istqb",
+              "hard_status": "NOT_MET"
+            }
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Erwartung ISTQB-Zertifizierung",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "ISTQB",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+            "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "istqb",
+            "severity": "block",
+            "meta": {
+              "family": "istqb"
+            }
+          },
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "istqb",
+            "severity": "block",
+            "meta": {
+              "family": "istqb",
+              "hard_status": "NOT_MET"
+            }
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Litware",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Erwartung ISTQB-Zertifizierung",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "id": "iv_career",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel geben, wie Sie in Ihrer Rolle bei Adventure Mart Kundenberatung und Beschwerdemanagement durchgeführt haben?",
+      "Welche Strategien verwenden Sie, um Termine im Büro effektiv zu organisieren?",
+      "Wie würden Sie Ihre Kenntnisse in MS Office nutzen, um Aufgaben bei Woodgrove Bank zu erfüllen?",
+      "Was macht eine gute Kundenorientierung in Ihrer Meinung aus, und wie würden Sie diese Fähigkeiten in Ihrer neuen Rolle anwenden?"
+    ],
+    "talking_points": [
+      "Erinnern Sie sich an eine Situation, in der Sie bei Adventure Mart einen schwierigen Kunden betreut haben und wie Sie damit umgegangen sind.",
+      "Besprechen Sie, welche Methoden Sie verwenden, um Termine zu organisieren, und warum Sie glauben, dass diese Fähigkeiten bei Woodgrove Bank nützlich wären.",
+      "Erklären Sie, wie Sie MS Office für Korrespondenz und andere Aufgaben verwenden würden, und geben Sie ein Beispiel für eine Aufgabe, die Sie mit diesen Werkzeugen erledigen würden.",
+      "Diskutieren Sie, welche Eigenschaften Sie für eine Rolle im Kundenservice bei Woodgrove Bank schätzen würden, und wie Sie diese Eigenschaften in Ihrem täglichen Arbeitsalltag zeigen würden."
+    ],
+    "gap_notes": [
+      "Erinnern Sie sich an spezifische Terminsysteme, die Sie bei Adventure Mart verwendet haben, da dies im Jobangebot nicht erwähnt wird.",
+      "Bereiten Sie sich darauf vor, Ihre Fähigkeiten im Kundenservice zu erweitern, da dies ein Schwerpunkt des Jobangebots ist, aber Sie haben keine Erfahrung in diesem Bereich angegeben."
+    ],
+    "anchors_used": [
+      {
+        "text": "Kundenberatung und Beschwerdemanagement bei Adventure Mart",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kenntnisse: Kassensystem, Deutsch, Englisch A2",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erinnern Sie sich an eine Situation, in der Sie bei Adventure Mart einen schwierigen Kunden betreut haben und wie Sie damit umgegangen sind.",
+            "Besprechen Sie, welche Methoden Sie verwenden, um Termine zu organisieren, und warum Sie glauben, dass diese Fähigkeiten bei Woodgrove Bank nützlich wären.",
+            "Erklären Sie, wie Sie MS Office für Korrespondenz und andere Aufgaben verwenden würden, und geben Sie ein Beispiel für eine Aufgabe, die Sie mit diesen Werkzeugen erledigen würden.",
+            "Diskutieren Sie, welche Eigenschaften Sie für eine Rolle im Kundenservice bei Woodgrove Bank schätzen würden, und wie Sie diese Eigenschaften in Ihrem täglichen Arbeitsalltag zeigen würden."
+          ],
+          "questions": [
+            "Können Sie uns ein Beispiel geben, wie Sie in Ihrer Rolle bei Adventure Mart Kundenberatung und Beschwerdemanagement durchgeführt haben?",
+            "Welche Strategien verwenden Sie, um Termine im Büro effektiv zu organisieren?",
+            "Wie würden Sie Ihre Kenntnisse in MS Office nutzen, um Aufgaben bei Woodgrove Bank zu erfüllen?",
+            "Was macht eine gute Kundenorientierung in Ihrer Meinung aus, und wie würden Sie diese Fähigkeiten in Ihrer neuen Rolle anwenden?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

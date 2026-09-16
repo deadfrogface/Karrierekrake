@@ -1,0 +1,144 @@
+[
+  {
+    "id": "cl_strong_match",
+    "label": "strong match",
+    "profile": "Mia Beispiel, Berlin\nmia.beispiel@example.com\n2019–heute Buchhalterin Kreditoren, Contoso Nord GmbH\n- DATEV Kreditorenbuchhaltung, Monatabschluss, Excel-Auswertungen\n- Abstimmung mit Fachbereichen\nAusbildung: Kauffrau für Büromanagement IHK\nKenntnisse: DATEV, Excel, SAP FI Grundlagen, Deutsch, Englisch B2",
+    "job": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München\nMehrjährige Kreditorenbuchhaltung, sichere DATEV-Kenntnisse, gute Excel-Kenntnisse, Deutsch verhandlungssicher.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung als Sachbearbeitung Buchhaltung (m/w/d)",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bin Mia Beispiel aus Berlin und bewerbe mich um den Ausbildungsplatz Sachbearbeitung Buchhaltung (m/w/d) bei Northwind Handels GmbH München. Mit meiner Ausbildung als Kauffrau für Büromanagement und meiner praktischen Erfahrung als Buchhalterin Kreditoren bei Contoso Nord GmbH, habe ich die notwendigen Kenntnisse und Fähigkeiten, um in dieser Stelle erfolgreich zu sein.\n\nMeine Tätigkeiten bei Contoso Nord GmbH umfassten die DATEV-Kreditorenbuchhaltung, den Monatabschluss sowie die Auswertung von Excel-Daten. Zudem war ich in der Abstimmung mit Fachbereichen beteiligt. Meine Kenntnisse in DATEV, Excel und SAP FI Grundlagen, sowie meine gute Deutschkenntnisse, verleihen mir die Grundlagen, um in dieser Stelle zu succeed.\n\nIch freue mich auf die Möglichkeit, meine Qualifikationen in Ihrem Unternehmen zu unterstellen und mit Ihnen zusammenzuarbeiten. Vielen Dank für Ihre Zeit und die Gelegenheit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nMia Beispiel\n\nMia.beispiel@example.com",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bin Mia Beispiel aus Berlin und bewerbe mich um den Ausbildungsplatz Sachbearbeitung Buchhaltung (m/w/d) bei Northwind Handels GmbH München. Mit meiner Ausbildung als Kauffrau für Büromanagement und meiner praktischen Erfahrung als Buchhalterin Kreditoren bei Contoso Nord GmbH, habe ich die notwendigen Kenntnisse und Fähigkeiten, um in dieser Stelle erfolgreich zu sein.\n\nMeine Tätigkeiten bei Contoso Nord GmbH umfassten die DATEV-Kreditorenbuchhaltung, den Monatabschluss sowie die Auswertung von Excel-Daten. Zudem war ich in der Abstimmung mit Fachbereichen beteiligt. Meine Kenntnisse in DATEV, Excel und SAP FI Grundlagen, sowie meine gute Deutschkenntnisse, verleihen mir die Grundlagen, um in dieser Stelle zu succeed.\n\nIch freue mich auf die Möglichkeit, meine Qualifikationen in Ihrem Unternehmen zu unterstellen und mit Ihnen zusammenzuarbeiten. Vielen Dank für Ihre Zeit und die Gelegenheit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nMia Beispiel\n\nMia.beispiel@example.com",
+    "raw_subject": "Bewerbung als Sachbearbeitung Buchhaltung (m/w/d)",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_medium_match",
+    "label": "medium match",
+    "profile": "Jonas Probe, Hamburg\njonas.probe@example.com\n2020–heute Office Manager, Fabrikam AG\n- Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen\nAusbildung Kaufmann Büromanagement\nKenntnisse: MS Office, Excel, Deutsch, Englisch B1",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Cover Letter für HR Sachbearbeitung — Litware SE",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bin Jonas Probe und habe in den letzten vier Jahren als Office Manager bei der Fabrikam AG tätig gewesen. In dieser Zeit habe ich mich auf die Organisation von Personalakten, die Erstellung von Excel-Reports sowie das Onboarding von Mitarbeitern spezialisiert. Die Verwendung von Personio hat mich in dieser Funktion stark unterstützt.\n\nMeine Ausbildung als Kaufmann Büromanagement sowie meine Kenntnisse in MS Office, Excel, Deutsch und Englisch B1 haben mich auf die Tätigkeit als HR Sachbearbeitung vorbereitet. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen mich für diesen Posten qualifizieren.\n\nVielen Dank für Ihre Zeit und die Möglichkeit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nJonas Probe",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bin Jonas Probe und habe in den letzten vier Jahren als Office Manager bei der Fabrikam AG tätig gewesen. In dieser Zeit habe ich mich auf die Organisation von Personalakten, die Erstellung von Excel-Reports sowie das Onboarding von Mitarbeitern spezialisiert. Die Verwendung von Personio hat mich in dieser Funktion stark unterstützt.\n\nMeine Ausbildung als Kaufmann Büromanagement sowie meine Kenntnisse in MS Office, Excel, Deutsch und Englisch B1 haben mich auf die Tätigkeit als HR Sachbearbeitung vorbereitet. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen mich für diesen Posten qualifizieren.\n\nVielen Dank für Ihre Zeit und die Möglichkeit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nJonas Probe",
+    "raw_subject": "Cover Letter für HR Sachbearbeitung — Litware SE",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_career_changer",
+    "label": "career changer",
+    "profile": "Sara Wechsel, Köln\nsara.wechsel@example.com\n2018–heute Verkäuferin Einzelhandel, Adventure Mart\n- Kundenberatung, Kasse, Beschwerdemanagement\nAusbildung Verkäuferin\nKenntnisse: Kassensystem, Deutsch, Englisch A2",
+    "job": "Kaufmännische Assistenz — Woodgrove Bank\nKorrespondenz, Terminorganisation, MS Office. Kundenorientierung erwünscht.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Betreff: Bewerbung auf den Posten Kaufmännische Assistenz bei Woodgrove Bank",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bin Sara Wechsel und bewerbe mich herzlich um den Posten Kaufmännische Assistenz bei Woodgrove Bank. Mit meiner Ausbildung als Verkäuferin und meiner Erfahrung im Einzelhandel bei Adventure Mart bringe ich eine solide Grundlage in Bereichen wie Kundenberatung, Kassensystem und Kommunikation mit. Meine Kenntnisse in MS Office und meine Kundenorientierung sind weitere Stärken, die ich in diesem neuen Berufsfeld einbringen kann.\n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen in Ihrem Team einzubringen und mit Ihnen zusammenzuarbeiten. Vielen Dank für Ihre Zeit und die Gelegenheit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nSara Wechsel",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bin Sara Wechsel und bewerbe mich herzlich um den Posten Kaufmännische Assistenz bei Woodgrove Bank. Mit meiner Ausbildung als Verkäuferin und meiner Erfahrung im Einzelhandel bei Adventure Mart bringe ich eine solide Grundlage in Bereichen wie Kundenberatung, Kassensystem und Kommunikation mit. Meine Kenntnisse in MS Office und meine Kundenorientierung sind weitere Stärken, die ich in diesem neuen Berufsfeld einbringen kann.\n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen in Ihrem Team einzubringen und mit Ihnen zusammenzuarbeiten. Vielen Dank für Ihre Zeit und die Gelegenheit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nSara Wechsel",
+    "raw_subject": "Betreff: Bewerbung auf den Posten Kaufmännische Assistenz bei Woodgrove Bank",
+    "score": 4.0,
+    "score_notes": [
+      "wrong_role"
+    ]
+  },
+  {
+    "id": "cl_missing_desirable",
+    "label": "missing desirable skill",
+    "profile": "Leo Held, Düsseldorf\nleo.held@example.com\n2021–heute Personalsachbearbeiter, Adventure Works\n- Personalakten, Zeiterfassung, Onboarding\nKenntnisse: Excel, MS Office, Deutsch — kein Personio",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil (nicht Pflicht).",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Betreff: Bewerbung auf die Stelle HR Sachbearbeitung bei Litware SE",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bin Leo Held und bewerbe mich um die Stelle HR Sachbearbeitung bei Litware SE. Mit meiner Berufserfahrung im Bereich Personalakten, Excel-Reports und Onboarding bin ich der richtige Kandidat für diese Position.\n\nMeine Kenntnisse in Excel und MS Office, sowie meine gute Deutschkenntnisse, machen mich für diese Stelle qualifiziert. Zudem habe ich in der Vergangenheit bei Adventure Works experience im Bereich Personalakten, Zeiterfassung und Onboarding gesammelt.\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen in der Praxis umzusetzen. Vielen Dank für Ihre Zeit und die Möglichkeit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nLeo Held\nleo.held@example.com",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bin Leo Held und bewerbe mich um die Stelle HR Sachbearbeitung bei Litware SE. Mit meiner Berufserfahrung im Bereich Personalakten, Excel-Reports und Onboarding bin ich der richtige Kandidat für diese Position.\n\nMeine Kenntnisse in Excel und MS Office, sowie meine gute Deutschkenntnisse, machen mich für diese Stelle qualifiziert. Zudem habe ich in der Vergangenheit bei Adventure Works experience im Bereich Personalakten, Zeiterfassung und Onboarding gesammelt.\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen in der Praxis umzusetzen. Vielen Dank für Ihre Zeit und die Möglichkeit, mich zu bewerben.\n\nMit freundlichen Grüßen,\nLeo Held\nleo.held@example.com",
+    "raw_subject": "Betreff: Bewerbung auf die Stelle HR Sachbearbeitung bei Litware SE",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_missing_hard",
+    "label": "missing hard requirement",
+    "profile": "Nora Admin, Stuttgart\nnora.admin@example.com\n2019–heute Verwaltungsassistenz Arztpraxis Mustermann\n- Terminvergabe, Abrechnung GOÄ-Grundlagen, Patientenaufnahme am Empfang\nKenntnisse: Praxissoftware, Excel, Deutsch",
+    "job": "Pflegefachkraft stationär — Beispielklinik Süd\nPflicht: abgeschlossene Pflegeausbildung, Patientenversorgung, Schichtarbeit.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Cover Letter für Pflegefachkraft stationär",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bin Nora Admin und arbeite seit 2019 als Verwaltungsassistentin in einer Arztpraxis in Stuttgart. Meine Aufgaben umfassen die Terminvergabe, die Abrechnung nach GOÄ-Grundlagen und die Patientenaufnahme am Empfang. Ich besitze Kenntnisse in Praxissoftware, Excel und Deutsch.\n\nIch bewundere die Arbeit in einer Beispielklinik Süd und bin auf der Suche nach einer Stelle als Pflegefachkraft stationär. Ich habe die Pflichtvoraussetzungen erfüllt, einschließlich der abgeschlossenen Pflegeausbildung, der Patientenversorgung und der Schichtarbeit.\n\nIch freue mich auf die Möglichkeit, meine Qualifikation in einer solch wichtigen Funktion zu nutzen. Vielen Dank für Ihre Zeit und Ihre Aufmerksamkeit.\n\nMit freundlichen Grüßen,\nNora Admin",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bin Nora Admin und arbeite seit 2019 als Verwaltungsassistentin in einer Arztpraxis in Stuttgart. Meine Aufgaben umfassen die Terminvergabe, die Abrechnung nach GOÄ-Grundlagen und die Patientenaufnahme am Empfang. Ich besitze Kenntnisse in Praxissoftware, Excel und Deutsch.\n\nIch bewundere die Arbeit in einer Beispielklinik Süd und bin auf der Suche nach einer Stelle als Pflegefachkraft stationär. Ich habe die Pflichtvoraussetzungen erfüllt, einschließlich der abgeschlossenen Pflegeausbildung, der Patientenversorgung und der Schichtarbeit.\n\nIch freue mich auf die Möglichkeit, meine Qualifikation in einer solch wichtigen Funktion zu nutzen. Vielen Dank für Ihre Zeit und Ihre Aufmerksamkeit.\n\nMit freundlichen Grüßen,\nNora Admin",
+    "raw_subject": "Cover Letter für Pflegefachkraft stationär",
+    "score": 8.0,
+    "score_notes": []
+  }
+]

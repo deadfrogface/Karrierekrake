@@ -1,0 +1,278 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Listen und Terminplanung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Personio",
+            "support": "NOT_SUPPORTED",
+            "note": "Personio ist nicht direkt im Profil erwähnt, sondern in den unzuverlässigen Daten.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "DATEV Kreditorenbuchhaltung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "SAP FI Grundlagen",
+            "support": "RELATED",
+            "note": "Kenntnisse auf Basis der Ausbildung und Erfahrung in Contoso Nord GmbH",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kundenberatung und Beschwerdemanagement",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Terminorganisation im Büro",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine direkte Unterstützung aus dem Profil, da die aktuelle Position als Einzelhandelsverkäuferin keine Terminorganisation im Büro beinhaltet.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminvergabe und Patientenaufnahme",
+            "support": "DIRECT",
+            "note": "Nora has experience with scheduling appointments and managing patient intake at the reception.",
+            "anchors": []
+          },
+          {
+            "claim": "GOÄ-Abrechnung Grundlagen",
+            "support": "RELATED",
+            "note": "Nora has basic knowledge of GOÄ billing, which is relevant for administrative tasks in a medical practice.",
+            "anchors": []
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "Nora's nursing training is not directly applicable to administrative assistant roles in medical practices.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminorganisation als Azubi",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Führungserfahrung",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine direkten Hinweise auf Führungserfahrung im Profil oder im unvertrauenswürdigen Abschnitt.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": false,
+      "capability": "interview_prep",
+      "suggestion": {},
+      "fallback_reason": "guenther_invalid_output",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "First-Level Ticketbearbeitung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Active Directory Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "granite-3.3-8b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  }
+]

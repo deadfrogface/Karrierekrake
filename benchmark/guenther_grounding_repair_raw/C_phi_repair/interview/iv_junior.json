@@ -1,0 +1,68 @@
+{
+  "id": "iv_junior",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel für eine Zeit geben, in der Sie die Terminorganisation als Azubi übernommen haben?",
+      "Welche MS Office-Funktionen sind Ihnen besonders wichtig für Ihre Rolle im Büromanagement?",
+      "Wie kommunizieren Sie effektiv mit Kollegen und Vorgesetzten in Ihrer aktuellen Position?",
+      "Welche Schritte unternehmen Sie, um sicherzustellen, dass Ihre Korrespondenz in Ihrer aktuellen Rolle präzise und professionell ist?"
+    ],
+    "talking_points": [
+      "Terminorganisation als Azubi",
+      "Führungserfahrung",
+      "Kenntnisse: MS Office, Deutsch, Englisch B1"
+    ],
+    "gap_notes": [
+      "Keine direkte Führungserfahrung angegeben",
+      "Sprachkenntnisse sind vorhanden, aber nicht direkt relevant für die Jobbeschreibung"
+    ],
+    "anchors_used": [
+      {
+        "text": "Azubi Kauffrau Büromanagement, Litware SE",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Terminorganisation als Azubi",
+            "Führungserfahrung",
+            "Kenntnisse: MS Office, Deutsch, Englisch B1"
+          ],
+          "questions": [
+            "Können Sie uns ein Beispiel für eine Zeit geben, in der Sie die Terminorganisation als Azubi übernommen haben?",
+            "Welche MS Office-Funktionen sind Ihnen besonders wichtig für Ihre Rolle im Büromanagement?",
+            "Wie kommunizieren Sie effektiv mit Kollegen und Vorgesetzten in Ihrer aktuellen Position?",
+            "Welche Schritte unternehmen Sie, um sicherzustellen, dass Ihre Korrespondenz in Ihrer aktuellen Rolle präzise und professionell ist?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

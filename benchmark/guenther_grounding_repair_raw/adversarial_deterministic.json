@@ -1,0 +1,534 @@
+{
+  "n": 40,
+  "correct": 40,
+  "accuracy": 1.0,
+  "rows": [
+    {
+      "id": "ac_01",
+      "claim": "Pflegeausbildung",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+          "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+          "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+          "claim_text": "Pflegeausbildung",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_02",
+      "claim": "examinierte Pflegefachkraft",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „examinierte Pflegefachkraft“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "examinierte Pflegefachkraft",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_03",
+      "claim": "DATEV Kreditorenbuchhaltung",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_04",
+      "claim": "Personio",
+      "expect": "UNSUPPORTED",
+      "got": "CONTRADICTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "CONTRADICTED_CLAIM",
+          "message_de": "Eine Aussage widerspricht den vorliegenden Profilbelegen.",
+          "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+          "claim_text": "Personio",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_05",
+      "claim": "Bachelor Informatik",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Bachelor Informatik“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Bachelor Informatik",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_06",
+      "claim": "Führungserfahrung",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CLAIM",
+          "message_de": "Eine Aussage im Text ist durch die vorliegenden Belege nicht gestützt.",
+          "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+          "claim_text": "Führungserfahrung",
+          "severity": "warning",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_07",
+      "claim": "Meisterbrief",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Meisterbrief“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Meisterbrief",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_08",
+      "claim": "ISTQB",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+          "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+          "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+          "claim_text": "ISTQB",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_09",
+      "claim": "Pflegeausbildung",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_10",
+      "claim": "Active Directory Grundlagen",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_11",
+      "claim": "Staatsexamen",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+          "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+          "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+          "claim_text": "Staatsexamen",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_12",
+      "claim": "CCNA",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „CCNA“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "CCNA",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_13",
+      "claim": "Excel-Auswertungen",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_14",
+      "claim": "Controlling-Studium",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+          "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+          "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+          "claim_text": "Controlling-Studium",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_15",
+      "claim": "Abitur",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_16",
+      "claim": "Google Ads Zertifikat",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Google Ads Zertifikat“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Google Ads Zertifikat",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_17",
+      "claim": "IHK Bilanzbuchhalter",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_18",
+      "claim": "AWS Solutions Architect",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CLAIM",
+          "message_de": "Eine Aussage im Text ist durch die vorliegenden Belege nicht gestützt.",
+          "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+          "claim_text": "AWS Solutions Architect",
+          "severity": "warning",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_19",
+      "claim": "Patientenaufnahme",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_20",
+      "claim": "abgeschlossene Pflegeausbildung",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+          "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+          "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+          "claim_text": "abgeschlossene Pflegeausbildung",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_21",
+      "claim": "Teamleitung",
+      "expect": "RELATED",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_22",
+      "claim": "Englisch B2",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_23",
+      "claim": "Lehramtsabschluss",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CLAIM",
+          "message_de": "Eine Aussage im Text ist durch die vorliegenden Belege nicht gestützt.",
+          "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+          "claim_text": "Lehramtsabschluss",
+          "severity": "warning",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_24",
+      "claim": "SAP FI Grundlagen",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_25",
+      "claim": "Altenpflegeexamen",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Altenpflegeexamen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Altenpflegeexamen",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_26",
+      "claim": "Staplerschein",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_27",
+      "claim": "Bürokaufmann-Ausbildung",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Bürokaufmann-Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Bürokaufmann-Ausbildung",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_28",
+      "claim": "GOÄ-Grundlagen",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_29",
+      "claim": "Promotionsabschluss",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CLAIM",
+          "message_de": "Eine Aussage im Text ist durch die vorliegenden Belege nicht gestützt.",
+          "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+          "claim_text": "Promotionsabschluss",
+          "severity": "warning",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_30",
+      "claim": "Krankenpflegeexamen",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Krankenpflegeexamen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Krankenpflegeexamen",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_31",
+      "claim": "Personio",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_32",
+      "claim": "Fahrerlaubnis Klasse CE",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CLAIM",
+          "message_de": "Eine Aussage im Text ist durch die vorliegenden Belege nicht gestützt.",
+          "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+          "claim_text": "Fahrerlaubnis Klasse CE",
+          "severity": "warning",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_33",
+      "claim": "First-Level Ticketbearbeitung",
+      "expect": "RELATED",
+      "got": "RELATED",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_34",
+      "claim": "Medizinstudium",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Medizinstudium“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Medizinstudium",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_35",
+      "claim": "Kauffrau für Büromanagement",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_36",
+      "claim": "Zertifikat Notfallpflege",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Zertifikat Notfallpflege“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Zertifikat Notfallpflege",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_37",
+      "claim": "Deutsch Muttersprache",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    },
+    {
+      "id": "ac_38",
+      "claim": "Fachwirt IHK",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+          "repair_instruction": "Entferne jede Behauptung zu „Fachwirt IHK“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+          "claim_text": "Fachwirt IHK",
+          "severity": "error",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_39",
+      "claim": "Schichtarbeit Erfahrung",
+      "expect": "UNSUPPORTED",
+      "got": "UNSUPPORTED",
+      "match": true,
+      "errors": [
+        {
+          "code": "UNSUPPORTED_CLAIM",
+          "message_de": "Eine Aussage im Text ist durch die vorliegenden Belege nicht gestützt.",
+          "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+          "claim_text": "Schichtarbeit Erfahrung",
+          "severity": "warning",
+          "meta": {}
+        }
+      ]
+    },
+    {
+      "id": "ac_40",
+      "claim": "Jahresabschluss-Unterstützung",
+      "expect": "SUPPORTED_DIRECT",
+      "got": "SUPPORTED_DIRECT",
+      "match": true,
+      "errors": []
+    }
+  ]
+}

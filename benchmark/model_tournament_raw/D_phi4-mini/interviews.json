@@ -1,0 +1,439 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Wie organisierst du deine Aufgaben und Terminplanung im Büro?",
+          "Kannst du ein Beispiel für ein Excel-Report geben, das du erstellt hast?",
+          "Wie gehst du mit Korrespondenz und Lieferantenabstimmungen um?",
+          "Welche Herausforderungen stellst du dir im Bereich Büromanagement?"
+        ],
+        "talking_points": [
+          "Terminplanung und Korrespondenz",
+          "Excel-Listen und Reports",
+          "Lieferantenabstimmung und Onboarding-Prozesse",
+          "Benutzung von Personio im HR-Bereich"
+        ],
+        "gap_notes": [
+          "Erfahrungen mit Personio fehlen.",
+          "Konkrete Beispiele für Excel-Reports sind nicht gegeben."
+        ],
+        "anchors_used": [
+          {
+            "text": "Office Manager bei Fabrikam AG",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Listen und Terminplanung",
+            "support": "DIRECT",
+            "note": "Jonas Probe hat Erfahrung mit Excel-Listen und Terminplanung in seiner aktuellen Rolle als Office Manager bei Fabrikam AG.",
+            "anchors": []
+          },
+          {
+            "claim": "Personio",
+            "support": "NOT_SUPPORTED",
+            "note": "Es gibt keine verifizierbare Beweise für die Nutzung von Personio durch Jonas Probe in den bereitgestellten Daten.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 9.8,
+    "score_notes": []
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Kannst du deine Erfahrung mit DATEV-Kreditorenbuchhaltung beschreiben?",
+          "Wie gehst du mit Excel-Auswertungen um?",
+          "Wie kommunizierst du effektiv mit anderen Fachbereichen?",
+          "Welche Kenntnisse hast du in Bezug auf SAP FI?",
+          "Wie bist du in der Vergangenheit bei der Sachbearbeitung in der Buchhaltung erfolgreich gewesen?"
+        ],
+        "talking_points": [
+          "DATEV-Kreditorenbuchhaltung",
+          "Excel-Auswertungen",
+          "Kommunikation mit Fachbereichen",
+          "SAP FI Grundlagen",
+          "Erfahrungen in der Sachbearbeitung"
+        ],
+        "gap_notes": [
+          "Erforderliche DATEV-Kenntnisse",
+          "Erforderliche Excel-Kenntnisse",
+          "Erforderliche Deutschkenntnisse",
+          "Erforderliche Erfahrungen in der Sachbearbeitung"
+        ],
+        "anchors_used": [
+          {
+            "text": "DATEV-Kreditorenbuchhaltung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel-Auswertungen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "SAP FI Grundlagen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch verhandlungssicher",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "DATEV Kreditorenbuchhaltung",
+            "support": "RELATED",
+            "note": "Die Erfahrung mit DATEV Kreditorenbuchhaltung wird erwähnt, jedoch ohne direkte Belege aus dem Profil.",
+            "anchors": []
+          },
+          {
+            "claim": "SAP FI Grundlagen",
+            "support": "RELATED",
+            "note": "SAP FI Grundlagen sind erwähnt, aber es fehlt ein direkter Beleg, der bestätigt, dass Mia diese Kenntnisse angewendet hat.",
+            "anchors": []
+          }
+        ],
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 10.0,
+    "score_notes": []
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Können Sie uns über Ihre Erfahrungen mit der Kundenberatung und dem Beschwerdemanagement bei Adventure Mart erzählen?",
+          "Wie organisieren Sie Ihre Terminkalender und Korrespondenz im aktuellen oder vorherigen Job?",
+          "Welche Fähigkeiten im MS Office-Spektrum sind Ihnen besonders wichtig für Ihre Rolle als Kaufmännische Assistenz?"
+        ],
+        "talking_points": [
+          "Erinnern Sie sich an eine Situation, in der Sie bei Adventure Mart Kundenberatung oder Beschwerdemanagement geleistet haben.",
+          "Besprechen Sie Ihre Methoden zur Terminorganisation und Korrespondenz.",
+          "Erklären Sie, warum MS Office-Fähigkeiten für Ihre Rolle als Kaufmännische Assistenz bei Woodgrove Bank wichtig sind."
+        ],
+        "gap_notes": [
+          "Erinnern Sie sich an spezifische Beispiele, die Ihre Fähigkeiten im Kundenservice und in der Terminorganisation zeigen.",
+          "Denken Sie an die Art der Korrespondenz, die Sie verwalten, und wie Sie MS Office verwenden, um Ihre Aufgaben zu erleichtern.",
+          "Reflektieren Sie über die Rolle der Kundenorientierung in Ihrer zukünftigen Position und wie Sie diese Erfahrung nutzen können."
+        ],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kundenberatung und Beschwerdemanagement",
+            "support": "DIRECT",
+            "note": "Sara hat Erfahrung im Kundenberatung und Beschwerdemanagement im Adventure Mart.",
+            "anchors": []
+          },
+          {
+            "claim": "Terminorganisation im Büro",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine Informationen über Sara's Fähigkeiten in der Terminorganisation im Büro.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 8.6,
+    "score_notes": []
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Wie organisierst du deine Aufgaben, um sicherzustellen, dass Terminvergabe und Patientenaufnahme effizient durchgeführt werden?",
+          "Kannst du ein Beispiel für eine GOÄ-Abrechnung geben, die du in deiner aktuellen Rolle durchgeführt hast?",
+          "Wie kommunizierst du mit den Patienten, wenn es um Terminplanung oder Abrechnung geht?"
+        ],
+        "talking_points": [
+          "Effizienz und Organisation in der Terminverwaltung.",
+          "Verständnis und Anwendung der GOÄ-Abrechnungsregeln.",
+          "Kommunikationsfähigkeiten mit Patienten im Empfang."
+        ],
+        "gap_notes": [
+          "Beispiel für GOÄ-Abrechnung benötigt.",
+          "Erfahrung mit Praxissoftware könnte nützlich sein.",
+          "Erweiterte Kenntnisse in Excel könnten hilfreich sein."
+        ],
+        "anchors_used": [
+          {
+            "text": "Verantwortung für Terminvergabe und Patientenaufnahme.",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Grundkenntnisse in GOÄ-Abrechnungen.",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Verantwortung für Patientenaufnahme am Empfang.",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminvergabe und Patientenaufnahme",
+            "support": "DIRECT",
+            "note": "Erforderliche Fähigkeiten für die Rolle.",
+            "anchors": []
+          },
+          {
+            "claim": "GOÄ-Abrechnung Grundlagen",
+            "support": "RELATED",
+            "note": "Relevante Abrechnungskenntnisse für die Rolle.",
+            "anchors": []
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "Nicht relevant für die Rolle.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 8.6,
+    "score_notes": []
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Wie organisierst du deine Terminkalender und welche Tools verwendest du dafür?",
+          "Kannst du ein Beispiel dafür geben, wie du eine Korrespondenz mit einem Kunden oder Kollegen geführt hast?",
+          "Wie lernst du neue MS Office-Funktionen und wie integrierst du diese in deinen Arbeitsalltag?"
+        ],
+        "talking_points": [
+          "Terminorganisation und -management",
+          "Korrespondenz und Kommunikation",
+          "MS Office-Fähigkeiten und kontinuierliches Lernen"
+        ],
+        "gap_notes": [
+          "Konkrete Beispiele für Terminorganisation und Korrespondenz fehlen.",
+          "Keine Informationen über Führungserfahrungen oder die Rolle der Azubi-Kauffrau im Büromanagement.",
+          "Keine Details zu den spezifischen MS Office-Funktionen, die Emma beherrscht."
+        ],
+        "anchors_used": [
+          {
+            "text": "Azubi Kauffrau Büromanagement",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Terminorganisation, Korrespondenz, MS Office",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": false,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminorganisation als Azubi",
+            "support": "DIRECT",
+            "note": "Azubi-Kauffrau Büromanagement bei Litware SE, die Posteingang, Termine und Excel-Tabellen verwaltet.",
+            "anchors": []
+          },
+          {
+            "claim": "Führungserfahrung",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine Führungserfahrung im bereitgestellten Profil.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 8.6,
+    "score_notes": []
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [
+          "Können Sie uns mehr über Ihre Erfahrung mit der Ticketbearbeitung im IT-Support erzählen?",
+          "Wie gehen Sie bei der Lösung von Problemen mit Windows-Systemen vor?",
+          "Welche Strategien verwenden Sie, um die Dokumentation in einem Wiki sicherzustellen?"
+        ],
+        "talking_points": [
+          "Erfahrung im First-Level-Ticketbearbeiten",
+          "Kenntnisse im Umgang mit Windows-Systemen und Active Directory"
+        ],
+        "gap_notes": [
+          "Erforderliche Windows-Kenntnisse und Active Directory-Praktiken",
+          "Dokumentationsfähigkeiten im Kontext eines Helpdesk-Ticketsystems"
+        ],
+        "anchors_used": [
+          {
+            "text": "First-Level-Ticketbearbeitung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Active Directory Grundlagen",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": [
+        "ungrounded_talking_points_dropped"
+      ]
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "First-Level Ticketbearbeitung",
+            "support": "DIRECT",
+            "note": "Rita hat Erfahrung im IT-Support First Level, einschließlich Ticketbearbeitung.",
+            "anchors": []
+          },
+          {
+            "claim": "Active Directory Grundlagen",
+            "support": "RELATED",
+            "note": "Rita hat Kenntnisse in Active Directory Grundlagen, was für IT-Support relevant sein kann.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "phi4-mini",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 7.9,
+    "score_notes": []
+  }
+]

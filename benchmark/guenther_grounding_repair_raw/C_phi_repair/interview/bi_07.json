@@ -1,0 +1,62 @@
+{
+  "id": "bi_07",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Rolle bei DATEV und die Art der Führungserfahrungen erzählen, die Sie dort gesammelt haben?",
+      "Welche spezifischen Herausforderungen haben Sie in Ihrer Buchhaltungsführung gemeistert, und wie haben Sie diese bewältigt?",
+      "Wie setzen Sie sich mit den Bedürfnissen Ihrer Teammitglieder auseinander und fördern Sie deren berufliches Wachstum?",
+      "Welche Strategien verwenden Sie, um die Effizienz und Effektivität Ihrer Buchhaltungsabteilungen zu verbessern?",
+      "Wie balancieren Sie die kurzfristigen Anforderungen Ihrer Abteilung mit den langfristigen Zielen des Unternehmens?"
+    ],
+    "talking_points": [
+      "Führungserfahrung bei DATEV"
+    ],
+    "gap_notes": [
+      "Details zu spezifischen Erfolgen oder Projekten, die Sie geleitet haben",
+      "Techniken zur Teamführung und Mitarbeitermotivation",
+      "Strategien zur Steigerung der Buchhaltungsprozesse",
+      "Erfahrungen mit der Navigation durch komplexe Buchhaltungsprobleme"
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Führungserfahrung bei DATEV"
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Rolle bei DATEV und die Art der Führungserfahrungen erzählen, die Sie dort gesammelt haben?",
+            "Welche spezifischen Herausforderungen haben Sie in Ihrer Buchhaltungsführung gemeistert, und wie haben Sie diese bewältigt?",
+            "Wie setzen Sie sich mit den Bedürfnissen Ihrer Teammitglieder auseinander und fördern Sie deren berufliches Wachstum?",
+            "Welche Strategien verwenden Sie, um die Effizienz und Effektivität Ihrer Buchhaltungsabteilungen zu verbessern?",
+            "Wie balancieren Sie die kurzfristigen Anforderungen Ihrer Abteilung mit den langfristigen Zielen des Unternehmens?"
+          ],
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

@@ -372,6 +372,13 @@ class SettingsConfig:
     gmail_exclude_senders: list[str] = field(default_factory=list)
     calendar_freebusy_enabled: bool = False
     gmail_credentials_path: str = "private/gmail_credentials.json"
+    # --- Günther die Krake (optional local AI; off by default) ---
+    # Never enables cloud AI. LLM output is untrusted and validated.
+    guenther_enabled: bool = False
+    # auto | qwen3-1.7b | qwen3-4b | phi4-mini
+    guenther_model: str = "auto"
+    # When no GGUF installed, allow deterministic heuristic assist (still fail-closed)
+    guenther_heuristic_fallback: bool = True
 
 
 # Allowed jobs-per-search choices for the settings UI (0 = Max).

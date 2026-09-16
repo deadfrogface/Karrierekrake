@@ -192,6 +192,30 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.ghosted_days": "Ghosting-Hinweis nach (Tagen)",
         "settings.email_draft_only": "Arbeitgeber-Mails nur als Entwurf (Standard)",
         "settings.allow_employer_email_send": "Echten Versand freigeben (nur mit Freigabe pro Mail)",
+        "settings.guenther": "Günther die Krake",
+        "settings.guenther_enabled": "Günther einschalten (nur lokal auf diesem PC)",
+        "settings.guenther_model": "Modell",
+        "settings.guenther_model.auto": "Automatisch",
+        "settings.guenther_model.light": "Leicht",
+        "settings.guenther_model.standard": "Standard",
+        "settings.guenther_model.alt": "Alternative",
+        "settings.guenther_hint": (
+            "Günther denkt mit — Karrierekrake entscheidet. "
+            "Keine Cloud-KI nötig. Modelle werden nur nach Ihrer Freigabe geladen. "
+            "Absenden, E-Mail-Versand und Termine bleiben bei Ihnen."
+        ),
+        "guenther.validator.unsupported_credential": (
+            "Eine behauptete Qualifikation ist im Profil nicht belegt."
+        ),
+        "guenther.validator.writing_blocked_hard_requirement": (
+            "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil."
+        ),
+        "guenther.validator.repair_exhausted": (
+            "Nach begrenzten Korrekturversuchen bleibt der Vorschlag unsicher."
+        ),
+        "guenther.validator.empty_talking_points": (
+            "Interview-Prep ohne nutzbare Talking Points trotz vorhandener Belege."
+        ),
         "settings.automation": "Automation",
         "settings.browser": "Browser",
         "settings.language": "Sprache",
@@ -601,6 +625,30 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.ghosted_days": "Ghosted hint after (days)",
         "settings.email_draft_only": "Employer email draft-only (default)",
         "settings.allow_employer_email_send": "Allow real send (still requires per-mail approval)",
+        "settings.guenther": "Günther die Krake",
+        "settings.guenther_enabled": "Enable Günther (local on this PC only)",
+        "settings.guenther_model": "Model",
+        "settings.guenther_model.auto": "Automatic",
+        "settings.guenther_model.light": "Light",
+        "settings.guenther_model.standard": "Standard",
+        "settings.guenther_model.alt": "Alternative",
+        "settings.guenther_hint": (
+            "Günther may suggest — Karrierekrake decides. "
+            "No cloud AI required. Models load only with your approval. "
+            "Submit, email send, and calendar finalize stay with you."
+        ),
+        "guenther.validator.unsupported_credential": (
+            "A claimed qualification is not supported by the profile."
+        ),
+        "guenther.validator.writing_blocked_hard_requirement": (
+            "Writing blocked: a required formal credential is missing from the profile."
+        ),
+        "guenther.validator.repair_exhausted": (
+            "After bounded repair attempts the suggestion remains uncertain."
+        ),
+        "guenther.validator.empty_talking_points": (
+            "Interview prep has no usable talking points despite available evidence."
+        ),
         "settings.automation": "Automation",
         "settings.browser": "Browser",
         "settings.language": "Language",
