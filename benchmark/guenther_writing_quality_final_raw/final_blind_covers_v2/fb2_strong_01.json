@@ -1,0 +1,102 @@
+{
+  "id": "fb2_strong_01",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren der Praxis Nordlicht, ich schreibe, um meine Begeisterung für die Rolle der medizinischen Fachangestellten auszudrücken, wie sie in Ihrem Profil beschrieben ist. Mein MFA-Examen im Jahr 2019 hat mir eine solide Grundlage in der Terminplanung, dem Empfang und der Abrechnung von Patienten gegeben. Ich bin überzeugt, dass meine Erfahrung im Zeitmanagement und in der Organisation, insbesondere im Kontext des Gesundheitswesens, eine wertvolle Ergänzung für Ihr Team sein wird. Ich bin besonders motiviert, in einer Umgebung zu arbeiten, in der Präzision und Effizienz im Vordergrund stehen, Eigenschaften, die ich durch meine Ausbildung und berufliche Praxis entwickelt habe. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in die Praxis Nordlicht einzubringen und zu Ihrem Team beizutragen.",
+  "subject": "Bewerbung für die Position der medizinischen Fachangestellten",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und berufliche Praxis entwickelt habe“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und berufliche Praxis entwickelt habe",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meine Ausbildung und“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meine Ausbildung und",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position der medizinischen Fachangestellten",
+          "body": "Sehr geehrte Damen und Herren der Praxis Nordlicht, ich schreibe, um meine Begeisterung für die Rolle der medizinischen Fachangestellten auszudrücken, wie sie in Ihrem Profil beschrieben ist. Mein MFA-Examen im Jahr 2019 hat mir eine solide Grundlage in der Terminplanung, dem Empfang und der Abrechnung von Patienten gegeben, Fähigkeiten, die ich in die Praxis Nordlicht einbringen würde. Ich bin überzeugt, dass meine Erfahrung im Zeitmanagement und in der Organisation, insbesondere im Kontext des Gesundheitswesens, eine wertvolle Ergänzung für Ihr Team sein wird. Ich bin besonders motiviert, in einer Umgebung zu arbeiten, in der Präzision und Effizienz im Vordergrund stehen, Eigenschaften, die ich durch meine Ausbildung und berufliche Praxis entwickelt habe. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in die Praxis Nordlicht einzubringen und zu Ihrem Team beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und berufliche Praxis entwickelt habe“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und berufliche Praxis entwickelt habe",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meine Ausbildung und“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meine Ausbildung und",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position der medizinischen Fachangestellten",
+          "body": "Sehr geehrte Damen und Herren der Praxis Nordlicht, ich schreibe, um meine Begeisterung für die Rolle der medizinischen Fachangestellten auszudrücken, wie sie in Ihrem Profil beschrieben ist. Mein MFA-Examen im Jahr 2019 hat mir eine solide Grundlage in der Terminplanung, dem Empfang und der Abrechnung von Patienten gegeben. Ich bin überzeugt, dass meine Erfahrung im Zeitmanagement und in der Organisation, insbesondere im Kontext des Gesundheitswesens, eine wertvolle Ergänzung für Ihr Team sein wird. Ich bin besonders motiviert, in einer Umgebung zu arbeiten, in der Präzision und Effizienz im Vordergrund stehen, Eigenschaften, die ich durch meine Ausbildung und berufliche Praxis entwickelt habe. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in die Praxis Nordlicht einzubringen und zu Ihrem Team beizutragen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

@@ -8,17 +8,18 @@
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Können Sie uns ein Beispiel für eine erfolgreiche manuelle Testreihe geben, die Sie durchgeführt haben?",
-      "Wie integrieren Sie Jira effektiv in Ihren Testprozess?",
-      "Welche Strategien verwenden Sie, um Fehler in den frühen Phasen des Softwareentwicklungslebenszyklus aufzuspüren?"
+      "Können Sie uns über Ihre Erfahrung mit manuellen Tests und Jira erzählen?",
+      "Wie integrierte Sie Sie in den Testprozess bei TestSphere SE?",
+      "Welche Strategien verwenden Sie, um Effizienz und Effektivität in Ihren QA-Zeiten zu verbessern?"
     ],
     "talking_points": [
-      "Erklären Sie Ihre Erfahrung mit manuellen Tests und wie Sie diese in Jira integriert haben.",
-      "Diskutieren Sie, wie Sie Jira nutzen, um den Testprozess zu verbessern und die Effizienz zu steigern."
+      "Erfahrung in der Durchführung manueller Tests und der Verwendung von Jira zur Verwaltung von QA-Projekten.",
+      "Verständnis der Rolle von QA im TestSphere SE-Umfeld und die Fähigkeit, sich an die Unternehmenskultur und -prozesse anzupassen."
     ],
     "gap_notes": [
-      "Details zu spezifischen Erfolgen oder Projekten fehlen, daher ist es wichtig, Beispiele aus der eigenen Erfahrung zu liefern.",
-      "Da keine EVIDENCE vorhanden ist, können keine konkreten Erfolge oder Techniken aus dem Profil entnommen werden."
+      "Weitere Details über spezifische Projekte oder Erfolge im QA-Rollenbereich erforderlich.",
+      "Erforderlich, mehr Kontext über die Art der manuellen Tests und die spezifischen Funktionen von Jira, die verwendet wurden.",
+      "Erforderlich, mehr Informationen über die Auswirkungen der Arbeit auf die Produktqualität und den Zeitplan."
     ],
     "anchors_used": [],
     "invented_flag": true,

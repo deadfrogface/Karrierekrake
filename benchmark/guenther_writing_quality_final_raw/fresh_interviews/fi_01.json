@@ -8,19 +8,26 @@
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Können Sie ein Projekt beschreiben, bei dem Sie Reporting-Tools in Excel verwendet haben?",
-      "Wie haben Sie Kostenrechnung bei FinHold SE zur Effizienzsteigerung beigetragen?",
-      "Welche Strategien verwenden Sie, um Ihre Excel-Fähigkeiten kontinuierlich zu verbessern?"
+      "Wie integrierst du Reporting, Excel und Kostenrechnung in deine tägliche Arbeit als Controller?",
+      "Kannst du ein Projekt beschreiben, bei dem du diese Fähigkeiten angewendet hast, um die FinHold SE zu unterstützen?",
+      "Welche Strategien verwendest du, um Kosten zu kontrollieren und zu optimieren?"
     ],
     "talking_points": [
-      "Berufserfahrung als Controller mit Schwerpunkt auf Reporting, Excel und Kostenrechnung.",
-      "Fähigkeiten im Umgang mit Excel zur Verwaltung und Analyse von Kosteninformationen."
+      "Die Interview-Cand hat 3 Jahre Berufserfahrung als Controller, wobei der Schwerpunkt auf Reporting, Excel und Kostenrechnung liegt.",
+      "Die relevanten Fähigkeiten der Interview-Cand für das Vorstellungsgespräch bei FinHold SE umfassen Reporting, Excel und Kostenrechnung."
     ],
     "gap_notes": [
-      "Keine spezifischen Projekte oder Erfolge im Profil angegeben, daher ist es wichtig, konkrete Beispiele während des Interviews zu liefern.",
-      "Weitere Details zu den Fähigkeiten und Erfahrungen im Bereich Reporting, Excel und Kostenrechnung werden benötigt, um die Diskussion zu vertiefen."
+      "Keine spezifischen Erfolge oder Projekte bereitgestellt, die in der Diskussion hervorgehoben werden könnten.",
+      "Weitere Details über die Art der Arbeit, die die Interview-Cand bei FinHold SE durchgeführt hat, wären hilfreich, um die Antworten besser auf die Stellenbeschreibung abzustimmen.",
+      "Es könnte nützlich sein, die Interview-Cand zu ermutigen, Beispiele aus ihrer Vergangenheit zu liefern, um ihre Fähigkeiten und Erfahrungen zu veranschaulichen."
     ],
-    "anchors_used": [],
+    "anchors_used": [
+      {
+        "text": "Reporting, Excel, Kostenrechnung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
     "invented_flag": true,
     "confidence": "low"
   }

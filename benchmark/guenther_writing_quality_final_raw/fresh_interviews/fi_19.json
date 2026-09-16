@@ -1,24 +1,28 @@
 {
   "id": "fi_19",
-  "score": 7.9,
+  "score": 8.6,
   "notes": [],
   "final_ok": true,
-  "talking_points_n": 2,
+  "talking_points_n": 3,
   "questions_n": 3,
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Können Sie ein Projekt beschreiben, bei dem Sie während Ihrer Zeit bei MetalForm GmbH eine signifikante Rolle bei der Montage oder Schichtung gespielt haben?",
-      "Wie gehen Sie vor, um sicherzustellen, dass die Montage- und Schichtprozesse effizient und genau durchgeführt werden?",
-      "Welche Herausforderungen haben Sie in Ihrer Rolle als Produktionstechniker erlebt und wie haben Sie diese überwunden?"
+      "Können Sie ein Projekt beschreiben, bei dem Sie Ihre Fähigkeiten in Montage und Schicht unter Beweis gestellt haben?",
+      "Wie gehen Sie mit Herausforderungen um, die während des Montageprozesses auftreten?",
+      "Welche Strategien verwenden Sie, um Effizienz und Qualität in der Schichtarbeit zu verbessern?"
     ],
     "talking_points": [
-      "Diskutieren Sie Ihre Erfahrungen und Fähigkeiten im Bereich Montage und Schichtung, insbesondere im Produktionskontext.",
-      "Erörtern Sie, wie Sie Ihre Rolle bei MetalForm GmbH optimiert haben, um Effizienz und Genauigkeit in den Montage- und Schichtprozessen zu verbessern."
+      "Diskutieren Sie ein Projekt, bei dem Sie Ihre Erfahrung in der Montage und Schicht genutzt haben, um Herausforderungen zu bewältigen und die Effizienz zu verbessern.",
+      "Erklären Sie, wie Sie Ihre Fähigkeiten einsetzen, um die Qualität und den Zeitplan in der Montage- und Schichtarbeit zu optimieren.",
+      "Besprechen Sie, wie Sie Ihre Erfahrungen in der Montage- und Schichtarbeit auf die Anforderungen bei MetalForm GmbH übertragen können."
     ],
-    "gap_notes": [],
+    "gap_notes": [
+      "Erforderliche Details zu spezifischen Projekten oder Erfolgen fehlen, daher ist es wichtig, allgemeine Erfahrungen und Fähigkeiten zu betonen.",
+      "Mögliche Transferfähigkeiten aus früheren Rollen oder Schulungen im Montage- und Schichtbereich sollten hervorgehoben werden, falls vorhanden."
+    ],
     "anchors_used": [],
-    "invented_flag": true,
+    "invented_flag": false,
     "confidence": "low"
   }
 }

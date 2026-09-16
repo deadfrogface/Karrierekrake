@@ -1,0 +1,49 @@
+{
+  "id": "fb2_career_06",
+  "final_ok": true,
+  "score": 6.0,
+  "notes": [
+    "placeholder"
+  ],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Excel Reporting und meine Begeisterung für Datenanalyse zu präsentieren. Mit meiner Erfahrung im Excel Reporting habe ich die Fähigkeit entwickelt, komplexe Datenmuster zu identifizieren und zu interpretieren, was mir ermöglicht, wertvolle Einblicke für Ihre Organisation zu liefern. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Kontext des Junior BI Analyst-Positions bei DataNest AG einzubringen. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Daten die Grundlage für einen erfolgreichen Beitrag zu Ihrem Team bilden können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten weiterzuentwickeln und zu Ihrem Team beizutragen.",
+  "subject": "Junior BI Analyst - DataNest AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Junior BI Analyst - DataNest AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Excel Reporting und meine Begeisterung für Datenanalyse zu präsentieren. Mit meiner Erfahrung im Excel Reporting habe ich die Fähigkeit entwickelt, komplexe Datenmuster zu identifizieren und zu interpretieren, was mir ermöglicht, wertvolle Einblicke für Ihre Organisation zu liefern. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Kontext des Junior BI Analyst-Positions bei DataNest AG einzubringen. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Daten die Grundlage für einen erfolgreichen Beitrag zu Ihrem Team bilden können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten weiterzuentwickeln und zu Ihrem Team beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

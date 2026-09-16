@@ -1,29 +1,26 @@
 {
   "id": "fi_10",
-  "score": 7.9,
+  "score": 7.2,
   "notes": [],
   "final_ok": true,
-  "talking_points_n": 2,
+  "talking_points_n": 1,
   "questions_n": 3,
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Welche Erfahrungen haben Sie mit der Wartung von Schalträdern gesammelt?",
-      "Können Sie ein Problem beschreiben, das Sie bei der Wartung eines Schalträders gelöst haben?",
-      "Wie stellen Sie sicher, dass die Wartungsschritte den Industriestandards entsprechen?"
+      "Welche Erfahrungen haben Sie mit der Wartung von Schaltschranken gesammelt?",
+      "Können Sie ein Problem beschreiben, das Sie während der Wartung eines Schaltschrankes gelöst haben?",
+      "Wie stellen Sie sicher, dass die Wartung der Schaltschranken den Industriestandards entspricht?"
     ],
     "talking_points": [
-      "Ich habe Erfahrung im Umgang mit Schalträdern, insbesondere im Bereich der Wartung, was für PowerFix AG relevant ist.",
-      "Während meiner Zeit als Elektroniker konnte ich die Bedeutung der Einhaltung von Wartungsprotokollen und der Verwendung der richtigen Werkzeuge und Techniken hervorheben."
+      "Berufserfahrung: 3 Jahre als Elektroniker, wobei der Schwerpunkt auf der Wartung von Schaltschranken lag."
     ],
-    "gap_notes": [],
-    "anchors_used": [
-      {
-        "text": "Schaltschrank, Wartung",
-        "source": "profile",
-        "quote": ""
-      }
+    "gap_notes": [
+      "Keine spezifischen Details über abgeschlossene Projekte oder Erfolge.",
+      "Möglicherweise mehr Informationen über die Art der Wartung, die durchgeführt wurde, oder die spezifischen Fähigkeiten, die erworben wurden.",
+      "Details zu den Industriestandards, die während der Wartung eingehalten werden, fehlen."
     ],
+    "anchors_used": [],
     "invented_flag": true,
     "confidence": "low"
   }

@@ -8,19 +8,24 @@
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Können Sie uns ein Beispiel dafür geben, wie Sie eine komplexe Firewall-Konfiguration gelöst haben?",
-      "Wie stellen Sie sicher, dass VPN-Verbindungen sicher und effizient sind?",
-      "Welche Strategien verwenden Sie, um Netzwerkprobleme zu diagnostizieren und zu beheben?"
+      "Können Sie uns ein Beispiel für eine Herausforderung geben, die Sie beim Konfigurieren oder Verwalten von Firewalls oder VPNs erlebt haben und wie Sie diese überwunden haben?",
+      "Welche Strategien verwenden Sie, um sicherzustellen, dass Netzwerkprotokolle und -regeln den Sicherheitsanforderungen Ihres Unternehmens entsprechen?",
+      "Wie halten Sie sich über die neuesten Entwicklungen im Bereich Netzwerk-Sicherheit auf dem Laufenden, und wie haben Sie diese Kenntnisse in Ihrer bisherigen Arbeit angewendet?"
     ],
     "talking_points": [
-      "Verwendung von Firewall und VPN zur Sicherung des Netzwerks bei NetGuard IT.",
-      "Drei Jahre Erfahrung im Netzwerkbereich, wobei der Schwerpunkt auf Firewall und VPN liegt."
+      "Erwähnung spezifischer Herausforderungen und Lösungen im Zusammenhang mit Netzwerk-Sicherheit.",
+      "Erklärung der Methoden zur Aufrechterhaltung der aktuellen Kenntnisse im Bereich Netzwerk-Sicherheit und deren Anwendung in der Vergangenheit."
     ],
     "gap_notes": [
-      "Fehlen spezifische Erfolge oder Projekte, die im Profil erwähnt werden.",
-      "Mögliche Herausforderungen oder Bereiche für Wachstum im aktuellen Job oder früheren Rollen könnten nicht klar sein."
+      "Keine spezifischen Erfolge oder Projekte erwähnt, daher könnte es hilfreich sein, persönliche Initiativen oder Beiträge zur Netzwerk-Sicherheit zu diskutieren, falls vorhanden.",
+      "Weitere Details zu den Fähigkeiten und Techniken, die beim Umgang mit Firewalls und VPNs verwendet werden, könnten nützlich sein."
     ],
     "anchors_used": [
+      {
+        "text": "Netzwerk-Sicherheit",
+        "source": "profile",
+        "quote": ""
+      },
       {
         "text": "Firewall",
         "source": "profile",

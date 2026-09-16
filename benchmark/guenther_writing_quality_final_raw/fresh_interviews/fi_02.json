@@ -8,27 +8,19 @@
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Welche Erfahrungen haben Sie mit der Verwaltung von Windows-Betriebssystemen gesammelt?",
-      "Können Sie ein Beispiel dafür geben, wie Sie Ticketing-Systeme zur Effizienzsteigerung eingesetzt haben?",
-      "Wie gehen Sie bei Problemen mit Active Directory-Verzeichnissen vor?"
+      "Können Sie uns ein Beispiel dafür geben, wie Sie ein komplexes Problem im Zusammenhang mit Windows gelöst haben?",
+      "Wie organisieren Sie Ihre Aufgaben, um sicherzustellen, dass Sie alle Tickets innerhalb des erwarteten Zeitrahmens bearbeiten können?",
+      "Welche Strategien verwenden Sie, um mit Active Directory-Anfragen umzugehen?"
     ],
     "talking_points": [
-      "Ich habe 3 Jahre lang Erfahrung im IT-Support, wobei ich mich auf Windows, Ticketing-Systeme und Active Directory spezialisiert habe.",
-      "Ich bin in der Lage, Probleme mit Windows-Betriebssystemen schnell zu diagnostizieren und zu beheben, was zu einer verbesserten Systemleistung und Benutzerzufriedenheit führt."
+      "Erfahrung im IT-Support mit einem Fokus auf Windows, Tickets und AD.",
+      "Mögliche Fähigkeiten im Problemlösungsprozess, insbesondere im Umgang mit Windows-Betriebssystemen und AD-Konfigurationen."
     ],
-    "gap_notes": [],
-    "anchors_used": [
-      {
-        "text": "Windows",
-        "source": "profile",
-        "quote": ""
-      },
-      {
-        "text": "Tickets",
-        "source": "profile",
-        "quote": ""
-      }
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften erwähnt, daher könnte es notwendig sein, mehr über die Fähigkeiten und Erfahrungen des Kandidaten zu erfahren.",
+      "Mögliche Lücken in der Erfahrung mit Windows, Tickets und AD, da nur allgemeine Schwerpunkte erwähnt wurden."
     ],
+    "anchors_used": [],
     "invented_flag": true,
     "confidence": "low"
   }

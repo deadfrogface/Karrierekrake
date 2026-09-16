@@ -1,0 +1,49 @@
+{
+  "id": "fb2_career_02",
+  "final_ok": true,
+  "score": 6.0,
+  "notes": [
+    "placeholder"
+  ],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Junior Accountants bei BooksUp AG auszudrücken. Mit meiner abgeschlossenen Rechnungsprüfung und meinem starken Interesse an Buchhaltung sehe ich eine hervorragende Gelegenheit, meine Fähigkeiten in Ihrem Unternehmen einzubringen. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Finanzmanagement gut zu den Anforderungen von BooksUp AG passen. Ich freue mich darauf, meine Erfahrung im Umgang mit komplexen finanziellen Daten und meinem Engagement für Genauigkeit und Integrität in der Buchhaltung in Ihre Team zu bringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Rita Switch",
+  "subject": "Bewerbung für die Position Junior Accountant bei BooksUp AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Junior Accountant bei BooksUp AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Junior Accountants bei BooksUp AG auszudrücken. Mit meiner abgeschlossenen Rechnungsprüfung und meinem starken Interesse an Buchhaltung sehe ich eine hervorragende Gelegenheit, meine Fähigkeiten in Ihrem Unternehmen einzubringen. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Finanzmanagement gut zu den Anforderungen von BooksUp AG passen. Ich freue mich darauf, meine Erfahrung im Umgang mit komplexen finanziellen Daten und meinem Engagement für Genauigkeit und Integrität in der Buchhaltung in Ihre Team zu bringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Rita Switch",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

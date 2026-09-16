@@ -1,0 +1,3 @@
+SUBJECT: Interessierte Cloud Admin bei SkyOps GmbH
+
+Ich schreibe, um meine Erfahrung mit Linux und den Grundlagen von Terraform, die ich in verschiedenen Projekten angewendet habe, auf die Anforderungen für die Cloud Admin Rolle bei SkyOps GmbH anzuwenden. Obwohl ich kein AWS Zertifikat besitze, bin ich bereit, mich in diesem Bereich weiterzubilden und habe bereits autonom AWS-Dienste eingerichtet. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Fähigkeit, neue Technologien schnell zu erlernen, von Vorteil für Ihr Team sein werden. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem innovativen Umfeld wie SkyOps GmbH einzubringen.

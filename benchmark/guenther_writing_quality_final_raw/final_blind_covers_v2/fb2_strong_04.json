@@ -1,0 +1,92 @@
+{
+  "id": "fb2_strong_04",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, während meiner Physiotherapie Ausbildung habe ich meine Fähigkeiten in der Patientenbetreuung geschärft. Mein Engagement für die Patientenversorgung und meine Erfahrung im Umgang mit komplexen Behandlungsplänen machen mich zu einem idealen Kandidaten für die Rolle der Physiotherapeut Assistenz bei MoveClinic GmbH. Ich freue mich darauf, meine Fähigkeiten in Ihrem Team einzubringen.",
+  "subject": "Bewerbung für Physiotherapeut Assistenz bei MoveClinic GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung habe ich die Fähigkeit entwickelt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung habe ich die Fähigkeit entwickelt",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meiner Ausbildung habe“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meiner Ausbildung habe",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Physiotherapeut Assistenz bei MoveClinic GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Patientenbetreuung und Physiotherapie als Physiotherapeut Assistenz bei MoveClinic GmbH zu teilen. Während meiner Ausbildung habe ich die Fähigkeit entwickelt, effektive Behandlungen für Patienten mit verschiedenen Bewegungsstörungen anzubieten. Mein Engagement für die Patientenversorgung und meine Fähigkeit, komplexe Behandlungspläne umzusetzen, würden ich gerne in die Rolle bei MoveClinic GmbH einbringen. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen gut zu den Anforderungen Ihres Teams passen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung habe ich meine Fähigkeiten in der Patien“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung habe ich meine Fähigkeiten in der Patien",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für Physiotherapeut Assistenz bei MoveClinic GmbH",
+          "body": "Sehr geehrte Damen und Herren, während meiner Physiotherapie Ausbildung habe ich meine Fähigkeiten in der Patientenbetreuung geschärft. Mein Engagement für die Patientenversorgung und meine Erfahrung im Umgang mit komplexen Behandlungsplänen machen mich zu einem idealen Kandidaten für die Rolle der Physiotherapeut Assistenz bei MoveClinic GmbH. Ich freue mich darauf, meine Fähigkeiten in Ihrem Team einzubringen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

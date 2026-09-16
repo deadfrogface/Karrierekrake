@@ -1,0 +1,102 @@
+{
+  "id": "fb2_strong_05",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren der Sparkasse Fiktiv, ich schreibe, um meine Erfahrung in der Kundenberatung und im Umgang mit Bankkonten für Sie zu nutzen. Mit meiner Ausbildung als Bankkauffrau IHK bin ich bestens gerüstet, um in Ihrer Bank wertvolle Dienste zu leisten. Ich freue mich darauf, meine Fähigkeiten in der Kundenzufriedenheit und im effizienten Bankmanagement einzubringen.",
+  "subject": "Bewerbung für die Position Bankkauffrau",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meiner Ausbildung als“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meiner Ausbildung als",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK bin ich bestens gerüstet“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK bin ich bestens gerüstet",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Bankkauffrau",
+          "body": "Sehr geehrte Damen und Herren der Sparkasse Fiktiv, ich schreibe, um meine Erfahrung in der Kundenberatung und im Umgang mit Bankkonten für Sie zu nutzen. Mit meiner Ausbildung als Bankkauffrau IHK bin ich bestens gerüstet, um in Ihrer Bank wertvolle Dienste zu leisten. Ich freue mich darauf, meine Fähigkeiten in der Kundenzufriedenheit und im effizienten Bankmanagement einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meiner Ausbildung als“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meiner Ausbildung als",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK bin ich bestens gerüstet“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK bin ich bestens gerüstet",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Bankkauffrau",
+          "body": "Sehr geehrte Damen und Herren der Sparkasse Fiktiv, ich schreibe, um meine Erfahrung in der Kundenberatung und im Umgang mit Bankkonten für Sie zu nutzen. Mit meiner Ausbildung als Bankkauffrau IHK bin ich bestens gerüstet, um in Ihrer Bank wertvolle Dienste zu leisten. Ich freue mich darauf, meine Fähigkeiten in der Kundenzufriedenheit und im effizienten Bankmanagement einzubringen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

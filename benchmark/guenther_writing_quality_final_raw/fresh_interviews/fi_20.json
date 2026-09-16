@@ -8,19 +8,19 @@
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Können Sie ein Beispiel dafür geben, wie Sie UML verwendet haben, um die Anforderungen eines Projekts zu dokumentieren?",
-      "Welche Strategien wenden Sie an, um sicherzustellen, dass Sie die Anforderungen vollständig verstehen, bevor Sie mit der Erstellung von UML-Diagrammen beginnen?",
-      "Wie balancieren Sie die Notwendigkeit, Anforderungen klar darzustellen, mit der Notwendigkeit, technische Einschränkungen oder Projektzeitpläne zu berücksichtigen?"
+      "Können Sie ein Beispiel geben, wie Sie UML verwendet haben, um die Anforderungen eines Projekts zu dokumentieren?",
+      "Welche Strategien wenden Sie an, um sicherzustellen, dass Sie alle relevanten Anforderungen für Ihr Projekt erfassen?",
+      "Wie gehen Sie mit widersprüchlichen Anforderungen oder Änderungen in den Anforderungen während des Lebenszyklus eines Projekts um?"
     ],
     "talking_points": [
-      "Diskussion über die Anwendung von UML zur Anforderungen-Dokumentation in einem vergangenen Projekt, wobei der Fokus auf der Schaffung klarer und effektiver Visualisierungen liegt.",
-      "Erklärung der Methodik zur Anforderungenanalyse, einschließlich der Nutzung von UML, um Missverständnisse zu vermeiden und sicherzustellen, dass alle Stakeholder die Anforderungen verstehen.",
-      "Erörterung des Ansatzes zur Priorisierung und Verwaltung von Anforderungen, insbesondere wie UML-Diagramme dabei helfen können, die wichtigsten Anforderungen hervorzuheben und die Projektziele zu unterstützen."
+      "Verwendung von UML zur Anforderungen-Dokumentation in einem 3-jährigen Job als Business Analyst.",
+      "Fokus auf Anforderungen und UML in der Rolle bei FinTech Hub.",
+      "Übertragung der Erfahrung im Umgang mit Anforderungen und UML auf die Rolle des Interview-Cand."
     ],
     "gap_notes": [
-      "Fehlen spezifische Beispiele für vergangene Projekte, in denen UML verwendet wurde.",
-      "Keine Details über die spezifischen UML-Techniken oder Werkzeuge, die der Kandidat verwendet.",
-      "Keine Erwähnung von Feedback oder Verbesserungen, die der Kandidat in Bezug auf die Anforderungen-Dokumentation gegeben hat."
+      "Fehlen spezifische Beispiele für Projekte, bei denen UML verwendet wurde.",
+      "Keine Details über die Art der FinTech-Hub oder die spezifischen Anforderungen, die im Job behandelt wurden.",
+      "Keine Informationen über die Fähigkeiten des Interview-Cands, die über die Anforderungen und UML hinausgehen."
     ],
     "anchors_used": [],
     "invented_flag": false,

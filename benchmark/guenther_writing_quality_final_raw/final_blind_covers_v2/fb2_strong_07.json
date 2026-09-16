@@ -1,0 +1,47 @@
+{
+  "id": "fb2_strong_07",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Begeisterung für die Position des Grafikdesigners bei PixelAtelier KG auszudrücken. Mit meiner Erfahrung im Bereich Mediengestaltung und meinem umfassenden Wissen in Adobe Photoshop und Adobe InDesign bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre kreative Vision einbringen kann. Insbesondere meine Fähigkeiten im Layout und die jahrelange Erfahrung in der digitalen Mediengestaltung, die ich bei PixelAtelier KG erworben habe, machen mich zu einem idealen Kandidaten für diese Rolle. Ich bin begeistert von der Möglichkeit, an Projekten zu arbeiten, die sowohl innovativ als auch visuell ansprechend sind, und freue mich darauf, meine Talente in die dynamische Umgebung von PixelAtelier KG einzubringen. Ich bin überzeugt, dass meine Leidenschaft für Design und meine Fähigkeit, visuelle Konzepte in überzeugende Medien umzusetzen, einen wertvollen Beitrag zum Erfolg Ihres Teams leisten können. Ich freue mich auf die Möglichkeit, meine Ideen und Fähigkeiten in einem Gespräch zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für die Position des Grafikdesigners",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Grafikdesigners",
+          "body": "Ich schreibe Ihnen, um meine Begeisterung für die Position des Grafikdesigners bei PixelAtelier KG auszudrücken. Mit meiner Erfahrung im Bereich Mediengestaltung und meinem umfassenden Wissen in Adobe Photoshop und Adobe InDesign bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre kreative Vision einbringen kann. Insbesondere meine Fähigkeiten im Layout und die jahrelange Erfahrung in der digitalen Mediengestaltung, die ich bei PixelAtelier KG erworben habe, machen mich zu einem idealen Kandidaten für diese Rolle. Ich bin begeistert von der Möglichkeit, an Projekten zu arbeiten, die sowohl innovativ als auch visuell ansprechend sind, und freue mich darauf, meine Talente in die dynamische Umgebung von PixelAtelier KG einzubringen. Ich bin überzeugt, dass meine Leidenschaft für Design und meine Fähigkeit, visuelle Konzepte in überzeugende Medien umzusetzen, einen wertvollen Beitrag zum Erfolg Ihres Teams leisten können. Ich freue mich auf die Möglichkeit, meine Ideen und Fähigkeiten in einem Gespräch zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

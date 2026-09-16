@@ -1,0 +1,47 @@
+{
+  "id": "fb2_career_03",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, Talent Coordinator bei HireWave KG, ich schreibe, um meine Erfahrung im Bereich des Transfer Recruiting Koordinations zu teilen. Mit meiner Rolle als Empfangstransfer Koordinator bei XYZ Corp konnte ich die Bedeutung einer nahtlosen Kommunikation zwischen verschiedenen Abteilungen und die Effizienzsteigerung durch strategische Talentallokation demonstrieren. Ich bin überzeugt, dass meine Fähigkeiten im Umgang mit internen und externen Kandidaten sowie meine Erfahrung im Aufbau und Management von Talentpooling-Prozessen bei HireWave KG von großem Nutzen sein werden. Ich freue mich darauf, meine Expertise in Ihrem renommierten Unternehmen einzubringen.",
+  "subject": "Bewerbung für die Position Talent Coordinator bei HireWave KG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Talent Coordinator bei HireWave KG",
+          "body": "Sehr geehrte Damen und Herren, Talent Coordinator bei HireWave KG, ich schreibe, um meine Erfahrung im Bereich des Transfer Recruiting Koordinations zu teilen. Mit meiner Rolle als Empfangstransfer Koordinator bei XYZ Corp konnte ich die Bedeutung einer nahtlosen Kommunikation zwischen verschiedenen Abteilungen und die Effizienzsteigerung durch strategische Talentallokation demonstrieren. Ich bin überzeugt, dass meine Fähigkeiten im Umgang mit internen und externen Kandidaten sowie meine Erfahrung im Aufbau und Management von Talentpooling-Prozessen bei HireWave KG von großem Nutzen sein werden. Ich freue mich darauf, meine Expertise in Ihrem renommierten Unternehmen einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

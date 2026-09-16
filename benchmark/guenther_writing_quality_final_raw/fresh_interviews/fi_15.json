@@ -8,35 +8,19 @@
   "validator_errors": [],
   "suggestion": {
     "questions": [
-      "Können Sie uns mehr über Ihre Erfahrung im Bestellmanagement erzählen?",
-      "Welche Strategien verwenden Sie, um Lieferanten effektiv zu verwalten?",
-      "Wie gehen Sie mit Herausforderungen im Lieferkettenmanagement um?"
+      "Können Sie ein spezifisches Beispiel geben, wie Sie ein Problem im Bestellwesen gelöst haben?",
+      "Welche Strategien verwenden Sie, um Lieferanten effektiv zu verwalten und Beziehungen aufzubauen?",
+      "Wie halten Sie die Lieferkettenaktualisierungen in Ihrem Bereich auf dem neuesten Stand?"
     ],
     "talking_points": [
-      "Ich habe drei Jahre Erfahrung im Einkauf, wobei mein Schwerpunkt auf Bestellwesen und Lieferanten lag.",
-      "Ich habe Strategien entwickelt und umgesetzt, um die Lieferketteneffizienz zu verbessern und die Beziehungen zu Lieferanten zu stärken."
+      "Diskussion über Best Practices im Bestellwesen und Lieferantenmanagement, basierend auf der Erfahrung im Einkauf.",
+      "Erwähnung von Erfolgsstrategien zur Optimierung der Lieferketten und zur Verbesserung der Kommunikation mit Lieferanten."
     ],
     "gap_notes": [
-      "Keine spezifischen Erfolge oder Errungenschaften im Profil angegeben, daher ist es wichtig, die relevanten Fähigkeiten und Erfahrungen während des Interviews hervorzuheben.",
-      "Es könnte hilfreich sein, Beispiele aus der eigenen Erfahrung zu geben, um die Fähigkeiten zu demonstrieren, auch wenn keine spezifischen Erfolge erwähnt wurden."
+      "Fehlen spezifischer Beispiele aus der aktuellen Erfahrung, die während des Interviews bereitgestellt werden können.",
+      "Mögliche Notwendigkeit, mehr Details über die Rolle bei SupplyWest GmbH und die damit verbundenen Verantwortlichkeiten zu liefern."
     ],
-    "anchors_used": [
-      {
-        "text": "Einkauf",
-        "source": "profile",
-        "quote": ""
-      },
-      {
-        "text": "Bestellwesen",
-        "source": "profile",
-        "quote": ""
-      },
-      {
-        "text": "Lieferanten",
-        "source": "profile",
-        "quote": ""
-      }
-    ],
+    "anchors_used": [],
     "invented_flag": true,
     "confidence": "low"
   }
