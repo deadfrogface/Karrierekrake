@@ -206,18 +206,20 @@ def build_interview20() -> list[dict]:
 
 
 def main() -> None:
+    created = datetime.now(timezone.utc).isoformat()
     payload = {
         "meta": {
             "purpose": "guenther_writing_quality_final",
-            "created_at": datetime.now(timezone.utc).isoformat(),
             "model_under_test": "phi4-mini",
         },
         "development_covers": build_dev(),
         "final_blind_covers": build_blind40(),
         "fresh_interviews": build_interview20(),
     }
+    # Hash content only (exclude volatile timestamp) so freeze is stable across rebuilds.
     raw = json.dumps(payload, ensure_ascii=False, sort_keys=True)
     payload["meta"]["fixture_sha256"] = hashlib.sha256(raw.encode()).hexdigest()
+    payload["meta"]["created_at"] = created
     payload["meta"]["dev_count"] = len(payload["development_covers"])
     payload["meta"]["blind_count"] = len(payload["final_blind_covers"])
     payload["meta"]["interview_count"] = len(payload["fresh_interviews"])

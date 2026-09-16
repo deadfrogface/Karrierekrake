@@ -1,9 +1,9 @@
 {
   "meta": {
     "purpose": "guenther_writing_quality_final",
-    "created_at": "2026-09-16T12:51:52.511582+00:00",
     "model_under_test": "phi4-mini",
-    "fixture_sha256": "47914daec7d8c6640477c9c925ceba8ac1e9eea175a05cf91b199884d653e8a4",
+    "fixture_sha256": "15651813fa98536288bdf8ba6c63105d7adf044edc1a4307919a94e932aad017",
+    "created_at": "2026-09-16T12:53:02.984438+00:00",
     "dev_count": 20,
     "blind_count": 40,
     "interview_count": 20
