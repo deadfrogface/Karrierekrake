@@ -1,0 +1,18 @@
+{
+  "id": "qwen35-27b",
+  "letter": "E",
+  "display_name": "Qwen3.5-27B",
+  "quantization": "Q4_K_M",
+  "approx_bytes": 16740812704,
+  "sha256": "84b5f7f112156d63836a01a69dc3f11a6ba63b10a23b8ca7a7efaf52d5a2d806",
+  "gguf_repository": "unsloth/Qwen3.5-27B-GGUF",
+  "upstream_repository": "Qwen/Qwen3.5-27B",
+  "upstream_license": "Apache-2.0",
+  "license_url": "https://huggingface.co/Qwen/Qwen3.5-27B",
+  "run_status_plan": "NOT_RUN_HARDWARE",
+  "executed": false,
+  "status": "NOT_RUN_HARDWARE",
+  "reason": "Q4_K_M ~16.7GB weights alone; benchmark host has 15GiB total RAM / ~10GiB available — cannot load without swap (none). No simulated results.",
+  "load_success": false,
+  "inference_success": false
+}
