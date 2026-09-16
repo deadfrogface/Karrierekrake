@@ -1,0 +1,52 @@
+{
+  "id": "fb_unk_03",
+  "final_ok": true,
+  "score": 6.5,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 123.466,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals Person mit einer langjährigen Erfahrung in der Kommissionierung bin ich besonders interessiert an der ausgeschriebenen Position als Lagerhilfe. In meiner bisherigen Tätigkeit habe ich mich intensiv mit der präzisen Zusammenstellung von Waren beschäftigt, was mich gut auf die Anforderungen dieser Rolle vorbereitet hat.\n\nIn meiner Arbeit habe ich gelernt, effizient und sorgfältig mit verschiedenen Artikeln umzugehen, was sich in der Fähigkeit niederschlägt, auch in einem dynamischen Umfeld zu arbeiten. Zudem habe ich Erfahrung mit der Nutzung von Lagerverwaltungssystemen, was mir hilft, Prozesse zu optimieren und Fehler zu vermeiden.\n\nIch freue mich darauf, meine Kenntnisse und Erfahrungen in der Kommissionierung in die ausgeschriebene Position einzubringen und dabei meine Zuverlässigkeit sowie meine Teamorientierung unter Beweis zu stellen. Mit meiner Hingabe und meiner Bereitschaft, mich weiterzuentwickeln, möchte ich gerne Teil Ihres Teams werden.\n\nMit freundlichen Grüßen\nSteve Pack",
+  "subject": "Bewerbung als Lagerhilfe",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Lagerhilfe",
+          "body": "Sehr geehrte Damen und Herren,\n\nals Person mit einer langjährigen Erfahrung in der Kommissionierung bin ich besonders interessiert an der ausgeschriebenen Position als Lagerhilfe. In meiner bisherigen Tätigkeit habe ich mich intensiv mit der präzisen Zusammenstellung von Waren beschäftigt, was mich gut auf die Anforderungen dieser Rolle vorbereitet hat.\n\nIn meiner Arbeit habe ich gelernt, effizient und sorgfältig mit verschiedenen Artikeln umzugehen, was sich in der Fähigkeit niederschlägt, auch in einem dynamischen Umfeld zu arbeiten. Zudem habe ich Erfahrung mit der Nutzung von Lagerverwaltungssystemen, was mir hilft, Prozesse zu optimieren und Fehler zu vermeiden.\n\nIch freue mich darauf, meine Kenntnisse und Erfahrungen in der Kommissionierung in die ausgeschriebene Position einzubringen und dabei meine Zuverlässigkeit sowie meine Teamorientierung unter Beweis zu stellen. Mit meiner Hingabe und meiner Bereitschaft, mich weiterzuentwickeln, möchte ich gerne Teil Ihres Teams werden.\n\nMit freundlichen Grüßen\nSteve Pack",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

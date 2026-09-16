@@ -1,0 +1,39 @@
+{
+  "id": "fi_09",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 121.315,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in der Vergangenheit mit schwierigen Kunden im Gästeservice umgehen?",
+      "Welche Erfahrungen haben Sie mit der Bearbeitung von Reservierungen gemacht?",
+      "Wie stellen Sie sicher, dass die Gästezufriedenheit im Vordergrund steht?"
+    ],
+    "talking_points": [
+      "Berufserfahrung in der Hotelfachbranche mit Fokus auf Reservierung und Gästeservice."
+    ],
+    "gap_notes": [
+      "Keine konkreten Beispiele oder Erfolge aus der Berufserfahrung vorhanden.",
+      "Keine spezifischen Kenntnisse oder Tools genannt, die im Zusammenhang mit Reservierungen stehen.",
+      "Keine Erwähnung von Soft Skills oder Kommunikationsfähigkeiten im Detail."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Hotelfach",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Reservierung, Gästeservice",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

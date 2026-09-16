@@ -1,0 +1,8 @@
+{
+  "id": "ac_04",
+  "claim": "Personio",
+  "expect": "UNSUPPORTED",
+  "got": "CONTRADICTED",
+  "match": true,
+  "model_id": "qwen3-14b"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "fi_06",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 137.526,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit mit Kreditoren gearbeitet?",
+      "Welche DATEV-Module kennen Sie und mit welchen haben Sie bereits Erfahrung?",
+      "Wie stellen Sie sicher, dass Kreditorenprozesse effizient und fehlerfrei ablaufen?"
+    ],
+    "talking_points": [
+      "In meiner bisherigen Tätigkeit bei DATEV habe ich mich intensiv mit Kreditorenprozessen beschäftigt, insbesondere mit der Abstimmung von Rechnungen und Zahlungsverkehr.",
+      "Ich habe Erfahrung mit der Nutzung von DATEV-Modulen wie DATEV Online und DATEV Business, um Kreditorenprozesse zu automatisieren."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfolge aus der Praxis, um die Aussagen weiter zu untermauern.",
+      "Die genaue Rolle und Verantwortung im Umgang mit Kreditoren ist nicht detailliert beschrieben.",
+      "Es gibt keine Erwähnung von spezifischen Tools oder Software, die über DATEV hinausgenutzt wurden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Kreditoren",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "DATEV",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Buchhaltung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

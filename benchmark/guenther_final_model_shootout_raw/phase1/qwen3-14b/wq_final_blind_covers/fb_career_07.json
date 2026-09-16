@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_07",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 143.062,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals erfahrene Montagekraft mit über fünf Jahren in der Industriebranche sehe ich mich gut für die ausgeschriebene Position als Facility Support bei BuildCare SE geeignet. In meiner bisherigen Tätigkeit habe ich mich intensiv mit der Wartung und Instandhaltung von technischen Anlagen beschäftigt, was mich in die Lage versetzt, auch im Bereich Facility Support schnell und zuverlässig zu arbeiten.\n\nIn meiner letzten Stelle war ich verantwortlich für die Montage und Instandhaltung von Produktionsanlagen, wodurch ich nicht nur technische Fähigkeiten, sondern auch ein gutes Verständnis für Prozesse und Abläufe entwickelt habe. Zudem habe ich in mehreren Projekten mit Teams zusammen gearbeitet, um sicherzustellen, dass alle Arbeiten termingerecht und nach Vorgaben abgeschlossen werden. Diese Erfahrung kann ich nun in der Rolle als Facility Support bei BuildCare SE nutzen, um effizient und präzise zu arbeiten.\n\nIch freue mich darauf, meine Kenntnisse und Erfahrungen in einem renommierten Unternehmen wie BuildCare SE einzubringen und mich weiterzuentwickeln. Mit meiner Zuverlässigkeit und meiner Leidenschaft für technische Herausforderungen möchte ich einen wertvollen Beitrag leisten.\n\nMit freundlichen Grüßen,\nJulia Craft",
+  "subject": "Bewerbung als Facility Support bei BuildCare SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Facility Support bei BuildCare SE",
+          "body": "Sehr geehrte Damen und Herren,\n\nals erfahrene Montagekraft mit über fünf Jahren in der Industriebranche sehe ich mich gut für die ausgeschriebene Position als Facility Support bei BuildCare SE geeignet. In meiner bisherigen Tätigkeit habe ich mich intensiv mit der Wartung und Instandhaltung von technischen Anlagen beschäftigt, was mich in die Lage versetzt, auch im Bereich Facility Support schnell und zuverlässig zu arbeiten.\n\nIn meiner letzten Stelle war ich verantwortlich für die Montage und Instandhaltung von Produktionsanlagen, wodurch ich nicht nur technische Fähigkeiten, sondern auch ein gutes Verständnis für Prozesse und Abläufe entwickelt habe. Zudem habe ich in mehreren Projekten mit Teams zusammen gearbeitet, um sicherzustellen, dass alle Arbeiten termingerecht und nach Vorgaben abgeschlossen werden. Diese Erfahrung kann ich nun in der Rolle als Facility Support bei BuildCare SE nutzen, um effizient und präzise zu arbeiten.\n\nIch freue mich darauf, meine Kenntnisse und Erfahrungen in einem renommierten Unternehmen wie BuildCare SE einzubringen und mich weiterzuentwickeln. Mit meiner Zuverlässigkeit und meiner Leidenschaft für technische Herausforderungen möchte ich einen wertvollen Beitrag leisten.\n\nMit freundlichen Grüßen,\nJulia Craft",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

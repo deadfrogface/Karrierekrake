@@ -1,0 +1,44 @@
+{
+  "id": "fi_07",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 130.417,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Marketing-Tätigkeit mit CMS-Systemen gearbeitet?",
+      "Welche Erfahrungen haben Sie mit SEO-Strategien gesammelt?",
+      "Wie planen und organisieren Sie die Erstellung von Content im Rahmen von Marketing-Kampagnen?"
+    ],
+    "talking_points": [
+      "In meiner 3-jährigen Marketing-Tätigkeit habe ich mit verschiedenen CMS-Systemen gearbeitet, um effizient Content zu verwalten und zu veröffentlichen.",
+      "Ich habe Erfahrung mit der Umsetzung von SEO-Strategien, um die Sichtbarkeit von Webseiten in Suchmaschinen zu steigern.",
+      "Ich plane und koordiniere Content-Erstellung basierend auf klaren Zielgruppen und Kampagnenzielen, um maximale Reichweite und Engagement zu erzielen."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Projekte, um die Talking Points weiter zu konkretisieren."
+    ],
+    "anchors_used": [
+      {
+        "text": "CMS",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "SEO",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Content",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  }
+}

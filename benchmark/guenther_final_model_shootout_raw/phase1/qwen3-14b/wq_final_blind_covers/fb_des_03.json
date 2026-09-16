@@ -1,0 +1,50 @@
+{
+  "id": "fb_des_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.8,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 142.522,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals Linux-Enthusiastin mit fundierten Kenntnissen in Bash-Skripting und Systemadministration bringe ich eine solide Grundlage mit, um die Anforderungen der Systemadmin-Rolle bei der InfraWorks GmbH zu erfüllen. In meiner bisherigen Tätigkeit habe ich komplexe Systemlandschaften verwaltet, Skripte zur Automatisierung von Routineaufgaben entwickelt und mich intensiv mit der Optimierung von Serverumgebungen beschäftigt.\n\nEin konkreter Beleg ist die Entwicklung von Bash-Skripten zur Automatisierung von Backup- und Monitoring-Prozessen, was die Effizienz der Systemverwaltung deutlich steigerte. Zudem habe ich in mehreren Projekten mit Linux-basierten Systemen gearbeitet und mich dabei mit der Sicherstellung von Stabilität, Sicherheit und Skalierbarkeit beschäftigt. Diese Erfahrungen ermöglichen mir, mich schnell in die Infrastruktur der InfraWorks GmbH einzuarbeiten und dort mitgestalten zu können.\n\nIch freue mich darauf, meine Kenntnisse und Erfahrungen in der Systemadministration für die ausgeschriebene Position einzusetzen und dabei meine Leidenschaft für Technologie und Innovation weiterzuentfalten.\n\nMit freundlichen Grüßen,\nNina Linux",
+  "subject": "Bewerbung als Systemadmin (m/w/d)",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Systemadmin (m/w/d)",
+          "body": "Sehr geehrte Damen und Herren,\n\nals Linux-Enthusiastin mit fundierten Kenntnissen in Bash-Skripting und Systemadministration bringe ich eine solide Grundlage mit, um die Anforderungen der Systemadmin-Rolle bei der InfraWorks GmbH zu erfüllen. In meiner bisherigen Tätigkeit habe ich komplexe Systemlandschaften verwaltet, Skripte zur Automatisierung von Routineaufgaben entwickelt und mich intensiv mit der Optimierung von Serverumgebungen beschäftigt.\n\nEin konkreter Beleg ist die Entwicklung von Bash-Skripten zur Automatisierung von Backup- und Monitoring-Prozessen, was die Effizienz der Systemverwaltung deutlich steigerte. Zudem habe ich in mehreren Projekten mit Linux-basierten Systemen gearbeitet und mich dabei mit der Sicherstellung von Stabilität, Sicherheit und Skalierbarkeit beschäftigt. Diese Erfahrungen ermöglichen mir, mich schnell in die Infrastruktur der InfraWorks GmbH einzuarbeiten und dort mitgestalten zu können.\n\nIch freue mich darauf, meine Kenntnisse und Erfahrungen in der Systemadministration für die ausgeschriebene Position einzusetzen und dabei meine Leidenschaft für Technologie und Innovation weiterzuentfalten.\n\nMit freundlichen Grüßen,\nNina Linux",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

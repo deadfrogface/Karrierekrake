@@ -1,0 +1,41 @@
+{
+  "id": "fi_02",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 127.875,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen IT-Support-Tätigkeit mit Windows-Systemen gearbeitet?",
+      "Welche Erfahrungen haben Sie mit der Bearbeitung von Tickets im Support-Alltag?",
+      "Wie haben Sie sich mit Active Directory in Ihrer letzten Position beschäftigt?"
+    ],
+    "talking_points": [
+      "Ich habe in den letzten drei Jahren IT-Support geleistet und mich intensiv mit Windows-Systemen beschäftigt, insbesondere bei der Installation, Wartung und Fehlerbehebung.",
+      "Ich bin erfahren in der Bearbeitung von Tickets, sowohl bei der Einordnung der Priorität als auch bei der Kommunikation mit Endnutzern.",
+      "Ich habe praktische Erfahrungen mit Active Directory, insbesondere bei der Verwaltung von Benutzern, Gruppen und Berechtigungen."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfolge aus der Praxis, um die Aussagen weiter zu untermauern.",
+      "Die genaue Rolle im Umgang mit Active Directory ist nicht detailliert beschrieben.",
+      "Es ist unklar, ob die Arbeit mit Tickets in einem spezifischen Ticketing-System erfolgt hat."
+    ],
+    "anchors_used": [
+      {
+        "text": "Windows",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Tickets",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  }
+}

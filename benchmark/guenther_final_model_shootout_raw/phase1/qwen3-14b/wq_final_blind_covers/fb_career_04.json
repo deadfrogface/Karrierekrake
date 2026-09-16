@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 125.862,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nAls Einzelhandelsmitarbeiter mit Erfahrung in der Transfer-Disposition habe ich bereits im Alltag komplexe Logistikprozesse koordiniert und dabei eine hohe Aufmerksamkeit für Details sowie eine strukturierte Arbeitsweise unter Beweis gestellt. In meiner Tätigkeit war ich zuständig für die Organisation von Lieferungen und Rücksendungen, was mich mit der Logistikbranche vertraut gemacht hat.\n\nIch habe Erfahrung mit der Planung von Transportrouten und der Koordination von Mitarbeitern, was mich in der Lage stellt, auch in der Rolle eines Logistikkoordinators bei MoveIt SE effizient und zuverlässig zu arbeiten. Zudem habe ich in meiner bisherigen Tätigkeit gelernt, mit verschiedenen IT-Systemen umzugehen, was mir hilft, digitale Prozesse in der Logistik zu verstehen und umzusetzen.\n\nIch freue mich darauf, meine Erfahrungen und Fähigkeiten in der ausgeschriebenen Position einzubringen und mich aktiv in das Team einzubringen. Mit meiner Zuverlässigkeit und meiner Bereitschaft, mich weiterzuentwickeln, möchte ich einen wertvollen Beitrag leisten.\n\nMit freundlichen Grüßen\nGeorg Retail",
+  "subject": "",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "",
+          "body": "Sehr geehrte Damen und Herren,\n\nAls Einzelhandelsmitarbeiter mit Erfahrung in der Transfer-Disposition habe ich bereits im Alltag komplexe Logistikprozesse koordiniert und dabei eine hohe Aufmerksamkeit für Details sowie eine strukturierte Arbeitsweise unter Beweis gestellt. In meiner Tätigkeit war ich zuständig für die Organisation von Lieferungen und Rücksendungen, was mich mit der Logistikbranche vertraut gemacht hat.\n\nIch habe Erfahrung mit der Planung von Transportrouten und der Koordination von Mitarbeitern, was mich in der Lage stellt, auch in der Rolle eines Logistikkoordinators bei MoveIt SE effizient und zuverlässig zu arbeiten. Zudem habe ich in meiner bisherigen Tätigkeit gelernt, mit verschiedenen IT-Systemen umzugehen, was mir hilft, digitale Prozesse in der Logistik zu verstehen und umzusetzen.\n\nIch freue mich darauf, meine Erfahrungen und Fähigkeiten in der ausgeschriebenen Position einzubringen und mich aktiv in das Team einzubringen. Mit meiner Zuverlässigkeit und meiner Bereitschaft, mich weiterzuentwickeln, möchte ich einen wertvollen Beitrag leisten.\n\nMit freundlichen Grüßen\nGeorg Retail",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

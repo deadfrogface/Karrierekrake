@@ -1,0 +1,40 @@
+{
+  "id": "fi_13",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 138.634,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in früheren Projekten mit Jira gearbeitet, um Testfälle und Fehler zu verfolgen?",
+      "Können Sie ein Beispiel nennen, in dem Sie durch manuelle Tests einen schwerwiegenden Fehler entdeckt haben?",
+      "Wie stellen Sie sicher, dass alle Testfälle vollständig und präzise dokumentiert sind?"
+    ],
+    "talking_points": [
+      "Ich habe in den letzten drei Jahren an mehreren Projekten mit manuellen Tests gearbeitet und dabei Erfahrung mit der Dokumentation von Testfällen gesammelt.",
+      "Ich nutze Jira regelmäßig, um Testfälle zu verfolgen und Fehler zu priorisieren, was die Kommunikation mit dem Entwicklerteam verbessert."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele für Erfolge oder Projekte, die den Bewerber kennzeichnen.",
+      "Keine detaillierten Informationen zu den verwendeten Tools oder Methoden außer Jira und manuellen Tests.",
+      "Keine Erwähnung von Teamkollegen oder Projekten, die den Bewerber in einem Teamkontext zeigen."
+    ],
+    "anchors_used": [
+      {
+        "text": "Manuelle Tests",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Jira",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

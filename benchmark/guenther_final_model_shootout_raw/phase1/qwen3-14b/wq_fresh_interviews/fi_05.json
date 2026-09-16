@@ -1,0 +1,46 @@
+{
+  "id": "fi_05",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 132.874,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in der Vergangenheit Ihre Active Sourcing-Strategien gemessen und optimiert?",
+      "Welche Tools oder Methoden nutzen Sie am häufigsten für LinkedIn-Sourcing?",
+      "Wie gehen Sie vor, wenn Sie mit einer hohen Anzahl von Kandidaten in der Pipeline konfrontiert sind?"
+    ],
+    "talking_points": [
+      "Ich habe in meiner Rolle als Recruiter aktiv mit Active Sourcing gearbeitet, insbesondere im Bereich LinkedIn, um passende Kandidaten zu identifizieren.",
+      "Meine Erfahrung umfasst die Nutzung von LinkedIn-Tools wie LinkedIn Sales Navigator und die Analyse von Kandidatenprofilen, um relevante Profile zu finden.",
+      "Ich habe mich in der Vergangenheit auf die Entwicklung von Sourcing-Strategien konzentriert, die auf klaren Zielgruppen basieren und regelmäßig überprüft werden."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele für Erfolge oder Ergebnisse aus der Active Sourcing-Arbeit.",
+      "Die genaue Art der optimierten Strategien oder Tools ist nicht detailliert beschrieben.",
+      "Es gibt keine klare Erwähnung von Herausforderungen oder Lösungen im Umgang mit einer großen Kandidatenpipeline."
+    ],
+    "anchors_used": [
+      {
+        "text": "Active Sourcing",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "LinkedIn",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Recruiter",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

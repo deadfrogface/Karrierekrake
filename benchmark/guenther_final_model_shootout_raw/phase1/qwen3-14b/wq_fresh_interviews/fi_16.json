@@ -1,0 +1,40 @@
+{
+  "id": "fi_16",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 149.898,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in der Vergangenheit mit komplexen Fallmanagement-Situationen umgehen können?",
+      "Welche Methoden oder Tools nutzen Sie bei der Planung und Umsetzung von Fallmanagement-Prozessen?",
+      "Wie stellen Sie sicher, dass die Bedürfnisse der Klienten im Mittelpunkt des Fallmanagements stehen?"
+    ],
+    "talking_points": [
+      "Ich habe in meiner bisherigen Tätigkeit als Sozialarbeiter mit verschiedenen Fallmanagement-Szenarien gearbeitet, wobei ich mich auf die individuelle Betreuung und die Entwicklung von maßgeschneiderten Lösungen konzentriert habe.",
+      "Ich setze bei der Planung von Fallmanagement-Prozessen auf strukturierte Ansätze, um sicherzustellen, dass alle relevanten Aspekte berücksichtigt werden."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfahrungen aus der Praxis, um die Aussagen zu untermauern.",
+      "Die genaue Art der Sozialarbeit (z. B. im Bereich Jugendhilfe, Migration, etc.) ist nicht spezifiziert.",
+      "Es gibt keine Erwähnung von spezifischen Tools oder Software, die im Fallmanagement genutzt werden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Sozialarbeit",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Fallmanagement",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

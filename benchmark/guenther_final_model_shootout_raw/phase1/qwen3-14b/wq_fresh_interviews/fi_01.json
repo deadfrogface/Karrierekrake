@@ -1,0 +1,45 @@
+{
+  "id": "fi_01",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 142.18,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer Rolle als Controller mit Reporting-Tools wie Excel gearbeitet?",
+      "Können Sie ein Beispiel für eine Kostenrechnung geben, an der Sie beteiligt waren?",
+      "Wie stellen Sie sicher, dass Ihre Reports präzise und rechtzeitig fertiggestellt werden?"
+    ],
+    "talking_points": [
+      "Als Controller mit 3 Jahren Berufserfahrung habe ich umfangreiche Erfahrung mit Reporting und Excel, insbesondere bei der Erstellung von monatlichen Finanzberichten.",
+      "Meine Arbeit umfasst die Analyse von Kostenstrukturen und die Identifikation von Einsparpotenzialen, was ich durch präzise Datenanalyse in Excel umsetze."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Projekte, die die Erfahrung mit Reporting und Excel untermauern.",
+      "Keine detaillierten Informationen zur Art der Kostenrechnungen oder zu den verwendeten Methoden.",
+      "Es ist unklar, ob die Erfahrung mit Excel auf komplexe oder einfache Aufgaben beschränkt ist."
+    ],
+    "anchors_used": [
+      {
+        "text": "Reporting",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Excel",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kostenrechnung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

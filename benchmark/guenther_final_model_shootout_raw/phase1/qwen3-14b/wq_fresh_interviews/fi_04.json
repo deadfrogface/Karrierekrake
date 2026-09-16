@@ -1,0 +1,40 @@
+{
+  "id": "fi_04",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 149.785,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie planen Sie Touren effizient, um Kosten und Zeit zu optimieren?",
+      "Wie stellen Sie sicher, dass alle telefonischen Kommunikationen mit Kunden und Lieferanten klar und professionell ablaufen?",
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit als Disponent mit unerwarteten Verzögerungen oder Änderungen umgesetzt?"
+    ],
+    "talking_points": [
+      "Ich habe in meiner Rolle als Disponent über drei Jahre Erfahrung in der Tourenplanung gesammelt, wobei ich mich auf die Optimierung von Routen und Ressourcen konzentriert habe.",
+      "Ich setze bei der telefonischen Kommunikation auf klare Struktur und professionelles Vorgehen, um sowohl Kunden als auch internen Teams zu beruhigen und zu informieren."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Ergebnisse aus der Disponententätigkeit, um die Aussagen weiter zu untermauern.",
+      "Die Evidenzliste ist leer, was die Tiefe der Aussagen begrenzt.",
+      "Es ist unklar, ob die Erfahrung mit FleetMove KG oder anderen Unternehmen gesammelt wurde."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Disponent",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Tourenplanung, Telefon",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

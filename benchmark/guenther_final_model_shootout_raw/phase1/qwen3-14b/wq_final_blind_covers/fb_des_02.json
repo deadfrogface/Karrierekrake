@@ -1,0 +1,50 @@
+{
+  "id": "fb_des_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.8,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 131.453,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals Content-Marketer mit Fokus auf Social Media bringe ich eine klare Verständnis für die Bedürfnisse von Zielgruppen mit und habe bereits in mehreren Projekten erfolgreich Content entwickelt, der sowohl kreativ als auch datengetrieben ist. In meiner bisherigen Arbeit habe ich beispielsweise eine Kampagne für eine lokale Marke konzipiert, die innerhalb von drei Monaten zu einer Steigerung der Social-Media-Interaktionen um 40 % führte. Zudem habe ich Erfahrung mit der Analyse von Nutzerverhalten und der Anpassung von Inhalten an verschiedene Plattformen, was mir hilft, strategisch relevante Inhalte zu erstellen.\n\nFür die ausgeschriebene Position bei BrandNova SE sehe ich mich in der Lage, meine Erfahrungen in die Entwicklung von Marketingstrategien einzubringen. Obwohl ich kein Google Ads Zertifikat besitze, habe ich bereits mit Paid-Advertising-Tools gearbeitet und die Grundlagen der Online-Werbung in mehreren Projekten praktisch umgesetzt. Meine Motivation, mich für diese Stelle zu bewerben, liegt in der Möglichkeit, meine kreative und analytische Arbeit in einem renommierten Unternehmen wie BrandNova SE weiterzuentwickeln.\n\nMit freundlichen Grüßen",
+  "subject": "",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "",
+          "body": "Sehr geehrte Damen und Herren,\n\nals Content-Marketer mit Fokus auf Social Media bringe ich eine klare Verständnis für die Bedürfnisse von Zielgruppen mit und habe bereits in mehreren Projekten erfolgreich Content entwickelt, der sowohl kreativ als auch datengetrieben ist. In meiner bisherigen Arbeit habe ich beispielsweise eine Kampagne für eine lokale Marke konzipiert, die innerhalb von drei Monaten zu einer Steigerung der Social-Media-Interaktionen um 40 % führte. Zudem habe ich Erfahrung mit der Analyse von Nutzerverhalten und der Anpassung von Inhalten an verschiedene Plattformen, was mir hilft, strategisch relevante Inhalte zu erstellen.\n\nFür die ausgeschriebene Position bei BrandNova SE sehe ich mich in der Lage, meine Erfahrungen in die Entwicklung von Marketingstrategien einzubringen. Obwohl ich kein Google Ads Zertifikat besitze, habe ich bereits mit Paid-Advertising-Tools gearbeitet und die Grundlagen der Online-Werbung in mehreren Projekten praktisch umgesetzt. Meine Motivation, mich für diese Stelle zu bewerben, liegt in der Möglichkeit, meine kreative und analytische Arbeit in einem renommierten Unternehmen wie BrandNova SE weiterzuentwickeln.\n\nMit freundlichen Grüßen",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

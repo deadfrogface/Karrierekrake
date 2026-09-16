@@ -1,0 +1,8 @@
+{
+  "id": "ac_30",
+  "claim": "Krankenpflegeexamen",
+  "expect": "UNSUPPORTED",
+  "got": "UNSUPPORTED",
+  "match": true,
+  "model_id": "qwen3-14b"
+}

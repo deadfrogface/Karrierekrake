@@ -1,0 +1,45 @@
+{
+  "id": "fi_17",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 104.106,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Arbeit mit Firewalls gearbeitet?",
+      "Welche Erfahrungen haben Sie mit der Konfiguration und Verwaltung von VPN-Verbindungen gesammelt?",
+      "Wie stellen Sie sicher, dass Netzwerk-Sicherheitsprotokolle effektiv umgesetzt werden?"
+    ],
+    "talking_points": [
+      "Berufserfahrung in Netzwerk-Sicherheit mit Schwerpunkt auf Firewalls und VPNs",
+      "Kenntnisse in der Planung und Umsetzung von Netzwerk-Sicherheitsstrategien"
+    ],
+    "gap_notes": [
+      "Keine konkreten Projekte oder Erfolge im Profil genannt",
+      "Keine detaillierten Beispiele für die Anwendung von Firewalls oder VPNs",
+      "Keine Erwähnung von spezifischen Tools oder Technologien"
+    ],
+    "anchors_used": [
+      {
+        "text": "Firewall",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "VPN",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Netzwerk",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}
