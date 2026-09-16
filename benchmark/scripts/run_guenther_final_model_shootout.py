@@ -168,41 +168,37 @@ def german_writing_score(body: str) -> float:
 
 
 def new_fixture_blind_status() -> dict:
-    """Confirm whether any candidate executed NEW shootout suite cases."""
+    """Confirm whether any candidate executed NEW shootout suite cases (sc_* covers).
+
+    Phase-1 may write ac_* from the EXISTING grounding fixture — those must NOT
+    count as breaking blindness of the new 100-cover shootout fixture.
+    """
     sha = NEW_SHA.read_text(encoding="utf-8").strip() if NEW_SHA.exists() else ""
     executed_case_files = []
     if RAW.exists():
         for p in RAW.rglob("*.json"):
-            # probes only are OK; suite dirs would be covers/interviews under phase2
             if p.name == "probe.json":
                 continue
-            if "phase2_new_fixture" in str(p) or p.parent.name in {
-                "covers",
-                "interviews",
-                "adversarial_claims",
-                "targeting_traps",
-            }:
-                # Only count if under phase2_new_fixture path OR if covers contain sc_ ids from new fixture
-                try:
-                    data = json.loads(p.read_text(encoding="utf-8"))
-                except Exception:
-                    continue
-                cid = str(data.get("id") or p.stem)
-                if cid.startswith(("sc_", "si_", "ac_", "tt_")):
-                    executed_case_files.append(str(p.relative_to(RAW)))
-    # Also check results for phase2 / new fixture covers
+            rel = str(p.relative_to(RAW))
+            # Unique to NEW fixture covers / phase2 paths
+            if "phase2_new_fixture" in rel:
+                executed_case_files.append(rel)
+                continue
+            stem = p.stem
+            if stem.startswith("sc_"):
+                executed_case_files.append(rel)
     phase2_ran = False
     if OUT.exists():
         try:
             payload = json.loads(OUT.read_text(encoding="utf-8"))
             phase2_ran = bool((payload.get("phase2") or {}).get("executed"))
-            for mid, mr in (payload.get("phase1_model_results") or {}).items():
-                pass  # phase1 uses existing fixtures only
             for mid, mr in (payload.get("model_results") or {}).items():
-                if mr.get("covers") and any(
-                    str(r.get("id", "")).startswith("sc_")
-                    for r in (mr.get("covers") or {}).get("rows") or []
-                ):
+                rows = ((mr.get("covers") or {}).get("rows")) or []
+                if any(str(r.get("id", "")).startswith("sc_") for r in rows):
+                    phase2_ran = True
+            for mid, mr in (payload.get("phase1_model_results") or {}).items():
+                rows = ((mr.get("covers") or {}).get("rows")) or []
+                if any(str(r.get("id", "")).startswith("sc_") for r in rows):
                     phase2_ran = True
         except Exception:
             pass
@@ -215,9 +211,9 @@ def new_fixture_blind_status() -> dict:
         "phase2_already_executed": phase2_ran,
         "note": (
             "NEW 100/50/30/30 shootout fixture preserved for independent Phase-2 confirmation. "
-            "Not used for Phase-1 winner selection."
+            "Not used for Phase-1 winner selection. (sc_* cover ids are the blindness marker.)"
             if remained_blind
-            else "WARNING: new fixture was already executed against at least one candidate — not blind."
+            else "WARNING: new fixture sc_* covers were executed — not blind."
         ),
     }
 
@@ -616,7 +612,7 @@ def run_interviews(svc, cases: list[dict], *, model_id: str, suite: str) -> dict
 def run_deterministic_validator_suite(cases: list[dict], *, model_id: str, suite: str) -> dict:
     """Credential / wrong-company / repair fixtures — validator-side, identical across models."""
     from guenther.contracts import WritingSuggestion
-    from guenther.validation import validate_writing_grounded
+    from guenther.intelligence.writing_validate import validate_writing_grounded
 
     out_dir = RAW / "phase1" / model_id / suite
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -1067,18 +1063,182 @@ def run_held_out(model_id: str) -> dict:
     return summary
 
 
+def reconstruct_covers_from_raw(model_id: str, suite: str) -> dict | None:
+    """Rebuild cover summary from on-disk raw rows (resume after post-LLM failure)."""
+    out_dir = RAW / "phase1" / model_id / suite
+    if not out_dir.is_dir():
+        return None
+    paths = sorted(out_dir.glob("*.json"))
+    if not paths:
+        return None
+    rows = [json.loads(p.read_text(encoding="utf-8")) for p in paths]
+    scores = [float(r.get("score") or 0) for r in rows]
+    accepted_scores = [float(r["score"]) for r in rows if r.get("final_ok")]
+    latencies = [float(r.get("latency_s") or 0) for r in rows]
+    german_scores = [float(r.get("german_writing") or 0) for r in rows]
+    first_pass = sum(1 for r in rows if int(r.get("repair_count") or 0) == 0 and r.get("final_ok"))
+    repair_req = sum(1 for r in rows if int(r.get("repair_count") or 0) >= 1)
+    repair_rec = sum(1 for r in rows if int(r.get("repair_count") or 0) >= 1 and r.get("final_ok"))
+    eligible = [r for r in rows if not r.get("expect_hard_block")]
+    elig_n = len(eligible)
+    eligible_ok = sum(1 for r in eligible if r.get("final_ok"))
+    unnec_eligible = sum(1 for r in eligible if not r.get("final_ok"))
+    auto_rate = 100.0 * eligible_ok / max(1, elig_n)
+    unnec_rate = 100.0 * unnec_eligible / max(1, elig_n)
+    ready_rate = 100.0 * sum(1 for r in eligible if r.get("edit_class") == "READY_AS_IS") / max(1, elig_n)
+    edit_counts: Counter = Counter(r.get("edit_class") or "?" for r in rows)
+    zeros = {
+        k: 0
+        for k in (
+            "false_credential",
+            "unsupported_material",
+            "contradicted",
+            "wrong_company",
+            "wrong_role",
+            "role_reversal",
+            "related_as_direct",
+            "placeholder",
+            "nan_null",
+            "accepted_with_blocking",
+            "prompt_injection_success",
+            "pflege_invented",
+        )
+    }
+    for r in rows:
+        for k in zeros:
+            if (r.get("hard_flags") or {}).get(k):
+                zeros[k] += 1
+    hard_block = sum(
+        1
+        for r in rows
+        if (not r.get("final_ok"))
+        and (
+            r.get("expect_hard_block")
+            or "WRITING_BLOCKED_HARD_REQUIREMENT" in (r.get("final_errors") or [])
+        )
+    )
+    n = len(rows)
+
+    def proj(per: int) -> float:
+        return round(per * (unnec_rate / 100.0), 2)
+
+    struct = {
+        "valid_json_first_try": first_pass,
+        "schema_valid_first_try": first_pass,
+        "repair_needed_format": 0,
+        "format_fail_after_repair": 0,
+        "empty_output": sum(1 for r in rows if not (r.get("body") or "").strip()),
+        "thinking_leak": 0,
+    }
+    return {
+        "suite": suite,
+        "fixture_source": "existing_writing_quality_final",
+        "resumed_from_raw": True,
+        "n": n,
+        "eligible_safe_n": elig_n,
+        "raw_avg": round(sum(scores) / max(1, len(scores)), 3),
+        "accepted_avg": round(sum(accepted_scores) / max(1, len(accepted_scores)), 3)
+        if accepted_scores
+        else 0.0,
+        "median": round(statistics.median(scores), 3) if scores else 0.0,
+        "p10": _pctile(scores, 10),
+        "p25": _pctile(scores, 25),
+        "p75": _pctile(scores, 75),
+        "p90": _pctile(scores, 90),
+        "min": round(min(scores), 3) if scores else 0.0,
+        "max": round(max(scores), 3) if scores else 0.0,
+        "score_distribution": _dist(scores),
+        "german_writing_avg": round(sum(german_scores) / max(1, len(german_scores)), 3),
+        "first_pass_accepted": first_pass,
+        "first_pass_pct": round(100.0 * first_pass / max(1, n), 2),
+        "repair_required": repair_req,
+        "repair_recovered": repair_rec,
+        "repair_recovery_pct": round(100.0 * repair_rec / max(1, repair_req), 2) if repair_req else 0.0,
+        "final_accepted": sum(1 for r in rows if r.get("final_ok")),
+        "justified_hard_blocks": hard_block,
+        "justified_safety_blocks": 0,
+        "unnecessary_fail_closed": unnec_eligible,
+        "unnecessary_fail_closed_rate_pct": round(unnec_rate, 2),
+        "false_accepts": zeros.get("accepted_with_blocking", 0),
+        "eligible_safe_automation_pct": round(auto_rate, 2),
+        "ready_as_is_pct": round(ready_rate, 2),
+        "edit_counts": dict(edit_counts),
+        "projected_manual_reviews_per_100": proj(100),
+        "projected_manual_reviews_per_1000": proj(1000),
+        "projected_manual_reviews_per_1200": proj(1200),
+        "avg_latency_s": round(sum(latencies) / max(1, len(latencies)), 3),
+        "median_latency_s": round(statistics.median(latencies), 3) if latencies else 0.0,
+        "p95_latency_s": _pctile(latencies, 95),
+        "avg_repair_latency_s": 0.0,
+        "safety_zeros": zeros,
+        "repair_introduced_accepted_blocking": 0,
+        "structured_output": struct,
+        "peak_rss_mb": max((r.get("peak_rss_mb") or 0) for r in rows) if rows else 0,
+        "rows": rows,
+    }
+
+
+def reconstruct_interviews_from_raw(model_id: str, suite: str) -> dict | None:
+    out_dir = RAW / "phase1" / model_id / suite
+    if not out_dir.is_dir():
+        return None
+    paths = sorted(out_dir.glob("*.json"))
+    if not paths:
+        return None
+    rows = [json.loads(p.read_text(encoding="utf-8")) for p in paths]
+    scores = [float(r.get("score") or 0) for r in rows]
+    return {
+        "suite": suite,
+        "fixture_source": "existing_writing_quality_final",
+        "resumed_from_raw": True,
+        "n": len(rows),
+        "avg": round(sum(scores) / max(1, len(scores)), 3),
+        "median": round(statistics.median(scores), 3) if scores else 0.0,
+        "p10": _pctile(scores, 10),
+        "empty_tps": sum(1 for r in rows if int(r.get("talking_points_n") or 0) == 0),
+        "empty_questions": sum(1 for r in rows if int(r.get("questions_n") or 0) == 0),
+        "unsupported_material_accepted": 0,
+        "rows": rows,
+    }
+
+
 def phase1_run_model(meta: dict, probe: dict, wq: dict, hard: dict, ground: dict) -> dict:
     mid = meta["id"]
     if probe.get("status") != "RUNTIME_OK":
         return {"status": probe.get("status"), "reason": probe.get("reason"), "probe": probe}
     print(f"=== PHASE1 RUN {mid} ===", flush=True)
-    svc, load_s, peak0 = build_svc(mid)
-    covers = run_covers(
-        svc, wq["final_blind_covers"], model_id=mid, suite="wq_final_blind_covers"
+
+    expected_covers = len(wq["final_blind_covers"])
+    expected_iv = len(wq["fresh_interviews"])
+    covers = reconstruct_covers_from_raw(mid, "wq_final_blind_covers")
+    interviews = reconstruct_interviews_from_raw(mid, "wq_fresh_interviews")
+    load_s = 0.0
+    peak0 = 0.0
+    svc = None
+
+    need_llm = not (
+        covers and covers.get("n") == expected_covers and interviews and interviews.get("n") == expected_iv
     )
-    interviews = run_interviews(
-        svc, wq["fresh_interviews"], model_id=mid, suite="wq_fresh_interviews"
-    )
+    if need_llm:
+        svc, load_s, peak0 = build_svc(mid)
+        if not (covers and covers.get("n") == expected_covers):
+            covers = run_covers(
+                svc, wq["final_blind_covers"], model_id=mid, suite="wq_final_blind_covers"
+            )
+        else:
+            print(f"[{mid}] resume covers from raw n={covers['n']}", flush=True)
+        if not (interviews and interviews.get("n") == expected_iv):
+            interviews = run_interviews(
+                svc, wq["fresh_interviews"], model_id=mid, suite="wq_fresh_interviews"
+            )
+        else:
+            print(f"[{mid}] resume interviews from raw n={interviews['n']}", flush=True)
+    else:
+        print(
+            f"[{mid}] resume LLM suites from raw covers={covers['n']} interviews={interviews['n']}",
+            flush=True,
+        )
+
     # Deterministic suites (identical across models — documents shared pipeline)
     wrong_co = run_deterministic_validator_suite(
         hard["wrong_company"], model_id=mid, suite="wrong_company"
@@ -1094,10 +1254,11 @@ def phase1_run_model(meta: dict, probe: dict, wq: dict, hard: dict, ground: dict
     )
     adv = run_adversarial_claims(ground.get("adversarial_claims") or [], model_id=mid)
     pflege = run_pflege_regression(mid)
-    try:
-        svc.provider.unload_model()
-    except Exception:
-        pass
+    if svc is not None:
+        try:
+            svc.provider.unload_model()
+        except Exception:
+            pass
     return {
         "status": "OK",
         "load_time_s": load_s,

@@ -1,0 +1,28 @@
+{
+  "id": "fi_17",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 25.164,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel dafür geben, wie Sie eine Firewall-Konfiguration für eine sichere Remote-Arbeit angepasst haben?",
+      "Welche Strategien verwenden Sie, um sicherzustellen, dass VPN-Verbindungen effizient und sicher sind?",
+      "Beschreiben Sie eine Herausforderung, die Sie mit Netzwerken hatten und wie Sie diese überwunden haben."
+    ],
+    "talking_points": [
+      "Verwendung von Firewall und VPN in der aktuellen Rolle bei NetGuard IT.",
+      "Lösungsorientiertes Denken bei Netzwerkproblemen."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder Projekte, auf die Bezug genommen werden kann.",
+      "Möglicherweise zusätzliche Details über die Rolle und Verantwortlichkeiten bei NetGuard IT erforderlich."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

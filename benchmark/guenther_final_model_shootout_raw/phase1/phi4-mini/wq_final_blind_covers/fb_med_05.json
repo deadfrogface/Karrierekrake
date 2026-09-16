@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_05",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 28.824,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren der QualiCheck GmbH, ich schreibe, um meine Erfahrung im Bereich Qualitätskontrolle und die Verfolgung von ISO-Prozessen mit Ihnen in Verbindung zu bringen. Im Laufe meiner Karriere habe ich eine Reihe von Checklisten und Messmitteln eingesetzt, um die Qualitätssicherung in verschiedenen Branchen zu gewährleisten. Mein Engagement für Präzision und strikte Einhaltung von Standards spiegelt sich in meiner Rolle als Qualitätsprüfer wider, wo ich die Einhaltung von ISO-Prozessen sicherstellte und kontinuierliche Verbesserungen initiierte. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung gut zu den Anforderungen der QualiCheck GmbH passen. Ich freue mich darauf, meine Expertise in Ihrem Team einzubringen und zur Erreichung Ihrer Qualitätsziele beizutragen.",
+  "subject": "Bewerbung für die Position des Qualitätsprüfers",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Qualitätsprüfers",
+          "body": "Sehr geehrte Damen und Herren der QualiCheck GmbH, ich schreibe, um meine Erfahrung im Bereich Qualitätskontrolle und die Verfolgung von ISO-Prozessen mit Ihnen in Verbindung zu bringen. Im Laufe meiner Karriere habe ich eine Reihe von Checklisten und Messmitteln eingesetzt, um die Qualitätssicherung in verschiedenen Branchen zu gewährleisten. Mein Engagement für Präzision und strikte Einhaltung von Standards spiegelt sich in meiner Rolle als Qualitätsprüfer wider, wo ich die Einhaltung von ISO-Prozessen sicherstellte und kontinuierliche Verbesserungen initiierte. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung gut zu den Anforderungen der QualiCheck GmbH passen. Ich freue mich darauf, meine Expertise in Ihrem Team einzubringen und zur Erreichung Ihrer Qualitätsziele beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.2
+}

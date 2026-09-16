@@ -1,0 +1,29 @@
+{
+  "id": "fi_07",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 23.697,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwendest du, um die SEO-Fähigkeiten eines CMS zu verbessern?",
+      "Kannst du ein Content-Marketing-Projekt beschreiben, bei dem du CMS, SEO und Content erfolgreich integriert hast?",
+      "Wie misst du den Erfolg deiner SEO-Bemühungen in Bezug auf Content?"
+    ],
+    "talking_points": [
+      "Diskussion über die Rolle des CMS in der Content-Strategie und SEO-Optimierung.",
+      "Erklärung des Prozesses, den du zur Analyse und Verbesserung des SEO-Effekts deines Contents verwendest.",
+      "Erklärung des Ansatzes zur Messung des ROI von SEO-Initiativen im Content-Bereich."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder quantitative Ergebnisse, die während des Interviews präsentiert werden könnten.",
+      "Es könnte hilfreich sein, Beispiele für erfolgreiche SEO- und Content-Kampagnen bereitzustellen, falls verfügbar."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

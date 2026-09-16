@@ -1,0 +1,25 @@
+{
+  "id": "fi_18",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 64.682,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie organisieren Sie Ihre Termine und Telefonanrufe im Empfangsbereich des MedCenter Nord?",
+      "Welche Methoden verwenden Sie, um die Effizienz im Empfangsbereich zu verbessern, insbesondere im Hinblick auf Termine und Telefonanrufe?",
+      "Können Sie ein Beispiel für eine Herausforderung geben, die Sie im Empfangsbereich des MedCenter Nord bewältigt haben, insbesondere im Zusammenhang mit der Verwaltung von Terminen und Telefonanrufen?"
+    ],
+    "talking_points": [
+      "Als Empfangskraft beim MedCenter Nord habe ich meine Fähigkeiten bei der Verwaltung von Terminen und Telefonanrufen geschärft.",
+      "Ich habe verschiedene Techniken und Systeme zur Effizienzsteigerung im Empfangsbereich des MedCenter Nord angewendet."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

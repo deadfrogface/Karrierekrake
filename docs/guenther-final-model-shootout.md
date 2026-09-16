@@ -14,14 +14,14 @@
 ## New shootout fixture blind status
 
 - SHA256: `858d60b36e1b0bc3cc3791cc55aa57f8d6fc5fac6d804bc8a48d49bd0131852a`
-- Remained blind through Phase-1: **True**
-- Note: NEW 100/50/30/30 shootout fixture preserved for independent Phase-2 confirmation. Not used for Phase-1 winner selection.
+- Remained blind through Phase-1: **False**
+- Note: WARNING: new fixture was already executed against at least one candidate — not blind.
 
 ## Phase-1 results table
 
 | MODEL | STATUS | SIZE_GB | PEAK_RAM | AVG_LAT | COVER_RAW | COVER_ACC | READY% | 1ST% | AUTO% | UNNEC% | MAN/1200 | IV | SAFETY | DEPLOY | LICENSE |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| phi4-mini | RUNTIME_OK | 2.32 | 5474.2 | None | None | None | None | None | None | None | None | None | 0 | CONSUMER_STANDARD | MIT |
+| phi4-mini | RUNTIME_OK | 2.32 | 5611.4 | 30.335 | 7.75 | 7.737 | 84.21 | 90.0 | 100.0 | 0.0 | 0.0 | 8.215 | 0 | CONSUMER_STANDARD | MIT |
 | qwen35-9b | RUNTIME_OK | 5.29 | 10229.3 | None | None | None | None | None | None | None | None | None | 0 | CONSUMER_HIGH | Apache-2.0 |
 | gemma4-12b | RUNTIME_OK | 7.14 | 14476.4 | None | None | None | None | None | None | None | None | None | 0 | ENTHUSIAST | Gemma Terms of Use |
 | qwen3-14b | RUNTIME_OK | 8.38 | 14492.2 | None | None | None | None | None | None | None | None | None | 0 | ENTHUSIAST | Apache-2.0 |
@@ -29,14 +29,14 @@
 
 ## Recommendation
 
-- BEST MEASURED: **NONE**
+- BEST MEASURED: **phi4-mini**
 - RELEASE-READY: **NOT_READY**
 - BEST DEFAULT: **phi4-mini**
-- BEST HIGH-QUALITY: **NONE**
+- BEST HIGH-QUALITY: **phi4-mini**
 - BEST LIGHT: **qwen3-1.7b (production light — unchanged)**
 - SHOULD PHI BE REPLACED: **NO**
 - KEEP QWEN3-1.7B PRODUCTION DEFAULT: **YES**
-- ARCHITECTURE: KEEP CURRENT
+- ARCHITECTURE: OPTION C: keep light default + hardened standard; optional HQ if hardware allows
 - WHY: Selected by safety→automation→ready-as-is→quality on EXISTING fixtures only; new shootout fixture reserved for Phase-2 confirmation.
 
 ## Phase 2 (blind confirmation)

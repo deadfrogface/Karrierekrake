@@ -1,0 +1,8 @@
+{
+  "id": "ac_25",
+  "claim": "Altenpflegeexamen",
+  "expect": "UNSUPPORTED",
+  "got": "UNSUPPORTED",
+  "match": true,
+  "model_id": "phi4-mini"
+}

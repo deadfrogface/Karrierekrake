@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_01",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 27.153,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich Systemintegration, insbesondere mit Windows, Tickets und Active Directory, für die Position des Fachinformatiker Supports bei BitForge GmbH zu nutzen. Meine Fähigkeiten im Umgang mit Systemen und Software-Lösungen, kombiniert mit meiner Erfahrung im Support, würden mir ermöglichen, effektiv zur Unterstützung des Teams bei BitForge GmbH beizutragen. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für Technologie in Ihrem Unternehmen einzubringen.",
+  "subject": "Bewerbung für die Position Fachinformatiker Support bei BitForge GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Fachinformatiker Support bei BitForge GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich Systemintegration, insbesondere mit Windows, Tickets und Active Directory, für die Position des Fachinformatiker Supports bei BitForge GmbH zu nutzen. Meine Fähigkeiten im Umgang mit Systemen und Software-Lösungen, kombiniert mit meiner Erfahrung im Support, würden mir ermöglichen, effektiv zur Unterstützung des Teams bei BitForge GmbH beizutragen. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für Technologie in Ihrem Unternehmen einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5474.5
+}

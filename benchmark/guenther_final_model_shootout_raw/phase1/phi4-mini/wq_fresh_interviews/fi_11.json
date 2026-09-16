@@ -1,0 +1,27 @@
+{
+  "id": "fi_11",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 29.731,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwendest du, um das Onboarding-Erlebnis für neue Mitarbeiter zu verbessern?",
+      "Wie führst du Personalakten effektiv und sicher?",
+      "Können Sie ein Projekt oder eine Initiative beschreiben, bei der du die HR-Fähigkeiten erfolgreich eingesetzt hast?"
+    ],
+    "talking_points": [
+      "Diskussion über verschiedene Onboarding-Prozesse und deren positive Auswirkungen auf die Mitarbeiterbindung."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Projekte erwähnt, daher ist es wichtig, die Kandidaten zu ermutigen, ihre Erfahrungen und Erfolge zu teilen.",
+      "Mögliche Lücken in der beruflichen Entwicklung oder Spezialisierung im HR-Bereich, die während des Interviews adressiert werden sollten."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

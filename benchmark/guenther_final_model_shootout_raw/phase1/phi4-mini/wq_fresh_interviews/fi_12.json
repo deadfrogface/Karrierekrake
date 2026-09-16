@@ -1,0 +1,34 @@
+{
+  "id": "fi_12",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 27.973,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel dafür geben, wie Sie einen neuen Kunden gewonnen haben?",
+      "Wie nutzen Sie CRM-Systeme, um Ihre Verkaufsbemühungen zu verbessern?",
+      "Welche Strategien verwenden Sie, um sich auf Akquise-Messen vorzubereiten?"
+    ],
+    "talking_points": [
+      "Erklärung der Nutzung und Vorteile von CRM-Systemen in Verkaufsprozessen.",
+      "Erörterung des Ansatzes zur Vorbereitung und Durchführung erfolgreicher Akquise-Messen."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder quantitative Ergebnisse im Profil.",
+      "Mögliche Transferfähigkeiten aus früheren Erfahrungen in Sales, die nicht direkt im Profil erwähnt wurden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Akquise und CRM sind Schwerpunkte, die wahrscheinlich in der Sales-Industrie relevant sind.",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

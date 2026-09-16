@@ -1,0 +1,50 @@
+{
+  "id": "fb_sparse_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 17.931,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich freue mich darauf, meine Erfahrungen im Verkauf und Kundenservice in einer flexiblen Arbeitsumgebung bei ShopQuick AG einzubringen. Mit meiner soliden Grundlage im Kundenmanagement und Verkaufsstrategien bin ich überzeugt, dass ich einen wertvollen Beitrag zum Erfolg Ihres Teams leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Kundenservices und des Verkaufs anzuwenden und dabei die Kundenzufriedenheit zu steigern.",
+  "subject": "Freischaffender für Aushilfe Verkauf - ShopQuick AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freischaffender für Aushilfe Verkauf - ShopQuick AG",
+          "body": "Ich freue mich darauf, meine Erfahrungen im Verkauf und Kundenservice in einer flexiblen Arbeitsumgebung bei ShopQuick AG einzubringen. Mit meiner soliden Grundlage im Kundenmanagement und Verkaufsstrategien bin ich überzeugt, dass ich einen wertvollen Beitrag zum Erfolg Ihres Teams leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Kundenservices und des Verkaufs anzuwenden und dabei die Kundenzufriedenheit zu steigern.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5611.4
+}

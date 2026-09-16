@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_07",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 32.157,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Handwerk Montage und des Transfers auf die Position des Facility Support bei BuildCare SE anzuwenden. Mit meiner Erfahrung in der Montage und Instandhaltung, insbesondere im Umgang mit komplexen Bauteilen und Systemen, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem Umfeld einzubringen, das sich durch Innovation und Qualität in der Baubranche auszeichnet. Ich freue mich darauf, meine Expertise in die Unterstützung Ihrer Facility-Operationen einzubringen und dazu beizutragen, die Effizienz und Zuverlässigkeit Ihrer Anlagen zu verbessern. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit BuildCare SE zu teilen.",
+  "subject": "Bewerbung für Facility Support bei BuildCare SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Facility Support bei BuildCare SE",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Handwerk Montage und des Transfers auf die Position des Facility Support bei BuildCare SE anzuwenden. Mit meiner Erfahrung in der Montage und Instandhaltung, insbesondere im Umgang mit komplexen Bauteilen und Systemen, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem Umfeld einzubringen, das sich durch Innovation und Qualität in der Baubranche auszeichnet. Ich freue mich darauf, meine Expertise in die Unterstützung Ihrer Facility-Operationen einzubringen und dazu beizutragen, die Effizienz und Zuverlässigkeit Ihrer Anlagen zu verbessern. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit BuildCare SE zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.7
+}

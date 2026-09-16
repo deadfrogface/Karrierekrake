@@ -1,0 +1,50 @@
+{
+  "id": "fb_des_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 25.19,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Grundpflege und meine Fähigkeit, Dokumentationen ohne Englischkenntnisse zu führen, auf die Pflegeassistenz bei Haus am Bach zu übertragen. Mit meinem Zertifikat im Grundpflege-Bereich und der Fähigkeit, Dokumentationen zu führen, bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein kann. Ich freue mich darauf, meine Fähigkeiten in einem englischsprachigen Umfeld zu erweitern und freue mich darauf, meine Rolle in der Pflege zu übernehmen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Pflegeassistenz - Haus am Bach",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Pflegeassistenz - Haus am Bach",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Grundpflege und meine Fähigkeit, Dokumentationen ohne Englischkenntnisse zu führen, auf die Pflegeassistenz bei Haus am Bach zu übertragen. Mit meinem Zertifikat im Grundpflege-Bereich und der Fähigkeit, Dokumentationen zu führen, bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein kann. Ich freue mich darauf, meine Fähigkeiten in einem englischsprachigen Umfeld zu erweitern und freue mich darauf, meine Rolle in der Pflege zu übernehmen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.7
+}

@@ -1,0 +1,26 @@
+{
+  "id": "fi_15",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 28.865,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns von einer Zeit erzählen, in der Sie eine Herausforderung im Bestellwesen meistern mussten und wie Sie damit umgegangen sind?",
+      "Welche Strategien verwenden Sie, um Lieferanten effektiv zu verwalten und Beziehungen zu ihnen aufzubauen?",
+      "Wie halten Sie sich über Änderungen im Bestell- und Lieferkettenprozess auf dem Laufenden und integrieren Sie diese in Ihre Arbeit?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie Ihre Erfahrungen im Einkauf und wie Sie Ihre Rolle bei SupplyWest GmbH genutzt haben, um im Bestellwesen und bei Lieferanten zu verbessern.",
+      "Erklären Sie, welche Fähigkeiten und Techniken Sie im Bereich Bestellwesen und Lieferantenmanagement angewendet haben.",
+      "Besprechen Sie, wie Sie Ihre Beziehungen zu Lieferanten aufgebaut und aufrechterhalten haben und welche Auswirkungen dies auf Ihre Arbeit hatte."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

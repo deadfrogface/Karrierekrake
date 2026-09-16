@@ -1,0 +1,71 @@
+{
+  "id": "fb_strong_08",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 63.941,
+  "repair_count": 1,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren der SalesDesk AG, ich schreibe, um meine Erfahrung im Bereich Angebotsverarbeitung, CRM und Kundendienst für Sie zu nutzen. Meine Fähigkeiten im Umgang mit Kunden und mein tiefes Verständnis für Verkaufsprozesse, die ich bei meiner vorherigen Firma erworben habe, würden ich gerne auf die Rolle des Vertriebsinnendienstlers übertragen. Ich bin überzeugt, dass meine Kenntnisse im Kundendienst und meine Erfahrung im CRM-System mir ermöglichen, effektiv zur Kundenzufriedenheit und zum Umsatzbeitrag beizutragen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Team einzubringen.",
+  "subject": "Bewerbung für die Position des Vertriebsinnendienstlers",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Vertriebsinnendienstlers",
+          "body": "Sehr geehrte Damen und Herren der SalesDesk AG, ich schreibe, um meine Erfahrung im Bereich Angebotsverarbeitung, CRM und Kundendienst für Sie zu nutzen. Meine Fähigkeiten im Umgang mit Kunden und mein tiefes Verständnis für Verkaufsprozesse, die ich bei [seine vorherige Firma] erworben habe, würden ich gerne auf die Rolle des Vertriebsinnendienstlers übertragen. Ich bin überzeugt, dass meine Kenntnisse im Kundendienst und meine Erfahrung im CRM-System mir ermöglichen, effektiv zur Kundenzufriedenheit und zum Umsatzbeitrag beizutragen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Team einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Vertriebsinnendienstlers",
+          "body": "Sehr geehrte Damen und Herren der SalesDesk AG, ich schreibe, um meine Erfahrung im Bereich Angebotsverarbeitung, CRM und Kundendienst für Sie zu nutzen. Meine Fähigkeiten im Umgang mit Kunden und mein tiefes Verständnis für Verkaufsprozesse, die ich bei meiner vorherigen Firma erworben habe, würden ich gerne auf die Rolle des Vertriebsinnendienstlers übertragen. Ich bin überzeugt, dass meine Kenntnisse im Kundendienst und meine Erfahrung im CRM-System mir ermöglichen, effektiv zur Kundenzufriedenheit und zum Umsatzbeitrag beizutragen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Team einzubringen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5562.3
+}
