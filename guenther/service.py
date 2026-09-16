@@ -543,24 +543,17 @@ class GuentherService:
             model_id=routed,
         )
         assert isinstance(model, WritingSuggestion)
-        report_dict = dict((history.last_snapshot or {}).get("_report") or {})
-        if not report_dict:
-            model, report = validate_writing_grounded(
-                model,
-                profile_text=profile_text,
-                job_text=job_text,
-                existing_evidence=existing_evidence,
-                target_company=target_company,
-                forbid_role_reversal=forbid_role_reversal,
-                forbid_wrong_role=forbid_wrong_role,
-            )
-            report_dict = report.to_dict()
-            errors = list(report.errors)
-        notes = [e.get("code") if isinstance(e, dict) else e.code for e in errors]
-        # Prefer structured errors from last report when available
-        if report_dict.get("errors"):
-            errors = report_dict["errors"]
-            notes = [e.get("code") for e in errors if isinstance(e, dict)]
+        model, report = validate_writing_grounded(
+            model,
+            profile_text=profile_text,
+            job_text=job_text,
+            existing_evidence=existing_evidence,
+            target_company=target_company,
+            forbid_role_reversal=forbid_role_reversal,
+            forbid_wrong_role=forbid_wrong_role,
+        )
+        report_dict = report.to_dict()
+        notes = [e.code for e in report.errors]
         if history.repair_count:
             notes.append(f"repairs={history.repair_count}")
         if history.exhausted:
@@ -569,23 +562,20 @@ class GuentherService:
             "writing_grounded",
             repairs=history.repair_count,
             exhausted=history.exhausted,
-            blocked=bool(report_dict.get("writing_blocked")),
+            blocked=bool(report.writing_blocked),
             model_id=routed,
         )
-        err_dicts = [
-            e if isinstance(e, dict) else e.to_dict()  # type: ignore[union-attr]
-            for e in errors
-        ]
+        accept_ok = bool(history.final_ok and report.ok)
         return envelope_from_model(
             capability="writing",
             model=model,
-            ok=True,
+            ok=accept_ok,
             provider_status="ready",
             model_id=routed,
             safety_notes=[str(n) for n in notes if n],
             validated=True,
             architecture=self.architecture.value,
-            validator_errors=err_dicts,
+            validator_errors=[e.to_dict() for e in report.errors],
             repair_history=history.to_dict(),
             grounding_report=report_dict,
         )
@@ -652,8 +642,7 @@ class GuentherService:
         model, report = validate_interview_grounded(
             model, profile_text=profile_text, job_text=job_text, evidence=evidence
         )
-        errors = list(report.errors)
-        notes = [e.code for e in errors]
+        notes = [e.code for e in report.errors]
         if history.repair_count:
             notes.append(f"repairs={history.repair_count}")
         log_event(
@@ -662,16 +651,17 @@ class GuentherService:
             exhausted=history.exhausted,
             model_id=routed,
         )
+        accept_ok = bool(history.final_ok and report.ok)
         return envelope_from_model(
             capability="interview_prep",
             model=model,
-            ok=True,
+            ok=accept_ok,
             provider_status="ready",
             model_id=routed,
             safety_notes=notes,
             validated=True,
             architecture=self.architecture.value,
-            validator_errors=[e.to_dict() for e in errors],
+            validator_errors=[e.to_dict() for e in report.errors],
             repair_history=history.to_dict(),
             grounding_report=report.to_dict(),
         )

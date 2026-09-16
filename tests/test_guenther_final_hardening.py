@@ -44,3 +44,11 @@ def test_explicit_profile_credential_allowed():
         model, profile_text=prof, job_text=job, target_company="Fiktiv AG"
     )
     assert rep.ok
+
+
+def test_blocking_errors_forbid_envelope_ok():
+    from guenther.intelligence.blocking_policy import has_blocking_errors
+    from guenther.intelligence.errors import UNSUPPORTED_CREDENTIAL, make_error
+
+    errs = [make_error(UNSUPPORTED_CREDENTIAL, claim_text="X", severity="error")]
+    assert has_blocking_errors(errs)

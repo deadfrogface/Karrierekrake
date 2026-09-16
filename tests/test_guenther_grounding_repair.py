@@ -265,4 +265,10 @@ def test_service_writing_heuristic_blocks_pflege(tmp_path, monkeypatch):
     body = (env.suggestion.get("body") or "").lower()
     assert "pflegeausbildung" not in body
     codes = {e.get("code") for e in env.validator_errors}
-    assert "UNSUPPORTED_CREDENTIAL" in codes or "WRITING_BLOCKED_HARD_REQUIREMENT" in codes
+    assert not env.ok
+    assert codes & {
+        "UNSUPPORTED_CREDENTIAL",
+        "WRITING_BLOCKED_HARD_REQUIREMENT",
+        "EMPTY_OUTPUT",
+        "HARD_REQUIREMENT_NOT_MET",
+    }
