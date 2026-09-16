@@ -1,0 +1,43 @@
+{
+  "id": "fi_15",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrung im Bestellmanagement erzählen?",
+      "Welche Strategien verwenden Sie, um Lieferanten effektiv zu verwalten?",
+      "Wie gehen Sie mit Herausforderungen im Lieferkettenmanagement um?"
+    ],
+    "talking_points": [
+      "Ich habe drei Jahre Erfahrung im Einkauf, wobei mein Schwerpunkt auf Bestellwesen und Lieferanten lag.",
+      "Ich habe Strategien entwickelt und umgesetzt, um die Lieferketteneffizienz zu verbessern und die Beziehungen zu Lieferanten zu stärken."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften im Profil angegeben, daher ist es wichtig, die relevanten Fähigkeiten und Erfahrungen während des Interviews hervorzuheben.",
+      "Es könnte hilfreich sein, Beispiele aus der eigenen Erfahrung zu geben, um die Fähigkeiten zu demonstrieren, auch wenn keine spezifischen Erfolge erwähnt wurden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Einkauf",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Bestellwesen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Lieferanten",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

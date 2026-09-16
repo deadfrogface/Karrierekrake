@@ -1,0 +1,24 @@
+{
+  "id": "fi_19",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Projekt beschreiben, bei dem Sie während Ihrer Zeit bei MetalForm GmbH eine signifikante Rolle bei der Montage oder Schichtung gespielt haben?",
+      "Wie gehen Sie vor, um sicherzustellen, dass die Montage- und Schichtprozesse effizient und genau durchgeführt werden?",
+      "Welche Herausforderungen haben Sie in Ihrer Rolle als Produktionstechniker erlebt und wie haben Sie diese überwunden?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie Ihre Erfahrungen und Fähigkeiten im Bereich Montage und Schichtung, insbesondere im Produktionskontext.",
+      "Erörtern Sie, wie Sie Ihre Rolle bei MetalForm GmbH optimiert haben, um Effizienz und Genauigkeit in den Montage- und Schichtprozessen zu verbessern."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

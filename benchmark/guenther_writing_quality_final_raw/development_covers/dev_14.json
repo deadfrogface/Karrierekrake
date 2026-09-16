@@ -1,0 +1,47 @@
+{
+  "id": "dev_14",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich des aktiven Sourcing und der Nutzung von LinkedIn zur Unterstützung von TalentHub einzubringen. Mit meiner Erfahrung in der Rekrutierung und der effektiven Nutzung von professionellen Netzwerken bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich bin besonders daran interessiert, meine Fähigkeiten im Bereich des aktiven Sourcing zu nutzen, um Talente zu identifizieren und zu gewinnen, und würde gerne meine Expertise mit TalentHub teilen. Ich freue mich darauf, Möglichkeiten für Zusammenarbeit zu erkunden.",
+  "subject": "Freelancer-Einzelunterstützung - TalentHub",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freelancer-Einzelunterstützung - TalentHub",
+          "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich des aktiven Sourcing und der Nutzung von LinkedIn zur Unterstützung von TalentHub einzubringen. Mit meiner Erfahrung in der Rekrutierung und der effektiven Nutzung von professionellen Netzwerken bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich bin besonders daran interessiert, meine Fähigkeiten im Bereich des aktiven Sourcing zu nutzen, um Talente zu identifizieren und zu gewinnen, und würde gerne meine Expertise mit TalentHub teilen. Ich freue mich darauf, Möglichkeiten für Zusammenarbeit zu erkunden.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "fi_06",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen hast du mit der DATEV-Buchhaltungssoftware gesammelt?",
+      "Kannst du ein spezifisches Projekt beschreiben, bei dem du deine Fähigkeiten im Bereich der Kreditoren-Buchhaltung angewendet hast?",
+      "Wie gehst du mit den Herausforderungen um, die sich aus den Änderungen im Bilanzrecht ergeben?"
+    ],
+    "talking_points": [
+      "Erwähne deine drei Jahre Erfahrung in der Buchhaltung und wie du dich in der Rolle bei DATEV geschult hast.",
+      "Diskutiere ein Projekt, bei dem du deine Kenntnisse im Bereich der Kreditoren-Buchhaltung erfolgreich angewendet hast."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

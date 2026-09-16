@@ -1,0 +1,83 @@
+{
+  "id": "fb_hard_02",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position LKW-Fahrer bei TransEuro KG anzubieten. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich bestens gerüstet, um in Ihrer Firma zu arbeiten. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung im LKW-Fahren eine wertvolle Bereicherung für Ihr Team darstellen. Ich freue mich auf die Möglichkeit, meine Kompetenzen in einem neuen Umfeld zu nutzen und zum Erfolg von TransEuro KG beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Yuri",
+  "subject": "Bewerbung für die Position LKW-Fahrer bei TransEuro KG",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung XYZ bin ich bestens gerüstet“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung XYZ bin ich bestens gerüstet",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position LKW-Fahrer bei TransEuro KG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position LKW-Fahrer bei TransEuro KG anzubieten. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich bestens gerüstet, um in Ihrer Firma zu arbeiten. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung im LKW-Fahren eine wertvolle Bereicherung für Ihr Team darstellen. Ich freue mich auf die Möglichkeit, meine Kompetenzen in einem neuen Umfeld zu nutzen und zum Erfolg von TransEuro KG beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Yuri",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung XYZ bin ich bestens gerüstet“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung XYZ bin ich bestens gerüstet",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position LKW-Fahrer bei TransEuro KG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position LKW-Fahrer bei TransEuro KG anzubieten. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich bestens gerüstet, um in Ihrer Firma zu arbeiten. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung im LKW-Fahren eine wertvolle Bereicherung für Ihr Team darstellen. Ich freue mich auf die Möglichkeit, meine Kompetenzen in einem neuen Umfeld zu nutzen und zum Erfolg von TransEuro KG beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Yuri",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

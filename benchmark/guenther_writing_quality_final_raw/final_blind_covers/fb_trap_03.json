@@ -1,0 +1,47 @@
+{
+  "id": "fb_trap_03",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die ausgeschriebene Position als Engineer bei Fabrikam Robotics AG auszudrücken. Mit meiner SPS, Inbetriebnahme, und meiner Erfahrung bei Tailspin Robotics bin ich überzeugt, dass ich meine Fähigkeiten im Bereich Robotik effektiv in Ihre innovative Unternehmenskultur einbringen kann. Insbesondere meine Rolle bei Tailspin Robotics, wo ich an der Entwicklung robuster und effizienter robotischer Systeme beteiligt war, hat meine Fähigkeiten in der Problemlösung und Systemintegration geschärft. Ich bin besonders an Fabrikam Robotics' Engagement für technologische Fortschritte und nachhaltige Lösungen interessiert. Ich freue mich auf die Möglichkeit, meine Expertise in Engineering und meine Leidenschaft für Robotik bei Fabrikam Robotics AG einzubringen. Herzlichen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Anstellung als Engineer bei Fabrikam Robotics AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Anstellung als Engineer bei Fabrikam Robotics AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die ausgeschriebene Position als Engineer bei Fabrikam Robotics AG auszudrücken. Mit meiner SPS, Inbetriebnahme, und meiner Erfahrung bei Tailspin Robotics bin ich überzeugt, dass ich meine Fähigkeiten im Bereich Robotik effektiv in Ihre innovative Unternehmenskultur einbringen kann. Insbesondere meine Rolle bei Tailspin Robotics, wo ich an der Entwicklung robuster und effizienter robotischer Systeme beteiligt war, hat meine Fähigkeiten in der Problemlösung und Systemintegration geschärft. Ich bin besonders an Fabrikam Robotics' Engagement für technologische Fortschritte und nachhaltige Lösungen interessiert. Ich freue mich auf die Möglichkeit, meine Expertise in Engineering und meine Leidenschaft für Robotik bei Fabrikam Robotics AG einzubringen. Herzlichen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

@@ -150,6 +150,18 @@ def _credential_sig_tokens(text: str) -> set[str]:
     return {t for t in _tokens(text) if t not in glue and len(t) >= 3}
 
 
+def _expand_credential_equiv(sig: set[str]) -> set[str]:
+    """Lightweight synonym expansion for matching only (not inventing new claims)."""
+    out = set(sig)
+    if "abschluss" in sig or "abschlussausbildung" in sig:
+        out.add("ausbildung")
+    if "ausbildung" in sig:
+        out.add("abschluss")
+    if "hotelfach" in "".join(sig) or any("hotelfach" in t for t in sig):
+        out.add("hotelfach")
+    return out
+
+
 def _evidence_direct_for_credential(claim_text: str, store: EvidenceStore) -> tuple[bool, str]:
     """Match credential claim against structured evidence items (not keyword blacklist)."""
     sig = _credential_sig_tokens(claim_text)
@@ -165,6 +177,12 @@ def _evidence_direct_for_credential(claim_text: str, store: EvidenceStore) -> tu
         if not it_sig:
             continue
         overlap = sig & it_sig
+        if not overlap:
+            # try synonym expansion (Abschluss ↔ Ausbildung) with domain token retained
+            overlap = _expand_credential_equiv(sig) & _expand_credential_equiv(it_sig)
+            domain = {t for t in overlap if t not in {"abschluss", "ausbildung"}}
+            if not domain and not (sig & it_sig):
+                continue
         if not overlap:
             continue
         item_fold = _fold(corpus)
@@ -346,6 +364,8 @@ def ground_claim(
         "jira": ("jira", "tickets", "issue tracking"),
         "cms": ("cms", "content management", "wordpress"),
         "seo": ("seo", "suchmaschinenoptimierung"),
+        "hotelfach": ("hotelfach", "hotelfach-abschluss", "hotelfachabschluss", "gaesteservice", "reservierung"),
+        "abschluss": ("abschluss", "ausbildung", "lehre"),
     }
     for key, vals in aliases.items():
         if key in claim_fold or any(k in claim_fold for k in vals if len(k) > 4):

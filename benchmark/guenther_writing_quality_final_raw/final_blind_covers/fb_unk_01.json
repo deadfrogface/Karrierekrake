@@ -1,0 +1,49 @@
+{
+  "id": "fb_unk_01",
+  "final_ok": true,
+  "score": 6.5,
+  "notes": [
+    "missing_company"
+  ],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten in der Sachbearbeitung anzubieten, die ich durch meine Erfahrung bei Quinn Office erworben habe. Mein Engagement für Excel, Ablage und effiziente Telefonkommunikation hat meine Fähigkeit, Aufgaben präzise und zeitnah zu erledigen, verbessert. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und Organisationsstärke einen wertvollen Beitrag für Ihre Team leisten können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld zu nutzen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für die Position Sachbearbeitung",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Sachbearbeitung",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten in der Sachbearbeitung anzubieten, die ich durch meine Erfahrung bei Quinn Office erworben habe. Mein Engagement für Excel, Ablage und effiziente Telefonkommunikation hat meine Fähigkeit, Aufgaben präzise und zeitnah zu erledigen, verbessert. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und Organisationsstärke einen wertvollen Beitrag für Ihre Team leisten können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld zu nutzen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

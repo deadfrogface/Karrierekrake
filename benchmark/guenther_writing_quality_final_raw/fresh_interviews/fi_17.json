@@ -1,0 +1,38 @@
+{
+  "id": "fi_17",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel dafür geben, wie Sie eine komplexe Firewall-Konfiguration gelöst haben?",
+      "Wie stellen Sie sicher, dass VPN-Verbindungen sicher und effizient sind?",
+      "Welche Strategien verwenden Sie, um Netzwerkprobleme zu diagnostizieren und zu beheben?"
+    ],
+    "talking_points": [
+      "Verwendung von Firewall und VPN zur Sicherung des Netzwerks bei NetGuard IT.",
+      "Drei Jahre Erfahrung im Netzwerkbereich, wobei der Schwerpunkt auf Firewall und VPN liegt."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder Projekte, die im Profil erwähnt werden.",
+      "Mögliche Herausforderungen oder Bereiche für Wachstum im aktuellen Job oder früheren Rollen könnten nicht klar sein."
+    ],
+    "anchors_used": [
+      {
+        "text": "Firewall",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "VPN",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

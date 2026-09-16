@@ -1,0 +1,26 @@
+{
+  "id": "fi_08",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Beispiel dafür geben, wie Sie eine Kommissionierung bei StockRoom GmbH erfolgreich abgeschlossen haben?",
+      "Welche Strategien verwenden Sie, um den Staplerschein effizient zu verwalten?",
+      "Wie gehen Sie mit Herausforderungen im Lagerbetrieb um, insbesondere im Zusammenhang mit Kommissionierung und Staplerschein?"
+    ],
+    "talking_points": [
+      "Diskussion über die Rolle der Kommissionierung im Lagerbetrieb und wie sie zur Effizienz beiträgt."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften erwähnt, daher ist es wichtig, die relevanten Fähigkeiten und Erfahrungen während des Interviews hervorzuheben.",
+      "Mögliche Lücken in der Erfahrung mit Kommissionierung und Staplerschein, da nur 3 Jahre Lagererfahrung angegeben sind."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

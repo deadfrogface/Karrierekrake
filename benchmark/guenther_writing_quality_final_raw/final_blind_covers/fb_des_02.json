@@ -1,0 +1,47 @@
+{
+  "id": "fb_des_02",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Content-Marketing und Social Media für BrandNova SE einzubringen. Mit meiner Erfahrung im Content-Marketing und der Fähigkeit, effektive Social-Media-Kampagnen zu erstellen, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich bin besonders an der Rolle des Marketing Managers interessiert, bei der ich strategische Marketingpläne entwickeln und umsetzen kann, um die Markenbekanntheit und das Engagement zu steigern. Ich freue mich darauf, meine Erfahrung mit Ihrem Team zu teilen und an der erfolgreichen Marke BrandNova SE teilzunehmen.",
+  "subject": "Marketing Manager - BrandNova SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Marketing Manager - BrandNova SE",
+          "body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Content-Marketing und Social Media für BrandNova SE einzubringen. Mit meiner Erfahrung im Content-Marketing und der Fähigkeit, effektive Social-Media-Kampagnen zu erstellen, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich bin besonders an der Rolle des Marketing Managers interessiert, bei der ich strategische Marketingpläne entwickeln und umsetzen kann, um die Markenbekanntheit und das Engagement zu steigern. Ich freue mich darauf, meine Erfahrung mit Ihrem Team zu teilen und an der erfolgreichen Marke BrandNova SE teilzunehmen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

@@ -154,6 +154,19 @@ def _classify_possession(phrase: str) -> tuple[ClaimKind, bool, str]:
     return ClaimKind.EXPERIENCE, False, "possession_non_formal"
 
 
+def _in_negated_context(blob: str, start: int, end: int) -> bool:
+    """True if match sits in a kein/keine/ohne/nicht window (honest gap wording)."""
+    window = blob[max(0, start - 40) : end + 5].lower()
+    return bool(
+        re.search(
+            r"(?:kein|keine|keinen|keinem|ohne|nicht)\s+[\w\-äöüÄÖÜß\s]{0,30}$",
+            window[: max(0, len(window) - max(0, end - start))],
+            re.I,
+        )
+        or re.search(r"\b(?:kein|keine|keinen|keinem|ohne)\s+", window, re.I)
+    )
+
+
 def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedClaim]:
     """Pull factual claims from free text. Does NOT decide support status."""
     blob = f"{subject or ''}\n{text or ''}"
@@ -162,6 +175,8 @@ def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedC
 
     for pat in _POSSESSION_PATTERNS:
         for m in pat.finditer(blob):
+            if _in_negated_context(blob, m.start(), m.end()):
+                continue
             phrase = _clean_possession_phrase(m.group(1))
             if len(phrase) < 4:
                 continue
@@ -187,6 +202,8 @@ def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedC
 
     for pat, label in _CREDENTIAL_PATTERNS:
         for m in pat.finditer(blob):
+            if _in_negated_context(blob, m.start(), m.end()):
+                continue
             span = m.group(0).strip()
             key = span.lower()
             if key in seen:
@@ -211,6 +228,8 @@ def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedC
         blob,
         re.I,
     ):
+        if _in_negated_context(blob, m.start(), m.end()):
+            continue
         span = m.group(0).strip()
         key = span.lower()
         if key not in seen:

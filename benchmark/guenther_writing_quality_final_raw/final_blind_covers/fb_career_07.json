@@ -1,0 +1,70 @@
+{
+  "id": "fb_career_07",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, im Rahmen meiner handwerklichen Erfahrung im Bereich Montage und nun im Übergang zur Instandhaltung, bin ich begeistert von der Möglichkeit, meine Fähigkeiten bei BuildCare SE einzubringen. Insbesondere habe ich Erfahrung mit der Wartung und Reparatur von industriellen Anlagen, was meiner Meinung nach gut zu den Anforderungen für Facility Support bei BuildCare SE passt. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Fähigkeit, komplexe Systeme effizient zu warten, einen wertvollen Beitrag für Ihr Team leisten können. Ich freue mich darauf, meine Expertise in die Rolle des Facility Support bei BuildCare SE zu übertragen und freue mich auf die Gelegenheit, meine Fähigkeiten in einem neuen Umfeld zu nutzen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für Facility Support bei BuildCare SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in Montage hat mir ein solides Verständn“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in Montage hat mir ein solides Verständn",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Facility Support bei BuildCare SE",
+          "body": "Sehr geehrte Damen und Herren, im Rahmen meiner handwerklichen Erfahrung im Bereich Montage und nun im Übergang zur Instandhaltung, bin ich begeistert von der Möglichkeit, meine Fähigkeiten bei BuildCare SE einzubringen. Meine gründliche Ausbildung in Montage hat mir ein solides Verständnis für die Bedeutung präziser und zuverlässiger Wartung in verschiedenen Umgebungen vermittelt. Insbesondere habe ich Erfahrung mit der Wartung und Reparatur von industriellen Anlagen, was meiner Meinung nach gut zu den Anforderungen für Facility Support bei BuildCare SE passt. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Fähigkeit, komplexe Systeme effizient zu warten, einen wertvollen Beitrag für Ihr Team leisten können. Ich freue mich darauf, meine Expertise in die Rolle des Facility Support bei BuildCare SE zu übertragen und freue mich auf die Gelegenheit, meine Fähigkeiten in einem neuen Umfeld zu nutzen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für Facility Support bei BuildCare SE",
+          "body": "Sehr geehrte Damen und Herren, im Rahmen meiner handwerklichen Erfahrung im Bereich Montage und nun im Übergang zur Instandhaltung, bin ich begeistert von der Möglichkeit, meine Fähigkeiten bei BuildCare SE einzubringen. Insbesondere habe ich Erfahrung mit der Wartung und Reparatur von industriellen Anlagen, was meiner Meinung nach gut zu den Anforderungen für Facility Support bei BuildCare SE passt. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Fähigkeit, komplexe Systeme effizient zu warten, einen wertvollen Beitrag für Ihr Team leisten können. Ich freue mich darauf, meine Expertise in die Rolle des Facility Support bei BuildCare SE zu übertragen und freue mich auf die Gelegenheit, meine Fähigkeiten in einem neuen Umfeld zu nutzen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

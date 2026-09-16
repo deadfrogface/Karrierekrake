@@ -1,0 +1,28 @@
+{
+  "id": "fi_07",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwendest du, um die SEO-Fähigkeiten eines CMS zu verbessern?",
+      "Kannst du ein Content-Marketing-Projekt beschreiben, bei dem du CMS, SEO und Content erfolgreich integriert hast?",
+      "Wie misst du den Erfolg deiner Marketingbemühungen im Zusammenhang mit CMS, SEO und Content?"
+    ],
+    "talking_points": [
+      "Diskussion über die Rolle von CMS im Content-Management und SEO-Optimierung.",
+      "Erklärung des Ansatzes zur Erstellung und Verwaltung von SEO-optimiertem Content.",
+      "Erklärung der Messung des Erfolgs von Marketingkampagnen, insbesondere im Hinblick auf SEO und Content-Leistung."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder Projekte, die als Beweis für die Fähigkeiten im Bereich CMS, SEO und Content dienen könnten.",
+      "Keine Details über die verwendeten Tools oder spezifische Strategien, die im Marketingprozess angewendet wurden."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

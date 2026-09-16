@@ -1,0 +1,27 @@
+{
+  "id": "fi_13",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel für eine erfolgreiche manuelle Testreihe geben, die Sie durchgeführt haben?",
+      "Wie integrieren Sie Jira effektiv in Ihren Testprozess?",
+      "Welche Strategien verwenden Sie, um Fehler in den frühen Phasen des Softwareentwicklungslebenszyklus aufzuspüren?"
+    ],
+    "talking_points": [
+      "Erklären Sie Ihre Erfahrung mit manuellen Tests und wie Sie diese in Jira integriert haben.",
+      "Diskutieren Sie, wie Sie Jira nutzen, um den Testprozess zu verbessern und die Effizienz zu steigern."
+    ],
+    "gap_notes": [
+      "Details zu spezifischen Erfolgen oder Projekten fehlen, daher ist es wichtig, Beispiele aus der eigenen Erfahrung zu liefern.",
+      "Da keine EVIDENCE vorhanden ist, können keine konkreten Erfolge oder Techniken aus dem Profil entnommen werden."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

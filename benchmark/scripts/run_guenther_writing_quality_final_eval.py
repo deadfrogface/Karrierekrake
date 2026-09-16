@@ -275,7 +275,7 @@ def render_report(payload: dict) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--phase", choices=["freeze", "dev", "blind", "interview", "held_out", "summary", "all"], default="summary")
+    ap.add_argument("--phase", choices=["freeze", "dev", "blind", "blind_v2", "interview", "held_out", "summary", "all"], default="summary")
     ap.add_argument("--model", default="phi4-mini")
     args = ap.parse_args()
 
@@ -323,6 +323,19 @@ def main() -> int:
             encoding="utf-8",
         )
         payload["final_blind"] = run_cover_suite(svc, fx["final_blind_covers"], label="final_blind_covers")
+        OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    if args.phase in {"blind_v2"}:
+        svc = _svc(architecture="phi_all", model=args.model, enable_repair=True)
+        (RAW / "blind_v2_fixture_freeze.json").write_text(
+            json.dumps({"sha256": fx["meta"]["fixture_sha256"], "ts": time.time(), "set": "v2"}, indent=2),
+            encoding="utf-8",
+        )
+        payload["final_blind_v1"] = payload.get("final_blind")
+        payload["final_blind"] = run_cover_suite(
+            svc, fx["final_blind_covers_v2"], label="final_blind_covers_v2"
+        )
+        payload["post_fix_second_unseen_blind"] = True
         OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     if args.phase in {"interview", "all"}:

@@ -1,0 +1,27 @@
+{
+  "id": "fi_09",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Beispiel dafür geben, wie Sie eine schwierige Situation im Gästeservice gelöst haben?",
+      "Wie halten Sie sich in einem hektischen Reservierungsumfeld organisiert?",
+      "Welche Strategien verwenden Sie, um den Gästen Ihre Dienstleistungen näherzubringen?"
+    ],
+    "talking_points": [
+      "Erfahrung im Hotelfach mit Schwerpunkt auf Reservierung und Gästeservice.",
+      "Stärken im Umgang mit Herausforderungen im Gästeservice."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften vorhanden, die in der Evidenz erwähnt werden.",
+      "Mögliche Transferfähigkeiten aus der Hotelfach-Erfahrung, die auf die Rolle übertragen werden können."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

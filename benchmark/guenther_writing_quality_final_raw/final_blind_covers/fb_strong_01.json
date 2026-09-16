@@ -1,0 +1,47 @@
+{
+  "id": "fb_strong_01",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Systemintegration und Unterstützung, insbesondere mit Windows, Ticketsystemen und Active Directory, auf die Anforderungen für die Position Fachinformatiker Support bei BitForge GmbH anzuwenden. Meine Fähigkeit, komplexe Probleme zu lösen und meine technische Kompetenz haben sich in verschiedenen IT-Projekten bewährt. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen.",
+  "subject": "Bewerbung für die Position Fachinformatiker Support bei BitForge GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Fachinformatiker Support bei BitForge GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Systemintegration und Unterstützung, insbesondere mit Windows, Ticketsystemen und Active Directory, auf die Anforderungen für die Position Fachinformatiker Support bei BitForge GmbH anzuwenden. Meine Fähigkeit, komplexe Probleme zu lösen und meine technische Kompetenz haben sich in verschiedenen IT-Projekten bewährt. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

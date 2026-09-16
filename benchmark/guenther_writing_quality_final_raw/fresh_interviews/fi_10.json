@@ -1,0 +1,30 @@
+{
+  "id": "fi_10",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen haben Sie mit der Wartung von Schalträdern gesammelt?",
+      "Können Sie ein Problem beschreiben, das Sie bei der Wartung eines Schalträders gelöst haben?",
+      "Wie stellen Sie sicher, dass die Wartungsschritte den Industriestandards entsprechen?"
+    ],
+    "talking_points": [
+      "Ich habe Erfahrung im Umgang mit Schalträdern, insbesondere im Bereich der Wartung, was für PowerFix AG relevant ist.",
+      "Während meiner Zeit als Elektroniker konnte ich die Bedeutung der Einhaltung von Wartungsprotokollen und der Verwendung der richtigen Werkzeuge und Techniken hervorheben."
+    ],
+    "gap_notes": [],
+    "anchors_used": [
+      {
+        "text": "Schaltschrank, Wartung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

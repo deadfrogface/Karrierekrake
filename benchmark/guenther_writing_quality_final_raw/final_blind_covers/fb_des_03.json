@@ -1,0 +1,83 @@
+{
+  "id": "fb_des_03",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Durch meine Erfahrung bei Nina Linux habe ich umfangreiche Kenntnisse im Bereich Linux und Bash erworben. Diese Fähigkeiten ermöglichen es mir, Systemadministrationsaufgaben effizient zu bewältigen und die Infrastruktur zu verwalten. Obwohl ich kein AWS Zertifikat besitze, bin ich ein AWS Cloud Practitioner, was ich gerne in meine Bewerbung für die Position Systemadmin bei InfraWorks GmbH einbringen würde. Ich bin überzeugt, dass meine technischen Fähigkeiten und meine Bereitschaft, mich in AWS weiterzuentwickeln, einen wertvollen Beitrag für Ihr Unternehmen leisten können.",
+  "subject": "Bewerbung für die Position Systemadmin bei InfraWorks GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Zertifikat besitze“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Zertifikat besitze",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Systemadmin bei InfraWorks GmbH",
+          "body": "Ich schreibe, um meine Fähigkeiten im Bereich Linux und Bash zu präsentieren, die ich durch meine Erfahrung bei Nina Linux erworben habe. Ich bin vertraut mit Systemadministrationsaufgaben und kann die Infrastruktur effizient verwalten. Obwohl ich kein AWS Zertifikat besitze, bin ich ein AWS Cloud Practitioner und wünschte, dass dies in meiner Bewerbung berücksichtigt wird. Ich bin überzeugt, dass meine technischen Fähigkeiten und meine Bereitschaft, mich in AWS zu vertiefen, einen wertvollen Beitrag für InfraWorks GmbH leisten können.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Zertifikat besitze“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Zertifikat besitze",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Systemadmin bei InfraWorks GmbH",
+          "body": "Durch meine Erfahrung bei Nina Linux habe ich umfangreiche Kenntnisse im Bereich Linux und Bash erworben. Diese Fähigkeiten ermöglichen es mir, Systemadministrationsaufgaben effizient zu bewältigen und die Infrastruktur zu verwalten. Obwohl ich kein AWS Zertifikat besitze, bin ich ein AWS Cloud Practitioner, was ich gerne in meine Bewerbung für die Position Systemadmin bei InfraWorks GmbH einbringen würde. Ich bin überzeugt, dass meine technischen Fähigkeiten und meine Bereitschaft, mich in AWS weiterzuentwickeln, einen wertvollen Beitrag für Ihr Unternehmen leisten können.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

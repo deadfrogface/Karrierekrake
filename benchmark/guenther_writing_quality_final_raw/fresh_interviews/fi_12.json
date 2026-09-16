@@ -1,0 +1,27 @@
+{
+  "id": "fi_12",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein erfolgreiches Verkaufsprojekt beschreiben, das Sie während Ihrer Zeit bei DealFlow AG geleitet haben?",
+      "Wie nutzen Sie CRM-Systeme, um Ihre Verkaufsbemühungen zu verbessern?",
+      "Welche Strategien wenden Sie an, um neue Kunden in Akquisitionsbereichen zu gewinnen?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie ein Verkaufsziel, das Sie bei DealFlow AG erreicht haben, und erklären Sie, wie Sie CRM-Tools in diesem Prozess eingesetzt haben.",
+      "Erklären Sie, wie Sie Ihre CRM-Fähigkeiten nutzen, um Beziehungen zu bestehenden und potenziellen Kunden aufzubauen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Projekte wurden bereitgestellt, daher ist es wichtig, allgemeine Erfahrungen und Fähigkeiten im Zusammenhang mit Akquise und CRM zu betonen.",
+      "Es könnte hilfreich sein, Beispiele für die Anwendung von CRM-Strategien in realen Szenarien bereitzustellen, auch wenn keine spezifischen Details vorliegen."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

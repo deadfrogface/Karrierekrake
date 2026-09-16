@@ -1,0 +1,27 @@
+{
+  "id": "fi_01",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Projekt beschreiben, bei dem Sie Reporting-Tools in Excel verwendet haben?",
+      "Wie haben Sie Kostenrechnung bei FinHold SE zur Effizienzsteigerung beigetragen?",
+      "Welche Strategien verwenden Sie, um Ihre Excel-Fähigkeiten kontinuierlich zu verbessern?"
+    ],
+    "talking_points": [
+      "Berufserfahrung als Controller mit Schwerpunkt auf Reporting, Excel und Kostenrechnung.",
+      "Fähigkeiten im Umgang mit Excel zur Verwaltung und Analyse von Kosteninformationen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekte oder Erfolge im Profil angegeben, daher ist es wichtig, konkrete Beispiele während des Interviews zu liefern.",
+      "Weitere Details zu den Fähigkeiten und Erfahrungen im Bereich Reporting, Excel und Kostenrechnung werden benötigt, um die Diskussion zu vertiefen."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "fi_02",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen haben Sie mit der Verwaltung von Windows-Betriebssystemen gesammelt?",
+      "Können Sie ein Beispiel dafür geben, wie Sie Ticketing-Systeme zur Effizienzsteigerung eingesetzt haben?",
+      "Wie gehen Sie bei Problemen mit Active Directory-Verzeichnissen vor?"
+    ],
+    "talking_points": [
+      "Ich habe 3 Jahre lang Erfahrung im IT-Support, wobei ich mich auf Windows, Ticketing-Systeme und Active Directory spezialisiert habe.",
+      "Ich bin in der Lage, Probleme mit Windows-Betriebssystemen schnell zu diagnostizieren und zu beheben, was zu einer verbesserten Systemleistung und Benutzerzufriedenheit führt."
+    ],
+    "gap_notes": [],
+    "anchors_used": [
+      {
+        "text": "Windows",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Tickets",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

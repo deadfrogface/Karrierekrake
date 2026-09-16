@@ -205,6 +205,97 @@ def build_interview20() -> list[dict]:
     return out
 
 
+def build_blind40_v2() -> list[dict]:
+    """Second unseen blind set after post-run fixes (negation / abschluss matching)."""
+    cases = []
+    strong = [
+        ("Medizinische Fachangestellte", "Praxis Nordlicht", "Ava MFA\nMFA Examen 2019\nTermine, Empfang, Abrechnung"),
+        ("Fachlagerist", "PackHub SE", "Ben Pack\nAusbildung Fachlagerist\nKommissionierung, Staplerschein"),
+        ("Industriekaufmann", "MetalTrade AG", "Cara Trade\nIndustriekaufmann IHK\nEinkauf, SAP Grundlagen"),
+        ("Physiotherapeut Assistenz", "MoveClinic GmbH", "Dan Physio\nPhysiotherapie Ausbildung\nPatientenbetreuung"),
+        ("Bankkauffrau", "Sparkasse Fiktiv", "Eva Bank\nBankkauffrau IHK\nKundenberatung, Konten"),
+        ("Tischler", "Holzwerk Süd", "Finn Wood\nGesellenbrief Tischler\nMöbelbau"),
+        ("Grafikdesigner", "PixelAtelier KG", "Gina Design\nMediengestalter Digital\nAdobe, Layout"),
+        ("Chemielaborant", "LabNova AG", "Hugo Lab\nChemielaborant Ausbildung\nHPLC, Dokumentation"),
+    ]
+    for i, (role, co, prof) in enumerate(strong, 1):
+        cases.append(_case(f"fb2_strong_{i:02d}", role, co, prof))
+    medium = [
+        ("Office Clerk", "AdminCore GmbH", "Ines Desk\nExcel, Ablage, Telefonzentrale"),
+        ("Community Manager", "SocialNest SE", "Jonas Social\nSocial Media, Community Support"),
+        ("Technical Writer Jr", "SpecDocs AG", "Kim Specs\nConfluence, technische Notizen"),
+        ("Procurement Assistant", "BuyLine KG", "Lara Procure\nBestellungen, Lieferantenmails"),
+        ("QA Assistant", "CheckMate GmbH", "Milo QA\nChecklisten, Stichproben"),
+        ("Front Desk", "Hotel Quell", "Nora Desk\nCheck-in, Telefon, Reservierung"),
+        ("Service Desk", "TicketTree AG", "Omar Desk\nFirst Level, Windows, Passwort-Resets"),
+        ("PMO Assistant", "PlanForge SE", "Pia PMO\nTerminplanung, Protokolle"),
+    ]
+    for i, (role, co, prof) in enumerate(medium, 1):
+        cases.append(_case(f"fb2_med_{i:02d}", role, co, prof))
+    career = [
+        ("Customer Care SaaS", "CloudCare GmbH", "Quinn Call\nHotline 4 Jahre — Wechsel SaaS Support"),
+        ("Junior Accountant", "BooksUp AG", "Rita Switch\nRechnungsprüfung — Interesse Buchhaltung"),
+        ("Talent Coordinator", "HireWave KG", "Sam Pivot\nEmpfang — Transfer Recruiting Koordination"),
+        ("Ops Coordinator", "FlowGoods SE", "Tina Shop\nEinzelhandel — Transfer Logistikkoordination"),
+        ("People Ops Junior", "CrewBase GmbH", "Uwe Admin\nVerwaltung — Transfer HR Ops"),
+        ("Junior BI Analyst", "DataNest AG", "Vera Sheet\nExcel Reporting — kein Data-Science-Studium"),
+        ("Maintenance Helper", "PlantCare SE", "Will Craft\nMontage — Transfer Instandhaltung"),
+        ("Sales Support", "GlowDesk GmbH", "Xenia Service\nKundenservice — Transfer Inside Sales"),
+    ]
+    for i, (role, co, prof) in enumerate(career, 1):
+        cases.append(_case(f"fb2_career_{i:02d}", role, co, prof))
+    desirable = [
+        ("Accountant", "LedgerBay AG", "Yara Ledgers\nDebitoren, Excel — kein DATEV", "DATEV wünschenswert."),
+        ("Performance Marketer", "AdPulse SE", "Zack Ads\nSocial Ads — kein Google Ads Zertifikat", "Google Ads Zertifikat wünschenswert."),
+        ("Cloud Admin", "SkyOps GmbH", "Amy Cloud\nLinux, Terraform Grundlagen — kein AWS Zertifikat", "AWS Zertifikat wünschenswert."),
+        ("Care Assistant", "Haus am See", "Bob Care\nGrundpflege — kein B2 Englisch Zertifikat", "Englisch B2 Zertifikat wünschenswert."),
+        ("CAD Assistant", "DraftWorks AG", "Cyd Draft\nBauzeichnungen lesen — kein AutoCAD Zertifikat", "AutoCAD Zertifikat wünschenswert."),
+    ]
+    for i, (role, co, prof, extra) in enumerate(desirable, 1):
+        cases.append(_case(f"fb2_des_{i:02d}", role, co, prof, job_extra=extra + "\n"))
+    for i, (role, prof) in enumerate(
+        [
+            ("Clerk", "Dee Sparse\nOffice, Excel"),
+            ("Support", "Eli Soft\nTickets"),
+            ("Warehouse Aide", "Fay Pack\nKommissionierung"),
+            ("EA", "Gus Assist\nKalender"),
+        ],
+        1,
+    ):
+        cases.append(_case(f"fb2_unk_{i:02d}", role, "", prof, unknown_co=True))
+    traps = [
+        ("Analyst", "Contoso Insights GmbH", "Hal Data\nSQL\nFrüher: Fabrikam Insights"),
+        ("Consultant", "Adventure Advisory SE", "Ivy Consult\nProzesse\nFrüher: Northwind Advisory"),
+        ("Engineer", "Wide World Robotics AG", "Jay Eng\nSPS\nFrüher: Litware Robotics"),
+    ]
+    for i, (role, co, prof) in enumerate(traps, 1):
+        cases.append(_case(f"fb2_trap_{i:02d}", role, co, prof, similar_trap=True))
+    cases.append(
+        _case(
+            "fb2_hard_01",
+            "Apotheker/in",
+            "CityApotheke West",
+            "Kai Retail\nDrogerieverkauf — keine Approbation",
+            hard_block=True,
+            job_extra="Pflicht: Approbation als Apotheker/in.\n",
+        )
+    )
+    cases.append(
+        _case(
+            "fb2_hard_02",
+            "Busfahrer/in",
+            "CityBus AG",
+            "Lee Car\nPKW Führerschein B — kein D",
+            hard_block=True,
+            job_extra="Pflicht: Führerschein Klasse D.\n",
+        )
+    )
+    cases.append(_case("fb2_sparse_01", "Office Aide", "PaperLane GmbH", "Mo Mini\nBüro"))
+    cases.append(_case("fb2_sparse_02", "Sales Aide", "QuickMart AG", "Nia Brief\nKundenkontakt"))
+    assert len(cases) == 40, len(cases)
+    return cases
+
+
 def main() -> None:
     created = datetime.now(timezone.utc).isoformat()
     payload = {
@@ -214,6 +305,7 @@ def main() -> None:
         },
         "development_covers": build_dev(),
         "final_blind_covers": build_blind40(),
+        "final_blind_covers_v2": build_blind40_v2(),
         "fresh_interviews": build_interview20(),
     }
     # Hash content only (exclude volatile timestamp) so freeze is stable across rebuilds.
@@ -222,10 +314,11 @@ def main() -> None:
     payload["meta"]["created_at"] = created
     payload["meta"]["dev_count"] = len(payload["development_covers"])
     payload["meta"]["blind_count"] = len(payload["final_blind_covers"])
+    payload["meta"]["blind_v2_count"] = len(payload["final_blind_covers_v2"])
     payload["meta"]["interview_count"] = len(payload["fresh_interviews"])
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"wrote": str(OUT), "sha256": payload["meta"]["fixture_sha256"], **{k: payload["meta"][k] for k in ("dev_count","blind_count","interview_count")}}, indent=2))
+    print(json.dumps({"wrote": str(OUT), "sha256": payload["meta"]["fixture_sha256"], **{k: payload["meta"][k] for k in ("dev_count","blind_count","blind_v2_count","interview_count")}}, indent=2))
 
 
 if __name__ == "__main__":
