@@ -1,4 +1,4 @@
-"""Bounded self-correction — max 2 repairs after original (attempts 0,1,2).
+"""Bounded self-correction — max 1 repair after original (attempts 0,1).
 
 REPAIR:NONE for historical tournament evidence. Model is not its own judge:
 validator errors + repair_instruction are injected as TRUSTED VALIDATOR feedback.
@@ -10,10 +10,11 @@ import json
 from dataclasses import asdict, dataclass, field
 from typing import Any, Callable
 
+from guenther.intelligence.blocking_policy import has_blocking_errors
 from guenther.intelligence.errors import REPAIR_EXHAUSTED, ValidatorError, make_error
 
 
-MAX_REPAIR_ATTEMPTS = 2  # after original → attempts 1..2; total generations ≤ 3
+MAX_REPAIR_ATTEMPTS = 1  # after original → one repair; repair-2 showed 0 recovery in eval
 
 
 @dataclass
@@ -106,7 +107,7 @@ def run_bounded_repair(
                 note="original" if attempt == 0 else f"repair_{attempt}",
             )
         )
-        if not errors or all(e.severity == "warning" for e in errors):
+        if not errors or not has_blocking_errors(errors):
             history.final_ok = True
             history.repair_count = max(0, attempt)
             return model, errors, history

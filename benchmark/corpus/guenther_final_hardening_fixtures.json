@@ -1,0 +1,1828 @@
+{
+  "meta": {
+    "purpose": "guenther_final_hardening",
+    "gen1_count": 60,
+    "gen2_count": 33,
+    "wrong_company_count": 30,
+    "eligible_writing_count": 20,
+    "blind_cover_count": 30,
+    "blind_interview_count": 20,
+    "fixture_sha256": "05a822acdbc9ce0f5e23440b3857afd928f4b0d484f4e3f2c1fdff6f0e341962"
+  },
+  "credential_generalization_set1": [
+    {
+      "id": "cg1_miss_01",
+      "profile": "Alex Test\nVerwaltung, Excel — kein TÜV-Sachkundeprüfung",
+      "job": "Stelle Fiktiv\nPflicht: TÜV-Sachkundeprüfung Sicherheit.",
+      "body": "Ich habe TÜV-Sachkundeprüfung Sicherheit abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_02",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Gabelstaplerschein",
+      "job": "Stelle Fiktiv\nPflicht: Gabelstaplerschein.",
+      "body": "Ich habe Gabelstaplerschein abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_03",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Rettungssanitäter-Ausbildung",
+      "job": "Stelle Fiktiv\nPflicht: Rettungssanitäter-Ausbildung.",
+      "body": "Ich habe Rettungssanitäter-Ausbildung abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_04",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Steuerfachangestellte",
+      "job": "Stelle Fiktiv\nPflicht: Steuerfachangestellte IHK.",
+      "body": "Ich habe Steuerfachangestellte IHK abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_05",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Bürokauffrau",
+      "job": "Stelle Fiktiv\nPflicht: Bürokauffrau IHK Abschluss.",
+      "body": "Ich habe Bürokauffrau IHK Abschluss abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_06",
+      "profile": "Alex Test\nVerwaltung, Excel — kein DevOps",
+      "job": "Stelle Fiktiv\nPflicht: DevOps Professional Zertifikat.",
+      "body": "Ich habe DevOps Professional Zertifikat abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_07",
+      "profile": "Alex Test\nVerwaltung, Excel — kein PMP",
+      "job": "Stelle Fiktiv\nPflicht: PMP Projektmanagement.",
+      "body": "Ich habe PMP Projektmanagement abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_08",
+      "profile": "Alex Test\nVerwaltung, Excel — kein ISO",
+      "job": "Stelle Fiktiv\nPflicht: ISO 9001 Lead Auditor.",
+      "body": "Ich habe ISO 9001 Lead Auditor abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_09",
+      "profile": "Alex Test\nVerwaltung, Excel — kein AWS",
+      "job": "Stelle Fiktiv\nPflicht: AWS Cloud Practitioner.",
+      "body": "Ich habe AWS Cloud Practitioner abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_10",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Scrum",
+      "job": "Stelle Fiktiv\nPflicht: Scrum Master PSM I.",
+      "body": "Ich habe Scrum Master PSM I abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_11",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Erste-Hilfe-Sachkunde",
+      "job": "Stelle Fiktiv\nPflicht: Erste-Hilfe-Sachkunde.",
+      "body": "Ich habe Erste-Hilfe-Sachkunde abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_12",
+      "profile": "Alex Test\nVerwaltung, Excel — kein SCC-Sicherheitszertifikat",
+      "job": "Stelle Fiktiv\nPflicht: SCC-Sicherheitszertifikat.",
+      "body": "Ich habe SCC-Sicherheitszertifikat abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_13",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Fachkraft",
+      "job": "Stelle Fiktiv\nPflicht: Fachkraft für Lagerlogistik.",
+      "body": "Ich habe Fachkraft für Lagerlogistik abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_14",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Kaufmann",
+      "job": "Stelle Fiktiv\nPflicht: Kaufmann E-Commerce IHK.",
+      "body": "Ich habe Kaufmann E-Commerce IHK abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_15",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Medizinische",
+      "job": "Stelle Fiktiv\nPflicht: Medizinische Fachangestellte Examen.",
+      "body": "Ich habe Medizinische Fachangestellte Examen abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_16",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Elektroniker",
+      "job": "Stelle Fiktiv\nPflicht: Elektroniker für Energie und Gebäudetechnik.",
+      "body": "Ich habe Elektroniker für Energie und Gebäudetechnik abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_17",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Fachinformatiker",
+      "job": "Stelle Fiktiv\nPflicht: Fachinformatiker Anwendungsentwicklung.",
+      "body": "Ich habe Fachinformatiker Anwendungsentwicklung abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_18",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Hotelfachmann/-frau",
+      "job": "Stelle Fiktiv\nPflicht: Hotelfachmann/-frau Abschluss.",
+      "body": "Ich habe Hotelfachmann/-frau Abschluss abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_19",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Koch-Ausbildung",
+      "job": "Stelle Fiktiv\nPflicht: Koch-Ausbildung.",
+      "body": "Ich habe Koch-Ausbildung abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_20",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Erzieher/in",
+      "job": "Stelle Fiktiv\nPflicht: Erzieher/in staatlich anerkannt.",
+      "body": "Ich habe Erzieher/in staatlich anerkannt abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_21",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Notfallsanitäter-Ausbildung",
+      "job": "Stelle Fiktiv\nPflicht: Notfallsanitäter-Ausbildung.",
+      "body": "Ich habe Notfallsanitäter-Ausbildung abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_22",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Geprüfter",
+      "job": "Stelle Fiktiv\nPflicht: Geprüfter Immobilienfachwirt.",
+      "body": "Ich habe Geprüfter Immobilienfachwirt abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_23",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Certified",
+      "job": "Stelle Fiktiv\nPflicht: Certified Information Systems Auditor.",
+      "body": "Ich habe Certified Information Systems Auditor abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_24",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Truck-Führerschein",
+      "job": "Stelle Fiktiv\nPflicht: Truck-Führerschein Klasse CE.",
+      "body": "Ich habe Truck-Führerschein Klasse CE abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_25",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Pharmazeutisch-technische",
+      "job": "Stelle Fiktiv\nPflicht: Pharmazeutisch-technische Assistentin.",
+      "body": "Ich habe Pharmazeutisch-technische Assistentin abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_26",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Geprüfter",
+      "job": "Stelle Fiktiv\nPflicht: Geprüfter Wirtschaftsfachwirt IHK.",
+      "body": "Ich habe Geprüfter Wirtschaftsfachwirt IHK abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_27",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Fachkraft",
+      "job": "Stelle Fiktiv\nPflicht: Fachkraft für Abwassertechnik.",
+      "body": "Ich habe Fachkraft für Abwassertechnik abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_28",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Sachkundeprüfung",
+      "job": "Stelle Fiktiv\nPflicht: Sachkundeprüfung §34a GewO.",
+      "body": "Ich habe Sachkundeprüfung §34a GewO abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_29",
+      "profile": "Alex Test\nVerwaltung, Excel — kein HACCP-Beauftragter",
+      "job": "Stelle Fiktiv\nPflicht: HACCP-Beauftragter Zertifikat.",
+      "body": "Ich habe HACCP-Beauftragter Zertifikat abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_miss_30",
+      "profile": "Alex Test\nVerwaltung, Excel — kein Geprüfter",
+      "job": "Stelle Fiktiv\nPflicht: Geprüfter Technischer Betriebswirt.",
+      "body": "Ich habe Geprüfter Technischer Betriebswirt abgeschlossen und bringe relevante Erfahrung mit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_have_31",
+      "profile": "Sam Beleg\n2019 Staplerschein erworben\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: Gabelstaplerschein.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (2019 Staplerschein erworben) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_32",
+      "profile": "Sam Beleg\nTÜV-Sachkundeprüfung Sicherheit 2020\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: TÜV-Sachkundeprüfung.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (TÜV-Sachkundeprüfung Sicherheit 2020) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_33",
+      "profile": "Sam Beleg\nAusbildung Bürokauffrau IHK 2018\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: Bürokauffrau IHK.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (Ausbildung Bürokauffrau IHK 2018) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_34",
+      "profile": "Sam Beleg\nZertifikat AWS Cloud Practitioner\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: AWS Cloud Practitioner.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (Zertifikat AWS Cloud Practitioner) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_35",
+      "profile": "Sam Beleg\nScrum Master PSM I Zertifikat\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: PSM I Scrum.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (Scrum Master PSM I Zertifikat) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_36",
+      "profile": "Sam Beleg\nErste-Hilfe-Sachkunde vorhanden\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: Erste-Hilfe.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (Erste-Hilfe-Sachkunde vorhanden) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_37",
+      "profile": "Sam Beleg\nAbschluss Fachkraft für Lagerlogistik\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: Fachkraft Lagerlogistik.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (Abschluss Fachkraft für Lagerlogistik) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_38",
+      "profile": "Sam Beleg\nIHK Kaufmann E-Commerce\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: Kaufmann E-Commerce.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (IHK Kaufmann E-Commerce) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_39",
+      "profile": "Sam Beleg\nMedizinische Fachangestellte Examen\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: MFA Examen.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (Medizinische Fachangestellte Examen) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_have_40",
+      "profile": "Sam Beleg\nElektroniker für Energie und Gebäudetechnik Ausbildung\nKenntnisse: Teamarbeit",
+      "job": "Stelle Fiktiv\nPflicht: Elektroniker.",
+      "body": "Sehr geehrte Damen und Herren, wie in meinem Profil beschrieben (Elektroniker für Energie und Gebäudetechnik Ausbildung) unterstütze ich Ihr Team bei Fiktiv AG. Mit freundlichen Grüßen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg1_rel_41",
+      "profile": "Rita Related\nKommissionierung, Warenwirtschaft",
+      "job": "Stelle\nPflicht: Gabelstaplerschein.",
+      "body": "Ich habe Gabelstaplerschein abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_42",
+      "profile": "Rita Related\nKreditoren, Excel",
+      "job": "Stelle\nPflicht: Steuerfachangestellte IHK.",
+      "body": "Ich habe Steuerfachangestellte IHK abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_43",
+      "profile": "Rita Related\nWindows Support, Tickets",
+      "job": "Stelle\nPflicht: AWS Cloud Practitioner.",
+      "body": "Ich habe AWS Cloud Practitioner abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_44",
+      "profile": "Rita Related\nProjektassistenz, MS Project",
+      "job": "Stelle\nPflicht: PMP.",
+      "body": "Ich habe PMP abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_45",
+      "profile": "Rita Related\nInterne Audits, Checklisten",
+      "job": "Stelle\nPflicht: ISO 9001 Lead Auditor.",
+      "body": "Ich habe ISO 9001 Lead Auditor abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_46",
+      "profile": "Rita Related\nDaily Standups, Kanban",
+      "job": "Stelle\nPflicht: PSM I.",
+      "body": "Ich habe PSM I abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_47",
+      "profile": "Rita Related\nBetrieblicher Ersthelfer Kurs",
+      "job": "Stelle\nPflicht: Erste-Hilfe-Sachkunde.",
+      "body": "Ich habe Erste-Hilfe-Sachkunde abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_48",
+      "profile": "Rita Related\nVersand, Kommissionierung",
+      "job": "Stelle\nPflicht: Fachkraft Lagerlogistik.",
+      "body": "Ich habe Fachkraft Lagerlogistik abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_49",
+      "profile": "Rita Related\nShop-Pflege, Kundenservice",
+      "job": "Stelle\nPflicht: Kaufmann E-Commerce.",
+      "body": "Ich habe Kaufmann E-Commerce abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_rel_50",
+      "profile": "Rita Related\nTermine, Empfang",
+      "job": "Stelle\nPflicht: MFA Examen.",
+      "body": "Ich habe MFA Examen abgeschlossen.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_51",
+      "profile": "Diff Case\nElektriker Gesellenbrief",
+      "job": "Job\nPflicht: Elektroniker Energie.",
+      "body": "Ich verfüge über Elektroniker Energie.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_52",
+      "profile": "Diff Case\nKoch-Ausbildung",
+      "job": "Job\nPflicht: Hotelfachmann.",
+      "body": "Ich verfüge über Hotelfachmann.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_53",
+      "profile": "Diff Case\nErzieher",
+      "job": "Job\nPflicht: Kaufmännische Ausbildung.",
+      "body": "Ich verfüge über Kaufmännische Ausbildung.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_54",
+      "profile": "Diff Case\nSCC",
+      "job": "Job\nPflicht: TÜV-Sachkundeprüfung.",
+      "body": "Ich verfüge über TÜV-Sachkundeprüfung.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_55",
+      "profile": "Diff Case\nFachinformatiker",
+      "job": "Job\nPflicht: Fachinformatiker Anwendungsentwicklung.",
+      "body": "Ich verfüge über Fachinformatiker Anwendungsentwicklung.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_56",
+      "profile": "Diff Case\nDevOps Zertifikat",
+      "job": "Job\nPflicht: AWS Cloud Practitioner.",
+      "body": "Ich verfüge über AWS Cloud Practitioner.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_57",
+      "profile": "Diff Case\nBürokauffrau",
+      "job": "Job\nPflicht: Steuerfachangestellte.",
+      "body": "Ich verfüge über Steuerfachangestellte.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_58",
+      "profile": "Diff Case\nRettungssanitäter",
+      "job": "Job\nPflicht: Notfallsanitäter.",
+      "body": "Ich verfüge über Notfallsanitäter.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_59",
+      "profile": "Diff Case\nHotelfach",
+      "job": "Job\nPflicht: Koch-Ausbildung.",
+      "body": "Ich verfüge über Koch-Ausbildung.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg1_diff_60",
+      "profile": "Diff Case\nE-Commerce Kaufmann",
+      "job": "Job\nPflicht: Einzelhandelskaufmann.",
+      "body": "Ich verfüge über Einzelhandelskaufmann.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    }
+  ],
+  "credential_generalization_set2": [
+    {
+      "id": "cg2_01",
+      "profile": "Gen2 1\nkein Stapler",
+      "job": "Stelle\nPflicht: Heftruckführerschein.",
+      "body": "Ich bin im Besitz der Qualifikation Heftruckführerschein.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_02",
+      "profile": "Gen2 2\nBuchhaltung Excel",
+      "job": "Stelle\nPflicht: Geprüfter Bilanzbuchhalter.",
+      "body": "Ich bin im Besitz der Qualifikation Geprüfter Bilanzbuchhalter.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_03",
+      "profile": "Gen2 3\nLinux Admin",
+      "job": "Stelle\nPflicht: Certified Kubernetes Administrator.",
+      "body": "Ich bin im Besitz der Qualifikation Certified Kubernetes Administrator.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_04",
+      "profile": "Gen2 4\nkein SAP",
+      "job": "Stelle\nPflicht: SAP FI Zertifizierung.",
+      "body": "Ich bin im Besitz der Qualifikation SAP FI Zertifizierung.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_05",
+      "profile": "Gen2 5\nIT Security Grundlagen",
+      "job": "Stelle\nPflicht: CEH Ethical Hacker.",
+      "body": "Ich bin im Besitz der Qualifikation CEH Ethical Hacker.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_06",
+      "profile": "Gen2 6\nPKW Führerschein",
+      "job": "Stelle\nPflicht: Truck-Führerschein Klasse C.",
+      "body": "Ich bin im Besitz der Qualifikation Truck-Führerschein Klasse C.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_07",
+      "profile": "Gen2 7\nMedizinische Verwaltung",
+      "job": "Stelle\nPflicht: Facharztqualifikation.",
+      "body": "Ich bin im Besitz der Qualifikation Facharztqualifikation.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_08",
+      "profile": "Gen2 8\nErste Hilfe Kurs",
+      "job": "Stelle\nPflicht: Notfallsanitäter.",
+      "body": "Ich bin im Besitz der Qualifikation Notfallsanitäter.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_09",
+      "profile": "Gen2 9\nApothekenhelfer",
+      "job": "Stelle\nPflicht: Pharmazeutisch-technische Assistentin.",
+      "body": "Ich bin im Besitz der Qualifikation Pharmazeutisch-technische Assistentin.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_10",
+      "profile": "Gen2 10\nTeamleitung Vertrieb",
+      "job": "Stelle\nPflicht: Geprüfter Wirtschaftsfachwirt IHK.",
+      "body": "Ich bin im Besitz der Qualifikation Geprüfter Wirtschaftsfachwirt IHK.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_11",
+      "profile": "Gen2 11\nStaplerschein 2021",
+      "job": "Stelle\nPflicht: Staplerschein.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Staplerschein 2021. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_12",
+      "profile": "Gen2 12\nGeprüfter Bilanzbuchhalter IHK",
+      "job": "Stelle\nPflicht: IHK Bilanzbuchhalter.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Geprüfter Bilanzbuchhalter IHK. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_13",
+      "profile": "Gen2 13\nCertified Kubernetes Administrator",
+      "job": "Stelle\nPflicht: CKA Kubernetes.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Certified Kubernetes Administrator. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_14",
+      "profile": "Gen2 14\nSAP FI Zertifizierung bestanden",
+      "job": "Stelle\nPflicht: SAP FI Zertifikat.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: SAP FI Zertifizierung bestanden. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_15",
+      "profile": "Gen2 15\nCEH Ethical Hacker Zertifikat",
+      "job": "Stelle\nPflicht: CEH Zertifikat.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: CEH Ethical Hacker Zertifikat. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_16",
+      "profile": "Gen2 16\nCNC-Fräsen, Schichtarbeit",
+      "job": "Stelle\nPflicht: Geprüfter Industriemeister Metall.",
+      "body": "Ich bin im Besitz der Qualifikation Geprüfter Industriemeister Metall.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_17",
+      "profile": "Gen2 17\nWerkstatt, PSA",
+      "job": "Stelle\nPflicht: Fachkraft für Arbeitssicherheit.",
+      "body": "Ich bin im Besitz der Qualifikation Fachkraft für Arbeitssicherheit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_18",
+      "profile": "Gen2 18\nEnglisch B1",
+      "job": "Stelle\nPflicht: IHK Foreign Language Correspondent.",
+      "body": "Ich bin im Besitz der Qualifikation IHK Foreign Language Correspondent.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_19",
+      "profile": "Gen2 19\nKostenrechnung Excel",
+      "job": "Stelle\nPflicht: Geprüfter Betriebswirt IHK.",
+      "body": "Ich bin im Besitz der Qualifikation Geprüfter Betriebswirt IHK.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_20",
+      "profile": "Gen2 20\nSQL Grundlagen",
+      "job": "Stelle\nPflicht: Certified Data Professional.",
+      "body": "Ich bin im Besitz der Qualifikation Certified Data Professional.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_21",
+      "profile": "Gen2 21\nElektroinstallation",
+      "job": "Stelle\nPflicht: Sachkundeprüfung Explosionsschutz.",
+      "body": "Ich bin im Besitz der Qualifikation Sachkundeprüfung Explosionsschutz.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_22",
+      "profile": "Gen2 22\nAngebotserstellung",
+      "job": "Stelle\nPflicht: Geprüfter Technischer Kaufmann.",
+      "body": "Ich bin im Besitz der Qualifikation Geprüfter Technischer Kaufmann.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_23",
+      "profile": "Gen2 23\nEmpfangsdienst",
+      "job": "Stelle\nPflicht: Fachkraft für Schutz und Sicherheit.",
+      "body": "Ich bin im Besitz der Qualifikation Fachkraft für Schutz und Sicherheit.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_24",
+      "profile": "Gen2 24\nMietverwaltung",
+      "job": "Stelle\nPflicht: Geprüfter Immobiliensachverständiger.",
+      "body": "Ich bin im Besitz der Qualifikation Geprüfter Immobiliensachverständiger.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cg2_25",
+      "profile": "Gen2 25\nGeprüfter Industriemeister Metall 2022",
+      "job": "Stelle\nPflicht: Industriemeister Metall.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Geprüfter Industriemeister Metall 2022. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_26",
+      "profile": "Gen2 26\nFachkraft für Arbeitssicherheit Zertifikat",
+      "job": "Stelle\nPflicht: Fachkraft Arbeitssicherheit.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Fachkraft für Arbeitssicherheit Zertifikat. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_27",
+      "profile": "Gen2 27\nIHK Foreign Language Correspondent",
+      "job": "Stelle\nPflicht: Foreign Language Correspondent.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: IHK Foreign Language Correspondent. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_28",
+      "profile": "Gen2 28\nGeprüfter Betriebswirt IHK Abschluss",
+      "job": "Stelle\nPflicht: Betriebswirt IHK.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Geprüfter Betriebswirt IHK Abschluss. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_29",
+      "profile": "Gen2 29\nCertified Data Professional Zertifikat",
+      "job": "Stelle\nPflicht: CDP Data.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Certified Data Professional Zertifikat. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_30",
+      "profile": "Gen2 30\nSachkundeprüfung Explosionsschutz bestanden",
+      "job": "Stelle\nPflicht: Explosionsschutz Sachkunde.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Sachkundeprüfung Explosionsschutz bestanden. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_31",
+      "profile": "Gen2 31\nGeprüfter Technischer Kaufmann IHK",
+      "job": "Stelle\nPflicht: Technischer Kaufmann.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Geprüfter Technischer Kaufmann IHK. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_32",
+      "profile": "Gen2 32\nFachkraft für Schutz und Sicherheit Ausbildung",
+      "job": "Stelle\nPflicht: Schutz und Sicherheit.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Fachkraft für Schutz und Sicherheit Ausbildung. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "cg2_33",
+      "profile": "Gen2 33\nGeprüfter Immobiliensachverständiger",
+      "job": "Stelle\nPflicht: Immobiliensachverständiger.",
+      "body": "Sehr geehrte Damen und Herren, laut Profil: Geprüfter Immobiliensachverständiger. Ich bewerbe mich bei Fiktiv AG.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": true
+    }
+  ],
+  "wrong_company": [
+    {
+      "id": "wc_01",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Northwind GmbH",
+      "body": "Sehr geehrte Damen und Herren, bei Adventure Works GmbH möchte ich mich bewerben.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_02",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Litware SE",
+      "body": "Sehr geehrte Damen und Herren, Litware interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Litware SE",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_03",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Contoso AG",
+      "body": "Sehr geehrte Damen und Herren, Contoso Aktiengesellschaft interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Contoso AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_04",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Fabrikam KG",
+      "body": "Sehr geehrte Damen und Herren, Fabrikam interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Fabrikam KG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_05",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Tailspin GmbH & Co. KG",
+      "body": "Sehr geehrte Damen und Herren, Tailspin interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Tailspin GmbH & Co. KG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_06",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Wide World Importers",
+      "body": "Sehr geehrte Damen und Herren, bei WWI möchte ich mich bewerben.",
+      "target_company": "Wide World Importers",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_07",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Beispielklinik Süd",
+      "body": "Sehr geehrte Damen und Herren, Beispielklinik interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Beispielklinik Süd",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_08",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Unbekannt",
+      "body": "Sehr geehrte Damen und Herren, für die ausgeschriebene Position interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Unknown",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_09",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Unknown",
+      "body": "Sehr geehrte Damen und Herren, Ich bewerbe mich für die ausgeschriebene Position. interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Unknown",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_10",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Alpha Beta GmbH",
+      "body": "Sehr geehrte Damen und Herren, bei Gamma Delta GmbH möchte ich mich bewerben.",
+      "target_company": "Alpha Beta GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_11",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Northwind GmbH",
+      "body": "Sehr geehrte Damen und Herren, bei Adventure Works GmbH möchte ich mich bewerben.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_12",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Litware SE",
+      "body": "Sehr geehrte Damen und Herren, Litware interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Litware SE",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_13",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Contoso AG",
+      "body": "Sehr geehrte Damen und Herren, Contoso Aktiengesellschaft interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Contoso AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_14",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Fabrikam KG",
+      "body": "Sehr geehrte Damen und Herren, Fabrikam interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Fabrikam KG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_15",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Tailspin GmbH & Co. KG",
+      "body": "Sehr geehrte Damen und Herren, Tailspin interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Tailspin GmbH & Co. KG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_16",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Wide World Importers",
+      "body": "Sehr geehrte Damen und Herren, bei WWI möchte ich mich bewerben.",
+      "target_company": "Wide World Importers",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_17",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Beispielklinik Süd",
+      "body": "Sehr geehrte Damen und Herren, Beispielklinik interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Beispielklinik Süd",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_18",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Unbekannt",
+      "body": "Sehr geehrte Damen und Herren, für die ausgeschriebene Position interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Unknown",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_19",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Unknown",
+      "body": "Sehr geehrte Damen und Herren, Ich bewerbe mich für die ausgeschriebene Position. interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Unknown",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_20",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Alpha Beta GmbH",
+      "body": "Sehr geehrte Damen und Herren, bei Gamma Delta GmbH möchte ich mich bewerben.",
+      "target_company": "Alpha Beta GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_21",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Northwind GmbH",
+      "body": "Sehr geehrte Damen und Herren, bei Adventure Works GmbH möchte ich mich bewerben.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_22",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Litware SE",
+      "body": "Sehr geehrte Damen und Herren, Litware interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Litware SE",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_23",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Contoso AG",
+      "body": "Sehr geehrte Damen und Herren, Contoso Aktiengesellschaft interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Contoso AG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_24",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Fabrikam KG",
+      "body": "Sehr geehrte Damen und Herren, Fabrikam interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Fabrikam KG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_25",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Tailspin GmbH & Co. KG",
+      "body": "Sehr geehrte Damen und Herren, Tailspin interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Tailspin GmbH & Co. KG",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_26",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Wide World Importers",
+      "body": "Sehr geehrte Damen und Herren, bei WWI möchte ich mich bewerben.",
+      "target_company": "Wide World Importers",
+      "expect_final_ok": false
+    },
+    {
+      "id": "wc_27",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Beispielklinik Süd",
+      "body": "Sehr geehrte Damen und Herren, Beispielklinik interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Beispielklinik Süd",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_28",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Unbekannt",
+      "body": "Sehr geehrte Damen und Herren, für die ausgeschriebene Position interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Unknown",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_29",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Unknown",
+      "body": "Sehr geehrte Damen und Herren, Ich bewerbe mich für die ausgeschriebene Position. interessiert mich. Mit freundlichen Grüßen.",
+      "target_company": "Unknown",
+      "expect_final_ok": true
+    },
+    {
+      "id": "wc_30",
+      "profile": "Mira Bewerberin\nOffice Erfahrung",
+      "job": "Stelle bei Alpha Beta GmbH",
+      "body": "Sehr geehrte Damen und Herren, bei Gamma Delta GmbH möchte ich mich bewerben.",
+      "target_company": "Alpha Beta GmbH",
+      "expect_final_ok": false
+    }
+  ],
+  "eligible_writing": [
+    {
+      "id": "ew_01",
+      "profile": "Kandidat 1\nBürokauffrau IHK 2019\nDATEV, Excel, Korrespondenz",
+      "job": "Sachbearbeiter bei Nordlicht Verwaltung GmbH\nAnforderungen: DATEV.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Bürokauffrau IHK 2019 und Erfahrung in DATEV, Excel, Korrespondenz bewerbe ich mich als Sachbearbeiter bei Nordlicht Verwaltung GmbH. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 1",
+      "target_company": "Nordlicht Verwaltung GmbH",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_02",
+      "profile": "Kandidat 2\nFachinformatiker Systemintegration\nWindows, Tickets, AD",
+      "job": "IT-Support bei Pixelwerk IT AG\nAnforderungen: Windows.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Fachinformatiker Systemintegration und Erfahrung in Windows, Tickets, AD bewerbe ich mich als IT-Support bei Pixelwerk IT AG. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 2",
+      "target_company": "Pixelwerk IT AG",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_03",
+      "profile": "Kandidat 3\nStaplerschein 2020\nKommissionierung, WMS",
+      "job": "Lagerist bei LogiTrans SE\nAnforderungen: Kommissionierung.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Staplerschein 2020 und Erfahrung in Kommissionierung, WMS bewerbe ich mich als Lagerist bei LogiTrans SE. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 3",
+      "target_company": "LogiTrans SE",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_04",
+      "profile": "Kandidat 4\nPflegehelfer Kurs 2021\nGrundpflege, Dokumentation",
+      "job": "Pflegehilfe bei Sonnenklinik GmbH\nAnforderungen: Grundpflege.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Pflegehelfer Kurs 2021 und Erfahrung in Grundpflege, Dokumentation bewerbe ich mich als Pflegehilfe bei Sonnenklinik GmbH. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 4",
+      "target_company": "Sonnenklinik GmbH",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_05",
+      "profile": "Kandidat 5\nKoch-Ausbildung 2018\nMise en Place, HACCP",
+      "job": "Koch bei Restaurant Alpenblick\nAnforderungen: Mise en Place.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Koch-Ausbildung 2018 und Erfahrung in Mise en Place, HACCP bewerbe ich mich als Koch bei Restaurant Alpenblick. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 5",
+      "target_company": "Restaurant Alpenblick",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_06",
+      "profile": "Kandidat 6\nElektroniker Energie Ausbildung\nSchaltschrank, Wartung",
+      "job": "Elektroniker bei EnergiePlus GmbH\nAnforderungen: Schaltschrank.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Elektroniker Energie Ausbildung und Erfahrung in Schaltschrank, Wartung bewerbe ich mich als Elektroniker bei EnergiePlus GmbH. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 6",
+      "target_company": "EnergiePlus GmbH",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_07",
+      "profile": "Kandidat 7\nPersonalsachbearbeitung 3 Jahre\nRecruiting, Onboarding",
+      "job": "HR Assistant bei PeopleFirst KG\nAnforderungen: Recruiting.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Personalsachbearbeitung 3 Jahre und Erfahrung in Recruiting, Onboarding bewerbe ich mich als HR Assistant bei PeopleFirst KG. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 7",
+      "target_company": "PeopleFirst KG",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_08",
+      "profile": "Kandidat 8\nEinzelhandelskaufmann\nKasse, Beratung",
+      "job": "Verkäufer bei Modehaus Weber\nAnforderungen: Kasse.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Einzelhandelskaufmann und Erfahrung in Kasse, Beratung bewerbe ich mich als Verkäufer bei Modehaus Weber. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 8",
+      "target_company": "Modehaus Weber",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_09",
+      "profile": "Kandidat 9\nKfz-Mechatroniker Gesellenbrief\nDiagnose, Service",
+      "job": "Mechaniker bei AutoFix Werkstatt\nAnforderungen: Diagnose.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Kfz-Mechatroniker Gesellenbrief und Erfahrung in Diagnose, Service bewerbe ich mich als Mechaniker bei AutoFix Werkstatt. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 9",
+      "target_company": "AutoFix Werkstatt",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_10",
+      "profile": "Kandidat 10\nProjektmanagement Grundlagen\nTermine, MS Project",
+      "job": "Projektassistenz bei BuildCo AG\nAnforderungen: Termine.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Projektmanagement Grundlagen und Erfahrung in Termine, MS Project bewerbe ich mich als Projektassistenz bei BuildCo AG. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 10",
+      "target_company": "BuildCo AG",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_11",
+      "profile": "Kandidat 11\nDatenschutzbeauftragter Fortbildung\nDSGVO, Audits",
+      "job": "Datenschutz bei SecureData GmbH\nAnforderungen: DSGVO.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Datenschutzbeauftragter Fortbildung und Erfahrung in DSGVO, Audits bewerbe ich mich als Datenschutz bei SecureData GmbH. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 11",
+      "target_company": "SecureData GmbH",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_12",
+      "profile": "Kandidat 12\nMarketingfachkraft IHK\nSocial Media, Content",
+      "job": "Marketing bei BrandWave SE\nAnforderungen: Social Media.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Marketingfachkraft IHK und Erfahrung in Social Media, Content bewerbe ich mich als Marketing bei BrandWave SE. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 12",
+      "target_company": "BrandWave SE",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_13",
+      "profile": "Kandidat 13\nTechnische Redaktion Zertifikat\nConfluence, XML",
+      "job": "Technischer Redakteur bei DocuTech GmbH\nAnforderungen: Confluence.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Technische Redaktion Zertifikat und Erfahrung in Confluence, XML bewerbe ich mich als Technischer Redakteur bei DocuTech GmbH. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 13",
+      "target_company": "DocuTech GmbH",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_14",
+      "profile": "Kandidat 14\nHotelfachfrau Abschluss\nReservierung, Gästeservice",
+      "job": "Empfang bei Hotel Seeblick\nAnforderungen: Reservierung.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Hotelfachfrau Abschluss und Erfahrung in Reservierung, Gästeservice bewerbe ich mich als Empfang bei Hotel Seeblick. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 14",
+      "target_company": "Hotel Seeblick",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_15",
+      "profile": "Kandidat 15\nInterne Audits\nISO-Prozesse, Checklisten",
+      "job": "Qualität bei QualiPro GmbH\nAnforderungen: ISO-Prozesse.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Interne Audits und Erfahrung in ISO-Prozesse, Checklisten bewerbe ich mich als Qualität bei QualiPro GmbH. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 15",
+      "target_company": "QualiPro GmbH",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_16",
+      "profile": "Kandidat 16\nSteuerfachangestellte IHK\nKreditoren, SAP FI",
+      "job": "Buchhaltung bei FinanzNest AG\nAnforderungen: Kreditoren.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Steuerfachangestellte IHK und Erfahrung in Kreditoren, SAP FI bewerbe ich mich als Buchhaltung bei FinanzNest AG. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 16",
+      "target_company": "FinanzNest AG",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_17",
+      "profile": "Kandidat 17\nMediengestalter Digital\nAdobe, Layout",
+      "job": "Grafik bei DesignStudio Nord\nAnforderungen: Adobe.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Mediengestalter Digital und Erfahrung in Adobe, Layout bewerbe ich mich als Grafik bei DesignStudio Nord. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 17",
+      "target_company": "DesignStudio Nord",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_18",
+      "profile": "Kandidat 18\nExaminierte Pflegefachkraft 2017\nIntensiv, Hygiene",
+      "job": "Pflegefachkraft bei Klinik am Park\nAnforderungen: Intensiv.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Examinierte Pflegefachkraft 2017 und Erfahrung in Intensiv, Hygiene bewerbe ich mich als Pflegefachkraft bei Klinik am Park. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 18",
+      "target_company": "Klinik am Park",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_19",
+      "profile": "Kandidat 19\nSachkundeprüfung §34a\nObjektschutz, Deeskalation",
+      "job": "Sicherheit bei Guardian Service\nAnforderungen: Objektschutz.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Sachkundeprüfung §34a und Erfahrung in Objektschutz, Deeskalation bewerbe ich mich als Sicherheit bei Guardian Service. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 19",
+      "target_company": "Guardian Service",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "ew_20",
+      "profile": "Kandidat 20\nIndustriekaufmann IHK\nBestellwesen, Lieferanten",
+      "job": "Einkauf bei SupplyChain KG\nAnforderungen: Bestellwesen.",
+      "body": "Sehr geehrte Damen und Herren,\n\nmit Industriekaufmann IHK und Erfahrung in Bestellwesen, Lieferanten bewerbe ich mich als Einkauf bei SupplyChain KG. Ich freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nKandidat 20",
+      "target_company": "SupplyChain KG",
+      "expect_final_ok": true,
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    }
+  ],
+  "blind_cover_quality": [
+    {
+      "id": "bc_01",
+      "profile": "Blind Cover 1\nHistorische Bestände, EAD\nReferenz: Projektarbeit in archivarin",
+      "job": "Archivarin (m/w/d)\nStadtarchiv Musterstadt\nProfil: Historische Bestände, EAD.",
+      "target_company": "Stadtarchiv Musterstadt",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_02",
+      "profile": "Blind Cover 2\nLinux, CI/CD, Docker\nReferenz: Projektarbeit in devops engineer",
+      "job": "DevOps Engineer (m/w/d)\nCloudNine GmbH\nProfil: Linux, CI/CD, Docker.",
+      "target_company": "CloudNine GmbH",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_03",
+      "profile": "Blind Cover 3\nInbound, CRM, Deutsch C1\nReferenz: Projektarbeit in kundenservice",
+      "job": "Kundenservice (m/w/d)\nTelCo Plus AG\nProfil: Inbound, CRM, Deutsch C1.",
+      "target_company": "TelCo Plus AG",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_04",
+      "profile": "Blind Cover 4\nMontage, Schicht\nReferenz: Projektarbeit in produktionshelfer",
+      "job": "Produktionshelfer (m/w/d)\nMetallWerk Süd\nProfil: Montage, Schicht.",
+      "target_company": "MetallWerk Süd",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_05",
+      "profile": "Blind Cover 5\nDATEV, Jahresabschluss\nReferenz: Projektarbeit in steuerfachangestellte",
+      "job": "Steuerfachangestellte (m/w/d)\nSteuerberatung Krüger\nProfil: DATEV, Jahresabschluss.",
+      "target_company": "Steuerberatung Krüger",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_06",
+      "profile": "Blind Cover 6\nGrundpflege, Medikamentengabe\nReferenz: Projektarbeit in pflegefachkraft",
+      "job": "Pflegefachkraft (m/w/d)\nAltenheim Sonnenhof\nProfil: Grundpflege, Medikamentengabe.",
+      "target_company": "Altenheim Sonnenhof",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_07",
+      "profile": "Blind Cover 7\nManuelle Tests, Jira\nReferenz: Projektarbeit in softwaretester",
+      "job": "Softwaretester (m/w/d)\nAppCheck SE\nProfil: Manuelle Tests, Jira.",
+      "target_company": "AppCheck SE",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_08",
+      "profile": "Blind Cover 8\nTourenplanung, Telefon\nReferenz: Projektarbeit in disponent",
+      "job": "Disponent (m/w/d)\nSpedLog KG\nProfil: Tourenplanung, Telefon.",
+      "target_company": "SpedLog KG",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_09",
+      "profile": "Blind Cover 9\nInstandhaltung, SLA\nReferenz: Projektarbeit in facility manager",
+      "job": "Facility Manager (m/w/d)\nGebäudeService Nord\nProfil: Instandhaltung, SLA.",
+      "target_company": "GebäudeService Nord",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_10",
+      "profile": "Blind Cover 10\nCMS, SEO\nReferenz: Projektarbeit in content manager",
+      "job": "Content Manager (m/w/d)\nWebWelt GmbH\nProfil: CMS, SEO.",
+      "target_company": "WebWelt GmbH",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_11",
+      "profile": "Blind Cover 11\nHPLC, GLP\nReferenz: Projektarbeit in laborant",
+      "job": "Laborant (m/w/d)\nChemLab AG\nProfil: HPLC, GLP.",
+      "target_company": "ChemLab AG",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_12",
+      "profile": "Blind Cover 12\nPlanung, Budget\nReferenz: Projektarbeit in eventmanager",
+      "job": "Eventmanager (m/w/d)\nEventPro Berlin\nProfil: Planung, Budget.",
+      "target_company": "EventPro Berlin",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_13",
+      "profile": "Blind Cover 13\nReporting, Excel\nReferenz: Projektarbeit in controller",
+      "job": "Controller (m/w/d)\nIndustrie Holding SE\nProfil: Reporting, Excel.",
+      "target_company": "Industrie Holding SE",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_14",
+      "profile": "Blind Cover 14\nFallmanagement\nReferenz: Projektarbeit in sozialarbeiter",
+      "job": "Sozialarbeiter (m/w/d)\nCaritas Beratung\nProfil: Fallmanagement.",
+      "target_company": "Caritas Beratung",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_15",
+      "profile": "Blind Cover 15\nFirewall, VPN\nReferenz: Projektarbeit in netzwerkadmin",
+      "job": "Netzwerkadmin (m/w/d)\nNetSecure IT\nProfil: Firewall, VPN.",
+      "target_company": "NetSecure IT",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_16",
+      "profile": "Blind Cover 16\nProphylaxe, Termine\nReferenz: Projektarbeit in zahnmedizinische fachangestellte",
+      "job": "Zahnmedizinische Fachangestellte (m/w/d)\nPraxis Dr. Weiß\nProfil: Prophylaxe, Termine.",
+      "target_company": "Praxis Dr. Weiß",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_17",
+      "profile": "Blind Cover 17\nPersonal, Kasse\nReferenz: Projektarbeit in filialleiter",
+      "job": "Filialleiter (m/w/d)\nSuperMarkt24\nProfil: Personal, Kasse.",
+      "target_company": "SuperMarkt24",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_18",
+      "profile": "Blind Cover 18\nEN-DE, Fachtexte\nReferenz: Projektarbeit in übersetzer",
+      "job": "Übersetzer (m/w/d)\nLinguaWorks\nProfil: EN-DE, Fachtexte.",
+      "target_company": "LinguaWorks",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_19",
+      "profile": "Blind Cover 19\nSpritzguss, QS\nReferenz: Projektarbeit in maschinenbediener",
+      "job": "Maschinenbediener (m/w/d)\nKunststoffTech\nProfil: Spritzguss, QS.",
+      "target_company": "KunststoffTech",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_20",
+      "profile": "Blind Cover 20\nActive Sourcing, LinkedIn\nReferenz: Projektarbeit in recruiter",
+      "job": "Recruiter (m/w/d)\nTalentHub\nProfil: Active Sourcing, LinkedIn.",
+      "target_company": "TalentHub",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_21",
+      "profile": "Blind Cover 21\nAngebote, Lieferanten\nReferenz: Projektarbeit in technischer einkäufer",
+      "job": "Technischer Einkäufer (m/w/d)\nMaschinenbau Ost\nProfil: Angebote, Lieferanten.",
+      "target_company": "Maschinenbau Ost",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_22",
+      "profile": "Blind Cover 22\nKIS, ICD\nReferenz: Projektarbeit in medizinische dokumentation",
+      "job": "Medizinische Dokumentation (m/w/d)\nKrankenhaus West\nProfil: KIS, ICD.",
+      "target_company": "Krankenhaus West",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_23",
+      "profile": "Blind Cover 23\nAkquise, CRM\nReferenz: Projektarbeit in key account",
+      "job": "Key Account (m/w/d)\nB2B Sales Pro\nProfil: Akquise, CRM.",
+      "target_company": "B2B Sales Pro",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_24",
+      "profile": "Blind Cover 24\nPflege, Maschinen\nReferenz: Projektarbeit in gärtner",
+      "job": "Gärtner (m/w/d)\nGrünanlagen Stadt\nProfil: Pflege, Maschinen.",
+      "target_company": "Grünanlagen Stadt",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_25",
+      "profile": "Blind Cover 25\nFristen, Akten\nReferenz: Projektarbeit in patentanwaltsfachangestellte",
+      "job": "Patentanwaltsfachangestellte (m/w/d)\nIP Law Partners\nProfil: Fristen, Akten.",
+      "target_company": "IP Law Partners",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_26",
+      "profile": "Blind Cover 26\nAnforderungen, UML\nReferenz: Projektarbeit in business analyst",
+      "job": "Business Analyst (m/w/d)\nFinTech Now\nProfil: Anforderungen, UML.",
+      "target_company": "FinTech Now",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_27",
+      "profile": "Blind Cover 27\nMandatsführung\nReferenz: Projektarbeit in rechtsanwaltsfachangestellte",
+      "job": "Rechtsanwaltsfachangestellte (m/w/d)\nKanzlei Hartmann\nProfil: Mandatsführung.",
+      "target_company": "Kanzlei Hartmann",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_28",
+      "profile": "Blind Cover 28\nZoll, Incoterms\nReferenz: Projektarbeit in speditionskaufmann",
+      "job": "Speditionskaufmann (m/w/d)\nCargoLine\nProfil: Zoll, Incoterms.",
+      "target_company": "CargoLine",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_29",
+      "profile": "Blind Cover 29\nStudium BWL, Social\nReferenz: Projektarbeit in werkstudent marketing",
+      "job": "Werkstudent Marketing (m/w/d)\nStartup Labs\nProfil: Studium BWL, Social.",
+      "target_company": "Startup Labs",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    },
+    {
+      "id": "bc_30",
+      "profile": "Blind Cover 30\nWartung, Kältemittel\nReferenz: Projektarbeit in servicetechniker",
+      "job": "Servicetechniker (m/w/d)\nKlimaKontrolle\nProfil: Wartung, Kältemittel.",
+      "target_company": "KlimaKontrolle",
+      "forbid_role_reversal": true,
+      "forbid_wrong_role": []
+    }
+  ],
+  "blind_interview_quality": [
+    {
+      "id": "bi_01",
+      "profile": "Blind Interview 1\nHistorische Bestände, EAD\nBerufserfahrung: 4 Jahre Archivarin",
+      "job": "Vorstellungsgespräch Archivarin bei Stadtarchiv Musterstadt\nSchwerpunkte: Historische Bestände, EAD.",
+      "target_company": "Stadtarchiv Musterstadt"
+    },
+    {
+      "id": "bi_02",
+      "profile": "Blind Interview 2\nLinux, CI/CD, Docker\nBerufserfahrung: 4 Jahre DevOps Engineer",
+      "job": "Vorstellungsgespräch DevOps Engineer bei CloudNine GmbH\nSchwerpunkte: Linux, CI/CD, Docker.",
+      "target_company": "CloudNine GmbH"
+    },
+    {
+      "id": "bi_03",
+      "profile": "Blind Interview 3\nInbound, CRM, Deutsch C1\nBerufserfahrung: 4 Jahre Kundenservice",
+      "job": "Vorstellungsgespräch Kundenservice bei TelCo Plus AG\nSchwerpunkte: Inbound, CRM, Deutsch C1.",
+      "target_company": "TelCo Plus AG"
+    },
+    {
+      "id": "bi_04",
+      "profile": "Blind Interview 4\nMontage, Schicht\nBerufserfahrung: 4 Jahre Produktionshelfer",
+      "job": "Vorstellungsgespräch Produktionshelfer bei MetallWerk Süd\nSchwerpunkte: Montage, Schicht.",
+      "target_company": "MetallWerk Süd"
+    },
+    {
+      "id": "bi_05",
+      "profile": "Blind Interview 5\nDATEV, Jahresabschluss\nBerufserfahrung: 4 Jahre Steuerfachangestellte",
+      "job": "Vorstellungsgespräch Steuerfachangestellte bei Steuerberatung Krüger\nSchwerpunkte: DATEV, Jahresabschluss.",
+      "target_company": "Steuerberatung Krüger"
+    },
+    {
+      "id": "bi_06",
+      "profile": "Blind Interview 6\nGrundpflege, Medikamentengabe\nBerufserfahrung: 4 Jahre Pflegefachkraft",
+      "job": "Vorstellungsgespräch Pflegefachkraft bei Altenheim Sonnenhof\nSchwerpunkte: Grundpflege, Medikamentengabe.",
+      "target_company": "Altenheim Sonnenhof"
+    },
+    {
+      "id": "bi_07",
+      "profile": "Blind Interview 7\nManuelle Tests, Jira\nBerufserfahrung: 4 Jahre Softwaretester",
+      "job": "Vorstellungsgespräch Softwaretester bei AppCheck SE\nSchwerpunkte: Manuelle Tests, Jira.",
+      "target_company": "AppCheck SE"
+    },
+    {
+      "id": "bi_08",
+      "profile": "Blind Interview 8\nTourenplanung, Telefon\nBerufserfahrung: 4 Jahre Disponent",
+      "job": "Vorstellungsgespräch Disponent bei SpedLog KG\nSchwerpunkte: Tourenplanung, Telefon.",
+      "target_company": "SpedLog KG"
+    },
+    {
+      "id": "bi_09",
+      "profile": "Blind Interview 9\nInstandhaltung, SLA\nBerufserfahrung: 4 Jahre Facility Manager",
+      "job": "Vorstellungsgespräch Facility Manager bei GebäudeService Nord\nSchwerpunkte: Instandhaltung, SLA.",
+      "target_company": "GebäudeService Nord"
+    },
+    {
+      "id": "bi_10",
+      "profile": "Blind Interview 10\nCMS, SEO\nBerufserfahrung: 4 Jahre Content Manager",
+      "job": "Vorstellungsgespräch Content Manager bei WebWelt GmbH\nSchwerpunkte: CMS, SEO.",
+      "target_company": "WebWelt GmbH"
+    },
+    {
+      "id": "bi_11",
+      "profile": "Blind Interview 11\nHPLC, GLP\nBerufserfahrung: 4 Jahre Laborant",
+      "job": "Vorstellungsgespräch Laborant bei ChemLab AG\nSchwerpunkte: HPLC, GLP.",
+      "target_company": "ChemLab AG"
+    },
+    {
+      "id": "bi_12",
+      "profile": "Blind Interview 12\nPlanung, Budget\nBerufserfahrung: 4 Jahre Eventmanager",
+      "job": "Vorstellungsgespräch Eventmanager bei EventPro Berlin\nSchwerpunkte: Planung, Budget.",
+      "target_company": "EventPro Berlin"
+    },
+    {
+      "id": "bi_13",
+      "profile": "Blind Interview 13\nReporting, Excel\nBerufserfahrung: 4 Jahre Controller",
+      "job": "Vorstellungsgespräch Controller bei Industrie Holding SE\nSchwerpunkte: Reporting, Excel.",
+      "target_company": "Industrie Holding SE"
+    },
+    {
+      "id": "bi_14",
+      "profile": "Blind Interview 14\nFallmanagement\nBerufserfahrung: 4 Jahre Sozialarbeiter",
+      "job": "Vorstellungsgespräch Sozialarbeiter bei Caritas Beratung\nSchwerpunkte: Fallmanagement.",
+      "target_company": "Caritas Beratung"
+    },
+    {
+      "id": "bi_15",
+      "profile": "Blind Interview 15\nFirewall, VPN\nBerufserfahrung: 4 Jahre Netzwerkadmin",
+      "job": "Vorstellungsgespräch Netzwerkadmin bei NetSecure IT\nSchwerpunkte: Firewall, VPN.",
+      "target_company": "NetSecure IT"
+    },
+    {
+      "id": "bi_16",
+      "profile": "Blind Interview 16\nProphylaxe, Termine\nBerufserfahrung: 4 Jahre Zahnmedizinische Fachangestellte",
+      "job": "Vorstellungsgespräch Zahnmedizinische Fachangestellte bei Praxis Dr. Weiß\nSchwerpunkte: Prophylaxe, Termine.",
+      "target_company": "Praxis Dr. Weiß"
+    },
+    {
+      "id": "bi_17",
+      "profile": "Blind Interview 17\nPersonal, Kasse\nBerufserfahrung: 4 Jahre Filialleiter",
+      "job": "Vorstellungsgespräch Filialleiter bei SuperMarkt24\nSchwerpunkte: Personal, Kasse.",
+      "target_company": "SuperMarkt24"
+    },
+    {
+      "id": "bi_18",
+      "profile": "Blind Interview 18\nEN-DE, Fachtexte\nBerufserfahrung: 4 Jahre Übersetzer",
+      "job": "Vorstellungsgespräch Übersetzer bei LinguaWorks\nSchwerpunkte: EN-DE, Fachtexte.",
+      "target_company": "LinguaWorks"
+    },
+    {
+      "id": "bi_19",
+      "profile": "Blind Interview 19\nSpritzguss, QS\nBerufserfahrung: 4 Jahre Maschinenbediener",
+      "job": "Vorstellungsgespräch Maschinenbediener bei KunststoffTech\nSchwerpunkte: Spritzguss, QS.",
+      "target_company": "KunststoffTech"
+    },
+    {
+      "id": "bi_20",
+      "profile": "Blind Interview 20\nActive Sourcing, LinkedIn\nBerufserfahrung: 4 Jahre Recruiter",
+      "job": "Vorstellungsgespräch Recruiter bei TalentHub\nSchwerpunkte: Active Sourcing, LinkedIn.",
+      "target_company": "TalentHub"
+    }
+  ],
+  "cross_case_contamination": [
+    {
+      "id": "cc_01",
+      "profile": "Person A\nStaplerschein",
+      "job": "Stelle Alpha GmbH",
+      "body": "Bewerbung bei Beta GmbH",
+      "target_company": "Alpha GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "cc_02",
+      "profile": "Person B\nDATEV",
+      "job": "Stelle Beta GmbH",
+      "body": "Sehr geehrte Damen und Herren, bei Beta GmbH interessiert mich die Stelle.",
+      "target_company": "Beta GmbH",
+      "expect_final_ok": true
+    }
+  ],
+  "repair_validator_cases": [
+    {
+      "id": "rv_01",
+      "profile": "Repair Val 1\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_02",
+      "profile": "Repair Val 2\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_03",
+      "profile": "Repair Val 3\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_04",
+      "profile": "Repair Val 4\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_05",
+      "profile": "Repair Val 5\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_06",
+      "profile": "Repair Val 6\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_07",
+      "profile": "Repair Val 7\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_08",
+      "profile": "Repair Val 8\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_09",
+      "profile": "Repair Val 9\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_10",
+      "profile": "Repair Val 10\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_11",
+      "profile": "Repair Val 11\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_12",
+      "profile": "Repair Val 12\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_13",
+      "profile": "Repair Val 13\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_14",
+      "profile": "Repair Val 14\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_15",
+      "profile": "Repair Val 15\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_16",
+      "profile": "Repair Val 16\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_17",
+      "profile": "Repair Val 17\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_18",
+      "profile": "Repair Val 18\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_19",
+      "profile": "Repair Val 19\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_20",
+      "profile": "Repair Val 20\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_21",
+      "profile": "Repair Val 21\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_22",
+      "profile": "Repair Val 22\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_23",
+      "profile": "Repair Val 23\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_24",
+      "profile": "Repair Val 24\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_25",
+      "profile": "Repair Val 25\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_26",
+      "profile": "Repair Val 26\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_27",
+      "profile": "Repair Val 27\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_28",
+      "profile": "Repair Val 28\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_29",
+      "profile": "Repair Val 29\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Fiktiv AG",
+      "expect_final_ok": false
+    },
+    {
+      "id": "rv_30",
+      "profile": "Repair Val 30\nOffice",
+      "job": "Stelle",
+      "body": "Sehr geehrte Damen und Herren, ich habe die Qualifikation X ohne Beleg.",
+      "target_company": "Northwind GmbH",
+      "expect_final_ok": false
+    }
+  ]
+}

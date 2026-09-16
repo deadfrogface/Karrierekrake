@@ -8,10 +8,20 @@ from typing import Any
 
 from guenther.contracts import WritingSuggestion
 from guenther.intelligence.claims import extract_claims_from_writing
+from guenther.intelligence.blocking_policy import has_blocking_errors
+from guenther.intelligence.company_match import (
+    company_referenced_in_text,
+    is_unknown_target,
+)
 from guenther.intelligence.errors import (
     CAREER_CHANGER_ROLE_CLAIM,
+    EMPTY_OUTPUT,
+    NAN_LEAK,
+    NULL_LEAK,
     ROLE_REVERSAL,
+    UNRESOLVED_PLACEHOLDER,
     WRONG_COMPANY,
+    WRONG_TARGET_ROLE,
     ValidatorError,
     make_error,
 )
@@ -56,6 +66,7 @@ def validate_writing_grounded(
     job_text: str,
     existing_evidence: list[dict[str, Any]] | None = None,
     target_company: str | None = None,
+    target_role: str | None = None,
     forbid_role_reversal: bool = False,
     forbid_wrong_role: list[str] | None = None,
 ) -> tuple[WritingSuggestion, WritingValidationReport]:
@@ -101,15 +112,30 @@ def validate_writing_grounded(
         ):
             errors.append(make_error(ROLE_REVERSAL, claim_text="role_reversal", severity="error"))
 
-    if target_company:
-        if _fold(target_company) not in fold and len(model.body or "") > 40:
+    if target_company and not is_unknown_target(target_company):
+        body = model.body or ""
+        if len(body.strip()) > 20 and not company_referenced_in_text(target_company, body):
             errors.append(
                 make_error(
                     WRONG_COMPANY,
                     claim_text=target_company,
-                    severity="warning",
+                    severity="error",
                 )
             )
+    elif target_company and is_unknown_target(target_company):
+        if re.search(r"\b(nan|none|null|\[unternehmen\]|musterfirma)\b", blob, re.I):
+            errors.append(make_error(UNRESOLVED_PLACEHOLDER, severity="error"))
+        if re.search(r"\bnan\b", blob, re.I):
+            errors.append(make_error(NAN_LEAK, severity="error"))
+        if re.search(r"\b(none|null)\b", blob, re.I):
+            errors.append(make_error(NULL_LEAK, severity="error"))
+
+    if re.search(r"\bnan\b", fold):
+        errors.append(make_error(NAN_LEAK, severity="error"))
+    if re.search(r"\b(none|null)\b", fold):
+        errors.append(make_error(NULL_LEAK, severity="error"))
+    if re.search(r"\[[\w\s]+\]", model.body or ""):
+        errors.append(make_error(UNRESOLVED_PLACEHOLDER, severity="error"))
 
     for bad in forbid_wrong_role or []:
         if _fold(bad) in fold:
@@ -117,9 +143,25 @@ def validate_writing_grounded(
                 make_error(
                     CAREER_CHANGER_ROLE_CLAIM,
                     claim_text=bad,
-                    severity="warning",
+                    severity="error",
                 )
             )
+
+    if target_role and len(model.body or "") > 30:
+        tr = _fold(target_role)
+        # Wrong role if letter clearly targets a different primary role token set
+        role_tokens = {t for t in re.findall(r"[a-z]{4,}", tr) if t not in {"stelle", "position", "m/w/d"}}
+        if role_tokens:
+            hit = sum(1 for t in role_tokens if t in fold)
+            if hit == 0 and any(
+                w in fold for w in ("recruiter", "personalabteilung prueft", "ihre bewerbung")
+            ):
+                errors.append(
+                    make_error(WRONG_TARGET_ROLE, claim_text=target_role, severity="error")
+                )
+
+    if not (model.body or "").strip() and not blocked:
+        errors.append(make_error(EMPTY_OUTPUT, severity="error"))
 
     # Mark invented if any unsupported credential
     if any(
@@ -155,17 +197,7 @@ def validate_writing_grounded(
         uniq.append(e)
 
     blocking = blocked or any(e.severity == "block" for e in uniq)
-    # ok means no error-severity credential/grounding failures remaining in output
-    ok = not blocking and not any(
-        e.code
-        in {
-            "UNSUPPORTED_CREDENTIAL",
-            "CONTRADICTED_CLAIM",
-            "JOB_REQUIREMENT_USED_AS_EVIDENCE",
-            "ROLE_REVERSAL",
-        }
-        for e in uniq
-    )
+    ok = (not blocking) and (not has_blocking_errors(uniq))
 
     report = WritingValidationReport(
         ok=ok,

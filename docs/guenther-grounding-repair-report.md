@@ -19,7 +19,7 @@
 | MAX REPAIRS | **2** after original (attempts 0,1,2) |
 | MODEL IS OWN JUDGE? | **NO** — deterministic grounding / hard-req / validators |
 | RECOMMENDED ARCHITECTURE | **PHI_DEFAULT_QWEN_LIGHT_OPTION** |
-| QUALITY READY | **YES** (grounded safety + original-10; human owns default flip) |
+| QUALITY READY | **NO** (superseded by final hardening pass — see `docs/guenther-final-hardening-report.md`) |
 | MERGE READY | **NO** (human only) |
 | PR #19 MERGED | **NO** |
 

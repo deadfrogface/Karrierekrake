@@ -21,7 +21,7 @@ from guenther.intelligence.errors import (
     ValidatorError,
     make_error,
 )
-from guenther.intelligence.evidence import EvidenceStore
+from guenther.intelligence.evidence import EvidenceKind, EvidenceStore
 
 
 class GroundingStatus(str, Enum):
@@ -103,6 +103,78 @@ def _profile_has_family(profile_fold: str, family: str) -> bool:
     return False
 
 
+def _credential_sig_tokens(text: str) -> set[str]:
+    glue = {
+        "mit",
+        "meiner",
+        "meinem",
+        "einer",
+        "einem",
+        "als",
+        "und",
+        "der",
+        "die",
+        "das",
+        "den",
+        "dem",
+        "des",
+        "fuer",
+        "fur",
+        "von",
+        "zum",
+        "zur",
+        "abgeschlossene",
+        "abgeschlossenen",
+        "erworbenen",
+        "bestandenen",
+        "qualifikation",
+        "ausbildung",
+        "zertifikat",
+        "zertifiziert",
+        "examiniert",
+        "habe",
+        "bin",
+        "ich",
+    }
+    return {t for t in _tokens(text) if t not in glue and len(t) >= 3}
+
+
+def _evidence_direct_for_credential(claim_text: str, store: EvidenceStore) -> tuple[bool, str]:
+    """Match credential claim against structured evidence items (not keyword blacklist)."""
+    sig = _credential_sig_tokens(claim_text)
+    if not sig:
+        return False, ""
+    best_id = ""
+    best_score = 0
+    for item in store.items:
+        if item.source.value == "job":
+            continue
+        corpus = " ".join([item.text, item.quote, *item.aliases])
+        it_sig = _credential_sig_tokens(corpus)
+        if not it_sig:
+            continue
+        overlap = sig & it_sig
+        if not overlap:
+            continue
+        item_fold = _fold(corpus)
+        if any(
+            f"kein {tok}" in item_fold
+            or f"keine {tok}" in item_fold
+            or f"ohne {tok}" in item_fold
+            for tok in overlap
+        ):
+            continue
+        score = len(overlap)
+        long_hit = any(len(t) >= 8 and t in it_sig for t in sig)
+        if sig <= it_sig or score >= 2 or long_hit:
+            if score > best_score:
+                best_score = score
+                best_id = item.id
+    if best_id:
+        return True, best_id
+    return False, ""
+
+
 def _in_job_only(claim_fold: str, job_fold: str, profile_fold: str) -> bool:
     """True if claim tokens appear in JOB but not meaningfully in PROFILE."""
     ct = _tokens(claim_fold)
@@ -148,29 +220,35 @@ def ground_claim(
 
     family = _credential_family(claim.text)
     if claim.kind == ClaimKind.CREDENTIAL or claim.requires_direct or family:
-        # Credentials require DIRECT profile/evidence support
-        ok_direct = False
-        matched = ""
-        if family and family != "ausbildung_generic":
-            ok_direct = _profile_has_family(profile_fold + " " + evidence_fold, family)
-            matched = family if ok_direct else ""
-        else:
-            # Generic: all meaningful claim tokens must appear in profile/evidence
-            ct = _tokens(claim.text)
-            corpus_t = _tokens(profile_text + "\n" + store.corpus())
-            # Drop glue words
-            glue = {"mit", "meiner", "meinem", "einer", "einem", "als", "und", "der", "die", "das"}
-            ct = {t for t in ct if t not in glue}
-            if ct and ct <= corpus_t:
-                ok_direct = True
-                matched = claim.text
-            elif ct and len(ct & corpus_t) >= max(2, len(ct) - 1):
-                ok_direct = True
-                matched = claim.text
+        ok_direct, matched_id = _evidence_direct_for_credential(claim.text, store)
+        matched = matched_id
+        if not ok_direct:
+            # Legacy family shortcut only when evidence items exist for that family
+            if family and family != "ausbildung_generic":
+                ok_direct = _profile_has_family(profile_fold + " " + evidence_fold, family)
+                matched = family if ok_direct else ""
+            if not ok_direct:
+                ct = _credential_sig_tokens(claim.text)
+                corpus_t = _credential_sig_tokens(profile_text + "\n" + store.corpus())
+                if ct and ct <= corpus_t:
+                    ok_direct = True
+                    matched = claim.text
+                elif ct and len(ct & corpus_t) >= max(2, len(ct) - 1):
+                    ok_direct = True
+                    matched = claim.text
 
         if not ok_direct:
-            # Contradiction: profile explicitly lacks it
             contradicted = False
+            sig = _credential_sig_tokens(claim.text)
+            for tok in sig:
+                if (
+                    f"kein {tok}" in profile_fold
+                    or f"keine {tok}" in profile_fold
+                    or f"ohne {tok}" in profile_fold
+                    or f"nicht {tok}" in profile_fold
+                ):
+                    contradicted = True
+                    break
             if family == "pflegeausbildung" and any(
                 x in profile_fold for x in ("kein pflege", "keine pflege", "nicht examiniert")
             ):
@@ -260,7 +338,7 @@ def ground_claim(
             status=GroundingStatus.RELATED,
             matched_evidence=" ".join(sorted(overlap)[:6]),
         )
-    err = make_error(UNSUPPORTED_CLAIM, claim_text=claim.text, severity="warning")
+    err = make_error(UNSUPPORTED_CLAIM, claim_text=claim.text, severity="error")
     return GroundingResult(
         claim=claim,
         status=GroundingStatus.UNSUPPORTED,

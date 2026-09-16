@@ -33,6 +33,14 @@ EMPTY_TALKING_POINTS = "EMPTY_TALKING_POINTS"
 EMPTY_INTERVIEW_QUESTIONS = "EMPTY_INTERVIEW_QUESTIONS"
 ROLE_REVERSAL = "ROLE_REVERSAL"
 WRONG_COMPANY = "WRONG_COMPANY"
+WRONG_TARGET_ROLE = "WRONG_TARGET_ROLE"
+UNSUPPORTED_MATERIAL_CLAIM = "UNSUPPORTED_MATERIAL_CLAIM"
+RELATED_PRESENTED_AS_DIRECT = "RELATED_PRESENTED_AS_DIRECT"
+HARD_REQUIREMENT_FALSE_CLAIM = "HARD_REQUIREMENT_FALSE_CLAIM"
+UNRESOLVED_PLACEHOLDER = "UNRESOLVED_PLACEHOLDER"
+NAN_LEAK = "NAN_LEAK"
+NULL_LEAK = "NULL_LEAK"
+EMPTY_OUTPUT = "EMPTY_OUTPUT"
 COMPANY_UNKNOWN_FABRICATED = "COMPANY_UNKNOWN_FABRICATED"
 CAREER_CHANGER_ROLE_CLAIM = "CAREER_CHANGER_ROLE_CLAIM"
 INVENTED_EMPLOYER = "INVENTED_EMPLOYER"
@@ -61,6 +69,14 @@ ERROR_DE: dict[str, str] = {
     EMPTY_INTERVIEW_QUESTIONS: "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
     ROLE_REVERSAL: "Der Text spricht aus Arbeitgeber-/Prüfer-Perspektive statt als Bewerber/in.",
     WRONG_COMPANY: "Zielunternehmen fehlt oder ist falsch.",
+    WRONG_TARGET_ROLE: "Die Bewerbung bezieht sich auf eine andere Zielrolle als ausgeschrieben.",
+    UNSUPPORTED_MATERIAL_CLAIM: "Eine wesentliche Kandidaten-Aussage ist nicht belegt.",
+    RELATED_PRESENTED_AS_DIRECT: "Transferierbare Erfahrung wurde als direkte Qualifikation dargestellt.",
+    HARD_REQUIREMENT_FALSE_CLAIM: "Eine Pflichtqualifikation wurde fälschlich als erfüllt dargestellt.",
+    UNRESOLVED_PLACEHOLDER: "Platzhalter im Text sind nicht aufgelöst.",
+    NAN_LEAK: "Ungültiger Platzhalter (nan) im Text.",
+    NULL_LEAK: "Ungültiger Platzhalter (null/None) im Text.",
+    EMPTY_OUTPUT: "Leerer Text ohne zulässigen Hard-Block.",
     COMPANY_UNKNOWN_FABRICATED: "Ein Unternehmen wurde genannt, das in den Daten nicht vorkommt.",
     CAREER_CHANGER_ROLE_CLAIM: (
         "Quereinstieg: bisherige Rolle wurde unpassend als Zielqualifikation dargestellt."

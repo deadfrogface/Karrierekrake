@@ -63,11 +63,87 @@ _EMPLOYER_PATTERNS = [
 ]
 
 
+# Possession / qualification assertions (language patterns — grounding uses evidence, not this list).
+_POSSESSION_PATTERNS: list[re.Pattern[str]] = [
+    re.compile(
+        r"(?:ich|wir)\s+(?:habe|haben|bin|besitze|verfüge|erwarb|erhalten|absolviert|abgeschlossen)\s+"
+        r"(?:eine|einen|meine|meinen|das|die|den)?\s*([A-ZÄÖÜa-zäöüß0-9][\w\-äöüÄÖÜß\s/]{3,55})",
+        re.I,
+    ),
+    re.compile(
+        r"mit\s+(?:meiner|meinem|einer|einem)\s+(?:abgeschlossenen|erworbenen|bestandenen)?\s*"
+        r"([\w\-äöüÄÖÜß\s/]{4,55})",
+        re.I,
+    ),
+    re.compile(
+        r"(?:als|zum|zur)\s+(?:zertifizierte[rn]?|examinierte[rn]?|geprüfte[rn]?|qualifizierte[rn]?)\s+"
+        r"([\w\-äöüÄÖÜß\s/]{4,55})",
+        re.I,
+    ),
+    re.compile(
+        r"(?:ich|wir)\s+(?:bin|sind)\s+(?:zertifiziert|examiniert|lizenziert)\s+(?:als|für)?\s*"
+        r"([\w\-äöüÄÖÜß\s/]{4,55})",
+        re.I,
+    ),
+]
+
+_POSSESSION_STOP = frozenset(
+    {
+        "sehr",
+        "geehrte",
+        "damen",
+        "herren",
+        "freue",
+        "mich",
+        "darauf",
+        "team",
+        "position",
+        "stelle",
+        "bewerbung",
+        "interesse",
+        "vielen",
+        "dank",
+        "grüßen",
+        "mit",
+        "freundlichen",
+    }
+)
+
+
+def _clean_possession_phrase(phrase: str) -> str:
+    p = re.sub(r"\s+", " ", (phrase or "").strip(" .,;:"))
+    # Trim trailing clause glue
+    p = re.split(r"\s+(?:und|sowie|mit|für|in|bei|an)\s+", p, maxsplit=1)[0].strip()
+    return p
+
+
 def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedClaim]:
     """Pull factual claims from free text. Does NOT decide support status."""
     blob = f"{subject or ''}\n{text or ''}"
     claims: list[GeneratedClaim] = []
     seen: set[str] = set()
+
+    for pat in _POSSESSION_PATTERNS:
+        for m in pat.finditer(blob):
+            phrase = _clean_possession_phrase(m.group(1))
+            if len(phrase) < 4:
+                continue
+            toks = {t.lower() for t in re.findall(r"\w+", phrase) if len(t) >= 3}
+            if toks and toks <= _POSSESSION_STOP:
+                continue
+            key = phrase.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            claims.append(
+                GeneratedClaim(
+                    text=phrase,
+                    kind=ClaimKind.CREDENTIAL,
+                    span=m.group(0).strip(),
+                    requires_direct=True,
+                    meta={"family": "possession_assertion", "assertion": "POSSESSES"},
+                )
+            )
 
     for pat, label in _CREDENTIAL_PATTERNS:
         for m in pat.finditer(blob):
