@@ -1,0 +1,101 @@
+{
+  "id": "bc_08",
+  "target_role": "Disponent (m/w/d)",
+  "target_company": "SpedLog KG",
+  "profile": "Blind Cover 8\nTourenplanung, Telefon\nReferenz: Projektarbeit in disponent",
+  "job": "Disponent (m/w/d)\nSpedLog KG\nProfil: Tourenplanung, Telefon.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "WRONG_COMPANY",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "SpedLog KG"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "WRONG_COMPANY",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "SpedLog KG"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um mein Interesse an der Position des Disponenten in Ihrer Firma auszudrücken. Mit meiner Ausbildung in der Tourenplanung und meinem Erfahrung im Telefonservice bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Team integrieren kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für Ihre Firma zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um mein Interesse an der Position des Disponenten in Ihrer Firma auszudrücken. Mit meiner Erfahrung im Tourenplanung und im Telefonservice bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Team integrieren kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für Ihre Firma zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um mein Interesse an der Position des Disponenten in Ihrer Firma auszudrücken. Mit meiner Erfahrung im Tourenplanung und im Telefonservice bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Team integrieren kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für Ihre Firma zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "final_subject": "Freude daran, Sie in Ihrem Team zu haben",
+  "body_len": 453,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "SpedLog KG",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Erfahrung im Tourenplanung",
+          "kind": "credential",
+          "span": "Mit meiner Erfahrung im Tourenplanung und im Telefonservice bin ic",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_1",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

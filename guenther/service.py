@@ -496,7 +496,31 @@ class GuentherService:
 
         use_repair = self.enable_repair if enable_repair is None else bool(enable_repair)
         routed = self._route_model("writing")
-        base_trusted = f"PROFILE:\n{profile_text[:8000]}\nSEED:\n{seed_body[:4000]}"
+        co_line = (
+            f"TARGET_COMPANY: {target_company}\n"
+            if target_company and str(target_company).strip()
+            else "TARGET_COMPANY: UNKNOWN — use generic wording, invent no company.\n"
+        )
+        writing_task = (
+            f"Erzeuge {draft_kind} als Bewerber/in in natürlichem, modernem Deutsch.\n"
+            "Struktur: kurzer Einstieg (Passung zur Rolle) → 2–4 konkrete Belege aus dem PROFIL → "
+            "Transfer zur Zielrolle → kurze Motivation → professioneller Schluss.\n"
+            "Regeln:\n"
+            "- Nur Fakten aus PROFIL/SEED. Stellenanforderungen sind KEINE Bewerber-Belege.\n"
+            "- Keine erfundenen Ausbildungen, Abschlüsse, Zertifikate, Examen, Studium, Lizenzen.\n"
+            "- Pflegeausbildung / formale Qualifikation nur wenn wörtlich im Profil.\n"
+            "- RELATED-Erfahrung ehrlich als Grundlage/Transfer formulieren — nicht als direkte Zielqualifikation.\n"
+            "- Fehlende Wunsch-Skills ehrlich benennen und nur mit vorhandener vergleichbarer Erfahrung verknüpfen.\n"
+            "- Wenn TARGET_COMPANY bekannt: exakten Firmennamen mindestens einmal korrekt nennen.\n"
+            "- Wenn UNKNOWN: Formulierungen wie „für die ausgeschriebene Position“ — keine Fantasiefirma.\n"
+            "- Keine Platzhalter wie [Name], [Ihr Name], [Firma], nan, null, None.\n"
+            "- Keine Clichés (Mit großem Interesse…, Hiermit bewerbe ich mich…, Leidenschaft für Ihr renommiertes Unternehmen…).\n"
+            "- Kein CV-Dump, keine Rollenvertauschung (nicht als Arbeitgeber schreiben).\n"
+            "- Concise, spezifisch, menschlich; invented_flag=true nur wenn du unsicher bist."
+        )
+        base_trusted = (
+            f"{co_line}PROFILE:\n{profile_text[:8000]}\nSEED:\n{seed_body[:4000]}"
+        )
 
         def _once(trusted_extra: str) -> tuple[Any, list, dict[str, Any]]:
             trusted = base_trusted
@@ -505,10 +529,7 @@ class GuentherService:
             model, env = self._generate_validated(
                 capability="writing",
                 schema_name="writing",
-                task=(
-                    f"Erzeuge {draft_kind} als Bewerber/in. Erfinde keine Ausbildungen/Abschlüsse. "
-                    "Pflegeausbildung nur wenn wörtlich im Profil. Stellenanforderungen sind keine Belege."
-                ),
+                task=writing_task,
                 trusted=trusted,
                 untrusted=f"JOB:\n{job_text[:8000]}",
                 model_id=routed,
@@ -605,7 +626,9 @@ class GuentherService:
                 schema_name="interview_prep",
                 task=(
                     "Interview-Prep nur aus Evidenz/Profil; keine erfundenen Erfolge. "
-                    "Wenn DIRECT-Evidenz existiert: mindestens talking_points und questions füllen."
+                    "Wenn Profil/DIRECT-Evidenz existiert: mindestens 3 konkrete talking_points "
+                    "UND mindestens 3 likely questions (questions) füllen — nie leere Listen. "
+                    "RELATED-Themen klar als Transfer kennzeichnen."
                 ),
                 trusted=trusted,
                 untrusted=f"JOB:\n{job_text[:8000]}",

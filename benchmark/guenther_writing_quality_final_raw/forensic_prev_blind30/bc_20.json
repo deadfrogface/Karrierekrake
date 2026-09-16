@@ -1,0 +1,107 @@
+{
+  "id": "bc_20",
+  "target_role": "Recruiter (m/w/d)",
+  "target_company": "TalentHub",
+  "profile": "Blind Cover 20\nActive Sourcing, LinkedIn\nReferenz: Projektarbeit in recruiter",
+  "job": "Recruiter (m/w/d)\nTalentHub\nProfil: Active Sourcing, LinkedIn.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "überzeugt"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "überzeugt"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als aktiver Sourcing-Fachmann auf LinkedIn bin ich begeistert von der Gelegenheit, mich an TalentHub zu wenden. Während meiner Zeit bei [Projektarbeit in recruiter] habe ich wertvolle Erfahrungen im Talent-Sourcing gesammelt, die ich gerne in Ihre dynamische Teamumgebung einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich des aktiven Sourcing und meine Leidenschaft für die Verbindung von Talenten zu herausragenden Unternehmen gut zu TalentHub passen würden. Ich freue mich darauf, mehr über die Möglichkeiten bei TalentHub zu erfahren und wie ich zur Erfüllung Ihrer Ziele beitragen könnte.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als aktiver Sourcing-Fachmann auf LinkedIn bin ich begeistert von der Gelegenheit, mich an TalentHub zu wenden. Während meiner Zeit bei [Projektarbeit in recruiter] habe ich wertvolle Erfahrungen im Talent-Sourcing gesammelt, die ich gerne in Ihre dynamische Teamumgebung einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich des aktiven Sourcing und meine Leidenschaft für die Verbindung von Talenten zu herausragenden Unternehmen gut zu TalentHub passen würden. Ich freue mich darauf, mehr über die Möglichkeiten bei TalentHub zu erfahren und wie ich zur Erfüllung Ihrer Ziele beitragen könnte.",
+  "final_body": "Sehr geehrte Damen und Herren, ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als aktiver Sourcing-Fachmann auf LinkedIn bin ich begeistert von der Gelegenheit, mich an TalentHub zu wenden. Während meiner Zeit bei [Projektarbeit in recruiter] habe ich wertvolle Erfahrungen im Talent-Sourcing gesammelt, die ich gerne in Ihre dynamische Teamumgebung einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich des aktiven Sourcing und meine Leidenschaft für die Verbindung von Talenten zu herausragenden Unternehmen gut zu TalentHub passen würden. Ich freue mich darauf, mehr über die Möglichkeiten bei TalentHub zu erfahren und wie ich zur Erfüllung Ihrer Ziele beitragen könnte.",
+  "final_subject": "Rekrutierungschance bei TalentHub",
+  "body_len": 698,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "überzeugt",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "überzeugt",
+          "kind": "credential",
+          "span": "Ich bin überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "überzeugt",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

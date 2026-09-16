@@ -1,0 +1,150 @@
+{
+  "id": "bc_22",
+  "target_role": "Medizinische Dokumentation (m/w/d)",
+  "target_company": "Krankenhaus West",
+  "profile": "Blind Cover 22\nKIS, ICD\nReferenz: Projektarbeit in medizinische dokumentation",
+  "job": "Medizinische Dokumentation (m/w/d)\nKrankenhaus West\nProfil: KIS, ICD.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "begeistert von der Möglichkeit"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung in der Pflege und meiner Erfahrung im Um"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung in der Pflege und meiner Erfahrung im Um"
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "Krankenhaus West"
+    }
+  ],
+  "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Bereich der medizinischen Dokumentation im Krankenhaus West einzubringen. Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang mit medizinischen Dokumenten bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse im KIS und ICD-System sowie meine Leidenschaft für die medizinische Dokumentation mit Ihnen zu diskutieren.",
+  "attempt1_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang mit medizinischen Dokumenten bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse im KIS und ICD-System sowie meine Leidenschaft für die medizinische Dokumentation mit Ihnen zu diskutieren.",
+  "final_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang mit medizinischen Dokumenten bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse im KIS und ICD-System sowie meine Leidenschaft für die medizinische Dokumentation mit Ihnen zu diskutieren.",
+  "final_subject": "Freundliche Bewerbung für die Position der medizinischen Dokumentation",
+  "body_len": 386,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Erfahrung im Um“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Krankenhaus West",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung",
+          "kind": "credential",
+          "span": "Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+          "kind": "credential",
+          "span": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Erfahrung im Um“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

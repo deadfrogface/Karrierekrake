@@ -1,0 +1,103 @@
+{
+  "id": "bc_25",
+  "target_role": "Patentanwaltsfachangestellte (m/w/d)",
+  "target_company": "IP Law Partners",
+  "profile": "Blind Cover 25\nFristen, Akten\nReferenz: Projektarbeit in patentanwaltsfachangestellte",
+  "job": "Patentanwaltsfachangestellte (m/w/d)\nIP Law Partners\nProfil: Fristen, Akten.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "A",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung im Umgang"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Patentanwaltsfachangestellten bei IP Law Partners auszudrücken. Mit meiner Erfahrung im Umgang mit Fristen und Akten, insbesondere während meiner Zeit als Projektarbeit in patentanwaltsfachangestellte, bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Patentschutzes und der geistigen Eigentumsverwaltung in Ihrem renommierten Unternehmen einzubringen.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Patentanwaltsfachangestellten bei IP Law Partners auszudrücken. Mit meiner Ausbildung in Blind Cover 25, insbesondere im Bereich Fristen und Akten, bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Patentschutzes und der geistigen Eigentumsverwaltung in Ihrem renommierten Unternehmen einzubringen.",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Patentanwaltsfachangestellten bei IP Law Partners auszudrücken. Mit meiner Ausbildung in Blind Cover 25, insbesondere im Bereich Fristen und Akten, bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Patentschutzes und der geistigen Eigentumsverwaltung in Ihrem renommierten Unternehmen einzubringen.",
+  "final_subject": "Patentanwaltsfachangestellte - Engagement und Erfahrung",
+  "body_len": 473,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung",
+          "kind": "credential",
+          "span": "Mit meiner Ausbildung in Blind Cover 25",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung in Blind Cover 25",
+          "kind": "credential",
+          "span": "Ausbildung in Blind Cover 25",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_0",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

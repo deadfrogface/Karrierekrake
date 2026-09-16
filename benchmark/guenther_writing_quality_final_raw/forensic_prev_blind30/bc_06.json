@@ -1,0 +1,67 @@
+{
+  "id": "bc_06",
+  "target_role": "Pflegefachkraft (m/w/d)",
+  "target_company": "Altenheim Sonnenhof",
+  "profile": "Blind Cover 6\nGrundpflege, Medikamentengabe\nReferenz: Projektarbeit in pflegefachkraft",
+  "job": "Pflegefachkraft (m/w/d)\nAltenheim Sonnenhof\nProfil: Grundpflege, Medikamentengabe.",
+  "final_ok": true,
+  "repair_count": 0,
+  "exhausted": false,
+  "category": "ACCEPTED",
+  "final_blocking_errors": [],
+  "attempt0_errors": [],
+  "attempt0_claims": [],
+  "attempt1_errors": [],
+  "attempt1_claims": [],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position der Pflegefachkraft im Altenheim Sonnenhof auszudrücken. Mit meiner pflegefachkraftbezogenen Projektarbeit und meiner praktischen Erfahrung in der Grundpflege und Medikamentengabe bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team des Altenheims leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für die Pflege mit Ihnen zu diskutieren.",
+  "attempt1_body": null,
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position der Pflegefachkraft im Altenheim Sonnenhof auszudrücken. Mit meiner pflegefachkraftbezogenen Projektarbeit und meiner praktischen Erfahrung in der Grundpflege und Medikamentengabe bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team des Altenheims leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für die Pflege mit Ihnen zu diskutieren.",
+  "final_subject": "Bewerbung für die Position Pflegefachkraft im Altenheim Sonnenhof",
+  "body_len": 472,
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [
+      {
+        "claim": {
+          "text": "pflegefachkraftbezogenen Projektarbeit",
+          "kind": "credential",
+          "span": "Mit meiner pflegefachkraftbezogenen Projektarbeit und meiner prakt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Pflegefachkraft",
+          "kind": "credential",
+          "span": "Pflegefachkraft",
+          "requires_direct": true,
+          "meta": {
+            "family": "Pflegefachkraft"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": null,
+  "fail_closed_kind": null
+}

@@ -1,0 +1,96 @@
+{
+  "id": "bc_13",
+  "target_role": "Controller (m/w/d)",
+  "target_company": "Industrie Holding SE",
+  "profile": "Blind Cover 13\nReporting, Excel\nReferenz: Projektarbeit in controller",
+  "job": "Controller (m/w/d)\nIndustrie Holding SE\nProfil: Reporting, Excel.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "WRONG_COMPANY",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "WRONG_COMPANY",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "Industrie Holding SE"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "WRONG_COMPANY",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "Industrie Holding SE"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die angebotene Position als Controller auszudrücken. Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere meine Rolle bei der Projektarbeit in der Controller-Abteilung hat meine Fähigkeiten in der Datenanalyse und Präsentation geschärft. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen und freue mich auf die Möglichkeit, meine Ideen und Erfahrungen mit Ihnen zu teilen. \n\nVielen Dank für Ihre Zeit und Überlegung. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+  "attempt1_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die angebotene Position als Controller auszudrücken. Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere meine Rolle bei der Projektarbeit in der Controller-Abteilung hat meine Fähigkeiten in der Datenanalyse und Präsentation geschärft. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen und freue mich auf die Möglichkeit, meine Ideen und Erfahrungen mit Ihnen zu teilen. \n\nVielen Dank für Ihre Zeit und Überlegung. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+  "final_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die angebotene Position als Controller auszudrücken. Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere meine Rolle bei der Projektarbeit in der Controller-Abteilung hat meine Fähigkeiten in der Datenanalyse und Präsentation geschärft. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen und freue mich auf die Möglichkeit, meine Ideen und Erfahrungen mit Ihnen zu teilen. \n\nVielen Dank für Ihre Zeit und Überlegung. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+  "final_subject": "Kontrollposition - Industrie Holding SE",
+  "body_len": 643,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Industrie Holding SE",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Erfahrung im Reporting",
+          "kind": "credential",
+          "span": "Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_1",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

@@ -1,0 +1,146 @@
+{
+  "id": "bc_26",
+  "target_role": "Business Analyst (m/w/d)",
+  "target_company": "FinTech Now",
+  "profile": "Blind Cover 26\nAnforderungen, UML\nReferenz: Projektarbeit in business analyst",
+  "job": "Business Analyst (m/w/d)\nFinTech Now\nProfil: Anforderungen, UML.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "A",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "überzeugt"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung und meine Erfahrung in der Erstellung vo"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "überzeugt"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung und meine Erfahrung in der Erstellung vo"
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich Anforderungen, UML zu präsentieren, die ich während meiner Ausbildung im Blind Cover 26 erworben habe. Ich bin überzeugt, dass meine Ausbildung und meine Erfahrung in der Erstellung von Anforderungen und UML-Diagrammen mich gut für die Rolle des Business Analysts bei FinTech Now geeignet machen. Ich freue mich darauf, meine Fähigkeiten in einem professionellen Umfeld zu demonstrieren und zum Erfolg Ihres Teams beizutragen.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich Anforderungen, UML zu präsentieren, die ich während meiner Ausbildung im Blind Cover 26 erworben habe. Ich bin überzeugt, dass meine Ausbildung und meine Erfahrung in der Erstellung von Anforderungen und UML-Diagrammen mich gut für die Rolle des Business Analysts bei FinTech Now geeignet machen. Ich freue mich darauf, meine Fähigkeiten in einem professionellen Umfeld zu demonstrieren und zum Erfolg Ihres Teams beizutragen.",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich Anforderungen, UML zu präsentieren, die ich während meiner Ausbildung im Blind Cover 26 erworben habe. Ich bin überzeugt, dass meine Ausbildung und meine Erfahrung in der Erstellung von Anforderungen und UML-Diagrammen mich gut für die Rolle des Business Analysts bei FinTech Now geeignet machen. Ich freue mich darauf, meine Fähigkeiten in einem professionellen Umfeld zu demonstrieren und zum Erfolg Ihres Teams beizutragen.",
+  "final_subject": "Freischaltung der Fähigkeiten im Bereich Anforderungen, UML",
+  "body_len": 503,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "überzeugt",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und meine Erfahrung in der Erstellung vo“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung und meine Erfahrung in der Erstellung vo",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "überzeugt",
+          "kind": "credential",
+          "span": "Ich bin überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "überzeugt",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung im Blind Cover 26 erworben habe",
+          "kind": "credential",
+          "span": "Ausbildung im Blind Cover 26 erworben habe",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_0",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Ausbildung und meine Erfahrung in der Erstellung vo",
+          "kind": "credential",
+          "span": "Ausbildung und meine Erfahrung in der Erstellung vo",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und meine Erfahrung in der Erstellung vo“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und meine Erfahrung in der Erstellung vo",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

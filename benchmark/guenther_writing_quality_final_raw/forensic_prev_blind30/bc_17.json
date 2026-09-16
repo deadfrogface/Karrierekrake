@@ -1,0 +1,77 @@
+{
+  "id": "bc_17",
+  "target_role": "Filialleiter (m/w/d)",
+  "target_company": "SuperMarkt24",
+  "profile": "Blind Cover 17\nPersonal, Kasse\nReferenz: Projektarbeit in filialleiter",
+  "job": "Filialleiter (m/w/d)\nSuperMarkt24\nProfil: Personal, Kasse.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um mich für die Position des Filialleiters bei SuperMarkt24 zu bewerben. Mit meiner Erfahrung im Personal- und Kassendienst, insbesondere während meiner Zeit bei der Projektarbeit in der Filialleitung, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten und meine Leidenschaft für exzellentes Kundenservice in Ihre Organisation einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung persönlich vorzulegen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+  "attempt1_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um mich für die Position des Filialleiters bei SuperMarkt24 zu bewerben. Mit meiner Erfahrung im Personal- und Kassendienst, insbesondere während meiner Zeit bei der Projektarbeit in der Filialleitung, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten und meine Leidenschaft für exzellentes Kundenservice in Ihre Organisation einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung persönlich vorzulegen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+  "final_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um mich für die Position des Filialleiters bei SuperMarkt24 zu bewerben. Mit meiner Erfahrung im Personal- und Kassendienst, insbesondere während meiner Zeit bei der Projektarbeit in der Filialleitung, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten und meine Leidenschaft für exzellentes Kundenservice in Ihre Organisation einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung persönlich vorzulegen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+  "final_subject": "Freude daran, Sie zu Ihrem Team zu begrüßen",
+  "body_len": 621,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Erfahrung im Personal-",
+          "kind": "credential",
+          "span": "Mit meiner Erfahrung im Personal- und Kassendienst",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_1",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

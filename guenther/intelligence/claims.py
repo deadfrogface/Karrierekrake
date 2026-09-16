@@ -40,10 +40,13 @@ _CREDENTIAL_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"pflegefachkraft", re.I), "Pflegefachkraft"),
     (re.compile(r"ausbildung\s+als\s+[\w\-äöüÄÖÜß\s]{3,40}", re.I), "Ausbildung"),
     (re.compile(r"ausbildung[:\s]+[\w\-äöüÄÖÜß\s/]{3,40}", re.I), "Ausbildung"),
+    (re.compile(r"(?:meiner|meine|einer|eine)\s+ausbildung\b(?:\s+[\w\-äöüÄÖÜß/]{2,40})?", re.I), "Ausbildung"),
+    # bare "Ausbildung" alone is too noisy when longer spans already capture formal claims
     (re.compile(r"bachelor(?:\s+(?:of|in)\s+[\w\s]{2,30})?", re.I), "Bachelor"),
     (re.compile(r"master(?:\s+(?:of|in)\s+[\w\s]{2,30})?", re.I), "Master"),
     (re.compile(r"ihk[\w\s\-]{0,40}", re.I), "IHK"),
     (re.compile(r"zertifikat[:\s]+[\w\-äöüÄÖÜß\s]{3,40}", re.I), "Zertifikat"),
+    (re.compile(r"\bzertifiziert\b", re.I), "Zertifikat"),
     (re.compile(r"abitur", re.I), "Abitur"),
     (re.compile(r"(?:2\.\s*)?staatsexamen", re.I), "Staatsexamen"),
     (re.compile(r"meisterbrief", re.I), "Meisterbrief"),
@@ -55,13 +58,25 @@ _CREDENTIAL_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bstudium\b", re.I), "Studium"),
 ]
 
-_EMPLOYER_PATTERNS = [
-    re.compile(
-        r"(?:bei|für|an\s+der|an\s+dem)\s+([A-ZÄÖÜ][\w\-äöüÄÖÜß]*(?:\s+[A-ZÄÖÜ][\w\-äöüÄÖÜß]*){0,4})",
-    ),
-    re.compile(r"\b([A-ZÄÖÜ][\w\-]+(?:\s+(?:GmbH|AG|SE|KG|OHG|Bank|Klinik|Mart|Works|Digital))?)\b"),
-]
+_FORMAL_MARKERS = re.compile(
+    r"(?:ausbildung|abschluss|zertifikat|zertifiziert|examen|examiniert|"
+    r"studium|bachelor|master|diplom|ihk|meister|lizenz|lizenziert|"
+    r"staatsexamen|gepr[üu]fte[rn]?|sachkunde|approbation|fuhrerschein|führerschein|"
+    r"schein\b|qualifikation)",
+    re.I,
+)
 
+# Soft / attitude / generic experience — NOT formal credentials
+_SOFT_NON_CREDENTIAL = re.compile(
+    r"^(?:überzeugt|uberzeugt|zuversichtlich|begeistert|leidenschaft|interesse|"
+    r"möglichkeit|moglichkeit|fähigkeit|fahigkeit|freude|hoffnung|"
+    r"erfahrung(?:en)?(?:\s+(?:in|im|mit|bei|als)\b.*)?|"
+    r"kenntnisse(?:\s+(?:in|im|mit)\b.*)?|"
+    r"praktische[rn]?\s+erfahrung(?:en)?.*|"
+    r"berufserfahrung.*|"
+    r"projektarbeit.*)$",
+    re.I,
+)
 
 # Possession / qualification assertions (language patterns — grounding uses evidence, not this list).
 _POSSESSION_PATTERNS: list[re.Pattern[str]] = [
@@ -106,6 +121,9 @@ _POSSESSION_STOP = frozenset(
         "grüßen",
         "mit",
         "freundlichen",
+        "überzeugt",
+        "zuversichtlich",
+        "begeistert",
     }
 )
 
@@ -115,6 +133,25 @@ def _clean_possession_phrase(phrase: str) -> str:
     # Trim trailing clause glue
     p = re.split(r"\s+(?:und|sowie|mit|für|in|bei|an)\s+", p, maxsplit=1)[0].strip()
     return p
+
+
+def _classify_possession(phrase: str) -> tuple[ClaimKind, bool, str]:
+    """Map possession phrase to claim kind. Formal quals → CREDENTIAL+direct; else EXPERIENCE/SKILL."""
+    p = (phrase or "").strip()
+    low = p.lower()
+    if not p or _SOFT_NON_CREDENTIAL.match(low):
+        if low.startswith("kenntnisse") or "kenntnisse" in low[:20]:
+            return ClaimKind.SKILL, False, "soft_skill"
+        return ClaimKind.EXPERIENCE, False, "soft_experience"
+    if _FORMAL_MARKERS.search(p):
+        return ClaimKind.CREDENTIAL, True, "formal_possession"
+    # Generic "Erfahrung in X" / skills without formal marker
+    if low.startswith("erfahrung") or "kenntnisse" in low:
+        return ClaimKind.EXPERIENCE, False, "experience_phrase"
+    # Short attitude words
+    if len(p) < 18 and not any(ch.isdigit() for ch in p):
+        return ClaimKind.OTHER, False, "non_material"
+    return ClaimKind.EXPERIENCE, False, "possession_non_formal"
 
 
 def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedClaim]:
@@ -135,13 +172,16 @@ def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedC
             if key in seen:
                 continue
             seen.add(key)
+            kind, requires_direct, family = _classify_possession(phrase)
+            if kind == ClaimKind.OTHER and not requires_direct:
+                continue
             claims.append(
                 GeneratedClaim(
                     text=phrase,
-                    kind=ClaimKind.CREDENTIAL,
+                    kind=kind,
                     span=m.group(0).strip(),
-                    requires_direct=True,
-                    meta={"family": "possession_assertion", "assertion": "POSSESSES"},
+                    requires_direct=requires_direct,
+                    meta={"family": family, "assertion": "POSSESSES"},
                 )
             )
 
@@ -150,6 +190,9 @@ def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedC
             span = m.group(0).strip()
             key = span.lower()
             if key in seen:
+                continue
+            # Skip spans fully contained in a longer already-captured claim
+            if any(key != s and key in s for s in seen):
                 continue
             seen.add(key)
             claims.append(

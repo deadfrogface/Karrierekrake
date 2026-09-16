@@ -1,0 +1,126 @@
+{
+  "id": "bc_15",
+  "target_role": "Netzwerkadmin (m/w/d)",
+  "target_company": "NetSecure IT",
+  "profile": "Blind Cover 15\nFirewall, VPN\nReferenz: Projektarbeit in netzwerkadmin",
+  "job": "Netzwerkadmin (m/w/d)\nNetSecure IT\nProfil: Firewall, VPN.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "A",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "praktischen Erfahrung im Umgang"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung in Netzwerkanalyse und meiner praktische"
+    }
+  ],
+  "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position des Netzwerkadmins bei NetSecure IT zu bewerben. Mit meiner praktischen Erfahrung im Umgang mit Firewalls und VPNs, die ich während meiner Projektarbeit in der Netzwerkanalyse erworben habe, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich Netzwerkadministration in einem innovativen Umfeld wie bei NetSecure IT zu nutzen. Ich freue mich auf die Möglichkeit, meine Kenntnisse und meine Begeisterung für die IT-Sicherheit mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Position des Netzwerkadmins bei NetSecure IT zu bewerben. Mit meiner Ausbildung in Netzwerkanalyse und meiner praktischen Erfahrung im Umgang mit Firewalls und VPNs, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich Netzwerkadministration in einem innovativen Umfeld wie bei NetSecure IT zu nutzen. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Position des Netzwerkadmins bei NetSecure IT zu bewerben. Mit meiner Ausbildung in Netzwerkanalyse und meiner praktischen Erfahrung im Umgang mit Firewalls und VPNs, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich Netzwerkadministration in einem innovativen Umfeld wie bei NetSecure IT zu nutzen. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+  "final_subject": "Bewerbung für die Position Netzwerkadmin",
+  "body_len": 516,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in Netzwerkanalyse und meiner praktische“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung in Netzwerkanalyse und meiner praktische",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung",
+          "kind": "credential",
+          "span": "Mit meiner Ausbildung in Netzwerkanalyse und meiner praktischen Er",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung in Netzwerkanalyse und meiner praktische",
+          "kind": "credential",
+          "span": "Ausbildung in Netzwerkanalyse und meiner praktische",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in Netzwerkanalyse und meiner praktische“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in Netzwerkanalyse und meiner praktische",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

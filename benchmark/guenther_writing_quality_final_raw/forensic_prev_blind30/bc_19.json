@@ -1,0 +1,67 @@
+{
+  "id": "bc_19",
+  "target_role": "Maschinenbediener (m/w/d)",
+  "target_company": "KunststoffTech",
+  "profile": "Blind Cover 19\nSpritzguss, QS\nReferenz: Projektarbeit in maschinenbediener",
+  "job": "Maschinenbediener (m/w/d)\nKunststoffTech\nProfil: Spritzguss, QS.",
+  "final_ok": true,
+  "repair_count": 0,
+  "exhausted": false,
+  "category": "ACCEPTED",
+  "final_blocking_errors": [],
+  "attempt0_errors": [],
+  "attempt0_claims": [],
+  "attempt1_errors": [],
+  "attempt1_claims": [],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Maschinenbedieners bei KunststoffTech auszudrücken. Mit meiner Ausbildung im Spritzguss und QS bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Produktionsumgebung einbringen kann. Ich freue mich darauf, meine Erfahrung aus der Projektarbeit in der Maschinenbedienerrolle mit Ihnen zu teilen.",
+  "attempt1_body": null,
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Maschinenbedieners bei KunststoffTech auszudrücken. Mit meiner Ausbildung im Spritzguss und QS bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Produktionsumgebung einbringen kann. Ich freue mich darauf, meine Erfahrung aus der Projektarbeit in der Maschinenbedienerrolle mit Ihnen zu teilen.",
+  "final_subject": "Freude darüber, dass Sie einen Maschinenbediener suchen",
+  "body_len": 391,
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung im Spritzguss",
+          "kind": "credential",
+          "span": "Mit meiner Ausbildung im Spritzguss und QS bin ich überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_1",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Ausbildung im Spritzguss und QS bin ich überzeugt",
+          "kind": "credential",
+          "span": "Ausbildung im Spritzguss und QS bin ich überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_1",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": null,
+  "fail_closed_kind": null
+}

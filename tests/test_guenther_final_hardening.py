@@ -52,3 +52,19 @@ def test_blocking_errors_forbid_envelope_ok():
 
     errs = [make_error(UNSUPPORTED_CREDENTIAL, claim_text="X", severity="error")]
     assert has_blocking_errors(errs)
+
+
+def test_soft_experience_not_formal_credential():
+    from guenther.intelligence.claims import ClaimKind, extract_claims_from_text
+
+    claims = extract_claims_from_text(
+        "Ich bin überzeugt, dass meine Erfahrung im manuellen Testen passt."
+    )
+    assert not any(c.kind == ClaimKind.CREDENTIAL and c.requires_direct for c in claims)
+
+
+def test_formal_ausbildung_still_credential():
+    from guenther.intelligence.claims import ClaimKind, extract_claims_from_text
+
+    claims = extract_claims_from_text("Mit meiner Ausbildung in Netzwerkanalyse bringe ich Kenntnisse mit.")
+    assert any(c.kind == ClaimKind.CREDENTIAL and c.requires_direct for c in claims)

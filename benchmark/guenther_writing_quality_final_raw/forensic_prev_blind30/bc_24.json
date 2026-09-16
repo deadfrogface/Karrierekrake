@@ -1,0 +1,150 @@
+{
+  "id": "bc_24",
+  "target_role": "Gärtner (m/w/d)",
+  "target_company": "Grünanlagen Stadt",
+  "profile": "Blind Cover 24\nPflege, Maschinen\nReferenz: Projektarbeit in gärtner",
+  "job": "Gärtner (m/w/d)\nGrünanlagen Stadt\nProfil: Pflege, Maschinen.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "pfleglichen Ausbildung"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung und meiner Erfahrung im Umgang mit Masch"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "pfleglichen Ausbildung glaube ich"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung glaube ich"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Gärtner-Position in Ihrer Grünanlagenstadt auszudrücken. Mit meiner pfleglichen Ausbildung und meiner Erfahrung im Umgang mit Maschinen glaube ich, dass ich gut zu Ihrer Teamarbeit passen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Gärtner-Position in Ihrer Grünanlagenstadt auszudrücken. Mit meiner pfleglichen Ausbildung glaube ich, dass ich gut zu Ihrer Teamarbeit passen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Gärtner-Position in Ihrer Grünanlagenstadt auszudrücken. Mit meiner pfleglichen Ausbildung glaube ich, dass ich gut zu Ihrer Teamarbeit passen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "final_subject": "Interessent für Gärtner-Position",
+  "body_len": 393,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „pfleglichen Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "pfleglichen Ausbildung glaube ich",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung glaube ich",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "pfleglichen Ausbildung glaube ich",
+          "kind": "credential",
+          "span": "Mit meiner pfleglichen Ausbildung glaube ich",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „pfleglichen Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "pfleglichen Ausbildung glaube ich",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung glaube ich",
+          "kind": "credential",
+          "span": "Ausbildung glaube ich",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung glaube ich",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

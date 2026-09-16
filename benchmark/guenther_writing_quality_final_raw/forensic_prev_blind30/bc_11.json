@@ -1,0 +1,65 @@
+{
+  "id": "bc_11",
+  "target_role": "Laborant (m/w/d)",
+  "target_company": "ChemLab AG",
+  "profile": "Blind Cover 11\nHPLC, GLP\nReferenz: Projektarbeit in laborant",
+  "job": "Laborant (m/w/d)\nChemLab AG\nProfil: HPLC, GLP.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "I",
+  "final_blocking_errors": [
+    "EMPTY_OUTPUT"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "praktischen Erfahrung"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "SCHEMA_INVALID"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "SCHEMA_INVALID",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die Möglichkeit auszudrücken, an Ihrem Team in ChemLab AG teilzunehmen. Mit meiner praktischen Erfahrung in der Laborarbeit, insbesondere im Einsatz von HPLC und unter Einhaltung der GLP-Richtlinien, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Erfolg Ihres Teams leisten kann. \n\nIch freue mich darauf, meine Fähigkeiten und meine Leidenschaft für wissenschaftliche Forschung in einem Umfeld wie ChemLab AG zu nutzen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+  "attempt1_body": "",
+  "final_body": "",
+  "final_subject": "",
+  "body_len": 0,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "EMPTY_OUTPUT",
+        "message_de": "Leerer Text ohne zulässigen Hard-Block.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": false,
+  "fail_closed_kind": "UNNECESSARY"
+}

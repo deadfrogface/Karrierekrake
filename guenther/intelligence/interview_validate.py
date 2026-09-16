@@ -85,7 +85,11 @@ def validate_interview_grounded(
             }:
                 bad = True
                 errors.append(
-                    make_error(UNSUPPORTED_CREDENTIAL, claim_text=c.text, severity="error")
+                    make_error(
+                        UNSUPPORTED_CREDENTIAL if c.requires_direct or c.kind.value == "credential" else "UNSUPPORTED_CLAIM",
+                        claim_text=c.text,
+                        severity="error",
+                    )
                 )
         if not bad:
             cleaned_tps.append(tp)

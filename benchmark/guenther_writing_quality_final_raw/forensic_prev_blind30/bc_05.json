@@ -1,0 +1,107 @@
+{
+  "id": "bc_05",
+  "target_role": "Steuerfachangestellte (m/w/d)",
+  "target_company": "Steuerberatung Krüger",
+  "profile": "Blind Cover 5\nDATEV, Jahresabschluss\nReferenz: Projektarbeit in steuerfachangestellte",
+  "job": "Steuerfachangestellte (m/w/d)\nSteuerberatung Krüger\nProfil: DATEV, Jahresabschluss.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Abschluss im Jahr 2021"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "praktischen Erfahrung"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe, um mich für die Position Steuerfachangestellte bei Steuerberatung Krüger zu bewerben. Mit meinem Abschluss im Jahr 2021 bei DATEV und meiner praktischen Erfahrung in der Projektarbeit im Bereich steuerfachangestellte bin ich überzeugt, dass ich meine Fähigkeiten und meine Leidenschaft für die Steuerberatung effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für die Steuerberatung mit Ihnen zu teilen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+  "attempt1_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mich für die Position Steuerfachangestellte bei Steuerberatung Krüger zu bewerben. Mit meiner praktischen Erfahrung in der Projektarbeit im Bereich steuerfachangestellte bin ich überzeugt, dass ich meine Fähigkeiten und meine Leidenschaft für die Steuerberatung effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für die Steuerberatung mit Ihnen zu teilen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+  "final_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mich für die Position Steuerfachangestellte bei Steuerberatung Krüger zu bewerben. Mit meiner praktischen Erfahrung in der Projektarbeit im Bereich steuerfachangestellte bin ich überzeugt, dass ich meine Fähigkeiten und meine Leidenschaft für die Steuerberatung effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für die Steuerberatung mit Ihnen zu teilen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+  "final_subject": "Bewerbung für die Position Steuerfachangestellte",
+  "body_len": 537,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "praktischen Erfahrung",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "praktischen Erfahrung",
+          "kind": "credential",
+          "span": "Mit meiner praktischen Erfahrung in der Projektarbeit im Bereich s",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "praktischen Erfahrung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

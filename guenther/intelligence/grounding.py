@@ -336,6 +336,16 @@ def ground_claim(
         "staplerschein": ("staplerschein", "stapler"),
         "active directory": ("active directory", "ad grundlagen", " ad ", "ad-grundlagen"),
         "patientenaufnahme": ("patientenaufnahme", "empfang"),
+        "excel": ("excel", "ms excel", "microsoft excel", "tabellenkalkulation"),
+        "reporting": ("reporting", "berichtswesen", "auswertungen"),
+        "kundenservice": ("kundenservice", "kundenanfragen", "customer service", "kundengesprache"),
+        "terminplanung": ("terminplanung", "termine", "scheduling", "disposition"),
+        "rechnungsbearbeitung": ("rechnung", "rechnungsbearbeitung", "fakturierung", "abrechnung"),
+        "personalverwaltung": ("personal", "hr", "personalsachbearbeitung", "personalverwaltung"),
+        "tourenplanung": ("tourenplanung", "disposition", "logistik"),
+        "jira": ("jira", "tickets", "issue tracking"),
+        "cms": ("cms", "content management", "wordpress"),
+        "seo": ("seo", "suchmaschinenoptimierung"),
     }
     for key, vals in aliases.items():
         if key in claim_fold or any(k in claim_fold for k in vals if len(k) > 4):
@@ -370,6 +380,15 @@ def ground_claim(
             claim=claim,
             status=GroundingStatus.RELATED,
             matched_evidence=" ".join(sorted(overlap)[:6]),
+        )
+    # Soft experience/skills without formal credential markers: warn, do not hard-block
+    # (formal credentials already returned above with requires_direct).
+    if claim.kind in {ClaimKind.EXPERIENCE, ClaimKind.SKILL} and not claim.requires_direct:
+        return GroundingResult(
+            claim=claim,
+            status=GroundingStatus.RELATED,
+            matched_evidence="",
+            note="soft_experience_unmatched_related",
         )
     err = make_error(UNSUPPORTED_CLAIM, claim_text=claim.text, severity="error")
     return GroundingResult(

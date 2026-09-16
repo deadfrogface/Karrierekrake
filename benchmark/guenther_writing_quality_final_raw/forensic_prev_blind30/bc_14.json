@@ -1,0 +1,60 @@
+{
+  "id": "bc_14",
+  "target_role": "Sozialarbeiter (m/w/d)",
+  "target_company": "Caritas Beratung",
+  "profile": "Blind Cover 14\nFallmanagement\nReferenz: Projektarbeit in sozialarbeiter",
+  "job": "Sozialarbeiter (m/w/d)\nCaritas Beratung\nProfil: Fallmanagement.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "WRONG_COMPANY"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "überzeugt"
+    }
+  ],
+  "attempt1_errors": [
+    "WRONG_COMPANY"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "Caritas Beratung"
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Sozialarbeiters im Bereich Fallmanagement bei Caritas Beratung auszudrücken. Während meiner Zeit als Sozialarbeiter habe ich wertvolle Erfahrungen im Umgang mit komplexen Fällen gesammelt, was mir ermöglicht, die Herausforderungen, denen Sie in Ihrem Team begegnen könnten, effektiv zu bewältigen. Ich bin überzeugt, dass meine Fähigkeiten im Fallmanagement und meine Leidenschaft für soziale Arbeit einen bedeutenden Beitrag zu Ihrem Team leisten können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu besprechen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, während meiner Zeit als Sozialarbeiter habe ich wertvolle Erfahrungen im Umgang mit komplexen Fällen gesammelt, was mir ermöglicht, die Herausforderungen, denen Sie in Ihrem Team begegnen könnten, effektiv zu bewältigen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu besprechen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "final_body": "Sehr geehrte Damen und Herren, während meiner Zeit als Sozialarbeiter habe ich wertvolle Erfahrungen im Umgang mit komplexen Fällen gesammelt, was mir ermöglicht, die Herausforderungen, denen Sie in Ihrem Team begegnen könnten, effektiv zu bewältigen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu besprechen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "final_subject": "Bewerbung für die Position des Sozialarbeiters im Bereich Fallmanagement",
+  "body_len": 388,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Caritas Beratung",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}
