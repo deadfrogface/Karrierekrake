@@ -1,0 +1,101 @@
+{
+  "id": "bi_17",
+  "suggestion": {
+    "questions": [],
+    "talking_points": [
+      "Peter Payroll Contoso hat DIRECT-Erfahrung im Bereich der Entgeltsysteme, was darauf hinweist, dass er ein tiefes Verständnis für die Komplexitäten und Anforderungen des Entgeltsystems hat.",
+      "Angesichts von Peters Rolle im Entgeltsystem Contoso kann man erwarten, dass er Fähigkeiten im Umgang mit verschiedenen Entgeltsystemen, Compliance-Anforderungen und möglicherweise auch im Bereich der automatisierten Lohnabrechnungen besitzt.",
+      "Peters Expertise im Entgeltsystem Contoso deutet darauf hin, dass er möglicherweise in der Lage ist, Prozesse zu optimieren, Fehler zu identifizieren und Lösungen für Probleme im Entgeltsystem zu entwickeln."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [
+    {
+      "code": "EMPTY_INTERVIEW_QUESTIONS",
+      "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+      "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+      "claim_text": "",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "EMPTY_TALKING_POINTS",
+            "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [
+            "Könnten Sie uns mehr über Ihre Erfahrungen mit Entgeltabrechnungen erzählen?",
+            "Welche Strategien verwenden Sie, um sicherzustellen, dass die Entgeltsysteme korrekt und effizient sind?",
+            "Wie gehen Sie mit Herausforderungen im Bereich der Entgeltsysteme um?"
+          ],
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "EMPTY_INTERVIEW_QUESTIONS",
+            "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+            "claim_text": "",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [
+            "Peter Payroll Contoso hat DIRECT-Erfahrung im Bereich der Entgeltsysteme, was darauf hinweist, dass er ein tiefes Verständnis für die Komplexitäten und Anforderungen des Entgeltsystems hat.",
+            "Angesichts von Peters Rolle im Entgeltsystem Contoso kann man erwarten, dass er Fähigkeiten im Umgang mit verschiedenen Entgeltsystemen, Compliance-Anforderungen und möglicherweise auch im Bereich der automatisierten Lohnabrechnungen besitzt.",
+            "Peters Expertise im Entgeltsystem Contoso deutet darauf hin, dass er möglicherweise in der Lage ist, Prozesse zu optimieren, Fehler zu identifizieren und Lösungen für Probleme im Entgeltsystem zu entwickeln."
+          ],
+          "questions": [],
+          "invented_flag": false
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [
+      {
+        "code": "EMPTY_INTERVIEW_QUESTIONS",
+        "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+        "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+        "claim_text": "",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "id": "bw_20",
+  "subject": "Pflegehelferanwärterin",
+  "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe Ihnen, um mich für die Stelle des Pflegehelferinnen anzumelden. Mit meiner Ausbildung in der Pflege und meiner Leidenschaft für die Betreuung älterer Menschen bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein kann. Ich freue mich darauf, meine Fähigkeiten und meine Hingabe an die Pflege in Ihrem Umfeld zu zeigen.\n\nMit freundlichen Grüßen,\nKatrin",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Leidenschaft fü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "message_de": "Zielunternehmen fehlt oder ist falsch.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Klinik",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Leidenschaft fü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Klinik",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Pflegehelferanwärterin",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe Ihnen, um mich für die Stelle des Pflegehelferinnen anzumelden, die ich in Ihrem Pflegezentrum gefunden habe. Mit meiner Ausbildung in der Pflege und meiner Leidenschaft für die Betreuung älterer Menschen bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein kann. Ich freue mich darauf, meine Fähigkeiten und meine Hingabe an die Pflege in Ihrem Umfeld zu zeigen.\n\nMit freundlichen Grüßen,\nKatrin",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Leidenschaft fü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Klinik",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Pflegehelferanwärterin",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe Ihnen, um mich für die Stelle des Pflegehelferinnen anzumelden. Mit meiner Ausbildung in der Pflege und meiner Leidenschaft für die Betreuung älterer Menschen bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein kann. Ich freue mich darauf, meine Fähigkeiten und meine Hingabe an die Pflege in Ihrem Umfeld zu zeigen.\n\nMit freundlichen Grüßen,\nKatrin",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Leidenschaft fü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Klinik",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Pflegehelferanwärterin",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe Ihnen, um mich für die Stelle des Pflegehelferinnen anzumelden. Mit meiner Ausbildung in der Pflege und meiner Leidenschaft für die Betreuung älterer Menschen bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein kann. Ich freue mich darauf, meine Fähigkeiten und meine Hingabe an die Pflege in Ihrem Umfeld zu zeigen.\n\nMit freundlichen Grüßen,\nKatrin",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Leidenschaft fü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Klinik",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+          "kind": "credential",
+          "span": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Leidenschaft fü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in der Pflege und meiner Leidenschaft fü",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

@@ -1,0 +1,47 @@
+{
+  "id": "bw_09",
+  "subject": "",
+  "body": "",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": true,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

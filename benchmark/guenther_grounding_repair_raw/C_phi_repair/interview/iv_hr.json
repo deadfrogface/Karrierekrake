@@ -1,0 +1,68 @@
+{
+  "id": "iv_hr",
+  "suggestion": {
+    "questions": [
+      "Wie organisierst du deine Aufgaben und Verantwortlichkeiten im Büro?",
+      "Kannst du ein Beispiel für eine Excel-Liste geben, die du im Rahmen deiner aktuellen Position erstellt hast?",
+      "Wie gehst du mit Korrespondenz und Lieferantenabstimmungen um?",
+      "Welche Strategien verwendest du, um den Onboarding-Prozess für neue Mitarbeiter zu optimieren?"
+    ],
+    "talking_points": [
+      "Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen",
+      "MS Office, Excel, Deutsch, Englisch B1",
+      "Office Manager bei Fabrikam AG"
+    ],
+    "gap_notes": [
+      "Keine Informationen über Personio im Kontext der aktuellen Position.",
+      "Keine Details zu HR Sachbearbeitung und Litware SE."
+    ],
+    "anchors_used": [
+      {
+        "text": "Office Manager bei Fabrikam AG",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen",
+            "MS Office, Excel, Deutsch, Englisch B1",
+            "Office Manager bei Fabrikam AG"
+          ],
+          "questions": [
+            "Wie organisierst du deine Aufgaben und Verantwortlichkeiten im Büro?",
+            "Kannst du ein Beispiel für eine Excel-Liste geben, die du im Rahmen deiner aktuellen Position erstellt hast?",
+            "Wie gehst du mit Korrespondenz und Lieferantenabstimmungen um?",
+            "Welche Strategien verwendest du, um den Onboarding-Prozess für neue Mitarbeiter zu optimieren?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

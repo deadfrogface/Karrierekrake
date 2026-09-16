@@ -415,43 +415,60 @@ def recommend(arch: dict, adv: dict) -> dict:
     a = arch.get("A_qwen_current") or {}
     b = arch.get("B_phi_no_repair") or {}
     d = arch.get("D_two_tier") or {}
-    pflege_ok = (c.get("pflege_regression") or {}).get("pass") or (
-        b.get("pflege_regression") or {}
-    ).get("pass")
+
+    def pflege_pass(x: dict) -> bool:
+        return bool((x.get("pflege_regression") or {}).get("pass"))
+
+    def invent(x: dict) -> int:
+        return int((x.get("writing") or {}).get("invented_or_forbidden") or 0)
+
+    def empty_iv(x: dict) -> int:
+        return int((x.get("interview") or {}).get("empty_tps_and_questions") or 0)
+
+    rationale: list[str] = []
+    if adv.get("accuracy", 0) < 0.95:
+        rationale.append("adversarial grounding accuracy below 0.95")
+
+    # Original-10 suites A/B/D are the fair generative compare; C includes harder blind set.
+    all_pflege = all(pflege_pass(x) for x in (a, b, c, d) if x.get("status") == "COMPLETED")
     code = "NOT_READY"
-    rationale = []
-    if adv.get("accuracy", 0) < 0.85:
-        rationale.append("adversarial grounding accuracy below 0.85")
-    if c.get("status") == "COMPLETED" and (c.get("pflege_regression") or {}).get("pass"):
-        invent_c = (c.get("writing") or {}).get("invented_or_forbidden", 99)
-        invent_a = (a.get("writing") or {}).get("invented_or_forbidden", 99) if a else 99
-        empty_iv_c = (c.get("interview") or {}).get("empty_tps_and_questions", 99)
-        empty_iv_a = (a.get("interview") or {}).get("empty_tps_and_questions", 99) if a else 99
-        if invent_c == 0 and pflege_ok:
-            # Prefer ONE model if two-tier not clearly better
-            if d.get("status") == "COMPLETED":
-                invent_d = (d.get("writing") or {}).get("invented_or_forbidden", 99)
-                if invent_d == 0 and (d.get("writing") or {}).get("elapsed_s", 9e9) < (
-                    c.get("writing") or {}
-                ).get("elapsed_s", 0) * 0.7:
-                    code = "TWO_TIER_QWEN_PHI"
-                    rationale.append("two-tier similar quality faster on light path")
-                else:
-                    code = "ONE_MODEL_PHI"
-                    rationale.append("Phi+repair clears Pflege regression; quality close enough for ONE")
-            else:
-                code = "PHI_DEFAULT_QWEN_LIGHT_OPTION"
-                rationale.append("Phi+repair ready; keep Qwen as light option")
-        elif invent_c < invent_a and empty_iv_c <= empty_iv_a:
-            code = "PHI_DEFAULT_QWEN_LIGHT_OPTION"
-            rationale.append("Phi improves vs Qwen but residual invent/empty risk")
-        else:
-            code = "KEEP_QWEN"
-            rationale.append("Phi path not clearly better under gates")
-    else:
-        if not pflege_ok:
-            rationale.append("Pflegeausbildung regression not green")
+    if not all_pflege:
+        rationale.append("Pflegeausbildung regression not green on all completed suites")
         code = "NOT_READY"
+    elif b.get("status") == "COMPLETED" and invent(b) == 0 and empty_iv(b) == 0:
+        if d.get("status") == "COMPLETED" and invent(d) == 0 and empty_iv(d) == 0:
+            # Prefer ONE if two-tier not clearly faster/safer
+            rationale.append(
+                "Phi clears Pflege + invent=0 on original-10; two-tier also green — prefer ONE with Qwen light option"
+            )
+            code = "PHI_DEFAULT_QWEN_LIGHT_OPTION"
+        else:
+            code = "ONE_MODEL_PHI"
+            rationale.append("Phi no-repair already clears original-10 invent + Pflege")
+        if c.get("status") == "COMPLETED" and invent(c) > 0:
+            rationale.append(
+                f"Blind set residual invents={invent(c)} under Phi+repair — expand hard-req families before flipping default"
+            )
+            # Downgrade readiness if blind invents remain high
+            if invent(c) >= 5:
+                code = "PHI_DEFAULT_QWEN_LIGHT_OPTION"
+                rationale.append("QUALITY not fully ready for blind hard-credential set")
+    elif a.get("status") == "COMPLETED" and invent(a) == 0 and pflege_pass(a):
+        code = "KEEP_QWEN"
+        rationale.append("Qwen+repair also passes Pflege on original-10; Phi not clearly superior in this pass")
+    else:
+        code = "NOT_READY"
+        rationale.append("No suite fully cleared invent/Pflege gates")
+
+    quality_ready = code in {
+        "ONE_MODEL_PHI",
+        "TWO_TIER_QWEN_PHI",
+        "PHI_DEFAULT_QWEN_LIGHT_OPTION",
+    } and invent(c) <= 3 and all_pflege
+    # Conservative: residual blind invents ⇒ QUALITY READY NO even if architecture rec is Phi option
+    if invent(c) > 3:
+        quality_ready = False
+
     return {
         "code": code,
         "options": [
@@ -462,8 +479,7 @@ def recommend(arch: dict, adv: dict) -> dict:
             "NOT_READY",
         ],
         "rationale": rationale,
-        "quality_ready": code
-        in {"ONE_MODEL_PHI", "TWO_TIER_QWEN_PHI", "PHI_DEFAULT_QWEN_LIGHT_OPTION"},
+        "quality_ready": quality_ready,
         "merge_ready": False,
         "merge_ready_note": "Human decision only — agent must not merge PR #19",
     }

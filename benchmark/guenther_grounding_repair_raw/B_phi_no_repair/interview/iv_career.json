@@ -1,0 +1,76 @@
+{
+  "id": "iv_career",
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Beispiel dafür geben, wie Sie eine schwierige Kundeninteraktion erfolgreich gelöst haben?",
+      "Wie organisieren Sie Ihre Terminkalender und stellen Sie sicher, dass Sie keine Terminschwellen überschreiten?",
+      "Welche Fähigkeiten im MS Office-Sortiment finden Sie am häufigsten in Ihrer Rolle als Kaufmännische Assistenz?"
+    ],
+    "talking_points": [
+      "Erinnern Sie sich an eine Situation, in der Sie die Kundenberatung und Beschwerdemanagementfähigkeiten angewendet haben.",
+      "Besprechen Sie Ihre Methoden zur Terminorganisation und wie Sie Ihre Produktivität und Zeitmanagement verbessern.",
+      "Erwähnen Sie spezifische MS Office-Funktionen, die Sie in Ihrer Rolle häufig verwenden."
+    ],
+    "gap_notes": [
+      "Erinnern Sie sich an spezifische Terminschwellen, die Sie überwinden müssen, um Ihre Produktivität zu verbessern.",
+      "Denken Sie an ein spezifisches MS Office-Werkzeug, das Sie besonders effektiv in Ihrer Rolle finden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Kundenberatung und Beschwerdemanagement",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kassensystem",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Deutsch, Englisch A2",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erinnern Sie sich an eine Situation, in der Sie die Kundenberatung und Beschwerdemanagementfähigkeiten angewendet haben.",
+            "Besprechen Sie Ihre Methoden zur Terminorganisation und wie Sie Ihre Produktivität und Zeitmanagement verbessern.",
+            "Erwähnen Sie spezifische MS Office-Funktionen, die Sie in Ihrer Rolle häufig verwenden."
+          ],
+          "questions": [
+            "Können Sie ein Beispiel dafür geben, wie Sie eine schwierige Kundeninteraktion erfolgreich gelöst haben?",
+            "Wie organisieren Sie Ihre Terminkalender und stellen Sie sicher, dass Sie keine Terminschwellen überschreiten?",
+            "Welche Fähigkeiten im MS Office-Sortiment finden Sie am häufigsten in Ihrer Rolle als Kaufmännische Assistenz?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

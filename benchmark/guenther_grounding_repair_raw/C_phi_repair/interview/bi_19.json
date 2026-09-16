@@ -1,0 +1,136 @@
+{
+  "id": "bi_19",
+  "suggestion": {
+    "questions": [],
+    "talking_points": [
+      "Durch meine Erfahrungen im persönlichen und beruflichen Bereich habe ich wertvolle Fähigkeiten erworben, die ich in die Rolle einer Pflegefachkraft einbringen kann."
+    ],
+    "gap_notes": [
+      "Erkenne die Lücke in der formalen Ausbildung.",
+      "Betone die Bereitschaft, formale Bildung in Pflege zu erlangen.",
+      "Hebe die relevanten Fähigkeiten hervor, die durch andere Erfahrungen erworben wurden.",
+      "Diskutiere die Lernbereitschaft und die Fähigkeit, sich an neue Informationen anzupassen."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [
+    {
+      "code": "EMPTY_INTERVIEW_QUESTIONS",
+      "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+      "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+      "claim_text": "",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung haben“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung haben",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung zu schließen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung zu schließen",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "EMPTY_TALKING_POINTS",
+            "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrungen im Pflegebereich erzählen, auch wenn Sie keine formale Ausbildung haben?",
+            "Welche Fähigkeiten oder Erfahrungen aus Ihrem persönlichen oder beruflichen Leben glauben Sie, dass Sie in die Rolle einer Pflegefachkraft einbringen können?",
+            "Wie planen Sie, die Lücken in Ihrer Pflegeausbildung zu schließen, um Ihre Fähigkeiten zu verbessern?",
+            "Welche Strategien verwenden Sie, um sich in einer Pflegeumgebung zurechtzufinden, wenn Sie keine formale Ausbildung haben?",
+            "Wie fühlen Sie sich bezüglich der Pflege von Patienten, und wie stellen Sie sicher, dass Sie die erforderliche Sorgfalt und Aufmerksamkeit bieten?"
+          ],
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "EMPTY_INTERVIEW_QUESTIONS",
+            "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+            "claim_text": "",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [
+            "Durch meine Erfahrungen im persönlichen und beruflichen Bereich habe ich wertvolle Fähigkeiten erworben, die ich in die Rolle einer Pflegefachkraft einbringen kann."
+          ],
+          "questions": [],
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [
+      {
+        "code": "EMPTY_INTERVIEW_QUESTIONS",
+        "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+        "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+        "claim_text": "",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Pflegefachkraft",
+          "kind": "credential",
+          "span": "Pflegefachkraft",
+          "requires_direct": true,
+          "meta": {
+            "family": "Pflegefachkraft"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "pflegeausbildung",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

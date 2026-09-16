@@ -1,0 +1,101 @@
+{
+  "id": "cl_experienced",
+  "subject": "Senior Buchhaltung / Teamleitung - Northwind AG",
+  "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe Ihnen, um mein Interesse an der Position des Senior Buchhalters / Teamleiters bei Northwind AG auszudrücken. Mit meiner umfangreichen Erfahrung in der Buchhaltung, insbesondere im Bereich des Jahresabschluss-Unterstützungsprozesses und der Prozessoptimierung für Kreditoren, glaube ich, dass ich eine wertvolle Bereicherung für Ihr Team sein könnte.\n\nIm Laufe meiner Karriere bei Contoso Süd, wo ich seit 2010 als Leiter der Buchhaltung tätig war, habe ich mich intensiv mit DATEV beschäftigt und Prozesse verbessert, um Effizienz und Genauigkeit zu steigern. Vor meinem aktuellen Posten war ich Buchhalter bei Fabrikam, wo ich meine Fähigkeiten im Umgang mit SAP FI und Excel weiterentwickelte.\n\nIch bin auch stolz darauf, dass ich 2014 die IHK-Bilanzbuchhalter-Bewertung abgeschlossen habe, was meine Fähigkeiten in der Buchhaltung weiter verfestigte.\n\nIch bin überzeugt, dass meine Erfahrungen und Fähigkeiten gut zu den Anforderungen der Position bei Northwind AG passen. Ich freue mich darauf, meine Ideen und Erfahrungen mit Ihnen zu teilen und zu diskutieren, wie ich zur erfolgreichen Zukunft Ihres Teams beitragen kann.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nKlaus",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „IHK-Bilanzbuchhalter-Bewertung abgeschlosse“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "IHK-Bilanzbuchhalter-Bewertung abgeschlosse",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK-Bilanzbuchhalter-Bewertung abgeschlosse“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK-Bilanzbuchhalter-Bewertung abgeschlosse",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Senior Buchhaltung / Teamleitung - Northwind AG",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe Ihnen, um mein Interesse an der Position des Senior Buchhalters / Teamleiters bei Northwind AG auszudrücken. Mit meiner umfangreichen Erfahrung in der Buchhaltung, insbesondere im Bereich des Jahresabschluss-Unterstützungsprozesses und der Prozessoptimierung für Kreditoren, glaube ich, dass ich eine wertvolle Bereicherung für Ihr Team sein könnte.\n\nIm Laufe meiner Karriere bei Contoso Süd, wo ich seit 2010 als Leiter der Buchhaltung tätig war, habe ich mich intensiv mit DATEV beschäftigt und Prozesse verbessert, um Effizienz und Genauigkeit zu steigern. Vor meinem aktuellen Posten war ich Buchhalter bei Fabrikam, wo ich meine Fähigkeiten im Umgang mit SAP FI und Excel weiterentwickelte.\n\nIch bin auch stolz darauf, dass ich 2014 die IHK-Bilanzbuchhalter-Bewertung abgeschlossen habe, was meine Fähigkeiten in der Buchhaltung weiter verfestigte.\n\nIch bin überzeugt, dass meine Erfahrungen und Fähigkeiten gut zu den Anforderungen der Position bei Northwind AG passen. Ich freue mich darauf, meine Ideen und Erfahrungen mit Ihnen zu teilen und zu diskutieren, wie ich zur erfolgreichen Zukunft Ihres Teams beitragen kann.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nKlaus",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „IHK-Bilanzbuchhalter-Bewertung abgeschlosse“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "IHK-Bilanzbuchhalter-Bewertung abgeschlosse",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "IHK-Bilanzbuchhalter-Bewertung abgeschlosse",
+          "kind": "credential",
+          "span": "IHK-Bilanzbuchhalter-Bewertung abgeschlosse",
+          "requires_direct": true,
+          "meta": {
+            "family": "IHK"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK-Bilanzbuchhalter-Bewertung abgeschlosse“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK-Bilanzbuchhalter-Bewertung abgeschlosse",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

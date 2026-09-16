@@ -99,6 +99,11 @@ _FAMILY_PROFILE_KEYS: dict[str, tuple[str, ...]] = {
     ),
     "personio": ("personio",),
     "degree": ("bachelor", "master", "studium"),
+    "staatsexamen": ("staatsexamen", "assessor"),
+    "meister": ("meisterbrief", "meister"),
+    "istqb": ("istqb",),
+    "netzwerkzertifikat": ("netzwerkzertifikat", "ccna"),
+    "studium": ("studium", "controlling-studium", "bachelor", "master"),
 }
 
 
@@ -115,8 +120,7 @@ def extract_job_requirements(job_text: str) -> list[HardRequirement]:
         fam = "pflegeausbildung"
         if fam not in seen:
             seen.add(fam)
-            kind = "hard"
-            found.append(HardRequirement(text="Pflegeausbildung", kind=kind, family=fam))
+            found.append(HardRequirement(text="Pflegeausbildung", kind="hard", family=fam))
 
     for pat, family, kind in _JOB_REQ_PATTERNS:
         if pat.search(job):
@@ -124,6 +128,23 @@ def extract_job_requirements(job_text: str) -> list[HardRequirement]:
                 continue
             seen.add(family)
             found.append(HardRequirement(text=family, kind=kind, family=family))
+
+    # Generic "Pflicht: <credential>" patterns
+    Pflicht_map = {
+        "staatsexamen": "staatsexamen",
+        "meisterbrief": "meister",
+        "meister": "meister",
+        "istqb": "istqb",
+        "netzwerkzertifikat": "netzwerkzertifikat",
+        "ccna": "netzwerkzertifikat",
+        "controlling-studium": "studium",
+        "studium": "studium",
+    }
+    if "pflicht" in low:
+        for needle, fam in Pflicht_map.items():
+            if needle in low and fam not in seen:
+                seen.add(fam)
+                found.append(HardRequirement(text=needle, kind="hard", family=fam))
 
     # Desirable Personio
     if "personio" in low and "personio" not in seen:
@@ -183,7 +204,16 @@ def evaluate_hard_requirements(
     # (RELATED_ONLY means domain-adjacent but credential still missing)
     if any(
         r.kind == "hard"
-        and r.family in {"pflegeausbildung", "degree"}
+        and r.family
+        in {
+            "pflegeausbildung",
+            "degree",
+            "staatsexamen",
+            "meister",
+            "istqb",
+            "netzwerkzertifikat",
+            "studium",
+        }
         and r.status in {HardReqStatus.NOT_MET, HardReqStatus.RELATED_ONLY}
         for r in reqs
     ):

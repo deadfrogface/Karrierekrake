@@ -1,0 +1,132 @@
+{
+  "id": "iv_it",
+  "suggestion": {
+    "questions": [],
+    "talking_points": [
+      "Ich habe in meinem Berufserlebnis als IT-Support First Level Erfahrung mit Ticketbearbeitung und Windows-Systemen gesammelt.",
+      "Meine Ausbildung als Fachinformatiker Systemintegration hat mich mit Active Directory und Excel ausgebildet.",
+      "Ich habe in der Praxis Erfahrungen mit Dokumentation in einem Wiki-System gesammelt."
+    ],
+    "gap_notes": [
+      "Die Evidenz zur IT-Support-Position ist direkt belegt (First-Level Ticketbearbeitung), aber keine direkte Verknüpfung zur Position ist erkennbar.",
+      "Die Kenntnisse in Active Directory Grundlagen sind im Profil belegt, aber keine direkte Verknüpfung zur Position ist erkennbar.",
+      "Die Dokumentation in einem Wiki-System ist im Berufserlebnis belegt, aber keine direkte Verknüpfung zur Position ist erkennbar."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "high"
+  },
+  "model_id": "qwen3-1.7b",
+  "validator_errors": [
+    {
+      "code": "EMPTY_INTERVIEW_QUESTIONS",
+      "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+      "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+      "claim_text": "",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "EMPTY_TALKING_POINTS",
+            "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [],
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "EMPTY_INTERVIEW_QUESTIONS",
+            "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+            "claim_text": "",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [
+            "Ich habe in meinem Berufserlebnis als IT-Support First Level Erfahrung mit Ticketbearbeitung und Windows-Systemen gesammelt.",
+            "Meine Ausbildung als Fachinformatiker Systemintegration hat mich mit Active Directory und Excel ausgebildet.",
+            "Ich habe in der Praxis Erfahrungen mit Dokumentation in einem Wiki-System gesammelt."
+          ],
+          "questions": [],
+          "invented_flag": false
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [
+      {
+        "code": "EMPTY_INTERVIEW_QUESTIONS",
+        "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+        "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+        "claim_text": "",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung als Fachinformatiker Systemintegration hat m",
+          "kind": "credential",
+          "span": "Ausbildung als Fachinformatiker Systemintegration hat m",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "Ausbildung als Fachinformatiker Systemintegration hat m",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Ausbildung als Fachinformatiker Systemintegration h",
+          "kind": "credential",
+          "span": "Ausbildung als Fachinformatiker Systemintegration h",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "Ausbildung als Fachinformatiker Systemintegration h",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

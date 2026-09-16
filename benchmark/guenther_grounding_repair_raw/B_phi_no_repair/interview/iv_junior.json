@@ -1,0 +1,71 @@
+{
+  "id": "iv_junior",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel dafür geben, wie Sie einen Terminkalender verwaltet haben?",
+      "Wie organisieren Sie Ihre Korrespondenz und Aufgaben im Büro?",
+      "Welche MS Office-Funktionen nutzen Sie am häufigsten und warum?",
+      "Wie würden Sie eine schwierige Korrespondenz mit einem Kunden oder Kollegen lösen?"
+    ],
+    "talking_points": [
+      "Terminorganisation als Azubi",
+      "Führungserfahrung (nicht direkt unterstützt, sollte aber angesprochen werden)"
+    ],
+    "gap_notes": [
+      "Keine direkten Erfolge oder Führungserfahrungen im Profil angegeben.",
+      "Mögliche Übung in Korrespondenz und MS Office-Funktionen im Jobangebot."
+    ],
+    "anchors_used": [
+      {
+        "text": "Azubi Kauffrau Büromanagement, Litware SE (3. Lehrjahr) - Terminorganisation",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Junior Assistenz der Geschäftsführung — Adventure Works - Korrespondenz, MS Office",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Terminorganisation als Azubi",
+            "Führungserfahrung (nicht direkt unterstützt, sollte aber angesprochen werden)"
+          ],
+          "questions": [
+            "Können Sie uns ein Beispiel dafür geben, wie Sie einen Terminkalender verwaltet haben?",
+            "Wie organisieren Sie Ihre Korrespondenz und Aufgaben im Büro?",
+            "Welche MS Office-Funktionen nutzen Sie am häufigsten und warum?",
+            "Wie würden Sie eine schwierige Korrespondenz mit einem Kunden oder Kollegen lösen?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "id": "iv_buchhaltung",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit DATEV-Kreditorenbuchhaltung erzählen?",
+      "Wie haben Sie Excel in Ihrer aktuellen Rolle bei Contoso Nord GmbH eingesetzt?",
+      "Welche Herausforderungen haben Sie bei der Abstimmung mit anderen Fachbereichen erlebt und wie haben Sie diese überwunden?",
+      "Wie würden Sie Ihre Kenntnisse im Büromanagement IHK auf die Rolle bei Northwind Handels GmbH übertragen?"
+    ],
+    "talking_points": [
+      "DATEV-Kreditorenbuchhaltung, Monatabschluss, Excel-Auswertungen",
+      "Abstimmung mit Fachbereichen",
+      "Ausbildung: Kaufffrau für Büromanagement IHK",
+      "Kenntnisse: DATEV, Excel, SAP FI Grundlagen, Deutsch, Englisch B2"
+    ],
+    "gap_notes": [
+      "Erforderliche SAP FI-Kenntnisse für Northwind Handels GmbH",
+      "Erforderliche Deutsch-Verhandlungssicherheit für Northwind Handels GmbH"
+    ],
+    "anchors_used": [
+      {
+        "text": "DATEV-Kreditorenbuchhaltung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Excel-Auswertungen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Abstimmung mit Fachbereichen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kaufffrau für Büromanagement IHK",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "SAP FI Grundlagen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Deutsch",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Englisch B2",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „IHK auf die Rolle bei Northwind Handels Gmb“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "IHK auf die Rolle bei Northwind Handels Gmb",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK auf die Rolle bei Northwind Handels Gmb“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK auf die Rolle bei Northwind Handels Gmb",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "DATEV-Kreditorenbuchhaltung, Monatabschluss, Excel-Auswertungen",
+            "Abstimmung mit Fachbereichen",
+            "Ausbildung: Kaufffrau für Büromanagement IHK",
+            "Kenntnisse: DATEV, Excel, SAP FI Grundlagen, Deutsch, Englisch B2"
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrungen mit DATEV-Kreditorenbuchhaltung erzählen?",
+            "Wie haben Sie Excel in Ihrer aktuellen Rolle bei Contoso Nord GmbH eingesetzt?",
+            "Welche Herausforderungen haben Sie bei der Abstimmung mit anderen Fachbereichen erlebt und wie haben Sie diese überwunden?",
+            "Wie würden Sie Ihre Kenntnisse im Büromanagement IHK auf die Rolle bei Northwind Handels GmbH übertragen?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „IHK auf die Rolle bei Northwind Handels Gmb“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "IHK auf die Rolle bei Northwind Handels Gmb",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni",
+          "kind": "credential",
+          "span": "Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung: Kaufffrau für Büromanagement IHK\nKenntni",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "IHK\nKenntnisse",
+          "kind": "credential",
+          "span": "IHK\nKenntnisse",
+          "requires_direct": true,
+          "meta": {
+            "family": "IHK"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "IHK\nKenntnisse",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "IHK auf die Rolle bei Northwind Handels Gmb",
+          "kind": "credential",
+          "span": "IHK auf die Rolle bei Northwind Handels Gmb",
+          "requires_direct": true,
+          "meta": {
+            "family": "IHK"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK auf die Rolle bei Northwind Handels Gmb“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK auf die Rolle bei Northwind Handels Gmb",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "bi_12",
+  "suggestion": {
+    "questions": [
+      "Can you describe your experience with Linux systems?",
+      "How do you monitor and maintain Linux servers?",
+      "What tools and methods do you use for Linux system administration?",
+      "Can you walk us through a time when you had to troubleshoot a complex issue on a Linux server?"
+    ],
+    "talking_points": [
+      "Direct experience with Linux systems.",
+      "Skills in monitoring and maintaining Linux servers.",
+      "Familiarity with tools and methods for Linux system administration.",
+      "Experience in troubleshooting complex issues on Linux servers."
+    ],
+    "gap_notes": [
+      "Need to emphasize hands-on experience with Linux.",
+      "Highlight problem-solving skills in a Linux environment.",
+      "Discuss familiarity with monitoring tools for Linux systems."
+    ],
+    "anchors_used": [
+      {
+        "text": "Linux system administration",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Direct experience with Linux systems.",
+            "Skills in monitoring and maintaining Linux servers.",
+            "Familiarity with tools and methods for Linux system administration.",
+            "Experience in troubleshooting complex issues on Linux servers."
+          ],
+          "questions": [
+            "Can you describe your experience with Linux systems?",
+            "How do you monitor and maintain Linux servers?",
+            "What tools and methods do you use for Linux system administration?",
+            "Can you walk us through a time when you had to troubleshoot a complex issue on a Linux server?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

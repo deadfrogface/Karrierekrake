@@ -1,0 +1,173 @@
+{
+  "id": "cl_strong_match",
+  "subject": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München",
+  "body": "Sehr geehrte Damen und Herren, ich habe mich über die Stelle als Sachbearbeitung Buchhaltung (m/w/d) in der Northwind Handels GmbH München interessiert. Ich habe meine Ausbildung als Kauffrau für Büromanagement IHK belegt und habe DATEV, Excel und SAP FI Grundlagen erfolgreich absolviert. Meine Erfahrung in der Kreditorenbuchhaltung mit DATEV und Excel sowie meine Abstimmung mit Fachbereichen hat mich dazu veranlasst, diese Stelle zu bewerben. Ich bin mit Deutsch verhandlungssicher und habe Englisch B2. Ich freue mich auf Ihre Berücksichtigung. Mit freundlichen Grüßen, Mia Beispiel",
+  "model_id": "qwen3-1.7b",
+  "architecture": "qwen_only",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „IHK belegt und habe DATEV“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "IHK belegt und habe DATEV",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK und meinen Kenntnissen in DATEV“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK und meinen Kenntnissen in DATEV",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München",
+          "body": "Sehr geehrte Damen und Herren, Ich habe mich über die Stelle als Sachbearbeitung Buchhaltung (m/w/d) in der Northwind Handels GmbH München interessiert. Ich bin mit meiner Ausbildung als Kauffrau für Büromanagement IHK und meinen Kenntnissen in DATEV, Excel und SAP FI Grundlagen sehr gut versorgt. Meine Erfahrung in der Kreditorenbuchhaltung mit DATEV und Excel sowie meine Abstimmung mit Fachbereichen hat mich dazu veranlasst, diese Stelle zu bewerben. Ich bin mit Deutsch verhandlungssicher und habe Englisch B2. Ich freue mich auf Ihre Berücksichtigung. Mit freundlichen Grüßen, Mia Beispiel",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK belegt und habe DATEV“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK belegt und habe DATEV",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München",
+          "body": "Sehr geehrte Damen und Herren, ich habe mich über die Stelle als Sachbearbeitung Buchhaltung (m/w/d) in der Northwind Handels GmbH München interessiert. Ich habe meine Ausbildung als Kauffrau für Büromanagement IHK belegt und habe DATEV, Excel und SAP FI Grundlagen erfolgreich absolviert. Meine Erfahrung in der Kreditorenbuchhaltung mit DATEV und Excel sowie meine Abstimmung mit Fachbereichen hat mich dazu veranlasst, diese Stelle zu bewerben. Ich bin mit Deutsch verhandlungssicher und habe Englisch B2. Ich freue mich auf Ihre Berücksichtigung. Mit freundlichen Grüßen, Mia Beispiel",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK belegt und habe DATEV“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK belegt und habe DATEV",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München",
+          "body": "Sehr geehrte Damen und Herren, ich habe mich über die Stelle als Sachbearbeitung Buchhaltung (m/w/d) in der Northwind Handels GmbH München interessiert. Ich habe meine Ausbildung als Kauffrau für Büromanagement IHK belegt und habe DATEV, Excel und SAP FI Grundlagen erfolgreich absolviert. Meine Erfahrung in der Kreditorenbuchhaltung mit DATEV und Excel sowie meine Abstimmung mit Fachbereichen hat mich dazu veranlasst, diese Stelle zu bewerben. Ich bin mit Deutsch verhandlungssicher und habe Englisch B2. Ich freue mich auf Ihre Berücksichtigung. Mit freundlichen Grüßen, Mia Beispiel",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „IHK belegt und habe DATEV“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "IHK belegt und habe DATEV",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung als Kauffrau für Büromanagement IHK belegt u",
+          "kind": "credential",
+          "span": "Ausbildung als Kauffrau für Büromanagement IHK belegt u",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "Ausbildung als Kauffrau für Büromanagement IHK belegt u",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Ausbildung als Kauffrau für Büromanagement IHK bele",
+          "kind": "credential",
+          "span": "Ausbildung als Kauffrau für Büromanagement IHK bele",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "Ausbildung als Kauffrau für Büromanagement IHK bele",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "IHK belegt und habe DATEV",
+          "kind": "credential",
+          "span": "IHK belegt und habe DATEV",
+          "requires_direct": true,
+          "meta": {
+            "family": "IHK"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK belegt und habe DATEV“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK belegt und habe DATEV",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

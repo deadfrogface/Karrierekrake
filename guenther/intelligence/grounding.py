@@ -76,6 +76,11 @@ _CREDENTIAL_FAMILIES = {
     "bachelor": ("bachelor",),
     "master": ("master",),
     "abitur": ("abitur",),
+    "staatsexamen": ("staatsexamen", "assessor"),
+    "meister": ("meisterbrief", "meister "),
+    "istqb": ("istqb",),
+    "ccna": ("ccna", "netzwerkzertifikat"),
+    "studium": ("studium", "controlling-studium"),
 }
 
 

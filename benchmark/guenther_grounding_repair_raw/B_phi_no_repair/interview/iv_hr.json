@@ -1,0 +1,79 @@
+{
+  "id": "iv_hr",
+  "suggestion": {
+    "questions": [
+      "Wie organisierst du deine Aufgaben und Verantwortlichkeiten im Büro?",
+      "Kannst du ein Beispiel für eine Excel-Liste geben, die du regelmäßig verwendest?",
+      "Wie gehst du mit Korrespondenz und Lieferantenabstimmungen um?",
+      "Welche Herausforderungen hast du bei der Personalaktenverwaltung erlebt und wie hast du sie gemeistert?",
+      "Wie nutzt du Personio in deinem aktuellen Job und welche Vorteile hast du daraus gezogen?"
+    ],
+    "talking_points": [
+      "Jonas hat Erfahrung in der Terminplanung und Korrespondenz im Büro.",
+      "Er ist vertraut mit Excel-Listen und Büromanagement.",
+      "Jonas arbeitet derzeit als Office Manager bei Fabrikam AG.",
+      "Er hat Kenntnisse in MS Office und Excel.",
+      "Jonas spricht Deutsch und Englisch B1."
+    ],
+    "gap_notes": [
+      "Keine Informationen über Jonas' Erfahrung mit Personio.",
+      "Keine Details zu Jonas' Rolle bei Litware SE und wie er Personio dort nutzen könnte."
+    ],
+    "anchors_used": [
+      {
+        "text": "Jonas' Rolle als Office Manager bei Fabrikam AG",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Jonas' Ausbildung im Kaufmann Büromanagement",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Jonas hat Erfahrung in der Terminplanung und Korrespondenz im Büro.",
+            "Er ist vertraut mit Excel-Listen und Büromanagement.",
+            "Jonas arbeitet derzeit als Office Manager bei Fabrikam AG.",
+            "Er hat Kenntnisse in MS Office und Excel.",
+            "Jonas spricht Deutsch und Englisch B1."
+          ],
+          "questions": [
+            "Wie organisierst du deine Aufgaben und Verantwortlichkeiten im Büro?",
+            "Kannst du ein Beispiel für eine Excel-Liste geben, die du regelmäßig verwendest?",
+            "Wie gehst du mit Korrespondenz und Lieferantenabstimmungen um?",
+            "Welche Herausforderungen hast du bei der Personalaktenverwaltung erlebt und wie hast du sie gemeistert?",
+            "Wie nutzt du Personio in deinem aktuellen Job und welche Vorteile hast du daraus gezogen?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

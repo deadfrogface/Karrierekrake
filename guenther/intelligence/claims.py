@@ -45,6 +45,14 @@ _CREDENTIAL_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"ihk[\w\s\-]{0,40}", re.I), "IHK"),
     (re.compile(r"zertifikat[:\s]+[\w\-äöüÄÖÜß\s]{3,40}", re.I), "Zertifikat"),
     (re.compile(r"abitur", re.I), "Abitur"),
+    (re.compile(r"(?:2\.\s*)?staatsexamen", re.I), "Staatsexamen"),
+    (re.compile(r"meisterbrief", re.I), "Meisterbrief"),
+    (re.compile(r"\bmeister\b", re.I), "Meister"),
+    (re.compile(r"istqb", re.I), "ISTQB"),
+    (re.compile(r"netzwerkzertifikat", re.I), "Netzwerkzertifikat"),
+    (re.compile(r"\bccna\b", re.I), "CCNA"),
+    (re.compile(r"controlling[\-\s]?studium", re.I), "Studium"),
+    (re.compile(r"\bstudium\b", re.I), "Studium"),
 ]
 
 _EMPLOYER_PATTERNS = [

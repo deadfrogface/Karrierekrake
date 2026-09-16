@@ -1,0 +1,160 @@
+{
+  "id": "bi_11",
+  "suggestion": {
+    "questions": [],
+    "talking_points": [],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [
+    {
+      "code": "EMPTY_TALKING_POINTS",
+      "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+      "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+      "claim_text": "",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "EMPTY_INTERVIEW_QUESTIONS",
+      "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+      "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+      "claim_text": "",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung\nKönnen Sie uns mehr über Ihre Erfahrunge“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung\nKönnen Sie uns mehr über Ihre Erfahrunge",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung erworben“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung erworben",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung umgegangen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung umgegangen",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Pflegeausbildung"
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrungen mit Pflegeausbildungen erzählen?",
+            "Welche Fähigkeiten haben Sie während Ihrer Ausbildung erworben, die Sie für die Rolle einer Pflegefachkraft besonders geeignet finden?",
+            "Wie haben Sie mit Herausforderungen in Ihrer Pflegeausbildung umgegangen?",
+            "Welche Aspekte der Pflege sind Ihnen besonders wichtig und warum?",
+            "Wie setzen Sie sich für die Verbesserung der Pflegequalität ein?"
+          ],
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung Station“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung Station",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "EMPTY_INTERVIEW_QUESTIONS",
+            "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+            "claim_text": "",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [
+            "Pflegefachkraft Rolle"
+          ],
+          "questions": [],
+          "invented_flag": false
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "SCHEMA_INVALID",
+            "message_de": "Die Modellausgabe entsprach nicht dem erwarteten Schema.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [],
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "EMPTY_TALKING_POINTS",
+        "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+        "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "EMPTY_INTERVIEW_QUESTIONS",
+        "message_de": "Interview-Prep enthält keine Fragen trotz vorhandener Belege.",
+        "repair_instruction": "Erzeuge mindestens 2 likely questions zur Stelle, ohne Fakten über den Bewerber zu erfinden.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

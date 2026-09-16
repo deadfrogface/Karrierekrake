@@ -1,0 +1,92 @@
+{
+  "id": "iv_hr",
+  "suggestion": {
+    "questions": [
+      "Welche HR-Tools nutzen Sie in Ihrer Arbeit?",
+      "Wie beschreiben Sie Ihre Erfahrung mit Excel-Reports?",
+      "Welche Vorteile hat Personio in Ihrer Arbeitsumgebung?"
+    ],
+    "talking_points": [
+      "DIRECT: Excel-Listen und Terminplanung sind direkt aus dem Profil belegt.",
+      "DIRECT: Kenntnisse in MS Office und Deutsch/Englisch B1 sind aus dem Profil stammen.",
+      "RELATED: Personio wird als HR-Tool erwähnt, aber nicht unterstützt."
+    ],
+    "gap_notes": [
+      "Direkte Belege für Personio sind nicht vorhanden.",
+      "Es gibt keine klaren Beweise für Kenntnisse in Personio oder anderen HR-Tools."
+    ],
+    "anchors_used": [
+      {
+        "text": "Excel-Listen",
+        "source": "profile",
+        "quote": "Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen"
+      },
+      {
+        "text": "Terminplanung",
+        "source": "profile",
+        "quote": "Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen"
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "qwen3-1.7b",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "EMPTY_TALKING_POINTS",
+            "message_de": "Interview-Prep enthält keine nutzbaren Talking Points trotz vorhandener Belege.",
+            "repair_instruction": "Erzeuge mindestens 3 talking_points, die NUR aus DIRECT/RELATED Evidenz oder Profilzitaten stammen. Keine erfundenen Erfolge.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [],
+          "questions": [],
+          "invented_flag": false
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [],
+        "repaired": true,
+        "output_snapshot": {
+          "talking_points": [
+            "DIRECT: Excel-Listen und Terminplanung sind direkt aus dem Profil belegt.",
+            "DIRECT: Kenntnisse in MS Office und Deutsch/Englisch B1 sind aus dem Profil stammen.",
+            "RELATED: Personio wird als HR-Tool erwähnt, aber nicht unterstützt."
+          ],
+          "questions": [
+            "Welche HR-Tools nutzen Sie in Ihrer Arbeit?",
+            "Wie beschreiben Sie Ihre Erfahrung mit Excel-Reports?",
+            "Welche Vorteile hat Personio in Ihrer Arbeitsumgebung?"
+          ],
+          "invented_flag": false
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}
