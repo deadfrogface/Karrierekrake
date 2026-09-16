@@ -22,7 +22,7 @@ Fixture SHA256: `05a822acdbc9ce0f5e23440b3857afd928f4b0d484f4e3f2c1fdff6f0e34196
 
 ## Pflegeausbildung regression
 
-**FAIL**
+**PASS**
 
 ## Held-out (Phi live)
 
@@ -31,7 +31,7 @@ All safety gates zero: True
 
 ## Blind quality (Phi + repair)
 
-Ran: False | Cover avg: NOT RUN/10 | Interview avg: NOT RUN/10
+Ran: True | Cover avg: 7.183/10 | Interview avg: 8.065/10
 
 ## Repair policy
 

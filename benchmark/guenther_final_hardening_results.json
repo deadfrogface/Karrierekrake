@@ -114,6 +114,7 @@
         "got_ok": false,
         "match": true,
         "codes": [
+          "CONTRADICTED_CLAIM",
           "WRONG_COMPANY"
         ]
       },
@@ -133,6 +134,7 @@
         "got_ok": false,
         "match": true,
         "codes": [
+          "CONTRADICTED_CLAIM",
           "WRONG_COMPANY"
         ]
       },
@@ -164,6 +166,7 @@
         "got_ok": false,
         "match": true,
         "codes": [
+          "CONTRADICTED_CLAIM",
           "WRONG_COMPANY"
         ]
       },
@@ -276,6 +279,7 @@
         "got_ok": false,
         "match": true,
         "codes": [
+          "CONTRADICTED_CLAIM",
           "WRONG_COMPANY"
         ]
       },
@@ -285,6 +289,7 @@
         "got_ok": false,
         "match": true,
         "codes": [
+          "CONTRADICTED_CLAIM",
           "WRONG_COMPANY"
         ]
       },
@@ -294,6 +299,7 @@
         "got_ok": false,
         "match": true,
         "codes": [
+          "CONTRADICTED_CLAIM",
           "UNSUPPORTED_CREDENTIAL",
           "WRONG_COMPANY"
         ]
@@ -1600,8 +1606,8 @@
     "ACCEPTED_CONTRADICTED": 0
   },
   "pflege_regression": {
-    "pass": false,
-    "no_profile_status": "SUPPORTED_DIRECT"
+    "pass": true,
+    "no_profile_status": "CONTRADICTED"
   },
   "held_out": {
     "ran": true,
@@ -1624,7 +1630,20 @@
     "ram_mb": null
   },
   "blind_quality": {
-    "ran": false
+    "ran": true,
+    "cover_n": 30,
+    "cover_avg": 7.183,
+    "interview_n": 20,
+    "interview_avg": 8.065,
+    "empty_tps": 1,
+    "empty_questions": 1,
+    "hard_fail_accepted": 0,
+    "latency": {
+      "avg_s": 32.039,
+      "median_s": 32.592,
+      "p95_s": 46.108
+    },
+    "elapsed_s": 1601.97
   },
   "repair_policy": {
     "max_repairs": 1,

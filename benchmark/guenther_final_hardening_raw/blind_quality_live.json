@@ -1,0 +1,729 @@
+{
+  "model": "phi4-mini",
+  "elapsed_s": 1601.97,
+  "latency": {
+    "avg_s": 32.039,
+    "median_s": 32.592,
+    "p95_s": 46.108
+  },
+  "blind_cover": {
+    "n": 30,
+    "avg_score": 7.183,
+    "hard_fail_accepted": 0,
+    "rows": [
+      {
+        "id": "bc_01",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 640
+      },
+      {
+        "id": "bc_02",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 616
+      },
+      {
+        "id": "bc_03",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": true,
+        "repair_count": 0,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 452
+      },
+      {
+        "id": "bc_04",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 339
+      },
+      {
+        "id": "bc_05",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 510
+      },
+      {
+        "id": "bc_06",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 528
+      },
+      {
+        "id": "bc_07",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 437
+      },
+      {
+        "id": "bc_08",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 485
+      },
+      {
+        "id": "bc_09",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": true,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 360
+      },
+      {
+        "id": "bc_10",
+        "score": 6.5,
+        "notes": [
+          "missing_company"
+        ],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 362
+      },
+      {
+        "id": "bc_11",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 435
+      },
+      {
+        "id": "bc_12",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 480
+      },
+      {
+        "id": "bc_13",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 470
+      },
+      {
+        "id": "bc_14",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": true,
+        "repair_count": 0,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 461
+      },
+      {
+        "id": "bc_15",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 732
+      },
+      {
+        "id": "bc_16",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 507
+      },
+      {
+        "id": "bc_17",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 398
+      },
+      {
+        "id": "bc_18",
+        "score": 6.0,
+        "notes": [
+          "placeholder"
+        ],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 633
+      },
+      {
+        "id": "bc_19",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": true,
+        "repair_count": 0,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 424
+      },
+      {
+        "id": "bc_20",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": true,
+        "repair_count": 0,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 663
+      },
+      {
+        "id": "bc_21",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 436
+      },
+      {
+        "id": "bc_22",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 413
+      },
+      {
+        "id": "bc_23",
+        "score": 6.5,
+        "notes": [
+          "missing_company"
+        ],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 270
+      },
+      {
+        "id": "bc_24",
+        "score": 4.5,
+        "notes": [
+          "placeholder",
+          "missing_company"
+        ],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 522
+      },
+      {
+        "id": "bc_25",
+        "score": 0.0,
+        "notes": [
+          "empty_body"
+        ],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 0
+      },
+      {
+        "id": "bc_26",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 503
+      },
+      {
+        "id": "bc_27",
+        "score": 0.0,
+        "notes": [
+          "empty_body"
+        ],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 0
+      },
+      {
+        "id": "bc_28",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": true,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 315
+      },
+      {
+        "id": "bc_29",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 609
+      },
+      {
+        "id": "bc_30",
+        "score": 8.0,
+        "notes": [],
+        "final_ok": false,
+        "repair_count": 1,
+        "hard_flags": {
+          "false_credential": false,
+          "wrong_company": false,
+          "wrong_role": false,
+          "role_reversal": false,
+          "accepted_with_blocking": false,
+          "pflege_invented": false,
+          "placeholder": false
+        },
+        "body_len": 280
+      }
+    ]
+  },
+  "blind_interview": {
+    "n": 20,
+    "avg_score": 8.065,
+    "empty_tps": 1,
+    "empty_questions": 1,
+    "rows": [
+      {
+        "id": "bi_01",
+        "score": 8.4,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 2,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_02",
+        "score": 8.6,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 3,
+        "questions_n": 3,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_03",
+        "score": 8.6,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 3,
+        "questions_n": 3,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_04",
+        "score": 7.7,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 1,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_05",
+        "score": 8.4,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 2,
+        "questions_n": 4,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_06",
+        "score": 7.7,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 1,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_07",
+        "score": 9.1,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 3,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_08",
+        "score": 7.7,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 1,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_09",
+        "score": 10.0,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 5,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_10",
+        "score": 10.0,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 5,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_11",
+        "score": 9.1,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 3,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_12",
+        "score": 7.2,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 1,
+        "questions_n": 3,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_13",
+        "score": 9.1,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 3,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_14",
+        "score": 8.4,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 2,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_15",
+        "score": 7.9,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 2,
+        "questions_n": 3,
+        "repair_count": 1
+      },
+      {
+        "id": "bi_16",
+        "score": 7.9,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 2,
+        "questions_n": 3,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_17",
+        "score": 1.0,
+        "notes": [
+          "empty_prep"
+        ],
+        "final_ok": false,
+        "talking_points_n": 0,
+        "questions_n": 0,
+        "repair_count": 1
+      },
+      {
+        "id": "bi_18",
+        "score": 7.7,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 1,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_19",
+        "score": 8.4,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 2,
+        "questions_n": 5,
+        "repair_count": 0
+      },
+      {
+        "id": "bi_20",
+        "score": 8.4,
+        "notes": [],
+        "final_ok": true,
+        "talking_points_n": 2,
+        "questions_n": 5,
+        "repair_count": 0
+      }
+    ]
+  }
+}

@@ -93,6 +93,11 @@ def build_evidence_store(
         if len(t) < 3:
             continue
         kind = _guess_kind(t)
+        aliases: tuple[str, ...] = ()
+        if not _line_negates_credential(t):
+            aliases = _aliases_for(t, kind)
+        else:
+            kind = EvidenceKind.OTHER
         store.add(
             EvidenceItem(
                 id=f"prof_{idx}",
@@ -100,7 +105,7 @@ def build_evidence_store(
                 source=EvidenceSource.PROFILE,
                 kind=kind,
                 quote=t,
-                aliases=_aliases_for(t, kind),
+                aliases=aliases,
             )
         )
         idx += 1
@@ -138,6 +143,28 @@ def build_evidence_store(
         )
         idx += 1
     return store
+
+
+def _line_negates_credential(text: str) -> bool:
+    low = text.lower()
+    if not any(p in low for p in ("keine ", "kein ", "ohne ", "nicht ")):
+        return False
+    return any(
+        k in low
+        for k in (
+            "ausbildung",
+            "studium",
+            "bachelor",
+            "master",
+            "ihk",
+            "zertifikat",
+            "abschluss",
+            "pflege",
+            "examen",
+            "schein",
+            "lizenz",
+        )
+    )
 
 
 def _guess_kind(text: str) -> EvidenceKind:

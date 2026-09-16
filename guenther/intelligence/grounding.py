@@ -97,7 +97,18 @@ def _credential_family(claim_text: str) -> str | None:
 def _profile_has_family(profile_fold: str, family: str) -> bool:
     keys = _CREDENTIAL_FAMILIES.get(family)
     if keys:
-        return any(k in profile_fold for k in keys)
+        for k in keys:
+            if k not in profile_fold:
+                continue
+            if (
+                f"keine {k}" in profile_fold
+                or f"kein {k}" in profile_fold
+                or f"ohne {k}" in profile_fold
+                or f"nicht {k}" in profile_fold
+            ):
+                continue
+            return True
+        return False
     if family == "ausbildung_generic":
         return "ausbildung" in profile_fold or "ihk" in profile_fold
     return False
@@ -230,10 +241,32 @@ def ground_claim(
             if not ok_direct:
                 ct = _credential_sig_tokens(claim.text)
                 corpus_t = _credential_sig_tokens(profile_text + "\n" + store.corpus())
-                if ct and ct <= corpus_t:
+
+                def _negated_in_profile(tokens: set[str]) -> bool:
+                    for tok in tokens:
+                        if len(tok) < 4:
+                            continue
+                        if (
+                            f"kein {tok}" in profile_fold
+                            or f"keine {tok}" in profile_fold
+                            or f"ohne {tok}" in profile_fold
+                            or f"nicht {tok}" in profile_fold
+                        ):
+                            return True
+                    if family == "pflegeausbildung" and any(
+                        x in profile_fold for x in ("kein pflege", "keine pflege", "nicht examiniert")
+                    ):
+                        return True
+                    return False
+
+                if ct and ct <= corpus_t and not _negated_in_profile(ct):
                     ok_direct = True
                     matched = claim.text
-                elif ct and len(ct & corpus_t) >= max(2, len(ct) - 1):
+                elif (
+                    ct
+                    and len(ct & corpus_t) >= max(2, len(ct) - 1)
+                    and not _negated_in_profile(ct)
+                ):
                     ok_direct = True
                     matched = claim.text
 

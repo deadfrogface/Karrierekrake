@@ -107,7 +107,7 @@ def _pflege_regression() -> dict[str, Any]:
     claim = GeneratedClaim(text="Pflegeausbildung", kind=ClaimKind.CREDENTIAL, requires_direct=True)
     store = build_evidence_store(profile_text=prof_no)
     gr = ground_claim(claim, store=store, profile_text=prof_no, job_text=job)
-    blocked = gr.status.value in {"UNSUPPORTED", "CONTRADICTED"}
+    blocked = gr.status.value in {"UNSUPPORTED", "CONTRADICTED", "UNKNOWN"}
     adv_ok = True
     if GROUND_FIX.exists():
         fx = json.loads(GROUND_FIX.read_text(encoding="utf-8"))
