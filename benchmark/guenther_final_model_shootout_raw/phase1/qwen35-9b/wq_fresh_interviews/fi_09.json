@@ -1,0 +1,45 @@
+{
+  "id": "fi_09",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 217.051,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie mit einer hohen Anzahl an gleichzeitigen Reservierungsanfragen um, ohne die Qualität des Service zu beeinträchtigen?",
+      "Welche Strategien nutzen Sie, um bei Überbuchungen oder Stornierungen den Gast dennoch positiv zu erleben?",
+      "Wie priorisieren Sie Aufgaben im Frontoffice, wenn Reservierung, Check-in und allgemeine Gästeanfragen gleichzeitig eintreffen?"
+    ],
+    "talking_points": [
+      "Nutzung meiner 3 Jahre Hotelfach-Erfahrung zur effizienten Bearbeitung von Reservierungen und Gästewünschen.",
+      "Anwendung von Serviceorientierung und Geduld aus der Hotelfach-Ausbildung, um auch in stressigen Situationen einen freundlichen Umgangston zu wahren.",
+      "Transfer von allgemeinen Hotelfach-Kenntnissen auf die spezifischen Schwerpunkte Reservierung und Gästeservice im Rahmen der 3-jährigen Berufserfahrung."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Arbeitgeber oder Firmennamen im Profil vorhanden, daher allgemeine Formulierung der Erfahrung.",
+      "Keine konkreten Zertifikate oder abgeschlossenen Weiterbildungen im Evidenzbereich verifiziert."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Hotelfach",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Reservierung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Gästeservice",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  }
+}

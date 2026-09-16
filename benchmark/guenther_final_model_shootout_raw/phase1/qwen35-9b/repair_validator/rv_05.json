@@ -1,0 +1,10 @@
+{
+  "id": "rv_05",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "WRONG_COMPANY"
+  ],
+  "model_id": "qwen35-9b"
+}

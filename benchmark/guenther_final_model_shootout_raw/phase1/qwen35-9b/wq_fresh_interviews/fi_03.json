@@ -1,0 +1,39 @@
+{
+  "id": "fi_03",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 63.622,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie strukturieren Sie Ihre Dokumentation im Pflegealltag, um Zeit zu sparen und Fehler zu vermeiden?",
+      "Welche Erfahrungen haben Sie mit der Grundpflege bei Patienten mit eingeschränkter Mobilität gesammelt?",
+      "Wie gehen Sie vor, wenn Sie im Pflegealltag auf eine unklare Anweisung oder einen Konflikt mit einem Angehörigen stoßen?"
+    ],
+    "talking_points": [
+      "Erfahrung in der Grundpflege über 3 Jahre in verschiedenen Pflegeeinrichtungen",
+      "Strukturierte Arbeitsweise zur effizienten Dokumentation und Patientenbetreuung"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Evidenzdaten (z.B. Zertifikate, konkrete Projekte) im Profil vorhanden, daher Fokus auf allgemeine Berufserfahrung und Standardkompetenzen",
+      "Fehlende Details zu spezifischen Patientenprofilen oder besonderen Herausforderungen in der bisherigen Tätigkeit"
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Berufserfahrung als Pflegehelfer",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte Grundpflege und Dokumentation",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

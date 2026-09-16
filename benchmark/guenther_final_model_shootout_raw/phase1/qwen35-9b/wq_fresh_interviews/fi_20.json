@@ -1,0 +1,45 @@
+{
+  "id": "fi_20",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 204.905,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie strukturieren Sie typischerweise Anforderungsanalysen in agilen Umgebungen?",
+      "Welche UML-Diagramme nutzen Sie bevorzugt, um komplexe Geschäftsprozesse zu visualisieren?",
+      "Wie gehen Sie vor, wenn Stakeholder widersprüchliche Anforderungen äußern?"
+    ],
+    "talking_points": [
+      "Erfahrung in der Anforderungsanalyse und -dokumentation über 3 Jahre im Business-Analyse-Bereich.",
+      "Praxiserfahrung mit UML zur Modellierung von Geschäftsprozessen und Systemstrukturen.",
+      "Fähigkeit, komplexe Anforderungen in verständliche Spezifikationen für Entwickler und Stakeholder zu übersetzen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projektnamen oder Firmennamen im Profil vorhanden, um konkrete Beispiele zu nennen.",
+      "Keine Zertifikate oder spezifischen Tools (z.B. Jira, Visio) im Profil explizit genannt, daher allgemeine Kompetenzformulierung."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Berufserfahrung Business Analyst",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkt Anforderungen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkt UML",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

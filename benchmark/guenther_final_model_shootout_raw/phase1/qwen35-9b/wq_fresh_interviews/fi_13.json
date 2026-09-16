@@ -1,0 +1,48 @@
+{
+  "id": "fi_13",
+  "score": 8.4,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 236.044,
+  "talking_points_n": 2,
+  "questions_n": 6,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Erzählen Sie mir von einem komplexen manuellen Testfall, den Sie in den letzten 3 Jahren entwickelt haben.",
+      "Wie nutzen Sie Jira konkret für das Testmanagement und den Status-Flow?",
+      "Welche Strategie verfolgen Sie bei der Priorisierung von Testfällen bei begrenzter Zeit?",
+      "Wie gehen Sie vor, wenn ein Bug in Jira falsch als 'Fixed' markiert wird, aber das Problem persistiert?",
+      "Wie strukturieren Sie Ihre Testdokumentation für die Nachfolge?",
+      "Was ist Ihre Vorgehensweise bei der Kommunikation von kritischen Fehlern an das Entwicklungsteam?"
+    ],
+    "talking_points": [
+      "3 Jahre Erfahrung in manueller Qualitätssicherung mit Fokus auf Testfall-Design und -Execution.",
+      "Praktische Nutzung von Jira für Issue-Tracking, Test-Planung und Status-Management."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekte oder Arbeitgeber im Profil angegeben, daher Transfer von allgemeinen QA-Prinzipien.",
+      "Fehlende Nennung spezifischer Branchen oder Domänen, daher Fokus auf universelle QA-Methoden.",
+      "Keine Zertifikate oder spezifischen Tools (außer Jira) erwähnt, daher Betonung auf manuellen Prozessen."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre QA Erfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Manuelle Tests",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Jira",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

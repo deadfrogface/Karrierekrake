@@ -1,0 +1,50 @@
+{
+  "id": "fb_des_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 53.732,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in Linux und Bash möchte ich als Systemadministrator bei InfraWorks GmbH einen Beitrag zur Stabilität Ihrer Infrastruktur leisten. Die ausgeschriebene Position erfordert fundierte Kenntnisse in Linux-Umgebungen, die ich bereits erfolgreich anwenden konnte. Zwar liegt mir kein AWS Cloud Practitioner Zertifikat vor, doch meine Basis in Linux-Systemadministration bildet eine solide Grundlage, um mich schnell in Cloud-Konzepte einzuarbeiten und bestehende Prozesse zu optimieren.\n\nIch freue mich darauf, meine Fähigkeiten in einem praxisnahen Umfeld bei InfraWorks GmbH einzubringen und gemeinsam mit dem Team Herausforderungen zu meistern.\n\nMit freundlichen Grüßen\nNina Linux",
+  "subject": "Bewerbung als Systemadministrator",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Systemadministrator",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in Linux und Bash möchte ich als Systemadministrator bei InfraWorks GmbH einen Beitrag zur Stabilität Ihrer Infrastruktur leisten. Die ausgeschriebene Position erfordert fundierte Kenntnisse in Linux-Umgebungen, die ich bereits erfolgreich anwenden konnte. Zwar liegt mir kein AWS Cloud Practitioner Zertifikat vor, doch meine Basis in Linux-Systemadministration bildet eine solide Grundlage, um mich schnell in Cloud-Konzepte einzuarbeiten und bestehende Prozesse zu optimieren.\n\nIch freue mich darauf, meine Fähigkeiten in einem praxisnahen Umfeld bei InfraWorks GmbH einzubringen und gemeinsam mit dem Team Herausforderungen zu meistern.\n\nMit freundlichen Grüßen\nNina Linux",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

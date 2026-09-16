@@ -1,0 +1,10 @@
+SUBJECT: Bewerbung als Systemadministrator
+
+Sehr geehrte Damen und Herren,
+
+mit meiner Erfahrung in Linux und Bash möchte ich als Systemadministrator bei InfraWorks GmbH einen Beitrag zur Stabilität Ihrer Infrastruktur leisten. Die ausgeschriebene Position erfordert fundierte Kenntnisse in Linux-Umgebungen, die ich bereits erfolgreich anwenden konnte. Zwar liegt mir kein AWS Cloud Practitioner Zertifikat vor, doch meine Basis in Linux-Systemadministration bildet eine solide Grundlage, um mich schnell in Cloud-Konzepte einzuarbeiten und bestehende Prozesse zu optimieren.
+
+Ich freue mich darauf, meine Fähigkeiten in einem praxisnahen Umfeld bei InfraWorks GmbH einzubringen und gemeinsam mit dem Team Herausforderungen zu meistern.
+
+Mit freundlichen Grüßen
+Nina Linux

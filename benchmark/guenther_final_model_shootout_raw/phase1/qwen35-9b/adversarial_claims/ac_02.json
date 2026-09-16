@@ -1,0 +1,8 @@
+{
+  "id": "ac_02",
+  "claim": "examinierte Pflegefachkraft",
+  "expect": "UNSUPPORTED",
+  "got": "UNSUPPORTED",
+  "match": true,
+  "model_id": "qwen35-9b"
+}

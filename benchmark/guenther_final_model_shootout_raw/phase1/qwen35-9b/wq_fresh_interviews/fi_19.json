@@ -1,0 +1,43 @@
+{
+  "id": "fi_19",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 154.784,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie Ihre 3 Jahre Produktionserfahrung strukturiert und welche spezifischen Montageaufgaben haben Sie dabei übernommen?",
+      "Wie gehen Sie mit den Anforderungen einer Schichtarbeit und den damit verbundenen Wechselwirkungen zwischen Schicht und Privatleben um?",
+      "Können Sie ein konkretes Beispiel nennen, in dem Sie in der Montage einen Fehler proaktiv erkannt und behoben haben, bevor er zu einem Stillstand führte?"
+    ],
+    "talking_points": [
+      "3 Jahre Produktionserfahrung in Montageprozessen"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Skills im Profil vorhanden, daher müssen die 3 Jahre Produktionserfahrung als primärer Beweis für die Eignung dienen.",
+      "Fehlende Details zu spezifischen Maschinen oder Software erfordern eine allgemeine, aber konkrete Formulierung basierend auf dem Standardwissen in der Montage."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Produktionserfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Montage",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schicht",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

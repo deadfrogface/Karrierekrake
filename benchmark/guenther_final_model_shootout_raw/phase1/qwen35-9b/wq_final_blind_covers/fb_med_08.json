@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_08",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 50.789,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, \n\nmit meiner Bewerbung bewerbe ich mich auf die Position der Projektassistenz bei ProjectHouse SE. Die strukturierte Planung und Koordination von Terminen sowie die Nutzung von MS Project Grundlagen entsprechen genau den Anforderungen, die Sie für diese Rolle suchen. \n\nIn meiner bisherigen Tätigkeit konnte ich bereits Erfahrung in der Terminverwaltung sammeln und mich mit den Grundlagen von MS Project vertraut machen. Diese Fähigkeiten möchte ich nun gezielt in Ihr Team einbringen, um Abläufe effizient zu gestalten und Projekte reibungslos zu unterstützen. \n\nGerne stelle ich mich Ihnen in einem persönlichen Gespräch vor und freue mich auf Ihre Rückmeldung. \n\nMit freundlichen Grüßen\nCarla Project",
+  "subject": "Bewerbung als Projektassistenz – Carla Project",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Projektassistenz – Carla Project",
+          "body": "Sehr geehrte Damen und Herren, \n\nmit meiner Bewerbung bewerbe ich mich auf die Position der Projektassistenz bei ProjectHouse SE. Die strukturierte Planung und Koordination von Terminen sowie die Nutzung von MS Project Grundlagen entsprechen genau den Anforderungen, die Sie für diese Rolle suchen. \n\nIn meiner bisherigen Tätigkeit konnte ich bereits Erfahrung in der Terminverwaltung sammeln und mich mit den Grundlagen von MS Project vertraut machen. Diese Fähigkeiten möchte ich nun gezielt in Ihr Team einbringen, um Abläufe effizient zu gestalten und Projekte reibungslos zu unterstützen. \n\nGerne stelle ich mich Ihnen in einem persönlichen Gespräch vor und freue mich auf Ihre Rückmeldung. \n\nMit freundlichen Grüßen\nCarla Project",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

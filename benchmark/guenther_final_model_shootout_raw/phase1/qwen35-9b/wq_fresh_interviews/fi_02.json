@@ -1,0 +1,50 @@
+{
+  "id": "fi_02",
+  "score": 9.8,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 76.98,
+  "talking_points_n": 4,
+  "questions_n": 6,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Erzählen Sie mir von einer komplexen AD-Problemstellung, die Sie gelöst haben.",
+      "Wie gehen Sie vor, wenn ein Ticket eskaliert und mehrere Benutzer betroffen sind?",
+      "Wie strukturieren Sie Ihre Arbeit bei der Priorisierung von Support-Tickets?",
+      "Wie haben Sie Ihre Kenntnisse in Windows-Administration in den letzten 3 Jahren vertieft?",
+      "Welche Erfahrungen haben Sie mit der Dokumentation von Lösungen in einem Ticket-System?",
+      "Wie reagieren Sie auf einen dringenden Ausfall im Produktivnetzwerk?"
+    ],
+    "talking_points": [
+      "Erfahrung mit der Analyse und Lösung von Windows-basierten Support-Tickets.",
+      "Dokumentation und Eskalationsprozesse im IT-Support.",
+      "Priorisierung und Zeitmanagement bei mehreren offenen Tickets.",
+      "Grundlegende Kenntnisse in Windows-Server Administration und Troubleshooting."
+    ],
+    "gap_notes": [
+      "Fehlende spezifische Evidenz für konkrete Projekte oder Erfolge im Profil.",
+      "Keine Details zu spezifischen Tools oder Zertifizierungen vorhanden.",
+      "Keine Informationen zu Teamgröße oder Unternehmensumgebung."
+    ],
+    "anchors_used": [
+      {
+        "text": "Windows",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Tickets",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "3 Jahre IT-Support",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

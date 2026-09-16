@@ -1,0 +1,8 @@
+{
+  "id": "ac_23",
+  "claim": "Lehramtsabschluss",
+  "expect": "UNSUPPORTED",
+  "got": "UNSUPPORTED",
+  "match": true,
+  "model_id": "qwen35-9b"
+}

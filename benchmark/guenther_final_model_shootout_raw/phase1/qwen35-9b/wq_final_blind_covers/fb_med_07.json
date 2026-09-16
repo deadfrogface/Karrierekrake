@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_07",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 46.129,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, als erfahrener First-Level Support für Windows-Systeme bringe ich die technische Basis mit, um die Herausforderungen im IT-Helpdesk bei der HelpNow AG effektiv zu meistern. Meine Erfahrung in der Fehlerbehebung und Anwenderunterstützung ermöglicht es mir, schnelle Lösungen für alltägliche IT-Probleme zu finden und die Arbeitsabläufe der Nutzer nahtlos aufrechtzuerhalten. Ich freue mich darauf, meine Fähigkeiten im Support-Umfeld einzubringen und einen Beitrag zur reibungslosen IT-Infrastruktur Ihrer Firma zu leisten. Mit freundlichen Grüßen, Boris Help",
+  "subject": "Bewerbung als IT-Helpdesk – Boris Help",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als IT-Helpdesk – Boris Help",
+          "body": "Sehr geehrte Damen und Herren, als erfahrener First-Level Support für Windows-Systeme bringe ich die technische Basis mit, um die Herausforderungen im IT-Helpdesk bei der HelpNow AG effektiv zu meistern. Meine Erfahrung in der Fehlerbehebung und Anwenderunterstützung ermöglicht es mir, schnelle Lösungen für alltägliche IT-Probleme zu finden und die Arbeitsabläufe der Nutzer nahtlos aufrechtzuerhalten. Ich freue mich darauf, meine Fähigkeiten im Support-Umfeld einzubringen und einen Beitrag zur reibungslosen IT-Infrastruktur Ihrer Firma zu leisten. Mit freundlichen Grüßen, Boris Help",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

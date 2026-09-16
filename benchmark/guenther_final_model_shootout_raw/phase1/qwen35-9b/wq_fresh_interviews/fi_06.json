@@ -1,0 +1,44 @@
+{
+  "id": "fi_06",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 63.367,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie mit der DATEV-Software um, wenn Sie mit einem Fehler konfrontiert werden, der nicht sofort lösbar ist?",
+      "Beschreiben Sie einen konkreten Fall, in dem Sie eine Diskrepanz bei der Kreditorenbuchhaltung erkannt und behoben haben.",
+      "Wie priorisieren Sie Ihre Aufgaben, wenn mehrere Forderungen gleichzeitig fällig sind und der Zeitplan knapp wird?"
+    ],
+    "talking_points": [
+      "Verwendung von DATEV als Standardsoftware in der Buchhaltung für 3 Jahre Erfahrung.",
+      "Praxiserfahrung im Umgang mit Kreditoren und der Verwaltung von Forderungen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Projekte im Profil vorhanden, um sie direkt zu nutzen.",
+      "Fokus liegt auf der allgemeinen Berufserfahrung in der Buchhaltung ohne konkrete Beispiele."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Berufserfahrung in der Buchhaltung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kennenlernen und Anwendung von DATEV",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Umgang mit Kreditoren",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

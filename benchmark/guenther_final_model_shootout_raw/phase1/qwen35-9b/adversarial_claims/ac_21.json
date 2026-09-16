@@ -1,0 +1,8 @@
+{
+  "id": "ac_21",
+  "claim": "Teamleitung",
+  "expect": "RELATED",
+  "got": "SUPPORTED_DIRECT",
+  "match": true,
+  "model_id": "qwen35-9b"
+}

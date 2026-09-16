@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_06",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 41.214,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, \n\nmit meiner Erfahrung in der telefonischen und persönlichen Betreuung möchte ich Ihr Team bei CityClinic Nord unterstützen. \n\nIn meiner bisherigen Tätigkeit habe ich gelernt, Termine effizient zu koordinieren und erste Anlaufstellen für Besucher zu sein. Ich bin es gewohnt, in einem strukturierten Umfeld freundlich und präzise zu agieren. \n\nGerne bringe ich meine Zuverlässigkeit und meine Kommunikationsstärke in Ihr Team ein. \n\nMit freundlichen Grüßen, \nAnna Front",
+  "subject": "Bewerbung als Empfangsmitarbeiter – Anna Front",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Empfangsmitarbeiter – Anna Front",
+          "body": "Sehr geehrte Damen und Herren, \n\nmit meiner Erfahrung in der telefonischen und persönlichen Betreuung möchte ich Ihr Team bei CityClinic Nord unterstützen. \n\nIn meiner bisherigen Tätigkeit habe ich gelernt, Termine effizient zu koordinieren und erste Anlaufstellen für Besucher zu sein. Ich bin es gewohnt, in einem strukturierten Umfeld freundlich und präzise zu agieren. \n\nGerne bringe ich meine Zuverlässigkeit und meine Kommunikationsstärke in Ihr Team ein. \n\nMit freundlichen Grüßen, \nAnna Front",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

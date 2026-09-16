@@ -1,0 +1,50 @@
+{
+  "id": "fb_des_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 69.633,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, \n\ndie Möglichkeit, bei BrandNova SE die Rolle des Marketing Managers zu übernehmen, reizt mich, da ich meine Expertise im Bereich Content und Social Media strategisch auf die gesamte Markenführung ausweiten möchte. \n\nIn meiner bisherigen Tätigkeit habe ich fundierte Erfahrungen in der Erstellung und Steuerung von Content-Strategien sowie im Aufbau von Social-Media-Kanälen gesammelt. Diese Fähigkeiten bilden eine solide Basis, um die Kommunikation von BrandNova SE zielgruppengerecht und konsistent auf allen Kanälen zu gestalten. \n\nZwar liegt mir kein Google Ads Zertifikat vor, doch verfüge ich über ein tiefes Verständnis für digitale Werbekanäle und kann mich schnell in die spezifischen Anforderungen von Google Ads einarbeiten. Meine Stärke liegt darin, kreative Inhalte und datengetriebene Strategien zu verbinden, um messbare Ergebnisse zu erzielen. \n\nIch freue mich darauf, meine Motivation und meine Erfahrung im Content- und Social-Bereich in Ihr Team bei BrandNova SE einzubringen und gemeinsam neue Wege für die Markenpräsenz zu gehen. \n\nMit freundlichen Grüßen",
+  "subject": "Bewerbung als Marketing Manager – Transfer von Content & Social Expertise",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Marketing Manager – Transfer von Content & Social Expertise",
+          "body": "Sehr geehrte Damen und Herren, \n\ndie Möglichkeit, bei BrandNova SE die Rolle des Marketing Managers zu übernehmen, reizt mich, da ich meine Expertise im Bereich Content und Social Media strategisch auf die gesamte Markenführung ausweiten möchte. \n\nIn meiner bisherigen Tätigkeit habe ich fundierte Erfahrungen in der Erstellung und Steuerung von Content-Strategien sowie im Aufbau von Social-Media-Kanälen gesammelt. Diese Fähigkeiten bilden eine solide Basis, um die Kommunikation von BrandNova SE zielgruppengerecht und konsistent auf allen Kanälen zu gestalten. \n\nZwar liegt mir kein Google Ads Zertifikat vor, doch verfüge ich über ein tiefes Verständnis für digitale Werbekanäle und kann mich schnell in die spezifischen Anforderungen von Google Ads einarbeiten. Meine Stärke liegt darin, kreative Inhalte und datengetriebene Strategien zu verbinden, um messbare Ergebnisse zu erzielen. \n\nIch freue mich darauf, meine Motivation und meine Erfahrung im Content- und Social-Bereich in Ihr Team bei BrandNova SE einzubringen und gemeinsam neue Wege für die Markenpräsenz zu gehen. \n\nMit freundlichen Grüßen",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

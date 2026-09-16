@@ -1,0 +1,37 @@
+{
+  "id": "fi_04",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 194.164,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie strukturieren Sie Ihre Tourenplanung unter Berücksichtigung von Zeitfenstern und Fahrzeugkapazitäten?",
+      "Wie gehen Sie mit spontanen Störungen im Fahrplan oder unvorhergesehenen Kundenanfragen um?",
+      "Welche Tools oder Software nutzen Sie aktuell für die Tourenoptimierung und wie bewerten Sie deren Effizienz?"
+    ],
+    "talking_points": [
+      "3 Jahre Erfahrung als Disponent mit Fokus auf Tourenplanung und telefonische Kundenkommunikation"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Arbeitgeber oder Tools im Profil angegeben; Transfer von allgemeinen Disponenten-Skills erforderlich"
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Disponent-Erfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Tourenplanung, Telefon",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

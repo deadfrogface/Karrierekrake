@@ -1,0 +1,43 @@
+{
+  "id": "fi_17",
+  "score": 8.4,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 93.454,
+  "talking_points_n": 2,
+  "questions_n": 6,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Erkläre mir bitte die Architektur der aktuellen Firewall-Regelwerke in Ihrem Netzwerk und wie Sie diese optimieren.",
+      "Wie gehen Sie vor, wenn Sie eine Sicherheitslücke in einer VPN-Konfiguration identifizieren, bevor sie ausgenutzt wird?",
+      "Welche Strategien nutzen Sie, um die Performance von VPN-Tunnels unter Last zu gewährleisten?",
+      "Wie bewerten Sie die Rolle von Zero-Trust-Architekturen im Vergleich zu traditionellen Perimeter-Modellen?",
+      "Können Sie ein Beispiel nennen, bei dem Sie eine komplexe Netzwerksegmentierung erfolgreich umgesetzt haben?",
+      "Wie priorisieren Sie zwischen der Wartung bestehender Systeme und der Implementierung neuer Sicherheitsstandards?"
+    ],
+    "talking_points": [
+      "Praktische Erfahrung mit Firewall-Regelwerken und deren Optimierung über 3 Jahre Netzwerkarbeit.",
+      "Kenntnisse in der Konfiguration und Hardening von VPN-Lösungen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projektnamen oder Erfolge im Profil vorhanden, daher allgemeine Aussagen basierend auf Berufserfahrung.",
+      "Fehlende Details zu spezifischen Technologien oder Zertifizierungen.",
+      "Keine Evidenz für konkrete Fallstudien oder Messwerte."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Netzwerk-Erfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Firewall, VPN",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

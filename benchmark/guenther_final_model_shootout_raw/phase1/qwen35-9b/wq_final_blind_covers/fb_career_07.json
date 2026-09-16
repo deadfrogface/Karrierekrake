@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_07",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.8,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 72.075,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\ndie Schnittstelle zwischen technischer Montage und laufender Instandhaltung ist für mich ein spannender Bereich, in dem ich meine Erfahrung bei BuildCare SE einbringen möchte. In meiner bisherigen Tätigkeit im Handwerk habe ich gelernt, wie präzise Montageprozesse funktionieren und welche kritischen Punkte bei der Wartung und Reparatur von Anlagen entscheidend sind.\n\nKonkret bringe ich folgende Kompetenzen mit:\n- Ich kenne die Abläufe der Montageplanung und -durchführung aus der Praxis und verstehe, wie sich Fehlerquellen in der Produktion auf die spätere Instandhaltung auswirken.\n- Ich habe Erfahrung im Umgang mit technischen Dokumentationen und kann diese zur Fehleranalyse nutzen.\n- Meine Arbeit im Team hat mich geübt, auch unter Zeitdruck strukturiert zu arbeiten und Lösungen zu finden.\n\nGerne möchte ich diese Transferkompetenzen nun gezielt in die Rolle des Facility Support bei BuildCare SE einbringen, um die Verfügbarkeit Ihrer Anlagen sicherzustellen und proaktiv Instandhaltungsbedarf zu erkennen.\n\nIch freue mich auf das Gespräch und stehe für Rückfragen gerne zur Verfügung.\n\nMit freundlichen Grüßen\nJulia Craft",
+  "subject": "Bewerbung als Facility Support – Transfer von Montageerfahrung zur Instandhaltung",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Facility Support – Transfer von Montageerfahrung zur Instandhaltung",
+          "body": "Sehr geehrte Damen und Herren,\n\ndie Schnittstelle zwischen technischer Montage und laufender Instandhaltung ist für mich ein spannender Bereich, in dem ich meine Erfahrung bei BuildCare SE einbringen möchte. In meiner bisherigen Tätigkeit im Handwerk habe ich gelernt, wie präzise Montageprozesse funktionieren und welche kritischen Punkte bei der Wartung und Reparatur von Anlagen entscheidend sind.\n\nKonkret bringe ich folgende Kompetenzen mit:\n- Ich kenne die Abläufe der Montageplanung und -durchführung aus der Praxis und verstehe, wie sich Fehlerquellen in der Produktion auf die spätere Instandhaltung auswirken.\n- Ich habe Erfahrung im Umgang mit technischen Dokumentationen und kann diese zur Fehleranalyse nutzen.\n- Meine Arbeit im Team hat mich geübt, auch unter Zeitdruck strukturiert zu arbeiten und Lösungen zu finden.\n\nGerne möchte ich diese Transferkompetenzen nun gezielt in die Rolle des Facility Support bei BuildCare SE einbringen, um die Verfügbarkeit Ihrer Anlagen sicherzustellen und proaktiv Instandhaltungsbedarf zu erkennen.\n\nIch freue mich auf das Gespräch und stehe für Rückfragen gerne zur Verfügung.\n\nMit freundlichen Grüßen\nJulia Craft",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

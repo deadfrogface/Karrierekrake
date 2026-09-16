@@ -1,0 +1,36 @@
+{
+  "id": "fi_08",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 42.939,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Erzählen Sie mir etwas über Ihre Erfahrung mit der Kommissionierung in den letzten 3 Jahren.",
+      "Wie haben Sie Ihre Staplerschein-Qualifikation in der Praxis angewendet?",
+      "Wie gehen Sie mit Zeitdruck oder hohen Kommissionierungsraten um?"
+    ],
+    "talking_points": [
+      "3 Jahre praktische Erfahrung in Lagerumgebungen mit Fokus auf Kommissionierung.",
+      "Effiziente Arbeitsabläufe und Sorgfalt bei der Warenverteilung basierend auf Berufserfahrung."
+    ],
+    "gap_notes": [],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Lagererfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Staplerschein",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

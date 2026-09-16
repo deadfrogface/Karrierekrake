@@ -1,0 +1,38 @@
+{
+  "id": "fi_05",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 54.407,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie strukturieren Sie Ihre tägliche Sourcing-Strategie, um relevante Kandidaten effizient zu finden?",
+      "Wie gehen Sie mit der hohen Anzahl an 'No-Show'-Raten bei aktiven Kandidaten um?",
+      "Welche spezifischen LinkedIn-Features nutzen Sie, um passive Kandidaten zu aktivieren?"
+    ],
+    "talking_points": [
+      "Erfahrung mit aktiver Sourcing-Strategie über 3 Jahre in der Recruiting-Branche",
+      "Vertrautheit mit LinkedIn als primäres Tool für die Kandidatensuche"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Metriken im Profil vorhanden, um quantitative Aussagen zu treffen"
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Berufserfahrung als Recruiter",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Aktive Sourcing- und LinkedIn-Schwerpunkte aus Stellenbeschreibung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

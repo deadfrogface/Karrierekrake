@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 58.124,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\ndie Rolle als Content Creator bei MediaPulse SE spricht mich an, da sie meine Stärken im Bereich CMS, SEO-Grundlagen und Texten direkt einbindet. Meine Erfahrung mit der Verwaltung von Content-Management-Systemen ermöglicht es mir, Inhalte effizient zu strukturieren und zu veröffentlichen. Zudem bringe ich fundierte Kenntnisse in SEO-Grundlagen mit, um Texte so zu optimieren, dass sie sowohl für Nutzer als auch für Suchmaschinen gut auffindbar sind. Mein Fokus auf präzises und zielgruppenorientiertes Texten unterstützt die Erstellung hochwertiger Inhalte, die die Markenidentität von MediaPulse SE stärken.\n\nIch freue mich darauf, meine Fähigkeiten in diesem Team einzubringen und gemeinsam mit Ihnen spannende Inhalte zu entwickeln.\n\nMit freundlichen Grüßen\nWendy Media",
+  "subject": "Bewerbung als Content Creator",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Content Creator",
+          "body": "Sehr geehrte Damen und Herren,\n\ndie Rolle als Content Creator bei MediaPulse SE spricht mich an, da sie meine Stärken im Bereich CMS, SEO-Grundlagen und Texten direkt einbindet. Meine Erfahrung mit der Verwaltung von Content-Management-Systemen ermöglicht es mir, Inhalte effizient zu strukturieren und zu veröffentlichen. Zudem bringe ich fundierte Kenntnisse in SEO-Grundlagen mit, um Texte so zu optimieren, dass sie sowohl für Nutzer als auch für Suchmaschinen gut auffindbar sind. Mein Fokus auf präzises und zielgruppenorientiertes Texten unterstützt die Erstellung hochwertiger Inhalte, die die Markenidentität von MediaPulse SE stärken.\n\nIch freue mich darauf, meine Fähigkeiten in diesem Team einzubringen und gemeinsam mit Ihnen spannende Inhalte zu entwickeln.\n\nMit freundlichen Grüßen\nWendy Media",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

@@ -1,0 +1,52 @@
+{
+  "id": "fi_10",
+  "score": 7.7,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 78.683,
+  "talking_points_n": 1,
+  "questions_n": 6,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Erzählen Sie mir etwas über Ihre bisherigen Erfahrungen mit Schaltschränken.",
+      "Wie gehen Sie bei Wartungsarbeiten vor, wenn ein Fehler nicht sofort ersichtlich ist.",
+      "Welche Sicherheitsvorkehrungen beachten Sie bei der Arbeit mit elektrischen Anlagen?",
+      "Wie strukturieren Sie Ihre Arbeitstage bei der Wartung?",
+      "Was ist Ihre Vorgehensweise bei der Dokumentation von Wartungsarbeiten?",
+      "Wie reagieren Sie auf dringende Störungen im Schaltschrank?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung als Elektroniker im Bereich Schaltschrank und Wartung."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekte oder Erfolge im Profil vorhanden, um detaillierte Beispiele zu liefern.",
+      "Fehlende Informationen zu spezifischen Technologien oder Software-Tools.",
+      "Keine Angaben zu Teamgrößen oder spezifischen Kundenprojekten."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Berufserfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schaltschrank",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Wartung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Elektroniker",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}
