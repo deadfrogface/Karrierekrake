@@ -1,5 +1,5 @@
 {
-  "purpose": "Günther quality-loop ablation on Phase-2 development fixture",
+  "purpose": "Günther quality-loop ablation on Phase-2 development fixture — COMPLETE",
   "primary_model": "phi4-mini",
   "ablation": {
     "A_old_phase2_reuse": {
@@ -59,12 +59,31 @@
       "p95_model_calls": 6,
       "peak_rss_mb": 5561.1796875
     },
-    "D_full": "RUNNING"
+    "D_full": {
+      "mode": "full",
+      "source": "live",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 85.11,
+      "unnecessary_fail_closed_pct": 14.89,
+      "ready_as_is_pct": 58.51,
+      "cover_raw_avg": 7.045,
+      "cover_accepted_avg": 7.576,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 141.688,
+      "median_latency_s": 132.449,
+      "p95_latency_s": 250.733,
+      "avg_model_calls": 4.85,
+      "p50_model_calls": 5.0,
+      "p95_model_calls": 7,
+      "peak_rss_mb": 5538.6171875
+    }
   },
   "revision_2_worth_keeping": false,
   "critic_net_positive_vs_plan_draft": false,
   "recommended_default_mode": "plan_draft",
+  "max_quality_revisions_recommended": 0,
   "development_target_reached": false,
   "new_blind_fixture_created": false,
-  "stop_reason": "Dev targets not reached after plan_draft+critic1; no new blind fixture. plan_draft best automation (93.62%); critic raises ready slightly but hurts automation."
+  "stop_reason": "Dev targets unmet. Best mode=plan_draft (auto 93.62%). Critic/full regress automation and ready vs OLD baseline ready. No new blind fixture."
 }

@@ -1,0 +1,76 @@
+{
+  "id": "sc_sparse_01",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 172.058,
+  "model_calls": 7,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Berufserfahrung im Bürobereich und meinen fließenden Deutschkenntnissen bin ich überzeugt, dass ich einen wertvollen Beitrag für PaperClip GmbH leisten kann. Ich freue mich darauf, meine Fähigkeiten im Büroumfeld zu nutzen und zu unterstützen.",
+  "subject": "Bürohilfe",
+  "peak_rss_mb": 207.4765625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.749,
+      "draft": 12.962,
+      "critique_1": 29.684,
+      "quality_revision_1": 13.429,
+      "critique_2": 33.292,
+      "quality_revision_2": 16.026,
+      "critique_3": 32.913
+    },
+    "cot_stored": false
+  }
+}

@@ -1,5 +1,7 @@
 {
-  "purpose": "Günther final intelligence architecture — quality loop results",
+  "purpose": "Günther final intelligence architecture — quality loop results COMPLETE",
+  "architecture_complete": true,
+  "ablation_complete": true,
   "primary_model": "phi4-mini",
   "light_fallback": "qwen3-1.7b",
   "model_tournament_closed": true,
@@ -10,6 +12,9 @@
   "max_plan_repairs": 1,
   "max_safety_repairs": 1,
   "max_quality_revisions": 2,
+  "max_quality_revisions_recommended_in_prod": 0,
+  "recommended_default_mode": "plan_draft",
+  "revision_2_worth_keeping": false,
   "critic_calibration": {
     "n": 6,
     "correct": 5,
@@ -112,10 +117,26 @@
       "p95_model_calls": 6,
       "peak_rss_mb": 5561.1796875
     },
-    "D_full": "RUNNING"
+    "D_full": {
+      "mode": "full",
+      "source": "live",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 85.11,
+      "unnecessary_fail_closed_pct": 14.89,
+      "ready_as_is_pct": 58.51,
+      "cover_raw_avg": 7.045,
+      "cover_accepted_avg": 7.576,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 141.688,
+      "median_latency_s": 132.449,
+      "p95_latency_s": 250.733,
+      "avg_model_calls": 4.85,
+      "p50_model_calls": 5.0,
+      "p95_model_calls": 7,
+      "peak_rss_mb": 5538.6171875
+    }
   },
-  "recommended_default_mode": "plan_draft",
-  "revision_2_worth_keeping": false,
   "development_target_reached": false,
   "new_blind_fixture_created": false,
   "held_out_rerun": false,
@@ -124,9 +145,13 @@
   "ci": "PASS",
   "windows_smoke": "PASS",
   "phase2_forensics": "benchmark/guenther_quality_loop_raw/phase2_failure_forensics.json",
-  "interpretation": {
-    "plan_draft": "Best automation lift 85.11→93.62 with safety 0; ready/cover drop",
-    "critic1": "Ready +4.25pp vs plan_draft but automation -4.26pp; not net-positive yet",
-    "next": "Improve critic/revision prompts or selective critic-on-not-ready; do not open model tournament"
+  "verdict": {
+    "best_mode": "plan_draft",
+    "automation_lift_vs_old_pp": 8.51,
+    "ready_delta_vs_old_pp": -15.96,
+    "cover_delta_vs_old": -0.365,
+    "revision_2_worth_keeping": false,
+    "reopen_model_selection": false,
+    "blind_fixture": false
   }
 }

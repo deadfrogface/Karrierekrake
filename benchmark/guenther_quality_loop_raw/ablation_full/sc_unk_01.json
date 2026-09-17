@@ -1,0 +1,54 @@
+{
+  "id": "sc_unk_01",
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 100.243,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich wende mich an Sie, da meine Berufserfahrung und Sprachkenntnisse mit den Anforderungen für die Rolle der Sachbearbeitung bei Ihrem Unternehmen übereinstimmen. Ich bringe Erfahrung im Umgang mit Excel, Ablage und Telefon, was für die Aufgaben im Cyd Office relevant sein könnte. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Ihrem Team zu diskutieren.",
+  "subject": "Interessent für die Rolle der Sachbearbeitung",
+  "peak_rss_mb": 207.58203125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.287,
+      "draft": 23.032,
+      "critique_1": 39.922
+    },
+    "cot_stored": false
+  }
+}

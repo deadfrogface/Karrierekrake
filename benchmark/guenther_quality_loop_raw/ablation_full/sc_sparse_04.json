@@ -1,0 +1,76 @@
+{
+  "id": "sc_sparse_04",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 208.659,
+  "model_calls": 7,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Erfahrungen im Telefonbereich mit CallLite SE zu teilen. Meine profunde Kenntnis des Deutschen und meine Berufserfahrung im Telefonbereich machen mich zu einem idealen Kandidaten für diese Position.",
+  "subject": "Telefonhilfe",
+  "peak_rss_mb": 207.4921875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.498,
+      "draft": 17.839,
+      "critique_1": 40.156,
+      "quality_revision_1": 18.226,
+      "critique_2": 35.959,
+      "quality_revision_2": 19.103,
+      "critique_3": 39.872
+    },
+    "cot_stored": false
+  }
+}

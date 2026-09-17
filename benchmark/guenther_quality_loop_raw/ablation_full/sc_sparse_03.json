@@ -1,0 +1,76 @@
+{
+  "id": "sc_sparse_03",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 213.612,
+  "model_calls": 7,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Berufserfahrung im Tragen und Sortieren bei BoxRoom KG als Lager Aushilfe einzubringen. Meine Erfahrung im Tragen und Sortieren, wie in meinem Arbeitgeberprofiel prof_1 dokumentiert, entspricht direkt den Anforderungen für diese Rolle. Ich bin überzeugt, dass meine Arbeitsmoral und meine Fähigkeit, Aufgaben effizient zu erledigen, dazu beitragen werden, den Ablauf im Lagerbetrieb von BoxRoom KG zu optimieren.",
+  "subject": "Lager Aushilfe",
+  "peak_rss_mb": 207.48046875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 32.466,
+      "draft": 13.502,
+      "critique_1": 18.277,
+      "quality_revision_1": 13.306,
+      "critique_2": 33.877,
+      "quality_revision_2": 22.298,
+      "critique_3": 79.881
+    },
+    "cot_stored": false
+  }
+}

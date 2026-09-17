@@ -1,0 +1,64 @@
+{
+  "id": "sc_career_17",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 143.392,
+  "model_calls": 5,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Erfahrungen im Außendienst und in der Transferberatung mit Ihnen zu teilen. Meine Rolle als Eve Sales hat mir die Fähigkeiten verliehen, die für die Position des Junior Consultants bei AdviseLite GmbH entscheidend sind. Ich bin überzeugt, dass meine strategische Denkweise und meine Fähigkeit, komplexe Beratungsprozesse zu managen, einen wertvollen Beitrag für Ihr Team leisten können.",
+  "subject": "Junior Consultant",
+  "peak_rss_mb": 207.45703125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 41.802,
+      "draft": 19.251,
+      "critique_1": 31.457,
+      "quality_revision_1": 18.899,
+      "critique_2": 31.981
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "sc_des_08",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 147.933,
+  "model_calls": 4,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit umfangreicher Erfahrung in der Tourenplanung und einem starken Fokus auf effiziente Routenoptimierung, auch ohne TMS Zertifikat, bin ich bereit, die Herausforderungen der Rolle des Disponenten bei RoutePro GmbH zu meistern. Meine praktische Erfahrung mit 'Zed Route' zeigt meine Fähigkeit, komplexe Routen zu entwerfen und zu optimieren, was direkt für die Rolle eines Disponenten relevant ist. Obwohl ich kein TMS Zertifikat habe, bin ich überzeugt, dass meine Fähigkeiten in der Tourenplanung die Lücke ausfüllen können und ich bereit bin, mich weiterzubilden, um meine Kompetenzen im Bereich des TMS zu verbessern.",
+  "subject": "Disponent",
+  "peak_rss_mb": 207.5625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 54.383,
+      "draft": 21.952,
+      "safety_repair": 31.155,
+      "critique_1": 40.441
+    },
+    "cot_stored": false
+  }
+}

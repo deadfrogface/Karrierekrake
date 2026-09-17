@@ -1,0 +1,76 @@
+{
+  "id": "sc_sparse_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 251.933,
+  "model_calls": 7,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, im Rahmen meiner beruflichen Entwicklung bin ich auf die Position des Empfangs Aushilfen bei ClinicLite gestoßen. Mit meiner bisherigen Erfahrung im Bereich Empfang, insbesondere im Umgang mit dem Qin Brief, bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Bedürfnisse von ClinicLite einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die Organisation und Kommunikation im Empfangsbereich mit Ihnen zu teilen.",
+  "subject": "Empfang Aushilfe - ClinicLite",
+  "peak_rss_mb": 207.515625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 42.255,
+      "draft": 23.997,
+      "critique_1": 37.337,
+      "quality_revision_1": 25.689,
+      "critique_2": 61.296,
+      "quality_revision_2": 25.102,
+      "critique_3": 36.249
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "id": "sc_des_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 250.733,
+  "model_calls": 8,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit Erfahrung in der Verwaltung von Windows Tickets und einem starken Engagement für IT-Prozesse bin ich eine geeignete Kandidatin für die IT-Support-Rolle bei DeskHelp AG. Obwohl ich kein ITIL Zertifikat besitze, bin ich bereit, mich in dieses Gebiet einzubringen und es zu erwerben.",
+  "subject": "IT-Support",
+  "peak_rss_mb": 207.5703125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 34.905,
+      "draft": 19.728,
+      "safety_repair": 20.432,
+      "critique_1": 37.994,
+      "quality_revision_1": 20.899,
+      "critique_2": 39.416,
+      "quality_revision_2": 19.803,
+      "critique_3": 57.551
+    },
+    "cot_stored": false
+  }
+}

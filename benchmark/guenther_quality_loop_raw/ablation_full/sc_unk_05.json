@@ -1,0 +1,78 @@
+{
+  "id": "sc_unk_05",
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 247.645,
+  "model_calls": 7,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit umfangreicher Erfahrung im Telefon und CRM bin ich bestens gerüstet, um als Teil des Kundenberatungsteams beizutragen. Mein Fachwissen im Umgang mit Kundeninteraktionen und im Management von Kundeninformationen ermöglicht es mir, effektiv zur Kundenzufriedenheit beizutragen.",
+  "subject": "Kundenberatung",
+  "peak_rss_mb": 208.69921875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 41.972,
+      "draft": 18.61,
+      "critique_1": 52.926,
+      "quality_revision_1": 21.612,
+      "critique_2": 52.237,
+      "quality_revision_2": 21.188,
+      "critique_3": 39.096
+    },
+    "cot_stored": false
+  }
+}
