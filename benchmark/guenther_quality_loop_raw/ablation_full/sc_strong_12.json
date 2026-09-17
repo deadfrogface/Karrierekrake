@@ -1,0 +1,64 @@
+{
+  "id": "sc_strong_12",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 123.089,
+  "model_calls": 5,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit über 3 Jahren Berufserfahrung im Bereich der Klinikverwaltung, insbesondere im Umgang mit KIS und ICD-Systemen, bringe ich meine Expertise in die Position der Medizinischen Dokumentation bei Klinik West ein. Mein Fokus liegt auf Effizienz und Genauigkeit in der medizinischen Dokumentation, was ich durch meine praktische Erfahrung sicherstellen kann. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung eine wertvolle Ergänzung für Klinik West darstellen.",
+  "subject": "Medizinische Dokumentation",
+  "peak_rss_mb": 208.4609375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.492,
+      "draft": 17.141,
+      "critique_1": 30.114,
+      "quality_revision_1": 19.159,
+      "critique_2": 27.18
+    },
+    "cot_stored": false
+  }
+}

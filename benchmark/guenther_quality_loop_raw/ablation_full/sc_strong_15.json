@@ -1,0 +1,64 @@
+{
+  "id": "sc_strong_15",
+  "final_ok": false,
+  "score": 5.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company",
+    "too_short"
+  ],
+  "latency_s": 136.998,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_SAFETY",
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "expect_hard_block": false,
+  "body": "Omar Cook, mit einer Koch-Ausbildung im Jahr 2018 und Erfahrung im HACCP und Mise en Place, ist gut positioniert, um die kulinarischen Anforderungen des Restaurants Alpen zu erfüllen.",
+  "subject": "Koch/Köchin",
+  "peak_rss_mb": 208.46875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben.",
+        "after": "quality_revision"
+      },
+      {
+        "state": "REVIEW_REQUIRED_SAFETY",
+        "progress": "Anschreiben wurde aus Sicherheitsgründen blockiert."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.923,
+      "draft": 15.875,
+      "critique_1": 42.062,
+      "quality_revision_1": 21.547
+    },
+    "cot_stored": false
+  }
+}

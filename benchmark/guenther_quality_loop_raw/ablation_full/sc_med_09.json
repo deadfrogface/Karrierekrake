@@ -1,0 +1,76 @@
+{
+  "id": "sc_med_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 251.006,
+  "model_calls": 7,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Cid Pack, und ich bin sehr daran interessiert, mich für die Rolle der Lagerhilfe bei PackRoom GmbH zu bewerben. Obwohl ich keine spezifische Berufserfahrung vorweisen kann, habe ich Erfahrung in Kommissionierung und Scanner, die ich glaube, gut für Ihre Abteilung einsetzen könnte. Ich bin bereit, mich in die Rolle einzubringen und zur Effizienzsteigerung in PackRoom GmbH beizutragen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für Lagerprozesse zu demonstrieren. Vielen Dank für Ihre Berücksichtigung.",
+  "subject": "Lagerhilfe",
+  "peak_rss_mb": 208.51953125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 52.551,
+      "draft": 23.703,
+      "critique_1": 40.147,
+      "quality_revision_1": 24.877,
+      "critique_2": 42.885,
+      "quality_revision_2": 25.204,
+      "critique_3": 41.636
+    },
+    "cot_stored": false
+  }
+}

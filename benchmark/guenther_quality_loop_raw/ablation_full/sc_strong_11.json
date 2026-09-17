@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_11",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 68.997,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Spritzguss und in der Qualitätsprüfung (QS) anzubieten. Mit 3 Jahren Erfahrung im Spritzguss und QS bin ich bestens gerüstet, um Ihre Maschinenbedienungsanforderungen zu erfüllen. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung eine wertvolle Bereicherung für FormTech GmbH sein werden.",
+  "subject": "Maschinenbediener/in - FormTech GmbH",
+  "peak_rss_mb": 208.45703125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.002,
+      "draft": 19.417,
+      "critique_1": 20.576
+    },
+    "cot_stored": false
+  }
+}

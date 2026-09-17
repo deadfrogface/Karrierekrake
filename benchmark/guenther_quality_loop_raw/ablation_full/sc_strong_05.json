@@ -1,0 +1,49 @@
+{
+  "id": "sc_strong_05",
+  "final_ok": false,
+  "score": 8.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [],
+  "latency_s": 80.675,
+  "model_calls": 3,
+  "final_state": "REVIEW_REQUIRED_SAFETY",
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "expect_hard_block": false,
+  "body": "Mit einer Ausbildung als Elektroniker Energie und Erfahrung im Bereich Schaltschrank, Wartung, bin ich gut positioniert, um die Anforderungen des Elektroniker-Posts bei PowerFix GmbH zu erfüllen. Meine Erfahrung im Bereich Schaltschrank, Wartung, könnte auf die Wartungsanforderungen des Elektroniker-Posts bei PowerFix GmbH übertragen werden.",
+  "subject": "Elektroniker",
+  "peak_rss_mb": 208.453125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_SAFETY",
+        "progress": "Anschreiben wurde aus Sicherheitsgründen blockiert."
+      }
+    ],
+    "timings_s": {
+      "plan": 43.861,
+      "draft": 16.888,
+      "safety_repair": 19.923
+    },
+    "cot_stored": false
+  }
+}

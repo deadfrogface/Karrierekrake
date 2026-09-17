@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_11",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 100.982,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich möchte mich für die Position des Support Engineer Jr bei ByteCare AG bewerben. Mit meiner Erfahrung im Elektronikverkauf und dem erfolgreichen Transfer meiner Fähigkeiten in den IT-Support sehe ich großes Potenzial, diese Kompetenzen in Ihrem Unternehmen anzuwenden. Ich bin überzeugt, dass meine Fähigkeit, schnell auf neue Herausforderungen zu reagieren und meine proaktiven Problemlösungsfähigkeiten, einen wertvollen Beitrag für Ihr Team leisten können. Ich bin besonders begeistert von der Möglichkeit, in einer Umgebung zu arbeiten, in der technisches Fachwissen und Sprachkenntnisse in Deutsch entscheidend sind. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Ihnen zu diskutieren.",
+  "subject": "Angebot für die Position Support Engineer Jr",
+  "peak_rss_mb": 207.43359375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 34.721,
+      "draft": 24.711,
+      "critique_1": 41.547
+    },
+    "cot_stored": false
+  }
+}

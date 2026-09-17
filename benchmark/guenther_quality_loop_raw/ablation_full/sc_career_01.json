@@ -1,0 +1,78 @@
+{
+  "id": "sc_career_01",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 189.34,
+  "model_calls": 7,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo CloudCare GmbH, ich habe Ihre Stellenanzeige für die Customer Success Rolle gesehen und bin sehr interessiert. Mit 4 Jahren Erfahrung im Callcenter Inbound und einem Quereinstieg in SaaS-Lösungen, glaube ich, dass ich gut geeignet bin, um die Bedürfnisse Ihrer Kunden zu erfüllen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem Customer Success Umfeld bei CloudCare GmbH einzubringen. Vielen Dank für Ihre Zeit.",
+  "subject": "Interesse an der Customer Success Rolle",
+  "peak_rss_mb": 207.390625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 28.994,
+      "draft": 20.313,
+      "critique_1": 27.529,
+      "quality_revision_1": 21.953,
+      "critique_2": 37.064,
+      "quality_revision_2": 20.54,
+      "critique_3": 32.943
+    },
+    "cot_stored": false
+  }
+}

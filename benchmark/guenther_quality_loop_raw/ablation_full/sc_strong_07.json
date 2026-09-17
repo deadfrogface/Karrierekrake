@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_07",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 78.889,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Bewerbung für die Position des Personalsachbearbeiters bei PeopleCore KG anzubieten. Mit 4 Jahren Berufserfahrung in der Personalsachbearbeitung und Fähigkeiten im Onboarding-Prozess sowie im Umgang mit Excel bin ich überzeugt, dass ich eine wertvolle Bereicherung für Ihr Team sein kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu diskutieren.",
+  "subject": "Personalsachbearbeiter/in",
+  "peak_rss_mb": 208.453125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.287,
+      "draft": 20.202,
+      "critique_1": 21.399
+    },
+    "cot_stored": false
+  }
+}

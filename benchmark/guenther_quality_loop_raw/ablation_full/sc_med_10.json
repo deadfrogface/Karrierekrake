@@ -1,0 +1,52 @@
+{
+  "id": "sc_med_10",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 79.928,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Rolle der Sachbearbeitung bei AdminCore AG anzubieten. Mit meiner Erfahrung in Ablage, Excel und Telefonzentrale, die direkt mit den Anforderungen von AdminCore AG übereinstimmt, bin ich überzeugt, dass ich eine wertvolle Bereicherung für Ihr Team sein kann.",
+  "subject": "Bewerbung für die Rolle der Sachbearbeitung",
+  "peak_rss_mb": 208.51953125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 30.241,
+      "draft": 28.978,
+      "critique_1": 20.708
+    },
+    "cot_stored": false
+  }
+}

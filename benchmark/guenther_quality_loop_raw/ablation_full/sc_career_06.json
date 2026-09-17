@@ -1,0 +1,71 @@
+{
+  "id": "sc_career_06",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 167.314,
+  "model_calls": 6,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Fähigkeiten im Excel und meine analytische Denkweise für die Rolle des Junior Data Analyst bei InsightLab AG einzubringen. Obwohl ich keine formale Data Science-Ausbildung habe, bin ich bereit, mich weiterzubilden und neue Tools und Methoden in der Datenanalyse zu erlernen.",
+  "subject": "Junior Data Analyst",
+  "peak_rss_mb": 207.41796875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 54.595,
+      "draft": 16.963,
+      "safety_repair": 16.452,
+      "critique_1": 30.949,
+      "quality_revision_1": 18.285,
+      "critique_2": 30.068
+    },
+    "cot_stored": false
+  }
+}
