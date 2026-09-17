@@ -609,7 +609,7 @@ def _plan_task() -> str:
         "Erfinde keine Evidenz. Jede faktische Aussage braucht evidence_id aus TRUSTED EvidenceStore. "
         "Preferiere 2–4 stärkste relevante Belege (Relevance > Recency). "
         "RELATED klar als Transfer markieren. do_not_claim für fehlende Hard-Qualifikationen. "
-        "Keine Platzhalter."
+        "Keine Platzhalter. Credential-Texte nicht verallgemeinern — exact evidence wording in reasons."
     )
 
 
@@ -618,7 +618,10 @@ def _draft_from_plan_task() -> str:
         "Schreibe das Anschreiben NUR aus dem VERIFIED PLAN + allowed evidence. "
         "Deutsch: natürlich, modern, konkret, knapp, glaubwürdig. "
         "RELATED nur als Transfer. Keine neuen Fakten. Keine Clichés. "
-        "Keine Platzhalter. Firma/Rolle aus Plan übernehmen."
+        "Keine Platzhalter ([...], nan, null). Firma/Rolle aus Plan übernehmen. "
+        "Credentials/Ausbildungen NUR wörtlich wie in allowed_direct_evidence — "
+        "nicht paraphrasieren (z.B. nicht 'Ausbildung im Steuerfach' statt "
+        "'Steuerfachangestellte IHK'). Arbeitgeber nur aus Evidenztext, nie erfinden."
     )
 
 
