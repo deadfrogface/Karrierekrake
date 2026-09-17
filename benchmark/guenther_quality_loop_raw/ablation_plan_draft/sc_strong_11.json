@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_11",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 76.179,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich wende mich an Sie, da ich von Ihrer Anzeige für die Rolle des Maschinenbedieners/in bei FormTech GmbH erfahren habe. Mit 3 Jahren Berufserfahrung im Spritzguss und QS bin ich überzeugt, dass meine Fähigkeiten gut zu Ihrer Produktionsumgebung passen. Ich bin überzeugt, dass ich meine Erfahrung nutzen kann, um die Effizienz und Kapazität Ihres Teams zu steigern. Ich freue mich auf die Möglichkeit, meine Erfahrung und meine Begeisterung für die Fertigungstechnik mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung.",
+  "subject": "Interessent für die Rolle des Maschinenbedieners/in",
+  "peak_rss_mb": 204.01171875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 47.767,
+      "draft": 28.409
+    },
+    "cot_stored": false
+  }
+}

@@ -40,35 +40,16 @@ def _rss_mb() -> float:
     return 0.0
 
 
-def score_cover(body: str, company: str | None) -> tuple[float, list[str]]:
-    notes: list[str] = []
-    if not (body or "").strip():
-        return 0.0, ["empty_body"]
-    low = body.lower()
-    score = 7.5
-    if company and company.strip() and company.lower() not in {"unknown", "unbekannt"}:
-        if company.lower() not in low:
-            score -= 1.5
-            notes.append("missing_company")
-    for phrase in (
-        "mit großem interesse",
-        "hiermit bewerbe ich mich",
-        "renommiertes unternehmen",
-        "leidenschaft",
-    ):
-        if phrase in low:
-            score -= 0.5
-            notes.append("generic")
-    if "[" in body and "]" in body:
-        score -= 2.0
-        notes.append("placeholder")
-    if len(body) < 180:
-        score -= 1.0
-    if len(body) > 2200:
-        score -= 0.5
-    if any(x in low for x in ("dadurch", "darüber hinaus", "konkret")):
-        score += 0.3
-    return max(0.0, min(10.0, round(score, 2))), notes
+def score_cover_case(case: dict, body: str, subject: str) -> tuple[float, list[str]]:
+    """Use identical scorer as Phase-2 shootout for fair before/after comparison."""
+    import sys
+
+    scripts = Path(__file__).resolve().parent
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    from run_model_tournament import score_cover as _score_cover
+
+    return _score_cover(case, body, subject)
 
 
 def classify_edit(final_ok: bool, score: float, expect_hard: bool) -> str:
@@ -171,7 +152,7 @@ def run_mode(mode: str, *, limit: int | None, resume: bool) -> dict:
         lat = time.perf_counter() - t0
         body = str((env.suggestion or {}).get("body") or "")
         subj = str((env.suggestion or {}).get("subject") or "")
-        sc, notes = score_cover(body, c.get("target_company"))
+        sc, notes = score_cover_case(c, body, subj)
         final_ok = bool(env.ok)
         expect_hard = c.get("expect_class") == "EXPECTED_HARD_BLOCK" or bool(
             c.get("expect_hard_block")

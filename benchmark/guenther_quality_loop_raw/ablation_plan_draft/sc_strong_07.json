@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_07",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 68.774,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit einer soliden Grundlage in der Personalsachbearbeitung und einem starken Fokus auf Effizienz im Onboarding-Prozess sowie im Excel bin ich bestens gerüstet, um Ihre Personalsachbearbeiter/in bei PeopleCore KG zu unterstützen. Meine vier Jahre Erfahrung in diesem Bereich, kombiniert mit meinen Fähigkeiten im Onboarding und Excel, machen mich zu einem idealen Kandidaten für diese Rolle.",
+  "subject": "Personalsachbearbeiter/in - PeopleCore KG",
+  "peak_rss_mb": 203.953125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 46.132,
+      "draft": 22.64
+    },
+    "cot_stored": false
+  }
+}

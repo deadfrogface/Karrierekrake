@@ -1,0 +1,42 @@
+{
+  "id": "sc_med_13",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 43.255,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung mit Confluence und technischen Notizen ein, um als technischer Redakteur bei DocuLine SE zu unterstützen. Ich bin überzeugt, dass meine Fähigkeiten gut zu den Anforderungen der Rolle passen.",
+  "subject": "Technische Redaktion Jr - DocuLine SE",
+  "peak_rss_mb": 194.6171875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 28.771,
+      "draft": 14.483
+    },
+    "cot_stored": false
+  }
+}

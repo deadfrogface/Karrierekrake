@@ -1,0 +1,50 @@
+{
+  "id": "sc_strong_15",
+  "final_ok": true,
+  "score": 5.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company",
+    "too_short"
+  ],
+  "latency_s": 104.255,
+  "model_calls": 3,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Omar Cook, mit einer Koch-Ausbildung 2018 und Erfahrung in HACCP und Mise en Place, ist gut positioniert, um die kulinarischen Anforderungen des Restaurants Alpen zu erfüllen.",
+  "subject": "Koch/Köchin",
+  "peak_rss_mb": 148.16015625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 62.874,
+      "draft": 23.576,
+      "safety_repair": 17.803
+    },
+    "cot_stored": false
+  }
+}
