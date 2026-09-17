@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import asdict, dataclass, field
 from enum import Enum
 from typing import Any, Iterable
@@ -186,7 +187,12 @@ def _guess_kind(text: str) -> EvidenceKind:
         return EvidenceKind.CREDENTIAL if "zertifikat" not in low else EvidenceKind.CERTIFICATE
     if "kenntnisse" in low or low.startswith("- "):
         return EvidenceKind.SKILL
-    if any(k in low for k in ("gmbh", "ag", "se", "klinik", "bank", "stadt ")):
+    if any(k in low for k in ("gmbh", " ag", " se ", "klinik", "stadt ", "sparkasse", "volksbank")):
+        return EvidenceKind.EMPLOYER
+    # Bare "bank" alone is too noisy (person names like "Tina Bank").
+    if re.search(r"\b[\w\-]+\s+bank\s+(?:ag|gmbh|se)\b", low) or re.search(
+        r"\b(?:deutsche|commerz|hypo|post)\s+bank\b", low
+    ):
         return EvidenceKind.EMPLOYER
     if any(k in low for k in ("deutsch", "englisch", "französisch")):
         return EvidenceKind.LANGUAGE

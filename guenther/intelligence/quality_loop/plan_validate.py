@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from guenther.intelligence.errors import (
@@ -37,6 +38,22 @@ def validate_writing_plan(
     errors: list[ValidatorError] = []
     known = _known_ids(store)
     creds = _credential_ids(store)
+
+    # Drop do_not_claim entries that are actually supported by profile evidence
+    # (false blocks that starve the writer of legitimate material).
+    corpus = store.corpus().lower()
+    cleaned_dnc: list[str] = []
+    for claim in plan.do_not_claim:
+        c = str(claim).strip()
+        if not c:
+            continue
+        tokens = [t for t in re.findall(r"[a-zäöüß]{4,}", c.lower()) if t not in {"keine", "kein", "ohne", "nicht", "erfahrung", "bereich"}]
+        if tokens and sum(1 for t in tokens if t in corpus) >= max(1, len(tokens) - 1):
+            # Supported by profile — do not forbid
+            continue
+        cleaned_dnc.append(c)
+    if cleaned_dnc != list(plan.do_not_claim):
+        plan = plan.model_copy(update={"do_not_claim": cleaned_dnc})
 
     for ref in plan.strongest_direct_evidence:
         if ref.evidence_id not in known:

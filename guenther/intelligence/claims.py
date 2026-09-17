@@ -44,7 +44,8 @@ _CREDENTIAL_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     # bare "Ausbildung" alone is too noisy when longer spans already capture formal claims
     (re.compile(r"bachelor(?:\s+(?:of|in)\s+[\w\s]{2,30})?", re.I), "Bachelor"),
     (re.compile(r"master(?:\s+(?:of|in)\s+[\w\s]{2,30})?", re.I), "Master"),
-    (re.compile(r"ihk[\w\s\-]{0,40}", re.I), "IHK"),
+    (re.compile(r"\bihk\b", re.I), "IHK"),
+    (re.compile(r"[\w\-äöüÄÖÜß]{3,30}\s+ihk\b", re.I), "IHK"),
     (re.compile(r"zertifikat[:\s]+[\w\-äöüÄÖÜß\s]{3,40}", re.I), "Zertifikat"),
     (re.compile(r"\bzertifiziert\b", re.I), "Zertifikat"),
     (re.compile(r"abitur", re.I), "Abitur"),
