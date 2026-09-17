@@ -38,29 +38,25 @@ from cover_opt.dspy_phi_adapter import PhiLocalAdapter  # noqa: E402
 
 # Candidate instruction variants (GEPA-style textual mutations from taxonomy feedback)
 CANDIDATES = {
-    "base_v1": None,  # production _draft_from_plan_task
-    "gepa_len_company_v1": (
-        "Schreibe das Anschreiben NUR aus dem VERIFIED PLAN + allowed evidence. "
-        "Deutsch: natürlich, modern, konkret. 280–850 Zeichen, 2–4 Absätze. "
-        "Erste Zeile: Rolle + Firmenname (wenn bekannt) + ein konkreter DIRECT-Beleg. "
-        "RELATED nur als Transfer. Keine neuen Fakten, keine Clichés, keine Platzhalter. "
-        "Credentials wörtlich aus allowed_direct_evidence. do_not_claim beachten. "
-        "Kein 'Mit großem Interesse', kein 'Hiermit bewerbe ich mich', kein Fake-Enthusiasmus."
+    "base_v2": None,  # production _draft_from_plan_task (updated)
+    "gepa_len_company_v2": (
+        "Schreibe das Anschreiben NUR aus verified_plan + allowed evidence. "
+        "250–900 Zeichen, 2–4 Absätze. Erste Sätze: target_role + target_company "
+        "wörtlich (auch 'Unknown') + ein DIRECT-Beleg. "
+        "RELATED nur Transfer. Credentials exakt. Keine Clichés/Platzhalter. "
+        "Kein 'finanziell'. do_not_claim beachten. Gesprächsangebot knapp."
     ),
-    "gepa_evidence_order_v1": (
-        "Schreibe das Anschreiben NUR aus dem VERIFIED PLAN. "
-        "Absatz 1: Passung Rolle/Firma mit einem DIRECT-Beleg. "
-        "Absatz 2–3: 1–2 weitere Evidenzpunkte, jeweils an eine Anforderung gekoppelt. "
-        "Abschluss: knappes Gesprächsangebot ohne Floskel. "
-        "Länge 250–900 Zeichen. RELATED als Transfer. Credentials exakt. "
-        "Keine erfundenen Zertifikate, kein CV-Dump, keine Platzhalter."
+    "gepa_evidence_order_v2": (
+        "Nur verified_plan. Absatz1: Rolle+Firma+DIRECT. "
+        "Absatz2–3: Evidenz an Anforderungen. Abschluss: Gespräch. "
+        "250–900 Zeichen. RELATED als Transfer. Credentials wörtlich. "
+        "Nie Zertifikate erfinden. Unknown-Firma als Unknown nennen."
     ),
-    "gepa_anti_generic_v1": (
-        "Cover Writer: nur verified_plan + allowed evidence. "
-        "Verbote: Mit großem Interesse; Hiermit bewerbe; renommiertes Unternehmen; "
-        "Leidenschaft; Synergie; Platzhalter; NaN; null; None; erfundene Credentials. "
-        "Gebote: Firma nennen, 2–4 Belege, modernes Deutsch, 240–900 Zeichen, "
-        "fehlende Wunsch-Skills ehrlich ohne Besitzanspruch, RELATED nicht zu DIRECT."
+    "gepa_anti_generic_v2": (
+        "Cover Writer: verified_plan only. Verbote: Mit großem Interesse; Hiermit bewerbe; "
+        "renommiertes Unternehmen; Leidenschaft; Synergie; finanziell; Platzhalter; "
+        "NaN; null; None; erfundene Credentials. "
+        "Gebote: Firma/Rolle wörtlich, 2–4 Belege, 250–900 Zeichen, modernes Deutsch."
     ),
 }
 

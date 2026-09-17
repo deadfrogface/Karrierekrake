@@ -13,9 +13,9 @@
   "avg_writer_calls": 1.667,
   "p95_model_calls": 4,
   "peak_rss_mb": 5481.17578125,
-  "config_name": "plan_draft_specialized_v1",
-  "writer_prompt_hash": "7f1a113ff1c15dacc379575e1e6961789794f624c2c457aeeab665323ab83749",
-  "new_writer_related_calls": 16,
-  "cache_hits": 0,
+  "config_name": "plan_draft_v2",
+  "writer_prompt_hash": "6f7fa74f361e248a0268fdbadb867316f92864549a8034a237eaf05a126100c9",
+  "new_writer_related_calls": 0,
+  "cache_hits": 6,
   "model": "phi4-mini"
 }

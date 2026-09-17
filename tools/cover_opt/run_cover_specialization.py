@@ -390,11 +390,19 @@ def main() -> None:
 
     split = load_split()
     failure_ids = [
+        "sc_adv_01",
         "sc_adv_02",
         "sc_career_08",
+        "sc_des_01",
         "sc_des_03",
+        "sc_des_06",
+        "sc_des_07",
+        "sc_med_13",
         "sc_sparse_06",
         "sc_strong_01",
+        "sc_strong_05",
+        "sc_strong_15",
+        "sc_strong_16",
         "sc_strong_20",
     ]
     train = [cid for cid, m in split.items() if m["split"] == "OPT_TRAIN" and m["eligible"]]
@@ -413,7 +421,7 @@ def main() -> None:
             writer_prompt=None,
             resume=args.resume,
             cache=cache,
-            out_name="eval_failures_v1",
+            out_name=f"eval_failures_{args.config_name}",
         )
         print(json.dumps(s, indent=2), flush=True)
         return
@@ -425,7 +433,7 @@ def main() -> None:
             writer_prompt=None,
             resume=args.resume,
             cache=cache,
-            out_name="probe_train_v1",
+            out_name=f"probe_train_{args.config_name}",
         )
         print(json.dumps(s, indent=2), flush=True)
         return
@@ -437,7 +445,7 @@ def main() -> None:
             writer_prompt=None,
             resume=args.resume,
             cache=cache,
-            out_name="tune_v1",
+            out_name=f"tune_{args.config_name}",
         )
         print(json.dumps(s, indent=2), flush=True)
         return
@@ -449,7 +457,7 @@ def main() -> None:
             writer_prompt=None,
             resume=args.resume,
             cache=cache,
-            out_name="shadow_v1",
+            out_name=f"shadow_{args.config_name}",
         )
         print(json.dumps(s, indent=2), flush=True)
         return
@@ -467,7 +475,7 @@ def main() -> None:
             writer_prompt=None,
             resume=args.resume,
             cache=cache,
-            out_name="full_development_v1",
+            out_name=f"full_development_{args.config_name}",
         )
         (OUT / "full_development_results.json").write_text(
             json.dumps(s, indent=2, ensure_ascii=False), encoding="utf-8"

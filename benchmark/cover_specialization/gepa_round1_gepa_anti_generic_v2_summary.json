@@ -1,0 +1,21 @@
+{
+  "n": 16,
+  "eligible_safe_n": 16,
+  "eligible_safe_automation_pct": 87.5,
+  "ready_as_is_pct": 50.0,
+  "balanced_rate": 50.0,
+  "cover_raw_avg": 7.312,
+  "cover_accepted_avg": 7.571,
+  "safety_failures_accepted": 0,
+  "avg_latency_s": 62.372,
+  "p95_latency_s": 92.374,
+  "avg_model_calls": 2.125,
+  "avg_writer_calls": 1.125,
+  "p95_model_calls": 3,
+  "peak_rss_mb": 180.3828125,
+  "config_name": "gepa_gepa_anti_generic_v2",
+  "writer_prompt_hash": "c85c0d1390e51adc36d048bb918de20cdaed60e22d68624edd60e719f5413073",
+  "new_writer_related_calls": 34,
+  "cache_hits": 0,
+  "model": "phi4-mini"
+}
