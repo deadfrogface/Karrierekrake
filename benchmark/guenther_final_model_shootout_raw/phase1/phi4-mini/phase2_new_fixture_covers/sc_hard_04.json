@@ -1,0 +1,50 @@
+{
+  "id": "sc_hard_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 32.657,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren der CityBus AG, ich schreibe, um meine Begeisterung für die Rolle des Busfahrers auszudrücken, wie sie in Ihrer ausgeschriebenen Position beschrieben ist. Mit meinem Führerschein B und meiner Leidenschaft für öffentliche Verkehrsmittel bin ich überzeugt, dass ich meine Fähigkeiten im Bereich des Busverkehrs effektiv einsetzen kann. Als Busfahrer/in habe ich umfangreiche Erfahrung im Umgang mit Fahrgästen und im Einhalten strenger Sicherheitsvorschriften, was mir ermöglicht, eine sichere und angenehme Reise für alle Passagiere zu gewährleisten. Ich bin besonders an der Möglichkeit interessiert, meine Erfahrung im Umgang mit verschiedenen Fahrgastgruppen und im effizienten Betrieb des Busdienstes zu nutzen. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für den öffentlichen Nahverkehr CityBus AG zu präsentieren und zu beweisen, dass ich ein wertvoller Mitarbeiter für Ihr Team sein kann.",
+  "subject": "Bewerbung für die Position des Busfahrers bei CityBus AG",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Busfahrers bei CityBus AG",
+          "body": "Sehr geehrte Damen und Herren der CityBus AG, ich schreibe, um meine Begeisterung für die Rolle des Busfahrers auszudrücken, wie sie in Ihrer ausgeschriebenen Position beschrieben ist. Mit meinem Führerschein B und meiner Leidenschaft für öffentliche Verkehrsmittel bin ich überzeugt, dass ich meine Fähigkeiten im Bereich des Busverkehrs effektiv einsetzen kann. Als Busfahrer/in habe ich umfangreiche Erfahrung im Umgang mit Fahrgästen und im Einhalten strenger Sicherheitsvorschriften, was mir ermöglicht, eine sichere und angenehme Reise für alle Passagiere zu gewährleisten. Ich bin besonders an der Möglichkeit interessiert, meine Erfahrung im Umgang mit verschiedenen Fahrgastgruppen und im effizienten Betrieb des Busdienstes zu nutzen. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für den öffentlichen Nahverkehr CityBus AG zu präsentieren und zu beweisen, dass ich ein wertvoller Mitarbeiter für Ihr Team sein kann.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5601.4
+}

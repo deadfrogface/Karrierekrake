@@ -1,0 +1,29 @@
+{
+  "id": "si_23",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 30.386,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit Wareneingangsprozessen erzählen?",
+      "Wie haben Sie die Effizienz des Wareneingangs mit Scannern verbessert?",
+      "Welche Herausforderungen haben Sie in der Logistik überwunden und wie haben Sie diese gemeistert?"
+    ],
+    "talking_points": [
+      "Erfahrung im Wareneingang und Einsatz von Scannern.",
+      "Drei Jahre Erfahrung in der Logistik, möglicherweise mit Fokus auf Effizienz und Prozessverbesserung."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Projekte erwähnt, die während der Karriere hervorgehoben werden könnten.",
+      "Mögliche Lücken in der beruflichen Entwicklung oder Spezialisierung, da keine Details über die Rolle oder die Fortschritte gegeben sind.",
+      "Keine Informationen über die Art der Logistik, die geleistet wurde, ob es sich um nationalen, internationalen oder spezifischen Sektor handelt."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

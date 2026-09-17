@@ -1,0 +1,27 @@
+{
+  "id": "si_18",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 27.161,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns über Ihre Erfahrungen mit der Verwaltung von Terminen und Telefonanrufen bei MedCenter Nord erzählen?",
+      "Welche Strategien verwenden Sie, um sicherzustellen, dass Termine und Telefonanrufe effizient verwaltet werden?",
+      "Wie haben Sie Herausforderungen im Zusammenhang mit der Termin- und Telefonverwaltung überwunden?"
+    ],
+    "talking_points": [
+      "Erfahrung im Empfang mit Schwerpunkt auf Termin- und Telefonmanagement."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften vorhanden, daher ist es wichtig, die Fähigkeiten und Strategien zu betonen, die relevant für die Rolle sind.",
+      "Mögliche Lücken in der Erfahrung mit spezifischen Systemen oder Software, daher sollte der Fokus auf allgemeinen Fähigkeiten und Anpassungsfähigkeit liegen."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

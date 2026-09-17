@@ -1,0 +1,50 @@
+{
+  "id": "sc_med_16",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 17.753,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Bewerbung für die Position des Recruiting Assistenz bei HireFast KG einzureichen. Mit meiner Erfahrung im Recruitement und meinem starken Deutsch-Kenntnis bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem Gespräch zu präsentieren.",
+  "subject": "Einreichung für die Position des Recruiting Assistenz bei HireFast KG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Einreichung für die Position des Recruiting Assistenz bei HireFast KG",
+          "body": "Ich schreibe Ihnen, um meine Bewerbung für die Position des Recruiting Assistenz bei HireFast KG einzureichen. Mit meiner Erfahrung im Recruitement und meinem starken Deutsch-Kenntnis bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem Gespräch zu präsentieren.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5578.4
+}

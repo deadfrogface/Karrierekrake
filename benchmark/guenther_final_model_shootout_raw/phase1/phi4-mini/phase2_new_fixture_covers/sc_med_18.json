@@ -1,0 +1,82 @@
+{
+  "id": "sc_med_18",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [],
+  "latency_s": 45.632,
+  "repair_count": 1,
+  "final_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Mit meiner Erfahrung im Kundenservice und CRM-Pflege bei [Name des Unternehmens] bin ich überzeugt, dass ich meine Fähigkeiten im Umgang mit CRM-Systemen und im Kundenservice effektiv für SaaS Care GmbH einsetzen kann. Ich bin besonders daran interessiert, meine Kenntnisse im CRM-Pflege und meine Fähigkeit, Probleme zu lösen und die Kundenzufriedenheit sicherzustellen, in die Rolle des Customer Success Jr einzubringen.",
+  "subject": "Bewerbung für die Position Customer Success Jr",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Customer Success Jr bei SaaS Care GmbH",
+          "body": "Ich schreibe, um meine Erfahrung im Kundenservice und CRM-Pflege bei [Name des Unternehmens] zu nutzen. Meine Rolle dort erforderte die Bearbeitung und Verwaltung von Kundenkontakten, die Lösung von Problemen und die Sicherstellung der Kundenzufriedenheit. Ich bin überzeugt, dass meine Fähigkeiten im Kundenservice und meine Erfahrung im Umgang mit CRM-Systemen eine wertvolle Ergänzung für Ihre Team sein werden. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für den Kundenservice bei SaaS Care GmbH einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Customer Success Jr",
+          "body": "Mit meiner Erfahrung im Kundenservice und CRM-Pflege bei [Name des Unternehmens] bin ich überzeugt, dass ich meine Fähigkeiten im Umgang mit CRM-Systemen und im Kundenservice effektiv für SaaS Care GmbH einsetzen kann. Ich bin besonders daran interessiert, meine Kenntnisse im CRM-Pflege und meine Fähigkeit, Probleme zu lösen und die Kundenzufriedenheit sicherzustellen, in die Rolle des Customer Success Jr einzubringen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

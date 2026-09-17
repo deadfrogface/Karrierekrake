@@ -1,0 +1,28 @@
+{
+  "id": "si_01",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 25.31,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Projekt beschreiben, bei dem Sie Reporting, Excel und Kostenrechnung eingesetzt haben?",
+      "Wie gehen Sie vor, um sicherzustellen, dass Ihre Berichterstattung genau und verlässlich ist?",
+      "Welche Strategien verwenden Sie, um Kosten zu kontrollieren und zu optimieren?"
+    ],
+    "talking_points": [
+      "Berufserfahrung als Controller mit Schwerpunkt auf Reporting, Excel und Kostenrechnung.",
+      "Fähigkeiten im Excel zur Erstellung und Verwaltung von Berichten und Tabellen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekte oder Erfolge im bereitgestellten Profil.",
+      "Mögliche Herausforderungen bei der Beantwortung spezifischer Fragen ohne zusätzliche Informationen."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

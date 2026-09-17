@@ -1,0 +1,34 @@
+{
+  "id": "si_24",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 31.884,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwenden Sie, um die Mitgliederbindung bei FitHub GmbH zu verbessern?",
+      "Können Sie ein erfolgreiches Mitgliedsengagement-Projekt beschreiben, das Sie bei Ihrer aktuellen Position geleitet haben?",
+      "Wie balancieren Sie die individuellen Bedürfnisse der Mitglieder mit den Zielen des Fitnessstudios?"
+    ],
+    "talking_points": [
+      "Erzählung eines erfolgreichen Engagement-Projekts, das die Fähigkeiten in der Mitgliederbetreuung und Teamarbeit zeigt."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder Projekte, die in der Profil-Datenbank erwähnt werden.",
+      "Mögliche Herausforderungen oder Probleme in der aktuellen Rolle, die während des Interviews angesprochen werden könnten, fehlen.",
+      "Keine Details zu den spezifischen Schwerpunkten oder den Methoden der Mitgliederbetreuung bei FitHub GmbH."
+    ],
+    "anchors_used": [
+      {
+        "text": "Mitgliederbetreuung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

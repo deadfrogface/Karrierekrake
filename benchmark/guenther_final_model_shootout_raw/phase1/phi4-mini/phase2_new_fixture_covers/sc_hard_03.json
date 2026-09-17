@@ -1,0 +1,50 @@
+{
+  "id": "sc_hard_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 26.465,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich freue mich darauf, meine Erfahrungen im Drogeriekauf und meine Leidenschaft für die Apothekerbranche bei CityApotheke West einzubringen. Mit meiner soliden Basis im Pharmaziewesen und meiner Erfahrung im Verkauf von Apothekenprodukten bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle eines Apotheker/in bei CityApotheke West übertragen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Umgang mit Apothekenprodukten und im Kundenservice zu nutzen, um die Bedürfnisse der Kunden zu erfüllen. Ich freue mich darauf, meine Fähigkeiten und meine Begeisterung für die Apothekenbranche mit Ihnen zu teilen.",
+  "subject": "Bewerbung für Apotheker/in bei CityApotheke West",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Apotheker/in bei CityApotheke West",
+          "body": "Ich freue mich darauf, meine Erfahrungen im Drogeriekauf und meine Leidenschaft für die Apothekerbranche bei CityApotheke West einzubringen. Mit meiner soliden Basis im Pharmaziewesen und meiner Erfahrung im Verkauf von Apothekenprodukten bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle eines Apotheker/in bei CityApotheke West übertragen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Umgang mit Apothekenprodukten und im Kundenservice zu nutzen, um die Bedürfnisse der Kunden zu erfüllen. Ich freue mich darauf, meine Fähigkeiten und meine Begeisterung für die Apothekenbranche mit Ihnen zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5601.4
+}

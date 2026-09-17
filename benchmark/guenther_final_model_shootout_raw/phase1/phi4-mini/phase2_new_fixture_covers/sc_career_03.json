@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 20.039,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position Junior Recruiter bei TalentBridge KG auszudrücken. Mit meiner Erfahrung in der Empfang/Terminplanung und dem Wechsel Recruiting bei TalentBridge KG bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle des Junior Recruiters einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Umgang mit potenziellen Kandidaten und im Verfassen von überzeugenden Briefen zu nutzen, um Talente für TalentBridge KG zu gewinnen.",
+  "subject": "Bewerbung für die Position Junior Recruiter bei TalentBridge KG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Junior Recruiter bei TalentBridge KG",
+          "body": "Ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position Junior Recruiter bei TalentBridge KG auszudrücken. Mit meiner Erfahrung in der Empfang/Terminplanung und dem Wechsel Recruiting bei TalentBridge KG bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle des Junior Recruiters einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Umgang mit potenziellen Kandidaten und im Verfassen von überzeugenden Briefen zu nutzen, um Talente für TalentBridge KG zu gewinnen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

@@ -1,0 +1,28 @@
+{
+  "id": "si_21",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 32.218,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein spezifisches Beispiel geben, wie Sie einen schwierigen Kunden in Ihrer Rolle beim Kundenservice bei CareLine AG erfolgreich betreut haben?",
+      "Wie setzen Sie sich mit neuen Kunden in Verbindung und halten Sie die Beziehung im CRM aktiv?",
+      "Welche Strategien verwenden Sie, um sich auf dem neuesten Stand der CRM-Tools und -Technologien zu halten?"
+    ],
+    "talking_points": [
+      "Erwähnen Sie Ihre Erfahrung im Kundenservice und wie Sie diese auf die Rolle im Kundenservice bei CareLine AG übertragen können.",
+      "Diskutieren Sie Ihre Fähigkeiten im Umgang mit CRM-Systemen und wie Sie diese nutzen, um den Inbound-Support zu verbessern."
+    ],
+    "gap_notes": [
+      "Sie benötigen mehr Details über Ihre spezifischen Erfolge und Erfahrungen im Kundenservice und CRM-Bereich.",
+      "Es könnte hilfreich sein, konkrete Beispiele für Ihre Arbeit im CRM und Inbound-Support zu liefern, falls verfügbar."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

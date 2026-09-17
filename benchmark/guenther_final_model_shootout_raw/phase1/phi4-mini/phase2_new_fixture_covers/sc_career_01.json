@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_01",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 37.368,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren der CloudCare GmbH, \n\nich schreibe Ihnen, um meine Erfahrung im Callcenter und meine Begeisterung für SaaS-Lösungen zu teilen. Über 4 Jahre hinweg habe ich als Quereinstieg im Callcenter gearbeitet, wo ich meine Kommunikationsfähigkeiten und mein Verständnis für Kundensupport verbessert habe. \n\nIm Rahmen meiner Rolle bei Callcenter Inbound bin ich in die Kundenerfahrung involviert und habe maßgeblich dazu beigetragen, die Zufriedenheit unserer Kunden zu steigern. Dies hat meine Fähigkeiten im Umgang mit komplexen Problemen und im Aufbau dauerhafter Kundenbeziehungen geschärft. \n\nIch bin besonders an der Rolle des Kundensuccess-Spezialisten in Ihrer CloudCare GmbH interessiert, da diese perfekt zu meiner beruflichen Laufbahn und meinen Sprachkenntnissen im Deutschen passt. Ich bin überzeugt, dass meine Erfahrung im Kundensupport und meine Leidenschaft für SaaS-Lösungen einen wertvollen Beitrag für Ihr Team leisten können. \n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu diskutieren und wie ich zur CloudCare GmbH beitragen kann. \n\nMit freundlichen Grüßen, \nOllie Call",
+  "subject": "Bewerbung für die Rolle des Kundensuccess-Spezialisten",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Rolle des Kundensuccess-Spezialisten",
+          "body": "Sehr geehrte Damen und Herren der CloudCare GmbH, \n\nich schreibe Ihnen, um meine Erfahrung im Callcenter und meine Begeisterung für SaaS-Lösungen zu teilen. Über 4 Jahre hinweg habe ich als Quereinstieg im Callcenter gearbeitet, wo ich meine Kommunikationsfähigkeiten und mein Verständnis für Kundensupport verbessert habe. \n\nIm Rahmen meiner Rolle bei Callcenter Inbound bin ich in die Kundenerfahrung involviert und habe maßgeblich dazu beigetragen, die Zufriedenheit unserer Kunden zu steigern. Dies hat meine Fähigkeiten im Umgang mit komplexen Problemen und im Aufbau dauerhafter Kundenbeziehungen geschärft. \n\nIch bin besonders an der Rolle des Kundensuccess-Spezialisten in Ihrer CloudCare GmbH interessiert, da diese perfekt zu meiner beruflichen Laufbahn und meinen Sprachkenntnissen im Deutschen passt. Ich bin überzeugt, dass meine Erfahrung im Kundensupport und meine Leidenschaft für SaaS-Lösungen einen wertvollen Beitrag für Ihr Team leisten können. \n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu diskutieren und wie ich zur CloudCare GmbH beitragen kann. \n\nMit freundlichen Grüßen, \nOllie Call",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

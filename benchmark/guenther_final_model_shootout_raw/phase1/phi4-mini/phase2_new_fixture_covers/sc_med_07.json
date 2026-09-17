@@ -1,0 +1,52 @@
+{
+  "id": "sc_med_07",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 28.077,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe, um meine Erfahrungen im Bereich Bestellungen und Lieferantenmails mit Ihnen in Verbindung zu bringen. Im Laufe meiner Zeit bei XYZ Corp. habe ich mich mit der Verwaltung von Bestellungen, der Kommunikation mit Lieferanten und der Optimierung von Lieferkettenprozessen auseinandergesetzt. Diese Erfahrungen haben mir geholfen, ein tiefes Verständnis für effiziente Einkaufsprozesse zu entwickeln, was ich gerne in die Rolle bei BuyLine GmbH einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich der Beschaffung und mein Engagement für die Verbesserung von Lieferkettenprozessen gut zu Ihrer Abteilung passen würden. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für effiziente Beschaffungssysteme mit Ihnen zu teilen.",
+  "subject": "Bewerbung für die Position Einkaufsassistenz",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Einkaufsassistenz",
+          "body": "Ich schreibe, um meine Erfahrungen im Bereich Bestellungen und Lieferantenmails mit Ihnen in Verbindung zu bringen. Im Laufe meiner Zeit bei XYZ Corp. habe ich mich mit der Verwaltung von Bestellungen, der Kommunikation mit Lieferanten und der Optimierung von Lieferkettenprozessen auseinandergesetzt. Diese Erfahrungen haben mir geholfen, ein tiefes Verständnis für effiziente Einkaufsprozesse zu entwickeln, was ich gerne in die Rolle bei BuyLine GmbH einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich der Beschaffung und mein Engagement für die Verbesserung von Lieferkettenprozessen gut zu Ihrer Abteilung passen würden. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für effiziente Beschaffungssysteme mit Ihnen zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5578.4
+}

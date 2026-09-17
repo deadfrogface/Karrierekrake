@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_14",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 21.102,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Bürokauf und meine Fähigkeiten im Umgang mit der Büroorganisation auf die Position Procurement Jr bei SupplyHub AG anzuwenden. Mit meiner bisherigen Rolle in der Büroorganisation und dem Fokus auf den Kaufprozess bin ich überzeugt, dass ich meine Kenntnisse und meine Deutschkenntnisse effektiv in die Rolle des Procurement Jr einbringen kann. Ich freue mich darauf, meine Fähigkeiten in Ihrem Team zu nutzen und zur erfolgreichen Beschaffungslösung bei SupplyHub AG beizutragen.",
+  "subject": "Bewerbung für die Position Procurement Jr bei SupplyHub AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Procurement Jr bei SupplyHub AG",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Bürokauf und meine Fähigkeiten im Umgang mit der Büroorganisation auf die Position Procurement Jr bei SupplyHub AG anzuwenden. Mit meiner bisherigen Rolle in der Büroorganisation und dem Fokus auf den Kaufprozess bin ich überzeugt, dass ich meine Kenntnisse und meine Deutschkenntnisse effektiv in die Rolle des Procurement Jr einbringen kann. Ich freue mich darauf, meine Fähigkeiten in Ihrem Team zu nutzen und zur erfolgreichen Beschaffungslösung bei SupplyHub AG beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5587.5
+}

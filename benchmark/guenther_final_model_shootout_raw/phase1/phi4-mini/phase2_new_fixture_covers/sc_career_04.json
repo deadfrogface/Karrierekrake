@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 24.887,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Erfahrung im Einzelhandel und meine Fähigkeiten im Logistikmanagement zu teilen, die ich für die Position des Logistikkoordinators bei MoveIt SE einsetzen möchte. Mit meiner soliden Grundlage im Einzelhandel, insbesondere in der Filialdisposition, bin ich vertraut mit den Herausforderungen und Belohnungen des Logistikmanagements. Ich bin überzeugt, dass meine Erfahrung im Umgang mit Lieferkettenprozessen und mein Engagement für Effizienz und Kundenzufriedenheit meine idealen Eigenschaften für diese Rolle darstellen. Ich freue mich darauf, meine Fähigkeiten in einem innovativen Umfeld wie MoveIt SE einzubringen.",
+  "subject": "Bewerbung für die Position Logistikkoordinator (m/w/d) bei MoveIt SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Logistikkoordinator (m/w/d) bei MoveIt SE",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Einzelhandel und meine Fähigkeiten im Logistikmanagement zu teilen, die ich für die Position des Logistikkoordinators bei MoveIt SE einsetzen möchte. Mit meiner soliden Grundlage im Einzelhandel, insbesondere in der Filialdisposition, bin ich vertraut mit den Herausforderungen und Belohnungen des Logistikmanagements. Ich bin überzeugt, dass meine Erfahrung im Umgang mit Lieferkettenprozessen und mein Engagement für Effizienz und Kundenzufriedenheit meine idealen Eigenschaften für diese Rolle darstellen. Ich freue mich darauf, meine Fähigkeiten in einem innovativen Umfeld wie MoveIt SE einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

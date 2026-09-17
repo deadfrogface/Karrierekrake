@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_13",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 32.592,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Content Marketing und meine Fähigkeiten im Marketingbereich auf die Position Marketing Coordinator bei PulseBrand GmbH anzuwenden. Mit meiner journalistischen Laufbahn, insbesondere im Bereich Transfer von Inhalt, habe ich umfangreiche Erfahrungen im strategischen Inhaltserstellungsprozess gesammelt. Dies umfasst die Erstellung von Blogbeiträgen, die Erstellung von Social-Media-Inhalten und die Entwicklung von Inhaltsstrategien, die die Markenbekanntheit und das Engagement steigern. Meine Fähigkeit, überzeugende Inhalte zu erstellen, die sowohl informativ als auch ansprechend sind, zusammen mit meinem Verständnis für die Marktdynamik, würde ich gerne in die Rolle des Marketing Coordinators bei PulseBrand GmbH einbringen. Ich bin überzeugt, dass meine Fähigkeiten im Content-Marketing und meine Erfahrung im strategischen Inhaltserstellungsprozess eine wertvolle Ergänzung für Ihr Team darstellen würden. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für Content-Marketing bei PulseBrand GmbH zu demonstrieren.",
+  "subject": "Bewerbung für die Position Marketing Coordinator bei PulseBrand GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Marketing Coordinator bei PulseBrand GmbH",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Content Marketing und meine Fähigkeiten im Marketingbereich auf die Position Marketing Coordinator bei PulseBrand GmbH anzuwenden. Mit meiner journalistischen Laufbahn, insbesondere im Bereich Transfer von Inhalt, habe ich umfangreiche Erfahrungen im strategischen Inhaltserstellungsprozess gesammelt. Dies umfasst die Erstellung von Blogbeiträgen, die Erstellung von Social-Media-Inhalten und die Entwicklung von Inhaltsstrategien, die die Markenbekanntheit und das Engagement steigern. Meine Fähigkeit, überzeugende Inhalte zu erstellen, die sowohl informativ als auch ansprechend sind, zusammen mit meinem Verständnis für die Marktdynamik, würde ich gerne in die Rolle des Marketing Coordinators bei PulseBrand GmbH einbringen. Ich bin überzeugt, dass meine Fähigkeiten im Content-Marketing und meine Erfahrung im strategischen Inhaltserstellungsprozess eine wertvolle Ergänzung für Ihr Team darstellen würden. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für Content-Marketing bei PulseBrand GmbH zu demonstrieren.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5587.5
+}

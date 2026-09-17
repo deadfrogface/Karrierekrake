@@ -1,0 +1,30 @@
+{
+  "id": "si_13",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 30.246,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrung mit manuellen Tests und Jira erzählen?",
+      "Wie integrieren Sie Feedback aus manuellen Tests in den Jira-Prozess?",
+      "Welche Strategien verwenden Sie, um Effizienz und Genauigkeit in Ihren QA-Zeiten zu verbessern?"
+    ],
+    "talking_points": [
+      "Die Interview-Cand hat 3 Jahre Erfahrung im QA-Bereich, wobei der Schwerpunkt auf manuellen Tests und Jira liegt.",
+      "Sie können ihre Expertise in der Durchführung manueller Tests und der Verwaltung von Aufgaben in Jira demonstrieren.",
+      "Die Cand kann ihre Strategien zur Optimierung des QA-Prozesses und zur Verbesserung der Effizienz und Genauigkeit teilen."
+    ],
+    "gap_notes": [
+      "Es fehlen spezifische Details zu den Erfolgen oder Projekten, die die Cand in ihrer QA-Rolle abgeschlossen hat.",
+      "Keine Informationen über die spezifischen Fähigkeiten oder Techniken, die die Cand im QA-Bereich beherrscht.",
+      "Keine Details über die Art der Produkte oder Systeme, mit denen die Cand gearbeitet hat."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "sc_med_17",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 23.299,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich freue mich darauf, meine Erfahrungen in der Koordination und Prozessoptimierung bei OpsNest SE einzubringen. Mit meiner bisherigen Rolle als Prozesslisten-Koordinatorin bin ich vertraut mit der Organisation und Verwaltung komplexer Abläufe, was mir ermöglicht, effizient zu arbeiten und die Prozesse zu verbessern. Ich bin überzeugt, dass meine Fähigkeiten in der Koordination und Prozessoptimierung gut zu den Anforderungen der Operations Assistenz bei OpsNest SE passen. Ich freue mich darauf, meine Erfahrung und meine Leidenschaft für effiziente Prozesse in Ihrem Team einzubringen.",
+  "subject": "Bewerbung für die Position Operations Assistenz",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Operations Assistenz",
+          "body": "Ich freue mich darauf, meine Erfahrungen in der Koordination und Prozessoptimierung bei OpsNest SE einzubringen. Mit meiner bisherigen Rolle als Prozesslisten-Koordinatorin bin ich vertraut mit der Organisation und Verwaltung komplexer Abläufe, was mir ermöglicht, effizient zu arbeiten und die Prozesse zu verbessern. Ich bin überzeugt, dass meine Fähigkeiten in der Koordination und Prozessoptimierung gut zu den Anforderungen der Operations Assistenz bei OpsNest SE passen. Ich freue mich darauf, meine Erfahrung und meine Leidenschaft für effiziente Prozesse in Ihrem Team einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5580.6
+}

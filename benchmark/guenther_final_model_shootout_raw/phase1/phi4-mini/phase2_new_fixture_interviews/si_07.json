@@ -1,0 +1,29 @@
+{
+  "id": "si_07",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 25.518,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwendest du, um die SEO-Fähigkeiten deiner Website zu verbessern?",
+      "Kannst du ein CMS-Projekt beschreiben, das du erfolgreich verwaltetet hast?",
+      "Wie priorisierst du Inhalte, um die Markenbekanntheit und das Engagement zu steigern?"
+    ],
+    "talking_points": [
+      "Diskussion über SEO-Strategien und deren Umsetzung im Marketingkontext.",
+      "Erklärung eines CMS-Projekts, einschließlich der Herausforderungen und des Erfolgs."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder quantitative Ergebnisse im Profil.",
+      "Keine Details zu den spezifischen CMS-Plattformen, die verwendet wurden.",
+      "Keine Erwähnung von Tools oder spezifischen SEO-Techniken."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

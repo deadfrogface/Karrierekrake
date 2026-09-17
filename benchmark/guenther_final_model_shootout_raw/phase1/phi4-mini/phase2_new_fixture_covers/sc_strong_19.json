@@ -1,0 +1,50 @@
+{
+  "id": "sc_strong_19",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.1,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 24.19,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der B2B-Akquise und im CRM für DealFlow AG zu präsentieren. Mit 5 Jahren Erfahrung im Verkauf und der Betreuung von Schlüsselkunden bin ich überzeugt, dass meine Fähigkeiten gut zu den Anforderungen Ihrer Firma passen. Insbesondere meine Fähigkeit, komplexe Kundenbeziehungen aufzubauen und zu erhalten, sowie meine Expertise im Umgang mit CRM-Systemen, würden ich gerne in die Rolle des Key Account Managers bei DealFlow AG einbringen. Ich freue mich auf die Möglichkeit, meine Erfahrung und meine Begeisterung für Ihr renommiertes Unternehmen mit Ihnen zu besprechen.",
+  "subject": "Bewerbung für die Position des Key Account Managers bei DealFlow AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Key Account Managers bei DealFlow AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der B2B-Akquise und im CRM für DealFlow AG zu präsentieren. Mit 5 Jahren Erfahrung im Verkauf und der Betreuung von Schlüsselkunden bin ich überzeugt, dass meine Fähigkeiten gut zu den Anforderungen Ihrer Firma passen. Insbesondere meine Fähigkeit, komplexe Kundenbeziehungen aufzubauen und zu erhalten, sowie meine Expertise im Umgang mit CRM-Systemen, würden ich gerne in die Rolle des Key Account Managers bei DealFlow AG einbringen. Ich freue mich auf die Möglichkeit, meine Erfahrung und meine Begeisterung für Ihr renommiertes Unternehmen mit Ihnen zu besprechen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5571.5
+}

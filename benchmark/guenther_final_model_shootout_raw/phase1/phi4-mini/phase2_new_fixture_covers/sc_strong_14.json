@@ -1,0 +1,50 @@
+{
+  "id": "sc_strong_14",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 25.414,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Netzwerkadministration, insbesondere mit Firewalls, VPNs und Switching, anzubieten, die ich bei NetGuard IT einsetzen möchte. Über 4 Jahre hinweg habe ich mich mit der Sicherstellung der Netzwerksicherheit und der effizienten Datenübertragung beschäftigt, was mir eine solide Grundlage für die Rolle eines Netzwerkadmins bei Ihrer Firma bietet. Ich bin überzeugt, dass meine Fähigkeiten und meine Leidenschaft für Netzwerktechnologien gut zu den Anforderungen von NetGuard IT passen. Ich freue mich darauf, meine Kenntnisse und meine Erfahrung in einem Umfeld einzubringen, das sich für technologische Innovationen einsetzt. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für die Position Netzwerkadmin",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Netzwerkadmin",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Netzwerkadministration, insbesondere mit Firewalls, VPNs und Switching, anzubieten, die ich bei NetGuard IT einsetzen möchte. Über 4 Jahre hinweg habe ich mich mit der Sicherstellung der Netzwerksicherheit und der effizienten Datenübertragung beschäftigt, was mir eine solide Grundlage für die Rolle eines Netzwerkadmins bei Ihrer Firma bietet. Ich bin überzeugt, dass meine Fähigkeiten und meine Leidenschaft für Netzwerktechnologien gut zu den Anforderungen von NetGuard IT passen. Ich freue mich darauf, meine Kenntnisse und meine Erfahrung in einem Umfeld einzubringen, das sich für technologische Innovationen einsetzt. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5564.6
+}

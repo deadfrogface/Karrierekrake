@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_02",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 17.891,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Begeisterung für die Position des Junior Controllers bei FinNest AG auszudrücken. Mit meiner Erfahrung in der Kreditorenbuchhaltung und meinem Interesse am Controlling sehe ich großes Potenzial für einen Beitrag zu Ihrem Team. Ich bin überzeugt, dass meine Fähigkeiten im Bereich der Finanzkontrolle und meine Kenntnisse im Umgang mit komplexen finanziellen Prozessen eine wertvolle Ergänzung für FinNest AG darstellen würden.",
+  "subject": "Bewerbung für die Position Junior Controller bei FinNest AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Junior Controller bei FinNest AG",
+          "body": "Ich schreibe Ihnen, um meine Begeisterung für die Position des Junior Controllers bei FinNest AG auszudrücken. Mit meiner Erfahrung in der Kreditorenbuchhaltung und meinem Interesse am Controlling sehe ich großes Potenzial für einen Beitrag zu Ihrem Team. Ich bin überzeugt, dass meine Fähigkeiten im Bereich der Finanzkontrolle und meine Kenntnisse im Umgang mit komplexen finanziellen Prozessen eine wertvolle Ergänzung für FinNest AG darstellen würden.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

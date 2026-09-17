@@ -1,0 +1,84 @@
+{
+  "id": "sc_des_04",
+  "final_ok": false,
+  "score": 0.0,
+  "german_writing": 0.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "empty_body"
+  ],
+  "latency_s": 54.485,
+  "repair_count": 1,
+  "final_errors": [
+    "EMPTY_OUTPUT"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "",
+  "subject": "",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Zertifikat zu teilen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Zertifikat zu teilen",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Pflegeassistenz - Haus am Bach",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Grundpflege und meine wachsende Kompetenz im Englischen B2 Zertifikat zu teilen. Als Pflegeassistentin habe ich eine starke Fähigkeit entwickelt, die Bedürfnisse der Menschen zu verstehen und zu erfüllen, was ich sicherstellen werde, dass ich im Team von Haus am Bach ein wertvoller Beitrag leiste. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem Umfeld zu nutzen, das sich für die Betreuung von Menschen einsetzt. Ich freue mich auf die Möglichkeit, meine Erfahrung und meine Entschlossenheit, mich weiterzuentwickeln, mit Ihnen zu diskutieren.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "SCHEMA_INVALID",
+            "message_de": "Die Modellausgabe entsprach nicht dem erwarteten Schema.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5592.2
+}

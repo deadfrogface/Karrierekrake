@@ -1,0 +1,50 @@
+{
+  "id": "sc_des_09",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 22.833,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im IT-Support, insbesondere im Umgang mit Windows-Tickets, auf die ausgeschriebene Position bei DeskHelp AG anzuwenden. Obwohl ich kein ITIL Zertifikat besitze, habe ich eine solide Grundlage im ITIL Foundation, was ich als wertvolle Ergänzung zu meiner Rolle bei DeskHelp AG sehe. Ich bin überzeugt, dass meine Fähigkeiten im IT-Support und meine Bereitschaft, mich weiterzubilden, mich gut für die Rolle bei DeskHelp AG geeignet machen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Team einzubringen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für IT-Support-Rolle bei DeskHelp AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für IT-Support-Rolle bei DeskHelp AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im IT-Support, insbesondere im Umgang mit Windows-Tickets, auf die ausgeschriebene Position bei DeskHelp AG anzuwenden. Obwohl ich kein ITIL Zertifikat besitze, habe ich eine solide Grundlage im ITIL Foundation, was ich als wertvolle Ergänzung zu meiner Rolle bei DeskHelp AG sehe. Ich bin überzeugt, dass meine Fähigkeiten im IT-Support und meine Bereitschaft, mich weiterzubilden, mich gut für die Rolle bei DeskHelp AG geeignet machen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Team einzubringen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5592.2
+}

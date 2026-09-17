@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_05",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 32.456,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich Personalwesen und meine Sprachkenntnisse im Deutschen zu teilen. Mit meiner bisherigen Rolle als Sachbearbeiterin im HR-Bereich, insbesondere im Bereich der Transferarbeit, bin ich vertraut mit den Herausforderungen und Verantwortlichkeiten, die mit der Verwaltung von Personalveränderungen einhergehen. Meine Fähigkeit, effizient und genau mit Personalakten umzugehen, zusammen mit meinem Verständnis für die Feinheiten des Personalwesens, habe mir ermöglicht, in dieser Rolle erfolgreich zu sein. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen eine wertvolle Ergänzung für Ihr Team sein werden. Ich bin besonders an der Rolle im HR-Bereich interessiert, da sie mir ermöglicht, meine Fähigkeiten im Personalwesen weiter zu entwickeln und einen bedeutenden Beitrag zum Erfolg Ihres Unternehmens zu leisten. Ich freue mich auf die Möglichkeit, meine Erfahrung und meine Begeisterung für Personalwesen bei PeopleNest GmbH zu teilen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für die Position HR Generalist Jr bei PeopleNest GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position HR Generalist Jr bei PeopleNest GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich Personalwesen und meine Sprachkenntnisse im Deutschen zu teilen. Mit meiner bisherigen Rolle als Sachbearbeiterin im HR-Bereich, insbesondere im Bereich der Transferarbeit, bin ich vertraut mit den Herausforderungen und Verantwortlichkeiten, die mit der Verwaltung von Personalveränderungen einhergehen. Meine Fähigkeit, effizient und genau mit Personalakten umzugehen, zusammen mit meinem Verständnis für die Feinheiten des Personalwesens, habe mir ermöglicht, in dieser Rolle erfolgreich zu sein. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen eine wertvolle Ergänzung für Ihr Team sein werden. Ich bin besonders an der Rolle im HR-Bereich interessiert, da sie mir ermöglicht, meine Fähigkeiten im Personalwesen weiter zu entwickeln und einen bedeutenden Beitrag zum Erfolg Ihres Unternehmens zu leisten. Ich freue mich auf die Möglichkeit, meine Erfahrung und meine Begeisterung für Personalwesen bei PeopleNest GmbH zu teilen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

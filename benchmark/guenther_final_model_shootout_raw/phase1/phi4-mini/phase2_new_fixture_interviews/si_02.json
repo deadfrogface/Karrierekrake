@@ -1,0 +1,45 @@
+{
+  "id": "si_02",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 33.032,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen haben Sie mit der Verwaltung von Windows-Betriebssystemen gesammelt?",
+      "Können Sie ein Beispiel dafür geben, wie Sie Ticketing-Systeme zur Effizienzsteigerung eingesetzt haben?",
+      "Wie gehen Sie bei Problemen mit Active Directory vor?"
+    ],
+    "talking_points": [
+      "Berufserfahrung im IT-Support mit Schwerpunkt auf Windows, Tickets und AD.",
+      "Mögliche Erfahrungen mit der Verwaltung und Lösung von Problemen im Zusammenhang mit Windows-Betriebssystemen, Ticketing-Systemen und Active Directory.",
+      "Bereitschaft, über die spezifischen Herausforderungen und Lösungen in der IT-Support-Sphäre bei ByteCare GmbH zu sprechen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften erwähnt, daher könnte es notwendig sein, mehr Details über die berufliche Entwicklung und die Fähigkeiten des Kandidaten zu erfahren.",
+      "Mögliche Lücken in der Erfahrung mit den genannten Schwerpunkten, da die Berufserfahrung nur 3 Jahre beträgt."
+    ],
+    "anchors_used": [
+      {
+        "text": "IT-Support",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Windows",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Tickets",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

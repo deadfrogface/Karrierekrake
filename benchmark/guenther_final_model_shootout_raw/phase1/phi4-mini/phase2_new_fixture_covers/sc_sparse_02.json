@@ -1,0 +1,50 @@
+{
+  "id": "sc_sparse_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 20.023,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mein Name ist Joe Brief und ich bin begeistert von der Möglichkeit, meine Erfahrungen im Verkauf und meine Sprachkenntnisse im Deutschen bei MartQuick AG einzubringen. Mit einer soliden Grundlage in der Kundenkommunikation und einem starken Engagement für Kundenzufriedenheit, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Verkauf und meine Fähigkeit, Beziehungen zu Kunden aufzubauen, in die dynamische Umgebung von MartQuick AG zu bringen.",
+  "subject": "Freudvolle Bewerbung für die Position Aushilfe Verkauf bei MartQuick AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freudvolle Bewerbung für die Position Aushilfe Verkauf bei MartQuick AG",
+          "body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mein Name ist Joe Brief und ich bin begeistert von der Möglichkeit, meine Erfahrungen im Verkauf und meine Sprachkenntnisse im Deutschen bei MartQuick AG einzubringen. Mit einer soliden Grundlage in der Kundenkommunikation und einem starken Engagement für Kundenzufriedenheit, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Verkauf und meine Fähigkeit, Beziehungen zu Kunden aufzubauen, in die dynamische Umgebung von MartQuick AG zu bringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5589.9
+}

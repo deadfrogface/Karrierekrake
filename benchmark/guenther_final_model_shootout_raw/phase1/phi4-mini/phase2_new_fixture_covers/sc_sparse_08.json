@@ -1,0 +1,50 @@
+{
+  "id": "sc_sparse_08",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 29.298,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich freue mich darauf, meine Erfahrungen im Bereich der Montage in Ihrer geschätzten Firma, MakeSimple AG, einzubringen. Mit meiner Rolle als Montage-Ingenieurin bei einem anderen Unternehmen konnte ich die Bedeutung präziser Montagearbeiten und die Notwendigkeit einer engen Zusammenarbeit mit dem Team hervorheben. Diese Erfahrungen haben mir geholfen, meine Fähigkeiten im Umgang mit verschiedenen Montagesystemen zu verfeinern und die Effizienz im Produktionsprozess zu steigern. Ich bin überzeugt, dass meine Kenntnisse im Bereich der Montage und meine Fähigkeit, schnell auf Veränderungen im Produktionsablauf zu reagieren, einen wertvollen Beitrag für MakeSimple AG leisten können. Ich bin besonders daran interessiert, meine Fähigkeiten im Umgang mit neuen Technologien und Maschinen in einem dynamischen Umfeld zu nutzen. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für die Montage in Ihre angesehene Firma einzubringen.",
+  "subject": "Bewerbung für die Position Montage-Ingenieurin",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Montage-Ingenieurin",
+          "body": "Ich freue mich darauf, meine Erfahrungen im Bereich der Montage in Ihrer geschätzten Firma, MakeSimple AG, einzubringen. Mit meiner Rolle als Montage-Ingenieurin bei einem anderen Unternehmen konnte ich die Bedeutung präziser Montagearbeiten und die Notwendigkeit einer engen Zusammenarbeit mit dem Team hervorheben. Diese Erfahrungen haben mir geholfen, meine Fähigkeiten im Umgang mit verschiedenen Montagesystemen zu verfeinern und die Effizienz im Produktionsprozess zu steigern. Ich bin überzeugt, dass meine Kenntnisse im Bereich der Montage und meine Fähigkeit, schnell auf Veränderungen im Produktionsablauf zu reagieren, einen wertvollen Beitrag für MakeSimple AG leisten können. Ich bin besonders daran interessiert, meine Fähigkeiten im Umgang mit neuen Technologien und Maschinen in einem dynamischen Umfeld zu nutzen. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für die Montage in Ihre angesehene Firma einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5589.9
+}

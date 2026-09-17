@@ -1,0 +1,82 @@
+{
+  "id": "sc_med_13",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [],
+  "latency_s": 51.82,
+  "repair_count": 1,
+  "final_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Mit meiner Erfahrung in der technischen Dokumentation und meinem Wissen in Confluence und technischen Notizen bin ich überzeugt, dass ich gut zu den Anforderungen der technischen Redaktion Jr bei DocuLine SE passen würde. Meine Rolle bei [Vorheriger Arbeitgeber] erforderte die Bearbeitung und Organisation technischer Inhalte, was meine Fähigkeiten in der technischen Kommunikation und mein Engagement für Klarheit und Präzision widerspiegelt. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem renommierten Unternehmen wie DocuLine SE einzubringen und zur Verbesserung der technischen Dokumentation beizutragen.",
+  "subject": "Bewerbung für die Position der technischen Redaktion Jr bei DocuLine SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position der technischen Redaktion Jr bei DocuLine SE",
+          "body": "Ich freue mich darauf, meine Erfahrungen in der technischen Dokumentation und mein Wissen in Confluence und technischen Notizen für DocuLine SE einzubringen. Meine Rolle bei [Vorheriger Arbeitgeber] erforderte die Bearbeitung und Organisation technischer Inhalte, was meine Fähigkeiten in der technischen Kommunikation und mein Engagement für Klarheit und Präzision widerspiegelt. Ich bin überzeugt, dass meine Fähigkeiten in Confluence und meine Erfahrung mit technischen Notizen gut zu den Anforderungen der technischen Redaktion Jr bei DocuLine SE passen. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem renommierten Unternehmen wie DocuLine SE einzubringen und zur Verbesserung der technischen Dokumentation beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position der technischen Redaktion Jr bei DocuLine SE",
+          "body": "Mit meiner Erfahrung in der technischen Dokumentation und meinem Wissen in Confluence und technischen Notizen bin ich überzeugt, dass ich gut zu den Anforderungen der technischen Redaktion Jr bei DocuLine SE passen würde. Meine Rolle bei [Vorheriger Arbeitgeber] erforderte die Bearbeitung und Organisation technischer Inhalte, was meine Fähigkeiten in der technischen Kommunikation und mein Engagement für Klarheit und Präzision widerspiegelt. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem renommierten Unternehmen wie DocuLine SE einzubringen und zur Verbesserung der technischen Dokumentation beizutragen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5578.4
+}

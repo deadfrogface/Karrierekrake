@@ -1,0 +1,38 @@
+{
+  "id": "si_16",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 39.538,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel für eine Fallbearbeitung geben, die Sie während Ihrer Zeit bei Beratung Plus durchgeführt haben?",
+      "Wie gehen Sie vor, um sicherzustellen, dass die Bedürfnisse Ihrer Klienten im Rahmen des Fallmanagements effektiv adressiert werden?",
+      "Welche Strategien verwenden Sie, um mit den Herausforderungen umzugehen, denen Sie in Ihrer Rolle als Sozialarbeiter begegnen?"
+    ],
+    "talking_points": [
+      "Erwähne spezifische Fallmanagement-Techniken, die du angewendet hast, und wie sie zu positiven Ergebnissen für deine Klienten geführt haben."
+    ],
+    "gap_notes": [
+      "Es fehlen spezifische Details zu vergangenen Fallmanagement-Erfahrungen, daher ist es wichtig, konkrete Beispiele aus dem eigenen Profil zu liefern, um die Antworten zu stärken.",
+      "Da keine EVIDENCE bereitgestellt wurde, ist es notwendig, die relevanten Fähigkeiten und Erfahrungen aus dem angegebenen Job und der Berufserfahrung zu nutzen."
+    ],
+    "anchors_used": [
+      {
+        "text": "Fallmanagement",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Berufserfahrung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}
