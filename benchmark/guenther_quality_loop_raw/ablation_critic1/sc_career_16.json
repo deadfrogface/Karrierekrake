@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_16",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 83.887,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Berufserfahrung im Hotel- und Kundenservice-Bereich sowie meine Deutschkenntnisse zu präsentieren, die ich für die Rolle des Service Coordinators bei HelpNow KG anspreche. In meiner bisherigen Tätigkeit als Hotelangestellte konnte ich die Bedeutung eines guten Kundenserviceverständnisses und effektiver Kommunikation in der deutschen Sprache erkennen, was ich in Ihrer Firma umsetzen möchte.",
+  "subject": "Service Coordinator",
+  "peak_rss_mb": 230.7734375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.153,
+      "draft": 20.511,
+      "critique_1": 24.222
+    },
+    "cot_stored": false
+  }
+}

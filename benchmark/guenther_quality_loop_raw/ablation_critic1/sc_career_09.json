@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 81.761,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit umfangreicher Erfahrung im Verkauf und ausgezeichneten Deutschkenntnissen bin ich bestens gerüstet, um die Anforderungen der Rolle Office Coordinator bei WorkFlow AG zu erfüllen. Meine Fähigkeit, Prozesse zu optimieren und Teams zu koordinieren, gepaart mit meiner Sprachkompetenz, macht mich zu einem idealen Kandidaten für diese Position.",
+  "subject": "Interessent für die Position Office Coordinator bei WorkFlow AG",
+  "peak_rss_mb": 230.75390625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 38.213,
+      "draft": 18.287,
+      "critique_1": 25.259
+    },
+    "cot_stored": false
+  }
+}

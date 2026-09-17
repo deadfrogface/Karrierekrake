@@ -1,0 +1,64 @@
+{
+  "id": "sc_career_01",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 166.828,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo CloudCare GmbH, ich schreibe, um mich für die Customer Success Rolle bei Ihrer Firma zu bewerben. Mit 4 Jahren Erfahrung im Callcenter Inbound und einem Quereinstieg in SaaS-Lösungen bin ich überzeugt, dass ich meine Fähigkeiten im Kundensupport und in der Problemlösung in einem Customer Success Umfeld effektiv einsetzen kann. Ich bin begeistert von der Möglichkeit, mich an Ihrem Team zu beteiligen und zur Kundenzufriedenheit beizutragen. Vielen Dank für Ihre Berücksichtigung.",
+  "subject": "Freelancer - Callcenter Inbound 4 Jahre - Quereinstieg SaaS",
+  "peak_rss_mb": 230.69921875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 47.35,
+      "draft": 22.53,
+      "critique_1": 39.229,
+      "quality_revision_1": 23.277,
+      "critique_2": 34.438
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "sc_career_17",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 127.599,
+  "model_calls": 5,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Erfahrung im Außendienst und in der Transferberatung bin ich bestens gerüstet, um die Herausforderungen als Junior Consultant bei AdviseLite GmbH zu meistern. Ich bringe meine Fähigkeiten im Kundenmanagement und im strategischen Planen von Personalbewegungen ein, um den Erfolg des Unternehmens zu unterstützen.",
+  "subject": "Junior Consultant",
+  "peak_rss_mb": 230.78125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 32.455,
+      "draft": 12.169,
+      "critique_1": 31.509,
+      "quality_revision_1": 20.874,
+      "critique_2": 30.587
+    },
+    "cot_stored": false
+  }
+}

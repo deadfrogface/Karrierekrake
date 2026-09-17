@@ -1,0 +1,64 @@
+{
+  "id": "sc_career_07",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 162.796,
+  "model_calls": 5,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit umfangreicher Erfahrung im Bereich Montage und Instandhaltung bin ich bestens gerüstet, um die Bedürfnisse von BuildCare SE im Bereich Facility Support zu erfüllen. Meine Fähigkeiten in der Organisation, Planung und Durchführung von Instandhaltungsarbeiten werden dazu beitragen, die Betriebsabläufe des Unternehmens effizient und zuverlässig zu gestalten.",
+  "subject": "Facility Support",
+  "peak_rss_mb": 230.75390625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 49.561,
+      "draft": 21.283,
+      "critique_1": 38.983,
+      "quality_revision_1": 20.551,
+      "critique_2": 32.416
+    },
+    "cot_stored": false
+  }
+}

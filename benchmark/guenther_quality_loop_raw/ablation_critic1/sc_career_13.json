@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_13",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 81.6,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, meine Expertise im Bereich Transfer Content Marketing als Journalist bei PulseBrand GmbH einzubringen. Mit meiner Erfahrung im Journalismus und speziell im Content-Marketing bin ich überzeugt, dass ich einen wertvollen Beitrag zum Marketingteam leisten kann.",
+  "subject": "Marketing Coordinator",
+  "peak_rss_mb": 230.76171875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 41.074,
+      "draft": 18.554,
+      "critique_1": 21.969
+    },
+    "cot_stored": false
+  }
+}

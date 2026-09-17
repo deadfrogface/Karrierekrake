@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_18",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 103.003,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich bin Fox Pack und habe großes Interesse an der Rolle des Warehouse Lead Jr bei Ihrer Firma. Ich bin besonders an der Kommissionierung und Schichtleitung interessiert, wie in meinem Profil erwähnt. Ich bin überzeugt, dass meine Fähigkeiten und meine Begeisterung für die Rolle gut zu StockLead AG passen würden.",
+  "subject": "Interessiert an der Rolle des Warehouse Lead Jr bei StockLead AG",
+  "peak_rss_mb": 230.78125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.462,
+      "draft": 18.795,
+      "critique_1": 46.742
+    },
+    "cot_stored": false
+  }
+}

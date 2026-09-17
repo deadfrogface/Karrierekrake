@@ -1,0 +1,52 @@
+{
+  "id": "sc_med_16",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 87.347,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe Erfahrung im Bereich Terminplanung und Vorstellungsgespräche ein, was ich glaube, dass es für die Rolle der Recruiting Assistenz bei HireFast KG von Vorteil sein könnte. Ich bin bereit, meine Fähigkeiten in die Rolle einzubringen und zu helfen, die Rekrutierungsprozesse bei HireFast KG zu optimieren.",
+  "subject": "Interessiert an der Rolle der Recruiting Assistenz bei HireFast KG",
+  "peak_rss_mb": 230.6796875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 38.01,
+      "draft": 19.011,
+      "critique_1": 30.324
+    },
+    "cot_stored": false
+  }
+}

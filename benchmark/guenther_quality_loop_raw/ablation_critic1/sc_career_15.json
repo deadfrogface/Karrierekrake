@@ -1,0 +1,64 @@
+{
+  "id": "sc_career_15",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 181.632,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich bin Cal Craft, ein Handwerk Kontroll-Assistent mit einem starken Hintergrund in 'Handwerk Kontrolle — Transfer Qualität'. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im QA-Bereich bei TestSphere SE einzubringen. Meine Berufserfahrung und Sprachkenntnisse in Deutsch entsprechen Ihren Anforderungen.",
+  "subject": "Antrag auf QA-Assistenten-Position bei TestSphere SE",
+  "peak_rss_mb": 230.7734375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.71,
+      "draft": 20.586,
+      "critique_1": 62.644,
+      "quality_revision_1": 19.753,
+      "critique_2": 48.934
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "sc_strong_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 136.472,
+  "model_calls": 5,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Berufserfahrung im Bereich Tourenplanung, Telefon und Disposition anzubieten, die ich über 4 Jahre hinweg erworben habe. Diese Fähigkeiten sind direkt relevant für die Rolle des Disponenten/in bei FleetMove KG. Ich bin überzeugt, dass meine Erfahrung im Umgang mit Kunden, Planung und Koordination von Besorgungen meine Stärken für Ihre Abteilung darstellen würde. Ich freue mich auf die Möglichkeit, meine Kompetenzen in einem neuen Umfeld einzubringen. Herzlichen Dank für Ihre Berücksichtigung.",
+  "subject": "Interessent für die Rolle des Disponenten/in",
+  "peak_rss_mb": 230.578125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.897,
+      "draft": 21.533,
+      "critique_1": 31.897,
+      "quality_revision_1": 22.599,
+      "critique_2": 20.543
+    },
+    "cot_stored": false
+  }
+}
