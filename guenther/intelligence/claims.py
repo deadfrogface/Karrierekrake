@@ -211,6 +211,8 @@ _CREDENTIAL_GLUE = frozenset(
         "des",
         "im",
         "in",
+        "aus",
+        "dem",
         "fuer",
         "fur",
         "von",
@@ -258,6 +260,27 @@ _NON_DOMAIN_CLAIM_TOKENS = frozenset(
 )
 
 
+_CREDENTIAL_NOISE_TOKENS = frozenset(
+    {
+        "jahr",
+        "jahre",
+        "kenntnissen",
+        "kenntnisse",
+        "erfahrungen",
+        "erfahrung",
+        "bereich",
+        "sowie",
+        "meine",
+        "meiner",
+        "einem",
+        "einer",
+        "auch",
+        "dazu",
+        "hac",  # truncated HACCP fragments from greedy spans
+    }
+)
+
+
 def _credential_span_has_domain(span: str) -> bool:
     """Reject underspecified spans like 'meine Ausbildung als' without a domain token."""
     toks = {
@@ -265,7 +288,9 @@ def _credential_span_has_domain(span: str) -> bool:
         for t in re.findall(r"[A-Za-zÄÖÜäöüß0-9]{3,}", span or "")
         if t.lower() not in _CREDENTIAL_GLUE
     }
-    toks = {t for t in toks if t not in _NON_DOMAIN_CLAIM_TOKENS}
+    toks = {t for t in toks if t not in _NON_DOMAIN_CLAIM_TOKENS and t not in _CREDENTIAL_NOISE_TOKENS}
+    # drop pure years
+    toks = {t for t in toks if not t.isdigit()}
     if not toks:
         return False
     # "Ausbildung als <verb> ..." is not a credential claim

@@ -55,7 +55,7 @@ class GuentherService:
             else ArchitectureMode(str(architecture or "auto"))
         )
         self.enable_repair = bool(enable_repair)
-        self.quality_loop_mode = str(quality_loop_mode or "full")
+        self.quality_loop_mode = str(quality_loop_mode or "plan_draft")
         self.hardware = detect_hardware()
         self.models_dir = default_models_dir()
         self.manager = ModelManager(self.models_dir)
@@ -503,7 +503,7 @@ class GuentherService:
         from guenther.intelligence.repair import RepairHistory
 
         use_repair = self.enable_repair if enable_repair is None else bool(enable_repair)
-        mode = quality_loop_mode or self.quality_loop_mode or "full"
+        mode = quality_loop_mode or self.quality_loop_mode or "plan_draft"
         if not use_repair and mode != "old":
             # Repair disabled → still allow plan/draft but no safety/quality repairs via mode=old
             mode = "old"

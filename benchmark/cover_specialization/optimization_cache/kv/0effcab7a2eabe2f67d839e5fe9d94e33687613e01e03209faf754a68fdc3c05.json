@@ -1,0 +1,30 @@
+{
+  "id": "sc_trap_04",
+  "case_id": "sc_trap_04",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 92.028,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Kim Acc, und ich bringe relevante Erfahrung im Bereich Buchhaltung und Proficiency in DATEV Accounting Software mit. Früher war ich bei Northwind Finance tätig, wo ich meine Fähigkeiten in der Buchhaltung weiterentwickelt habe. Ich bin überzeugt, dass meine Qualifikationen und Erfahrungen eine wertvolle Bereicherung für Wide World Finance KG darstellen.",
+  "subject": "Job Application - Accountant",
+  "peak_rss_mb": 227.74609375,
+  "optimizer_score": 0.39,
+  "feedback": "STRUCTURAL_FAILURE: Fix this tagged issue without inventing facts. STRUCTURAL_FAILURE: Remove placeholders / NaN / null / None.",
+  "completion_status": "done",
+  "configuration_hash": "308eb4a68cc818ca66ca90ec685d4667076833aa577769376ad115546875a9f1",
+  "writer_prompt_hash": "7f1a113ff1c15dacc379575e1e6961789794f624c2c457aeeab665323ab83749",
+  "plan_hash": "unfrozen",
+  "model_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+  "generation_config_hash": "8e6882afc629e3b26fd027f0961b1fd678891be9fe4b8cd19f0055c2596a9697",
+  "evaluator_hash": "5dcff107c3bc0baeeb144fb150829756fc8af5be93386d5063ac2b51004d586c",
+  "hard_flags": {},
+  "cache_key": "0effcab7a2eabe2f67d839e5fe9d94e33687613e01e03209faf754a68fdc3c05"
+}

@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-09-17T19:09:24.981915+00:00",
+  "train": 64,
+  "validation": 16,
+  "fictional_only": true,
+  "real_pii": 0,
+  "min_train_required": 300,
+  "min_val_required": 50,
+  "data_sufficient": false,
+  "gpu": {
+    "cuda_available": false,
+    "gpu_model": null,
+    "vram_mb": null
+  },
+  "lora_training_status": "BLOCKED_NO_SUITABLE_GPU_AND_INSUFFICIENT_DATA",
+  "train_sha256": "47884f54d4c22c5a0ffa4df5b2c3c9a78a6451a4d50fde5d7c166b19a17cd7ee",
+  "validation_sha256": "8610db48c31fc187f4dd653430ccfa943404df93e100593d33230c346021b4b3"
+}

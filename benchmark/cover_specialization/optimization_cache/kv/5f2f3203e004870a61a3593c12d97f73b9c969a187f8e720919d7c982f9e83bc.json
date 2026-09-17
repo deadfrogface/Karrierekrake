@@ -1,0 +1,30 @@
+{
+  "id": "sc_career_06",
+  "case_id": "sc_career_06",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 71.069,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Ted Excel, und ich habe Erfahrung mit Excel für Datenanalyse. Obwohl ich kein Data-Science-Studium habe, bin ich überzeugt, dass meine praktischen Fähigkeiten in Excel und meine Deutschkenntnisse für die Rolle eines Junior Data Analyst bei InsightLab AG von großem Wert sein werden.",
+  "subject": "Junior Data Analyst",
+  "peak_rss_mb": 224.55078125,
+  "optimizer_score": 0.39,
+  "feedback": "STRUCTURAL_FAILURE: Fix this tagged issue without inventing facts. STRUCTURAL_FAILURE: Remove placeholders / NaN / null / None.",
+  "completion_status": "done",
+  "configuration_hash": "308eb4a68cc818ca66ca90ec685d4667076833aa577769376ad115546875a9f1",
+  "writer_prompt_hash": "7f1a113ff1c15dacc379575e1e6961789794f624c2c457aeeab665323ab83749",
+  "plan_hash": "unfrozen",
+  "model_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+  "generation_config_hash": "8e6882afc629e3b26fd027f0961b1fd678891be9fe4b8cd19f0055c2596a9697",
+  "evaluator_hash": "5dcff107c3bc0baeeb144fb150829756fc8af5be93386d5063ac2b51004d586c",
+  "hard_flags": {},
+  "cache_key": "5f2f3203e004870a61a3593c12d97f73b9c969a187f8e720919d7c982f9e83bc"
+}

@@ -15,7 +15,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-from guenther.contracts import WritingSuggestion
+from guenther.contracts import ConfidenceLevel, WritingSuggestion
 from guenther.intelligence.blocking_policy import has_blocking_errors
 from guenther.intelligence.errors import (
     REPAIR_EXHAUSTED,
@@ -267,6 +267,15 @@ def run_quality_loop(
             f"JOB:\n{job_text[:8000]}",
         )
         timings["plan_repair"] = round(time.perf_counter() - t1, 3)
+    if not isinstance(plan_model, WritingPlan):
+        # Deterministic fallback plan from EvidenceStore — avoids false SCHEMA blocks.
+        _transition(transitions, "PLAN_FALLBACK", reason="schema_invalid_after_repair")
+        plan_model = _heuristic_plan_from_store(
+            store=store,
+            target_company=target_company,
+            target_role=target_role,
+        )
+        plan_errs = []
     if not isinstance(plan_model, WritingPlan):
         return _fail(
             FinalResultState.GENERATION_FAILED,
@@ -641,19 +650,68 @@ def _draft_from_plan_task() -> str:
     return (
         "Schreibe das Anschreiben NUR aus dem VERIFIED PLAN + allowed evidence. "
         "Deutsch: natürlich, modern, konkret, glaubwürdig. "
-        "Länge: 220–900 Zeichen Fließtext (2–4 Absätze), nicht telegrammartig. "
+        "Länge: 250–900 Zeichen Fließtext (2–4 Absätze), nicht telegrammartig. "
         "RELATED nur als Transfer. Keine neuen Fakten. Keine Clichés. "
         "Vermeide 'Mit großem Interesse', 'Hiermit bewerbe ich mich', "
         "'renommiertes Unternehmen', Fake-Enthusiasmus und Buzzword-Ketten. "
         "Keine Platzhalter ([...], nan, null, None). "
-        "Firma und Rolle aus Plan wörtlich nennen, wenn bekannt. "
+        "Nenne target_company und target_role wörtlich aus dem Plan "
+        "(auch wenn target_company 'Unknown' ist — dann das Wort Unknown verwenden). "
         "Nutze 2–4 stärkste Evidenzpunkte (Relevance > Recency), kein CV-Dump. "
         "Credentials/Ausbildungen NUR wörtlich wie in allowed_direct_evidence — "
-        "nicht paraphrasieren (z.B. nicht 'Ausbildung im Steuerfach' statt "
-        "'Steuerfachangestellte IHK'). Fehlende wünschenswerte Skills ehrlich "
-        "als Lernbereitschaft ohne Besitzanspruch. "
+        "nicht paraphrasieren (z.B. 'Koch-Ausbildung 2018' nicht umschreiben). "
+        "Fehlende wünschenswerte Skills ehrlich als Lernbereitschaft ohne Besitzanspruch. "
         "Arbeitgeber nur aus Evidenztext, nie erfinden. "
-        "do_not_claim strikt beachten — keine erfundenen Zertifikate."
+        "do_not_claim strikt beachten — keine erfundenen Zertifikate. "
+        "Vermeide das Wort 'finanziell' (nutze Controlling/Reporting/Kostenstellen)."
+    )
+
+
+def _heuristic_plan_from_store(
+    *,
+    store: EvidenceStore,
+    target_company: str | None,
+    target_role: str | None,
+) -> WritingPlan:
+    """Minimal verified plan when the model fails to emit valid writing_plan JSON."""
+    from guenther.intelligence.quality_loop.schemas import PlanEvidenceRef
+
+    items = list(store.items)
+    direct = []
+    related = []
+    for it in items[:4]:
+        ref = PlanEvidenceRef(evidence_id=it.id, reason=it.text[:200])
+        if it.kind.value in {"credential", "certificate"} or not direct:
+            direct.append(ref)
+        elif len(related) < 2:
+            related.append(
+                PlanEvidenceRef(
+                    evidence_id=it.id,
+                    reason=it.text[:200],
+                    allowed_transfer_framing="als transferable Grundlage",
+                )
+            )
+    if not direct and items:
+        direct = [PlanEvidenceRef(evidence_id=items[0].id, reason=items[0].text[:200])]
+    co = (target_company or "Unknown").strip() or "Unknown"
+    role = (target_role or "").strip()
+    return WritingPlan(
+        target_role=role or "ausgeschriebene Position",
+        target_company=co,
+        candidate_positioning="Passung über belegte Profil-Evidenz",
+        strongest_direct_evidence=direct[:4],
+        strongest_related_evidence=related[:2],
+        do_not_claim=[],
+        hard_requirements=[],
+        desirable_requirements=[],
+        argument_1="Belegte Erfahrung einbringen",
+        argument_2="Transfer ehrlich formulieren",
+        argument_3="Motivation knapp und konkret",
+        company_reference=co,
+        opening_strategy="Rolle + Firma + ein DIRECT-Beleg",
+        closing_strategy="Gesprächsangebot ohne Floskel",
+        invented_flag=False,
+        confidence=ConfidenceLevel.LOW,
     )
 
 
