@@ -45,6 +45,7 @@ class GuentherService:
         allow_heuristic_when_no_llm: bool = True,
         architecture: str | ArchitectureMode = ArchitectureMode.AUTO,
         enable_repair: bool = True,
+        quality_loop_mode: str = "full",
     ) -> None:
         self.enabled = enabled
         self.model_pref = model
@@ -54,6 +55,7 @@ class GuentherService:
             else ArchitectureMode(str(architecture or "auto"))
         )
         self.enable_repair = bool(enable_repair)
+        self.quality_loop_mode = str(quality_loop_mode or "full")
         self.hardware = detect_hardware()
         self.models_dir = default_models_dir()
         self.manager = ModelManager(self.models_dir)
@@ -84,8 +86,7 @@ class GuentherService:
             model_pref=self.model_pref,
         )
         mid = decision.model_id
-        if self.architecture in {ArchitectureMode.PHI_ALL, ArchitectureMode.TWO_TIER}:
-            return mid
+        # Explicit prefs still get LIGHT hardware downgrade to avoid OOM.
         return graceful_model_fallback(self.hardware.tier, mid)
 
     def ensure_model_loaded(self, model_id: str | None = None) -> ProviderStatus:
@@ -115,6 +116,7 @@ class GuentherService:
             "hardware_tier": self.hardware.tier.value,
             "ram_gb": self.hardware.ram_gb,
             "recommended_model": self.hardware.recommended_model_id,
+            "quality_loop_mode": self.quality_loop_mode,
             "models_dir": str(self.models_dir),
             "loaded_model_id": self._loaded_model_id,
         }
@@ -149,6 +151,8 @@ class GuentherService:
             "evidence_assist": 512,
             "writing": 768,
             "interview_prep": 512,
+            "writing_plan": 768,
+            "writing_critique": 512,
         }.get(schema_name, 512)
         req = GenerationRequest(
             system=system,
@@ -489,116 +493,98 @@ class GuentherService:
         forbid_wrong_role: list[str] | None = None,
         existing_evidence: list[dict[str, Any]] | None = None,
         enable_repair: bool | None = None,
+        quality_loop_mode: str | None = None,
+        target_role: str | None = None,
     ) -> GuentherEnvelope:
-        """Writing with deterministic grounding + bounded self-correction."""
+        """Writing via bounded PLAN→DRAFT→CRITIQUE→REVISE→VERIFY (or legacy mode=old)."""
         from guenther.contracts import WritingSuggestion
         from guenther.intelligence.errors import SCHEMA_INVALID, make_error
+        from guenther.intelligence.quality_loop.state_machine import run_quality_loop
+        from guenther.intelligence.repair import RepairHistory
 
         use_repair = self.enable_repair if enable_repair is None else bool(enable_repair)
+        mode = quality_loop_mode or self.quality_loop_mode or "full"
+        if not use_repair and mode != "old":
+            # Repair disabled → still allow plan/draft but no safety/quality repairs via mode=old
+            mode = "old"
         routed = self._route_model("writing")
-        co_line = (
-            f"TARGET_COMPANY: {target_company}\n"
-            if target_company and str(target_company).strip()
-            else "TARGET_COMPANY: UNKNOWN — use generic wording, invent no company.\n"
-        )
-        writing_task = (
-            f"Erzeuge {draft_kind} als Bewerber/in in natürlichem, modernem Deutsch.\n"
-            "Struktur: kurzer Einstieg (Passung zur Rolle) → 2–4 konkrete Belege aus dem PROFIL → "
-            "Transfer zur Zielrolle → kurze Motivation → professioneller Schluss.\n"
-            "Regeln:\n"
-            "- Nur Fakten aus PROFIL/SEED. Stellenanforderungen sind KEINE Bewerber-Belege.\n"
-            "- Keine erfundenen Ausbildungen, Abschlüsse, Zertifikate, Examen, Studium, Lizenzen.\n"
-            "- Pflegeausbildung / formale Qualifikation nur wenn wörtlich im Profil.\n"
-            "- RELATED-Erfahrung ehrlich als Grundlage/Transfer formulieren — nicht als direkte Zielqualifikation.\n"
-            "- Fehlende Wunsch-Skills ehrlich benennen und nur mit vorhandener vergleichbarer Erfahrung verknüpfen.\n"
-            "- Wenn TARGET_COMPANY bekannt: exakten Firmennamen mindestens einmal korrekt nennen.\n"
-            "- Wenn UNKNOWN: Formulierungen wie „für die ausgeschriebene Position“ — keine Fantasiefirma.\n"
-            "- Keine Platzhalter wie [Name], [Ihr Name], [Firma], nan, null, None.\n"
-            "- Keine Clichés (Mit großem Interesse…, Hiermit bewerbe ich mich…, Leidenschaft für Ihr renommiertes Unternehmen…).\n"
-            "- Kein CV-Dump, keine Rollenvertauschung (nicht als Arbeitgeber schreiben).\n"
-            "- Concise, spezifisch, menschlich; invented_flag=true nur wenn du unsicher bist."
-        )
-        base_trusted = (
-            f"{co_line}PROFILE:\n{profile_text[:8000]}\nSEED:\n{seed_body[:4000]}"
-        )
 
-        def _once(trusted_extra: str) -> tuple[Any, list, dict[str, Any]]:
-            trusted = base_trusted
-            if trusted_extra:
-                trusted = f"{trusted}\n{trusted_extra}"
+        def _generate(
+            schema_name: str, task: str, trusted: str, untrusted: str
+        ) -> tuple[Any | None, list, dict[str, Any]]:
+            capability = "writing" if schema_name.startswith("writing") else schema_name
             model, env = self._generate_validated(
-                capability="writing",
-                schema_name="writing",
-                task=writing_task,
+                capability=capability if capability in {"writing", "interview_prep"} else "writing",
+                schema_name=schema_name,
+                task=task if draft_kind == "cover_letter" or schema_name != "writing" else task,
                 trusted=trusted,
-                untrusted=f"JOB:\n{job_text[:8000]}",
+                untrusted=untrusted,
                 model_id=routed,
             )
             if model is None:
-                empty = WritingSuggestion()
                 return (
-                    empty,
+                    None,
                     [make_error(SCHEMA_INVALID, severity="error")],
-                    {"subject": "", "body": "", "invented_flag": True},
+                    {},
                 )
-            assert isinstance(model, WritingSuggestion)
-            model, _legacy = validate_writing(model, profile_text=profile_text, job_text=job_text)
-            model, report = validate_writing_grounded(
-                model,
-                profile_text=profile_text,
-                job_text=job_text,
-                existing_evidence=existing_evidence,
-                target_company=target_company,
-                forbid_role_reversal=forbid_role_reversal,
-                forbid_wrong_role=forbid_wrong_role,
-            )
-            snap = model.model_dump(mode="json")
-            snap["_report"] = report.to_dict()
+            if schema_name == "writing":
+                assert isinstance(model, WritingSuggestion)
+                model, _legacy = validate_writing(
+                    model, profile_text=profile_text, job_text=job_text
+                )
+            snap = model.model_dump(mode="json") if hasattr(model, "model_dump") else {}
             snap["_env_model_id"] = env.model_id
-            return model, list(report.errors), snap
+            return model, [], snap
 
-        model, errors, history = run_bounded_repair(
-            capability="writing",
-            generate_fn=_once,
-            enable_repair=use_repair,
-            model_id=routed,
-        )
-        assert isinstance(model, WritingSuggestion)
-        model, report = validate_writing_grounded(
-            model,
+        result = run_quality_loop(
+            generate_fn=_generate,
             profile_text=profile_text,
             job_text=job_text,
-            existing_evidence=existing_evidence,
             target_company=target_company,
+            target_role=target_role,
+            existing_evidence=existing_evidence,
             forbid_role_reversal=forbid_role_reversal,
             forbid_wrong_role=forbid_wrong_role,
+            mode=mode,
+            seed_body=seed_body,
         )
-        report_dict = report.to_dict()
-        notes = [e.code for e in report.errors]
-        if history.repair_count:
-            notes.append(f"repairs={history.repair_count}")
-        if history.exhausted:
-            notes.append("repair_exhausted")
+        notes = [e.get("code") for e in result.validator_errors if e.get("code")]
+        notes.append(f"final_state={result.final_state.value}")
+        notes.append(f"model_calls={result.model_calls}")
+        if result.progress:
+            notes.append(f"progress={result.progress}")
         log_event(
-            "writing_grounded",
-            repairs=history.repair_count,
-            exhausted=history.exhausted,
-            blocked=bool(report.writing_blocked),
+            "writing_quality_loop",
+            mode=mode,
+            final_state=result.final_state.value,
+            model_calls=result.model_calls,
+            early_exit=result.early_exit,
             model_id=routed,
         )
-        accept_ok = bool(history.final_ok and report.ok)
+        history = RepairHistory(
+            capability="writing",
+            final_ok=bool(result.ok),
+            repair_count=result.safety_repair_count,
+            exhausted=result.final_state.value
+            in {"REVIEW_REQUIRED_SAFETY", "GENERATION_FAILED", "HARD_REQUIREMENT_NOT_MET"},
+            mode="quality_loop",
+        )
+        repair_meta = history.to_dict()
+        repair_meta.update(result.to_meta())
+        grounding = dict(result.grounding_report or {})
+        grounding["quality_loop"] = result.to_meta()
         return envelope_from_model(
             capability="writing",
-            model=model,
-            ok=accept_ok,
+            model=result.suggestion,
+            ok=bool(result.ok),
             provider_status="ready",
             model_id=routed,
             safety_notes=[str(n) for n in notes if n],
             validated=True,
             architecture=self.architecture.value,
-            validator_errors=[e.to_dict() for e in report.errors],
-            repair_history=history.to_dict(),
-            grounding_report=report_dict,
+            validator_errors=list(result.validator_errors),
+            repair_history=repair_meta,
+            grounding_report=grounding,
         )
 
     def suggest_interview_prep(
@@ -701,6 +687,7 @@ def get_guenther_service(
     refresh: bool = False,
     architecture: str | None = None,
     enable_repair: bool | None = None,
+    quality_loop_mode: str | None = None,
 ) -> GuentherService:
     global _SERVICE
     with _SERVICE_LOCK:
@@ -710,6 +697,7 @@ def get_guenther_service(
                 model=model or "auto",
                 architecture=architecture or ArchitectureMode.AUTO,
                 enable_repair=True if enable_repair is None else bool(enable_repair),
+                quality_loop_mode=quality_loop_mode or "full",
             )
         else:
             if enabled is not None:
@@ -720,4 +708,6 @@ def get_guenther_service(
                 _SERVICE.architecture = ArchitectureMode(str(architecture))
             if enable_repair is not None:
                 _SERVICE.enable_repair = bool(enable_repair)
+            if quality_loop_mode is not None:
+                _SERVICE.quality_loop_mode = str(quality_loop_mode)
         return _SERVICE

@@ -34,10 +34,11 @@ MODEL_CATALOG: dict[str, dict] = {
         "source_repo": "bartowski/Qwen_Qwen3-1.7B-GGUF",
         "base_model": "Qwen/Qwen3-1.7B",
         "hf_commit": "dcb19155b962dbb6389f4691a982043a8e651022",
-        "notes": "Apache-2.0 base; community Q4_K_M GGUF; LIGHT default",
+        "notes": "Apache-2.0 base; community Q4_K_M GGUF; LIGHT hardware/failsafe fallback only",
+        "role": "light_fallback",
     },
     "qwen3-4b": {
-        "display_name": "Günther Standard (Qwen3 4B)",
+        "display_name": "Günther Qwen3 4B (legacy option)",
         "license": "Apache-2.0",
         "approx_bytes": 2_497_280_256,
         "ram_gb_min": 5.0,
@@ -50,10 +51,11 @@ MODEL_CATALOG: dict[str, dict] = {
         "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
         "source_repo": "Qwen/Qwen3-4B-GGUF",
         "base_model": "Qwen/Qwen3-4B",
-        "notes": "Apache-2.0 official GGUF; STANDARD Autopick",
+        "notes": "Legacy catalog option — not recommended primary after Phi lock-in",
+        "role": "legacy",
     },
     "phi4-mini": {
-        "display_name": "Günther stark (Phi-4-mini-instruct)",
+        "display_name": "Günther (Phi-4-mini — empfohlen)",
         "license": "MIT",
         "approx_bytes": 2_491_874_688,
         "ram_gb_min": 5.0,
@@ -70,9 +72,10 @@ MODEL_CATALOG: dict[str, dict] = {
         "upstream_license": "MIT",
         "quant": "Q4_K_M",
         "notes": (
-            "Tournament winner provenance; MIT upstream microsoft/Phi-4-mini-instruct. "
-            "Not hard-coded as sole production default — catalog option alongside Qwen3-1.7B."
+            "PRIMARY Günther model (final shootout). MIT upstream microsoft/Phi-4-mini-instruct. "
+            "Qwen3-1.7B remains LIGHT hardware/failsafe fallback only."
         ),
+        "role": "primary",
         "deferred": False,
     },
 }

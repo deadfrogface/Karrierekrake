@@ -1,0 +1,25 @@
+{
+  "ablation": {
+    "A_old_phase2_reuse": {
+      "mode": "old",
+      "source": "phase2_reuse",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 85.11,
+      "unnecessary_fail_closed_pct": 14.89,
+      "ready_as_is_pct": 76.6,
+      "cover_raw_avg": 7.665,
+      "cover_accepted_avg": 7.808,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 31.076,
+      "median_latency_s": 24.593,
+      "p95_latency_s": 74.428,
+      "avg_model_calls": null,
+      "p50_model_calls": null,
+      "p95_model_calls": null,
+      "peak_rss_mb": 5601.4
+    }
+  },
+  "revision_2_worth_keeping": null,
+  "development_target_reached": false
+}

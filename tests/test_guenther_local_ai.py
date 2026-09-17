@@ -231,7 +231,9 @@ def test_hardware_auto_fallback(monkeypatch):
     # detect reads /proc first on Linux — override by patching _ram_gb via env only works as fallback
     # so call graceful directly
     assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "qwen3-1.7b"
-    assert graceful_model_fallback(HardwareTier.STANDARD, "auto") == "qwen3-4b"
+    assert graceful_model_fallback(HardwareTier.STANDARD, "auto") == "phi4-mini"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3-1.7b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "qwen3-1.7b"
 
 
 def test_extract_json_strips_think_blocks():

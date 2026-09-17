@@ -195,10 +195,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther einschalten (nur lokal auf diesem PC)",
         "settings.guenther_model": "Modell",
-        "settings.guenther_model.auto": "Automatisch",
-        "settings.guenther_model.light": "Leicht",
-        "settings.guenther_model.standard": "Standard",
-        "settings.guenther_model.alt": "Alternative",
+        "settings.guenther_model.auto": "Automatisch (Phi empfohlen)",
+        "settings.guenther_model.primary": "Empfohlen — Phi-4-mini",
+        "settings.guenther_model.light": "Leicht — Qwen3-1.7B (Fallback)",
+        "settings.guenther_model.legacy4b": "Legacy — Qwen3-4B",
+        "settings.guenther_model.standard": "Legacy — Qwen3-4B",
+        "settings.guenther_model.alt": "Empfohlen — Phi-4-mini",
         "settings.guenther_hint": (
             "Günther denkt mit — Karrierekrake entscheidet. "
             "Keine Cloud-KI nötig. Modelle werden nur nach Ihrer Freigabe geladen. "
@@ -628,10 +630,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Enable Günther (local on this PC only)",
         "settings.guenther_model": "Model",
-        "settings.guenther_model.auto": "Automatic",
-        "settings.guenther_model.light": "Light",
-        "settings.guenther_model.standard": "Standard",
-        "settings.guenther_model.alt": "Alternative",
+        "settings.guenther_model.auto": "Automatic (Phi recommended)",
+        "settings.guenther_model.primary": "Recommended — Phi-4-mini",
+        "settings.guenther_model.light": "Light — Qwen3-1.7B (fallback)",
+        "settings.guenther_model.legacy4b": "Legacy — Qwen3-4B",
+        "settings.guenther_model.standard": "Legacy — Qwen3-4B",
+        "settings.guenther_model.alt": "Recommended — Phi-4-mini",
         "settings.guenther_hint": (
             "Günther may suggest — Karrierekrake decides. "
             "No cloud AI required. Models load only with your approval. "

@@ -152,3 +152,16 @@ SCHEMA_BY_NAME: dict[str, type[BaseModel]] = {
     "writing": WritingSuggestion,
     "interview_prep": InterviewPrepSuggestion,
 }
+
+# Quality-loop schemas (imported after WritingSuggestion to avoid cycles).
+from guenther.intelligence.quality_loop.schemas import (  # noqa: E402
+    QualityCritique,
+    WritingPlan,
+)
+
+SCHEMA_BY_NAME["writing_plan"] = WritingPlan
+SCHEMA_BY_NAME["writing_critique"] = QualityCritique
+
+
+def _schema_by_name() -> dict[str, type[BaseModel]]:
+    return dict(SCHEMA_BY_NAME)

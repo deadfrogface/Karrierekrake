@@ -74,4 +74,23 @@ SCHEMA_HINTS: dict[str, str] = {
         '{"questions":[],"talking_points":[],"gap_notes":[],"anchors_used":[],'
         '"invented_flag":false,"confidence":"low|medium|high"}'
     ),
+    "writing_plan": (
+        '{"target_role":"","target_company":"","candidate_positioning":"",'
+        '"strongest_direct_evidence":[{"evidence_id":"","reason":""}],'
+        '"strongest_related_evidence":[{"evidence_id":"","reason":"","allowed_transfer_framing":""}],'
+        '"do_not_claim":[],'
+        '"hard_requirements":[{"requirement":"","status":"MET_DIRECT|RELATED_ONLY|NOT_MET|UNKNOWN"}],'
+        '"desirable_requirements":[{"requirement":"","status":"MET_DIRECT|RELATED_ONLY|NOT_MET|UNKNOWN"}],'
+        '"argument_1":"","argument_2":"","argument_3":"",'
+        '"company_reference":"","opening_strategy":"","closing_strategy":"",'
+        '"invented_flag":false,"confidence":"low|medium|high"}'
+    ),
+    "writing_critique": (
+        '{"job_relevance":0,"evidence_use":0,"specificity":0,"german_naturalness":0,'
+        '"persuasiveness":0,"structure":0,"conciseness":0,"transferable_experience":0,'
+        '"submission_readiness":0,"ready_as_is":false,'
+        '"problems":[{"severity":"low|medium|high","location":"","problem":"",'
+        '"recommended_change":"","evidence_id_to_use":""}],'
+        '"strong_parts_to_preserve":[],"invented_flag":false,"confidence":"low|medium|high"}'
+    ),
 }

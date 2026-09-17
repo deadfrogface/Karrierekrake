@@ -71,6 +71,10 @@ class HeuristicProvider(LocalAIProvider):
             payload = self._writing(trusted, untrusted)
         elif schema == "interview_prep":
             payload = self._interview(trusted, untrusted)
+        elif schema == "writing_plan":
+            payload = self._writing_plan(trusted, untrusted)
+        elif schema == "writing_critique":
+            payload = self._writing_critique(trusted, untrusted)
         else:
             return GenerationResult(
                 ok=False,
@@ -174,10 +178,157 @@ class HeuristicProvider(LocalAIProvider):
         return {"items": [], "confidence": "low"}
 
     def _writing(self, trusted: str, untrusted: str) -> dict[str, Any]:
+        company = _target_company(trusted)
+        evidence_bits: list[str] = []
+        try:
+            if "verified_plan" in trusted:
+                start = trusted.find("{")
+                if start >= 0:
+                    obj = json.loads(trusted[start:])
+                    plan = obj.get("verified_plan") or {}
+                    for row in (plan.get("allowed_direct_evidence") or [])[:3]:
+                        evidence_bits.append(str(row.get("text") or ""))
+                    for row in (plan.get("allowed_related_evidence") or [])[:1]:
+                        framing = str(row.get("allowed_transfer_framing") or row.get("text") or "")
+                        if framing:
+                            evidence_bits.append(framing)
+                    if plan.get("target_company"):
+                        company = str(plan.get("target_company"))
+        except Exception:
+            pass
+        if not evidence_bits:
+            for token in ("Excel", "Buchhaltung", "Ablage", "Kundensupport", "Deutsch"):
+                if token.lower() in trusted.lower():
+                    evidence_bits.append(token)
+        evid = "; ".join(b for b in evidence_bits if b)[:280]
+        co_phrase = (
+            f" bei {company}"
+            if company and company.upper() not in {"UNKNOWN", "UNBEKANNT"}
+            else ""
+        )
+        body = (
+            f"Gerne bewerbe ich mich{co_phrase}. "
+            f"Relevant sind insbesondere: {evid or 'meine im Profil belegte Erfahrung'}. "
+            "Ich bringe eine strukturierte Arbeitsweise mit und formuliere Transfer nur dort, "
+            "wo Belege vorhanden sind. Über ein Gespräch freue ich mich."
+        )
         return {
-            "subject": "",
-            "body": "",
+            "subject": f"Bewerbung{co_phrase}".strip(),
+            "body": body,
             "anchors_used": [],
+            "invented_flag": False,
+            "confidence": "low",
+        }
+
+    def _writing_plan(self, trusted: str, untrusted: str) -> dict[str, Any]:
+        company = _target_company(trusted)
+        role = ""
+        for line in (trusted or "").splitlines():
+            if line.upper().startswith("TARGET_ROLE:"):
+                role = line.split(":", 1)[1].strip()
+                break
+        ids: list[str] = []
+        marker = "EVIDENCE_STORE:"
+        if marker in trusted:
+            raw = trusted.split(marker, 1)[1]
+            try:
+                start = raw.find("[")
+                end = raw.rfind("]")
+                if start >= 0 and end > start:
+                    items = json.loads(raw[start : end + 1])
+                    for it in items[:4]:
+                        eid = str(it.get("id") or "")
+                        if eid:
+                            ids.append(eid)
+            except Exception:
+                pass
+        if not ids:
+            ids = ["prof_0"]
+        direct = [{"evidence_id": ids[0], "reason": "stärkster Profilbeleg"}]
+        related = []
+        if len(ids) > 1:
+            related = [
+                {
+                    "evidence_id": ids[1],
+                    "reason": "transferierbar",
+                    "allowed_transfer_framing": "als Grundlage zur Einarbeitung",
+                }
+            ]
+        return {
+            "target_role": role or "ausgeschriebene Position",
+            "target_company": company or "UNKNOWN",
+            "candidate_positioning": "Passung über belegte Profil-Evidenz",
+            "strongest_direct_evidence": direct,
+            "strongest_related_evidence": related,
+            "do_not_claim": [],
+            "hard_requirements": [],
+            "desirable_requirements": [],
+            "argument_1": "Belegte Erfahrung einbringen",
+            "argument_2": "Transfer ehrlich formulieren",
+            "argument_3": "Motivation knapp",
+            "company_reference": company or "die ausgeschriebene Position",
+            "opening_strategy": "konkret, ohne Floskel",
+            "closing_strategy": "Gesprächsangebot",
+            "invented_flag": False,
+            "confidence": "low",
+        }
+
+    def _writing_critique(self, trusted: str, untrusted: str) -> dict[str, Any]:
+        body = ""
+        try:
+            start = trusted.find("{")
+            if start >= 0:
+                obj = json.loads(trusted[start:])
+                body = str(obj.get("draft_body") or "")
+        except Exception:
+            body = trusted
+        low = body.lower()
+        generic = any(
+            p in low
+            for p in (
+                "mit großem interesse",
+                "hiermit bewerbe",
+                "renommiertes",
+                "leidenschaft",
+            )
+        )
+        short = len(body.strip()) < 220
+        ready = (not generic) and (not short) and bool(body.strip())
+        problems = []
+        if generic:
+            problems.append(
+                {
+                    "severity": "high",
+                    "location": "opening",
+                    "problem": "Generische Floskel",
+                    "recommended_change": "Öffnung durch konkreten Beleg ersetzen",
+                    "evidence_id_to_use": "",
+                }
+            )
+        if short:
+            problems.append(
+                {
+                    "severity": "medium",
+                    "location": "body",
+                    "problem": "Zu knapp / wenig spezifisch",
+                    "recommended_change": "Einen konkreten Evidenzpunkt ergänzen",
+                    "evidence_id_to_use": "",
+                }
+            )
+        score = 8 if ready else 5
+        return {
+            "job_relevance": score,
+            "evidence_use": score,
+            "specificity": 4 if short else score,
+            "german_naturalness": 6 if generic else score,
+            "persuasiveness": score,
+            "structure": score,
+            "conciseness": score,
+            "transferable_experience": score,
+            "submission_readiness": score,
+            "ready_as_is": ready,
+            "problems": problems,
+            "strong_parts_to_preserve": [],
             "invented_flag": False,
             "confidence": "low",
         }
@@ -191,6 +342,13 @@ class HeuristicProvider(LocalAIProvider):
             "invented_flag": False,
             "confidence": "low",
         }
+
+
+def _target_company(trusted: str) -> str:
+    for line in (trusted or "").splitlines():
+        if line.upper().startswith("TARGET_COMPANY:"):
+            return line.split(":", 1)[1].strip().split("—")[0].strip()
+    return ""
 
 
 def _split_subject_body(text: str) -> tuple[str, str]:

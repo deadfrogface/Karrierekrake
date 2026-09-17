@@ -39,6 +39,13 @@ a true ≥99% production rate.
 | Phase-2 executed against winner after selection | **YES** (`phi4-mini`) |
 | Post-Phase-2 tuning | **NO** |
 
+**Phase Y correction note:** Raw execution chronology and
+`benchmark/guenther_final_model_shootout_results.json` → `new_fixture_blind_status.remained_blind_through_phase1=true`
+confirm blindness through Phase-1. Phase-1 raw outputs contain only pre-existing suites
+(`wq_final_blind_covers`, hardening, …); `sc_*` appears first under Phase-2 paths.
+If any summary text previously read as “Remained blind … False”, that was a **presentation
+inconsistency only** — benchmark numbers and blindness facts were not rewritten.
+
 ---
 
 ## Model provenance
