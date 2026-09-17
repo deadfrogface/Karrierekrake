@@ -1,0 +1,69 @@
+{
+  "id": "sc_des_08",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 218.94,
+  "model_calls": 6,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit umfangreicher Erfahrung im Dispositionsmanagement und Tourenplanung bin ich bereit, mich in einem modernen TMS-umgebenden Umfeld bei RoutePro GmbH zu engagieren. Obwohl kein TMS Zertifikat vorhanden ist, glaube ich, dass meine Tourenplanungserfahrung eine solide Grundlage für die Annahme von TMS-Kenntnissen bieten könnte.",
+  "subject": "Disponent",
+  "peak_rss_mb": 230.89453125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 51.266,
+      "draft": 20.032,
+      "safety_repair": 16.885,
+      "critique_1": 45.51,
+      "quality_revision_1": 20.631,
+      "critique_2": 64.61
+    },
+    "cot_stored": false
+  }
+}

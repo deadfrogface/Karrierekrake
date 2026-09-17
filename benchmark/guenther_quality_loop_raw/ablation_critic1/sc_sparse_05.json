@@ -1,0 +1,64 @@
+{
+  "id": "sc_sparse_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 167.203,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Meg Intern, mit Erfahrung in MS Word. Ich suche eine Praktikant Position im Bereich Office bei StartOffice GmbH. Ich bin überzeugt, dass meine Fähigkeiten und meine Begeisterung für moderne und effiziente Arbeitsprozesse gut zu Ihrem Team passen würden.",
+  "subject": "Praktikant Office - StartOffice GmbH",
+  "peak_rss_mb": 230.82421875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 36.149,
+      "draft": 23.709,
+      "critique_1": 49.508,
+      "quality_revision_1": 19.189,
+      "critique_2": 38.644
+    },
+    "cot_stored": false
+  }
+}

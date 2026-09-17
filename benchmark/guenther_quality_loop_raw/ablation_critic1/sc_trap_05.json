@@ -1,0 +1,52 @@
+{
+  "id": "sc_trap_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 76.565,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich möchte meine Bewerbung für die Position des Recruiters bei TalentHub GmbH einreichen. Mit meiner Erfahrung bei RecruitPro GmbH als Recruiter und meinem aktiven Sourcing-Ansatz bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich bin besonders an der Möglichkeit interessiert, meine Fähigkeiten im Recruiten und Talentmanagement im Kontext von TalentHub GmbHs Zielen zu nutzen.",
+  "subject": "Einreichung für die Position des Recruiters",
+  "peak_rss_mb": 231.01171875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 36.059,
+      "draft": 18.891,
+      "critique_1": 21.613
+    },
+    "cot_stored": false
+  }
+}

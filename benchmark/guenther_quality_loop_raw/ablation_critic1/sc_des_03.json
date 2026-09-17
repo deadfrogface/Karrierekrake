@@ -1,0 +1,69 @@
+{
+  "id": "sc_des_03",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 295.628,
+  "model_calls": 6,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe umfangreiche Kenntnisse im Linux-Betriebssystem und in der Shell-Scripting-Sprache Bash mit. Obwohl kein AWS Zertifikat vorhanden ist, kann ich mich in IT-Landschaften zurechtfinden, was für die Rolle des Systemadmins bei SkyOps GmbH essentiell ist.",
+  "subject": "Systemadmin",
+  "peak_rss_mb": 230.8828125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 79.417,
+      "draft": 54.8,
+      "safety_repair": 25.196,
+      "critique_1": 45.91,
+      "quality_revision_1": 22.836,
+      "critique_2": 67.465
+    },
+    "cot_stored": false
+  }
+}

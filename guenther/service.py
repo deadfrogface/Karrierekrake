@@ -45,7 +45,7 @@ class GuentherService:
         allow_heuristic_when_no_llm: bool = True,
         architecture: str | ArchitectureMode = ArchitectureMode.AUTO,
         enable_repair: bool = True,
-        quality_loop_mode: str = "full",
+        quality_loop_mode: str = "plan_draft",
     ) -> None:
         self.enabled = enabled
         self.model_pref = model
@@ -697,7 +697,7 @@ def get_guenther_service(
                 model=model or "auto",
                 architecture=architecture or ArchitectureMode.AUTO,
                 enable_repair=True if enable_repair is None else bool(enable_repair),
-                quality_loop_mode=quality_loop_mode or "full",
+                quality_loop_mode=quality_loop_mode or "plan_draft",
             )
         else:
             if enabled is not None:

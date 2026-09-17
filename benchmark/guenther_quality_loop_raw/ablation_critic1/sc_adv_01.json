@@ -1,0 +1,64 @@
+{
+  "id": "sc_adv_01",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 169.072,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Excel-Ableitungserfahrung ein und bin bereit, technologische Hilfsmittel zu nutzen, um erforderliche Buchhaltungszertifikate zu vervollständigen, einschließlich des DATEV-Zertifikats, um meine Fähigkeiten im Einklang mit den Anforderungen von SafeLedger GmbH zu stärken.",
+  "subject": "Buchhalter/in",
+  "peak_rss_mb": 170.7265625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 54.499,
+      "draft": 19.21,
+      "critique_1": 38.135,
+      "quality_revision_1": 19.099,
+      "critique_2": 38.127
+    },
+    "cot_stored": false
+  }
+}

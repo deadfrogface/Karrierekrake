@@ -1,5 +1,5 @@
 {
-  "purpose": "Günther quality-loop results",
+  "purpose": "Günther final intelligence architecture — quality loop results",
   "primary_model": "phi4-mini",
   "light_fallback": "qwen3-1.7b",
   "model_tournament_closed": true,
@@ -92,9 +92,30 @@
       "p50_model_calls": 2.0,
       "p95_model_calls": 3,
       "peak_rss_mb": 5547.08984375
-    }
+    },
+    "C_critic1": {
+      "mode": "critic1",
+      "source": "live",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 89.36,
+      "unnecessary_fail_closed_pct": 10.64,
+      "ready_as_is_pct": 64.89,
+      "cover_raw_avg": 7.17,
+      "cover_accepted_avg": 7.655,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 127.702,
+      "median_latency_s": 129.51,
+      "p95_latency_s": 216.354,
+      "avg_model_calls": 4.12,
+      "p50_model_calls": 5.0,
+      "p95_model_calls": 6,
+      "peak_rss_mb": 5561.1796875
+    },
+    "D_full": "RUNNING"
   },
-  "ablation_live_status": "critic1_running",
+  "recommended_default_mode": "plan_draft",
+  "revision_2_worth_keeping": false,
   "development_target_reached": false,
   "new_blind_fixture_created": false,
   "held_out_rerun": false,
@@ -102,5 +123,10 @@
   "merge_ready": false,
   "ci": "PASS",
   "windows_smoke": "PASS",
-  "commit": "99ed79e+"
+  "phase2_forensics": "benchmark/guenther_quality_loop_raw/phase2_failure_forensics.json",
+  "interpretation": {
+    "plan_draft": "Best automation lift 85.11→93.62 with safety 0; ready/cover drop",
+    "critic1": "Ready +4.25pp vs plan_draft but automation -4.26pp; not net-positive yet",
+    "next": "Improve critic/revision prompts or selective critic-on-not-ready; do not open model tournament"
+  }
 }

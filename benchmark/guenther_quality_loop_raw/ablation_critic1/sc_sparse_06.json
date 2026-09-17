@@ -1,0 +1,64 @@
+{
+  "id": "sc_sparse_06",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 224.086,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Leidenschaft für Ordnung und meine Erfahrung im Archivwesen ein, was mich zu einer idealen Ergänzung für das Stadtarchiv Nord macht. Ich schätze Ordnung, was für die Rolle im Stadtarchiv Nord von Vorteil ist. Ich bin bereit, meine Erfahrungen und Fähigkeiten im Archivwesen weiterzuentwickeln, insbesondere im Hinblick auf die Anforderungen des Stadtarchivs Nord.",
+  "subject": "Hilfskraft Archiv - Stadtarchiv Nord",
+  "peak_rss_mb": 230.82421875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 77.015,
+      "draft": 24.227,
+      "critique_1": 37.351,
+      "quality_revision_1": 24.717,
+      "critique_2": 60.772
+    },
+    "cot_stored": false
+  }
+}

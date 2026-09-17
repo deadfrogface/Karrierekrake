@@ -1,6 +1,6 @@
 # Günther Final Intelligence Architecture
 
-**GÜNTHER FINAL INTELLIGENCE ARCHITECTURE:** in progress (implementation + ablation)  
+**GÜNTHER FINAL INTELLIGENCE ARCHITECTURE:** COMPLETE (impl) / ablation D still running; QUALITY READY=NO  
 **PRIMARY MODEL LOCKED:** Phi-4-mini  
 **MODEL TOURNAMENT CLOSED:** YES  
 **PR #19 MERGED:** NO
@@ -78,31 +78,19 @@ Not-ready root causes:
 
 ## Ablation (development fixture = Phase-2)
 
-Baseline (OLD / Phase-2 reuse):
+| Mode | Automation | Ready | Cover raw | Safety | Latency | Calls |
+|------|------------|-------|-----------|--------|---------|-------|
+| **A** OLD (Phase-2) | 85.11% | **76.6%** | **7.665** | 0 | ~31 s | — |
+| **B** plan_draft | **93.62%** | 60.64% | 7.30 | 0 | ~61 s | 2.05 |
+| **C** critic1 | 89.36% | 64.89% | 7.17 | 0 | ~128 s | 4.12 |
+| **D** full (≤2 rev) | RUNNING | — | — | — | — | — |
 
-| | |
-|--|--|
-| Automation | 85.11% |
-| Unnecessary fail-closed | 14.89% |
-| Cover raw | 7.665 |
-| Ready-as-is | 76.6% |
-| Safety accepted failures | 0 |
+**Finding:** PLAN+DRAFT is the clear automation win (+8.5 pp) with zero accepted safety failures. Critic+1 revision recovers some ready-as-is (+4 pp vs B) but **regresses automation** (−4 pp vs B) and does not restore cover ≥8.0.
 
-### B — PLAN + DRAFT + SAFETY (complete)
-
-| | |
-|--|--|
-| Automation | **93.62%** |
-| Unnecessary fail-closed | **6.38%** |
-| Cover raw | 7.30 |
-| Ready-as-is | 60.64% |
-| Safety accepted failures | 0 |
-| Avg latency | ~60.7 s |
-| Avg model calls | 2.05 |
-
-C (`critic1`) and D (`full`) **RUNNING**.
-
-Development targets before new blind: automation ≥95%, ready ≥90%, cover ≥8.0, safety 0 — **not yet reached** (automation improved; ready/cover need critic).
+**Development targets** (auto≥95 / ready≥90 / cover≥8): **NOT reached.**  
+→ **No new blind fixture** in this pass.  
+→ Recommended production writing mode for now: **`plan_draft`** (critic remains available for further prompt work).  
+→ Do **not** reopen model tournament.
 
 ## Shootout report blindness correction (Phase Y)
 

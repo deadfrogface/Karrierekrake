@@ -1,0 +1,52 @@
+{
+  "id": "sc_des_06",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 87.488,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo, ich wende mich an dich, da ich von deiner Expertise in der Rekrutierung und meiner Expertise im Sourcing ohne Personio erfahren habe. Ich bin überzeugt, dass meine Fähigkeiten gut zu den innovativen Ansätzen von HireWave KG passen. Ich freue mich darauf, mehr über die Möglichkeiten mit dir zu besprechen.",
+  "subject": "Rekrutierung interested in innovative Sourcing-Methoden",
+  "peak_rss_mb": 230.88671875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 32.708,
+      "draft": 17.165,
+      "critique_1": 37.613
+    },
+    "cot_stored": false
+  }
+}
