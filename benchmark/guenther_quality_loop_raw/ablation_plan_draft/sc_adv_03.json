@@ -1,0 +1,47 @@
+{
+  "id": "sc_adv_03",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 55.659,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Fähigkeiten in der Verwaltung und Organisation in die Pflegeprozesse bei Haus Sonne einzubringen. Auch wenn ich keine Grundpflege Erfahrung habe, bin ich überzeugt, dass meine organisatorischen Fähigkeiten und meine Erfahrung in der Verwaltung die Pflegeabläufe optimieren können.",
+  "subject": "Pflegehelfer/in",
+  "peak_rss_mb": 230.54296875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.556,
+      "draft": 10.113,
+      "safety_repair": 15.988
+    },
+    "cot_stored": false
+  }
+}

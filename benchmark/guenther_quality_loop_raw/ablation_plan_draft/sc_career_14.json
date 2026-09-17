@@ -1,0 +1,44 @@
+{
+  "id": "sc_career_14",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 67.664,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo, ich habe Ihre Stellenanzeige für einen Procurement Jr bei SupplyHub AG gesehen. Mit meiner Erfahrung in Büroorganisation und Transfer-Einkauf, wie in meinem Profil erwähnt, bin ich überzeugt, dass ich eine wertvolle Bereicherung für Ihr Team sein kann. Ich bin flexibel und bereit, neue Herausforderungen im Procurement-Bereich anzugehen. Außerdem bin ich versiert in der deutschen Sprache, was für die Anforderungen Ihrer Stelle erforderlich ist. Ich freue mich darauf, meine Fähigkeiten im Transfer-Einkauf zu nutzen, um die Effizienz im Procurement-Bereich von SupplyHub AG zu steigern. Vielen Dank für Ihre Zeit.",
+  "subject": "Angebot für die Rolle Procurement Jr bei SupplyHub AG",
+  "peak_rss_mb": 200.1875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 41.662,
+      "draft": 26.0
+    },
+    "cot_stored": false
+  }
+}

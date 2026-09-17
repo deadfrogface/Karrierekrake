@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_03",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 54.798,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Empfang und Terminplanen im Wechsel Recruiting mit und suche eine Junior Recruiter Position bei TalentBridge KG. Meine pflichtbewusste und proaktive Arbeitsweise, kombiniert mit meinen Fähigkeiten im Umgang mit deutschen Sprachgebrauch, machen mich zu einem idealen Kandidaten für diese Rolle.",
+  "subject": "Junior Recruiter",
+  "peak_rss_mb": 170.9609375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 35.598,
+      "draft": 19.198
+    },
+    "cot_stored": false
+  }
+}

@@ -88,9 +88,21 @@ Baseline (OLD / Phase-2 reuse):
 | Ready-as-is | 76.6% |
 | Safety accepted failures | 0 |
 
-Live ablation modes: `old` | `plan_draft` | `critic1` | `full` — see `benchmark/guenther_quality_loop_ablation.json`.
+### B — PLAN + DRAFT + SAFETY (complete)
 
-Development targets before new blind: automation ≥95%, ready ≥90%, cover ≥8.0, safety 0.
+| | |
+|--|--|
+| Automation | **93.62%** |
+| Unnecessary fail-closed | **6.38%** |
+| Cover raw | 7.30 |
+| Ready-as-is | 60.64% |
+| Safety accepted failures | 0 |
+| Avg latency | ~60.7 s |
+| Avg model calls | 2.05 |
+
+C (`critic1`) and D (`full`) **RUNNING**.
+
+Development targets before new blind: automation ≥95%, ready ≥90%, cover ≥8.0, safety 0 — **not yet reached** (automation improved; ready/cover need critic).
 
 ## Shootout report blindness correction (Phase Y)
 

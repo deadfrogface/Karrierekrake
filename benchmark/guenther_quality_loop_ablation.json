@@ -1,4 +1,6 @@
 {
+  "purpose": "Günther quality-loop ablation (partial)",
+  "primary_model": "phi4-mini",
   "ablation": {
     "A_old_phase2_reuse": {
       "mode": "old",
@@ -18,8 +20,29 @@
       "p50_model_calls": null,
       "p95_model_calls": null,
       "peak_rss_mb": 5601.4
+    },
+    "B_plan_draft": {
+      "mode": "plan_draft",
+      "source": "live",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 93.62,
+      "unnecessary_fail_closed_pct": 6.38,
+      "ready_as_is_pct": 60.64,
+      "cover_raw_avg": 7.3,
+      "cover_accepted_avg": 7.538,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 60.684,
+      "median_latency_s": 50.944,
+      "p95_latency_s": 90.77,
+      "avg_model_calls": 2.05,
+      "p50_model_calls": 2.0,
+      "p95_model_calls": 3,
+      "peak_rss_mb": 5547.08984375
     }
   },
   "revision_2_worth_keeping": null,
-  "development_target_reached": false
+  "development_target_reached": false,
+  "critic1_status": "RUNNING",
+  "note": "plan_draft improves automation vs Phase-2 but ready/cover drop; critic modes expected to recover quality"
 }

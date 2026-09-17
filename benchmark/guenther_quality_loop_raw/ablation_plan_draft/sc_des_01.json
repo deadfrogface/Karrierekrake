@@ -1,0 +1,42 @@
+{
+  "id": "sc_des_01",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 47.824,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Debitorenmanagement und Excel ein, was für die Rolle eines Buchhalters bei LedgerPro AG relevant ist. Obwohl ich keine DATEV-Kenntnisse habe, bin ich bereit, mich in diesem Bereich weiterzubilden, um den Anforderungen des Unternehmens gerecht zu werden.",
+  "subject": "Buchhalter/in - LedgerPro AG",
+  "peak_rss_mb": 217.0234375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 31.681,
+      "draft": 16.143
+    },
+    "cot_stored": false
+  }
+}

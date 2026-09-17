@@ -1,0 +1,42 @@
+{
+  "id": "sc_sparse_08",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 46.123,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Bereich Montage ein und bin überzeugt, dass meine Fähigkeiten gut zu den Anforderungen von MakeSimple AG passen. Meine Deutschkenntnisse ermöglichen es mir, effektiv mit dem Team und den Kunden zu kommunizieren.",
+  "subject": "Produktion Aushilfe",
+  "peak_rss_mb": 216.98828125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 31.979,
+      "draft": 14.143
+    },
+    "cot_stored": false
+  }
+}

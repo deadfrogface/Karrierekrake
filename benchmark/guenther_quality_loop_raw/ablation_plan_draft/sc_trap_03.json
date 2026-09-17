@@ -1,0 +1,42 @@
+{
+  "id": "sc_trap_03",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 45.244,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine technischen Fähigkeiten und meine Erfahrung im Bereich Robotik bei Fabrikam Robotics AG einzubringen. Während meiner Zeit bei Tailspin Robotics AG habe ich an Projekten gearbeitet, die meine Fähigkeiten in der Robotikentwicklung und -integration unter Beweis stellen. Ich bin überzeugt, dass meine Expertise eine wertvolle Ergänzung für Ihr Team sein wird.",
+  "subject": "Ingenieur",
+  "peak_rss_mb": 224.41796875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 28.974,
+      "draft": 16.269
+    },
+    "cot_stored": false
+  }
+}

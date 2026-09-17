@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 49.728,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Office Coordinators bei WorkFlow AG einzureichen. Mit meiner Erfahrung im Verkauf und im Transfer Office glaube ich, dass ich gut geeignet bin, um Ihre Anforderungen zu erfüllen. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung die Rolle des Office Coordinators bei Ihrer Firma unterstützen können. Ich freue mich auf die Gelegenheit, meine Bewerbung zu besprechen. Vielen Dank für Ihre Zeit und Berücksichtigung.",
+  "subject": "Interessent für die Position des Office Coordinators bei WorkFlow AG",
+  "peak_rss_mb": 200.125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.203,
+      "draft": 20.524
+    },
+    "cot_stored": false
+  }
+}

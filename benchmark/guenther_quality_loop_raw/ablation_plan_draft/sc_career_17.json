@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_17",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 45.197,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Außendienst und in der Transferberatung ein, um als Junior Consultant bei AdviseLite GmbH zu helfen. Meine Fähigkeiten im Umgang mit Kunden und die Fähigkeit, komplexe Sachverhalte verständlich zu vermitteln, sind direkt auf die Anforderungen der Rolle abgestimmt.",
+  "subject": "Junior Consultant",
+  "peak_rss_mb": 5542.390625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 30.205,
+      "draft": 14.991
+    },
+    "cot_stored": false
+  }
+}

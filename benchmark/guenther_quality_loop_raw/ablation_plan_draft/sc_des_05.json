@@ -1,0 +1,42 @@
+{
+  "id": "sc_des_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 50.093,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Fähigkeiten im Lesen und Interpretieren von Bauzeichnungen ohne AutoCAD Zertifikat bei BauStark AG einzubringen. Meine Erfahrung ermöglicht es mir, komplexe Bauzeichnungen effektiv zu verstehen und umzusetzen, was meiner Meinung nach gut zu den Anforderungen der Bauleiter-Assistenten-Rolle passt.",
+  "subject": "Bauleiter Assistenz",
+  "peak_rss_mb": 224.41015625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.665,
+      "draft": 16.427
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "sc_des_06",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 51.398,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo, ich bin ein Recruiter bei HireWave KG und interessiere mich für Talente, die Personio-Praktiken in der Sourcing-Strategie anwenden. Ich suche jemanden, der eine aktive Sourcing-Strategie verfolgt und Personio-Praktiken vermeidet. Sie haben Erfahrung im Recruitement und sind bereit, diese Personio-Kenntnisse in HireWave KG einzubringen.",
+  "subject": "Rekrutierung interested in Personio-Praktiken",
+  "peak_rss_mb": 224.41015625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.25,
+      "draft": 18.147
+    },
+    "cot_stored": false
+  }
+}

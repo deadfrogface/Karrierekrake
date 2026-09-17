@@ -1,0 +1,47 @@
+{
+  "id": "sc_des_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 71.554,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit Erfahrung in Windows Tickets bin ich bereit, meine Fähigkeiten im IT-Support bei DeskHelp AG zu nutzen. Obwohl ich kein ITIL Zertifikat habe, bin ich offen für Schulungen, um meine Kenntnisse im ITIL Framework zu erweitern.",
+  "subject": "IT-Support bei DeskHelp AG",
+  "peak_rss_mb": 224.4140625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.799,
+      "draft": 14.74,
+      "safety_repair": 17.013
+    },
+    "cot_stored": false
+  }
+}

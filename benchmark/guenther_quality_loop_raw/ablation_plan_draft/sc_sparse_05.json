@@ -1,0 +1,42 @@
+{
+  "id": "sc_sparse_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 41.812,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo, ich bin Meg Intern mit Berufserfahrung im Bereich Office. Ich interessiere mich für eine Praktikant Position im Bereich Office bei StartOffice GmbH. Ich bin überzeugt, dass meine Fähigkeiten gut zu Ihrer Firma passen.",
+  "subject": "Praktikant Office",
+  "peak_rss_mb": 216.96484375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 28.001,
+      "draft": 13.81
+    },
+    "cot_stored": false
+  }
+}

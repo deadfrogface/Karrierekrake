@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_19",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 48.996,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo, ich bin Gil Hobby und interessiere mich für die IT-Administration bei InfraLite SE. Ich habe Erfahrung im IT-Bereich und bin bereit, meine Fähigkeiten im Bereich der IT-Administration auf die Bedürfnisse Ihres Unternehmens zu übertragen.",
+  "subject": "IT Admin Jr - IT-Administration",
+  "peak_rss_mb": 216.89453125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.66,
+      "draft": 15.335
+    },
+    "cot_stored": false
+  }
+}

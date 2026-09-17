@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_11",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 47.232,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich wende mich an Sie, um mein Interesse an der Rolle des Support Engineer Jr bei ByteCare AG auszudrücken. Mit meiner bisherigen Erfahrung im Elektronikverkauf und dem Transfer in die IT-Support-Lücke sehe ich großes Potenzial, mich in Ihre IT-Support-Team einzubringen. Ich bin überzeugt, dass meine Fähigkeiten und meine Lernbereitschaft es mir ermöglichen werden, effektiv in dieser Rolle zu arbeiten.",
+  "subject": "Angebot für Support Engineer Jr Rolle",
+  "peak_rss_mb": 200.16015625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 27.752,
+      "draft": 19.479
+    },
+    "cot_stored": false
+  }
+}

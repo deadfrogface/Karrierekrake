@@ -1,0 +1,44 @@
+{
+  "id": "sc_hard_05",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 67.737,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": true,
+  "body": "Ich bringe ein starkes Verständnis für Buchhaltung und Finanzmanagement mit, insbesondere im Excel-Bereich, was für die Rolle eines Steuerberaters/in bei Kanzlei TaxPro von Vorteil sein kann. Obwohl ich kein Steuerberaterexamen habe, bin ich überzeugt, dass meine Fähigkeiten in der Organisation und Analyse finanzieller Daten die Effizienz und Genauigkeit bei der Bearbeitung steuerlicher Angelegenheiten verbessern können.",
+  "subject": "Steuerberater/in",
+  "peak_rss_mb": 230.53515625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 49.276,
+      "draft": 18.46
+    },
+    "cot_stored": false
+  }
+}

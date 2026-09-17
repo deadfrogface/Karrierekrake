@@ -1,0 +1,44 @@
+{
+  "id": "sc_trap_04",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 51.91,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe relevante Erfahrung im Bereich Buchhaltung mit, insbesondere mit DATEV, und habe zuvor bei Northwind Finance gearbeitet. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung gut zu den Anforderungen von Wide World Finance KG passen.",
+  "subject": "Accountant",
+  "peak_rss_mb": 224.421875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 36.739,
+      "draft": 15.17
+    },
+    "cot_stored": false
+  }
+}

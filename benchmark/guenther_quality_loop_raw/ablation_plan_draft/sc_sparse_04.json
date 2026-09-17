@@ -1,0 +1,42 @@
+{
+  "id": "sc_sparse_04",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 43.373,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Erfahrungen im Telefonbereich mit CallLite SE zu teilen. Meine berufliche Laufbahn hat mir eine solide Grundlage in der Kommunikation und im Kundenservice gegeben, was ich als nützlich für die Rolle der Telefonhilfe erachte.",
+  "subject": "Telefonhilfe",
+  "peak_rss_mb": 216.953125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.564,
+      "draft": 13.808
+    },
+    "cot_stored": false
+  }
+}

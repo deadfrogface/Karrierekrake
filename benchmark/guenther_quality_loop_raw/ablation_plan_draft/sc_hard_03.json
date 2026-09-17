@@ -1,0 +1,44 @@
+{
+  "id": "sc_hard_03",
+  "final_ok": true,
+  "score": 7.0,
+  "edit_class": "MINOR_STYLE_EDIT_OPTIONAL",
+  "notes": [
+    "too_short"
+  ],
+  "latency_s": 71.528,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": true,
+  "body": "Ich bringe meine Erfahrung im Drogerieverkauf mit und bin bereit, die erforderlichen Approbationsanforderungen zu erfüllen, um bei CityApotheke West als Apotheker/in tätig zu sein.",
+  "subject": "Apotheker/in",
+  "peak_rss_mb": 230.53515625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 55.708,
+      "draft": 15.82
+    },
+    "cot_stored": false
+  }
+}
