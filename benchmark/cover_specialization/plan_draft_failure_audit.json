@@ -1,0 +1,81 @@
+{
+  "eligible_failures_audited": 6,
+  "counts": {
+    "WRITER_UNSUPPORTED_CLAIM": 1,
+    "PLAN_FALSE_BLOCK": 2,
+    "VALIDATOR_FALSE_POSITIVE": 3
+  },
+  "plan_false_failures": 2,
+  "writer_failures": 1,
+  "validator_false_positives": 3,
+  "rows": [
+    {
+      "case_id": "sc_adv_02",
+      "category": "WRITER_UNSUPPORTED_CLAIM",
+      "final_state": "REVIEW_REQUIRED_SAFETY",
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "score": 8.0,
+      "expect_class": "EXPECTED_SAFETY_TRAP",
+      "body_len": 360
+    },
+    {
+      "case_id": "sc_career_08",
+      "category": "PLAN_FALSE_BLOCK",
+      "final_state": "GENERATION_FAILED",
+      "final_errors": [
+        "SCHEMA_INVALID"
+      ],
+      "score": 0.0,
+      "expect_class": "ELIGIBLE_SAFE",
+      "body_len": 0
+    },
+    {
+      "case_id": "sc_des_03",
+      "category": "VALIDATOR_FALSE_POSITIVE",
+      "final_state": "REVIEW_REQUIRED_SAFETY",
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "score": 8.0,
+      "expect_class": "ELIGIBLE_SAFE",
+      "body_len": 302
+    },
+    {
+      "case_id": "sc_sparse_06",
+      "category": "PLAN_FALSE_BLOCK",
+      "final_state": "GENERATION_FAILED",
+      "final_errors": [
+        "SCHEMA_INVALID"
+      ],
+      "score": 0.0,
+      "expect_class": "ELIGIBLE_SAFE",
+      "body_len": 0
+    },
+    {
+      "case_id": "sc_strong_01",
+      "category": "VALIDATOR_FALSE_POSITIVE",
+      "final_state": "REVIEW_REQUIRED_SAFETY",
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "score": 6.0,
+      "expect_class": "ELIGIBLE_SAFE",
+      "body_len": 247
+    },
+    {
+      "case_id": "sc_strong_20",
+      "category": "VALIDATOR_FALSE_POSITIVE",
+      "final_state": "REVIEW_REQUIRED_SAFETY",
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "score": 7.0,
+      "expect_class": "ELIGIBLE_SAFE",
+      "body_len": 186
+    }
+  ],
+  "note": "Classification uses post-fix validator for FP detection; PLAN_FALSE_BLOCK = SCHEMA_INVALID before draft.",
+  "plan_target_ge_99": "PENDING_FIX_VERIFY"
+}

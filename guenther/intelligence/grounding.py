@@ -119,8 +119,13 @@ def _credential_sig_tokens(text: str) -> set[str]:
         "mit",
         "meiner",
         "meinem",
+        "meine",
+        "mein",
+        "meinen",
         "einer",
         "einem",
+        "eine",
+        "ein",
         "als",
         "und",
         "der",
@@ -129,6 +134,8 @@ def _credential_sig_tokens(text: str) -> set[str]:
         "den",
         "dem",
         "des",
+        "im",
+        "in",
         "fuer",
         "fur",
         "von",
@@ -146,8 +153,34 @@ def _credential_sig_tokens(text: str) -> set[str]:
         "habe",
         "bin",
         "ich",
+        "wir",
+        "sowie",
+        "erfahrung",
+        "berufserfahrung",
+        "jahre",
+        "funf",
+        "fuenf",
+        "erwerben",
+        "nachholen",
+        "absolvieren",
     }
     return {t for t in _tokens(text) if t not in glue and len(t) >= 3}
+
+
+def _stem_token_overlap(a: set[str], b: set[str]) -> set[str]:
+    """Match domain stems (steuerfach ↔ steuerfachangestellte) without inventing claims."""
+    hits: set[str] = set(a & b)
+    for ta in a:
+        if len(ta) < 6:
+            continue
+        for tb in b:
+            if len(tb) < 6:
+                continue
+            if ta == tb:
+                hits.add(ta)
+            elif ta.startswith(tb) or tb.startswith(ta):
+                hits.add(min(ta, tb, key=len))
+    return hits
 
 
 def _expand_credential_equiv(sig: set[str]) -> set[str]:
@@ -159,6 +192,13 @@ def _expand_credential_equiv(sig: set[str]) -> set[str]:
         out.add("abschluss")
     if "hotelfach" in "".join(sig) or any("hotelfach" in t for t in sig):
         out.add("hotelfach")
+    if any(t.startswith("steuerfach") for t in sig):
+        out.add("steuerfach")
+        out.add("steuerfachangestellte")
+    if any(t.startswith("bankkauf") for t in sig):
+        out.add("bankkauf")
+        out.add("bankkauffrau")
+        out.add("bankkaufmann")
     return out
 
 
@@ -176,10 +216,12 @@ def _evidence_direct_for_credential(claim_text: str, store: EvidenceStore) -> tu
         it_sig = _credential_sig_tokens(corpus)
         if not it_sig:
             continue
-        overlap = sig & it_sig
+        overlap = _stem_token_overlap(sig, it_sig)
         if not overlap:
             # try synonym expansion (Abschluss ↔ Ausbildung) with domain token retained
-            overlap = _expand_credential_equiv(sig) & _expand_credential_equiv(it_sig)
+            overlap = _stem_token_overlap(
+                _expand_credential_equiv(sig), _expand_credential_equiv(it_sig)
+            )
             domain = {t for t in overlap if t not in {"abschluss", "ausbildung"}}
             if not domain and not (sig & it_sig):
                 continue
@@ -194,8 +236,10 @@ def _evidence_direct_for_credential(claim_text: str, store: EvidenceStore) -> tu
         ):
             continue
         score = len(overlap)
-        long_hit = any(len(t) >= 8 and t in it_sig for t in sig)
-        if sig <= it_sig or score >= 2 or long_hit:
+        long_hit = any(len(t) >= 6 and t in it_sig for t in sig) or bool(
+            _stem_token_overlap({t for t in sig if len(t) >= 6}, it_sig)
+        )
+        if sig <= it_sig or score >= 1 and long_hit or score >= 2:
             if score > best_score:
                 best_score = score
                 best_id = item.id

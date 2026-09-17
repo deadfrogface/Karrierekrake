@@ -1,0 +1,36 @@
+{
+  "abcd_verified": true,
+  "values": {
+    "A": {
+      "auto": 85.11,
+      "ready": 76.6,
+      "cover": 7.665,
+      "safety": 0
+    },
+    "B": {
+      "auto": 93.62,
+      "ready": 60.64,
+      "cover": 7.3,
+      "safety": 0,
+      "calls": 2.05
+    },
+    "C": {
+      "auto": 89.36,
+      "ready": 64.89,
+      "cover": 7.17,
+      "safety": 0,
+      "calls": 4.12
+    },
+    "D": {
+      "auto": 85.11,
+      "ready": 58.51,
+      "cover": 7.045,
+      "safety": 0,
+      "calls": 4.85
+    }
+  },
+  "source": "benchmark/guenther_quality_loop_ablation.json",
+  "default_mode": "plan_draft",
+  "critic1_default": "REMOVED",
+  "revision2_default": "REMOVED"
+}

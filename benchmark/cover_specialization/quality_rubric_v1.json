@@ -1,0 +1,52 @@
+{
+  "base_score": 8.0,
+  "deterministic_deductions": {
+    "awkward_de": -1.5,
+    "buzzwords_leidenschaft+synergie": -0.5,
+    "empty_body": "score=0",
+    "missing_company": -1.5,
+    "placeholder_name_firma_null_nan": -2.0,
+    "role_reversal": -5.0,
+    "too_long_>2500": -0.5,
+    "too_short_<200": -1.0,
+    "wrong_role": -4.0
+  },
+  "dimensions": [
+    "JOB_RELEVANCE",
+    "EVIDENCE_USE",
+    "SPECIFICITY",
+    "GERMAN_NATURALNESS",
+    "PERSUASIVENESS",
+    "STRUCTURE",
+    "CONCISENESS",
+    "ROLE_TARGETING",
+    "COMPANY_TARGETING",
+    "TRANSFERABLE_EXPERIENCE_FRAMING",
+    "OPENING_QUALITY",
+    "BODY_QUALITY",
+    "CLOSING_QUALITY",
+    "REPETITION",
+    "GENERIC_LANGUAGE",
+    "OVERCLAIMING",
+    "SUBMISSION_READINESS"
+  ],
+  "do_not_modify_during_optimization": true,
+  "frozen": true,
+  "ready_as_is_definition": {
+    "complete": true,
+    "denominator": "ALL eligible cases (unnecessary fail-closed counts as NOT READY)",
+    "minor_optional_style_ok": true,
+    "natural_german": true,
+    "no_mandatory_human_rewrite": true,
+    "not_cv_dump": true,
+    "not_generic_ai_filler": true,
+    "operational_rule": "final_ok AND score_cover >= 8.0 (edit_class READY_AS_IS)",
+    "professionally_written": true,
+    "safe": true,
+    "specific_to_role": true,
+    "truthful": true,
+    "uses_relevant_evidence": true
+  },
+  "source_function": "benchmark/scripts/run_model_tournament.py::score_cover",
+  "version": "v1"
+}

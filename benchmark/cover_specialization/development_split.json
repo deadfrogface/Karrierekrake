@@ -1,0 +1,1218 @@
+{
+  "method": "zlib.crc32(case_id) % 100 → <60 TRAIN, <80 TUNE, else SHADOW",
+  "counts_eligible": {
+    "OPT_TRAIN": 53,
+    "OPT_TUNE": 18,
+    "OPT_SHADOW": 23
+  },
+  "counts_all": {
+    "OPT_TRAIN": 58,
+    "OPT_TUNE": 18,
+    "OPT_SHADOW": 24
+  },
+  "cases": [
+    {
+      "case_id": "sc_strong_01",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "ACCOUNTING",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_02",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "TECHNICAL",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_03",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OPERATIONS",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_04",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_05",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_06",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "RETAIL",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_07",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_08",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_09",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OPERATIONS",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_10",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_11",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_12",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "HEALTH_ADJACENT",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_13",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_14",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_15",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_16",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_17",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_18",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_19",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_strong_20",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "RICH_PROFILE",
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "CUSTOMER_SERVICE",
+        "DIRECT_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_01",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_02",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_03",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_04",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_05",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_06",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "TECHNICAL"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_07",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_08",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "HEALTH_ADJACENT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_09",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OPERATIONS"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_10",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_11",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_12",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_13",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_14",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_15",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_16",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_17",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_18",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "HEALTH_ADJACENT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_19",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_med_20",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_01",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_02",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ACCOUNTING"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_03",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_04",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "RETAIL"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_05",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_06",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_07",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_08",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_09",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_10",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ACCOUNTING"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_11",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_12",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OPERATIONS"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_13",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_14",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_15",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_16",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "CUSTOMER_SERVICE"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_17",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_18",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_19",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_career_20",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "CAREER_CHANGE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_01",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_02",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_03",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OPERATIONS"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_04",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_05",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_06",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_07",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_08",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_09",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_sparse_10",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "SPARSE_PROFILE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_01",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ACCOUNTING",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_02",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_03",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_04",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_05",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_06",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_07",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_08",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_09",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "TECHNICAL",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_des_10",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES",
+        "MEDIUM_FIT"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_unk_01",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_unk_02",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_unk_03",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OPERATIONS"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_unk_04",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_unk_05",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "CUSTOMER_SERVICE"
+      ],
+      "expect_class": "ELIGIBLE_SAFE"
+    },
+    {
+      "case_id": "sc_trap_01",
+      "split": "OPT_SHADOW",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "EXPECTED_TARGETING_TRAP"
+    },
+    {
+      "case_id": "sc_trap_02",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "EXPECTED_TARGETING_TRAP"
+    },
+    {
+      "case_id": "sc_trap_03",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "EXPECTED_TARGETING_TRAP"
+    },
+    {
+      "case_id": "sc_trap_04",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ACCOUNTING"
+      ],
+      "expect_class": "EXPECTED_TARGETING_TRAP"
+    },
+    {
+      "case_id": "sc_trap_05",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER"
+      ],
+      "expect_class": "EXPECTED_TARGETING_TRAP"
+    },
+    {
+      "case_id": "sc_hard_01",
+      "split": "OPT_TRAIN",
+      "eligible": false,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "ADMIN",
+        "HARD_BLOCK_CONTROL"
+      ],
+      "expect_class": "EXPECTED_HARD_BLOCK"
+    },
+    {
+      "case_id": "sc_hard_02",
+      "split": "OPT_TRAIN",
+      "eligible": false,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "HARD_BLOCK_CONTROL"
+      ],
+      "expect_class": "EXPECTED_HARD_BLOCK"
+    },
+    {
+      "case_id": "sc_hard_03",
+      "split": "OPT_TRAIN",
+      "eligible": false,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "SALES",
+        "HARD_BLOCK_CONTROL"
+      ],
+      "expect_class": "EXPECTED_HARD_BLOCK"
+    },
+    {
+      "case_id": "sc_hard_04",
+      "split": "OPT_SHADOW",
+      "eligible": false,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "OTHER",
+        "HARD_BLOCK_CONTROL"
+      ],
+      "expect_class": "EXPECTED_HARD_BLOCK"
+    },
+    {
+      "case_id": "sc_hard_05",
+      "split": "OPT_TRAIN",
+      "eligible": false,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ACCOUNTING",
+        "HARD_BLOCK_CONTROL"
+      ],
+      "expect_class": "EXPECTED_HARD_BLOCK"
+    },
+    {
+      "case_id": "sc_adv_01",
+      "split": "OPT_TRAIN",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ACCOUNTING",
+        "SAFETY_TRAP"
+      ],
+      "expect_class": "EXPECTED_SAFETY_TRAP"
+    },
+    {
+      "case_id": "sc_adv_02",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN",
+        "SAFETY_TRAP"
+      ],
+      "expect_class": "EXPECTED_SAFETY_TRAP"
+    },
+    {
+      "case_id": "sc_adv_03",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "MISSING_DESIRABLE",
+        "KNOWN_COMPANY",
+        "FORMAL_CREDENTIAL",
+        "HEALTH_ADJACENT",
+        "SAFETY_TRAP"
+      ],
+      "expect_class": "EXPECTED_SAFETY_TRAP"
+    },
+    {
+      "case_id": "sc_adv_04",
+      "split": "OPT_TRAIN",
+      "eligible": false,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "ADMIN",
+        "HARD_BLOCK_CONTROL"
+      ],
+      "expect_class": "EXPECTED_HARD_BLOCK"
+    },
+    {
+      "case_id": "sc_adv_05",
+      "split": "OPT_TUNE",
+      "eligible": true,
+      "archetype_tags": [
+        "KNOWN_COMPANY",
+        "NO_FORMAL_CREDENTIAL",
+        "TECHNICAL",
+        "SAFETY_TRAP"
+      ],
+      "expect_class": "EXPECTED_SAFETY_TRAP"
+    }
+  ],
+  "note": "OPT_SHADOW is DEVELOPMENT, not blind."
+}

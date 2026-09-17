@@ -1,0 +1,25 @@
+{
+  "evaluator_id": "cover_quality_v1",
+  "frozen_at": "2026-09-17T18:46:44.559299+00:00",
+  "head_at_freeze_note": "recorded_after_commit",
+  "primary_model_for_writer": "phi4-mini",
+  "phi_gguf_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+  "evaluator_type": "deterministic_score_cover",
+  "evaluator_temperature": null,
+  "evaluator_seed": null,
+  "quality_evaluator_code_hash": "441c82e8ad0d3c43e28e7dacbab70609f0b38c30cc70330e65a78db1015e205f",
+  "quality_rubric_sha256": "72aa54e87e0a0ff694bb7469faf47c28a03908d68afc1e3d99aea97ead6ee2f5",
+  "quality_judge_prompt_sha256": "fb8c00d67094d3364d2e7e1d4d64c50dfd09b7d702e5794b16f72c5040207f06",
+  "ready_as_is_threshold": 8.0,
+  "generation_settings_writer": {
+    "temperature": 0.1,
+    "n_ctx": 4096,
+    "max_tokens_writing": "service_token_budget"
+  },
+  "files": {
+    "quality_rubric_v1.json": "72aa54e87e0a0ff694bb7469faf47c28a03908d68afc1e3d99aea97ead6ee2f5",
+    "quality_judge_prompt_v1.txt": "fb8c00d67094d3364d2e7e1d4d64c50dfd09b7d702e5794b16f72c5040207f06",
+    "score_cover_source": "benchmark/scripts/run_model_tournament.py"
+  },
+  "evaluator_manifest_sha256": "5dcff107c3bc0baeeb144fb150829756fc8af5be93386d5063ac2b51004d586c"
+}

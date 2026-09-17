@@ -243,6 +243,30 @@ def run_quality_loop(
         f"JOB:\n{job_text[:8000]}",
     )
     timings["plan"] = round(time.perf_counter() - t0, 3)
+    # Targeted fix: SCHEMA_INVALID / parse failure gets one repair attempt (proven false blocks).
+    if not isinstance(plan_model, WritingPlan) and plan_repair_count < MAX_PLAN_REPAIRS:
+        _transition(transitions, "PLAN_REPAIR", reason="schema_invalid")
+        plan_repair_count += 1
+        schema_feedback = plan_errs or [
+            make_error(
+                SCHEMA_INVALID,
+                severity="error",
+                repair_instruction=(
+                    "Antworte NUR mit einem vollständigen writing_plan JSON-Objekt. "
+                    "Alle Pflichtfelder setzen; leere Listen statt fehlender Keys."
+                ),
+            )
+        ]
+        t1 = time.perf_counter()
+        plan_model, plan_errs, _ = _call(
+            "writing_plan",
+            _plan_task(),
+            _plan_trusted(profile_text, store, target_company, target_role, seed_body)
+            + "\n"
+            + build_repair_feedback(list(schema_feedback)),
+            f"JOB:\n{job_text[:8000]}",
+        )
+        timings["plan_repair"] = round(time.perf_counter() - t1, 3)
     if not isinstance(plan_model, WritingPlan):
         return _fail(
             FinalResultState.GENERATION_FAILED,
@@ -616,12 +640,20 @@ def _plan_task() -> str:
 def _draft_from_plan_task() -> str:
     return (
         "Schreibe das Anschreiben NUR aus dem VERIFIED PLAN + allowed evidence. "
-        "Deutsch: natürlich, modern, konkret, knapp, glaubwürdig. "
+        "Deutsch: natürlich, modern, konkret, glaubwürdig. "
+        "Länge: 220–900 Zeichen Fließtext (2–4 Absätze), nicht telegrammartig. "
         "RELATED nur als Transfer. Keine neuen Fakten. Keine Clichés. "
-        "Keine Platzhalter ([...], nan, null). Firma/Rolle aus Plan übernehmen. "
+        "Vermeide 'Mit großem Interesse', 'Hiermit bewerbe ich mich', "
+        "'renommiertes Unternehmen', Fake-Enthusiasmus und Buzzword-Ketten. "
+        "Keine Platzhalter ([...], nan, null, None). "
+        "Firma und Rolle aus Plan wörtlich nennen, wenn bekannt. "
+        "Nutze 2–4 stärkste Evidenzpunkte (Relevance > Recency), kein CV-Dump. "
         "Credentials/Ausbildungen NUR wörtlich wie in allowed_direct_evidence — "
         "nicht paraphrasieren (z.B. nicht 'Ausbildung im Steuerfach' statt "
-        "'Steuerfachangestellte IHK'). Arbeitgeber nur aus Evidenztext, nie erfinden."
+        "'Steuerfachangestellte IHK'). Fehlende wünschenswerte Skills ehrlich "
+        "als Lernbereitschaft ohne Besitzanspruch. "
+        "Arbeitgeber nur aus Evidenztext, nie erfinden. "
+        "do_not_claim strikt beachten — keine erfundenen Zertifikate."
     )
 
 

@@ -167,6 +167,115 @@ def _in_negated_context(blob: str, start: int, end: int) -> bool:
     )
 
 
+def _in_future_intent_context(blob: str, start: int, end: int) -> bool:
+    """True if credential marker is about acquiring later, not possessing now.
+
+    Honest gap framing such as 'kein AWS Zertifikat ... bereit, dieses zu erwerben'
+    must not be treated as claiming the credential.
+    """
+    window = blob[max(0, start - 80) : min(len(blob), end + 60)].lower()
+    return bool(
+        re.search(
+            r"(?:zu\s+erwerben|werde\s+(?:ich\s+)?(?:noch\s+)?(?:erwerben|absolvieren|nachholen)|"
+            r"möchte\s+(?:ich\s+)?(?:noch\s+)?(?:erwerben|absolvieren|nachholen)|"
+            r"plane\s+(?:ich\s+)?(?:noch\s+)?(?:zu\s+)?(?:erwerben|absolvieren)|"
+            r"bereit(?:\s+\w+){0,8}\s+(?:dieses|das|ein)\s+\w*\s*(?:zertifikat|ausbildung)?"
+            r"(?:\s+\w+){0,6}\s+zu\s+erwerben|"
+            r"zertifikat\s+zu\s+erwerben)",
+            window,
+            re.I,
+        )
+    )
+
+
+_CREDENTIAL_GLUE = frozenset(
+    {
+        "mit",
+        "meiner",
+        "meinem",
+        "meine",
+        "mein",
+        "meinen",
+        "einer",
+        "einem",
+        "eine",
+        "ein",
+        "als",
+        "und",
+        "der",
+        "die",
+        "das",
+        "den",
+        "dem",
+        "des",
+        "im",
+        "in",
+        "fuer",
+        "fur",
+        "von",
+        "zum",
+        "zur",
+        "ausbildung",
+        "zertifikat",
+        "zertifiziert",
+        "abschluss",
+        "qualifikation",
+        "habe",
+        "bin",
+        "ich",
+        "wir",
+        "sowie",
+        "erfahrung",
+        "berufserfahrung",
+        "bringe",
+        "bringen",
+        "motivation",
+        "kenntnisse",
+        "faehigkeiten",
+        "fahigkeiten",
+    }
+)
+
+
+_NON_DOMAIN_CLAIM_TOKENS = frozenset(
+    {
+        "bringe",
+        "bringen",
+        "motivation",
+        "engagement",
+        "team",
+        "position",
+        "stelle",
+        "rolle",
+        "unternehmen",
+        "firma",
+        "bereit",
+        "gerne",
+        "freue",
+        "interesse",
+    }
+)
+
+
+def _credential_span_has_domain(span: str) -> bool:
+    """Reject underspecified spans like 'meine Ausbildung als' without a domain token."""
+    toks = {
+        t.lower()
+        for t in re.findall(r"[A-Za-zÄÖÜäöüß0-9]{3,}", span or "")
+        if t.lower() not in _CREDENTIAL_GLUE
+    }
+    toks = {t for t in toks if t not in _NON_DOMAIN_CLAIM_TOKENS}
+    if not toks:
+        return False
+    # "Ausbildung als <verb> ..." is not a credential claim
+    m = re.search(r"ausbildung\s+als\s+(\w+)", span or "", re.I)
+    if m:
+        head = m.group(1).lower()
+        if head in _NON_DOMAIN_CLAIM_TOKENS or head in _CREDENTIAL_GLUE:
+            return False
+    return True
+
+
 def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedClaim]:
     """Pull factual claims from free text. Does NOT decide support status."""
     blob = f"{subject or ''}\n{text or ''}"
@@ -177,17 +286,21 @@ def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedC
         for m in pat.finditer(blob):
             if _in_negated_context(blob, m.start(), m.end()):
                 continue
+            if _in_future_intent_context(blob, m.start(), m.end()):
+                continue
             phrase = _clean_possession_phrase(m.group(1))
             if len(phrase) < 4:
                 continue
             toks = {t.lower() for t in re.findall(r"\w+", phrase) if len(t) >= 3}
             if toks and toks <= _POSSESSION_STOP:
                 continue
+            kind, requires_direct, family = _classify_possession(phrase)
+            if requires_direct and not _credential_span_has_domain(phrase):
+                continue
             key = phrase.lower()
             if key in seen:
                 continue
             seen.add(key)
-            kind, requires_direct, family = _classify_possession(phrase)
             if kind == ClaimKind.OTHER and not requires_direct:
                 continue
             claims.append(
@@ -204,12 +317,19 @@ def extract_claims_from_text(text: str, *, subject: str = "") -> list[GeneratedC
         for m in pat.finditer(blob):
             if _in_negated_context(blob, m.start(), m.end()):
                 continue
+            if _in_future_intent_context(blob, m.start(), m.end()):
+                continue
             span = m.group(0).strip()
+            if not _credential_span_has_domain(span):
+                continue
             key = span.lower()
             if key in seen:
                 continue
             # Skip spans fully contained in a longer already-captured claim
             if any(key != s and key in s for s in seen):
+                continue
+            # Skip longer claims that only add glue around an already-seen domain span
+            if any(s != key and s in key for s in seen):
                 continue
             seen.add(key)
             claims.append(
