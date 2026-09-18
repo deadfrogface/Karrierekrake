@@ -16,12 +16,13 @@ from PySide6.QtWidgets import (
 )
 
 from core.case_pipeline import refresh_follow_up_tasks
+from integrations.followup import FollowUpPolicy
 from core.database import Database
 from core.lifecycle import CaseStatus
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from integrations.interview_prep import build_interview_prep
-from integrations.reply_draft import ReplyAction, SendGate, build_action_draft
+from integrations.reply_draft import SendGate, build_follow_up_draft
 
 
 class LifecyclePage(QWidget):
@@ -168,11 +169,8 @@ class LifecyclePage(QWidget):
     def generate_followups(self) -> None:
         cfg = self.config_service.load()
         db = self._db()
-        n = refresh_follow_up_tasks(
-            db,
-            follow_up_days=int(cfg.settings.follow_up_days),
-            ghosted_days=int(cfg.settings.ghosted_days),
-        )
+        policy = FollowUpPolicy.from_settings(cfg.settings)
+        n = refresh_follow_up_tasks(db, policy=policy)
         QMessageBox.information(
             self, tr("nav.lifecycle"), tr("lifecycle.followups_done").format(n=n)
         )
@@ -202,28 +200,19 @@ class LifecyclePage(QWidget):
         if not case:
             return
         cfg = self.config_service.load()
-        # Typed FOLLOWUP action — never free-form generation; never auto-send.
-        draft = build_action_draft(
-            ReplyAction.FOLLOWUP,
+        draft = build_follow_up_draft(
             case.to_dict(),
             applicant_name=cfg.application.full_name,
         )
-        gate = SendGate(
-            allow_send=bool(cfg.settings.allow_employer_email_send),
-            draft_only=bool(cfg.settings.email_draft_only),
-        )
-        draft.draft_only = True
-        draft.auto_send = False
-        result = gate.attempt_send(
-            draft, transport=lambda d: (_ for _ in ()).throw(RuntimeError("blocked"))
-        )
-        review = "BINDING REVIEW" if draft.requires_explicit_review else "DRAFT ONLY"
+        gate = SendGate(allow_send=bool(cfg.settings.allow_employer_email_send))
+        # Always draft-only unless explicitly enabled — never auto-send.
+        draft.draft_only = bool(cfg.settings.email_draft_only) or not gate.allow_send
+        result = gate.attempt_send(draft, transport=lambda d: (_ for _ in ()).throw(RuntimeError("blocked")))
         QMessageBox.information(
             self,
             tr("lifecycle.draft_reply"),
-            f"Action: {draft.action}\nTo: {draft.to_address}\nSubject: {draft.subject}\n\n"
-            f"{draft.body}\n\n"
-            f"[{review}] "
+            f"To: {draft.to_address}\nSubject: {draft.subject}\n\n{draft.body}\n\n"
+            f"[{'DRAFT ONLY' if draft.draft_only else 'send gated'}] "
             f"{result.send_error or 'ready for approval'}",
         )
 

@@ -7,6 +7,7 @@ __all__ = [
     "email_associate",
     "email_normalize",
     "followup",
+    "reminders",
     "reply_draft",
     "interview_prep",
     "ics_export",

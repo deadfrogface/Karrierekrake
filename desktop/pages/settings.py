@@ -210,6 +210,8 @@ class SettingsPage(QWidget):
         self.ghosted_days = QSpinBox()
         self.ghosted_days.setRange(1, 180)
         self.email_draft_only = QCheckBox()
+        self.followup_enabled = QCheckBox()
+        self.followup_reminders_enabled = QCheckBox()
         self.allow_employer_email_send = QCheckBox()
         self.lbl_preferred_contact = QLabel()
         self.lbl_tel_avail = QLabel()
@@ -222,6 +224,8 @@ class SettingsPage(QWidget):
         lform.addRow(self.lbl_working_hours, self.working_hours)
         lform.addRow(self.lbl_follow_up_days, self.follow_up_days)
         lform.addRow(self.lbl_ghosted_days, self.ghosted_days)
+        lform.addRow(self.followup_enabled)
+        lform.addRow(self.followup_reminders_enabled)
         lform.addRow(self.email_draft_only)
         lform.addRow(self.allow_employer_email_send)
         apps_layout.addWidget(life_box)
@@ -355,6 +359,8 @@ class SettingsPage(QWidget):
             self.lbl_working_hours.setText(tr("settings.working_hours"))
             self.lbl_follow_up_days.setText(tr("settings.follow_up_days"))
             self.lbl_ghosted_days.setText(tr("settings.ghosted_days"))
+            self.followup_enabled.setText(tr("settings.followup_enabled"))
+            self.followup_reminders_enabled.setText(tr("settings.followup_reminders_enabled"))
             self.email_draft_only.setText(tr("settings.email_draft_only"))
             self.allow_employer_email_send.setText(tr("settings.allow_employer_email_send"))
         if hasattr(self, "guenther_box"):
@@ -452,6 +458,8 @@ class SettingsPage(QWidget):
             self.working_hours.setText(str(getattr(s, "working_hours", "") or "09:00-17:00"))
             self.follow_up_days.setValue(int(getattr(s, "follow_up_days", 14) or 14))
             self.ghosted_days.setValue(int(getattr(s, "ghosted_days", 21) or 21))
+            self.followup_enabled.setChecked(bool(getattr(s, "followup_enabled", True)))
+            self.followup_reminders_enabled.setChecked(bool(getattr(s, "followup_reminders_enabled", False)))
             self.email_draft_only.setChecked(bool(getattr(s, "email_draft_only", True)))
             self.allow_employer_email_send.setChecked(
                 bool(getattr(s, "allow_employer_email_send", False))
@@ -545,6 +553,8 @@ class SettingsPage(QWidget):
             cfg.settings.working_hours = self.working_hours.text().strip() or "09:00-17:00"
             cfg.settings.follow_up_days = int(self.follow_up_days.value())
             cfg.settings.ghosted_days = int(self.ghosted_days.value())
+            cfg.settings.followup_enabled = self.followup_enabled.isChecked()
+            cfg.settings.followup_reminders_enabled = self.followup_reminders_enabled.isChecked()
             cfg.settings.email_draft_only = self.email_draft_only.isChecked()
             cfg.settings.allow_employer_email_send = self.allow_employer_email_send.isChecked()
         if hasattr(self, "guenther_enabled"):

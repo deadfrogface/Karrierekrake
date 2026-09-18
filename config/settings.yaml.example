@@ -37,6 +37,9 @@ telephone_availability: "09:00-12:00,14:00-17:00"
 working_hours: "09:00-17:00"
 follow_up_days: 14
 ghosted_days: 21
+followup_enabled: true
+followup_reminders_enabled: false
+followup_reminder_schema_version: 1
 email_draft_only: true
 allow_employer_email_send: false
 gmail_sync_enabled: false

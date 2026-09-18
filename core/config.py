@@ -378,6 +378,11 @@ class SettingsConfig:
     working_hours: str = "09:00-17:00"
     follow_up_days: int = 14
     ghosted_days: int = 21
+    # Follow-up / ghosting feature (PR32). Thresholds above are settings-driven;
+    # never hardcode a global "14 Tage" ghosting rule in call sites.
+    followup_enabled: bool = True
+    followup_reminders_enabled: bool = False
+    followup_reminder_schema_version: int = 1
     # Employer email: draft-only unless user enables send + approves each draft
     email_draft_only: bool = True
     allow_employer_email_send: bool = False
