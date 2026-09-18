@@ -401,6 +401,11 @@ class SettingsConfig:
     contact_discovery_stale_after_days: int = 90
     # Mass retro web crawl of historical jobs — forbidden unless explicitly enabled.
     contact_discovery_allow_retro_crawl: bool = False
+    # --- Contact verification + writer binding (PR26) ---
+    # Verification runs on discovered candidates; discovery alone never feeds writer.
+    contact_verification_enabled: bool = True
+    # When false: provenance/verification kept, writer ignores CONTACT_* claims.
+    contact_writer_binding_enabled: bool = True
 
 
 # Allowed jobs-per-search choices for the settings UI (0 = Max).
