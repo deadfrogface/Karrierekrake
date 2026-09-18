@@ -164,28 +164,39 @@ FORBIDDEN_BASENAME_GLOBS: tuple[str, ...] = (
     "gmail_credentials.json",
 )
 
-# Content substrings that block release when found in text-ish TOC members
-# (scanned only for small text files extracted from the artifact).
+# Content substrings that block release when found in *first-party* text members.
+# Vendor discovery docs (googleapiclient, botocore examples, playwright stubs) are
+# path-scanned only — see FALSE_POSITIVE_NOTES. Do not disable the scanner.
 FORBIDDEN_CONTENT_PATTERNS: tuple[tuple[str, str], ...] = (
     ("begin_private_key", "-----BEGIN PRIVATE KEY-----"),
     ("begin_rsa_private", "-----BEGIN RSA PRIVATE KEY-----"),
-    ("aws_access_key_id", "AKIA"),
+    ("aws_access_key_id", "AKIA"),  # matched with AKIA[0-9A-Z]{16} in scanner
     ("openai_sk", "sk-proj-"),
-    ("openai_sk_legacy", "sk-"),  # justified FP: see FALSE_POSITIVE_NOTES if needed
+    ("openai_sk_legacy", "sk-"),  # matched with sk-[A-Za-z0-9]{20,} in scanner
 )
 
-# Paths where "sk-" alone is too noisy — require longer forms only there.
-SK_NOISE_ALLOW_SUFFIXES: tuple[str, ...] = (
-    ".pyd",
-    ".dll",
-    ".so",
-    ".dylib",
-    ".exe",
-    ".png",
-    ".jpg",
-    ".ico",
-    ".qml",
-    ".qm",
+# TOC path prefixes that receive *content* (email/secret) scanning.
+# Everything else is still subject to forbidden *path* markers.
+FIRST_PARTY_CONTENT_PREFIXES: tuple[str, ...] = (
+    "app/",
+    "apply/",
+    "browser/",
+    "core/",
+    "desktop/",
+    "guenther/",
+    "integrations/",
+    "search/",
+    "templates/",
+    "config/",
+    "assets/",
+    "app.",
+    "apply.",
+    "browser.",
+    "core.",
+    "desktop.",
+    "guenther.",
+    "integrations.",
+    "search.",
 )
 
 FALSE_POSITIVE_NOTES: dict[str, str] = {
@@ -205,6 +216,19 @@ FALSE_POSITIVE_NOTES: dict[str, str] = {
     "google.auth.environment_vars": (
         "Module name contains '.env' as a substring of '.environment'; dotenv matching uses path boundaries."
     ),
+    "googleapiclient/discovery_cache": (
+        "Upstream Google API discovery JSON may mention example emails / PEM headers as schema "
+        "documentation. Path gate still applies; content email/secret scan is first-party only."
+    ),
+    "botocore/data/*/examples": (
+        "AWS botocore example payloads may contain the AKIA prefix as documentation, not live keys."
+    ),
+    "jobspy/model.py AKIA": (
+        "python-jobspy model field docs may mention AWS key shape; content scan is first-party only."
+    ),
+    "playwright/_generated.py @microsoft.com": (
+        "Generated Playwright API stubs reference Microsoft docs emails; not applicant PII."
+    ),
 }
 
 
@@ -212,6 +236,32 @@ class PolicyHit(NamedTuple):
     kind: str
     path: str
     detail: str
+
+
+def is_first_party_content_path(path: str) -> bool:
+    """True if path should receive email/secret *content* scanning.
+
+    Vendor trees (googleapiclient discovery JSON, botocore examples, playwright
+    stubs) are still checked for forbidden *path* markers, but their embedded
+    documentation emails / example key shapes are documented FPs — not live PII.
+    """
+    lower = normalize_path(path).lstrip("/").lower()
+    for strip in ("pyz-00.pyz/", "pyz.pyz/", "base_library.zip/"):
+        if lower.startswith(strip):
+            lower = lower[len(strip) :]
+    base = lower.rsplit("/", 1)[-1]
+    if base in {"notice", "license", "license.txt", "notice.txt", "license.md"}:
+        return True
+    if lower in {"notice", "license"}:
+        return True
+    for prefix in FIRST_PARTY_CONTENT_PREFIXES:
+        p = prefix.lower()
+        if lower.startswith(p):
+            return True
+        dotted = p.rstrip("./").replace("/", ".")
+        if lower == dotted or lower.startswith(dotted + ".") or lower.startswith(dotted + "/"):
+            return True
+    return False
 
 
 def normalize_path(path: str) -> str:

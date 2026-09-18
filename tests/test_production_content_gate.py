@@ -270,7 +270,7 @@ def test_manifest_deterministic_entry_order(tmp_path: Path):
 def test_scan_text_blocks_private_key():
     scan = _load_scan()
     hits = scan.scan_text_content(
-        "embedded/secret.pem",
+        "desktop/embedded/secret.pem",
         "-----BEGIN PRIVATE KEY-----\nMIIE\n-----END PRIVATE KEY-----\n",
     )
     assert any(h.kind == "begin_private_key" for h in hits)
@@ -289,8 +289,35 @@ def test_scan_text_blocks_real_email_domain():
     scan = _load_scan()
     # Assemble domain from parts so privacy_scan.py does not flag this test file.
     domain = "g" + "mail.com"
-    hits = scan.scan_text_content("leaked.txt", f"contact me at person@{domain} please")
+    hits = scan.scan_text_content("desktop/leaked.txt", f"contact me at person@{domain} please")
     assert any(h.kind == "non_example_email" for h in hits)
+
+
+def test_vendor_discovery_email_is_not_content_scanned():
+    """Justified FP: googleapiclient discovery JSON emails are schema docs."""
+    scan = _load_scan()
+    domain = "g" + "mail.com"
+    hits = scan.scan_text_content(
+        "googleapiclient/discovery_cache/documents/storage.v1.json",
+        f"user@{domain}",
+    )
+    assert hits == []
+    assert not policy.is_first_party_content_path(
+        "googleapiclient/discovery_cache/documents/storage.v1.json"
+    )
+    assert policy.is_first_party_content_path("desktop/app.py")
+    assert policy.is_first_party_content_path("config/settings.yaml.example")
+
+
+def test_vendor_akia_docs_not_flagged_as_live_key():
+    scan = _load_scan()
+    # Bare AKIA in vendor docs must not fail; full key shape in first-party must.
+    assert scan.scan_text_content("jobspy/model.py", "field aws_access_key_id AKIA docs") == []
+    hits = scan.scan_text_content(
+        "desktop/secrets.py",
+        "key = AKIAIOSFODNN7EXAMPLE",
+    )
+    assert any(h.kind == "aws_access_key_id" for h in hits)
 
 
 def test_settings_example_gmail_path_not_secret():

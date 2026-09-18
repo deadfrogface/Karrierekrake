@@ -57,6 +57,11 @@ Do **not** disable the scanner. Document in `FALSE_POSITIVE_NOTES`:
 - `settings.yaml.example` may mention `private/gmail_credentials.json` as a **path**;
   no secret payload ships.
 - Playwright **driver** package is allowed; browser caches are not.
+- `botocore/data/logs` is the AWS CloudWatch Logs *API model*, not app logs.
+- `googleapiclient/discovery_cache`, Playwright `_generated.py`, and botocore/jobspy
+  example docs may contain documentation emails or `AKIA` prefixes — **content**
+  email/secret scanning is first-party only; **path** gating still covers all TOC
+  entries.
 
 ## Dev vs production entry
 

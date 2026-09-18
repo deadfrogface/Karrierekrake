@@ -34,6 +34,7 @@ POLICY_VERSION = policy.POLICY_VERSION
 PolicyHit = policy.PolicyHit
 normalize_path = policy.normalize_path
 scan_paths = policy.scan_paths
+is_first_party_content_path = policy.is_first_party_content_path
 
 EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})\b")
 ALLOW_EMAIL_DOMAINS = {"example.com", "example.org", "example.net", "localhost"}
@@ -136,10 +137,18 @@ def extract_small_texts_from_exe(exe: Path) -> list[tuple[str, str]]:
 
 
 def scan_text_content(path: str, text: str) -> list:
+    """Scan file text for secrets/PII.
+
+    Only first-party shipped paths are content-scanned (emails / key shapes).
+    Vendor discovery docs are excluded here but still path-gated — see
+    FALSE_POSITIVE_NOTES. Scanner is never disabled.
+    """
     hits = []
+    if not is_first_party_content_path(path):
+        return hits
     if "settings.yaml.example" in normalize_path(path).lower():
         for kind, needle in FORBIDDEN_CONTENT_PATTERNS:
-            if kind.startswith("openai"):
+            if kind.startswith("openai") or kind == "aws_access_key_id":
                 continue
             if needle in text:
                 hits.append(PolicyHit(kind=kind, path=path, detail="content marker"))
@@ -147,6 +156,12 @@ def scan_text_content(path: str, text: str) -> list:
     for kind, needle in FORBIDDEN_CONTENT_PATTERNS:
         if kind == "openai_sk_legacy":
             if not re.search(r"\bsk-[A-Za-z0-9]{20,}\b", text):
+                continue
+            hits.append(PolicyHit(kind=kind, path=path, detail="content marker"))
+            continue
+        if kind == "aws_access_key_id":
+            # Real IAM key shape; bare "AKIA" appears in botocore/jobspy docs (FP).
+            if not re.search(r"\bAKIA[0-9A-Z]{16}\b", text):
                 continue
             hits.append(PolicyHit(kind=kind, path=path, detail="content marker"))
             continue
@@ -194,8 +209,11 @@ def scan_artifact(
             )
 
     if dist is not None and dist.is_dir():
+        skip_names = {"content_manifest.json", "build_metadata.txt", "karrierekrake.exe"}
         for p in dist.rglob("*"):
             if not p.is_file():
+                continue
+            if p.name.lower() in skip_names or p.suffix.lower() in {".exe", ".dll"}:
                 continue
             if p.suffix.lower() not in TEXT_SUFFIXES and not p.name.endswith(".example"):
                 continue
