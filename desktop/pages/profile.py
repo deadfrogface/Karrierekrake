@@ -214,18 +214,32 @@ class ProfilePage(QWidget):
         QMessageBox.information(self, tr("profile.cv"), tr("profile.cv_updated"))
 
     def reset_profile(self) -> None:
+        """Offer explicit reset/delete scopes — UX text must match what is removed."""
         msg = QMessageBox(self)
         msg.setWindowTitle(tr("profile.reset_title"))
         msg.setText(tr("profile.reset"))
-        msg.setInformativeText(tr("profile.reset_confirm_cv"))
+        msg.setInformativeText(tr("profile.reset_choose_scope"))
         cv_btn = msg.addButton(tr("profile.reset_cv_only"), QMessageBox.ButtonRole.AcceptRole)
-        all_btn = msg.addButton(tr("profile.reset_all"), QMessageBox.ButtonRole.DestructiveRole)
+        profile_btn = msg.addButton(tr("profile.reset_all"), QMessageBox.ButtonRole.DestructiveRole)
+        wipe_btn = msg.addButton(
+            tr("profile.reset_wipe_all_local"), QMessageBox.ButtonRole.DestructiveRole
+        )
         msg.addButton(QMessageBox.StandardButton.Cancel)
         msg.exec()
         clicked = msg.clickedButton()
         if clicked is None or clicked == msg.button(QMessageBox.StandardButton.Cancel):
             return
-        if clicked is all_btn:
+        if clicked is wipe_btn:
+            confirm = QMessageBox.question(
+                self,
+                tr("profile.reset_title"),
+                tr("profile.reset_confirm_wipe_all"),
+            )
+            if confirm != QMessageBox.StandardButton.Yes:
+                return
+            self.config_service.delete_all_local_data()
+            done_msg = tr("profile.reset_wipe_done")
+        elif clicked is profile_btn:
             confirm = QMessageBox.question(
                 self,
                 tr("profile.reset_title"),
@@ -233,7 +247,9 @@ class ProfilePage(QWidget):
             )
             if confirm != QMessageBox.StandardButton.Yes:
                 return
-            self.config_service.reset_to_empty_profile(clear_search_prefs=False)
+            # Profile + documents; search prefs kept (PR22).
+            self.config_service.reset_profile_and_documents(clear_search_prefs=False)
+            done_msg = tr("profile.reset_done")
         elif clicked is cv_btn:
             confirm = QMessageBox.question(
                 self,
@@ -248,10 +264,11 @@ class ProfilePage(QWidget):
             cfg.application = clear_cv_personal(cfg.application)
             cfg.application.cv_path = ""
             self.config_service.save(cfg)
+            done_msg = tr("profile.reset_done")
         else:
             return
         self.load_from_config()
-        QMessageBox.information(self, tr("profile.reset_title"), tr("profile.reset_done"))
+        QMessageBox.information(self, tr("profile.reset_title"), done_msg)
 
     def save(self) -> None:
         cfg = self.config_service.load()
@@ -285,7 +302,8 @@ class ProfilePage(QWidget):
                 p.location.home_address = new_home
                 self.location_work.home_address.setText(p.location.home_address)
 
-        sync_application_summaries(a, p.qualifications)
+        # Never fill_empty on normal save — user CLEAR must stick (PR20).
+        sync_application_summaries(a, p.qualifications, fill_empty=False)
 
         # Keep Mindestgehalt and free-text Gehaltsvorstellung from drifting apart.
         annual, _why = normalize_to_annual_gross_eur(text=a.salary_expectation or "")
