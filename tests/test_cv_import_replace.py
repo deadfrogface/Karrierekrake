@@ -45,7 +45,7 @@ def test_replace_mode_clears_previous_cv_profile():
     app = ApplicationProfile()
     plan_a = plan_personal_import(app, personal_from_parsed(parsed_a), mode="replace")
     apply_personal_updates(app, plan_a.updates, source=SOURCE_CV)
-    sync_application_summaries(app, quals_a)
+    sync_application_summaries(app, quals_a, fill_empty=True)
     profile_quals = replace_qualifications(QualificationsConfig(), quals_a)
 
     assert app.first_name == "Anna"
@@ -58,7 +58,7 @@ def test_replace_mode_clears_previous_cv_profile():
     plan_b = plan_personal_import(app, personal_from_parsed(parsed_b), mode="replace")
     apply_personal_updates(app, plan_b.updates, source=SOURCE_CV)
     profile_quals = replace_qualifications(profile_quals, quals_b)
-    sync_application_summaries(app, profile_quals)
+    sync_application_summaries(app, profile_quals, fill_empty=True)
 
     assert app.first_name == "Bruno"
     assert app.last_name == "Beta"

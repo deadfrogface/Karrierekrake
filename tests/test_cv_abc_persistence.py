@@ -25,7 +25,7 @@ def _apply_replace(cv_name: str, app: ApplicationProfile, quals: QualificationsC
     plan = plan_personal_import(app, personal_from_parsed(parsed), mode="replace")
     apply_personal_updates(app, plan.updates, source=SOURCE_CV)
     quals = replace_qualifications(quals, incoming)
-    sync_application_summaries(app, quals)
+    sync_application_summaries(app, quals, fill_empty=True)
     return app, quals, parsed
 
 

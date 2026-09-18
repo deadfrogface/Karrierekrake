@@ -339,25 +339,64 @@ def filter_parsed_for_import(parsed: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def sync_application_summaries(app: ApplicationProfile, quals: QualificationsConfig) -> None:
+def _may_sync_summary(
+    app: ApplicationProfile,
+    name: str,
+    *,
+    fill_empty: bool,
+) -> bool:
+    """Decide whether structured quals may write into an application summary field.
+
+    Rules (PR20 — storage / explicit clear are source of truth):
+    - SOURCE_MANUAL → never overwrite (includes explicit user CLEAR).
+    - SOURCE_CV → refresh from quals.
+    - untagged empty → only fill when ``fill_empty`` (CV import path).
+    - untagged non-empty → treat as legacy CV-like and allow refresh.
+    """
+    origins = getattr(app, "field_origins", None) or {}
+    if name in origins:
+        origin = str(origins.get(name) or "")
+        if origin == SOURCE_MANUAL:
+            return False
+        if origin == SOURCE_CV:
+            return True
+        if origin in (SOURCE_DEFAULT, ""):
+            current = str(getattr(app, name, "") or "").strip()
+            return bool(current) or fill_empty
+        return False
+    current = str(getattr(app, name, "") or "").strip()
+    if current:
+        return True  # legacy untagged value — CV-like
+    return fill_empty
+
+
+def sync_application_summaries(
+    app: ApplicationProfile,
+    quals: QualificationsConfig,
+    *,
+    fill_empty: bool = False,
+) -> None:
     """Refresh short application text fields from structured quals (CV-sourced).
 
-    Manual field origins are preserved — never overwrite user-edited summaries.
+    Manual / explicitly cleared fields are never overwritten. Empty untagged
+    fields are filled only when ``fill_empty=True`` (CV import). Normal profile
+    save must call this with the default ``fill_empty=False`` so a user CLEAR
+    cannot be resurrected from qualifications.
     """
-    if quals.language_labels() and field_origin(app, "languages") != SOURCE_MANUAL:
+    if quals.language_labels() and _may_sync_summary(app, "languages", fill_empty=fill_empty):
         app.languages = ", ".join(quals.language_labels())
         set_field_origin(app, "languages", SOURCE_CV)
-    if quals.education and field_origin(app, "education") != SOURCE_MANUAL:
+    if quals.education and _may_sync_summary(app, "education", fill_empty=fill_empty):
         app.education = quals.education[0].qualification or quals.education[0].label()
         set_field_origin(app, "education", SOURCE_CV)
     if quals.work_experience:
-        if field_origin(app, "current_employment") != SOURCE_MANUAL:
+        if _may_sync_summary(app, "current_employment", fill_empty=fill_empty):
             app.current_employment = quals.work_experience[0].title or quals.work_experience[0].label()
             set_field_origin(app, "current_employment", SOURCE_CV)
-        if field_origin(app, "work_experience") != SOURCE_MANUAL:
+        if _may_sync_summary(app, "work_experience", fill_empty=fill_empty):
             app.work_experience = quals.work_experience[0].label()
             set_field_origin(app, "work_experience", SOURCE_CV)
-    if quals.driving_values() and field_origin(app, "driving_license") != SOURCE_MANUAL:
+    if quals.driving_values() and _may_sync_summary(app, "driving_license", fill_empty=fill_empty):
         app.driving_license = quals.driving_values()[0]
         set_field_origin(app, "driving_license", SOURCE_CV)
 

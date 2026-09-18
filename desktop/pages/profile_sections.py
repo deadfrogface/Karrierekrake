@@ -26,7 +26,6 @@ from desktop.i18n import tr
 from desktop.services.profile_merge import (
     SOURCE_MANUAL,
     preserve_sourced_on_edit,
-    set_field_origin,
 )
 from desktop.widgets import ListEditor
 from desktop.widgets.structured_editors import (
@@ -390,37 +389,48 @@ class ApplicantSection(QGroupBox):
         self.sync_home_from_address.setChecked(sync_address_to_search)
 
     def save_into(self, app: ApplicationProfile) -> bool:
-        """Apply form values to ``app``. Returns sync-address checkbox state."""
-        personal_map = {
-            "first_name": self.first_name.text().strip(),
-            "last_name": self.last_name.text().strip(),
-            "street": self.street.text().strip(),
-            "postal_code": self.postal_code.text().strip(),
-            "city": self.city.text().strip(),
-            "email": self.email.text().strip(),
-            "phone": self.phone.text().strip(),
-            "date_of_birth": self.dob.text().strip(),
-            "driving_license": self.drv.text().strip(),
-            "education": self.edu_text.text().strip(),
-            "languages": self.lang_text.text().strip(),
-            "current_employment": self.current_job.text().strip(),
+        """Apply form values to ``app`` via explicit CLEAR/SET semantics.
+
+        Empty / whitespace-only inputs become CLEAR with ``SOURCE_MANUAL`` origin
+        so CV summary sync cannot resurrect them. Returns sync-address checkbox.
+        """
+        from desktop.services.profile_patch import (
+            PatchOp,
+            ProfilePatch,
+            apply_profile_patch,
+            build_application_patches,
+        )
+        from core.config import QualificationsConfig
+
+        proposed = {
+            "first_name": self.first_name.text(),
+            "last_name": self.last_name.text(),
+            "street": self.street.text(),
+            "postal_code": self.postal_code.text(),
+            "city": self.city.text(),
+            "country": self.app_country.text(),
+            "email": self.email.text(),
+            "phone": self.phone.text(),
+            "date_of_birth": self.dob.text(),
+            "driving_license": self.drv.text(),
+            "education": self.edu_text.text(),
+            "languages": self.lang_text.text(),
+            "current_employment": self.current_job.text(),
+            "work_authorization": self.work_auth.text(),
+            "notice_period": self.notice.text(),
+            "earliest_start_date": self.start.text(),
+            "salary_expectation": self.salary_exp.text(),
+            "willingness_to_travel": self.travel.text(),
+            "willingness_to_relocate": self.relocate.text(),
+            "remote_preference": self.remote_pref.text(),
         }
-        for name, value in personal_map.items():
-            old = str(getattr(app, name, "") or "")
-            setattr(app, name, value)
-            if value != old:
-                if not value and name in (app.field_origins or {}):
-                    app.field_origins.pop(name, None)
-                elif value:
-                    set_field_origin(app, name, SOURCE_MANUAL)
-        app.country = self.app_country.text().strip() or "DE"
-        app.work_authorization = self.work_auth.text().strip()
-        app.notice_period = self.notice.text().strip()
-        app.earliest_start_date = self.start.text().strip()
-        app.salary_expectation = self.salary_exp.text().strip()
-        app.willingness_to_travel = self.travel.text().strip()
-        app.willingness_to_relocate = self.relocate.text().strip()
-        app.remote_preference = self.remote_pref.text().strip()
+        patches = build_application_patches(app, proposed)
+        patches = {k: v for k, v in patches.items() if v.op is not PatchOp.UNCHANGED}
+        # Blank country → CLEAR resets to DE inside apply_profile_patch
+        if patches:
+            apply_profile_patch(app, QualificationsConfig(), ProfilePatch(application=patches))
+        if not str(app.country or "").strip():
+            app.country = "DE"
         app.sync_address()
         return self.sync_home_from_address.isChecked()
 

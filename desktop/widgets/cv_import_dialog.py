@@ -230,6 +230,6 @@ class CvImportDialog(QDialog):
             conflict_choices=choices,
             conflicts=self.plan.conflicts,
         )
-        sync_application_summaries(app, self.result_quals)
+        sync_application_summaries(app, self.result_quals, fill_empty=True)
         self.result_application = app
         self.accept()
