@@ -392,6 +392,15 @@ class SettingsConfig:
     guenther_model: str = "auto"
     # When no GGUF installed, allow deterministic heuristic assist (still fail-closed)
     guenther_heuristic_fallback: bool = True
+    # --- Recruiting contact discovery (PR25; off by default) ---
+    # Provenance-backed person contacts only; NOT_FOUND is a success path.
+    contact_discovery_enabled: bool = False
+    contact_discovery_max_fetches_per_run: int = 20
+    contact_discovery_min_interval_seconds: float = 1.0
+    contact_discovery_cache_ttl_hours: int = 168
+    contact_discovery_stale_after_days: int = 90
+    # Mass retro web crawl of historical jobs — forbidden unless explicitly enabled.
+    contact_discovery_allow_retro_crawl: bool = False
 
 
 # Allowed jobs-per-search choices for the settings UI (0 = Max).
