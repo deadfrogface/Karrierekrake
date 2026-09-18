@@ -47,6 +47,8 @@ INVENTED_EMPLOYER = "INVENTED_EMPLOYER"
 SCHEMA_INVALID = "SCHEMA_INVALID"
 REPAIR_EXHAUSTED = "REPAIR_EXHAUSTED"
 INJECTION_IN_OUTPUT = "INJECTION_IN_OUTPUT"
+UNVERIFIED_CONTACT_PERSON = "UNVERIFIED_CONTACT_PERSON"
+INFERRED_SALUTATION = "INFERRED_SALUTATION"
 
 
 ERROR_DE: dict[str, str] = {
@@ -85,6 +87,12 @@ ERROR_DE: dict[str, str] = {
     SCHEMA_INVALID: "Die Modellausgabe entsprach nicht dem erwarteten Schema.",
     REPAIR_EXHAUSTED: "Nach begrenzten Korrekturversuchen bleibt der Text unsicher.",
     INJECTION_IN_OUTPUT: "Untrusted Anweisungen dürften die Ausgabe nicht steuern.",
+    UNVERIFIED_CONTACT_PERSON: (
+        "Eine ungeprüfte Kontaktperson wurde in das Anschreiben eingefügt."
+    ),
+    INFERRED_SALUTATION: (
+        "Eine Anrede wurde ohne explizite Belege erschlossen (kein Gender-Guessing)."
+    ),
 }
 
 
