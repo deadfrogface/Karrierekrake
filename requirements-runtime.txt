@@ -22,6 +22,7 @@ google-api-python-client>=2.100.0
 google-auth-oauthlib>=1.2.0
 google-auth>=2.23.0
 keyring>=24.0.0
+tenacity>=8.2.0
 # Calendar scheduling engine (PR31)
 dateparser>=1.2.0
 icalendar>=5.0.0

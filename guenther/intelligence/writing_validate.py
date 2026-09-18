@@ -16,10 +16,12 @@ from guenther.intelligence.company_match import (
 from guenther.intelligence.errors import (
     CAREER_CHANGER_ROLE_CLAIM,
     EMPTY_OUTPUT,
+    INFERRED_SALUTATION,
     NAN_LEAK,
     NULL_LEAK,
     ROLE_REVERSAL,
     UNRESOLVED_PLACEHOLDER,
+    UNVERIFIED_CONTACT_PERSON,
     WRONG_COMPANY,
     WRONG_TARGET_ROLE,
     ValidatorError,
@@ -69,6 +71,8 @@ def validate_writing_grounded(
     target_role: str | None = None,
     forbid_role_reversal: bool = False,
     forbid_wrong_role: list[str] | None = None,
+    contact_claims: Any | None = None,
+    applicant_name: str = "",
 ) -> tuple[WritingSuggestion, WritingValidationReport]:
     store = build_evidence_store(profile_text=profile_text, existing_evidence=existing_evidence)
     claims = extract_claims_from_writing(model.model_dump(mode="json"))
@@ -162,6 +166,44 @@ def validate_writing_grounded(
 
     if not (model.body or "").strip() and not blocked:
         errors.append(make_error(EMPTY_OUTPUT, severity="error"))
+
+    # PR26: verified-contact-only — strip / flag invented person salutations
+    if contact_claims is not None:
+        from core.contacts.writer_contract import (
+            sanitize_cover_body_for_claims,
+            writer_invented_contact_violations,
+        )
+
+        viol = writer_invented_contact_violations(
+            model.body or "",
+            contact_claims,
+            applicant_name=applicant_name or "",
+        )
+        if viol:
+            for v in viol:
+                code = (
+                    INFERRED_SALUTATION
+                    if v.startswith("SALUTATION_NOT_ALLOWED")
+                    else UNVERIFIED_CONTACT_PERSON
+                )
+                errors.append(
+                    make_error(
+                        code,
+                        claim_text=v,
+                        severity="error",
+                        repair_instruction=(
+                            "Verwende nur NEUTRAL_SALUTATION wenn CONTACT_VERIFIED=false "
+                            "oder SALUTATION_ALLOWED=false. Keine Personennamen erfinden."
+                        ),
+                    )
+                )
+            model.body = sanitize_cover_body_for_claims(
+                model.body or "",
+                contact_claims,
+                applicant_name=applicant_name or "",
+            )
+            model.invented_flag = True
+            notes.append("unverified_contact_sanitized")
 
     # Mark invented if any unsupported credential
     if any(

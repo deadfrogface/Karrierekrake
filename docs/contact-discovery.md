@@ -84,6 +84,13 @@ hard retention jobs land in PR42.
 2. `DELETE FROM recruiting_contacts` or call `delete_recruiting_contacts`.
 3. Remove/ignore `core/contacts` usage; schema table is inert when unused.
 
+## PR26 — Verification & Writer
+
+Discovered contacts are **not** auto-used. See `docs/contact-verification.md`:
+Verification → Writer claims (`CONTACT_VERIFIED`, …). Toggle
+`contact_writer_binding_enabled: false` to detach the writer while keeping
+provenance.
+
 ## Acceptance mapping
 
 | Gate | Check |

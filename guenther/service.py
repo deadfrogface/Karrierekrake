@@ -495,6 +495,7 @@ class GuentherService:
         enable_repair: bool | None = None,
         quality_loop_mode: str | None = None,
         target_role: str | None = None,
+        contact_claims: Any | None = None,
     ) -> GuentherEnvelope:
         """Writing via bounded PLAN→DRAFT→CRITIQUE→REVISE→VERIFY (or legacy mode=old)."""
         from guenther.contracts import WritingSuggestion
@@ -547,6 +548,7 @@ class GuentherService:
             forbid_wrong_role=forbid_wrong_role,
             mode=mode,
             seed_body=seed_body,
+            contact_claims=contact_claims,
         )
         notes = [e.get("code") for e in result.validator_errors if e.get("code")]
         notes.append(f"final_state={result.final_state.value}")

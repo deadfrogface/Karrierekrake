@@ -11,9 +11,15 @@ from core.lifecycle import (
     CaseEvent,
     CaseEventType,
     CaseStatus,
-    email_category_to_status,
+    LifecycleEvent,
+    LifecycleEventType,
+    email_category_to_lifecycle_event,
 )
-from integrations.email_associate import associate_email
+from integrations.email_associate import (
+    ASSOCIATION_POLICY_VERSION,
+    associate_email,
+    decide_association_write,
+)
 from integrations.email_classify import classify_email
 from integrations.followup import suggest_follow_ups
 from integrations.gmail_sync import ParsedEmail, sender_is_excluded
@@ -42,6 +48,16 @@ def process_parsed_email(
     else:
         payload = dict(email)
 
+    # Fail-safe dedupe: never emit duplicate lifecycle events for same gmail_id.
+    existing_gid = str(payload.get("gmail_id") or "").strip()
+    if existing_gid and db.has_gmail_message(existing_gid):
+        existing = db.get_email_by_gmail_id(existing_gid) or {}
+        return {
+            "email_id": existing.get("id") or existing_gid,
+            "status": "duplicate",
+            "skipped": True,
+        }
+
     sender = payload.get("sender") or ""
     if sender_is_excluded(sender, exclude_senders or []):
         payload.update(
@@ -60,8 +76,6 @@ def process_parsed_email(
     payload["category"] = classification.category
     payload["confidence"] = classification.confidence
 
-    # Optional Günther second opinion — never overrides false-rejection guard
-    # or forces status; stored as advisory metadata only.
     guenther_meta: dict[str, Any] = {}
     try:
         from core.config import load_config
@@ -86,7 +100,6 @@ def process_parsed_email(
                     "safety_notes": env.safety_notes,
                     "model_id": env.model_id,
                 }
-                # Advisory only: never raise confidence to force rejection
                 if (
                     classification.false_rejection_blocked
                     or env.suggestion.get("false_rejection_risk")
@@ -96,21 +109,70 @@ def process_parsed_email(
         logger.debug("guenther email assist skipped", exc_info=False)
 
     cases = [c.to_dict() for c in db.list_cases(limit=2000)]
-    assoc = associate_email(
+    proposed = associate_email(
         sender=sender,
         subject=payload.get("subject") or "",
+        body=payload.get("body_text") or "",
         cases=cases,
+        thread_id=payload.get("thread_id") or "",
+        message_id=payload.get("message_id") or payload.get("gmail_id") or "",
     )
+
+    # Protect confirmed associations on re-ingest (no silent overwrite / cross-case mutation).
+    existing = None
+    gmail_key = payload.get("gmail_id") or ""
+    if gmail_key:
+        existing = db.get_email_message(gmail_key)
+    if existing and (
+        int(existing.get("association_confirmed") or 0)
+        or (
+            (existing.get("association_status") or "") == "linked"
+            and existing.get("case_id")
+            and int(existing.get("association_confirmed") or 0)
+        )
+    ):
+        assoc = decide_association_write(
+            existing_status=str(existing.get("association_status") or ""),
+            existing_case_id=str(existing.get("case_id") or ""),
+            existing_confirmed=bool(int(existing.get("association_confirmed") or 0)),
+            existing_policy_version=str(existing.get("association_policy_version") or ""),
+            proposed=proposed,
+        )
+    else:
+        assoc = proposed
 
     if guenther_meta:
         payload["guenther"] = guenther_meta
 
+    payload["association_policy_version"] = assoc.policy_version or ASSOCIATION_POLICY_VERSION
+    payload["association_explanation"] = assoc.explanation or assoc.reason
+    payload["association_evidence_json"] = list(assoc.evidence)
+
+    if assoc.match_status == "protected" and existing:
+        # Keep confirmed link; do not mutate case status from this pass.
+        payload["case_id"] = existing.get("case_id") or ""
+        payload["association_status"] = "linked"
+        payload["association_confirmed"] = 1
+        eid = db.save_email_message(payload)
+        return {
+            "email_id": eid,
+            "status": "protected",
+            "case_id": payload["case_id"],
+            "category": classification.category,
+            "confidence": classification.confidence,
+            "false_rejection_blocked": classification.false_rejection_blocked,
+            "association_reason": assoc.reason,
+            "policy_version": assoc.policy_version,
+        }
+
     if assoc.ambiguous or not assoc.case_id:
-        payload["association_status"] = "ambiguous" if assoc.candidates or assoc.ambiguous else "unlinked"
+        status = assoc.match_status if assoc.match_status in {"ambiguous", "review_required"} else (
+            "ambiguous" if assoc.candidates or assoc.ambiguous else "unlinked"
+        )
+        payload["association_status"] = status
         payload["case_id"] = ""
         eid = db.save_email_message(payload)
         if assoc.candidates:
-            # Record ambiguity against first candidate for timeline visibility.
             for cid in assoc.candidates[:3]:
                 db.add_case_event(
                     CaseEvent(
@@ -121,6 +183,9 @@ def process_parsed_email(
                                 "email_id": eid,
                                 "reason": assoc.reason,
                                 "candidates": list(assoc.candidates),
+                                "explanation": assoc.explanation,
+                                "policy_version": assoc.policy_version,
+                                "evidence": list(assoc.evidence),
                             },
                             ensure_ascii=False,
                         ),
@@ -134,6 +199,8 @@ def process_parsed_email(
             "confidence": classification.confidence,
             "false_rejection_blocked": classification.false_rejection_blocked,
             "candidates": list(assoc.candidates),
+            "association_reason": assoc.reason,
+            "policy_version": assoc.policy_version,
         }
 
     payload["case_id"] = assoc.case_id
@@ -148,6 +215,10 @@ def process_parsed_email(
                     "email_id": eid,
                     "category": classification.category,
                     "confidence": classification.confidence,
+                    "association_confidence": assoc.confidence,
+                    "explanation": assoc.explanation,
+                    "evidence": list(assoc.evidence),
+                    "policy_version": assoc.policy_version,
                 },
                 ensure_ascii=False,
             ),
@@ -160,13 +231,20 @@ def process_parsed_email(
         and classification.confidence >= min_confidence
         and not classification.false_rejection_blocked
     ):
-        new_status = email_category_to_status(classification.category)
-        if new_status:
-            db.set_case_status(
+        # Classifier → event only; reducer owns status. Never LLM-driven writes.
+        event_type = email_category_to_lifecycle_event(classification.category)
+        if event_type:
+            db.apply_lifecycle_event_for_email(
                 assoc.case_id,
-                new_status,
+                event_type,
+                email_id=eid,
+                occurred_at=payload.get("received_at") or "",
                 confidence=classification.confidence,
-                payload={"source": "email", "email_id": eid},
+                payload={
+                    "source": "email",
+                    "category": classification.category,
+                    "gmail_id": payload.get("gmail_id") or "",
+                },
             )
 
     return {
@@ -176,6 +254,8 @@ def process_parsed_email(
         "category": classification.category,
         "confidence": classification.confidence,
         "false_rejection_blocked": classification.false_rejection_blocked,
+        "association_reason": assoc.reason,
+        "policy_version": assoc.policy_version,
     }
 
 
@@ -190,7 +270,9 @@ def process_email_batch(
     ]
 
 
-def refresh_follow_up_tasks(db: Database, *, follow_up_days: int = 14, ghosted_days: int = 21) -> int:
+def refresh_follow_up_tasks(
+    db: Database, *, follow_up_days: int = 14, ghosted_days: int = 21
+) -> int:
     cases = [c.to_dict() for c in db.list_cases(limit=2000)]
     suggestions = suggest_follow_ups(
         cases, follow_up_days=follow_up_days, ghosted_days=ghosted_days
@@ -212,7 +294,9 @@ def refresh_follow_up_tasks(db: Database, *, follow_up_days: int = 14, ghosted_d
             CaseEvent(
                 case_id=s.case_id,
                 event_type=CaseEventType.FOLLOW_UP_SUGGESTED.value,
-                payload_json=json.dumps({"kind": s.kind, "text": s.text}, ensure_ascii=False),
+                payload_json=json.dumps(
+                    {"kind": s.kind, "text": s.text}, ensure_ascii=False
+                ),
             )
         )
         if s.kind == "ghosted":
@@ -221,6 +305,15 @@ def refresh_follow_up_tasks(db: Database, *, follow_up_days: int = 14, ghosted_d
                 CaseStatus.APPLIED.value,
                 CaseStatus.CONFIRMATION.value,
             }:
-                db.set_case_status(s.case_id, CaseStatus.GHOSTED.value, force=False)
+                db.append_lifecycle_event(
+                    LifecycleEvent(
+                        case_id=s.case_id,
+                        event_type=LifecycleEventType.GHOSTED.value,
+                        idempotency_key=f"ghosted-suggest:{s.case_id}",
+                        payload={"source": "follow_up_suggest", "kind": s.kind},
+                        source="follow_up_suggest",
+                        confidence=0.5,
+                    )
+                )
         created += 1
     return created

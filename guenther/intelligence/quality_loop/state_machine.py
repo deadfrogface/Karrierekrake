@@ -108,6 +108,7 @@ def run_quality_loop(
     forbid_wrong_role: list[str] | None = None,
     mode: str = "full",
     seed_body: str = "",
+    contact_claims: Any | None = None,
 ) -> QualityLoopResult:
     """Execute bounded writing pipeline.
 
@@ -136,6 +137,20 @@ def run_quality_loop(
     store = build_evidence_store(
         profile_text=profile_text, existing_evidence=existing_evidence or []
     )
+
+    def _validate_draft(model: WritingSuggestion):
+        return validate_writing_grounded(
+            model,
+            profile_text=profile_text,
+            job_text=job_text,
+            existing_evidence=existing_evidence,
+            target_company=target_company,
+            target_role=target_role,
+            forbid_role_reversal=forbid_role_reversal,
+            forbid_wrong_role=forbid_wrong_role,
+            contact_claims=contact_claims,
+        )
+
 
     def _call(schema: str, task: str, trusted: str, untrusted: str) -> tuple[Any | None, list[ValidatorError], dict[str, Any]]:
         nonlocal model_calls
@@ -178,21 +193,13 @@ def run_quality_loop(
         model, errors, _snap = _call(
             "writing",
             _draft_task_legacy(),
-            _legacy_trusted(profile_text, seed_body, target_company),
+            _legacy_trusted(profile_text, seed_body, target_company, contact_claims),
             f"JOB:\n{job_text[:8000]}",
         )
         timings["draft"] = round(time.perf_counter() - t0, 3)
         if model is None or not isinstance(model, WritingSuggestion):
             return _fail(FinalResultState.GENERATION_FAILED, errors=errors or [make_error(SCHEMA_INVALID)])
-        model, report = validate_writing_grounded(
-            model,
-            profile_text=profile_text,
-            job_text=job_text,
-            existing_evidence=existing_evidence,
-            target_company=target_company,
-            forbid_role_reversal=forbid_role_reversal,
-            forbid_wrong_role=forbid_wrong_role,
-        )
+        model, report = _validate_draft(model)
         if not report.ok and safety_repair_count < MAX_SAFETY_REPAIRS:
             _transition(transitions, "SAFETY_REPAIR")
             safety_repair_count += 1
@@ -200,7 +207,7 @@ def run_quality_loop(
             model2, errors2, _ = _call(
                 "writing",
                 _draft_task_legacy(),
-                _legacy_trusted(profile_text, seed_body, target_company)
+                _legacy_trusted(profile_text, seed_body, target_company, contact_claims)
                 + "\n"
                 + build_repair_feedback(list(report.errors)),
                 f"JOB:\n{job_text[:8000]}",
@@ -208,15 +215,7 @@ def run_quality_loop(
             timings["safety_repair"] = round(time.perf_counter() - t1, 3)
             if isinstance(model2, WritingSuggestion):
                 model = model2
-                model, report = validate_writing_grounded(
-                    model,
-                    profile_text=profile_text,
-                    job_text=job_text,
-                    existing_evidence=existing_evidence,
-                    target_company=target_company,
-                    forbid_role_reversal=forbid_role_reversal,
-                    forbid_wrong_role=forbid_wrong_role,
-                )
+                model, report = _validate_draft(model)
                 errors = list(report.errors)
         return _finalize_from_report(
             model=model,
@@ -239,7 +238,7 @@ def run_quality_loop(
     plan_model, plan_errs, _ = _call(
         "writing_plan",
         _plan_task(),
-        _plan_trusted(profile_text, store, target_company, target_role, seed_body),
+        _plan_trusted(profile_text, store, target_company, target_role, seed_body, contact_claims),
         f"JOB:\n{job_text[:8000]}",
     )
     timings["plan"] = round(time.perf_counter() - t0, 3)
@@ -261,7 +260,7 @@ def run_quality_loop(
         plan_model, plan_errs, _ = _call(
             "writing_plan",
             _plan_task(),
-            _plan_trusted(profile_text, store, target_company, target_role, seed_body)
+            _plan_trusted(profile_text, store, target_company, target_role, seed_body, contact_claims)
             + "\n"
             + build_repair_feedback(list(schema_feedback)),
             f"JOB:\n{job_text[:8000]}",
@@ -295,7 +294,7 @@ def run_quality_loop(
         plan2, _, _ = _call(
             "writing_plan",
             _plan_task(),
-            _plan_trusted(profile_text, store, target_company, target_role, seed_body)
+            _plan_trusted(profile_text, store, target_company, target_role, seed_body, contact_claims)
             + "\n"
             + build_repair_feedback(p_errors),
             f"JOB:\n{job_text[:8000]}",
@@ -319,7 +318,7 @@ def run_quality_loop(
             errors=p_errors,
         )
 
-    verified = summarize_plan_for_draft(plan_obj, store)
+    verified = summarize_plan_for_draft(plan_obj, store, contact_claims=contact_claims)
 
     # ---------- DRAFT ----------
     _transition(transitions, "DRAFT")
@@ -327,22 +326,14 @@ def run_quality_loop(
     draft, d_errs, _ = _call(
         "writing",
         _draft_from_plan_task(),
-        json.dumps({"verified_plan": verified, "seed": seed_body[:2000]}, ensure_ascii=False),
+        json.dumps({"verified_plan": verified, "seed": seed_body[:2000], "contact_claims": (contact_claims.to_dict() if contact_claims is not None and hasattr(contact_claims, "to_dict") else None)}, ensure_ascii=False),
         f"JOB:\n{job_text[:4000]}",
     )
     timings["draft"] = round(time.perf_counter() - t0, 3)
     if not isinstance(draft, WritingSuggestion):
         return _fail(FinalResultState.GENERATION_FAILED, errors=d_errs or [make_error(SCHEMA_INVALID)])
 
-    draft, report = validate_writing_grounded(
-        draft,
-        profile_text=profile_text,
-        job_text=job_text,
-        existing_evidence=existing_evidence,
-        target_company=target_company,
-        forbid_role_reversal=forbid_role_reversal,
-        forbid_wrong_role=forbid_wrong_role,
-    )
+    draft, report = _validate_draft(draft)
 
     # ---------- SAFETY REPAIR (max 1) ----------
     if not report.ok and safety_repair_count < MAX_SAFETY_REPAIRS and model_calls < MAX_MODEL_CALLS:
@@ -352,7 +343,7 @@ def run_quality_loop(
         draft2, _, _ = _call(
             "writing",
             _draft_from_plan_task(),
-            json.dumps({"verified_plan": verified, "seed": seed_body[:2000]}, ensure_ascii=False)
+            json.dumps({"verified_plan": verified, "seed": seed_body[:2000], "contact_claims": (contact_claims.to_dict() if contact_claims is not None and hasattr(contact_claims, "to_dict") else None)}, ensure_ascii=False)
             + "\n"
             + build_repair_feedback(list(report.errors)),
             f"JOB:\n{job_text[:4000]}",
@@ -360,15 +351,7 @@ def run_quality_loop(
         timings["safety_repair"] = round(time.perf_counter() - t1, 3)
         if isinstance(draft2, WritingSuggestion):
             draft = draft2
-            draft, report = validate_writing_grounded(
-                draft,
-                profile_text=profile_text,
-                job_text=job_text,
-                existing_evidence=existing_evidence,
-                target_company=target_company,
-                forbid_role_reversal=forbid_role_reversal,
-                forbid_wrong_role=forbid_wrong_role,
-            )
+            draft, report = _validate_draft(draft)
 
     if not report.ok:
         return _finalize_from_report(
@@ -414,15 +397,7 @@ def run_quality_loop(
             )
             timings["targeted_rewrite"] = round(time.perf_counter() - t0, 3)
             if isinstance(draft_r, WritingSuggestion):
-                draft_r, report_r = validate_writing_grounded(
-                    draft_r,
-                    profile_text=profile_text,
-                    job_text=job_text,
-                    existing_evidence=existing_evidence,
-                    target_company=target_company,
-                    forbid_role_reversal=forbid_role_reversal,
-                    forbid_wrong_role=forbid_wrong_role,
-                )
+                draft_r, report_r = _validate_draft(draft_r)
                 if report_r.ok:
                     draft, report = draft_r, report_r
                 # if rewrite unsafe: keep original safe draft
@@ -473,15 +448,7 @@ def run_quality_loop(
         if critique.ready_as_is:
             early_exit = rev_i == 0 and quality_revision_count == 0
             _transition(transitions, "FINAL_SAFETY_VERIFY")
-            draft, report = validate_writing_grounded(
-                draft,
-                profile_text=profile_text,
-                job_text=job_text,
-                existing_evidence=existing_evidence,
-                target_company=target_company,
-                forbid_role_reversal=forbid_role_reversal,
-                forbid_wrong_role=forbid_wrong_role,
-            )
+            draft, report = _validate_draft(draft)
             return _finalize_from_report(
                 model=draft,
                 report=report,
@@ -530,15 +497,7 @@ def run_quality_loop(
         timings[f"quality_revision_{rev_i+1}"] = round(time.perf_counter() - t1, 3)
         if isinstance(rev, WritingSuggestion):
             draft = rev
-        draft, report = validate_writing_grounded(
-            draft,
-            profile_text=profile_text,
-            job_text=job_text,
-            existing_evidence=existing_evidence,
-            target_company=target_company,
-            forbid_role_reversal=forbid_role_reversal,
-            forbid_wrong_role=forbid_wrong_role,
-        )
+        draft, report = _validate_draft(draft)
         if not report.ok:
             # one safety repair after quality revision if budget remains
             if safety_repair_count < MAX_SAFETY_REPAIRS and model_calls < MAX_MODEL_CALLS:
@@ -554,15 +513,7 @@ def run_quality_loop(
                 )
                 if isinstance(draft2, WritingSuggestion):
                     draft = draft2
-                    draft, report = validate_writing_grounded(
-                        draft,
-                        profile_text=profile_text,
-                        job_text=job_text,
-                        existing_evidence=existing_evidence,
-                        target_company=target_company,
-                        forbid_role_reversal=forbid_role_reversal,
-                        forbid_wrong_role=forbid_wrong_role,
-                    )
+                    draft, report = _validate_draft(draft)
             if not report.ok:
                 return _finalize_from_report(
                     model=draft,
@@ -580,15 +531,7 @@ def run_quality_loop(
                 )
 
     _transition(transitions, "FINAL_SAFETY_VERIFY")
-    draft, report = validate_writing_grounded(
-        draft,
-        profile_text=profile_text,
-        job_text=job_text,
-        existing_evidence=existing_evidence,
-        target_company=target_company,
-        forbid_role_reversal=forbid_role_reversal,
-        forbid_wrong_role=forbid_wrong_role,
-    )
+    draft, report = _validate_draft(draft)
     last_ready = bool(critiques and critiques[-1].get("ready_as_is"))
     return _finalize_from_report(
         model=draft,
@@ -704,7 +647,7 @@ def _draft_from_plan_task() -> str:
         "Fehlende wünschenswerte Skills ehrlich als Lernbereitschaft ohne Besitzanspruch. "
         "Arbeitgeber nur aus Evidenztext, nie erfinden. "
         "do_not_claim strikt beachten — keine erfundenen Zertifikate. "
-        "Vermeide das Wort 'finanziell' (nutze Controlling/Reporting/Kostenstellen)."
+        "Vermeide das Wort 'finanziell' (nutze Controlling/Reporting/Kostenstellen). CONTACT_VERIFIED: wenn false, KEINE Personennamen/Anreden (Frau/Herr X) einfügen — nur NEUTRAL_SALUTATION. Kein Gender-Guessing."
     )
 
 
@@ -820,6 +763,7 @@ def _plan_trusted(
     target_company: str | None,
     target_role: str | None,
     seed_body: str,
+    contact_claims: Any | None = None,
 ) -> str:
     co = (
         f"TARGET_COMPANY: {target_company}\n"
@@ -827,18 +771,29 @@ def _plan_trusted(
         else "TARGET_COMPANY: UNKNOWN\n"
     )
     role = f"TARGET_ROLE: {target_role}\n" if target_role else ""
+    contact = ""
+    if contact_claims is not None and hasattr(contact_claims, "to_trusted_block"):
+        contact = "### CONTACT_CLAIMS\n" + contact_claims.to_trusted_block() + "\n"
     return (
-        f"{co}{role}"
+        f"{co}{role}{contact}"
         f"EVIDENCE_STORE:\n{json.dumps(store.to_list(), ensure_ascii=False)[:12000]}\n"
         f"PROFILE:\n{profile_text[:6000]}\n"
         f"SEED:\n{seed_body[:2000]}"
     )
 
 
-def _legacy_trusted(profile_text: str, seed_body: str, target_company: str | None) -> str:
+def _legacy_trusted(
+    profile_text: str,
+    seed_body: str,
+    target_company: str | None,
+    contact_claims: Any | None = None,
+) -> str:
     co = (
         f"TARGET_COMPANY: {target_company}\n"
         if target_company and str(target_company).strip()
         else "TARGET_COMPANY: UNKNOWN\n"
     )
-    return f"{co}PROFILE:\n{profile_text[:8000]}\nSEED:\n{seed_body[:4000]}"
+    contact = ""
+    if contact_claims is not None and hasattr(contact_claims, "to_trusted_block"):
+        contact = "### CONTACT_CLAIMS\n" + contact_claims.to_trusted_block() + "\n"
+    return f"{co}{contact}PROFILE:\n{profile_text[:8000]}\nSEED:\n{seed_body[:4000]}"
