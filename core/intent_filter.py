@@ -325,6 +325,26 @@ def _exclude_pass(
     )
 
 
+def _intent_has_active_filters(intent: SearchIntent) -> bool:
+    """True when any hard/soft intent filter is set (incl. geo/employment-only).
+
+    Distinct from ``SearchIntent.is_empty()`` which intentionally ignores
+    geo/salary alone for legacy migration dual-write behaviour.
+    """
+    if not intent.is_empty():
+        return True
+    return any(
+        [
+            intent.remote_mode,
+            intent.employment_types,
+            intent.working_time,
+            intent.salary_min is not None,
+            intent.countries,
+            intent.radius_km is not None,
+        ]
+    )
+
+
 def apply_search_intent(job: Job, intent: SearchIntent | None) -> IntentFilterResult:
     """Run the full deterministic intent pipeline for one job.
 
@@ -332,7 +352,7 @@ def apply_search_intent(job: Job, intent: SearchIntent | None) -> IntentFilterRe
     (caller falls back to legacy matcher path).
     """
     version = ranking_version_token()
-    if intent is None or intent.is_empty():
+    if intent is None or not _intent_has_active_filters(intent):
         return IntentFilterResult(
             included=True,
             excluded=False,

@@ -12,7 +12,8 @@ STRICT (Tester A): `target_roles` drive discovery. Profile work history may late
 boost fitness (PR23+) but must **not** inject new role families into the search.
 
 Mandatory skills (Tester B): e.g. `mandatory_skills: [SAP]` — jobs without SAP
-are `FILTERED_OUT` in **PR23** (not implemented here).
+are `FILTERED_OUT` by **PR23** (`core/intent_filter.py`). See
+`docs/search-intent-filtering.md`.
 
 ## Schema version
 
@@ -67,4 +68,11 @@ Qualifications / CV skills are **never** copied into SearchIntent.
 
 - Original `jobs` / `filters` remain in YAML alongside `search_intent`
 - Failed parse: do not destroy YAML (atomic replace elsewhere)
-- Dual-write `sync_legacy_jobs_from_intent` is temporary until PR23 cutover
+- Dual-write `sync_legacy_jobs_from_intent` is temporary until full cutover
+- Ranking strategy is versioned (`ranking_version`); never soften hard filters
+  to “roll back” quality — clear stale scores and rematch instead
+
+## PR23 filtering
+
+Deterministic pipeline + curated payroll/SAP aliases:
+[`docs/search-intent-filtering.md`](search-intent-filtering.md).

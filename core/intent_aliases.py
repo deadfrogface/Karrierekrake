@@ -243,26 +243,49 @@ def skill_family_for_label(label: str) -> SkillFamily | None:
     return None
 
 
+def _negated_at(text: str, start: int) -> bool:
+    """True if match at ``start`` is preceded by a local negation (kein/ohne/without)."""
+    window = (text or "")[max(0, start - 24) : start].casefold()
+    return bool(
+        re.search(
+            r"(?:^|[^\w])(?:ohne|kein|keine|keinen|keinem|keiner|without|no|not|nie)\s+$",
+            window,
+        )
+        or re.search(
+            r"(?:ohne|kein|keine|keinen|without|no)\s+\w{0,12}\s+$",
+            window,
+        )
+    )
+
+
 def text_has_solid_skill(text: str, label: str) -> bool:
     """Deterministic skill presence — SAP only via solid product/family patterns."""
     fam = skill_family_for_label(label)
     blob = text or ""
     blob_cf = _cf(blob)
     if fam is not None:
-        # Explicit false-positive phrases alone never count.
         for fp in fam.false_positives:
             if blob_cf.strip() == fp or blob_cf == fp:
                 return False
-        return any(p.search(blob) for p in fam.positive)
+        for pat in fam.positive:
+            for m in pat.finditer(blob):
+                if _negated_at(blob, m.start()):
+                    continue
+                return True
+        return False
     # Generic mandatory skill: word-boundary / normalized containment.
     key = _norm_alias(label)
     if not key or len(key) < 2:
         return False
-    if re.search(rf"(?<!\w){re.escape(key)}(?!\w)", _norm_alias(blob)):
-        return True
-    # Original casefold word-boundary on raw text for tokens with punctuation
+    norm_blob = _norm_alias(blob)
+    for m in re.finditer(rf"(?<!\w){re.escape(key)}(?!\w)", norm_blob):
+        if not _negated_at(norm_blob, m.start()):
+            return True
     raw = _cf(label)
-    return bool(re.search(rf"(?<!\w){re.escape(raw)}(?!\w)", blob_cf))
+    for m in re.finditer(rf"(?<!\w){re.escape(raw)}(?!\w)", blob_cf):
+        if not _negated_at(blob_cf, m.start()):
+            return True
+    return False
 
 
 def is_sap_false_positive_text(text: str) -> bool:
