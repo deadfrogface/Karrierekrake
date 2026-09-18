@@ -28,11 +28,13 @@ jobs:
           pip install -r requirements.txt
       - name: Privacy scan
         run: python scripts/privacy_scan.py
+      - name: Production content gate (unit)
+        run: python -m pytest -q tests/test_production_content_gate.py
       - name: Summary
         if: always()
         shell: pwsh
         run: |
-          Add-Content $env:GITHUB_STEP_SUMMARY "## privacy`nPASS"
+          Add-Content $env:GITHUB_STEP_SUMMARY "## privacy`nPASS (+ production content gate unit)"
 
   unit-tests:
     name: unit-tests
