@@ -45,12 +45,12 @@ _NAME_TOKEN = r"[A-ZÄÖÜ][a-zäöüß\-]+(?:\s+[A-ZÄÖÜ][a-zäöüß\-]+){0,
 _CONTACT_BLOCK_RE = re.compile(
     rf"(?:"
     rf"(?:Ihre?\s+)?Ansprechpartner(?:in)?|"
-    rf"Kontakt(?:person)?|"
+    rf"\bKontakt(?:person)?\b|"
     rf"\bRecruiter(?:in)?\b|"
-    rf"Bewerbung(?:en)?\s+(?:bitte\s+)?an|"
-    rf"Fragen\s+an"
+    rf"Bewerbung(?:en)?[ \t]+(?:bitte[ \t]+)?an|"
+    rf"Fragen[ \t]+an"
     rf")"
-    rf"\s*[:\-]?\s*"
+    rf"[ \t]*[:\-]?[ \t]*"
     rf"(?P<body>[^\n]{{3,160}})",
     re.I,
 )
