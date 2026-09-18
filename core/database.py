@@ -12,7 +12,18 @@ from typing import Any, Iterator
 
 from core.models import ApplicationRecord, Job, JobStatus, utc_now_iso
 from core.deduplicator import company_key as _company_key, title_key as _title_key
-from core.lifecycle import ApplicationCase, CaseEvent, CaseEventType, CaseStatus, can_transition
+from core.lifecycle import (
+    ApplicationCase,
+    CaseEvent,
+    CaseEventType,
+    CaseStatus,
+    LifecycleEvent,
+    LifecycleEventType,
+    can_transition,
+    reduce_lifecycle_events,
+    seed_event_for_status,
+    status_to_lifecycle_event,
+)
 
 from urllib.parse import parse_qs, urlparse
 
@@ -150,7 +161,8 @@ CREATE TABLE IF NOT EXISTS application_cases (
     notes TEXT DEFAULT '',
     company_key TEXT DEFAULT '',
     title_key TEXT DEFAULT '',
-    url_key TEXT DEFAULT ''
+    url_key TEXT DEFAULT '',
+    legacy_status TEXT DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS case_events (
@@ -159,6 +171,19 @@ CREATE TABLE IF NOT EXISTS case_events (
     event_type TEXT NOT NULL,
     payload_json TEXT DEFAULT '{}',
     created_at TEXT,
+    confidence REAL DEFAULT 1.0,
+    FOREIGN KEY(case_id) REFERENCES application_cases(id)
+);
+
+CREATE TABLE IF NOT EXISTS lifecycle_events (
+    id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    occurred_at TEXT NOT NULL,
+    recorded_at TEXT NOT NULL,
+    idempotency_key TEXT DEFAULT '',
+    payload_json TEXT DEFAULT '{}',
+    source TEXT DEFAULT '',
     confidence REAL DEFAULT 1.0,
     FOREIGN KEY(case_id) REFERENCES application_cases(id)
 );
@@ -200,6 +225,11 @@ CREATE INDEX IF NOT EXISTS idx_cases_company_title ON application_cases(company_
 CREATE INDEX IF NOT EXISTS idx_cases_url_key ON application_cases(url_key);
 CREATE INDEX IF NOT EXISTS idx_cases_job ON application_cases(job_id);
 CREATE INDEX IF NOT EXISTS idx_case_events_case ON case_events(case_id);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_events_case ON lifecycle_events(case_id);
+CREATE INDEX IF NOT EXISTS idx_lifecycle_events_occurred ON lifecycle_events(case_id, occurred_at);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_lifecycle_events_idem
+    ON lifecycle_events(case_id, idempotency_key)
+    WHERE idempotency_key != '';
 CREATE INDEX IF NOT EXISTS idx_email_case ON email_messages(case_id);
 CREATE INDEX IF NOT EXISTS idx_email_assoc ON email_messages(association_status);
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON lifecycle_tasks(status);
@@ -382,6 +412,109 @@ class Database:
                         "ALTER TABLE email_messages ADD COLUMN "
                         "association_confirmed INTEGER DEFAULT 0"
                     )
+
+            self._ensure_lifecycle_event_schema(conn)
+            self._backfill_lifecycle_events_if_needed(conn)
+
+    @staticmethod
+    def _ensure_lifecycle_event_schema(conn: sqlite3.Connection) -> None:
+        case_cols = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(application_cases)").fetchall()
+        }
+        if case_cols and "legacy_status" not in case_cols:
+            conn.execute(
+                "ALTER TABLE application_cases ADD COLUMN legacy_status TEXT DEFAULT ''"
+            )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS lifecycle_events (
+                id TEXT PRIMARY KEY,
+                case_id TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                occurred_at TEXT NOT NULL,
+                recorded_at TEXT NOT NULL,
+                idempotency_key TEXT DEFAULT '',
+                payload_json TEXT DEFAULT '{}',
+                source TEXT DEFAULT '',
+                confidence REAL DEFAULT 1.0,
+                FOREIGN KEY(case_id) REFERENCES application_cases(id)
+            )
+            """
+        )
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_lifecycle_events_case ON lifecycle_events(case_id)"
+        )
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_lifecycle_events_occurred "
+            "ON lifecycle_events(case_id, occurred_at)"
+        )
+        conn.execute(
+            """
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_lifecycle_events_idem
+            ON lifecycle_events(case_id, idempotency_key)
+            WHERE idempotency_key != ''
+            """
+        )
+
+    @staticmethod
+    def _backfill_lifecycle_events_if_needed(conn: sqlite3.Connection) -> None:
+        case_cols = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(application_cases)").fetchall()
+        }
+        if "legacy_status" not in case_cols:
+            return
+        conn.execute(
+            """
+            UPDATE application_cases
+            SET legacy_status = status
+            WHERE COALESCE(legacy_status, '') = ''
+              AND COALESCE(status, '') != ''
+            """
+        )
+        rows = conn.execute(
+            "SELECT id, status, legacy_status, created_at, updated_at, applied_at "
+            "FROM application_cases"
+        ).fetchall()
+        for row in rows:
+            case_id = row["id"]
+            existing = conn.execute(
+                "SELECT COUNT(*) AS c FROM lifecycle_events WHERE case_id = ?",
+                (case_id,),
+            ).fetchone()
+            if existing and int(existing["c"] or 0) > 0:
+                continue
+            status = (row["legacy_status"] or row["status"] or CaseStatus.TO_APPLY.value).strip()
+            seed = seed_event_for_status(status)
+            if not seed:
+                continue
+            occurred = (
+                row["applied_at"] or row["created_at"] or row["updated_at"] or utc_now_iso()
+            )
+            recorded = row["updated_at"] or occurred
+            conn.execute(
+                """
+                INSERT OR IGNORE INTO lifecycle_events (
+                    id, case_id, event_type, occurred_at, recorded_at,
+                    idempotency_key, payload_json, source, confidence
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    str(uuid.uuid4()),
+                    case_id,
+                    seed,
+                    occurred,
+                    recorded,
+                    f"backfill:{case_id}:{seed}:{status}",
+                    json.dumps(
+                        {"backfill": True, "legacy_status": status, "from": "migration"},
+                        ensure_ascii=False,
+                    ),
+                    "migration_backfill",
+                    1.0,
+                ),
+            )
 
     @staticmethod
     def _invalidate_stale_ranking_scores(conn: sqlite3.Connection) -> None:
@@ -1096,28 +1229,267 @@ class Database:
         force: bool = False,
         confidence: float = 1.0,
         payload: dict[str, Any] | None = None,
+        occurred_at: str = "",
+        idempotency_key: str = "",
+        source: str = "",
     ) -> ApplicationCase | None:
+        """Mutate status only by appending a lifecycle event and reducing."""
         case = self.get_case(case_id)
         if case is None:
             return None
-        if not can_transition(case.status, new_status, force=force):
+        new_status = (new_status or "").strip().lower()
+        if not new_status:
             return case
-        old = case.status
-        case.status = new_status
-        case.updated_at = utc_now_iso()
-        self.upsert_case(case)
+        if not force and not can_transition(case.status, new_status, force=False):
+            return case
+
+        extra = dict(payload or {})
+        if force:
+            event_type = LifecycleEventType.MANUAL_OVERRIDE.value
+            extra.setdefault("to", new_status)
+            extra.setdefault("from", case.status)
+            audit_type = CaseEventType.MANUAL_OVERRIDE.value
+        else:
+            mapped = status_to_lifecycle_event(new_status)
+            if not mapped:
+                return case
+            event_type = mapped
+            audit_type = CaseEventType.STATUS_CHANGED.value
+
+        self.append_lifecycle_event(
+            LifecycleEvent(
+                case_id=case_id,
+                event_type=event_type,
+                occurred_at=occurred_at or utc_now_iso(),
+                idempotency_key=idempotency_key,
+                payload=extra,
+                source=source
+                or extra.get("source", "")
+                or ("manual" if force else "status_write"),
+                confidence=confidence,
+            )
+        )
         self.add_case_event(
             CaseEvent(
                 case_id=case_id,
-                event_type=CaseEventType.STATUS_CHANGED.value,
+                event_type=audit_type,
                 payload_json=json.dumps(
-                    {"from": old, "to": new_status, **(payload or {})},
+                    {
+                        "from": case.status,
+                        "to": new_status,
+                        "lifecycle_event": event_type,
+                        **extra,
+                    },
                     ensure_ascii=False,
                 ),
                 confidence=confidence,
             )
         )
+        return self.get_case(case_id)
+
+    def append_lifecycle_event(
+        self,
+        event: LifecycleEvent,
+        *,
+        recompute: bool = True,
+    ) -> tuple[LifecycleEvent, bool]:
+        if not event.case_id:
+            raise ValueError("lifecycle event requires case_id")
+        case = self.get_case(event.case_id)
+        if case is None:
+            raise ValueError(f"unknown case_id: {event.case_id}")
+
+        self._ensure_seed_lifecycle_event(case)
+
+        ev = event.with_defaults()
+        if not ev.id:
+            ev = LifecycleEvent(
+                event_type=ev.event_type,
+                occurred_at=ev.occurred_at,
+                idempotency_key=ev.idempotency_key,
+                payload=dict(ev.payload or {}),
+                id=str(uuid.uuid4()),
+                case_id=ev.case_id or event.case_id,
+                recorded_at=ev.recorded_at,
+                source=ev.source,
+                confidence=ev.confidence,
+            )
+        inserted = True
+        try:
+            with self.connection() as conn:
+                conn.execute(
+                    """
+                    INSERT INTO lifecycle_events (
+                        id, case_id, event_type, occurred_at, recorded_at,
+                        idempotency_key, payload_json, source, confidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        ev.id,
+                        ev.case_id,
+                        ev.event_type,
+                        ev.occurred_at,
+                        ev.recorded_at,
+                        ev.idempotency_key or "",
+                        json.dumps(ev.payload or {}, ensure_ascii=False),
+                        ev.source or "",
+                        float(ev.confidence),
+                    ),
+                )
+        except sqlite3.IntegrityError:
+            inserted = False
+            if ev.idempotency_key:
+                with self.connection() as conn:
+                    row = conn.execute(
+                        """
+                        SELECT * FROM lifecycle_events
+                        WHERE case_id = ? AND idempotency_key = ?
+                        LIMIT 1
+                        """,
+                        (ev.case_id, ev.idempotency_key),
+                    ).fetchone()
+                if row:
+                    ev = self._row_to_lifecycle_event(row)
+
+        if recompute:
+            self.recompute_case_status(ev.case_id)
+        return ev, inserted
+
+    def _ensure_seed_lifecycle_event(self, case: ApplicationCase) -> None:
+        with self.connection() as conn:
+            count = conn.execute(
+                "SELECT COUNT(*) AS c FROM lifecycle_events WHERE case_id = ?",
+                (case.id,),
+            ).fetchone()
+        if count and int(count["c"] or 0) > 0:
+            return
+        status = (case.legacy_status or case.status or CaseStatus.TO_APPLY.value).strip()
+        seed = seed_event_for_status(status)
+        if not seed:
+            return
+        if not case.legacy_status and case.status:
+            with self.connection() as conn:
+                conn.execute(
+                    "UPDATE application_cases SET legacy_status = ? WHERE id = ? "
+                    "AND COALESCE(legacy_status, '') = ''",
+                    (case.status, case.id),
+                )
+        occurred = case.applied_at or case.created_at or utc_now_iso()
+        try:
+            with self.connection() as conn:
+                conn.execute(
+                    """
+                    INSERT INTO lifecycle_events (
+                        id, case_id, event_type, occurred_at, recorded_at,
+                        idempotency_key, payload_json, source, confidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        str(uuid.uuid4()),
+                        case.id,
+                        seed,
+                        occurred,
+                        case.updated_at or occurred,
+                        f"seed:{case.id}:{seed}:{status}",
+                        json.dumps({"seed": True, "legacy_status": status}, ensure_ascii=False),
+                        "status_seed",
+                        1.0,
+                    ),
+                )
+        except sqlite3.IntegrityError:
+            return
+
+    @staticmethod
+    def _row_to_lifecycle_event(row: Any) -> LifecycleEvent:
+        payload_raw = row["payload_json"] or "{}"
+        try:
+            payload = json.loads(payload_raw) if isinstance(payload_raw, str) else {}
+        except json.JSONDecodeError:
+            payload = {}
+        if not isinstance(payload, dict):
+            payload = {}
+        return LifecycleEvent(
+            id=row["id"],
+            case_id=row["case_id"],
+            event_type=row["event_type"],
+            occurred_at=row["occurred_at"] or "",
+            recorded_at=row["recorded_at"] or "",
+            idempotency_key=row["idempotency_key"] or "",
+            payload=payload,
+            source=row["source"] or "",
+            confidence=float(row["confidence"] or 0),
+        )
+
+    def list_lifecycle_events(
+        self, case_id: str, *, limit: int = 500
+    ) -> list[LifecycleEvent]:
+        with self.connection() as conn:
+            rows = conn.execute(
+                """
+                SELECT * FROM lifecycle_events WHERE case_id = ?
+                ORDER BY occurred_at ASC, recorded_at ASC, id ASC
+                LIMIT ?
+                """,
+                (case_id, limit),
+            ).fetchall()
+        return [self._row_to_lifecycle_event(r) for r in rows]
+
+    def recompute_case_status(self, case_id: str) -> ApplicationCase | None:
+        case = self.get_case(case_id)
+        if case is None:
+            return None
+        events = self.list_lifecycle_events(case_id)
+        if not events:
+            fallback = case.legacy_status or case.status
+            if fallback and case.status != fallback:
+                case.status = fallback
+                case.updated_at = utc_now_iso()
+                return self.upsert_case(case)
+            return case
+        result = reduce_lifecycle_events(events)
+        if case.status != result.status:
+            case.status = result.status
+            case.updated_at = utc_now_iso()
+            return self.upsert_case(case)
         return case
+
+    def apply_lifecycle_event_for_email(
+        self,
+        case_id: str,
+        event_type: str,
+        *,
+        email_id: str = "",
+        occurred_at: str = "",
+        confidence: float = 1.0,
+        payload: dict[str, Any] | None = None,
+    ) -> ApplicationCase | None:
+        extra = dict(payload or {})
+        if email_id:
+            extra.setdefault("email_id", email_id)
+        idem = f"email:{case_id}:{email_id}:{event_type}" if email_id else ""
+        self.append_lifecycle_event(
+            LifecycleEvent(
+                case_id=case_id,
+                event_type=event_type,
+                occurred_at=occurred_at or utc_now_iso(),
+                idempotency_key=idem,
+                payload=extra,
+                source="email",
+                confidence=confidence,
+            )
+        )
+        self.add_case_event(
+            CaseEvent(
+                case_id=case_id,
+                event_type=CaseEventType.LIFECYCLE_EVENT.value,
+                payload_json=json.dumps(
+                    {"lifecycle_event": event_type, **extra},
+                    ensure_ascii=False,
+                ),
+                confidence=confidence,
+            )
+        )
+        return self.get_case(case_id)
 
     def add_case_event(self, event: CaseEvent) -> CaseEvent:
         if not event.id:
@@ -1167,7 +1539,6 @@ class Database:
     def ensure_case_from_job(
         self, job: Job, *, status: str = CaseStatus.APPLIED.value
     ) -> ApplicationCase:
-        """Create or refresh a case when an application succeeds / is tracked."""
         existing = self.find_case_for_job(
             job_id=job.id or "",
             url_keys={_url_identity(u) for u in (job.url, job.application_url) if u} - {""},
@@ -1177,16 +1548,23 @@ class Database:
         )
         if existing:
             case = ApplicationCase.from_dict(existing)
-            if can_transition(case.status, status):
-                case.status = status
             case.job_id = case.job_id or job.id
-            case.updated_at = utc_now_iso()
-            return self.upsert_case(case)
+            case = self.upsert_case(case)
+            if status and status != case.status:
+                self.set_case_status(
+                    case.id,
+                    status,
+                    source="ensure_case_from_job",
+                    payload={"job_id": job.id},
+                )
+                refreshed = self.get_case(case.id)
+                return refreshed or case
+            return case
         case = ApplicationCase(
             job_id=job.id,
             company=job.company,
             position=job.title,
-            status=status,
+            status=CaseStatus.TO_APPLY.value,
             source=job.source,
             url=job.url,
             application_url=job.application_url,
@@ -1194,8 +1572,27 @@ class Database:
             company_key=_company_key(job.company),
             title_key=_title_key(job.title),
             url_key=_url_identity(job.application_url or job.url),
+            legacy_status=CaseStatus.TO_APPLY.value,
         )
         case = self.upsert_case(case)
+        self.append_lifecycle_event(
+            LifecycleEvent(
+                case_id=case.id,
+                event_type=LifecycleEventType.APPLICATION_CREATED.value,
+                occurred_at=case.created_at or utc_now_iso(),
+                idempotency_key=f"created:{case.id}",
+                payload={"job_id": job.id},
+                source="ensure_case_from_job",
+            )
+        )
+        if status and status != CaseStatus.TO_APPLY.value:
+            self.set_case_status(
+                case.id,
+                status,
+                source="ensure_case_from_job",
+                payload={"job_id": job.id},
+                idempotency_key=f"ensure:{case.id}:{status}",
+            )
         self.add_case_event(
             CaseEvent(
                 case_id=case.id,
@@ -1203,7 +1600,7 @@ class Database:
                 payload_json=json.dumps({"status": status}, ensure_ascii=False),
             )
         )
-        return case
+        return self.get_case(case.id) or case
 
     def get_email_message(self, email_id: str) -> dict[str, Any] | None:
         with self.connection() as conn:
