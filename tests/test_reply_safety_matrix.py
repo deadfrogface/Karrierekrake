@@ -167,7 +167,7 @@ def test_e2e_draft_belongs_to_exact_case():
         "position": "Rolle Alpha",
         "company_verified": True,
         "position_verified": True,
-        "contact_email": "a@alpha.example",
+        "contact_email": "a@alpha.example.com",
         "contact_email_verified": True,
     }
     case_b = {
@@ -176,7 +176,7 @@ def test_e2e_draft_belongs_to_exact_case():
         "position": "Rolle Beta",
         "company_verified": True,
         "position_verified": True,
-        "contact_email": "b@beta.example",
+        "contact_email": "b@beta.example.com",
         "contact_email_verified": True,
     }
     d_a = build_action_draft(ReplyAction.FOLLOWUP, case_a, applicant_name="Max")
@@ -195,7 +195,7 @@ def test_commercial_zero_default_autosend_and_failed_not_sent():
         "position": "Role",
         "company_verified": True,
         "position_verified": True,
-        "contact_email": "hr@fail.example",
+        "contact_email": "hr@fail.example.com",
         "contact_email_verified": True,
     }
     draft = build_action_draft(ReplyAction.FOLLOWUP, case, applicant_name="Max")
@@ -218,7 +218,7 @@ def test_binding_actions_need_explicit_review():
         "position": "Role",
         "company_verified": True,
         "position_verified": True,
-        "contact_email": "hr@bind.example",
+        "contact_email": "hr@bind.example.com",
         "contact_email_verified": True,
     }
     for action in (ReplyAction.WITHDRAW, ReplyAction.DECLINE_OFFER):
