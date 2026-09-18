@@ -1,5 +1,8 @@
 # Günther — Hardware tiers & graceful degradation (Phase 5)
 
+> **PR19 freeze note:** Current *recommended* primary for STANDARD/POWER is **Phi-4-mini**; LIGHT still falls back to **Qwen3-1.7B** in code. Long-term product decision is Phi-only (STANDARD+LIGHT). See `docs/pr19-guenther-phi-freeze.md`. Historical rows below may describe earlier Qwen Autopick.
+
+
 | Tier | Detection | Default model | Degradation |
 |------|-----------|---------------|-------------|
 | LIGHT | &lt;8 GB RAM or ≤2 CPUs | qwen3-1.7b | If missing/OOM → deterministic Karrierekrake only; UI „Günther nicht verfügbar“ |

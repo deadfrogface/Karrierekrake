@@ -1,9 +1,11 @@
 {
   "decision": "PR19_COVER_WRITER_PLATEAU_FREEZE",
-  "frozen_at_utc": "2026-09-18T02:11:00Z",
+  "frozen_at_utc": "2026-09-18T02:17:00Z",
   "branch": "cursor/guenther-local-ai-megapass-d85b",
   "pr": 19,
-  "head_at_freeze": "8475a60dc0c0663fecfa40d001f777081d582b2a",
+  "head_at_freeze": "6f272318f8171b4870ea084891e11a7b45bdf84d",
+  "status": "FROZEN",
+  "functional": true,
   "primary_model": "phi4-mini",
   "model_selection_reopened": false,
   "quality_ready": false,
@@ -29,6 +31,12 @@
     "avg_writer_calls": 1.1,
     "source": "benchmark/cover_specialization/full_development_results.json"
   },
+  "implemented_vs_decided": {
+    "implemented_primary": "phi4-mini",
+    "implemented_light_fallback_still_in_code": "qwen3-1.7b",
+    "decided_long_term": "phi_only_standard_and_light",
+    "qwen_removal": "FOLLOW_UP_NOT_IN_THIS_FREEZE"
+  },
   "architecture_frozen": {
     "default_quality_loop_mode": "plan_draft",
     "critic1_default": "REMOVED",
@@ -50,7 +58,21 @@
     "may_continue_other_work": true,
     "may_not_claim_cover_99_gate_passed": true,
     "may_not_create_final_blind_until_dev_gate_pass": true,
-    "may_not_auto_merge_pr19": true
+    "may_not_auto_merge_pr19": true,
+    "next_product_pr": "PR20 — Profile Data Integrity",
+    "return_before_commercial_release": true
   },
-  "next_blocker": "Cover-only LoRA/QLoRA on suitable NVIDIA GPU with >=300 fictional SFT examples; then re-measure full development gate before any new blind fixture."
+  "known_blockers": [
+    "Writer specialization still insufficient vs 99/99/8.0",
+    "Fine-tuning likely required",
+    "BLOCKED_NO_SUITABLE_GPU",
+    "Insufficient high-confidence gold material (<300 SFT)"
+  ],
+  "next_blocker": "Cover-only LoRA/QLoRA on suitable NVIDIA GPU with >=300 fictional SFT examples; then re-measure full development gate before any new blind fixture.",
+  "docs": [
+    "docs/pr19-guenther-phi-freeze.md",
+    "docs/pr19-github-description.md",
+    "docs/adr/pr19-cover-writer-plateau-freeze.md",
+    "docs/guenther-cover-letter-specialization.md"
+  ]
 }
