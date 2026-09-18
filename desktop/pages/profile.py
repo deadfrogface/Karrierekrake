@@ -280,6 +280,35 @@ class ProfilePage(QWidget):
         self.languages.save_into(p.qualifications)
         self.location_work.save_into(p.location, p.employment, p.filters)
 
+        # PR22: keep SearchIntent in sync with clearly mapped career lists.
+        from core.search_intent import (
+            apply_clear_jobs_edit_to_intent,
+            empty_search_intent,
+            parse_search_intent,
+        )
+
+        raw_intent = getattr(p, "search_intent", None)
+        if raw_intent is None:
+            intent = empty_search_intent()
+        elif hasattr(raw_intent, "model_dump"):
+            intent = raw_intent
+        elif isinstance(raw_intent, dict):
+            intent = parse_search_intent(raw_intent)
+        else:
+            intent = empty_search_intent()
+        p.search_intent = apply_clear_jobs_edit_to_intent(intent, p.jobs)
+        from core.search_intent import apply_location_employment_to_intent
+
+        p.search_intent = apply_location_employment_to_intent(
+            p.search_intent, location=p.location, employment=p.employment
+        )
+        # Exclusion keywords remain on filters until dedicated UI; mirror clear excludes.
+        excl = [str(x).strip() for x in (p.filters.exclusion_keywords or []) if str(x).strip()]
+        if excl != list(p.search_intent.excluded_keywords):
+            data = p.search_intent.model_dump()
+            data["excluded_keywords"] = excl
+            p.search_intent = parse_search_intent(data)
+
         a = cfg.application
         sync_addr = self.applicant.save_into(a)
         self.config_service.set_sync_address_to_search(sync_addr)

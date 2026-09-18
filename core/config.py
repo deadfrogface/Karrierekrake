@@ -221,6 +221,10 @@ class SearchPreferences:
 
     Distinct from ApplicationProfile: search location/titles/filters live here;
     PII for form submit lives on ApplicationProfile. See core/search_preferences.py.
+
+    ``search_intent`` (PR22) is the versioned source of truth for *what to find*.
+    Legacy ``jobs`` / ``filters`` slices remain for dual-read during migration;
+    they must not secretly drive search once PR23 consumes SearchIntent only.
     """
 
     location: LocationConfig = field(default_factory=LocationConfig)
@@ -228,6 +232,7 @@ class SearchPreferences:
     employment: EmploymentConfig = field(default_factory=EmploymentConfig)
     qualifications: QualificationsConfig = field(default_factory=QualificationsConfig)
     filters: FiltersConfig = field(default_factory=FiltersConfig)
+    search_intent: Any = field(default=None)
 
 
 # Backward-compatible name used in older imports / YAML mental model.
@@ -305,7 +310,9 @@ def empty_qualifications() -> QualificationsConfig:
 
 def empty_search_preferences() -> SearchPreferences:
     """Blank search/qualification preferences (no demo data)."""
-    return SearchPreferences()
+    from core.search_intent import empty_search_intent
+
+    return SearchPreferences(search_intent=empty_search_intent())
 
 
 def empty_profile_config() -> SearchPreferences:
@@ -389,7 +396,8 @@ def soft_migrate_jobs_config(jobs: JobsConfig) -> JobsConfig:
     """Fold legacy ``alternative_titles`` into ``desired_titles`` once.
 
     Keeps ``alternative_titles`` empty after migration so UI/search no longer
-    depend on a separate 'Alternative Berufe' list.
+    depend on a separate 'Alternative Berufe' list. Deprecated in favor of
+    SearchIntent.target_roles (PR22); field retained for dual-read/rollback.
     """
     alts = [t for t in (jobs.alternative_titles or []) if str(t).strip()]
     if not alts:
@@ -401,6 +409,41 @@ def soft_migrate_jobs_config(jobs: JobsConfig) -> JobsConfig:
     jobs.desired_titles = desired
     jobs.alternative_titles = []
     return jobs
+
+
+def ensure_search_intent(profile: SearchPreferences) -> SearchPreferences:
+    """Attach SearchIntent: load existing or migrate clear legacy fields only."""
+    from core.search_intent import (
+        empty_search_intent,
+        migrate_legacy_search_preferences,
+        parse_search_intent,
+        sync_legacy_jobs_from_intent,
+    )
+
+    raw = profile.search_intent
+    if raw is None:
+        intent = None
+    elif hasattr(raw, "model_dump"):
+        intent = raw
+    elif isinstance(raw, dict):
+        intent = parse_search_intent(raw)
+    else:
+        intent = empty_search_intent()
+
+    if intent is None or (hasattr(intent, "is_empty") and intent.is_empty()):
+        result = migrate_legacy_search_preferences(
+            jobs=profile.jobs,
+            filters=profile.filters,
+            location=profile.location,
+            employment=profile.employment,
+            existing_intent=None if intent is None else intent,
+        )
+        profile.search_intent = result.intent
+        # Dual-write mirrors for legacy readers (does not invent roles).
+        sync_legacy_jobs_from_intent(result.intent, profile.jobs)
+    else:
+        profile.search_intent = intent
+    return profile
 
 
 def normalize_jobs_per_search(value: Any) -> int:
@@ -728,12 +771,27 @@ def save_config(
     settings_path = settings_path or CONFIG_DIR / "settings.yaml"
 
     config.application.sync_address()
+    from core.search_intent import SearchIntent, sync_legacy_jobs_from_intent
+
+    intent = getattr(config.profile, "search_intent", None)
+    if intent is None:
+        ensure_search_intent(config.profile)
+        intent = config.profile.search_intent
+    if hasattr(intent, "model_dump"):
+        sync_legacy_jobs_from_intent(intent, config.profile.jobs)
+        intent_payload = intent.model_dump(mode="json")
+    elif isinstance(intent, dict):
+        intent_payload = intent
+    else:
+        intent_payload = SearchIntent().model_dump(mode="json")
+
     profile_data = {
         "location": _dataclass_to_dict(config.profile.location),
         "jobs": _dataclass_to_dict(config.profile.jobs),
         "employment": _dataclass_to_dict(config.profile.employment),
         "qualifications": _dataclass_to_dict(config.profile.qualifications),
         "filters": _dataclass_to_dict(config.profile.filters),
+        "search_intent": intent_payload,
     }
     application_data = _dataclass_to_dict(config.application)
     settings_data = _dataclass_to_dict(config.settings)
@@ -783,13 +841,19 @@ def load_config(
     employment = _merge_dataclass(EmploymentConfig, profile_raw.get("employment", {}))
     qualifications = parse_qualifications(profile_raw.get("qualifications", {}))
     filters = _merge_dataclass(FiltersConfig, profile_raw.get("filters", {}))
+    from core.search_intent import parse_search_intent
+
+    intent_raw = profile_raw.get("search_intent")
+    search_intent = parse_search_intent(intent_raw if isinstance(intent_raw, dict) else None)
     profile = SearchPreferences(
         location=location,
         jobs=jobs,
         employment=employment,
         qualifications=qualifications,
         filters=filters,
+        search_intent=search_intent,
     )
+    profile = ensure_search_intent(profile)
     if strip_placeholders:
         profile = strip_example_placeholders(profile)
     application = _merge_dataclass(ApplicationProfile, application_raw)
