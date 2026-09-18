@@ -161,7 +161,12 @@ class SearchIntent(BaseModel):
         return self
 
     def is_empty(self) -> bool:
-        """True when no search-shaping fields are set (review flags ignored)."""
+        """True when no role/skill/keyword/industry wish is configured.
+
+        Geo/salary/working_time alone do **not** count: they often mirror
+        LocationConfig/EmploymentConfig defaults after migration and must not
+        block lifting ``jobs.desired_titles`` into ``target_roles`` on save.
+        """
         return not any(
             [
                 self.target_roles,
@@ -175,12 +180,6 @@ class SearchIntent(BaseModel):
                 self.preferred_industries,
                 self.excluded_industries,
                 self.strictness is not None,
-                self.remote_mode is not None,
-                self.employment_types,
-                self.working_time,
-                self.salary_min is not None,
-                self.countries,
-                self.radius_km is not None,
             ]
         )
 

@@ -771,14 +771,29 @@ def save_config(
     settings_path = settings_path or CONFIG_DIR / "settings.yaml"
 
     config.application.sync_address()
-    from core.search_intent import SearchIntent, sync_legacy_jobs_from_intent
+    from core.search_intent import (
+        SearchIntent,
+        apply_clear_jobs_edit_to_intent,
+        sync_legacy_jobs_from_intent,
+    )
 
     intent = getattr(config.profile, "search_intent", None)
-    if intent is None:
+    jobs = config.profile.jobs
+    # Empty role/skill intent must not wipe jobs; lift clear job lists first.
+    if intent is None or (hasattr(intent, "is_empty") and intent.is_empty()):
         ensure_search_intent(config.profile)
         intent = config.profile.search_intent
+    # If jobs still carry titles the intent lacks (UI-only edit), copy them up.
+    if hasattr(intent, "model_dump") and (
+        list(jobs.desired_titles or []) != list(intent.target_roles or [])
+        or list(jobs.unwanted_titles or []) != list(intent.excluded_roles or [])
+    ):
+        if intent.is_empty() or not intent.target_roles:
+            intent = apply_clear_jobs_edit_to_intent(intent, jobs)
+            config.profile.search_intent = intent
     if hasattr(intent, "model_dump"):
-        sync_legacy_jobs_from_intent(intent, config.profile.jobs)
+        if not intent.is_empty():
+            sync_legacy_jobs_from_intent(intent, config.profile.jobs)
         intent_payload = intent.model_dump(mode="json")
     elif isinstance(intent, dict):
         intent_payload = intent

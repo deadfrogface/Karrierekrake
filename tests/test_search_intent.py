@@ -55,12 +55,26 @@ def test_schema_version_constant():
     assert empty_search_intent().schema_version == SEARCH_INTENT_SCHEMA_VERSION
 
 
-def test_empty_intent_is_empty():
-    intent = empty_search_intent()
+def test_empty_intent_ignores_geo_defaults_for_is_empty():
+    """Location defaults must not make intent 'non-empty' and block title lift."""
+    intent = SearchIntent(countries=["DE"], radius_km=20.0, working_time=["full_time"])
     assert intent.is_empty()
-    assert intent.strictness is None
-    assert intent.remote_mode is None
-    assert intent.target_roles == []
+    intent2 = SearchIntent(target_roles=["Buchhalter"], countries=["DE"])
+    assert not intent2.is_empty()
+
+
+def test_save_lifts_desired_titles_when_intent_only_has_geo(tmp_path: Path):
+    cfg = empty_app_config(root=tmp_path)
+    cfg.profile.search_intent = SearchIntent(countries=["DE"], radius_km=20.0)
+    cfg.profile.jobs.desired_titles = ["Sachbearbeiter", "Assistent"]
+    paths = _paths(tmp_path)
+    save_config(cfg, **paths)
+    text = paths["profile_path"].read_text(encoding="utf-8")
+    assert "Sachbearbeiter" in text
+    loaded = load_config(**paths, root=tmp_path, strip_placeholders=False)
+    assert loaded.profile.jobs.desired_titles == ["Sachbearbeiter", "Assistent"]
+    assert loaded.profile.search_intent.target_roles == ["Sachbearbeiter", "Assistent"]
+
 
 
 def test_rejects_unknown_strictness():
