@@ -1209,6 +1209,21 @@ class Database:
             )
         return mid
 
+
+    def get_email_by_gmail_id(self, gmail_id: str) -> dict[str, Any] | None:
+        gid = (gmail_id or "").strip()
+        if not gid:
+            return None
+        with self.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM email_messages WHERE gmail_id = ? LIMIT 1",
+                (gid,),
+            ).fetchone()
+        return dict(row) if row else None
+
+    def has_gmail_message(self, gmail_id: str) -> bool:
+        return self.get_email_by_gmail_id(gmail_id) is not None
+
     def list_ambiguous_emails(self, *, limit: int = 100) -> list[dict[str, Any]]:
         with self.connection() as conn:
             rows = conn.execute(
