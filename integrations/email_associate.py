@@ -2,6 +2,9 @@
 
 Adapted from PBP ``match_email_to_application`` (MIT): domain-signal required,
 high threshold, recruiter-domain ambiguity → leave unlinked for review.
+
+PR29: evidence-backed matching with fail-closed ambiguity. Bump
+``ASSOCIATION_POLICY_VERSION`` when thresholds / evidence weights change.
 """
 
 from __future__ import annotations
@@ -13,6 +16,9 @@ from urllib.parse import urlparse
 
 from integrations.email_normalize import extract_sender_domain, extract_sender_email
 
+
+# Bump when evidence weights, thresholds, or ambiguity margin change.
+ASSOCIATION_POLICY_VERSION = "1.0.0"
 
 # PBP RECRUITER_DOMAIN_KEYWORDS (MIT) — never domain-only match.
 RECRUITER_DOMAIN_KEYWORDS: tuple[str, ...] = (
@@ -35,6 +41,7 @@ RECRUITER_DOMAIN_KEYWORDS: tuple[str, ...] = (
 )
 
 AUTO_MATCH_THRESHOLD = 0.90
+AMBIGUITY_MARGIN = 0.08
 ARCHIVE_STATUSES = frozenset({"rejected", "withdrawn", "closed", "abgelehnt", "zurueckgezogen"})
 
 _REF_RE = re.compile(
@@ -61,11 +68,70 @@ class AssociationResult:
     ambiguous: bool
     candidates: tuple[str, ...] = ()
     reason: str = ""
+    explanation: str = ""
+    evidence: tuple[str, ...] = ()
+    policy_version: str = ASSOCIATION_POLICY_VERSION
+    match_status: str = ""  # linked | ambiguous | review_required | no_safe_match | protected
+
+    def __post_init__(self) -> None:
+        if self.match_status:
+            return
+        if self.case_id and not self.ambiguous:
+            object.__setattr__(self, "match_status", "linked")
+        elif self.ambiguous:
+            object.__setattr__(self, "match_status", "ambiguous")
+        else:
+            object.__setattr__(self, "match_status", "no_safe_match")
 
 
 def _is_recruiter_domain(domain: str) -> bool:
     d = (domain or "").lower()
     return bool(d) and any(k in d for k in RECRUITER_DOMAIN_KEYWORDS)
+
+
+def decide_association_write(
+    *,
+    existing_status: str,
+    existing_case_id: str,
+    existing_confirmed: bool,
+    proposed: AssociationResult,
+    existing_policy_version: str = "",
+) -> AssociationResult:
+    """Protect confirmed links — never silent overwrite (PR29 rollback contract).
+
+    Stub for test-first commit; full fail-closed behaviour lands with the
+    evidence matcher.
+    """
+    status = (existing_status or "").lower()
+    if existing_confirmed or (status == "linked" and existing_case_id):
+        if proposed.case_id and proposed.case_id != existing_case_id:
+            return AssociationResult(
+                case_id=existing_case_id,
+                confidence=1.0,
+                ambiguous=False,
+                candidates=(existing_case_id,),
+                reason="confirmed_association_protected",
+                explanation=(
+                    f"Confirmed association to {existing_case_id} retained; "
+                    f"proposed {proposed.case_id} ignored "
+                    f"(prior policy {existing_policy_version or 'unknown'})."
+                ),
+                evidence=("confirmed_link",),
+                policy_version=ASSOCIATION_POLICY_VERSION,
+                match_status="protected",
+            )
+        return AssociationResult(
+            case_id=existing_case_id,
+            confidence=1.0,
+            ambiguous=False,
+            candidates=(existing_case_id,),
+            reason="confirmed_kept",
+            explanation="Existing confirmed association kept.",
+            evidence=("confirmed_link",),
+            policy_version=ASSOCIATION_POLICY_VERSION,
+            match_status="protected",
+        )
+    return proposed
 
 
 def associate_email(
@@ -76,8 +142,19 @@ def associate_email(
     direction: str = "inbound",
     recipients: str = "",
     body: str = "",
+    thread_id: str = "",
+    message_id: str = "",
+    ats_application_id: str = "",
+    location_hint: str = "",
+    is_forwarded: bool = False,
 ) -> AssociationResult:
-    """Return best case link or ambiguous/unlinked (Im Zweifel unverknüpft)."""
+    """Return best case link or ambiguous/unlinked (Im Zweifel unverknüpft).
+
+    Extra evidence kwargs (thread/message/ATS/location/forwarded) are accepted
+    for the PR29 corpus; legacy scoring ignores them until the evidence matcher
+    lands.
+    """
+    _ = (thread_id, message_id, ats_application_id, location_hint, is_forwarded)
     cases_list = list(cases)
     if not cases_list:
         return AssociationResult(None, 0.0, False, reason="no_cases")
