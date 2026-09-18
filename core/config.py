@@ -45,6 +45,9 @@ class LocationConfig:
     # Address text that home_latitude/longitude were geocoded for. When the
     # current home_address no longer matches, persisted coords are discarded.
     home_geocoded_address: str = ""
+    # When True (default), commute radius applies across DE/AT/CH via Haversine.
+    # Toggle off to restrict place resolution to ``country`` only.
+    cross_border_dach: bool = True
 
 
 @dataclass
@@ -345,6 +348,9 @@ class SettingsConfig:
         default_factory=lambda: ["bundesagentur", "indeed"]
     )
     geocoder: str = "nominatim"
+    # DACH cross-border commute (Haversine). Off → resolve only profile country.
+    # Does NOT claim full AT/CH job-board coverage — geography only.
+    cross_border_dach_enabled: bool = True
     cover_letter_template: str = "templates/cover_letter.txt"
     exclude_on_missing_mandatory: bool = False
     automatic_cover_letters: bool = True

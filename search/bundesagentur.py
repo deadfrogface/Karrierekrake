@@ -220,6 +220,7 @@ class BundesagenturSource(JobSource):
                 city=city,
                 postal_code=postal,
                 address=", ".join(address_parts),
+                country_code="DE",  # BA Jobsuche is DE-scoped
                 latitude=float(lat) if lat is not None else None,
                 longitude=float(lon) if lon is not None else None,
                 distance_km=float(distance) if distance is not None else None,

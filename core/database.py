@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     city TEXT,
     postal_code TEXT,
     address TEXT,
+    country_code TEXT DEFAULT '',
     latitude REAL,
     longitude REAL,
     distance_km REAL,
@@ -97,7 +98,11 @@ CREATE TABLE IF NOT EXISTS geocode_cache (
     latitude REAL NOT NULL,
     longitude REAL NOT NULL,
     display_name TEXT,
-    cached_at TEXT
+    cached_at TEXT,
+    data_source TEXT DEFAULT '',
+    data_version TEXT DEFAULT '',
+    country_code TEXT DEFAULT '',
+    resolution_status TEXT DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS source_status (
@@ -232,7 +237,7 @@ class Database:
             #    Do NOT create idx_jobs_run_id here — legacy jobs tables lack run_id.
             conn.executescript(SCHEMA)
 
-            # 2) Migrate older DBs that predate run_id / search_runs / ranking_version.
+            # 2) Migrate older DBs that predate run_id / search_runs / ranking_version / DACH.
             cols = {row[1] for row in conn.execute("PRAGMA table_info(jobs)").fetchall()}
             if "run_id" not in cols:
                 conn.execute("ALTER TABLE jobs ADD COLUMN run_id TEXT DEFAULT ''")
@@ -240,6 +245,34 @@ class Database:
                 conn.execute(
                     "ALTER TABLE jobs ADD COLUMN ranking_version TEXT DEFAULT ''"
                 )
+            if "country_code" not in cols:
+                # Lazy-normalize on enrich; no mass backfill without backup.
+                conn.execute(
+                    "ALTER TABLE jobs ADD COLUMN country_code TEXT DEFAULT ''"
+                )
+
+            # Geocode cache provenance (data_source / version) for DACH invalidation.
+            geo_cols = {
+                row[1]
+                for row in conn.execute("PRAGMA table_info(geocode_cache)").fetchall()
+            }
+            if geo_cols:
+                if "data_source" not in geo_cols:
+                    conn.execute(
+                        "ALTER TABLE geocode_cache ADD COLUMN data_source TEXT DEFAULT ''"
+                    )
+                if "data_version" not in geo_cols:
+                    conn.execute(
+                        "ALTER TABLE geocode_cache ADD COLUMN data_version TEXT DEFAULT ''"
+                    )
+                if "country_code" not in geo_cols:
+                    conn.execute(
+                        "ALTER TABLE geocode_cache ADD COLUMN country_code TEXT DEFAULT ''"
+                    )
+                if "resolution_status" not in geo_cols:
+                    conn.execute(
+                        "ALTER TABLE geocode_cache ADD COLUMN resolution_status TEXT DEFAULT ''"
+                    )
 
             conn.execute(
                 """
@@ -276,18 +309,25 @@ class Database:
         cols = {row[1] for row in conn.execute("PRAGMA table_info(jobs)").fetchall()}
         if "ranking_version" not in cols:
             return
-        conn.execute(
-            """
-            UPDATE jobs
-            SET match_score = 0,
-                match_reasons = '[]',
-                ranking_version = ''
-            WHERE ranking_version IS NOT NULL
-              AND ranking_version != ''
-              AND ranking_version != ?
-            """,
-            (current,),
-        )
+        # Incomplete legacy stubs in tests may lack status/source_job_id — skip safely.
+        required = {"match_score", "match_reasons", "ranking_version"}
+        if not required.issubset(cols):
+            return
+        try:
+            conn.execute(
+                """
+                UPDATE jobs
+                SET match_score = 0,
+                    match_reasons = '[]',
+                    ranking_version = ''
+                WHERE ranking_version IS NOT NULL
+                  AND ranking_version != ''
+                  AND ranking_version != ?
+                """,
+                (current,),
+            )
+        except Exception:
+            return
 
     def recover_interrupted_state(self) -> None:
         """Heal rows left mid-flight after a crash / force-kill."""
@@ -625,37 +665,103 @@ class Database:
         return record.id
 
     def get_geocode(self, query: str) -> tuple[float, float, str, str] | None:
-        """Return (lat, lon, display_name, cached_at) or None."""
+        """Return (lat, lon, display_name, cached_at) or None.
+
+        Extra provenance columns (data_source/version) are available via
+        ``get_geocode_record`` — this tuple shape stays backward compatible.
+        """
+        rec = self.get_geocode_record(query)
+        if not rec:
+            return None
+        return (
+            float(rec["latitude"]),
+            float(rec["longitude"]),
+            rec.get("display_name") or "",
+            rec.get("cached_at") or "",
+        )
+
+    def get_geocode_record(self, query: str) -> dict[str, Any] | None:
+        """Full geocode cache row including data_source / data_version."""
         with self.connection() as conn:
             row = conn.execute(
-                "SELECT latitude, longitude, display_name, cached_at FROM geocode_cache WHERE query = ?",
+                "SELECT * FROM geocode_cache WHERE query = ?",
                 (query.lower().strip(),),
             ).fetchone()
         if not row:
             return None
-        return (
-            float(row["latitude"]),
-            float(row["longitude"]),
-            row["display_name"] or "",
-            row["cached_at"] or "",
-        )
+        keys = row.keys()
+        return {k: row[k] for k in keys}
 
     def set_geocode(
-        self, query: str, latitude: float, longitude: float, display_name: str = ""
+        self,
+        query: str,
+        latitude: float,
+        longitude: float,
+        display_name: str = "",
+        *,
+        data_source: str = "",
+        data_version: str = "",
+        country_code: str = "",
+        resolution_status: str = "",
     ) -> None:
+        status = resolution_status or (
+            "UNKNOWN" if display_name == "__unresolved__" else "RESOLVED"
+        )
         with self.connection() as conn:
-            conn.execute(
-                """
-                INSERT INTO geocode_cache (query, latitude, longitude, display_name, cached_at)
-                VALUES (?, ?, ?, ?, ?)
-                ON CONFLICT(query) DO UPDATE SET
-                    latitude=excluded.latitude,
-                    longitude=excluded.longitude,
-                    display_name=excluded.display_name,
-                    cached_at=excluded.cached_at
-                """,
-                (query.lower().strip(), latitude, longitude, display_name, utc_now_iso()),
-            )
+            # Ensure provenance columns exist (legacy DBs).
+            geo_cols = {
+                row[1]
+                for row in conn.execute("PRAGMA table_info(geocode_cache)").fetchall()
+            }
+            if "data_source" in geo_cols:
+                conn.execute(
+                    """
+                    INSERT INTO geocode_cache (
+                        query, latitude, longitude, display_name, cached_at,
+                        data_source, data_version, country_code, resolution_status
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(query) DO UPDATE SET
+                        latitude=excluded.latitude,
+                        longitude=excluded.longitude,
+                        display_name=excluded.display_name,
+                        cached_at=excluded.cached_at,
+                        data_source=excluded.data_source,
+                        data_version=excluded.data_version,
+                        country_code=excluded.country_code,
+                        resolution_status=excluded.resolution_status
+                    """,
+                    (
+                        query.lower().strip(),
+                        latitude,
+                        longitude,
+                        display_name,
+                        utc_now_iso(),
+                        data_source,
+                        data_version,
+                        country_code,
+                        status,
+                    ),
+                )
+            else:
+                conn.execute(
+                    """
+                    INSERT INTO geocode_cache (query, latitude, longitude, display_name, cached_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(query) DO UPDATE SET
+                        latitude=excluded.latitude,
+                        longitude=excluded.longitude,
+                        display_name=excluded.display_name,
+                        cached_at=excluded.cached_at
+                    """,
+                    (
+                        query.lower().strip(),
+                        latitude,
+                        longitude,
+                        display_name,
+                        utc_now_iso(),
+                    ),
+                )
 
     def set_source_status(
         self, source: str, status: str, message: str = "", jobs_found: int = 0
