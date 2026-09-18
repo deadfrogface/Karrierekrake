@@ -1,0 +1,8 @@
+dry_run: false
+headless: false
+max_applications_per_day: 10
+delay_between_applications_seconds: 45
+automation_paused: false
+run_automatically: false
+legacy_schedule_enabled: false
+legacy_schedule_times: []

@@ -1,0 +1,27 @@
+# Null-ish / missing nested answers from hand-edited YAML.
+first_name: "Iris"
+last_name: "Iota"
+street: null
+postal_code: null
+city: "Bremen"
+country: "DE"
+email: "iris.iota@example.com"
+phone: null
+date_of_birth: null
+driving_license: null
+work_authorization: null
+notice_period: null
+earliest_start_date: null
+salary_expectation: null
+current_employment: null
+education: null
+work_experience: null
+languages: null
+willingness_to_travel: null
+willingness_to_relocate: null
+remote_preference: null
+linkedin_url: null
+portfolio_url: null
+cv_path: null
+field_origins: null
+answers: null

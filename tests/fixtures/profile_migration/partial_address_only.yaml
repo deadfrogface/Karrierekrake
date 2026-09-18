@@ -1,0 +1,30 @@
+# Partial write leftover: only address block filled.
+first_name: ""
+last_name: ""
+street: "Partialstraße 3"
+postal_code: "50667"
+city: "Köln"
+country: "DE"
+email: ""
+phone: ""
+date_of_birth: ""
+driving_license: ""
+work_authorization: ""
+notice_period: ""
+earliest_start_date: ""
+salary_expectation: ""
+current_employment: ""
+education: ""
+work_experience: ""
+languages: ""
+willingness_to_travel: ""
+willingness_to_relocate: ""
+remote_preference: ""
+linkedin_url: ""
+portfolio_url: ""
+cv_path: ""
+field_origins:
+  street: manual
+  postal_code: manual
+  city: manual
+answers: {}

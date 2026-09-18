@@ -344,9 +344,15 @@ class ConfigService:
         }
 
     def reset_to_empty_profile(self, *, clear_search_prefs: bool = False) -> AppConfig:
-        """Persist an empty applicant + qualifications profile after clearing CV files."""
+        """Persist an empty applicant + qualifications profile after clearing CV files.
+
+        Removes: application PII, qualifications, CV files/variants.
+        Keeps (unless ``clear_search_prefs``): search titles/location/filters,
+        settings, job DB, logs. Search prefs are preserved by default (PR22).
+        """
         from core.config import empty_application_profile, empty_qualifications, empty_search_preferences
         from desktop.services.profile_merge import clear_complete_application
+        from desktop.services.profile_patch import PATCH_SCHEMA_VERSION
 
         self.clear_cv_storage()
         cfg = self.load()
@@ -374,4 +380,74 @@ class ConfigService:
             cfg.profile.employment = emp  # keep work-model toggles
             cfg.profile.filters = empty.filters
             _ = (jobs, filt)  # silence unused in clear path
-        return self.save(cfg)
+        saved = self.save(cfg)
+        meta = self.load_meta()
+        meta["profile_patch_schema"] = PATCH_SCHEMA_VERSION
+        self.save_meta(meta)
+        return saved
+
+    def reset_profile_and_documents(self, *, clear_search_prefs: bool = False) -> AppConfig:
+        """Alias: empty profile + delete stored CV/cover documents (same as reset)."""
+        return self.reset_to_empty_profile(clear_search_prefs=clear_search_prefs)
+
+    def delete_all_local_data(self) -> dict[str, Any]:
+        """Remove all local Karrierekrake AppData contents (config, DB, logs, CVs, cache).
+
+        Recreates empty directory skeleton afterwards. Does not touch other users'
+        data or the install directory. Search prefs YAML are deleted with config;
+        next ``load()`` re-bootstraps from ``*.example`` (non-PII defaults only).
+        """
+        import time
+
+        from desktop.services.profile_patch import PATCH_SCHEMA_VERSION
+
+        root = self.dirs["root"]
+        removed: list[str] = []
+        backup_hint = ""
+        # Best-effort snapshot of config before wipe (rollback aid)
+        stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+        backup_dir = root / f".wipe_backup_{stamp}"
+        try:
+            if self.dirs["config"].exists():
+                shutil.copytree(self.dirs["config"], backup_dir / "config", dirs_exist_ok=True)
+                backup_hint = str(backup_dir)
+        except OSError:
+            backup_hint = ""
+
+        for key, path in list(self.dirs.items()):
+            if key == "root":
+                continue
+            if not path.exists():
+                continue
+            try:
+                if path.is_dir():
+                    shutil.rmtree(path)
+                    removed.append(str(path))
+                elif path.is_file():
+                    path.unlink()
+                    removed.append(str(path))
+            except OSError:
+                continue
+        # meta.json lives on root
+        if self.meta_path.exists():
+            try:
+                self.meta_path.unlink()
+                removed.append(str(self.meta_path))
+            except OSError:
+                pass
+
+        # Recreate skeleton + empty-safe bootstrap
+        self.dirs = ensure_app_dirs()
+        self.meta_path = self.dirs["root"] / "meta.json"
+        self._config = None
+        self._bootstrap_from_examples()
+        meta = {
+            "first_run_completed": False,
+            "cv_variants": [],
+            "active_cv_id": "",
+            "profile_patch_schema": PATCH_SCHEMA_VERSION,
+            "last_wipe_at": stamp,
+            "last_wipe_backup": backup_hint,
+        }
+        self.save_meta(meta)
+        return {"removed": removed, "backup": backup_hint, "schema": PATCH_SCHEMA_VERSION}

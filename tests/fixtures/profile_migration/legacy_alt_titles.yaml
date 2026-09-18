@@ -1,0 +1,33 @@
+location:
+  home_address: ""
+  max_distance_km: 20
+  allow_remote_germany: true
+  allow_hybrid: false
+  country: "DE"
+jobs:
+  desired_titles: []
+  alternative_titles:
+    - "Bürohilfe"
+  unwanted_titles: []
+  desired_industries: []
+  excluded_industries: []
+employment:
+  full_time: true
+  part_time: false
+  remote: false
+  hybrid: false
+  onsite: true
+  minimum_salary: null
+qualifications:
+  languages: []
+  education: []
+  work_experience: []
+  certificates: []
+  skills: []
+  software: []
+  driving_license: []
+filters:
+  desired_keywords: []
+  exclusion_keywords: []
+  preferred_companies: []
+  excluded_companies: []

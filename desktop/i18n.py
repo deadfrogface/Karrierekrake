@@ -152,10 +152,34 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.reset": "Profil zurücksetzen",
         "profile.reset_title": "Profil zurücksetzen",
         "profile.reset_cv_only": "Nur CV-Daten löschen",
-        "profile.reset_all": "Komplettes Profil löschen",
-        "profile.reset_confirm_cv": "Alle aus dem Lebenslauf importierten Daten löschen?\nManuell eingegebene Einträge bleiben erhalten.",
-        "profile.reset_confirm_all": "Komplettes Bewerbungsprofil löschen?\nDiese Aktion kann nicht rückgängig gemacht werden.",
+        "profile.reset_all": "Profil + Dokumente löschen",
+        "profile.reset_wipe_all_local": "Alle lokalen Karrierekrake-Daten löschen",
+        "profile.reset_choose_scope": (
+            "Bitte Umfang wählen:\n"
+            "• Nur CV-Daten — importierte Qualifikationen/Felder; manuelle Einträge bleiben.\n"
+            "• Profil + Dokumente — Bewerberdaten, Qualifikationen und gespeicherte CVs. "
+            "Suchwünsche bleiben erhalten.\n"
+            "• Alle lokalen Daten — Config, Job-Datenbank, Logs, CVs und Cache."
+        ),
+        "profile.reset_confirm_cv": (
+            "Alle aus dem Lebenslauf importierten Daten und CV-Dateien löschen?\n"
+            "Manuell eingegebene Einträge bleiben erhalten.\n"
+            "Suchwünsche werden nicht geändert."
+        ),
+        "profile.reset_confirm_all": (
+            "Bewerbungsprofil und gespeicherte Dokumente (CVs) vollständig löschen?\n"
+            "Entfernt: Name, Kontakt, Qualifikationen, Antworten, CV-Dateien.\n"
+            "Bleibt erhalten: Suchwünsche (Titel, Ort, Filter), Einstellungen, Job-Historie.\n"
+            "Diese Aktion kann nicht rückgängig gemacht werden."
+        ),
+        "profile.reset_confirm_wipe_all": (
+            "ALLE lokalen Karrierekrake-Daten löschen?\n"
+            "Entfernt: Profil, Suchwünsche, Einstellungen, Job-Datenbank, Logs, CVs, Cache.\n"
+            "Eine kurze Config-Sicherung wird nach Möglichkeit angelegt.\n"
+            "Diese Aktion kann nicht rückgängig gemacht werden."
+        ),
         "profile.reset_done": "Profil zurückgesetzt.",
+        "profile.reset_wipe_done": "Alle lokalen Karrierekrake-Daten wurden gelöscht.",
         "cv_import.title": "Profil aus Lebenslauf",
         "cv_import.intro": "Erkannte Angaben prüfen. Empfohlen: Profil aus CV ersetzen.",
         "cv_import.mode": "Import-Modus",
@@ -587,10 +611,34 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.reset": "Reset profile",
         "profile.reset_title": "Reset profile",
         "profile.reset_cv_only": "Clear CV-derived data only",
-        "profile.reset_all": "Clear complete profile",
-        "profile.reset_confirm_cv": "Clear all data imported from CVs?\nManually entered entries will be kept.",
-        "profile.reset_confirm_all": "Clear the complete application profile?\nThis cannot be undone.",
+        "profile.reset_all": "Clear profile + documents",
+        "profile.reset_wipe_all_local": "Delete all local Karrierekrake data",
+        "profile.reset_choose_scope": (
+            "Choose a scope:\n"
+            "• CV data only — imported qualifications/fields; manual entries kept.\n"
+            "• Profile + documents — applicant data, qualifications, stored CVs. "
+            "Search preferences kept.\n"
+            "• All local data — config, job database, logs, CVs, and cache."
+        ),
+        "profile.reset_confirm_cv": (
+            "Clear all data imported from CVs and stored CV files?\n"
+            "Manually entered entries will be kept.\n"
+            "Search preferences are not changed."
+        ),
+        "profile.reset_confirm_all": (
+            "Clear the application profile and stored documents (CVs)?\n"
+            "Removes: name, contact, qualifications, answers, CV files.\n"
+            "Keeps: search preferences (titles, location, filters), settings, job history.\n"
+            "This cannot be undone."
+        ),
+        "profile.reset_confirm_wipe_all": (
+            "Delete ALL local Karrierekrake data?\n"
+            "Removes: profile, search preferences, settings, job database, logs, CVs, cache.\n"
+            "A short config backup is created when possible.\n"
+            "This cannot be undone."
+        ),
         "profile.reset_done": "Profile reset.",
+        "profile.reset_wipe_done": "All local Karrierekrake data has been deleted.",
         "cv_import.title": "Import profile from CV",
         "cv_import.intro": "Review detected data. Recommended: replace profile from CV.",
         "cv_import.mode": "Import mode",

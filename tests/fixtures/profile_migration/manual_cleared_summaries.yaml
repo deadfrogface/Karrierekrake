@@ -1,0 +1,34 @@
+# Manual CLEAR already persisted — sync must not refill.
+first_name: "Hanna"
+last_name: "Theta"
+street: ""
+postal_code: ""
+city: "Dresden"
+country: "DE"
+email: "hanna.theta@example.com"
+phone: ""
+date_of_birth: ""
+driving_license: ""
+work_authorization: ""
+notice_period: ""
+earliest_start_date: ""
+salary_expectation: ""
+current_employment: ""
+education: ""
+work_experience: ""
+languages: ""
+willingness_to_travel: ""
+willingness_to_relocate: ""
+remote_preference: ""
+linkedin_url: ""
+portfolio_url: ""
+cv_path: ""
+field_origins:
+  first_name: manual
+  last_name: manual
+  email: manual
+  city: manual
+  languages: manual
+  education: manual
+  driving_license: manual
+answers: {}

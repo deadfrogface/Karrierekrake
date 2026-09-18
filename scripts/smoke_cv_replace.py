@@ -27,7 +27,7 @@ def _apply(cv_path: Path, app: ApplicationProfile, quals: QualificationsConfig):
     plan = plan_personal_import(app, personal_from_parsed(parsed), mode="replace")
     apply_personal_updates(app, plan.updates, source=SOURCE_CV, conflicts=plan.conflicts, conflict_choices={})
     quals = replace_qualifications(quals, incoming)
-    sync_application_summaries(app, quals)
+    sync_application_summaries(app, quals, fill_empty=True)
     return app, quals
 
 

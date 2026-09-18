@@ -89,7 +89,7 @@ def test_repo_has_no_active_jobhuntsaver_identity():
             continue
         if any(
             p in path.parts
-            for p in (".git", ".venv", "__pycache__", "dist", "build", ".pytest_cache")
+            for p in (".git", ".venv", "__pycache__", "dist", "build", ".pytest_cache", ".hypothesis")
         ):
             continue
         if path.resolve() in {p.resolve() for p in allowed}:
@@ -118,7 +118,7 @@ def test_no_wrong_karrierekrake_capitalization():
             continue
         if any(
             p in path.parts
-            for p in (".git", ".venv", "__pycache__", "dist", "build", ".pytest_cache")
+            for p in (".git", ".venv", "__pycache__", "dist", "build", ".pytest_cache", ".hypothesis")
         ):
             continue
         if path.name == "test_product_rename_migration.py":
