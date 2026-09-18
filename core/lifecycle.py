@@ -301,8 +301,25 @@ def seed_event_for_status(status: str) -> str | None:
     return STATUS_TO_SEED_EVENT.get(key)
 
 
-def _event_sort_key(ev: LifecycleEvent) -> tuple[str, str, str]:
-    return (ev.occurred_at or "", ev.recorded_at or "", ev.id or "")
+def _is_synthetic_lifecycle_event(ev: LifecycleEvent) -> bool:
+    """Status seeds / migration backfills are historical placeholders, not live facts."""
+    src = (ev.source or "").strip().lower()
+    if src in {"status_seed", "migration_backfill"}:
+        return True
+    payload = ev.payload or {}
+    return bool(payload.get("seed") or payload.get("backfill"))
+
+
+def _event_sort_key(ev: LifecycleEvent) -> tuple[str, int, str, str]:
+    # On same-second ties (utc_now_iso drops microseconds), UUID order is
+    # non-deterministic: a live MANUAL_OVERRIDE must not lose to a seed
+    # REJECTION_RECEIVED that sorts after it and re-closes the case.
+    return (
+        ev.occurred_at or "",
+        0 if _is_synthetic_lifecycle_event(ev) else 1,
+        ev.recorded_at or "",
+        ev.id or "",
+    )
 
 
 def _dedupe_by_idempotency(events: Sequence[LifecycleEvent]) -> list[LifecycleEvent]:

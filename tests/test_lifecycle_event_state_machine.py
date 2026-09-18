@@ -351,6 +351,45 @@ def test_manual_override_via_set_case_status(db: Database):
     assert LifecycleEventType.MANUAL_OVERRIDE.value in types
 
 
+def test_same_second_seed_does_not_outrank_manual_override():
+    """Regression: second-precision timestamps + UUID sort must not reopen-fail."""
+    ts = "2026-01-01T00:00:00+00:00"
+    seed = LifecycleEvent(
+        event_type=LifecycleEventType.REJECTION_RECEIVED.value,
+        occurred_at=ts,
+        recorded_at=ts,
+        payload={"seed": True, "legacy_status": "rejected"},
+        source="status_seed",
+        id="zzzz-seed-sorts-lexically-last",
+    )
+    override = LifecycleEvent(
+        event_type=LifecycleEventType.MANUAL_OVERRIDE.value,
+        occurred_at=ts,
+        recorded_at=ts,
+        payload={"to": CaseStatus.INTERVIEW.value, "from": CaseStatus.REJECTED.value},
+        source="manual",
+        id="aaaa-override-sorts-lexically-first",
+    )
+    # Insertion / id order must not matter when occurred_at ties.
+    assert project_status([override, seed]) == CaseStatus.INTERVIEW.value
+    assert project_status([seed, override]) == CaseStatus.INTERVIEW.value
+
+
+def test_manual_override_same_second_as_case_created(db: Database, monkeypatch):
+    """DB path: seed + force override in the same UTC second (CI flake class)."""
+    fixed = "2026-09-18T12:00:00+00:00"
+    monkeypatch.setattr("core.database.utc_now_iso", lambda: fixed)
+    monkeypatch.setattr("core.lifecycle.utc_now_iso", lambda: fixed)
+    case = _case(
+        db,
+        status=CaseStatus.REJECTED.value,
+        created_at=fixed,
+        updated_at=fixed,
+    )
+    db.set_case_status(case.id, CaseStatus.INTERVIEW.value, force=True)
+    assert db.get_case(case.id).status == CaseStatus.INTERVIEW.value
+
+
 def test_classifier_maps_to_events_not_blind_status():
     assert (
         email_category_to_lifecycle_event("rejection")
