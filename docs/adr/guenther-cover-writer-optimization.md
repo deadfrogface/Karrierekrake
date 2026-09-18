@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted for development; production promotion pending development + blind gates.
+Accepted architecture; **plateau frozen** below gate — see
+`docs/adr/pr19-cover-writer-plateau-freeze.md`. QUALITY READY = NO until
+joint 99/99/8/safety0 is measured again without lowering targets.
 
 ## Context
 

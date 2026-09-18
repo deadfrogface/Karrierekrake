@@ -1,23 +1,40 @@
 # Günther Cover Letter Specialization
 
-Status: **IN PROGRESS** (development gate not yet passed)
+Status: **FROZEN PLATEAU** (development gate not passed — QUALITY READY = NO)
 
 ## Goal
 
 Specialize Phi-4-mini for German cover letters only:
 
-`Evidence → Verified Plan → Specialized Writer → Safety Verify → Ready`
+`Evidence → Verified Plan → Specialized Writer → Safety Verify → [optional one targeted rewrite] → Ready`
 
-Optional: one targeted rewrite. No generic Critic1 / Revision2 in the production default.
+No generic Critic1 / Revision2 in the production default.
 
-Joint targets: Automation ≥99%, Ready-as-is ≥99%, Cover ≥8.0, Safety = 0.
+Joint targets (LOCKED — must not be lowered for PR #19 optics):
+
+- Automation ≥99%
+- Ready-as-is ≥99%
+- Cover ≥8.0
+- Safety = 0
+
+## PR #19 decision (2026-09-18)
+
+| Flag | Value |
+|------|-------|
+| QUALITY READY | **NO** |
+| MERGE READY | **NO** |
+| PR #19 auto-merge | **NO** |
+| Plateau freeze | **YES** — other product development may continue |
+| Final blind fixture | **NOT created** (dev gate failed) |
+
+Artifact: `benchmark/cover_specialization/pr19_plateau_freeze.json`
 
 ## Locked
 
 - Primary model: Phi-4-mini (`Q4_K_M`, SHA256 `01999f17…c0c2`)
 - Model selection: **closed**
 - Evaluator: frozen under `benchmark/cover_specialization/`
-- Default quality-loop mode: `plan_draft`
+- Default quality-loop mode: `plan_draft` + one targeted rewrite when needed
 
 ## Architecture
 
@@ -27,6 +44,7 @@ Joint targets: Automation ≥99%, Ready-as-is ≥99%, Cover ≥8.0, Safety = 0.
 | Hard-requirement logic | Generic Critic2 / Revision2 |
 | Verified Plan | Unbounded regeneration |
 | Deterministic safety + max-1 safety repair | |
+| One targeted rewrite | Few-shot (K≥2 regresses) |
 | Phi-4-mini primary / Qwen3-1.7B light fallback | |
 
 ## A/B/C/D (verified)
@@ -40,32 +58,7 @@ Joint targets: Automation ≥99%, Ready-as-is ≥99%, Cover ≥8.0, Safety = 0.
 
 Conclusion: Plan helps automation; generic critic/rev2 do not help.
 
-## Plan+Draft failure audit (6 eligible)
-
-| Category | Count |
-|----------|-------|
-| PLAN_FALSE_BLOCK (SCHEMA_INVALID) | 2 |
-| VALIDATOR_FALSE_POSITIVE | 3 |
-| WRITER_UNSUPPORTED_CLAIM | 1 |
-
-Targeted fixes applied (schema retry, claim/grounding FPs, IHK span, employer mis-tag, do_not_claim cleanup). Safety for true inventions (e.g. CISSP) remains blocking.
-
-## Tooling
-
-- `tools/cover_opt/` — DSPy Phi adapter, metric, cache/resume, runners
-- DSPy `3.3.1` in `requirements-dev.txt` only (not runtime)
-- Cache key: case+plan+prompt+demos+model+gen+evaluator hashes
-
-## LoRA
-
-Only if prompt/few-shot/targeted-rewrite plateau below 99/99. GPU required; otherwise `BLOCKED_NO_SUITABLE_GPU` with prepared scripts.
-
-## Merge
-
-Human merges PR #19 only when `QUALITY READY = YES` and `MERGE READY = YES`.
-
-
-## Development gate result (plan_draft_v2)
+## Frozen development gate (plan_draft_v2)
 
 | Metric | Value | Target |
 |--------|-------|--------|
@@ -75,8 +68,15 @@ Human merges PR #19 only when `QUALITY READY = YES` and `MERGE READY = YES`.
 | Cover raw | 7.68 | ≥8.0 |
 | Safety | 0 | 0 |
 
-GEPA: base_v2 wins probe (100/93.75); mutants regress.
-Few-shot: K=2 collapses (keep K=0).
-Targeted rewrite: see `targeted_rewrite_results.json`.
-LoRA: REQUIRED but BLOCKED_NO_SUITABLE_GPU (+ insufficient gold <300).
-QUALITY READY: NO. MERGE READY: NO.
+GEPA: base_v2 wins probe; mutants regress. Few-shot K=2 collapses (keep K=0).
+Targeted rewrite kept experimentally. LoRA required but `BLOCKED_NO_SUITABLE_GPU`.
+
+## Next blocker
+
+Cover-only LoRA/QLoRA on a suitable NVIDIA GPU with ≥300 fictional SFT examples,
+then re-measure the full development gate **before** any new blind fixture.
+
+## Merge
+
+Human merges PR #19 only when `QUALITY READY = YES` and `MERGE READY = YES`.
+Do **not** lower targets to force a merge.

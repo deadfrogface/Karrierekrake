@@ -1,0 +1,56 @@
+{
+  "decision": "PR19_COVER_WRITER_PLATEAU_FREEZE",
+  "frozen_at_utc": "2026-09-18T02:11:00Z",
+  "branch": "cursor/guenther-local-ai-megapass-d85b",
+  "pr": 19,
+  "head_at_freeze": "8475a60dc0c0663fecfa40d001f777081d582b2a",
+  "primary_model": "phi4-mini",
+  "model_selection_reopened": false,
+  "quality_ready": false,
+  "merge_ready": false,
+  "pr19_merged": false,
+  "targets_locked": {
+    "eligible_safe_automation_pct": 99.0,
+    "ready_as_is_pct": 99.0,
+    "cover_raw_avg": 8.0,
+    "accepted_safety_failures": 0,
+    "may_not_be_lowered_to_make_pr19_look_better": true
+  },
+  "frozen_development_gate": {
+    "config": "plan_draft_v2",
+    "eligible_safe_n": 94,
+    "eligible_safe_automation_pct": 93.62,
+    "ready_as_is_pct": 84.04,
+    "balanced_rate": 84.04,
+    "cover_raw_avg": 7.68,
+    "cover_accepted_avg": 7.839,
+    "safety_failures_accepted": 0,
+    "avg_model_calls": 2.1,
+    "avg_writer_calls": 1.1,
+    "source": "benchmark/cover_specialization/full_development_results.json"
+  },
+  "architecture_frozen": {
+    "default_quality_loop_mode": "plan_draft",
+    "critic1_default": "REMOVED",
+    "revision2_default": "REMOVED",
+    "targeted_rewrite": "KEPT",
+    "few_shot": "NOT_KEPT",
+    "evaluator": "frozen_v1",
+    "phi_gguf_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2"
+  },
+  "plateau": {
+    "prompt_optimization": "COMPLETE",
+    "gepa": "COMPLETE_BASE_V2_WINS",
+    "few_shot": "TESTED_K2_REGRESSED",
+    "targeted_rewrite": "KEPT_BUT_BELOW_99",
+    "lora_required": true,
+    "lora_training_status": "BLOCKED_NO_SUITABLE_GPU"
+  },
+  "product_development": {
+    "may_continue_other_work": true,
+    "may_not_claim_cover_99_gate_passed": true,
+    "may_not_create_final_blind_until_dev_gate_pass": true,
+    "may_not_auto_merge_pr19": true
+  },
+  "next_blocker": "Cover-only LoRA/QLoRA on suitable NVIDIA GPU with >=300 fictional SFT examples; then re-measure full development gate before any new blind fixture."
+}
