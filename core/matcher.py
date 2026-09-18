@@ -16,6 +16,8 @@ from typing import Any, Literal
 
 from core.config import AppConfig, LanguageEntry
 from core.hard_filter import hard_exclude
+from core.intent_aliases import ranking_version_token
+from core.intent_filter import apply_search_intent
 from core.models import Job, MatchResult, RemoteType
 from core.salary import job_annual_salary, meets_minimum
 from core.text_normalize import clean_text
@@ -322,23 +324,51 @@ def score_job(job: Job, config: AppConfig, already_applied: bool = False) -> Mat
             excluded=True,
             exclude_reason=exclude,
             evidence=[],
+            ranking_version=ranking_version_token(),
         )
 
     profile = config.profile
+    intent = getattr(profile, "search_intent", None)
+    intent_result = apply_search_intent(job, intent)
+    # Hard SearchIntent gates — ranking must NEVER resurrect excluded jobs.
+    if intent_result.excluded:
+        return MatchResult(
+            score=0,
+            match_reasons=[],
+            rejection_reasons=list(intent_result.why_excluded)
+            or [intent_result.exclude_reason or "filtered by search intent"],
+            excluded=True,
+            exclude_reason=intent_result.exclude_reason,
+            evidence=[],
+            ranking_version=intent_result.ranking_version,
+            intent_explanation=intent_result.to_dict(),
+        )
+
     quals = profile.qualifications
     reasons: list[str] = []
     issues: list[str] = []
     evidence: list[MatchEvidence] = []
     score = 0
+    if intent_result.why_shown:
+        reasons.extend(intent_result.why_shown)
 
     title_l = _norm(clean_text(job.title))
     desc_l = _norm(clean_text(job.description))
     combined = f"{title_l} {desc_l}"
     profile_blob = _profile_experience_blob(quals)
 
-    # Soft-migrate: desired titles only (alternative_titles folded at load).
-    desired = list(profile.jobs.desired_titles or [])
+    # Prefer SearchIntent target_roles when set; else legacy desired_titles.
+    intent_titles: list[str] = []
+    if intent is not None and not intent.is_empty():
+        intent_titles = list(intent.target_roles or []) + list(intent.required_roles or [])
+    desired = list(intent_titles) if intent_titles else list(profile.jobs.desired_titles or [])
     legacy_alt = list(getattr(profile.jobs, "alternative_titles", None) or [])
+    # STRICT: profile must not inject new role families via alternative_titles.
+    if intent is not None and getattr(intent, "strictness", None) is not None:
+        from core.search_intent import Strictness
+
+        if intent.strictness is Strictness.STRICT:
+            legacy_alt = []
     all_titles = list(dict.fromkeys([*desired, *legacy_alt]))
 
     # Title match (0-30)
@@ -675,6 +705,15 @@ def score_job(job: Job, config: AppConfig, already_applied: bool = False) -> Mat
             reasons.append(f"Bevorzugtes Unternehmen: {company}")
             break
 
+    # Soft intent preferred-skill boost (included jobs only; never resurrects).
+    if intent is not None and not intent.is_empty() and intent_result.included:
+        from core.intent_aliases import text_has_solid_skill
+
+        for skill in intent.preferred_skills or []:
+            if text_has_solid_skill(combined, skill) or _token_in_text(skill, combined):
+                score = min(100, score + 3)
+                reasons.append(f"✓ preferred skill: {skill}")
+
     score = max(0, min(100, score))
     # Deduplicate reason strings while preserving order
     reasons = list(dict.fromkeys(reasons))
@@ -683,6 +722,8 @@ def score_job(job: Job, config: AppConfig, already_applied: bool = False) -> Mat
         match_reasons=reasons,
         rejection_reasons=issues,
         evidence=[e.to_dict() for e in evidence],
+        ranking_version=intent_result.ranking_version or ranking_version_token(),
+        intent_explanation=intent_result.to_dict() if intent_result.why_shown or intent_result.criteria else {},
     )
 
 

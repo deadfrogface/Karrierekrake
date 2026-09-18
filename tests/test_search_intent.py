@@ -415,7 +415,7 @@ def test_tester_b_sap_mandatory_skill():
     intent = golden_tester_b_sap_mandatory()
     assert intent.mandatory_skills == ["SAP"]
     assert intent.strictness is Strictness.STRICT
-    # PR23 will FILTERED_OUT jobs without SAP — domain only asserts persistence.
+    # PR23 intent_filter FILTERED_OUT jobs without solid SAP.
     dumped = intent.model_dump(mode="json")
     assert dumped["mandatory_skills"] == ["SAP"]
 

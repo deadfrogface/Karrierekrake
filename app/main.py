@@ -432,6 +432,7 @@ def run_pipeline(
         job.match_score = result.score
         job.match_reasons = result.match_reasons
         job.rejection_reasons = result.rejection_reasons
+        job.ranking_version = getattr(result, "ranking_version", "") or ""
         if result.excluded:
             if result.exclude_reason and "km" in (result.exclude_reason or ""):
                 outside += 1
