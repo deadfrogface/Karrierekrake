@@ -1,0 +1,4158 @@
+{
+  "schema_version": 1,
+  "description": "Synthetic recruiting contact discovery corpus (PR25)",
+  "positives": [
+    {
+      "id": "pos_text_000",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/0",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 0</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Mira Vogel, Recruiterin —\n       mira.vogel@firma0.example.com, Tel. +49 30 1000000</p>\n    </body></html>",
+      "text": "Ansprechpartner: Mira Vogel — mira.vogel@firma0.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Mira Vogel",
+        "email": "mira.vogel@firma0.example.com"
+      }
+    },
+    {
+      "id": "pos_text_001",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/1",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 1</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Tobias Keller, Recruiter —\n       tobias.keller@firma1.example.com, Tel. +49 30 1000001</p>\n    </body></html>",
+      "text": "Ansprechpartner: Tobias Keller — tobias.keller@firma1.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tobias Keller",
+        "email": "tobias.keller@firma1.example.com"
+      }
+    },
+    {
+      "id": "pos_text_002",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/2",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 2</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Lena Richter, Talent Acquisition —\n       lena.richter@firma2.example.com, Tel. +49 30 1000002</p>\n    </body></html>",
+      "text": "Ansprechpartner: Lena Richter — lena.richter@firma2.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lena Richter",
+        "email": "lena.richter@firma2.example.com"
+      }
+    },
+    {
+      "id": "pos_text_003",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/3",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 3</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Jonas Stein, HR-Managerin —\n       jonas.stein@firma3.example.com, Tel. +49 30 1000003</p>\n    </body></html>",
+      "text": "Ansprechpartner: Jonas Stein — jonas.stein@firma3.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Jonas Stein",
+        "email": "jonas.stein@firma3.example.com"
+      }
+    },
+    {
+      "id": "pos_text_004",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/4",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 4</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Clara Brandt, Personalreferent —\n       clara.brandt@firma4.example.com, Tel. +49 30 1000004</p>\n    </body></html>",
+      "text": "Ansprechpartner: Clara Brandt — clara.brandt@firma4.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Clara Brandt",
+        "email": "clara.brandt@firma4.example.com"
+      }
+    },
+    {
+      "id": "pos_text_005",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/5",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 5</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Erik Neumann, Hiring Manager —\n       erik.neumann@firma5.example.com, Tel. +49 30 1000005</p>\n    </body></html>",
+      "text": "Ansprechpartner: Erik Neumann — erik.neumann@firma5.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Erik Neumann",
+        "email": "erik.neumann@firma5.example.com"
+      }
+    },
+    {
+      "id": "pos_text_006",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/6",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 6</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Nora Krüger, Ansprechpartner —\n       nora.krueger@firma6.example.com, Tel. +49 30 1000006</p>\n    </body></html>",
+      "text": "Ansprechpartner: Nora Krüger — nora.krueger@firma6.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nora Krüger",
+        "email": "nora.krueger@firma6.example.com"
+      }
+    },
+    {
+      "id": "pos_text_007",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/7",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 7</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Paul Hoffmann, Recruiterin —\n       paul.hoffmann@firma7.example.com, Tel. +49 30 1000007</p>\n    </body></html>",
+      "text": "Ansprechpartner: Paul Hoffmann — paul.hoffmann@firma7.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Paul Hoffmann",
+        "email": "paul.hoffmann@firma7.example.com"
+      }
+    },
+    {
+      "id": "pos_text_008",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/8",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 8</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Sina Schäfer, Recruiter —\n       sina.schaefer@firma8.example.com, Tel. +49 30 1000008</p>\n    </body></html>",
+      "text": "Ansprechpartner: Sina Schäfer — sina.schaefer@firma8.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sina Schäfer",
+        "email": "sina.schaefer@firma8.example.com"
+      }
+    },
+    {
+      "id": "pos_text_009",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/9",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 9</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Marc Weber, Talent Acquisition —\n       marc.weber@firma9.example.com, Tel. +49 30 1000009</p>\n    </body></html>",
+      "text": "Ansprechpartner: Marc Weber — marc.weber@firma9.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Marc Weber",
+        "email": "marc.weber@firma9.example.com"
+      }
+    },
+    {
+      "id": "pos_text_010",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/10",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 10</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Julia Fischer, HR-Managerin —\n       julia.fischer@firma10.example.com, Tel. +49 30 1000010</p>\n    </body></html>",
+      "text": "Ansprechpartner: Julia Fischer — julia.fischer@firma10.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Julia Fischer",
+        "email": "julia.fischer@firma10.example.com"
+      }
+    },
+    {
+      "id": "pos_text_011",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/11",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 11</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Omar Becker, Personalreferent —\n       omar.becker@firma11.example.com, Tel. +49 30 1000011</p>\n    </body></html>",
+      "text": "Ansprechpartner: Omar Becker — omar.becker@firma11.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Omar Becker",
+        "email": "omar.becker@firma11.example.com"
+      }
+    },
+    {
+      "id": "pos_text_012",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/12",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 12</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Greta Schulz, Hiring Manager —\n       greta.schulz@firma12.example.com, Tel. +49 30 1000012</p>\n    </body></html>",
+      "text": "Ansprechpartner: Greta Schulz — greta.schulz@firma12.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Greta Schulz",
+        "email": "greta.schulz@firma12.example.com"
+      }
+    },
+    {
+      "id": "pos_text_013",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/13",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 13</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Felix Wagner, Ansprechpartner —\n       felix.wagner@firma13.example.com, Tel. +49 30 1000013</p>\n    </body></html>",
+      "text": "Ansprechpartner: Felix Wagner — felix.wagner@firma13.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Felix Wagner",
+        "email": "felix.wagner@firma13.example.com"
+      }
+    },
+    {
+      "id": "pos_text_014",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/14",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 14</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Ayla Koch, Recruiterin —\n       ayla.koch@firma14.example.com, Tel. +49 30 1000014</p>\n    </body></html>",
+      "text": "Ansprechpartner: Ayla Koch — ayla.koch@firma14.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ayla Koch",
+        "email": "ayla.koch@firma14.example.com"
+      }
+    },
+    {
+      "id": "pos_text_015",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/15",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 15</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Ben Bauer, Recruiter —\n       ben.bauer@firma15.example.com, Tel. +49 30 1000015</p>\n    </body></html>",
+      "text": "Ansprechpartner: Ben Bauer — ben.bauer@firma15.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ben Bauer",
+        "email": "ben.bauer@firma15.example.com"
+      }
+    },
+    {
+      "id": "pos_text_016",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/16",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 16</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Dana Schröder, Talent Acquisition —\n       dana.schroeder@firma16.example.com, Tel. +49 30 1000016</p>\n    </body></html>",
+      "text": "Ansprechpartner: Dana Schröder — dana.schroeder@firma16.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Dana Schröder",
+        "email": "dana.schroeder@firma16.example.com"
+      }
+    },
+    {
+      "id": "pos_text_017",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/17",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 17</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Hugo Klein, HR-Managerin —\n       hugo.klein@firma17.example.com, Tel. +49 30 1000017</p>\n    </body></html>",
+      "text": "Ansprechpartner: Hugo Klein — hugo.klein@firma17.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Hugo Klein",
+        "email": "hugo.klein@firma17.example.com"
+      }
+    },
+    {
+      "id": "pos_text_018",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/18",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 18</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Iris Wolf, Personalreferent —\n       iris.wolf@firma18.example.com, Tel. +49 30 1000018</p>\n    </body></html>",
+      "text": "Ansprechpartner: Iris Wolf — iris.wolf@firma18.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Iris Wolf",
+        "email": "iris.wolf@firma18.example.com"
+      }
+    },
+    {
+      "id": "pos_text_019",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/19",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 19</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Kai Schrader, Hiring Manager —\n       kai.schrader@firma19.example.com, Tel. +49 30 1000019</p>\n    </body></html>",
+      "text": "Ansprechpartner: Kai Schrader — kai.schrader@firma19.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Kai Schrader",
+        "email": "kai.schrader@firma19.example.com"
+      }
+    },
+    {
+      "id": "pos_text_020",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/20",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 20</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Lara Vogel, Ansprechpartner —\n       lara.vogel@firma20.example.com, Tel. +49 30 1000020</p>\n    </body></html>",
+      "text": "Ansprechpartner: Lara Vogel — lara.vogel@firma20.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lara Vogel",
+        "email": "lara.vogel@firma20.example.com"
+      }
+    },
+    {
+      "id": "pos_text_021",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/21",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 21</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Nils Keller, Recruiterin —\n       nils.keller@firma21.example.com, Tel. +49 30 1000021</p>\n    </body></html>",
+      "text": "Ansprechpartner: Nils Keller — nils.keller@firma21.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nils Keller",
+        "email": "nils.keller@firma21.example.com"
+      }
+    },
+    {
+      "id": "pos_text_022",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/22",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 22</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Pia Richter, Recruiter —\n       pia.richter@firma22.example.com, Tel. +49 30 1000022</p>\n    </body></html>",
+      "text": "Ansprechpartner: Pia Richter — pia.richter@firma22.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Pia Richter",
+        "email": "pia.richter@firma22.example.com"
+      }
+    },
+    {
+      "id": "pos_text_023",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/23",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 23</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Quinn Stein, Talent Acquisition —\n       quinn.stein@firma23.example.com, Tel. +49 30 1000023</p>\n    </body></html>",
+      "text": "Ansprechpartner: Quinn Stein — quinn.stein@firma23.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Quinn Stein",
+        "email": "quinn.stein@firma23.example.com"
+      }
+    },
+    {
+      "id": "pos_text_024",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/24",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 24</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Rita Brandt, HR-Managerin —\n       rita.brandt@firma24.example.com, Tel. +49 30 1000024</p>\n    </body></html>",
+      "text": "Ansprechpartner: Rita Brandt — rita.brandt@firma24.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Rita Brandt",
+        "email": "rita.brandt@firma24.example.com"
+      }
+    },
+    {
+      "id": "pos_text_025",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/25",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 25</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Sven Neumann, Personalreferent —\n       sven.neumann@firma25.example.com, Tel. +49 30 1000025</p>\n    </body></html>",
+      "text": "Ansprechpartner: Sven Neumann — sven.neumann@firma25.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sven Neumann",
+        "email": "sven.neumann@firma25.example.com"
+      }
+    },
+    {
+      "id": "pos_text_026",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/26",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 26</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Tara Krüger, Hiring Manager —\n       tara.krueger@firma26.example.com, Tel. +49 30 1000026</p>\n    </body></html>",
+      "text": "Ansprechpartner: Tara Krüger — tara.krueger@firma26.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tara Krüger",
+        "email": "tara.krueger@firma26.example.com"
+      }
+    },
+    {
+      "id": "pos_text_027",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/27",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 27</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Ulf Hoffmann, Ansprechpartner —\n       ulf.hoffmann@firma27.example.com, Tel. +49 30 1000027</p>\n    </body></html>",
+      "text": "Ansprechpartner: Ulf Hoffmann — ulf.hoffmann@firma27.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ulf Hoffmann",
+        "email": "ulf.hoffmann@firma27.example.com"
+      }
+    },
+    {
+      "id": "pos_text_028",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/28",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 28</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Vera Schäfer, Recruiterin —\n       vera.schaefer@firma28.example.com, Tel. +49 30 1000028</p>\n    </body></html>",
+      "text": "Ansprechpartner: Vera Schäfer — vera.schaefer@firma28.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Vera Schäfer",
+        "email": "vera.schaefer@firma28.example.com"
+      }
+    },
+    {
+      "id": "pos_text_029",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/29",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 29</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Willi Weber, Recruiter —\n       willi.weber@firma29.example.com, Tel. +49 30 1000029</p>\n    </body></html>",
+      "text": "Ansprechpartner: Willi Weber — willi.weber@firma29.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Willi Weber",
+        "email": "willi.weber@firma29.example.com"
+      }
+    },
+    {
+      "id": "pos_text_030",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/30",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 30</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Mira Fischer, Talent Acquisition —\n       mira.fischer@firma30.example.com, Tel. +49 30 1000030</p>\n    </body></html>",
+      "text": "Ansprechpartner: Mira Fischer — mira.fischer@firma30.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Mira Fischer",
+        "email": "mira.fischer@firma30.example.com"
+      }
+    },
+    {
+      "id": "pos_text_031",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/31",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 31</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Tobias Becker, HR-Managerin —\n       tobias.becker@firma31.example.com, Tel. +49 30 1000031</p>\n    </body></html>",
+      "text": "Ansprechpartner: Tobias Becker — tobias.becker@firma31.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tobias Becker",
+        "email": "tobias.becker@firma31.example.com"
+      }
+    },
+    {
+      "id": "pos_text_032",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/32",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 32</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Lena Schulz, Personalreferent —\n       lena.schulz@firma32.example.com, Tel. +49 30 1000032</p>\n    </body></html>",
+      "text": "Ansprechpartner: Lena Schulz — lena.schulz@firma32.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lena Schulz",
+        "email": "lena.schulz@firma32.example.com"
+      }
+    },
+    {
+      "id": "pos_text_033",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/33",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 33</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Jonas Wagner, Hiring Manager —\n       jonas.wagner@firma33.example.com, Tel. +49 30 1000033</p>\n    </body></html>",
+      "text": "Ansprechpartner: Jonas Wagner — jonas.wagner@firma33.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Jonas Wagner",
+        "email": "jonas.wagner@firma33.example.com"
+      }
+    },
+    {
+      "id": "pos_text_034",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/34",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 34</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Clara Koch, Ansprechpartner —\n       clara.koch@firma34.example.com, Tel. +49 30 1000034</p>\n    </body></html>",
+      "text": "Ansprechpartner: Clara Koch — clara.koch@firma34.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Clara Koch",
+        "email": "clara.koch@firma34.example.com"
+      }
+    },
+    {
+      "id": "pos_text_035",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/35",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 35</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Erik Bauer, Recruiterin —\n       erik.bauer@firma35.example.com, Tel. +49 30 1000035</p>\n    </body></html>",
+      "text": "Ansprechpartner: Erik Bauer — erik.bauer@firma35.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Erik Bauer",
+        "email": "erik.bauer@firma35.example.com"
+      }
+    },
+    {
+      "id": "pos_text_036",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/36",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 36</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Nora Schröder, Recruiter —\n       nora.schroeder@firma36.example.com, Tel. +49 30 1000036</p>\n    </body></html>",
+      "text": "Ansprechpartner: Nora Schröder — nora.schroeder@firma36.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nora Schröder",
+        "email": "nora.schroeder@firma36.example.com"
+      }
+    },
+    {
+      "id": "pos_text_037",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/37",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 37</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Paul Klein, Talent Acquisition —\n       paul.klein@firma37.example.com, Tel. +49 30 1000037</p>\n    </body></html>",
+      "text": "Ansprechpartner: Paul Klein — paul.klein@firma37.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Paul Klein",
+        "email": "paul.klein@firma37.example.com"
+      }
+    },
+    {
+      "id": "pos_text_038",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/38",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 38</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Sina Wolf, HR-Managerin —\n       sina.wolf@firma38.example.com, Tel. +49 30 1000038</p>\n    </body></html>",
+      "text": "Ansprechpartner: Sina Wolf — sina.wolf@firma38.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sina Wolf",
+        "email": "sina.wolf@firma38.example.com"
+      }
+    },
+    {
+      "id": "pos_text_039",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/39",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 39</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Marc Schrader, Personalreferent —\n       marc.schrader@firma39.example.com, Tel. +49 30 1000039</p>\n    </body></html>",
+      "text": "Ansprechpartner: Marc Schrader — marc.schrader@firma39.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Marc Schrader",
+        "email": "marc.schrader@firma39.example.com"
+      }
+    },
+    {
+      "id": "pos_text_040",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/40",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 40</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Julia Vogel, Hiring Manager —\n       julia.vogel@firma0.example.com, Tel. +49 30 1000040</p>\n    </body></html>",
+      "text": "Ansprechpartner: Julia Vogel — julia.vogel@firma0.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Julia Vogel",
+        "email": "julia.vogel@firma0.example.com"
+      }
+    },
+    {
+      "id": "pos_text_041",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/41",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 41</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Omar Keller, Ansprechpartner —\n       omar.keller@firma1.example.com, Tel. +49 30 1000041</p>\n    </body></html>",
+      "text": "Ansprechpartner: Omar Keller — omar.keller@firma1.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Omar Keller",
+        "email": "omar.keller@firma1.example.com"
+      }
+    },
+    {
+      "id": "pos_text_042",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/42",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 42</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Greta Richter, Recruiterin —\n       greta.richter@firma2.example.com, Tel. +49 30 1000042</p>\n    </body></html>",
+      "text": "Ansprechpartner: Greta Richter — greta.richter@firma2.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Greta Richter",
+        "email": "greta.richter@firma2.example.com"
+      }
+    },
+    {
+      "id": "pos_text_043",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/43",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 43</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Felix Stein, Recruiter —\n       felix.stein@firma3.example.com, Tel. +49 30 1000043</p>\n    </body></html>",
+      "text": "Ansprechpartner: Felix Stein — felix.stein@firma3.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Felix Stein",
+        "email": "felix.stein@firma3.example.com"
+      }
+    },
+    {
+      "id": "pos_text_044",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/44",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 44</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Ayla Brandt, Talent Acquisition —\n       ayla.brandt@firma4.example.com, Tel. +49 30 1000044</p>\n    </body></html>",
+      "text": "Ansprechpartner: Ayla Brandt — ayla.brandt@firma4.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ayla Brandt",
+        "email": "ayla.brandt@firma4.example.com"
+      }
+    },
+    {
+      "id": "pos_text_045",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/45",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 45</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Ben Neumann, HR-Managerin —\n       ben.neumann@firma5.example.com, Tel. +49 30 1000045</p>\n    </body></html>",
+      "text": "Ansprechpartner: Ben Neumann — ben.neumann@firma5.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ben Neumann",
+        "email": "ben.neumann@firma5.example.com"
+      }
+    },
+    {
+      "id": "pos_text_046",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/46",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 46</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Dana Krüger, Personalreferent —\n       dana.krueger@firma6.example.com, Tel. +49 30 1000046</p>\n    </body></html>",
+      "text": "Ansprechpartner: Dana Krüger — dana.krueger@firma6.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Dana Krüger",
+        "email": "dana.krueger@firma6.example.com"
+      }
+    },
+    {
+      "id": "pos_text_047",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/47",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 47</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Hugo Hoffmann, Hiring Manager —\n       hugo.hoffmann@firma7.example.com, Tel. +49 30 1000047</p>\n    </body></html>",
+      "text": "Ansprechpartner: Hugo Hoffmann — hugo.hoffmann@firma7.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Hugo Hoffmann",
+        "email": "hugo.hoffmann@firma7.example.com"
+      }
+    },
+    {
+      "id": "pos_text_048",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/48",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 48</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Iris Schäfer, Ansprechpartner —\n       iris.schaefer@firma8.example.com, Tel. +49 30 1000048</p>\n    </body></html>",
+      "text": "Ansprechpartner: Iris Schäfer — iris.schaefer@firma8.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Iris Schäfer",
+        "email": "iris.schaefer@firma8.example.com"
+      }
+    },
+    {
+      "id": "pos_text_049",
+      "kind": "positive",
+      "variant": "job_posting_text",
+      "source_url": "https://jobs.example.com/text/49",
+      "html": "<!DOCTYPE html><html><body>\n    <h1>Stellenanzeige 49</h1>\n    <p>Wir suchen Verstärkung im Team.</p>\n    <p>Ansprechpartnerin: Kai Weber, Recruiterin —\n       kai.weber@firma9.example.com, Tel. +49 30 1000049</p>\n    </body></html>",
+      "text": "Ansprechpartner: Kai Weber — kai.weber@firma9.example.com",
+      "expect": {
+        "status": "FOUND",
+        "name": "Kai Weber",
+        "email": "kai.weber@firma9.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_000",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/0",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 0\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 0\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Lara Fischer\", \"email\": \"lara.fischer@firma10.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000050\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lara Fischer",
+        "email": "lara.fischer@firma10.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_001",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/1",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 1\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 1\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Nils Becker\", \"email\": \"nils.becker@firma11.example.com\", \"contactType\": \"Talent Acquisition\", \"telephone\": \"+49 30 1000051\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nils Becker",
+        "email": "nils.becker@firma11.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_002",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/2",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 2\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 2\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Pia Schulz\", \"email\": \"pia.schulz@firma12.example.com\", \"contactType\": \"HR-Managerin\", \"telephone\": \"+49 30 1000052\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Pia Schulz",
+        "email": "pia.schulz@firma12.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_003",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/3",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 3\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 3\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Quinn Wagner\", \"email\": \"quinn.wagner@firma13.example.com\", \"contactType\": \"Personalreferent\", \"telephone\": \"+49 30 1000053\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Quinn Wagner",
+        "email": "quinn.wagner@firma13.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_004",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/4",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 4\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 4\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Rita Koch\", \"email\": \"rita.koch@firma14.example.com\", \"contactType\": \"Hiring Manager\", \"telephone\": \"+49 30 1000054\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Rita Koch",
+        "email": "rita.koch@firma14.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_005",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/5",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 5\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 5\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Sven Bauer\", \"email\": \"sven.bauer@firma15.example.com\", \"contactType\": \"Ansprechpartner\", \"telephone\": \"+49 30 1000055\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sven Bauer",
+        "email": "sven.bauer@firma15.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_006",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/6",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 6\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 6\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Tara Schröder\", \"email\": \"tara.schroeder@firma16.example.com\", \"contactType\": \"Recruiterin\", \"telephone\": \"+49 30 1000056\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tara Schröder",
+        "email": "tara.schroeder@firma16.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_007",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/7",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 7\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 7\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Ulf Klein\", \"email\": \"ulf.klein@firma17.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000057\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ulf Klein",
+        "email": "ulf.klein@firma17.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_008",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/8",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 8\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 8\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Vera Wolf\", \"email\": \"vera.wolf@firma18.example.com\", \"contactType\": \"Talent Acquisition\", \"telephone\": \"+49 30 1000058\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Vera Wolf",
+        "email": "vera.wolf@firma18.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_009",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/9",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 9\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 9\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Willi Schrader\", \"email\": \"willi.schrader@firma19.example.com\", \"contactType\": \"HR-Managerin\", \"telephone\": \"+49 30 1000059\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Willi Schrader",
+        "email": "willi.schrader@firma19.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_010",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/10",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 10\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 10\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Mira Vogel\", \"email\": \"mira.vogel@firma20.example.com\", \"contactType\": \"Personalreferent\", \"telephone\": \"+49 30 1000060\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Mira Vogel",
+        "email": "mira.vogel@firma20.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_011",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/11",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 11\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 11\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Tobias Keller\", \"email\": \"tobias.keller@firma21.example.com\", \"contactType\": \"Hiring Manager\", \"telephone\": \"+49 30 1000061\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tobias Keller",
+        "email": "tobias.keller@firma21.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_012",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/12",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 12\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 12\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Lena Richter\", \"email\": \"lena.richter@firma22.example.com\", \"contactType\": \"Ansprechpartner\", \"telephone\": \"+49 30 1000062\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lena Richter",
+        "email": "lena.richter@firma22.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_013",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/13",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 13\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 13\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Jonas Stein\", \"email\": \"jonas.stein@firma23.example.com\", \"contactType\": \"Recruiterin\", \"telephone\": \"+49 30 1000063\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Jonas Stein",
+        "email": "jonas.stein@firma23.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_014",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/14",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 14\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 14\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Clara Brandt\", \"email\": \"clara.brandt@firma24.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000064\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Clara Brandt",
+        "email": "clara.brandt@firma24.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_015",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/15",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 15\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 15\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Erik Neumann\", \"email\": \"erik.neumann@firma25.example.com\", \"contactType\": \"Talent Acquisition\", \"telephone\": \"+49 30 1000065\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Erik Neumann",
+        "email": "erik.neumann@firma25.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_016",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/16",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 16\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 16\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Nora Krüger\", \"email\": \"nora.krueger@firma26.example.com\", \"contactType\": \"HR-Managerin\", \"telephone\": \"+49 30 1000066\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nora Krüger",
+        "email": "nora.krueger@firma26.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_017",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/17",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 17\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 17\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Paul Hoffmann\", \"email\": \"paul.hoffmann@firma27.example.com\", \"contactType\": \"Personalreferent\", \"telephone\": \"+49 30 1000067\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Paul Hoffmann",
+        "email": "paul.hoffmann@firma27.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_018",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/18",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 18\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 18\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Sina Schäfer\", \"email\": \"sina.schaefer@firma28.example.com\", \"contactType\": \"Hiring Manager\", \"telephone\": \"+49 30 1000068\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sina Schäfer",
+        "email": "sina.schaefer@firma28.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_019",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/19",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 19\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 19\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Marc Weber\", \"email\": \"marc.weber@firma29.example.com\", \"contactType\": \"Ansprechpartner\", \"telephone\": \"+49 30 1000069\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Marc Weber",
+        "email": "marc.weber@firma29.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_020",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/20",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 20\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 20\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Julia Fischer\", \"email\": \"julia.fischer@firma30.example.com\", \"contactType\": \"Recruiterin\", \"telephone\": \"+49 30 1000070\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Julia Fischer",
+        "email": "julia.fischer@firma30.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_021",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/21",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 21\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 21\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Omar Becker\", \"email\": \"omar.becker@firma31.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000071\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Omar Becker",
+        "email": "omar.becker@firma31.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_022",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/22",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 22\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 22\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Greta Schulz\", \"email\": \"greta.schulz@firma32.example.com\", \"contactType\": \"Talent Acquisition\", \"telephone\": \"+49 30 1000072\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Greta Schulz",
+        "email": "greta.schulz@firma32.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_023",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/23",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 23\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 23\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Felix Wagner\", \"email\": \"felix.wagner@firma33.example.com\", \"contactType\": \"HR-Managerin\", \"telephone\": \"+49 30 1000073\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Felix Wagner",
+        "email": "felix.wagner@firma33.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_024",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/24",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 24\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 24\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Ayla Koch\", \"email\": \"ayla.koch@firma34.example.com\", \"contactType\": \"Personalreferent\", \"telephone\": \"+49 30 1000074\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ayla Koch",
+        "email": "ayla.koch@firma34.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_025",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/25",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 25\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 25\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Ben Bauer\", \"email\": \"ben.bauer@firma35.example.com\", \"contactType\": \"Hiring Manager\", \"telephone\": \"+49 30 1000075\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ben Bauer",
+        "email": "ben.bauer@firma35.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_026",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/26",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 26\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 26\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Dana Schröder\", \"email\": \"dana.schroeder@firma36.example.com\", \"contactType\": \"Ansprechpartner\", \"telephone\": \"+49 30 1000076\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Dana Schröder",
+        "email": "dana.schroeder@firma36.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_027",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/27",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 27\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 27\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Hugo Klein\", \"email\": \"hugo.klein@firma37.example.com\", \"contactType\": \"Recruiterin\", \"telephone\": \"+49 30 1000077\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Hugo Klein",
+        "email": "hugo.klein@firma37.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_028",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/28",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 28\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 28\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Iris Wolf\", \"email\": \"iris.wolf@firma38.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000078\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Iris Wolf",
+        "email": "iris.wolf@firma38.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_029",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/29",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 29\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 29\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Kai Schrader\", \"email\": \"kai.schrader@firma39.example.com\", \"contactType\": \"Talent Acquisition\", \"telephone\": \"+49 30 1000079\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Kai Schrader",
+        "email": "kai.schrader@firma39.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_030",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/30",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 30\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 30\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Lara Vogel\", \"email\": \"lara.vogel@firma0.example.com\", \"contactType\": \"HR-Managerin\", \"telephone\": \"+49 30 1000080\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lara Vogel",
+        "email": "lara.vogel@firma0.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_031",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/31",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 31\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 31\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Nils Keller\", \"email\": \"nils.keller@firma1.example.com\", \"contactType\": \"Personalreferent\", \"telephone\": \"+49 30 1000081\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nils Keller",
+        "email": "nils.keller@firma1.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_032",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/32",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 32\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 32\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Pia Richter\", \"email\": \"pia.richter@firma2.example.com\", \"contactType\": \"Hiring Manager\", \"telephone\": \"+49 30 1000082\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Pia Richter",
+        "email": "pia.richter@firma2.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_033",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/33",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 33\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 33\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Quinn Stein\", \"email\": \"quinn.stein@firma3.example.com\", \"contactType\": \"Ansprechpartner\", \"telephone\": \"+49 30 1000083\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Quinn Stein",
+        "email": "quinn.stein@firma3.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_034",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/34",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 34\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 34\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Rita Brandt\", \"email\": \"rita.brandt@firma4.example.com\", \"contactType\": \"Recruiterin\", \"telephone\": \"+49 30 1000084\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Rita Brandt",
+        "email": "rita.brandt@firma4.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_035",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/35",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 35\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 35\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Sven Neumann\", \"email\": \"sven.neumann@firma5.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000085\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sven Neumann",
+        "email": "sven.neumann@firma5.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_036",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/36",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 36\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 36\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Tara Krüger\", \"email\": \"tara.krueger@firma6.example.com\", \"contactType\": \"Talent Acquisition\", \"telephone\": \"+49 30 1000086\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tara Krüger",
+        "email": "tara.krueger@firma6.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_037",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/37",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 37\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 37\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Ulf Hoffmann\", \"email\": \"ulf.hoffmann@firma7.example.com\", \"contactType\": \"HR-Managerin\", \"telephone\": \"+49 30 1000087\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ulf Hoffmann",
+        "email": "ulf.hoffmann@firma7.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_038",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/38",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 38\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 38\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Vera Schäfer\", \"email\": \"vera.schaefer@firma8.example.com\", \"contactType\": \"Personalreferent\", \"telephone\": \"+49 30 1000088\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Vera Schäfer",
+        "email": "vera.schaefer@firma8.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_039",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/39",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 39\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 39\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Willi Weber\", \"email\": \"willi.weber@firma9.example.com\", \"contactType\": \"Hiring Manager\", \"telephone\": \"+49 30 1000089\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Willi Weber",
+        "email": "willi.weber@firma9.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_040",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/40",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 40\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 40\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Mira Fischer\", \"email\": \"mira.fischer@firma10.example.com\", \"contactType\": \"Ansprechpartner\", \"telephone\": \"+49 30 1000090\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Mira Fischer",
+        "email": "mira.fischer@firma10.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_041",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/41",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 41\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 41\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Tobias Becker\", \"email\": \"tobias.becker@firma11.example.com\", \"contactType\": \"Recruiterin\", \"telephone\": \"+49 30 1000091\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tobias Becker",
+        "email": "tobias.becker@firma11.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_042",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/42",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 42\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 42\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Lena Schulz\", \"email\": \"lena.schulz@firma12.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000092\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lena Schulz",
+        "email": "lena.schulz@firma12.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_043",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/43",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 43\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 43\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Jonas Wagner\", \"email\": \"jonas.wagner@firma13.example.com\", \"contactType\": \"Talent Acquisition\", \"telephone\": \"+49 30 1000093\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Jonas Wagner",
+        "email": "jonas.wagner@firma13.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_044",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/44",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 44\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 44\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Clara Koch\", \"email\": \"clara.koch@firma14.example.com\", \"contactType\": \"HR-Managerin\", \"telephone\": \"+49 30 1000094\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Clara Koch",
+        "email": "clara.koch@firma14.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_045",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/45",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 45\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 45\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Erik Bauer\", \"email\": \"erik.bauer@firma15.example.com\", \"contactType\": \"Personalreferent\", \"telephone\": \"+49 30 1000095\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Erik Bauer",
+        "email": "erik.bauer@firma15.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_046",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/46",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 46\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 46\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Nora Schröder\", \"email\": \"nora.schroeder@firma16.example.com\", \"contactType\": \"Hiring Manager\", \"telephone\": \"+49 30 1000096\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nora Schröder",
+        "email": "nora.schroeder@firma16.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_047",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/47",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 47\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 47\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Paul Klein\", \"email\": \"paul.klein@firma17.example.com\", \"contactType\": \"Ansprechpartner\", \"telephone\": \"+49 30 1000097\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Paul Klein",
+        "email": "paul.klein@firma17.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_048",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/48",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 48\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 48\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Sina Wolf\", \"email\": \"sina.wolf@firma18.example.com\", \"contactType\": \"Recruiterin\", \"telephone\": \"+49 30 1000098\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sina Wolf",
+        "email": "sina.wolf@firma18.example.com"
+      }
+    },
+    {
+      "id": "pos_jsonld_049",
+      "kind": "positive",
+      "variant": "job_posting_jsonld",
+      "source_url": "https://jobs.example.com/jsonld/49",
+      "html": "<html><head><script type=\"application/ld+json\">{\"@type\": \"JobPosting\", \"title\": \"Fachkraft 49\", \"datePosted\": \"2026-09-01\", \"dateModified\": \"2026-09-10\", \"hiringOrganization\": {\"name\": \"Org 49\"}, \"applicationContact\": {\"@type\": \"ContactPoint\", \"name\": \"Marc Schrader\", \"email\": \"marc.schrader@firma19.example.com\", \"contactType\": \"Recruiter\", \"telephone\": \"+49 30 1000099\"}}</script></head><body><p>Job details without contact in body.</p></body></html>",
+      "text": "",
+      "expect": {
+        "status": "FOUND",
+        "name": "Marc Schrader",
+        "email": "marc.schrader@firma19.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_000",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/0",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Julia Vogel",
+        "recruiter_email": "julia.vogel@firma20.example.com",
+        "contact_role": "Talent Acquisition",
+        "department": "People",
+        "contact_phone": "+49 30 1000100"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Julia Vogel",
+        "email": "julia.vogel@firma20.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_001",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/1",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Omar Keller",
+        "recruiter_email": "omar.keller@firma21.example.com",
+        "contact_role": "HR-Managerin",
+        "department": "HR",
+        "contact_phone": "+49 30 1000101"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Omar Keller",
+        "email": "omar.keller@firma21.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_002",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/2",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Greta Richter",
+        "recruiter_email": "greta.richter@firma22.example.com",
+        "contact_role": "Personalreferent",
+        "department": "Talent",
+        "contact_phone": "+49 30 1000102"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Greta Richter",
+        "email": "greta.richter@firma22.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_003",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/3",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Felix Stein",
+        "recruiter_email": "felix.stein@firma23.example.com",
+        "contact_role": "Hiring Manager",
+        "department": "Personal",
+        "contact_phone": "+49 30 1000103"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Felix Stein",
+        "email": "felix.stein@firma23.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_004",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/4",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Ayla Brandt",
+        "recruiter_email": "ayla.brandt@firma24.example.com",
+        "contact_role": "Ansprechpartner",
+        "department": "Recruiting",
+        "contact_phone": "+49 30 1000104"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Ayla Brandt",
+        "email": "ayla.brandt@firma24.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_005",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/5",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Ben Neumann",
+        "recruiter_email": "ben.neumann@firma25.example.com",
+        "contact_role": "Recruiterin",
+        "department": "People",
+        "contact_phone": "+49 30 1000105"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Ben Neumann",
+        "email": "ben.neumann@firma25.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_006",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/6",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Dana Krüger",
+        "recruiter_email": "dana.krueger@firma26.example.com",
+        "contact_role": "Recruiter",
+        "department": "HR",
+        "contact_phone": "+49 30 1000106"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Dana Krüger",
+        "email": "dana.krueger@firma26.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_007",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/7",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Hugo Hoffmann",
+        "recruiter_email": "hugo.hoffmann@firma27.example.com",
+        "contact_role": "Talent Acquisition",
+        "department": "Talent",
+        "contact_phone": "+49 30 1000107"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Hugo Hoffmann",
+        "email": "hugo.hoffmann@firma27.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_008",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/8",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Iris Schäfer",
+        "recruiter_email": "iris.schaefer@firma28.example.com",
+        "contact_role": "HR-Managerin",
+        "department": "Personal",
+        "contact_phone": "+49 30 1000108"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Iris Schäfer",
+        "email": "iris.schaefer@firma28.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_009",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/9",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Kai Weber",
+        "recruiter_email": "kai.weber@firma29.example.com",
+        "contact_role": "Personalreferent",
+        "department": "Recruiting",
+        "contact_phone": "+49 30 1000109"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Kai Weber",
+        "email": "kai.weber@firma29.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_010",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/10",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Lara Fischer",
+        "recruiter_email": "lara.fischer@firma30.example.com",
+        "contact_role": "Hiring Manager",
+        "department": "People",
+        "contact_phone": "+49 30 1000110"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Lara Fischer",
+        "email": "lara.fischer@firma30.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_011",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/11",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Nils Becker",
+        "recruiter_email": "nils.becker@firma31.example.com",
+        "contact_role": "Ansprechpartner",
+        "department": "HR",
+        "contact_phone": "+49 30 1000111"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Nils Becker",
+        "email": "nils.becker@firma31.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_012",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/12",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Pia Schulz",
+        "recruiter_email": "pia.schulz@firma32.example.com",
+        "contact_role": "Recruiterin",
+        "department": "Talent",
+        "contact_phone": "+49 30 1000112"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Pia Schulz",
+        "email": "pia.schulz@firma32.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_013",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/13",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Quinn Wagner",
+        "recruiter_email": "quinn.wagner@firma33.example.com",
+        "contact_role": "Recruiter",
+        "department": "Personal",
+        "contact_phone": "+49 30 1000113"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Quinn Wagner",
+        "email": "quinn.wagner@firma33.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_014",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/14",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Rita Koch",
+        "recruiter_email": "rita.koch@firma34.example.com",
+        "contact_role": "Talent Acquisition",
+        "department": "Recruiting",
+        "contact_phone": "+49 30 1000114"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Rita Koch",
+        "email": "rita.koch@firma34.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_015",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/15",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Sven Bauer",
+        "recruiter_email": "sven.bauer@firma35.example.com",
+        "contact_role": "HR-Managerin",
+        "department": "People",
+        "contact_phone": "+49 30 1000115"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Sven Bauer",
+        "email": "sven.bauer@firma35.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_016",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/16",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Tara Schröder",
+        "recruiter_email": "tara.schroeder@firma36.example.com",
+        "contact_role": "Personalreferent",
+        "department": "HR",
+        "contact_phone": "+49 30 1000116"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Tara Schröder",
+        "email": "tara.schroeder@firma36.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_017",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/17",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Ulf Klein",
+        "recruiter_email": "ulf.klein@firma37.example.com",
+        "contact_role": "Hiring Manager",
+        "department": "Talent",
+        "contact_phone": "+49 30 1000117"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Ulf Klein",
+        "email": "ulf.klein@firma37.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_018",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/18",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Vera Wolf",
+        "recruiter_email": "vera.wolf@firma38.example.com",
+        "contact_role": "Ansprechpartner",
+        "department": "Personal",
+        "contact_phone": "+49 30 1000118"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Vera Wolf",
+        "email": "vera.wolf@firma38.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_019",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/19",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Willi Schrader",
+        "recruiter_email": "willi.schrader@firma39.example.com",
+        "contact_role": "Recruiterin",
+        "department": "Recruiting",
+        "contact_phone": "+49 30 1000119"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Willi Schrader",
+        "email": "willi.schrader@firma39.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_020",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/20",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Mira Vogel",
+        "recruiter_email": "mira.vogel@firma0.example.com",
+        "contact_role": "Recruiter",
+        "department": "People",
+        "contact_phone": "+49 30 1000120"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Mira Vogel",
+        "email": "mira.vogel@firma0.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_021",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/21",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Tobias Keller",
+        "recruiter_email": "tobias.keller@firma1.example.com",
+        "contact_role": "Talent Acquisition",
+        "department": "HR",
+        "contact_phone": "+49 30 1000121"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Tobias Keller",
+        "email": "tobias.keller@firma1.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_022",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/22",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Lena Richter",
+        "recruiter_email": "lena.richter@firma2.example.com",
+        "contact_role": "HR-Managerin",
+        "department": "Talent",
+        "contact_phone": "+49 30 1000122"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Lena Richter",
+        "email": "lena.richter@firma2.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_023",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/23",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Jonas Stein",
+        "recruiter_email": "jonas.stein@firma3.example.com",
+        "contact_role": "Personalreferent",
+        "department": "Personal",
+        "contact_phone": "+49 30 1000123"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Jonas Stein",
+        "email": "jonas.stein@firma3.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_024",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/24",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Clara Brandt",
+        "recruiter_email": "clara.brandt@firma4.example.com",
+        "contact_role": "Hiring Manager",
+        "department": "Recruiting",
+        "contact_phone": "+49 30 1000124"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Clara Brandt",
+        "email": "clara.brandt@firma4.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_025",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/25",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Erik Neumann",
+        "recruiter_email": "erik.neumann@firma5.example.com",
+        "contact_role": "Ansprechpartner",
+        "department": "People",
+        "contact_phone": "+49 30 1000125"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Erik Neumann",
+        "email": "erik.neumann@firma5.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_026",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/26",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Nora Krüger",
+        "recruiter_email": "nora.krueger@firma6.example.com",
+        "contact_role": "Recruiterin",
+        "department": "HR",
+        "contact_phone": "+49 30 1000126"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Nora Krüger",
+        "email": "nora.krueger@firma6.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_027",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/27",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Paul Hoffmann",
+        "recruiter_email": "paul.hoffmann@firma7.example.com",
+        "contact_role": "Recruiter",
+        "department": "Talent",
+        "contact_phone": "+49 30 1000127"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Paul Hoffmann",
+        "email": "paul.hoffmann@firma7.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_028",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/28",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Sina Schäfer",
+        "recruiter_email": "sina.schaefer@firma8.example.com",
+        "contact_role": "Talent Acquisition",
+        "department": "Personal",
+        "contact_phone": "+49 30 1000128"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Sina Schäfer",
+        "email": "sina.schaefer@firma8.example.com"
+      }
+    },
+    {
+      "id": "pos_ats_029",
+      "kind": "positive",
+      "variant": "ats_metadata",
+      "source_url": "https://boards.example.com/29",
+      "html": "",
+      "text": "",
+      "ats_metadata": {
+        "recruiter_name": "Marc Weber",
+        "recruiter_email": "marc.weber@firma9.example.com",
+        "contact_role": "HR-Managerin",
+        "department": "Recruiting",
+        "contact_phone": "+49 30 1000129"
+      },
+      "expect": {
+        "status": "FOUND",
+        "name": "Marc Weber",
+        "email": "marc.weber@firma9.example.com"
+      }
+    },
+    {
+      "id": "pos_career_000",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company0.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Julia Fischer (Personalreferent) julia.fischer@firma10.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Julia Fischer",
+        "email": "julia.fischer@firma10.example.com"
+      }
+    },
+    {
+      "id": "pos_career_001",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company1.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Omar Becker (Hiring Manager) omar.becker@firma11.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Omar Becker",
+        "email": "omar.becker@firma11.example.com"
+      }
+    },
+    {
+      "id": "pos_career_002",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company2.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Greta Schulz (Ansprechpartner) greta.schulz@firma12.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Greta Schulz",
+        "email": "greta.schulz@firma12.example.com"
+      }
+    },
+    {
+      "id": "pos_career_003",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company3.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Felix Wagner (Recruiterin) felix.wagner@firma13.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Felix Wagner",
+        "email": "felix.wagner@firma13.example.com"
+      }
+    },
+    {
+      "id": "pos_career_004",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company4.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Ayla Koch (Recruiter) ayla.koch@firma14.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ayla Koch",
+        "email": "ayla.koch@firma14.example.com"
+      }
+    },
+    {
+      "id": "pos_career_005",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company5.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Ben Bauer (Talent Acquisition) ben.bauer@firma15.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ben Bauer",
+        "email": "ben.bauer@firma15.example.com"
+      }
+    },
+    {
+      "id": "pos_career_006",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company6.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Dana Schröder (HR-Managerin) dana.schroeder@firma16.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Dana Schröder",
+        "email": "dana.schroeder@firma16.example.com"
+      }
+    },
+    {
+      "id": "pos_career_007",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company7.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Hugo Klein (Personalreferent) hugo.klein@firma17.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Hugo Klein",
+        "email": "hugo.klein@firma17.example.com"
+      }
+    },
+    {
+      "id": "pos_career_008",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company8.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Iris Wolf (Hiring Manager) iris.wolf@firma18.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Iris Wolf",
+        "email": "iris.wolf@firma18.example.com"
+      }
+    },
+    {
+      "id": "pos_career_009",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company9.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Kai Schrader (Ansprechpartner) kai.schrader@firma19.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Kai Schrader",
+        "email": "kai.schrader@firma19.example.com"
+      }
+    },
+    {
+      "id": "pos_career_010",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company10.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Lara Vogel (Recruiterin) lara.vogel@firma20.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lara Vogel",
+        "email": "lara.vogel@firma20.example.com"
+      }
+    },
+    {
+      "id": "pos_career_011",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company11.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Nils Keller (Recruiter) nils.keller@firma21.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nils Keller",
+        "email": "nils.keller@firma21.example.com"
+      }
+    },
+    {
+      "id": "pos_career_012",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company12.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Pia Richter (Talent Acquisition) pia.richter@firma22.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Pia Richter",
+        "email": "pia.richter@firma22.example.com"
+      }
+    },
+    {
+      "id": "pos_career_013",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company13.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Quinn Stein (HR-Managerin) quinn.stein@firma23.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Quinn Stein",
+        "email": "quinn.stein@firma23.example.com"
+      }
+    },
+    {
+      "id": "pos_career_014",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company14.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Rita Brandt (Personalreferent) rita.brandt@firma24.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Rita Brandt",
+        "email": "rita.brandt@firma24.example.com"
+      }
+    },
+    {
+      "id": "pos_career_015",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company15.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Sven Neumann (Hiring Manager) sven.neumann@firma25.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sven Neumann",
+        "email": "sven.neumann@firma25.example.com"
+      }
+    },
+    {
+      "id": "pos_career_016",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company16.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Tara Krüger (Ansprechpartner) tara.krueger@firma26.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tara Krüger",
+        "email": "tara.krueger@firma26.example.com"
+      }
+    },
+    {
+      "id": "pos_career_017",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company17.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Ulf Hoffmann (Recruiterin) ulf.hoffmann@firma27.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ulf Hoffmann",
+        "email": "ulf.hoffmann@firma27.example.com"
+      }
+    },
+    {
+      "id": "pos_career_018",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company18.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Vera Schäfer (Recruiter) vera.schaefer@firma28.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Vera Schäfer",
+        "email": "vera.schaefer@firma28.example.com"
+      }
+    },
+    {
+      "id": "pos_career_019",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company19.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Willi Weber (Talent Acquisition) willi.weber@firma29.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Willi Weber",
+        "email": "willi.weber@firma29.example.com"
+      }
+    },
+    {
+      "id": "pos_career_020",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company20.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Mira Fischer (HR-Managerin) mira.fischer@firma30.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Mira Fischer",
+        "email": "mira.fischer@firma30.example.com"
+      }
+    },
+    {
+      "id": "pos_career_021",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company21.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Tobias Becker (Personalreferent) tobias.becker@firma31.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tobias Becker",
+        "email": "tobias.becker@firma31.example.com"
+      }
+    },
+    {
+      "id": "pos_career_022",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company22.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Lena Schulz (Hiring Manager) lena.schulz@firma32.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lena Schulz",
+        "email": "lena.schulz@firma32.example.com"
+      }
+    },
+    {
+      "id": "pos_career_023",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company23.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Jonas Wagner (Ansprechpartner) jonas.wagner@firma33.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Jonas Wagner",
+        "email": "jonas.wagner@firma33.example.com"
+      }
+    },
+    {
+      "id": "pos_career_024",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company24.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Clara Koch (Recruiterin) clara.koch@firma34.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Clara Koch",
+        "email": "clara.koch@firma34.example.com"
+      }
+    },
+    {
+      "id": "pos_career_025",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company25.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Erik Bauer (Recruiter) erik.bauer@firma35.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Erik Bauer",
+        "email": "erik.bauer@firma35.example.com"
+      }
+    },
+    {
+      "id": "pos_career_026",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company26.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Nora Schröder (Talent Acquisition) nora.schroeder@firma36.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nora Schröder",
+        "email": "nora.schroeder@firma36.example.com"
+      }
+    },
+    {
+      "id": "pos_career_027",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company27.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Paul Klein (HR-Managerin) paul.klein@firma37.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Paul Klein",
+        "email": "paul.klein@firma37.example.com"
+      }
+    },
+    {
+      "id": "pos_career_028",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company28.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Sina Wolf (Personalreferent) sina.wolf@firma38.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sina Wolf",
+        "email": "sina.wolf@firma38.example.com"
+      }
+    },
+    {
+      "id": "pos_career_029",
+      "kind": "positive",
+      "variant": "company_career_page",
+      "source_url": "https://company29.example.com/karriere",
+      "html": "<html><body>\n    <h1>Karriere</h1>\n    <p>Fragen zum Bewerbungsprozess?</p>\n    <p>Ansprechpartner: Marc Schrader (Hiring Manager) marc.schrader@firma39.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Marc Schrader",
+        "email": "marc.schrader@firma39.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_000",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company0.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Julia Vogel, People — julia.vogel@firma0.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Julia Vogel",
+        "email": "julia.vogel@firma0.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_001",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company1.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Omar Keller, HR — omar.keller@firma1.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Omar Keller",
+        "email": "omar.keller@firma1.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_002",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company2.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Greta Richter, Talent — greta.richter@firma2.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Greta Richter",
+        "email": "greta.richter@firma2.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_003",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company3.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Felix Stein, Personal — felix.stein@firma3.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Felix Stein",
+        "email": "felix.stein@firma3.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_004",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company4.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Ayla Brandt, Recruiting — ayla.brandt@firma4.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ayla Brandt",
+        "email": "ayla.brandt@firma4.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_005",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company5.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Ben Neumann, People — ben.neumann@firma5.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ben Neumann",
+        "email": "ben.neumann@firma5.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_006",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company6.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Dana Krüger, HR — dana.krueger@firma6.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Dana Krüger",
+        "email": "dana.krueger@firma6.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_007",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company7.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Hugo Hoffmann, Talent — hugo.hoffmann@firma7.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Hugo Hoffmann",
+        "email": "hugo.hoffmann@firma7.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_008",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company8.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Iris Schäfer, Personal — iris.schaefer@firma8.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Iris Schäfer",
+        "email": "iris.schaefer@firma8.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_009",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company9.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Kai Weber, Recruiting — kai.weber@firma9.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Kai Weber",
+        "email": "kai.weber@firma9.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_010",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company10.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Lara Fischer, People — lara.fischer@firma10.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lara Fischer",
+        "email": "lara.fischer@firma10.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_011",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company11.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Nils Becker, HR — nils.becker@firma11.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nils Becker",
+        "email": "nils.becker@firma11.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_012",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company12.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Pia Schulz, Talent — pia.schulz@firma12.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Pia Schulz",
+        "email": "pia.schulz@firma12.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_013",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company13.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Quinn Wagner, Personal — quinn.wagner@firma13.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Quinn Wagner",
+        "email": "quinn.wagner@firma13.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_014",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company14.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Rita Koch, Recruiting — rita.koch@firma14.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Rita Koch",
+        "email": "rita.koch@firma14.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_015",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company15.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Sven Bauer, People — sven.bauer@firma15.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sven Bauer",
+        "email": "sven.bauer@firma15.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_016",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company16.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Tara Schröder, HR — tara.schroeder@firma16.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tara Schröder",
+        "email": "tara.schroeder@firma16.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_017",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company17.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Ulf Klein, Talent — ulf.klein@firma17.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ulf Klein",
+        "email": "ulf.klein@firma17.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_018",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company18.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Vera Wolf, Personal — vera.wolf@firma18.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Vera Wolf",
+        "email": "vera.wolf@firma18.example.com"
+      }
+    },
+    {
+      "id": "pos_contact_019",
+      "kind": "positive",
+      "variant": "company_contact_page",
+      "source_url": "https://company19.example.com/kontakt",
+      "html": "<html><body>\n    <h1>Recruiting Kontakt</h1>\n    <p>Ansprechpartner: Willi Schrader, Recruiting — willi.schrader@firma19.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "contact",
+      "expect": {
+        "status": "FOUND",
+        "name": "Willi Schrader",
+        "email": "willi.schrader@firma19.example.com"
+      }
+    },
+    {
+      "id": "pos_multi_000",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/0",
+      "html": "<html><body><pre>Ansprechpartner: Mira Vogel — mira.vogel@firma0.example.com\nAnsprechpartnerin: Hugo Klein — hugo.klein@firma17.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Mira Vogel — mira.vogel@firma0.example.com\nAnsprechpartnerin: Hugo Klein — hugo.klein@firma17.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "mira.vogel@firma0.example.com",
+          "hugo.klein@firma17.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_001",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/1",
+      "html": "<html><body><pre>Ansprechpartner: Tobias Keller — tobias.keller@firma1.example.com\nAnsprechpartnerin: Iris Wolf — iris.wolf@firma18.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Tobias Keller — tobias.keller@firma1.example.com\nAnsprechpartnerin: Iris Wolf — iris.wolf@firma18.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "tobias.keller@firma1.example.com",
+          "iris.wolf@firma18.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_002",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/2",
+      "html": "<html><body><pre>Ansprechpartner: Lena Richter — lena.richter@firma2.example.com\nAnsprechpartnerin: Kai Schrader — kai.schrader@firma19.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Lena Richter — lena.richter@firma2.example.com\nAnsprechpartnerin: Kai Schrader — kai.schrader@firma19.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "lena.richter@firma2.example.com",
+          "kai.schrader@firma19.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_003",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/3",
+      "html": "<html><body><pre>Ansprechpartner: Jonas Stein — jonas.stein@firma3.example.com\nAnsprechpartnerin: Lara Vogel — lara.vogel@firma20.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Jonas Stein — jonas.stein@firma3.example.com\nAnsprechpartnerin: Lara Vogel — lara.vogel@firma20.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "jonas.stein@firma3.example.com",
+          "lara.vogel@firma20.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_004",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/4",
+      "html": "<html><body><pre>Ansprechpartner: Clara Brandt — clara.brandt@firma4.example.com\nAnsprechpartnerin: Nils Keller — nils.keller@firma21.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Clara Brandt — clara.brandt@firma4.example.com\nAnsprechpartnerin: Nils Keller — nils.keller@firma21.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "clara.brandt@firma4.example.com",
+          "nils.keller@firma21.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_005",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/5",
+      "html": "<html><body><pre>Ansprechpartner: Erik Neumann — erik.neumann@firma5.example.com\nAnsprechpartnerin: Pia Richter — pia.richter@firma22.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Erik Neumann — erik.neumann@firma5.example.com\nAnsprechpartnerin: Pia Richter — pia.richter@firma22.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "erik.neumann@firma5.example.com",
+          "pia.richter@firma22.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_006",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/6",
+      "html": "<html><body><pre>Ansprechpartner: Nora Krüger — nora.krueger@firma6.example.com\nAnsprechpartnerin: Quinn Stein — quinn.stein@firma23.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Nora Krüger — nora.krueger@firma6.example.com\nAnsprechpartnerin: Quinn Stein — quinn.stein@firma23.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "nora.krueger@firma6.example.com",
+          "quinn.stein@firma23.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_007",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/7",
+      "html": "<html><body><pre>Ansprechpartner: Paul Hoffmann — paul.hoffmann@firma7.example.com\nAnsprechpartnerin: Rita Brandt — rita.brandt@firma24.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Paul Hoffmann — paul.hoffmann@firma7.example.com\nAnsprechpartnerin: Rita Brandt — rita.brandt@firma24.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "paul.hoffmann@firma7.example.com",
+          "rita.brandt@firma24.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_008",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/8",
+      "html": "<html><body><pre>Ansprechpartner: Sina Schäfer — sina.schaefer@firma8.example.com\nAnsprechpartnerin: Sven Neumann — sven.neumann@firma25.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Sina Schäfer — sina.schaefer@firma8.example.com\nAnsprechpartnerin: Sven Neumann — sven.neumann@firma25.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "sina.schaefer@firma8.example.com",
+          "sven.neumann@firma25.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_009",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/9",
+      "html": "<html><body><pre>Ansprechpartner: Marc Weber — marc.weber@firma9.example.com\nAnsprechpartnerin: Tara Krüger — tara.krueger@firma26.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Marc Weber — marc.weber@firma9.example.com\nAnsprechpartnerin: Tara Krüger — tara.krueger@firma26.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "marc.weber@firma9.example.com",
+          "tara.krueger@firma26.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_010",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/10",
+      "html": "<html><body><pre>Ansprechpartner: Julia Fischer — julia.fischer@firma10.example.com\nAnsprechpartnerin: Ulf Hoffmann — ulf.hoffmann@firma27.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Julia Fischer — julia.fischer@firma10.example.com\nAnsprechpartnerin: Ulf Hoffmann — ulf.hoffmann@firma27.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "julia.fischer@firma10.example.com",
+          "ulf.hoffmann@firma27.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_011",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/11",
+      "html": "<html><body><pre>Ansprechpartner: Omar Becker — omar.becker@firma11.example.com\nAnsprechpartnerin: Vera Schäfer — vera.schaefer@firma28.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Omar Becker — omar.becker@firma11.example.com\nAnsprechpartnerin: Vera Schäfer — vera.schaefer@firma28.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "omar.becker@firma11.example.com",
+          "vera.schaefer@firma28.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_012",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/12",
+      "html": "<html><body><pre>Ansprechpartner: Greta Schulz — greta.schulz@firma12.example.com\nAnsprechpartnerin: Willi Weber — willi.weber@firma29.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Greta Schulz — greta.schulz@firma12.example.com\nAnsprechpartnerin: Willi Weber — willi.weber@firma29.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "greta.schulz@firma12.example.com",
+          "willi.weber@firma29.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_013",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/13",
+      "html": "<html><body><pre>Ansprechpartner: Felix Wagner — felix.wagner@firma13.example.com\nAnsprechpartnerin: Mira Fischer — mira.fischer@firma30.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Felix Wagner — felix.wagner@firma13.example.com\nAnsprechpartnerin: Mira Fischer — mira.fischer@firma30.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "felix.wagner@firma13.example.com",
+          "mira.fischer@firma30.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_multi_014",
+      "kind": "positive",
+      "variant": "multiple_persons",
+      "source_url": "https://jobs.example.com/multi/14",
+      "html": "<html><body><pre>Ansprechpartner: Ayla Koch — ayla.koch@firma14.example.com\nAnsprechpartnerin: Tobias Becker — tobias.becker@firma31.example.com\n</pre></body></html>",
+      "text": "Ansprechpartner: Ayla Koch — ayla.koch@firma14.example.com\nAnsprechpartnerin: Tobias Becker — tobias.becker@firma31.example.com\n",
+      "expect": {
+        "status": "FOUND",
+        "min_persons": 2,
+        "emails": [
+          "ayla.koch@firma14.example.com",
+          "tobias.becker@firma31.example.com"
+        ]
+      }
+    },
+    {
+      "id": "pos_hr_general_000",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/0",
+      "html": "<html><body>\n    <p>Ansprechpartner: Mira Vogel, Personal — mira.vogel@firma20.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Mira Vogel",
+        "email": "mira.vogel@firma20.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_001",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/1",
+      "html": "<html><body>\n    <p>Ansprechpartner: Tobias Keller, Personal — tobias.keller@firma21.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Tobias Keller",
+        "email": "tobias.keller@firma21.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_002",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/2",
+      "html": "<html><body>\n    <p>Ansprechpartner: Lena Richter, Personal — lena.richter@firma22.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Lena Richter",
+        "email": "lena.richter@firma22.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_003",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/3",
+      "html": "<html><body>\n    <p>Ansprechpartner: Jonas Stein, Personal — jonas.stein@firma23.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Jonas Stein",
+        "email": "jonas.stein@firma23.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_004",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/4",
+      "html": "<html><body>\n    <p>Ansprechpartner: Clara Brandt, Personal — clara.brandt@firma24.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Clara Brandt",
+        "email": "clara.brandt@firma24.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_005",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/5",
+      "html": "<html><body>\n    <p>Ansprechpartner: Erik Neumann, Personal — erik.neumann@firma25.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Erik Neumann",
+        "email": "erik.neumann@firma25.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_006",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/6",
+      "html": "<html><body>\n    <p>Ansprechpartner: Nora Krüger, Personal — nora.krueger@firma26.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Nora Krüger",
+        "email": "nora.krueger@firma26.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_007",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/7",
+      "html": "<html><body>\n    <p>Ansprechpartner: Paul Hoffmann, Personal — paul.hoffmann@firma27.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Paul Hoffmann",
+        "email": "paul.hoffmann@firma27.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_008",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/8",
+      "html": "<html><body>\n    <p>Ansprechpartner: Sina Schäfer, Personal — sina.schaefer@firma28.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Sina Schäfer",
+        "email": "sina.schaefer@firma28.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_009",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/9",
+      "html": "<html><body>\n    <p>Ansprechpartner: Marc Weber, Personal — marc.weber@firma29.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Marc Weber",
+        "email": "marc.weber@firma29.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_010",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/10",
+      "html": "<html><body>\n    <p>Ansprechpartner: Julia Fischer, Personal — julia.fischer@firma30.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Julia Fischer",
+        "email": "julia.fischer@firma30.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_011",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/11",
+      "html": "<html><body>\n    <p>Ansprechpartner: Omar Becker, Personal — omar.becker@firma31.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Omar Becker",
+        "email": "omar.becker@firma31.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_012",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/12",
+      "html": "<html><body>\n    <p>Ansprechpartner: Greta Schulz, Personal — greta.schulz@firma32.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Greta Schulz",
+        "email": "greta.schulz@firma32.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_013",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/13",
+      "html": "<html><body>\n    <p>Ansprechpartner: Felix Wagner, Personal — felix.wagner@firma33.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Felix Wagner",
+        "email": "felix.wagner@firma33.example.com"
+      }
+    },
+    {
+      "id": "pos_hr_general_014",
+      "kind": "positive",
+      "variant": "hr_general",
+      "source_url": "https://hr.example.com/general/14",
+      "html": "<html><body>\n    <p>Ansprechpartner: Ayla Koch, Personal — ayla.koch@firma34.example.com</p>\n    </body></html>",
+      "text": "",
+      "page_kind": "career",
+      "expect": {
+        "status": "FOUND",
+        "name": "Ayla Koch",
+        "email": "ayla.koch@firma34.example.com"
+      }
+    }
+  ],
+  "not_found": [
+    {
+      "id": "nf_empty_000",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/0",
+      "html": "<html><body><h1>Job 0</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_001",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/1",
+      "html": "<html><body><h1>Job 1</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_002",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/2",
+      "html": "<html><body><h1>Job 2</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_003",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/3",
+      "html": "<html><body><h1>Job 3</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_004",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/4",
+      "html": "<html><body><h1>Job 4</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_005",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/5",
+      "html": "<html><body><h1>Job 5</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_006",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/6",
+      "html": "<html><body><h1>Job 6</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_007",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/7",
+      "html": "<html><body><h1>Job 7</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_008",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/8",
+      "html": "<html><body><h1>Job 8</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_009",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/9",
+      "html": "<html><body><h1>Job 9</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_010",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/10",
+      "html": "<html><body><h1>Job 10</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_011",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/11",
+      "html": "<html><body><h1>Job 11</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_012",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/12",
+      "html": "<html><body><h1>Job 12</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_013",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/13",
+      "html": "<html><body><h1>Job 13</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_014",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/14",
+      "html": "<html><body><h1>Job 14</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_015",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/15",
+      "html": "<html><body><h1>Job 15</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_016",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/16",
+      "html": "<html><body><h1>Job 16</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_017",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/17",
+      "html": "<html><body><h1>Job 17</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_018",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/18",
+      "html": "<html><body><h1>Job 18</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_019",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/19",
+      "html": "<html><body><h1>Job 19</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_020",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/20",
+      "html": "<html><body><h1>Job 20</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_021",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/21",
+      "html": "<html><body><h1>Job 21</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_022",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/22",
+      "html": "<html><body><h1>Job 22</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_023",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/23",
+      "html": "<html><body><h1>Job 23</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_024",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/24",
+      "html": "<html><body><h1>Job 24</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_025",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/25",
+      "html": "<html><body><h1>Job 25</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_026",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/26",
+      "html": "<html><body><h1>Job 26</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_027",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/27",
+      "html": "<html><body><h1>Job 27</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_028",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/28",
+      "html": "<html><body><h1>Job 28</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_029",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/29",
+      "html": "<html><body><h1>Job 29</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_030",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/30",
+      "html": "<html><body><h1>Job 30</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_031",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/31",
+      "html": "<html><body><h1>Job 31</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_032",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/32",
+      "html": "<html><body><h1>Job 32</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_033",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/33",
+      "html": "<html><body><h1>Job 33</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_034",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/34",
+      "html": "<html><body><h1>Job 34</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_035",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/35",
+      "html": "<html><body><h1>Job 35</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_036",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/36",
+      "html": "<html><body><h1>Job 36</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_037",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/37",
+      "html": "<html><body><h1>Job 37</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_038",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/38",
+      "html": "<html><body><h1>Job 38</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_empty_039",
+      "kind": "not_found",
+      "variant": "empty_page",
+      "source_url": "https://jobs.example.com/empty/39",
+      "html": "<html><body><h1>Job 39</h1><p>Keine Kontaktdaten.</p></body></html>",
+      "text": "Wir suchen Verstärkung. Bitte bewerben Sie sich über das Portal.",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_000",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/0",
+      "html": "<html><body><p>Bewerbungen bitte an info@company0.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company0.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_001",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/1",
+      "html": "<html><body><p>Bewerbungen bitte an info@company1.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company1.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_002",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/2",
+      "html": "<html><body><p>Bewerbungen bitte an info@company2.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company2.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_003",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/3",
+      "html": "<html><body><p>Bewerbungen bitte an info@company3.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company3.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_004",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/4",
+      "html": "<html><body><p>Bewerbungen bitte an info@company4.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company4.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_005",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/5",
+      "html": "<html><body><p>Bewerbungen bitte an info@company5.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company5.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_006",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/6",
+      "html": "<html><body><p>Bewerbungen bitte an info@company6.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company6.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_007",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/7",
+      "html": "<html><body><p>Bewerbungen bitte an info@company7.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company7.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_008",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/8",
+      "html": "<html><body><p>Bewerbungen bitte an info@company8.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company8.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_009",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/9",
+      "html": "<html><body><p>Bewerbungen bitte an info@company9.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company9.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_010",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/10",
+      "html": "<html><body><p>Bewerbungen bitte an info@company10.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company10.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_011",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/11",
+      "html": "<html><body><p>Bewerbungen bitte an info@company11.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company11.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_012",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/12",
+      "html": "<html><body><p>Bewerbungen bitte an info@company12.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company12.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_013",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/13",
+      "html": "<html><body><p>Bewerbungen bitte an info@company13.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company13.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_014",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/14",
+      "html": "<html><body><p>Bewerbungen bitte an info@company14.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company14.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_015",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/15",
+      "html": "<html><body><p>Bewerbungen bitte an info@company15.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company15.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_016",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/16",
+      "html": "<html><body><p>Bewerbungen bitte an info@company16.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company16.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_017",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/17",
+      "html": "<html><body><p>Bewerbungen bitte an info@company17.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company17.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_018",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/18",
+      "html": "<html><body><p>Bewerbungen bitte an info@company18.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company18.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_019",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/19",
+      "html": "<html><body><p>Bewerbungen bitte an info@company19.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company19.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_020",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/20",
+      "html": "<html><body><p>Bewerbungen bitte an info@company20.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company20.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_021",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/21",
+      "html": "<html><body><p>Bewerbungen bitte an info@company21.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company21.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_022",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/22",
+      "html": "<html><body><p>Bewerbungen bitte an info@company22.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company22.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_023",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/23",
+      "html": "<html><body><p>Bewerbungen bitte an info@company23.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company23.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_024",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/24",
+      "html": "<html><body><p>Bewerbungen bitte an info@company24.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company24.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_025",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/25",
+      "html": "<html><body><p>Bewerbungen bitte an info@company25.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company25.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_026",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/26",
+      "html": "<html><body><p>Bewerbungen bitte an info@company26.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company26.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_027",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/27",
+      "html": "<html><body><p>Bewerbungen bitte an info@company27.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company27.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_028",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/28",
+      "html": "<html><body><p>Bewerbungen bitte an info@company28.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company28.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_029",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/29",
+      "html": "<html><body><p>Bewerbungen bitte an info@company29.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company29.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_030",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/30",
+      "html": "<html><body><p>Bewerbungen bitte an info@company30.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company30.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_031",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/31",
+      "html": "<html><body><p>Bewerbungen bitte an info@company31.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company31.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_032",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/32",
+      "html": "<html><body><p>Bewerbungen bitte an info@company32.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company32.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_033",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/33",
+      "html": "<html><body><p>Bewerbungen bitte an info@company33.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company33.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_034",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/34",
+      "html": "<html><body><p>Bewerbungen bitte an info@company34.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company34.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_035",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/35",
+      "html": "<html><body><p>Bewerbungen bitte an info@company35.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company35.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_036",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/36",
+      "html": "<html><body><p>Bewerbungen bitte an info@company36.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company36.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_037",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/37",
+      "html": "<html><body><p>Bewerbungen bitte an info@company37.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company37.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_038",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/38",
+      "html": "<html><body><p>Bewerbungen bitte an info@company38.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company38.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_info_039",
+      "kind": "not_found",
+      "variant": "info_mailbox",
+      "source_url": "https://jobs.example.com/info/39",
+      "html": "<html><body><p>Bewerbungen bitte an info@company39.example.com</p></body></html>",
+      "text": "Bewerbungen bitte an jobs@company39.example.com",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_000",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/0",
+      "html": "<html><body><script type='application/ld+json'>{broken 0",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_001",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/1",
+      "html": "<html><body><script type='application/ld+json'>{broken 1",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_002",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/2",
+      "html": "<html><body><script type='application/ld+json'>{broken 2",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_003",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/3",
+      "html": "<html><body><script type='application/ld+json'>{broken 3",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_004",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/4",
+      "html": "<html><body><script type='application/ld+json'>{broken 4",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_005",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/5",
+      "html": "<html><body><script type='application/ld+json'>{broken 5",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_006",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/6",
+      "html": "<html><body><script type='application/ld+json'>{broken 6",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_007",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/7",
+      "html": "<html><body><script type='application/ld+json'>{broken 7",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_008",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/8",
+      "html": "<html><body><script type='application/ld+json'>{broken 8",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_009",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/9",
+      "html": "<html><body><script type='application/ld+json'>{broken 9",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_010",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/10",
+      "html": "<html><body><script type='application/ld+json'>{broken 10",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_011",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/11",
+      "html": "<html><body><script type='application/ld+json'>{broken 11",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_012",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/12",
+      "html": "<html><body><script type='application/ld+json'>{broken 12",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_013",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/13",
+      "html": "<html><body><script type='application/ld+json'>{broken 13",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_014",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/14",
+      "html": "<html><body><script type='application/ld+json'>{broken 14",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_015",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/15",
+      "html": "<html><body><script type='application/ld+json'>{broken 15",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_016",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/16",
+      "html": "<html><body><script type='application/ld+json'>{broken 16",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_017",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/17",
+      "html": "<html><body><script type='application/ld+json'>{broken 17",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_018",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/18",
+      "html": "<html><body><script type='application/ld+json'>{broken 18",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    },
+    {
+      "id": "nf_malformed_019",
+      "kind": "not_found",
+      "variant": "malformed_html",
+      "source_url": "https://jobs.example.com/bad/19",
+      "html": "<html><body><script type='application/ld+json'>{broken 19",
+      "text": "",
+      "expect": {
+        "status": "NOT_FOUND"
+      }
+    }
+  ]
+}

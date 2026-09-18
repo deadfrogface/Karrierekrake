@@ -199,6 +199,26 @@ CREATE INDEX IF NOT EXISTS idx_case_events_case ON case_events(case_id);
 CREATE INDEX IF NOT EXISTS idx_email_case ON email_messages(case_id);
 CREATE INDEX IF NOT EXISTS idx_email_assoc ON email_messages(association_status);
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON lifecycle_tasks(status);
+
+CREATE TABLE IF NOT EXISTS recruiting_contacts (
+    id TEXT PRIMARY KEY,
+    job_id TEXT DEFAULT '',
+    case_id TEXT DEFAULT '',
+    schema_version INTEGER NOT NULL DEFAULT 1,
+    status TEXT NOT NULL,
+    payload_json TEXT NOT NULL DEFAULT '{}',
+    source_type TEXT DEFAULT '',
+    source_url TEXT DEFAULT '',
+    discovered_at TEXT,
+    invalidated_at TEXT DEFAULT '',
+    cache_key TEXT DEFAULT '',
+    contact_kind TEXT DEFAULT ''
+);
+
+CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_job ON recruiting_contacts(job_id);
+CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_case ON recruiting_contacts(case_id);
+CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_cache ON recruiting_contacts(cache_key);
+CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_status ON recruiting_contacts(status);
 """
 
 
@@ -295,6 +315,42 @@ class Database:
 
             # 4) Invalidate cached match scores from older ranking/alias algorithms.
             self._invalidate_stale_ranking_scores(conn)
+
+            # 5) Recruiting contact discovery store (PR25).
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS recruiting_contacts (
+                    id TEXT PRIMARY KEY,
+                    job_id TEXT DEFAULT '',
+                    case_id TEXT DEFAULT '',
+                    schema_version INTEGER NOT NULL DEFAULT 1,
+                    status TEXT NOT NULL,
+                    payload_json TEXT NOT NULL DEFAULT '{}',
+                    source_type TEXT DEFAULT '',
+                    source_url TEXT DEFAULT '',
+                    discovered_at TEXT,
+                    invalidated_at TEXT DEFAULT '',
+                    cache_key TEXT DEFAULT '',
+                    contact_kind TEXT DEFAULT ''
+                )
+                """
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_job "
+                "ON recruiting_contacts(job_id)"
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_case "
+                "ON recruiting_contacts(case_id)"
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_cache "
+                "ON recruiting_contacts(cache_key)"
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_status "
+                "ON recruiting_contacts(status)"
+            )
 
     @staticmethod
     def _invalidate_stale_ranking_scores(conn: sqlite3.Connection) -> None:
@@ -1248,3 +1304,156 @@ class Database:
         data = dict(row)
         data.pop("updated_at", None)
         return Job.from_dict(data)
+
+    # --- Recruiting contact discovery (PR25) ---
+
+    def upsert_recruiting_contact_result(
+        self, result: Any, *, cache_key: str = ""
+    ) -> str:
+        """Persist a DiscoveryResult (FOUND / NOT_FOUND / …). Returns row id."""
+        from core.contacts.models import DiscoveryResult
+
+        if not isinstance(result, DiscoveryResult):
+            raise TypeError("expected DiscoveryResult")
+        best = result.best
+        row_id = str(uuid.uuid4())
+        payload = json.dumps(result.to_dict(), ensure_ascii=False)
+        with self.connection() as conn:
+            # Replace previous cache_key row if present
+            if cache_key:
+                conn.execute(
+                    "DELETE FROM recruiting_contacts WHERE cache_key = ? AND status != 'INVALIDATED'",
+                    (cache_key,),
+                )
+            conn.execute(
+                """
+                INSERT INTO recruiting_contacts (
+                    id, job_id, case_id, schema_version, status, payload_json,
+                    source_type, source_url, discovered_at, invalidated_at,
+                    cache_key, contact_kind
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, ?)
+                """,
+                (
+                    row_id,
+                    result.job_id or "",
+                    result.case_id or "",
+                    int(result.schema_version),
+                    result.status,
+                    payload,
+                    (best.source_type if best else ""),
+                    (best.source_url if best else ""),
+                    result.discovered_at or utc_now_iso(),
+                    cache_key or "",
+                    (best.contact_kind if best else ""),
+                ),
+            )
+        return row_id
+
+    def get_recruiting_contact_cache(self, cache_key: str) -> dict[str, Any] | None:
+        if not cache_key:
+            return None
+        with self.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM recruiting_contacts WHERE cache_key = ? "
+                "AND status != 'INVALIDATED' ORDER BY discovered_at DESC LIMIT 1",
+                (cache_key,),
+            ).fetchone()
+        if not row:
+            return None
+        data = dict(row)
+        try:
+            data["payload_json"] = json.loads(data.get("payload_json") or "{}")
+        except json.JSONDecodeError:
+            data["payload_json"] = {}
+        return data
+
+    def list_recruiting_contacts(
+        self,
+        *,
+        job_id: str | None = None,
+        case_id: str | None = None,
+        include_invalidated: bool = False,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        clauses: list[str] = []
+        params: list[Any] = []
+        if job_id:
+            clauses.append("job_id = ?")
+            params.append(job_id)
+        if case_id:
+            clauses.append("case_id = ?")
+            params.append(case_id)
+        if not include_invalidated:
+            clauses.append("status != 'INVALIDATED'")
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        sql = (
+            f"SELECT * FROM recruiting_contacts {where} "
+            f"ORDER BY discovered_at DESC LIMIT ?"
+        )
+        params.append(limit)
+        with self.connection() as conn:
+            rows = conn.execute(sql, params).fetchall()
+        out: list[dict[str, Any]] = []
+        for row in rows:
+            data = dict(row)
+            try:
+                data["payload_json"] = json.loads(data.get("payload_json") or "{}")
+            except json.JSONDecodeError:
+                data["payload_json"] = {}
+            out.append(data)
+        return out
+
+    def invalidate_recruiting_contacts(
+        self,
+        *,
+        job_id: str | None = None,
+        case_id: str | None = None,
+        cache_key: str | None = None,
+    ) -> int:
+        clauses: list[str] = ["status != 'INVALIDATED'"]
+        params: list[Any] = []
+        if job_id:
+            clauses.append("job_id = ?")
+            params.append(job_id)
+        if case_id:
+            clauses.append("case_id = ?")
+            params.append(case_id)
+        if cache_key:
+            clauses.append("cache_key = ?")
+            params.append(cache_key)
+        if not (job_id or case_id or cache_key):
+            return 0
+        now = utc_now_iso()
+        sql = (
+            f"UPDATE recruiting_contacts SET status = 'INVALIDATED', "
+            f"invalidated_at = ? WHERE {' AND '.join(clauses)}"
+        )
+        with self.connection() as conn:
+            cur = conn.execute(sql, [now, *params])
+            return int(cur.rowcount or 0)
+
+    def delete_recruiting_contacts(
+        self,
+        *,
+        job_id: str | None = None,
+        case_id: str | None = None,
+        contact_id: str | None = None,
+    ) -> int:
+        clauses: list[str] = []
+        params: list[Any] = []
+        if contact_id:
+            clauses.append("id = ?")
+            params.append(contact_id)
+        if job_id:
+            clauses.append("job_id = ?")
+            params.append(job_id)
+        if case_id:
+            clauses.append("case_id = ?")
+            params.append(case_id)
+        if not clauses:
+            return 0
+        sql = f"DELETE FROM recruiting_contacts WHERE {' AND '.join(clauses)}"
+        with self.connection() as conn:
+            cur = conn.execute(sql, params)
+            return int(cur.rowcount or 0)
+

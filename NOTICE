@@ -107,3 +107,14 @@ Model weight licenses (downloaded separately, never in git/EXE):
 
 Pydantic (MIT) is already a Karrierekrake runtime dependency and is used for
 structured contract validation of untrusted model output.
+
+### Recruiting contact discovery (PR25)
+
+Optional structured-data / HTML helpers (used when installed; bs4/lxml fallback
+is the default path — no scrape of login/paywall or LinkedIn as a required source):
+
+- **extruct** (BSD) — https://github.com/scrapinghub/extruct
+- **selectolax** (MIT) — https://github.com/rushter/selectolax
+- **trafilatura** (Apache-2.0 / GPL-3.0+) — https://github.com/adbar/trafilatura
+- **schema.org JobPosting** — https://schema.org/JobPosting (vocabulary only)
+

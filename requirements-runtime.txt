@@ -24,3 +24,7 @@ google-auth>=2.23.0
 keyring>=24.0.0
 # Optional: Günther embedded local LLM (EXE may ship without it; heuristic/fail-closed otherwise)
 # llama-cpp-python>=0.3.0
+# Optional: richer JSON-LD / HTML extraction for contact discovery (PR25); bs4/lxml fallback always works
+# extruct>=0.16.0
+# selectolax>=0.3.0
+# trafilatura>=1.6.0

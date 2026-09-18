@@ -47,3 +47,10 @@ gmail_credentials_path: private/gmail_credentials.json
 guenther_enabled: false
 guenther_model: auto              # auto | qwen3-1.7b | qwen3-4b | phi4-mini
 guenther_heuristic_fallback: true
+# Recruiting contact discovery (PR25) — off by default; provenance required
+contact_discovery_enabled: false
+contact_discovery_max_fetches_per_run: 20
+contact_discovery_min_interval_seconds: 1.0
+contact_discovery_cache_ttl_hours: 168
+contact_discovery_stale_after_days: 90
+contact_discovery_allow_retro_crawl: false
