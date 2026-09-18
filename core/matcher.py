@@ -329,7 +329,15 @@ def score_job(job: Job, config: AppConfig, already_applied: bool = False) -> Mat
 
     profile = config.profile
     intent = getattr(profile, "search_intent", None)
-    intent_result = apply_search_intent(job, intent)
+    from core.location import cross_border_dach_enabled
+
+    home_cc = getattr(getattr(profile, "location", None), "country", "DE") or "DE"
+    intent_result = apply_search_intent(
+        job,
+        intent,
+        cross_border_dach=cross_border_dach_enabled(config),
+        home_country=home_cc,
+    )
     # Hard SearchIntent gates — ranking must NEVER resurrect excluded jobs.
     if intent_result.excluded:
         return MatchResult(

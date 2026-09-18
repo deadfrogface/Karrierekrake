@@ -27,6 +27,11 @@ from core.intent_aliases import (
     text_has_solid_skill,
     title_matches_role_label,
 )
+from core.geo_normalize import (
+    dach_countries_for_intent,
+    extract_country_hint,
+    normalize_country_code,
+)
 from core.models import Job, RemoteType
 from core.search_intent import SearchIntent, Strictness
 from core.text_normalize import clean_text
@@ -125,15 +130,14 @@ def normalize_job_for_intent(job: Job) -> NormalizedJobText:
     emp = clean_text(job.employment_type).casefold()
     remote = clean_text(job.remote_type) or RemoteType.UNKNOWN.value
     combined = f"{title}\n{description}\n{company}"
-    # Lightweight country hint from free text (no DACH cross-border logic).
-    blob = combined.casefold()
-    country_hint = ""
-    if re.search(r"\bdeutschland\b|\bgermany\b|\b\(de\)\b", blob):
-        country_hint = "DE"
-    elif re.search(r"\bösterreich\b|\baustria\b|\b\(at\)\b", blob):
-        country_hint = "AT"
-    elif re.search(r"\bschweiz\b|\bswitzerland\b|\b\(ch\)\b", blob):
-        country_hint = "CH"
+    # Prefer explicit job.country_code; else free-text hint (DACH-aware).
+    country_hint = normalize_country_code(getattr(job, "country_code", "") or "")
+    if not country_hint:
+        country_hint = extract_country_hint(
+            combined,
+            getattr(job, "address", "") or "",
+            city,
+        )
     return NormalizedJobText(
         title=title,
         description=description,
@@ -258,10 +262,23 @@ def _salary_ok(norm: NormalizedJobText, salary_min: float | None) -> bool:
     return float(annual) >= float(salary_min)
 
 
-def _country_ok(norm: NormalizedJobText, countries: list[str]) -> bool:
+def _country_ok(
+    norm: NormalizedJobText,
+    countries: list[str],
+    *,
+    cross_border_dach: bool = True,
+    home_country: str = "DE",
+) -> bool:
     if not countries:
         return True
-    wanted = {c.casefold().strip() for c in countries if c.strip()}
+    # Cross-border commute: expand DACH so AT/CH workplaces near a DE home
+    # are not hard-excluded by a national country list alone.
+    effective = dach_countries_for_intent(
+        countries,
+        cross_border_enabled=cross_border_dach,
+        home_country=home_country,
+    )
+    wanted = {c.casefold().strip() for c in effective if c.strip()}
     # Accept ISO-ish and common names
     aliases = {
         "de": {"de", "deutschland", "germany"},
@@ -282,7 +299,7 @@ def _country_ok(norm: NormalizedJobText, countries: list[str]) -> bool:
     for name in expanded:
         if len(name) >= 2 and re.search(rf"(?<!\w){re.escape(name)}(?!\w)", blob):
             return True
-    # No country signal on job → do not hard-exclude (geo often on location config).
+    # No country signal on job → do not hard-exclude (geo often on location/radius).
     if not hint and not any(
         re.search(rf"(?<!\w){re.escape(n)}(?!\w)", blob) for n in expanded if len(n) >= 2
     ):
@@ -295,6 +312,8 @@ def _radius_ok(norm: NormalizedJobText, radius_km: float | None) -> bool:
         return True
     if norm.remote_type == RemoteType.REMOTE.value:
         return True
+    # UNKNOWN distance: do not invent a hard-fail (or hard-pass beyond soft path).
+    # Intent filter keeps jobs with unknown distance; hard_filter may still gate auto-apply.
     if norm.distance_km is None:
         return True
     return float(norm.distance_km) <= float(radius_km)
@@ -345,11 +364,20 @@ def _intent_has_active_filters(intent: SearchIntent) -> bool:
     )
 
 
-def apply_search_intent(job: Job, intent: SearchIntent | None) -> IntentFilterResult:
+def apply_search_intent(
+    job: Job,
+    intent: SearchIntent | None,
+    *,
+    cross_border_dach: bool = True,
+    home_country: str = "DE",
+) -> IntentFilterResult:
     """Run the full deterministic intent pipeline for one job.
 
     Empty / None intent → included with rank_score 0 and empty explanations
     (caller falls back to legacy matcher path).
+
+    ``cross_border_dach`` expands country gates to DE/AT/CH so commute radius
+    is mathematical, not national. Does not claim AT/CH board coverage.
     """
     version = ranking_version_token()
     if intent is None or not _intent_has_active_filters(intent):
@@ -643,14 +671,23 @@ def apply_search_intent(job: Job, intent: SearchIntent | None) -> IntentFilterRe
         )
 
     if intent.countries:
-        ok = _country_ok(norm, intent.countries)
+        ok = _country_ok(
+            norm,
+            intent.countries,
+            cross_border_dach=cross_border_dach,
+            home_country=home_country,
+        )
         criteria.append(
             CriterionResult(
                 kind="country",
                 label=",".join(intent.countries),
                 passed=ok,
                 hard=True,
-                detail="country matched" if ok else "country mismatch",
+                detail=(
+                    "country matched (DACH cross-border)"
+                    if ok and cross_border_dach
+                    else ("country matched" if ok else "country mismatch")
+                ),
             )
         )
         if not ok:

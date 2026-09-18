@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Any
 
 from core.deduplicator import make_job_id
+from core.geo_normalize import normalize_country_code, source_location_blob_to_fields
 from core.models import Job, RemoteType
 from search.base import JobSource, PartialResultsError, SearchQuery
 
@@ -130,7 +131,11 @@ class IndeedSource(JobSource):
         url = str(row.get("job_url") or row.get("link") or "").strip()
         company = str(row.get("company") or "").strip()
         location = str(row.get("location") or "").strip()
-        city = location.split(",")[0].strip() if location else ""
+        fields = source_location_blob_to_fields(location)
+        city = fields["city"] or (location.split(",")[0].strip() if location else "")
+        # JobSpy Indeed adapter stays DE-scoped (country_indeed=germany) — isolated.
+        # Still normalize any explicit country token in the location string.
+        country_code = fields["country_code"] or "DE"
         description = str(row.get("description") or "")
         salary_text = ""
         salary_min = salary_max = None
@@ -175,7 +180,9 @@ class IndeedSource(JobSource):
             company=company,
             description=description,
             city=city,
+            postal_code=fields.get("postal_code") or "",
             address=location,
+            country_code=normalize_country_code(country_code) or "DE",
             remote_type=_remote_from_row(row),
             employment_type=str(row.get("job_type") or ""),
             salary_min=salary_min,

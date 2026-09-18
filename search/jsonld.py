@@ -8,6 +8,10 @@ from typing import Any
 from bs4 import BeautifulSoup
 
 from core.deduplicator import make_job_id
+from core.geo_normalize import (
+    normalize_country_code,
+    source_location_blob_to_fields,
+)
 from core.models import Job, RemoteType
 
 
@@ -141,6 +145,7 @@ def job_from_list_card(
     company: str = "",
     city: str = "",
     min_title_len: int = 5,
+    country_code: str = "",
 ) -> Job | None:
     """Build a Job from HTML card/link fallbacks when JSON-LD is absent."""
     title = (title or "").strip()
@@ -150,7 +155,9 @@ def job_from_list_card(
     if _is_gender_only_title(title):
         return None
     company = (company or "").strip()
-    city = (city or "").strip()
+    fields = source_location_blob_to_fields(city)
+    city_n = fields["city"] or (city or "").strip()
+    cc = normalize_country_code(country_code) or fields["country_code"]
     return Job(
         id=make_job_id(source, url, url, title, company),
         source=source,
@@ -158,9 +165,11 @@ def job_from_list_card(
         title=title,
         company=company,
         description="",
-        city=city,
-        address=city,
-        remote_type=_infer_remote(title, company, city),
+        city=city_n,
+        postal_code=fields.get("postal_code") or "",
+        address=city or city_n,
+        country_code=cc,
+        remote_type=_infer_remote(title, company, city_n),
         published_at="",
         url=url,
         application_url=url,
@@ -186,6 +195,8 @@ def job_from_job_posting(
         url = url.get("@id") or ""
     url = str(url or "").strip()
     city = ""
+    postal = ""
+    country_code = ""
     loc = item.get("jobLocation") or {}
     if isinstance(loc, list) and loc:
         loc = loc[0]
@@ -193,6 +204,10 @@ def job_from_job_posting(
         addr = loc.get("address") or {}
         if isinstance(addr, dict):
             city = str(addr.get("addressLocality") or "").strip()
+            postal = str(addr.get("postalCode") or "").strip()
+            country_code = normalize_country_code(
+                addr.get("addressCountry") or ""
+            )
     description = item.get("description") or ""
     text = (
         BeautifulSoup(description, "lxml").get_text("\n", strip=True) if description else ""
@@ -202,6 +217,10 @@ def job_from_job_posting(
     if "TELECOMMUTE" in location_type:
         remote = RemoteType.REMOTE.value
     smin, smax, salary_text = _salary_from_base_salary(item)
+    if not country_code:
+        country_code = source_location_blob_to_fields(
+            f"{postal} {city}".strip()
+        ).get("country_code") or ""
     return Job(
         id=make_job_id(source, url, url, title, company),
         source=source,
@@ -210,7 +229,9 @@ def job_from_job_posting(
         company=company,
         description=text,
         city=city,
+        postal_code=postal,
         address=city,
+        country_code=country_code,
         remote_type=remote,
         salary_min=smin,
         salary_max=smax,
