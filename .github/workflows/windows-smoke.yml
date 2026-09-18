@@ -76,6 +76,13 @@ jobs:
           if ($subsystem -ne 2) { Write-Error "EXE subsystem=$subsystem (expected 2=WINDOWS_GUI / noconsole)"; exit 1 }
           Write-Host "EXE subsystem=WINDOWS_GUI (noconsole) OK"
         shell: pwsh
+      - name: Production content scan + manifest
+        shell: pwsh
+        run: |
+          python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty
+          if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
+          Get-Content dist/content_manifest.json | Select-Object -First 40
       - name: Packaged EXE smoke-test (isolated LOCALAPPDATA)
         shell: pwsh
         run: |
@@ -125,6 +132,7 @@ jobs:
           path: |
             dist/Karrierekrake.exe
             dist/build_metadata.txt
+            dist/content_manifest.json
             dist/smoke_test_result.txt
           if-no-files-found: error
           retention-days: 14
@@ -135,6 +143,7 @@ jobs:
           @"
           ## WINDOWS BUILD / EXE
           - build: see job
+          - production content gate: see job
           - EXE startup smoke: see job
           - legacy DB EXE: see job
           - reset: see job

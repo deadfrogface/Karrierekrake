@@ -24,6 +24,8 @@ jobs:
           pip install -r requirements.txt
       - name: Privacy scan
         run: python scripts/privacy_scan.py
+      - name: Production content gate (unit)
+        run: python -m pytest -q tests/test_production_content_gate.py
       - name: Full pytest
         env:
           QT_QPA_PLATFORM: offscreen
@@ -68,6 +70,12 @@ jobs:
           if ($subsystem -ne 2) { Write-Error "EXE subsystem=$subsystem (expected 2=WINDOWS_GUI / noconsole)"; exit 1 }
           Write-Host "EXE subsystem=WINDOWS_GUI (noconsole) OK"
         shell: pwsh
+      - name: Production content scan + manifest
+        shell: pwsh
+        run: |
+          python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty
+          if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
       - name: EXE smoke-test
         shell: pwsh
         run: |
@@ -81,5 +89,6 @@ jobs:
           path: |
             dist/Karrierekrake.exe
             dist/build_metadata.txt
+            dist/content_manifest.json
           if-no-files-found: error
           retention-days: 30
