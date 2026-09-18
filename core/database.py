@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     duplicate_of TEXT,
     alt_sources TEXT DEFAULT '[]',
     run_id TEXT DEFAULT '',
+    ranking_version TEXT DEFAULT '',
     updated_at TEXT
 );
 
@@ -231,10 +232,14 @@ class Database:
             #    Do NOT create idx_jobs_run_id here — legacy jobs tables lack run_id.
             conn.executescript(SCHEMA)
 
-            # 2) Migrate older DBs that predate run_id / search_runs.
+            # 2) Migrate older DBs that predate run_id / search_runs / ranking_version.
             cols = {row[1] for row in conn.execute("PRAGMA table_info(jobs)").fetchall()}
             if "run_id" not in cols:
                 conn.execute("ALTER TABLE jobs ADD COLUMN run_id TEXT DEFAULT ''")
+            if "ranking_version" not in cols:
+                conn.execute(
+                    "ALTER TABLE jobs ADD COLUMN ranking_version TEXT DEFAULT ''"
+                )
 
             conn.execute(
                 """
@@ -255,6 +260,34 @@ class Database:
                     "CREATE INDEX IF NOT EXISTS idx_jobs_run_id ON jobs(run_id)"
                 )
 
+            # 4) Invalidate cached match scores from older ranking/alias algorithms.
+            self._invalidate_stale_ranking_scores(conn)
+
+    @staticmethod
+    def _invalidate_stale_ranking_scores(conn: sqlite3.Connection) -> None:
+        """Zero scores whose ranking_version does not match the current strategy.
+
+        Never softens hard filters — only clears stale soft scores so rematch
+        can recompute. Jobs already hard-ignored keep their status.
+        """
+        from core.intent_aliases import ranking_version_token
+
+        current = ranking_version_token()
+        cols = {row[1] for row in conn.execute("PRAGMA table_info(jobs)").fetchall()}
+        if "ranking_version" not in cols:
+            return
+        conn.execute(
+            """
+            UPDATE jobs
+            SET match_score = 0,
+                match_reasons = '[]',
+                ranking_version = ''
+            WHERE ranking_version IS NOT NULL
+              AND ranking_version != ''
+              AND ranking_version != ?
+            """,
+            (current,),
+        )
 
     def recover_interrupted_state(self) -> None:
         """Heal rows left mid-flight after a crash / force-kill."""

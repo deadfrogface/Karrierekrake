@@ -71,6 +71,8 @@ class Job:
     duplicate_of: str | None = None
     alt_sources: list[str] = field(default_factory=list)
     run_id: str = ""
+    # Persist ranking/alias algorithm version with cached scores (PR23).
+    ranking_version: str = ""
 
     def __post_init__(self) -> None:
         self.title = clean_text(self.title)
@@ -130,3 +132,6 @@ class MatchResult:
     # Structured evidence dicts (DIRECT / RELATED / NOT_SUPPORTED). Optional for
     # backward compatibility with older DB rows / callers.
     evidence: list[dict[str, Any]] = field(default_factory=list)
+    # PR23 SearchIntent ranking/alias version + explainability payload.
+    ranking_version: str = ""
+    intent_explanation: dict[str, Any] = field(default_factory=dict)
