@@ -266,3 +266,94 @@ def test_family_coverage_counts(scenarios: list[dict]):
     assert sum(counts.values()) >= 250
     assert counts["clear_unique"] >= 50
     assert counts["same_company_two_roles"] >= 30
+
+
+def test_db_confirmed_association_not_silently_overwritten(tmp_path):
+    """Fail-closed persistence: confirmed case_id survives rematch."""
+    from core.database import Database
+    from core.lifecycle import ApplicationCase, CaseStatus
+
+    db = Database(tmp_path / "assoc.db")
+    db.upsert_case(
+        ApplicationCase(
+            id="keep-me",
+            company="Keep GmbH",
+            position="Assistenz",
+            status=CaseStatus.APPLIED.value,
+            contact_email="hr@keep.example.com",
+        )
+    )
+    eid = db.save_email_message(
+        {
+            "gmail_id": "g-confirmed-1",
+            "subject": "Orig",
+            "sender": "hr@keep.example.com",
+            "body_text": "hello",
+            "case_id": "keep-me",
+            "association_status": "linked",
+            "association_policy_version": "0.9.0",
+            "association_explanation": "manual",
+            "association_confirmed": 1,
+        }
+    )
+    db.resolve_email_association("g-confirmed-1", "keep-me")
+    # Attempt overwrite with different case
+    db.save_email_message(
+        {
+            "gmail_id": "g-confirmed-1",
+            "subject": "Rematch",
+            "sender": "hr@other.example.com",
+            "body_text": "other",
+            "case_id": "other-case",
+            "association_status": "linked",
+            "association_policy_version": ASSOCIATION_POLICY_VERSION,
+            "association_explanation": "should not apply",
+            "association_confirmed": 0,
+        }
+    )
+    row = db.get_email_message("g-confirmed-1")
+    assert row is not None
+    assert row["case_id"] == "keep-me"
+    assert int(row["association_confirmed"]) == 1
+    assert row["association_status"] == "linked"
+    assert eid
+
+
+def test_policy_version_stored_on_ambiguous(tmp_path):
+    from core.database import Database
+    from core.case_pipeline import process_parsed_email
+    from core.lifecycle import ApplicationCase, CaseStatus
+
+    db = Database(tmp_path / "assoc2.db")
+    db.upsert_case(
+        ApplicationCase(
+            id="c1",
+            company="Nordlicht GmbH",
+            position="Buchhalter",
+            status=CaseStatus.APPLIED.value,
+            contact_email="hr@nordlicht.example.com",
+        )
+    )
+    db.upsert_case(
+        ApplicationCase(
+            id="c2",
+            company="Nordlicht GmbH",
+            position="Controller",
+            status=CaseStatus.APPLIED.value,
+            contact_email="hr@nordlicht.example.com",
+        )
+    )
+    out = process_parsed_email(
+        db,
+        {
+            "gmail_id": "g-amb-1",
+            "subject": "Update",
+            "sender": "People <noreply@nordlicht.example.com>",
+            "body_text": "Allgemeine Nachricht",
+        },
+        auto_status=False,
+    )
+    assert out["status"] in {"ambiguous", "review_required"}
+    row = db.get_email_message("g-amb-1")
+    assert row["association_policy_version"] == ASSOCIATION_POLICY_VERSION
+    assert row["case_id"] in ("", None)

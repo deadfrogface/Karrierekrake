@@ -174,6 +174,10 @@ CREATE TABLE IF NOT EXISTS email_messages (
     confidence REAL DEFAULT 0,
     case_id TEXT DEFAULT '',
     association_status TEXT DEFAULT 'unlinked',
+    association_policy_version TEXT DEFAULT '',
+    association_explanation TEXT DEFAULT '',
+    association_evidence_json TEXT DEFAULT '[]',
+    association_confirmed INTEGER DEFAULT 0,
     received_at TEXT DEFAULT '',
     created_at TEXT,
     UNIQUE(gmail_id)
@@ -351,6 +355,33 @@ class Database:
                 "CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_status "
                 "ON recruiting_contacts(status)"
             )
+
+            # 6) Email association policy metadata (PR29) — never auto-overwrite confirmed.
+            email_cols = {
+                row[1]
+                for row in conn.execute("PRAGMA table_info(email_messages)").fetchall()
+            }
+            if email_cols:
+                if "association_policy_version" not in email_cols:
+                    conn.execute(
+                        "ALTER TABLE email_messages ADD COLUMN "
+                        "association_policy_version TEXT DEFAULT ''"
+                    )
+                if "association_explanation" not in email_cols:
+                    conn.execute(
+                        "ALTER TABLE email_messages ADD COLUMN "
+                        "association_explanation TEXT DEFAULT ''"
+                    )
+                if "association_evidence_json" not in email_cols:
+                    conn.execute(
+                        "ALTER TABLE email_messages ADD COLUMN "
+                        "association_evidence_json TEXT DEFAULT '[]'"
+                    )
+                if "association_confirmed" not in email_cols:
+                    conn.execute(
+                        "ALTER TABLE email_messages ADD COLUMN "
+                        "association_confirmed INTEGER DEFAULT 0"
+                    )
 
     @staticmethod
     def _invalidate_stale_ranking_scores(conn: sqlite3.Connection) -> None:
@@ -1174,27 +1205,108 @@ class Database:
         )
         return case
 
-    def save_email_message(self, row: dict[str, Any]) -> str:
-        mid = row.get("id") or str(uuid.uuid4())
+    def get_email_message(self, email_id: str) -> dict[str, Any] | None:
         with self.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM email_messages WHERE id = ? OR gmail_id = ? LIMIT 1",
+                (email_id, email_id),
+            ).fetchone()
+        return dict(row) if row else None
+
+    def save_email_message(self, row: dict[str, Any]) -> str:
+        """Persist email. Confirmed associations are never silently overwritten."""
+        mid = row.get("id") or str(uuid.uuid4())
+        gmail_id = row.get("gmail_id") or mid
+        evidence = row.get("association_evidence_json")
+        if not isinstance(evidence, str):
+            evidence = json.dumps(evidence or [], ensure_ascii=False)
+        with self.connection() as conn:
+            existing = conn.execute(
+                "SELECT * FROM email_messages WHERE gmail_id = ? LIMIT 1",
+                (gmail_id,),
+            ).fetchone()
+            if existing is not None:
+                prev = dict(existing)
+                confirmed = bool(int(prev.get("association_confirmed") or 0))
+                prev_case = prev.get("case_id") or ""
+                if confirmed and prev_case:
+                    new_case = row.get("case_id") or ""
+                    # Protect confirmed link — classification may update, case_id may not.
+                    if new_case and new_case != prev_case:
+                        conn.execute(
+                            """
+                            UPDATE email_messages SET
+                                subject=?, body_text=?, category=?, confidence=?
+                            WHERE gmail_id=?
+                            """,
+                            (
+                                row.get("subject") or prev.get("subject") or "",
+                                row.get("body_text") or prev.get("body_text") or "",
+                                row.get("category") or prev.get("category") or "",
+                                float(row.get("confidence") or prev.get("confidence") or 0),
+                                gmail_id,
+                            ),
+                        )
+                        return str(prev.get("id") or mid)
+                    conn.execute(
+                        """
+                        UPDATE email_messages SET
+                            subject=?, body_text=?, category=?, confidence=?
+                        WHERE gmail_id=?
+                        """,
+                        (
+                            row.get("subject") or prev.get("subject") or "",
+                            row.get("body_text") or prev.get("body_text") or "",
+                            row.get("category") or prev.get("category") or "",
+                            float(row.get("confidence") or prev.get("confidence") or 0),
+                            gmail_id,
+                        ),
+                    )
+                    return str(prev.get("id") or mid)
+
             conn.execute(
                 """
                 INSERT INTO email_messages (
                     id, gmail_id, thread_id, subject, sender, body_text,
                     category, confidence, case_id, association_status,
+                    association_policy_version, association_explanation,
+                    association_evidence_json, association_confirmed,
                     received_at, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(gmail_id) DO UPDATE SET
                     subject=excluded.subject,
                     body_text=excluded.body_text,
                     category=excluded.category,
                     confidence=excluded.confidence,
-                    case_id=excluded.case_id,
-                    association_status=excluded.association_status
+                    case_id=CASE
+                        WHEN email_messages.association_confirmed = 1
+                        THEN email_messages.case_id
+                        ELSE excluded.case_id
+                    END,
+                    association_status=CASE
+                        WHEN email_messages.association_confirmed = 1
+                        THEN email_messages.association_status
+                        ELSE excluded.association_status
+                    END,
+                    association_policy_version=CASE
+                        WHEN email_messages.association_confirmed = 1
+                        THEN email_messages.association_policy_version
+                        ELSE excluded.association_policy_version
+                    END,
+                    association_explanation=CASE
+                        WHEN email_messages.association_confirmed = 1
+                        THEN email_messages.association_explanation
+                        ELSE excluded.association_explanation
+                    END,
+                    association_evidence_json=CASE
+                        WHEN email_messages.association_confirmed = 1
+                        THEN email_messages.association_evidence_json
+                        ELSE excluded.association_evidence_json
+                    END
                 """,
                 (
                     mid,
-                    row.get("gmail_id") or mid,
+                    gmail_id,
                     row.get("thread_id") or "",
                     row.get("subject") or "",
                     row.get("sender") or "",
@@ -1203,6 +1315,10 @@ class Database:
                     float(row.get("confidence") or 0),
                     row.get("case_id") or "",
                     row.get("association_status") or "unlinked",
+                    row.get("association_policy_version") or "",
+                    row.get("association_explanation") or "",
+                    evidence,
+                    1 if row.get("association_confirmed") else 0,
                     row.get("received_at") or "",
                     row.get("created_at") or utc_now_iso(),
                 ),
@@ -1214,7 +1330,7 @@ class Database:
             rows = conn.execute(
                 """
                 SELECT * FROM email_messages
-                WHERE association_status = 'ambiguous'
+                WHERE association_status IN ('ambiguous', 'review_required')
                 ORDER BY created_at DESC LIMIT ?
                 """,
                 (limit,),
@@ -1222,20 +1338,40 @@ class Database:
         return [dict(r) for r in rows]
 
     def resolve_email_association(self, email_id: str, case_id: str) -> None:
+        """Manual user confirmation — sets confirmed flag (rollback-safe)."""
+        from integrations.email_associate import ASSOCIATION_POLICY_VERSION
+
         with self.connection() as conn:
             conn.execute(
                 """
                 UPDATE email_messages
-                SET case_id = ?, association_status = 'linked'
+                SET case_id = ?,
+                    association_status = 'linked',
+                    association_confirmed = 1,
+                    association_policy_version = ?,
+                    association_explanation = ?
                 WHERE id = ? OR gmail_id = ?
                 """,
-                (case_id, email_id, email_id),
+                (
+                    case_id,
+                    ASSOCIATION_POLICY_VERSION,
+                    f"Manually confirmed link to {case_id}",
+                    email_id,
+                    email_id,
+                ),
             )
         self.add_case_event(
             CaseEvent(
                 case_id=case_id,
                 event_type=CaseEventType.EMAIL_LINKED.value,
-                payload_json=json.dumps({"email_id": email_id, "manual": True}),
+                payload_json=json.dumps(
+                    {
+                        "email_id": email_id,
+                        "manual": True,
+                        "confirmed": True,
+                        "policy_version": ASSOCIATION_POLICY_VERSION,
+                    }
+                ),
             )
         )
 

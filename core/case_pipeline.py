@@ -13,7 +13,11 @@ from core.lifecycle import (
     CaseStatus,
     email_category_to_status,
 )
-from integrations.email_associate import associate_email
+from integrations.email_associate import (
+    ASSOCIATION_POLICY_VERSION,
+    associate_email,
+    decide_association_write,
+)
 from integrations.email_classify import classify_email
 from integrations.followup import suggest_follow_ups
 from integrations.gmail_sync import ParsedEmail, sender_is_excluded
@@ -96,21 +100,70 @@ def process_parsed_email(
         logger.debug("guenther email assist skipped", exc_info=False)
 
     cases = [c.to_dict() for c in db.list_cases(limit=2000)]
-    assoc = associate_email(
+    proposed = associate_email(
         sender=sender,
         subject=payload.get("subject") or "",
+        body=payload.get("body_text") or "",
         cases=cases,
+        thread_id=payload.get("thread_id") or "",
+        message_id=payload.get("message_id") or payload.get("gmail_id") or "",
     )
+
+    # Protect confirmed associations on re-ingest (no silent overwrite / cross-case mutation).
+    existing = None
+    gmail_key = payload.get("gmail_id") or ""
+    if gmail_key:
+        existing = db.get_email_message(gmail_key)
+    if existing and (
+        int(existing.get("association_confirmed") or 0)
+        or (
+            (existing.get("association_status") or "") == "linked"
+            and existing.get("case_id")
+            and int(existing.get("association_confirmed") or 0)
+        )
+    ):
+        assoc = decide_association_write(
+            existing_status=str(existing.get("association_status") or ""),
+            existing_case_id=str(existing.get("case_id") or ""),
+            existing_confirmed=bool(int(existing.get("association_confirmed") or 0)),
+            existing_policy_version=str(existing.get("association_policy_version") or ""),
+            proposed=proposed,
+        )
+    else:
+        assoc = proposed
 
     if guenther_meta:
         payload["guenther"] = guenther_meta
 
+    payload["association_policy_version"] = assoc.policy_version or ASSOCIATION_POLICY_VERSION
+    payload["association_explanation"] = assoc.explanation or assoc.reason
+    payload["association_evidence_json"] = list(assoc.evidence)
+
+    if assoc.match_status == "protected" and existing:
+        # Keep confirmed link; do not mutate case status from this pass.
+        payload["case_id"] = existing.get("case_id") or ""
+        payload["association_status"] = "linked"
+        payload["association_confirmed"] = 1
+        eid = db.save_email_message(payload)
+        return {
+            "email_id": eid,
+            "status": "protected",
+            "case_id": payload["case_id"],
+            "category": classification.category,
+            "confidence": classification.confidence,
+            "false_rejection_blocked": classification.false_rejection_blocked,
+            "association_reason": assoc.reason,
+            "policy_version": assoc.policy_version,
+        }
+
     if assoc.ambiguous or not assoc.case_id:
-        payload["association_status"] = "ambiguous" if assoc.candidates or assoc.ambiguous else "unlinked"
+        status = assoc.match_status if assoc.match_status in {"ambiguous", "review_required"} else (
+            "ambiguous" if assoc.candidates or assoc.ambiguous else "unlinked"
+        )
+        payload["association_status"] = status
         payload["case_id"] = ""
         eid = db.save_email_message(payload)
         if assoc.candidates:
-            # Record ambiguity against first candidate for timeline visibility.
             for cid in assoc.candidates[:3]:
                 db.add_case_event(
                     CaseEvent(
@@ -121,6 +174,9 @@ def process_parsed_email(
                                 "email_id": eid,
                                 "reason": assoc.reason,
                                 "candidates": list(assoc.candidates),
+                                "explanation": assoc.explanation,
+                                "policy_version": assoc.policy_version,
+                                "evidence": list(assoc.evidence),
                             },
                             ensure_ascii=False,
                         ),
@@ -134,6 +190,8 @@ def process_parsed_email(
             "confidence": classification.confidence,
             "false_rejection_blocked": classification.false_rejection_blocked,
             "candidates": list(assoc.candidates),
+            "association_reason": assoc.reason,
+            "policy_version": assoc.policy_version,
         }
 
     payload["case_id"] = assoc.case_id
@@ -148,6 +206,10 @@ def process_parsed_email(
                     "email_id": eid,
                     "category": classification.category,
                     "confidence": classification.confidence,
+                    "association_confidence": assoc.confidence,
+                    "explanation": assoc.explanation,
+                    "evidence": list(assoc.evidence),
+                    "policy_version": assoc.policy_version,
                 },
                 ensure_ascii=False,
             ),
@@ -176,6 +238,8 @@ def process_parsed_email(
         "category": classification.category,
         "confidence": classification.confidence,
         "false_rejection_blocked": classification.false_rejection_blocked,
+        "association_reason": assoc.reason,
+        "policy_version": assoc.policy_version,
     }
 
 
