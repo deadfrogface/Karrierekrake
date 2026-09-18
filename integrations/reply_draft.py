@@ -100,10 +100,15 @@ class VerifiedFacts:
             else ""
         )
 
-        when = (interview_when or case.get("interview_when") or "").strip()
-        when_ok = bool(interview_when) or cls._flag(case, "interview_when")
-        if not when_ok:
+        # Explicit kwargs are trusted only when the case does not mark the
+        # field as unverified (False). Missing flag + non-empty kwarg = ok.
+        if "interview_when_verified" in case and case.get("interview_when_verified") is False:
             when = ""
+        else:
+            when = (interview_when or case.get("interview_when") or "").strip()
+            when_ok = bool(interview_when) or cls._flag(case, "interview_when")
+            if not when_ok:
+                when = ""
 
         slots_src = proposed_slots
         if slots_src is None:
@@ -349,6 +354,8 @@ def _build_reschedule(
     del offer_phone, general_note
     blocking = _missing_core(facts)
     used = [k for k in ("company", "position", "contact_name", "contact_email") if getattr(facts, k)]
+    role = _role_line(facts)
+    role_bit = f" ({role})" if role else ""
     old = ""
     if facts.interview_when:
         old = (
@@ -367,7 +374,7 @@ def _build_reschedule(
         alt_block = " Bitte lassen Sie uns einen neuen Termin finden."
     body = (
         f"{_greeting(facts)}\n\n"
-        f"könnten wir den Interviewtermin verschieben?{old}{alt_block}\n\n"
+        f"könnten wir den Interviewtermin{role_bit} verschieben?{old}{alt_block}\n\n"
         f"{_signoff(facts)}"
     )
     return _base_draft(
@@ -539,8 +546,10 @@ def _build_general(
         mid = note[:800]
         used.append("general_note")
     else:
+        role = _role_line(facts)
+        role_bit = f" {role}" if role else ""
         mid = (
-            "vielen Dank für Ihre Nachricht. "
+            f"vielen Dank für Ihre Nachricht zur Bewerbung{role_bit}. "
             "Ich melde mich bezogen auf den vorliegenden Fall."
         )
     body = f"{_greeting(facts)}\n\n{mid}\n\n{_signoff(facts)}"
