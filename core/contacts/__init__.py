@@ -22,6 +22,13 @@ from core.contacts.models import (
     SourceType,
     SOURCE_PRIORITY,
 )
+from core.contacts.writer_contract import (
+    NEUTRAL_SALUTATION,
+    WriterContactClaims,
+    build_writer_claims,
+    claims_from_discovery,
+    writer_invented_contact_violations,
+)
 from core.contacts.verification import (
     VERIFICATION_SCHEMA_VERSION,
     ConflictRecord,
@@ -38,6 +45,7 @@ from core.contacts.verification import (
 __all__ = [
     "CONTACT_SCHEMA_VERSION",
     "DEFAULT_VERIFICATION_STATUS",
+    "NEUTRAL_SALUTATION",
     "VERIFICATION_SCHEMA_VERSION",
     "ConflictRecord",
     "ContactCandidate",
@@ -52,10 +60,14 @@ __all__ = [
     "SourceType",
     "VerificationResult",
     "VerificationStatus",
+    "WriterContactClaims",
+    "build_writer_claims",
+    "claims_from_discovery",
     "annotate_candidate_verification",
     "discover_contacts",
     "evidence_strength_for_source",
     "has_explicit_salutation_evidence",
     "verify_candidate",
     "verify_discovery",
+    "writer_invented_contact_violations",
 ]

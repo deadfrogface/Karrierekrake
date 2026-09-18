@@ -2,6 +2,9 @@
 
 Experience and skills are relevance-ranked against the job text — never
 hallucinated, never ``bei nan``.
+
+PR26: optional verified recruiting contact claims may adjust salutation;
+unverified contacts never inject a person name.
 """
 
 from __future__ import annotations
@@ -9,6 +12,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 from core.config import AppConfig, ExperienceEntry
 from core.matcher import _is_glue_token, _meaningful_words, _norm, _token_in_text
@@ -16,7 +20,7 @@ from core.models import Job
 from core.text_normalize import clean_company, clean_text
 
 
-DEFAULT_TEMPLATE = """Sehr geehrte Damen und Herren,
+DEFAULT_TEMPLATE = """{salutation},
 
 hiermit bewerbe ich mich um die Position als {job_title} bei {company}.
 
@@ -94,7 +98,6 @@ def pick_relevant_experience(
     best = ranked[0]
     if _experience_relevance(best, blob) > 0:
         return best
-    # No overlap — fall back to first listed (caller may still use soft wording).
     return experiences[0]
 
 
@@ -111,18 +114,43 @@ def pick_relevant_skills(config: AppConfig, job: Job, *, limit: int = 6) -> list
         )
     )
     pool = [s for s in pool if s and not _is_glue_token(s)]
-    hits = [s for s in pool if _token_in_text(s, blob) or any(
-        _token_in_text(part, blob)
-        for part in re.split(r"[,/|]", s)
-        if len(part.strip()) >= 3 and not _is_glue_token(part)
-    )]
+    hits = [
+        s
+        for s in pool
+        if _token_in_text(s, blob)
+        or any(
+            _token_in_text(part, blob)
+            for part in re.split(r"[,/|]", s)
+            if len(part.strip()) >= 3 and not _is_glue_token(part)
+        )
+    ]
     if hits:
         return hits[:limit]
-    # Soft fallback: keep profile order but shorter list to avoid dumping noise.
     return pool[: min(3, limit)]
 
 
-def render_cover_letter(job: Job, config: AppConfig) -> str:
+def _resolve_writer_claims(
+    config: AppConfig,
+    contact_claims: Any | None,
+) -> Any:
+    from core.contacts.writer_contract import WriterContactClaims, build_writer_claims
+
+    binding = bool(getattr(config.settings, "contact_writer_binding_enabled", True))
+    if isinstance(contact_claims, WriterContactClaims):
+        if not binding:
+            return build_writer_claims(None, writer_binding_enabled=False)
+        return contact_claims
+    if contact_claims is not None and hasattr(contact_claims, "contact_verified"):
+        return build_writer_claims(contact_claims, writer_binding_enabled=binding)
+    return WriterContactClaims.empty(writer_binding_enabled=binding)
+
+
+def render_cover_letter(
+    job: Job,
+    config: AppConfig,
+    *,
+    contact_claims: Any | None = None,
+) -> str:
     template_path = resolve_cover_letter_template(config)
     if template_path is not None:
         template = template_path.read_text(encoding="utf-8")
@@ -154,6 +182,12 @@ def render_cover_letter(job: Job, config: AppConfig) -> str:
             "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein."
         )
 
+    claims = _resolve_writer_claims(config, contact_claims)
+    from core.contacts.writer_contract import (
+        apply_claims_to_template_mapping,
+        sanitize_cover_body_for_claims,
+    )
+
     mapping = {
         "job_title": clean_text(job.title) or "die ausgeschriebene Position",
         "company": company,
@@ -162,16 +196,24 @@ def render_cover_letter(job: Job, config: AppConfig) -> str:
         "full_name": clean_text(config.application.full_name) or "[Ihr Name]",
         "first_name": clean_text(config.application.first_name),
         "last_name": clean_text(config.application.last_name),
+        "salutation": "Sehr geehrte Damen und Herren",
     }
+    mapping = apply_claims_to_template_mapping(mapping, claims)
 
     class _Safe(dict):
         def __missing__(self, key: str) -> str:
             return "{" + key + "}"
 
     try:
-        return template.format_map(_Safe(mapping))
+        text = template.format_map(_Safe(mapping))
     except (ValueError, IndexError):
-        return DEFAULT_TEMPLATE.format_map(_Safe(mapping))
+        text = DEFAULT_TEMPLATE.format_map(_Safe(mapping))
+
+    return sanitize_cover_body_for_claims(
+        text,
+        claims,
+        applicant_name=mapping.get("full_name") or "",
+    )
 
 
 def save_cover_letter(text: str, path: Path) -> Path:

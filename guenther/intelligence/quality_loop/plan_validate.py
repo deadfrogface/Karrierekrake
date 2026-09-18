@@ -218,7 +218,12 @@ def plan_blocking(errors: list[ValidatorError]) -> bool:
     return any(e.severity == "error" for e in errors)
 
 
-def summarize_plan_for_draft(plan: WritingPlan, store: EvidenceStore) -> dict[str, Any]:
+def summarize_plan_for_draft(
+    plan: WritingPlan,
+    store: EvidenceStore,
+    *,
+    contact_claims: Any | None = None,
+) -> dict[str, Any]:
     """Compact verified plan payload for the drafting prompt (no unrelated profile dump)."""
     by_id = {i.id: i for i in store.items}
     direct = []
@@ -246,7 +251,7 @@ def summarize_plan_for_draft(plan: WritingPlan, store: EvidenceStore) -> dict[st
                     "allowed_transfer_framing": ref.allowed_transfer_framing,
                 }
             )
-    return {
+    out = {
         "target_role": plan.target_role,
         "target_company": plan.target_company,
         "candidate_positioning": plan.candidate_positioning,
@@ -262,3 +267,6 @@ def summarize_plan_for_draft(plan: WritingPlan, store: EvidenceStore) -> dict[st
         "hard_requirements": [h.model_dump(mode="json") for h in plan.hard_requirements],
         "desirable_requirements": [d.model_dump(mode="json") for d in plan.desirable_requirements],
     }
+    if contact_claims is not None and hasattr(contact_claims, "to_dict"):
+        out["contact_claims"] = contact_claims.to_dict()
+    return out

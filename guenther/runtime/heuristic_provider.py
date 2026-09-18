@@ -180,6 +180,7 @@ class HeuristicProvider(LocalAIProvider):
     def _writing(self, trusted: str, untrusted: str) -> dict[str, Any]:
         company = _target_company(trusted)
         evidence_bits: list[str] = []
+        contact_verified = "CONTACT_VERIFIED=true" in (trusted or "")
         try:
             if "verified_plan" in trusted:
                 start = trusted.find("{")
@@ -194,6 +195,9 @@ class HeuristicProvider(LocalAIProvider):
                             evidence_bits.append(framing)
                     if plan.get("target_company"):
                         company = str(plan.get("target_company"))
+                    claims = obj.get("contact_claims") or {}
+                    if isinstance(claims, dict):
+                        contact_verified = bool(claims.get("CONTACT_VERIFIED"))
         except Exception:
             pass
         if not evidence_bits:
@@ -206,8 +210,11 @@ class HeuristicProvider(LocalAIProvider):
             if company and company.upper() not in {"UNKNOWN", "UNBEKANNT"}
             else ""
         )
+        # Never invent personal salutations (PR26).
+        opening = "Sehr geehrte Damen und Herren"
+        _ = contact_verified  # reserved for future titled openings with explicit evidence
         body = (
-            f"Gerne bewerbe ich mich{co_phrase}. "
+            f"{opening}, gerne bewerbe ich mich{co_phrase}. "
             f"Relevant sind insbesondere: {evid or 'meine im Profil belegte Erfahrung'}. "
             "Ich bringe eine strukturierte Arbeitsweise mit und formuliere Transfer nur dort, "
             "wo Belege vorhanden sind. Über ein Gespräch freue ich mich."
