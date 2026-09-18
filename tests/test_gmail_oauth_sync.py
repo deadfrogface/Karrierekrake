@@ -40,6 +40,15 @@ from integrations.gmail_sync import (
 from integrations.secure_tokens import delete_token, load_token, store_token
 
 
+@pytest.fixture(autouse=True)
+def _isolate_gmail_token_storage(tmp_path: Path):
+    """Clear shared OS keyring between tests (Windows Credential Locker on CI)."""
+    sink = tmp_path / "_token_sink"
+    delete_token(TOKEN_ACCOUNT, fallback_dir=sink)
+    yield
+    delete_token(TOKEN_ACCOUNT, fallback_dir=sink)
+
+
 def _http_error(status: int, body: bytes = b'{"error":{"message":"x"}}') -> HttpError:
     return HttpError(httplib2.Response({"status": str(status)}), body)
 
@@ -562,7 +571,7 @@ def test_parse_message_basic():
         "payload": {
             "headers": [
                 {"name": "Subject", "value": "Bewerbung"},
-                {"name": "From", "value": "A <a@b.de>"},
+                {"name": "From", "value": "A <a@b.example.com>"},
             ],
             "body": {"data": ""},
         },
@@ -570,12 +579,12 @@ def test_parse_message_basic():
     parsed = parse_message(msg)
     assert parsed.id == "m1"
     assert parsed.subject == "Bewerbung"
-    assert "a@b.de" in parsed.sender.lower() or parsed.sender
+    assert "a@b.example.com" in parsed.sender.lower() or parsed.sender
 
 
 def test_sender_exclude_wildcard():
     assert sender_is_excluded("x@news.example.com", ["*@news.example.com"]) is True
-    assert sender_is_excluded("hr@corp.de", ["*@news.example.com"]) is False
+    assert sender_is_excluded("hr@corp.example.com", ["*@news.example.com"]) is False
 
 
 def test_list_message_ids_pagination_token():
@@ -943,7 +952,7 @@ def test_sync_logs_omit_body(caplog):
         "payload": {
             "headers": [
                 {"name": "Subject", "value": "Subj"},
-                {"name": "From", "value": "a@b.de"},
+                {"name": "From", "value": "a@b.example.com"},
             ],
             "parts": [
                 {
@@ -979,7 +988,7 @@ def test_process_parsed_email_skips_duplicate_lifecycle(tmp_path: Path):
     email = ParsedEmail(
         id="g1",
         subject="Hi",
-        sender="hr@firma.de",
+        sender="hr@firma.example.com",
         body_text="Danke für Ihre Bewerbung",
     )
     r1 = process_parsed_email(db, email, auto_status=False)
