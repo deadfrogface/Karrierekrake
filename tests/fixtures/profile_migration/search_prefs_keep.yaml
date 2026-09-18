@@ -1,0 +1,37 @@
+location:
+  home_address: "Berlin"
+  max_distance_km: 15
+  allow_remote_germany: true
+  allow_hybrid: true
+  country: "DE"
+jobs:
+  desired_titles:
+    - "Verwaltungsfachangestellte"
+    - "Sachbearbeiter Büro"
+  alternative_titles: []
+  unwanted_titles:
+    - "Praktikant"
+  desired_industries:
+    - "Öffentlicher Dienst"
+  excluded_industries: []
+employment:
+  full_time: true
+  part_time: true
+  remote: false
+  hybrid: true
+  onsite: true
+  minimum_salary: 32000
+qualifications:
+  languages: []
+  education: []
+  work_experience: []
+  certificates: []
+  skills: []
+  software: []
+  driving_license: []
+filters:
+  desired_keywords: []
+  exclusion_keywords:
+    - "Provision"
+  preferred_companies: []
+  excluded_companies: []

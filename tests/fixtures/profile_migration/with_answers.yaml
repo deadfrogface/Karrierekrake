@@ -1,0 +1,32 @@
+# Answers dict from older builds.
+first_name: "Dana"
+last_name: "Delta"
+street: ""
+postal_code: ""
+city: ""
+country: "AT"
+email: "dana.delta@example.com"
+phone: ""
+date_of_birth: "1990-01-01"
+driving_license: ""
+work_authorization: "EU"
+notice_period: ""
+earliest_start_date: "sofort"
+salary_expectation: ""
+current_employment: ""
+education: ""
+work_experience: ""
+languages: ""
+willingness_to_travel: ""
+willingness_to_relocate: ""
+remote_preference: ""
+linkedin_url: ""
+portfolio_url: ""
+cv_path: ""
+field_origins:
+  first_name: manual
+  country: manual
+answers:
+  Fuehrerschein: "Ja"
+  Gehalt: "nach Vereinbarung"
+  Eintritt: "sofort"

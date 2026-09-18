@@ -1,0 +1,33 @@
+# CV-tagged origins; languages summary later cleared manually.
+first_name: "Bruno"
+last_name: "Beta"
+street: ""
+postal_code: ""
+city: "Hamburg"
+country: "DE"
+email: "bruno.beta@example.com"
+phone: ""
+date_of_birth: ""
+driving_license: "B"
+work_authorization: ""
+notice_period: ""
+earliest_start_date: ""
+salary_expectation: ""
+current_employment: ""
+education: ""
+work_experience: ""
+languages: "Deutsch – C2, Englisch – B2"
+willingness_to_travel: ""
+willingness_to_relocate: ""
+remote_preference: ""
+linkedin_url: ""
+portfolio_url: ""
+cv_path: "cv_bruno.pdf"
+field_origins:
+  first_name: cv
+  last_name: cv
+  email: cv
+  city: cv
+  languages: cv
+  driving_license: cv
+answers: {}

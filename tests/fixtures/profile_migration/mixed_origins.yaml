@@ -1,0 +1,37 @@
+# Mixed origins: some CV, some manual — clear must not touch other fields.
+first_name: "Eva"
+last_name: "Epsilon"
+street: "Manuellweg 9"
+postal_code: "10115"
+city: "Berlin"
+country: "DE"
+email: "eva.epsilon@example.com"
+phone: "+49 30 2222222"
+date_of_birth: ""
+driving_license: "BE"
+work_authorization: ""
+notice_period: "4 Wochen"
+earliest_start_date: ""
+salary_expectation: "42000"
+current_employment: "Teamassistenz"
+education: "Abitur"
+work_experience: "Teamassistenz"
+languages: "Deutsch"
+willingness_to_travel: "nein"
+willingness_to_relocate: "nein"
+remote_preference: "vor Ort"
+linkedin_url: ""
+portfolio_url: ""
+cv_path: ""
+field_origins:
+  first_name: cv
+  last_name: cv
+  email: cv
+  street: manual
+  postal_code: manual
+  city: manual
+  languages: cv
+  driving_license: cv
+  notice_period: manual
+  salary_expectation: manual
+answers: {}

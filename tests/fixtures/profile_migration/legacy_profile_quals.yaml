@@ -1,0 +1,56 @@
+location:
+  home_address: "München"
+  max_distance_km: 25
+  allow_remote_germany: true
+  allow_hybrid: true
+  country: "DE"
+jobs:
+  desired_titles:
+    - "Sachbearbeiter"
+  alternative_titles: []
+  unwanted_titles: []
+  desired_industries: []
+  excluded_industries: []
+employment:
+  full_time: true
+  part_time: false
+  remote: true
+  hybrid: true
+  onsite: true
+  minimum_salary: null
+qualifications:
+  languages:
+    - language: "Deutsch"
+      level: "C2"
+      source: cv
+    - language: "Englisch"
+      level: "B2"
+      source: cv
+  education:
+    - qualification: "Bachelor Informatik"
+      institution: "TU Beispiel"
+      completion_date: "2020"
+      source: cv
+  work_experience:
+    - title: "Sachbearbeiter"
+      company: "Muster GmbH"
+      start_date: "2021"
+      end_date: ""
+      source: cv
+  certificates: []
+  skills:
+    - value: "Excel"
+      source: cv
+    - value: "Word"
+      source: cv
+  software:
+    - value: "Outlook"
+      source: manual
+  driving_license:
+    - value: "B"
+      source: cv
+filters:
+  desired_keywords: []
+  exclusion_keywords: []
+  preferred_companies: []
+  excluded_companies: []

@@ -1,0 +1,29 @@
+# Unicode / umlauts / ß — roundtrip must preserve.
+first_name: "Jürgen"
+last_name: "Größe"
+street: "Größe-Straße 12"
+postal_code: "80331"
+city: "München"
+country: "DE"
+email: "juergen.groesse@example.com"
+phone: "+49 89 1111111"
+date_of_birth: ""
+driving_license: ""
+work_authorization: "Niederlassungserlaubnis"
+notice_period: "3 Monate"
+earliest_start_date: ""
+salary_expectation: "45.000 €"
+current_employment: "Bürokauffrau"
+education: "Ausbildung zur Bürokauffrau"
+work_experience: "Büro"
+languages: "Deutsch, Französisch"
+willingness_to_travel: "gelegentlich"
+willingness_to_relocate: "nein"
+remote_preference: "hybrid"
+linkedin_url: ""
+portfolio_url: ""
+cv_path: ""
+field_origins:
+  first_name: manual
+  last_name: manual
+answers: {}

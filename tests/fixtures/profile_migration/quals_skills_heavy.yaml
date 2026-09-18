@@ -1,0 +1,46 @@
+location:
+  home_address: "Leipzig"
+  max_distance_km: 40
+  allow_remote_germany: true
+  allow_hybrid: true
+  country: "DE"
+jobs:
+  desired_titles:
+    - "Office Manager"
+  alternative_titles: []
+  unwanted_titles: []
+  desired_industries: []
+  excluded_industries: []
+employment:
+  full_time: true
+  part_time: false
+  remote: true
+  hybrid: true
+  onsite: true
+  minimum_salary: 28000
+qualifications:
+  languages:
+    - language: "Deutsch"
+      level: "C1"
+      source: cv
+  education: []
+  work_experience: []
+  certificates:
+    - name: "Erste Hilfe"
+      source: manual
+  skills:
+    - value: "Excel"
+      source: cv
+    - value: "PowerPoint"
+      source: cv
+    - value: "Kundenberatung"
+      source: manual
+  software:
+    - value: "SAP"
+      source: cv
+  driving_license: []
+filters:
+  desired_keywords: []
+  exclusion_keywords: []
+  preferred_companies: []
+  excluded_companies: []

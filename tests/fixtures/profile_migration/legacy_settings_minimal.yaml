@@ -1,0 +1,5 @@
+dry_run: true
+headless: true
+max_applications_per_day: 5
+delay_between_applications_seconds: 30
+log_level: "INFO"
