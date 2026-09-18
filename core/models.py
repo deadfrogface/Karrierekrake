@@ -51,6 +51,8 @@ class Job:
     city: str = ""
     postal_code: str = ""
     address: str = ""
+    # ISO 3166-1 alpha-2 when known (DE|AT|CH). Empty = unknown — never invent.
+    country_code: str = ""
     latitude: float | None = None
     longitude: float | None = None
     distance_km: float | None = None
@@ -80,6 +82,7 @@ class Job:
         self.city = clean_text(self.city)
         self.postal_code = clean_text(self.postal_code)
         self.address = clean_text(self.address)
+        self.country_code = clean_text(self.country_code).upper()
         self.salary_text = clean_text(self.salary_text)
         self.source = clean_text(self.source)
         if is_blankish(self.remote_type):
