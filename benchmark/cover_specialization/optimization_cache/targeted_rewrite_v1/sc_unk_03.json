@@ -1,0 +1,19 @@
+{
+  "id": "sc_unk_03",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 5.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company",
+    "too_short"
+  ],
+  "latency_s": 69.426,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Ich bin an einer Lagerhilfe-Rolle interessiert, die eine passende Berufserfahrung und Deutschkenntnisse erfordert. Ich bin bereit, meine Fähigkeiten in einem logistischen Umfeld einzubringen.",
+  "subject": "Lagerhilfe-Jobangebot",
+  "baseline_score": 6.5,
+  "baseline_edit": "MATERIAL_EDIT_REQUIRED",
+  "hard_flags": {}
+}

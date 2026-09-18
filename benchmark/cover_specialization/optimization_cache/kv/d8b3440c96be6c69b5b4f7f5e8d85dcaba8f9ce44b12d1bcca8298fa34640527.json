@@ -1,0 +1,30 @@
+{
+  "id": "sc_des_04",
+  "case_id": "sc_des_04",
+  "final_ok": false,
+  "score": 8.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [],
+  "latency_s": 86.562,
+  "model_calls": 3,
+  "writer_calls": 2,
+  "final_state": "REVIEW_REQUIRED_SAFETY",
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "expect_hard_block": false,
+  "body": "Mit Grundpflege-Erfahrung und einem Englisch-B2-Zertifikat bin ich gut geeignet für die Rolle der Pflegeassistenz bei Haus am Bach. Ich bin bereit, meine Fähigkeiten im Umgang mit englischsprachigen Patienten zu nutzen, um einen positiven Einfluss auf die Patientenpflege zu haben.",
+  "subject": "Pflegeassistenz",
+  "peak_rss_mb": 140.71875,
+  "optimizer_score": 0.05,
+  "feedback": "WEAK_JOB_LINK: Connect evidence explicitly to advertised requirements.",
+  "completion_status": "done",
+  "configuration_hash": "9625db9805af1b1f4fb65dee108d2c931cc80561bdee716afa1efe1540368d8f",
+  "writer_prompt_hash": "6f7fa74f361e248a0268fdbadb867316f92864549a8034a237eaf05a126100c9",
+  "plan_hash": "unfrozen",
+  "model_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+  "generation_config_hash": "8e6882afc629e3b26fd027f0961b1fd678891be9fe4b8cd19f0055c2596a9697",
+  "evaluator_hash": "5dcff107c3bc0baeeb144fb150829756fc8af5be93386d5063ac2b51004d586c",
+  "hard_flags": {},
+  "cache_key": "d8b3440c96be6c69b5b4f7f5e8d85dcaba8f9ce44b12d1bcca8298fa34640527"
+}

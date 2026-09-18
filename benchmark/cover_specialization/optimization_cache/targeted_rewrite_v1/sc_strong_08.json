@@ -1,0 +1,16 @@
+{
+  "id": "sc_strong_08",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 57.365,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Ich bringe 3 Jahre Erfahrung im Controlling, Reporting, Excel und Kostenstellen, was direkt auf die Anforderungen für die Rolle des Controllers bei FinHold SE zutrifft. Meine Fähigkeiten im Bereich Controlling und Reporting sind besonders relevant für diese Position.",
+  "subject": "Kontrollposition bei FinHold SE",
+  "baseline_score": 6.0,
+  "baseline_edit": "MATERIAL_EDIT_REQUIRED",
+  "hard_flags": {}
+}

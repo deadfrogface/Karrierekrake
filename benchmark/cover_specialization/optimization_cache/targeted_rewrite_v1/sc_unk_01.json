@@ -1,0 +1,18 @@
+{
+  "id": "sc_unk_01",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 65.521,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Berufserfahrung im Bereich Cyd Office, Excel, Ablage und Telefon zu präsentieren. Ich glaube, dass diese Fähigkeiten gut zu Ihrer Sachbearbeitung Rolle passen könnten. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld zu zeigen.",
+  "subject": "Interessent für Sachbearbeitung Rolle",
+  "baseline_score": 6.5,
+  "baseline_edit": "MATERIAL_EDIT_REQUIRED",
+  "hard_flags": {}
+}

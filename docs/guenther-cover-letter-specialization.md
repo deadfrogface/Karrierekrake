@@ -63,3 +63,20 @@ Only if prompt/few-shot/targeted-rewrite plateau below 99/99. GPU required; othe
 ## Merge
 
 Human merges PR #19 only when `QUALITY READY = YES` and `MERGE READY = YES`.
+
+
+## Development gate result (plan_draft_v2)
+
+| Metric | Value | Target |
+|--------|-------|--------|
+| Auto | 93.62% | ≥99% |
+| Ready | 84.04% | ≥99% |
+| Balanced | 84.04% | ≥99% |
+| Cover raw | 7.68 | ≥8.0 |
+| Safety | 0 | 0 |
+
+GEPA: base_v2 wins probe (100/93.75); mutants regress.
+Few-shot: K=2 collapses (keep K=0).
+Targeted rewrite: see `targeted_rewrite_results.json`.
+LoRA: REQUIRED but BLOCKED_NO_SUITABLE_GPU (+ insufficient gold <300).
+QUALITY READY: NO. MERGE READY: NO.

@@ -386,6 +386,47 @@ def run_quality_loop(
             plan_repair_count=plan_repair_count,
         )
 
+    # ---------- ONE TARGETED QUALITY REWRITE (plan_draft only; no Critic loop) ----------
+    if mode == "plan_draft" and quality_revision_count < 1 and model_calls < MAX_MODEL_CALLS:
+        issues = _deterministic_quality_issues(
+            body=draft.body or "",
+            subject=draft.subject or "",
+            target_company=target_company,
+        )
+        if issues:
+            _transition(transitions, "TARGETED_REWRITE", issues=issues)
+            quality_revision_count += 1
+            t0 = time.perf_counter()
+            draft_r, _, _ = _call(
+                "writing",
+                _targeted_rewrite_task(issues),
+                json.dumps(
+                    {
+                        "verified_plan": verified,
+                        "original_subject": draft.subject,
+                        "original_body": draft.body,
+                        "preserve": ["correct facts", "company", "role"],
+                        "issues": issues,
+                    },
+                    ensure_ascii=False,
+                ),
+                f"JOB:\n{job_text[:4000]}",
+            )
+            timings["targeted_rewrite"] = round(time.perf_counter() - t0, 3)
+            if isinstance(draft_r, WritingSuggestion):
+                draft_r, report_r = validate_writing_grounded(
+                    draft_r,
+                    profile_text=profile_text,
+                    job_text=job_text,
+                    existing_evidence=existing_evidence,
+                    target_company=target_company,
+                    forbid_role_reversal=forbid_role_reversal,
+                    forbid_wrong_role=forbid_wrong_role,
+                )
+                if report_r.ok:
+                    draft, report = draft_r, report_r
+                # if rewrite unsafe: keep original safe draft
+
     if not use_critic:
         return _finalize_from_report(
             model=draft,
@@ -665,6 +706,40 @@ def _draft_from_plan_task() -> str:
         "do_not_claim strikt beachten — keine erfundenen Zertifikate. "
         "Vermeide das Wort 'finanziell' (nutze Controlling/Reporting/Kostenstellen)."
     )
+
+
+def _targeted_rewrite_task(issues: list[str]) -> str:
+    return (
+        "Überarbeite das Anschreiben EINMAL gezielt. "
+        f"Probleme: {', '.join(issues)}. "
+        "Ändere NUR das Nötige. Erhalte korrekte Fakten, Firma, Rolle. "
+        "Keine neuen Credentials/Erfahrung. RELATED nicht zu DIRECT. "
+        "Länge 250–900 Zeichen. target_company wörtlich (auch Unknown). "
+        "Vermeide 'finanziell', Platzhalter, Clichés."
+    )
+
+
+def _deterministic_quality_issues(
+    *,
+    body: str,
+    subject: str,
+    target_company: str | None,
+) -> list[str]:
+    """Frozen-evaluator-aligned heuristics — no LLM critic."""
+    issues: list[str] = []
+    b = body or ""
+    blob = f"{b}\n{subject or ''}".lower()
+    if len(b.strip()) < 220:
+        issues.append("TOO_SHORT")
+    if target_company and str(target_company).strip():
+        co = str(target_company).strip().lower()
+        if co and co not in blob:
+            issues.append("WEAK_COMPANY_LINK")
+    if "finanziell" in blob or "[name]" in blob or "[firma]" in blob:
+        issues.append("STRUCTURAL_FAILURE")
+    if any(p in blob for p in ("mit großem interesse", "hiermit bewerbe", "renommiertes")):
+        issues.append("GENERIC_OPENING")
+    return issues
 
 
 def _heuristic_plan_from_store(

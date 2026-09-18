@@ -1,0 +1,32 @@
+{
+  "id": "sc_strong_08",
+  "case_id": "sc_strong_08",
+  "final_ok": false,
+  "score": 5.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company",
+    "too_short"
+  ],
+  "latency_s": 68.564,
+  "model_calls": 3,
+  "writer_calls": 2,
+  "final_state": "REVIEW_REQUIRED_SAFETY",
+  "final_errors": [
+    "WRONG_COMPANY"
+  ],
+  "expect_hard_block": false,
+  "body": "Controlling 3 Jahre, Expertise in Reporting, Excel und Kostenstellen.",
+  "subject": "Controller",
+  "peak_rss_mb": 180.6328125,
+  "optimizer_score": 0.05,
+  "feedback": "TOO_SHORT: Expand to 220–900 chars with 2–4 evidence-linked paragraphs. WEAK_COMPANY_LINK: Name the target company explicitly when known. WEAK_COMPANY_LINK: Include the exact target company name. TOO_SHORT: Letter under 200 characters — expand with grounded evidence.",
+  "completion_status": "done",
+  "configuration_hash": "6a7d0cd3c2ddbf053037cfe0c7d5ec462317ff2d937ddd494a1ba606972b364c",
+  "writer_prompt_hash": "12428e7aac8b1eca5e022f82608d6a28d72677292b5a5ad740473080020b4306",
+  "plan_hash": "unfrozen",
+  "model_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+  "generation_config_hash": "8e6882afc629e3b26fd027f0961b1fd678891be9fe4b8cd19f0055c2596a9697",
+  "evaluator_hash": "5dcff107c3bc0baeeb144fb150829756fc8af5be93386d5063ac2b51004d586c",
+  "hard_flags": {}
+}

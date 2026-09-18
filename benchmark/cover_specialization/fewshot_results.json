@@ -1,0 +1,93 @@
+{
+  "tune_n": 18,
+  "results": [
+    {
+      "k": 0,
+      "selector": "NONE",
+      "auto_pct": 100.0,
+      "ready_pct": 83.33,
+      "balanced_rate": 83.33,
+      "cover_raw": 7.75,
+      "safety_failures": 0,
+      "avg_writer_calls": 1.056,
+      "p95_latency_s": 90.393,
+      "new_calls": 0,
+      "cross_case_contamination": 0,
+      "wrong_company": 0,
+      "wrong_role": 0,
+      "credential_invention": 0,
+      "unsupported_material_accepted": 0
+    },
+    {
+      "k": 2,
+      "selector": "GLOBAL",
+      "auto_pct": 22.22,
+      "ready_pct": 16.67,
+      "balanced_rate": 16.67,
+      "cover_raw": 1.694,
+      "safety_failures": 0,
+      "avg_writer_calls": 1.111,
+      "p95_latency_s": 180.482,
+      "new_calls": 38,
+      "cross_case_contamination": 0,
+      "wrong_company": 0,
+      "wrong_role": 0,
+      "credential_invention": 0,
+      "unsupported_material_accepted": 0
+    }
+  ],
+  "ranked": [
+    {
+      "k": 0,
+      "selector": "NONE",
+      "auto_pct": 100.0,
+      "ready_pct": 83.33,
+      "balanced_rate": 83.33,
+      "cover_raw": 7.75,
+      "safety_failures": 0,
+      "avg_writer_calls": 1.056,
+      "p95_latency_s": 90.393,
+      "new_calls": 0,
+      "cross_case_contamination": 0,
+      "wrong_company": 0,
+      "wrong_role": 0,
+      "credential_invention": 0,
+      "unsupported_material_accepted": 0
+    },
+    {
+      "k": 2,
+      "selector": "GLOBAL",
+      "auto_pct": 22.22,
+      "ready_pct": 16.67,
+      "balanced_rate": 16.67,
+      "cover_raw": 1.694,
+      "safety_failures": 0,
+      "avg_writer_calls": 1.111,
+      "p95_latency_s": 180.482,
+      "new_calls": 38,
+      "cross_case_contamination": 0,
+      "wrong_company": 0,
+      "wrong_role": 0,
+      "credential_invention": 0,
+      "unsupported_material_accepted": 0
+    }
+  ],
+  "best": {
+    "k": 0,
+    "selector": "NONE",
+    "auto_pct": 100.0,
+    "ready_pct": 83.33,
+    "balanced_rate": 83.33,
+    "cover_raw": 7.75,
+    "safety_failures": 0,
+    "avg_writer_calls": 1.056,
+    "p95_latency_s": 90.393,
+    "new_calls": 0,
+    "cross_case_contamination": 0,
+    "wrong_company": 0,
+    "wrong_role": 0,
+    "credential_invention": 0,
+    "unsupported_material_accepted": 0
+  },
+  "keep_fewshot": false
+}

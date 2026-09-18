@@ -1,0 +1,6 @@
+{
+  "plan_frozen": true,
+  "plan_target_ge_99": false,
+  "note": "SCHEMA_INVALID false blocks mitigated via 1 repair + heuristic fallback; residual schema/draft failures remain on full-dev.",
+  "eligible_failures_after_v2": 6
+}

@@ -1,0 +1,16 @@
+{
+  "id": "sc_adv_05",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 55.555,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Mit über 10 Jahren Erfahrung in Java bin ich bestens gerüstet, um bei CodeNest GmbH zu helfen. Ich beherrsche auch die Grundlagen von HTML, um sicherzustellen, dass unsere Webprojekte sowohl funktional als auch ästhetisch ansprechend sind.",
+  "subject": "Entwickler/in - CodeNest GmbH",
+  "baseline_score": 7.0,
+  "baseline_edit": "MINOR_STYLE_EDIT_OPTIONAL",
+  "hard_flags": {}
+}

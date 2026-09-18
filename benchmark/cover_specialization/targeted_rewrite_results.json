@@ -1,0 +1,39 @@
+{
+  "rewrite_candidates_n": 8,
+  "rewritten": 8,
+  "baseline": {
+    "n": 100,
+    "eligible_safe_n": 94,
+    "eligible_safe_automation_pct": 93.62,
+    "ready_as_is_pct": 84.04,
+    "balanced_rate": 84.04,
+    "cover_raw_avg": 7.68,
+    "cover_accepted_avg": 7.839,
+    "safety_failures_accepted": 0,
+    "avg_latency_s": 68.964,
+    "p95_latency_s": 94.383,
+    "avg_model_calls": 2.1,
+    "avg_writer_calls": 1.1,
+    "p95_model_calls": 3,
+    "peak_rss_mb": 5485.05859375
+  },
+  "with_rewrite_merged": {
+    "n": 100,
+    "eligible_safe_n": 94,
+    "eligible_safe_automation_pct": 93.62,
+    "ready_as_is_pct": 87.23,
+    "balanced_rate": 87.23,
+    "cover_raw_avg": 7.73,
+    "cover_accepted_avg": 7.892,
+    "safety_failures_accepted": 0,
+    "avg_latency_s": 68.799,
+    "p95_latency_s": 94.383,
+    "avg_model_calls": 2.1,
+    "avg_writer_calls": 1.1,
+    "p95_model_calls": 3,
+    "peak_rss_mb": 5483.3515625
+  },
+  "balanced_lift_pp": 3.19,
+  "keep": true,
+  "decision": "KEPT"
+}

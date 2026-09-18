@@ -1,0 +1,18 @@
+{
+  "id": "sc_career_02",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 7.0,
+  "edit_class": "MINOR_STYLE_EDIT_OPTIONAL",
+  "notes": [
+    "too_short"
+  ],
+  "latency_s": 52.35,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Ich bringe meine Spezialisierung in der Kreditorenbuchhaltung und mein Interesse an Controlling ein, um als Junior Controller bei FinNest AG zu helfen.",
+  "subject": "Junior Controller - FinNest AG",
+  "baseline_score": 6.0,
+  "baseline_edit": "MATERIAL_EDIT_REQUIRED",
+  "hard_flags": {}
+}
