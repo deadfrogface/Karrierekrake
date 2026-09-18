@@ -148,17 +148,26 @@ def can_transition(current: str, proposed: str, *, force: bool = False) -> bool:
 
 
 def email_category_to_status(category: str) -> str | None:
-    """Map classifier category → case status (local rules, no LLM)."""
+    """Map classifier category → case status (local rules, no LLM).
+
+    Accepts legacy operational labels and PR28 lifecycle class names.
+    UNKNOWN / review / noise / general never auto-map to a status.
+    """
     mapping = {
         "confirmation": CaseStatus.CONFIRMATION.value,
         "eingangsbestaetigung": CaseStatus.CONFIRMATION.value,
+        "application_received": CaseStatus.CONFIRMATION.value,
+        "under_review": CaseStatus.CONFIRMATION.value,
         "assessment": CaseStatus.ASSESSMENT.value,
         "interview": CaseStatus.INTERVIEW.value,
         "interview_invite": CaseStatus.INTERVIEW.value,
+        "interview_reschedule": CaseStatus.INTERVIEW.value,
         "offer": CaseStatus.OFFER.value,
         "angebot": CaseStatus.OFFER.value,
         "rejection": CaseStatus.REJECTED.value,
         "abgelehnt": CaseStatus.REJECTED.value,
         "ghosted": CaseStatus.GHOSTED.value,
+        # Explicit non-mappings: review, unknown, noise, general,
+        # general_recruiter_message, document_request → None
     }
     return mapping.get((category or "").strip().lower())
