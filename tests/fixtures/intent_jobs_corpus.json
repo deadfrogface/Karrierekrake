@@ -1,0 +1,4646 @@
+{
+  "jobs": [
+    {
+      "id": "pay-pos-0",
+      "title": "Lohnbuchhalter",
+      "company": "Nordlicht GmbH 0",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-1",
+      "title": "Lohnbuchhalterin (m/w/d)",
+      "company": "Nordlicht GmbH 1",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-2",
+      "title": "Gehaltsbuchhalter",
+      "company": "Nordlicht GmbH 2",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-3",
+      "title": "Lohn- und Gehaltsbuchhalter",
+      "company": "Nordlicht GmbH 3",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-4",
+      "title": "Payroll Specialist",
+      "company": "Nordlicht GmbH 4",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-5",
+      "title": "Payroll Accountant",
+      "company": "Nordlicht GmbH 5",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-6",
+      "title": "Fachkraft Entgeltabrechnung",
+      "company": "Nordlicht GmbH 6",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-7",
+      "title": "Sachbearbeiter Lohn und Gehalt",
+      "company": "Nordlicht GmbH 7",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-8",
+      "title": "Entgeltabrechner",
+      "company": "Nordlicht GmbH 8",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-9",
+      "title": "Senior Payroll Manager",
+      "company": "Nordlicht GmbH 9",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-10",
+      "title": "Gehaltsabrechnung Sachbearbeitung",
+      "company": "Nordlicht GmbH 10",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "pay-pos-11",
+      "title": "Lohnabrechnung Spezialist",
+      "company": "Nordlicht GmbH 11",
+      "description": "Verantwortung für monatliche Entgeltabrechnung und Meldewesen.",
+      "city": "Hamburg",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "tags": [
+        "payroll_positive"
+      ]
+    },
+    {
+      "id": "decoy-0",
+      "title": "Verkäufer",
+      "company": "Decoy AG 0",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-1",
+      "title": "Callcenter Agent",
+      "company": "Decoy AG 1",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-2",
+      "title": "Softwareentwickler",
+      "company": "Decoy AG 2",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-3",
+      "title": "Buchhalter",
+      "company": "Decoy AG 3",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-4",
+      "title": "Controller",
+      "company": "Decoy AG 4",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-5",
+      "title": "Recruiter",
+      "company": "Decoy AG 5",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-6",
+      "title": "Lagerist",
+      "company": "Decoy AG 6",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-7",
+      "title": "Koch",
+      "company": "Decoy AG 7",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-8",
+      "title": "Krankenpfleger",
+      "company": "Decoy AG 8",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-9",
+      "title": "IT-Systemadministrator",
+      "company": "Decoy AG 9",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-10",
+      "title": "Office Manager",
+      "company": "Decoy AG 10",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-11",
+      "title": "Projektleiter Bau",
+      "company": "Decoy AG 11",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-12",
+      "title": "Marketing Manager",
+      "company": "Decoy AG 12",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-13",
+      "title": "Data Analyst",
+      "company": "Decoy AG 13",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-14",
+      "title": "Rechtsanwaltsfachangestellte",
+      "company": "Decoy AG 14",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-15",
+      "title": "Fahrer",
+      "company": "Decoy AG 15",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-16",
+      "title": "Maurer",
+      "company": "Decoy AG 16",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-17",
+      "title": "Elektriker",
+      "company": "Decoy AG 17",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-18",
+      "title": "Lehrer",
+      "company": "Decoy AG 18",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "decoy-19",
+      "title": "Zahnmedizinische Fachangestellte",
+      "company": "Decoy AG 19",
+      "description": "Allgemeine Tätigkeiten ohne Payroll-Bezug. IT und ERP Erfahrung von Vorteil.",
+      "city": "Berlin",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "tags": [
+        "payroll_negative",
+        "sap_false_positive_candidate"
+      ]
+    },
+    {
+      "id": "sap-pos-0",
+      "title": "SAP Berater 0",
+      "company": "Sapphire Consulting Fiction 0",
+      "description": "Kenntnisse in SAP FI/CO erforderlich.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-pos-1",
+      "title": "SAP Berater 1",
+      "company": "Sapphire Consulting Fiction 1",
+      "description": "Arbeit mit SAP HANA und S/4HANA.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-pos-2",
+      "title": "SAP Berater 2",
+      "company": "Sapphire Consulting Fiction 2",
+      "description": "SAP SuccessFactors und SAP HR.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-pos-3",
+      "title": "SAP Berater 3",
+      "company": "Sapphire Consulting Fiction 3",
+      "description": "Tiefgreifende SAP ERP Erfahrung.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-pos-4",
+      "title": "SAP Berater 4",
+      "company": "Sapphire Consulting Fiction 4",
+      "description": "SAP Basis Administration.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-pos-5",
+      "title": "SAP Berater 5",
+      "company": "Sapphire Consulting Fiction 5",
+      "description": "SAP MM und SAP SD Customizing.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-pos-6",
+      "title": "SAP Berater 6",
+      "company": "Sapphire Consulting Fiction 6",
+      "description": "S4HANA Migration Projekt.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-pos-7",
+      "title": "SAP Berater 7",
+      "company": "Sapphire Consulting Fiction 7",
+      "description": "SAP Fiori Apps Entwicklung.",
+      "city": "München",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "tags": [
+        "sap_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-0",
+      "title": "IT Administrator",
+      "company": "FP Corp 0",
+      "description": "Irgendwie IT und allgemeine Softwarekenntnisse.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-1",
+      "title": "ERP Generalist",
+      "company": "FP Corp 1",
+      "description": "ERP Erfahrung mit Microsoft Dynamics und Oracle.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-2",
+      "title": "Softwareentwickler",
+      "company": "FP Corp 2",
+      "description": "Softwareentwicklung in Java, kein SAP erwähnt.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-3",
+      "title": "DATEV Buchhalter",
+      "company": "FP Corp 3",
+      "description": "DATEV und Navision Kenntnisse erwünscht.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-4",
+      "title": "Sapphire Host",
+      "company": "FP Corp 4",
+      "description": "Event Sapphire Conference Organisation ohne SAP Produkt.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-5",
+      "title": "IT Support",
+      "company": "FP Corp 5",
+      "description": "Informationstechnologie First Level Support.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-6",
+      "title": "Dynamics Berater",
+      "company": "FP Corp 6",
+      "description": "Microsoft Dynamics 365 Finance.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "sap-fp-7",
+      "title": "Oracle DBA",
+      "company": "FP Corp 7",
+      "description": "Oracle Datenbankadministration.",
+      "city": "Köln",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 100.0,
+      "tags": [
+        "sap_false_positive"
+      ]
+    },
+    {
+      "id": "matrix-0",
+      "title": "Office Manager 0",
+      "company": "Matrix Fiction 0",
+      "description": "Tätigkeit als Office Manager. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 0.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 5.0,
+      "salary_min": 30000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-1",
+      "title": "Sachbearbeiter 1",
+      "company": "Matrix Fiction 1",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 1.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 6.0,
+      "salary_min": 30100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-2",
+      "title": "Assistent 2",
+      "company": "Matrix Fiction 2",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 2.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 7.0,
+      "salary_min": 30200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-3",
+      "title": "Teamleiter Verwaltung 3",
+      "company": "Matrix Fiction 3",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Standort Deutschland Fall 3.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "salary_min": 30300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-4",
+      "title": "Backoffice 4",
+      "company": "Matrix Fiction 4",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 4.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 9.0,
+      "salary_min": 30400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-5",
+      "title": "Office Manager 5",
+      "company": "Matrix Fiction 5",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 5.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 10.0,
+      "salary_min": 30500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-6",
+      "title": "Sachbearbeiter 6",
+      "company": "Matrix Fiction 6",
+      "description": "Tätigkeit als Sachbearbeiter. Standort Deutschland Fall 6.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 11.0,
+      "salary_min": 30600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-7",
+      "title": "Assistent 7",
+      "company": "Matrix Fiction 7",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 7.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "salary_min": 30700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-8",
+      "title": "Teamleiter Verwaltung 8",
+      "company": "Matrix Fiction 8",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 8.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 13.0,
+      "salary_min": 30800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-9",
+      "title": "Backoffice 9",
+      "company": "Matrix Fiction 9",
+      "description": "Tätigkeit als Backoffice. Standort Deutschland Fall 9.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 14.0,
+      "salary_min": 30900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-10",
+      "title": "Office Manager 10",
+      "company": "Matrix Fiction 10",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 10.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "salary_min": 31000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-11",
+      "title": "Sachbearbeiter 11",
+      "company": "Matrix Fiction 11",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 11.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 16.0,
+      "salary_min": 31100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-12",
+      "title": "Assistent 12",
+      "company": "Matrix Fiction 12",
+      "description": "Tätigkeit als Assistent. Standort Deutschland Fall 12.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 17.0,
+      "salary_min": 31200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-13",
+      "title": "Teamleiter Verwaltung 13",
+      "company": "Matrix Fiction 13",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 13.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 18.0,
+      "salary_min": 31300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-14",
+      "title": "Backoffice 14",
+      "company": "Matrix Fiction 14",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 14.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 19.0,
+      "salary_min": 31400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-15",
+      "title": "Office Manager 15",
+      "company": "Matrix Fiction 15",
+      "description": "Tätigkeit als Office Manager. Standort Deutschland Fall 15.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "salary_min": 31500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-16",
+      "title": "Sachbearbeiter 16",
+      "company": "Matrix Fiction 16",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 16.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 21.0,
+      "salary_min": 31600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-17",
+      "title": "Assistent 17",
+      "company": "Matrix Fiction 17",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 17.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 22.0,
+      "salary_min": 31700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-18",
+      "title": "Teamleiter Verwaltung 18",
+      "company": "Matrix Fiction 18",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Standort Deutschland Fall 18.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 23.0,
+      "salary_min": 31800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-19",
+      "title": "Backoffice 19",
+      "company": "Matrix Fiction 19",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 19.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 24.0,
+      "salary_min": 31900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-20",
+      "title": "Office Manager 20",
+      "company": "Matrix Fiction 20",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 20.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 25.0,
+      "salary_min": 32000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-21",
+      "title": "Sachbearbeiter 21",
+      "company": "Matrix Fiction 21",
+      "description": "Tätigkeit als Sachbearbeiter. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 21.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 26.0,
+      "salary_min": 32100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-22",
+      "title": "Assistent 22",
+      "company": "Matrix Fiction 22",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 22.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 27.0,
+      "salary_min": 32200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-23",
+      "title": "Teamleiter Verwaltung 23",
+      "company": "Matrix Fiction 23",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 23.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 28.0,
+      "salary_min": 32300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-24",
+      "title": "Backoffice 24",
+      "company": "Matrix Fiction 24",
+      "description": "Tätigkeit als Backoffice. Standort Deutschland Fall 24.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 29.0,
+      "salary_min": 32400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-25",
+      "title": "Office Manager 25",
+      "company": "Matrix Fiction 25",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 25.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 30.0,
+      "salary_min": 32500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-26",
+      "title": "Sachbearbeiter 26",
+      "company": "Matrix Fiction 26",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 26.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 31.0,
+      "salary_min": 32600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-27",
+      "title": "Assistent 27",
+      "company": "Matrix Fiction 27",
+      "description": "Tätigkeit als Assistent. Standort Deutschland Fall 27.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 32.0,
+      "salary_min": 32700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-28",
+      "title": "Teamleiter Verwaltung 28",
+      "company": "Matrix Fiction 28",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 28.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 33.0,
+      "salary_min": 32800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-29",
+      "title": "Backoffice 29",
+      "company": "Matrix Fiction 29",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 29.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 34.0,
+      "salary_min": 32900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-30",
+      "title": "Office Manager 30",
+      "company": "Matrix Fiction 30",
+      "description": "Tätigkeit als Office Manager. Standort Deutschland Fall 30.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 35.0,
+      "salary_min": 33000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-31",
+      "title": "Sachbearbeiter 31",
+      "company": "Matrix Fiction 31",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 31.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 36.0,
+      "salary_min": 33100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-32",
+      "title": "Assistent 32",
+      "company": "Matrix Fiction 32",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 32.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 37.0,
+      "salary_min": 33200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-33",
+      "title": "Teamleiter Verwaltung 33",
+      "company": "Matrix Fiction 33",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Standort Deutschland Fall 33.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 38.0,
+      "salary_min": 33300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-34",
+      "title": "Backoffice 34",
+      "company": "Matrix Fiction 34",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 34.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 39.0,
+      "salary_min": 33400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-35",
+      "title": "Office Manager 35",
+      "company": "Matrix Fiction 35",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 35.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 40.0,
+      "salary_min": 33500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-36",
+      "title": "Sachbearbeiter 36",
+      "company": "Matrix Fiction 36",
+      "description": "Tätigkeit als Sachbearbeiter. Standort Deutschland Fall 36.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 41.0,
+      "salary_min": 33600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-37",
+      "title": "Assistent 37",
+      "company": "Matrix Fiction 37",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 37.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 42.0,
+      "salary_min": 33700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-38",
+      "title": "Teamleiter Verwaltung 38",
+      "company": "Matrix Fiction 38",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 38.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 43.0,
+      "salary_min": 33800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-39",
+      "title": "Backoffice 39",
+      "company": "Matrix Fiction 39",
+      "description": "Tätigkeit als Backoffice. Standort Deutschland Fall 39.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 44.0,
+      "salary_min": 33900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-40",
+      "title": "Office Manager 40",
+      "company": "Matrix Fiction 40",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 40.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 5.0,
+      "salary_min": 34000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-41",
+      "title": "Sachbearbeiter 41",
+      "company": "Matrix Fiction 41",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 41.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 6.0,
+      "salary_min": 34100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-42",
+      "title": "Assistent 42",
+      "company": "Matrix Fiction 42",
+      "description": "Tätigkeit als Assistent. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 42.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 7.0,
+      "salary_min": 34200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-43",
+      "title": "Teamleiter Verwaltung 43",
+      "company": "Matrix Fiction 43",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 43.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "salary_min": 34300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-44",
+      "title": "Backoffice 44",
+      "company": "Matrix Fiction 44",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 44.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 9.0,
+      "salary_min": 34400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-45",
+      "title": "Office Manager 45",
+      "company": "Matrix Fiction 45",
+      "description": "Tätigkeit als Office Manager. Standort Deutschland Fall 45.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 10.0,
+      "salary_min": 34500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-46",
+      "title": "Sachbearbeiter 46",
+      "company": "Matrix Fiction 46",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 46.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 11.0,
+      "salary_min": 34600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-47",
+      "title": "Assistent 47",
+      "company": "Matrix Fiction 47",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 47.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "salary_min": 34700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-48",
+      "title": "Teamleiter Verwaltung 48",
+      "company": "Matrix Fiction 48",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Standort Deutschland Fall 48.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 13.0,
+      "salary_min": 34800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-49",
+      "title": "Backoffice 49",
+      "company": "Matrix Fiction 49",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 49.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 14.0,
+      "salary_min": 34900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-50",
+      "title": "Office Manager 50",
+      "company": "Matrix Fiction 50",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 50.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "salary_min": 35000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-51",
+      "title": "Sachbearbeiter 51",
+      "company": "Matrix Fiction 51",
+      "description": "Tätigkeit als Sachbearbeiter. Standort Deutschland Fall 51.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 16.0,
+      "salary_min": 35100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-52",
+      "title": "Assistent 52",
+      "company": "Matrix Fiction 52",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 52.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 17.0,
+      "salary_min": 35200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-53",
+      "title": "Teamleiter Verwaltung 53",
+      "company": "Matrix Fiction 53",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 53.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 18.0,
+      "salary_min": 35300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-54",
+      "title": "Backoffice 54",
+      "company": "Matrix Fiction 54",
+      "description": "Tätigkeit als Backoffice. Standort Deutschland Fall 54.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 19.0,
+      "salary_min": 35400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-55",
+      "title": "Office Manager 55",
+      "company": "Matrix Fiction 55",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 55.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "salary_min": 35500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-56",
+      "title": "Sachbearbeiter 56",
+      "company": "Matrix Fiction 56",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 56.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 21.0,
+      "salary_min": 35600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-57",
+      "title": "Assistent 57",
+      "company": "Matrix Fiction 57",
+      "description": "Tätigkeit als Assistent. Standort Deutschland Fall 57.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 22.0,
+      "salary_min": 35700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-58",
+      "title": "Teamleiter Verwaltung 58",
+      "company": "Matrix Fiction 58",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 58.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 23.0,
+      "salary_min": 35800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-59",
+      "title": "Backoffice 59",
+      "company": "Matrix Fiction 59",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 59.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 24.0,
+      "salary_min": 35900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-60",
+      "title": "Office Manager 60",
+      "company": "Matrix Fiction 60",
+      "description": "Tätigkeit als Office Manager. Standort Deutschland Fall 60.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 25.0,
+      "salary_min": 36000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-61",
+      "title": "Sachbearbeiter 61",
+      "company": "Matrix Fiction 61",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 61.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 26.0,
+      "salary_min": 36100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-62",
+      "title": "Assistent 62",
+      "company": "Matrix Fiction 62",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 62.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 27.0,
+      "salary_min": 36200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-63",
+      "title": "Teamleiter Verwaltung 63",
+      "company": "Matrix Fiction 63",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 63.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 28.0,
+      "salary_min": 36300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-64",
+      "title": "Backoffice 64",
+      "company": "Matrix Fiction 64",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 64.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 29.0,
+      "salary_min": 36400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-65",
+      "title": "Office Manager 65",
+      "company": "Matrix Fiction 65",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 65.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 30.0,
+      "salary_min": 36500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-66",
+      "title": "Sachbearbeiter 66",
+      "company": "Matrix Fiction 66",
+      "description": "Tätigkeit als Sachbearbeiter. Standort Deutschland Fall 66.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 31.0,
+      "salary_min": 36600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-67",
+      "title": "Assistent 67",
+      "company": "Matrix Fiction 67",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 67.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 32.0,
+      "salary_min": 36700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-68",
+      "title": "Teamleiter Verwaltung 68",
+      "company": "Matrix Fiction 68",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 68.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 33.0,
+      "salary_min": 36800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-69",
+      "title": "Backoffice 69",
+      "company": "Matrix Fiction 69",
+      "description": "Tätigkeit als Backoffice. Standort Deutschland Fall 69.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 34.0,
+      "salary_min": 36900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-70",
+      "title": "Office Manager 70",
+      "company": "Matrix Fiction 70",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 70.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 35.0,
+      "salary_min": 37000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-71",
+      "title": "Sachbearbeiter 71",
+      "company": "Matrix Fiction 71",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 71.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 36.0,
+      "salary_min": 37100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-72",
+      "title": "Assistent 72",
+      "company": "Matrix Fiction 72",
+      "description": "Tätigkeit als Assistent. Standort Deutschland Fall 72.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 37.0,
+      "salary_min": 37200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-73",
+      "title": "Teamleiter Verwaltung 73",
+      "company": "Matrix Fiction 73",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 73.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 38.0,
+      "salary_min": 37300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-74",
+      "title": "Backoffice 74",
+      "company": "Matrix Fiction 74",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 74.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 39.0,
+      "salary_min": 37400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-75",
+      "title": "Office Manager 75",
+      "company": "Matrix Fiction 75",
+      "description": "Tätigkeit als Office Manager. Standort Deutschland Fall 75.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 40.0,
+      "salary_min": 37500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-76",
+      "title": "Sachbearbeiter 76",
+      "company": "Matrix Fiction 76",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 76.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 41.0,
+      "salary_min": 37600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-77",
+      "title": "Assistent 77",
+      "company": "Matrix Fiction 77",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 77.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 42.0,
+      "salary_min": 37700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-78",
+      "title": "Teamleiter Verwaltung 78",
+      "company": "Matrix Fiction 78",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Standort Deutschland Fall 78.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 43.0,
+      "salary_min": 37800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-79",
+      "title": "Backoffice 79",
+      "company": "Matrix Fiction 79",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 79.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 44.0,
+      "salary_min": 37900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-80",
+      "title": "Office Manager 80",
+      "company": "Matrix Fiction 80",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 80.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 5.0,
+      "salary_min": 38000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-81",
+      "title": "Sachbearbeiter 81",
+      "company": "Matrix Fiction 81",
+      "description": "Tätigkeit als Sachbearbeiter. Standort Deutschland Fall 81.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 6.0,
+      "salary_min": 38100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-82",
+      "title": "Assistent 82",
+      "company": "Matrix Fiction 82",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 82.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 7.0,
+      "salary_min": 38200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-83",
+      "title": "Teamleiter Verwaltung 83",
+      "company": "Matrix Fiction 83",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 83.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 8.0,
+      "salary_min": 38300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-84",
+      "title": "Backoffice 84",
+      "company": "Matrix Fiction 84",
+      "description": "Tätigkeit als Backoffice. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 84.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 9.0,
+      "salary_min": 38400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-85",
+      "title": "Office Manager 85",
+      "company": "Matrix Fiction 85",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 85.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 10.0,
+      "salary_min": 38500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-86",
+      "title": "Sachbearbeiter 86",
+      "company": "Matrix Fiction 86",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 86.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 11.0,
+      "salary_min": 38600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-87",
+      "title": "Assistent 87",
+      "company": "Matrix Fiction 87",
+      "description": "Tätigkeit als Assistent. Standort Deutschland Fall 87.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 12.0,
+      "salary_min": 38700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-88",
+      "title": "Teamleiter Verwaltung 88",
+      "company": "Matrix Fiction 88",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 88.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 13.0,
+      "salary_min": 38800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-89",
+      "title": "Backoffice 89",
+      "company": "Matrix Fiction 89",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 89.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 14.0,
+      "salary_min": 38900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-90",
+      "title": "Office Manager 90",
+      "company": "Matrix Fiction 90",
+      "description": "Tätigkeit als Office Manager. Standort Deutschland Fall 90.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 15.0,
+      "salary_min": 39000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-91",
+      "title": "Sachbearbeiter 91",
+      "company": "Matrix Fiction 91",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 91.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 16.0,
+      "salary_min": 39100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-92",
+      "title": "Assistent 92",
+      "company": "Matrix Fiction 92",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 92.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 17.0,
+      "salary_min": 39200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-93",
+      "title": "Teamleiter Verwaltung 93",
+      "company": "Matrix Fiction 93",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Standort Deutschland Fall 93.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 18.0,
+      "salary_min": 39300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-94",
+      "title": "Backoffice 94",
+      "company": "Matrix Fiction 94",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 94.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 19.0,
+      "salary_min": 39400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-95",
+      "title": "Office Manager 95",
+      "company": "Matrix Fiction 95",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 95.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "salary_min": 39500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-96",
+      "title": "Sachbearbeiter 96",
+      "company": "Matrix Fiction 96",
+      "description": "Tätigkeit als Sachbearbeiter. Standort Deutschland Fall 96.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 21.0,
+      "salary_min": 39600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-97",
+      "title": "Assistent 97",
+      "company": "Matrix Fiction 97",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 97.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 22.0,
+      "salary_min": 39700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-98",
+      "title": "Teamleiter Verwaltung 98",
+      "company": "Matrix Fiction 98",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 98.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 23.0,
+      "salary_min": 39800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-99",
+      "title": "Backoffice 99",
+      "company": "Matrix Fiction 99",
+      "description": "Tätigkeit als Backoffice. Standort Deutschland Fall 99.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 24.0,
+      "salary_min": 39900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-100",
+      "title": "Office Manager 100",
+      "company": "Matrix Fiction 100",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 100.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 25.0,
+      "salary_min": 40000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-101",
+      "title": "Sachbearbeiter 101",
+      "company": "Matrix Fiction 101",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 101.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 26.0,
+      "salary_min": 40100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-102",
+      "title": "Assistent 102",
+      "company": "Matrix Fiction 102",
+      "description": "Tätigkeit als Assistent. Standort Deutschland Fall 102.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 27.0,
+      "salary_min": 40200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-103",
+      "title": "Teamleiter Verwaltung 103",
+      "company": "Matrix Fiction 103",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 103.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 28.0,
+      "salary_min": 40300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-104",
+      "title": "Backoffice 104",
+      "company": "Matrix Fiction 104",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 104.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 29.0,
+      "salary_min": 40400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-105",
+      "title": "Office Manager 105",
+      "company": "Matrix Fiction 105",
+      "description": "Tätigkeit als Office Manager. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 105.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 30.0,
+      "salary_min": 40500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": false,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-106",
+      "title": "Sachbearbeiter 106",
+      "company": "Matrix Fiction 106",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 106.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 31.0,
+      "salary_min": 40600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-107",
+      "title": "Assistent 107",
+      "company": "Matrix Fiction 107",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Standort Deutschland Fall 107.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 32.0,
+      "salary_min": 40700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-108",
+      "title": "Teamleiter Verwaltung 108",
+      "company": "Matrix Fiction 108",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Standort Deutschland Fall 108.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 33.0,
+      "salary_min": 40800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-109",
+      "title": "Backoffice 109",
+      "company": "Matrix Fiction 109",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Standort Deutschland Fall 109.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 34.0,
+      "salary_min": 40900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-110",
+      "title": "Office Manager 110",
+      "company": "Matrix Fiction 110",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 110.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 35.0,
+      "salary_min": 41000,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-111",
+      "title": "Sachbearbeiter 111",
+      "company": "Matrix Fiction 111",
+      "description": "Tätigkeit als Sachbearbeiter. Standort Deutschland Fall 111.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 36.0,
+      "salary_min": 41100,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-112",
+      "title": "Assistent 112",
+      "company": "Matrix Fiction 112",
+      "description": "Tätigkeit als Assistent. Pflichtkenntnis Python. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 112.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 37.0,
+      "salary_min": 41200,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "matrix-113",
+      "title": "Teamleiter Verwaltung 113",
+      "company": "Matrix Fiction 113",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 113.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 38.0,
+      "salary_min": 41300,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-114",
+      "title": "Backoffice 114",
+      "company": "Matrix Fiction 114",
+      "description": "Tätigkeit als Backoffice. Standort Deutschland Fall 114.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 39.0,
+      "salary_min": 41400,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-115",
+      "title": "Office Manager 115",
+      "company": "Matrix Fiction 115",
+      "description": "Tätigkeit als Office Manager. Pflichtkenntnis DATEV. Standort Deutschland Fall 115.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 40.0,
+      "salary_min": 41500,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "DATEV",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-116",
+      "title": "Sachbearbeiter 116",
+      "company": "Matrix Fiction 116",
+      "description": "Tätigkeit als Sachbearbeiter. Pflichtkenntnis Excel. Standort Deutschland Fall 116.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Teilzeit",
+      "distance_km": 41.0,
+      "salary_min": 41600,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Excel",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-117",
+      "title": "Assistent 117",
+      "company": "Matrix Fiction 117",
+      "description": "Tätigkeit als Assistent. Standort Deutschland Fall 117.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 42.0,
+      "salary_min": 41700,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Python",
+        "has_skill": false,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-118",
+      "title": "Teamleiter Verwaltung 118",
+      "company": "Matrix Fiction 118",
+      "description": "Tätigkeit als Teamleiter Verwaltung. Pflichtkenntnis Deutsch. Standort Deutschland Fall 118.",
+      "city": "Leipzig",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 43.0,
+      "salary_min": 41800,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Deutsch",
+        "has_skill": true,
+        "has_excl_keyword": false
+      }
+    },
+    {
+      "id": "matrix-119",
+      "title": "Backoffice 119",
+      "company": "Matrix Fiction 119",
+      "description": "Tätigkeit als Backoffice. Pflichtkenntnis Englisch. Branche Glücksspiel und Nachtarbeit. Standort Deutschland Fall 119.",
+      "city": "Leipzig",
+      "remote_type": "hybrid",
+      "employment_type": "Vollzeit",
+      "distance_km": 44.0,
+      "salary_min": 41900,
+      "tags": [
+        "matrix"
+      ],
+      "meta": {
+        "skill": "Englisch",
+        "has_skill": true,
+        "has_excl_keyword": true
+      }
+    },
+    {
+      "id": "edge-empty",
+      "title": "",
+      "company": "Leer AG",
+      "description": "",
+      "city": "",
+      "remote_type": "unknown",
+      "employment_type": "",
+      "distance_km": null,
+      "tags": [
+        "edge"
+      ]
+    },
+    {
+      "id": "edge-payroll-remote",
+      "title": "Payroll Specialist Remote DE",
+      "company": "Remote Fiction",
+      "description": "Remote Payroll für Deutschland. Entgeltabrechnung.",
+      "city": "Remote",
+      "remote_type": "remote",
+      "employment_type": "Vollzeit",
+      "distance_km": 500.0,
+      "tags": [
+        "payroll_positive",
+        "remote"
+      ]
+    },
+    {
+      "id": "pad-0",
+      "title": "Allgemeine Verwaltung 0",
+      "company": "Pad GmbH 0",
+      "description": "Fiktive Stellenbeschreibung Nr. 0 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-1",
+      "title": "Allgemeine Verwaltung 1",
+      "company": "Pad GmbH 1",
+      "description": "Fiktive Stellenbeschreibung Nr. 1 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-2",
+      "title": "Allgemeine Verwaltung 2",
+      "company": "Pad GmbH 2",
+      "description": "Fiktive Stellenbeschreibung Nr. 2 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-3",
+      "title": "Allgemeine Verwaltung 3",
+      "company": "Pad GmbH 3",
+      "description": "Fiktive Stellenbeschreibung Nr. 3 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-4",
+      "title": "Allgemeine Verwaltung 4",
+      "company": "Pad GmbH 4",
+      "description": "Fiktive Stellenbeschreibung Nr. 4 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-5",
+      "title": "Allgemeine Verwaltung 5",
+      "company": "Pad GmbH 5",
+      "description": "Fiktive Stellenbeschreibung Nr. 5 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-6",
+      "title": "Allgemeine Verwaltung 6",
+      "company": "Pad GmbH 6",
+      "description": "Fiktive Stellenbeschreibung Nr. 6 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-7",
+      "title": "Allgemeine Verwaltung 7",
+      "company": "Pad GmbH 7",
+      "description": "Fiktive Stellenbeschreibung Nr. 7 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-8",
+      "title": "Allgemeine Verwaltung 8",
+      "company": "Pad GmbH 8",
+      "description": "Fiktive Stellenbeschreibung Nr. 8 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-9",
+      "title": "Allgemeine Verwaltung 9",
+      "company": "Pad GmbH 9",
+      "description": "Fiktive Stellenbeschreibung Nr. 9 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-10",
+      "title": "Allgemeine Verwaltung 10",
+      "company": "Pad GmbH 10",
+      "description": "Fiktive Stellenbeschreibung Nr. 10 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-11",
+      "title": "Allgemeine Verwaltung 11",
+      "company": "Pad GmbH 11",
+      "description": "Fiktive Stellenbeschreibung Nr. 11 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-12",
+      "title": "Allgemeine Verwaltung 12",
+      "company": "Pad GmbH 12",
+      "description": "Fiktive Stellenbeschreibung Nr. 12 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-13",
+      "title": "Allgemeine Verwaltung 13",
+      "company": "Pad GmbH 13",
+      "description": "Fiktive Stellenbeschreibung Nr. 13 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-14",
+      "title": "Allgemeine Verwaltung 14",
+      "company": "Pad GmbH 14",
+      "description": "Fiktive Stellenbeschreibung Nr. 14 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-15",
+      "title": "Allgemeine Verwaltung 15",
+      "company": "Pad GmbH 15",
+      "description": "Fiktive Stellenbeschreibung Nr. 15 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-16",
+      "title": "Allgemeine Verwaltung 16",
+      "company": "Pad GmbH 16",
+      "description": "Fiktive Stellenbeschreibung Nr. 16 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-17",
+      "title": "Allgemeine Verwaltung 17",
+      "company": "Pad GmbH 17",
+      "description": "Fiktive Stellenbeschreibung Nr. 17 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-18",
+      "title": "Allgemeine Verwaltung 18",
+      "company": "Pad GmbH 18",
+      "description": "Fiktive Stellenbeschreibung Nr. 18 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-19",
+      "title": "Allgemeine Verwaltung 19",
+      "company": "Pad GmbH 19",
+      "description": "Fiktive Stellenbeschreibung Nr. 19 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-20",
+      "title": "Allgemeine Verwaltung 20",
+      "company": "Pad GmbH 20",
+      "description": "Fiktive Stellenbeschreibung Nr. 20 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-21",
+      "title": "Allgemeine Verwaltung 21",
+      "company": "Pad GmbH 21",
+      "description": "Fiktive Stellenbeschreibung Nr. 21 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-22",
+      "title": "Allgemeine Verwaltung 22",
+      "company": "Pad GmbH 22",
+      "description": "Fiktive Stellenbeschreibung Nr. 22 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-23",
+      "title": "Allgemeine Verwaltung 23",
+      "company": "Pad GmbH 23",
+      "description": "Fiktive Stellenbeschreibung Nr. 23 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-24",
+      "title": "Allgemeine Verwaltung 24",
+      "company": "Pad GmbH 24",
+      "description": "Fiktive Stellenbeschreibung Nr. 24 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-25",
+      "title": "Allgemeine Verwaltung 25",
+      "company": "Pad GmbH 25",
+      "description": "Fiktive Stellenbeschreibung Nr. 25 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-26",
+      "title": "Allgemeine Verwaltung 26",
+      "company": "Pad GmbH 26",
+      "description": "Fiktive Stellenbeschreibung Nr. 26 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-27",
+      "title": "Allgemeine Verwaltung 27",
+      "company": "Pad GmbH 27",
+      "description": "Fiktive Stellenbeschreibung Nr. 27 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-28",
+      "title": "Allgemeine Verwaltung 28",
+      "company": "Pad GmbH 28",
+      "description": "Fiktive Stellenbeschreibung Nr. 28 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-29",
+      "title": "Allgemeine Verwaltung 29",
+      "company": "Pad GmbH 29",
+      "description": "Fiktive Stellenbeschreibung Nr. 29 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-30",
+      "title": "Allgemeine Verwaltung 30",
+      "company": "Pad GmbH 30",
+      "description": "Fiktive Stellenbeschreibung Nr. 30 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-31",
+      "title": "Allgemeine Verwaltung 31",
+      "company": "Pad GmbH 31",
+      "description": "Fiktive Stellenbeschreibung Nr. 31 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-32",
+      "title": "Allgemeine Verwaltung 32",
+      "company": "Pad GmbH 32",
+      "description": "Fiktive Stellenbeschreibung Nr. 32 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-33",
+      "title": "Allgemeine Verwaltung 33",
+      "company": "Pad GmbH 33",
+      "description": "Fiktive Stellenbeschreibung Nr. 33 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-34",
+      "title": "Allgemeine Verwaltung 34",
+      "company": "Pad GmbH 34",
+      "description": "Fiktive Stellenbeschreibung Nr. 34 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-35",
+      "title": "Allgemeine Verwaltung 35",
+      "company": "Pad GmbH 35",
+      "description": "Fiktive Stellenbeschreibung Nr. 35 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-36",
+      "title": "Allgemeine Verwaltung 36",
+      "company": "Pad GmbH 36",
+      "description": "Fiktive Stellenbeschreibung Nr. 36 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-37",
+      "title": "Allgemeine Verwaltung 37",
+      "company": "Pad GmbH 37",
+      "description": "Fiktive Stellenbeschreibung Nr. 37 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-38",
+      "title": "Allgemeine Verwaltung 38",
+      "company": "Pad GmbH 38",
+      "description": "Fiktive Stellenbeschreibung Nr. 38 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-39",
+      "title": "Allgemeine Verwaltung 39",
+      "company": "Pad GmbH 39",
+      "description": "Fiktive Stellenbeschreibung Nr. 39 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-40",
+      "title": "Allgemeine Verwaltung 40",
+      "company": "Pad GmbH 40",
+      "description": "Fiktive Stellenbeschreibung Nr. 40 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-41",
+      "title": "Allgemeine Verwaltung 41",
+      "company": "Pad GmbH 41",
+      "description": "Fiktive Stellenbeschreibung Nr. 41 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-42",
+      "title": "Allgemeine Verwaltung 42",
+      "company": "Pad GmbH 42",
+      "description": "Fiktive Stellenbeschreibung Nr. 42 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-43",
+      "title": "Allgemeine Verwaltung 43",
+      "company": "Pad GmbH 43",
+      "description": "Fiktive Stellenbeschreibung Nr. 43 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-44",
+      "title": "Allgemeine Verwaltung 44",
+      "company": "Pad GmbH 44",
+      "description": "Fiktive Stellenbeschreibung Nr. 44 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-45",
+      "title": "Allgemeine Verwaltung 45",
+      "company": "Pad GmbH 45",
+      "description": "Fiktive Stellenbeschreibung Nr. 45 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-46",
+      "title": "Allgemeine Verwaltung 46",
+      "company": "Pad GmbH 46",
+      "description": "Fiktive Stellenbeschreibung Nr. 46 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-47",
+      "title": "Allgemeine Verwaltung 47",
+      "company": "Pad GmbH 47",
+      "description": "Fiktive Stellenbeschreibung Nr. 47 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-48",
+      "title": "Allgemeine Verwaltung 48",
+      "company": "Pad GmbH 48",
+      "description": "Fiktive Stellenbeschreibung Nr. 48 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-49",
+      "title": "Allgemeine Verwaltung 49",
+      "company": "Pad GmbH 49",
+      "description": "Fiktive Stellenbeschreibung Nr. 49 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-50",
+      "title": "Allgemeine Verwaltung 50",
+      "company": "Pad GmbH 50",
+      "description": "Fiktive Stellenbeschreibung Nr. 50 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-51",
+      "title": "Allgemeine Verwaltung 51",
+      "company": "Pad GmbH 51",
+      "description": "Fiktive Stellenbeschreibung Nr. 51 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-52",
+      "title": "Allgemeine Verwaltung 52",
+      "company": "Pad GmbH 52",
+      "description": "Fiktive Stellenbeschreibung Nr. 52 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-53",
+      "title": "Allgemeine Verwaltung 53",
+      "company": "Pad GmbH 53",
+      "description": "Fiktive Stellenbeschreibung Nr. 53 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-54",
+      "title": "Allgemeine Verwaltung 54",
+      "company": "Pad GmbH 54",
+      "description": "Fiktive Stellenbeschreibung Nr. 54 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-55",
+      "title": "Allgemeine Verwaltung 55",
+      "company": "Pad GmbH 55",
+      "description": "Fiktive Stellenbeschreibung Nr. 55 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-56",
+      "title": "Allgemeine Verwaltung 56",
+      "company": "Pad GmbH 56",
+      "description": "Fiktive Stellenbeschreibung Nr. 56 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-57",
+      "title": "Allgemeine Verwaltung 57",
+      "company": "Pad GmbH 57",
+      "description": "Fiktive Stellenbeschreibung Nr. 57 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-58",
+      "title": "Allgemeine Verwaltung 58",
+      "company": "Pad GmbH 58",
+      "description": "Fiktive Stellenbeschreibung Nr. 58 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-59",
+      "title": "Allgemeine Verwaltung 59",
+      "company": "Pad GmbH 59",
+      "description": "Fiktive Stellenbeschreibung Nr. 59 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-60",
+      "title": "Allgemeine Verwaltung 60",
+      "company": "Pad GmbH 60",
+      "description": "Fiktive Stellenbeschreibung Nr. 60 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-61",
+      "title": "Allgemeine Verwaltung 61",
+      "company": "Pad GmbH 61",
+      "description": "Fiktive Stellenbeschreibung Nr. 61 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-62",
+      "title": "Allgemeine Verwaltung 62",
+      "company": "Pad GmbH 62",
+      "description": "Fiktive Stellenbeschreibung Nr. 62 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-63",
+      "title": "Allgemeine Verwaltung 63",
+      "company": "Pad GmbH 63",
+      "description": "Fiktive Stellenbeschreibung Nr. 63 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-64",
+      "title": "Allgemeine Verwaltung 64",
+      "company": "Pad GmbH 64",
+      "description": "Fiktive Stellenbeschreibung Nr. 64 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-65",
+      "title": "Allgemeine Verwaltung 65",
+      "company": "Pad GmbH 65",
+      "description": "Fiktive Stellenbeschreibung Nr. 65 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-66",
+      "title": "Allgemeine Verwaltung 66",
+      "company": "Pad GmbH 66",
+      "description": "Fiktive Stellenbeschreibung Nr. 66 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-67",
+      "title": "Allgemeine Verwaltung 67",
+      "company": "Pad GmbH 67",
+      "description": "Fiktive Stellenbeschreibung Nr. 67 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-68",
+      "title": "Allgemeine Verwaltung 68",
+      "company": "Pad GmbH 68",
+      "description": "Fiktive Stellenbeschreibung Nr. 68 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-69",
+      "title": "Allgemeine Verwaltung 69",
+      "company": "Pad GmbH 69",
+      "description": "Fiktive Stellenbeschreibung Nr. 69 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-70",
+      "title": "Allgemeine Verwaltung 70",
+      "company": "Pad GmbH 70",
+      "description": "Fiktive Stellenbeschreibung Nr. 70 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-71",
+      "title": "Allgemeine Verwaltung 71",
+      "company": "Pad GmbH 71",
+      "description": "Fiktive Stellenbeschreibung Nr. 71 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-72",
+      "title": "Allgemeine Verwaltung 72",
+      "company": "Pad GmbH 72",
+      "description": "Fiktive Stellenbeschreibung Nr. 72 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-73",
+      "title": "Allgemeine Verwaltung 73",
+      "company": "Pad GmbH 73",
+      "description": "Fiktive Stellenbeschreibung Nr. 73 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-74",
+      "title": "Allgemeine Verwaltung 74",
+      "company": "Pad GmbH 74",
+      "description": "Fiktive Stellenbeschreibung Nr. 74 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-75",
+      "title": "Allgemeine Verwaltung 75",
+      "company": "Pad GmbH 75",
+      "description": "Fiktive Stellenbeschreibung Nr. 75 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-76",
+      "title": "Allgemeine Verwaltung 76",
+      "company": "Pad GmbH 76",
+      "description": "Fiktive Stellenbeschreibung Nr. 76 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-77",
+      "title": "Allgemeine Verwaltung 77",
+      "company": "Pad GmbH 77",
+      "description": "Fiktive Stellenbeschreibung Nr. 77 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-78",
+      "title": "Allgemeine Verwaltung 78",
+      "company": "Pad GmbH 78",
+      "description": "Fiktive Stellenbeschreibung Nr. 78 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-79",
+      "title": "Allgemeine Verwaltung 79",
+      "company": "Pad GmbH 79",
+      "description": "Fiktive Stellenbeschreibung Nr. 79 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-80",
+      "title": "Allgemeine Verwaltung 80",
+      "company": "Pad GmbH 80",
+      "description": "Fiktive Stellenbeschreibung Nr. 80 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-81",
+      "title": "Allgemeine Verwaltung 81",
+      "company": "Pad GmbH 81",
+      "description": "Fiktive Stellenbeschreibung Nr. 81 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-82",
+      "title": "Allgemeine Verwaltung 82",
+      "company": "Pad GmbH 82",
+      "description": "Fiktive Stellenbeschreibung Nr. 82 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-83",
+      "title": "Allgemeine Verwaltung 83",
+      "company": "Pad GmbH 83",
+      "description": "Fiktive Stellenbeschreibung Nr. 83 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-84",
+      "title": "Allgemeine Verwaltung 84",
+      "company": "Pad GmbH 84",
+      "description": "Fiktive Stellenbeschreibung Nr. 84 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-85",
+      "title": "Allgemeine Verwaltung 85",
+      "company": "Pad GmbH 85",
+      "description": "Fiktive Stellenbeschreibung Nr. 85 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-86",
+      "title": "Allgemeine Verwaltung 86",
+      "company": "Pad GmbH 86",
+      "description": "Fiktive Stellenbeschreibung Nr. 86 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-87",
+      "title": "Allgemeine Verwaltung 87",
+      "company": "Pad GmbH 87",
+      "description": "Fiktive Stellenbeschreibung Nr. 87 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-88",
+      "title": "Allgemeine Verwaltung 88",
+      "company": "Pad GmbH 88",
+      "description": "Fiktive Stellenbeschreibung Nr. 88 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-89",
+      "title": "Allgemeine Verwaltung 89",
+      "company": "Pad GmbH 89",
+      "description": "Fiktive Stellenbeschreibung Nr. 89 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-90",
+      "title": "Allgemeine Verwaltung 90",
+      "company": "Pad GmbH 90",
+      "description": "Fiktive Stellenbeschreibung Nr. 90 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-91",
+      "title": "Allgemeine Verwaltung 91",
+      "company": "Pad GmbH 91",
+      "description": "Fiktive Stellenbeschreibung Nr. 91 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-92",
+      "title": "Allgemeine Verwaltung 92",
+      "company": "Pad GmbH 92",
+      "description": "Fiktive Stellenbeschreibung Nr. 92 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-93",
+      "title": "Allgemeine Verwaltung 93",
+      "company": "Pad GmbH 93",
+      "description": "Fiktive Stellenbeschreibung Nr. 93 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-94",
+      "title": "Allgemeine Verwaltung 94",
+      "company": "Pad GmbH 94",
+      "description": "Fiktive Stellenbeschreibung Nr. 94 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-95",
+      "title": "Allgemeine Verwaltung 95",
+      "company": "Pad GmbH 95",
+      "description": "Fiktive Stellenbeschreibung Nr. 95 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-96",
+      "title": "Allgemeine Verwaltung 96",
+      "company": "Pad GmbH 96",
+      "description": "Fiktive Stellenbeschreibung Nr. 96 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-97",
+      "title": "Allgemeine Verwaltung 97",
+      "company": "Pad GmbH 97",
+      "description": "Fiktive Stellenbeschreibung Nr. 97 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-98",
+      "title": "Allgemeine Verwaltung 98",
+      "company": "Pad GmbH 98",
+      "description": "Fiktive Stellenbeschreibung Nr. 98 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-99",
+      "title": "Allgemeine Verwaltung 99",
+      "company": "Pad GmbH 99",
+      "description": "Fiktive Stellenbeschreibung Nr. 99 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-100",
+      "title": "Allgemeine Verwaltung 100",
+      "company": "Pad GmbH 100",
+      "description": "Fiktive Stellenbeschreibung Nr. 100 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-101",
+      "title": "Allgemeine Verwaltung 101",
+      "company": "Pad GmbH 101",
+      "description": "Fiktive Stellenbeschreibung Nr. 101 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-102",
+      "title": "Allgemeine Verwaltung 102",
+      "company": "Pad GmbH 102",
+      "description": "Fiktive Stellenbeschreibung Nr. 102 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-103",
+      "title": "Allgemeine Verwaltung 103",
+      "company": "Pad GmbH 103",
+      "description": "Fiktive Stellenbeschreibung Nr. 103 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-104",
+      "title": "Allgemeine Verwaltung 104",
+      "company": "Pad GmbH 104",
+      "description": "Fiktive Stellenbeschreibung Nr. 104 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-105",
+      "title": "Allgemeine Verwaltung 105",
+      "company": "Pad GmbH 105",
+      "description": "Fiktive Stellenbeschreibung Nr. 105 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-106",
+      "title": "Allgemeine Verwaltung 106",
+      "company": "Pad GmbH 106",
+      "description": "Fiktive Stellenbeschreibung Nr. 106 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-107",
+      "title": "Allgemeine Verwaltung 107",
+      "company": "Pad GmbH 107",
+      "description": "Fiktive Stellenbeschreibung Nr. 107 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-108",
+      "title": "Allgemeine Verwaltung 108",
+      "company": "Pad GmbH 108",
+      "description": "Fiktive Stellenbeschreibung Nr. 108 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-109",
+      "title": "Allgemeine Verwaltung 109",
+      "company": "Pad GmbH 109",
+      "description": "Fiktive Stellenbeschreibung Nr. 109 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-110",
+      "title": "Allgemeine Verwaltung 110",
+      "company": "Pad GmbH 110",
+      "description": "Fiktive Stellenbeschreibung Nr. 110 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-111",
+      "title": "Allgemeine Verwaltung 111",
+      "company": "Pad GmbH 111",
+      "description": "Fiktive Stellenbeschreibung Nr. 111 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-112",
+      "title": "Allgemeine Verwaltung 112",
+      "company": "Pad GmbH 112",
+      "description": "Fiktive Stellenbeschreibung Nr. 112 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-113",
+      "title": "Allgemeine Verwaltung 113",
+      "company": "Pad GmbH 113",
+      "description": "Fiktive Stellenbeschreibung Nr. 113 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-114",
+      "title": "Allgemeine Verwaltung 114",
+      "company": "Pad GmbH 114",
+      "description": "Fiktive Stellenbeschreibung Nr. 114 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-115",
+      "title": "Allgemeine Verwaltung 115",
+      "company": "Pad GmbH 115",
+      "description": "Fiktive Stellenbeschreibung Nr. 115 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-116",
+      "title": "Allgemeine Verwaltung 116",
+      "company": "Pad GmbH 116",
+      "description": "Fiktive Stellenbeschreibung Nr. 116 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-117",
+      "title": "Allgemeine Verwaltung 117",
+      "company": "Pad GmbH 117",
+      "description": "Fiktive Stellenbeschreibung Nr. 117 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-118",
+      "title": "Allgemeine Verwaltung 118",
+      "company": "Pad GmbH 118",
+      "description": "Fiktive Stellenbeschreibung Nr. 118 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-119",
+      "title": "Allgemeine Verwaltung 119",
+      "company": "Pad GmbH 119",
+      "description": "Fiktive Stellenbeschreibung Nr. 119 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-120",
+      "title": "Allgemeine Verwaltung 120",
+      "company": "Pad GmbH 120",
+      "description": "Fiktive Stellenbeschreibung Nr. 120 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-121",
+      "title": "Allgemeine Verwaltung 121",
+      "company": "Pad GmbH 121",
+      "description": "Fiktive Stellenbeschreibung Nr. 121 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-122",
+      "title": "Allgemeine Verwaltung 122",
+      "company": "Pad GmbH 122",
+      "description": "Fiktive Stellenbeschreibung Nr. 122 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-123",
+      "title": "Allgemeine Verwaltung 123",
+      "company": "Pad GmbH 123",
+      "description": "Fiktive Stellenbeschreibung Nr. 123 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-124",
+      "title": "Allgemeine Verwaltung 124",
+      "company": "Pad GmbH 124",
+      "description": "Fiktive Stellenbeschreibung Nr. 124 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-125",
+      "title": "Allgemeine Verwaltung 125",
+      "company": "Pad GmbH 125",
+      "description": "Fiktive Stellenbeschreibung Nr. 125 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-126",
+      "title": "Allgemeine Verwaltung 126",
+      "company": "Pad GmbH 126",
+      "description": "Fiktive Stellenbeschreibung Nr. 126 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-127",
+      "title": "Allgemeine Verwaltung 127",
+      "company": "Pad GmbH 127",
+      "description": "Fiktive Stellenbeschreibung Nr. 127 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-128",
+      "title": "Allgemeine Verwaltung 128",
+      "company": "Pad GmbH 128",
+      "description": "Fiktive Stellenbeschreibung Nr. 128 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    },
+    {
+      "id": "pad-129",
+      "title": "Allgemeine Verwaltung 129",
+      "company": "Pad GmbH 129",
+      "description": "Fiktive Stellenbeschreibung Nr. 129 ohne Spezialbezug.",
+      "city": "Erfurt",
+      "remote_type": "onsite",
+      "employment_type": "Vollzeit",
+      "distance_km": 20.0,
+      "tags": [
+        "pad"
+      ]
+    }
+  ],
+  "note": "synthetic fictional only"
+}
