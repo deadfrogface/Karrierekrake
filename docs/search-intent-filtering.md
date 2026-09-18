@@ -89,4 +89,7 @@ guaranteed “fit rate”.
 
 ## Out of scope (PR23)
 
-DACH cross-border, new job sources, UI redesign, LLM as hard filter.
+DACH cross-border commute filtering is implemented in PR24
+(`docs/dach-cross-border.md`). Radius is Haversine-based; borders are not
+distance barriers. This document remains the SearchIntent filter/ranking
+reference — it does not redefine geo coverage claims.

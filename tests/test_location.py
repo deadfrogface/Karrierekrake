@@ -116,9 +116,10 @@ def test_repeated_location_uses_cache(monkeypatch, tmp_path):
 
 def test_ensure_home_coords_only_once_on_failure(monkeypatch, tmp_path):
     db = Database(tmp_path / "t.db")
+    # No valid DACH PLZ → offline pgeocode cannot rescue; Nominatim empty.
     cfg = AppConfig(
         profile=SearchPreferences(
-            location=LocationConfig(home_address="Hafenweg 87, 28195 Bremen")
+            location=LocationConfig(home_address="Nowhere Street 1, Nirgendsheim")
         )
     )
     svc = LocationService(db, cfg, timeout_s=0.5)
@@ -401,10 +402,17 @@ def test_resolve_home_invalidates_stale_persisted_coords(monkeypatch, tmp_path):
     monkeypatch.setattr("httpx.Client", _Client)
     res = svc.resolve_home()
     assert res.resolved
-    assert res.source == "geocode"
-    assert res.coords == (53.55, 9.99)
-    assert calls["n"] >= 1
-    assert cfg.profile.location.home_latitude == 53.55
-    assert cfg.profile.location.home_longitude == 9.99
-    assert "Hamburg" in cfg.profile.location.home_geocoded_address
+    # Offline pgeocode may resolve PLZ 20095 before Nominatim — both OK.
+    assert res.source in {"geocode", "pgeocode", "nominatim"}
+    assert res.coords is not None
+    assert abs(res.coords[0] - 53.55) < 1.0  # Hamburg area
+    assert abs(res.coords[1] - 9.99) < 1.5
+    assert cfg.profile.location.home_latitude == res.coords[0]
+    assert cfg.profile.location.home_longitude == res.coords[1]
+    assert "Hamburg" in cfg.profile.location.home_geocoded_address or "Neue" in (
+        cfg.profile.location.home_geocoded_address or ""
+    )
     assert svc.home_updated is True
+    # Network only required when offline path cannot resolve
+    if res.source in {"geocode", "nominatim"}:
+        assert calls["n"] >= 1
