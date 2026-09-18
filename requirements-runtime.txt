@@ -22,6 +22,7 @@ google-api-python-client>=2.100.0
 google-auth-oauthlib>=1.2.0
 google-auth>=2.23.0
 keyring>=24.0.0
+tenacity>=8.2.0
 # Optional: Günther embedded local LLM (EXE may ship without it; heuristic/fail-closed otherwise)
 # llama-cpp-python>=0.3.0
 # Optional: richer JSON-LD / HTML extraction for contact discovery (PR25); bs4/lxml fallback always works

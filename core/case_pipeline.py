@@ -42,6 +42,16 @@ def process_parsed_email(
     else:
         payload = dict(email)
 
+    # Fail-safe dedupe: never emit duplicate lifecycle events for same gmail_id.
+    existing_gid = str(payload.get("gmail_id") or "").strip()
+    if existing_gid and db.has_gmail_message(existing_gid):
+        existing = db.get_email_by_gmail_id(existing_gid) or {}
+        return {
+            "email_id": existing.get("id") or existing_gid,
+            "status": "duplicate",
+            "skipped": True,
+        }
+
     sender = payload.get("sender") or ""
     if sender_is_excluded(sender, exclude_senders or []):
         payload.update(
