@@ -14,6 +14,8 @@ __all__ = [
     "calendar_timezone",
     "calendar_freebusy",
     "proposal_parse",
+    "calendar_write",
+    "calendar_scheduling",
     "gmail_auth",
     "gmail_sync",
     "secure_tokens",
