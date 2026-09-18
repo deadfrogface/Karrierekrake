@@ -1,0 +1,63 @@
+{
+  "id": "bi_15",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrung im Personalwesen erzählen?",
+      "Welche Strategien verwenden Sie, um Talente in Ihrem Team zu identifizieren und zu gewinnen?",
+      "Wie gehen Sie mit Herausforderungen im Personalwesen um, denen Sie begegnet sind?",
+      "Welche Fähigkeiten sehen Sie als besonders wichtig für die Rolle des HR-BPs an?",
+      "Wie setzen Sie sich mit den Bedürfnissen und Zielen des Teams und des Unternehmens auseinander?"
+    ],
+    "talking_points": [
+      "Personio-Erfahrung"
+    ],
+    "gap_notes": [],
+    "anchors_used": [
+      {
+        "text": "Personio",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Personio-Erfahrung"
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrung im Personalwesen erzählen?",
+            "Welche Strategien verwenden Sie, um Talente in Ihrem Team zu identifizieren und zu gewinnen?",
+            "Wie gehen Sie mit Herausforderungen im Personalwesen um, denen Sie begegnet sind?",
+            "Welche Fähigkeiten sehen Sie als besonders wichtig für die Rolle des HR-BPs an?",
+            "Wie setzen Sie sich mit den Bedürfnissen und Zielen des Teams und des Unternehmens auseinander?"
+          ],
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

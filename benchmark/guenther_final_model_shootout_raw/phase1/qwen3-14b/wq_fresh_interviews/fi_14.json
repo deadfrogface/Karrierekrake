@@ -1,0 +1,45 @@
+{
+  "id": "fi_14",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 152.052,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit SLA-Ziele erreicht und welche Herausforderungen haben Sie dabei erlebt?",
+      "Können Sie ein Beispiel nennen, in dem Sie eine Instandhaltungsaufgabe effizient und termingerecht abgeschlossen haben?",
+      "Wie gehen Sie vor, wenn ein SLA nicht erfüllt werden kann und wie kommunizieren Sie dies mit den Beteiligten?"
+    ],
+    "talking_points": [
+      "In meiner bisherigen Tätigkeit als Facility-Mitarbeiter habe ich mich mit der Sicherstellung von SLA-Zielen beschäftigt, indem ich Prioritäten klar definierte und Ressourcen effizient einsetzte.",
+      "Bei der Kommunikation von SLA-Verzögerungen habe ich mich immer bemüht, transparent und proaktiv zu handeln, um das Vertrauen der Stakeholder zu wahren."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Zahlen zur Erfüllung von SLA-Zielen.",
+      "Die genaue Art der Instandhaltungsaufgaben ist nicht spezifiziert.",
+      "Es gibt keine Erwähnung von Tools oder Methoden zur SLA-Überwachung."
+    ],
+    "anchors_used": [
+      {
+        "text": "Instandhaltung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "SLA",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Facility",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

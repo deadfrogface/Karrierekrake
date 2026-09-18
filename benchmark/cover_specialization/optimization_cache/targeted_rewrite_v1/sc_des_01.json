@@ -1,0 +1,16 @@
+{
+  "id": "sc_des_01",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 57.502,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Ich bringe meine Expertise im Debitorenmanagement in Excel ein und kann DATEV nicht verwenden. Ich bin überzeugt, dass meine Fähigkeiten gut zu den Anforderungen von LedgerPro AG passen, insbesondere wenn Sie Excel-Fähigkeiten schätzen.",
+  "subject": "Buchhalter/in - Excel-Fähigkeiten",
+  "baseline_score": 6.0,
+  "baseline_edit": "MATERIAL_EDIT_REQUIRED",
+  "hard_flags": {}
+}

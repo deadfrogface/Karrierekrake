@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_06",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 89.31,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals examinierte Steuerfachangestellte mit fundierter Erfahrung in der Erstellung von Jahresabschlüssen bringe ich die passenden Qualifikationen für die Kanzlei Bergmann mit. \n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der DATEV-Software sowie in der Bearbeitung komplexer Jahresabschlüsse erworben. Diese Erfahrung ermöglicht es mir, Ihre Mandanten effizient und präzise zu betreuen. Mein Fokus liegt dabei auf einer strukturierten Arbeitsweise und der sicheren Anwendung der relevanten Steuergesetze.\n\nIch freue mich darauf, meine Expertise in Ihr Team einzubringen und die Kanzlei Bergmann tatkräftig zu unterstützen. Über die Gelegenheit zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nSara Tax",
+  "subject": "Bewerbung als Steuerfachangestellte - Sara Tax",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Steuerfachangestellte - Sara Tax",
+          "body": "Sehr geehrte Damen und Herren,\n\nals examinierte Steuerfachangestellte mit fundierter Erfahrung in der Erstellung von Jahresabschlüssen bringe ich die passenden Qualifikationen für die Kanzlei Bergmann mit. \n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der DATEV-Software sowie in der Bearbeitung komplexer Jahresabschlüsse erworben. Diese Erfahrung ermöglicht es mir, Ihre Mandanten effizient und präzise zu betreuen. Mein Fokus liegt dabei auf einer strukturierten Arbeitsweise und der sicheren Anwendung der relevanten Steuergesetze.\n\nIch freue mich darauf, meine Expertise in Ihr Team einzubringen und die Kanzlei Bergmann tatkräftig zu unterstützen. Über die Gelegenheit zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nSara Tax",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

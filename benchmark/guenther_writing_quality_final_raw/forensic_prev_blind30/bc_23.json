@@ -1,0 +1,112 @@
+{
+  "id": "bc_23",
+  "target_role": "Key Account (m/w/d)",
+  "target_company": "B2B Sales Pro",
+  "profile": "Blind Cover 23\nAkquise, CRM\nReferenz: Projektarbeit in key account",
+  "job": "Key Account (m/w/d)\nB2B Sales Pro\nProfil: Akquise, CRM.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "begeistert von der Möglichkeit"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung"
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "B2B Sales Pro"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung"
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "B2B Sales Pro"
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Bereich Akquise und CRM in Ihrem Team einzubringen. Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich sicher, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Ideen und Strategien für den Erfolg Ihres Unternehmens zu diskutieren.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich freue mich darauf, meine Fähigkeiten im Bereich Akquise und CRM in Ihrem Team einzubringen. Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich sicher, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Ideen und Strategien für den Erfolg Ihres Unternehmens zu diskutieren.",
+  "final_body": "Sehr geehrte Damen und Herren, ich freue mich darauf, meine Fähigkeiten im Bereich Akquise und CRM in Ihrem Team einzubringen. Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich sicher, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Ideen und Strategien für den Erfolg Ihres Unternehmens zu diskutieren.",
+  "final_subject": "Key Account - Akquise-Magnum-Leicht",
+  "body_len": 363,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Erfahrung",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "B2B Sales Pro",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Erfahrung",
+          "kind": "credential",
+          "span": "Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

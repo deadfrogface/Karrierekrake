@@ -1,0 +1,52 @@
+{
+  "id": "sc_des_02",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 103.233,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe umfangreiche Erfahrung im Bereich Social Ads ein, was für die Rolle eines Marketing Managers bei AdPulse SE von Vorteil sein könnte. Ich bin bereit, mein Fachwissen im Google-Ads-Bereich zu erweitern, um meine Fähigkeiten für diese Position zu stärken.",
+  "subject": "Marketing Manager",
+  "peak_rss_mb": 207.515625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.808,
+      "draft": 18.971,
+      "critique_1": 46.452
+    },
+    "cot_stored": false
+  }
+}

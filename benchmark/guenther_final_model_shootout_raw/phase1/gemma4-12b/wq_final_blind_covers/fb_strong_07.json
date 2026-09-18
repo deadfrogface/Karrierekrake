@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_07",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 100.557,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Konfiguration und Verwaltung von Firewall-Systemen, VPN-Verbindungen und Switching-Infrastrukturen bringe ich die passenden technischen Grundlagen für die Position als Netzwerktechniker bei der SecureNet KG mit.\n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der Bereitstellung sicherer Netzwerkverbindungen und der Steuerung von Netzwerkkomponenten aufgebaut. Diese praktischen Erfahrungen ermöglichen es mir, bestehende Netzwerkinfrastrukturen stabil zu betreuen und gezielt zu optimieren. Da ich zwar keine CCNA-Zertifizierung besitze, verfüge ich jedoch über fundierte praktische Expertise in den relevanten Kernbereichen der Netzwerktechnik.\n\nIch freue mich darauf, meine technischen Fähigkeiten in Ihr Team einzubringen und die Netzwerkinfrastruktur der SecureNet KG zuverlässig zu unterstützen.\\n\nÜber die Einladung zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nTim Network",
+  "subject": "Bewerbung als Netzwerktechniker - Tim Network",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Netzwerktechniker - Tim Network",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Konfiguration und Verwaltung von Firewall-Systemen, VPN-Verbindungen und Switching-Infrastrukturen bringe ich die passenden technischen Grundlagen für die Position als Netzwerktechniker bei der SecureNet KG mit.\n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der Bereitstellung sicherer Netzwerkverbindungen und der Steuerung von Netzwerkkomponenten aufgebaut. Diese praktischen Erfahrungen ermöglichen es mir, bestehende Netzwerkinfrastrukturen stabil zu betreuen und gezielt zu optimieren. Da ich zwar keine CCNA-Zertifizierung besitze, verfüge ich jedoch über fundierte praktische Expertise in den relevanten Kernbereichen der Netzwerktechnik.\n\nIch freue mich darauf, meine technischen Fähigkeiten in Ihr Team einzubringen und die Netzwerkinfrastruktur der SecureNet KG zuverlässig zu unterstützen.\\n\nÜber die Einladung zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nTim Network",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

@@ -1,0 +1,28 @@
+{
+  "id": "fi_06",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen haben Sie mit der Verwaltung von Kreditoren im Kontext des DATEV-Systems?",
+      "Können Sie ein spezifisches Buchhaltungsproblem beschreiben, das Sie bei der Arbeit mit DATEV gelöst haben?",
+      "Wie würden Sie DATEV nutzen, um die finanzielle Gesundheit eines Unternehmens zu verbessern?"
+    ],
+    "talking_points": [
+      "Erwähne die spezifischen Fähigkeiten, die du im Bereich Buchhaltung erworben hast, insbesondere im Zusammenhang mit Kreditoren und DATEV.",
+      "Diskutiere, wie du die Prinzipien der Buchhaltung angewendet hast, um die finanzielle Leistung eines Unternehmens zu verbessern, und verwende DATEV als Beispiel, falls zutreffend.",
+      "Erkläre, wie du DATEV nutzt, um die Einhaltung von Finanzregulierungen und die Effizienz der finanziellen Prozesse zu gewährleisten."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele aus der beruflichen Laufbahn, die du verwenden könntest, um deine Erfahrungen und Fähigkeiten zu veranschaulichen.",
+      "Du solltest möglicherweise spezifischere Fähigkeiten oder Kenntnisse im Zusammenhang mit DATEV hervorheben, falls du darüber Bescheid weißt."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

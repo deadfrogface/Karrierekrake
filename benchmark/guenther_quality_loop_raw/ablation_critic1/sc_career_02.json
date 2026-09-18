@@ -1,0 +1,64 @@
+{
+  "id": "sc_career_02",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 226.768,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Erfahrungen in der Kreditorenbuchhaltung und mein Interesse an Controlling in die Rolle des Junior Controllers bei FinNest AG einzubringen. Ich bin überzeugt, dass meine Berufserfahrung und meine Grundkenntnisse in Deutsch den Anforderungen entsprechen.",
+  "subject": "Junior Controller",
+  "peak_rss_mb": 230.71484375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 56.572,
+      "draft": 20.139,
+      "critique_1": 66.156,
+      "quality_revision_1": 23.22,
+      "critique_2": 60.678
+    },
+    "cot_stored": false
+  }
+}

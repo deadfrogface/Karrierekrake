@@ -1,0 +1,102 @@
+{
+  "id": "fb_des_04",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "CONTRADICTED_CLAIM",
+    "WRONG_COMPANY"
+  ],
+  "attempt1_errors": [
+    "CONTRADICTED_CLAIM",
+    "WRONG_COMPANY"
+  ],
+  "final_errors": [
+    "CONTRADICTED_CLAIM",
+    "WRONG_COMPANY"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Erfahrung in der Grundpflege und meine Dokumentationserfahrung anzubieten. Meine Fähigkeiten in der Pflege, kombiniert mit meiner Fähigkeit, genaue Dokumentationen vorzunehmen, würden mir ermöglichen, effektiv in Ihrer Pflegeabteilung zu arbeiten. Ich bin besonders daran interessiert, meine Sprachkenntnisse im Pflegekontext zu verbessern, daher wäre ein B2 Zertifikat in Englisch sehr vorteilhaft. Ich freue mich darauf, meine Fähigkeiten in Ihrer Organisation einzubringen. Mit freundlichen Grüßen, Otto Care",
+  "subject": "Pflegeassistenz - Haus am Bach",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "CONTRADICTED_CLAIM",
+            "message_de": "Eine Aussage widerspricht den vorliegenden Profilbelegen.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Zertifikat in Englisch sehr vorteilhaft",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Haus am Bach",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Pflegeassistenz - Haus am Bach",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Erfahrung in der Grundpflege und meine Dokumentationserfahrung, unterstützt durch ein B2 Zertifikat, anzubieten. Meine Fähigkeiten in der Pflege, kombiniert mit meiner Fähigkeit, genaue Dokumentationen vorzunehmen, würden mir ermöglichen, effektiv in Ihrer Pflegeabteilung zu arbeiten. Ich bin besonders daran interessiert, meine Sprachkenntnisse im Pflegekontext zu verbessern, daher wäre ein B2 Zertifikat in Englisch sehr vorteilhaft. Ich freue mich darauf, meine Fähigkeiten in Ihrer Organisation einzubringen. Mit freundlichen Grüßen, Otto Care",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "CONTRADICTED_CLAIM",
+            "message_de": "Eine Aussage widerspricht den vorliegenden Profilbelegen.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Zertifikat in Englisch sehr vorteilhaft",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Haus am Bach",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Pflegeassistenz - Haus am Bach",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Erfahrung in der Grundpflege und meine Dokumentationserfahrung anzubieten. Meine Fähigkeiten in der Pflege, kombiniert mit meiner Fähigkeit, genaue Dokumentationen vorzunehmen, würden mir ermöglichen, effektiv in Ihrer Pflegeabteilung zu arbeiten. Ich bin besonders daran interessiert, meine Sprachkenntnisse im Pflegekontext zu verbessern, daher wäre ein B2 Zertifikat in Englisch sehr vorteilhaft. Ich freue mich darauf, meine Fähigkeiten in Ihrer Organisation einzubringen. Mit freundlichen Grüßen, Otto Care",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

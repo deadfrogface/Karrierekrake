@@ -1,0 +1,47 @@
+{
+  "id": "fb2_med_04",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Bestellungen und Lieferantenmanagement zu teilen, die ich bei meiner aktuellen Position bei XYZ Corp erworben habe. Mein Fokus auf effiziente Prozesse und meine Fähigkeit, Beziehungen zu Lieferanten aufzubauen, würde ich gerne auf die Position des Procurement Assistants bei BuyLine KG übertragen. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Procurement-Bereich bei Ihrem angesehenen Unternehmen einzubringen.",
+  "subject": "Bewerbung für die Position des Procurement Assistants bei BuyLine KG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Procurement Assistants bei BuyLine KG",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Bestellungen und Lieferantenmanagement zu teilen, die ich bei meiner aktuellen Position bei XYZ Corp erworben habe. Mein Fokus auf effiziente Prozesse und meine Fähigkeit, Beziehungen zu Lieferanten aufzubauen, würde ich gerne auf die Position des Procurement Assistants bei BuyLine KG übertragen. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Procurement-Bereich bei Ihrem angesehenen Unternehmen einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

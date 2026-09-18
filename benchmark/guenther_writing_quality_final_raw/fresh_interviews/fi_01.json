@@ -1,0 +1,34 @@
+{
+  "id": "fi_01",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie integrierst du Reporting, Excel und Kostenrechnung in deine tägliche Arbeit als Controller?",
+      "Kannst du ein Projekt beschreiben, bei dem du diese Fähigkeiten angewendet hast, um die FinHold SE zu unterstützen?",
+      "Welche Strategien verwendest du, um Kosten zu kontrollieren und zu optimieren?"
+    ],
+    "talking_points": [
+      "Die Interview-Cand hat 3 Jahre Berufserfahrung als Controller, wobei der Schwerpunkt auf Reporting, Excel und Kostenrechnung liegt.",
+      "Die relevanten Fähigkeiten der Interview-Cand für das Vorstellungsgespräch bei FinHold SE umfassen Reporting, Excel und Kostenrechnung."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Projekte bereitgestellt, die in der Diskussion hervorgehoben werden könnten.",
+      "Weitere Details über die Art der Arbeit, die die Interview-Cand bei FinHold SE durchgeführt hat, wären hilfreich, um die Antworten besser auf die Stellenbeschreibung abzustimmen.",
+      "Es könnte nützlich sein, die Interview-Cand zu ermutigen, Beispiele aus ihrer Vergangenheit zu liefern, um ihre Fähigkeiten und Erfahrungen zu veranschaulichen."
+    ],
+    "anchors_used": [
+      {
+        "text": "Reporting, Excel, Kostenrechnung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

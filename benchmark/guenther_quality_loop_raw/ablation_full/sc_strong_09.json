@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 67.217,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe über 4 Jahre Berufserfahrung im Bereich Tourenplanung, Telefon und Disposition ein, was perfekt für die Rolle des Disponenten/in bei FleetMove KG geeignet ist. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung direkt auf die Anforderungen von FleetMove KG abgestimmt sind.",
+  "subject": "Freischaffender Disponent/in",
+  "peak_rss_mb": 208.45703125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.675,
+      "draft": 16.167,
+      "critique_1": 21.373
+    },
+    "cot_stored": false
+  }
+}

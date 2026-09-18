@@ -1,0 +1,50 @@
+{
+  "id": "sc_med_08",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 31.974,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Social Media und Content Pflege zu teilen, die ich glaube, gut auf die Rolle des Marketing Assistants bei BrandWave SE übertragen kann. Mit meiner Rolle bei XYZ-Corp habe ich erfolgreich Social Media-Kampagnen entwickelt und verwaltet, was zu einer Steigerung der Online-Präsenz und des Engagements um 20% führte. Ich bin auch in der Erstellung und Pflege von Inhalten für verschiedene Kanäle involviert, was meine Fähigkeiten im Verfassen von überzeugenden Texten und im Verständnis des Content-Marketing-Konzepts zeigt. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Marketing und Content-Pflege bei BrandWave SE einzubringen und würde gerne meine Erfahrung in Ihre Teamarbeit einbringen.",
+  "subject": "Bewerbung für die Position Marketing Assistant bei BrandWave SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Marketing Assistant bei BrandWave SE",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Bereich Social Media und Content Pflege zu teilen, die ich glaube, gut auf die Rolle des Marketing Assistants bei BrandWave SE übertragen kann. Mit meiner Rolle bei XYZ-Corp habe ich erfolgreich Social Media-Kampagnen entwickelt und verwaltet, was zu einer Steigerung der Online-Präsenz und des Engagements um 20% führte. Ich bin auch in der Erstellung und Pflege von Inhalten für verschiedene Kanäle involviert, was meine Fähigkeiten im Verfassen von überzeugenden Texten und im Verständnis des Content-Marketing-Konzepts zeigt. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Marketing und Content-Pflege bei BrandWave SE einzubringen und würde gerne meine Erfahrung in Ihre Teamarbeit einbringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5578.4
+}

@@ -1,0 +1,29 @@
+{
+  "id": "fi_20",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 32.991,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Beispiel für eine erfolgreiche Anforderungen-Dokumentation geben, die Sie bei FinTech Hub erstellt haben?",
+      "Wie gehen Sie vor, um UML-Diagramme zu erstellen, die den Anforderungen Ihres Kunden entsprechen?",
+      "Welche Strategien verwenden Sie, um sicherzustellen, dass die Anforderungen klar und effektiv kommuniziert werden?"
+    ],
+    "talking_points": [
+      "Erfahrung im Erstellen und Verwalten von Anforderungen-Dokumentationen, insbesondere im FinTech-Bereich.",
+      "Beherrschung von UML-Diagrammen zur Visualisierung und Kommunikation von Anforderungen.",
+      "Stärken im effektiven Kommunizieren und Verstehen von Kundenanforderungen, um genaue und relevante Anforderungen-Dokumente zu erstellen."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Beispiele für abgeschlossene Projekte, daher könnte es hilfreich sein, reale Szenarien aus früheren Rollen zu teilen, wenn möglich.",
+      "Es könnte nützlich sein, mehr Details über die Art der Anforderungen-Dokumentation zu geben, die Sie erstellt haben, um die Expertise zu verdeutlichen."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

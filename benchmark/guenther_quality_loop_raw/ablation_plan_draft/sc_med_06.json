@@ -1,0 +1,44 @@
+{
+  "id": "sc_med_06",
+  "final_ok": true,
+  "score": 7.0,
+  "edit_class": "MINOR_STYLE_EDIT_OPTIONAL",
+  "notes": [
+    "too_short"
+  ],
+  "latency_s": 44.723,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe umfangreiche Erfahrung im IT-Support, insbesondere im Bereich First-Level, Windows, Passwort-Resets, was perfekt zu TicketTree AGs Anforderungen passt.",
+  "subject": "IT-Helpdesk",
+  "peak_rss_mb": 183.3359375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 32.002,
+      "draft": 12.721
+    },
+    "cot_stored": false
+  }
+}

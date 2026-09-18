@@ -1,0 +1,50 @@
+{
+  "id": "sc_trap_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 16.007,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position Engineer bei Fabrikam Robotics AG auszudrücken. Mit meiner Erfahrung in der SPS und Inbetriebnahme bei Tailspin Robotics bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle bei Fabrikam Robotics integrieren kann. Ich bin besonders an der Möglichkeit interessiert, mich an den innovativen Robotikprojekten zu beteiligen, die Fabrikam Robotics entwickelt.",
+  "subject": "Bewerbung für die Position Engineer bei Fabrikam Robotics AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Engineer bei Fabrikam Robotics AG",
+          "body": "Ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position Engineer bei Fabrikam Robotics AG auszudrücken. Mit meiner Erfahrung in der SPS und Inbetriebnahme bei Tailspin Robotics bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle bei Fabrikam Robotics integrieren kann. Ich bin besonders an der Möglichkeit interessiert, mich an den innovativen Robotikprojekten zu beteiligen, die Fabrikam Robotics entwickelt.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5601.4
+}

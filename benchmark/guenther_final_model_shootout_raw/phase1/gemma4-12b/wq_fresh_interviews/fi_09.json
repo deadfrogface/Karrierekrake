@@ -1,0 +1,39 @@
+{
+  "id": "fi_09",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 91.357,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie mit schwierigen Gästewünschen im Bereich Reservierung um?",
+      "Beschreiben Sie Ihre Erfahrung im täglichen Gästeservice im Hotelbetrieb.",
+      "Wie organisieren Sie Ihre Aufgaben, wenn mehrere Reservierungsanfragen gleichzeitig eingehen?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im Hotelfach",
+      "Spezialisierung auf den Bereich Reservierung",
+      "Erfahrung im direkten Gästeservice"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder detaillierten Aufgabenbeschreibungen in der Evidenz vorhanden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Hotelfach",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Reservierung, Gästeservice",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  }
+}

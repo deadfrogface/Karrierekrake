@@ -1,0 +1,18 @@
+{
+  "id": "sc_career_06",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 81.188,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Ich freue mich darauf, meine praktischen Datenanalyse-Fähigkeiten und meine Excel-Prozesse mit Ihnen zu teilen. Meine Berufserfahrung und meine Deutschkenntnisse entsprechen den Anforderungen für die Junior Data Analyst Position bei InsightLab AG.",
+  "subject": "Junior Data Analyst Position",
+  "baseline_score": 6.0,
+  "baseline_edit": "MATERIAL_EDIT_REQUIRED",
+  "hard_flags": {}
+}

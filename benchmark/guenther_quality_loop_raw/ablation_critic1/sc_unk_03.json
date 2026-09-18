@@ -1,0 +1,71 @@
+{
+  "id": "sc_unk_03",
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 158.096,
+  "model_calls": 6,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit einer soliden Berufserfahrung im Lagerbereich und versiertem Umgang mit Kommissionierung bin ich gut gerüstet, um Ihre Lagerhilfeanforderungen zu erfüllen. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen eine wertvolle Bereicherung für Ihr Team darstellen.",
+  "subject": "Lagerhilfe",
+  "peak_rss_mb": 230.92578125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 38.85,
+      "draft": 17.214,
+      "safety_repair": 15.909,
+      "critique_1": 27.62,
+      "quality_revision_1": 16.104,
+      "critique_2": 42.396
+    },
+    "cot_stored": false
+  }
+}

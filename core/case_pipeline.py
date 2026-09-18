@@ -60,12 +60,50 @@ def process_parsed_email(
     payload["category"] = classification.category
     payload["confidence"] = classification.confidence
 
+    # Optional Günther second opinion — never overrides false-rejection guard
+    # or forces status; stored as advisory metadata only.
+    guenther_meta: dict[str, Any] = {}
+    try:
+        from core.config import load_config
+        from guenther.service import get_guenther_service
+
+        cfg = load_config()
+        if getattr(cfg.settings, "guenther_enabled", False):
+            g = get_guenther_service(
+                enabled=True,
+                model=getattr(cfg.settings, "guenther_model", "auto") or "auto",
+            )
+            env = g.suggest_email_class(
+                payload.get("subject") or "",
+                payload.get("body_text") or "",
+                deterministic_category=classification.category,
+                deterministic_false_rejection_blocked=classification.false_rejection_blocked,
+            )
+            if env.ok and env.validated:
+                guenther_meta = {
+                    "category": env.suggestion.get("category"),
+                    "confidence": env.suggestion.get("confidence"),
+                    "safety_notes": env.safety_notes,
+                    "model_id": env.model_id,
+                }
+                # Advisory only: never raise confidence to force rejection
+                if (
+                    classification.false_rejection_blocked
+                    or env.suggestion.get("false_rejection_risk")
+                ):
+                    guenther_meta["status_write_blocked"] = True
+    except Exception:
+        logger.debug("guenther email assist skipped", exc_info=False)
+
     cases = [c.to_dict() for c in db.list_cases(limit=2000)]
     assoc = associate_email(
         sender=sender,
         subject=payload.get("subject") or "",
         cases=cases,
     )
+
+    if guenther_meta:
+        payload["guenther"] = guenther_meta
 
     if assoc.ambiguous or not assoc.case_id:
         payload["association_status"] = "ambiguous" if assoc.candidates or assoc.ambiguous else "unlinked"

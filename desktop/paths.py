@@ -45,6 +45,7 @@ def ensure_app_dirs() -> dict[str, Path]:
         "cvs": root / "cvs",
         "cache": root / "cache",
         "cover_letters": root / "cover_letters",
+        "models": root / "models",
     }
     for path in dirs.values():
         path.mkdir(parents=True, exist_ok=True)

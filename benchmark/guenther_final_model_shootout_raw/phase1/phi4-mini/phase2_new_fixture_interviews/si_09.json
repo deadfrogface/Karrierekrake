@@ -1,0 +1,28 @@
+{
+  "id": "si_09",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 26.965,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Beispiel dafür geben, wie Sie eine schwierige Situation im Gästeservice gelöst haben?",
+      "Wie halten Sie sich in einem hektischen Reservierungsumfeld organisiert?",
+      "Welche Strategien verwenden Sie, um den Gästen Ihre Dienstleistungen nahtlos nahezubringen?"
+    ],
+    "talking_points": [
+      "Erfahrung im Hotelfach, insbesondere im Bereich Reservierung und Gästeservice.",
+      "Spezialisierung auf die Verbesserung des Kundenerlebnisses im Alpenhof."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften im Profil angegeben, daher ist es wichtig, die Fähigkeiten und Erfahrungen des Kandidaten im Gespräch hervorzuheben.",
+      "Mögliche Lücken in der beruflichen Laufbahn oder in der Spezialisierung, die während des Interviews besprochen werden könnten."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "sc_strong_05",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 65.784,
+  "repair_count": 1,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Berufserfahrung im Bereich der elektrischen Energieversorgung anzubieten. In meiner bisherigen Rolle war ich für die Wartung und Reparatur von Schaltschranken verantwortlich, was meine praktischen Fähigkeiten im Umgang mit elektrischen Systemen unter Beweis stellt. Ich bin überzeugt, dass meine Erfahrung und meine Deutschkenntnisse eine wertvolle Ergänzung für Ihr Team bei PowerFix GmbH darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen und zum Erfolg Ihres Unternehmens beizutragen.",
+  "subject": "Bewerbung für die Position Elektroniker bei PowerFix GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meiner Ausbildung als“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meiner Ausbildung als",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Elektroniker bei PowerFix GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Berufserfahrung als Elektroniker im Bereich Energie und meine Fähigkeiten im Umgang mit Schaltschrank-Wartung anzubieten. Mit meiner Ausbildung als Elektroniker Energie bin ich vertraut mit den grundlegenden und fortgeschrittenen Techniken im Bereich der elektrischen Energieversorgung. In meiner bisherigen Rolle war ich für die Wartung und Reparatur von Schaltschranken verantwortlich, was meine praktischen Fähigkeiten im Umgang mit elektrischen Systemen unter Beweis stellt. Ich bin überzeugt, dass meine Erfahrung und meine Deutschkenntnisse eine wertvolle Ergänzung für Ihr Team bei PowerFix GmbH darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen und zum Erfolg Ihres Unternehmens beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Elektroniker bei PowerFix GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Berufserfahrung im Bereich der elektrischen Energieversorgung anzubieten. In meiner bisherigen Rolle war ich für die Wartung und Reparatur von Schaltschranken verantwortlich, was meine praktischen Fähigkeiten im Umgang mit elektrischen Systemen unter Beweis stellt. Ich bin überzeugt, dass meine Erfahrung und meine Deutschkenntnisse eine wertvolle Ergänzung für Ihr Team bei PowerFix GmbH darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen und zum Erfolg Ihres Unternehmens beizutragen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5557.8
+}

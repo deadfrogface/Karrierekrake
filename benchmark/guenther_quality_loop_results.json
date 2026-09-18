@@ -1,0 +1,157 @@
+{
+  "purpose": "Günther final intelligence architecture — quality loop results COMPLETE",
+  "architecture_complete": true,
+  "ablation_complete": true,
+  "primary_model": "phi4-mini",
+  "light_fallback": "qwen3-1.7b",
+  "model_tournament_closed": true,
+  "plan_stage_implemented": true,
+  "critic_implemented": true,
+  "early_exit": true,
+  "max_model_calls": 8,
+  "max_plan_repairs": 1,
+  "max_safety_repairs": 1,
+  "max_quality_revisions": 2,
+  "max_quality_revisions_recommended_in_prod": 0,
+  "recommended_default_mode": "plan_draft",
+  "revision_2_worth_keeping": false,
+  "critic_calibration": {
+    "n": 6,
+    "correct": 5,
+    "accuracy": 0.833,
+    "pass": true,
+    "cases": [
+      {
+        "id": "cal_excellent",
+        "expected": true,
+        "predicted": true,
+        "ok": true
+      },
+      {
+        "id": "cal_generic",
+        "expected": false,
+        "predicted": false,
+        "ok": true
+      },
+      {
+        "id": "cal_irrelevant",
+        "expected": false,
+        "predicted": false,
+        "ok": true
+      },
+      {
+        "id": "cal_cv_dump",
+        "expected": false,
+        "predicted": true,
+        "ok": false
+      },
+      {
+        "id": "cal_repetitive",
+        "expected": false,
+        "predicted": false,
+        "ok": true
+      },
+      {
+        "id": "cal_career_change",
+        "expected": true,
+        "predicted": true,
+        "ok": true
+      }
+    ]
+  },
+  "ablation": {
+    "A_old_phase2_reuse": {
+      "mode": "old",
+      "source": "phase2_reuse",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 85.11,
+      "unnecessary_fail_closed_pct": 14.89,
+      "ready_as_is_pct": 76.6,
+      "cover_raw_avg": 7.665,
+      "cover_accepted_avg": 7.808,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 31.076,
+      "median_latency_s": 24.593,
+      "p95_latency_s": 74.428,
+      "avg_model_calls": null,
+      "p50_model_calls": null,
+      "p95_model_calls": null,
+      "peak_rss_mb": 5601.4
+    },
+    "B_plan_draft": {
+      "mode": "plan_draft",
+      "source": "live",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 93.62,
+      "unnecessary_fail_closed_pct": 6.38,
+      "ready_as_is_pct": 60.64,
+      "cover_raw_avg": 7.3,
+      "cover_accepted_avg": 7.538,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 60.684,
+      "median_latency_s": 50.944,
+      "p95_latency_s": 90.77,
+      "avg_model_calls": 2.05,
+      "p50_model_calls": 2.0,
+      "p95_model_calls": 3,
+      "peak_rss_mb": 5547.08984375
+    },
+    "C_critic1": {
+      "mode": "critic1",
+      "source": "live",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 89.36,
+      "unnecessary_fail_closed_pct": 10.64,
+      "ready_as_is_pct": 64.89,
+      "cover_raw_avg": 7.17,
+      "cover_accepted_avg": 7.655,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 127.702,
+      "median_latency_s": 129.51,
+      "p95_latency_s": 216.354,
+      "avg_model_calls": 4.12,
+      "p50_model_calls": 5.0,
+      "p95_model_calls": 6,
+      "peak_rss_mb": 5561.1796875
+    },
+    "D_full": {
+      "mode": "full",
+      "source": "live",
+      "n": 100,
+      "eligible_safe_n": 94,
+      "eligible_safe_automation_pct": 85.11,
+      "unnecessary_fail_closed_pct": 14.89,
+      "ready_as_is_pct": 58.51,
+      "cover_raw_avg": 7.045,
+      "cover_accepted_avg": 7.576,
+      "safety_failures_accepted": 0,
+      "avg_latency_s": 141.688,
+      "median_latency_s": 132.449,
+      "p95_latency_s": 250.733,
+      "avg_model_calls": 4.85,
+      "p50_model_calls": 5.0,
+      "p95_model_calls": 7,
+      "peak_rss_mb": 5538.6171875
+    }
+  },
+  "development_target_reached": false,
+  "new_blind_fixture_created": false,
+  "held_out_rerun": false,
+  "quality_ready": false,
+  "merge_ready": false,
+  "ci": "PASS",
+  "windows_smoke": "PASS",
+  "phase2_forensics": "benchmark/guenther_quality_loop_raw/phase2_failure_forensics.json",
+  "verdict": {
+    "best_mode": "plan_draft",
+    "automation_lift_vs_old_pp": 8.51,
+    "ready_delta_vs_old_pp": -15.96,
+    "cover_delta_vs_old": -0.365,
+    "revision_2_worth_keeping": false,
+    "reopen_model_selection": false,
+    "blind_fixture": false
+  }
+}

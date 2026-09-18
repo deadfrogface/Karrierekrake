@@ -1,0 +1,83 @@
+{
+  "id": "dev_18",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Mit meiner Koch-Ausbildung von 2018, die ich an der renommierten Kochschule in München absolviert habe, bin ich bestens vorbereitet, um im kulinarischen Bereich des Restaurant Alpenblick mitzuwirken. Die strenge Schulung und das Zertifikat im HACCP-System haben meine Fähigkeiten im sanften Garde und im authentischen Alpen-Essen verfeinert. Ich bin überzeugt, dass meine Erfahrung im Kochen und meine Leidenschaft für exquisite Küche meine idealen Eigenschaften für diese Rolle darstellen. Ich freue mich darauf, meine Fähigkeiten und meine Begeisterung für das kulinarische Handwerk im Restaurant Alpenblick einzubringen.",
+  "subject": "Bewerbung für Kochposition im Restaurant Alpenblick",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Zertifikat im HACCP-System zu präsentieren“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Zertifikat im HACCP-System zu präsentieren",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Kochposition im Restaurant Alpenblick",
+          "body": "Ich schreibe, um meine Koch-Ausbildung von 2018 und mein Zertifikat im HACCP-System zu präsentieren. Mit meiner Erfahrung im Kochen und der strengen Schulung bin ich überzeugt, dass ich meine Fähigkeiten im kulinarischen Bereich im Restaurant Alpenblick einsetzen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Bereich des sanften Garde und des authentischen Alpen-Essen anzuwenden. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem renommierten Restaurant einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Zertifikat im HACCP-System haben meine Fähigkeiten“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Zertifikat im HACCP-System haben meine Fähigkeiten",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für Kochposition im Restaurant Alpenblick",
+          "body": "Mit meiner Koch-Ausbildung von 2018, die ich an der renommierten Kochschule in München absolviert habe, bin ich bestens vorbereitet, um im kulinarischen Bereich des Restaurant Alpenblick mitzuwirken. Die strenge Schulung und das Zertifikat im HACCP-System haben meine Fähigkeiten im sanften Garde und im authentischen Alpen-Essen verfeinert. Ich bin überzeugt, dass meine Erfahrung im Kochen und meine Leidenschaft für exquisite Küche meine idealen Eigenschaften für diese Rolle darstellen. Ich freue mich darauf, meine Fähigkeiten und meine Begeisterung für das kulinarische Handwerk im Restaurant Alpenblick einzubringen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

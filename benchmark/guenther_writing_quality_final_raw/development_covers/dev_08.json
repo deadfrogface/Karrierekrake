@@ -1,0 +1,83 @@
+{
+  "id": "dev_08",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "final_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Erfahrung im Onboarding und im Recruiting-Support sowie meine Fähigkeiten in Excel hervorzuheben. Meine Rolle bei [Vorheriger Arbeitgeber] erforderte die Unterstützung bei der Rekrutierung und dem Onboarding neuer Mitarbeiter, was meine Fähigkeiten in der Kommunikation, Organisation und Datenverwaltung unter Beweis stellte. Ich bin überzeugt, dass meine Erfahrung im Recruiting-Support und meine Expertise in Excel gut zu den Anforderungen der Position bei PeopleFirst KG passen. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich für die Entwicklung und Unterstützung eines starken Teams einsetzt. Vielen Dank für die Berücksichtigung meiner Bewerbung.",
+  "subject": "Bewerbung für die Position HR Assistant bei PeopleFirst KG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position HR Assistant bei PeopleFirst KG",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Onboarding und im Recruiting-Support sowie meine Fähigkeiten in Excel hervorzuheben. Meine Rolle bei [Vorheriger Arbeitgeber] erforderte die Unterstützung bei der Rekrutierung und dem Onboarding neuer Mitarbeiter, was meine Fähigkeiten in der Kommunikation, Organisation und Datenverwaltung unter Beweis stellte. Ich bin überzeugt, dass meine Erfahrung im Recruiting-Support und meine Expertise in Excel gut zu den Anforderungen der Position bei PeopleFirst KG passen. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich für die Entwicklung und Unterstützung eines starken Teams einsetzt. Vielen Dank für die Berücksichtigung meiner Bewerbung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position HR Assistant bei PeopleFirst KG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Erfahrung im Onboarding und im Recruiting-Support sowie meine Fähigkeiten in Excel hervorzuheben. Meine Rolle bei [Vorheriger Arbeitgeber] erforderte die Unterstützung bei der Rekrutierung und dem Onboarding neuer Mitarbeiter, was meine Fähigkeiten in der Kommunikation, Organisation und Datenverwaltung unter Beweis stellte. Ich bin überzeugt, dass meine Erfahrung im Recruiting-Support und meine Expertise in Excel gut zu den Anforderungen der Position bei PeopleFirst KG passen. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich für die Entwicklung und Unterstützung eines starken Teams einsetzt. Vielen Dank für die Berücksichtigung meiner Bewerbung.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

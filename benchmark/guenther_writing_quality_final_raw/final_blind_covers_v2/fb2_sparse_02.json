@@ -1,0 +1,47 @@
+{
+  "id": "fb2_sparse_02",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Begeisterung für die Gelegenheit auszudrücken, bei QuickMart AG als Sales Aide zu arbeiten. Mit meiner Erfahrung im Kundenservice und meiner Fähigkeit, Teams zu motivieren, glaube ich, dass ich einen wertvollen Beitrag für Ihr Unternehmen leisten kann. Ich bin begeistert von der Möglichkeit, Teil Ihres Teams zu werden und habe die Anforderungen für diese Position sorgfältig geprüft. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf Kundenzufriedenheit konzentriert, wie es bei QuickMart AG der Fall ist. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung zu besprechen.",
+  "subject": "Bewerbung für die Position Sales Aide bei QuickMart AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Sales Aide bei QuickMart AG",
+          "body": "Ich schreibe Ihnen, um meine Begeisterung für die Gelegenheit auszudrücken, bei QuickMart AG als Sales Aide zu arbeiten. Mit meiner Erfahrung im Kundenservice und meiner Fähigkeit, Teams zu motivieren, glaube ich, dass ich einen wertvollen Beitrag für Ihr Unternehmen leisten kann. Ich bin begeistert von der Möglichkeit, Teil Ihres Teams zu werden und habe die Anforderungen für diese Position sorgfältig geprüft. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf Kundenzufriedenheit konzentriert, wie es bei QuickMart AG der Fall ist. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung zu besprechen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

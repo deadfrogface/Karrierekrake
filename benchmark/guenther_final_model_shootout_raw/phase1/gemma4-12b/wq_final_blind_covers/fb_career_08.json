@@ -1,0 +1,52 @@
+{
+  "id": "fb_career_08",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 80.528,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung im Kundenservice und meine tägliche Arbeit am Telefon bilden das Fundament für den Wechsel in den Inside Sales bei GlowSales GmbH. Durch meine Tätigkeit im Kundenservice bin ich es gewohnt, Kundenanliegen präzise zu bearbeiten und eine lösungsorientierte Kommunikation zu pflegen. Diese Kompetenzen möchte ich nutzen, um Kundenanfragen proaktiv zu begleiten und den Vertriebsprozess aktiv zu unterstützen. Mein Fokus liegt darauf, durch eine klare und freundliche Kommunikation Vertrauen aufzubauen und die Bedürfnisse der Kunden effizient zu erfüllen. Ich freue mich darauf, meine Erfahrung in der direkten Kundenansprache in Ihr Team einzubringen.\n\nMit freundlichen Grüßen\nKlaus Service",
+  "subject": "Bewerbung als Inside Sales bei GlowSales GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Inside Sales bei GlowSales GmbH",
+          "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung im Kundenservice und meine tägliche Arbeit am Telefon bilden das Fundament für den Wechsel in den Inside Sales bei GlowSales GmbH. Durch meine Tätigkeit im Kundenservice bin ich es gewohnt, Kundenanliegen präzise zu bearbeiten und eine lösungsorientierte Kommunikation zu pflegen. Diese Kompetenzen möchte ich nutzen, um Kundenanfragen proaktiv zu begleiten und den Vertriebsprozess aktiv zu unterstützen. Mein Fokus liegt darauf, durch eine klare und freundliche Kommunikation Vertrauen aufzubauen und die Bedürfnisse der Kunden effizient zu erfüllen. Ich freue mich darauf, meine Erfahrung in der direkten Kundenansprache in Ihr Team einzubringen.\n\nMit freundlichen Grüßen\nKlaus Service",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

@@ -1,0 +1,40 @@
+{
+  "id": "si_15",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 42.385,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns von einer Zeit erzählen, in der Sie eine Herausforderung im Bestellwesen meistern mussten und wie Sie diese bewältigt haben?",
+      "Welche Strategien verwenden Sie, um die Lieferanten effektiv zu verwalten und die Lieferketten zu optimieren?",
+      "Wie gehen Sie bei der Analyse von Bestellmustern und der Identifizierung von Verbesserungsmöglichkeiten vor?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie Ihre Erfahrungen im Einkauf und wie Sie Ihre Rolle bei der Optimierung des Bestellprozesses bei SupplyWest GmbH ausgefüllt haben.",
+      "Besprechen Sie, wie Sie Ihre interpersonellen Fähigkeiten nutzen, um mit Lieferanten und anderen Stakeholdern im Bestellprozess zu arbeiten."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften im Profil angegeben, daher ist es wichtig, die Fähigkeiten und Erfahrungen im Kontext des Bestellwesens und der Lieferantenverwaltung hervorzuheben.",
+      "Mögliche Lücken in Bezug auf spezifische Erfolge oder Meilensteine, die während der 3-jährigen Erfahrung im Einkauf erwähnt werden könnten.",
+      "Es könnte hilfreich sein, Beispiele für erfolgreiche Bestellprozesse oder Lieferantenbeziehungen zu liefern, auch wenn keine spezifischen Erfolge im Profil angegeben sind."
+    ],
+    "anchors_used": [
+      {
+        "text": "Bestellwesen",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Lieferanten",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

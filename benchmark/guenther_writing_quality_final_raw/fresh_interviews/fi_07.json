@@ -1,0 +1,44 @@
+{
+  "id": "fi_07",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwendest du, um die SEO-Fähigkeiten eines CMS zu verbessern?",
+      "Kannst du ein Content-Marketing-Projekt beschreiben, das du bei PulseBrand geleitet hast?",
+      "Wie priorisierst du deine Aufgaben, um sicherzustellen, dass SEO- und Content-Ziele erreicht werden?"
+    ],
+    "talking_points": [
+      "Erwähne spezifische SEO-Strategien, die du bei CMS-Projekten angewendet hast.",
+      "Diskutiere einen erfolgreichen Content-Marketing-Projekt, das du bei PulseBrand durchgeführt hast, und betone, wie du CMS und SEO integriert hast.",
+      "Erkläre deine Methodik zur Priorisierung von Aufgaben, insbesondere wie du SEO und Content-Ziele in deinen täglichen Aufgaben einsetzt."
+    ],
+    "gap_notes": [
+      "Keine Informationen über spezifische Erfolge oder Projekte, die du bei PulseBrand geleitet hast.",
+      "Keine Details über die spezifischen SEO-Fähigkeiten oder CMS-Erfahrungen."
+    ],
+    "anchors_used": [
+      {
+        "text": "SEO",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Content",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "CMS",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

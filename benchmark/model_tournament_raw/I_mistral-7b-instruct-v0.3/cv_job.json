@@ -1,0 +1,46 @@
+{
+  "cv": {
+    "ok": false,
+    "capability": "cv_extract",
+    "suggestion": {},
+    "fallback_reason": "guenther_invalid_output",
+    "provider_status": "ready",
+    "model_id": "mistral-7b-instruct-v0.3",
+    "validated": false,
+    "safety_notes": [
+      "fail_closed"
+    ]
+  },
+  "jobs": [
+    {
+      "id": "ho_job_hr",
+      "envelope": {
+        "ok": false,
+        "capability": "job_analysis",
+        "suggestion": {},
+        "fallback_reason": "guenther_invalid_output",
+        "provider_status": "ready",
+        "model_id": "mistral-7b-instruct-v0.3",
+        "validated": false,
+        "safety_notes": [
+          "fail_closed"
+        ]
+      }
+    },
+    {
+      "id": "ho_job_pflege",
+      "envelope": {
+        "ok": false,
+        "capability": "job_analysis",
+        "suggestion": {},
+        "fallback_reason": "guenther_invalid_output",
+        "provider_status": "ready",
+        "model_id": "mistral-7b-instruct-v0.3",
+        "validated": false,
+        "safety_notes": [
+          "fail_closed"
+        ]
+      }
+    }
+  ]
+}

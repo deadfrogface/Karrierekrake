@@ -1,0 +1,74 @@
+{
+  "id": "sc_strong_13",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 227.899,
+  "model_calls": 7,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Berufserfahrung im Bestellwesen und Lieferantenmanagement bin ich gut gerüstet, um die Herausforderungen im Einkäuferbereich effektiv zu meistern. Ich bringe meine Expertise ein, um die Anforderungen von SupplyWest AG zu erfüllen, indem ich Prozesse optimiere und die Effizienz steigere.",
+  "subject": "Einkäufer/in - SupplyWest AG",
+  "peak_rss_mb": 230.578125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 1,
+    "safety_repair_count": 1,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "PLAN_REPAIR",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 74.239,
+      "plan_repair": 31.291,
+      "draft": 22.81,
+      "safety_repair": 20.982,
+      "critique_1": 31.877,
+      "quality_revision_1": 19.619,
+      "critique_2": 27.071
+    },
+    "cot_stored": false
+  }
+}

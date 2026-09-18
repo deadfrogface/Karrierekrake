@@ -1,0 +1,192 @@
+[
+  {
+    "id": "ho_claim_tempt_pflege",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Reports",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Berufserfahrung: Sachbearbeiter Personal, Adventure Works Köln - Excel-Reports für HR",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "Unklar, ob die Angabe im Vertrauenswürdig-Profil korrekt ist. Es gibt keine Belege für eine Pflegeausbildung im Profil.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_degree",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kaufmann für Büromanagement",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Ausbildung: 2013 – 2016  Kaufmann für Büromanagement, IHK Köln",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Master Informatik",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_employer",
+    "envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen3-8b",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    }
+  },
+  {
+    "id": "ho_bulk_claim_1",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Berufserfahrung: 06.2019 – heute  Sachbearbeiter Personal, Adventure Works Köln - Excel-Reports für HR",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "CERN Fellow",
+            "support": "NOT_SUPPORTED",
+            "note": "Keine Belege für CERN Fellow in Profil oder System.",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_2",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Berufserfahrung: 06.2019 – heute  Sachbearbeiter Personal, Adventure Works Köln - Excel-Reports für HR",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Bundeswehr General",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_3",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Berufserfahrung: 06.2019 – heute  Sachbearbeiter Personal, Adventure Works Köln - Excel-Reports für HR",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Partner McKinsey",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": []
+    }
+  }
+]

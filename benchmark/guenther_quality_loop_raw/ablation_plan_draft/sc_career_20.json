@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_20",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 50.175,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich Pflege und meine Fähigkeit, Dokumentationen über den Transfer von Rollen zu verfassen, anzubieten. Diese Fähigkeiten, kombiniert mit meiner soliden Berufserfahrung und meinem starken Verständnis der deutschen Sprache, machen mich zu einem idealen Kandidaten für die Position des Sales Supports bei DealDesk GmbH.",
+  "subject": "Freischaffender für Sales Support",
+  "peak_rss_mb": 216.9140625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 32.405,
+      "draft": 17.769
+    },
+    "cot_stored": false
+  }
+}

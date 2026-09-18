@@ -1,0 +1,82 @@
+{
+  "id": "sc_strong_15",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [],
+  "latency_s": 75.391,
+  "repair_count": 1,
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich freue mich darauf, meine Erfahrungen im Kochbereich und meine Deutschkenntnisse in die Rolle eines Kochs/Köchinnens im Restaurant Alpen einzubringen. Mit meiner Koch-Ausbildung 2018 und Spezialisierung auf HACCP und Mise en Place bin ich bestens gerüstet, um strenge Hygienestandards und effiziente Arbeitsabläufe zu gewährleisten. Ich bin begeistert von der Möglichkeit, meine kulinarischen Fähigkeiten und meine Begeisterung für exquisite Küche in einem Umfeld zu nutzen, das sowohl kulinarische als auch sprachliche Exzellenz schätzt.",
+  "subject": "Bewerbung für Koch/Köchin bei Restaurant Alpen",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung 2018 und Spezialisierung auf HACCP und M“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung 2018 und Spezialisierung auf HACCP und M",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Koch/Köchin bei Restaurant Alpen",
+          "body": "Mit meiner Koch-Ausbildung 2018 und Spezialisierung auf HACCP und Mise en Place bin ich bestens gerüstet, um meine Fähigkeiten im kulinarischen Bereich bei Restaurant Alpen einzubringen. Meine Erfahrung in der Kochtätigkeit, insbesondere im Umgang mit strengen Hygienestandards und effizienten Arbeitsabläufen, würde ich gerne auf die Bedürfnisse Ihres renommierten Restaurants übertragen. Ich bin begeistert von der Möglichkeit, meine Leidenschaft für exquisite Küche und meine Deutschkenntnisse in einem Umfeld zu nutzen, das sowohl kulinarische als auch sprachliche Exzellenz schätzt. Ich freue mich auf die Gelegenheit, meine Fähigkeiten und meine Begeisterung für die kulinarische Kunst mit Ihnen zu diskutieren.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung 2018 und Spezialisierung auf HACCP und M“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung 2018 und Spezialisierung auf HACCP und M",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für Koch/Köchin bei Restaurant Alpen",
+          "body": "Ich freue mich darauf, meine Erfahrungen im Kochbereich und meine Deutschkenntnisse in die Rolle eines Kochs/Köchinnens im Restaurant Alpen einzubringen. Mit meiner Koch-Ausbildung 2018 und Spezialisierung auf HACCP und Mise en Place bin ich bestens gerüstet, um strenge Hygienestandards und effiziente Arbeitsabläufe zu gewährleisten. Ich bin begeistert von der Möglichkeit, meine kulinarischen Fähigkeiten und meine Begeisterung für exquisite Küche in einem Umfeld zu nutzen, das sowohl kulinarische als auch sprachliche Exzellenz schätzt.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.1
+}

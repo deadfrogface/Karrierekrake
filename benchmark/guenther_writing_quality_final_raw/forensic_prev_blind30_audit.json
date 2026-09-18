@@ -1,0 +1,3138 @@
+{
+  "model": "phi4-mini",
+  "n": 30,
+  "final_accepted": 5,
+  "final_fail_closed": 25,
+  "elapsed_s": 1539.5,
+  "category_counts_fail_closed": {
+    "B": 16,
+    "A": 7,
+    "D": 1,
+    "I": 1
+  },
+  "JUSTIFIED_FAIL_CLOSED": 20,
+  "UNNECESSARY_FAIL_CLOSED": 5,
+  "REVIEW_FAIL_CLOSED": 0,
+  "JUSTIFIED_FAIL_CLOSED_OF_30": 20,
+  "UNNECESSARY_FAIL_CLOSED_OF_30": 5,
+  "manual_category_counts_fail_closed": {
+    "B": 12,
+    "A": 8,
+    "D": 4,
+    "I": 1
+  },
+  "root_cause_summary": {
+    "A_true_safety": 8,
+    "B_targeting_placeholder_company": 12,
+    "C_overstrict_validator": 0,
+    "D_claim_extraction_fp": 4,
+    "E_evidence_match_fn": 0,
+    "F_repair_failure": 0,
+    "G_model_quality": 0,
+    "H_hard_requirement": 0,
+    "I_structural": 1,
+    "J_other": 0
+  },
+  "rows": [
+    {
+      "id": "bc_01",
+      "target_role": "Archivarin (m/w/d)",
+      "target_company": "Stadtarchiv Musterstadt",
+      "profile": "Blind Cover 1\nHistorische Bestände, EAD\nReferenz: Projektarbeit in archivarin",
+      "job": "Archivarin (m/w/d)\nStadtarchiv Musterstadt\nProfil: Historische Bestände, EAD.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung in der Pflege und meiner Leidenschaft fü"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Archivarin Position im Stadtarchiv Musterstadt auszudrücken. Mit meiner Ausbildung in der Pflege und meiner Leidenschaft für historische Bestände bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein könnte. Ich freue mich darauf, meine Fähigkeiten im Umgang mit historischen Dokumenten und Archivmaterialien weiter zu entwickeln.\n\nMit freundlichen Grüßen,\n[Name des Bewerbers]",
+      "attempt1_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Archivarin Position im Stadtarchiv Musterstadt auszudrücken. Ich bin überzeugt, dass meine Fähigkeiten im Umgang mit historischen Dokumenten und Archivmaterialien sowie meine Leidenschaft für historische Bestände mich gut für diese Rolle qualifizieren.\n\nMit freundlichen Grüßen,\n[Name des Bewerbers]",
+      "final_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Archivarin Position im Stadtarchiv Musterstadt auszudrücken. Ich bin überzeugt, dass meine Fähigkeiten im Umgang mit historischen Dokumenten und Archivmaterialien sowie meine Leidenschaft für historische Bestände mich gut für diese Rolle qualifizieren.\n\nMit freundlichen Grüßen,\n[Name des Bewerbers]",
+      "final_subject": "Archivarin Position - Stadtarchiv Musterstadt",
+      "body_len": 370,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "überzeugt",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "überzeugt",
+              "kind": "credential",
+              "span": "Ich bin überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "überzeugt",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_02",
+      "target_role": "DevOps Engineer (m/w/d)",
+      "target_company": "CloudNine GmbH",
+      "profile": "Blind Cover 2\nLinux, CI/CD, Docker\nReferenz: Projektarbeit in devops engineer",
+      "job": "DevOps Engineer (m/w/d)\nCloudNine GmbH\nProfil: Linux, CI/CD, Docker.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "A",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "praktischen Erfahrung"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        }
+      ],
+      "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um meine Begeisterung für die DevOps-Position bei CloudNine GmbH auszudrücken, wie sie in Ihrem Stellenangebot beschrieben ist. Mit meiner praktischen Erfahrung in Linux, CI/CD und Docker bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Insbesondere meine Projektarbeit in devops engineer hat meine Fähigkeiten geschärft, die ich gerne auf CloudNine GmbH anwenden würde. Ich freue mich auf die Möglichkeit, meine technischen Fähigkeiten und meine Leidenschaft für DevOps mit Ihnen zu diskutieren.",
+      "attempt1_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die DevOps-Position bei CloudNine GmbH zu bewerben, wie sie in Ihrem Stellenangebot beschrieben ist. Mit meiner Ausbildung in Blind Cover 2 bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Insbesondere meine Projektarbeit in devops engineer hat meine Fähigkeiten geschärft, die ich gerne auf CloudNine GmbH anwenden würde. Ich freue mich auf die Möglichkeit, meine technischen Fähigkeiten und meine Leidenschaft für DevOps mit Ihnen zu diskutieren.",
+      "final_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die DevOps-Position bei CloudNine GmbH zu bewerben, wie sie in Ihrem Stellenangebot beschrieben ist. Mit meiner Ausbildung in Blind Cover 2 bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Insbesondere meine Projektarbeit in devops engineer hat meine Fähigkeiten geschärft, die ich gerne auf CloudNine GmbH anwenden würde. Ich freue mich auf die Möglichkeit, meine technischen Fähigkeiten und meine Leidenschaft für DevOps mit Ihnen zu diskutieren.",
+      "final_subject": "DevOps Engineer - CloudNine GmbH",
+      "body_len": 555,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung in Blind Cover 2 bin ich überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Ausbildung in Blind Cover 2 bin ich überzeugt",
+              "kind": "credential",
+              "span": "Ausbildung in Blind Cover 2 bin ich überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_0",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_03",
+      "target_role": "Kundenservice (m/w/d)",
+      "target_company": "TelCo Plus AG",
+      "profile": "Blind Cover 3\nInbound, CRM, Deutsch C1\nReferenz: Projektarbeit in kundenservice",
+      "job": "Kundenservice (m/w/d)\nTelCo Plus AG\nProfil: Inbound, CRM, Deutsch C1.",
+      "final_ok": true,
+      "repair_count": 1,
+      "exhausted": false,
+      "category": "ACCEPTED",
+      "final_blocking_errors": [],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "besonders begeistert von der Möglichkeit"
+        }
+      ],
+      "attempt1_errors": [],
+      "attempt1_claims": [],
+      "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position im Kundenservice bei TelCo Plus AG zu bewerben. Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im CRM-System, insbesondere im Hinblick auf die deutsche Sprache, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich bin besonders begeistert von der Möglichkeit, meine Erfahrungen aus der Projektarbeit im Kundenservice mit Ihnen zu kombinieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für hervorragenden Kundenservice mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+      "attempt1_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position im Kundenservice bei TelCo Plus AG zu bewerben. Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im CRM-System, insbesondere im Hinblick auf die deutsche Sprache, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Erfahrungen aus der Projektarbeit im Kundenservice mit Ihnen zu kombinieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für hervorragenden Kundenservice mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+      "final_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position im Kundenservice bei TelCo Plus AG zu bewerben. Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im CRM-System, insbesondere im Hinblick auf die deutsche Sprache, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Erfahrungen aus der Projektarbeit im Kundenservice mit Ihnen zu kombinieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für hervorragenden Kundenservice mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+      "final_subject": "Freundliche Bewerbung für die Position im Kundenservice",
+      "body_len": 674,
+      "grounding_report": {
+        "ok": true,
+        "errors": [],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung im Kundenservice",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im C",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Ausbildung im Kundenservice und meinen Fähigkeiten",
+              "kind": "credential",
+              "span": "Ausbildung im Kundenservice und meinen Fähigkeiten",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": null,
+      "fail_closed_kind": null,
+      "manual_category": "ACCEPTED",
+      "manual_fail_closed_kind": "accepted"
+    },
+    {
+      "id": "bc_04",
+      "target_role": "Produktionshelfer (m/w/d)",
+      "target_company": "MetallWerk Süd",
+      "profile": "Blind Cover 4\nMontage, Schicht\nReferenz: Projektarbeit in produktionshelfer",
+      "job": "Produktionshelfer (m/w/d)\nMetallWerk Süd\nProfil: Montage, Schicht.",
+      "final_ok": true,
+      "repair_count": 1,
+      "exhausted": false,
+      "category": "ACCEPTED",
+      "final_blocking_errors": [],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        }
+      ],
+      "attempt1_errors": [],
+      "attempt1_claims": [],
+      "attempt0_body": "Ich schreibe, um meine Fähigkeiten im Bereich Montage und Schicht, die ich während meiner Zeit als Produktionshelfer bei MetallWerk Süd erworben habe, für Ihre Position als Produktionshelfer anzubieten. Ich bin überzeugt, dass meine praktischen Erfahrungen und meine Fähigkeit, effizient und präzise zu arbeiten, zu Ihrem Team beitragen würden. Ich freue mich auf die Möglichkeit, meine Bewerbung näher zu besprechen.",
+      "attempt1_body": "Während meiner Zeit als Produktionshelfer bei MetallWerk Süd habe ich umfangreiche Erfahrungen im Bereich Montage und Schicht gesammelt. Ich freue mich darauf, diese Fähigkeiten in die Rolle des Produktionshelfer bei MetallWerk Süd einzubringen.",
+      "final_body": "Während meiner Zeit als Produktionshelfer bei MetallWerk Süd habe ich umfangreiche Erfahrungen im Bereich Montage und Schicht gesammelt. Ich freue mich darauf, diese Fähigkeiten in die Rolle des Produktionshelfer bei MetallWerk Süd einzubringen.",
+      "final_subject": "Bewerbung für die Position des Produktionshelfer",
+      "body_len": 245,
+      "grounding_report": {
+        "ok": true,
+        "errors": [],
+        "grounding": [],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": null,
+      "fail_closed_kind": null,
+      "manual_category": "ACCEPTED",
+      "manual_fail_closed_kind": "accepted"
+    },
+    {
+      "id": "bc_05",
+      "target_role": "Steuerfachangestellte (m/w/d)",
+      "target_company": "Steuerberatung Krüger",
+      "profile": "Blind Cover 5\nDATEV, Jahresabschluss\nReferenz: Projektarbeit in steuerfachangestellte",
+      "job": "Steuerfachangestellte (m/w/d)\nSteuerberatung Krüger\nProfil: DATEV, Jahresabschluss.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Abschluss im Jahr 2021"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "praktischen Erfahrung"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe, um mich für die Position Steuerfachangestellte bei Steuerberatung Krüger zu bewerben. Mit meinem Abschluss im Jahr 2021 bei DATEV und meiner praktischen Erfahrung in der Projektarbeit im Bereich steuerfachangestellte bin ich überzeugt, dass ich meine Fähigkeiten und meine Leidenschaft für die Steuerberatung effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für die Steuerberatung mit Ihnen zu teilen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mich für die Position Steuerfachangestellte bei Steuerberatung Krüger zu bewerben. Mit meiner praktischen Erfahrung in der Projektarbeit im Bereich steuerfachangestellte bin ich überzeugt, dass ich meine Fähigkeiten und meine Leidenschaft für die Steuerberatung effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für die Steuerberatung mit Ihnen zu teilen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+      "final_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mich für die Position Steuerfachangestellte bei Steuerberatung Krüger zu bewerben. Mit meiner praktischen Erfahrung in der Projektarbeit im Bereich steuerfachangestellte bin ich überzeugt, dass ich meine Fähigkeiten und meine Leidenschaft für die Steuerberatung effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für die Steuerberatung mit Ihnen zu teilen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+      "final_subject": "Bewerbung für die Position Steuerfachangestellte",
+      "body_len": 537,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "praktischen Erfahrung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "praktischen Erfahrung",
+              "kind": "credential",
+              "span": "Mit meiner praktischen Erfahrung in der Projektarbeit im Bereich s",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "praktischen Erfahrung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_06",
+      "target_role": "Pflegefachkraft (m/w/d)",
+      "target_company": "Altenheim Sonnenhof",
+      "profile": "Blind Cover 6\nGrundpflege, Medikamentengabe\nReferenz: Projektarbeit in pflegefachkraft",
+      "job": "Pflegefachkraft (m/w/d)\nAltenheim Sonnenhof\nProfil: Grundpflege, Medikamentengabe.",
+      "final_ok": true,
+      "repair_count": 0,
+      "exhausted": false,
+      "category": "ACCEPTED",
+      "final_blocking_errors": [],
+      "attempt0_errors": [],
+      "attempt0_claims": [],
+      "attempt1_errors": [],
+      "attempt1_claims": [],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position der Pflegefachkraft im Altenheim Sonnenhof auszudrücken. Mit meiner pflegefachkraftbezogenen Projektarbeit und meiner praktischen Erfahrung in der Grundpflege und Medikamentengabe bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team des Altenheims leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für die Pflege mit Ihnen zu diskutieren.",
+      "attempt1_body": null,
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position der Pflegefachkraft im Altenheim Sonnenhof auszudrücken. Mit meiner pflegefachkraftbezogenen Projektarbeit und meiner praktischen Erfahrung in der Grundpflege und Medikamentengabe bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team des Altenheims leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für die Pflege mit Ihnen zu diskutieren.",
+      "final_subject": "Bewerbung für die Position Pflegefachkraft im Altenheim Sonnenhof",
+      "body_len": 472,
+      "grounding_report": {
+        "ok": true,
+        "errors": [],
+        "grounding": [
+          {
+            "claim": {
+              "text": "pflegefachkraftbezogenen Projektarbeit",
+              "kind": "credential",
+              "span": "Mit meiner pflegefachkraftbezogenen Projektarbeit und meiner prakt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Pflegefachkraft",
+              "kind": "credential",
+              "span": "Pflegefachkraft",
+              "requires_direct": true,
+              "meta": {
+                "family": "Pflegefachkraft"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": null,
+      "fail_closed_kind": null,
+      "manual_category": "ACCEPTED",
+      "manual_fail_closed_kind": "accepted"
+    },
+    {
+      "id": "bc_07",
+      "target_role": "Softwaretester (m/w/d)",
+      "target_company": "AppCheck SE",
+      "profile": "Blind Cover 7\nManuelle Tests, Jira\nReferenz: Projektarbeit in softwaretester",
+      "job": "Softwaretester (m/w/d)\nAppCheck SE\nProfil: Manuelle Tests, Jira.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "D",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung im manuellen Testen"
+        },
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "AppCheck SE"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "begeistert von der Möglichkeit"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung im manuellen Testen"
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Softwaretesters, wie sie in Ihrem Jobangebot beschrieben ist, auszudrücken. Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Kontext Ihres Projekts zu demonstrieren. Vielen Dank für Ihre Zeit und Überlegung.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, als Softwaretester bei AppCheck SE zu arbeiten. Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Kontext Ihres Projekts zu demonstrieren. Vielen Dank für Ihre Zeit und Überlegung.",
+      "final_body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, als Softwaretester bei AppCheck SE zu arbeiten. Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Kontext Ihres Projekts zu demonstrieren. Vielen Dank für Ihre Zeit und Überlegung.",
+      "final_subject": "Softwaretester-Anwärter",
+      "body_len": 392,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „begeistert von der Möglichkeit“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "begeistert von der Möglichkeit",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im manuellen Testen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung im manuellen Testen",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "begeistert von der Möglichkeit",
+              "kind": "credential",
+              "span": "ich bin begeistert von der Möglichkeit",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „begeistert von der Möglichkeit“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "begeistert von der Möglichkeit",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Erfahrung im manuellen Testen",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im manuellen Testen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Erfahrung im manuellen Testen",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": false,
+      "fail_closed_kind": "UNNECESSARY",
+      "manual_category": "D",
+      "manual_fail_closed_kind": "UNNECESSARY"
+    },
+    {
+      "id": "bc_08",
+      "target_role": "Disponent (m/w/d)",
+      "target_company": "SpedLog KG",
+      "profile": "Blind Cover 8\nTourenplanung, Telefon\nReferenz: Projektarbeit in disponent",
+      "job": "Disponent (m/w/d)\nSpedLog KG\nProfil: Tourenplanung, Telefon.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        },
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "SpedLog KG"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "SpedLog KG"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um mein Interesse an der Position des Disponenten in Ihrer Firma auszudrücken. Mit meiner Ausbildung in der Tourenplanung und meinem Erfahrung im Telefonservice bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Team integrieren kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für Ihre Firma zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um mein Interesse an der Position des Disponenten in Ihrer Firma auszudrücken. Mit meiner Erfahrung im Tourenplanung und im Telefonservice bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Team integrieren kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für Ihre Firma zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um mein Interesse an der Position des Disponenten in Ihrer Firma auszudrücken. Mit meiner Erfahrung im Tourenplanung und im Telefonservice bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Team integrieren kann. Ich freue mich darauf, meine Kenntnisse und meine Begeisterung für Ihre Firma zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "final_subject": "Freude daran, Sie in Ihrem Team zu haben",
+      "body_len": 453,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "SpedLog KG",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Erfahrung im Tourenplanung",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung im Tourenplanung und im Telefonservice bin ic",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_09",
+      "target_role": "Facility Manager (m/w/d)",
+      "target_company": "GebäudeService Nord",
+      "profile": "Blind Cover 9\nInstandhaltung, SLA\nReferenz: Projektarbeit in facility manager",
+      "job": "Facility Manager (m/w/d)\nGebäudeService Nord\nProfil: Instandhaltung, SLA.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "zuversichtlich"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Fähigkeit"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "zuversichtlich"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Fähigkeit"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um meine Bewerbung für die Position des Facility Managers bei GebäudeService Nord anzubieten. Mit meiner Erfahrung in der Facility Management-Branche und meiner Leidenschaft für die Einhaltung von Service Level Agreements (SLAs) bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann.\n\nIm Laufe meiner Karriere habe ich eine solide Grundlage in der Verwaltung von Infrastrukturen aufgebaut, einschließlich der Organisation und Durchführung von Facility Management-Projekten. Diese Fähigkeiten, kombiniert mit meiner Fähigkeit, proaktiv Lösungen für Herausforderungen zu finden, machen mich zu einem idealen Kandidaten für diese Rolle.\n\nIch freue mich darauf, meine Fähigkeiten und meine Begeisterung für Facility Management mit Ihnen zu teilen. Ich bin zuversichtlich, dass ich meine Erfahrungen nutzen kann, um die Effizienz und Effektivität des Facility Management-Teams bei GebäudeService Nord zu verbessern.\n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung näher zu besprechen.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um meine Bewerbung für die Position des Facility Managers bei GebäudeService Nord anzubieten. Mit meiner Erfahrung in der Facility Management-Branche und meiner Leidenschaft für die Einhaltung von Service Level Agreements (SLAs) bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann.\n\nIm Laufe meiner Karriere habe ich eine solide Grundlage in der Verwaltung von Infrastrukturen aufgebaut, einschließlich der Organisation und Durchführung von Facility Management-Projekten. Diese Fähigkeiten, kombiniert mit meiner Fähigkeit, proaktiv Lösungen für Herausforderungen zu finden, machen mich zu einem idealen Kandidaten für diese Rolle.\n\nIch freue mich darauf, meine Fähigkeiten und meine Begeisterung für Facility Management mit Ihnen zu teilen. Ich bin zuversichtlich, dass ich meine Erfahrungen nutzen kann, um die Effizienz und Effektivität des Facility Management-Teams bei GebäudeService Nord zu verbessern.\n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung näher zu besprechen.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+      "final_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um meine Bewerbung für die Position des Facility Managers bei GebäudeService Nord anzubieten. Mit meiner Erfahrung in der Facility Management-Branche und meiner Leidenschaft für die Einhaltung von Service Level Agreements (SLAs) bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann.\n\nIm Laufe meiner Karriere habe ich eine solide Grundlage in der Verwaltung von Infrastrukturen aufgebaut, einschließlich der Organisation und Durchführung von Facility Management-Projekten. Diese Fähigkeiten, kombiniert mit meiner Fähigkeit, proaktiv Lösungen für Herausforderungen zu finden, machen mich zu einem idealen Kandidaten für diese Rolle.\n\nIch freue mich darauf, meine Fähigkeiten und meine Begeisterung für Facility Management mit Ihnen zu teilen. Ich bin zuversichtlich, dass ich meine Erfahrungen nutzen kann, um die Effizienz und Effektivität des Facility Management-Teams bei GebäudeService Nord zu verbessern.\n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung näher zu besprechen.\n\nMit freundlichen Grüßen,\n[Ihr Name]",
+      "final_subject": "Bewerbung für die Position Facility Manager - GebäudeService Nord",
+      "body_len": 1134,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „zuversichtlich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "zuversichtlich",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Fähigkeit“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Fähigkeit",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "zuversichtlich",
+              "kind": "credential",
+              "span": "Ich bin zuversichtlich",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „zuversichtlich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "zuversichtlich",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Erfahrung",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung in der Facility Management-Branche und meiner",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Erfahrung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Fähigkeit",
+              "kind": "credential",
+              "span": "mit meiner Fähigkeit",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Fähigkeit“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Fähigkeit",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_10",
+      "target_role": "Content Manager (m/w/d)",
+      "target_company": "WebWelt GmbH",
+      "profile": "Blind Cover 10\nCMS, SEO\nReferenz: Projektarbeit in content manager",
+      "job": "Content Manager (m/w/d)\nWebWelt GmbH\nProfil: CMS, SEO.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "A",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Pflegeausbildung"
+        }
+      ],
+      "attempt0_body": "Ich schreibe Ihnen, um mein Interesse an der Content Manager Position bei WebWelt GmbH auszudrücken. Mit meiner Erfahrung in der Pflege von Projekten im Bereich CMS und SEO bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld anzuwenden und zu Ihrem Unternehmen beizutragen.",
+      "attempt1_body": "Ich schreibe Ihnen, um mein Interesse an der Content Manager Position bei WebWelt GmbH auszudrücken. Mit meiner Pflegeausbildung in content manager bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld anzuwenden und zu Ihrem Unternehmen beizutragen.",
+      "final_body": "Ich schreibe Ihnen, um mein Interesse an der Content Manager Position bei WebWelt GmbH auszudrücken. Mit meiner Pflegeausbildung in content manager bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld anzuwenden und zu Ihrem Unternehmen beizutragen.",
+      "final_subject": "Freischaffender für Content Manager Position",
+      "body_len": 339,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Pflegeausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Pflegeausbildung",
+              "kind": "credential",
+              "span": "Mit meiner Pflegeausbildung in content manager bin ich überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Pflegeausbildung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Pflegeausbildung in content manager bin",
+              "kind": "credential",
+              "span": "Pflegeausbildung in content manager bin",
+              "requires_direct": true,
+              "meta": {
+                "family": "Pflegeausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "ausbildung in content manager bin ich überzeugt",
+              "kind": "credential",
+              "span": "ausbildung in content manager bin ich überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_11",
+      "target_role": "Laborant (m/w/d)",
+      "target_company": "ChemLab AG",
+      "profile": "Blind Cover 11\nHPLC, GLP\nReferenz: Projektarbeit in laborant",
+      "job": "Laborant (m/w/d)\nChemLab AG\nProfil: HPLC, GLP.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "I",
+      "final_blocking_errors": [
+        "EMPTY_OUTPUT"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "praktischen Erfahrung"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "SCHEMA_INVALID"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "SCHEMA_INVALID",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die Möglichkeit auszudrücken, an Ihrem Team in ChemLab AG teilzunehmen. Mit meiner praktischen Erfahrung in der Laborarbeit, insbesondere im Einsatz von HPLC und unter Einhaltung der GLP-Richtlinien, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Erfolg Ihres Teams leisten kann. \n\nIch freue mich darauf, meine Fähigkeiten und meine Leidenschaft für wissenschaftliche Forschung in einem Umfeld wie ChemLab AG zu nutzen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+      "attempt1_body": "",
+      "final_body": "",
+      "final_subject": "",
+      "body_len": 0,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "EMPTY_OUTPUT",
+            "message_de": "Leerer Text ohne zulässigen Hard-Block.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": false,
+      "fail_closed_kind": "UNNECESSARY",
+      "manual_category": "I",
+      "manual_fail_closed_kind": "UNNECESSARY"
+    },
+    {
+      "id": "bc_12",
+      "target_role": "Eventmanager (m/w/d)",
+      "target_company": "EventPro Berlin",
+      "profile": "Blind Cover 12\nPlanung, Budget\nReferenz: Projektarbeit in eventmanager",
+      "job": "Eventmanager (m/w/d)\nEventPro Berlin\nProfil: Planung, Budget.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung"
+        },
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "EventPro Berlin"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung"
+        },
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "EventPro Berlin"
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Eventplanung und Budgetierung zu präsentieren. Mit meiner Erfahrung in der Planung und Budgetierung von Projekten, insbesondere im Bereich der Eventmanagement, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu zeigen.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Eventplanung und Budgetierung zu präsentieren. Mit meiner Erfahrung in der Planung und Budgetierung von Projekten, insbesondere im Bereich des Eventmanagements, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu zeigen.",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Eventplanung und Budgetierung zu präsentieren. Mit meiner Erfahrung in der Planung und Budgetierung von Projekten, insbesondere im Bereich des Eventmanagements, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu zeigen.",
+      "final_subject": "Freelance Eventmanager - Planung und Budgetierung",
+      "body_len": 395,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "EventPro Berlin",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Erfahrung",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung in der Planung und Budgetierung von Projekten",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Erfahrung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": false,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "D",
+      "manual_fail_closed_kind": "UNNECESSARY"
+    },
+    {
+      "id": "bc_13",
+      "target_role": "Controller (m/w/d)",
+      "target_company": "Industrie Holding SE",
+      "profile": "Blind Cover 13\nReporting, Excel\nReferenz: Projektarbeit in controller",
+      "job": "Controller (m/w/d)\nIndustrie Holding SE\nProfil: Reporting, Excel.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "Industrie Holding SE"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "Industrie Holding SE"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die angebotene Position als Controller auszudrücken. Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere meine Rolle bei der Projektarbeit in der Controller-Abteilung hat meine Fähigkeiten in der Datenanalyse und Präsentation geschärft. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen und freue mich auf die Möglichkeit, meine Ideen und Erfahrungen mit Ihnen zu teilen. \n\nVielen Dank für Ihre Zeit und Überlegung. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die angebotene Position als Controller auszudrücken. Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere meine Rolle bei der Projektarbeit in der Controller-Abteilung hat meine Fähigkeiten in der Datenanalyse und Präsentation geschärft. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen und freue mich auf die Möglichkeit, meine Ideen und Erfahrungen mit Ihnen zu teilen. \n\nVielen Dank für Ihre Zeit und Überlegung. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+      "final_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die angebotene Position als Controller auszudrücken. Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere meine Rolle bei der Projektarbeit in der Controller-Abteilung hat meine Fähigkeiten in der Datenanalyse und Präsentation geschärft. Ich freue mich darauf, meine Fähigkeiten in Ihrem Unternehmen einzubringen und freue mich auf die Möglichkeit, meine Ideen und Erfahrungen mit Ihnen zu teilen. \n\nVielen Dank für Ihre Zeit und Überlegung. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+      "final_subject": "Kontrollposition - Industrie Holding SE",
+      "body_len": 643,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Industrie Holding SE",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Erfahrung im Reporting",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung im Reporting und Excel bin ich überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_14",
+      "target_role": "Sozialarbeiter (m/w/d)",
+      "target_company": "Caritas Beratung",
+      "profile": "Blind Cover 14\nFallmanagement\nReferenz: Projektarbeit in sozialarbeiter",
+      "job": "Sozialarbeiter (m/w/d)\nCaritas Beratung\nProfil: Fallmanagement.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "WRONG_COMPANY"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        }
+      ],
+      "attempt1_errors": [
+        "WRONG_COMPANY"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "Caritas Beratung"
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Sozialarbeiters im Bereich Fallmanagement bei Caritas Beratung auszudrücken. Während meiner Zeit als Sozialarbeiter habe ich wertvolle Erfahrungen im Umgang mit komplexen Fällen gesammelt, was mir ermöglicht, die Herausforderungen, denen Sie in Ihrem Team begegnen könnten, effektiv zu bewältigen. Ich bin überzeugt, dass meine Fähigkeiten im Fallmanagement und meine Leidenschaft für soziale Arbeit einen bedeutenden Beitrag zu Ihrem Team leisten können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu besprechen. Vielen Dank für Ihre Zeit und Überlegung.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, während meiner Zeit als Sozialarbeiter habe ich wertvolle Erfahrungen im Umgang mit komplexen Fällen gesammelt, was mir ermöglicht, die Herausforderungen, denen Sie in Ihrem Team begegnen könnten, effektiv zu bewältigen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu besprechen. Vielen Dank für Ihre Zeit und Überlegung.",
+      "final_body": "Sehr geehrte Damen und Herren, während meiner Zeit als Sozialarbeiter habe ich wertvolle Erfahrungen im Umgang mit komplexen Fällen gesammelt, was mir ermöglicht, die Herausforderungen, denen Sie in Ihrem Team begegnen könnten, effektiv zu bewältigen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu besprechen. Vielen Dank für Ihre Zeit und Überlegung.",
+      "final_subject": "Bewerbung für die Position des Sozialarbeiters im Bereich Fallmanagement",
+      "body_len": 388,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Caritas Beratung",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_15",
+      "target_role": "Netzwerkadmin (m/w/d)",
+      "target_company": "NetSecure IT",
+      "profile": "Blind Cover 15\nFirewall, VPN\nReferenz: Projektarbeit in netzwerkadmin",
+      "job": "Netzwerkadmin (m/w/d)\nNetSecure IT\nProfil: Firewall, VPN.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "A",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "praktischen Erfahrung im Umgang"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung in Netzwerkanalyse und meiner praktische"
+        }
+      ],
+      "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position des Netzwerkadmins bei NetSecure IT zu bewerben. Mit meiner praktischen Erfahrung im Umgang mit Firewalls und VPNs, die ich während meiner Projektarbeit in der Netzwerkanalyse erworben habe, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich Netzwerkadministration in einem innovativen Umfeld wie bei NetSecure IT zu nutzen. Ich freue mich auf die Möglichkeit, meine Kenntnisse und meine Begeisterung für die IT-Sicherheit mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Position des Netzwerkadmins bei NetSecure IT zu bewerben. Mit meiner Ausbildung in Netzwerkanalyse und meiner praktischen Erfahrung im Umgang mit Firewalls und VPNs, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich Netzwerkadministration in einem innovativen Umfeld wie bei NetSecure IT zu nutzen. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Position des Netzwerkadmins bei NetSecure IT zu bewerben. Mit meiner Ausbildung in Netzwerkanalyse und meiner praktischen Erfahrung im Umgang mit Firewalls und VPNs, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich Netzwerkadministration in einem innovativen Umfeld wie bei NetSecure IT zu nutzen. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+      "final_subject": "Bewerbung für die Position Netzwerkadmin",
+      "body_len": 516,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in Netzwerkanalyse und meiner praktische“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in Netzwerkanalyse und meiner praktische",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung in Netzwerkanalyse und meiner praktischen Er",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Ausbildung in Netzwerkanalyse und meiner praktische",
+              "kind": "credential",
+              "span": "Ausbildung in Netzwerkanalyse und meiner praktische",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in Netzwerkanalyse und meiner praktische“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung in Netzwerkanalyse und meiner praktische",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_16",
+      "target_role": "Zahnmedizinische Fachangestellte (m/w/d)",
+      "target_company": "Praxis Dr. Weiß",
+      "profile": "Blind Cover 16\nProphylaxe, Termine\nReferenz: Projektarbeit in zahnmedizinische fachangestellte",
+      "job": "Zahnmedizinische Fachangestellte (m/w/d)\nPraxis Dr. Weiß\nProfil: Prophylaxe, Termine.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung im Management von Termineinrichtungen bin ich"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Zahnmedizinischen Fachangestellten in Ihrer Praxis Dr. Weiß anzubieten. Mit meiner Ausbildung in Prophylaxe und meiner Erfahrung im Management von Termineinrichtungen bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Praxis einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die zahnmedizinische Versorgung mit Ihnen zu teilen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Zahnmedizinischen Fachangestellten in Ihrer Praxis Dr. Weiß anzubieten. Mit meiner Erfahrung im Management von Termineinrichtungen bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Praxis einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die zahnmedizinische Versorgung mit Ihnen zu teilen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Zahnmedizinischen Fachangestellten in Ihrer Praxis Dr. Weiß anzubieten. Mit meiner Erfahrung im Management von Termineinrichtungen bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Praxis einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die zahnmedizinische Versorgung mit Ihnen zu teilen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+      "final_subject": "Bewerbung für die Position des Zahnmedizinischen Fachangestellten",
+      "body_len": 501,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im Management von Termineinrichtungen bin ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung im Management von Termineinrichtungen bin ich",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Erfahrung im Management von Termineinrichtungen bin ich",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung im Management von Termineinrichtungen bin ich",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im Management von Termineinrichtungen bin ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Erfahrung im Management von Termineinrichtungen bin ich",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_17",
+      "target_role": "Filialleiter (m/w/d)",
+      "target_company": "SuperMarkt24",
+      "profile": "Blind Cover 17\nPersonal, Kasse\nReferenz: Projektarbeit in filialleiter",
+      "job": "Filialleiter (m/w/d)\nSuperMarkt24\nProfil: Personal, Kasse.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um mich für die Position des Filialleiters bei SuperMarkt24 zu bewerben. Mit meiner Erfahrung im Personal- und Kassendienst, insbesondere während meiner Zeit bei der Projektarbeit in der Filialleitung, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten und meine Leidenschaft für exzellentes Kundenservice in Ihre Organisation einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung persönlich vorzulegen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um mich für die Position des Filialleiters bei SuperMarkt24 zu bewerben. Mit meiner Erfahrung im Personal- und Kassendienst, insbesondere während meiner Zeit bei der Projektarbeit in der Filialleitung, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten und meine Leidenschaft für exzellentes Kundenservice in Ihre Organisation einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung persönlich vorzulegen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+      "final_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um mich für die Position des Filialleiters bei SuperMarkt24 zu bewerben. Mit meiner Erfahrung im Personal- und Kassendienst, insbesondere während meiner Zeit bei der Projektarbeit in der Filialleitung, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten und meine Leidenschaft für exzellentes Kundenservice in Ihre Organisation einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung persönlich vorzulegen. \n\nMit freundlichen Grüßen, \n[Ihr Name]",
+      "final_subject": "Freude daran, Sie zu Ihrem Team zu begrüßen",
+      "body_len": 621,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Erfahrung im Personal-",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung im Personal- und Kassendienst",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_18",
+      "target_role": "Übersetzer (m/w/d)",
+      "target_company": "LinguaWorks",
+      "profile": "Blind Cover 18\nEN-DE, Fachtexte\nReferenz: Projektarbeit in übersetzer",
+      "job": "Übersetzer (m/w/d)\nLinguaWorks\nProfil: EN-DE, Fachtexte.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "A",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Leidenschaft"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Leidenschaft"
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Gelegenheit auszudrücken, LinguaWorks zu unterstützen. Mit meiner Leidenschaft für Fachtexte und meinem Engagement für die Übersetzung bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in Ihrem Umfeld einzubringen.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Gelegenheit auszudrücken, LinguaWorks zu unterstützen. Mit meiner Leidenschaft für Fachtexte und meinem Engagement für die Übersetzung bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in Ihrem Umfeld einzubringen.",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Gelegenheit auszudrücken, LinguaWorks zu unterstützen. Mit meiner Leidenschaft für Fachtexte und meinem Engagement für die Übersetzung bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in Ihrem Umfeld einzubringen.",
+      "final_subject": "Freude darüber, dass Sie LinguaWorks suchen, um Ihre Übersetzungsbedürfnisse zu erfüllen",
+      "body_len": 361,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Leidenschaft“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Leidenschaft",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Leidenschaft",
+              "kind": "credential",
+              "span": "Mit meiner Leidenschaft für Fachtexte und meinem Engagement für di",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Leidenschaft“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Leidenschaft",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": false,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "D",
+      "manual_fail_closed_kind": "UNNECESSARY"
+    },
+    {
+      "id": "bc_19",
+      "target_role": "Maschinenbediener (m/w/d)",
+      "target_company": "KunststoffTech",
+      "profile": "Blind Cover 19\nSpritzguss, QS\nReferenz: Projektarbeit in maschinenbediener",
+      "job": "Maschinenbediener (m/w/d)\nKunststoffTech\nProfil: Spritzguss, QS.",
+      "final_ok": true,
+      "repair_count": 0,
+      "exhausted": false,
+      "category": "ACCEPTED",
+      "final_blocking_errors": [],
+      "attempt0_errors": [],
+      "attempt0_claims": [],
+      "attempt1_errors": [],
+      "attempt1_claims": [],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Maschinenbedieners bei KunststoffTech auszudrücken. Mit meiner Ausbildung im Spritzguss und QS bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Produktionsumgebung einbringen kann. Ich freue mich darauf, meine Erfahrung aus der Projektarbeit in der Maschinenbedienerrolle mit Ihnen zu teilen.",
+      "attempt1_body": null,
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Maschinenbedieners bei KunststoffTech auszudrücken. Mit meiner Ausbildung im Spritzguss und QS bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Produktionsumgebung einbringen kann. Ich freue mich darauf, meine Erfahrung aus der Projektarbeit in der Maschinenbedienerrolle mit Ihnen zu teilen.",
+      "final_subject": "Freude darüber, dass Sie einen Maschinenbediener suchen",
+      "body_len": 391,
+      "grounding_report": {
+        "ok": true,
+        "errors": [],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung im Spritzguss",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung im Spritzguss und QS bin ich überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Ausbildung im Spritzguss und QS bin ich überzeugt",
+              "kind": "credential",
+              "span": "Ausbildung im Spritzguss und QS bin ich überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": null,
+      "fail_closed_kind": null,
+      "manual_category": "ACCEPTED",
+      "manual_fail_closed_kind": "accepted"
+    },
+    {
+      "id": "bc_20",
+      "target_role": "Recruiter (m/w/d)",
+      "target_company": "TalentHub",
+      "profile": "Blind Cover 20\nActive Sourcing, LinkedIn\nReferenz: Projektarbeit in recruiter",
+      "job": "Recruiter (m/w/d)\nTalentHub\nProfil: Active Sourcing, LinkedIn.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als aktiver Sourcing-Fachmann auf LinkedIn bin ich begeistert von der Gelegenheit, mich an TalentHub zu wenden. Während meiner Zeit bei [Projektarbeit in recruiter] habe ich wertvolle Erfahrungen im Talent-Sourcing gesammelt, die ich gerne in Ihre dynamische Teamumgebung einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich des aktiven Sourcing und meine Leidenschaft für die Verbindung von Talenten zu herausragenden Unternehmen gut zu TalentHub passen würden. Ich freue mich darauf, mehr über die Möglichkeiten bei TalentHub zu erfahren und wie ich zur Erfüllung Ihrer Ziele beitragen könnte.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als aktiver Sourcing-Fachmann auf LinkedIn bin ich begeistert von der Gelegenheit, mich an TalentHub zu wenden. Während meiner Zeit bei [Projektarbeit in recruiter] habe ich wertvolle Erfahrungen im Talent-Sourcing gesammelt, die ich gerne in Ihre dynamische Teamumgebung einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich des aktiven Sourcing und meine Leidenschaft für die Verbindung von Talenten zu herausragenden Unternehmen gut zu TalentHub passen würden. Ich freue mich darauf, mehr über die Möglichkeiten bei TalentHub zu erfahren und wie ich zur Erfüllung Ihrer Ziele beitragen könnte.",
+      "final_body": "Sehr geehrte Damen und Herren, ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als aktiver Sourcing-Fachmann auf LinkedIn bin ich begeistert von der Gelegenheit, mich an TalentHub zu wenden. Während meiner Zeit bei [Projektarbeit in recruiter] habe ich wertvolle Erfahrungen im Talent-Sourcing gesammelt, die ich gerne in Ihre dynamische Teamumgebung einbringen würde. Ich bin überzeugt, dass meine Fähigkeiten im Bereich des aktiven Sourcing und meine Leidenschaft für die Verbindung von Talenten zu herausragenden Unternehmen gut zu TalentHub passen würden. Ich freue mich darauf, mehr über die Möglichkeiten bei TalentHub zu erfahren und wie ich zur Erfüllung Ihrer Ziele beitragen könnte.",
+      "final_subject": "Rekrutierungschance bei TalentHub",
+      "body_len": 698,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "überzeugt",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "überzeugt",
+              "kind": "credential",
+              "span": "Ich bin überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "überzeugt",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_21",
+      "target_role": "Technischer Einkäufer (m/w/d)",
+      "target_company": "Maschinenbau Ost",
+      "profile": "Blind Cover 21\nAngebote, Lieferanten\nReferenz: Projektarbeit in technischer einkäufer",
+      "job": "Technischer Einkäufer (m/w/d)\nMaschinenbau Ost\nProfil: Angebote, Lieferanten.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "WRONG_COMPANY",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "Maschinenbau Ost"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die Position des Technischen Einkäufers, die Sie ausgeschrieben haben, auszudrücken. Mit meiner Erfahrung im Bereich technischer Einkäufe, insbesondere im Maschinenbau, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team von Maschinenbau Ost leisten kann. Während meiner Zeit bei Cover 21 habe ich mich auf die Identifizierung und Bewertung potenzieller Angebote und Lieferanten spezialisiert, was meine Fähigkeiten in der Analyse und Entscheidungsfindung unterstreicht. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit technischen Produkten und Lieferkettenmanagement meine idealen Eigenschaften für diese Rolle darstellen. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für technisches Einkaufen mit Ihnen zu diskutieren.\n\nMit freundlichen Grüßen,\n[Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die Position des Technischen Einkäufers, die Sie ausgeschrieben haben, auszudrücken. Während meiner Zeit bei Cover 21 habe ich mich auf die Identifizierung und Bewertung potenzieller Angebote und Lieferanten spezialisiert, was meine Fähigkeiten in der Analyse und Entscheidungsfindung unterstreicht. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für technisches Einkaufen mit Ihnen zu diskutieren.\n\nMit freundlichen Grüßen,\n[Name]",
+      "final_body": "Sehr geehrte Damen und Herren, \n\nIch schreibe Ihnen, um meine Begeisterung für die Position des Technischen Einkäufers, die Sie ausgeschrieben haben, auszudrücken. Während meiner Zeit bei Cover 21 habe ich mich auf die Identifizierung und Bewertung potenzieller Angebote und Lieferanten spezialisiert, was meine Fähigkeiten in der Analyse und Entscheidungsfindung unterstreicht. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für technisches Einkaufen mit Ihnen zu diskutieren.\n\nMit freundlichen Grüßen,\n[Name]",
+      "final_subject": "Technischer Einkäufer - Maschinenbau Ost",
+      "body_len": 527,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Maschinenbau Ost",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_22",
+      "target_role": "Medizinische Dokumentation (m/w/d)",
+      "target_company": "Krankenhaus West",
+      "profile": "Blind Cover 22\nKIS, ICD\nReferenz: Projektarbeit in medizinische dokumentation",
+      "job": "Medizinische Dokumentation (m/w/d)\nKrankenhaus West\nProfil: KIS, ICD.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "begeistert von der Möglichkeit"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung in der Pflege und meiner Erfahrung im Um"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung in der Pflege und meiner Erfahrung im Um"
+        },
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "Krankenhaus West"
+        }
+      ],
+      "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Bereich der medizinischen Dokumentation im Krankenhaus West einzubringen. Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang mit medizinischen Dokumenten bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse im KIS und ICD-System sowie meine Leidenschaft für die medizinische Dokumentation mit Ihnen zu diskutieren.",
+      "attempt1_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang mit medizinischen Dokumenten bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse im KIS und ICD-System sowie meine Leidenschaft für die medizinische Dokumentation mit Ihnen zu diskutieren.",
+      "final_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang mit medizinischen Dokumenten bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse im KIS und ICD-System sowie meine Leidenschaft für die medizinische Dokumentation mit Ihnen zu diskutieren.",
+      "final_subject": "Freundliche Bewerbung für die Position der medizinischen Dokumentation",
+      "body_len": 386,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Erfahrung im Um“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Krankenhaus West",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung in der Pflege und meiner Erfahrung im Umgang",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+              "kind": "credential",
+              "span": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung in der Pflege und meiner Erfahrung im Um“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung in der Pflege und meiner Erfahrung im Um",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_23",
+      "target_role": "Key Account (m/w/d)",
+      "target_company": "B2B Sales Pro",
+      "profile": "Blind Cover 23\nAkquise, CRM\nReferenz: Projektarbeit in key account",
+      "job": "Key Account (m/w/d)\nB2B Sales Pro\nProfil: Akquise, CRM.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "begeistert von der Möglichkeit"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung"
+        },
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "B2B Sales Pro"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung"
+        },
+        {
+          "code": "WRONG_COMPANY",
+          "claim": "B2B Sales Pro"
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Bereich Akquise und CRM in Ihrem Team einzubringen. Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich sicher, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Ideen und Strategien für den Erfolg Ihres Unternehmens zu diskutieren.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich freue mich darauf, meine Fähigkeiten im Bereich Akquise und CRM in Ihrem Team einzubringen. Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich sicher, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Ideen und Strategien für den Erfolg Ihres Unternehmens zu diskutieren.",
+      "final_body": "Sehr geehrte Damen und Herren, ich freue mich darauf, meine Fähigkeiten im Bereich Akquise und CRM in Ihrem Team einzubringen. Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich sicher, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Ideen und Strategien für den Erfolg Ihres Unternehmens zu diskutieren.",
+      "final_subject": "Key Account - Akquise-Magnum-Leicht",
+      "body_len": 363,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "B2B Sales Pro",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Erfahrung",
+              "kind": "credential",
+              "span": "Mit meiner Erfahrung in der Projektarbeit bei key accounts bin ich",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Erfahrung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": false,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "D",
+      "manual_fail_closed_kind": "UNNECESSARY"
+    },
+    {
+      "id": "bc_24",
+      "target_role": "Gärtner (m/w/d)",
+      "target_company": "Grünanlagen Stadt",
+      "profile": "Blind Cover 24\nPflege, Maschinen\nReferenz: Projektarbeit in gärtner",
+      "job": "Gärtner (m/w/d)\nGrünanlagen Stadt\nProfil: Pflege, Maschinen.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "pfleglichen Ausbildung"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung und meiner Erfahrung im Umgang mit Masch"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL",
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "pfleglichen Ausbildung glaube ich"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung glaube ich"
+        },
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Gärtner-Position in Ihrer Grünanlagenstadt auszudrücken. Mit meiner pfleglichen Ausbildung und meiner Erfahrung im Umgang mit Maschinen glaube ich, dass ich gut zu Ihrer Teamarbeit passen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Gärtner-Position in Ihrer Grünanlagenstadt auszudrücken. Mit meiner pfleglichen Ausbildung glaube ich, dass ich gut zu Ihrer Teamarbeit passen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Gärtner-Position in Ihrer Grünanlagenstadt auszudrücken. Mit meiner pfleglichen Ausbildung glaube ich, dass ich gut zu Ihrer Teamarbeit passen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "final_subject": "Interessent für Gärtner-Position",
+      "body_len": 393,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „pfleglichen Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "pfleglichen Ausbildung glaube ich",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung glaube ich",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "pfleglichen Ausbildung glaube ich",
+              "kind": "credential",
+              "span": "Mit meiner pfleglichen Ausbildung glaube ich",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „pfleglichen Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "pfleglichen Ausbildung glaube ich",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Ausbildung glaube ich",
+              "kind": "credential",
+              "span": "Ausbildung glaube ich",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung glaube ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung glaube ich",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_25",
+      "target_role": "Patentanwaltsfachangestellte (m/w/d)",
+      "target_company": "IP Law Partners",
+      "profile": "Blind Cover 25\nFristen, Akten\nReferenz: Projektarbeit in patentanwaltsfachangestellte",
+      "job": "Patentanwaltsfachangestellte (m/w/d)\nIP Law Partners\nProfil: Fristen, Akten.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "A",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Erfahrung im Umgang"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung"
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Patentanwaltsfachangestellten bei IP Law Partners auszudrücken. Mit meiner Erfahrung im Umgang mit Fristen und Akten, insbesondere während meiner Zeit als Projektarbeit in patentanwaltsfachangestellte, bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Patentschutzes und der geistigen Eigentumsverwaltung in Ihrem renommierten Unternehmen einzubringen.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Patentanwaltsfachangestellten bei IP Law Partners auszudrücken. Mit meiner Ausbildung in Blind Cover 25, insbesondere im Bereich Fristen und Akten, bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Patentschutzes und der geistigen Eigentumsverwaltung in Ihrem renommierten Unternehmen einzubringen.",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Patentanwaltsfachangestellten bei IP Law Partners auszudrücken. Mit meiner Ausbildung in Blind Cover 25, insbesondere im Bereich Fristen und Akten, bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Bereich des Patentschutzes und der geistigen Eigentumsverwaltung in Ihrem renommierten Unternehmen einzubringen.",
+      "final_subject": "Patentanwaltsfachangestellte - Engagement und Erfahrung",
+      "body_len": 473,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung in Blind Cover 25",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Ausbildung in Blind Cover 25",
+              "kind": "credential",
+              "span": "Ausbildung in Blind Cover 25",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_0",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_26",
+      "target_role": "Business Analyst (m/w/d)",
+      "target_company": "FinTech Now",
+      "profile": "Blind Cover 26\nAnforderungen, UML\nReferenz: Projektarbeit in business analyst",
+      "job": "Business Analyst (m/w/d)\nFinTech Now\nProfil: Anforderungen, UML.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "A",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung und meine Erfahrung in der Erstellung vo"
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "überzeugt"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung und meine Erfahrung in der Erstellung vo"
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich Anforderungen, UML zu präsentieren, die ich während meiner Ausbildung im Blind Cover 26 erworben habe. Ich bin überzeugt, dass meine Ausbildung und meine Erfahrung in der Erstellung von Anforderungen und UML-Diagrammen mich gut für die Rolle des Business Analysts bei FinTech Now geeignet machen. Ich freue mich darauf, meine Fähigkeiten in einem professionellen Umfeld zu demonstrieren und zum Erfolg Ihres Teams beizutragen.",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich Anforderungen, UML zu präsentieren, die ich während meiner Ausbildung im Blind Cover 26 erworben habe. Ich bin überzeugt, dass meine Ausbildung und meine Erfahrung in der Erstellung von Anforderungen und UML-Diagrammen mich gut für die Rolle des Business Analysts bei FinTech Now geeignet machen. Ich freue mich darauf, meine Fähigkeiten in einem professionellen Umfeld zu demonstrieren und zum Erfolg Ihres Teams beizutragen.",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich Anforderungen, UML zu präsentieren, die ich während meiner Ausbildung im Blind Cover 26 erworben habe. Ich bin überzeugt, dass meine Ausbildung und meine Erfahrung in der Erstellung von Anforderungen und UML-Diagrammen mich gut für die Rolle des Business Analysts bei FinTech Now geeignet machen. Ich freue mich darauf, meine Fähigkeiten in einem professionellen Umfeld zu demonstrieren und zum Erfolg Ihres Teams beizutragen.",
+      "final_subject": "Freischaltung der Fähigkeiten im Bereich Anforderungen, UML",
+      "body_len": 503,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "überzeugt",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und meine Erfahrung in der Erstellung vo“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und meine Erfahrung in der Erstellung vo",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "überzeugt",
+              "kind": "credential",
+              "span": "Ich bin überzeugt",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "überzeugt",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          },
+          {
+            "claim": {
+              "text": "Ausbildung im Blind Cover 26 erworben habe",
+              "kind": "credential",
+              "span": "Ausbildung im Blind Cover 26 erworben habe",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_0",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Ausbildung und meine Erfahrung in der Erstellung vo",
+              "kind": "credential",
+              "span": "Ausbildung und meine Erfahrung in der Erstellung vo",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und meine Erfahrung in der Erstellung vo“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung und meine Erfahrung in der Erstellung vo",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_27",
+      "target_role": "Rechtsanwaltsfachangestellte (m/w/d)",
+      "target_company": "Kanzlei Hartmann",
+      "profile": "Blind Cover 27\nMandatsführung\nReferenz: Projektarbeit in rechtsanwaltsfachangestellte",
+      "job": "Rechtsanwaltsfachangestellte (m/w/d)\nKanzlei Hartmann\nProfil: Mandatsführung.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Position der Rechtsanwaltsfachangestellten in Ihrer Kanzlei Hartmann auszudrücken. Während meiner Zeit in der Projektarbeit in rechtsanwaltsfachangestellte habe ich wertvolle Erfahrungen im Mandatsmanagement gesammelt, die ich gerne in Ihre Praxis einbringen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für die rechtliche Unterstützung von Mandanten mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Position der Rechtsanwaltsfachangestellten in Ihrer Kanzlei Hartmann auszudrücken. Während meiner Zeit in der Projektarbeit in Mandatsführung habe ich wertvolle Erfahrungen im Mandatsmanagement gesammelt, die ich gerne in Ihre Praxis einbringen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für die rechtliche Unterstützung von Mandanten mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Position der Rechtsanwaltsfachangestellten in Ihrer Kanzlei Hartmann auszudrücken. Während meiner Zeit in der Projektarbeit in Mandatsführung habe ich wertvolle Erfahrungen im Mandatsmanagement gesammelt, die ich gerne in Ihre Praxis einbringen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für die rechtliche Unterstützung von Mandanten mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+      "final_subject": "Mandatsführung - Rechtsanwaltsfachangestellte",
+      "body_len": 550,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_28",
+      "target_role": "Speditionskaufmann (m/w/d)",
+      "target_company": "CargoLine",
+      "profile": "Blind Cover 28\nZoll, Incoterms\nReferenz: Projektarbeit in speditionskaufmann",
+      "job": "Speditionskaufmann (m/w/d)\nCargoLine\nProfil: Zoll, Incoterms.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "A",
+      "final_blocking_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_errors": [
+        "SCHEMA_INVALID"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "SCHEMA_INVALID",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "Ausbildung im Zoll und einem tiefen Verständnis für"
+        }
+      ],
+      "attempt0_body": "",
+      "attempt1_body": "Ich schreibe Ihnen, um meine Begeisterung für die Rolle des Speditionskaufmanns bei CargoLine auszudrücken. Mit meiner Ausbildung im Zoll und einem tiefen Verständnis für Incoterms bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Erfahrungen im Speditionsbereich mit Ihnen zu teilen und an Ihrem Erfolg teilzunehmen.",
+      "final_body": "Ich schreibe Ihnen, um meine Begeisterung für die Rolle des Speditionskaufmanns bei CargoLine auszudrücken. Mit meiner Ausbildung im Zoll und einem tiefen Verständnis für Incoterms bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Erfahrungen im Speditionsbereich mit Ihnen zu teilen und an Ihrem Erfolg teilzunehmen.",
+      "final_subject": "Freiberuflicher Speditionskaufmann",
+      "body_len": 377,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung im Zoll und einem tiefen Verständnis für“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung im Zoll und einem tiefen Verständnis für",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung im Zoll",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung im Zoll und einem tiefen Verständnis für Inc",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Ausbildung im Zoll und einem tiefen Verständnis für",
+              "kind": "credential",
+              "span": "Ausbildung im Zoll und einem tiefen Verständnis für",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "UNSUPPORTED",
+            "matched_evidence": "",
+            "note": "credential_not_direct",
+            "errors": [
+              {
+                "code": "UNSUPPORTED_CREDENTIAL",
+                "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+                "repair_instruction": "Entferne jede Behauptung zu „Ausbildung im Zoll und einem tiefen Verständnis für“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+                "claim_text": "Ausbildung im Zoll und einem tiefen Verständnis für",
+                "severity": "error",
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": [
+          "ungrounded_credential_detected"
+        ]
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "A",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_29",
+      "target_role": "Werkstudent Marketing (m/w/d)",
+      "target_company": "Startup Labs",
+      "profile": "Blind Cover 29\nStudium BWL, Social\nReferenz: Projektarbeit in werkstudent marketing",
+      "job": "Werkstudent Marketing (m/w/d)\nStartup Labs\nProfil: Studium BWL, Social.",
+      "final_ok": false,
+      "repair_count": 1,
+      "exhausted": true,
+      "category": "B",
+      "final_blocking_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt1_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "attempt1_claims": [
+        {
+          "code": "UNRESOLVED_PLACEHOLDER",
+          "claim": ""
+        }
+      ],
+      "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Stelle des Werkstudenten Marketing bei Startup Labs zu bewerben. Mit meinem Studium im Bereich BWL und Social, insbesondere durch meine Projektarbeit im Marketingbereich, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für innovative Marketingstrategien mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Stelle des Werkstudenten Marketing bei Startup Labs zu bewerben. Mit meinem Studium im Bereich BWL und Social, insbesondere durch meine Projektarbeit im Marketingbereich, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für innovative Marketingstrategien mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Stelle des Werkstudenten Marketing bei Startup Labs zu bewerben. Mit meinem Studium im Bereich BWL und Social, insbesondere durch meine Projektarbeit im Marketingbereich, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für innovative Marketingstrategien mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+      "final_subject": "Bewerbung für die Stelle Werkstudent Marketing",
+      "body_len": 533,
+      "grounding_report": {
+        "ok": false,
+        "errors": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Studium im Bereich BWL",
+              "kind": "credential",
+              "span": "Mit meinem Studium im Bereich BWL und Social",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Studium",
+              "kind": "credential",
+              "span": "Studium",
+              "requires_direct": true,
+              "meta": {
+                "family": "Studium"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_1",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": true,
+      "fail_closed_kind": "JUSTIFIED",
+      "manual_category": "B",
+      "manual_fail_closed_kind": "JUSTIFIED"
+    },
+    {
+      "id": "bc_30",
+      "target_role": "Servicetechniker (m/w/d)",
+      "target_company": "KlimaKontrolle",
+      "profile": "Blind Cover 30\nWartung, Kältemittel\nReferenz: Projektarbeit in servicetechniker",
+      "job": "Servicetechniker (m/w/d)\nKlimaKontrolle\nProfil: Wartung, Kältemittel.",
+      "final_ok": true,
+      "repair_count": 1,
+      "exhausted": false,
+      "category": "ACCEPTED",
+      "final_blocking_errors": [],
+      "attempt0_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "attempt0_claims": [
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "begeistert von der Möglichkeit"
+        },
+        {
+          "code": "UNSUPPORTED_CREDENTIAL",
+          "claim": "praktischen Erfahrung"
+        }
+      ],
+      "attempt1_errors": [],
+      "attempt1_claims": [],
+      "attempt0_body": "Ich schreibe, um meine Begeisterung für die Position des Servicetechnikers, die Sie derzeit für die Klimakontrolle ausgeschrieben haben, auszudrücken. Mit meiner praktischen Erfahrung in der Wartung und dem Umgang mit Kältemittel, die ich während meiner Zeit als Servicetechniker erworben habe, bin ich überzeugt, dass ich ein wertvoller Beitrag für Ihr Team sein kann. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf die Aufrechterhaltung der optimalen Funktionalität und Effizienz konzentriert. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die Wartung in Ihrem Unternehmen einzubringen.",
+      "attempt1_body": "Ich schreibe, um mich für die Position des Servicetechnikers, die Sie derzeit für die Klimakontrolle ausgeschrieben haben, zu bewerben. Mit meiner Ausbildung als Servicetechniker und meiner Erfahrung in der Wartung und im Umgang mit Kältemittel bin ich überzeugt, dass ich gut zu Ihrem Team passen würde. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf die Aufrechterhaltung der optimalen Funktionalität und Effizienz konzentriert.",
+      "final_body": "Ich schreibe, um mich für die Position des Servicetechnikers, die Sie derzeit für die Klimakontrolle ausgeschrieben haben, zu bewerben. Mit meiner Ausbildung als Servicetechniker und meiner Erfahrung in der Wartung und im Umgang mit Kältemittel bin ich überzeugt, dass ich gut zu Ihrem Team passen würde. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf die Aufrechterhaltung der optimalen Funktionalität und Effizienz konzentriert.",
+      "final_subject": "Freundliche Einladung zum Servicetechniker-Job",
+      "body_len": 467,
+      "grounding_report": {
+        "ok": true,
+        "errors": [],
+        "grounding": [
+          {
+            "claim": {
+              "text": "Ausbildung als Servicetechniker",
+              "kind": "credential",
+              "span": "Mit meiner Ausbildung als Servicetechniker und meiner Erfahrung in",
+              "requires_direct": true,
+              "meta": {
+                "family": "possession_assertion",
+                "assertion": "POSSESSES"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Ausbildung als Servicetechniker und meiner Erfahrung in",
+              "kind": "credential",
+              "span": "Ausbildung als Servicetechniker und meiner Erfahrung in",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          },
+          {
+            "claim": {
+              "text": "Ausbildung als Servicetechniker und meiner Erfahrun",
+              "kind": "credential",
+              "span": "Ausbildung als Servicetechniker und meiner Erfahrun",
+              "requires_direct": true,
+              "meta": {
+                "family": "Ausbildung"
+              }
+            },
+            "status": "SUPPORTED_DIRECT",
+            "matched_evidence": "prof_2",
+            "note": "credential_direct",
+            "errors": []
+          }
+        ],
+        "hard_requirements": {
+          "requirements": [],
+          "blocking_errors": [],
+          "writing_blocked": false
+        },
+        "writing_blocked": false,
+        "notes": []
+      },
+      "was_block_justified": null,
+      "fail_closed_kind": null,
+      "manual_category": "ACCEPTED",
+      "manual_fail_closed_kind": "accepted"
+    }
+  ]
+}

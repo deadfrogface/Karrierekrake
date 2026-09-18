@@ -1,0 +1,132 @@
+{
+  "id": "bc_07",
+  "target_role": "Softwaretester (m/w/d)",
+  "target_company": "AppCheck SE",
+  "profile": "Blind Cover 7\nManuelle Tests, Jira\nReferenz: Projektarbeit in softwaretester",
+  "job": "Softwaretester (m/w/d)\nAppCheck SE\nProfil: Manuelle Tests, Jira.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "D",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung im manuellen Testen"
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "AppCheck SE"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "begeistert von der Möglichkeit"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung im manuellen Testen"
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle des Softwaretesters, wie sie in Ihrem Jobangebot beschrieben ist, auszudrücken. Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Kontext Ihres Projekts zu demonstrieren. Vielen Dank für Ihre Zeit und Überlegung.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, als Softwaretester bei AppCheck SE zu arbeiten. Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Kontext Ihres Projekts zu demonstrieren. Vielen Dank für Ihre Zeit und Überlegung.",
+  "final_body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, als Softwaretester bei AppCheck SE zu arbeiten. Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, meine Fähigkeiten im Kontext Ihres Projekts zu demonstrieren. Vielen Dank für Ihre Zeit und Überlegung.",
+  "final_subject": "Softwaretester-Anwärter",
+  "body_len": 392,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „begeistert von der Möglichkeit“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "begeistert von der Möglichkeit",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im manuellen Testen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Erfahrung im manuellen Testen",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "begeistert von der Möglichkeit",
+          "kind": "credential",
+          "span": "ich bin begeistert von der Möglichkeit",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „begeistert von der Möglichkeit“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "begeistert von der Möglichkeit",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Erfahrung im manuellen Testen",
+          "kind": "credential",
+          "span": "Mit meiner Erfahrung im manuellen Testen und der Nutzung von Jira",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im manuellen Testen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung im manuellen Testen",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": false,
+  "fail_closed_kind": "UNNECESSARY"
+}

@@ -1,0 +1,28 @@
+{
+  "id": "fi_16",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 31.808,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Fall im Bereich des Fallmanagements beschreiben, bei dem Sie eine signifikante Verbesserung der Situation des Klienten erzielt haben?",
+      "Wie gehen Sie vor, um sicherzustellen, dass die Bedürfnisse des Klienten während des Fallmanagements effektiv adressiert werden?",
+      "Welche Strategien verwenden Sie, um mit den Herausforderungen umzugehen, die oft mit der Sozialarbeit verbunden sind?"
+    ],
+    "talking_points": [
+      "Diskussion über Strategien und Erfahrungen im Fallmanagement innerhalb der Sozialarbeit.",
+      "Erwähnung spezifischer Fallmanagement-Fähigkeiten, die während der 3 Jahre Berufserfahrung erworben wurden."
+    ],
+    "gap_notes": [
+      "Fehlen spezifischer Beispiele oder Erfolge, die im Profil erwähnt werden könnten.",
+      "Möglicherweise sollte mehr über die Fähigkeiten und Qualifikationen im Bereich des Fallmanagements gesagt werden."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

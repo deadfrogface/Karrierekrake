@@ -1,0 +1,82 @@
+{
+  "id": "sc_sparse_05",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.8,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [],
+  "latency_s": 87.688,
+  "repair_count": 1,
+  "final_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, \n\nich schreibe, um mich für die ausgeschriebene Position des Praktikanten Office bei StartOffice GmbH zu bewerben. Mit meiner praktischen Erfahrung im Bereich Word-Dokumente und der Fähigkeit, effizient und präzise zu arbeiten, glaube ich, dass ich gut zur Rolle passen würde. \n\nIm Laufe meiner Tätigkeit bei [Vorheriger Arbeitgeber] habe ich umfangreiche Erfahrung im Umgang mit Microsoft Word, einschließlich der Erstellung, Bearbeitung und Formatierung komplexer Dokumente. Diese Fähigkeiten habe ich erfolgreich in verschiedenen Projekten eingesetzt, was mir ermöglicht, die Anforderungen des Praktikanten Office bei StartOffice GmbH zu erfüllen. \n\nDarüber hinaus habe ich in meiner bisherigen Rolle die Fähigkeit entwickelt, schnell und genau zu arbeiten, was mir ermöglicht, Aufgaben effizient zu erledigen und dabei hohe Qualität zu gewährleisten. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen eine wertvolle Bereicherung für Ihr Team darstellen würden. \n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu teilen und zu beweisen, dass ich gut geeignet bin für die Rolle des Praktikanten Office bei StartOffice GmbH. \n\nVielen Dank für Ihre Zeit und Berücksichtigung. Ich freue mich auf Ihre Antwort. \n\nMit freundlichen Grüßen, \n[Name des Bewerbers]",
+  "subject": "Praktikant Office - StartOffice GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Praktikant Office - StartOffice GmbH",
+          "body": "Sehr geehrte Damen und Herren, \n\nich schreibe, um mich für die ausgeschriebene Position des Praktikanten Office bei StartOffice GmbH zu bewerben. Mit meiner praktischen Erfahrung im Bereich Word-Dokumente und der Fähigkeit, effizient und präzise zu arbeiten, glaube ich, dass ich gut zur Rolle passen würde. \n\nIm Laufe meiner Tätigkeit bei [Vorheriger Arbeitgeber] habe ich umfangreiche Erfahrung im Umgang mit Microsoft Word, einschließlich der Erstellung, Bearbeitung und Formatierung komplexer Dokumente. Diese Fähigkeiten habe ich erfolgreich in verschiedenen Projekten eingesetzt, was mir ermöglicht, die Anforderungen des Praktikanten Office bei StartOffice GmbH zu erfüllen. \n\nDarüber hinaus habe ich in meiner bisherigen Rolle die Fähigkeit entwickelt, schnell und genau zu arbeiten, was mir ermöglicht, Aufgaben effizient zu erledigen und dabei hohe Qualität zu gewährleisten. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen eine wertvolle Bereicherung für Ihr Team darstellen würden. \n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu teilen und zu beweisen, dass ich gut geeignet bin für die Rolle des Praktikanten Office bei StartOffice GmbH. \n\nVielen Dank für Ihre Zeit und Berücksichtigung. Ich freue mich auf Ihre Antwort. \n\nMit freundlichen Grüßen, \n[Name des Bewerbers]",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Praktikant Office - StartOffice GmbH",
+          "body": "Sehr geehrte Damen und Herren, \n\nich schreibe, um mich für die ausgeschriebene Position des Praktikanten Office bei StartOffice GmbH zu bewerben. Mit meiner praktischen Erfahrung im Bereich Word-Dokumente und der Fähigkeit, effizient und präzise zu arbeiten, glaube ich, dass ich gut zur Rolle passen würde. \n\nIm Laufe meiner Tätigkeit bei [Vorheriger Arbeitgeber] habe ich umfangreiche Erfahrung im Umgang mit Microsoft Word, einschließlich der Erstellung, Bearbeitung und Formatierung komplexer Dokumente. Diese Fähigkeiten habe ich erfolgreich in verschiedenen Projekten eingesetzt, was mir ermöglicht, die Anforderungen des Praktikanten Office bei StartOffice GmbH zu erfüllen. \n\nDarüber hinaus habe ich in meiner bisherigen Rolle die Fähigkeit entwickelt, schnell und genau zu arbeiten, was mir ermöglicht, Aufgaben effizient zu erledigen und dabei hohe Qualität zu gewährleisten. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen eine wertvolle Bereicherung für Ihr Team darstellen würden. \n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu teilen und zu beweisen, dass ich gut geeignet bin für die Rolle des Praktikanten Office bei StartOffice GmbH. \n\nVielen Dank für Ihre Zeit und Berücksichtigung. Ich freue mich auf Ihre Antwort. \n\nMit freundlichen Grüßen, \n[Name des Bewerbers]",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5589.9
+}

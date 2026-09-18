@@ -1,0 +1,457 @@
+[
+  {
+    "id": "cl_strong_match",
+    "label": "strong match",
+    "profile": "Mia Beispiel, Berlin\nmia.beispiel@example.com\n2019–heute Buchhalterin Kreditoren, Contoso Nord GmbH\n- DATEV Kreditorenbuchhaltung, Monatabschluss, Excel-Auswertungen\n- Abstimmung mit Fachbereichen\nAusbildung: Kauffrau für Büromanagement IHK\nKenntnisse: DATEV, Excel, SAP FI Grundlagen, Deutsch, Englisch B2",
+    "job": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München\nMehrjährige Kreditorenbuchhaltung, sichere DATEV-Kenntnisse, gute Excel-Kenntnisse, Deutsch verhandlungssicher.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um Stelle als Sachbearbeiterin Buchhaltung",
+        "body": "Sehr geehrte Damen und Herren,\n\nmit Begeisterung bewerbe ich mich um die Stelle als Sachbearbeiterin Buchhaltung bei der Northwind Handels GmbH in München. Mit meiner mehrjährigen Berufserfahrung als Buchhalterin Kreditoren bei der Contoso Nord GmbH sowie meiner Ausbildung zur Kauffrau für Büromanagement verfüge ich über fundierte Kenntnisse in DATEV-Kreditorenbuchhaltung, Monatabschlüssen und Excel-Auswertungen. Zudem habe ich fundierte Kenntnisse in SAP FI und bin verhandlungssicher in Deutsch und Englisch (B2).\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen und Erfahrungen im Rahmen eines persönlichen Gesprächs näher zu erläutern.\n\nMit freundlichen Grüßen,\nMia Beispiel",
+        "anchors_used": [
+          {
+            "text": "DATEV",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "SAP FI",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch B2",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nmit Begeisterung bewerbe ich mich um die Stelle als Sachbearbeiterin Buchhaltung bei der Northwind Handels GmbH in München. Mit meiner mehrjährigen Berufserfahrung als Buchhalterin Kreditoren bei der Contoso Nord GmbH sowie meiner Ausbildung zur Kauffrau für Büromanagement verfüge ich über fundierte Kenntnisse in DATEV-Kreditorenbuchhaltung, Monatabschlüssen und Excel-Auswertungen. Zudem habe ich fundierte Kenntnisse in SAP FI und bin verhandlungssicher in Deutsch und Englisch (B2).\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen und Erfahrungen im Rahmen eines persönlichen Gesprächs näher zu erläutern.\n\nMit freundlichen Grüßen,\nMia Beispiel",
+    "raw_subject": "Bewerbung um Stelle als Sachbearbeiterin Buchhaltung",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_medium_match",
+    "label": "medium match",
+    "profile": "Jonas Probe, Hamburg\njonas.probe@example.com\n2020–heute Office Manager, Fabrikam AG\n- Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen\nAusbildung Kaufmann Büromanagement\nKenntnisse: MS Office, Excel, Deutsch, Englisch B1",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um die Stelle als HR Sachbearbeiter bei Litware SE",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bewerbe mich um die Stelle als HR Sachbearbeiter bei Litware SE. Mit meiner Ausbildung zum Kaufmann für Büromanagement und meiner mehrjährigen Erfahrung als Office Manager bei Fabrikam AG verfüge ich über fundierte Kenntnisse in Terminplanung, Korrespondenz sowie der Verwaltung von Excel-Listen. Zudem habe ich Erfahrung in der Abstimmung mit Lieferanten und bin mit MS Office sowie Excel vertraut. Meine Sprachkenntnisse umfassen Deutsch und Englisch (B1).\n\nIch bin überzeugt, dass meine Fähigkeiten und mein Engagement für die Organisation und Verwaltung von Personalakten sowie die Erstellung von Excel-Reports und Onboarding-Prozessen gut zu Ihrem Team passen. Ich freue mich auf die Möglichkeit, meine Kenntnisse und Erfahrungen in Ihrem Unternehmen einzusetzen.\n\nMit freundlichen Grüßen,\nJonas Probe",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bewerbe mich um die Stelle als HR Sachbearbeiter bei Litware SE. Mit meiner Ausbildung zum Kaufmann für Büromanagement und meiner mehrjährigen Erfahrung als Office Manager bei Fabrikam AG verfüge ich über fundierte Kenntnisse in Terminplanung, Korrespondenz sowie der Verwaltung von Excel-Listen. Zudem habe ich Erfahrung in der Abstimmung mit Lieferanten und bin mit MS Office sowie Excel vertraut. Meine Sprachkenntnisse umfassen Deutsch und Englisch (B1).\n\nIch bin überzeugt, dass meine Fähigkeiten und mein Engagement für die Organisation und Verwaltung von Personalakten sowie die Erstellung von Excel-Reports und Onboarding-Prozessen gut zu Ihrem Team passen. Ich freue mich auf die Möglichkeit, meine Kenntnisse und Erfahrungen in Ihrem Unternehmen einzusetzen.\n\nMit freundlichen Grüßen,\nJonas Probe",
+    "raw_subject": "Bewerbung um die Stelle als HR Sachbearbeiter bei Litware SE",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_career_changer",
+    "label": "career changer",
+    "profile": "Sara Wechsel, Köln\nsara.wechsel@example.com\n2018–heute Verkäuferin Einzelhandel, Adventure Mart\n- Kundenberatung, Kasse, Beschwerdemanagement\nAusbildung Verkäuferin\nKenntnisse: Kassensystem, Deutsch, Englisch A2",
+    "job": "Kaufmännische Assistenz — Woodgrove Bank\nKorrespondenz, Terminorganisation, MS Office. Kundenorientierung erwünscht.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um die Stelle als Kaufmännische Assistenz",
+        "body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich Ihre Stellenausschreibung zur Kaufmännischen Assistenz bei Woodgrove Bank gelesen. Als Verkäuferin in einem Einzelhandelsgeschäft seit 2018 bringe ich fundierte Erfahrungen in Kundenberatung, Kasse sowie Beschwerdemanagement mit. Meine Ausbildung als Verkäuferin und meine Kenntnisse in Kassensystemen, Deutsch und Englisch (A2) unterstreichen meine fachlichen Qualifikationen.\n\nIch bin überzeugt, dass meine Organisationsfähigkeit und meine Kundenorientierung gut zu Ihrem Team passen. Ich freue mich auf die Möglichkeit, mich in einem neuen Arbeitsumfeld weiterzuentwickeln und meine Kompetenzen einzusetzen.\n\nMit freundlichen Grüßen,\nSara Wechsel",
+        "anchors_used": [
+          {
+            "text": "Verkäuferin",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Kundenberatung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Kasse",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Beschwerdemanagement",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Ausbildung Verkäuferin",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch A2",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich Ihre Stellenausschreibung zur Kaufmännischen Assistenz bei Woodgrove Bank gelesen. Als Verkäuferin in einem Einzelhandelsgeschäft seit 2018 bringe ich fundierte Erfahrungen in Kundenberatung, Kasse sowie Beschwerdemanagement mit. Meine Ausbildung als Verkäuferin und meine Kenntnisse in Kassensystemen, Deutsch und Englisch (A2) unterstreichen meine fachlichen Qualifikationen.\n\nIch bin überzeugt, dass meine Organisationsfähigkeit und meine Kundenorientierung gut zu Ihrem Team passen. Ich freue mich auf die Möglichkeit, mich in einem neuen Arbeitsumfeld weiterzuentwickeln und meine Kompetenzen einzusetzen.\n\nMit freundlichen Grüßen,\nSara Wechsel",
+    "raw_subject": "Bewerbung um die Stelle als Kaufmännische Assistenz",
+    "score": 4.0,
+    "score_notes": [
+      "wrong_role"
+    ]
+  },
+  {
+    "id": "cl_missing_desirable",
+    "label": "missing desirable skill",
+    "profile": "Leo Held, Düsseldorf\nleo.held@example.com\n2021–heute Personalsachbearbeiter, Adventure Works\n- Personalakten, Zeiterfassung, Onboarding\nKenntnisse: Excel, MS Office, Deutsch — kein Personio",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil (nicht Pflicht).",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um die Stelle als HR Sachbearbeiter bei Litware SE",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bewerbe mich um die Stelle als HR Sachbearbeiter bei Litware SE. Mit meiner Erfahrung als Personalsachbearbeiter bei Adventure Works verfüge ich über fundierte Kenntnisse in der Verwaltung von Personalakten, der Erstellung von Excel-Reports sowie dem Onboarding neuer Mitarbeiter. Obwohl ich bisher keine Erfahrung mit Personio habe, bin ich bereit, mich schnell darauf einzulassen und die Anforderungen der Stelle zu erfüllen.\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen und mein Engagement für die Personalverwaltung vorzustellen.\n\nMit freundlichen Grüßen,\nLeo Held",
+        "anchors_used": [
+          {
+            "text": "Personalakten",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel-Reports",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Onboarding",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Personio",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bewerbe mich um die Stelle als HR Sachbearbeiter bei Litware SE. Mit meiner Erfahrung als Personalsachbearbeiter bei Adventure Works verfüge ich über fundierte Kenntnisse in der Verwaltung von Personalakten, der Erstellung von Excel-Reports sowie dem Onboarding neuer Mitarbeiter. Obwohl ich bisher keine Erfahrung mit Personio habe, bin ich bereit, mich schnell darauf einzulassen und die Anforderungen der Stelle zu erfüllen.\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen und mein Engagement für die Personalverwaltung vorzustellen.\n\nMit freundlichen Grüßen,\nLeo Held",
+    "raw_subject": "Bewerbung um die Stelle als HR Sachbearbeiter bei Litware SE",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_missing_hard",
+    "label": "missing hard requirement",
+    "profile": "Nora Admin, Stuttgart\nnora.admin@example.com\n2019–heute Verwaltungsassistenz Arztpraxis Mustermann\n- Terminvergabe, Abrechnung GOÄ-Grundlagen, Patientenaufnahme am Empfang\nKenntnisse: Praxissoftware, Excel, Deutsch",
+    "job": "Pflegefachkraft stationär — Beispielklinik Süd\nPflicht: abgeschlossene Pflegeausbildung, Patientenversorgung, Schichtarbeit.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um die Stelle als Pflegefachkraft stationär",
+        "body": "Sehr geehrte Damen und Herren,\n\nmit dieser Bewerbung möchte ich mich für die Stelle als Pflegefachkraft stationär bei der Beispielklinik Süd bewerben. Mit meiner abgeschlossenen Pflegeausbildung und meiner Erfahrung in der Patientenversorgung sowie meiner Bereitschaft zur Schichtarbeit bin ich überzeugt, dass ich zu Ihrem Team passen würde.\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen und mein Engagement vorzustellen.\n\nMit freundlichen Grüßen,\nNora Admin",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nmit dieser Bewerbung möchte ich mich für die Stelle als Pflegefachkraft stationär bei der Beispielklinik Süd bewerben. Mit meiner abgeschlossenen Pflegeausbildung und meiner Erfahrung in der Patientenversorgung sowie meiner Bereitschaft zur Schichtarbeit bin ich überzeugt, dass ich zu Ihrem Team passen würde.\n\nIch freue mich auf die Gelegenheit, meine Qualifikationen und mein Engagement vorzustellen.\n\nMit freundlichen Grüßen,\nNora Admin",
+    "raw_subject": "Bewerbung um die Stelle als Pflegefachkraft stationär",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_experienced",
+    "label": "experienced",
+    "profile": "Klaus Erfahrung, Frankfurt\nklaus.erfahrung@example.com\n2010–heute Leiter Buchhaltung, Contoso Süd (Team 4)\n- DATEV, Jahresabschluss-Unterstützung, Prozessoptimierung Kreditoren\nDavor 2005–2010 Buchhalter Fabrikam\nIHK Bilanzbuchhalter Weiterbildung 2014\nKenntnisse: DATEV, SAP FI, Excel",
+    "job": "Senior Buchhaltung / Teamleitung — Northwind AG\nDATEV, Führungserfahrung, Kreditoren/Debitoren, Prozessverständnis.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um Stelle als Senior Buchhaltung / Teamleitung",
+        "body": "Sehr geehrte Damen und Herren,\n\nmit Referenznummer 123456 bewerbe ich mich um die Stelle als Senior Buchhaltung / Teamleitung bei Northwind AG. Mit meiner langjährigen Erfahrung in der Buchhaltung und meiner Führungserfahrung im Bereich Kreditoren/Debitoren sowie meinem tiefen Verständnis für Prozesse im Finanzwesen möchte ich mich für diese Position qualifizieren.\n\nIn meiner aktuellen Position als Leiter Buchhaltung bei Contoso Süd (Team 4) habe ich DATEV und SAP FI erfolgreich eingesetzt, um Prozesse zu optimieren und die Effizienz zu steigern. Zuvor war ich Buchhalter bei Fabrikam und habe 2014 meine Weiterbildung als IHK Bilanzbuchhalter abgeschlossen. Meine Kenntnisse umfassen DATEV, SAP FI und Excel.\n\nIch freue mich auf die Gelegenheit, meine Fähigkeiten und Erfahrungen im Rahmen eines persönlichen Gesprächs näher zu erläutern.\n\nMit freundlichen Grüßen,\nKlaus Erfahrung",
+        "anchors_used": [
+          {
+            "text": "DATEV",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "SAP FI",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Kreditoren/Debitoren",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Buchhaltung",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nmit Referenznummer 123456 bewerbe ich mich um die Stelle als Senior Buchhaltung / Teamleitung bei Northwind AG. Mit meiner langjährigen Erfahrung in der Buchhaltung und meiner Führungserfahrung im Bereich Kreditoren/Debitoren sowie meinem tiefen Verständnis für Prozesse im Finanzwesen möchte ich mich für diese Position qualifizieren.\n\nIn meiner aktuellen Position als Leiter Buchhaltung bei Contoso Süd (Team 4) habe ich DATEV und SAP FI erfolgreich eingesetzt, um Prozesse zu optimieren und die Effizienz zu steigern. Zuvor war ich Buchhalter bei Fabrikam und habe 2014 meine Weiterbildung als IHK Bilanzbuchhalter abgeschlossen. Meine Kenntnisse umfassen DATEV, SAP FI und Excel.\n\nIch freue mich auf die Gelegenheit, meine Fähigkeiten und Erfahrungen im Rahmen eines persönlichen Gesprächs näher zu erläutern.\n\nMit freundlichen Grüßen,\nKlaus Erfahrung",
+    "raw_subject": "Bewerbung um Stelle als Senior Buchhaltung / Teamleitung",
+    "score": 6.0,
+    "score_notes": [
+      "placeholder"
+    ]
+  },
+  {
+    "id": "cl_junior",
+    "label": "junior",
+    "profile": "Emma Start, Leipzig\nemma.start@example.com\n2024–heute Azubi Kauffrau Büromanagement, Litware SE (3. Lehrjahr)\n- Posteingang, Termine, Excel-Tabellen, Telefonzentrale\nAbitur 2022\nKenntnisse: MS Office, Deutsch, Englisch B1",
+    "job": "Junior Assistenz der Geschäftsführung — Adventure Works\nTerminorganisation, Korrespondenz, MS Office. Berufseinsteiger willkommen.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung als Junior Assistenz der Geschäftsführung",
+        "body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich Ihre Stellenausschreibung für die Position als Junior Assistenz der Geschäftsführung gelesen. Als Azubin im 3. Lehrjahr im Bereich Kauffrau Büromanagement bei Litware SE verfüge ich über fundierte Kenntnisse in der Termineorganisation, Posteingangsverwaltung sowie der Nutzung von MS Office. Zudem habe ich bereits Erfahrungen in der Korrespondenz und der Bearbeitung von Excel-Tabellen gesammelt.\n\nMein Ziel ist es, meine berufliche Entwicklung in einem dynamischen Umfeld weiter voranzutreiben und meine Fähigkeiten in der Büroorganisation sowie im Umgang mit MS Office zu vertiefen. Ich bin überzeugt, dass meine bisherigen Erfahrungen und mein Motivationsspielraum gut zu Ihrem Team passen.\n\nIch freue mich auf die Möglichkeit, mich in einem persönlichen Gespräch näher vorzustellen und meine Qualifikationen sowie mein Interesse an der Stelle zu erläutern.\n\nMit freundlichen Grüßen,\nEmma Start",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich Ihre Stellenausschreibung für die Position als Junior Assistenz der Geschäftsführung gelesen. Als Azubin im 3. Lehrjahr im Bereich Kauffrau Büromanagement bei Litware SE verfüge ich über fundierte Kenntnisse in der Termineorganisation, Posteingangsverwaltung sowie der Nutzung von MS Office. Zudem habe ich bereits Erfahrungen in der Korrespondenz und der Bearbeitung von Excel-Tabellen gesammelt.\n\nMein Ziel ist es, meine berufliche Entwicklung in einem dynamischen Umfeld weiter voranzutreiben und meine Fähigkeiten in der Büroorganisation sowie im Umgang mit MS Office zu vertiefen. Ich bin überzeugt, dass meine bisherigen Erfahrungen und mein Motivationsspielraum gut zu Ihrem Team passen.\n\nIch freue mich auf die Möglichkeit, mich in einem persönlichen Gespräch näher vorzustellen und meine Qualifikationen sowie mein Interesse an der Stelle zu erläutern.\n\nMit freundlichen Grüßen,\nEmma Start",
+    "raw_subject": "Bewerbung als Junior Assistenz der Geschäftsführung",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_admin",
+    "label": "administrative",
+    "profile": "Tina Büro, München\ntina.buero@example.com\n2017–heute Sachbearbeiterin Verwaltung, Stadt Beispiel\n- Aktenführung, Formularprüfung, Bürgertelefon, Excel-Listen\nKenntnisse: MS Office, Deutsch Muttersprache",
+    "job": "Verwaltungsfachkraft — Woodgrove Kommunalservice\nAktenführung, Bürgerkontakt, MS Office, sorgfältige Dokumentation.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um die Stelle als Verwaltungsfachkraft",
+        "body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich Ihre Stellenausschreibung für eine Verwaltungsfachkraft im Bereich Woodgrove Kommunalservice gelesen. Mit meiner langjährigen Erfahrung als Sachbearbeiterin Verwaltung in der Stadt Beispiel, wo ich mich auf Aktenführung, Bürgerkontakt und sorgfältige Dokumentation spezialisiert habe, bin ich bestens auf die Anforderungen dieser Stelle vorbereitet.\n\nMeine Kenntnisse in MS Office und meine sichere Beherrschung der deutschen Sprache ermöglichen es mir, mich effizient in den Arbeitsablauf einzufügen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und mein Engagement in Ihrem Team einzubringen.\n\nMit freundlichen Grüßen,\nTina Büro",
+        "anchors_used": [
+          {
+            "text": "Aktenführung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "MS Office",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich Ihre Stellenausschreibung für eine Verwaltungsfachkraft im Bereich Woodgrove Kommunalservice gelesen. Mit meiner langjährigen Erfahrung als Sachbearbeiterin Verwaltung in der Stadt Beispiel, wo ich mich auf Aktenführung, Bürgerkontakt und sorgfältige Dokumentation spezialisiert habe, bin ich bestens auf die Anforderungen dieser Stelle vorbereitet.\n\nMeine Kenntnisse in MS Office und meine sichere Beherrschung der deutschen Sprache ermöglichen es mir, mich effizient in den Arbeitsablauf einzufügen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und mein Engagement in Ihrem Team einzubringen.\n\nMit freundlichen Grüßen,\nTina Büro",
+    "raw_subject": "Bewerbung um die Stelle als Verwaltungsfachkraft",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_sales",
+    "label": "sales/service",
+    "profile": "Paul Service, Hannover\npaul.service@example.com\n2018–heute Kundenberater Callcenter, Contoso Service\n- Inbound-Beratung, Ticket-System, Beschwerdeeskalation\nKenntnisse: CRM-Grundlagen, Deutsch, Englisch B2",
+    "job": "Kundenbetreuung Innendienst — Fabrikam Retail\nTelefon/E-Mail, CRM, lösungsorientierte Kommunikation.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um die Stelle als Kundenbetreuung Innendienst",
+        "body": "Sehr geehrte Damen und Herren,\n\nich bewerbe mich um die Stelle als Kundenbetreuung Innendienst bei Fabrikam Retail. Mit meiner Erfahrung als Kundenberater in einem Callcenter seit 2018 verfüge ich über fundierte Kenntnisse im Umgang mit CRM-Systemen sowie in der Bearbeitung von Kundenanfragen und -beschwerden. Meine Stärken liegen in der lösungsorientierten Kommunikation und der effektiven Bearbeitung von Tickets. Ich bin überzeugt, dass meine Kompetenzen und mein Engagement für eine zufriedene Kundenbindung die Stelle bei Ihnen optimal besetzen.\n\nMit freundlichen Grüßen,\nPaul Service",
+        "anchors_used": [
+          {
+            "text": "CRM-Systeme",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Ticket-Bearbeitung",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich bewerbe mich um die Stelle als Kundenbetreuung Innendienst bei Fabrikam Retail. Mit meiner Erfahrung als Kundenberater in einem Callcenter seit 2018 verfüge ich über fundierte Kenntnisse im Umgang mit CRM-Systemen sowie in der Bearbeitung von Kundenanfragen und -beschwerden. Meine Stärken liegen in der lösungsorientierten Kommunikation und der effektiven Bearbeitung von Tickets. Ich bin überzeugt, dass meine Kompetenzen und mein Engagement für eine zufriedene Kundenbindung die Stelle bei Ihnen optimal besetzen.\n\nMit freundlichen Grüßen,\nPaul Service",
+    "raw_subject": "Bewerbung um die Stelle als Kundenbetreuung Innendienst",
+    "score": 6.0,
+    "score_notes": [
+      "placeholder"
+    ]
+  },
+  {
+    "id": "cl_techish",
+    "label": "technical-ish",
+    "profile": "Rita Tech, Nürnberg\nrita.tech@example.com\n2020–heute IT-Support First Level, Adventure IT\n- Ticketbearbeitung, Nutzerberatung Windows/Office, Dokumentation in Wiki\nAusbildung Fachinformatiker Systemintegration\nKenntnisse: Windows, Active Directory Grundlagen, Excel",
+    "job": "IT-Helpdesk (m/w/d) — Litware Digital\nFirst-Level-Support, Ticketsystem, Windows-Kenntnisse, dokumentationssicher.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung um Stelle als IT-Helpdesk Support",
+        "body": "Sehr geehrte Damen und Herren,\n\nmit Begeisterung bewerbe ich mich um die Stelle als IT-Helpdesk Support bei Litware Digital. Mit meiner Ausbildung zum Fachinformatiker Systemintegration und meiner Berufserfahrung als IT-Support First Level bei Adventure IT verfüge ich über fundierte Kenntnisse in der Ticketbearbeitung, Nutzerberatung sowie der Dokumentation in Wiki-Systemen. Meine Erfahrungen mit Windows und Active Directory Grundlagen sowie meine Sicherheit in der Nutzung von Excel ermöglichen mir eine effiziente und strukturierte Bearbeitung von Supportanfragen.\n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und mein Engagement in Ihrem Team einzubringen und bin bereit, mich in einem Gespräch detailliert über meine Qualifikationen zu unterhalten.\n\nMit freundlichen Grüßen,\nRita Tech",
+        "anchors_used": [
+          {
+            "text": "First-Level-Support",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Ticketbearbeitung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Nutzerberatung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Windows",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Active Directory",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Wiki",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-8b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nmit Begeisterung bewerbe ich mich um die Stelle als IT-Helpdesk Support bei Litware Digital. Mit meiner Ausbildung zum Fachinformatiker Systemintegration und meiner Berufserfahrung als IT-Support First Level bei Adventure IT verfüge ich über fundierte Kenntnisse in der Ticketbearbeitung, Nutzerberatung sowie der Dokumentation in Wiki-Systemen. Meine Erfahrungen mit Windows und Active Directory Grundlagen sowie meine Sicherheit in der Nutzung von Excel ermöglichen mir eine effiziente und strukturierte Bearbeitung von Supportanfragen.\n\nIch freue mich auf die Möglichkeit, meine Fähigkeiten und mein Engagement in Ihrem Team einzubringen und bin bereit, mich in einem Gespräch detailliert über meine Qualifikationen zu unterhalten.\n\nMit freundlichen Grüßen,\nRita Tech",
+    "raw_subject": "Bewerbung um Stelle als IT-Helpdesk Support",
+    "score": 8.0,
+    "score_notes": []
+  }
+]

@@ -1,0 +1,101 @@
+{
+  "id": "sc_strong_01",
+  "final_ok": false,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 76.588,
+  "repair_count": 1,
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, im Rahmen meiner Berufserfahrung als Steuerfachangestellte IHK und meiner fünfjährigen Tätigkeit bei DATEV, einem führenden Kredoressortierer, bin ich über meine Fähigkeiten in Excel und meine formale Ausbildung informiert. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit komplexen finanziellen Daten und meine Erfahrung im Steuerwesen eine wertvolle Ergänzung für Ihr Team darstellen würden. Ich freue mich darauf, meine Fähigkeiten im Buchhaltungsbereich bei NordLedger GmbH einzubringen.",
+  "subject": "Bewerbung für Buchhalter/in Rolle",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung haben mich gut vorbereitet“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung haben mich gut vorbereitet",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK und meine fünfjährige Tätigkeit bei DAT“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK und meine fünfjährige Tätigkeit bei DAT",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Buchhalter/in Rolle",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung als Steuerfachangestellte IHK und meine fünfjährige Tätigkeit bei DATEV, einem führenden Kredoressortierer, darzustellen. Meine Fähigkeiten in Excel und meine formale Ausbildung haben mich gut vorbereitet, um in der Buchhaltungsrolle bei NordLedger GmbH zu arbeiten. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit komplexen finanziellen Daten und meine Erfahrung im Steuerwesen eine wertvolle Ergänzung für Ihr Team darstellen würden.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung informiert“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung informiert",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK und meiner fünfjährigen Tätigkeit bei D“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK und meiner fünfjährigen Tätigkeit bei D",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für Buchhalter/in Rolle",
+          "body": "Sehr geehrte Damen und Herren, im Rahmen meiner Berufserfahrung als Steuerfachangestellte IHK und meiner fünfjährigen Tätigkeit bei DATEV, einem führenden Kredoressortierer, bin ich über meine Fähigkeiten in Excel und meine formale Ausbildung informiert. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit komplexen finanziellen Daten und meine Erfahrung im Steuerwesen eine wertvolle Ergänzung für Ihr Team darstellen würden. Ich freue mich darauf, meine Fähigkeiten im Buchhaltungsbereich bei NordLedger GmbH einzubringen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5546.2
+}

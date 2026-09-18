@@ -1,0 +1,29 @@
+{
+  "id": "si_26",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 27.805,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns über Ihre Erfahrungen mit dem Check-in-Prozess in Ihrem aktuellen oder früheren Job erzählen?",
+      "Wie gehen Sie mit Gästen um, die möglicherweise ungeduldig oder anspruchsvoll sind?",
+      "Welche Strategien verwenden Sie, um den Check-in-Prozess für Gäste effizienter zu gestalten?"
+    ],
+    "talking_points": [
+      "Erfahrung im Gästeservice, insbesondere im Check-in-Bereich, für Hotel Quell.",
+      "Können Sie spezifische Herausforderungen im Gästeservice identifizieren und wie Sie diese gemeistert haben?",
+      "Welche Maßnahmen haben Sie ergriffen, um den Check-in-Prozess zu verbessern und die Kundenzufriedenheit zu steigern?"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften erwähnt, daher könnte es notwendig sein, den Bewerber zu ermutigen, über ihre Erfolge und wie sie zur Effizienz des Check-in-Prozesses beigetragen haben, zu sprechen.",
+      "Möglicherweise sollte der Bewerber mehr Details über ihre Fähigkeiten und Techniken bereitstellen, die sie im Gästeservice verwendet haben."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

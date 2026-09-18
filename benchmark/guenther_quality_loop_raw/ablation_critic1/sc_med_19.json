@@ -1,0 +1,54 @@
+{
+  "id": "sc_med_19",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 105.674,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich habe Ihre Stellenanzeige für einen Warehouse Clerk bei CargoBay SE entdeckt und bin sehr interessiert. Mit meiner Erfahrung im Wareneingang und in der Dokumentation glaube ich, dass ich gut zu Ihrer Abteilung passen würde. Ich freue mich darauf, meine Fähigkeiten in Ihrem Team einzubringen.",
+  "subject": "Interessent für die Position des Warehouse Clerks",
+  "peak_rss_mb": 230.69140625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 44.102,
+      "draft": 24.978,
+      "critique_1": 36.584
+    },
+    "cot_stored": false
+  }
+}

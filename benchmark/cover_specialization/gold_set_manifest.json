@@ -1,0 +1,32 @@
+{
+  "gold_count": 80,
+  "elite_gold_count": 0,
+  "elite_note": "Frozen scorer base=8.0; elite>=8.5 unavailable without raising base — use GOLD only.",
+  "gold_safety_failures": 0,
+  "sources": {
+    "A_old": 72,
+    "B_plan_draft": 8
+  },
+  "archetypes": {
+    "RICH_PROFILE": 16,
+    "KNOWN_COMPANY": 80,
+    "NO_FORMAL_CREDENTIAL": 76,
+    "TECHNICAL": 4,
+    "DIRECT_FIT": 16,
+    "OPERATIONS": 5,
+    "OTHER": 37,
+    "FORMAL_CREDENTIAL": 4,
+    "RETAIL": 2,
+    "ADMIN": 18,
+    "HEALTH_ADJACENT": 4,
+    "SALES": 6,
+    "CAREER_CHANGE": 18,
+    "ACCOUNTING": 3,
+    "CUSTOMER_SERVICE": 1,
+    "SPARSE_PROFILE": 10,
+    "MISSING_DESIRABLE": 11,
+    "MEDIUM_FIT": 9,
+    "SAFETY_TRAP": 4
+  },
+  "content_sha256": "ee44e08b3f71b367b580905f730846a0587e4162bd37f0678b05459afd13df7c"
+}

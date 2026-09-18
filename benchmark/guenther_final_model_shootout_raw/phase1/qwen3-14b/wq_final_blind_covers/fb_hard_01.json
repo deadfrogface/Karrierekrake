@@ -1,0 +1,82 @@
+{
+  "id": "fb_hard_01",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "UNUSABLE",
+  "notes": [],
+  "latency_s": 279.478,
+  "repair_count": 1,
+  "final_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals Xena Admin mit Schwerpunkt auf Büroorganisation bringe ich eine strukturierte Arbeitsweise und eine hohe Aufmerksamkeit für Details mit, die sich ideal für die Unterstützung im klinischen Umfeld eignen. In meiner bisherigen Tätigkeit habe ich Erfahrung mit der Koordination von Terminen, der Verwaltung von Dokumenten und der Optimierung von Abläufen gesammelt — Fähigkeiten, die sich nahtlos in die tägliche Arbeit einer Pflegefachkraft übertragen lassen.\n\nIch habe gelernt, in komplexen Umgebungen effizient zu arbeiten und Prioritäten zu setzen, was mir ermöglicht, mich schnell auf neue Herausforderungen einzustellen. Zudem habe ich in meiner Rolle immer den Fokus auf die Bedürfnisse der Kolleg:innen und Patient:innen gerichtet, was mir hilft, mich auf die Zusammenarbeit im Team der Klinik Westpark einzulassen.\n\nIch freue mich darauf, meine Fähigkeiten im Rahmen der ausgeschriebenen Position einzubringen und mich aktiv in den Alltag der Klinik Westpark einzubringen.\n\nMit freundlichen Grüßen",
+  "subject": "Bewerbung als Pflegefachkraft",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "",
+          "body": "Sehr geehrte Damen und Herren,\n\nals Xena Admin mit Schwerpunkt auf Büroorganisation bringe ich eine strukturierte Arbeitsweise und eine hohe Aufmerksamkeit für Details mit, die sich ideal für die Unterstützung im klinischen Umfeld eignen. In meiner bisherigen Tätigkeit habe ich Erfahrung mit der Koordination von Terminen, der Verwaltung von Dokumenten und der Optimierung von Abläufen gesammelt — Fähigkeiten, die sich nahtlos in die tägliche Arbeit einer Pflegefachkraft übertragen lassen.\n\nIch habe gelernt, in komplexen Umgebungen effizient zu arbeiten und Prioritäten zu setzen, was mir ermöglicht, mich schnell auf neue Herausforderungen einzustellen. Zudem habe ich in meiner Rolle immer den Fokus auf die Bedürfnisse der Kolleg:innen und Patient:innen gerichtet, was mir hilft, mich auf die Zusammenarbeit im Team der Klinik Westpark einzulassen.\n\nIch freue mich darauf, meine Fähigkeiten im Rahmen der ausgeschriebenen Position einzubringen und mich aktiv in den Alltag der Klinik Westpark einzubringen.\n\nMit freundlichen Grüßen",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-14b",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung als Pflegefachkraft",
+          "body": "Sehr geehrte Damen und Herren,\n\nals Xena Admin mit Schwerpunkt auf Büroorganisation bringe ich eine strukturierte Arbeitsweise und eine hohe Aufmerksamkeit für Details mit, die sich ideal für die Unterstützung im klinischen Umfeld eignen. In meiner bisherigen Tätigkeit habe ich Erfahrung mit der Koordination von Terminen, der Verwaltung von Dokumenten und der Optimierung von Abläufen gesammelt — Fähigkeiten, die sich nahtlos in die tägliche Arbeit einer Pflegefachkraft übertragen lassen.\n\nIch habe gelernt, in komplexen Umgebungen effizient zu arbeiten und Prioritäten zu setzen, was mir ermöglicht, mich schnell auf neue Herausforderungen einzustellen. Zudem habe ich in meiner Rolle immer den Fokus auf die Bedürfnisse der Kolleg:innen und Patient:innen gerichtet, was mir hilft, mich auf die Zusammenarbeit im Team der Klinik Westpark einzulassen.\n\nIch freue mich darauf, meine Fähigkeiten im Rahmen der ausgeschriebenen Position einzubringen und mich aktiv in den Alltag der Klinik Westpark einzubringen.\n\nMit freundlichen Grüßen",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

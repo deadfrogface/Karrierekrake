@@ -1,0 +1,49 @@
+{
+  "id": "dev_16",
+  "final_ok": true,
+  "score": 6.5,
+  "notes": [
+    "missing_company"
+  ],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich Office und Excel, die ich in meiner bisherigen Tätigkeit erworben habe, für Ihre Organisation einzusetzen. Mein Engagement für Detailgenauigkeit und Effizienz, wie in meinem Profil beschrieben, würde ich gerne in die Rolle einbringen, die Sie ausgeschrieben haben. Ich bin überzeugt, dass meine Erfahrung im Umgang mit Microsoft Office-Anwendungen und im Projektmanagement den Anforderungen entsprechen wird, die Sie für die ausgeschriebene Position suchen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für die Arbeit mit Ihnen zu demonstrieren.",
+  "subject": "Bewerbung für eine Rolle im Bereich Office und Excel",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für eine Rolle im Bereich Office und Excel",
+          "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich Office und Excel, die ich in meiner bisherigen Tätigkeit erworben habe, für Ihre Organisation einzusetzen. Mein Engagement für Detailgenauigkeit und Effizienz, wie in meinem Profil beschrieben, würde ich gerne in die Rolle einbringen, die Sie ausgeschrieben haben. Ich bin überzeugt, dass meine Erfahrung im Umgang mit Microsoft Office-Anwendungen und im Projektmanagement den Anforderungen entsprechen wird, die Sie für die ausgeschriebene Position suchen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für die Arbeit mit Ihnen zu demonstrieren.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

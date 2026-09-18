@@ -1,0 +1,247 @@
+{
+  "id": "cl_career_changer",
+  "subject": "Kaufmännische Assistenz - Woodgrove Bank",
+  "body": "Sehr geehrte Damen und Herren, ich freue mich sehr, bei Ihnen als Kaufmännische Assistenz zu bewerben. Mit meiner Ausbildung als Verkäuferin und meinen Kenntnissen in Kassensystem, Deutsch und Englisch A2 habe ich eine gute Grundlage für dieses Einsatzfeld. Ich bin Kundenorientierung sehr gewohnt und habe bereits Erfahrung in Kundenberatung und Beschwerdemanagement. Meine Leistungen in der Einzelhandel sind mir sehr wichtig, und ich bin überzeugt, dass ich in diesem Bereich gut abschneiden könnte. Ich freue mich sehr auf Ihre Berücksichtigung meiner Bewerbung. Mit freundlichen Grüßen, Sara Wechsel",
+  "model_id": "qwen3-1.7b",
+  "architecture": "qwen_only",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen in Ka“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen i“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "CAREER_CHANGER_ROLE_CLAIM",
+      "message_de": "Quereinstieg: bisherige Rolle wurde unpassend als Zielqualifikation dargestellt.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Ausbildung als Verkäuferin",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen in Ka“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen i“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "CAREER_CHANGER_ROLE_CLAIM",
+            "message_de": "Quereinstieg: bisherige Rolle wurde unpassend als Zielqualifikation dargestellt.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Ausbildung als Verkäuferin",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Kaufmännische Assistenz - Woodgrove Bank",
+          "body": "Sehr geehrte Damen und Herren, Ich freue mich sehr, bei Ihnen als Kaufmännische Assistenz zu bewerben. Mit meiner Ausbildung als Verkäuferin und meinen Kenntnissen in Kassensystem, Deutsch und Englisch A2 habe ich eine gute Grundlage für dieses Einsatzfeld. Ich bin Kundenorientierung sehr gewohnt und habe bereits Erfahrung in Kundenberatung und Beschwerdemanagement. Meine Leistungen in der Einzelhandel sind mir sehr wichtig, und ich bin überzeugt, dass ich in diesem Bereich gut abschneiden könnte. Ich freue mich sehr auf Ihre Berücksichtigung meiner Bewerbung. Mit freundlichen Grüßen, Sara Wechsel",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen in Ka“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen i“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "CAREER_CHANGER_ROLE_CLAIM",
+            "message_de": "Quereinstieg: bisherige Rolle wurde unpassend als Zielqualifikation dargestellt.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Ausbildung als Verkäuferin",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Kaufmännische Assistenz - Woodgrove Bank",
+          "body": "Sehr geehrte Damen und Herren, Ich freue mich sehr, bei Ihnen als Kaufmännische Assistenz zu bewerben. Mit meiner Ausbildung als Verkäuferin und meinen Kenntnissen in Kassensystem, Deutsch und Englisch A2 habe ich eine gute Grundlage für dieses Einsatzfeld. Ich bin Kundenorientierung sehr gewohnt und habe bereits Erfahrung in Kundenberatung und Beschwerdemanagement. Meine Leistungen in der Einzelhandel sind mir sehr wichtig, und ich bin überzeugt, dass ich in diesem Bereich gut abschneiden könnte. Ich freue mich sehr auf Ihre Berücksichtigung meiner Bewerbung. Mit freundlichen Grüßen, Sara Wechsel",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen in Ka“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen i“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "CAREER_CHANGER_ROLE_CLAIM",
+            "message_de": "Quereinstieg: bisherige Rolle wurde unpassend als Zielqualifikation dargestellt.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Ausbildung als Verkäuferin",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Kaufmännische Assistenz - Woodgrove Bank",
+          "body": "Sehr geehrte Damen und Herren, ich freue mich sehr, bei Ihnen als Kaufmännische Assistenz zu bewerben. Mit meiner Ausbildung als Verkäuferin und meinen Kenntnissen in Kassensystem, Deutsch und Englisch A2 habe ich eine gute Grundlage für dieses Einsatzfeld. Ich bin Kundenorientierung sehr gewohnt und habe bereits Erfahrung in Kundenberatung und Beschwerdemanagement. Meine Leistungen in der Einzelhandel sind mir sehr wichtig, und ich bin überzeugt, dass ich in diesem Bereich gut abschneiden könnte. Ich freue mich sehr auf Ihre Berücksichtigung meiner Bewerbung. Mit freundlichen Grüßen, Sara Wechsel",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen in Ka“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen i“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "CAREER_CHANGER_ROLE_CLAIM",
+        "message_de": "Quereinstieg: bisherige Rolle wurde unpassend als Zielqualifikation dargestellt.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Ausbildung als Verkäuferin",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+          "kind": "credential",
+          "span": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen in Ka“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen in Ka",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+          "kind": "credential",
+          "span": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Verkäuferin und meinen Kenntnissen i“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Verkäuferin und meinen Kenntnissen i",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

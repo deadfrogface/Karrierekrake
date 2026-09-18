@@ -1,0 +1,52 @@
+{
+  "id": "fb_unk_01",
+  "final_ok": true,
+  "score": 6.5,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 69.102,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung in der Büroorganisation und Sachbearbeitung passt sehr gut zu den Anforderungen der ausgeschriebenen Position. In meiner bisherigen Tätigkeit habe ich fundierte Kenntnisse in der effizienten Ablage sowie in der professionellen Telefonführung gesammelt. Zudem bin ich sicher im Umgang mit Excel, um Daten strukturiert zu verarbeiten. Diese Kompetenzen möchte ich nutzen, um Ihre internen Prozesse zuverlässig zu unterstützen und einen reibungslosen Büroalltag zu gewährleisten. Ich freue mich darauf, meine organisatorischen Fähigkeiten in Ihr Team einzubringen.\n\nMit freundlichen Grüßen",
+  "subject": "Bewerbung als Sachbearbeiter",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Sachbearbeiter",
+          "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung in der Büroorganisation und Sachbearbeitung passt sehr gut zu den Anforderungen der ausgeschriebenen Position. In meiner bisherigen Tätigkeit habe ich fundierte Kenntnisse in der effizienten Ablage sowie in der professionellen Telefonführung gesammelt. Zudem bin ich sicher im Umgang mit Excel, um Daten strukturiert zu verarbeiten. Diese Kompetenzen möchte ich nutzen, um Ihre internen Prozesse zuverlässig zu unterstützen und einen reibungslosen Büroalltag zu gewährleisten. Ich freue mich darauf, meine organisatorischen Fähigkeiten in Ihr Team einzubringen.\n\nMit freundlichen Grüßen",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

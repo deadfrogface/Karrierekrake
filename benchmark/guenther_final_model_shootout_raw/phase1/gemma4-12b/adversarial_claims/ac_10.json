@@ -1,0 +1,8 @@
+{
+  "id": "ac_10",
+  "claim": "Active Directory Grundlagen",
+  "expect": "SUPPORTED_DIRECT",
+  "got": "SUPPORTED_DIRECT",
+  "match": true,
+  "model_id": "gemma4-12b"
+}

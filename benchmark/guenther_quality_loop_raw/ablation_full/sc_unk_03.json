@@ -1,0 +1,54 @@
+{
+  "id": "sc_unk_03",
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 111.881,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte/r [Name des Arbeitgeber/in], ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mein Name ist Eli Pack und ich schreibe Ihnen, um mein Interesse an der Lagerhilfe-Rolle, die Sie ausgeschrieben haben, auszudrücken. Während meiner bisherigen Berufserfahrung hatte ich die Gelegenheit, in verschiedenen Rollen im Lagerbereich zu arbeiten, insbesondere im Bereich der Kommissionierung. Diese Erfahrung hat mir geholfen, ein solides Verständnis für die Prozesse und Anforderungen im Lagerbetrieb zu entwickeln. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung eine wertvolle Ergänzung für Ihr Team darstellen würden. Ich freue mich auf die Möglichkeit, meine Fähigkeiten im Kontext Ihres Unternehmens weiter zu diskutieren. Mit freundlichen Grüßen, Eli Pack",
+  "subject": "Lagerhilfe",
+  "peak_rss_mb": 207.59375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 42.597,
+      "draft": 30.608,
+      "critique_1": 38.674
+    },
+    "cot_stored": false
+  }
+}

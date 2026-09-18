@@ -1,0 +1,8 @@
+{
+  "id": "ac_09",
+  "claim": "Pflegeausbildung",
+  "expect": "SUPPORTED_DIRECT",
+  "got": "SUPPORTED_DIRECT",
+  "match": true,
+  "model_id": "qwen35-9b"
+}

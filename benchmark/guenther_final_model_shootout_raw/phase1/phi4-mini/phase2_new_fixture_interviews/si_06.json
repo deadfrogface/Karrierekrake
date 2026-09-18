@@ -1,0 +1,29 @@
+{
+  "id": "si_06",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 32.205,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit der DATEV-Buchhaltungssoftware erzählen?",
+      "Welche Strategien haben Sie angewendet, um die Effizienz im Bereich der Kreditoren bei Ihrer vorherigen Position zu verbessern?",
+      "Wie würden Sie DATEV in Ihrem täglichen Arbeitsablauf integrieren, um die Prozesse bei LedgerLite AG zu optimieren?"
+    ],
+    "talking_points": [
+      "Verwendung der DATEV-Buchhaltungssoftware zur Verwaltung von Kreditoren im Rahmen der Buchhaltung.",
+      "Anwendung von Strategien zur Verbesserung der Effizienz und Effizienz im Bereich der Kreditoren, basierend auf früheren Erfahrungen.",
+      "Integration von DATEV in die täglichen Arbeitsabläufe, um die Prozesse bei LedgerLite AG zu optimieren und die Leistung zu verbessern."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften erwähnt, die während der vorherigen Positionen erzielt wurden.",
+      "Mögliche Herausforderungen oder Probleme, die während der Arbeit mit der DATEV-Buchhaltungssoftware oder im Bereich der Kreditoren aufgetreten sind, nicht erwähnt."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

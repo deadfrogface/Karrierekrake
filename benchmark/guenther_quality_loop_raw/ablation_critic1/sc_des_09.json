@@ -1,0 +1,64 @@
+{
+  "id": "sc_des_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 163.078,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Erfahrung in der Verwaltung von Windows Tickets bin ich gut gerüstet, um Aufgaben im IT-Support bei DeskHelp AG zu übernehmen. Ich bin bereit, mich schnell in ITIL weiterzubilden, um die Anforderungen des IT-Support-Assistenten zu erfüllen.",
+  "subject": "IT-Support-Assistent",
+  "peak_rss_mb": 230.90234375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 44.226,
+      "draft": 14.4,
+      "critique_1": 41.403,
+      "quality_revision_1": 16.9,
+      "critique_2": 46.147
+    },
+    "cot_stored": false
+  }
+}

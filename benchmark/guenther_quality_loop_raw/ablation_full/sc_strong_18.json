@@ -1,0 +1,64 @@
+{
+  "id": "sc_strong_18",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 132.916,
+  "model_calls": 5,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Expertise in Instandhaltung, SLA und Handwerk bei CampusCare SE als Facility Manager einzubringen. Meine Erfahrung mit der Verwaltung von Facility-Projekten und der Sicherstellung hoher Service-Niveau-Standards (SLA) macht mich zu einer idealen Kandidatin für diese Rolle.",
+  "subject": "Facility Manager",
+  "peak_rss_mb": 208.48046875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 40.836,
+      "draft": 18.681,
+      "critique_1": 33.648,
+      "quality_revision_1": 17.748,
+      "critique_2": 22.0
+    },
+    "cot_stored": false
+  }
+}

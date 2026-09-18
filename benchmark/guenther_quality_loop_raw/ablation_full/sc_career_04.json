@@ -1,0 +1,76 @@
+{
+  "id": "sc_career_04",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 215.815,
+  "model_calls": 7,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe über 5 Jahre Berufserfahrung im Bereich Logistik, insbesondere im Bereich der Transferdisposition, mit. Meine Fähigkeiten im effizienten Ablaufkoordinieren und in der enken Zusammenarbeit mit verschiedenen Abteilungen haben sich in verschiedenen Rollen bewährt. Ich bin überzeugt, dass meine praktischen Kenntnisse und meine Deutschkenntnisse gut zu den Anforderungen von MoveIt SE passen.",
+  "subject": "Einzelhandel Filiale — Transfer Disposition",
+  "peak_rss_mb": 207.3984375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 28.201,
+      "draft": 20.813,
+      "critique_1": 35.395,
+      "quality_revision_1": 22.494,
+      "critique_2": 41.38,
+      "quality_revision_2": 19.632,
+      "critique_3": 47.896
+    },
+    "cot_stored": false
+  }
+}

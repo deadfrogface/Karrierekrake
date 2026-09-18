@@ -1,0 +1,71 @@
+{
+  "id": "sc_med_20",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 41.612,
+  "repair_count": 1,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Berufserfahrung im Empfang und in der Mitgliederbetreuung anzubieten, die ich bei einem Fitnessstudio erworben habe. Mein Engagement für die Kundenzufriedenheit und meine Fähigkeit, in einer dynamischen Umgebung zu arbeiten, würden ich gerne auf die Position im Fitnessstudio von FitHub GmbH übertragen. Ich bin überzeugt, dass meine bisherigen Erfahrungen und meine Leidenschaft für Fitness mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+  "subject": "Bewerbung für die Position Fitness Studio Assistenz bei FitHub GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Fitness Studio Assistenz bei FitHub GmbH",
+          "body": "Ich schreibe Ihnen, um meine Erfahrung im Empfang und in der Mitgliederbetreuung anzubieten, die ich bei [Name des Fitnessstudios] erworben habe. Mein Engagement für die Kundenzufriedenheit und meine Fähigkeit, in einer dynamischen Umgebung zu arbeiten, würden ich gerne auf die Position im Fitnessstudio von FitHub GmbH übertragen. Ich bin überzeugt, dass meine bisherigen Erfahrungen und meine Leidenschaft für Fitness mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Fitness Studio Assistenz bei FitHub GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe Ihnen, um meine Berufserfahrung im Empfang und in der Mitgliederbetreuung anzubieten, die ich bei einem Fitnessstudio erworben habe. Mein Engagement für die Kundenzufriedenheit und meine Fähigkeit, in einer dynamischen Umgebung zu arbeiten, würden ich gerne auf die Position im Fitnessstudio von FitHub GmbH übertragen. Ich bin überzeugt, dass meine bisherigen Erfahrungen und meine Leidenschaft für Fitness mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

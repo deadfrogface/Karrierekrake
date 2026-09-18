@@ -1,0 +1,47 @@
+{
+  "id": "fb2_career_08",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Kundenservice und meine darauf folgende Rolle im Inside Sales zu teilen. Während meiner Zeit bei XYZ Company habe ich maßgeblich zur Steigerung des Kundenzufriedenheitsgrades beigetragen, was zu einer 20%igen Steigerung der Kundenbindung führte. Ich bin überzeugt, dass meine Fähigkeiten im Kundenservice und meine Erfahrung im Verkauf es mir ermöglichen, einen wertvollen Beitrag für GlowDesk GmbH zu leisten. Ich freue mich auf die Möglichkeit, meine Fähigkeiten im Inside Sales zu nutzen und zur Erfolgsgeschichte von GlowDesk GmbH beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Xenia Service",
+  "subject": "Bewerbung für die Position Sales Support bei GlowDesk GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Sales Support bei GlowDesk GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Kundenservice und meine darauf folgende Rolle im Inside Sales zu teilen. Während meiner Zeit bei XYZ Company habe ich maßgeblich zur Steigerung des Kundenzufriedenheitsgrades beigetragen, was zu einer 20%igen Steigerung der Kundenbindung führte. Ich bin überzeugt, dass meine Fähigkeiten im Kundenservice und meine Erfahrung im Verkauf es mir ermöglichen, einen wertvollen Beitrag für GlowDesk GmbH zu leisten. Ich freue mich auf die Möglichkeit, meine Fähigkeiten im Inside Sales zu nutzen und zur Erfolgsgeschichte von GlowDesk GmbH beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Xenia Service",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

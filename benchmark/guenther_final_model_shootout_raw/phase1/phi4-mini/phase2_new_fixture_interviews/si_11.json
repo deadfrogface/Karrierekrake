@@ -1,0 +1,27 @@
+{
+  "id": "si_11",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 29.06,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwendest du, um das Onboarding-Erlebnis für neue Mitarbeiter zu verbessern?",
+      "Wie führst du Personalakten effektiv und sicher im Unternehmen?",
+      "Kannst du ein Beispiel dafür geben, wie du eine Personalakte bei PeopleNest KG verwaltet hast?"
+    ],
+    "talking_points": [
+      "Erwähne spezifische Onboarding-Prozesse, die du implementiert hast, und wie sie die Mitarbeiterzufriedenheit und -bindung verbessert haben.",
+      "Nenne einen Fall, bei dem du die Personalakte verwendet hast, um eine wichtige Entscheidung im Personalwesen zu treffen."
+    ],
+    "gap_notes": [
+      "Da keine spezifischen Erfolge oder Details zum Profil des Kandidaten vorliegen, ist es wichtig, die Fragen so zu gestalten, dass sie die Fähigkeiten und Erfahrungen des Kandidaten in Bezug auf Onboarding und Personalakten herausfordern, ohne auf spezifische Erfolge zu verweisen."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

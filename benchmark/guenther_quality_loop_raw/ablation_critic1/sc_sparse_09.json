@@ -1,0 +1,57 @@
+{
+  "id": "sc_sparse_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 107.817,
+  "model_calls": 4,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um mein Interesse an der Position des Empfangs Aushilfe bei ClinicLite auszudrücken. Mit meiner Erfahrung im Empfang, wie in meinem Qin Brief dokumentiert, bin ich überzeugt, dass ich gut zu Ihrer Teamkultur passen würde. Ich bin bereit, meine Fähigkeiten im Empfangsbereich einzubringen und freue mich auf die Möglichkeit, meine Deutschkenntnisse in einem professionellen Umfeld zu nutzen. Vielen Dank für Ihre Zeit und Berücksichtigung meiner Bewerbung.",
+  "subject": "Empfang Aushilfe - ClinicLite",
+  "peak_rss_mb": 230.84765625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 32.579,
+      "draft": 23.301,
+      "safety_repair": 26.678,
+      "critique_1": 25.255
+    },
+    "cot_stored": false
+  }
+}

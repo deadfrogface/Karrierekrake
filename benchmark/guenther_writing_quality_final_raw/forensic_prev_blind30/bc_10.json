@@ -1,0 +1,118 @@
+{
+  "id": "bc_10",
+  "target_role": "Content Manager (m/w/d)",
+  "target_company": "WebWelt GmbH",
+  "profile": "Blind Cover 10\nCMS, SEO\nReferenz: Projektarbeit in content manager",
+  "job": "Content Manager (m/w/d)\nWebWelt GmbH\nProfil: CMS, SEO.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "A",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Pflegeausbildung"
+    }
+  ],
+  "attempt0_body": "Ich schreibe Ihnen, um mein Interesse an der Content Manager Position bei WebWelt GmbH auszudrücken. Mit meiner Erfahrung in der Pflege von Projekten im Bereich CMS und SEO bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld anzuwenden und zu Ihrem Unternehmen beizutragen.",
+  "attempt1_body": "Ich schreibe Ihnen, um mein Interesse an der Content Manager Position bei WebWelt GmbH auszudrücken. Mit meiner Pflegeausbildung in content manager bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld anzuwenden und zu Ihrem Unternehmen beizutragen.",
+  "final_body": "Ich schreibe Ihnen, um mein Interesse an der Content Manager Position bei WebWelt GmbH auszudrücken. Mit meiner Pflegeausbildung in content manager bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld anzuwenden und zu Ihrem Unternehmen beizutragen.",
+  "final_subject": "Freischaffender für Content Manager Position",
+  "body_len": 339,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Pflegeausbildung",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Pflegeausbildung",
+          "kind": "credential",
+          "span": "Mit meiner Pflegeausbildung in content manager bin ich überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Pflegeausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Pflegeausbildung in content manager bin",
+          "kind": "credential",
+          "span": "Pflegeausbildung in content manager bin",
+          "requires_direct": true,
+          "meta": {
+            "family": "Pflegeausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "ausbildung in content manager bin ich überzeugt",
+          "kind": "credential",
+          "span": "ausbildung in content manager bin ich überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

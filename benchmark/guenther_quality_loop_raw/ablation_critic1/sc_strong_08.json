@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_08",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 85.345,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine 3 Jahre Erfahrung im Bereich Controlling, Reporting, Excel und Kostenstellen ein, um als Controller bei FinHold SE zu arbeiten. Meine Fähigkeiten im Bereich Controlling, wie Hana Control, zusammen mit meiner Erfahrung im Reporting, Excel und Kostenstellen, sind direkt auf die Anforderungen für die Rolle des Controllers bei FinHold SE zugeschnitten.",
+  "subject": "Kontrollbeauftragte",
+  "peak_rss_mb": 230.578125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 41.892,
+      "draft": 19.13,
+      "critique_1": 24.32
+    },
+    "cot_stored": false
+  }
+}

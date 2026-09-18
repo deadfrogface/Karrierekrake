@@ -1,0 +1,158 @@
+{
+  "id": "cl_experienced",
+  "subject": "Senior Buchhaltung / Teamleitung – Northwind AG",
+  "body": "Sehr geehrte Damen und Herren, Ich bin Klaus Erfahrung, Leiter Buchhaltung bei Contoso Süd. Seit 2010 arbeite ich in der Buchhaltung mit Schwerpunkt DATEV und SAP FI. In meiner aktuellen Position als Leiter Buchhaltung bei Contoso Süd habe ich die Verantwortung für die Jahresabschlüsse und die Prozessoptimierung von Kreditoren und Debitoren übernommen. Vor 2010 habe ich als Buchhalter bei Fabrikam gearbeitet, wobei ich meine IHK-Bilanzbuchhalter-Weiterbildung 2014 abschloss. Meine Kenntnisse umfassen DATEV, SAP FI und Excel. Ich bin mit der Ausbildung und der Erfahrung in der Buchhaltung sehr zufrieden und würde mich sehr gerne für eine Position bei Northwind AG angeschlossen fühlen. Mit freundlichen Grüßen, Klaus Erfahrung",
+  "model_id": "qwen3-1.7b",
+  "architecture": "qwen_only",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und der Erfahrung in der Buchhaltung seh“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und der Erfahrung in der Buchhaltung seh“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Senior Buchhaltung / Teamleitung — Northwind AG",
+          "body": "Sehr geehrte Damen und Herren, Ich bin Klaus Erfahrung, Leiter Buchhaltung bei Contoso Süd. Seit 2010 arbeite ich in der Buchhaltung mit Schwerpunkt DATEV und SAP FI. In meiner aktuellen Position als Leiter Buchhaltung bei Contoso Süd habe ich die Verantwortung für die Jahresabschlüsse und die Prozessoptimierung von Kreditoren und Debitoren übernommen. Vor 2010 habe ich als Buchhalter bei Fabrikam gearbeitet, wobei ich meine IHK-Bilanzbuchhalter-Weiterbildung 2014 abschloss. Meine Kenntnisse umfassen DATEV, SAP FI und Excel. Ich bin mit der Ausbildung und der Erfahrung in der Buchhaltung sehr zufrieden und würde mich sehr gerne für eine Position bei Northwind AG angeschlossen fühlen. Mit freundlichen Grüßen, Klaus Erfahrung",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und der Erfahrung in der Buchhaltung seh“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Senior Buchhaltung / Teamleitung — Northwind AG",
+          "body": "Sehr geehrte Damen und Herren, Ich bin Klaus Erfahrung, Leiter Buchhaltung bei Contoso Süd. Seit 2010 arbeite ich in der Buchhaltung mit Schwerpunkt DATEV und SAP FI. In meiner aktuellen Position als Leiter Buchhaltung bei Contoso Süd habe ich die Verantwortung für die Jahresabschlüsse und die Prozessoptimierung von Kreditoren und Debitoren übernommen. Vor 2010 habe ich als Buchhalter bei Fabrikam gearbeitet, wobei ich meine IHK-Bilanzbuchhalter-Weiterbildung 2014 abschloss. Meine Kenntnisse umfassen DATEV, SAP FI und Excel. Ich bin mit der Ausbildung und der Erfahrung in der Buchhaltung sehr zufrieden und würde mich sehr gerne für eine Position bei Northwind AG angeschlossen fühlen. Mit freundlichen Grüßen, Klaus Erfahrung",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und der Erfahrung in der Buchhaltung seh“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Senior Buchhaltung / Teamleitung – Northwind AG",
+          "body": "Sehr geehrte Damen und Herren, Ich bin Klaus Erfahrung, Leiter Buchhaltung bei Contoso Süd. Seit 2010 arbeite ich in der Buchhaltung mit Schwerpunkt DATEV und SAP FI. In meiner aktuellen Position als Leiter Buchhaltung bei Contoso Süd habe ich die Verantwortung für die Jahresabschlüsse und die Prozessoptimierung von Kreditoren und Debitoren übernommen. Vor 2010 habe ich als Buchhalter bei Fabrikam gearbeitet, wobei ich meine IHK-Bilanzbuchhalter-Weiterbildung 2014 abschloss. Meine Kenntnisse umfassen DATEV, SAP FI und Excel. Ich bin mit der Ausbildung und der Erfahrung in der Buchhaltung sehr zufrieden und würde mich sehr gerne für eine Position bei Northwind AG angeschlossen fühlen. Mit freundlichen Grüßen, Klaus Erfahrung",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und der Erfahrung in der Buchhaltung seh“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+          "kind": "credential",
+          "span": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung und der Erfahrung in der Buchhaltung seh“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung und der Erfahrung in der Buchhaltung seh",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "IHK-Bilanzbuchhalter-Weiterbildung 2014 abs",
+          "kind": "credential",
+          "span": "IHK-Bilanzbuchhalter-Weiterbildung 2014 abs",
+          "requires_direct": true,
+          "meta": {
+            "family": "IHK"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "IHK-Bilanzbuchhalter-Weiterbildung 2014 abs",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

@@ -1,0 +1,83 @@
+{
+  "id": "fb2_strong_03",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren der MetalTrade AG, ich schreibe, um meine Erfahrung im Bereich Einkauf und Kenntnisse in SAP-Systemen anzubieten. Als Industriekaufmann IHK habe ich umfangreiche Kenntnisse im Einkauf und in der Optimierung von Lieferkettenprozessen. Ich bin überzeugt, dass meine Fähigkeiten im Einkauf und meine Erfahrung mit SAP-Systemen eine wertvolle Ergänzung für Ihr Team sein werden. Ich freue mich darauf, meine Ideen und Fähigkeiten in die Rolle des Industriekaufmanns bei MetalTrade AG einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Cara Trade",
+  "subject": "Bewerbung für die Position Industriekaufmann",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK habe ich umfangreiche Kenntnisse im Ein“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK habe ich umfangreiche Kenntnisse im Ein",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Industriekaufmann",
+          "body": "Sehr geehrte Damen und Herren der MetalTrade AG, ich schreibe, um meine Erfahrung im Bereich Einkauf und Kenntnisse in SAP-Systemen anzubieten. Als Industriekaufmann IHK habe ich umfangreiche Kenntnisse im Einkauf und in der Optimierung von Lieferkettenprozessen. Ich bin überzeugt, dass meine Fähigkeiten im Einkauf und meine Erfahrung mit SAP-Systemen eine wertvolle Ergänzung für Ihr Team sein werden. Ich freue mich darauf, meine Ideen und Fähigkeiten in die Rolle des Industriekaufmanns bei MetalTrade AG einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Cara Trade",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK habe ich umfangreiche Kenntnisse im Ein“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK habe ich umfangreiche Kenntnisse im Ein",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Industriekaufmann",
+          "body": "Sehr geehrte Damen und Herren der MetalTrade AG, ich schreibe, um meine Erfahrung im Bereich Einkauf und Kenntnisse in SAP-Systemen anzubieten. Als Industriekaufmann IHK habe ich umfangreiche Kenntnisse im Einkauf und in der Optimierung von Lieferkettenprozessen. Ich bin überzeugt, dass meine Fähigkeiten im Einkauf und meine Erfahrung mit SAP-Systemen eine wertvolle Ergänzung für Ihr Team sein werden. Ich freue mich darauf, meine Ideen und Fähigkeiten in die Rolle des Industriekaufmanns bei MetalTrade AG einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Cara Trade",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

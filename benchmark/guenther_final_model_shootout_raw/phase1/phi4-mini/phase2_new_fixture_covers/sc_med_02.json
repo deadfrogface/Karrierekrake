@@ -1,0 +1,50 @@
+{
+  "id": "sc_med_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 20.016,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich CMS und SEO bei MediaPulse SE einzubringen. Mit meiner Erfahrung im Umgang mit Texten und der Verbreitung von Inhalten über verschiedene Kanäle bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich bin besonders daran interessiert, meine Kenntnisse im SEO-Bereich zu nutzen, um die Sichtbarkeit und Reichweite Ihrer Inhalte zu verbessern. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für Content-Erstellung mit Ihnen zu teilen.",
+  "subject": "Content Manager - Berufserfahrung und Deutsch",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Content Manager - Berufserfahrung und Deutsch",
+          "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich CMS und SEO bei MediaPulse SE einzubringen. Mit meiner Erfahrung im Umgang mit Texten und der Verbreitung von Inhalten über verschiedene Kanäle bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich bin besonders daran interessiert, meine Kenntnisse im SEO-Bereich zu nutzen, um die Sichtbarkeit und Reichweite Ihrer Inhalte zu verbessern. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für Content-Erstellung mit Ihnen zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5571.5
+}

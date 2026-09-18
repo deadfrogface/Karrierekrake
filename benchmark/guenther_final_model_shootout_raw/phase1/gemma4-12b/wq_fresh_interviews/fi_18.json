@@ -1,0 +1,38 @@
+{
+  "id": "fi_18",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 102.705,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie vor, wenn mehrere Anrufer gleichzeitig auf der Leitung sind und gleichzeitig Gäste am Empfang erscheinen?",
+      "Wie reagieren Sie auf einen unzufriedenen oder aggressiven Patienten am Empfang?",
+      "Wie stellen Sie sicher, dass Termine korrekt koordiniert werden, wenn es zu Überschneidungen kommt?"
+    ],
+    "talking_points": [
+      "3 Jahre Erfahrung im Bereich Empfang"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder detaillierten Aufgabenbeschreibungen im Profil vorhanden.",
+      "Fehlende Informationen zu Softwarekenntnissen für die Terminplanung."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Empfang",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "JOB: Schwerpunkte: Termine, Telefon",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

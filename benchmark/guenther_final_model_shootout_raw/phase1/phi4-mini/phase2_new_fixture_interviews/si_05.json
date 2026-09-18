@@ -1,0 +1,29 @@
+{
+  "id": "si_05",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 28.423,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie integrierst du Active Sourcing in deine täglichen Aufgaben, um Talente effektiv zu gewinnen?",
+      "Kannst du ein erfolgreiches Talentgewinnungsprojekt auf LinkedIn beschreiben, das du durchgeführt hast?",
+      "Welche Strategien verwendest du, um deine Präsenz und Glaubwürdigkeit auf LinkedIn zu maximieren?"
+    ],
+    "talking_points": [
+      "Diskussion über Strategien und Werkzeuge für Active Sourcing, insbesondere im Kontext von LinkedIn.",
+      "Erzählung eines Fallstudien oder Projekts, bei dem Active Sourcing auf LinkedIn erfolgreich war.",
+      "Erklärung der Methoden zur Steigerung der Sichtbarkeit und des Einflusses auf LinkedIn."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder detaillierte Beispiele aus der Profil-Evidenz.",
+      "Mögliche Herausforderungen oder Fallstricke im Zusammenhang mit Active Sourcing und LinkedIn könnten nicht erwähnt werden."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

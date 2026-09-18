@@ -1,0 +1,44 @@
+{
+  "id": "sc_strong_12",
+  "final_ok": true,
+  "score": 6.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 56.392,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe 3 Jahre Berufserfahrung im Bereich der Klinikverwaltung ein, wobei ich mich insbesondere mit KIS und ICD-Systemen auseinandergesetzt habe. Diese Erfahrung ist direkt relevant für die Rolle der medizinischen Dokumentation bei Klinik West.",
+  "subject": "Medizinische Dokumentation",
+  "peak_rss_mb": 204.015625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 38.94,
+      "draft": 17.45
+    },
+    "cot_stored": false
+  }
+}

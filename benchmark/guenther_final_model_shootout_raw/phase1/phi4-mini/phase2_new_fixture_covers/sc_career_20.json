@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_20",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 18.602,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Mit meiner Erfahrung in der Pflegeunterstützung und meiner Leidenschaft für Kundenservice freue ich mich darauf, meine Fähigkeiten im Sales-Support bei DealDesk GmbH einzubringen. Ich bin überzeugt, dass meine Fähigkeit, Beziehungen aufzubauen und zu pflegen, sowie meine starke Kommunikationsfähigkeit, die Grundlage für erfolgreiche Verkaufsunterstützung bilden können. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Kundenservice in einem dynamischen Verkaufsumfeld einzusetzen.",
+  "subject": "Freust du dich, DealDesk GmbH als Sales Support zu unterstützen?",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freust du dich, DealDesk GmbH als Sales Support zu unterstützen?",
+          "body": "Mit meiner Erfahrung in der Pflegeunterstützung und meiner Leidenschaft für Kundenservice freue ich mich darauf, meine Fähigkeiten im Sales-Support bei DealDesk GmbH einzubringen. Ich bin überzeugt, dass meine Fähigkeit, Beziehungen aufzubauen und zu pflegen, sowie meine starke Kommunikationsfähigkeit, die Grundlage für erfolgreiche Verkaufsunterstützung bilden können. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Kundenservice in einem dynamischen Verkaufsumfeld einzusetzen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5587.5
+}

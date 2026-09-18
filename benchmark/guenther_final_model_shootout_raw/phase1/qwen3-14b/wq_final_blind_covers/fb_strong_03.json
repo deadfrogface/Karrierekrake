@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.8,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 110.22,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals Fachkraft für Lagerlogistik mit Staplerschein bringe ich fundierte Erfahrungen in der effizienten Organisation von Lagerprozessen mit. In meiner Zeit bei Mona Warehouse habe ich beispielsweise die Ein- und Auslagerung von Gütern mit einer Fehlerquote unter 0,5 % sicher gestaltet und dabei die Einhaltung von Sicherheitsvorschriften priorisiert. Zudem habe ich in der Zusammenarbeit mit dem Lagerpersonal und Lieferanten stets auf eine klare Kommunikation geachtet, um Abläufe zu optimieren.\n\nDiese Erfahrungen können ich nun in die ausgeschriebene Position bei CargoBay SE einbringen, um Prozesse weiter zu strukturieren und zu verbessern. Besonders motiviert bin ich,因为我 habe das Ziel, in einem modernen und zukunftsorientierten Umfeld meine Fähigkeiten weiter zu entwickeln und zum Erfolg des Unternehmens beizutragen.\n\nMit freundlichen Grüßen",
+  "subject": "Bewerbung als Lagerfachkraft",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Lagerfachkraft",
+          "body": "Sehr geehrte Damen und Herren,\n\nals Fachkraft für Lagerlogistik mit Staplerschein bringe ich fundierte Erfahrungen in der effizienten Organisation von Lagerprozessen mit. In meiner Zeit bei Mona Warehouse habe ich beispielsweise die Ein- und Auslagerung von Gütern mit einer Fehlerquote unter 0,5 % sicher gestaltet und dabei die Einhaltung von Sicherheitsvorschriften priorisiert. Zudem habe ich in der Zusammenarbeit mit dem Lagerpersonal und Lieferanten stets auf eine klare Kommunikation geachtet, um Abläufe zu optimieren.\n\nDiese Erfahrungen können ich nun in die ausgeschriebene Position bei CargoBay SE einbringen, um Prozesse weiter zu strukturieren und zu verbessern. Besonders motiviert bin ich,因为我 habe das Ziel, in einem modernen und zukunftsorientierten Umfeld meine Fähigkeiten weiter zu entwickeln und zum Erfolg des Unternehmens beizutragen.\n\nMit freundlichen Grüßen",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

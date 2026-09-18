@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_13",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 99.053,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit einer soliden Grundlage im Journalismus und einem Fokus auf Transfer Content Marketing bin ich bestens gerüstet, um die Rolle des Marketing Coordinators bei PulseBrand GmbH zu übernehmen. Mein Hintergrund ermöglicht es mir, effektive Marketingstrategien zu entwickeln und umzusetzen, die die Marke und die Zielgruppe gleichermaßen ansprechen. Ich bin überzeugt, dass meine Fähigkeiten im Content-Marketing und meine Erfahrung im Medienbereich einen wertvollen Beitrag zum Erfolg von PulseBrand GmbH leisten können.",
+  "subject": "Marketing Coordinator",
+  "peak_rss_mb": 207.44140625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 42.124,
+      "draft": 19.958,
+      "critique_1": 36.969
+    },
+    "cot_stored": false
+  }
+}

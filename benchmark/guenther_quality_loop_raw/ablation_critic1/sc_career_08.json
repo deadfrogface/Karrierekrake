@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_08",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 151.773,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im 'Kundenservice Telefon — Transfer Vertrieb' ein und bin überzeugt, dass diese Fähigkeiten direkt auf die Rolle des Inside Sales bei GlowSales GmbH übertragbar sind. Obwohl ich keine spezifische Erfahrung im Inside Sales Bereich habe, kann meine Erfahrung bei Val Service und im 'Kundenservice Telefon — Transfer Vertrieb' in die Rolle bei GlowSales GmbH übertragen werden. Meine Sprachkompetenz im Deutschen und die passende Berufserfahrung erfüllen die Anforderungen für diese Position.",
+  "subject": "Innenvertrieb - GlowSales GmbH",
+  "peak_rss_mb": 230.75390625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 73.277,
+      "draft": 26.946,
+      "critique_1": 51.545
+    },
+    "cot_stored": false
+  }
+}

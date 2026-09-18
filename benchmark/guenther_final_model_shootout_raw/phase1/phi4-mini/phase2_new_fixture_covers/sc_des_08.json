@@ -1,0 +1,50 @@
+{
+  "id": "sc_des_08",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 19.501,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Mit meiner Erfahrung in der Tourenplanung und meiner flexiblen Arbeitsweise bin ich überzeugt, dass ich einen wertvollen Beitrag für RoutePro GmbH leisten kann. Obwohl ich kein TMS Zertifikat besitze, bin ich bereit, mich in diesem Bereich weiterzubilden und habe bereits Erfahrung im Umgang mit flexiblen Routeneinstellungen. Ich freue mich darauf, meine Fähigkeiten in der Rolle eines Disponenten bei RoutePro GmbH zu nutzen und zum Erfolg Ihres Teams beizutragen.",
+  "subject": "Freust du dich, bei RoutePro GmbH als Disponent zu arbeiten?",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freust du dich, bei RoutePro GmbH als Disponent zu arbeiten?",
+          "body": "Mit meiner Erfahrung in der Tourenplanung und meiner flexiblen Arbeitsweise bin ich überzeugt, dass ich einen wertvollen Beitrag für RoutePro GmbH leisten kann. Obwohl ich kein TMS Zertifikat besitze, bin ich bereit, mich in diesem Bereich weiterzubilden und habe bereits Erfahrung im Umgang mit flexiblen Routeneinstellungen. Ich freue mich darauf, meine Fähigkeiten in der Rolle eines Disponenten bei RoutePro GmbH zu nutzen und zum Erfolg Ihres Teams beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5592.2
+}

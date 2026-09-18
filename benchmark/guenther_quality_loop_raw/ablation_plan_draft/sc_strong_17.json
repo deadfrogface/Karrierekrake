@@ -1,0 +1,44 @@
+{
+  "id": "sc_strong_17",
+  "final_ok": true,
+  "score": 7.0,
+  "edit_class": "MINOR_STYLE_EDIT_OPTIONAL",
+  "notes": [
+    "too_short"
+  ],
+  "latency_s": 45.23,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit umfangreicher Erfahrung im Einsatz von Messmitteln, Checklisten und ISO-Prozessen bin ich bestens gerüstet, um die strengen Qualitätskontrollen bei QualiCheck GmbH zu übernehmen.",
+  "subject": "Qualitätsprüfer/in - QualiCheck GmbH",
+  "peak_rss_mb": 183.71484375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 31.098,
+      "draft": 14.131
+    },
+    "cot_stored": false
+  }
+}

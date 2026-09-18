@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_16",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 82.987,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, hiermit möchte ich mich für die Stelle des Service Coordinators bei HelpNow KG bewerben. Mit meiner beruflichen Laufbahn im Hotel Empfang und meinem Fokus auf den Transfer von Kundenservice bin ich überzeugt, dass ich die notwendigen Fähigkeiten für diese Rolle mitbringen kann. Ich freue mich auf die Möglichkeit, meine Erfahrungen und mein Engagement für den Kundenservice mit Ihnen zu teilen.",
+  "subject": "Einreichung zur Stelle des Service Coordinators",
+  "peak_rss_mb": 207.45703125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.315,
+      "draft": 21.911,
+      "critique_1": 21.758
+    },
+    "cot_stored": false
+  }
+}

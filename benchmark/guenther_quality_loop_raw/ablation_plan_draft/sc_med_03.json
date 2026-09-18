@@ -1,0 +1,42 @@
+{
+  "id": "sc_med_03",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 49.834,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe umfangreiche Erfahrung im Projektmanagement mit, insbesondere im Umgang mit MS Project und Terminplanung. Ich bin bereit, diese Fähigkeiten bei PlanHouse AG einzusetzen, um die Projektziele effektiv zu unterstützen.",
+  "subject": "Projektassistenz",
+  "peak_rss_mb": 183.30859375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 36.068,
+      "draft": 13.765
+    },
+    "cot_stored": false
+  }
+}

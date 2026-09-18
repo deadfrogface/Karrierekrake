@@ -1,0 +1,29 @@
+{
+  "id": "fi_14",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 33.515,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit der Einhaltung von SLA in Ihrer bisherigen Rolle erzählen?",
+      "Welche Strategien verwenden Sie, um die Instandhaltung auf dem Campus zu verwalten?",
+      "Wie gehen Sie mit Herausforderungen im Zusammenhang mit der Instandhaltung um, um die SLA zu erfüllen?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie Ihre Rolle und Verantwortlichkeiten in Ihrer letzten Position im Bereich der Facility-Instandhaltung.",
+      "Erklären Sie, wie Sie Ihre Fähigkeiten einsetzen, um die SLA zu erfüllen und die Effizienz der Instandhaltung zu verbessern.",
+      "Besprechen Sie, wie Sie Ihre Teamarbeit und Kommunikation genutzt haben, um die Ziele der Instandhaltung auf dem Campus zu erreichen."
+    ],
+    "gap_notes": [
+      "Es fehlen spezifische Details zu den Erfolgen und Herausforderungen in früheren Rollen, die helfen könnten, die Konversation zu vertiefen.",
+      "Es könnte hilfreich sein, Beispiele für erfolgreiche SLA-Managementszenarien bereitzustellen, falls verfügbar."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

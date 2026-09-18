@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_10",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 65.417,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Jules Service, mit 5 Jahren Erfahrung im Inbound CRM und Beherrschung der deutschen Sprache C1. Ich bin bestens geeignet, um die Bedürfnisse der Kunden bei TelCare AG zu unterstützen und zu erfüllen.",
+  "subject": "Kundenberater/in - TelCare AG",
+  "peak_rss_mb": 204.0,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 47.25,
+      "draft": 18.165
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "fb_des_01",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 42.364,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Kreditorenbuchhaltung und meiner täglichen Arbeit mit Excel möchte ich Ihr Team bei der LedgerPro AG unterstützen. Da DATEV in der ausgeschriebenen Position wünschenswert ist, bringe ich meine fundierten Kenntnisse in Excel als vergleichbare Basis mit, um die Anforderungen schnell zu erfüllen.\n\nIch freue mich darauf, meine Fähigkeiten in der Praxis einzubringen und mich von Ihnen überzeugen zu lassen.",
+  "subject": "Bewerbung als Buchhalter – Lena Books",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Buchhalter – Lena Books",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Kreditorenbuchhaltung und meiner täglichen Arbeit mit Excel möchte ich Ihr Team bei der LedgerPro AG unterstützen. Da DATEV in der ausgeschriebenen Position wünschenswert ist, bringe ich meine fundierten Kenntnisse in Excel als vergleichbare Basis mit, um die Anforderungen schnell zu erfüllen.\n\nIch freue mich darauf, meine Fähigkeiten in der Praxis einzubringen und mich von Ihnen überzeugen zu lassen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

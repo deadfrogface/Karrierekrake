@@ -1,0 +1,52 @@
+{
+  "id": "fb_career_02",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 103.04,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmeine fundierte Erfahrung in der Kreditorenbuchhaltung bildet eine solide Basis für den Wechsel in das Controlling bei der FinHold AG. Durch meine tägliche Arbeit mit Finanzdaten verfüge ich über ein tiefes Verständnis für buchhalterische Abläufe und die präzise Verarbeitung von Zahlungsströmen.\n\nIn meiner bisherigen Tätigkeit habe ich die Zuverlässigkeit und Genauigkeit in der Buchhaltung sichergestellt, was mir hilft, komplexe Datenstrukturen schnell zu erfassen. Mein ausgeprägtes Interesse am Controlling ermöglicht es mir, diese praktischen Kenntnisse gezielt in die Analyse und Steuerung von Geschäftsprozessen einzubringen. Ich bringe die notwendige Sorgfalt mit, um die Finanzdaten der FinHold AG präzise aufzubereiten und unterstützend für die Entscheidungsprozesse einzusetzen.\n\nIch freue mich darauf, meine Erfahrung in einem neuen, analytischen Kontext einzubringen und mich in Ihr Team einzufügen.\\n\nMit freundlichen Grüßen\nErik Switch",
+  "subject": "Bewerbung als Junior Controller - Erik Switch",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Junior Controller - Erik Switch",
+          "body": "Sehr geehrte Damen und Herren,\n\nmeine fundierte Erfahrung in der Kreditorenbuchhaltung bildet eine solide Basis für den Wechsel in das Controlling bei der FinHold AG. Durch meine tägliche Arbeit mit Finanzdaten verfüge ich über ein tiefes Verständnis für buchhalterische Abläufe und die präzise Verarbeitung von Zahlungsströmen.\n\nIn meiner bisherigen Tätigkeit habe ich die Zuverlässigkeit und Genauigkeit in der Buchhaltung sichergestellt, was mir hilft, komplexe Datenstrukturen schnell zu erfassen. Mein ausgeprägtes Interesse am Controlling ermöglicht es mir, diese praktischen Kenntnisse gezielt in die Analyse und Steuerung von Geschäftsprozessen einzubringen. Ich bringe die notwendige Sorgfalt mit, um die Finanzdaten der FinHold AG präzise aufzubereiten und unterstützend für die Entscheidungsprozesse einzusetzen.\n\nIch freue mich darauf, meine Erfahrung in einem neuen, analytischen Kontext einzubringen und mich in Ihr Team einzufügen.\\n\nMit freundlichen Grüßen\nErik Switch",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

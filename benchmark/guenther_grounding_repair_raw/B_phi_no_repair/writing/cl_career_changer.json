@@ -1,0 +1,47 @@
+{
+  "id": "cl_career_changer",
+  "subject": "Kaufmännische Assistenz - Woodgrove Bank",
+  "body": "Sehr geehrte Damen und Herren, Ich schreibe, um mich für die Position der Kaufmännischen Assistenz bei Woodgrove Bank zu bewerben. Mit meiner Erfahrung im Einzelhandel und meiner Fähigkeit in der Kundenberatung, Kasse und Beschwerdemanagement, glaube ich, dass ich eine wertvolle Ergänzung für Ihr Team sein könnte. Ich bin versiert im Umgang mit Kassensystemen und beherrsche sowohl Deutsch als auch Englisch auf A2-Niveau. Zusätzlich habe ich Erfahrung im Umgang mit MS Office, was mir ermöglicht, effektiv an der Korrespondenz und Terminorganisation teilzunehmen. Ich freue mich darauf, meine Fähigkeiten in der Kundenorientierung und Unterstützung bei Woodgrove Bank einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Sara Wechsel",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Kaufmännische Assistenz - Woodgrove Bank",
+          "body": "Sehr geehrte Damen und Herren, Ich schreibe, um mich für die Position der Kaufmännischen Assistenz bei Woodgrove Bank zu bewerben. Mit meiner Erfahrung im Einzelhandel und meiner Fähigkeit in der Kundenberatung, Kasse und Beschwerdemanagement, glaube ich, dass ich eine wertvolle Ergänzung für Ihr Team sein könnte. Ich bin versiert im Umgang mit Kassensystemen und beherrsche sowohl Deutsch als auch Englisch auf A2-Niveau. Zusätzlich habe ich Erfahrung im Umgang mit MS Office, was mir ermöglicht, effektiv an der Korrespondenz und Terminorganisation teilzunehmen. Ich freue mich darauf, meine Fähigkeiten in der Kundenorientierung und Unterstützung bei Woodgrove Bank einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Sara Wechsel",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

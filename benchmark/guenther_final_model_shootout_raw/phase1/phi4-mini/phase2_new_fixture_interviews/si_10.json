@@ -1,0 +1,29 @@
+{
+  "id": "si_10",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 35.514,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen haben Sie mit der Wartung von Schalträdern gesammelt?",
+      "Können Sie ein Problem beschreiben, das Sie während der Wartung eines Schalträders gelöst haben?",
+      "Wie stellen Sie sicher, dass die Wartung der Schalträder den Spezifikationen von PowerFix AG entspricht?"
+    ],
+    "talking_points": [
+      "Die Erfahrung des Kandidaten im Bereich Schaltschrank-Wartung ist relevant, aber spezifische Details fehlen.",
+      "Es könnte hilfreich sein, den Kandidaten zu bitten, über seine Kenntnisse der Spezifikationen und Standards von PowerFix AG zu sprechen, um seine Eignung für die Rolle zu beurteilen."
+    ],
+    "gap_notes": [
+      "Es fehlen Details zu den spezifischen Schritten und Techniken, die der Kandidat bei der Wartung von Schalträdern angewendet hat.",
+      "Es ist nicht klar, wie gut der Kandidat mit den Werkzeugen und Techniken vertraut ist, die für PowerFix AG erforderlich sind.",
+      "Es gibt keine Informationen über die Art der Schalträder, die der Kandidat gewartet hat, was für die Spezifikationen von PowerFix AG relevant sein könnte."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

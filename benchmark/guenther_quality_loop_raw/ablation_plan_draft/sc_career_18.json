@@ -1,0 +1,44 @@
+{
+  "id": "sc_career_18",
+  "final_ok": true,
+  "score": 7.0,
+  "edit_class": "MINOR_STYLE_EDIT_OPTIONAL",
+  "notes": [
+    "too_short"
+  ],
+  "latency_s": 40.162,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich habe meine Berufserfahrung im Lagerbereich und bin versiert im Umgang mit Deutsch. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Lagermanagement bei StockLead AG einzubringen.",
+  "subject": "Hallo, ich interessiere mich für die Rolle des Warehouse Lead Jr bei StockLead AG.",
+  "peak_rss_mb": 216.88671875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 24.622,
+      "draft": 15.539
+    },
+    "cot_stored": false
+  }
+}

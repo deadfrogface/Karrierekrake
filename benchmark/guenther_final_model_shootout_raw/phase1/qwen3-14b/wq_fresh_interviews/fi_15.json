@@ -1,0 +1,39 @@
+{
+  "id": "fi_15",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 132.664,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit im Einkauf mit Lieferanten gearbeitet?",
+      "Welche Herausforderungen haben Sie im Bestellwesen bereits bewältigt?",
+      "Wie gehen Sie vor, wenn es zu Lieferverzögerungen kommt?"
+    ],
+    "talking_points": [
+      "Ich habe in den letzten drei Jahren im Einkauf gearbeitet und mich mit der Abstimmung von Bestellungen und Lieferanten beschäftigt."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfolge aus der Praxis, um die Aussagen weiter zu konkretisieren.",
+      "Die genaue Rolle im Einkauf (z. B. Einkauf von Rohstoffen, Verpackung, etc.) ist nicht klar definiert.",
+      "Es gibt keine Hinweise auf spezifische Tools oder Software, die im Bestellwesen genutzt werden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Einkauf",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Bestellwesen, Lieferanten",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

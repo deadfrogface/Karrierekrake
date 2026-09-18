@@ -1,0 +1,29 @@
+{
+  "id": "si_22",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 33.87,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Projekt beschreiben, bei dem Sie Excel verwendet haben, um einen erheblichen Einfluss auf die Effizienz oder Ergebnisse zu haben?",
+      "Wie gehen Sie bei der Verwaltung Ihrer Korrespondenz in einem Teamumfeld vor?",
+      "Welche Strategien verwenden Sie, um Excel-Dokumente für andere verständlich und nutzbar zu machen?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie ein Projekt, bei dem Sie Excel-Daten für Analyse oder Präsentation verwendet haben.",
+      "Besprechen Sie Ihre Herangehensweise an die Excel-Dokumentation, insbesondere wie Sie komplexe Informationen für Kollegen zugänglich machen."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Erfolge im Zusammenhang mit Excel und Korrespondenz erwähnt.",
+      "Mögliche Transferfähigkeiten basierend auf den Schwerpunkten, aber keine konkreten Beispiele bereitgestellt.",
+      "Mögliche Fragen zu spezifischen Fähigkeiten oder Herausforderungen, die während der 3-jährigen Berufserfahrung nicht angesprochen wurden."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

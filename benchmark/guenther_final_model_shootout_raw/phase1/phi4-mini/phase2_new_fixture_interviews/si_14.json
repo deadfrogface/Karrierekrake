@@ -1,0 +1,28 @@
+{
+  "id": "si_14",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 36.114,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Projekt beschreiben, bei dem Sie die SLA-Richtlinien erfolgreich umgesetzt haben?",
+      "Wie priorisieren Sie Instandhaltungstätigkeiten, wenn Sie mit begrenzten Ressourcen konfrontiert sind?",
+      "Welche Strategien verwenden Sie, um die Effizienz und Effektivität der Instandhaltungsteams auf dem Campus zu verbessern?"
+    ],
+    "talking_points": [
+      "Diskussion über die Anwendung von SLA-Richtlinien in der Vergangenheit, um die Zuverlässigkeit und Qualität der Instandhaltung zu gewährleisten."
+    ],
+    "gap_notes": [
+      "Fehlen spezifischer Beispiele für Erfolge oder Projekte, auf die sich der Kandidat beziehen könnte.",
+      "Keine Details über die spezifischen Fähigkeiten oder Techniken, die der Kandidat im Bereich der Instandhaltung verwendet hat.",
+      "Keine Informationen über die Art der Einrichtungen, die der Kandidat verwaltet hat, was Kontext für die Erfahrung bieten könnte."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

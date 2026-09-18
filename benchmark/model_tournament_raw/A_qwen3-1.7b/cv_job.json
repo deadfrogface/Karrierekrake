@@ -1,0 +1,114 @@
+{
+  "cv": {
+    "ok": true,
+    "capability": "cv_extract",
+    "suggestion": {
+      "full_name": "Tom Probe",
+      "emails": [
+        "tom.probe@example.com"
+      ],
+      "phones": [
+        "+49 171 2222002"
+      ],
+      "skills": [
+        "MS Office",
+        "Excel",
+        "Personio Grundlagen",
+        "Deutsch Muttersprache",
+        "Englisch B2"
+      ],
+      "languages": [
+        "Deutsch",
+        "Englisch"
+      ],
+      "experience_titles": [
+        "Sachbearbeiter Personal",
+        "Office Manager"
+      ],
+      "education": [
+        "Kaufmann für Büromanagement, IHK Köln"
+      ],
+      "certificates": [],
+      "confidence": "high",
+      "notes": [],
+      "invented_flag": false
+    },
+    "fallback_reason": "",
+    "provider_status": "ready",
+    "model_id": "qwen3-1.7b",
+    "validated": true,
+    "safety_notes": []
+  },
+  "jobs": [
+    {
+      "id": "ho_job_hr",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "Vertrauenswürdiger Profil/System",
+          "requirements": [
+            {
+              "requirement": "Kenntnis von Personalakten, Excel-Reports und Onboarding",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Kenntnis von Personio",
+              "kind": "desirable",
+              "confidence": "medium"
+            },
+            {
+              "requirement": "Deutsch Muttersprache",
+              "kind": "desirable",
+              "confidence": "medium"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Der Stellenberater benötigt eine Kenntnis von Personalakten, Excel-Reports und Onboarding sowie Kenntnis von Personio und Deutsch Muttersprache.",
+          "confidence": "high"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen3-1.7b",
+        "validated": true,
+        "safety_notes": []
+      }
+    },
+    {
+      "id": "ho_job_pflege",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "Pflegeausbildung, Intensivstation, Patientenversorgung",
+          "requirements": [
+            {
+              "requirement": "Pflegeausbildung",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Intensivstation",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Patientenversorgung",
+              "kind": "hard",
+              "confidence": "high"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Pflegeausbildung, Intensivstation, Patientenversorgung",
+          "confidence": "high"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen3-1.7b",
+        "validated": true,
+        "safety_notes": []
+      }
+    }
+  ]
+}

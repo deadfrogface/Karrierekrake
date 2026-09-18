@@ -1,0 +1,82 @@
+{
+  "id": "fb_hard_01",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "UNUSABLE",
+  "notes": [],
+  "latency_s": 199.574,
+  "repair_count": 1,
+  "final_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner fundierten Erfahrung in der Büroorganisation bringe ich eine strukturierte Arbeitsweise und organisatorisches Geschick mit, die ich gerne in der Klinik Westpark einbringen möchte.\n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der Büroorganisation gesammelt. Diese Kompetenzen ermöglichen es mir, administrative Abläufe effizient zu koordinieren und einen reibungslosen Betriebsablauf zu unterstützen. Da ich keine formale Pflegeausbildung vorweisen kann, liegt mein Fokus auf der Unterstützung der pflegerischen Prozesse durch meine organisatorische Expertise.\n\nIch freue mich darauf, mein strukturiertes Handeln in Ihr Team einzubringen und die Klinik Westpark tatkräftig zu unterstützen.\n\nMit freundlichen Grüßen\nXena Admin",
+  "subject": "Bewerbung als Pflegefachkraft - Xena Admin",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Pflegefachkraft - Xena Admin",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Büroorganisation bringe ich eine strukturierte Arbeitsweise und organisatorisches Geschick mit, die ich gerne in der Klinik Westpark einbringen möchte.\n\nIn meiner bisherigen Tätigkeit habe ich fundierte Kenntnisse in der Büroorganisation gesammelt. Diese Kompetenzen ermöglichen es mir, administrative Abläufe effizient zu koordinieren und einen reibungslosen Betriebsablauf zu unterstützen. Da ich keine formale Pflegeausbildung oder die spezifische Fachkraft-Ausbildung XYZ vorweisen kann, liegt mein Fokus auf der Unterstützung der pflegerischen Prozesse durch meine organisatorische Expertise.\n\nIch freue mich darauf, mein strukturiertes Handeln in Ihr Team einzubringen und die Klinik Westpark tatkräftig zu unterstützen.\\n\nMit freundlichen Grüßen\nXena Admin",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "gemma4-12b",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung als Pflegefachkraft - Xena Admin",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner fundierten Erfahrung in der Büroorganisation bringe ich eine strukturierte Arbeitsweise und organisatorisches Geschick mit, die ich gerne in der Klinik Westpark einbringen möchte.\n\nIn meiner bisherigen Tätigkeit habe ich umfassende Kenntnisse in der Büroorganisation gesammelt. Diese Kompetenzen ermöglichen es mir, administrative Abläufe effizient zu koordinieren und einen reibungslosen Betriebsablauf zu unterstützen. Da ich keine formale Pflegeausbildung vorweisen kann, liegt mein Fokus auf der Unterstützung der pflegerischen Prozesse durch meine organisatorische Expertise.\n\nIch freue mich darauf, mein strukturiertes Handeln in Ihr Team einzubringen und die Klinik Westpark tatkräftig zu unterstützen.\n\nMit freundlichen Grüßen\nXena Admin",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

@@ -1,0 +1,50 @@
+{
+  "id": "sc_des_05",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 23.002,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren der BauStark AG, ich schreibe, um meine Fähigkeiten im Lesen und Interpretieren von Bauzeichnungen ohne AutoCAD Zertifikat anzubieten. Meine Erfahrung umfasst die sorgfältige Analyse und Ausführung von Bauzeichnungen, was sicherstellt, dass alle Strukturen den Spezifikationen entsprechen. Ich bin überzeugt, dass meine Detailorientierung und meine Fähigkeit, komplexe Informationen schnell zu verstehen, mich gut für die Rolle des Bauleiter Assistenz geeignet machen. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in Ihrem renommierten Unternehmen einzubringen und würde mich freuen, meine Erfahrung und meine Leidenschaft für Bauwesen mit Ihnen zu teilen.",
+  "subject": "Bewerbung für Bauleiter Assistenz",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Bauleiter Assistenz",
+          "body": "Sehr geehrte Damen und Herren der BauStark AG, ich schreibe, um meine Fähigkeiten im Lesen und Interpretieren von Bauzeichnungen ohne AutoCAD Zertifikat anzubieten. Meine Erfahrung umfasst die sorgfältige Analyse und Ausführung von Bauzeichnungen, was sicherstellt, dass alle Strukturen den Spezifikationen entsprechen. Ich bin überzeugt, dass meine Detailorientierung und meine Fähigkeit, komplexe Informationen schnell zu verstehen, mich gut für die Rolle des Bauleiter Assistenz geeignet machen. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in Ihrem renommierten Unternehmen einzubringen und würde mich freuen, meine Erfahrung und meine Leidenschaft für Bauwesen mit Ihnen zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5592.2
+}

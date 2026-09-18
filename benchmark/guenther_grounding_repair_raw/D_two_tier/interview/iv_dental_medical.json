@@ -1,0 +1,91 @@
+{
+  "id": "iv_dental_medical",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns über Ihre Erfahrungen mit der Terminvergabe und Patientenaufnahme in Ihrer aktuellen Position erzählen?",
+      "Wie vertraut sind Sie mit den Grundlagen der GOÄ-Abrechnung und wie haben Sie diese in Ihrer Praxis angewendet?",
+      "Welche Fähigkeiten haben Sie in Bezug auf die Praxissoftware und Excel erworben?"
+    ],
+    "talking_points": [
+      "Erfahrung mit Terminvergabe und Patientenaufnahme in einer Arztpraxis.",
+      "Kenntnisse im Umgang mit GOÄ-Abrechnungsgrundlagen.",
+      "Vertrautheit mit Praxissoftware und Excel."
+    ],
+    "gap_notes": [
+      "Keine direkte Evidenz für Pflegeausbildung, daher sollte dies nicht in den Interviewfragen angesprochen werden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Verantwortung für Terminvergabe und Patientenaufnahme in der aktuellen Position.",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Verwendung von GOÄ-Abrechnungsgrundlagen.",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Verwendung von Praxissoftware und Excel.",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "high"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erfahrung mit Terminvergabe und Patientenaufnahme in einer Arztpraxis.",
+            "Kenntnisse im Umgang mit GOÄ-Abrechnungsgrundlagen.",
+            "Vertrautheit mit Praxissoftware und Excel."
+          ],
+          "questions": [
+            "Können Sie uns über Ihre Erfahrungen mit der Terminvergabe und Patientenaufnahme in Ihrer aktuellen Position erzählen?",
+            "Wie vertraut sind Sie mit den Grundlagen der GOÄ-Abrechnung und wie haben Sie diese in Ihrer Praxis angewendet?",
+            "Welche Fähigkeiten haben Sie in Bezug auf die Praxissoftware und Excel erworben?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Pflegeausbildung",
+          "kind": "credential",
+          "span": "Pflegeausbildung",
+          "requires_direct": true,
+          "meta": {
+            "family": "Pflegeausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "pflegeausbildung",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

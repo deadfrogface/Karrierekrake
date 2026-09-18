@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 85.433,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Dokumentationsarbeit und fundierten Kenntnissen in Confluence sowie XML-Grundlagen bringe ich die passenden Voraussetzungen für die Position als Technischer Redakteur bei der DocuLine AG mit.\n\nIn meinen bisherigen Tätigkeiten habe ich erfolgreich mit Confluence gearbeitet, um Informationen strukturiert aufzubereiten. Zudem verfüge ich über die notwendigen XML-Grundlagen, um technische Inhalte präzise und systemkonform zu verarbeiten. Diese Kombination aus Tool-Kenntnis und technischem Verständnis ermöglicht es mir, komplexe Inhalte effizient für die Zielgruppe aufzubereiten.\n\nIch freue mich darauf, meine Fähigkeiten in Ihr Team einzubringen und die Dokumentationsqualität bei der DocuLine AG aktiv mitzugestalten.\\n\nMit freundlichen Grüßen\nXander Docs",
+  "subject": "Bewerbung als Technischer Redakteur",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Technischer Redakteur",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung in der Dokumentationsarbeit und fundierten Kenntnissen in Confluence sowie XML-Grundlagen bringe ich die passenden Voraussetzungen für die Position als Technischer Redakteur bei der DocuLine AG mit.\n\nIn meinen bisherigen Tätigkeiten habe ich erfolgreich mit Confluence gearbeitet, um Informationen strukturiert aufzubereiten. Zudem verfüge ich über die notwendigen XML-Grundlagen, um technische Inhalte präzise und systemkonform zu verarbeiten. Diese Kombination aus Tool-Kenntnis und technischem Verständnis ermöglicht es mir, komplexe Inhalte effizient für die Zielgruppe aufzubereiten.\n\nIch freue mich darauf, meine Fähigkeiten in Ihr Team einzubringen und die Dokumentationsqualität bei der DocuLine AG aktiv mitzugestalten.\\n\nMit freundlichen Grüßen\nXander Docs",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

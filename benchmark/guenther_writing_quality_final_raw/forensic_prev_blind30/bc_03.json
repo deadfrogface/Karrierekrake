@@ -1,0 +1,74 @@
+{
+  "id": "bc_03",
+  "target_role": "Kundenservice (m/w/d)",
+  "target_company": "TelCo Plus AG",
+  "profile": "Blind Cover 3\nInbound, CRM, Deutsch C1\nReferenz: Projektarbeit in kundenservice",
+  "job": "Kundenservice (m/w/d)\nTelCo Plus AG\nProfil: Inbound, CRM, Deutsch C1.",
+  "final_ok": true,
+  "repair_count": 1,
+  "exhausted": false,
+  "category": "ACCEPTED",
+  "final_blocking_errors": [],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "besonders begeistert von der Möglichkeit"
+    }
+  ],
+  "attempt1_errors": [],
+  "attempt1_claims": [],
+  "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position im Kundenservice bei TelCo Plus AG zu bewerben. Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im CRM-System, insbesondere im Hinblick auf die deutsche Sprache, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich bin besonders begeistert von der Möglichkeit, meine Erfahrungen aus der Projektarbeit im Kundenservice mit Ihnen zu kombinieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für hervorragenden Kundenservice mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+  "attempt1_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position im Kundenservice bei TelCo Plus AG zu bewerben. Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im CRM-System, insbesondere im Hinblick auf die deutsche Sprache, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Erfahrungen aus der Projektarbeit im Kundenservice mit Ihnen zu kombinieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für hervorragenden Kundenservice mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+  "final_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die Position im Kundenservice bei TelCo Plus AG zu bewerben. Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im CRM-System, insbesondere im Hinblick auf die deutsche Sprache, bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Ich freue mich auf die Möglichkeit, meine Erfahrungen aus der Projektarbeit im Kundenservice mit Ihnen zu kombinieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für hervorragenden Kundenservice mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf Ihre Antwort.",
+  "final_subject": "Freundliche Bewerbung für die Position im Kundenservice",
+  "body_len": 674,
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung im Kundenservice",
+          "kind": "credential",
+          "span": "Mit meiner Ausbildung im Kundenservice und meinen Fähigkeiten im C",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Ausbildung im Kundenservice und meinen Fähigkeiten",
+          "kind": "credential",
+          "span": "Ausbildung im Kundenservice und meinen Fähigkeiten",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": null,
+  "fail_closed_kind": null
+}

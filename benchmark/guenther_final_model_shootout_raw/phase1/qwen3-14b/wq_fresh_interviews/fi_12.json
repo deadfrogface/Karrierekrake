@@ -1,0 +1,38 @@
+{
+  "id": "fi_12",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 162.017,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Sales-Erfahrung mit CRM-Systemen gearbeitet?",
+      "Können Sie ein Beispiel nennen, in dem Sie durch gezielte Akquise einen bedeutenden Verkaufserfolg erzielt haben?",
+      "Wie gehen Sie vor, um Leads effizient zu managen und zu qualifizieren?"
+    ],
+    "talking_points": [
+      "In meiner 3-jährigen Sales-Erfahrung habe ich mit verschiedenen CRM-Systemen gearbeitet, um Leads effizient zu verfolgen und zu analysieren.",
+      "Ich habe Erfahrung mit der Planung und Durchführung von Akquise-Strategien, um neue Kunden zu gewinnen und bestehende Beziehungen zu stärken."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Zahlen, um die Erfolge in der Akquise und CRM-Nutzung weiter zu konkretisieren."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Sales",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Akquise, CRM",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

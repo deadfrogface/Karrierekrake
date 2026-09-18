@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_01",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 44.451,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Rolle des Customer Success bei CloudCare GmbH vorzulegen. Mit einer soliden Grundlage in Callcenter Inbound und einer Leidenschaft für die Kundenerfahrung bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und Erfahrungen mit Ihnen zu besprechen.",
+  "subject": "Kandidatur für die Rolle des Customer Success bei CloudCare GmbH",
+  "peak_rss_mb": 137.85546875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 27.926,
+      "draft": 16.524
+    },
+    "cot_stored": false
+  }
+}

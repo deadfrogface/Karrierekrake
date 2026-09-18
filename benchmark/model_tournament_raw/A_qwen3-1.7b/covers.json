@@ -1,0 +1,527 @@
+[
+  {
+    "id": "cl_strong_match",
+    "label": "strong match",
+    "profile": "Mia Beispiel, Berlin\nmia.beispiel@example.com\n2019–heute Buchhalterin Kreditoren, Contoso Nord GmbH\n- DATEV Kreditorenbuchhaltung, Monatabschluss, Excel-Auswertungen\n- Abstimmung mit Fachbereichen\nAusbildung: Kauffrau für Büromanagement IHK\nKenntnisse: DATEV, Excel, SAP FI Grundlagen, Deutsch, Englisch B2",
+    "job": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München\nMehrjährige Kreditorenbuchhaltung, sichere DATEV-Kenntnisse, gute Excel-Kenntnisse, Deutsch verhandlungssicher.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Sachbearbeitung Buchhaltung (m/w/d) – Northwind Handels GmbH München",
+        "body": "Sehr geehrte Damen und Herren,\\n\\nIch bin Mia Beispiel, Buchhalterin bei Contoso Nord GmbH. In meiner Ausbildung als Kauffrau für Büromanagement habe ich Grundlagen der Kreditorenbuchhaltung erworben, inklusive DATEV-Kenntnissen und Excel-Auswertungen. Meine Erfahrung umfasst die Abstimmung mit Fachbereichen und die Führung von Buchhaltungsprozessen.\\n\\nIch habe DATEV, Excel und SAP FI Grundlagen beherrscht und verfüge über Deutsch (B2) und Englisch (B2).\\n\\nIch freue mich auf Ihre Anfrage und würde mich sehr gerne als Bewerberin für die Position Sachbearbeitung Buchhaltung (m/w/d) bei Northwind Handels GmbH München bewerben.\\n\\nMit freundlichen Grüßen,Mia Beispiel",
+        "anchors_used": [
+          {
+            "text": "Sachbearbeitung Buchhaltung (m/w/d) – Northwind Handels GmbH München",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "DATEV",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "SAP FI Grundlagen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch (B2)",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch (B2)",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\\n\\nIch bin Mia Beispiel, Buchhalterin bei Contoso Nord GmbH. In meiner Ausbildung als Kauffrau für Büromanagement habe ich Grundlagen der Kreditorenbuchhaltung erworben, inklusive DATEV-Kenntnissen und Excel-Auswertungen. Meine Erfahrung umfasst die Abstimmung mit Fachbereichen und die Führung von Buchhaltungsprozessen.\\n\\nIch habe DATEV, Excel und SAP FI Grundlagen beherrscht und verfüge über Deutsch (B2) und Englisch (B2).\\n\\nIch freue mich auf Ihre Anfrage und würde mich sehr gerne als Bewerberin für die Position Sachbearbeitung Buchhaltung (m/w/d) bei Northwind Handels GmbH München bewerben.\\n\\nMit freundlichen Grüßen,Mia Beispiel",
+    "raw_subject": "Sachbearbeitung Buchhaltung (m/w/d) – Northwind Handels GmbH München",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_medium_match",
+    "label": "medium match",
+    "profile": "Jonas Probe, Hamburg\njonas.probe@example.com\n2020–heute Office Manager, Fabrikam AG\n- Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen\nAusbildung Kaufmann Büromanagement\nKenntnisse: MS Office, Excel, Deutsch, Englisch B1",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Guten Tag",
+        "body": "Ich habe in der Vergangenheit Erfahrung im Bereich Office Management und Büroorganisation gesammelt. Meine Ausbildung als Kaufmann Büromanagement hat mich in der Arbeit mit Excel, Outlook und Terminplanung stark gefördert. Ich habe in der Vergangenheit auch mit internationalen Kooperationen und Lieferantenabstimmungen gearbeitet. Meine Kenntnisse in Deutsch und Englisch B1 sind mir sehr wertvoll. Ich freue mich auf die Gelegenheit, mich für eine Position in der Branche zu bewerben.",
+        "anchors_used": [
+          {
+            "text": "Office Manager",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Kaufmann Büromanagement",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch B1",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Ich habe in der Vergangenheit Erfahrung im Bereich Office Management und Büroorganisation gesammelt. Meine Ausbildung als Kaufmann Büromanagement hat mich in der Arbeit mit Excel, Outlook und Terminplanung stark gefördert. Ich habe in der Vergangenheit auch mit internationalen Kooperationen und Lieferantenabstimmungen gearbeitet. Meine Kenntnisse in Deutsch und Englisch B1 sind mir sehr wertvoll. Ich freue mich auf die Gelegenheit, mich für eine Position in der Branche zu bewerben.",
+    "raw_subject": "Guten Tag",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_career_changer",
+    "label": "career changer",
+    "profile": "Sara Wechsel, Köln\nsara.wechsel@example.com\n2018–heute Verkäuferin Einzelhandel, Adventure Mart\n- Kundenberatung, Kasse, Beschwerdemanagement\nAusbildung Verkäuferin\nKenntnisse: Kassensystem, Deutsch, Englisch A2",
+    "job": "Kaufmännische Assistenz — Woodgrove Bank\nKorrespondenz, Terminorganisation, MS Office. Kundenorientierung erwünscht.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Kaufmännische Assistenz – Woodgrove Bank",
+        "body": "Sehr geehrte Damen und Herren, Ich freue mich sehr, bei Ihnen als Kaufmännische Assistenz zu bewerben. Mit meiner Ausbildung als Verkäuferin und meiner Erfahrung im Einzelhandel habe ich die Grundlagen für eine Unterstützung in der Korrespondenz und Terminorganisation geschaffen. Meine Kenntnisse im Kassensystem und im Deutsch-Englisch-Kompetenzen sind mir sehr wertvoll. Ich bin mit meiner Kundenorientierung und meiner Teamarbeit stolz. Ich hoffe, ich könnte Ihnen bei der Unterstützung in Ihrem Unternehmen weiterhelfen. Mit freundlichen Grüßen, Sara Wechsel",
+        "anchors_used": [
+          {
+            "text": "Kassensystem",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch-Englisch-Kompetenzen",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren, Ich freue mich sehr, bei Ihnen als Kaufmännische Assistenz zu bewerben. Mit meiner Ausbildung als Verkäuferin und meiner Erfahrung im Einzelhandel habe ich die Grundlagen für eine Unterstützung in der Korrespondenz und Terminorganisation geschaffen. Meine Kenntnisse im Kassensystem und im Deutsch-Englisch-Kompetenzen sind mir sehr wertvoll. Ich bin mit meiner Kundenorientierung und meiner Teamarbeit stolz. Ich hoffe, ich könnte Ihnen bei der Unterstützung in Ihrem Unternehmen weiterhelfen. Mit freundlichen Grüßen, Sara Wechsel",
+    "raw_subject": "Kaufmännische Assistenz – Woodgrove Bank",
+    "score": 4.0,
+    "score_notes": [
+      "wrong_role"
+    ]
+  },
+  {
+    "id": "cl_missing_desirable",
+    "label": "missing desirable skill",
+    "profile": "Leo Held, Düsseldorf\nleo.held@example.com\n2021–heute Personalsachbearbeiter, Adventure Works\n- Personalakten, Zeiterfassung, Onboarding\nKenntnisse: Excel, MS Office, Deutsch — kein Personio",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil (nicht Pflicht).",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Sehr geehrte Frau Held",
+        "body": "Sehr geehrte Frau Held, ich habe Ihre Bewerbungsdatei im Zusammenhang mit der Stelle als Personalsachbearbeiter bei Adventure Works gesichtet. Ihre Erfahrung in der Personalaktenverwaltung, der Zeiterfassung und dem Onboarding ist sehr relevant für die Position. Ich würde mich sehr darauf freuen, Ihre Bewerbung zu prüfen. Mit freundlichen Grüßen,",
+        "anchors_used": [
+          {
+            "text": "Personalsachbearbeiter",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Personalakten",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Zeiterfassung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Onboarding",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "MS Office",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Frau Held, ich habe Ihre Bewerbungsdatei im Zusammenhang mit der Stelle als Personalsachbearbeiter bei Adventure Works gesichtet. Ihre Erfahrung in der Personalaktenverwaltung, der Zeiterfassung und dem Onboarding ist sehr relevant für die Position. Ich würde mich sehr darauf freuen, Ihre Bewerbung zu prüfen. Mit freundlichen Grüßen,",
+    "raw_subject": "Sehr geehrte Frau Held",
+    "score": 1.5,
+    "score_notes": [
+      "role_reversal",
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_missing_hard",
+    "label": "missing hard requirement",
+    "profile": "Nora Admin, Stuttgart\nnora.admin@example.com\n2019–heute Verwaltungsassistenz Arztpraxis Mustermann\n- Terminvergabe, Abrechnung GOÄ-Grundlagen, Patientenaufnahme am Empfang\nKenntnisse: Praxissoftware, Excel, Deutsch",
+    "job": "Pflegefachkraft stationär — Beispielklinik Süd\nPflicht: abgeschlossene Pflegeausbildung, Patientenversorgung, Schichtarbeit.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Verwaltungsassistenz in einer Arztpraxis",
+        "body": "Sehr geehrte Damen und Herren,\\n\\nIch bin Nora Admin aus Stuttgart und freue mich, Ihnen meine Bewerbung für die Verwaltungsassistenz in einer Arztpraxis unterbreiten zu können. In meiner Ausbildung als Verwaltungsassistenz habe ich Erfahrung in der Terminvergabe, Abrechnung und Patientenaufnahme. Ich verfüge über Kenntnisse in der Praxissoftware und Excel sowie über Deutsch.\\n\\nIch bin mit der Bewerbung sehr begeistert und freue mich auf Ihre Rückmeldung.\\n\\nMit freundlichen Grüßen,Nora Admin",
+        "anchors_used": [
+          {
+            "text": "Verwaltungsassistenz in einer Arztpraxis",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\\n\\nIch bin Nora Admin aus Stuttgart und freue mich, Ihnen meine Bewerbung für die Verwaltungsassistenz in einer Arztpraxis unterbreiten zu können. In meiner Ausbildung als Verwaltungsassistenz habe ich Erfahrung in der Terminvergabe, Abrechnung und Patientenaufnahme. Ich verfüge über Kenntnisse in der Praxissoftware und Excel sowie über Deutsch.\\n\\nIch bin mit der Bewerbung sehr begeistert und freue mich auf Ihre Rückmeldung.\\n\\nMit freundlichen Grüßen,Nora Admin",
+    "raw_subject": "Verwaltungsassistenz in einer Arztpraxis",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_experienced",
+    "label": "experienced",
+    "profile": "Klaus Erfahrung, Frankfurt\nklaus.erfahrung@example.com\n2010–heute Leiter Buchhaltung, Contoso Süd (Team 4)\n- DATEV, Jahresabschluss-Unterstützung, Prozessoptimierung Kreditoren\nDavor 2005–2010 Buchhalter Fabrikam\nIHK Bilanzbuchhalter Weiterbildung 2014\nKenntnisse: DATEV, SAP FI, Excel",
+    "job": "Senior Buchhaltung / Teamleitung — Northwind AG\nDATEV, Führungserfahrung, Kreditoren/Debitoren, Prozessverständnis.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Senior Buchhaltung / Teamleitung — Northwind AG",
+        "body": "Sehr geehrte Damen und Herren, Ich bin Klaus Erfahrung, Leiter Buchhaltung bei Contoso Süd. Meine Erfahrung mit DATEV, SAP FI und Excel sowie mein Know-how in Kreditoren/Debitoren-Prozessen macht mich zu einem attraktiven Kandidaten für Ihre Position. Ich freue mich auf Ihre Anfrage und bin bereit, meine Qualifikationen zu unterstreichen. Mit freundlichen Grüßen, Klaus Erfahrung",
+        "anchors_used": [
+          {
+            "text": "DATEV",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "SAP FI",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Kreditoren/Debitoren",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren, Ich bin Klaus Erfahrung, Leiter Buchhaltung bei Contoso Süd. Meine Erfahrung mit DATEV, SAP FI und Excel sowie mein Know-how in Kreditoren/Debitoren-Prozessen macht mich zu einem attraktiven Kandidaten für Ihre Position. Ich freue mich auf Ihre Anfrage und bin bereit, meine Qualifikationen zu unterstreichen. Mit freundlichen Grüßen, Klaus Erfahrung",
+    "raw_subject": "Senior Buchhaltung / Teamleitung — Northwind AG",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_junior",
+    "label": "junior",
+    "profile": "Emma Start, Leipzig\nemma.start@example.com\n2024–heute Azubi Kauffrau Büromanagement, Litware SE (3. Lehrjahr)\n- Posteingang, Termine, Excel-Tabellen, Telefonzentrale\nAbitur 2022\nKenntnisse: MS Office, Deutsch, Englisch B1",
+    "job": "Junior Assistenz der Geschäftsführung — Adventure Works\nTerminorganisation, Korrespondenz, MS Office. Berufseinsteiger willkommen.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Bewerbung für Junior Assistenz der Geschäftsführung",
+        "body": "Sehr geehrte Geschäftsführung, ich bin Emma Start, Azubi Kauffrau Büromanagement, Litware SE. Ich habe in den letzten drei Jahren in der Büroorganisation und Korrespondenz unterrichtet. Meine Kenntnisse umfassen MS Office, Deutsch und Englisch B1. Ich freue mich auf die Möglichkeit, mich als neuen Berufseinsteiger in Ihrem Team einzubringen. Mit freundlichen Grüßen, Emma Start",
+        "anchors_used": [
+          {
+            "text": "Büromanagement",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "MS Office",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch B1",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Geschäftsführung, ich bin Emma Start, Azubi Kauffrau Büromanagement, Litware SE. Ich habe in den letzten drei Jahren in der Büroorganisation und Korrespondenz unterrichtet. Meine Kenntnisse umfassen MS Office, Deutsch und Englisch B1. Ich freue mich auf die Möglichkeit, mich als neuen Berufseinsteiger in Ihrem Team einzubringen. Mit freundlichen Grüßen, Emma Start",
+    "raw_subject": "Bewerbung für Junior Assistenz der Geschäftsführung",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_admin",
+    "label": "administrative",
+    "profile": "Tina Büro, München\ntina.buero@example.com\n2017–heute Sachbearbeiterin Verwaltung, Stadt Beispiel\n- Aktenführung, Formularprüfung, Bürgertelefon, Excel-Listen\nKenntnisse: MS Office, Deutsch Muttersprache",
+    "job": "Verwaltungsfachkraft — Woodgrove Kommunalservice\nAktenführung, Bürgerkontakt, MS Office, sorgfältige Dokumentation.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Verwaltungsfachkraft – Woodgrove Kommunalservice",
+        "body": "Sehr geehrte Damen und Herren, Ich bin Tina Büro aus München, die seit 2017 als Sachbearbeiterin im Verwaltungsbereich tätig bin. Meine tägliche Arbeit umfasst die Aktenführung, die Formularprüfung sowie den Bürgertelefonat. Ich verfüge über umfassende Erfahrung in der sorgfältigen Dokumentation und in der Nutzung von MS Office. Meine Kenntnisse in Deutsch, insbesondere als Muttersprache, sind mir von großem Wert. Ich freue mich auf eine Zusammenarbeit und hoffe, dass ich Ihnen bei der Unterstützung Ihrer Verwaltungsarbeit von Nutzen sein kann. Mit freundlichen Grüßen, Tina Büro",
+        "anchors_used": [
+          {
+            "text": "Aktenführung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Formularprüfung",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "MS Office",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Muttersprache",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren, Ich bin Tina Büro aus München, die seit 2017 als Sachbearbeiterin im Verwaltungsbereich tätig bin. Meine tägliche Arbeit umfasst die Aktenführung, die Formularprüfung sowie den Bürgertelefonat. Ich verfüge über umfassende Erfahrung in der sorgfältigen Dokumentation und in der Nutzung von MS Office. Meine Kenntnisse in Deutsch, insbesondere als Muttersprache, sind mir von großem Wert. Ich freue mich auf eine Zusammenarbeit und hoffe, dass ich Ihnen bei der Unterstützung Ihrer Verwaltungsarbeit von Nutzen sein kann. Mit freundlichen Grüßen, Tina Büro",
+    "raw_subject": "Verwaltungsfachkraft – Woodgrove Kommunalservice",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_sales",
+    "label": "sales/service",
+    "profile": "Paul Service, Hannover\npaul.service@example.com\n2018–heute Kundenberater Callcenter, Contoso Service\n- Inbound-Beratung, Ticket-System, Beschwerdeeskalation\nKenntnisse: CRM-Grundlagen, Deutsch, Englisch B2",
+    "job": "Kundenbetreuung Innendienst — Fabrikam Retail\nTelefon/E-Mail, CRM, lösungsorientierte Kommunikation.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Kundenberatung im Callcenter",
+        "body": "Sehr geehrte Damen und Herren,\n\nIch bin Paul Service, ein erfahrener Kundenberater im Callcenter von Contoso Service. Meine Erfahrung in der Inbound-Beratung und der Beschwerdeeskalation hat mich zu einer vertrauenswürdigen Kundenbeziehung geführt. Ich verstehe die Bedürfnisse meiner Kunden und versuche, lösungsorientierte Kommunikation zu ermöglichen.\n\nMeine Kenntnisse umfassen die Grundlagen des CRM-Systems, sowie Deutsch und Englisch B2. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen zu nutzen.\n\nMit freundlichen Grüßen,\nPaul Service",
+        "anchors_used": [
+          {
+            "text": "Kundenberater",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Callcenter",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "CRM-Grundlagen",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Deutsch",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Englisch B2",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nIch bin Paul Service, ein erfahrener Kundenberater im Callcenter von Contoso Service. Meine Erfahrung in der Inbound-Beratung und der Beschwerdeeskalation hat mich zu einer vertrauenswürdigen Kundenbeziehung geführt. Ich verstehe die Bedürfnisse meiner Kunden und versuche, lösungsorientierte Kommunikation zu ermöglichen.\n\nMeine Kenntnisse umfassen die Grundlagen des CRM-Systems, sowie Deutsch und Englisch B2. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen zu nutzen.\n\nMit freundlichen Grüßen,\nPaul Service",
+    "raw_subject": "Kundenberatung im Callcenter",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_techish",
+    "label": "technical-ish",
+    "profile": "Rita Tech, Nürnberg\nrita.tech@example.com\n2020–heute IT-Support First Level, Adventure IT\n- Ticketbearbeitung, Nutzerberatung Windows/Office, Dokumentation in Wiki\nAusbildung Fachinformatiker Systemintegration\nKenntnisse: Windows, Active Directory Grundlagen, Excel",
+    "job": "IT-Helpdesk (m/w/d) — Litware Digital\nFirst-Level-Support, Ticketsystem, Windows-Kenntnisse, dokumentationssicher.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Sehr geehrte Damen und Herren",
+        "body": "Sehr geehrte Damen und Herren, ich möchte mich Ihnen als Bewerber annehmen. Ich habe in der letzten Zeit in der IT-Support-Abteilung von Rita Tech, Nürnberg, Erfahrung mit Ticketbearbeitung, Nutzerberatung und Dokumentation in einem Wiki. Meine Ausbildung als Fachinformatiker Systemintegration hat mich in Windows und Active Directory weitergebaut. Ich habe Kenntnisse in Excel und bin in der Lage, Ticketsysteme zu nutzen und zu dokumentieren. Ich freue mich auf eine mögliche Zusammenarbeit.",
+        "anchors_used": [
+          {
+            "text": "IT-Support First Level",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Windows-Kenntnisse",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Dokumentation in Wiki",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Fachinformatiker Systemintegration",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Excel",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren, ich möchte mich Ihnen als Bewerber annehmen. Ich habe in der letzten Zeit in der IT-Support-Abteilung von Rita Tech, Nürnberg, Erfahrung mit Ticketbearbeitung, Nutzerberatung und Dokumentation in einem Wiki. Meine Ausbildung als Fachinformatiker Systemintegration hat mich in Windows und Active Directory weitergebaut. Ich habe Kenntnisse in Excel und bin in der Lage, Ticketsysteme zu nutzen und zu dokumentieren. Ich freue mich auf eine mögliche Zusammenarbeit.",
+    "raw_subject": "Sehr geehrte Damen und Herren",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  }
+]

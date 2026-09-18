@@ -1,0 +1,47 @@
+{
+  "id": "fb_med_07",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im IT-Helpdesk-Bereich anzubieten, insbesondere im Bereich des Windows-Systems. In meiner bisherigen Rolle als First-Level Support habe ich eine solide Grundlage in der Problemlösung und Kundensupport aufgebaut. Ich bin überzeugt, dass meine Fähigkeiten und meine Leidenschaft für die Unterstützung technischer Kunden gut zu den Zielen von HelpNow AG passen. Ich freue mich darauf, meine Expertise in Ihrem Team einzubringen.",
+  "subject": "Bewerbung für IT-Helpdesk-Rolle bei HelpNow AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für IT-Helpdesk-Rolle bei HelpNow AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im IT-Helpdesk-Bereich anzubieten, insbesondere im Bereich des Windows-Systems. In meiner bisherigen Rolle als First-Level Support habe ich eine solide Grundlage in der Problemlösung und Kundensupport aufgebaut. Ich bin überzeugt, dass meine Fähigkeiten und meine Leidenschaft für die Unterstützung technischer Kunden gut zu den Zielen von HelpNow AG passen. Ich freue mich darauf, meine Expertise in Ihrem Team einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "fi_08",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 149.154,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit als Lagerarbeiter mit der Kommissionierung gearbeitet?",
+      "Wie nutzen Sie Ihren Staplerschein in der Praxis, und welche Sicherheitsmaßnahmen beachten Sie dabei?",
+      "Können Sie ein Beispiel nennen, in dem Sie effizient mit Lagerbeständen umgegangen sind?"
+    ],
+    "talking_points": [
+      "Ich habe drei Jahre Erfahrung in der Lagerarbeit und bin mit dem Prozess der Kommissionierung vertraut, bei dem ich sicherstellen kann, dass die richtigen Artikel in die richtigen Mengen geliefert werden.",
+      "Mein Staplerschein ermöglicht mir, Lastwagen und Paletten sicher und effizient zu transportieren, wobei ich immer die Sicherheitsvorschriften und die Richtlinien des Unternehmens befolge."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfolge aus der Vergangenheit, die die Fähigkeiten des Bewerbers untermauern.",
+      "Keine Informationen zu Soft Skills oder Teamarbeit vorhanden.",
+      "Keine Erwähnung von Weiterbildungen oder Zertifizierungen, die über die Grundqualifikation hinausgehen."
+    ],
+    "anchors_used": [
+      {
+        "text": "Kommissionierung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Staplerschein",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

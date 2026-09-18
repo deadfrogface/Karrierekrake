@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_05",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 89.762,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung in der Sachbearbeitung und Verwaltung bildet das Fundament für den Wechsel in die Personalabteilung bei der PeopleCore GmbH. Durch meine bisherige Tätigkeit in der Verwaltung bin ich mit strukturierten Prozessen und präziser Dokumentation bestens vertraut.\n\nDiese administrativen Kompetenzen möchte ich gezielt einsetzen, um die HR-Prozesse effizient zu unterstützen. Da ich bereits fundierte Erfahrung in der allgemeinen Sachbearbeitung gesammelt habe, bringe ich die nötige Genauigkeit mit, um administrative Aufgaben im Personalwesen zuverlässig zu übernehmen. Ich freue mich darauf, meine organisatorischen Fähigkeiten in Ihr Team einzubringen und mich in die spezifischen HR-Aufgaben bei der PeopleCore GmbH einzuarbeiten.\n\nÜber die Gelegenheit zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nHanna Admin",
+  "subject": "Bewerbung als HR Generalist Junior",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als HR Generalist Junior",
+          "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung in der Sachbearbeitung und Verwaltung bildet das Fundament für den Wechsel in die Personalabteilung bei der PeopleCore GmbH. Durch meine bisherige Tätigkeit in der Verwaltung bin ich mit strukturierten Prozessen und präziser Dokumentation bestens vertraut.\n\nDiese administrativen Kompetenzen möchte ich gezielt einsetzen, um die HR-Prozesse effizient zu unterstützen. Da ich bereits fundierte Erfahrung in der allgemeinen Sachbearbeitung gesammelt habe, bringe ich die nötige Genauigkeit mit, um administrative Aufgaben im Personalwesen zuverlässig zu übernehmen. Ich freue mich darauf, meine organisatorischen Fähigkeiten in Ihr Team einzubringen und mich in die spezifischen HR-Aufgaben bei der PeopleCore GmbH einzuarbeiten.\n\nÜber die Gelegenheit zu einem persönlichen Gespräch freue ich mich sehr.\n\nMit freundlichen Grüßen\nHanna Admin",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

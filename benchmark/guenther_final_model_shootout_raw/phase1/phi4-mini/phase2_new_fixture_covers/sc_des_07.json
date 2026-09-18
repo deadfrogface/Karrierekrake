@@ -1,0 +1,84 @@
+{
+  "id": "sc_des_07",
+  "final_ok": false,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 60.184,
+  "repair_count": 1,
+  "final_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, während meiner Zeit bei [Vorheriger Arbeitgeber] habe ich die Verantwortung übernommen, Finanzberichte zu erstellen und zu verwalten, was meine Fähigkeiten im Umgang mit Excel und meine Aufmerksamkeit für Details unterstreicht. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Controller-Bereich bei NumHold SE einzubringen, insbesondere da SAP CO wünschenswert ist. Ich bin überzeugt, dass meine Erfahrung im Reporting und meine Bereitschaft, mich in die Rolle des Controllers zu entwickeln, einen wertvollen Beitrag für Ihr Team leisten können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld zu nutzen und zum Erfolg von NumHold SE beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Yan Num",
+  "subject": "Bewerbung für die Rolle des Controllers bei NumHold SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Rolle des Controllers bei NumHold SE",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrungen im Bereich Reporting Excel und meine Fähigkeiten im Controller-Bereich anzubieten. Während meiner Zeit bei [Vorheriger Arbeitgeber] habe ich die Verantwortung übernommen, die Finanzberichte zu erstellen und zu verwalten, was meine Fähigkeiten im Umgang mit Excel und meine Aufmerksamkeit für Details unterstreicht. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Controller-Bereich bei NumHold SE einzubringen, insbesondere da SAP CO wünschenswert ist. Ich bin überzeugt, dass meine Erfahrung im Reporting und meine Bereitschaft, mich in die Rolle des Controllers zu entwickeln, einen wertvollen Beitrag für Ihr Team leisten können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld zu nutzen und zum Erfolg von NumHold SE beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Yan Num",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Rolle des Controllers bei NumHold SE",
+          "body": "Sehr geehrte Damen und Herren, während meiner Zeit bei [Vorheriger Arbeitgeber] habe ich die Verantwortung übernommen, Finanzberichte zu erstellen und zu verwalten, was meine Fähigkeiten im Umgang mit Excel und meine Aufmerksamkeit für Details unterstreicht. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Controller-Bereich bei NumHold SE einzubringen, insbesondere da SAP CO wünschenswert ist. Ich bin überzeugt, dass meine Erfahrung im Reporting und meine Bereitschaft, mich in die Rolle des Controllers zu entwickeln, einen wertvollen Beitrag für Ihr Team leisten können. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem neuen Umfeld zu nutzen und zum Erfolg von NumHold SE beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Yan Num",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5592.2
+}

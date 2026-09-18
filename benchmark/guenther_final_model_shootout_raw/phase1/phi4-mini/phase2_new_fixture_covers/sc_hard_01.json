@@ -1,0 +1,71 @@
+{
+  "id": "sc_hard_01",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 49.756,
+  "repair_count": 1,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, Klinik Westpark, ich schreibe Ihnen, um meine Begeisterung für die Rolle im Bereich der Büroorganisation auszudrücken. Mit meiner Erfahrung in der Büroorganisation und meinen starken organisatorischen Fähigkeiten bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Pflegeumgebung einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Fähigkeiten im Bereich der Patientenbetreuung und des Managements von Pflegeprozessen einzubringen, um die Qualität der Patientenversorgung zu verbessern. Ich freue mich darauf, meine Fähigkeiten im Team von Klinik Westpark einzubringen.",
+  "subject": "Bewerbung für die Position der Bürokonzeptions-Fähigkeiten",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position der Pflegefachkraft bei Klinik Westpark",
+          "body": "Ich schreibe Ihnen, um meine Begeisterung für die Rolle der Pflegefachkraft bei Klinik Westpark auszudrücken. Mit meiner Erfahrung in der Büroorganisation und meinen starken organisatorischen Fähigkeiten bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Pflegeumgebung einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Fähigkeiten im Bereich der Patientenbetreuung und des Managements von Pflegeprozessen einzubringen, um die Qualität der Patientenversorgung zu verbessern.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position der Bürokonzeptions-Fähigkeiten",
+          "body": "Sehr geehrte Damen und Herren, Klinik Westpark, ich schreibe Ihnen, um meine Begeisterung für die Rolle im Bereich der Büroorganisation auszudrücken. Mit meiner Erfahrung in der Büroorganisation und meinen starken organisatorischen Fähigkeiten bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Pflegeumgebung einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Fähigkeiten im Bereich der Patientenbetreuung und des Managements von Pflegeprozessen einzubringen, um die Qualität der Patientenversorgung zu verbessern. Ich freue mich darauf, meine Fähigkeiten im Team von Klinik Westpark einzubringen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 1,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5601.4
+}

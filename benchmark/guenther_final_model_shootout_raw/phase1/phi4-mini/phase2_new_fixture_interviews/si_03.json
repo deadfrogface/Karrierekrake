@@ -1,0 +1,25 @@
+{
+  "id": "si_03",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 27.619,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen haben Sie in der Grundpflege gesammelt, und wie haben Sie diese in Ihrer bisherigen Rolle angewendet?",
+      "Wie wichtig finden Sie die Dokumentation in der Pflege und können Sie ein Beispiel für eine Situation nennen, in der Sie Ihre Dokumentationsfähigkeiten unter Beweis gestellt haben?",
+      "Welche Herausforderungen begegnen Sie häufig in der Pflege und wie gehen Sie vor, um diese zu bewältigen?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie Ihre Erfahrungen und Fähigkeiten im Bereich der Grundpflege, insbesondere wie Sie diese Fähigkeiten in Ihrer bisherigen Rolle als Pflegehelfer angewendet haben.",
+      "Erklären Sie die Bedeutung der Dokumentation in der Pflege und teilen Sie ein spezifisches Beispiel mit, das Ihre Dokumentationsfähigkeiten zeigt."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

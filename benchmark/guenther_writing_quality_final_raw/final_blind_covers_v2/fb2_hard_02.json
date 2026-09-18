@@ -1,0 +1,83 @@
+{
+  "id": "fb2_hard_02",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "attempt1_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "final_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Busfahrers einzureichen. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich überzeugt, dass ich meine Fähigkeiten im Bereich des öffentlichen Verkehrs effektiv einsetzen kann. Während meiner bisherigen Tätigkeit als Busfahrer/in konnte ich meine Führungsqualitäten und mein Engagement für die Sicherheit und Effizienz des Fahrbetriebs unter Beweis stellen. Ich bin begeistert von der Möglichkeit, meine Erfahrung bei CityBus AG zu nutzen und zum Erfolg Ihres renommierten Unternehmens beizutragen. Ich freue mich auf die Gelegenheit, meine Bewerbung persönlich vorzulegen.",
+  "subject": "Bewerbung für die Position des Busfahrers bei CityBus AG",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung XYZ bin ich überzeugt",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Busfahrers bei CityBus AG",
+          "body": "Sehr geehrte Damen und Herren der CityBus AG, ich schreibe, um meine Bewerbung für die Position des Busfahrers einzureichen. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich überzeugt, dass ich meine Fähigkeiten im Bereich des öffentlichen Verkehrs effektiv einsetzen kann. Während meiner bisherigen Tätigkeit als Busfahrer/in konnte ich meine Führungsqualitäten und mein Engagement für die Sicherheit und Effizienz des Fahrbetriebs unter Beweis stellen. Ich bin begeistert von der Möglichkeit, meine Erfahrung bei CityBus AG zu nutzen und zum Erfolg Ihres renommierten Unternehmens beizutragen. Ich freue mich auf die Gelegenheit, meine Bewerbung persönlich vorzulegen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung XYZ bin ich überzeugt",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Busfahrers bei CityBus AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Busfahrers einzureichen. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich überzeugt, dass ich meine Fähigkeiten im Bereich des öffentlichen Verkehrs effektiv einsetzen kann. Während meiner bisherigen Tätigkeit als Busfahrer/in konnte ich meine Führungsqualitäten und mein Engagement für die Sicherheit und Effizienz des Fahrbetriebs unter Beweis stellen. Ich bin begeistert von der Möglichkeit, meine Erfahrung bei CityBus AG zu nutzen und zum Erfolg Ihres renommierten Unternehmens beizutragen. Ich freue mich auf die Gelegenheit, meine Bewerbung persönlich vorzulegen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

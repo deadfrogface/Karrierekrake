@@ -1,0 +1,453 @@
+{
+  "id": "cl_missing_hard",
+  "subject": "Bewerbung für die Stelle der Pflegefachkraft stationär — Beispielklinik Süd",
+  "body": "",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung und meiner praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Pflegeausbildung und meiner praktischen Erfahrung",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+      "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+      "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+      "claim_text": "Pflegefachkraft",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „ausbildung und meiner praktischen Erfahrung in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "ausbildung und meiner praktischen Erfahrung in der",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+      "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+      "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+      "claim_text": "Pflegeausbildung",
+      "severity": "block",
+      "meta": {
+        "family": "pflegeausbildung"
+      }
+    },
+    {
+      "code": "HARD_REQUIREMENT_NOT_MET",
+      "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+      "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+      "claim_text": "Pflegeausbildung",
+      "severity": "error",
+      "meta": {
+        "family": "pflegeausbildung",
+        "hard_status": "RELATED_ONLY"
+      }
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung und Erfahrung in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Pflegeausbildung und Erfahrung in der",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung und Erfahrung in der Patientenversorgung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung und Erfahrung in der Patientenversorgung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+            "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "Pflegeausbildung",
+            "severity": "block",
+            "meta": {
+              "family": "pflegeausbildung"
+            }
+          },
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "Pflegeausbildung",
+            "severity": "error",
+            "meta": {
+              "family": "pflegeausbildung",
+              "hard_status": "RELATED_ONLY"
+            }
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Stelle der Pflegefachkraft stationär",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung und meiner Erfahrung in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Pflegeausbildung und meiner Erfahrung in",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung und meiner Erfahrung in der Patientenver“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung und meiner Erfahrung in der Patientenver",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Mit meiner abgeschlossenen Pflegeausbildung und meiner Erfahrung in“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Mit meiner abgeschlossenen Pflegeausbildung und meiner Erfahrung in",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+            "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "Pflegeausbildung",
+            "severity": "block",
+            "meta": {
+              "family": "pflegeausbildung"
+            }
+          },
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "Pflegeausbildung",
+            "severity": "error",
+            "meta": {
+              "family": "pflegeausbildung",
+              "hard_status": "RELATED_ONLY"
+            }
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Stelle der Pflegefachkraft stationär",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung und meiner praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Pflegeausbildung und meiner praktischen Erfahrung",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung und meiner praktischen Erfahrung in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung und meiner praktischen Erfahrung in der",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+            "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "Pflegeausbildung",
+            "severity": "block",
+            "meta": {
+              "family": "pflegeausbildung"
+            }
+          },
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "Pflegeausbildung",
+            "severity": "error",
+            "meta": {
+              "family": "pflegeausbildung",
+              "hard_status": "RELATED_ONLY"
+            }
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Stelle der Pflegefachkraft stationär — Beispielklinik Süd",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung und meiner praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Pflegeausbildung und meiner praktischen Erfahrung",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+        "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+        "claim_text": "Pflegefachkraft",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „ausbildung und meiner praktischen Erfahrung in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "ausbildung und meiner praktischen Erfahrung in der",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "WRITING_BLOCKED_HARD_REQUIREMENT",
+        "message_de": "Schreiben blockiert: formale Pflichtqualifikation fehlt im Profil. Es wird keine Bewerbung mit erfundenen Abschlüssen erzeugt.",
+        "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+        "claim_text": "Pflegeausbildung",
+        "severity": "block",
+        "meta": {
+          "family": "pflegeausbildung"
+        }
+      },
+      {
+        "code": "HARD_REQUIREMENT_NOT_MET",
+        "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+        "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+        "claim_text": "Pflegeausbildung",
+        "severity": "error",
+        "meta": {
+          "family": "pflegeausbildung",
+          "hard_status": "RELATED_ONLY"
+        }
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Pflegeausbildung und meiner praktischen Erfahrung",
+          "kind": "credential",
+          "span": "Pflegeausbildung und meiner praktischen Erfahrung",
+          "requires_direct": true,
+          "meta": {
+            "family": "Pflegeausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Pflegeausbildung und meiner praktischen Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Pflegeausbildung und meiner praktischen Erfahrung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Pflegefachkraft",
+          "kind": "credential",
+          "span": "Pflegefachkraft",
+          "requires_direct": true,
+          "meta": {
+            "family": "Pflegefachkraft"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "job_requirement_not_candidate_evidence",
+        "errors": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "ausbildung und meiner praktischen Erfahrung in der",
+          "kind": "credential",
+          "span": "ausbildung und meiner praktischen Erfahrung in der",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „ausbildung und meiner praktischen Erfahrung in der“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "ausbildung und meiner praktischen Erfahrung in der",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen",
+          "kind": "credential",
+          "span": "Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen",
+          "requires_direct": true,
+          "meta": {
+            "family": "abgeschlossen"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Mit meiner abgeschlossenen Pflegeausbildung und meiner praktischen",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [
+        {
+          "text": "Pflegeausbildung",
+          "kind": "hard",
+          "family": "pflegeausbildung",
+          "status": "RELATED_ONLY",
+          "note": "related_admin_medical_no_credential"
+        }
+      ],
+      "blocking_errors": [
+        {
+          "code": "HARD_REQUIREMENT_NOT_MET",
+          "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+          "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+          "claim_text": "Pflegeausbildung",
+          "severity": "error",
+          "meta": {
+            "family": "pflegeausbildung",
+            "hard_status": "RELATED_ONLY"
+          }
+        }
+      ],
+      "writing_blocked": false
+    },
+    "writing_blocked": true,
+    "notes": [
+      "ungrounded_credential_detected",
+      "writing_blocked_hard_requirement_body_cleared"
+    ]
+  },
+  "flags": {
+    "empty": true,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

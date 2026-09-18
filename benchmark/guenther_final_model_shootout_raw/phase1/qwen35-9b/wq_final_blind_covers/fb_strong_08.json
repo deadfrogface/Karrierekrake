@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_08",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 64.361,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Bewerbung bewerbe ich mich auf die Position im Vertriebsinnendienst bei SalesDesk AG. Die Kombination aus meiner Erfahrung mit Angebotserstellung und der täglichen Arbeit im CRM-System passt ideal zu den Anforderungen dieser Rolle.\n\nIn meiner bisherigen Tätigkeit habe ich mich intensiv mit der Erstellung und Verwaltung von Angeboten beschäftigt, was mir ein sicheres Händchen für die Prozessabwicklung im Vertriebsinnendienst gibt. Zudem bin ich gewohnt, Kundendaten und -anfragen effizient im CRM zu pflegen und zu koordinieren. Diese Routinearbeit mit Kundentelefonaten und Datenpflege habe ich bisher erfolgreich ausgeführt und kann diese Kompetenzen direkt in Ihr Team einbringen.\n\nIch freue mich darauf, meine Erfahrung in der operativen Vertriebsunterstützung bei SalesDesk AG einzubringen und gemeinsam mit dem Team die Prozesse zu optimieren.\n\nMit freundlichen Grüßen\nUlla Sales",
+  "subject": "Bewerbung als Vertriebsinnendienst – Ulla Sales",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Vertriebsinnendienst – Ulla Sales",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Bewerbung bewerbe ich mich auf die Position im Vertriebsinnendienst bei SalesDesk AG. Die Kombination aus meiner Erfahrung mit Angebotserstellung und der täglichen Arbeit im CRM-System passt ideal zu den Anforderungen dieser Rolle.\n\nIn meiner bisherigen Tätigkeit habe ich mich intensiv mit der Erstellung und Verwaltung von Angeboten beschäftigt, was mir ein sicheres Händchen für die Prozessabwicklung im Vertriebsinnendienst gibt. Zudem bin ich gewohnt, Kundendaten und -anfragen effizient im CRM zu pflegen und zu koordinieren. Diese Routinearbeit mit Kundentelefonaten und Datenpflege habe ich bisher erfolgreich ausgeführt und kann diese Kompetenzen direkt in Ihr Team einbringen.\n\nIch freue mich darauf, meine Erfahrung in der operativen Vertriebsunterstützung bei SalesDesk AG einzubringen und gemeinsam mit dem Team die Prozesse zu optimieren.\n\nMit freundlichen Grüßen\nUlla Sales",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

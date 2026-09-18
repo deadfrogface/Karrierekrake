@@ -1,0 +1,12 @@
+{
+  "id": "cg1_miss_15",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "CONTRADICTED_CLAIM",
+    "HARD_REQUIREMENT_NOT_MET",
+    "WRONG_COMPANY"
+  ],
+  "model_id": "qwen3-14b"
+}

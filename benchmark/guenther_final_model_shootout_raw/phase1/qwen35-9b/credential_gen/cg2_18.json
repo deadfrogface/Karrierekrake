@@ -1,0 +1,12 @@
+{
+  "id": "cg2_18",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "WRONG_COMPANY"
+  ],
+  "model_id": "qwen35-9b"
+}

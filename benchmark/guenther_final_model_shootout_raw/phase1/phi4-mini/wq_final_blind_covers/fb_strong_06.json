@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_06",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 26.262,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, im Zuge meiner Tätigkeit als Steuerfachangestellte (m/w/d) bei der IHK und unter Verwendung des DATEV-Systems bin ich bestrebt, meine Fähigkeiten im Bereich der Buchhaltung und Steuerberatung auf die Anforderungen Ihrer Kanzlei Bergmann anzuwenden. Mit meinem umfassenden Verständnis für die steuerrechtlichen Vorschriften und der Erfahrung im Jahresabschluss bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse und meine Leidenschaft für die Buchhaltung in Ihrem Unternehmen einzubringen.",
+  "subject": "Bewerbung für die Position Steuerfachangestellte bei Kanzlei Bergmann",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Steuerfachangestellte bei Kanzlei Bergmann",
+          "body": "Sehr geehrte Damen und Herren, im Zuge meiner Tätigkeit als Steuerfachangestellte (m/w/d) bei der IHK und unter Verwendung des DATEV-Systems bin ich bestrebt, meine Fähigkeiten im Bereich der Buchhaltung und Steuerberatung auf die Anforderungen Ihrer Kanzlei Bergmann anzuwenden. Mit meinem umfassenden Verständnis für die steuerrechtlichen Vorschriften und der Erfahrung im Jahresabschluss bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Kenntnisse und meine Leidenschaft für die Buchhaltung in Ihrem Unternehmen einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5555.5
+}

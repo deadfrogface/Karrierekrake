@@ -1,0 +1,47 @@
+{
+  "id": "dev_19",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich schreibe, um meine Fähigkeiten im Büroleitungsbereich bei OfficeWorks GmbH zu präsentieren. Mit meiner Erfahrung im Büroleitungsbereich, insbesondere bei der Organisation und Optimierung von Büroprozessen, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für effiziente Büroarbeit mit Ihnen zu teilen.",
+  "subject": "Bewerbung für die Rolle des Büroleiters",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Rolle des Büroleiters",
+          "body": "Ich schreibe, um meine Fähigkeiten im Büroleitungsbereich bei OfficeWorks GmbH zu präsentieren. Mit meiner Erfahrung im Büroleitungsbereich, insbesondere bei der Organisation und Optimierung von Büroprozessen, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Erfahrungen und meine Leidenschaft für effiziente Büroarbeit mit Ihnen zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

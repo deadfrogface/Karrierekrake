@@ -1,0 +1,82 @@
+{
+  "id": "cl_missing_desirable",
+  "subject": "Sehr geehrte Frau/ Herr Held",
+  "body": "Sehr geehrte Frau/ Herr Held, ich habe mich als Bewerber/in für die Stelle als Personalsachbearbeiter/in bei Adventure Works interessiert. Meine Erfahrung in der Personalaktenverwaltung, der Zeiterfassung und dem Onboarding ist mir sehr wertvoll. Ich habe in den letzten Jahren in der Branche gearbeitet und habe mich immer darauf konzentriert, die Prozesse effizient zu gestalten. Meine Kenntnisse in Excel und MS Office sowie mein Deutsch ermöglichen mir, mit den Teammitgliedern gut zusammenzuarbeiten. Ich bin sehr interessiert an der Möglichkeit, meine Fähigkeiten in einem dynamischen Umfeld zu anwenden. Ich freue mich auf Ihre Rückmeldung.",
+  "model_id": "qwen3-1.7b",
+  "architecture": "qwen_only",
+  "validator_errors": [
+    {
+      "code": "WRONG_COMPANY",
+      "message_de": "Zielunternehmen fehlt oder ist falsch.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Litware",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-1.7b",
+        "errors_before": [
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Litware",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Sehr geehrte Frau/ Herr Held",
+          "body": "Sehr geehrte Frau/ Herr Held, ich habe mich als Bewerber/in für die Stelle als Personalsachbearbeiter/in bei Adventure Works interessiert. Meine Erfahrung in der Personalaktenverwaltung, der Zeiterfassung und dem Onboarding ist mir sehr wertvoll. Ich habe in den letzten Jahren in der Branche gearbeitet und habe mich immer darauf konzentriert, die Prozesse effizient zu gestalten. Meine Kenntnisse in Excel und MS Office sowie mein Deutsch ermöglichen mir, mit den Teammitgliedern gut zusammenzuarbeiten. Ich bin sehr interessiert an der Möglichkeit, meine Fähigkeiten in einem dynamischen Umfeld zu anwenden. Ich freue mich auf Ihre Rückmeldung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Litware",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [
+        {
+          "text": "personio",
+          "kind": "desirable",
+          "family": "personio",
+          "status": "MET_DIRECT",
+          "note": "profile_direct"
+        }
+      ],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

@@ -1,0 +1,52 @@
+{
+  "id": "sc_med_14",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 105.698,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo, ich habe von der Rolle des PMO-Assistenten bei ForgePlan GmbH gehört und bin sehr daran interessiert. Mit meiner Erfahrung im Bereich Protokolle und Terminplanung glaube ich, dass ich gut zu dieser Position passen würde. Ich habe keine spezifischen Erfahrungen mit den Projektmanagement-Tools von ForgePlan GmbH, aber ich bin sicher, dass ich schnell lernen kann. Ich bin versiert in Deutsch und bringe eine solide Berufserfahrung mit. Ich freue mich auf die Möglichkeit, meine Fähigkeiten bei ForgePlan GmbH einzubringen.",
+  "subject": "PMO Assistenz",
+  "peak_rss_mb": 230.66796875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 59.382,
+      "draft": 23.753,
+      "critique_1": 22.56
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "sc_hard_04",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 44.103,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": true,
+  "body": "Ich bin ein Busfahrer/in mit PKW Führerschein B — kein D, und ich bin bereit, CityBus AG als zuverlässigen Arbeitgeber zu unterstützen. Ich bringe meine Fähigkeiten im Busbetrieb ein, um CityBus AG zu stärken.",
+  "subject": "Angebot für Busfahrer/in",
+  "peak_rss_mb": 230.53515625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.557,
+      "draft": 14.545
+    },
+    "cot_stored": false
+  }
+}

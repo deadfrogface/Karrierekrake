@@ -1,0 +1,52 @@
+{
+  "id": "fb_des_01",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 41.195,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren der LedgerPro AG, \n\nIch schreibe, um meine Fähigkeiten im Bereich des Buchhaltungswesens, insbesondere mit Excel, anzubieten, wie Sie in meinem Profil beschrieben sehen. Mein Engagement für Genauigkeit und Effizienz, wie es bei der Arbeit mit DATEV und Excel gezeigt wurde, würde ich gerne in die Rolle eines Buchhalters bei LedgerPro AG einbringen. \n\nIm Laufe meiner Karriere habe ich meine Fähigkeiten im Umgang mit Excel geschärft, um Finanzberichte und Konten zu erstellen und zu analysieren, was ich glaube, dass es gut zu den Anforderungen Ihrer Buchhaltungsabteilung passen würde. Obwohl ich kein Zertifikat von DATEV besitze, habe ich meine Fähigkeiten durch die Arbeit mit Excel und anderen Buchhaltungssoftwareprogrammen verfeinert. \n\nIch bin begeistert von der Möglichkeit, in einer renommierten Firma wie der LedgerPro AG zu arbeiten und freue mich darauf, meine Buchhaltungsfähigkeiten in die Rolle eines Buchhalters einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem Gespräch zu diskutieren. \n\nMit freundlichen Grüßen, \nLena Books",
+  "subject": "Bewerbung für die Position Buchhalter",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Buchhalter",
+          "body": "Sehr geehrte Damen und Herren der LedgerPro AG, \n\nIch schreibe, um meine Fähigkeiten im Bereich des Buchhaltungswesens, insbesondere mit Excel, anzubieten, wie Sie in meinem Profil beschrieben sehen. Mein Engagement für Genauigkeit und Effizienz, wie es bei der Arbeit mit DATEV und Excel gezeigt wurde, würde ich gerne in die Rolle eines Buchhalters bei LedgerPro AG einbringen. \n\nIm Laufe meiner Karriere habe ich meine Fähigkeiten im Umgang mit Excel geschärft, um Finanzberichte und Konten zu erstellen und zu analysieren, was ich glaube, dass es gut zu den Anforderungen Ihrer Buchhaltungsabteilung passen würde. Obwohl ich kein Zertifikat von DATEV besitze, habe ich meine Fähigkeiten durch die Arbeit mit Excel und anderen Buchhaltungssoftwareprogrammen verfeinert. \n\nIch bin begeistert von der Möglichkeit, in einer renommierten Firma wie der LedgerPro AG zu arbeiten und freue mich darauf, meine Buchhaltungsfähigkeiten in die Rolle eines Buchhalters einzubringen. \n\nVielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem Gespräch zu diskutieren. \n\nMit freundlichen Grüßen, \nLena Books",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.7
+}

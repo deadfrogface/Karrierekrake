@@ -1,0 +1,44 @@
+{
+  "id": "fi_12",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 59.566,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie strukturieren Sie Ihre Akquise-Pipeline, um den CRM-Zyklus effizient zu steuern?",
+      "Welche CRM-Tools haben Sie in den letzten 3 Jahren erfolgreich für Lead-Management genutzt?",
+      "Wie gehen Sie mit Widerständen bei der ersten Kontaktaufnahme in einem B2B-Sales-Prozess um?"
+    ],
+    "talking_points": [
+      "3 Jahre Erfahrung im Sales-Bereich mit Fokus auf Akquise und Kundenmanagement.",
+      "Erfolgreiche Nutzung von CRM-Systemen zur Optimierung von Lead-Conversion-Raten."
+    ],
+    "gap_notes": [
+      "Fehlende spezifische Evidenz zu genutzten CRM-Tools oder quantifizierten Erfolgen im Profil.",
+      "Keine Details zu spezifischen Branchen oder Kundenarten vorhanden."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Sales Erfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte Akquise und CRM",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Profil: Interview Cand 12",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

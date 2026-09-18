@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 75.651,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung im Einzelhandel und in der Filialarbeit bietet eine solide Basis für die Rolle als Logistikkoordinator bei MoveIt SE. Durch meine Tätigkeit im Einzelhandel bin ich mit der effizienten Warenbewegung und der Organisation von Beständen bestens vertraut. Diese praktischen Erfahrungen im Bereich der Disposition ermöglichen es mir, logistische Abläufe strukturiert zu begleiten und die Warenflüsse reibungslos zu koordinieren. Ich bringe die nötige Routine mit, um Aufgaben präzise umzusetzen und die logistische Infrastruktur aktiv zu unterstützen. Gerne möchte ich meine Kompetenzen in Ihr Team einbringen.\n\nMit freundlichen Grüßen\nGeorg Retail",
+  "subject": "Bewerbung als Logistikkoordinator",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Logistikkoordinator",
+          "body": "Sehr geehrte Damen und Herren,\n\nmeine Erfahrung im Einzelhandel und in der Filialarbeit bietet eine solide Basis für die Rolle als Logistikkoordinator bei MoveIt SE. Durch meine Tätigkeit im Einzelhandel bin ich mit der effizienten Warenbewegung und der Organisation von Beständen bestens vertraut. Diese praktischen Erfahrungen im Bereich der Disposition ermöglichen es mir, logistische Abläufe strukturiert zu begleiten und die Warenflüsse reibungslos zu koordinieren. Ich bringe die nötige Routine mit, um Aufgaben präzise umzusetzen und die logistische Infrastruktur aktiv zu unterstützen. Gerne möchte ich meine Kompetenzen in Ihr Team einbringen.\n\nMit freundlichen Grüßen\nGeorg Retail",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

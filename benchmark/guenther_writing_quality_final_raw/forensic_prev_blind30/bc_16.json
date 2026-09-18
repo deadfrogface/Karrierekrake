@@ -1,0 +1,107 @@
+{
+  "id": "bc_16",
+  "target_role": "Zahnmedizinische Fachangestellte (m/w/d)",
+  "target_company": "Praxis Dr. Weiß",
+  "profile": "Blind Cover 16\nProphylaxe, Termine\nReferenz: Projektarbeit in zahnmedizinische fachangestellte",
+  "job": "Zahnmedizinische Fachangestellte (m/w/d)\nPraxis Dr. Weiß\nProfil: Prophylaxe, Termine.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung im Management von Termineinrichtungen bin ich"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Zahnmedizinischen Fachangestellten in Ihrer Praxis Dr. Weiß anzubieten. Mit meiner Ausbildung in Prophylaxe und meiner Erfahrung im Management von Termineinrichtungen bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Praxis einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die zahnmedizinische Versorgung mit Ihnen zu teilen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Zahnmedizinischen Fachangestellten in Ihrer Praxis Dr. Weiß anzubieten. Mit meiner Erfahrung im Management von Termineinrichtungen bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Praxis einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die zahnmedizinische Versorgung mit Ihnen zu teilen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position des Zahnmedizinischen Fachangestellten in Ihrer Praxis Dr. Weiß anzubieten. Mit meiner Erfahrung im Management von Termineinrichtungen bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Praxis einbringen kann. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die zahnmedizinische Versorgung mit Ihnen zu teilen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, [Dein Name]",
+  "final_subject": "Bewerbung für die Position des Zahnmedizinischen Fachangestellten",
+  "body_len": 501,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im Management von Termineinrichtungen bin ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Erfahrung im Management von Termineinrichtungen bin ich",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Erfahrung im Management von Termineinrichtungen bin ich",
+          "kind": "credential",
+          "span": "Mit meiner Erfahrung im Management von Termineinrichtungen bin ich",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung im Management von Termineinrichtungen bin ich“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung im Management von Termineinrichtungen bin ich",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

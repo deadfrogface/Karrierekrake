@@ -1,0 +1,47 @@
+{
+  "id": "dev_04",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Inbound-Telefonie und mein Wissen im CRM-System zu nutzen, um als wertvoller Beitrag für Ihre Kundenservice-Abteilung bei TelCo Plus AG zu dienen. Mit meiner C1-Niveau-Fähigkeit in Deutsch und meiner Spezialisierung im Kundendienst bin ich überzeugt, dass ich die Kommunikation mit Ihren Kunden effektiv verbessern kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen.",
+  "subject": "Bewerbung für die Rolle des Kundenberaters bei TelCo Plus AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Rolle des Kundenberaters bei TelCo Plus AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Inbound-Telefonie und mein Wissen im CRM-System zu nutzen, um als wertvoller Beitrag für Ihre Kundenservice-Abteilung bei TelCo Plus AG zu dienen. Mit meiner C1-Niveau-Fähigkeit in Deutsch und meiner Spezialisierung im Kundendienst bin ich überzeugt, dass ich die Kommunikation mit Ihren Kunden effektiv verbessern kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

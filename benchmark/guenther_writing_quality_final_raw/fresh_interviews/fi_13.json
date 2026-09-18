@@ -1,0 +1,28 @@
+{
+  "id": "fi_13",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns über Ihre Erfahrung mit manuellen Tests und Jira erzählen?",
+      "Wie integrierte Sie Sie in den Testprozess bei TestSphere SE?",
+      "Welche Strategien verwenden Sie, um Effizienz und Effektivität in Ihren QA-Zeiten zu verbessern?"
+    ],
+    "talking_points": [
+      "Erfahrung in der Durchführung manueller Tests und der Verwendung von Jira zur Verwaltung von QA-Projekten.",
+      "Verständnis der Rolle von QA im TestSphere SE-Umfeld und die Fähigkeit, sich an die Unternehmenskultur und -prozesse anzupassen."
+    ],
+    "gap_notes": [
+      "Weitere Details über spezifische Projekte oder Erfolge im QA-Rollenbereich erforderlich.",
+      "Erforderlich, mehr Kontext über die Art der manuellen Tests und die spezifischen Funktionen von Jira, die verwendet wurden.",
+      "Erforderlich, mehr Informationen über die Auswirkungen der Arbeit auf die Produktqualität und den Zeitplan."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

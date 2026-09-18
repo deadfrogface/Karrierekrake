@@ -1,0 +1,73 @@
+{
+  "id": "bw_28",
+  "body": "Ich freue mich darauf, meine Unterstützungserfahrungen und meine Leidenschaft für technisches Problemlösen in die Rolle des 2nd Level Network Technikers einzubringen. Mit meinem Hintergrund in der Windows-Support-Sphäre bin ich vertraut mit den Herausforderungen und Lösungen im Netzwerkbereich. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Fähigkeit, komplexe Systeme zu verstehen, mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+  "bad_tokens": [],
+  "blocked": false,
+  "repairs": 0,
+  "codes": [
+    "HARD_REQUIREMENT_NOT_MET",
+    "WRONG_COMPANY"
+  ],
+  "validator_errors": [
+    {
+      "code": "HARD_REQUIREMENT_NOT_MET",
+      "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+      "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+      "claim_text": "netzwerkzertifikat",
+      "severity": "warning",
+      "meta": {
+        "family": "netzwerkzertifikat",
+        "hard_status": "NOT_MET"
+      }
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "message_de": "Zielunternehmen fehlt oder ist falsch.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Adventure",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "HARD_REQUIREMENT_NOT_MET",
+            "message_de": "Eine Pflichtanforderung der Stelle ist im Profil nicht direkt belegt.",
+            "repair_instruction": "Die Stelle verlangt eine formale Qualifikation, die im Profil fehlt. Behaupte diese Qualifikation NICHT. Setze invented_flag=true und beschreibe höchstens ehrlich die vorhandene Erfahrung OHNE den fehlenden Abschluss vorzutäuschen — oder body=\"\".",
+            "claim_text": "netzwerkzertifikat",
+            "severity": "warning",
+            "meta": {
+              "family": "netzwerkzertifikat",
+              "hard_status": "NOT_MET"
+            }
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Adventure",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Einzigartige Fähigkeiten und Engagement für Wachstum",
+          "body": "Ich freue mich darauf, meine Unterstützungserfahrungen und meine Leidenschaft für technisches Problemlösen in die Rolle des 2nd Level Network Technikers einzubringen. Mit meinem Hintergrund in der Windows-Support-Sphäre bin ich vertraut mit den Herausforderungen und Lösungen im Netzwerkbereich. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Fähigkeit, komplexe Systeme zu verstehen, mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

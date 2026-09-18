@@ -1,0 +1,47 @@
+{
+  "id": "dev_17",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich freue mich darauf, meine SQL- und Reporting-Fähigkeiten bei Northwind Analytics GmbH einzubringen. Während meiner Zeit bei Adventure Works Analytics habe ich umfangreiche Erfahrungen im Umgang mit Datenbanken und im Erstellen von Berichten gesammelt, die ich gerne auf die Herausforderungen bei Northwind Analytics GmbH übertragen würde. Ich bin überzeugt, dass meine Fähigkeiten in SQL und Reporting gut zu den Anforderungen für die Rolle Analyst passen. Ich freue mich darauf, meine Expertise in einem innovativen Umfeld einzubringen und zur erfolgreichen Entwicklung von Northwind Analytics GmbH beizutragen.",
+  "subject": "Angebot für die Rolle Analyst (m/w/d) bei Northwind Analytics GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Angebot für die Rolle Analyst (m/w/d) bei Northwind Analytics GmbH",
+          "body": "Ich freue mich darauf, meine SQL- und Reporting-Fähigkeiten bei Northwind Analytics GmbH einzubringen. Während meiner Zeit bei Adventure Works Analytics habe ich umfangreiche Erfahrungen im Umgang mit Datenbanken und im Erstellen von Berichten gesammelt, die ich gerne auf die Herausforderungen bei Northwind Analytics GmbH übertragen würde. Ich bin überzeugt, dass meine Fähigkeiten in SQL und Reporting gut zu den Anforderungen für die Rolle Analyst passen. Ich freue mich darauf, meine Expertise in einem innovativen Umfeld einzubringen und zur erfolgreichen Entwicklung von Northwind Analytics GmbH beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

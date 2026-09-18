@@ -1,0 +1,84 @@
+{
+  "id": "fb_hard_01",
+  "final_ok": false,
+  "score": 0.0,
+  "german_writing": 0.0,
+  "edit_class": "UNUSABLE",
+  "notes": [
+    "empty_body"
+  ],
+  "latency_s": 131.46,
+  "repair_count": 1,
+  "final_errors": [
+    "EMPTY_OUTPUT"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "",
+  "subject": "",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Pflegefachkraft",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Pflegefachkraft – Xena Admin",
+          "body": "Sehr geehrte Damen und Herren,mit Bezug auf die ausgeschriebene Stelle als Pflegefachkraft bei Klinik Westpark möchte ich meine organisatorischen Fähigkeiten einbringen. Da ich keine abgeschlossene Pflegeausbildung oder formelle Fachkraft-Ausbildung XYZ besitze, kann ich die zwingenden fachlichen Voraussetzungen nicht erfüllen. Meine Erfahrung in der Büroorganisation bei Xena Admin ermöglicht mir jedoch eine strukturierte Unterstützung im Verwaltungsbereich. Ich bin offen für eine Tätigkeit in diesem Umfeld, sofern die formellen Qualifikationen nicht zwingend erforderlich sind. Mit freundlichen Grüßen, Xena Admin",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen35-9b",
+        "errors_before": [
+          {
+            "code": "SCHEMA_INVALID",
+            "message_de": "Die Modellausgabe entsprach nicht dem erwarteten Schema.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "",
+          "body": "",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

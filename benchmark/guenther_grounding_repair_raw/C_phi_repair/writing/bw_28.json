@@ -1,0 +1,184 @@
+{
+  "id": "bw_28",
+  "subject": "Angebot zur Bewerbung für den 2nd Level — Pflicht Netzwerkzertifikat",
+  "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Position des 2nd Level — Pflicht Netzwerkzertifikats, wie in Ihrem Jobangebot beschrieben, auszudrücken. Mit meiner Erfahrung im Support-Level und meinem Engagement für kontinuierliches Lernen bin ich zuversichtlich, dass ich die Fähigkeiten und die Leidenschaft für Networking, die Sie suchen, mitbringen kann.\n\nIch freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu erweitern und zum Erfolg Ihres Teams beizutragen. Ich freue mich auf die Möglichkeit, meine Erfahrungen und meine Begeisterung für Networking mit Ihnen zu besprechen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nSam",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „zertifikat\nSehr geehrte Damen und Herren“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "zertifikat\nSehr geehrte Damen und Herren",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "message_de": "Zielunternehmen fehlt oder ist falsch.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Adventure",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „zertifikat\nSehr geehrte Damen und Herren“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "zertifikat\nSehr geehrte Damen und Herren",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Adventure",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Angebot zur Bewerbung für den 2nd Level — Pflicht Netzwerkzertifikat",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Position des 2nd Level — Pflicht Netzwerkzertifikats, wie in Ihrem Jobangebot beschrieben, auszudrücken. Mit meiner Erfahrung im Support-Level und meinem Engagement für kontinuierliches Lernen bin ich zuversichtlich, dass ich die Fähigkeiten und die Leidenschaft für Networking, die Sie suchen, mitbringen kann.\n\nIch freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu erweitern und zum Erfolg Ihres Teams beizutragen. Ich freue mich auf die Möglichkeit, meine Erfahrungen und meine Begeisterung für Networking mit Ihnen zu besprechen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nSam",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „zertifikat\nSehr geehrte Damen und Herren“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "zertifikat\nSehr geehrte Damen und Herren",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Adventure",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Angebot zur Bewerbung für den 2nd Level — Pflicht Netzwerkzertifikat",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Position des 2nd Level — Pflicht Netzwerkzertifikats, wie in Ihrem Jobangebot beschrieben, auszudrücken. Mit meiner Erfahrung im Support-Level und meinem Engagement für kontinuierliches Lernen bin ich zuversichtlich, dass ich die Fähigkeiten und die Leidenschaft für Networking, die Sie suchen, mitbringen kann.\n\nIch freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu erweitern und zum Erfolg Ihres Teams beizutragen. Ich freue mich auf die Möglichkeit, meine Erfahrungen und meine Begeisterung für Networking mit Ihnen zu besprechen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nSam",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      },
+      {
+        "attempt": 2,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „zertifikat\nSehr geehrte Damen und Herren“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "zertifikat\nSehr geehrte Damen und Herren",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Adventure",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Angebot zur Bewerbung für den 2nd Level — Pflicht Netzwerkzertifikat",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Position des 2nd Level — Pflicht Netzwerkzertifikats, wie in Ihrem Jobangebot beschrieben, auszudrücken. Mit meiner Erfahrung im Support-Level und meinem Engagement für kontinuierliches Lernen bin ich zuversichtlich, dass ich die Fähigkeiten und die Leidenschaft für Networking, die Sie suchen, mitbringen kann.\n\nIch freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu erweitern und zum Erfolg Ihres Teams beizutragen. Ich freue mich auf die Möglichkeit, meine Erfahrungen und meine Begeisterung für Networking mit Ihnen zu besprechen.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nSam",
+          "invented_flag": true
+        },
+        "note": "repair_2"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 2,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „zertifikat\nSehr geehrte Damen und Herren“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "zertifikat\nSehr geehrte Damen und Herren",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Adventure",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "zertifikat\nSehr geehrte Damen und Herren",
+          "kind": "credential",
+          "span": "zertifikat\nSehr geehrte Damen und Herren",
+          "requires_direct": true,
+          "meta": {
+            "family": "Zertifikat"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „zertifikat\nSehr geehrte Damen und Herren“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "zertifikat\nSehr geehrte Damen und Herren",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false,
+    "forbidden_token": "Netzwerkzertifikat"
+  },
+  "invented_flag": true
+}

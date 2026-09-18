@@ -1,0 +1,12 @@
+SUBJECT: Bewerbung als Systemadmin (m/w/d)
+
+Sehr geehrte Damen und Herren,
+
+als Linux-Enthusiastin mit fundierten Kenntnissen in Bash-Skripting und Systemadministration bringe ich eine solide Grundlage mit, um die Anforderungen der Systemadmin-Rolle bei der InfraWorks GmbH zu erfüllen. In meiner bisherigen Tätigkeit habe ich komplexe Systemlandschaften verwaltet, Skripte zur Automatisierung von Routineaufgaben entwickelt und mich intensiv mit der Optimierung von Serverumgebungen beschäftigt.
+
+Ein konkreter Beleg ist die Entwicklung von Bash-Skripten zur Automatisierung von Backup- und Monitoring-Prozessen, was die Effizienz der Systemverwaltung deutlich steigerte. Zudem habe ich in mehreren Projekten mit Linux-basierten Systemen gearbeitet und mich dabei mit der Sicherstellung von Stabilität, Sicherheit und Skalierbarkeit beschäftigt. Diese Erfahrungen ermöglichen mir, mich schnell in die Infrastruktur der InfraWorks GmbH einzuarbeiten und dort mitgestalten zu können.
+
+Ich freue mich darauf, meine Kenntnisse und Erfahrungen in der Systemadministration für die ausgeschriebene Position einzusetzen und dabei meine Leidenschaft für Technologie und Innovation weiterzuentfalten.
+
+Mit freundlichen Grüßen,
+Nina Linux

@@ -1,0 +1,97 @@
+{
+  "cv": {
+    "ok": true,
+    "capability": "cv_extract",
+    "suggestion": {
+      "full_name": "Tom Probe",
+      "emails": [
+        "tom.probe@example.com"
+      ],
+      "phones": [
+        "+49 171 2222002"
+      ],
+      "skills": [
+        "MS Office",
+        "Excel",
+        "Personio Grundlagen"
+      ],
+      "languages": [
+        "Deutsch Muttersprache",
+        "Englisch B2"
+      ],
+      "experience_titles": [
+        "Sachbearbeiter Personal",
+        "Office Manager"
+      ],
+      "education": [
+        "Kaufmann für Büromanagement"
+      ],
+      "certificates": [],
+      "confidence": "high",
+      "notes": [],
+      "invented_flag": false
+    },
+    "fallback_reason": "",
+    "provider_status": "ready",
+    "model_id": "qwen3-4b",
+    "validated": true,
+    "safety_notes": []
+  },
+  "jobs": [
+    {
+      "id": "ho_job_hr",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [
+            {
+              "requirement": "Personalakten, Excel-Reports, Onboarding",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Personio von Vorteil",
+              "kind": "desirable",
+              "confidence": "medium"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Die Stelle erfordert Erfahrung in Personalakten, Excel-Reports und Onboarding, wobei Personio von Vorteil ist.",
+          "confidence": "medium"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen3-4b",
+        "validated": true,
+        "safety_notes": []
+      }
+    },
+    {
+      "id": "ho_job_pflege",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [
+            {
+              "requirement": "Pflegeausbildung, Intensivstation, Approbation nicht nötig aber Patientenversorgung Pflicht",
+              "kind": "hard",
+              "confidence": "high"
+            }
+          ],
+          "red_flags": [],
+          "summary": "",
+          "confidence": "high"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "qwen3-4b",
+        "validated": true,
+        "safety_notes": []
+      }
+    }
+  ]
+}

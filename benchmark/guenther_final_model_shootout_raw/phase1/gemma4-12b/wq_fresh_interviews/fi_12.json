@@ -1,0 +1,39 @@
+{
+  "id": "fi_12",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 84.349,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie bei der Akquise von Neukunden vor?",
+      "Welche Erfahrungen haben Sie bereits mit CRM-Systemen gesammelt?",
+      "Wie gehen Sie mit Ablehnungen in der Akquise um?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im Bereich Sales",
+      "Erfahrung in der Akquise von Neukunden",
+      "Kenntnisse im Umgang mit CRM-Systemen"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder detaillierten Projekterfolge im Profil angegeben."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Sales",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Akquise, CRM",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

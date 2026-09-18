@@ -1,0 +1,42 @@
+{
+  "id": "sc_adv_01",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 56.801,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Expertise in Excel und Ablage ein, unterstützt durch ein Must-Have-DATEV-Zertifikat, was mich zu einem idealen Kandidaten für die Rolle des Buchhalters in SafeLedger GmbH macht, wo DATEV-Kenntnisse unerlässlich sind.",
+  "subject": "Buchhalter/in",
+  "peak_rss_mb": 230.53515625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.951,
+      "draft": 16.85
+    },
+    "cot_stored": false
+  }
+}

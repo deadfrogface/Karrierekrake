@@ -1,0 +1,52 @@
+{
+  "id": "sc_med_18",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 93.7,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Hallo, ich bin Lia Success und interessiere mich für die Rolle des Customer Success Jr bei SaaS Care GmbH. Ich bringe Erfahrung im Kundendienst, insbesondere im Umgang mit Kundenmails und der Pflege von CRM-Systemen. Ich bin überzeugt, dass meine Fähigkeiten und meine Erfahrung im Kundendienst gut zu Ihrer Team passen. Ich freue mich auf die Möglichkeit, meine Kenntnisse im CRM-Bereich weiter zu vertiefen und zur Kundenzufriedenheit beizutragen. Vielen Dank für Ihre Berücksichtigung.",
+  "subject": "Freischaltung der Rolle Customer Success Jr",
+  "peak_rss_mb": 194.8671875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.43,
+      "draft": 20.812,
+      "critique_1": 35.456
+    },
+    "cot_stored": false
+  }
+}

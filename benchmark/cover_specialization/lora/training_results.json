@@ -1,0 +1,6 @@
+{
+  "status": "BLOCKED_NO_SUITABLE_GPU_AND_INSUFFICIENT_DATA",
+  "trials": 0,
+  "max_trials": 2,
+  "note": "No training executed in this environment."
+}

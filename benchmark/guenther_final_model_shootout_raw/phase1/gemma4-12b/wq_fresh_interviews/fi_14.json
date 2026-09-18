@@ -1,0 +1,40 @@
+{
+  "id": "fi_14",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 96.071,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie vor, wenn ein SLA-Ziel gefährdet ist?",
+      "Beschreiben Sie Ihre Erfahrung in der Instandhaltung von Campus-Einrichtungen.",
+      "Wie priorisieren Sie Aufgaben bei gleichzeitigem Auftreten mehrerer Störungen?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung im Bereich Facility Management.",
+      "Erfahrung in der Instandhaltung von Gebäuden und Anlagen.",
+      "Kenntnisse im Umgang mit Service Level Agreements (SLA) im Facility-Kontext."
+    ],
+    "gap_notes": [
+      "No specific project details or quantifiable achievements provided in the profile.",
+      "Lack of specific technical certifications or software experience."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Facility",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Instandhaltung, SLA",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

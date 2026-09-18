@@ -1,0 +1,42 @@
+{
+  "id": "sc_career_15",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 51.711,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich bin ein Cal Craft, der sich auf 'Handwerk Kontrolle — Transfer Qualität' spezialisiert hat. Ich bin überzeugt, dass meine Fähigkeiten im QA-Bereich bei TestSphere SE wertvoll sein werden. Ich habe keine formalen Qualifikationen im QA-Bereich oder im Deutschen, aber ich bringe eine starke Betonung auf Qualität und Kontrolle im Handwerk mit. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen.",
+  "subject": "QA Assistant",
+  "peak_rss_mb": 212.19140625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 28.44,
+      "draft": 23.27
+    },
+    "cot_stored": false
+  }
+}

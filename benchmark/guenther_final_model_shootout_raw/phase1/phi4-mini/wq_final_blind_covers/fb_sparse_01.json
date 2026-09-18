@@ -1,0 +1,50 @@
+{
+  "id": "fb_sparse_01",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 20.723,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle der Bürohilfe bei PaperClip GmbH auszudrücken. Mit meiner Erfahrung im Bürobereich, insbesondere in der Organisation und Verwaltung von Dokumenten, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich habe in meiner bisherigen Rolle als Bürohilfe in der XYZ Corporation meine Fähigkeiten im Umgang mit Büroarbeiten geschärft, was mir ermöglicht, effizient zu arbeiten und die Abläufe zu optimieren. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die Büroarbeit in die Rolle bei PaperClip GmbH zu bringen.",
+  "subject": "Bewerbung für die Position Bürohilfe bei PaperClip GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Bürohilfe bei PaperClip GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Rolle der Bürohilfe bei PaperClip GmbH auszudrücken. Mit meiner Erfahrung im Bürobereich, insbesondere in der Organisation und Verwaltung von Dokumenten, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich habe in meiner bisherigen Rolle als Bürohilfe in der XYZ Corporation meine Fähigkeiten im Umgang mit Büroarbeiten geschärft, was mir ermöglicht, effizient zu arbeiten und die Abläufe zu optimieren. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die Büroarbeit in die Rolle bei PaperClip GmbH zu bringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5611.4
+}

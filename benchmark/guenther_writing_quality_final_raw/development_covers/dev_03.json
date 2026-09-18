@@ -1,0 +1,47 @@
+{
+  "id": "dev_03",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Kommissionierung und im WMS, kombiniert mit meinem Zertifikat im Staplerschein 2020, als Grundlage für die Position des Lagerists bei LogiTrans SE zu nutzen. Meine Fähigkeiten in der Optimierung von Lagerprozessen und die strikte Einhaltung von Logistikvorgaben, die ich bei früheren Rollen erworben habe, würden meiner Expertise in Ihrem Team zugutekommen. Ich bin begeistert von der Möglichkeit, meine Kenntnisse im Bereich Logistik bei LogiTrans SE anzuwenden und freue mich auf die Gelegenheit, meine Fähigkeiten in einem renommierten Unternehmen einzubringen. Herzlichen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für die Position des Lagerists bei LogiTrans SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Lagerists bei LogiTrans SE",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung in der Kommissionierung und im WMS, kombiniert mit meinem Zertifikat im Staplerschein 2020, als Grundlage für die Position des Lagerists bei LogiTrans SE zu nutzen. Meine Fähigkeiten in der Optimierung von Lagerprozessen und die strikte Einhaltung von Logistikvorgaben, die ich bei früheren Rollen erworben habe, würden meiner Expertise in Ihrem Team zugutekommen. Ich bin begeistert von der Möglichkeit, meine Kenntnisse im Bereich Logistik bei LogiTrans SE anzuwenden und freue mich auf die Gelegenheit, meine Fähigkeiten in einem renommierten Unternehmen einzubringen. Herzlichen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

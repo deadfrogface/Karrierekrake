@@ -1,0 +1,39 @@
+{
+  "id": "si_08",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 32.215,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit der Kommissionierung erzählen?",
+      "Wie haben Sie den Staplerschein in Ihrer bisherigen Position verwaltet?",
+      "Welche Strategien verwenden Sie, um die Lagerprozesse bei StockRoom GmbH zu optimieren?"
+    ],
+    "talking_points": [
+      "Die Erfahrung im Lager, insbesondere im Bereich der Kommissionierung, ist relevant für die Position bei StockRoom GmbH.",
+      "Das Wissen um den Staplerschein ist ein wichtiger Aspekt des Jobbeschreibungsprofils und sollte hervorgehoben werden."
+    ],
+    "gap_notes": [
+      "Es fehlt an spezifischen Erfolgsbeispielen, die in der Interviewvorbereitung hervorgehoben werden könnten.",
+      "Es könnte hilfreich sein, konkrete Beispiele für Kommissionierungsprozesse oder Staplerscheine zu liefern, falls verfügbar."
+    ],
+    "anchors_used": [
+      {
+        "text": "Kommissionierung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Staplerschein",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

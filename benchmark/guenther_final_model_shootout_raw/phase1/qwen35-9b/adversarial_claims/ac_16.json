@@ -1,0 +1,8 @@
+{
+  "id": "ac_16",
+  "claim": "Google Ads Zertifikat",
+  "expect": "UNSUPPORTED",
+  "got": "UNSUPPORTED",
+  "match": true,
+  "model_id": "qwen35-9b"
+}

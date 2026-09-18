@@ -1,0 +1,180 @@
+[
+  {
+    "id": "cl_strong_match",
+    "label": "strong match",
+    "profile": "Mia Beispiel, Berlin\nmia.beispiel@example.com\n2019–heute Buchhalterin Kreditoren, Contoso Nord GmbH\n- DATEV Kreditorenbuchhaltung, Monatabschluss, Excel-Auswertungen\n- Abstimmung mit Fachbereichen\nAusbildung: Kauffrau für Büromanagement IHK\nKenntnisse: DATEV, Excel, SAP FI Grundlagen, Deutsch, Englisch B2",
+    "job": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München\nMehrjährige Kreditorenbuchhaltung, sichere DATEV-Kenntnisse, gute Excel-Kenntnisse, Deutsch verhandlungssicher.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Antrag als Sachbearbeiter/in Buchhaltung bei Northwind Handels GmbH",
+        "body": "Sehr geehrte Damen und Herren,\n\nich möchte mich für die Stelle als Sachbearbeiter/in Buchhaltung bei Northwind Handels GmbH in München bewerben. Mit mehr als fünf Jahren Erfahrung in der Kreditorenbuchhaltung, verfüge ich über sichere DATEV-Kenntnisse sowie gute Fähigkeiten in Excel. Darüber hinaus bin ich Deutsch verhandlungssicher und habe eine Ausbildung zur Kauffrau für Büromanagement beendet.\n\nIch bin überzeugt, dass meine Fähigkeiten und Erfahrung mich in der Position als Sachbearbeiter/in Buchhaltung qualifizieren. Ich freue mich darauf, meine Fähigkeiten bei Ihnen einzusetzen.\n\nMit freundlichen Grüßen\nMia Beispiel",
+        "anchors_used": [
+          {
+            "text": "Buchhalterin Kreditoren, Contoso Nord GmbH",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich möchte mich für die Stelle als Sachbearbeiter/in Buchhaltung bei Northwind Handels GmbH in München bewerben. Mit mehr als fünf Jahren Erfahrung in der Kreditorenbuchhaltung, verfüge ich über sichere DATEV-Kenntnisse sowie gute Fähigkeiten in Excel. Darüber hinaus bin ich Deutsch verhandlungssicher und habe eine Ausbildung zur Kauffrau für Büromanagement beendet.\n\nIch bin überzeugt, dass meine Fähigkeiten und Erfahrung mich in der Position als Sachbearbeiter/in Buchhaltung qualifizieren. Ich freue mich darauf, meine Fähigkeiten bei Ihnen einzusetzen.\n\nMit freundlichen Grüßen\nMia Beispiel",
+    "raw_subject": "Antrag als Sachbearbeiter/in Buchhaltung bei Northwind Handels GmbH",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_medium_match",
+    "label": "medium match",
+    "profile": "Jonas Probe, Hamburg\njonas.probe@example.com\n2020–heute Office Manager, Fabrikam AG\n- Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen\nAusbildung Kaufmann Büromanagement\nKenntnisse: MS Office, Excel, Deutsch, Englisch B1",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Antrittsbrief als neuer Mitarbeiter bei Karrierekrake",
+        "body": "Sehr geehrte Damen und Herren,\n\nich freue mich, mich als neuer Mitarbeiter bei Karrierekrake einzuführen. Mein Name ist Jonas Probe, und ich bin seit 2020 als Office Manager bei Fabrikam AG tätig. In dieser Position habe ich verschiedene Aufgaben übernommen, darunter die Terminplanung, die Korrespondenz, die Lieferantenabstimmung sowie die Erstellung von Excel-Listen.\n\nMeine Ausbildung als Kaufmann Büromanagement und meine Fähigkeiten in MS Office, Excel, Deutsch und Englisch B1 ermöglichen es mir, mich schnell in meine neue Rolle einzufinden und zu beitragen. Ich bin sehr motiviert, meine Erfahrungen und Kenntnisse in der Personaladministration und dem Erstellen von Excel-Reports zu nutzen, um bei Karrierekrake einen wertvollen Beitrag zu leisten.\n\nIch freue mich darauf, Ihnen persönlicher vorzustellen und meine Fähigkeiten in Personio zu nutzen, um den Onboarding-Prozess zu erleichtern.\n\nMit freundlichen Grüßen,\nJonas Probe",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich freue mich, mich als neuer Mitarbeiter bei Karrierekrake einzuführen. Mein Name ist Jonas Probe, und ich bin seit 2020 als Office Manager bei Fabrikam AG tätig. In dieser Position habe ich verschiedene Aufgaben übernommen, darunter die Terminplanung, die Korrespondenz, die Lieferantenabstimmung sowie die Erstellung von Excel-Listen.\n\nMeine Ausbildung als Kaufmann Büromanagement und meine Fähigkeiten in MS Office, Excel, Deutsch und Englisch B1 ermöglichen es mir, mich schnell in meine neue Rolle einzufinden und zu beitragen. Ich bin sehr motiviert, meine Erfahrungen und Kenntnisse in der Personaladministration und dem Erstellen von Excel-Reports zu nutzen, um bei Karrierekrake einen wertvollen Beitrag zu leisten.\n\nIch freue mich darauf, Ihnen persönlicher vorzustellen und meine Fähigkeiten in Personio zu nutzen, um den Onboarding-Prozess zu erleichtern.\n\nMit freundlichen Grüßen,\nJonas Probe",
+    "raw_subject": "Antrittsbrief als neuer Mitarbeiter bei Karrierekrake",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_career_changer",
+    "label": "career changer",
+    "profile": "Sara Wechsel, Köln\nsara.wechsel@example.com\n2018–heute Verkäuferin Einzelhandel, Adventure Mart\n- Kundenberatung, Kasse, Beschwerdemanagement\nAusbildung Verkäuferin\nKenntnisse: Kassensystem, Deutsch, Englisch A2",
+    "job": "Kaufmännische Assistenz — Woodgrove Bank\nKorrespondenz, Terminorganisation, MS Office. Kundenorientierung erwünscht.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Antrittsbrief zur Stelle Kaufmännische Assistenz bei Woodgrove Bank",
+        "body": "Sehr geehrte Damen und Herren,\n\nzunächst möchte ich mich für die Stelle Kaufmännische Assistenz bei Woodgrove Bank interessieren. Seit 2018 bin ich als Verkäuferin in einem Einzelhandel tätig und habe dabei verschiedene Aufgaben übernommen. Dabei habe ich mich um die Kundenberatung, den Umgang mit der Kasse sowie das Managen von Kundenbeschwerden gekümmert. Diese Erfahrungen haben mich in der Korrespondenz und der Terminorganisation geübt, wobei ich regelmäßig mit MS Office arbeiten musste. Meine Kundenorientierung sowie meine Fähigkeiten im Umgang mit Kunden und in der Kundenberatung sind wichtige Aspekte, die ich in meiner neuen Position nutzen möchte.\n\nIch bin besonders stolz auf meine Fähigkeiten im Umgang mit Kassensystemen, Deutsch und Englisch A2, die mir in meiner aktuellen Tätigkeit sehr zugutekommen. Ich bin überzeugt, dass ich mit meiner Erfahrung und meinen Fähigkeiten eine wertvolle Ergänzung für euer Team sein kann.\n\nIch freue mich auf eine Rückmeldung und hoffe, dass ich die Möglichkeit habe, mich Ihnen persönlicher vorzustellen.\n\nMit freundlichen Grüßen\nSara Wechsel",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nzunächst möchte ich mich für die Stelle Kaufmännische Assistenz bei Woodgrove Bank interessieren. Seit 2018 bin ich als Verkäuferin in einem Einzelhandel tätig und habe dabei verschiedene Aufgaben übernommen. Dabei habe ich mich um die Kundenberatung, den Umgang mit der Kasse sowie das Managen von Kundenbeschwerden gekümmert. Diese Erfahrungen haben mich in der Korrespondenz und der Terminorganisation geübt, wobei ich regelmäßig mit MS Office arbeiten musste. Meine Kundenorientierung sowie meine Fähigkeiten im Umgang mit Kunden und in der Kundenberatung sind wichtige Aspekte, die ich in meiner neuen Position nutzen möchte.\n\nIch bin besonders stolz auf meine Fähigkeiten im Umgang mit Kassensystemen, Deutsch und Englisch A2, die mir in meiner aktuellen Tätigkeit sehr zugutekommen. Ich bin überzeugt, dass ich mit meiner Erfahrung und meinen Fähigkeiten eine wertvolle Ergänzung für euer Team sein kann.\n\nIch freue mich auf eine Rückmeldung und hoffe, dass ich die Möglichkeit habe, mich Ihnen persönlicher vorzustellen.\n\nMit freundlichen Grüßen\nSara Wechsel",
+    "raw_subject": "Antrittsbrief zur Stelle Kaufmännische Assistenz bei Woodgrove Bank",
+    "score": 8.0,
+    "score_notes": []
+  },
+  {
+    "id": "cl_missing_desirable",
+    "label": "missing desirable skill",
+    "profile": "Leo Held, Düsseldorf\nleo.held@example.com\n2021–heute Personalsachbearbeiter, Adventure Works\n- Personalakten, Zeiterfassung, Onboarding\nKenntnisse: Excel, MS Office, Deutsch — kein Personio",
+    "job": "HR Sachbearbeitung — Litware SE\nPersonalakten, Excel-Reports, Onboarding. Personio von Vorteil (nicht Pflicht).",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Antritt als HR Sachbearbeiter bei Adventure Works",
+        "body": "Sehr geehrte Damen und Herren,\n\nich freue mich, Ihnen meine Bewerbung für die Stelle als HR Sachbearbeiter bei Adventure Works zukommen zu lassen. Mein Name ist Leo Held, und ich arbeite seit 2021 als Personalsachbearbeiter bei Adventure Works, wobei ich mich mit den Aufgaben befasst habe, wie die Führung und Verwaltung von Personalakten, die Zeiterfassung sowie das Onboarding neuer Mitarbeiter.\n\nMeine Kenntnisse reichen über die Verwendung von Excel und MS Office hinaus, und ich bin fließend im Deutschen. Zusätzlich habe ich erfahren, dass Personio von Vorteil sein kann, obwohl es nicht als Pflichtangabe gilt.\n\nIch bin sehr motiviert, diese neue Herausforderung anzunehmen und meine Fähigkeiten in Ihrem Unternehmen einzusetzen. Ich würde mich sehr freuen, Ihnen meine Bewerbung näher zu erläutern.\n\nMit freundlichen Grüßen,\nLeo Held",
+        "anchors_used": [],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich freue mich, Ihnen meine Bewerbung für die Stelle als HR Sachbearbeiter bei Adventure Works zukommen zu lassen. Mein Name ist Leo Held, und ich arbeite seit 2021 als Personalsachbearbeiter bei Adventure Works, wobei ich mich mit den Aufgaben befasst habe, wie die Führung und Verwaltung von Personalakten, die Zeiterfassung sowie das Onboarding neuer Mitarbeiter.\n\nMeine Kenntnisse reichen über die Verwendung von Excel und MS Office hinaus, und ich bin fließend im Deutschen. Zusätzlich habe ich erfahren, dass Personio von Vorteil sein kann, obwohl es nicht als Pflichtangabe gilt.\n\nIch bin sehr motiviert, diese neue Herausforderung anzunehmen und meine Fähigkeiten in Ihrem Unternehmen einzusetzen. Ich würde mich sehr freuen, Ihnen meine Bewerbung näher zu erläutern.\n\nMit freundlichen Grüßen,\nLeo Held",
+    "raw_subject": "Antritt als HR Sachbearbeiter bei Adventure Works",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  },
+  {
+    "id": "cl_missing_hard",
+    "label": "missing hard requirement",
+    "profile": "Nora Admin, Stuttgart\nnora.admin@example.com\n2019–heute Verwaltungsassistenz Arztpraxis Mustermann\n- Terminvergabe, Abrechnung GOÄ-Grundlagen, Patientenaufnahme am Empfang\nKenntnisse: Praxissoftware, Excel, Deutsch",
+    "job": "Pflegefachkraft stationär — Beispielklinik Süd\nPflicht: abgeschlossene Pflegeausbildung, Patientenversorgung, Schichtarbeit.",
+    "envelope": {
+      "ok": true,
+      "capability": "writing",
+      "suggestion": {
+        "subject": "Antrittsbrief als Verwaltungsassistentin bei Arztpraxis Mustermann",
+        "body": "Sehr geehrte Damen und Herren,\n\nich freue mich, Ihnen meine Bewerbung als Verwaltungsassistentin bei der Arztpraxis Mustermann zukommen zu lassen. Seit 2019 bin ich als Verwaltungsassistentin in einer Arztpraxis tätig, wobei ich verschiedene Aufgaben übernehme, darunter die Terminvergabe, die Abrechnung nach den GOÄ-Grundlagen sowie die Patientenaufnahme am Empfang. Meine Kenntnisse umfassen die Nutzung von Praxissoftware, Excel sowie die Sprache Deutsch.\n\nIch bin mir sicher, dass ich mit meinen Fähigkeiten und Erfahrungen einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, Ihnen in einem persönlichen Gespräch meine Qualifikationen näher vorzustellen.\n\nMit freundlichen Grüßen\nNora Admin",
+        "anchors_used": [
+          {
+            "text": "Nora Admin",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Stuttgart",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "2019–heute Verwaltungsassistenz Arztpraxis Mustermann",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Terminvergabe, Abrechnung GOÄ-Grundlagen, Patientenaufnahme am Empfang",
+            "source": "profile",
+            "quote": ""
+          },
+          {
+            "text": "Praxissoftware, Excel, Deutsch",
+            "source": "profile",
+            "quote": ""
+          }
+        ],
+        "invented_flag": true,
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": [
+        "possible_invented_facts"
+      ]
+    },
+    "raw_body": "Sehr geehrte Damen und Herren,\n\nich freue mich, Ihnen meine Bewerbung als Verwaltungsassistentin bei der Arztpraxis Mustermann zukommen zu lassen. Seit 2019 bin ich als Verwaltungsassistentin in einer Arztpraxis tätig, wobei ich verschiedene Aufgaben übernehme, darunter die Terminvergabe, die Abrechnung nach den GOÄ-Grundlagen sowie die Patientenaufnahme am Empfang. Meine Kenntnisse umfassen die Nutzung von Praxissoftware, Excel sowie die Sprache Deutsch.\n\nIch bin mir sicher, dass ich mit meinen Fähigkeiten und Erfahrungen einen wertvollen Beitrag zu Ihrem Team leisten kann. Ich freue mich darauf, Ihnen in einem persönlichen Gespräch meine Qualifikationen näher vorzustellen.\n\nMit freundlichen Grüßen\nNora Admin",
+    "raw_subject": "Antrittsbrief als Verwaltungsassistentin bei Arztpraxis Mustermann",
+    "score": 6.5,
+    "score_notes": [
+      "missing_company"
+    ]
+  }
+]

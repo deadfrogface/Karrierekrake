@@ -1,0 +1,38 @@
+{
+  "id": "fi_04",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 114.364,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie vor, wenn es bei der Tourenplanung zu kurzfristigen Störungen oder Verzögerungen kommt?",
+      "Wie priorisieren Sie Aufgaben, wenn mehrere Telefonanrufe gleichzeitig eingehen?",
+      "Welche Kriterien nutzen Sie, um die Effizienz einer geplanten Route zu bewerten?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung als Disponent in der Tourenplanung"
+    ],
+    "gap_notes": [
+      "Keine spezifischen Projekterfolge oder messbaren Kennzahlen in den Evidenzen vorhanden.",
+      "Fehlende Details zu genutzten Software-Tools für die Tourenplanung."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Disponent",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Tourenplanung, Telefon",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

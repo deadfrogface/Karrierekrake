@@ -1,0 +1,584 @@
+{
+  "n": 60,
+  "passed": 60,
+  "rows": [
+    {
+      "id": "cg1_miss_01",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_02",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_03",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_04",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_05",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_06",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_07",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_08",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_09",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_10",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_11",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_12",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_13",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_14",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_15",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "HARD_REQUIREMENT_NOT_MET",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_16",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_17",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_18",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_19",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_20",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_21",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_22",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_23",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_24",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_25",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_26",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_27",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_28",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_29",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "UNSUPPORTED_CREDENTIAL",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_miss_30",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "CONTRADICTED_CLAIM",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_have_31",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_32",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_33",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_34",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_35",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_36",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_37",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_38",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_have_39",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": [
+        "HARD_REQUIREMENT_NOT_MET"
+      ]
+    },
+    {
+      "id": "cg1_have_40",
+      "expect_final_ok": true,
+      "got_ok": true,
+      "match": true,
+      "codes": []
+    },
+    {
+      "id": "cg1_rel_41",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_42",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_43",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_44",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_45",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_46",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_47",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_48",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_49",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_rel_50",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "HARD_REQUIREMENT_NOT_MET",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_51",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_52",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_53",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_54",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_55",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_56",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_57",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_58",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_59",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "cg1_diff_60",
+      "expect_final_ok": false,
+      "got_ok": false,
+      "match": true,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRONG_COMPANY"
+      ]
+    }
+  ]
+}

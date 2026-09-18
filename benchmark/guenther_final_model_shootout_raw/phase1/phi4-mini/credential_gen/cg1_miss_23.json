@@ -1,0 +1,11 @@
+{
+  "id": "cg1_miss_23",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "CONTRADICTED_CLAIM",
+    "WRONG_COMPANY"
+  ],
+  "model_id": "phi4-mini"
+}

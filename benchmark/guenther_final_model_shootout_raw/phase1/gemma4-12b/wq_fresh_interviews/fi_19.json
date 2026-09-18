@@ -1,0 +1,38 @@
+{
+  "id": "fi_19",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 82.344,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie mit den Anforderungen einer Schichtarbeit um?",
+      "Können Sie Ihre Erfahrung in der Montage beschreiben?",
+      "Wie reagieren Sie auf Qualitätsanforderungen in der Produktion?"
+    ],
+    "talking_points": [
+      "3 Jahre Berufserfahrung in der Produktion",
+      "Erfahrung in der Montage"
+    ],
+    "gap_notes": [
+      "No specific project details or achievements provided in the profile."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Produktion",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Montage, Schicht",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

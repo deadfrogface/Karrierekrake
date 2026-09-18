@@ -1,0 +1,64 @@
+{
+  "id": "sc_des_01",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 216.354,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Debitorenmanagement in Excel ein und bin bereit, mich an die Anforderungen von LedgerPro AG anzupassen. Während ich keine DATEV-Kenntnisse habe, bin ich motiviert, diese Fähigkeiten zu erwerben, um meine Rolle als Buchhalter/in optimal auszuführen.",
+  "subject": "Buchhalter/in",
+  "peak_rss_mb": 230.86328125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 56.05,
+      "draft": 18.28,
+      "critique_1": 51.048,
+      "quality_revision_1": 22.758,
+      "critique_2": 68.213
+    },
+    "cot_stored": false
+  }
+}

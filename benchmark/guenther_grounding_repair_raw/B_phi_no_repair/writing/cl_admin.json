@@ -1,0 +1,47 @@
+{
+  "id": "cl_admin",
+  "subject": "Verwaltungsfachkraft - Woodgrove Kommunalservice",
+  "body": "Sehr geehrte Damen und Herren, Ich bin Tina Büro, eine erfahrene Sachbearbeiterin, die seit 2017 in der Verwaltung tätig ist. Mit meiner Expertise in Aktenführung, Formularprüfung, Bürgertelefon und Excel-Listen bin ich überzeugt, dass ich meine Fähigkeiten im Bereich der Verwaltung und sorgfältigen Dokumentation für Woodgrove Kommunalservice nutzen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse von MS Office und meine Muttersprache Deutsch in Ihre Organisation einzubringen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Ihnen zu besprechen. Mit freundlichen Grüßen, Tina Büro, tina.buero@example.com",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Verwaltungsfachkraft - Woodgrove Kommunalservice",
+          "body": "Sehr geehrte Damen und Herren, Ich bin Tina Büro, eine erfahrene Sachbearbeiterin, die seit 2017 in der Verwaltung tätig ist. Mit meiner Expertise in Aktenführung, Formularprüfung, Bürgertelefon und Excel-Listen bin ich überzeugt, dass ich meine Fähigkeiten im Bereich der Verwaltung und sorgfältigen Dokumentation für Woodgrove Kommunalservice nutzen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse von MS Office und meine Muttersprache Deutsch in Ihre Organisation einzubringen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Ihnen zu besprechen. Mit freundlichen Grüßen, Tina Büro, tina.buero@example.com",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

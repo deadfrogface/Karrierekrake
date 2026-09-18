@@ -1,0 +1,49 @@
+{
+  "id": "fb_career_06",
+  "final_ok": true,
+  "score": 6.0,
+  "notes": [
+    "placeholder"
+  ],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren der InsightLab AG, ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position des Junior Data Analyst auszudrücken. Mit meiner Erfahrung in Excel-Auswertungen und Reporting habe ich die Fähigkeit entwickelt, Daten effektiv zu analysieren und zu interpretieren, was mir ermöglicht, wertvolle Einblicke für die Entscheidungsfindung zu liefern. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Datenanalyse gut zu den Anforderungen der Position passen. Ich freue mich darauf, meine Fähigkeiten in Ihrem renommierten Unternehmen einzubringen und zur erfolgreichen Datenanalyse bei InsightLab AG beizutragen.",
+  "subject": "Begeisterte Bewerbung für die Position des Junior Data Analyst bei InsightLab AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Begeisterte Bewerbung für die Position des Junior Data Analyst bei InsightLab AG",
+          "body": "Sehr geehrte Damen und Herren der InsightLab AG, ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position des Junior Data Analyst auszudrücken. Mit meiner Erfahrung in Excel-Auswertungen und Reporting habe ich die Fähigkeit entwickelt, Daten effektiv zu analysieren und zu interpretieren, was mir ermöglicht, wertvolle Einblicke für die Entscheidungsfindung zu liefern. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Datenanalyse gut zu den Anforderungen der Position passen. Ich freue mich darauf, meine Fähigkeiten in Ihrem renommierten Unternehmen einzubringen und zur erfolgreichen Datenanalyse bei InsightLab AG beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

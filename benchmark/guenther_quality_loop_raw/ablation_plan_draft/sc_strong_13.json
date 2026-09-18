@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_13",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 82.062,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin ein zertifizierter Industriekaufmann IHK, was meine Fähigkeiten im Bestellwesen und im Umgang mit Lieferanten stärkt. Meine Erfahrung im Bestellwesen und Lieferanten ermöglicht es mir, nahtlos in die Rolle des Einkäufers bei SupplyWest AG zu integrieren. Ich bin bereit, meine umfassenden Kenntnisse und meine Anpassungsfähigkeit auf die spezifischen Anforderungen von SupplyWest AG zuzuwenden.",
+  "subject": "Einkäufer/in - SupplyWest AG",
+  "peak_rss_mb": 144.3203125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 58.386,
+      "draft": 23.674
+    },
+    "cot_stored": false
+  }
+}

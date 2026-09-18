@@ -1,0 +1,43 @@
+{
+  "id": "fi_14",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 57.83,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie bewerten Sie Ihre bisherigen Erfahrungen mit SLA-Einhaltung in der Facility-Branche?",
+      "Welche Strategien haben Sie angewendet, um Instandhaltungsprozesse effizienter zu gestalten?",
+      "Wie gehen Sie mit dringenden Störungen im Vergleich zu geplanten Wartungen um?"
+    ],
+    "talking_points": [
+      "Erfahrung in der Facility-Instandhaltung über 3 Jahre mit Fokus auf SLA-Management."
+    ],
+    "gap_notes": [
+      "Fehlende spezifische Evidenz für die genannte Stelle in der EVIDENZ-Liste.",
+      "Keine konkreten Beispiele für erfolgreiche SLA-Verbesserungen oder technische Details verfügbar."
+    ],
+    "anchors_used": [
+      {
+        "text": "3 Jahre Facility-Erfahrung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Instandhaltung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "SLA",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

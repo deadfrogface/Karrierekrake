@@ -1,0 +1,47 @@
+{
+  "id": "fb_med_05",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren der QualiCheck GmbH, ich schreibe Ihnen, um meine Erfahrung im Bereich Qualitätskontrolle und die Anwendung von Checklisten und Messmitteln, insbesondere im Kontext von ISO-Prozessen, für die Position des Qualitätsprüfers zu präsentieren. In meiner bisherigen Rolle bei Zeno Quality war ich für die Entwicklung und Umsetzung von Qualitätsmanagementsystemen verantwortlich, was meine Fähigkeit zur Überprüfung und Verbesserung von Prozessen unterstreicht. Ich bin überzeugt, dass meine Erfahrung im Bereich der Qualitätskontrolle und die Vertrautheit mit ISO-Prozessen eine wertvolle Ergänzung für Ihr Team sein wird. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in die Arbeit bei QualiCheck GmbH einzubringen.",
+  "subject": "Bewerbung für die Position des Qualitätsprüfers",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Qualitätsprüfers",
+          "body": "Sehr geehrte Damen und Herren der QualiCheck GmbH, ich schreibe Ihnen, um meine Erfahrung im Bereich Qualitätskontrolle und die Anwendung von Checklisten und Messmitteln, insbesondere im Kontext von ISO-Prozessen, für die Position des Qualitätsprüfers zu präsentieren. In meiner bisherigen Rolle bei Zeno Quality war ich für die Entwicklung und Umsetzung von Qualitätsmanagementsystemen verantwortlich, was meine Fähigkeit zur Überprüfung und Verbesserung von Prozessen unterstreicht. Ich bin überzeugt, dass meine Erfahrung im Bereich der Qualitätskontrolle und die Vertrautheit mit ISO-Prozessen eine wertvolle Ergänzung für Ihr Team sein wird. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in die Arbeit bei QualiCheck GmbH einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "sc_strong_13",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 99.308,
+  "model_calls": 4,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit einer soliden Grundlage im Bestellwesen und Lieferanten, kombiniert mit einem Abschluss als Industriekaufmann IHK, bin ich gut positioniert, um die Anforderungen des Einkäufers bei SupplyWest AG zu erfüllen. Meine Berufserfahrung und Sprachkenntnisse im Deutschen entsprechen den Anforderungen des Jobs.",
+  "subject": "Einkäufer/in",
+  "peak_rss_mb": 208.4609375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 1,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "SAFETY_REPAIR",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 40.443,
+      "draft": 15.613,
+      "safety_repair": 18.339,
+      "critique_1": 24.91
+    },
+    "cot_stored": false
+  }
+}

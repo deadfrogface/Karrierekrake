@@ -1,0 +1,76 @@
+{
+  "id": "iv_dental_medical",
+  "suggestion": {
+    "questions": [
+      "Wie organisierst du deine Aufgaben, um sicherzustellen, dass Terminvergabe und Patientenaufnahme effizient durchgeführt werden?",
+      "Kannst du ein Beispiel für eine GOÄ-Abrechnung geben, die du durchgeführt hast?",
+      "Wie kommunizierst du mit den Patienten, wenn es um Terminplanung oder Abrechnungsfragen geht?"
+    ],
+    "talking_points": [
+      "Effizienz bei der Terminvergabe und Patientenaufnahme",
+      "Verständnis und Anwendung der GOÄ-Abrechnungsgrundlagen",
+      "Kommunikationsfähigkeiten mit Patienten im Empfang"
+    ],
+    "gap_notes": [
+      "Erfahrungen mit Praxissoftware und Excel",
+      "Beherrschung der deutschen Sprache im beruflichen Kontext"
+    ],
+    "anchors_used": [
+      {
+        "text": "Veranstaltung im Empfang",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Terminvergabe und Patientenaufnahme",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "GOÄ-Abrechnung Grundlagen",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Effizienz bei der Terminvergabe und Patientenaufnahme",
+            "Verständnis und Anwendung der GOÄ-Abrechnungsgrundlagen",
+            "Kommunikationsfähigkeiten mit Patienten im Empfang"
+          ],
+          "questions": [
+            "Wie organisierst du deine Aufgaben, um sicherzustellen, dass Terminvergabe und Patientenaufnahme effizient durchgeführt werden?",
+            "Kannst du ein Beispiel für eine GOÄ-Abrechnung geben, die du durchgeführt hast?",
+            "Wie kommunizierst du mit den Patienten, wenn es um Terminplanung oder Abrechnungsfragen geht?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

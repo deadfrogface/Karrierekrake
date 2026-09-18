@@ -1,0 +1,3 @@
+SUBJECT: Bewerbung für die Position Systemadmin bei InfraWorks GmbH
+
+Durch meine Erfahrung bei Nina Linux habe ich umfangreiche Kenntnisse im Bereich Linux und Bash erworben. Diese Fähigkeiten ermöglichen es mir, Systemadministrationsaufgaben effizient zu bewältigen und die Infrastruktur zu verwalten. Obwohl ich kein AWS Zertifikat besitze, bin ich ein AWS Cloud Practitioner, was ich gerne in meine Bewerbung für die Position Systemadmin bei InfraWorks GmbH einbringen würde. Ich bin überzeugt, dass meine technischen Fähigkeiten und meine Bereitschaft, mich in AWS weiterzuentwickeln, einen wertvollen Beitrag für Ihr Unternehmen leisten können.

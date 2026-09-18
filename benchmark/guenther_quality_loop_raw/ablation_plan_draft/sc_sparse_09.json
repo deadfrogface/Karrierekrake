@@ -1,0 +1,42 @@
+{
+  "id": "sc_sparse_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 53.589,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, im Zuge meiner kontinuierlichen beruflichen Entwicklung bin ich auf die ausgeschriebene Position des Empfangs Aushilfen bei ClinicLite gestoßen. Mit einer soliden Grundlage im Empfang, wie in meinem Qin Brief dokumentiert, bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihrem Team einsetzen kann. Obwohl ich keine spezifischen Erfahrungen mit ClinicLite oder detaillierte Deutschkenntnisse in den verfügbaren Informationen erwähnt habe, bin ich bereit, meine umfassenden Fähigkeiten und meine Begeisterung für die Rolle zu demonstrieren.",
+  "subject": "Empfang Aushilfe - ClinicLite",
+  "peak_rss_mb": 217.0,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.508,
+      "draft": 20.08
+    },
+    "cot_stored": false
+  }
+}

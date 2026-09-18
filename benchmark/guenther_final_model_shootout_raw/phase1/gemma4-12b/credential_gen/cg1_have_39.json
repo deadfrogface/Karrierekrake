@@ -1,0 +1,10 @@
+{
+  "id": "cg1_have_39",
+  "expect_final_ok": true,
+  "got_ok": true,
+  "match": true,
+  "codes": [
+    "HARD_REQUIREMENT_NOT_MET"
+  ],
+  "model_id": "gemma4-12b"
+}

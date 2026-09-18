@@ -1,0 +1,26 @@
+{
+  "id": "fi_05",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 20.861,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie integrierst du LinkedIn in deine Active Sourcing-Strategie?",
+      "Kannst du ein erfolgreiches Rekrutierungsprojekt beschreiben, das du durch Active Sourcing bei TalentBridge abgeschlossen hast?",
+      "Welche Herausforderungen stellst du dir bei der Nutzung von LinkedIn für Sourcing und wie überwindest du diese?"
+    ],
+    "talking_points": [
+      "Erwähne spezifische Strategien, die du für Active Sourcing auf LinkedIn entwickelt hast.",
+      "Diskutiere die Art und Weise, wie du LinkedIn nutzt, um potenzielle Kandidaten zu identifizieren und mit ihnen in Kontakt zu treten.",
+      "Erkläre, wie du deine Sourcing-Effizienz und -Ergebnisse auf LinkedIn gemessen und verbessert hast."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

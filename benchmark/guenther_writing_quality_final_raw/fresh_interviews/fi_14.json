@@ -1,0 +1,29 @@
+{
+  "id": "fi_14",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit der Einhaltung von SLA in Ihrer bisherigen Rolle erzählen?",
+      "Welche Strategien verwenden Sie, um die Instandhaltung auf einem Campus zu verwalten?",
+      "Wie gehen Sie mit Herausforderungen im Zusammenhang mit der Instandhaltung um, um die SLA zu erfüllen?"
+    ],
+    "talking_points": [
+      "Erfahrung in der Instandhaltung mit einem Fokus auf SLA.",
+      "Drei Jahre Berufserfahrung in Facility-Instandhaltung.",
+      "Verständnis für die Verwaltung von Instandhaltung auf einem Campus."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Errungenschaften erwähnt, die in den Beweisen aufgeführt sind.",
+      "Mögliche Lücken in der Erzählung, da keine detaillierten Beispiele oder Erfolge bereitgestellt wurden.",
+      "Möglicherweise zusätzliche Informationen über die Rolle, die die Einhaltung von SLA betraf, oder über die spezifischen Herausforderungen, denen sich der Kandidat im Laufe seiner Karriere gestellt hat, erforderlich."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

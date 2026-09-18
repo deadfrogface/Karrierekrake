@@ -1,0 +1,67 @@
+{
+  "n": 5,
+  "still_inventing": 0,
+  "all_cleared": true,
+  "rows": [
+    {
+      "id": "bw_15",
+      "body": "Ich bringe meine Erfahrung im Finanzwesen und meine Fähigkeiten im Datenmanagement ein, um die Kontrollen des Northwind-Stores zu verbessern. Mit meinem Hintergrund in der Finanzverwaltung und meinem Engagement für Datenintegrität bin ich zuversichtlich, dass ich einen wertvollen Beitrag zum Team von Contoso DATEV leisten kann.",
+      "bad_tokens": [],
+      "blocked": false,
+      "repairs": 1,
+      "codes": [
+        "HARD_REQUIREMENT_NOT_MET"
+      ]
+    },
+    {
+      "id": "bw_19",
+      "body": "",
+      "bad_tokens": [],
+      "blocked": true,
+      "repairs": 2,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRITING_BLOCKED_HARD_REQUIREMENT",
+        "HARD_REQUIREMENT_NOT_MET",
+        "HARD_REQUIREMENT_NOT_MET",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "bw_26",
+      "body": "",
+      "bad_tokens": [],
+      "blocked": true,
+      "repairs": 2,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRITING_BLOCKED_HARD_REQUIREMENT",
+        "HARD_REQUIREMENT_NOT_MET",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "bw_28",
+      "body": "Ich freue mich darauf, meine Unterstützungserfahrungen und meine Leidenschaft für technisches Problemlösen in die Rolle des 2nd Level Network Technikers einzubringen. Mit meinem Hintergrund in der Windows-Support-Sphäre bin ich vertraut mit den Herausforderungen und Lösungen im Netzwerkbereich. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Fähigkeit, komplexe Systeme zu verstehen, mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+      "bad_tokens": [],
+      "blocked": false,
+      "repairs": 0,
+      "codes": [
+        "HARD_REQUIREMENT_NOT_MET",
+        "WRONG_COMPANY"
+      ]
+    },
+    {
+      "id": "bw_30",
+      "body": "",
+      "bad_tokens": [],
+      "blocked": true,
+      "repairs": 2,
+      "codes": [
+        "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+        "WRITING_BLOCKED_HARD_REQUIREMENT",
+        "HARD_REQUIREMENT_NOT_MET"
+      ]
+    }
+  ]
+}

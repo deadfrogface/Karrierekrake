@@ -1,0 +1,27 @@
+{
+  "id": "fi_15",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein spezifisches Beispiel geben, wie Sie ein Problem im Bestellwesen gelöst haben?",
+      "Welche Strategien verwenden Sie, um Lieferanten effektiv zu verwalten und Beziehungen aufzubauen?",
+      "Wie halten Sie die Lieferkettenaktualisierungen in Ihrem Bereich auf dem neuesten Stand?"
+    ],
+    "talking_points": [
+      "Diskussion über Best Practices im Bestellwesen und Lieferantenmanagement, basierend auf der Erfahrung im Einkauf.",
+      "Erwähnung von Erfolgsstrategien zur Optimierung der Lieferketten und zur Verbesserung der Kommunikation mit Lieferanten."
+    ],
+    "gap_notes": [
+      "Fehlen spezifischer Beispiele aus der aktuellen Erfahrung, die während des Interviews bereitgestellt werden können.",
+      "Mögliche Notwendigkeit, mehr Details über die Rolle bei SupplyWest GmbH und die damit verbundenen Verantwortlichkeiten zu liefern."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

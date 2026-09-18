@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_18",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 51.189,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe eine solide Grundlage in der Instandhaltung, SLA und Handwerk mit meinem Hintergrund bei Rita Facility ein. Meine Erfahrung kann direkt auf die Anforderungen des Facility Manager-Posts bei CampusCare SE übertragen werden, wobei ich sicherstelle, dass ich die notwendigen Fähigkeiten und Kenntnisse im Bereich Facility Management besitze.",
+  "subject": "Facility Manager",
+  "peak_rss_mb": 188.296875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 34.925,
+      "draft": 16.264
+    },
+    "cot_stored": false
+  }
+}

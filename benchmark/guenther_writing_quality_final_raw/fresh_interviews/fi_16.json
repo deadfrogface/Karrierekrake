@@ -1,0 +1,27 @@
+{
+  "id": "fi_16",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Fall beschreiben, bei dem Sie Fallmanagement-Techniken erfolgreich angewendet haben?",
+      "Wie gehen Sie vor, um die Bedürfnisse Ihrer Klienten in Ihrem Fallmanagement-Prozess zu verstehen und zu adressieren?",
+      "Welche Strategien verwenden Sie, um mit den Herausforderungen umzugehen, denen Sie im Laufe Ihrer Sozialarbeit-Berufserfahrung begegnet sind?"
+    ],
+    "talking_points": [
+      "Diskussion über Fallmanagement-Strategien und deren positive Auswirkungen auf die Klienten."
+    ],
+    "gap_notes": [
+      "Fehlen spezifischer Beispiele für Fallmanagement-Erfolge, die während des Interviews geteilt werden können.",
+      "Es könnte hilfreich sein, konkrete Fallmanagement-Techniken oder -Methoden zu benennen, die im Profil erwähnt werden könnten.",
+      "Es fehlen Details zu den Herausforderungen, denen der Kandidat begegnet ist, was die Diskussion über Bewältigungsfähigkeiten einschränken könnte."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

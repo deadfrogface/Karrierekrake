@@ -1,0 +1,10 @@
+FROZEN COVER QUALITY JUDGE v1 (deterministic structural scorer).
+
+This evaluator is FROZEN for the cover-letter specialization pass.
+Do NOT modify rubric, base score, deductions, or ready_as_is threshold during optimization.
+
+READY_AS_IS := final_ok AND score_cover >= 8.0
+Denomimator for ready_as_is_pct := ALL eligible cases.
+
+score_cover starts at 8.0 and applies only the documented deterministic deductions.
+No LLM judge is used in v1; textual GEPA feedback is produced separately from error tags.

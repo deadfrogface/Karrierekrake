@@ -1,0 +1,28 @@
+{
+  "id": "si_04",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 31.72,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel dafür geben, wie Sie eine komplexe Tour für einen Kunden bei FleetMove KG geplant haben?",
+      "Wie gehen Sie mit schwierigen Kundeninteraktionen um, insbesondere wenn es um Telefonate geht?",
+      "Welche Strategien verwenden Sie, um Ihre Tourenplanungseffizienz zu verbessern?"
+    ],
+    "talking_points": [
+      "Diskussion über die Anwendung von Techniken zur Tourenplanung, um Zeit und Ressourcen zu sparen.",
+      "Erörterung der Nutzung von Software-Tools oder Methoden zur Optimierung der Tourenplanung und Steigerung der Effizienz."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Meilensteine im Profil angegeben, daher ist es schwierig, konkrete Erfolge zu diskutieren.",
+      "Mögliche Transferfähigkeiten aus früheren Rollen oder Fähigkeiten fehlen, daher ist es wichtig, auf allgemeine Fähigkeiten in Tourenplanung und Kundenkommunikation zu fokussieren."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "sc_unk_02",
+  "expect_hard_block": false,
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 55.562,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "body": "Ich bin Dee Soft, und ich habe Interesse an der Support Specialist Rolle, die Sie ausgeschrieben haben. Mit meiner Erfahrung in der Ticketbearbeitung und Windows-Systemen bin ich überzeugt, dass ich gut zu den Anforderungen dieser Position passen würde. Ich freue mich darauf, meine Fähigkeiten in Ihrem Team einzubringen.",
+  "subject": "Application for Support Specialist Position",
+  "baseline_score": 6.5,
+  "baseline_edit": "MATERIAL_EDIT_REQUIRED",
+  "hard_flags": {}
+}

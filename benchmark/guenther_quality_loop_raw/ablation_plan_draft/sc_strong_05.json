@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 89.354,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Eli Electro, Elektroniker Energie Ausbildung. Ich habe Erfahrung im Bereich Schaltschrank, Wartung. Ich bin gut positioniert, um die Anforderungen des Elektroniker-Posts bei PowerFix GmbH zu erfüllen.",
+  "subject": "Elektroniker",
+  "peak_rss_mb": 203.93359375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 70.144,
+      "draft": 19.208
+    },
+    "cot_stored": false
+  }
+}

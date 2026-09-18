@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_07",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 79.224,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe 4 Jahre Berufserfahrung im Bereich Personalsachbearbeitung ein, wobei ich mich auf Onboarding-Prozesse und Excel-Fähigkeiten spezialisiert habe. Ich bin überzeugt, dass meine Fähigkeiten und Erfahrungen eine wertvolle Bereicherung für PeopleCore KG sein werden.",
+  "subject": "Personalsachbearbeiter/in",
+  "peak_rss_mb": 230.578125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.405,
+      "draft": 16.905,
+      "critique_1": 24.911
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,133 @@
+[
+  {
+    "id": "ho_claim_tempt_pflege",
+    "envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    }
+  },
+  {
+    "id": "ho_claim_tempt_degree",
+    "envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    }
+  },
+  {
+    "id": "ho_claim_tempt_employer",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Adventure Works Köln",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Sachbearbeiter Personal, Adventure Works Köln",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Pflege von Personalakten und Zeiterfassung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Excel-Reports für HR",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Onboarding-Unterstützung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "05.2016 – 05.2019  Office Manager, Litware SE Düsseldorf",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Büroorganisation und Lieferantenabstimmung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "2013 – 2016  Kaufmann für Büromanagement, IHK Köln",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "MS Office, Excel, Personio Grundlagen, Deutsch Muttersprache, Englisch B2",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_1",
+    "envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    }
+  },
+  {
+    "id": "ho_bulk_claim_2",
+    "envelope": {
+      "ok": false,
+      "capability": "evidence_assist",
+      "suggestion": {},
+      "fallback_reason": "invalid_json",
+      "provider_status": "error",
+      "model_id": "qwen2.5-7b-instruct",
+      "validated": false,
+      "safety_notes": [
+        "fail_closed"
+      ]
+    }
+  }
+]

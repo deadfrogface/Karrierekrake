@@ -1,0 +1,39 @@
+{
+  "id": "si_28",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 39.285,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein erfolgreiches Angebot oder eine Lieferantenbeziehung beschreiben, die Sie während Ihrer Zeit bei Procurement aufgebaut haben?",
+      "Wie gehen Sie vor, um die Bedürfnisse Ihres Kunden in Bezug auf Angebote und Lieferanten zu verstehen und zu erfüllen?",
+      "Welche Strategien verwenden Sie, um wettbewerbsfähige Angebote zu sichern und Lieferanten zu managen?"
+    ],
+    "talking_points": [
+      "Erörtern Sie Ihre Ansätze zur Lieferantenbeziehung, einschließlich der Auswahl, Bewertung und des Managements von Lieferanten.",
+      "Besprechen Sie, wie Sie Ihre Fähigkeiten im Procurement verbessern und wie Sie Ihre Rolle in der Beschaffung für BuyLine AG optimieren können."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder abgeschlossene Projekte zur Verfügung gestellt, daher ist es wichtig, allgemeine Fähigkeiten und Strategien zu betonen, die auf die Rolle zugeschnitten sind.",
+      "Mögliche Lücken in der Erfahrung mit spezifischen Tools oder Prozessen, die bei BuyLine AG verwendet werden, müssen geschlossen werden, indem man sich auf allgemeine Fähigkeiten und Lernbereitschaft konzentriert."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung im Procurement",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Angebote, Lieferanten",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

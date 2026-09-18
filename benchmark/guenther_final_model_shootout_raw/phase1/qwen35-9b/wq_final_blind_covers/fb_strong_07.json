@@ -1,0 +1,52 @@
+{
+  "id": "fb_strong_07",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.8,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 69.808,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Bewerbung bewerbe ich mich bei SecureNet KG für die ausgeschriebene Position als Netzwerktechniker. Die von Ihnen geforderten Schwerpunkte Firewall, VPN und Switching decken sich exakt mit meinem technischen Fokus und meiner täglichen Praxis.\n\nIn meiner bisherigen Tätigkeit habe ich mich intensiv mit der Administration und Wartung von Netzwerkinfrastrukturen beschäftigt. Konkrete Beispiele aus meinem Profil sind:\n- Einrichtung und Konfiguration von VPN-Tunneln für sichere Fernzugriffe.\n- Verwaltung und Optimierung von Switching-Umgebungen zur effizienten Datenübertragung.\n- Implementierung und Pflege von Firewall-Regeln zum Schutz der Netzwerkpere.\n\nZwar liegt mir kein formales CCNA-Zertifikat vor, doch meine praktische Erfahrung in den genannten Bereichen ermöglicht mir, die Anforderungen der Stelle sicher zu erfüllen. Ich bin überzeugt, dass ich durch meine fundierte Praxis und meine schnelle Auffassungsgabe einen sofortigen Mehrwert für Ihr Team bei SecureNet KG leisten kann.\n\nGerne stelle ich mich in einem persönlichen Gespräch vor und freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nTim Network",
+  "subject": "Bewerbung als Netzwerktechniker – Tim Network",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Netzwerktechniker – Tim Network",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Bewerbung bewerbe ich mich bei SecureNet KG für die ausgeschriebene Position als Netzwerktechniker. Die von Ihnen geforderten Schwerpunkte Firewall, VPN und Switching decken sich exakt mit meinem technischen Fokus und meiner täglichen Praxis.\n\nIn meiner bisherigen Tätigkeit habe ich mich intensiv mit der Administration und Wartung von Netzwerkinfrastrukturen beschäftigt. Konkrete Beispiele aus meinem Profil sind:\n- Einrichtung und Konfiguration von VPN-Tunneln für sichere Fernzugriffe.\n- Verwaltung und Optimierung von Switching-Umgebungen zur effizienten Datenübertragung.\n- Implementierung und Pflege von Firewall-Regeln zum Schutz der Netzwerkpere.\n\nZwar liegt mir kein formales CCNA-Zertifikat vor, doch meine praktische Erfahrung in den genannten Bereichen ermöglicht mir, die Anforderungen der Stelle sicher zu erfüllen. Ich bin überzeugt, dass ich durch meine fundierte Praxis und meine schnelle Auffassungsgabe einen sofortigen Mehrwert für Ihr Team bei SecureNet KG leisten kann.\n\nGerne stelle ich mich in einem persönlichen Gespräch vor und freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen\nTim Network",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

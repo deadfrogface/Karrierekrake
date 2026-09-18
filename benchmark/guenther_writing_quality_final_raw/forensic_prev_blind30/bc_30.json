@@ -1,0 +1,94 @@
+{
+  "id": "bc_30",
+  "target_role": "Servicetechniker (m/w/d)",
+  "target_company": "KlimaKontrolle",
+  "profile": "Blind Cover 30\nWartung, Kältemittel\nReferenz: Projektarbeit in servicetechniker",
+  "job": "Servicetechniker (m/w/d)\nKlimaKontrolle\nProfil: Wartung, Kältemittel.",
+  "final_ok": true,
+  "repair_count": 1,
+  "exhausted": false,
+  "category": "ACCEPTED",
+  "final_blocking_errors": [],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "begeistert von der Möglichkeit"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "praktischen Erfahrung"
+    }
+  ],
+  "attempt1_errors": [],
+  "attempt1_claims": [],
+  "attempt0_body": "Ich schreibe, um meine Begeisterung für die Position des Servicetechnikers, die Sie derzeit für die Klimakontrolle ausgeschrieben haben, auszudrücken. Mit meiner praktischen Erfahrung in der Wartung und dem Umgang mit Kältemittel, die ich während meiner Zeit als Servicetechniker erworben habe, bin ich überzeugt, dass ich ein wertvoller Beitrag für Ihr Team sein kann. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf die Aufrechterhaltung der optimalen Funktionalität und Effizienz konzentriert. Ich freue mich darauf, meine Kenntnisse und meine Leidenschaft für die Wartung in Ihrem Unternehmen einzubringen.",
+  "attempt1_body": "Ich schreibe, um mich für die Position des Servicetechnikers, die Sie derzeit für die Klimakontrolle ausgeschrieben haben, zu bewerben. Mit meiner Ausbildung als Servicetechniker und meiner Erfahrung in der Wartung und im Umgang mit Kältemittel bin ich überzeugt, dass ich gut zu Ihrem Team passen würde. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf die Aufrechterhaltung der optimalen Funktionalität und Effizienz konzentriert.",
+  "final_body": "Ich schreibe, um mich für die Position des Servicetechnikers, die Sie derzeit für die Klimakontrolle ausgeschrieben haben, zu bewerben. Mit meiner Ausbildung als Servicetechniker und meiner Erfahrung in der Wartung und im Umgang mit Kältemittel bin ich überzeugt, dass ich gut zu Ihrem Team passen würde. Ich freue mich darauf, meine Fähigkeiten in einem Umfeld einzubringen, das sich auf die Aufrechterhaltung der optimalen Funktionalität und Effizienz konzentriert.",
+  "final_subject": "Freundliche Einladung zum Servicetechniker-Job",
+  "body_len": 467,
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung als Servicetechniker",
+          "kind": "credential",
+          "span": "Mit meiner Ausbildung als Servicetechniker und meiner Erfahrung in",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Ausbildung als Servicetechniker und meiner Erfahrung in",
+          "kind": "credential",
+          "span": "Ausbildung als Servicetechniker und meiner Erfahrung in",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Ausbildung als Servicetechniker und meiner Erfahrun",
+          "kind": "credential",
+          "span": "Ausbildung als Servicetechniker und meiner Erfahrun",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_2",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": null,
+  "fail_closed_kind": null
+}

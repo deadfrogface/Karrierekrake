@@ -1,0 +1,47 @@
+{
+  "id": "dev_12",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Leidenschaft für Storytelling und meine Erfahrung im Journalismus auf die Rolle des Marketings bei BrandWave SE zu übertragen. Mein Engagement für Content-Erstellung und mein Verständnis für die Kraft des Storytelling in sozialen Medien, wie sie in meiner bisherigen Tätigkeit sichtbar wurden, würden ich gerne in die Markenbildung und das Wachstum von BrandWave SE einbringen. Ich bin überzeugt, dass meine Fähigkeiten im Content-Management und meine strategische Denkweise die Marke von BrandWave SE stärken können. Ich freue mich darauf, meine Ideen und Erfahrungen in Ihre Marketing-Strategie einzubringen. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "BrandWave SE - Marketing-Begeisterter",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "BrandWave SE - Marketing-Begeisterter",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Leidenschaft für Storytelling und meine Erfahrung im Journalismus auf die Rolle des Marketings bei BrandWave SE zu übertragen. Mein Engagement für Content-Erstellung und mein Verständnis für die Kraft des Storytelling in sozialen Medien, wie sie in meiner bisherigen Tätigkeit sichtbar wurden, würden ich gerne in die Markenbildung und das Wachstum von BrandWave SE einbringen. Ich bin überzeugt, dass meine Fähigkeiten im Content-Management und meine strategische Denkweise die Marke von BrandWave SE stärken können. Ich freue mich darauf, meine Ideen und Erfahrungen in Ihre Marketing-Strategie einzubringen. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

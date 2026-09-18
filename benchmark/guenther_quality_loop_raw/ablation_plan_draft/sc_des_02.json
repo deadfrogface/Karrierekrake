@@ -1,0 +1,42 @@
+{
+  "id": "sc_des_02",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 42.855,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe umfangreiche Erfahrung im Bereich Social Ads ein, was direkt für die Rolle eines Marketing Managers bei AdPulse SE relevant ist. Leider fehlt mir ein Google-Ads-Zertifikat, was für die Position möglicherweise wünschenswert ist.",
+  "subject": "Marketing Manager",
+  "peak_rss_mb": 217.03515625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 28.523,
+      "draft": 14.331
+    },
+    "cot_stored": false
+  }
+}

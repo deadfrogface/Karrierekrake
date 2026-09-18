@@ -1,0 +1,50 @@
+{
+  "id": "sc_sparse_06",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 31.328,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe Ihnen, um meine Begeisterung für die Position Hilfskraft Archiv im Stadtarchiv Nord auszudrücken. Mit meiner Erfahrung im Bereich der Dokumentenorganisation und Archivierung bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Arbeit des Stadtarchivs integrieren kann. Insbesondere meine Rolle als Hilfskraft im Stadtarchiv Ost, wo ich mich mit der Organisation und Verwaltung von Archivmaterialien beschäftigte, hat mir wertvolle Erfahrungen in der Dokumentenpflege und im Umgang mit historischen Dokumenten vermittelt. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit Archivmaterialien und meine Leidenschaft für die Bewahrung von Geschichte und Kultur gut zu den Anforderungen des Stadtarchivs Nord passen. Ich freue mich darauf, meine Fähigkeiten und meine Begeisterung für die Arbeit im Stadtarchiv Nord zu nutzen.",
+  "subject": "Bewerbung für die Position Hilfskraft Archiv im Stadtarchiv Nord",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Hilfskraft Archiv im Stadtarchiv Nord",
+          "body": "Ich schreibe Ihnen, um meine Begeisterung für die Position Hilfskraft Archiv im Stadtarchiv Nord auszudrücken. Mit meiner Erfahrung im Bereich der Dokumentenorganisation und Archivierung bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Arbeit des Stadtarchivs integrieren kann. Insbesondere meine Rolle als Hilfskraft im Stadtarchiv Ost, wo ich mich mit der Organisation und Verwaltung von Archivmaterialien beschäftigte, hat mir wertvolle Erfahrungen in der Dokumentenpflege und im Umgang mit historischen Dokumenten vermittelt. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit Archivmaterialien und meine Leidenschaft für die Bewahrung von Geschichte und Kultur gut zu den Anforderungen des Stadtarchivs Nord passen. Ich freue mich darauf, meine Fähigkeiten und meine Begeisterung für die Arbeit im Stadtarchiv Nord zu nutzen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5589.9
+}

@@ -1,0 +1,50 @@
+{
+  "id": "fb_career_03",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 29.178,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Junior Recruiters bei HireFast KG auszudrücken. Mit meiner Erfahrung im Empfang und Terminplanung, insbesondere im Umgang mit verschiedenen Zeitplänen und der Organisation von Terminen, sehe ich eine solide Grundlage für die Rolle im Recruiting-Bereich. Ich bin überzeugt, dass meine Fähigkeiten im Zeitmanagement und in der Kommunikation, die ich durch die Koordination von Terminen entwickelt habe, direkt auf die Anforderungen des Junior Recruiter-Posts zutreffen. Ich bin besonders an der Möglichkeit interessiert, meine Fähigkeiten im Recruitment-Bereich zu erweitern und zu nutzen. Ich freue mich auf die Möglichkeit, meine Bewerbung für diese Position zu erörtern. Vielen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Bewerbung für die Position Junior Recruiter bei HireFast KG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Junior Recruiter bei HireFast KG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Begeisterung für die Position des Junior Recruiters bei HireFast KG auszudrücken. Mit meiner Erfahrung im Empfang und Terminplanung, insbesondere im Umgang mit verschiedenen Zeitplänen und der Organisation von Terminen, sehe ich eine solide Grundlage für die Rolle im Recruiting-Bereich. Ich bin überzeugt, dass meine Fähigkeiten im Zeitmanagement und in der Kommunikation, die ich durch die Koordination von Terminen entwickelt habe, direkt auf die Anforderungen des Junior Recruiter-Posts zutreffen. Ich bin besonders an der Möglichkeit interessiert, meine Fähigkeiten im Recruitment-Bereich zu erweitern und zu nutzen. Ich freue mich auf die Möglichkeit, meine Bewerbung für diese Position zu erörtern. Vielen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.2
+}

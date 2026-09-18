@@ -1,0 +1,40 @@
+{
+  "id": "fi_10",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 150.29,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie beschreiben, wie Sie in der Vergangenheit Schaltschränke gewartet haben?",
+      "Welche Herausforderungen haben Sie bei der Wartung von Schaltschränken erlebt, und wie haben Sie sie gelöst?",
+      "Wie stellen Sie sicher, dass die Wartung von Schaltschränken sicher und effizient durchgeführt wird?"
+    ],
+    "talking_points": [
+      "Als Elektroniker mit 3 Jahren Berufserfahrung habe ich bereits verschiedene Schaltschränke gewartet und dabei sicherstellen können, dass sie optimal funktionieren.",
+      "Ich setze bei der Wartung von Schaltschränken auf systematische Vorgehensweisen, um Risiken zu minimieren und die Effizienz zu maximieren."
+    ],
+    "gap_notes": [
+      "Es gibt keine konkreten Beispiele oder Projekte im Profil, die die genannten Erfahrungen untermauern.",
+      "Die genannten talking points basieren auf allgemeinen Aussagen und nicht auf spezifischen Evidenzen.",
+      "Die Fragen sind allgemein formuliert, da keine detaillierte Evidenz vorliegt."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Elektroniker",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Schaltschrank, Wartung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

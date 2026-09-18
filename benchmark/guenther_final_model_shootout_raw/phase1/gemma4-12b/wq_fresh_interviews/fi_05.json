@@ -1,0 +1,39 @@
+{
+  "id": "fi_05",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 102.833,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie gehen Sie konkret bei der Identifikation von passiven Kandidaten auf LinkedIn vor?",
+      "Welche Strategien nutzen Sie, um die Response-Rate bei Active Sourcing Maßnahmen zu optimieren?",
+      "Wie priorisieren Sie verschiedene Kanäle bei der Suche nach spezialisierten Talenten?"
+    ],
+    "talking_points": [
+      "3 Jahre Erfahrung im Bereich Recruiting",
+      "Spezialisierung auf Active Sourcing",
+      "Expertise in der Nutzung von LinkedIn für die Kandidatengewinnung"
+    ],
+    "gap_notes": [
+      "No specific evidence provided in the profile for the candidate's experience or achievements. Only general job title and focus areas are known."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Recruiter",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Active Sourcing, LinkedIn",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

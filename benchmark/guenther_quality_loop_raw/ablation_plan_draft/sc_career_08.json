@@ -1,0 +1,37 @@
+{
+  "id": "sc_career_08",
+  "final_ok": false,
+  "score": 0.0,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "empty_body"
+  ],
+  "latency_s": 64.532,
+  "model_calls": 1,
+  "final_state": "GENERATION_FAILED",
+  "final_errors": [
+    "SCHEMA_INVALID"
+  ],
+  "expect_hard_block": false,
+  "body": "",
+  "subject": "",
+  "peak_rss_mb": 195.47265625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      }
+    ],
+    "timings_s": {
+      "plan": 64.532
+    },
+    "cot_stored": false
+  }
+}

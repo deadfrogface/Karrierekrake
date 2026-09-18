@@ -1,0 +1,30 @@
+{
+  "id": "si_20",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 32.603,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel geben, wie Sie UML verwendet haben, um die Anforderungen eines Projekts zu dokumentieren?",
+      "Welche Strategien wenden Sie an, um sicherzustellen, dass Sie die Anforderungen vollständig verstehen, bevor Sie mit der Erstellung von UML-Diagrammen beginnen?",
+      "Wie balancieren Sie die Notwendigkeit, Anforderungen klar darzustellen, mit der Notwendigkeit, technische Details zu vereinfachen, wenn Sie mit Stakeholdern interagieren?"
+    ],
+    "talking_points": [
+      "Verwendung von UML zur Anforderungen-Dokumentation in der Rolle als Business Analyst.",
+      "Ansatz zur Anforderungenverständnis und Validierung, bevor UML-Diagramme erstellt werden.",
+      "Technische Details versus Stakeholder-Kommunikation im Kontext der Anforderungen-Dokumentation."
+    ],
+    "gap_notes": [
+      "Fehlen spezifischer Beispiele für Projekte, bei denen UML verwendet wurde.",
+      "Keine Details über die spezifischen UML-Techniken, die angewendet wurden.",
+      "Keine Erwähnung des spezifischen Software- oder Anforderungsmanagement-Tools, das verwendet wurde."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

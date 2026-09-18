@@ -1,0 +1,100 @@
+{
+  "cv": {
+    "ok": true,
+    "capability": "cv_extract",
+    "suggestion": {
+      "full_name": "Tom Probe",
+      "emails": [
+        "tom.probe@example.com"
+      ],
+      "phones": [
+        "+49 171 2222002"
+      ],
+      "skills": [
+        "Excel-Reports für HR",
+        "Onboarding-Unterstützung",
+        "Büroorganisation und Lieferantenabstimmung",
+        "Kenntnisse: MS Office, Excel, Personio Grundlagen"
+      ],
+      "languages": [
+        "Deutsch (Muttersprache)",
+        "Englisch (B2)"
+      ],
+      "experience_titles": [
+        "Sachbearbeiter Personal",
+        "Adventure Works Köln",
+        "Office Manager",
+        "Litware SE Düsseldorf"
+      ],
+      "education": [
+        "Kaufmann für Büromanagement",
+        "IHK Köln"
+      ],
+      "certificates": [],
+      "confidence": "low",
+      "notes": [],
+      "invented_flag": false
+    },
+    "fallback_reason": "",
+    "provider_status": "ready",
+    "model_id": "phi4-mini",
+    "validated": true,
+    "safety_notes": []
+  },
+  "jobs": [
+    {
+      "id": "ho_job_hr",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [],
+          "red_flags": [],
+          "summary": "",
+          "confidence": "low"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "phi4-mini",
+        "validated": true,
+        "safety_notes": []
+      }
+    },
+    {
+      "id": "ho_job_pflege",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "",
+          "requirements": [
+            {
+              "requirement": "Pflegeausbildung",
+              "kind": "desirable",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Intensivstation",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Patientenversorgung Pflicht",
+              "kind": "hard",
+              "confidence": "high"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Die Stelle erfordert eine Pflegeausbildung, ist in einer Intensivstation und erfordert die Pflicht der Patientenversorgung.",
+          "confidence": "high"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "phi4-mini",
+        "validated": true,
+        "safety_notes": []
+      }
+    }
+  ]
+}

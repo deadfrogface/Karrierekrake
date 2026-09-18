@@ -1,0 +1,26 @@
+{
+  "id": "fi_04",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 19.962,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns von einer Situation erzählen, in der Ihre Tourenplanung-Fähigkeiten besonders herausgefordert haben und wie Sie damit umgegangen sind?",
+      "Wie priorisieren Sie Telefonanrufe, wenn Sie mehrere gleichzeitig haben, und wie beeinflusst dies Ihre Tourenplanung?",
+      "Welche Strategien verwenden Sie, um Ihre Arbeitsabläufe bei FleetMove KG zu optimieren?"
+    ],
+    "talking_points": [
+      "Diskussion über die Herausforderungen und Lösungen im Zusammenhang mit Tourenplanung.",
+      "Erklärung der Priorisierungsmethoden für Telefonanrufe und deren Einfluss auf die Tourenplanung.",
+      "Darlegung der Optimierungsstrategien für Arbeitsabläufe im Kontext von FleetMove KG."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

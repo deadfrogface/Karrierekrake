@@ -1,0 +1,340 @@
+{
+  "source": "ablation_plan_draft non-ready eligible",
+  "counts": {
+    "OVERCLAIMING": 4,
+    "TOO_SHORT": 26,
+    "WEAK_SPECIFICITY": 24,
+    "STRUCTURAL_FAILURE": 7,
+    "WEAK_COMPANY_LINK": 6,
+    "FAKE_ENTHUSIASM": 1
+  },
+  "cases": [
+    {
+      "case_id": "sc_adv_02",
+      "tags": [
+        "OVERCLAIMING"
+      ],
+      "score": 8.0,
+      "final_ok": false
+    },
+    {
+      "case_id": "sc_career_02",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_career_04",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_career_06",
+      "tags": [
+        "TOO_SHORT",
+        "STRUCTURAL_FAILURE",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 5.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_career_08",
+      "tags": [
+        "TOO_SHORT",
+        "STRUCTURAL_FAILURE"
+      ],
+      "score": 0.0,
+      "final_ok": false
+    },
+    {
+      "case_id": "sc_career_14",
+      "tags": [
+        "STRUCTURAL_FAILURE"
+      ],
+      "score": 6.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_career_18",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_des_03",
+      "tags": [
+        "OVERCLAIMING"
+      ],
+      "score": 8.0,
+      "final_ok": false
+    },
+    {
+      "case_id": "sc_des_08",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_des_10",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_01",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_02",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_04",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_06",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_07",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_08",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_09",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_10",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_med_15",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_sparse_01",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_sparse_03",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_sparse_06",
+      "tags": [
+        "TOO_SHORT",
+        "STRUCTURAL_FAILURE"
+      ],
+      "score": 0.0,
+      "final_ok": false
+    },
+    {
+      "case_id": "sc_sparse_10",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_strong_01",
+      "tags": [
+        "STRUCTURAL_FAILURE",
+        "OVERCLAIMING"
+      ],
+      "score": 6.0,
+      "final_ok": false
+    },
+    {
+      "case_id": "sc_strong_08",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_strong_12",
+      "tags": [
+        "STRUCTURAL_FAILURE"
+      ],
+      "score": 6.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_strong_15",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_COMPANY_LINK",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 5.5,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_strong_17",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_strong_19",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_strong_20",
+      "tags": [
+        "TOO_SHORT",
+        "OVERCLAIMING",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": false
+    },
+    {
+      "case_id": "sc_trap_04",
+      "tags": [
+        "STRUCTURAL_FAILURE"
+      ],
+      "score": 6.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_trap_05",
+      "tags": [
+        "TOO_SHORT",
+        "WEAK_SPECIFICITY"
+      ],
+      "score": 7.0,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_unk_01",
+      "tags": [
+        "WEAK_COMPANY_LINK"
+      ],
+      "score": 6.5,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_unk_02",
+      "tags": [
+        "WEAK_COMPANY_LINK"
+      ],
+      "score": 6.5,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_unk_03",
+      "tags": [
+        "WEAK_COMPANY_LINK",
+        "FAKE_ENTHUSIASM"
+      ],
+      "score": 6.5,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_unk_04",
+      "tags": [
+        "WEAK_COMPANY_LINK"
+      ],
+      "score": 6.5,
+      "final_ok": true
+    },
+    {
+      "case_id": "sc_unk_05",
+      "tags": [
+        "WEAK_COMPANY_LINK"
+      ],
+      "score": 6.5,
+      "final_ok": true
+    }
+  ]
+}

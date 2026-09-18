@@ -1,0 +1,8 @@
+{
+  "id": "ac_20",
+  "claim": "abgeschlossene Pflegeausbildung",
+  "expect": "UNSUPPORTED",
+  "got": "UNSUPPORTED",
+  "match": true,
+  "model_id": "gemma4-12b"
+}

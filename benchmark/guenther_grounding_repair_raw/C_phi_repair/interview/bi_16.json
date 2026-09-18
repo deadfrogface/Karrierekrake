@@ -1,0 +1,56 @@
+{
+  "id": "bi_16",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit Windows-Netzwerken erzählen?",
+      "Welche spezifischen Aspekte des CCNA-Kurses haben Sie am meisten gelernt und wie haben Sie diese angewendet?"
+    ],
+    "talking_points": [
+      "Erwähne deine praktische Erfahrung mit Windows-Netzwerken.",
+      "Diskutiere die relevanten Techniken, die du während des CCNA-Kurses gelernt hast."
+    ],
+    "gap_notes": [
+      "Erkläre, wie du deine CCNA-Erfahrungen auf die Rolle des 2nd Level angewendet hast.",
+      "Bereite dich darauf vor, über spezifische Networking-Probleme zu sprechen, die du gelöst hast."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erwähne deine praktische Erfahrung mit Windows-Netzwerken.",
+            "Diskutiere die relevanten Techniken, die du während des CCNA-Kurses gelernt hast."
+          ],
+          "questions": [
+            "Können Sie uns mehr über Ihre Erfahrungen mit Windows-Netzwerken erzählen?",
+            "Welche spezifischen Aspekte des CCNA-Kurses haben Sie am meisten gelernt und wie haben Sie diese angewendet?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

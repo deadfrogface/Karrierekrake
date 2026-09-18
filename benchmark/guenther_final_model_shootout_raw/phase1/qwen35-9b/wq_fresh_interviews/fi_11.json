@@ -1,0 +1,41 @@
+{
+  "id": "fi_11",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 43.909,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Erzählen Sie mir von einem herausfordernden Onboarding-Prozess, den Sie umgesetzt haben.",
+      "Wie gehen Sie mit Fehlern bei der Führung von Personalakten um?",
+      "Wie strukturieren Sie die Kommunikation zwischen neuen Mitarbeitern und den Fachabteilungen?"
+    ],
+    "talking_points": [
+      "3 Jahre Erfahrung im HR-Bereich mit Fokus auf Prozessoptimierung.",
+      "Erfolgreiche Implementierung von Onboarding-Workflows zur Steigerung der Mitarbeiterzufriedenheit."
+    ],
+    "gap_notes": [],
+    "anchors_used": [
+      {
+        "text": "3 Jahre HR",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Onboarding",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Personalakte",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

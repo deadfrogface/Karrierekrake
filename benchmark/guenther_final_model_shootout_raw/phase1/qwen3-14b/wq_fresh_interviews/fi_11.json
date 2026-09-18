@@ -1,0 +1,39 @@
+{
+  "id": "fi_11",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 135.287,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit die Onboarding-Prozesse optimiert?",
+      "Welche Herausforderungen haben Sie bei der Verwaltung von Personalakten erlebt, und wie haben Sie sie bewältigt?",
+      "Wie stellen Sie sicher, dass alle Personalakten rechtssicher und vollständig sind?"
+    ],
+    "talking_points": [
+      "Ich habe in meiner bisherigen Tätigkeit als HR-Mitarbeiter mit Onboarding-Prozessen gearbeitet und dabei die Einbindung von digitalen Tools zur Verbesserung der Effizienz umgesetzt."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Ergebnisse aus der Arbeit mit Onboarding-Prozessen.",
+      "Die genaue Art der digitalen Tools, die genutzt wurden, ist nicht spezifiziert.",
+      "Es ist nicht klar, welche gesetzlichen Vorgaben konkret beachtet wurden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Onboarding-Prozesse",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Personalakte",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

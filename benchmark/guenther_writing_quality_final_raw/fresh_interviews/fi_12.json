@@ -1,0 +1,28 @@
+{
+  "id": "fi_12",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein erfolgreiches Verkaufsprojekt beschreiben, das Sie während Ihrer Zeit bei DealFlow AG geleitet haben?",
+      "Wie nutzen Sie CRM-Systeme, um Ihre Verkaufsbemühungen zu verbessern?",
+      "Welche Strategien wenden Sie an, um neue Kunden zu akquirieren?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie ein Verkaufsziel, das Sie erreicht haben, und wie Sie DealFlow AGs CRM-Systeme genutzt haben, um dieses Ziel zu erreichen.",
+      "Erklären Sie, wie Sie CRM-Daten analysieren, um potenzielle Kunden zu identifizieren und zu verfolgen.",
+      "Besprechen Sie Ihre Ansätze zur Kundenakquise und wie Sie DealFlow AGs Verkaufsstrategien integriert haben."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Projekte wurden erwähnt, daher ist es wichtig, den Bewerber zu bitten, Beispiele aus seiner Erfahrung zu liefern.",
+      "Weitere Details zu den verwendeten CRM-Systemen und spezifischen Akquisitionsstrategien könnten hilfreich sein, um das Gespräch zu führen."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

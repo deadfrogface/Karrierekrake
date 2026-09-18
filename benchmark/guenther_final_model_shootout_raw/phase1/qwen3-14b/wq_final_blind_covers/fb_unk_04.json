@@ -1,0 +1,52 @@
+{
+  "id": "fb_unk_04",
+  "final_ok": true,
+  "score": 6.5,
+  "german_writing": 7.8,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 136.704,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nAls erfahrene Assistentin mit Schwerpunkt auf Kalender- und Korrespondenzmanagement bringe ich eine strukturierte und zuverlässige Arbeitsweise mit, die sich ideal für die ausgeschriebene Position eignet. In meiner aktuellen Tätigkeit bei Tara Assist habe ich komplexe Termine koordiniert und professionelle Kommunikation gewährleistet, was mich bestens auf die Anforderungen einer Assistentenrolle vorbereitet hat.\n\nEin konkreter Beleg ist die Organisation von mehreren Projekten mit mehreren Stakeholdern, bei denen ich Termine, Kommunikation und Dokumentation effizient abgestimmt habe. Zudem habe ich in der Vergangenheit für mehrere Führungskräfte die tägliche Korrespondenz bearbeitet und dabei eine hohe Aufmerksamkeit für Details gezeigt. Diese Erfahrungen ermöglichen mir, mich schnell in neue Umgebungen einzubringen und effektiv zu unterstützen.\n\nIch freue mich darauf, meine Fähigkeiten in einer neuen Herausforderung einzusetzen und mich aktiv in das Team einzubringen. Mit meiner Zuverlässigkeit und meiner Fokus auf Organisation und Kommunikation möchte ich gerne meine Beiträge für die ausgeschriebene Position leisten.\n\nMit freundlichen Grüßen",
+  "subject": "Bewerbung als Assistent/in der Geschäftsführung",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Assistent/in der Geschäftsführung",
+          "body": "Sehr geehrte Damen und Herren,\n\nAls erfahrene Assistentin mit Schwerpunkt auf Kalender- und Korrespondenzmanagement bringe ich eine strukturierte und zuverlässige Arbeitsweise mit, die sich ideal für die ausgeschriebene Position eignet. In meiner aktuellen Tätigkeit bei Tara Assist habe ich komplexe Termine koordiniert und professionelle Kommunikation gewährleistet, was mich bestens auf die Anforderungen einer Assistentenrolle vorbereitet hat.\n\nEin konkreter Beleg ist die Organisation von mehreren Projekten mit mehreren Stakeholdern, bei denen ich Termine, Kommunikation und Dokumentation effizient abgestimmt habe. Zudem habe ich in der Vergangenheit für mehrere Führungskräfte die tägliche Korrespondenz bearbeitet und dabei eine hohe Aufmerksamkeit für Details gezeigt. Diese Erfahrungen ermöglichen mir, mich schnell in neue Umgebungen einzubringen und effektiv zu unterstützen.\n\nIch freue mich darauf, meine Fähigkeiten in einer neuen Herausforderung einzusetzen und mich aktiv in das Team einzubringen. Mit meiner Zuverlässigkeit und meiner Fokus auf Organisation und Kommunikation möchte ich gerne meine Beiträge für die ausgeschriebene Position leisten.\n\nMit freundlichen Grüßen",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

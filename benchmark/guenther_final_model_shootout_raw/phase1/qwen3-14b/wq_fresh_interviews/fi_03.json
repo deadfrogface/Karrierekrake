@@ -1,0 +1,45 @@
+{
+  "id": "fi_03",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 143.263,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit als Pflegehelfer mit der Dokumentation von Pflegevorgängen umgegangen?",
+      "Können Sie ein Beispiel nennen, in dem Sie bei der Grundpflege eine besondere Situation bewältigt haben?",
+      "Wie stellen Sie sicher, dass alle Pflegevorgänge ordnungsgemäß und rechtzeitig dokumentiert werden?"
+    ],
+    "talking_points": [
+      "In meiner Rolle als Pflegehelfer habe ich mich intensiv mit der Grundpflege beschäftigt, einschließlich der Hygienemaßnahmen und der Unterstützung bei der Körperpflege.",
+      "Ich habe Erfahrung mit der Dokumentation von Pflegevorgängen und achte dabei besonders auf Genauigkeit und Timeliness."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfolge aus der Berufserfahrung, um die Aussagen weiter zu untermauern.",
+      "Die Evidenzliste ist leer, was die Tiefe der Informationen begrenzt.",
+      "Es gibt keine Hinweise auf spezifische Herausforderungen oder Lösungen aus der Praxis."
+    ],
+    "anchors_used": [
+      {
+        "text": "Grundpflege",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Dokumentation",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Berufserfahrung: 3 Jahre Pflegehelfer",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

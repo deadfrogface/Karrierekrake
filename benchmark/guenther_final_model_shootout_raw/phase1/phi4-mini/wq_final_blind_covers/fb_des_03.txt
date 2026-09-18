@@ -1,0 +1,3 @@
+SUBJECT: Bewerbung für die Position Systemadmin bei InfraWorks GmbH
+
+Ich schreibe Ihnen, um meine Erfahrung mit Linux und Bash-Skripten anzubieten, die ich bei InfraWorks GmbH einsetzen könnte. Obwohl ich kein AWS Zertifikat besitze, bin ich bereit, mich in diesem Bereich weiterzubilden, um meine Fähigkeiten im Cloud Computing zu erweitern. Mein Engagement für technisches Lernen und meine Problemlösungsfähigkeiten würden ich gerne in die Infrastruktur von InfraWorks einbringen.

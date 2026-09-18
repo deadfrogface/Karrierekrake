@@ -1,0 +1,29 @@
+{
+  "id": "fi_20",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Beispiel geben, wie Sie UML verwendet haben, um die Anforderungen eines Projekts zu dokumentieren?",
+      "Welche Strategien wenden Sie an, um sicherzustellen, dass Sie alle relevanten Anforderungen für Ihr Projekt erfassen?",
+      "Wie gehen Sie mit widersprüchlichen Anforderungen oder Änderungen in den Anforderungen während des Lebenszyklus eines Projekts um?"
+    ],
+    "talking_points": [
+      "Verwendung von UML zur Anforderungen-Dokumentation in einem 3-jährigen Job als Business Analyst.",
+      "Fokus auf Anforderungen und UML in der Rolle bei FinTech Hub.",
+      "Übertragung der Erfahrung im Umgang mit Anforderungen und UML auf die Rolle des Interview-Cand."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Beispiele für Projekte, bei denen UML verwendet wurde.",
+      "Keine Details über die Art der FinTech-Hub oder die spezifischen Anforderungen, die im Job behandelt wurden.",
+      "Keine Informationen über die Fähigkeiten des Interview-Cands, die über die Anforderungen und UML hinausgehen."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

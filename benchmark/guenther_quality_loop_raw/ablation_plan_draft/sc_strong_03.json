@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_03",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 90.77,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe eine solide Lagerlogistik-Erfahrung mit und kann die Anforderungen von StockBay SE erfüllen. Obwohl ich keine Erfahrung im Kommissionieren habe, bin ich bereit, diese Erfahrung aufzubauen, um vollständig in die Rolle einzusteigen.",
+  "subject": "Lagerfachkraft - StockBay SE",
+  "peak_rss_mb": 177.125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 69.658,
+      "draft": 21.111
+    },
+    "cot_stored": false
+  }
+}

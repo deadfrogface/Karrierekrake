@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_16",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 75.132,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin begeistert von der Möglichkeit, meine ReFa Ausbildung und meine Erfahrung in Mandatsführung und Fristen bei Kanzlei Hart einzubringen. Ich bin überzeugt, dass meine Fähigkeiten und meine Deutschkenntnis perfekt zu den Anforderungen des Rechtsanwaltsfachangestellten/r passen.",
+  "subject": "Rechtsanwaltsfachangestellte/r",
+  "peak_rss_mb": 208.46875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.705,
+      "draft": 17.085,
+      "critique_1": 24.34
+    },
+    "cot_stored": false
+  }
+}

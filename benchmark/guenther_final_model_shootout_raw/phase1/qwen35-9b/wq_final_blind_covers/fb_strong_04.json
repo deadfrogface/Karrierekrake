@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 50.94,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meinem Hotelfach-Abschluss und meiner Erfahrung im Bereich Reservierung und Gästeservice möchte ich meine Kenntnisse in die Praxis bei Seehotel Bellevue einbringen.\n\nIn meiner bisherigen Tätigkeit bei Pia Hotel konnte ich fundierte Erfahrungen in der Abwicklung von Reservierungen und im direkten Gästeservice sammeln. Diese Kompetenzen möchte ich nun nutzen, um einen reibungslosen Ablauf im Hotelbetrieb zu gewährleisten und Gäste mit einem persönlichen Service zu begeistern.\n\nIch freue mich darauf, meine Motivation und meine Fähigkeiten in einem anspruchsvollen Umfeld wie Seehotel Bellevue weiterzuentwickeln.\n\nMit freundlichen Grüßen\nPia Hotel",
+  "subject": "Bewerbung als Hotelfachfrau – Pia Hotel",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Hotelfachfrau – Pia Hotel",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meinem Hotelfach-Abschluss und meiner Erfahrung im Bereich Reservierung und Gästeservice möchte ich meine Kenntnisse in die Praxis bei Seehotel Bellevue einbringen.\n\nIn meiner bisherigen Tätigkeit bei Pia Hotel konnte ich fundierte Erfahrungen in der Abwicklung von Reservierungen und im direkten Gästeservice sammeln. Diese Kompetenzen möchte ich nun nutzen, um einen reibungslosen Ablauf im Hotelbetrieb zu gewährleisten und Gäste mit einem persönlichen Service zu begeistern.\n\nIch freue mich darauf, meine Motivation und meine Fähigkeiten in einem anspruchsvollen Umfeld wie Seehotel Bellevue weiterzuentwickeln.\n\nMit freundlichen Grüßen\nPia Hotel",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

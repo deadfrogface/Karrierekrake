@@ -1,0 +1,47 @@
+{
+  "id": "cl_junior",
+  "subject": "Junior Assistenz der Geschäftsführung — Adventure Works",
+  "body": "Guten Tag,\n\nIch schreibe Ihnen, um mich für die Position der Junior Assistenz der Geschäftsführung bei Adventure Works zu bewerben. Während meines letzten Lehrjahres bei Litware SE habe ich meine Fähigkeiten in der Terminorganisation, Korrespondenz und MS Office geschärft. Ich bin begeistert von der Möglichkeit, in einem dynamischen Umfeld zu arbeiten, das die Organisation und Effizienz fördert. Meine Erfahrung mit Posteingang, Termine, Excel-Tabellen und Telefonzentrale würde mir helfen, die Anforderungen dieser Rolle zu erfüllen. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld einzubringen und freue mich auf die Möglichkeit, mit Ihnen zusammenzuarbeiten.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nEmma Start",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Junior Assistenz der Geschäftsführung — Adventure Works",
+          "body": "Guten Tag,\n\nIch schreibe Ihnen, um mich für die Position der Junior Assistenz der Geschäftsführung bei Adventure Works zu bewerben. Während meines letzten Lehrjahres bei Litware SE habe ich meine Fähigkeiten in der Terminorganisation, Korrespondenz und MS Office geschärft. Ich bin begeistert von der Möglichkeit, in einem dynamischen Umfeld zu arbeiten, das die Organisation und Effizienz fördert. Meine Erfahrung mit Posteingang, Termine, Excel-Tabellen und Telefonzentrale würde mir helfen, die Anforderungen dieser Rolle zu erfüllen. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld einzubringen und freue mich auf die Möglichkeit, mit Ihnen zusammenzuarbeiten.\n\nVielen Dank für Ihre Zeit und Überlegung.\n\nMit freundlichen Grüßen,\nEmma Start",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

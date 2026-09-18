@@ -1,0 +1,21 @@
+{
+  "n": 6,
+  "eligible_safe_n": 6,
+  "eligible_safe_automation_pct": 83.33,
+  "ready_as_is_pct": 83.33,
+  "balanced_rate": 83.33,
+  "cover_raw_avg": 6.667,
+  "cover_accepted_avg": 8.0,
+  "safety_failures_accepted": 0,
+  "avg_latency_s": 112.216,
+  "p95_latency_s": 148.858,
+  "avg_model_calls": 2.667,
+  "avg_writer_calls": 1.667,
+  "p95_model_calls": 4,
+  "peak_rss_mb": 5481.17578125,
+  "config_name": "plan_draft_v2",
+  "writer_prompt_hash": "6f7fa74f361e248a0268fdbadb867316f92864549a8034a237eaf05a126100c9",
+  "new_writer_related_calls": 0,
+  "cache_hits": 6,
+  "model": "phi4-mini"
+}

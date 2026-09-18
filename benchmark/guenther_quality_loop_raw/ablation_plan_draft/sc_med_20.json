@@ -1,0 +1,42 @@
+{
+  "id": "sc_med_20",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 54.497,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Empfang und Mitgliedersupport ein und bin begeistert von der Möglichkeit, diese Fähigkeiten im Fitnessstudio von FitHub GmbH einzusetzen. Mein Engagement für Kundenservice und meine Fähigkeit, in einer dynamischen Umgebung zu arbeiten, machen mich zu einem idealen Kandidaten für diese Rolle.",
+  "subject": "Fitness Studio Assistenz - FitHub GmbH",
+  "peak_rss_mb": 5488.3984375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 40.254,
+      "draft": 14.243
+    },
+    "cot_stored": false
+  }
+}

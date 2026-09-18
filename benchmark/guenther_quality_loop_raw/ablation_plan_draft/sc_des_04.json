@@ -1,0 +1,42 @@
+{
+  "id": "sc_des_04",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 41.805,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin motiviert, meine Fähigkeiten im Pflegebereich bei Haus am Bach einzubringen und freue mich darauf, meine Kenntnisse im Umgang mit Menschen und im Pflegeprozess zu nutzen. Ich bin stolz darauf, dass ich ein solides Fundament im Pflegebereich habe, auch wenn ich kein Englisch-B2-Zertifikat besitze, welches für die Position wünschenswert ist.",
+  "subject": "Pflegeassistenz",
+  "peak_rss_mb": 224.40625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 26.14,
+      "draft": 15.664
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "cg1_miss_03",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "CONTRADICTED_CLAIM",
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "model_id": "gemma4-12b"
+}

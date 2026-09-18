@@ -1,0 +1,31 @@
+{
+  "id": "fi_10",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 28.396,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Erfahrungen haben Sie mit der Wartung von Schaltschranken gesammelt?",
+      "Können Sie ein Problem beschreiben, das Sie während der Wartung eines Schaltschrankes gelöst haben?",
+      "Wie stellen Sie sicher, dass Sie die Wartungsprotokolle für Schaltschranken genau und vollständig führen?"
+    ],
+    "talking_points": [
+      "Erinnern Sie sich an eine Situation, in der Sie während der Wartung eines Schaltschrankes auf ein unerwartetes Problem gestoßen sind und wie Sie es gelöst haben.",
+      "Besprechen Sie, wie Sie Ihre Kenntnisse und Fähigkeiten im Bereich Schaltschrank-Wartung aktuell halten."
+    ],
+    "gap_notes": [],
+    "anchors_used": [
+      {
+        "text": "Vorstellungsgespräch Elektroniker bei PowerFix AG",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

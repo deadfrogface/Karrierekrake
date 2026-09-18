@@ -1,0 +1,1560 @@
+{
+  "purpose": "Phase-A forensic analysis of Phase-2 Phi blind covers",
+  "n_cases": 100,
+  "eligible_safe_n": 94,
+  "unnecessary_fail_closed_eligible": 14,
+  "not_ready_as_is": 23,
+  "below_8": 14,
+  "repair_required": 19,
+  "repair_failed": 14,
+  "category_counts": {
+    "SAFETY_BLOCK_TRUE": 13,
+    "TARGETING_BLOCK_TRUE": 0,
+    "CLAIM_GROUNDING_FAILURE": 6,
+    "CLAIM_EXTRACTION_FALSE_POSITIVE": 0,
+    "EVIDENCE_MATCH_FAILURE": 0,
+    "COMPANY_FAILURE": 5,
+    "ROLE_FAILURE": 0,
+    "PLACEHOLDER_FAILURE": 7,
+    "STRUCTURAL_FAILURE": 1,
+    "GENERIC_WRITING": 14,
+    "WEAK_SPECIFICITY": 1,
+    "WEAK_EVIDENCE_SELECTION": 9,
+    "POOR_TRANSFERABLE_EXPERIENCE_FRAMING": 0,
+    "WEAK_OPENING": 13,
+    "WEAK_CLOSING": 0,
+    "REPETITION": 0,
+    "ROBOTIC_GERMAN": 0,
+    "IRRELEVANT_EVIDENCE": 0,
+    "MISSED_STRONG_EVIDENCE": 0,
+    "REPAIR_FAILURE": 14,
+    "OTHER": 0
+  },
+  "primary_category_counts": {
+    "OTHER": 77,
+    "GENERIC_WRITING": 5,
+    "SAFETY_BLOCK_TRUE": 13,
+    "STRUCTURAL_FAILURE": 1,
+    "WEAK_EVIDENCE_SELECTION": 2,
+    "COMPANY_FAILURE": 2
+  },
+  "unnecessary_fail_closed_ids": [
+    "sc_career_10",
+    "sc_des_04",
+    "sc_des_07",
+    "sc_des_10",
+    "sc_med_13",
+    "sc_med_18",
+    "sc_sparse_05",
+    "sc_strong_01",
+    "sc_strong_13",
+    "sc_strong_15",
+    "sc_strong_16",
+    "sc_strong_20",
+    "sc_unk_02",
+    "sc_unk_03"
+  ],
+  "unnecessary_fail_closed_root_causes": {
+    "CLAIM_GROUNDING_FAILURE_UNSUPPORTED_CREDENTIAL": 6,
+    "PLACEHOLDER_FAILURE": 7,
+    "STRUCTURAL_EMPTY_OUTPUT": 1,
+    "REPAIR_FAILED_AFTER_MAX1": 14
+  },
+  "not_ready_root_causes": {
+    "fail_closed_safety_or_structure": 14,
+    "accepted_but_score_below_8_or_material_edit": 9,
+    "generic_or_weak_specificity": 15
+  },
+  "cases": [
+    {
+      "id": "sc_adv_01",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_adv_02",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_adv_03",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_adv_04",
+      "final_ok": true,
+      "expect_hard_block": true,
+      "eligible_safe": false,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_adv_05",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_01",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_02",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "GENERIC_WRITING",
+        "WEAK_EVIDENCE_SELECTION",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "GENERIC_WRITING"
+    },
+    {
+      "id": "sc_career_03",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_04",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_05",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_06",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "GENERIC_WRITING",
+        "WEAK_EVIDENCE_SELECTION"
+      ],
+      "primary_category": "GENERIC_WRITING"
+    },
+    {
+      "id": "sc_career_07",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_08",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_09",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_10",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "notes": [],
+      "categories": [
+        "CLAIM_GROUNDING_FAILURE",
+        "GENERIC_WRITING",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_career_11",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_12",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_13",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_14",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_15",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_16",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_17",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_18",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_19",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_career_20",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_01",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_02",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_03",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_04",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 0.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "EMPTY_OUTPUT"
+      ],
+      "notes": [
+        "empty_body"
+      ],
+      "categories": [
+        "REPAIR_FAILURE",
+        "STRUCTURAL_FAILURE",
+        "WEAK_SPECIFICITY"
+      ],
+      "primary_category": "STRUCTURAL_FAILURE"
+    },
+    {
+      "id": "sc_des_05",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_06",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_07",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "GENERIC_WRITING",
+        "PLACEHOLDER_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_des_08",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_09",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_des_10",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "notes": [],
+      "categories": [
+        "GENERIC_WRITING",
+        "PLACEHOLDER_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_hard_01",
+      "final_ok": true,
+      "expect_hard_block": true,
+      "eligible_safe": false,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 1,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_hard_02",
+      "final_ok": true,
+      "expect_hard_block": true,
+      "eligible_safe": false,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_hard_03",
+      "final_ok": true,
+      "expect_hard_block": true,
+      "eligible_safe": false,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_hard_04",
+      "final_ok": true,
+      "expect_hard_block": true,
+      "eligible_safe": false,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_hard_05",
+      "final_ok": true,
+      "expect_hard_block": true,
+      "eligible_safe": false,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "WEAK_EVIDENCE_SELECTION"
+      ],
+      "primary_category": "WEAK_EVIDENCE_SELECTION"
+    },
+    {
+      "id": "sc_med_01",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_02",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_03",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_04",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_05",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_06",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_07",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "GENERIC_WRITING",
+        "WEAK_EVIDENCE_SELECTION",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "GENERIC_WRITING"
+    },
+    {
+      "id": "sc_med_08",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_09",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_10",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_11",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_12",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_13",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "notes": [],
+      "categories": [
+        "PLACEHOLDER_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_med_14",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_15",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_16",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_17",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_18",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "notes": [],
+      "categories": [
+        "PLACEHOLDER_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_med_19",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_med_20",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 1,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_01",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_02",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_03",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_04",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_05",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "notes": [],
+      "categories": [
+        "GENERIC_WRITING",
+        "PLACEHOLDER_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_sparse_06",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_07",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_08",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_09",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_sparse_10",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_01",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "CLAIM_GROUNDING_FAILURE",
+        "GENERIC_WRITING",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_strong_02",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_03",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_04",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_05",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 1,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_06",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_07",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_08",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "GENERIC_WRITING",
+        "WEAK_EVIDENCE_SELECTION"
+      ],
+      "primary_category": "GENERIC_WRITING"
+    },
+    {
+      "id": "sc_strong_09",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_10",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_11",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_12",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_13",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "notes": [],
+      "categories": [
+        "CLAIM_GROUNDING_FAILURE",
+        "GENERIC_WRITING",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_strong_14",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_15",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "notes": [],
+      "categories": [
+        "CLAIM_GROUNDING_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_strong_16",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "notes": [],
+      "categories": [
+        "CLAIM_GROUNDING_FAILURE",
+        "GENERIC_WRITING",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_strong_17",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 1,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_18",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_19",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_strong_20",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNSUPPORTED_CREDENTIAL",
+        "UNSUPPORTED_CREDENTIAL"
+      ],
+      "notes": [],
+      "categories": [
+        "CLAIM_GROUNDING_FAILURE",
+        "GENERIC_WRITING",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_trap_01",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_trap_02",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 1,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_trap_03",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_trap_04",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.0,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "placeholder"
+      ],
+      "categories": [
+        "WEAK_EVIDENCE_SELECTION",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "WEAK_EVIDENCE_SELECTION"
+    },
+    {
+      "id": "sc_trap_05",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 8.0,
+      "edit_class": "READY_AS_IS",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [],
+      "categories": [],
+      "primary_category": "OTHER"
+    },
+    {
+      "id": "sc_unk_01",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.5,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "missing_company"
+      ],
+      "categories": [
+        "COMPANY_FAILURE",
+        "WEAK_EVIDENCE_SELECTION",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "COMPANY_FAILURE"
+    },
+    {
+      "id": "sc_unk_02",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 4.5,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "notes": [
+        "placeholder",
+        "missing_company"
+      ],
+      "categories": [
+        "COMPANY_FAILURE",
+        "PLACEHOLDER_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_unk_03",
+      "final_ok": false,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.5,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 1,
+      "final_errors": [
+        "UNRESOLVED_PLACEHOLDER"
+      ],
+      "notes": [
+        "missing_company"
+      ],
+      "categories": [
+        "COMPANY_FAILURE",
+        "GENERIC_WRITING",
+        "PLACEHOLDER_FAILURE",
+        "REPAIR_FAILURE",
+        "SAFETY_BLOCK_TRUE",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "SAFETY_BLOCK_TRUE"
+    },
+    {
+      "id": "sc_unk_04",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.5,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "missing_company"
+      ],
+      "categories": [
+        "COMPANY_FAILURE",
+        "WEAK_EVIDENCE_SELECTION",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "COMPANY_FAILURE"
+    },
+    {
+      "id": "sc_unk_05",
+      "final_ok": true,
+      "expect_hard_block": false,
+      "eligible_safe": true,
+      "score": 6.5,
+      "edit_class": "MATERIAL_EDIT_REQUIRED",
+      "repair_count": 0,
+      "final_errors": [],
+      "notes": [
+        "missing_company"
+      ],
+      "categories": [
+        "COMPANY_FAILURE",
+        "GENERIC_WRITING",
+        "WEAK_EVIDENCE_SELECTION",
+        "WEAK_OPENING"
+      ],
+      "primary_category": "GENERIC_WRITING"
+    }
+  ],
+  "category_vocabulary": [
+    "SAFETY_BLOCK_TRUE",
+    "TARGETING_BLOCK_TRUE",
+    "CLAIM_GROUNDING_FAILURE",
+    "CLAIM_EXTRACTION_FALSE_POSITIVE",
+    "EVIDENCE_MATCH_FAILURE",
+    "COMPANY_FAILURE",
+    "ROLE_FAILURE",
+    "PLACEHOLDER_FAILURE",
+    "STRUCTURAL_FAILURE",
+    "GENERIC_WRITING",
+    "WEAK_SPECIFICITY",
+    "WEAK_EVIDENCE_SELECTION",
+    "POOR_TRANSFERABLE_EXPERIENCE_FRAMING",
+    "WEAK_OPENING",
+    "WEAK_CLOSING",
+    "REPETITION",
+    "ROBOTIC_GERMAN",
+    "IRRELEVANT_EVIDENCE",
+    "MISSED_STRONG_EVIDENCE",
+    "REPAIR_FAILURE",
+    "OTHER"
+  ],
+  "note": "Eligible fail-closed (14/94) are counted as unnecessary for automation metric in shootout summary; most carry real safety codes (placeholder/credential) that the quality loop must prevent via plan+draft constraints — not by weakening gates."
+}

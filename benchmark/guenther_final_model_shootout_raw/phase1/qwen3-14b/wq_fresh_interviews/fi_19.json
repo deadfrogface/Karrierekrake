@@ -1,0 +1,40 @@
+{
+  "id": "fi_19",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 130.782,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit in der Produktion mit Schichtarbeit umgehen gelernt?",
+      "Können Sie ein Beispiel nennen, in dem Sie bei der Montage Probleme gelöst haben?",
+      "Wie bewerten Sie Ihre Fähigkeit, in einem Team unter Zeitdruck zu arbeiten?"
+    ],
+    "talking_points": [
+      "Ich habe in der Produktion gearbeitet und mich mit Schichtarbeit vertraut gemacht, was meine Flexibilität und meine Fähigkeit zur Teamarbeit unterstreicht.",
+      "In meiner bisherigen Tätigkeit habe ich Erfahrung mit der Montage gesammelt und habe gelernt, Probleme systematisch zu lösen."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfolge aus der Berufserfahrung, um die Aussagen weiter zu untermauern.",
+      "Die Evidenzliste ist leer, was bedeutet, dass keine direkten Beweise für die genannten Erfahrungen vorliegen.",
+      "Die Antwort basiert auf allgemeinen Aussagen, da keine spezifischen Daten zur Verfügung stehen."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Produktion",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Montage, Schicht",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

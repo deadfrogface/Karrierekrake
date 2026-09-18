@@ -1,0 +1,47 @@
+{
+  "id": "fb_career_04",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich schreibe, um meine Erfahrung im Einzelhandel und meine Disposition für logistische Aufgaben bei MoveIt SE zu teilen. Mit meiner Rolle als Einzelhandelsfilialarbeiterin habe ich umfangreiche Erfahrung im Umgang mit Lagerbeständen, in der Koordination von Lieferungen und in der Optimierung von Abläufen. Diese Fähigkeiten, zusammen mit meiner Fähigkeit, effizient mit verschiedenen Teammitgliedern zu arbeiten, würden mir ermöglichen, effektiv im Logistikbereich von MoveIt SE zu arbeiten. Ich bin begeistert von der Möglichkeit, meine logistischen Fähigkeiten in einem innovativen Umfeld einzubringen, das sich auf die Entwicklung von Robotiklösungen für den Handel konzentriert. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Leidenschaft für die Logistik mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+  "subject": "Bewerbung für die Position des Logistikkoordinators bei MoveIt SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Logistikkoordinators bei MoveIt SE",
+          "body": "Ich schreibe, um meine Erfahrung im Einzelhandel und meine Disposition für logistische Aufgaben bei MoveIt SE zu teilen. Mit meiner Rolle als Einzelhandelsfilialarbeiterin habe ich umfangreiche Erfahrung im Umgang mit Lagerbeständen, in der Koordination von Lieferungen und in der Optimierung von Abläufen. Diese Fähigkeiten, zusammen mit meiner Fähigkeit, effizient mit verschiedenen Teammitgliedern zu arbeiten, würden mir ermöglichen, effektiv im Logistikbereich von MoveIt SE zu arbeiten. Ich bin begeistert von der Möglichkeit, meine logistischen Fähigkeiten in einem innovativen Umfeld einzubringen, das sich auf die Entwicklung von Robotiklösungen für den Handel konzentriert. Ich bin überzeugt, dass meine Problemlösungsfähigkeiten und meine Leidenschaft für die Logistik mich zu einem wertvollen Mitglied Ihres Teams machen würden.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

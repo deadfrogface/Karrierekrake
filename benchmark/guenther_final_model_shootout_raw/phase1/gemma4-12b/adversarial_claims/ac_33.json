@@ -1,0 +1,8 @@
+{
+  "id": "ac_33",
+  "claim": "First-Level Ticketbearbeitung",
+  "expect": "RELATED",
+  "got": "RELATED",
+  "match": true,
+  "model_id": "gemma4-12b"
+}

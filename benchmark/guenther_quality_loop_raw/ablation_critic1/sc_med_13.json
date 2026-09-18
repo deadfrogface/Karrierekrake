@@ -1,0 +1,64 @@
+{
+  "id": "sc_med_13",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 150.013,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Erfahrung in Confluence und technischen Notizen bin ich gut gerüstet, um die Anforderungen der technischen Redaktion bei DocuLine SE zu erfüllen. Ich bin überzeugt, dass meine Fähigkeiten gut zu Ihrem Team passen.",
+  "subject": "Technische Redaktion Jr - DocuLine SE",
+  "peak_rss_mb": 230.65234375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.081,
+      "draft": 17.995,
+      "critique_1": 33.469,
+      "quality_revision_1": 16.593,
+      "critique_2": 42.87
+    },
+    "cot_stored": false
+  }
+}

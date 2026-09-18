@@ -1,0 +1,40 @@
+{
+  "id": "fi_18",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 138.642,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in Ihrer bisherigen Tätigkeit mit der Terminverwaltung für Patienten umgegangen?",
+      "Welche Erfahrungen haben Sie mit der Bearbeitung von telefonischen Anfragen gemacht?",
+      "Wie stellen Sie sicher, dass alle Termine korrekt und pünktlich vergeben werden?"
+    ],
+    "talking_points": [
+      "In meiner bisherigen Tätigkeit als Empfangsmitarbeiter habe ich täglich mit der Terminverwaltung für Patienten gearbeitet, wobei ich sicherstellte, dass alle Termine korrekt und pünktlich vergeben wurden.",
+      "Ich verwende ein digitales Terminsystem, um die Übersichtlichkeit und Effizienz zu gewährleisten, und passe mich bei Bedarf an neue Systeme an."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Erfolge aus der Berufserfahrung, um die Kompetenzen weiter zu untermauern.",
+      "Keine Informationen zu Soft Skills wie Kommunikation oder Stressmanagement vorhanden.",
+      "Keine Erwähnung von Weiterbildungen oder Zertifizierungen im Bereich Empfang oder Patientenversorgung."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Empfang",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Schwerpunkte: Termine, Telefon",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

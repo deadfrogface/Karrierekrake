@@ -1,0 +1,42 @@
+{
+  "id": "sc_med_18",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 42.693,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe eine solide Erfahrung im Umgang mit Kundenmails und im CRM-Pflegen mit. Diese Fähigkeiten sind direkt für die Rolle des Customer Success Jr bei SaaS Care GmbH relevant. Ich bin überzeugt, dass meine Kompetenzen und meine Fähigkeit, Kunden effektiv zu unterstützen, einen wertvollen Beitrag für Ihr Team leisten können.",
+  "subject": "Interessiert an der Rolle des Customer Success Jr bei SaaS Care GmbH",
+  "peak_rss_mb": 5478.43359375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 27.886,
+      "draft": 14.806
+    },
+    "cot_stored": false
+  }
+}

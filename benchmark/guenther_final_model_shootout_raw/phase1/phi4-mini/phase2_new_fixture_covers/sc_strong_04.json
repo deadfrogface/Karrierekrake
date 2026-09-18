@@ -1,0 +1,50 @@
+{
+  "id": "sc_strong_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 22.002,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Mit meinem Hotelfach-Abschluss und meiner Erfahrung im Gästeservice und Reservierung bin ich überzeugt, dass ich meine Fähigkeiten effektiv für SeeHotel Bellevue einsetzen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Bereich Hotelfach im renommierten SeeHotel Bellevue anzuwenden. Mein Engagement für exzellente Kundenbetreuung und meine Fähigkeit, in einer dynamischen Hotelumgebung zu arbeiten, würden ich gerne in die Rolle bei SeeHotel Bellevue einbringen.",
+  "subject": "Bewerbung für die Position Hotelfachfrau bei SeeHotel Bellevue",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Hotelfachfrau bei SeeHotel Bellevue",
+          "body": "Mit meinem Hotelfach-Abschluss und meiner Erfahrung im Gästeservice und Reservierung bin ich überzeugt, dass ich meine Fähigkeiten effektiv für SeeHotel Bellevue einsetzen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Bereich Hotelfach im renommierten SeeHotel Bellevue anzuwenden. Mein Engagement für exzellente Kundenbetreuung und meine Fähigkeit, in einer dynamischen Hotelumgebung zu arbeiten, würden ich gerne in die Rolle bei SeeHotel Bellevue einbringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5553.2
+}

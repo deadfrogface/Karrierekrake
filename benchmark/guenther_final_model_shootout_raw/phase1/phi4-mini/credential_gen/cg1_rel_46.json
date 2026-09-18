@@ -1,0 +1,10 @@
+{
+  "id": "cg1_rel_46",
+  "expect_final_ok": false,
+  "got_ok": false,
+  "match": true,
+  "codes": [
+    "WRONG_COMPANY"
+  ],
+  "model_id": "phi4-mini"
+}

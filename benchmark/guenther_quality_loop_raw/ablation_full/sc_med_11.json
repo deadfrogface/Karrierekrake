@@ -1,0 +1,76 @@
+{
+  "id": "sc_med_11",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 189.883,
+  "model_calls": 7,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Erfahrung im Ticketsystem und Nutzerberatung kann ich direkt zum Erfolg des Service Desk bei SoftCare KG beitragen. Meine Fähigkeiten in der Kundensupport-Sphäre und die Beherrschung der deutschen Sprache stellen sicher, dass ich die Anforderungen des Dienstleistungsbereichs effektiv erfüllen kann.",
+  "subject": "Service Desk - SoftCare KG",
+  "peak_rss_mb": 208.53125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 27.027,
+      "draft": 12.168,
+      "critique_1": 37.185,
+      "quality_revision_1": 16.292,
+      "critique_2": 39.992,
+      "quality_revision_2": 17.062,
+      "critique_3": 40.154
+    },
+    "cot_stored": false
+  }
+}

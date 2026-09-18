@@ -1,0 +1,74 @@
+{
+  "id": "bw_10",
+  "subject": "Freude daran, meine Buchhaltungsfähigkeiten bei Contoso einzubringen",
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Führungserfahrung und meine Leidenschaft für Buchhaltung zu teilen. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Buchhaltungsbereich bei Contoso einzubringen. Ich freue mich darauf, meine Erfahrungen bei der Leitung einer Buchhaltungsabteilung von 4 Personen anzubieten und zur erfolgreichen Buchhaltung Ihres Unternehmens beizutragen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Contoso zu teilen. Mit freundlichen Grüßen, Klaus",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "WRONG_COMPANY",
+      "message_de": "Zielunternehmen fehlt oder ist falsch.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Northwind",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Northwind",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freude daran, meine Buchhaltungsfähigkeiten bei Contoso einzubringen",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Führungserfahrung und meine Leidenschaft für Buchhaltung zu teilen. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Buchhaltungsbereich bei Contoso einzubringen. Ich freue mich darauf, meine Erfahrungen bei der Leitung einer Buchhaltungsabteilung von 4 Personen anzubieten und zur erfolgreichen Buchhaltung Ihres Unternehmens beizutragen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Contoso zu teilen. Mit freundlichen Grüßen, Klaus",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Northwind",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false
+  },
+  "invented_flag": true
+}

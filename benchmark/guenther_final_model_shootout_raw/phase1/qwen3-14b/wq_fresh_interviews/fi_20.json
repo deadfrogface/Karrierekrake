@@ -1,0 +1,41 @@
+{
+  "id": "fi_20",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 152.134,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie haben Sie in früheren Projekten mit Stakeholdern zusammengearbeitet, um Anforderungen zu sammeln und zu priorisieren?",
+      "Können Sie ein Beispiel nennen, in dem Sie UML-Diagramme zur Dokumentation von Systemanforderungen verwendet haben?",
+      "Wie stellen Sie sicher, dass die Anforderungen, die Sie sammeln, klar und messbar sind?"
+    ],
+    "talking_points": [
+      "In meiner Rolle als Business Analyst habe ich Erfahrung mit der Erstellung von Anforderungsdokumenten und der Kommunikation mit Stakeholdern, um sicherzustellen, dass alle Anforderungen verstanden und dokumentiert werden.",
+      "Ich habe in mehreren Projekten UML-Diagramme genutzt, um komplexe Geschäftsprozesse und Systeminteraktionen visuell darzustellen, was die Kommunikation mit Entwicklungsteams erleichtert hat.",
+      "Ich setze Methoden wie Use Case-Modelle und Anforderungskataloge ein, um Anforderungen systematisch zu erfassen und zu strukturieren."
+    ],
+    "gap_notes": [
+      "Es fehlen konkrete Beispiele oder Projekte, die die genannten Erfahrungen untermauern.",
+      "Die genaue Art der Anforderungen (z. B. funktionale vs. nicht funktionale) ist nicht spezifiziert.",
+      "Es gibt keine Erwähnung von Tools oder Methoden, die im UML-Kontext genutzt wurden."
+    ],
+    "anchors_used": [
+      {
+        "text": "Berufserfahrung: 3 Jahre Business Analyst",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Anforderungen, UML",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

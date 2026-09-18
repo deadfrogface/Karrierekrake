@@ -16,6 +16,8 @@ hidden = (
     + collect_submodules("apply")
     + collect_submodules("core")
     + collect_submodules("desktop")
+    + collect_submodules("guenther")
+    + collect_submodules("integrations")
 )
 
 datas = [

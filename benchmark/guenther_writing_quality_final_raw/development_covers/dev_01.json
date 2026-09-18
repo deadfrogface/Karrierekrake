@@ -1,0 +1,47 @@
+{
+  "id": "dev_01",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren der Nordlicht Verwaltung GmbH, ich schreibe, um meine Erfahrung in der Verwaltung und Organisation von Korrespondenz und Daten zu nutzen. Mit meinem Abschluss als Bürokauffrau IHK 2019 und meiner Erfahrung in der Verwendung von DATEV und Excel bin ich überzeugt, dass ich meine Fähigkeiten in die Rolle des Sachbearbeiters bei Ihrer Firma einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse in der effizienten Verwaltung von Daten und Dokumenten zu nutzen, um die Abläufe innerhalb Ihres Unternehmens zu verbessern.",
+  "subject": "Bewerbung für die Position des Sachbearbeiters",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Sachbearbeiters",
+          "body": "Sehr geehrte Damen und Herren der Nordlicht Verwaltung GmbH, ich schreibe, um meine Erfahrung in der Verwaltung und Organisation von Korrespondenz und Daten zu nutzen. Mit meinem Abschluss als Bürokauffrau IHK 2019 und meiner Erfahrung in der Verwendung von DATEV und Excel bin ich überzeugt, dass ich meine Fähigkeiten in die Rolle des Sachbearbeiters bei Ihrer Firma einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse in der effizienten Verwaltung von Daten und Dokumenten zu nutzen, um die Abläufe innerhalb Ihres Unternehmens zu verbessern.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

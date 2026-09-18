@@ -1,0 +1,83 @@
+{
+  "id": "fb_career_03",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "final_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, an Sie wende ich mich, um meine Bewerbung für die Position des Junior Recruiters bei HireFast KG einzureichen. Mit meiner Erfahrung im Empfang und Terminplanung, die ich bei [Vorunternehmen] gesammelt habe, bin ich überzeugt, dass ich meine Fähigkeiten effektiv in das Recruiting-Team von HireFast integrieren kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse in der Rekrutierung und Talentmanagement zu nutzen, um HireFast KG zu unterstützen, talentierte Fachkräfte zu gewinnen und zu halten. Ich freue mich darauf, meine Erfahrung und meine Leidenschaft für die Rekrutierung bei Ihrer angesehenen Firma einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Fiona Pivot",
+  "subject": "Bewerbung für die Position Junior Recruiter bei HireFast KG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Junior Recruiter bei HireFast KG",
+          "body": "Sehr geehrte Damen und Herren, an Sie wende ich mich, um meine Bewerbung für die Position des Junior Recruiters bei HireFast KG einzureichen. Mit meiner Erfahrung im Empfang und Terminplanung, die ich bei [Vorunternehmen] gesammelt habe, bin ich überzeugt, dass ich meine Fähigkeiten effektiv in das Recruiting-Team von HireFast integrieren kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse in der Rekrutierung und Talentmanagement zu nutzen, um HireFast KG zu unterstützen, talentierte Fachkräfte zu gewinnen und zu halten. Ich freue mich darauf, meine Erfahrung und meine Leidenschaft für die Rekrutierung bei Ihrer angesehenen Firma einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Fiona Pivot",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNRESOLVED_PLACEHOLDER",
+            "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Junior Recruiter bei HireFast KG",
+          "body": "Sehr geehrte Damen und Herren, an Sie wende ich mich, um meine Bewerbung für die Position des Junior Recruiters bei HireFast KG einzureichen. Mit meiner Erfahrung im Empfang und Terminplanung, die ich bei [Vorunternehmen] gesammelt habe, bin ich überzeugt, dass ich meine Fähigkeiten effektiv in das Recruiting-Team von HireFast integrieren kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse in der Rekrutierung und Talentmanagement zu nutzen, um HireFast KG zu unterstützen, talentierte Fachkräfte zu gewinnen und zu halten. Ich freue mich darauf, meine Erfahrung und meine Leidenschaft für die Rekrutierung bei Ihrer angesehenen Firma einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Fiona Pivot",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

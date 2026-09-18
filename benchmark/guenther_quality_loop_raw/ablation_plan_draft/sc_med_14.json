@@ -1,0 +1,42 @@
+{
+  "id": "sc_med_14",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 58.475,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit einer soliden Grundlage in Protokollführung und Terminplanung, bin ich bereit, diese Fähigkeiten im PMO-Bereich zu erweitern und zu verbessern. Meine Erfahrung im Bereich der Projektmanagement-Operationen, insbesondere im Umgang mit Protokollen und Terminplanung, macht mich zu einer idealen Kandidatin für die Rolle des PMO-Assistenten bei ForgePlan GmbH.",
+  "subject": "PMO Assistenz - ForgePlan GmbH",
+  "peak_rss_mb": 194.62890625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.165,
+      "draft": 19.309
+    },
+    "cot_stored": false
+  }
+}

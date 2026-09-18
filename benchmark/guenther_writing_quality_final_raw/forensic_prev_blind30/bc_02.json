@@ -1,0 +1,103 @@
+{
+  "id": "bc_02",
+  "target_role": "DevOps Engineer (m/w/d)",
+  "target_company": "CloudNine GmbH",
+  "profile": "Blind Cover 2\nLinux, CI/CD, Docker\nReferenz: Projektarbeit in devops engineer",
+  "job": "DevOps Engineer (m/w/d)\nCloudNine GmbH\nProfil: Linux, CI/CD, Docker.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "A",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "praktischen Erfahrung"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    }
+  ],
+  "attempt0_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um meine Begeisterung für die DevOps-Position bei CloudNine GmbH auszudrücken, wie sie in Ihrem Stellenangebot beschrieben ist. Mit meiner praktischen Erfahrung in Linux, CI/CD und Docker bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Insbesondere meine Projektarbeit in devops engineer hat meine Fähigkeiten geschärft, die ich gerne auf CloudNine GmbH anwenden würde. Ich freue mich auf die Möglichkeit, meine technischen Fähigkeiten und meine Leidenschaft für DevOps mit Ihnen zu diskutieren.",
+  "attempt1_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die DevOps-Position bei CloudNine GmbH zu bewerben, wie sie in Ihrem Stellenangebot beschrieben ist. Mit meiner Ausbildung in Blind Cover 2 bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Insbesondere meine Projektarbeit in devops engineer hat meine Fähigkeiten geschärft, die ich gerne auf CloudNine GmbH anwenden würde. Ich freue mich auf die Möglichkeit, meine technischen Fähigkeiten und meine Leidenschaft für DevOps mit Ihnen zu diskutieren.",
+  "final_body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe, um mich für die DevOps-Position bei CloudNine GmbH zu bewerben, wie sie in Ihrem Stellenangebot beschrieben ist. Mit meiner Ausbildung in Blind Cover 2 bin ich überzeugt, dass ich einen wertvollen Beitrag zum Team leisten kann. Insbesondere meine Projektarbeit in devops engineer hat meine Fähigkeiten geschärft, die ich gerne auf CloudNine GmbH anwenden würde. Ich freue mich auf die Möglichkeit, meine technischen Fähigkeiten und meine Leidenschaft für DevOps mit Ihnen zu diskutieren.",
+  "final_subject": "DevOps Engineer - CloudNine GmbH",
+  "body_len": 555,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung",
+          "kind": "credential",
+          "span": "Mit meiner Ausbildung in Blind Cover 2 bin ich überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung in Blind Cover 2 bin ich überzeugt",
+          "kind": "credential",
+          "span": "Ausbildung in Blind Cover 2 bin ich überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_0",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

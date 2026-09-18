@@ -1,0 +1,49 @@
+{
+  "id": "fb2_trap_01",
+  "final_ok": true,
+  "score": 6.0,
+  "notes": [
+    "placeholder"
+  ],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, Contoso Insights GmbH, ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position des Analysten auszudrücken. Mit meiner Erfahrung in der Datenanalyse bei Fabrikam Insights und meinen Fähigkeiten in SQL bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere freue ich mich darauf, meine Kenntnisse in SQL und meine Erfahrung im Umgang mit Datenanalysen zu nutzen, um wertvolle Einblicke für Ihre Kunden zu gewinnen. Ich bin besonders an der Möglichkeit interessiert, mich an Projekten zu beteiligen, die Datenintegrität und -analyse in Ihrem Unternehmen fördern. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für Datenanalyse mit Contoso Insights GmbH zu kombinieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung zu besprechen.",
+  "subject": "Begeisterte Bewerbung für die Rolle des Analysten bei Contoso Insights GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Begeisterte Bewerbung für die Rolle des Analysten bei Contoso Insights GmbH",
+          "body": "Sehr geehrte Damen und Herren, Contoso Insights GmbH, ich schreibe Ihnen, um meine Begeisterung für die ausgeschriebene Position des Analysten auszudrücken. Mit meiner Erfahrung in der Datenanalyse bei Fabrikam Insights und meinen Fähigkeiten in SQL bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Insbesondere freue ich mich darauf, meine Kenntnisse in SQL und meine Erfahrung im Umgang mit Datenanalysen zu nutzen, um wertvolle Einblicke für Ihre Kunden zu gewinnen. Ich bin besonders an der Möglichkeit interessiert, mich an Projekten zu beteiligen, die Datenintegrität und -analyse in Ihrem Unternehmen fördern. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Leidenschaft für Datenanalyse mit Contoso Insights GmbH zu kombinieren. Vielen Dank für Ihre Zeit und Überlegung. Ich freue mich auf die Möglichkeit, meine Bewerbung zu besprechen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

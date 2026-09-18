@@ -1,0 +1,40 @@
+{
+  "id": "fi_07",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 51.326,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie strukturieren Sie Ihre SEO-Strategie für ein CMS-basiertes Content-Management?",
+      "Welche Erfahrungen haben Sie mit der Optimierung von Content für spezifische Zielgruppen gemacht?",
+      "Wie gehen Sie mit der Herausforderung um, Content-Marketing und SEO effektiv zu verbinden?"
+    ],
+    "talking_points": [
+      "Nutzung von CMS-Funktionen zur Verbesserung der SEO-Performance",
+      "Erfolgreiche Umsetzung von Content-Strategien in Marketing-Projekten",
+      "Anpassung von Content an SEO-Anforderungen und Zielgruppenbedürfnisse"
+    ],
+    "gap_notes": [
+      "Fehlende spezifische Details zu den genutzten CMS-Tools und SEO-Methoden im Profil",
+      "Keine konkreten Beispiele für erfolgreiche Marketing-Projekte verfügbar"
+    ],
+    "anchors_used": [
+      {
+        "text": "CMS, SEO, Content",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "3 Jahre Marketing-Erfahrung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

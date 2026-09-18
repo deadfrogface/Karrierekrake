@@ -1,0 +1,24 @@
+{
+  "id": "fi_08",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 56.474,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien haben Sie angewendet, um die Effizienz der Kommissionierung bei StockRoom GmbH zu verbessern?",
+      "Wie haben Sie die Staplerscheine in Ihrem aktuellen Lagerumfeld genutzt, um Abläufe zu optimieren?",
+      "Können Sie ein Problem beschreiben, das Sie in der Lagerkommissionierung bei StockRoom GmbH erlebt haben, und wie Sie es gelöst haben?"
+    ],
+    "talking_points": [
+      "Bei StockRoom GmbH habe ich Strategien zur Optimierung des Ablaufs in der Lagerkommissionierung angewendet, was zu einer Steigerung der Effizienz führte."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

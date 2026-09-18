@@ -1,0 +1,164 @@
+{
+  "id": "cl_strong_match",
+  "subject": "Bewerbung für die Position der Sachbearbeitung Buchhaltung",
+  "body": "Sehr geehrte Damen und Herren, Ich schreibe, um mich für die Position der Sachbearbeitung Buchhaltung bei Northwind Handels GmbH München zu bewerben. Mit meiner mehrjährigen Erfahrung in der Kreditorenbuchhaltung und meinen sicheren DATEV-Kenntnissen, gepaart mit guten Excel-Kenntnissen, glaube ich, dass ich gut zu Ihrer Buchhaltungsabteilung passen würde. Meine Ausbildung als Kauffrau für Büromanagement IHK hat mir eine solide Grundlage in der Büromanagement-Praktik gegeben. Ich bin versiert in der Verwendung von DATEV und Excel und habe eine gute Beherrschung der deutschen Sprache, was mir ermöglicht, effektiv mit den Fachbereichen zu kommunizieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Mia Beispiel",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kauffrau für Büromanagement IHK hat mir“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "Ausbildung als Kauffrau für Büromanagement IHK hat mir",
+      "severity": "error",
+      "meta": {}
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+      "repair_instruction": "Entferne jede Behauptung zu „IHK hat mir eine solide Grundlage in der Bü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+      "claim_text": "IHK hat mir eine solide Grundlage in der Bü",
+      "severity": "error",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kauffrau für Büromanagement IHK hat mir“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kauffrau für Büromanagement IHK hat mir",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK hat mir eine solide Grundlage in der Bü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK hat mir eine solide Grundlage in der Bü",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position der Sachbearbeitung Buchhaltung",
+          "body": "Sehr geehrte Damen und Herren, Ich schreibe, um mich für die Position der Sachbearbeitung Buchhaltung bei Northwind Handels GmbH München zu bewerben. Mit meiner mehrjährigen Erfahrung in der Kreditorenbuchhaltung und meinen sicheren DATEV-Kenntnissen, gepaart mit guten Excel-Kenntnissen, glaube ich, dass ich gut zu Ihrer Buchhaltungsabteilung passen würde. Meine Ausbildung als Kauffrau für Büromanagement IHK hat mir eine solide Grundlage in der Büromanagement-Praktik gegeben. Ich bin versiert in der Verwendung von DATEV und Excel und habe eine gute Beherrschung der deutschen Sprache, was mir ermöglicht, effektiv mit den Fachbereichen zu kommunizieren. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Mia Beispiel",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kauffrau für Büromanagement IHK hat mir“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Ausbildung als Kauffrau für Büromanagement IHK hat mir",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „IHK hat mir eine solide Grundlage in der Bü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "IHK hat mir eine solide Grundlage in der Bü",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Ausbildung als Kauffrau für Büromanagement IHK hat mir",
+          "kind": "credential",
+          "span": "Ausbildung als Kauffrau für Büromanagement IHK hat mir",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung als Kauffrau für Büromanagement IHK hat mir“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung als Kauffrau für Büromanagement IHK hat mir",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      },
+      {
+        "claim": {
+          "text": "Ausbildung als Kauffrau für Büromanagement IHK hat",
+          "kind": "credential",
+          "span": "Ausbildung als Kauffrau für Büromanagement IHK hat",
+          "requires_direct": true,
+          "meta": {
+            "family": "Ausbildung"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "Ausbildung als Kauffrau für Büromanagement IHK hat",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "IHK hat mir eine solide Grundlage in der Bü",
+          "kind": "credential",
+          "span": "IHK hat mir eine solide Grundlage in der Bü",
+          "requires_direct": true,
+          "meta": {
+            "family": "IHK"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „IHK hat mir eine solide Grundlage in der Bü“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "IHK hat mir eine solide Grundlage in der Bü",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

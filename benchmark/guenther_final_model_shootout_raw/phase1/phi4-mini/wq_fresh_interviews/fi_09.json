@@ -1,0 +1,37 @@
+{
+  "id": "fi_09",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 45.817,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwenden Sie, um den Gästeservice bei Alpenhof zu verbessern?",
+      "Wie bleiben Sie auf dem Laufenden mit den neuesten Trends im Bereich Gästeservice und Reservierung?",
+      "Können Sie ein Beispiel dafür geben, wie Sie Ihre Reservierungsfähigkeiten bei Alpenhof eingesetzt haben?"
+    ],
+    "talking_points": [
+      "Bei Alpenhof konzentriere ich mich darauf, den Gästeservice durch persönliche Interaktion und Aufmerksamkeit auf Details zu verbessern.",
+      "Ich halte mich über Trends im Gästeservice und Reservierung auf dem Laufenden, indem ich regelmäßig Fachliteratur lese und Branchenveranstaltungen besuche.",
+      "Ich habe bei Alpenhof erfolgreich eine Reservierung für eine Gruppe von 10 Gästen durchgeführt, indem ich sorgfältig die Vorlieben der Gäste und die Verfügbarkeit des Veranstaltungsortes berücksichtigt habe."
+    ],
+    "gap_notes": [],
+    "anchors_used": [
+      {
+        "text": "Reservierung",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Gästeservice",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  }
+}

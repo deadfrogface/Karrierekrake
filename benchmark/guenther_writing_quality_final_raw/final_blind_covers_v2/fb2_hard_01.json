@@ -1,0 +1,121 @@
+{
+  "id": "fb2_hard_01",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "UNSUPPORTED_CREDENTIAL",
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "attempt1_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "UNSUPPORTED_CREDENTIAL",
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "final_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "UNSUPPORTED_CREDENTIAL",
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich bringe meine Erfahrung im Drogerieverkauf und meine formale Fachkraft-Ausbildung vor, um Ihre Apotheke zu unterstützen. Ich bin überzeugt, dass meine Fähigkeiten und meine Ausbildung eine wertvolle Ergänzung für CityApotheke West darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in diesem Bereich weiterzuentwickeln und zum Erfolg Ihres Unternehmens beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Kai Retail",
+  "subject": "Bewerbung für Apotheker/in bei CityApotheke West",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung XYZ anzubieten",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung eine wertvolle Ergänzung für CityApothek“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung eine wertvolle Ergänzung für CityApothek",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "meine Ausbildung eine",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Apotheker/in bei CityApotheke West",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Drogerieverkauf und meine formale Fachkraft-Ausbildung XYZ anzubieten, um Ihre Apotheke zu unterstützen. Ich bin überzeugt, dass meine Fähigkeiten und meine Ausbildung eine wertvolle Ergänzung für CityApotheke West darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in diesem Bereich weiterzuentwickeln und zum Erfolg Ihres Unternehmens beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Kai Retail",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung vor",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung eine wertvolle Ergänzung für CityApothek“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung eine wertvolle Ergänzung für CityApothek",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "meine Ausbildung eine",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für Apotheker/in bei CityApotheke West",
+          "body": "Sehr geehrte Damen und Herren, ich bringe meine Erfahrung im Drogerieverkauf und meine formale Fachkraft-Ausbildung vor, um Ihre Apotheke zu unterstützen. Ich bin überzeugt, dass meine Fähigkeiten und meine Ausbildung eine wertvolle Ergänzung für CityApotheke West darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in diesem Bereich weiterzuentwickeln und zum Erfolg Ihres Unternehmens beizutragen. Vielen Dank für Ihre Zeit und Überlegung. Mit freundlichen Grüßen, Kai Retail",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

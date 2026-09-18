@@ -1,0 +1,47 @@
+{
+  "id": "cl_sales",
+  "subject": "Freude darüber, dass Sie sich für die Position im Innendienst bei Fabrikam Retail interessieren",
+  "body": "Sehr geehrte Damen und Herren, \n\nIch hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe Ihnen, um mich für die Position im Innendienst bei Fabrikam Retail zu bewerben, wie in Ihrem Jobangebot beschrieben. Mit meiner Erfahrung im Callcenter bei Contoso Service, insbesondere im Umgang mit CRM-Systemen und in der lösungsorientierten Kommunikation, glaube ich, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. \n\nIch bin begeistert von der Möglichkeit, meine Fähigkeiten im Kundenservice und meine Sprachkenntnisse im Deutschen und Englischen B2 einzubringen, um Fabrikam Retail zu unterstützen. \n\nIch freue mich auf die Möglichkeit, meine Erfahrungen und meine Begeisterung für herausragenden Kundenservice mit Ihnen zu besprechen. \n\nVielen Dank für Ihre Zeit und Berücksichtigung. \n\nMit freundlichen Grüßen, \nPaul Service",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freude darüber, dass Sie sich für die Position im Innendienst bei Fabrikam Retail interessieren",
+          "body": "Sehr geehrte Damen und Herren, \n\nIch hoffe, diese Nachricht erreicht Sie wohlbehalten. Ich schreibe Ihnen, um mich für die Position im Innendienst bei Fabrikam Retail zu bewerben, wie in Ihrem Jobangebot beschrieben. Mit meiner Erfahrung im Callcenter bei Contoso Service, insbesondere im Umgang mit CRM-Systemen und in der lösungsorientierten Kommunikation, glaube ich, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. \n\nIch bin begeistert von der Möglichkeit, meine Fähigkeiten im Kundenservice und meine Sprachkenntnisse im Deutschen und Englischen B2 einzubringen, um Fabrikam Retail zu unterstützen. \n\nIch freue mich auf die Möglichkeit, meine Erfahrungen und meine Begeisterung für herausragenden Kundenservice mit Ihnen zu besprechen. \n\nVielen Dank für Ihre Zeit und Berücksichtigung. \n\nMit freundlichen Grüßen, \nPaul Service",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

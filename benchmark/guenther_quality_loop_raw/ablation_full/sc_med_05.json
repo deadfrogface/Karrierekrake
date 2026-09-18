@@ -1,0 +1,52 @@
+{
+  "id": "sc_med_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 72.743,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Onboarding-Support und meine Excel-Proficiency in die HR-Abteilung bei CrewBase KG einzubringen. Mit meiner Erfahrung in der Verwaltung von Personalressourcen und meinem starken Deutsch bin ich sicher, dass ich einen wertvollen Beitrag zum Team leisten kann.",
+  "subject": "Einreichung für HR Assistant bei CrewBase KG",
+  "peak_rss_mb": 208.5078125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.049,
+      "draft": 16.978,
+      "critique_1": 26.714
+    },
+    "cot_stored": false
+  }
+}

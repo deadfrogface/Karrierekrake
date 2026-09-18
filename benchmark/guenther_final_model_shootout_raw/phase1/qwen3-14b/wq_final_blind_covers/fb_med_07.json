@@ -1,0 +1,52 @@
+{
+  "id": "fb_med_07",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.8,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 126.449,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nals IT-Helpdesk-Mitarbeiter mit Fokus auf First-Level Support unter Windows habe ich bereits in mehreren Projekten Erfahrung gesammelt, in denen ich Kunden bei der Lösung von technischen Problemen unterstützt habe. In meiner aktuellen Tätigkeit habe ich beispielsweise die Einrichtung von Netzwerkverbindungen und die Behebung von Softwareproblemen im Alltag von Mitarbeitern übernommen. Zudem habe ich mich intensiv mit der Dokumentation von Lösungen und der Kommunikation mit Second-Level-Teams beschäftigt, was mir eine strukturierte und effiziente Arbeitsweise vermittelt hat.\n\nDiese Erfahrungen habe ich nun mit der Zielrolle bei HelpNow AG verknüpft, da ich das Ziel verfolge, meine Fähigkeiten im IT-Support weiter zu vertiefen und in einem renommierten Unternehmen wie HelpNow AG meine Kompetenzen weiterzuentwickeln. Besonders freue ich mich auf die Möglichkeit, meine Erfahrung im Umgang mit Windows-Systemen und die Lösung von Kundenanfragen in einem professionellen Umfeld einzusetzen.\n\nMit freundlichen Grüßen,\nBoris Help",
+  "subject": "Bewerbung um die Stelle als IT-Helpdesk bei HelpNow AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen3-14b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung um die Stelle als IT-Helpdesk bei HelpNow AG",
+          "body": "Sehr geehrte Damen und Herren,\n\nals IT-Helpdesk-Mitarbeiter mit Fokus auf First-Level Support unter Windows habe ich bereits in mehreren Projekten Erfahrung gesammelt, in denen ich Kunden bei der Lösung von technischen Problemen unterstützt habe. In meiner aktuellen Tätigkeit habe ich beispielsweise die Einrichtung von Netzwerkverbindungen und die Behebung von Softwareproblemen im Alltag von Mitarbeitern übernommen. Zudem habe ich mich intensiv mit der Dokumentation von Lösungen und der Kommunikation mit Second-Level-Teams beschäftigt, was mir eine strukturierte und effiziente Arbeitsweise vermittelt hat.\n\nDiese Erfahrungen habe ich nun mit der Zielrolle bei HelpNow AG verknüpft, da ich das Ziel verfolge, meine Fähigkeiten im IT-Support weiter zu vertiefen und in einem renommierten Unternehmen wie HelpNow AG meine Kompetenzen weiterzuentwickeln. Besonders freue ich mich auf die Möglichkeit, meine Erfahrung im Umgang mit Windows-Systemen und die Lösung von Kundenanfragen in einem professionellen Umfeld einzusetzen.\n\nMit freundlichen Grüßen,\nBoris Help",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14510.9
+}

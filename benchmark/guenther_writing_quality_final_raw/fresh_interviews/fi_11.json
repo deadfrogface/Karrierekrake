@@ -1,0 +1,25 @@
+{
+  "id": "fi_11",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Welche Strategien verwendest du, um das Onboarding-Erlebnis für neue Mitarbeiter bei PeopleNest KG zu verbessern?",
+      "Wie führst du deine Personalakte effektiv im HR-Bereich bei PeopleNest KG?",
+      "Kannst du ein Beispiel für eine erfolgreiche Personalaktion oder ein Onboarding-Projekt nennen, das du bei PeopleNest KG durchgeführt hast?"
+    ],
+    "talking_points": [
+      "Erwähne spezifische Onboarding-Prozesse, die du implementiert hast, und wie sie die Mitarbeiterzufriedenheit und -bindung verbessert haben.",
+      "Diskutiere die Rolle der Personalakte bei der Effizienzsteigerung und wie du diese bei PeopleNest KG optimiert hast.",
+      "Erinnere dich an ein Projekt, bei dem du die Zusammenarbeit zwischen verschiedenen Abteilungen bei PeopleNest KG verbessert hast."
+    ],
+    "gap_notes": [],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

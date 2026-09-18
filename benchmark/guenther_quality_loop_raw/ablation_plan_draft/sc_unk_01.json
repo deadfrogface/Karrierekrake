@@ -1,0 +1,44 @@
+{
+  "id": "sc_unk_01",
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 44.635,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Sachbearbeitungseinsatz mit Excel, Ablage und Telefon ein, was direkt relevant für das Sachbearbeitungsteam bei Cyd Office ist. Ich bin bereit, meine Fähigkeiten im Kontext des neuen Unternehmens anzuwenden.",
+  "subject": "Angebot für Sachbearbeitung",
+  "peak_rss_mb": 224.41796875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 30.172,
+      "draft": 14.462
+    },
+    "cot_stored": false
+  }
+}

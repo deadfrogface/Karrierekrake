@@ -1,0 +1,46 @@
+{
+  "id": "si_30",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 35.815,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie organisierst du deine Teamkoordination, um die Effizienz an der Kasse zu verbessern?",
+      "Kannst du ein spezifisches Beispiel nennen, wie du als Retail Lead bei ShopQuick AG zur Kundenzufriedenheit beigetragen hast?",
+      "Welche Strategien verwendest du, um Herausforderungen im Bereich der Kasse und Teamkoordination zu bewältigen?"
+    ],
+    "talking_points": [
+      "Diskussion über Teammanagement- und Koordinationsfähigkeiten, insbesondere im Kontext der Kasse.",
+      "Erwähnung spezifischer Erfahrungen und Erfolge im Bereich der Teamkoordination und Kassenmanagement im Retail-Bereich.",
+      "Strategien und Ansätze zur Lösung von Problemen und zur Optimierung des Ablaufs an der Kasse."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder detaillierte Beispiele aus dem Profil des Kandidaten.",
+      "Mögliche Herausforderungen bei der Diskussion spezifischer Erfolge ohne bereitgestellte Evidenz.",
+      "Mögliche Notwendigkeit, den Kandidaten zu ermutigen, konkrete Beispiele aus eigener Erfahrung zu liefern."
+    ],
+    "anchors_used": [
+      {
+        "text": "Retail Lead",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Kasse",
+        "source": "profile",
+        "quote": ""
+      },
+      {
+        "text": "Teamkoordination",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

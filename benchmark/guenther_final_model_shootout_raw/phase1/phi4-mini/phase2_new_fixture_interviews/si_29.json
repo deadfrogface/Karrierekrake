@@ -1,0 +1,29 @@
+{
+  "id": "si_29",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 31.292,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Wie organisieren Sie Termine und Abrechnungen in Ihrer aktuellen Rolle?",
+      "Können Sie ein spezifisches Beispiel nennen, wie Sie eine Herausforderung im Zusammenhang mit Terminplanung oder Abrechnung gemeistert haben?",
+      "Welche Strategien setzen Sie um sicherzustellen, dass Termine und Abrechnungen effizient verwaltet werden?"
+    ],
+    "talking_points": [
+      "Diskussion über die Organisation und Verwaltung von Terminen und Abrechnungen in einer medizinischen Praxis.",
+      "Strategien und Werkzeuge, die Sie verwenden, um Effizienz und Genauigkeit bei der Termin- und Abrechnungsverwaltung zu gewährleisten."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Erfolge oder detaillierte Beispiele aus dem Profil.",
+      "Mögliche Herausforderungen oder Probleme im Zusammenhang mit der Rolle, die nicht erwähnt wurden, sollten angesprochen werden.",
+      "Weitere Informationen über die Fähigkeiten und Kompetenzen, die für die Rolle relevant sind, könnten hilfreich sein."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

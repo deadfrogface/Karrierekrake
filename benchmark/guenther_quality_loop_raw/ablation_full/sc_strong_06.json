@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_06",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 76.716,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe eine solide Berufserfahrung als Einzelhandelskaufmann mit Rollen in Kasse und Beratung, was gut zu den Anforderungen von ModeHaus West passt, insbesondere im Hinblick auf die Sprachkenntnisse im Deutschen.",
+  "subject": "Verkäufer/in",
+  "peak_rss_mb": 208.453125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 40.41,
+      "draft": 15.569,
+      "critique_1": 20.735
+    },
+    "cot_stored": false
+  }
+}

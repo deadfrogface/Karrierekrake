@@ -1,0 +1,83 @@
+{
+  "id": "dev_13",
+  "final_ok": false,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 1,
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich der Wartung und Ausbildung von Elektroniker-Schaltschranken auf die Rolle des Elektronikers bei EnergiePlus GmbH anzuwenden. Mit meiner Ausbildung als Elektroniker bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle bei Ihrer Firma einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Umgang mit Energiesystemen und meine Fähigkeit, komplexe Probleme effizient zu lösen, in den Betrieb von EnergiePlus GmbH zu integrieren. Ich freue mich auf die Möglichkeit, meine Bewerbung bei Ihnen persönlich vorzulegen.",
+  "subject": "Bewerbung für die Rolle des Elektronikers bei EnergiePlus GmbH",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meiner Ausbildung als“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meiner Ausbildung als",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Rolle des Elektronikers bei EnergiePlus GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich der Wartung und Ausbildung von Elektroniker-Schaltschranken auf die Rolle des Elektronikers bei EnergiePlus GmbH anzuwenden. Mit meiner Ausbildung als Elektroniker und meiner praktischen Erfahrung in der Wartung und Ausbildung von Elektroniker-Schaltschranken bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle bei Ihrer Firma einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Umgang mit Energiesystemen und meine Fähigkeit, komplexe Probleme effizient zu lösen, in den Betrieb von EnergiePlus GmbH zu integrieren. Ich freue mich auf die Möglichkeit, meine Bewerbung bei Ihnen persönlich vorzulegen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „meiner Ausbildung als“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "meiner Ausbildung als",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Rolle des Elektronikers bei EnergiePlus GmbH",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich der Wartung und Ausbildung von Elektroniker-Schaltschranken auf die Rolle des Elektronikers bei EnergiePlus GmbH anzuwenden. Mit meiner Ausbildung als Elektroniker bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Rolle bei Ihrer Firma einbringen kann. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Umgang mit Energiesystemen und meine Fähigkeit, komplexe Probleme effizient zu lösen, in den Betrieb von EnergiePlus GmbH zu integrieren. Ich freue mich auf die Möglichkeit, meine Bewerbung bei Ihnen persönlich vorzulegen.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  }
+}

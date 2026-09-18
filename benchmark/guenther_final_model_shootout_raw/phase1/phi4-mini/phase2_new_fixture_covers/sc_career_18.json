@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_18",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 29.543,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren der StockLead AG, ich schreibe, um meine Erfahrung im Kommissionieren und meine Leidenschaft für die Schichtleitung in einer Lagerumgebung zu teilen. Als Kommissionierungsspezialist bei Fox Pack habe ich meine Fähigkeiten in der Organisation und Effizienzsteigerung in Lagerumgebungen geschärft. Ich bin überzeugt, dass meine Erfahrung im Umgang mit Lagerbeständen und die Fähigkeit, Schichten effektiv zu leiten, mich gut für die Rolle des Warehouse Lead Jr bei StockLead AG geeignet machen. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Lagerwesen und meine Deutschkenntnisse in einem professionellen Umfeld einzusetzen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in die Wachstums- und Erfolgsgeschichte von StockLead AG einzubringen.",
+  "subject": "Bewerbung für die Position des Warehouse Lead Jr bei StockLead AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position des Warehouse Lead Jr bei StockLead AG",
+          "body": "Sehr geehrte Damen und Herren der StockLead AG, ich schreibe, um meine Erfahrung im Kommissionieren und meine Leidenschaft für die Schichtleitung in einer Lagerumgebung zu teilen. Als Kommissionierungsspezialist bei Fox Pack habe ich meine Fähigkeiten in der Organisation und Effizienzsteigerung in Lagerumgebungen geschärft. Ich bin überzeugt, dass meine Erfahrung im Umgang mit Lagerbeständen und die Fähigkeit, Schichten effektiv zu leiten, mich gut für die Rolle des Warehouse Lead Jr bei StockLead AG geeignet machen. Ich bin besonders an der Möglichkeit interessiert, meine Kenntnisse im Lagerwesen und meine Deutschkenntnisse in einem professionellen Umfeld einzusetzen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in die Wachstums- und Erfolgsgeschichte von StockLead AG einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5587.5
+}

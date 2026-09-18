@@ -1,0 +1,29 @@
+{
+  "id": "sc_strong_16",
+  "case_id": "sc_strong_16",
+  "final_ok": true,
+  "score": 7.0,
+  "edit_class": "MINOR_STYLE_EDIT_OPTIONAL",
+  "notes": [
+    "too_short"
+  ],
+  "latency_s": 62.775,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Rechtsanwaltsfachangestellte/r mit ReFa Ausbildung und Erfahrung in Mandatsführung und Fristen, bereit, meine Fähigkeiten in der Kanzlei Hart einzubringen.",
+  "subject": "Rechtsanwaltsfachangestellte/r",
+  "peak_rss_mb": 140.74609375,
+  "optimizer_score": 0.40499999999999997,
+  "feedback": "TOO_SHORT: Expand to 220–900 chars with 2–4 evidence-linked paragraphs. TOO_SHORT: Letter under 200 characters — expand with grounded evidence.",
+  "completion_status": "done",
+  "configuration_hash": "6a7d0cd3c2ddbf053037cfe0c7d5ec462317ff2d937ddd494a1ba606972b364c",
+  "writer_prompt_hash": "12428e7aac8b1eca5e022f82608d6a28d72677292b5a5ad740473080020b4306",
+  "plan_hash": "unfrozen",
+  "model_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+  "generation_config_hash": "8e6882afc629e3b26fd027f0961b1fd678891be9fe4b8cd19f0055c2596a9697",
+  "evaluator_hash": "5dcff107c3bc0baeeb144fb150829756fc8af5be93386d5063ac2b51004d586c",
+  "hard_flags": {}
+}

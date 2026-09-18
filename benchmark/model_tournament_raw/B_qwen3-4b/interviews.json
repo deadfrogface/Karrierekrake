@@ -1,0 +1,365 @@
+[
+  {
+    "id": "iv_hr",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Listen und Terminplanung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2020–heute Office Manager, Fabrikam AG",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "- Terminplanung, Korrespondenz, Lieferantenabstimmung, Excel-Listen",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Personio",
+            "support": "RELATED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_buchhaltung",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "DATEV Kreditorenbuchhaltung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "SAP FI Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Sachbearbeitung Buchhaltung (m/w/d) — Northwind Handels GmbH München",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "gute Excel-Kenntnisse",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Deutsch verhandlungssicher",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_career",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kundenberatung und Beschwerdemanagement",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Terminorganisation im Büro",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "low"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_dental_medical",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminvergabe und Patientenaufnahme",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "GOÄ-Abrechnung Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": []
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_junior",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Terminorganisation als Azubi",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Emma Start, Leipzig - 2024–heute Azubi Kauffrau Büromanagement, Litware SE (3. Lehrjahr) - Posteingang, Termine, Excel-Tabellen, Telefonzentrale",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Führungserfahrung",
+            "support": "NOT_SUPPORTED",
+            "note": "",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  },
+  {
+    "id": "iv_it",
+    "prep_envelope": {
+      "ok": true,
+      "capability": "interview_prep",
+      "suggestion": {
+        "questions": [],
+        "talking_points": [],
+        "gap_notes": [],
+        "anchors_used": [],
+        "invented_flag": false,
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "evidence_envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "First-Level Ticketbearbeitung",
+            "support": "DIRECT",
+            "note": "",
+            "anchors": [
+              {
+                "text": "2020–heute IT-Support First Level, Adventure IT",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Ticketbearbeitung, Nutzerberatung Windows/Office, Dokumentation in Wiki",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          },
+          {
+            "claim": "Active Directory Grundlagen",
+            "support": "RELATED",
+            "note": "",
+            "anchors": [
+              {
+                "text": "Ausbildung Fachinformatiker Systemintegration",
+                "source": "evidence",
+                "quote": ""
+              },
+              {
+                "text": "Kenntnisse: Windows, Active Directory Grundlagen, Excel",
+                "source": "evidence",
+                "quote": ""
+              }
+            ]
+          }
+        ],
+        "confidence": "high"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-4b",
+      "validated": true,
+      "safety_notes": []
+    },
+    "score": 1.0,
+    "score_notes": [
+      "empty_prep"
+    ]
+  }
+]

@@ -1,0 +1,75 @@
+{
+  "id": "bw_30",
+  "subject": "Bewerbung für Bauleiter — Pflicht Meisterbrief",
+  "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um meine Bewerbung für die Position des Bauleiters — Pflicht Meisterbrief anzubieten. Mit 10 Jahren Erfahrung im Handwerk und einer starken Grundlage in Projektmanagement bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Erfahrung und meine Leidenschaft für exzellentes Handwerk mit Ihnen zu teilen.\n\nMit freundlichen Grüßen,\nUwe Umbau",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [
+    {
+      "code": "WRONG_COMPANY",
+      "message_de": "Zielunternehmen fehlt oder ist falsch.",
+      "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+      "claim_text": "Fabrikam",
+      "severity": "warning",
+      "meta": {}
+    }
+  ],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "WRONG_COMPANY",
+            "message_de": "Zielunternehmen fehlt oder ist falsch.",
+            "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+            "claim_text": "Fabrikam",
+            "severity": "warning",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Bauleiter — Pflicht Meisterbrief",
+          "body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um meine Bewerbung für die Position des Bauleiters — Pflicht Meisterbrief anzubieten. Mit 10 Jahren Erfahrung im Handwerk und einer starken Grundlage in Projektmanagement bin ich überzeugt, dass ich meine Fähigkeiten effektiv in Ihre Firma einbringen kann. Ich freue mich darauf, meine Erfahrung und meine Leidenschaft für exzellentes Handwerk mit Ihnen zu teilen.\n\nMit freundlichen Grüßen,\nUwe Umbau",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "Fabrikam",
+        "severity": "warning",
+        "meta": {}
+      }
+    ],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": false,
+    "forbidden_token": "Meister"
+  },
+  "invented_flag": true
+}

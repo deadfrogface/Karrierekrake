@@ -1,0 +1,8 @@
+{
+  "id": "cg2_33",
+  "expect_final_ok": true,
+  "got_ok": true,
+  "match": true,
+  "codes": [],
+  "model_id": "phi4-mini"
+}

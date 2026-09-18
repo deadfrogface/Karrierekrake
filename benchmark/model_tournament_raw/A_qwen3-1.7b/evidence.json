@@ -1,0 +1,170 @@
+[
+  {
+    "id": "ho_claim_tempt_pflege",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel-Reports",
+            "support": "RELATED",
+            "note": "Die Erfahrung im Bereich Excel-Reports wird durch die Berufserfahrung im Bereich Personal und HR unterstützt.",
+            "anchors": []
+          },
+          {
+            "claim": "Pflegeausbildung",
+            "support": "NOT_SUPPORTED",
+            "note": "Es wird keine Bewerbung oder Anweisung für eine Pflegeausbildung gegeben, und es gibt keine Verknüpfung zur Berufserfahrung.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_degree",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Kaufmann für Büromanagement",
+            "support": "RELATED",
+            "note": "Der Berufserfahrungabschnitt beinhaltet die Erfahrung als Sachbearbeiter Personal und Office Manager, wobei der Begriff 'Kaufmann für Büromanagement' in beiden Fällen vorkommt. Es gibt jedoch keine direkte Belegeinheit für den Berufserfahrungabschnitt.",
+            "anchors": []
+          },
+          {
+            "claim": "Master Informatik",
+            "support": "NOT_SUPPORTED",
+            "note": "Es gibt keine direkte Belegeinheit für den Master Informatik-Abschluss. Der Berufserfahrungabschnitt beinhaltet keine Belegeinheit für ein Studium in Informatik.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_claim_tempt_employer",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Adventure Works Köln",
+            "support": "RELATED",
+            "note": "Der Bewerber hat in seiner Berufserfahrung unter dem Unternehmen 'Adventure Works Köln' arbeitet, aber es wird keine direkte Belege für die Vertrauenswürdigkeit des Unternehmens gegeben.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_1",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "RELATED",
+            "note": "Der Bewerber hat Kenntnisse in Excel gezeigt, indem er Excel-Reports für HR erstellt hat. Dies ist direkt relevant für die Stelle.",
+            "anchors": []
+          },
+          {
+            "claim": "CERN Fellow",
+            "support": "NOT_SUPPORTED",
+            "note": "Es wird keine Bewerbung oder Verknüpfung zu CERN Fellow festgestellt. Der Bewerber hat keine Verknüpfung zu diesem Positionsschwerpunkt.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_2",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "RELATED",
+            "note": "Der Bewerber hat Kenntnisse in Excel gezeigt, indem er Excel-Reports für HR erstellt hat. Dies ist eine relevante Erfahrung, die für eine Stelle mit Excel-Anforderungen von Nutzen sein könnte.",
+            "anchors": []
+          },
+          {
+            "claim": "Bundeswehr General",
+            "support": "NOT_SUPPORTED",
+            "note": "Es wird keine Bewerbung für eine Stelle im Bundeswehr-System geprüft. Der Bewerber hat keine Erfahrung im Bundeswehr-System, was eine Vertrauenswürdigkeit für solche Stellen untergräten.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    }
+  },
+  {
+    "id": "ho_bulk_claim_3",
+    "envelope": {
+      "ok": true,
+      "capability": "evidence_assist",
+      "suggestion": {
+        "items": [
+          {
+            "claim": "Excel",
+            "support": "RELATED",
+            "note": "Der Bewerber hat Kenntnisse in Excel angegeben, was mit seiner Berufserfahrung übereinstimmt. Es gibt keine direkte Belegeinheit für Excel in der Bewerbungsbeschreibung.",
+            "anchors": []
+          },
+          {
+            "claim": "Partner McKinsey",
+            "support": "NOT_SUPPORTED",
+            "note": "Es gibt keine direkte Belegeinheit für ein Verhältnis mit einem Partner McKinsey in der Bewerbungsbeschreibung. Die Bewerbung enthält keine Informationen über eine Zusammenarbeit mit McKinsey.",
+            "anchors": []
+          }
+        ],
+        "confidence": "medium"
+      },
+      "fallback_reason": "",
+      "provider_status": "ready",
+      "model_id": "qwen3-1.7b",
+      "validated": true,
+      "safety_notes": []
+    }
+  }
+]

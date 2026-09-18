@@ -1,0 +1,52 @@
+{
+  "id": "fb_unk_01",
+  "final_ok": true,
+  "score": 6.5,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 67.687,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Bewerbung bewerbe ich mich auf die ausgeschriebene Sachbearbeitungsstelle. Die Kombination aus strukturierten Abläufen und präziser Datenpflege entspricht genau meinen Stärken.\n\nIn meiner bisherigen Tätigkeit bei Quinn Office habe ich routiniert administrative Prozesse koordiniert und dabei stets auf eine effiziente Ablage von Dokumenten geachtet. Zudem unterstützte ich das Team durch die professionelle Entgegennahme von Anrufen und die schnelle Bearbeitung von Anfragen. Diese Erfahrung in der sorgfältigen Büroorganisation und der zuverlässigen Kommunikation möchte ich nun direkt in Ihr Team einbringen.\n\nIch freue mich darauf, meine Fähigkeiten in der Sachbearbeitung für Ihre ausgeschriebene Position einzusetzen und mich persönlich vorzustellen.\n\nMit freundlichen Grüßen\nQuinn Office",
+  "subject": "Bewerbung als Sachbearbeiter/in – Ihre ausgeschriebene Position",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Sachbearbeiter/in – Ihre ausgeschriebene Position",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Bewerbung bewerbe ich mich auf die ausgeschriebene Sachbearbeitungsstelle. Die Kombination aus strukturierten Abläufen und präziser Datenpflege entspricht genau meinen Stärken.\n\nIn meiner bisherigen Tätigkeit bei Quinn Office habe ich routiniert administrative Prozesse koordiniert und dabei stets auf eine effiziente Ablage von Dokumenten geachtet. Zudem unterstützte ich das Team durch die professionelle Entgegennahme von Anrufen und die schnelle Bearbeitung von Anfragen. Diese Erfahrung in der sorgfältigen Büroorganisation und der zuverlässigen Kommunikation möchte ich nun direkt in Ihr Team einbringen.\n\nIch freue mich darauf, meine Fähigkeiten in der Sachbearbeitung für Ihre ausgeschriebene Position einzusetzen und mich persönlich vorzustellen.\n\nMit freundlichen Grüßen\nQuinn Office",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

@@ -1,0 +1,64 @@
+{
+  "id": "sc_med_09",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 154.404,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit einer soliden Grundlage in Kommissionierung und Scanner bin ich überzeugt, dass ich meine Fähigkeiten effektiv für die Lagerhilfe-Rolle bei PackRoom GmbH einsetzen kann. Meine Berufserfahrung entspricht den Anforderungen, und ich bin versichert, dass ich die Rolle mit Deutschkenntnissen ausführe.",
+  "subject": "Lagerhilfe-Anwärter",
+  "peak_rss_mb": 230.6328125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 47.112,
+      "draft": 17.258,
+      "critique_1": 35.009,
+      "quality_revision_1": 18.075,
+      "critique_2": 36.947
+    },
+    "cot_stored": false
+  }
+}

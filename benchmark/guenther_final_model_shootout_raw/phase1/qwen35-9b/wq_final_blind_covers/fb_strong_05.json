@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_05",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.8,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 66.487,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner bisherigen Tätigkeit im Bereich Spritzguss und Qualitätsmanagement (QS) möchte ich meine praktische Erfahrung in die Rolle des Maschinenbedienern bei der FormTech GmbH einbringen. Die Anforderungen an präzise Prozessführung und Qualitätskontrolle entsprechen genau meinem bisherigen Arbeitsumfeld.\n\nKonkret konnte ich in der Vergangenheit Spritzgussmaschinen sicher und effizient bedienen sowie Qualitätsstandards durch regelmäßige Messungen und Dokumentation sicherstellen. Diese Erfahrung in der Schichtarbeit ermöglicht es mir, auch in wechselnden Teams und unter Zeitdruck zuverlässig zu arbeiten. Zudem bringe ich eine hohe Sorgfalt bei der Einhaltung von Sicherheitsvorschriften mit, was für den reibungslosen Ablauf in der Produktion essenziell ist.\n\nIch bin überzeugt, dass mein Know-how in der Spritzgusstechnik und mein Verständnis für Qualitätsprozesse einen sofortigen Mehrwert für Ihr Team bei der FormTech GmbH darstellen. Gerne stehe ich Ihnen für ein persönliches Gespräch zur Verfügung, um meine Eignung vorzustellen.\n\nMit freundlichen Grüßen\nQuinn Machine",
+  "subject": "Bewerbung als Maschinenbediener – Erfahrung in Spritzguss und Qualitätsmanagement",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Maschinenbediener – Erfahrung in Spritzguss und Qualitätsmanagement",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner bisherigen Tätigkeit im Bereich Spritzguss und Qualitätsmanagement (QS) möchte ich meine praktische Erfahrung in die Rolle des Maschinenbedienern bei der FormTech GmbH einbringen. Die Anforderungen an präzise Prozessführung und Qualitätskontrolle entsprechen genau meinem bisherigen Arbeitsumfeld.\n\nKonkret konnte ich in der Vergangenheit Spritzgussmaschinen sicher und effizient bedienen sowie Qualitätsstandards durch regelmäßige Messungen und Dokumentation sicherstellen. Diese Erfahrung in der Schichtarbeit ermöglicht es mir, auch in wechselnden Teams und unter Zeitdruck zuverlässig zu arbeiten. Zudem bringe ich eine hohe Sorgfalt bei der Einhaltung von Sicherheitsvorschriften mit, was für den reibungslosen Ablauf in der Produktion essenziell ist.\n\nIch bin überzeugt, dass mein Know-how in der Spritzgusstechnik und mein Verständnis für Qualitätsprozesse einen sofortigen Mehrwert für Ihr Team bei der FormTech GmbH darstellen. Gerne stehe ich Ihnen für ein persönliches Gespräch zur Verfügung, um meine Eignung vorzustellen.\n\nMit freundlichen Grüßen\nQuinn Machine",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

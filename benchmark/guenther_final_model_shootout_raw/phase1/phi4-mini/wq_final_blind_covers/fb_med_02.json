@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 26.856,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Bereich CMS, SEO und Texten bei MediaPulse SE einzubringen. Meine Erfahrung mit der Erstellung von Inhalten, die sowohl SEO-freundlich als auch für die Zielgruppe ansprechend sind, würde ich gerne in Ihre dynamische Medienlandschaft einbringen. Ich bin überzeugt, dass meine Kenntnisse im Content-Management-System und meine Fähigkeit, Inhalte zu optimieren, um die Sichtbarkeit und das Engagement zu verbessern, einen wertvollen Beitrag für Ihr Team leisten würden. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem innovativen Umfeld wie MediaPulse SE zu nutzen. Herzlichen Dank für Ihre Zeit und Überlegung.",
+  "subject": "Content Creator-Begeisterung",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Content Creator-Begeisterung",
+          "body": "Sehr geehrte Damen und Herren, ich bin begeistert von der Möglichkeit, meine Fähigkeiten im Bereich CMS, SEO und Texten bei MediaPulse SE einzubringen. Meine Erfahrung mit der Erstellung von Inhalten, die sowohl SEO-freundlich als auch für die Zielgruppe ansprechend sind, würde ich gerne in Ihre dynamische Medienlandschaft einbringen. Ich bin überzeugt, dass meine Kenntnisse im Content-Management-System und meine Fähigkeit, Inhalte zu optimieren, um die Sichtbarkeit und das Engagement zu verbessern, einen wertvollen Beitrag für Ihr Team leisten würden. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in einem innovativen Umfeld wie MediaPulse SE zu nutzen. Herzlichen Dank für Ihre Zeit und Überlegung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5567.0
+}

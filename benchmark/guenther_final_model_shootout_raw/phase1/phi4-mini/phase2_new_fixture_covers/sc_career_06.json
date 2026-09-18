@@ -1,0 +1,52 @@
+{
+  "id": "sc_career_06",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 26.637,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich hoffe, diese Nachricht erreicht Sie wohlauf. Als Enthusiast für Datenanalyse und mit meiner Erfahrung in Excel-Auswertungen bin ich begeistert von der Möglichkeit, mich bei InsightLab AG weiterzuentwickeln. Die Rolle des Junior Data Analysten, die Sie ausgeschrieben haben, scheint perfekt zu meiner bisherigen Laufbahn und meinen analytischen Fähigkeiten zu passen. Ich bin überzeugt, dass meine Fähigkeit, Daten in aussagekräftige Erkenntnisse zu übersetzen, sowie meine Leidenschaft für Datenanalyse, einen wertvollen Beitrag für Ihr Team leisten würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für die Arbeit mit Ihnen zu teilen.",
+  "subject": "Freudvolle Gelegenheit für eine Karriereentwicklung",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freudvolle Gelegenheit für eine Karriereentwicklung",
+          "body": "Ich hoffe, diese Nachricht erreicht Sie wohlauf. Als Enthusiast für Datenanalyse und mit meiner Erfahrung in Excel-Auswertungen bin ich begeistert von der Möglichkeit, mich bei InsightLab AG weiterzuentwickeln. Die Rolle des Junior Data Analysten, die Sie ausgeschrieben haben, scheint perfekt zu meiner bisherigen Laufbahn und meinen analytischen Fähigkeiten zu passen. Ich bin überzeugt, dass meine Fähigkeit, Daten in aussagekräftige Erkenntnisse zu übersetzen, sowie meine Leidenschaft für Datenanalyse, einen wertvollen Beitrag für Ihr Team leisten würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für die Arbeit mit Ihnen zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5582.9
+}

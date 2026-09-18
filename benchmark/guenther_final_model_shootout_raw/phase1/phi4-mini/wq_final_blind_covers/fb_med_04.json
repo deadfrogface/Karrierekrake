@@ -1,0 +1,50 @@
+{
+  "id": "fb_med_04",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 22.106,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich schreibe, um meine Erfahrung im Bestellwesen und Lieferantenkommunikation bei ProcureEast KG zu nutzen. Meine Rolle bei XYZ Corp umfasste die Organisation von Bestellungen, die Kommunikation mit Lieferanten und die Optimierung des Beschaffungsprozesses. Ich bin überzeugt, dass meine Fähigkeiten im Bestellwesen und meine Erfahrung im Umgang mit Lieferanten gut zu Ihrer Position passen würden. Ich freue mich darauf, meine Fähigkeiten im Rahmen des Einkaufsassistenz-Teams von ProcureEast KG einzubringen.",
+  "subject": "Bewerbung für die Position Einkaufsassistenz",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Einkaufsassistenz",
+          "body": "Ich schreibe, um meine Erfahrung im Bestellwesen und Lieferantenkommunikation bei ProcureEast KG zu nutzen. Meine Rolle bei XYZ Corp umfasste die Organisation von Bestellungen, die Kommunikation mit Lieferanten und die Optimierung des Beschaffungsprozesses. Ich bin überzeugt, dass meine Fähigkeiten im Bestellwesen und meine Erfahrung im Umgang mit Lieferanten gut zu Ihrer Position passen würden. Ich freue mich darauf, meine Fähigkeiten im Rahmen des Einkaufsassistenz-Teams von ProcureEast KG einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.2
+}

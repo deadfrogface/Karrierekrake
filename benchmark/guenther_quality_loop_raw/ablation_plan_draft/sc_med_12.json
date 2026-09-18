@@ -1,0 +1,42 @@
+{
+  "id": "sc_med_12",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 53.594,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin erfahren in Kundenkontakt und Warenpräsentation, was ideal für die Rolle der Verkaufsassistenz bei ShopQuick AG ist. Meine Berufserfahrung und Sprachkenntnisse entsprechen den Anforderungen des Jobangebots.",
+  "subject": "Verkaufsassistenz - ShopQuick AG",
+  "peak_rss_mb": 194.61328125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 39.144,
+      "draft": 14.449
+    },
+    "cot_stored": false
+  }
+}

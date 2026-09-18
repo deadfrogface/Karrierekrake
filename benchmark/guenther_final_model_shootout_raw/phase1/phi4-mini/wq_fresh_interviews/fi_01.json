@@ -1,0 +1,29 @@
+{
+  "id": "fi_01",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 24.314,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns ein Beispiel dafür geben, wie Sie Reporting-Tools in Excel verwendet haben, um die Kostenrechnung bei FinHold SE zu verbessern?",
+      "Welche Strategien haben Sie angewendet, um die Effizienz im Reporting-Prozess zu steigern?",
+      "Wie haben Sie die Herausforderungen im Zusammenhang mit der Kostenrechnung bei FinHold SE gemeistert?"
+    ],
+    "talking_points": [
+      "Berufserfahrung als Controller mit Schwerpunkt auf Reporting, Excel und Kostenrechnung.",
+      "Erfahrung im Umgang mit Excel-Tools zur Erstellung und Analyse von Berichten.",
+      "Strategien zur Optimierung der Kostenrechnung und zur Steigerung der Effizienz."
+    ],
+    "gap_notes": [
+      "Keine spezifischen Erfolge oder Projekte erwähnt, die in den bereitgestellten Profilen gezeigt wurden.",
+      "Mögliche Transferfähigkeiten basierend auf den Schwerpunkten, könnten jedoch nicht konkretisiert werden."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

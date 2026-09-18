@@ -1,0 +1,55 @@
+{
+  "id": "cl_missing_desirable",
+  "subject": "Interessiert an der HR Sachbearbeitung bei Litware SE",
+  "body": "Hallo, ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mein Name ist Leo Held, und ich bin derzeit Personalsachbearbeiter bei Adventure Works. Ich habe Ihre Anzeige für die HR Sachbearbeitung bei Litware SE gesehen und bin sehr an der Möglichkeit interessiert, mich bei Ihrem Team zu engagieren. Ich habe Erfahrung mit Personalakten, Zeiterfassung und Onboarding-Prozessen. Auch wenn ich Personio nicht benutze, bin ich versiert in Excel und MS Office und spreche fließend Deutsch. Ich freue mich auf die Möglichkeit, meine Fähigkeiten bei Litware SE einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, Leo Held",
+  "model_id": "phi4-mini",
+  "architecture": "phi_all",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Interessiert an der HR Sachbearbeitung bei Litware SE",
+          "body": "Hallo, ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Mein Name ist Leo Held, und ich bin derzeit Personalsachbearbeiter bei Adventure Works. Ich habe Ihre Anzeige für die HR Sachbearbeitung bei Litware SE gesehen und bin sehr an der Möglichkeit interessiert, mich bei Ihrem Team zu engagieren. Ich habe Erfahrung mit Personalakten, Zeiterfassung und Onboarding-Prozessen. Auch wenn ich Personio nicht benutze, bin ich versiert in Excel und MS Office und spreche fließend Deutsch. Ich freue mich auf die Möglichkeit, meine Fähigkeiten bei Litware SE einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, Leo Held",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "none"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "hard_requirements": {
+      "requirements": [
+        {
+          "text": "personio",
+          "kind": "desirable",
+          "family": "personio",
+          "status": "MET_DIRECT",
+          "note": "profile_direct"
+        }
+      ],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "flags": {
+    "empty": false,
+    "pflege_invented": false,
+    "has_company": true
+  },
+  "invented_flag": true
+}

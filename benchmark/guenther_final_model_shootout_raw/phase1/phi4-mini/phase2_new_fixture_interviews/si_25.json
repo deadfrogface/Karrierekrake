@@ -1,0 +1,30 @@
+{
+  "id": "si_25",
+  "score": 8.6,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 32.375,
+  "talking_points_n": 3,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Problem beschreiben, das Sie während Ihrer Zeit bei AutoFix Werkstatt diagnostiziert haben und wie Sie es gelöst haben?",
+      "Wie pflegen Sie, Ihre Diagnosefähigkeiten zu verbessern, insbesondere im Hinblick auf die neuesten Technologien im Automotive Service?",
+      "Wie gehen Sie mit Zeitdruck und hohen Erwartungen an einem Auto Service-Termin um?"
+    ],
+    "talking_points": [
+      "Diskussion über die Techniken und Werkzeuge, die Sie zur Diagnose von Autos verwendet haben, insbesondere solche, die Sie als effektiv oder innovativ empfanden.",
+      "Erwähnung eines spezifischen Falles, bei dem Ihre Diagnosefähigkeiten zu einer erfolgreichen Reparatur oder Lösung eines Problems beigetragen haben.",
+      "Erklärung Ihrer Herangehensweise an kontinuierliches Lernen und Aktualisieren Ihrer Fähigkeiten im Automotive Service, um mit den neuesten Diagnosemethoden Schritt zu halten."
+    ],
+    "gap_notes": [
+      "Keine Informationen über spezifische Erfolge oder Techniken, die während der Karriere verwendet wurden.",
+      "Keine Details über die Art der Autos, die Sie behandelt haben, oder die spezifischen Herausforderungen, denen Sie begegnet sind.",
+      "Keine Erwähnung von Zertifizierungen, Schulungen oder zusätzlichen Fähigkeiten, die über die grundlegende Diagnose- und Service-Fähigkeiten hinausgehen."
+    ],
+    "anchors_used": [],
+    "invented_flag": false,
+    "confidence": "low"
+  }
+}

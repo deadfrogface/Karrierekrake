@@ -1,0 +1,64 @@
+{
+  "id": "sc_med_11",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 129.93,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Erfahrung im Ticketsystem und Nutzerberatung bin ich gut gerüstet, um die Anforderungen des Service Desk bei SoftCare KG zu erfüllen. Ich bin überzeugt, dass meine Fähigkeiten im Bereich der Kundensupport und Problemlösung einen wertvollen Beitrag zum Team leisten können.",
+  "subject": "Service Desk",
+  "peak_rss_mb": 230.640625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 31.375,
+      "draft": 14.185,
+      "critique_1": 36.984,
+      "quality_revision_1": 16.216,
+      "critique_2": 31.167
+    },
+    "cot_stored": false
+  }
+}

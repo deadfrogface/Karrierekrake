@@ -1,0 +1,99 @@
+{
+  "id": "fb_hard_02",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "UNUSABLE",
+  "notes": [],
+  "latency_s": 51.804,
+  "repair_count": 1,
+  "final_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position LKW-Fahrer bei TransEuro KG anzubieten. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich bestens gerüstet, um die Anforderungen Ihrer Firma zu erfüllen. Ich bin überzeugt, dass meine Erfahrung im LKW-Fahren und meine formale Ausbildung die idealen Voraussetzungen für diese Rolle darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten bei TransEuro KG einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung.",
+  "subject": "Bewerbung für die Position LKW-Fahrer bei TransEuro KG",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung XYZ bin ich bestens gerüstet“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung XYZ bin ich bestens gerüstet",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung die idealen Voraussetzungen für diese Ro“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung die idealen Voraussetzungen für diese Ro",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position LKW-Fahrer bei TransEuro KG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position LKW-Fahrer bei TransEuro KG anzubieten. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich bestens gerüstet, um die Anforderungen Ihrer Firma zu erfüllen. Ich bin überzeugt, dass meine Erfahrung im LKW-Fahren und meine formale Ausbildung die idealen Voraussetzungen für diese Rolle darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten bei TransEuro KG einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung.",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "phi4-mini",
+        "errors_before": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung XYZ bin ich bestens gerüstet“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung XYZ bin ich bestens gerüstet",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Ausbildung die idealen Voraussetzungen für diese Ro“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Ausbildung die idealen Voraussetzungen für diese Ro",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position LKW-Fahrer bei TransEuro KG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Bewerbung für die Position LKW-Fahrer bei TransEuro KG anzubieten. Mit meinem Führerschein B und meiner abgeschlossenen formellen Fachkraft-Ausbildung XYZ bin ich bestens gerüstet, um die Anforderungen Ihrer Firma zu erfüllen. Ich bin überzeugt, dass meine Erfahrung im LKW-Fahren und meine formale Ausbildung die idealen Voraussetzungen für diese Rolle darstellen. Ich freue mich auf die Möglichkeit, meine Fähigkeiten bei TransEuro KG einzubringen. Vielen Dank für Ihre Zeit und Berücksichtigung.",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5611.4
+}

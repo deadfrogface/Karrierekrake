@@ -1,0 +1,29 @@
+{
+  "id": "si_19",
+  "score": 7.9,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 34.765,
+  "talking_points_n": 2,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie ein Projekt beschreiben, bei dem Sie Ihre Fähigkeiten in Montage und Schicht unter Beweis gestellt haben?",
+      "Wie gehen Sie mit Herausforderungen um, die während des Montageprozesses auftreten?",
+      "Welche Strategien verwenden Sie, um Effizienz und Qualität in der Schichtarbeit zu verbessern?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie ein Projekt, bei dem Sie Ihre Erfahrung in Montage und Schicht genutzt haben, um Herausforderungen zu bewältigen und die Effizienz zu verbessern.",
+      "Erklären Sie, wie Sie Ihre Fähigkeiten in Montage und Schicht einsetzen, um die Produktionsprozesse bei MetalForm GmbH zu optimieren."
+    ],
+    "gap_notes": [
+      "Geben Sie spezifische Beispiele für Ihre Arbeitserfahrung in Montage und Schicht an.",
+      "Erklären Sie, wie Ihre Beiträge zur Produktion bei MetalForm GmbH zur Verbesserung der Effizienz und Qualität beigetragen haben.",
+      "Diskutieren Sie, wie Sie Ihre Fähigkeiten in Montage und Schicht weiterentwickeln und anwenden können, um Herausforderungen in der Produktionsumgebung zu bewältigen."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

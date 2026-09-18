@@ -1,0 +1,107 @@
+{
+  "id": "bc_12",
+  "target_role": "Eventmanager (m/w/d)",
+  "target_company": "EventPro Berlin",
+  "profile": "Blind Cover 12\nPlanung, Budget\nReferenz: Projektarbeit in eventmanager",
+  "job": "Eventmanager (m/w/d)\nEventPro Berlin\nProfil: Planung, Budget.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung"
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "EventPro Berlin"
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "WRONG_COMPANY"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Erfahrung"
+    },
+    {
+      "code": "WRONG_COMPANY",
+      "claim": "EventPro Berlin"
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Eventplanung und Budgetierung zu präsentieren. Mit meiner Erfahrung in der Planung und Budgetierung von Projekten, insbesondere im Bereich der Eventmanagement, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu zeigen.",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Eventplanung und Budgetierung zu präsentieren. Mit meiner Erfahrung in der Planung und Budgetierung von Projekten, insbesondere im Bereich des Eventmanagements, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu zeigen.",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Fähigkeiten im Bereich der Eventplanung und Budgetierung zu präsentieren. Mit meiner Erfahrung in der Planung und Budgetierung von Projekten, insbesondere im Bereich des Eventmanagements, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich darauf, meine Fähigkeiten in einem neuen Umfeld zu zeigen.",
+  "final_subject": "Freelance Eventmanager - Planung und Budgetierung",
+  "body_len": 395,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "Erfahrung",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "WRONG_COMPANY",
+        "message_de": "Zielunternehmen fehlt oder ist falsch.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "EventPro Berlin",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Erfahrung",
+          "kind": "credential",
+          "span": "Mit meiner Erfahrung in der Planung und Budgetierung von Projekten",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „Erfahrung“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "Erfahrung",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

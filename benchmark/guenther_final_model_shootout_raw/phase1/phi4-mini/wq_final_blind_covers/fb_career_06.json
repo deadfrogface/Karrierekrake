@@ -1,0 +1,52 @@
+{
+  "id": "fb_career_06",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 25.931,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als Enthusiast für Excel-Auswertungen und Reporting, die ich bereits in verschiedenen Projekten angewendet habe, bin ich begeistert von der Möglichkeit, meine Fähigkeiten im Rahmen der Junior Data Analyst Position bei InsightLab AG einzubringen. Meine Erfahrung mit Excel hat mir geholfen, Datenmuster zu erkennen und Berichte zu erstellen, die für Stakeholder von entscheidender Bedeutung sind. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Datenanalyse gut zu den Anforderungen von InsightLab AG passen. Ich freue mich darauf, meine Expertise in Ihrem Team einzubringen und zur erfolgreichen Datenanalyse bei InsightLab AG beizutragen.",
+  "subject": "Freudvolle Gelegenheit für eine Junior Data Analyst Position",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Freudvolle Gelegenheit für eine Junior Data Analyst Position",
+          "body": "Ich hoffe, diese Nachricht erreicht Sie wohlbehalten. Als Enthusiast für Excel-Auswertungen und Reporting, die ich bereits in verschiedenen Projekten angewendet habe, bin ich begeistert von der Möglichkeit, meine Fähigkeiten im Rahmen der Junior Data Analyst Position bei InsightLab AG einzubringen. Meine Erfahrung mit Excel hat mir geholfen, Datenmuster zu erkennen und Berichte zu erstellen, die für Stakeholder von entscheidender Bedeutung sind. Ich bin überzeugt, dass meine analytischen Fähigkeiten und meine Leidenschaft für Datenanalyse gut zu den Anforderungen von InsightLab AG passen. Ich freue mich darauf, meine Expertise in Ihrem Team einzubringen und zur erfolgreichen Datenanalyse bei InsightLab AG beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5569.2
+}

@@ -1,0 +1,42 @@
+{
+  "id": "sc_sparse_02",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 48.934,
+  "model_calls": 2,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bin Joe Brief, und ich bringe eine solide Erfahrung im Verkauf mit. Mein Fokus liegt auf effektiven Kundenkontakten, was ich glaube, dass es für die Rolle des Aushilfe Verkaufs bei MartQuick AG sehr wertvoll wäre.",
+  "subject": "Aushilfe Verkauf - MartQuick AG",
+  "peak_rss_mb": 216.921875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.077,
+      "draft": 15.856
+    },
+    "cot_stored": false
+  }
+}

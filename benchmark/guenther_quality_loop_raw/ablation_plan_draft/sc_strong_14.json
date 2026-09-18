@@ -1,0 +1,42 @@
+{
+  "id": "sc_strong_14",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 53.968,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe 4 Jahre Erfahrung im Bereich Firewall, VPN und Switching ein, was ich glaube, gut für die Rolle eines Netzwerkadmins bei NetGuard IT qualifiziert. Ich bin überzeugt, dass meine praktischen Kenntnisse und meine Fähigkeit, komplexe Netzwerke zu verwalten, einen wertvollen Beitrag für Ihr Team leisten können.",
+  "subject": "Interessiert an der Rolle des Netzwerkadmins bei NetGuard IT",
+  "peak_rss_mb": 156.3359375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 37.066,
+      "draft": 16.9
+    },
+    "cot_stored": false
+  }
+}

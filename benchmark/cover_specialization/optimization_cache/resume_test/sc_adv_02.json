@@ -1,0 +1,1 @@
+{"id": "sc_adv_02", "case_id": "sc_adv_02", "final_ok": true, "score": 8.0, "edit_class": "READY_AS_IS", "notes": [], "latency_s": 0.01, "model_calls": 0, "writer_calls": 0, "expect_hard_block": false, "body": "resume-sentinel", "subject": "x", "completion_status": "done", "hard_flags": {}}

@@ -1,0 +1,50 @@
+{
+  "id": "sc_career_15",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 22.269,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Mit einer soliden Grundlage im Handwerk und einer Leidenschaft für Qualitätssicherung bin ich begeistert von der Möglichkeit, meine Fähigkeiten im QA-Bereich bei TestSphere SE einzubringen. Meine Erfahrung im Qualitätsmanagement, insbesondere im Testen und Validieren von Produkten, würde ich gerne auf Ihre Teamarbeit übertragen. Ich bin überzeugt, dass meine Fähigkeiten im Testen und die strenge Methodik, die ich angewendet habe, gut zu den Anforderungen von TestSphere SE passen. Ich freue mich auf die Möglichkeit, meine Expertise im QA-Bereich mit Ihrem Team zu teilen.",
+  "subject": "Bewerbung für die Position QA Assistant bei TestSphere SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position QA Assistant bei TestSphere SE",
+          "body": "Mit einer soliden Grundlage im Handwerk und einer Leidenschaft für Qualitätssicherung bin ich begeistert von der Möglichkeit, meine Fähigkeiten im QA-Bereich bei TestSphere SE einzubringen. Meine Erfahrung im Qualitätsmanagement, insbesondere im Testen und Validieren von Produkten, würde ich gerne auf Ihre Teamarbeit übertragen. Ich bin überzeugt, dass meine Fähigkeiten im Testen und die strenge Methodik, die ich angewendet habe, gut zu den Anforderungen von TestSphere SE passen. Ich freue mich auf die Möglichkeit, meine Expertise im QA-Bereich mit Ihrem Team zu teilen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5587.5
+}

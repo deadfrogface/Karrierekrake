@@ -1,0 +1,64 @@
+{
+  "id": "sc_sparse_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 182.511,
+  "model_calls": 5,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich freue mich darauf, meine Erfahrungen mit MS Word im Rahmen der Rolle eines Praktikanten im Büro von StartOffice GmbH zu nutzen. Meine Arbeit mit MS Word umfasst die Erstellung, Bearbeitung und Formatierung komplexer Dokumente, was direkt für die Aufgaben eines Praktikanten im Büro relevant ist. Ich bin überzeugt, dass meine Fähigkeiten dabei helfen können, die Effizienz und Produktivität des Büros zu steigern.",
+  "subject": "Praktikant Office - StartOffice GmbH",
+  "peak_rss_mb": 207.4921875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 40.54,
+      "draft": 16.816,
+      "critique_1": 40.188,
+      "quality_revision_1": 25.224,
+      "critique_2": 59.74
+    },
+    "cot_stored": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "sc_med_19",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 39.803,
+  "model_calls": 2,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich möchte mich für die Position des Warehouse Clerks bei CargoBay SE bewerben. Mit meiner Erfahrung im Wareneingang und Dokumentation glaube ich, dass ich gut zu den Anforderungen und Verantwortlichkeiten dieser Rolle passen würde. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Team einzubringen.",
+  "subject": "Einreichung zur Position: Warehouse Clerk",
+  "peak_rss_mb": 5482.9375,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "plan_draft",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 25.515,
+      "draft": 14.287
+    },
+    "cot_stored": false
+  }
+}

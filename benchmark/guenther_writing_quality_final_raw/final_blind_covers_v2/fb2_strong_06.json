@@ -1,0 +1,47 @@
+{
+  "id": "fb2_strong_06",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Sehr geehrte Damen und Herren von Holzwerk Süd, ich schreibe, um meine Erfahrung im Möbelbau als Tischler anzubieten. Mit meinem Gesellenbrief Tischler und meiner praktischen Erfahrung im Möbelbau bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Tischlerarbeit bei Ihrem Unternehmen einbringen kann. Ich bin besonders an der Möglichkeit interessiert, an Projekten wie [beispielhafte Möbelstücke, die im Profil erwähnt werden], mitzuwirken und meine Fähigkeiten in der Holzverarbeitung zu erweitern. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Ihrem Team zu teilen und zum Erfolg von Holzwerk Süd beizutragen.",
+  "subject": "Bewerbung für Tischlerposition",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für Tischlerposition",
+          "body": "Sehr geehrte Damen und Herren von Holzwerk Süd, ich schreibe, um meine Erfahrung im Möbelbau als Tischler anzubieten. Mit meinem Gesellenbrief Tischler und meiner praktischen Erfahrung im Möbelbau bin ich überzeugt, dass ich meine Fähigkeiten effektiv in die Tischlerarbeit bei Ihrem Unternehmen einbringen kann. Ich bin besonders an der Möglichkeit interessiert, an Projekten wie [beispielhafte Möbelstücke, die im Profil erwähnt werden], mitzuwirken und meine Fähigkeiten in der Holzverarbeitung zu erweitern. Ich freue mich auf die Möglichkeit, meine Fähigkeiten mit Ihrem Team zu teilen und zum Erfolg von Holzwerk Süd beizutragen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

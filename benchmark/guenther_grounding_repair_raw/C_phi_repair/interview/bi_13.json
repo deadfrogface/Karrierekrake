@@ -1,0 +1,62 @@
+{
+  "id": "bi_13",
+  "suggestion": {
+    "questions": [
+      "Können Sie uns über Ihre Erfahrungen mit der Buchhaltungssoftware DATEV erzählen?",
+      "Welche Strategien haben Sie angewendet, um die Effizienz im Buchhaltungssystem von DATEV zu verbessern?",
+      "Wie haben Sie DATEV in Ihrer vorherigen Rolle eingesetzt, um die finanzielle Leistung eines Unternehmens oder einer Abteilung zu verwalten?"
+    ],
+    "talking_points": [
+      "DATEV-Erfahrung"
+    ],
+    "gap_notes": [
+      "Erkenne die Notwendigkeit, den Bewerber zu ermutigen, spezifische Beispiele aus seiner Vergangenheit zu liefern, um seine DATEV-Erfahrungen zu veranschaulichen.",
+      "Den Bewerber auffordern, über seine Kenntnisse der Buchhaltungsprozesse und -systeme innerhalb des DATEV-Systems zu sprechen."
+    ],
+    "anchors_used": [
+      {
+        "text": "DATEV-Erfahrung",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": true,
+    "confidence": "low"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "DATEV-Erfahrung"
+          ],
+          "questions": [
+            "Können Sie uns über Ihre Erfahrungen mit der Buchhaltungssoftware DATEV erzählen?",
+            "Welche Strategien haben Sie angewendet, um die Effizienz im Buchhaltungssystem von DATEV zu verbessern?",
+            "Wie haben Sie DATEV in Ihrer vorherigen Rolle eingesetzt, um die finanzielle Leistung eines Unternehmens oder einer Abteilung zu verwalten?"
+          ],
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

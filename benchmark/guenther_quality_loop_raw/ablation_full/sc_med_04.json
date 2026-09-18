@@ -1,0 +1,52 @@
+{
+  "id": "sc_med_04",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 69.021,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Erfahrung im Empfang, Termine und Telefon mit und bin überzeugt, dass ich gut zu CityClinic Nord passen würde. Ich bin bereit, meine Fähigkeiten im Empfangsbereich anzuwenden und zur effizienten Abläufe des Krankenhauses beizutragen.",
+  "subject": "Freischaffter für Empfang",
+  "peak_rss_mb": 208.5078125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 29.674,
+      "draft": 15.139,
+      "critique_1": 24.206
+    },
+    "cot_stored": false
+  }
+}

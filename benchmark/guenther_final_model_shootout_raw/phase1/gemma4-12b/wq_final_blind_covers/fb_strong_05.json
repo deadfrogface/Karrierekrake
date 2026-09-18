@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_05",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 102.55,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung im Bereich Spritzguss und der Qualitätssicherung bringe ich die passenden Voraussetzungen für die Position als Maschinenbediener bei der FormTech GmbH mit.\n\nIn meiner bisherigen Tätigkeit konnte ich fundierte Kenntnisse im Spritzgussverfahren sammeln und sicherstellen, dass die produzierten Teile den Qualitätsanforderungen entsprechen. Zudem bin ich mit den Abläufen in der Schichtarbeit bestens vertraut und gewohnt, zuverlässig und präzise zu arbeiten. Diese praktischen Erfahrungen ermöglichen es mir, mich schnell in Ihre Produktionsprozesse einzuarbeiten und einen reibungslosen Betriebsablauf zu unterstützen.\n\nIch freue mich darauf, meine handwerklichen Fähigkeiten in Ihr Team einzubringen und die Produktion der FormTech GmbH tatkräftig zu unterstützen.\\n\nMit freundlichen Grüßen\nQuinn Machine",
+  "subject": "Bewerbung als Maschinenbediener - Quinn Machine",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "gemma4-12b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Maschinenbediener - Quinn Machine",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit meiner Erfahrung im Bereich Spritzguss und der Qualitätssicherung bringe ich die passenden Voraussetzungen für die Position als Maschinenbediener bei der FormTech GmbH mit.\n\nIn meiner bisherigen Tätigkeit konnte ich fundierte Kenntnisse im Spritzgussverfahren sammeln und sicherstellen, dass die produzierten Teile den Qualitätsanforderungen entsprechen. Zudem bin ich mit den Abläufen in der Schichtarbeit bestens vertraut und gewohnt, zuverlässig und präzise zu arbeiten. Diese praktischen Erfahrungen ermöglichen es mir, mich schnell in Ihre Produktionsprozesse einzuarbeiten und einen reibungslosen Betriebsablauf zu unterstützen.\n\nIch freue mich darauf, meine handwerklichen Fähigkeiten in Ihr Team einzubringen und die Produktion der FormTech GmbH tatkräftig zu unterstützen.\\n\nMit freundlichen Grüßen\nQuinn Machine",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 14465.8
+}

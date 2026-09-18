@@ -1,0 +1,29 @@
+{
+  "id": "sc_unk_05",
+  "case_id": "sc_unk_05",
+  "final_ok": true,
+  "score": 6.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "missing_company"
+  ],
+  "latency_s": 60.204,
+  "model_calls": 2,
+  "writer_calls": 1,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe eine Mischung aus technischer Expertise und Kundenorientierung in meine Kundenberatungstätigkeit ein. Meine Erfahrung mit Telefon und CRM-Systemen ermöglicht es mir, effektive Lösungen für Kundenprobleme zu entwickeln und zu implementieren. Ich bin bereit, meine Fähigkeiten in einem neuen Umfeld anzuwenden und einen positiven Einfluss auf Ihr Team zu haben.",
+  "subject": "Kundenberatung",
+  "peak_rss_mb": 227.3515625,
+  "optimizer_score": 0.39749999999999996,
+  "feedback": "WEAK_COMPANY_LINK: Name the target company explicitly when known. WEAK_COMPANY_LINK: Include the exact target company name.",
+  "completion_status": "done",
+  "configuration_hash": "308eb4a68cc818ca66ca90ec685d4667076833aa577769376ad115546875a9f1",
+  "writer_prompt_hash": "7f1a113ff1c15dacc379575e1e6961789794f624c2c457aeeab665323ab83749",
+  "plan_hash": "unfrozen",
+  "model_sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+  "generation_config_hash": "8e6882afc629e3b26fd027f0961b1fd678891be9fe4b8cd19f0055c2596a9697",
+  "evaluator_hash": "5dcff107c3bc0baeeb144fb150829756fc8af5be93386d5063ac2b51004d586c",
+  "hard_flags": {}
+}

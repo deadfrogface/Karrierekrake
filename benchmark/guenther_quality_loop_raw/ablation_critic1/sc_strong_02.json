@@ -1,0 +1,64 @@
+{
+  "id": "sc_strong_02",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 203.666,
+  "model_calls": 5,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Berufserfahrung als Fachinformatiker Systemintegration, insbesondere mein Fachwissen in Windows, Tickets und Active Directory, ein, um die Anforderungen des IT-Support-Teams bei HelpDesk Pro AG zu erfüllen. Obwohl ich keine spezifische Erfahrung mit HelpDesk Pro AG habe, bin ich überzeugt, dass meine Fähigkeiten im IT-Support-Umfeld und meine Fähigkeit, übertragbare Fähigkeiten anzuwenden, von unschätzbarem Wert sein werden.",
+  "subject": "IT-Support",
+  "peak_rss_mb": 230.57421875,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 1,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 50.251,
+      "draft": 19.308,
+      "critique_1": 40.345,
+      "quality_revision_1": 25.348,
+      "critique_2": 68.41
+    },
+    "cot_stored": false
+  }
+}

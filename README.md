@@ -59,6 +59,8 @@ Profil & Daten: `%LOCALAPPDATA%\Karrierekrake`
 | Einstellungen | Allgemein / Suche / Bewerbung / Erweitert · **Über Karrierekrake** |
 | Protokolle | Ereignisse verständlich, Technik darunter |
 
+**Günther die Krake (optional):** Lokale Mithilfe beim Verstehen von Lebenslauf, Stelle und Bewerbungsmails. Ausgeschaltet standardmäßig. Keine Cloud-KI nötig — Modelle nur nach Ihrer Freigabe auf diesem PC. Günther denkt mit; Absenden, Mail-Versand und Termine entscheiden weiterhin Sie / Karrierekrake.
+
 Themes: System / Hell / Dunkel · Fenster mindestens ca. 900×650
 
 <p align="center">

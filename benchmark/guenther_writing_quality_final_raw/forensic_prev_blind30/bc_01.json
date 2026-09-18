@@ -1,0 +1,112 @@
+{
+  "id": "bc_01",
+  "target_role": "Archivarin (m/w/d)",
+  "target_company": "Stadtarchiv Musterstadt",
+  "profile": "Blind Cover 1\nHistorische Bestände, EAD\nReferenz: Projektarbeit in archivarin",
+  "job": "Archivarin (m/w/d)\nStadtarchiv Musterstadt\nProfil: Historische Bestände, EAD.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung"
+    },
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "Ausbildung in der Pflege und meiner Leidenschaft fü"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "UNSUPPORTED_CREDENTIAL",
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNSUPPORTED_CREDENTIAL",
+      "claim": "überzeugt"
+    },
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Archivarin Position im Stadtarchiv Musterstadt auszudrücken. Mit meiner Ausbildung in der Pflege und meiner Leidenschaft für historische Bestände bin ich überzeugt, dass ich eine wertvolle Ergänzung für Ihr Team sein könnte. Ich freue mich darauf, meine Fähigkeiten im Umgang mit historischen Dokumenten und Archivmaterialien weiter zu entwickeln.\n\nMit freundlichen Grüßen,\n[Name des Bewerbers]",
+  "attempt1_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Archivarin Position im Stadtarchiv Musterstadt auszudrücken. Ich bin überzeugt, dass meine Fähigkeiten im Umgang mit historischen Dokumenten und Archivmaterialien sowie meine Leidenschaft für historische Bestände mich gut für diese Rolle qualifizieren.\n\nMit freundlichen Grüßen,\n[Name des Bewerbers]",
+  "final_body": "Sehr geehrte Damen und Herren,\n\nIch schreibe, um mein Interesse an der Archivarin Position im Stadtarchiv Musterstadt auszudrücken. Ich bin überzeugt, dass meine Fähigkeiten im Umgang mit historischen Dokumenten und Archivmaterialien sowie meine Leidenschaft für historische Bestände mich gut für diese Rolle qualifizieren.\n\nMit freundlichen Grüßen,\n[Name des Bewerbers]",
+  "final_subject": "Archivarin Position - Stadtarchiv Musterstadt",
+  "body_len": 370,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNSUPPORTED_CREDENTIAL",
+        "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+        "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+        "claim_text": "überzeugt",
+        "severity": "error",
+        "meta": {}
+      },
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "überzeugt",
+          "kind": "credential",
+          "span": "Ich bin überzeugt",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "UNSUPPORTED",
+        "matched_evidence": "",
+        "note": "credential_not_direct",
+        "errors": [
+          {
+            "code": "UNSUPPORTED_CREDENTIAL",
+            "message_de": "Eine behauptete Qualifikation oder Ausbildung ist im Profil nicht belegt.",
+            "repair_instruction": "Entferne jede Behauptung zu „überzeugt“. Nenne nur im Profil wörtlich belegte Ausbildungen/Abschlüsse. Wenn eine Pflichtqualifikation fehlt, weise ehrlich auf die Lücke hin oder lasse body leer — erfinde nichts.",
+            "claim_text": "überzeugt",
+            "severity": "error",
+            "meta": {}
+          }
+        ]
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": [
+      "ungrounded_credential_detected"
+    ]
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

@@ -1,0 +1,76 @@
+{
+  "id": "sc_career_05",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 183.617,
+  "model_calls": 7,
+  "final_state": "REVIEW_REQUIRED_QUALITY",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Position HR Generalist Jr bei PeopleNest GmbH zu bewerben. Mit meiner Erfahrung in der Verwaltungs-Sachbearbeitung, insbesondere im Bereich des Personaltransfers, glaube ich, dass ich gut zu Ihrer Abteilung passen würde. Ich bin begeistert von der Möglichkeit, meine Fähigkeiten im HR-Bereich bei PeopleNest GmbH einzubringen.",
+  "subject": "Interessent für die Position HR Generalist Jr",
+  "peak_rss_mb": 207.40625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "REVIEW_REQUIRED_QUALITY",
+        "progress": "Anschreiben braucht eine kurze Qualitätsprüfung."
+      }
+    ],
+    "timings_s": {
+      "plan": 33.468,
+      "draft": 18.733,
+      "critique_1": 29.563,
+      "quality_revision_1": 19.532,
+      "critique_2": 32.549,
+      "quality_revision_2": 19.549,
+      "critique_3": 30.219
+    },
+    "cot_stored": false
+  }
+}

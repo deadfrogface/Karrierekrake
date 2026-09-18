@@ -1,0 +1,76 @@
+{
+  "id": "sc_career_08",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 218.296,
+  "model_calls": 7,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit meiner Erfahrung im 'Kundenservice Telefon — Transfer Vertrieb' bin ich bestens gerüstet, um als Inside Sales bei GlowSales GmbH zu arbeiten. Meine Fähigkeit, Kunden effektiv zu kommunizieren und deren Zufriedenheit sicherzustellen, wird in dieser Rolle entscheidend sein.",
+  "subject": "Innenverkäufer - Kundendienst und Vertriebserfahrung",
+  "peak_rss_mb": 207.42578125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": false,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 2,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 1
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 2
+      },
+      {
+        "state": "QUALITY_REVISION",
+        "progress": "Günther verbessert die Formulierung.",
+        "round": 2
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 3
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 34.708,
+      "draft": 18.107,
+      "critique_1": 37.493,
+      "quality_revision_1": 24.193,
+      "critique_2": 46.713,
+      "quality_revision_2": 17.761,
+      "critique_3": 39.315
+    },
+    "cot_stored": false
+  }
+}

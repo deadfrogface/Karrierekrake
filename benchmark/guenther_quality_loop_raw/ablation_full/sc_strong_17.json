@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_17",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 76.959,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Ich bringe meine Expertise im Bereich Messmittel, Checklisten und ISO-Prozessen ein, um als Qualitätsprüfer bei QualiCheck GmbH zu unterstützen. Meine berufliche Erfahrung und Sprachkenntnisse im Deutschen entsprechen den Anforderungen des Jobs.",
+  "subject": "Freelancer für Qualitätsprüfer/in",
+  "peak_rss_mb": 208.4765625,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "full",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 30.151,
+      "draft": 16.097,
+      "critique_1": 30.709
+    },
+    "cot_stored": false
+  }
+}

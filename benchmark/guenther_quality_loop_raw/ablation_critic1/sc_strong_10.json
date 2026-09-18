@@ -1,0 +1,52 @@
+{
+  "id": "sc_strong_10",
+  "final_ok": true,
+  "score": 8.0,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 94.671,
+  "model_calls": 3,
+  "final_state": "READY_AUTOMATIC",
+  "final_errors": [],
+  "expect_hard_block": false,
+  "body": "Mit einer soliden Berufserfahrung von 5 Jahren im Bereich Inbound CRM und einer Beherrschung der deutschen Sprache auf C1-Niveau bin ich bestens gerüstet, um als Kundenberater/in bei TelCare AG zu arbeiten. Meine Fähigkeiten ermöglichen es mir, effektiv mit Kunden in Kontakt zu treten und deren Bedürfnisse zu adressieren.",
+  "subject": "Kundenberater/in",
+  "peak_rss_mb": 230.578125,
+  "hard_flags": {},
+  "quality_loop": {
+    "mode": "critic1",
+    "early_exit": true,
+    "plan_repair_count": 0,
+    "safety_repair_count": 0,
+    "quality_revision_count": 0,
+    "transitions": [
+      {
+        "state": "PLAN",
+        "progress": "Günther erstellt einen Bewerbungsplan."
+      },
+      {
+        "state": "DRAFT",
+        "progress": "Günther erstellt dein Anschreiben."
+      },
+      {
+        "state": "CRITIQUE",
+        "progress": "Günther prüft die Qualität.",
+        "round": 1
+      },
+      {
+        "state": "FINAL_SAFETY_VERIFY",
+        "progress": "Günther prüft das Anschreiben."
+      },
+      {
+        "state": "READY_AUTOMATIC",
+        "progress": "Anschreiben fertig."
+      }
+    ],
+    "timings_s": {
+      "plan": 50.47,
+      "draft": 18.223,
+      "critique_1": 25.976
+    },
+    "cot_stored": false
+  }
+}

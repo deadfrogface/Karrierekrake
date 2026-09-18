@@ -1,0 +1,83 @@
+{
+  "cv": {
+    "ok": false,
+    "capability": "cv_extract",
+    "suggestion": {},
+    "fallback_reason": "guenther_invalid_output",
+    "provider_status": "ready",
+    "model_id": "granite-3.3-8b",
+    "validated": false,
+    "safety_notes": [
+      "fail_closed"
+    ]
+  },
+  "jobs": [
+    {
+      "id": "ho_job_hr",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "VERTRAUENSWÜRDIG",
+          "requirements": [
+            {
+              "requirement": "Muttersprache Deutsch",
+              "kind": "desirable",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Erfahrung mit Personalakten, Excel-Reports, Onboarding",
+              "kind": "desirable",
+              "confidence": "medium"
+            },
+            {
+              "requirement": "Erfahrung mit Personio",
+              "kind": "desirable",
+              "confidence": "medium"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Der Bewerber verfügt über eine starke Beherrschung der deutschen Sprache und hat Erfahrung mit Personalakten, Excel-Reports und Onboarding. Er hat zudem Erfahrung mit Personio, was als von Vorteil gilt.",
+          "confidence": "high"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "granite-3.3-8b",
+        "validated": true,
+        "safety_notes": []
+      }
+    },
+    {
+      "id": "ho_job_pflege",
+      "envelope": {
+        "ok": true,
+        "capability": "job_analysis",
+        "suggestion": {
+          "title_normalized": "VERTRAUENSWÜRDIG (Profil/System)",
+          "requirements": [
+            {
+              "requirement": "Pflegeausbildung",
+              "kind": "hard",
+              "confidence": "high"
+            },
+            {
+              "requirement": "Erfahrung in der Intensivstation",
+              "kind": "hard",
+              "confidence": "high"
+            }
+          ],
+          "red_flags": [],
+          "summary": "Der Bewerber verfügt über eine Pflegeausbildung und Erfahrung in der Intensivstation, wobei die Verantwortung für die Patientenversorgung betont wird.",
+          "confidence": "low"
+        },
+        "fallback_reason": "",
+        "provider_status": "ready",
+        "model_id": "granite-3.3-8b",
+        "validated": true,
+        "safety_notes": [
+          "ungrounded_requirement_dropped"
+        ]
+      }
+    }
+  ]
+}

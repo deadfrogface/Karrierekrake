@@ -1,0 +1,27 @@
+{
+  "id": "si_27",
+  "score": 7.2,
+  "notes": [],
+  "final_ok": true,
+  "latency_s": 29.04,
+  "talking_points_n": 1,
+  "questions_n": 3,
+  "validator_errors": [],
+  "suggestion": {
+    "questions": [
+      "Können Sie uns mehr über Ihre Erfahrungen mit Spritzgusstechniken und Qualitätskontrolle in Ihrem aktuellen oder früheren Job erzählen?",
+      "Wie haben Sie Herausforderungen im Spritzgussprozess in Ihrer bisherigen Rolle gemeistert?",
+      "Welche Maßnahmen haben Sie ergriffen, um die Qualitätssicherung in Ihrem Spritzgussprojekt zu verbessern?"
+    ],
+    "talking_points": [
+      "Diskutieren Sie spezifische Projekte, bei denen Sie Spritzgusstechniken angewendet haben und wie Sie dabei Qualitätskontrollprozesse integriert haben."
+    ],
+    "gap_notes": [
+      "Fehlen spezifische Beispiele oder Erfolge, die im Profil erwähnt werden könnten.",
+      "Es könnte hilfreich sein, über die Art der von Ihnen geleiteten Projekte oder die spezifischen Rollen, die Sie innehatten, mehr zu erfahren."
+    ],
+    "anchors_used": [],
+    "invented_flag": true,
+    "confidence": "low"
+  }
+}

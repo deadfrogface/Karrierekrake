@@ -1,0 +1,8 @@
+{
+  "id": "ac_15",
+  "claim": "Abitur",
+  "expect": "SUPPORTED_DIRECT",
+  "got": "SUPPORTED_DIRECT",
+  "match": true,
+  "model_id": "phi4-mini"
+}

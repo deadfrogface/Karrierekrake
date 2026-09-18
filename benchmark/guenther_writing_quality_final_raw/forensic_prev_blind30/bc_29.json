@@ -1,0 +1,92 @@
+{
+  "id": "bc_29",
+  "target_role": "Werkstudent Marketing (m/w/d)",
+  "target_company": "Startup Labs",
+  "profile": "Blind Cover 29\nStudium BWL, Social\nReferenz: Projektarbeit in werkstudent marketing",
+  "job": "Werkstudent Marketing (m/w/d)\nStartup Labs\nProfil: Studium BWL, Social.",
+  "final_ok": false,
+  "repair_count": 1,
+  "exhausted": true,
+  "category": "B",
+  "final_blocking_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt0_claims": [
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt1_errors": [
+    "UNRESOLVED_PLACEHOLDER"
+  ],
+  "attempt1_claims": [
+    {
+      "code": "UNRESOLVED_PLACEHOLDER",
+      "claim": ""
+    }
+  ],
+  "attempt0_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Stelle des Werkstudenten Marketing bei Startup Labs zu bewerben. Mit meinem Studium im Bereich BWL und Social, insbesondere durch meine Projektarbeit im Marketingbereich, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für innovative Marketingstrategien mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "attempt1_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Stelle des Werkstudenten Marketing bei Startup Labs zu bewerben. Mit meinem Studium im Bereich BWL und Social, insbesondere durch meine Projektarbeit im Marketingbereich, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für innovative Marketingstrategien mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "final_body": "Sehr geehrte Damen und Herren, ich schreibe, um mich für die Stelle des Werkstudenten Marketing bei Startup Labs zu bewerben. Mit meinem Studium im Bereich BWL und Social, insbesondere durch meine Projektarbeit im Marketingbereich, bin ich überzeugt, dass ich einen wertvollen Beitrag für Ihr Team leisten kann. Ich freue mich auf die Möglichkeit, meine Fähigkeiten und meine Begeisterung für innovative Marketingstrategien mit Ihnen zu diskutieren. Vielen Dank für Ihre Zeit und Berücksichtigung. Mit freundlichen Grüßen, [Ihr Name]",
+  "final_subject": "Bewerbung für die Stelle Werkstudent Marketing",
+  "body_len": 533,
+  "grounding_report": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "UNRESOLVED_PLACEHOLDER",
+        "message_de": "Platzhalter im Text sind nicht aufgelöst.",
+        "repair_instruction": "Korrigiere die Ausgabe streng anhand TRUSTED VALIDATOR-Feedback. Erfinde keine Fakten. Antworte nur mit gültigem JSON.",
+        "claim_text": "",
+        "severity": "error",
+        "meta": {}
+      }
+    ],
+    "grounding": [
+      {
+        "claim": {
+          "text": "Studium im Bereich BWL",
+          "kind": "credential",
+          "span": "Mit meinem Studium im Bereich BWL und Social",
+          "requires_direct": true,
+          "meta": {
+            "family": "possession_assertion",
+            "assertion": "POSSESSES"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_1",
+        "note": "credential_direct",
+        "errors": []
+      },
+      {
+        "claim": {
+          "text": "Studium",
+          "kind": "credential",
+          "span": "Studium",
+          "requires_direct": true,
+          "meta": {
+            "family": "Studium"
+          }
+        },
+        "status": "SUPPORTED_DIRECT",
+        "matched_evidence": "prof_1",
+        "note": "credential_direct",
+        "errors": []
+      }
+    ],
+    "hard_requirements": {
+      "requirements": [],
+      "blocking_errors": [],
+      "writing_blocked": false
+    },
+    "writing_blocked": false,
+    "notes": []
+  },
+  "was_block_justified": true,
+  "fail_closed_kind": "JUSTIFIED"
+}

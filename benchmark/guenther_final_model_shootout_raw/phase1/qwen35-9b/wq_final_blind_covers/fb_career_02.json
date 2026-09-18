@@ -1,0 +1,52 @@
+{
+  "id": "fb_career_02",
+  "final_ok": true,
+  "score": 6.0,
+  "german_writing": 7.5,
+  "edit_class": "MATERIAL_EDIT_REQUIRED",
+  "notes": [
+    "placeholder"
+  ],
+  "latency_s": 57.721,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, \n\nals erfahrener Buchhalter in der Kreditorenbuchhaltung bei FinHold AG bringe ich fundierte Kenntnisse in der Finanzbuchhaltung und eine hohe Präzision bei der Datenpflege mit. Mein tiefes Verständnis für Bilanzierungsprozesse und die Analyse von Forderungen bildet eine solide Basis für die Übernahme Ihrer Aufgaben als Junior Controller. \n\nIch möchte meine Erfahrung in der operativen Buchhaltung nutzen, um bei FinHold AG die Schnittstelle zwischen Finanzbuchhaltung und Controlling zu stärken. Besonders die Analyse von Zahlungsströmen und die Sicherstellung der Liquidität aus meiner aktuellen Tätigkeit sehe ich als direkten Transfer in die Planung und Auswertung von Kennzahlen. \n\nGerne möchte ich meine analytischen Fähigkeiten in Ihr Team einbringen und mich weiterentwickeln. \n\nMit freundlichen Grüßen\nErik Switch",
+  "subject": "Bewerbung als Junior Controller – Erik Switch",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als Junior Controller – Erik Switch",
+          "body": "Sehr geehrte Damen und Herren, \n\nals erfahrener Buchhalter in der Kreditorenbuchhaltung bei FinHold AG bringe ich fundierte Kenntnisse in der Finanzbuchhaltung und eine hohe Präzision bei der Datenpflege mit. Mein tiefes Verständnis für Bilanzierungsprozesse und die Analyse von Forderungen bildet eine solide Basis für die Übernahme Ihrer Aufgaben als Junior Controller. \n\nIch möchte meine Erfahrung in der operativen Buchhaltung nutzen, um bei FinHold AG die Schnittstelle zwischen Finanzbuchhaltung und Controlling zu stärken. Besonders die Analyse von Zahlungsströmen und die Sicherstellung der Liquidität aus meiner aktuellen Tätigkeit sehe ich als direkten Transfer in die Planung und Auswertung von Kennzahlen. \n\nGerne möchte ich meine analytischen Fähigkeiten in Ihr Team einbringen und mich weiterentwickeln. \n\nMit freundlichen Grüßen\nErik Switch",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

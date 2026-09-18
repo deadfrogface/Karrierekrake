@@ -1,0 +1,70 @@
+{
+  "id": "bi_20",
+  "suggestion": {
+    "questions": [
+      "Kannst du einige Projekte beschreiben, bei denen du MS Office nützlich gefunden hast?",
+      "Wie gehst du vor, um Aufgaben in MS Office effizient zu erledigen?",
+      "Welche Funktionen von MS Office bist du am meisten vertraut mit und warum?",
+      "Kannst du ein Problem beschreiben, das du mit MS Office gelöst hast?",
+      "Wie bleibst du auf dem neuesten Stand der MS Office-Funktionen und Updates?"
+    ],
+    "talking_points": [
+      "Erwähne spezifische MS Office-Funktionen, die du verwendest, wie z.B. Excel für Datenanalyse oder Word für Dokumententextverarbeitung.",
+      "Erkläre, wie du MS Office zur Effizienzsteigerung in deinen Aufgaben oder Projekten nutzt.",
+      "Zeige dein Verständnis der verschiedenen MS Office-Anwendungen und wie du zwischen ihnen wechseln kannst."
+    ],
+    "gap_notes": [
+      "Erkenne an, dass du möglicherweise keine spezifischen Projekte hast, in denen du MS Office verwendet hast, da dies ein B2-Niveau ist.",
+      "Bereite dich darauf vor, allgemeine Erfahrungen mit MS Office zu teilen, anstatt spezifischer Erfolgsgeschichten."
+    ],
+    "anchors_used": [
+      {
+        "text": "MS Office",
+        "source": "profile",
+        "quote": ""
+      }
+    ],
+    "invented_flag": false,
+    "confidence": "medium"
+  },
+  "model_id": "phi4-mini",
+  "validator_errors": [],
+  "repair_history": {
+    "capability": "interview_prep",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "talking_points": [
+            "Erwähne spezifische MS Office-Funktionen, die du verwendest, wie z.B. Excel für Datenanalyse oder Word für Dokumententextverarbeitung.",
+            "Erkläre, wie du MS Office zur Effizienzsteigerung in deinen Aufgaben oder Projekten nutzt.",
+            "Zeige dein Verständnis der verschiedenen MS Office-Anwendungen und wie du zwischen ihnen wechseln kannst."
+          ],
+          "questions": [
+            "Kannst du einige Projekte beschreiben, bei denen du MS Office nützlich gefunden hast?",
+            "Wie gehst du vor, um Aufgaben in MS Office effizient zu erledigen?",
+            "Welche Funktionen von MS Office bist du am meisten vertraut mit und warum?",
+            "Kannst du ein Problem beschreiben, das du mit MS Office gelöst hast?",
+            "Wie bleibst du auf dem neuesten Stand der MS Office-Funktionen und Updates?"
+          ],
+          "invented_flag": false
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "grounding_report": {
+    "ok": true,
+    "errors": [],
+    "grounding": [],
+    "notes": [],
+    "has_direct_evidence": true
+  }
+}

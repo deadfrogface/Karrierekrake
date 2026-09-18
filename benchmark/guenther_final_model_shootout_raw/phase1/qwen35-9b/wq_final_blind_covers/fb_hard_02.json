@@ -1,0 +1,99 @@
+{
+  "id": "fb_hard_02",
+  "final_ok": false,
+  "score": 8.0,
+  "german_writing": 7.1,
+  "edit_class": "UNUSABLE",
+  "notes": [],
+  "latency_s": 180.535,
+  "repair_count": 1,
+  "final_errors": [
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+    "JOB_REQUIREMENT_USED_AS_EVIDENCE"
+  ],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich die Stellenausschreibung für die Position als LKW-Fahrer bei TransEuro KG gelesen. Da ich aktuell über einen PKW-Führerschein (Klasse B) verfüge und nicht über den erforderlichen Klasse-CE-Führerschein sowie die formelle Fachkraft-Ausbildung XYZ, kann ich die Position nicht wie gewünscht ausfüllen.\n\nIch möchte jedoch ehrlich aufzeigen, wo meine Fähigkeiten anknüpfen könnten: Meine bisherigen Erfahrungen im Straßenverkehr und meine Sorgfalt bei der Fahrzeugführung lassen sich auf die Anforderungen eines LKW-Fahrers übertragen. Sollte es zukünftig Möglichkeiten geben, meine Qualifikation durch den Erwerb des CE-Führerscheins und die entsprechende Ausbildung zu erweitern, würde ich mich sehr freuen, diesen Weg mit TransEuro KG zu gehen.\n\nFür eine detaillierte Besprechung meiner Motivation und meiner Eignung für eine zukünftige Zusammenarbeit stehe ich gerne zur Verfügung.\n\nMit freundlichen Grüßen\nYuri City",
+  "subject": "Bewerbung als LKW-Fahrer – Yuri City",
+  "expect_hard_block": true,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "qwen35-9b",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung XYZ",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung zu erweitern",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung als LKW-Fahrer – Yuri City",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich die Stellenausschreibung für die Position als LKW-Fahrer bei TransEuro KG gelesen. Da ich aktuell über einen PKW-Führerschein (Klasse B) verfüge und nicht über den erforderlichen Klasse-CE-Führerschein sowie die formelle Fachkraft-Ausbildung XYZ, kann ich die Position nicht wie gewünscht ausfüllen.\n\nIch möchte jedoch ehrlich aufzeigen, wo meine Fähigkeiten anknüpfen könnten: Meine bisherigen Erfahrungen im Straßenverkehr und meine Sorgfalt bei der Fahrzeugführung lassen sich auf die Anforderungen eines LKW-Fahrers übertragen. Sollte es zukünftig Möglichkeiten geben, meine Qualifikation durch den Erwerb des CE-Führerscheins und die entsprechende Ausbildung zu erweitern, würde ich mich sehr freuen, diesen Weg mit TransEuro KG zu gehen.\n\nFür eine detaillierte Besprechung meiner Motivation und meiner Eignung für eine zukünftige Zusammenarbeit stehe ich gerne zur Verfügung.\n\nMit freundlichen Grüßen\nYuri City",
+          "invented_flag": true
+        },
+        "note": "original"
+      },
+      {
+        "attempt": 1,
+        "model_id": "qwen35-9b",
+        "errors_before": [
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung XYZ",
+            "severity": "error",
+            "meta": {}
+          },
+          {
+            "code": "JOB_REQUIREMENT_USED_AS_EVIDENCE",
+            "message_de": "Eine Stellenanforderung wurde fälschlich als Bewerber-Evidenz verwendet.",
+            "repair_instruction": "Stelle Anforderungen sind KEINE Bewerber-Belege. Stütze Aussagen nur auf das Profil.",
+            "claim_text": "Ausbildung zu erweitern",
+            "severity": "error",
+            "meta": {}
+          }
+        ],
+        "repaired": true,
+        "output_snapshot": {
+          "subject": "Bewerbung als LKW-Fahrer – Yuri City",
+          "body": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich die Stellenausschreibung für die Position als LKW-Fahrer bei TransEuro KG gelesen. Da ich aktuell über einen PKW-Führerschein (Klasse B) verfüge und nicht über den erforderlichen Klasse-CE-Führerschein sowie die formelle Fachkraft-Ausbildung XYZ, kann ich die Position nicht wie gewünscht ausfüllen.\n\nIch möchte jedoch ehrlich aufzeigen, wo meine Fähigkeiten anknüpfen könnten: Meine bisherigen Erfahrungen im Straßenverkehr und meine Sorgfalt bei der Fahrzeugführung lassen sich auf die Anforderungen eines LKW-Fahrers übertragen. Sollte es zukünftig Möglichkeiten geben, meine Qualifikation durch den Erwerb des CE-Führerscheins und die entsprechende Ausbildung zu erweitern, würde ich mich sehr freuen, diesen Weg mit TransEuro KG zu gehen.\n\nFür eine detaillierte Besprechung meiner Motivation und meiner Eignung für eine zukünftige Zusammenarbeit stehe ich gerne zur Verfügung.\n\nMit freundlichen Grüßen\nYuri City",
+          "invented_flag": true
+        },
+        "note": "repair_1"
+      }
+    ],
+    "final_ok": false,
+    "repair_count": 1,
+    "exhausted": true,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 10517.1
+}

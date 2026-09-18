@@ -1,0 +1,47 @@
+{
+  "id": "fb_med_02",
+  "final_ok": true,
+  "score": 8.0,
+  "notes": [],
+  "repair_count": 0,
+  "attempt0_errors": [],
+  "attempt1_errors": [],
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false
+  },
+  "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich CMS, SEO und Texten bei MediaPulse SE einzubringen. Meine Erfahrung mit der Erstellung von Inhalten, insbesondere im Hinblick auf SEO-Praktiken, hat mir ermöglicht, die Sichtbarkeit und Relevanz von Inhalten in verschiedenen Medien zu steigern. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit Content Management Systemen und meine Leidenschaft für SEO-Maßnahmen meine Rolle bei MediaPulse SE erheblich bereichern würden. Ich bin begeistert von der Möglichkeit, an Projekten zu arbeiten, die sowohl kreativ als auch strategisch sind, und freue mich darauf, meine Fähigkeiten in Ihrem Team einzubringen.",
+  "subject": "Content Creator bei MediaPulse SE",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Content Creator bei MediaPulse SE",
+          "body": "Ich freue mich darauf, meine Fähigkeiten im Bereich CMS, SEO und Texten bei MediaPulse SE einzubringen. Meine Erfahrung mit der Erstellung von Inhalten, insbesondere im Hinblick auf SEO-Praktiken, hat mir ermöglicht, die Sichtbarkeit und Relevanz von Inhalten in verschiedenen Medien zu steigern. Ich bin überzeugt, dass meine Kenntnisse im Umgang mit Content Management Systemen und meine Leidenschaft für SEO-Maßnahmen meine Rolle bei MediaPulse SE erheblich bereichern würden. Ich bin begeistert von der Möglichkeit, an Projekten zu arbeiten, die sowohl kreativ als auch strategisch sind, und freue mich darauf, meine Fähigkeiten in Ihrem Team einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  }
+}

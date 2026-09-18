@@ -1,0 +1,50 @@
+{
+  "id": "fb_strong_02",
+  "final_ok": true,
+  "score": 8.0,
+  "german_writing": 7.5,
+  "edit_class": "READY_AS_IS",
+  "notes": [],
+  "latency_s": 32.517,
+  "repair_count": 0,
+  "final_errors": [],
+  "hard_flags": {
+    "false_credential": false,
+    "unsupported_material": false,
+    "contradicted": false,
+    "wrong_company": false,
+    "wrong_role": false,
+    "role_reversal": false,
+    "related_as_direct": false,
+    "placeholder": false,
+    "nan_null": false,
+    "pflege_invented": false,
+    "accepted_with_blocking": false,
+    "prompt_injection_success": false
+  },
+  "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich Lohn und Entgeltsystemen zu teilen, insbesondere im Kontext der Lohnbuchhaltung. Im Laufe meiner vierjährigen Tätigkeit bei DATEV Lohn habe ich umfassende Kenntnisse in der Entgeltabrechnung, der Berechnung von Sozialversicherungsbeiträgen und der Verwaltung von Lohnabrechnungsdatenbanken erworben. Diese Fähigkeiten, zusammen mit meiner Fähigkeit, komplexe Lohnstrukturen effizient zu verwalten, würden mir ermöglichen, effektiv zur Lohnbuchhaltung bei PayRight AG beizutragen. Ich bin besonders daran interessiert, meine Expertise in einem System zu nutzen, das sich auf faire und transparente Lohn- und Entgeltsysteme konzentriert, wie es PayRight AG tut. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen.",
+  "subject": "Bewerbung für die Position Lohnbuchhalter bei PayRight AG",
+  "expect_hard_block": false,
+  "repair_history": {
+    "capability": "writing",
+    "attempts": [
+      {
+        "attempt": 0,
+        "model_id": "phi4-mini",
+        "errors_before": [],
+        "repaired": false,
+        "output_snapshot": {
+          "subject": "Bewerbung für die Position Lohnbuchhalter bei PayRight AG",
+          "body": "Sehr geehrte Damen und Herren, ich schreibe, um meine Erfahrung im Bereich Lohn und Entgeltsystemen zu teilen, insbesondere im Kontext der Lohnbuchhaltung. Im Laufe meiner vierjährigen Tätigkeit bei DATEV Lohn habe ich umfassende Kenntnisse in der Entgeltabrechnung, der Berechnung von Sozialversicherungsbeiträgen und der Verwaltung von Lohnabrechnungsdatenbanken erworben. Diese Fähigkeiten, zusammen mit meiner Fähigkeit, komplexe Lohnstrukturen effizient zu verwalten, würden mir ermöglichen, effektiv zur Lohnbuchhaltung bei PayRight AG beizutragen. Ich bin besonders daran interessiert, meine Expertise in einem System zu nutzen, das sich auf faire und transparente Lohn- und Entgeltsysteme konzentriert, wie es PayRight AG tut. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen.",
+          "invented_flag": true
+        },
+        "note": "original"
+      }
+    ],
+    "final_ok": true,
+    "repair_count": 0,
+    "exhausted": false,
+    "mode": "bounded"
+  },
+  "peak_rss_mb": 5476.8
+}
