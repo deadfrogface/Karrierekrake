@@ -390,6 +390,20 @@ class SettingsConfig:
     gmail_exclude_senders: list[str] = field(default_factory=list)
     calendar_freebusy_enabled: bool = False
     gmail_credentials_path: str = "private/gmail_credentials.json"
+    # --- Calendar scheduling engine (PR31) ---
+    scheduling_timezone: str = "Europe/Berlin"
+    interview_duration_minutes: int = 60
+    schedule_buffer_before_minutes: int = 15
+    schedule_buffer_after_minutes: int = 15
+    onsite_travel_buffer_minutes: int = 0
+    schedule_allow_weekends: bool = False
+    schedule_respect_holidays: bool = False
+    schedule_holiday_country: str = "DE"
+    schedule_preferred_windows: str = ""
+    schedule_slot_step_minutes: int = 30
+    schedule_max_ranked_slots: int = 5
+    scheduling_preferences: dict | None = None
+    allow_calendar_write: bool = False
     # --- Günther die Krake (optional local AI; off by default) ---
     # Never enables cloud AI. LLM output is untrusted and validated.
     guenther_enabled: bool = False
@@ -406,6 +420,11 @@ class SettingsConfig:
     contact_discovery_stale_after_days: int = 90
     # Mass retro web crawl of historical jobs — forbidden unless explicitly enabled.
     contact_discovery_allow_retro_crawl: bool = False
+    # --- Contact verification + writer binding (PR26) ---
+    # Verification runs on discovered candidates; discovery alone never feeds writer.
+    contact_verification_enabled: bool = True
+    # When false: provenance/verification kept, writer ignores CONTACT_* claims.
+    contact_writer_binding_enabled: bool = True
 
 
 # Allowed jobs-per-search choices for the settings UI (0 = Max).

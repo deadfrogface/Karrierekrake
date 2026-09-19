@@ -14,7 +14,12 @@ from core.models import utc_now_iso
 from core.text_normalize import clean_text
 
 # Bump when persisted payload shape changes; DB rows keep schema_version.
+# v1: discovery (PR25). Verification status lives in VerificationResult (PR26);
+# legacy candidates without verification default to UNVERIFIED at read time.
 CONTACT_SCHEMA_VERSION = 1
+
+# Soft default for migration — never treat legacy rows as writer-verified.
+DEFAULT_VERIFICATION_STATUS = "UNVERIFIED"
 
 
 class SourceType(str, Enum):
@@ -96,6 +101,8 @@ class ContactCandidate:
     contact_kind: str = ContactKind.UNKNOWN.value
     stale: bool = False
     page_timestamp: str = ""  # source page date if known (stale detection)
+    # PR26: discovery never auto-verifies. Default UNVERIFIED until verify_*.
+    verification_status: str = DEFAULT_VERIFICATION_STATUS
 
     def __post_init__(self) -> None:
         self.name = clean_text(self.name)
@@ -106,6 +113,9 @@ class ContactCandidate:
         self.source_url = clean_text(self.source_url)
         self.source_type = clean_text(self.source_type)
         self.page_timestamp = clean_text(self.page_timestamp)
+        self.verification_status = (
+            clean_text(self.verification_status) or DEFAULT_VERIFICATION_STATUS
+        )
         if isinstance(self.evidence, list):
             self.evidence = [
                 e if isinstance(e, ContactEvidence) else ContactEvidence.from_dict(e)

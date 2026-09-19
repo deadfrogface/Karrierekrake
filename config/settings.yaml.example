@@ -46,6 +46,18 @@ gmail_sync_enabled: false
 gmail_exclude_senders: []
 calendar_freebusy_enabled: false
 gmail_credentials_path: private/gmail_credentials.json
+scheduling_timezone: Europe/Berlin
+interview_duration_minutes: 60
+schedule_buffer_before_minutes: 15
+schedule_buffer_after_minutes: 15
+onsite_travel_buffer_minutes: 0
+schedule_allow_weekends: false
+schedule_respect_holidays: false
+schedule_holiday_country: DE
+schedule_preferred_windows: ''
+schedule_slot_step_minutes: 30
+schedule_max_ranked_slots: 5
+allow_calendar_write: false
 # Günther die Krake — optionale lokale Hilfe (kein Cloud-KI-Zwang)
 guenther_enabled: false
 guenther_model: auto              # auto | qwen3-1.7b | qwen3-4b | phi4-mini
@@ -57,3 +69,7 @@ contact_discovery_min_interval_seconds: 1.0
 contact_discovery_cache_ttl_hours: 168
 contact_discovery_stale_after_days: 90
 contact_discovery_allow_retro_crawl: false
+# Contact verification + writer binding (PR26) — discovery never auto-uses contacts
+contact_verification_enabled: true
+# Rollback writer link without dropping provenance: set false
+contact_writer_binding_enabled: true

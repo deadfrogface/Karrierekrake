@@ -1,4 +1,8 @@
-"""ICS export helpers — adapted from PBP ics_service.py (MIT)."""
+"""ICS export helpers — adapted from PBP ics_service.py (MIT).
+
+Times are written as UTC (Z). Callers must pass timezone-aware ISO starts;
+naive values are anchored to UTC explicitly (never silent local guess).
+"""
 
 from __future__ import annotations
 
@@ -73,6 +77,9 @@ def build_meetings_ics(meetings: Iterable[dict[str, Any]], *, calendar_name: str
         lines.append(ics_fold(f"SUMMARY:{summary}"))
         if description:
             lines.append(ics_fold(f"DESCRIPTION:{description}"))
+        location = ics_escape(m.get("location") or "")
+        if location:
+            lines.append(ics_fold(f"LOCATION:{location}"))
         lines.append("END:VEVENT")
         count += 1
     lines.append("END:VCALENDAR")
