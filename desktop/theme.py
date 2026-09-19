@@ -472,5 +472,25 @@ QListWidget#EventList {{
 
 
 def stylesheet_for(preference: str) -> str:
+    """Return the active app stylesheet.
+
+    Uses the design-system overlay by default. Rollback: set env
+    ``KARRIEREKRAKE_LEGACY_STYLES=1`` or call ``legacy_stylesheet_for``.
+    """
+    import os
+
+    from desktop.design_system.stylesheet import compose_app_stylesheet
+
+    if os.environ.get("KARRIEREKRAKE_LEGACY_STYLES", "").strip() in {
+        "1",
+        "true",
+        "yes",
+    }:
+        return legacy_stylesheet_for(preference)
+    return compose_app_stylesheet(preference, use_design_layer=True)
+
+
+def legacy_stylesheet_for(preference: str) -> str:
+    """Pre-design-system QSS path (rollback)."""
     theme = resolve_theme(preference)
     return DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
