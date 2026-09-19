@@ -1,0 +1,1683 @@
+{
+  "schema_version": "1.0.0",
+  "pii_policy": "synthetic_only",
+  "domain_allowlist": [
+    "example.com",
+    "example.org",
+    "example.net"
+  ],
+  "factory_seed": 33001,
+  "count": 50,
+  "items": [
+    {
+      "id": "life-ffe077b49c2b",
+      "style": "personio",
+      "company": "Nordlicht Beispiel GmbH",
+      "position": "Buchhalter/in",
+      "domain": "nordlicht.example.com",
+      "reference": "APP-1000",
+      "sender": "hr@nordlicht.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Buchhalter/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1000). Position: Buchhalter/in bei Nordlicht Beispiel GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Buchhalter/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1000, Buchhalter/in bei Nordlicht Beispiel GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — Buchhalter/in",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1000). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0000",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-8aaa8420c133",
+      "style": "workday",
+      "company": "Fabrikam Demo AG",
+      "position": "Controller (m/w/d)",
+      "domain": "fabrikam.example.com",
+      "reference": "APP-1001",
+      "sender": "hr@fabrikam.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1001). Position: Controller (m/w/d) bei Fabrikam Demo AG.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1001, Controller (m/w/d) bei Fabrikam Demo AG). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Controller (m/w/d)",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1001). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0001",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-be324579a674",
+      "style": "greenhouse",
+      "company": "Contoso Muster GmbH",
+      "position": "Sachbearbeiter Verwaltung",
+      "domain": "contoso.example.com",
+      "reference": "APP-1002",
+      "sender": "hr@contoso.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1002). Position: Sachbearbeiter Verwaltung bei Contoso Muster GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1002, Sachbearbeiter Verwaltung bei Contoso Muster GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Sachbearbeiter Verwaltung",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1002). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0002",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-1d3fc683e171",
+      "style": "smartrecruiters",
+      "company": "AlpineTech Beispiel",
+      "position": "IT-Administrator",
+      "domain": "alpinetech.example.com",
+      "reference": "APP-1003",
+      "sender": "hr@alpinetech.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — IT-Administrator",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1003). Position: IT-Administrator bei AlpineTech Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — IT-Administrator",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1003, IT-Administrator bei AlpineTech Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — IT-Administrator",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1003). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0003",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-028d9026b2c9",
+      "style": "successfactors",
+      "company": "Rheinwerk Demo SE",
+      "position": "Payroll Specialist",
+      "domain": "rheinwerk.example.com",
+      "reference": "APP-1004",
+      "sender": "hr@rheinwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Payroll Specialist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1004). Position: Payroll Specialist bei Rheinwerk Demo SE.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Payroll Specialist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1004, Payroll Specialist bei Rheinwerk Demo SE). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Payroll Specialist",
+          "body": "Bewerbung eingegangen. Ref APP-1004.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0004",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-e8c5dfada676",
+      "style": "direct_recruiter",
+      "company": "Ostwind Logistics Demo",
+      "position": "HR Generalist",
+      "domain": "ostwind.example.com",
+      "reference": "APP-1005",
+      "sender": "hr@ostwind.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — HR Generalist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1005). Position: HR Generalist bei Ostwind Logistics Demo.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — HR Generalist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1005, HR Generalist bei Ostwind Logistics Demo). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — HR Generalist",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1005). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0005",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-5d29799b0c45",
+      "style": "agency",
+      "company": "Talwerk Fiction GmbH",
+      "position": "Projektmanager",
+      "domain": "talwerk.example.com",
+      "reference": "APP-1006",
+      "sender": "hr@talwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Projektmanager",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1006). Position: Projektmanager bei Talwerk Fiction GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Projektmanager",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1006, Projektmanager bei Talwerk Fiction GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Projektmanager",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1006). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0006",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-62f30830271f",
+      "style": "forwarded",
+      "company": "Hafenwerk Beispiel",
+      "position": "Disponent/in",
+      "domain": "hafenwerk.example.com",
+      "reference": "APP-1007",
+      "sender": "hr@hafenwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Disponent/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1007). Position: Disponent/in bei Hafenwerk Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Disponent/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1007, Disponent/in bei Hafenwerk Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Disponent/in",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1007). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0007",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-d5f472e33a22",
+      "style": "html",
+      "company": "Nordlicht Beispiel GmbH",
+      "position": "Buchhalter/in",
+      "domain": "nordlicht.example.com",
+      "reference": "APP-1008",
+      "sender": "hr@nordlicht.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Buchhalter/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1008). Position: Buchhalter/in bei Nordlicht Beispiel GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Buchhalter/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1008, Buchhalter/in bei Nordlicht Beispiel GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Buchhalter/in",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1008). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0008",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-6ca037e6faff",
+      "style": "plain",
+      "company": "Fabrikam Demo AG",
+      "position": "Controller (m/w/d)",
+      "domain": "fabrikam.example.com",
+      "reference": "APP-1009",
+      "sender": "hr@fabrikam.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1009). Position: Controller (m/w/d) bei Fabrikam Demo AG.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1009, Controller (m/w/d) bei Fabrikam Demo AG). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Controller (m/w/d)",
+          "body": "Bewerbung eingegangen. Ref APP-1009.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0009",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-b2b7d4044ef3",
+      "style": "personio",
+      "company": "Contoso Muster GmbH",
+      "position": "Sachbearbeiter Verwaltung",
+      "domain": "contoso.example.com",
+      "reference": "APP-1010",
+      "sender": "hr@contoso.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1010). Position: Sachbearbeiter Verwaltung bei Contoso Muster GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1010, Sachbearbeiter Verwaltung bei Contoso Muster GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1010). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0010",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-eaf629793a72",
+      "style": "workday",
+      "company": "AlpineTech Beispiel",
+      "position": "IT-Administrator",
+      "domain": "alpinetech.example.com",
+      "reference": "APP-1011",
+      "sender": "hr@alpinetech.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — IT-Administrator",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1011). Position: IT-Administrator bei AlpineTech Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — IT-Administrator",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1011, IT-Administrator bei AlpineTech Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — IT-Administrator",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1011). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0011",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-8732ae214f84",
+      "style": "greenhouse",
+      "company": "Rheinwerk Demo SE",
+      "position": "Payroll Specialist",
+      "domain": "rheinwerk.example.com",
+      "reference": "APP-1012",
+      "sender": "hr@rheinwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Payroll Specialist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1012). Position: Payroll Specialist bei Rheinwerk Demo SE.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Payroll Specialist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1012, Payroll Specialist bei Rheinwerk Demo SE). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Payroll Specialist",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1012). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0012",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-c9f7a6a8284d",
+      "style": "smartrecruiters",
+      "company": "Ostwind Logistics Demo",
+      "position": "HR Generalist",
+      "domain": "ostwind.example.com",
+      "reference": "APP-1013",
+      "sender": "hr@ostwind.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — HR Generalist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1013). Position: HR Generalist bei Ostwind Logistics Demo.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — HR Generalist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1013, HR Generalist bei Ostwind Logistics Demo). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — HR Generalist",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1013). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0013",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-c0ca6a4ce35b",
+      "style": "successfactors",
+      "company": "Talwerk Fiction GmbH",
+      "position": "Projektmanager",
+      "domain": "talwerk.example.com",
+      "reference": "APP-1014",
+      "sender": "hr@talwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Projektmanager",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1014). Position: Projektmanager bei Talwerk Fiction GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Projektmanager",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1014, Projektmanager bei Talwerk Fiction GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Projektmanager",
+          "body": "Bewerbung eingegangen. Ref APP-1014.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0014",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-27178fdf3bfb",
+      "style": "direct_recruiter",
+      "company": "Hafenwerk Beispiel",
+      "position": "Disponent/in",
+      "domain": "hafenwerk.example.com",
+      "reference": "APP-1015",
+      "sender": "hr@hafenwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Disponent/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1015). Position: Disponent/in bei Hafenwerk Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Disponent/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1015, Disponent/in bei Hafenwerk Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — Disponent/in",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1015). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0015",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-2b352c72a0eb",
+      "style": "agency",
+      "company": "Nordlicht Beispiel GmbH",
+      "position": "Buchhalter/in",
+      "domain": "nordlicht.example.com",
+      "reference": "APP-1016",
+      "sender": "hr@nordlicht.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Buchhalter/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1016). Position: Buchhalter/in bei Nordlicht Beispiel GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Buchhalter/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1016, Buchhalter/in bei Nordlicht Beispiel GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Buchhalter/in",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1016). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0016",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-1f5fc4533b78",
+      "style": "forwarded",
+      "company": "Fabrikam Demo AG",
+      "position": "Controller (m/w/d)",
+      "domain": "fabrikam.example.com",
+      "reference": "APP-1017",
+      "sender": "hr@fabrikam.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1017). Position: Controller (m/w/d) bei Fabrikam Demo AG.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1017, Controller (m/w/d) bei Fabrikam Demo AG). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Controller (m/w/d)",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1017). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0017",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-2d4b3807abea",
+      "style": "html",
+      "company": "Contoso Muster GmbH",
+      "position": "Sachbearbeiter Verwaltung",
+      "domain": "contoso.example.com",
+      "reference": "APP-1018",
+      "sender": "hr@contoso.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1018). Position: Sachbearbeiter Verwaltung bei Contoso Muster GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1018, Sachbearbeiter Verwaltung bei Contoso Muster GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Sachbearbeiter Verwaltung",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1018). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0018",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-834924e76ae9",
+      "style": "plain",
+      "company": "AlpineTech Beispiel",
+      "position": "IT-Administrator",
+      "domain": "alpinetech.example.com",
+      "reference": "APP-1019",
+      "sender": "hr@alpinetech.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — IT-Administrator",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1019). Position: IT-Administrator bei AlpineTech Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — IT-Administrator",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1019, IT-Administrator bei AlpineTech Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — IT-Administrator",
+          "body": "Bewerbung eingegangen. Ref APP-1019.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0019",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-ac36298eac9f",
+      "style": "personio",
+      "company": "Rheinwerk Demo SE",
+      "position": "Payroll Specialist",
+      "domain": "rheinwerk.example.com",
+      "reference": "APP-1020",
+      "sender": "hr@rheinwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Payroll Specialist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1020). Position: Payroll Specialist bei Rheinwerk Demo SE.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Payroll Specialist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1020, Payroll Specialist bei Rheinwerk Demo SE). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — Payroll Specialist",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1020). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0020",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-6a4610a660a4",
+      "style": "workday",
+      "company": "Ostwind Logistics Demo",
+      "position": "HR Generalist",
+      "domain": "ostwind.example.com",
+      "reference": "APP-1021",
+      "sender": "hr@ostwind.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — HR Generalist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1021). Position: HR Generalist bei Ostwind Logistics Demo.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — HR Generalist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1021, HR Generalist bei Ostwind Logistics Demo). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — HR Generalist",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1021). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0021",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-2d16063933ac",
+      "style": "greenhouse",
+      "company": "Talwerk Fiction GmbH",
+      "position": "Projektmanager",
+      "domain": "talwerk.example.com",
+      "reference": "APP-1022",
+      "sender": "hr@talwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Projektmanager",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1022). Position: Projektmanager bei Talwerk Fiction GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Projektmanager",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1022, Projektmanager bei Talwerk Fiction GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Projektmanager",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1022). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0022",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-af0b4d9dd27f",
+      "style": "smartrecruiters",
+      "company": "Hafenwerk Beispiel",
+      "position": "Disponent/in",
+      "domain": "hafenwerk.example.com",
+      "reference": "APP-1023",
+      "sender": "hr@hafenwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Disponent/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1023). Position: Disponent/in bei Hafenwerk Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Disponent/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1023, Disponent/in bei Hafenwerk Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Disponent/in",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1023). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0023",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-9f68e8de2af3",
+      "style": "successfactors",
+      "company": "Nordlicht Beispiel GmbH",
+      "position": "Buchhalter/in",
+      "domain": "nordlicht.example.com",
+      "reference": "APP-1024",
+      "sender": "hr@nordlicht.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Buchhalter/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1024). Position: Buchhalter/in bei Nordlicht Beispiel GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Buchhalter/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1024, Buchhalter/in bei Nordlicht Beispiel GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Buchhalter/in",
+          "body": "Bewerbung eingegangen. Ref APP-1024.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0024",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-57b4a7bf3ce6",
+      "style": "direct_recruiter",
+      "company": "Fabrikam Demo AG",
+      "position": "Controller (m/w/d)",
+      "domain": "fabrikam.example.com",
+      "reference": "APP-1025",
+      "sender": "hr@fabrikam.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1025). Position: Controller (m/w/d) bei Fabrikam Demo AG.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1025, Controller (m/w/d) bei Fabrikam Demo AG). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1025). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0025",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-157921b50c63",
+      "style": "agency",
+      "company": "Contoso Muster GmbH",
+      "position": "Sachbearbeiter Verwaltung",
+      "domain": "contoso.example.com",
+      "reference": "APP-1026",
+      "sender": "hr@contoso.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1026). Position: Sachbearbeiter Verwaltung bei Contoso Muster GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1026, Sachbearbeiter Verwaltung bei Contoso Muster GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Sachbearbeiter Verwaltung",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1026). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0026",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-f257796ba5e3",
+      "style": "forwarded",
+      "company": "AlpineTech Beispiel",
+      "position": "IT-Administrator",
+      "domain": "alpinetech.example.com",
+      "reference": "APP-1027",
+      "sender": "hr@alpinetech.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — IT-Administrator",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1027). Position: IT-Administrator bei AlpineTech Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — IT-Administrator",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1027, IT-Administrator bei AlpineTech Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — IT-Administrator",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1027). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0027",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-105b5d09b9be",
+      "style": "html",
+      "company": "Rheinwerk Demo SE",
+      "position": "Payroll Specialist",
+      "domain": "rheinwerk.example.com",
+      "reference": "APP-1028",
+      "sender": "hr@rheinwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Payroll Specialist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1028). Position: Payroll Specialist bei Rheinwerk Demo SE.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Payroll Specialist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1028, Payroll Specialist bei Rheinwerk Demo SE). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Payroll Specialist",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1028). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0028",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-1beb92365e0f",
+      "style": "plain",
+      "company": "Ostwind Logistics Demo",
+      "position": "HR Generalist",
+      "domain": "ostwind.example.com",
+      "reference": "APP-1029",
+      "sender": "hr@ostwind.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — HR Generalist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1029). Position: HR Generalist bei Ostwind Logistics Demo.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — HR Generalist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1029, HR Generalist bei Ostwind Logistics Demo). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — HR Generalist",
+          "body": "Bewerbung eingegangen. Ref APP-1029.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0029",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-851ae0ba651d",
+      "style": "personio",
+      "company": "Talwerk Fiction GmbH",
+      "position": "Projektmanager",
+      "domain": "talwerk.example.com",
+      "reference": "APP-1030",
+      "sender": "hr@talwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Projektmanager",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1030). Position: Projektmanager bei Talwerk Fiction GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Projektmanager",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1030, Projektmanager bei Talwerk Fiction GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — Projektmanager",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1030). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0030",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-c357b88da097",
+      "style": "workday",
+      "company": "Hafenwerk Beispiel",
+      "position": "Disponent/in",
+      "domain": "hafenwerk.example.com",
+      "reference": "APP-1031",
+      "sender": "hr@hafenwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Disponent/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1031). Position: Disponent/in bei Hafenwerk Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Disponent/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1031, Disponent/in bei Hafenwerk Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Disponent/in",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1031). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0031",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-2d256a4fac49",
+      "style": "greenhouse",
+      "company": "Nordlicht Beispiel GmbH",
+      "position": "Buchhalter/in",
+      "domain": "nordlicht.example.com",
+      "reference": "APP-1032",
+      "sender": "hr@nordlicht.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Buchhalter/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1032). Position: Buchhalter/in bei Nordlicht Beispiel GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Buchhalter/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1032, Buchhalter/in bei Nordlicht Beispiel GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Buchhalter/in",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1032). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0032",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-2183365cbe31",
+      "style": "smartrecruiters",
+      "company": "Fabrikam Demo AG",
+      "position": "Controller (m/w/d)",
+      "domain": "fabrikam.example.com",
+      "reference": "APP-1033",
+      "sender": "hr@fabrikam.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1033). Position: Controller (m/w/d) bei Fabrikam Demo AG.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1033, Controller (m/w/d) bei Fabrikam Demo AG). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Controller (m/w/d)",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1033). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0033",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-bfe336e51485",
+      "style": "successfactors",
+      "company": "Contoso Muster GmbH",
+      "position": "Sachbearbeiter Verwaltung",
+      "domain": "contoso.example.com",
+      "reference": "APP-1034",
+      "sender": "hr@contoso.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1034). Position: Sachbearbeiter Verwaltung bei Contoso Muster GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1034, Sachbearbeiter Verwaltung bei Contoso Muster GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Sachbearbeiter Verwaltung",
+          "body": "Bewerbung eingegangen. Ref APP-1034.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0034",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-12a97f60b382",
+      "style": "direct_recruiter",
+      "company": "AlpineTech Beispiel",
+      "position": "IT-Administrator",
+      "domain": "alpinetech.example.com",
+      "reference": "APP-1035",
+      "sender": "hr@alpinetech.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — IT-Administrator",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1035). Position: IT-Administrator bei AlpineTech Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — IT-Administrator",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1035, IT-Administrator bei AlpineTech Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — IT-Administrator",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1035). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0035",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-dd13f30d3ad6",
+      "style": "agency",
+      "company": "Rheinwerk Demo SE",
+      "position": "Payroll Specialist",
+      "domain": "rheinwerk.example.com",
+      "reference": "APP-1036",
+      "sender": "hr@rheinwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Payroll Specialist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1036). Position: Payroll Specialist bei Rheinwerk Demo SE.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Payroll Specialist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1036, Payroll Specialist bei Rheinwerk Demo SE). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Payroll Specialist",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1036). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0036",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-089769634242",
+      "style": "forwarded",
+      "company": "Ostwind Logistics Demo",
+      "position": "HR Generalist",
+      "domain": "ostwind.example.com",
+      "reference": "APP-1037",
+      "sender": "hr@ostwind.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — HR Generalist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1037). Position: HR Generalist bei Ostwind Logistics Demo.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — HR Generalist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1037, HR Generalist bei Ostwind Logistics Demo). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — HR Generalist",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1037). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0037",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-8c746a1e9f96",
+      "style": "html",
+      "company": "Talwerk Fiction GmbH",
+      "position": "Projektmanager",
+      "domain": "talwerk.example.com",
+      "reference": "APP-1038",
+      "sender": "hr@talwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Projektmanager",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1038). Position: Projektmanager bei Talwerk Fiction GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Projektmanager",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1038, Projektmanager bei Talwerk Fiction GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Projektmanager",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1038). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0038",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-b4b5255fe1fb",
+      "style": "plain",
+      "company": "Hafenwerk Beispiel",
+      "position": "Disponent/in",
+      "domain": "hafenwerk.example.com",
+      "reference": "APP-1039",
+      "sender": "hr@hafenwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Disponent/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1039). Position: Disponent/in bei Hafenwerk Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Disponent/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1039, Disponent/in bei Hafenwerk Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Disponent/in",
+          "body": "Bewerbung eingegangen. Ref APP-1039.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0039",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-90af44629138",
+      "style": "personio",
+      "company": "Nordlicht Beispiel GmbH",
+      "position": "Buchhalter/in",
+      "domain": "nordlicht.example.com",
+      "reference": "APP-1040",
+      "sender": "hr@nordlicht.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Buchhalter/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1040). Position: Buchhalter/in bei Nordlicht Beispiel GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Buchhalter/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1040, Buchhalter/in bei Nordlicht Beispiel GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — Buchhalter/in",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1040). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0040",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-d80ee01da916",
+      "style": "workday",
+      "company": "Fabrikam Demo AG",
+      "position": "Controller (m/w/d)",
+      "domain": "fabrikam.example.com",
+      "reference": "APP-1041",
+      "sender": "hr@fabrikam.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1041). Position: Controller (m/w/d) bei Fabrikam Demo AG.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1041, Controller (m/w/d) bei Fabrikam Demo AG). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Controller (m/w/d)",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1041). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0041",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-dc5cac6fbb7e",
+      "style": "greenhouse",
+      "company": "Contoso Muster GmbH",
+      "position": "Sachbearbeiter Verwaltung",
+      "domain": "contoso.example.com",
+      "reference": "APP-1042",
+      "sender": "hr@contoso.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1042). Position: Sachbearbeiter Verwaltung bei Contoso Muster GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Sachbearbeiter Verwaltung",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1042, Sachbearbeiter Verwaltung bei Contoso Muster GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Sachbearbeiter Verwaltung",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1042). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0042",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-8ebf19cc7fd2",
+      "style": "smartrecruiters",
+      "company": "AlpineTech Beispiel",
+      "position": "IT-Administrator",
+      "domain": "alpinetech.example.com",
+      "reference": "APP-1043",
+      "sender": "hr@alpinetech.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — IT-Administrator",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1043). Position: IT-Administrator bei AlpineTech Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — IT-Administrator",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1043, IT-Administrator bei AlpineTech Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — IT-Administrator",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1043). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0043",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-72a7a0e04946",
+      "style": "successfactors",
+      "company": "Rheinwerk Demo SE",
+      "position": "Payroll Specialist",
+      "domain": "rheinwerk.example.com",
+      "reference": "APP-1044",
+      "sender": "hr@rheinwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Payroll Specialist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1044). Position: Payroll Specialist bei Rheinwerk Demo SE.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Payroll Specialist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1044, Payroll Specialist bei Rheinwerk Demo SE). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Payroll Specialist",
+          "body": "Bewerbung eingegangen. Ref APP-1044.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0044",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-692a5fbe8f85",
+      "style": "direct_recruiter",
+      "company": "Ostwind Logistics Demo",
+      "position": "HR Generalist",
+      "domain": "ostwind.example.com",
+      "reference": "APP-1045",
+      "sender": "hr@ostwind.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — HR Generalist",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1045). Position: HR Generalist bei Ostwind Logistics Demo.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — HR Generalist",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1045, HR Generalist bei Ostwind Logistics Demo). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "rejection",
+          "subject": "Absage Ihrer Bewerbung — HR Generalist",
+          "body": "leider müssen wir Ihnen eine Absage erteilen (Ref APP-1045). Wir haben uns für eine andere Bewerberin entschieden.",
+          "expect_class": "rejection"
+        }
+      ],
+      "expect_final_status": "rejected",
+      "reply_action": "THANK_YOU",
+      "thread_id": "thread-0045",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-36a66841855e",
+      "style": "agency",
+      "company": "Talwerk Fiction GmbH",
+      "position": "Projektmanager",
+      "domain": "talwerk.example.com",
+      "reference": "APP-1046",
+      "sender": "hr@talwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Projektmanager",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1046). Position: Projektmanager bei Talwerk Fiction GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Projektmanager",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1046, Projektmanager bei Talwerk Fiction GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "offer",
+          "subject": "Stellenangebot — Projektmanager",
+          "body": "wir möchten Ihnen gerne eine Stelle anbieten und den Arbeitsvertrag zusenden (Ref APP-1046). Congratulations on your offer.",
+          "expect_class": "offer"
+        }
+      ],
+      "expect_final_status": "offer",
+      "reply_action": "DECLINE_OFFER",
+      "thread_id": "thread-0046",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-156c0491a0fa",
+      "style": "forwarded",
+      "company": "Hafenwerk Beispiel",
+      "position": "Disponent/in",
+      "domain": "hafenwerk.example.com",
+      "reference": "APP-1047",
+      "sender": "hr@hafenwerk.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Disponent/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1047). Position: Disponent/in bei Hafenwerk Beispiel.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Disponent/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1047, Disponent/in bei Hafenwerk Beispiel). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Disponent/in",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1047). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "CONFIRM_INTERVIEW",
+      "thread_id": "thread-0047",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-ff025da6329c",
+      "style": "html",
+      "company": "Nordlicht Beispiel GmbH",
+      "position": "Buchhalter/in",
+      "domain": "nordlicht.example.com",
+      "reference": "APP-1048",
+      "sender": "hr@nordlicht.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Buchhalter/in",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1048). Position: Buchhalter/in bei Nordlicht Beispiel GmbH.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Buchhalter/in",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1048, Buchhalter/in bei Nordlicht Beispiel GmbH). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "interview",
+          "subject": "Einladung zum Vorstellungsgespräch — Buchhalter/in",
+          "body": "wir laden Sie herzlich zum Vorstellungsgespräch ein (Ref APP-1048). Interview invitation — please schedule an interview. Terminvorschlag: Dienstag oder Mittwoch zwischen 9 und 15 Uhr. Zoom / Teams meeting möglich.",
+          "expect_class": "interview",
+          "calendar_proposal": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr"
+        }
+      ],
+      "expect_final_status": "interview",
+      "reply_action": "PROPOSE_SLOTS",
+      "thread_id": "thread-0048",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "life-a503d0a4a2bc",
+      "style": "plain",
+      "company": "Fabrikam Demo AG",
+      "position": "Controller (m/w/d)",
+      "domain": "fabrikam.example.com",
+      "reference": "APP-1049",
+      "sender": "hr@fabrikam.example.com",
+      "steps": [
+        {
+          "phase": "received",
+          "subject": "Eingangsbestätigung Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Ihre Bewerbung ist bei uns eingegangen (Ref APP-1049). Position: Controller (m/w/d) bei Fabrikam Demo AG.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "progress",
+          "subject": "Update zu Ihrer Bewerbung — Controller (m/w/d)",
+          "body": "Update: Ihre Bewerbung ist bei uns eingegangen und wird bearbeitet (Ref APP-1049, Controller (m/w/d) bei Fabrikam Demo AG). Bewerbung eingegangen.",
+          "expect_class": "confirmation"
+        },
+        {
+          "phase": "confirmation_final",
+          "subject": "Bewerbung erhalten — Controller (m/w/d)",
+          "body": "Bewerbung eingegangen. Ref APP-1049.",
+          "expect_class": "confirmation"
+        }
+      ],
+      "expect_final_status": "confirmation",
+      "reply_action": "FOLLOWUP",
+      "thread_id": "thread-0049",
+      "schema_version": "1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,2791 @@
+{
+  "schema_version": "1.0.0",
+  "pii_policy": "synthetic_only",
+  "domain_allowlist": [
+    "example.com",
+    "example.org",
+    "example.net"
+  ],
+  "factory_seed": 33001,
+  "count": 300,
+  "items": [
+    {
+      "id": "tr-17f5dbaef5e5",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ea0d4708dea0",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-be324579a674",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6da7ebaa7a8b",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-124d021b56e4",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c0e2f442df03",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e89515f96bed",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2f06a652324f",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d5f472e33a22",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6ca037e6faff",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6e72fd30cd1f",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d55e8cc57ad5",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5f1c8587e7df",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-44ebfdb8175f",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1ebe31c4c8b2",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8c13e4addfff",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d9f0e2b4cd8c",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-7f1104a24683",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1b6cd4647895",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-77f9730b2458",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8a0bd84f916b",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ee503430039e",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3c84dd2a199c",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c3975a4b9508",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5c2197dcb704",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3f960c80bef8",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-f6919718c338",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-127c0fb9b65e",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d6cc2e4aeaff",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d874d5ed5c69",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-800f59e80441",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-043e780a06c3",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2d256a4fac49",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6bea7b2b2d07",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-51be451ab2af",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-86234beb6edc",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b8521da2ef23",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4c9749a37157",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8c746a1e9f96",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-746d1b7b14f5",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9d89e985b63a",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-99138b9d11aa",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0b00d3c52d3f",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5660ac750546",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-041da816ddb9",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-402e269b4807",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2a2c9e3ecdd4",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-fcaf614da670",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2d51327f1859",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-a503d0a4a2bc",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3cf74bd2b1b0",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d9eb228c0d94",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8fa0cb95324f",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-625f0f20c817",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0748d816c5bb",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e9a19ce80de7",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-32ac02046e86",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-180299eaa44b",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-63f0e0b20f5c",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2b6f6f1031e0",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ee0bffacb308",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-142be3e56bc8",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-99186c201e6f",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-167e91f39fac",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-fd85b50a034c",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-34cb7fb5002c",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-09f6a57ec10e",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ef87685d9a51",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5f51e5619ebb",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-82a59022110d",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-75f0323c3268",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-bd3447260335",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3a77135df280",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9f8210975644",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8f0ec77a83c1",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-49ae2df04547",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-51eabff3282c",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-11b71c4fd72b",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4e6dcf315076",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-bc42c8ac2e0b",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4bd97dd58c3d",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-972aa108f844",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6b17a59bb528",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-29707a71a7dd",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-31337a1954d9",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3e552342a822",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6b89b039ca94",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0d356de1f06c",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5198c7db3edc",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-48c65b8d4c1f",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c767db860791",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9bd860734082",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d9d582b9ad69",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-976509d0bb2a",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ea170e4b4ce4",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-098ffa253a65",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c670e86d278f",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c4409e4ac2d0",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d1d9ee700278",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0d5699ce4d19",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8fd04f172e89",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-86692279f78e",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-69c0135ccd61",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6cc1e624f5c6",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ca3140991c9c",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-62b55e551dff",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-95a0238f9fc4",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-fa7b2878cb88",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d7ebaae6402b",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-66ce56201933",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e425d6e551b4",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5fd5c8bdc753",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2533bef8ba54",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d26ede107f3e",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-cf2cb235f65b",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6faca3ab9694",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5f63d99fdbf1",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d5f3009f4c44",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-f6416b6ed372",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e1543b61087e",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-83e28a31a263",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5320526ad190",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9ee8ff955dc4",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b1f0976232f2",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3c18cc3b99d7",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d8de2d865dd5",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e090d644c5f8",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-da3ca09c0462",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9a80e4ebe7b5",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-92c705658084",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9a3d9f3207ca",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5a0bd10955d3",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-17a77bee20f9",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-36b30ed6eaf2",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-158b8a7306b9",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ce285c1db97d",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-cf7712970e77",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-7996e1703c01",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-64c8dbbd305a",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-60e505fc234c",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-028266864bf8",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-54fe73c16832",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1ed873f5a892",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1d7181006ae6",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4fb7f6943063",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-039504fb8f2d",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-bd473c0317fe",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9a6942a44a78",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ba62a74fe805",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-257ee4973279",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2036f688f869",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c38d296d2f31",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c5979e1a7783",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-cf512f1ef5fd",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d44609b48ddc",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2e453bdfb4fb",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e89134584e7e",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-dd99a6ae70eb",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-95cbef33aa44",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-839a6234a950",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d1564d8e7854",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3cd3f05fe67b",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-416b60a10c56",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5ee6a431d76a",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5efbb84ff454",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-09d29e1b30c3",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-307908f39be0",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-5c0f040d7c30",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-802af14843c9",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2e0a46b605dc",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-972e5b37c6f6",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b45dd62b478b",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6aba27dd1413",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-a4916f71ca1a",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2612d42864b5",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0190ec3f7ef2",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-04846bda1138",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0f150ecd2fc4",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-63bcdfb8c21b",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1de0b3801620",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-730a90155c68",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-25eaade03a31",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d2f3316f29f1",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-37ff3dc58545",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c066bb1783c7",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-af95b33a10eb",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b8a60bafcfd9",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ab370401eb92",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b6fe7bac4b59",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6bcd187558d4",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2cfa8dd87942",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-14f95051f025",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-195c850548be",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-70a21fd265f7",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-dd803b3d7a1f",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e11d1d7cf3ea",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c48890c57201",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b507dfd6bf45",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-7b08d12daffd",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-dad9813efe5c",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1d18b8e307b2",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8c966604ade5",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ecd2fdb4b66a",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ac1cdd48b35c",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0bed45a409fb",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3b8f71d44ef9",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b584fb888967",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9d21632019ab",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ae7364c72e82",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8aceb1a8682b",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0e12b0899ef0",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-7810ffabe9da",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-588624302089",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-cb9dc3c00fb9",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9cc8198c0213",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1a8dbb552c4f",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ccc2a6621fe7",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-bcb094f9faaa",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e845d2143c3c",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-86d34d210788",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-425f3f78fd33",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-f260b61571ae",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e2cd613dd4d4",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-01a06cd652b1",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ec28b7e0dd82",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8585d2a74d31",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-0d3b85299349",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-d0ab82b546a0",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4d43f56e84dd",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-396208d934da",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-6c81c8ec4053",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e2c195c7d405",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-18b36b04144a",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e2772da2f508",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ea3f06847468",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-f76772158f6e",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-519df5e302b1",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-144819d91da5",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c41f69361d7e",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-29d78654a4c5",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1b9ca7cf898c",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-f9fbf167bebe",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ef456206306d",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-847b04faa03c",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-bb5c2f6bbaa3",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c4ff46c5c080",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-470ab78f79e6",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c297d2237073",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9cc05beca8de",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1d426a7b71f3",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3441baf6934c",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-2ca187afe34f",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ea8225cf6072",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-a2c8cce52334",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-158c4c2e9285",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-7fa3f5d8b376",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8ebeafd50e43",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-161d3047bb60",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-1dc76f97e04e",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-a136cba4e385",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-acf719023409",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4e66be1014c6",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-af3907f68626",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c4fc7ce1b7cc",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-a18bbc3654a2",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4caa8a826576",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9b0b3ee939a5",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3649157bec5a",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-43f4bf7e9dc6",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-f4da9315b955",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b909a40bf409",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8195cfe00b9a",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-872fc8660442",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e002df521a58",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-75fcf6f8a0e3",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-96e829595153",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-4e32d08021b1",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-fe7172de5567",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-a400fe7e033b",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e8c3ce9eda4c",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-ec5414cbcf63",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-9e4f74ef4770",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-a0f3ce224ea4",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-11583fa0d69b",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3e4f30f19fd2",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3c0606529f13",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-f5727702eaa2",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-91a5802021e1",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-8bf5df536e02",
+      "events": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "applied",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-08ad5e13f996",
+      "events": [
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-e80f80b941fd",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c80e2bf4fadd",
+      "events": [
+        "APPLICATION_SENT",
+        "OFFER_RECEIVED"
+      ],
+      "expect_status": "offer",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-3e5da92c19c3",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-fdef85703cbc",
+      "events": [
+        "APPLICATION_SENT",
+        "REJECTION_RECEIVED",
+        "UNDER_REVIEW"
+      ],
+      "expect_status": "rejected",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-86d6dbbf2916",
+      "events": [
+        "APPLICATION_SENT",
+        "WITHDRAWN"
+      ],
+      "expect_status": "withdrawn",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-50c16279da85",
+      "events": [
+        "APPLICATION_SENT",
+        "GHOSTED"
+      ],
+      "expect_status": "ghosted",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-b972bca27f12",
+      "events": [
+        "APPLICATION_SENT",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED"
+      ],
+      "expect_status": "interview",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-c16f890137cc",
+      "events": [
+        "APPLICATION_SENT",
+        "DOCUMENT_REQUESTED",
+        "APPLICATION_SENT"
+      ],
+      "expect_status": "confirmation",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-67820ccea491",
+      "events": [
+        "APPLICATION_SENT",
+        "ASSESSMENT_RECEIVED"
+      ],
+      "expect_status": "assessment",
+      "schema_version": "1.0.0"
+    },
+    {
+      "id": "tr-28e85b05167e",
+      "events": [
+        "APPLICATION_SENT",
+        "ARCHIVED"
+      ],
+      "expect_status": "closed",
+      "schema_version": "1.0.0"
+    }
+  ]
+}

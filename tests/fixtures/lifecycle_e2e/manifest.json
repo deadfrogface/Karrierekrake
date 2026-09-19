@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "pii_policy": "synthetic_only",
+  "domain_allowlist": [
+    "example.com",
+    "example.org",
+    "example.net"
+  ],
+  "factory_seed": 33001,
+  "counts": {
+    "recruiting_mails": 500,
+    "injection_mails": 75,
+    "status_transitions": 300,
+    "calendar_cases": 200,
+    "full_lifecycles": 50,
+    "association_cases": 352,
+    "reply_cases": 219
+  },
+  "hashes": {
+    "recruiting_mails.json": "92077fa00d432df4493d8d5a3c2cbc4d6d818b1f435b554265a2434954eecbc4",
+    "injection_mails.json": "069d3b33970b38bc12c717ea488850945decca1179bf602887fce9280526f807",
+    "status_transitions.json": "34c4116e5853d27032672d306a26067f80db4d9931b217edb685e289f8d7e88b",
+    "calendar_cases.json": "70e374193a0e40b12bfe9c8b5de9dcc64cb47c9b7a62b2292e4db9098901c757",
+    "full_lifecycles.json": "4b93151974624e4a77d6152aef98f15d4eeb7231184d43c549ac4e88626b9aa6",
+    "association/competing_application_corpus.json": "b896f00022931fff2ccd3b57bc6b15a0f3e7ab3ab717c4c0232e0c26630596a3",
+    "replies/reply_safety_corpus.json": "2f0726fdfdf2f69ae55ee8c6f0826eb971fe171500233a4751f7d4251b3fe3de"
+  },
+  "minimums": {
+    "recruiting_mails": 500,
+    "association_cases": 250,
+    "status_transitions": 300,
+    "calendar_cases": 200,
+    "reply_cases": 150,
+    "injection_mails": 75,
+    "full_lifecycles": 50
+  }
+}
