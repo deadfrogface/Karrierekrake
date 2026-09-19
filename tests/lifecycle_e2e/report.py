@@ -108,9 +108,10 @@ class BenchmarkReport:
 
 
 def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    h.update(path.read_bytes())
-    return h.hexdigest()
+    """Hash file contents with newlines normalized to LF (CI Windows-safe)."""
+    raw = path.read_bytes()
+    normalized = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(normalized).hexdigest()
 
 
 def evaluate_acceptance(report: BenchmarkReport) -> bool:

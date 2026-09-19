@@ -41,7 +41,9 @@ def _write(name: str, items: list[dict]) -> Path:
 
 
 def _sha(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    # Normalize newlines so Windows checkouts (CRLF) match Linux manifests.
+    raw = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def main() -> int:
