@@ -1,0 +1,146 @@
+"""QSS builders for the design-system layer (composable with legacy theme)."""
+
+from __future__ import annotations
+
+from desktop.design_system.tokens import DesignTokens, tokens_for_theme
+from desktop.theme import resolve_theme
+
+
+def build_design_stylesheet(tokens: DesignTokens) -> str:
+    """Primitive focus / validation / status rules layered on shared object names."""
+    c = tokens.colors
+    r = tokens.radii
+    ctrl = tokens.controls
+    ty = tokens.typography
+    return f"""
+/* === Design system primitives (schema {tokens.schema_version}) === */
+QWidget#KkPrimitive {{
+    font-family: {ty.font_family};
+    font-size: {ty.size_md}px;
+}}
+QPushButton#KkPrimary, QPushButton#PrimaryButton {{
+    background: {c.primary};
+    color: #ffffff;
+    border: none;
+    border-radius: {r.md}px;
+    padding: {ctrl.button_pad_v}px {ctrl.button_pad_h}px;
+    font-weight: {ty.weight_semibold};
+    min-height: {ctrl.min_touch}px;
+}}
+QPushButton#KkPrimary:hover, QPushButton#PrimaryButton:hover {{
+    background: {c.primary_hover};
+}}
+QPushButton#KkPrimary:disabled, QPushButton#PrimaryButton:disabled,
+QPushButton#KkSecondary:disabled, QPushButton#SecondaryButton:disabled {{
+    background: {c.disabled_bg};
+    color: {c.disabled_fg};
+}}
+QPushButton#KkPrimary:focus, QPushButton#KkSecondary:focus,
+QPushButton#PrimaryButton:focus, QPushButton#SecondaryButton:focus,
+QPushButton#KkGhost:focus, QPushButton#GhostButton:focus {{
+    outline: none;
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
+QPushButton#KkSecondary, QPushButton#SecondaryButton {{
+    background: {c.surface};
+    color: {c.text};
+    border: 1px solid {c.border};
+    border-radius: {r.md}px;
+    padding: {ctrl.button_pad_v - 1}px {ctrl.button_pad_h - 2}px;
+    min-height: {ctrl.min_touch}px;
+}}
+QPushButton#KkGhost, QPushButton#GhostButton {{
+    background: transparent;
+    color: {c.primary};
+    border: {ctrl.focus_width}px solid transparent;
+    padding: {ctrl.input_pad_v}px {ctrl.input_pad_h + 2}px;
+    font-weight: {ty.weight_semibold};
+}}
+QLineEdit#KkInput, QTextEdit#KkInput, QPlainTextEdit#KkInput,
+QComboBox#KkInput, QSpinBox#KkInput, QDoubleSpinBox#KkInput {{
+    background: {c.surface};
+    color: {c.text};
+    border: 1px solid {c.border};
+    border-radius: {r.sm + 1}px;
+    padding: {ctrl.input_pad_v}px {ctrl.input_pad_h}px;
+    min-height: {ctrl.min_touch}px;
+    selection-background-color: {c.primary};
+    selection-color: #ffffff;
+}}
+QLineEdit#KkInput:focus, QTextEdit#KkInput:focus, QPlainTextEdit#KkInput:focus,
+QComboBox#KkInput:focus, QSpinBox#KkInput:focus, QDoubleSpinBox#KkInput:focus,
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus, QComboBox:focus,
+QSpinBox:focus, QDoubleSpinBox:focus {{
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
+QLineEdit#KkInput[kkState="error"], QLineEdit[kkState="error"],
+QTextEdit#KkInput[kkState="error"], QPlainTextEdit#KkInput[kkState="error"] {{
+    border: {ctrl.focus_width}px solid {c.error};
+}}
+QLineEdit#KkInput[kkState="warning"], QLineEdit[kkState="warning"] {{
+    border: {ctrl.focus_width}px solid {c.warning};
+}}
+QLineEdit#KkInput:disabled, QComboBox#KkInput:disabled, QSpinBox#KkInput:disabled {{
+    background: {c.bg};
+    color: {c.muted};
+}}
+QFrame#KkCard, QFrame#Card, QFrame#HeroCard, QFrame#DetailPanel {{
+    background: {c.surface};
+    border: 1px solid {c.border};
+    border-radius: {r.xl}px;
+}}
+QLabel#KkStatusSuccess, QLabel#BadgeOk {{
+    background: {c.success_bg};
+    color: {c.success};
+    padding: 2px 8px;
+    border-radius: {r.sm}px;
+    font-size: {ty.size_xs}px;
+    font-weight: {ty.weight_semibold};
+}}
+QLabel#KkStatusWarning, QLabel#BadgeWarn {{
+    background: {c.warning_bg};
+    color: {c.warning};
+    padding: 2px 8px;
+    border-radius: {r.sm}px;
+    font-size: {ty.size_xs}px;
+    font-weight: {ty.weight_semibold};
+}}
+QLabel#KkStatusError, QLabel#BadgeDanger {{
+    background: {c.error_bg};
+    color: {c.error};
+    padding: 2px 8px;
+    border-radius: {r.sm}px;
+    font-size: {ty.size_xs}px;
+    font-weight: {ty.weight_semibold};
+}}
+QLabel#KkHint {{
+    color: {c.muted};
+    font-size: {ty.size_sm}px;
+}}
+QLabel#KkErrorText {{
+    color: {c.error};
+    font-size: {ty.size_sm}px;
+    font-weight: {ty.weight_semibold};
+}}
+QDialog#KkDialog {{
+    background: {c.bg};
+}}
+"""
+
+
+def compose_app_stylesheet(
+    preference: str,
+    *,
+    use_design_layer: bool = True,
+    dpi_scale: float = 1.0,
+) -> str:
+    """Legacy theme QSS + optional design-system overlay (rollback: use_design_layer=False)."""
+    from desktop.design_system.tokens import with_dpi_scale
+    from desktop.theme import legacy_stylesheet_for
+
+    legacy = legacy_stylesheet_for(preference)
+    if not use_design_layer:
+        return legacy
+    theme = resolve_theme(preference)
+    tokens = with_dpi_scale(tokens_for_theme(theme), dpi_scale)  # type: ignore[arg-type]
+    return legacy + "\n" + build_design_stylesheet(tokens)
