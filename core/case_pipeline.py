@@ -21,7 +21,8 @@ from integrations.email_associate import (
     decide_association_write,
 )
 from integrations.email_classify import classify_email
-from integrations.followup import suggest_follow_ups
+from integrations.followup import FollowUpPolicy, suggest_follow_ups
+from integrations.reminders import ReminderStore, sync_reminders_from_suggestions
 from integrations.gmail_sync import ParsedEmail, sender_is_excluded
 
 logger = logging.getLogger("karrierekrake.lifecycle")
@@ -271,12 +272,31 @@ def process_email_batch(
 
 
 def refresh_follow_up_tasks(
-    db: Database, *, follow_up_days: int = 14, ghosted_days: int = 21
+    db: Database,
+    *,
+    follow_up_days: int | None = None,
+    ghosted_days: int | None = None,
+    policy: FollowUpPolicy | None = None,
+    persist_reminders: bool = True,
 ) -> int:
+    """Create suggest-only follow-up tasks from an explicit policy/thresholds.
+
+    Thresholds must come from settings (or an explicit FollowUpPolicy).
+    There is no silent hardcoded "14 Tage" default in this path.
+    """
+    if policy is None:
+        if follow_up_days is None or ghosted_days is None:
+            raise TypeError(
+                "FollowUpPolicy or explicit follow_up_days/ghosted_days required"
+            )
+        policy = FollowUpPolicy(
+            follow_up_days=int(follow_up_days),
+            ghosted_days=int(ghosted_days),
+        )
+    if not policy.enabled:
+        return 0
     cases = [c.to_dict() for c in db.list_cases(limit=2000)]
-    suggestions = suggest_follow_ups(
-        cases, follow_up_days=follow_up_days, ghosted_days=ghosted_days
-    )
+    suggestions = suggest_follow_ups(cases, policy=policy)
     created = 0
     for s in suggestions:
         assert s.auto_send is False
@@ -287,6 +307,7 @@ def refresh_follow_up_tasks(
                 "title": "Ghosting-Hinweis" if s.kind == "ghosted" else "Nachfassen",
                 "body": s.text,
                 "status": "open",
+                "due_at": s.due_at,
                 "auto_send": False,
             }
         )
@@ -295,7 +316,13 @@ def refresh_follow_up_tasks(
                 case_id=s.case_id,
                 event_type=CaseEventType.FOLLOW_UP_SUGGESTED.value,
                 payload_json=json.dumps(
-                    {"kind": s.kind, "text": s.text}, ensure_ascii=False
+                    {
+                        "kind": s.kind,
+                        "text": s.text,
+                        "schema_version": s.schema_version,
+                        "auto_send": False,
+                    },
+                    ensure_ascii=False,
                 ),
             )
         )
@@ -316,4 +343,8 @@ def refresh_follow_up_tasks(
                     )
                 )
         created += 1
+    if persist_reminders and policy.reminders_enabled and suggestions:
+        sync_reminders_from_suggestions(
+            ReminderStore(db), suggestions, policy=policy
+        )
     return created

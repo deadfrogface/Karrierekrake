@@ -33,3 +33,5 @@ holidays>=0.40
 # extruct>=0.16.0
 # selectolax>=0.3.0
 # trafilatura>=1.6.0
+# Follow-up reminders ticker (PR32); stable pin only — no pre-releases
+APScheduler>=3.10.4,<4.0

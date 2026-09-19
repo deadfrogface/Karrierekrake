@@ -116,6 +116,35 @@ class WritingSuggestion(StrictModel):
     confidence: ConfidenceLevel = ConfidenceLevel.LOW
 
 
+class ReplyActionSuggestion(StrictModel):
+    """Günther may only polish an existing typed ReplyAction draft.
+
+    Never invents company/job/contact/dates/salary. Never sets auto_send.
+    Binding actions always require_explicit_review=True.
+    """
+
+    action: Literal[
+        "CONFIRM_INTERVIEW",
+        "PROPOSE_SLOTS",
+        "RESCHEDULE",
+        "DOCUMENT_REPLY",
+        "THANK_YOU",
+        "FOLLOWUP",
+        "WITHDRAW",
+        "DECLINE_OFFER",
+        "GENERAL_REPLY",
+    ] = "GENERAL_REPLY"
+    case_id: str = Field(default="", max_length=80)
+    subject: str = Field(default="", max_length=200)
+    body: str = Field(default="", max_length=6000)
+    used_facts: list[str] = Field(default_factory=list, max_length=20)
+    invented_flag: bool = False
+    draft_only: bool = True
+    auto_send: bool = False
+    requires_explicit_review: bool = False
+    confidence: ConfidenceLevel = ConfidenceLevel.LOW
+
+
 class InterviewPrepSuggestion(StrictModel):
     questions: list[str] = Field(default_factory=list, max_length=20)
     talking_points: list[str] = Field(default_factory=list, max_length=20)
@@ -150,6 +179,7 @@ SCHEMA_BY_NAME: dict[str, type[BaseModel]] = {
     "email_class": EmailClassSuggestion,
     "association": AssociationSuggestion,
     "writing": WritingSuggestion,
+    "reply_action": ReplyActionSuggestion,
     "interview_prep": InterviewPrepSuggestion,
 }
 

@@ -220,6 +220,20 @@ CREATE TABLE IF NOT EXISTS lifecycle_tasks (
     auto_send INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS followup_reminders (
+    id TEXT PRIMARY KEY,
+    case_id TEXT DEFAULT '',
+    kind TEXT DEFAULT '',
+    title TEXT DEFAULT '',
+    body TEXT DEFAULT '',
+    status TEXT DEFAULT 'open',
+    due_at TEXT DEFAULT '',
+    created_at TEXT,
+    fired_at TEXT DEFAULT '',
+    auto_send INTEGER DEFAULT 0,
+    schema_version INTEGER NOT NULL DEFAULT 1
+);
+
 CREATE INDEX IF NOT EXISTS idx_cases_status ON application_cases(status);
 CREATE INDEX IF NOT EXISTS idx_cases_company_title ON application_cases(company_key, title_key);
 CREATE INDEX IF NOT EXISTS idx_cases_url_key ON application_cases(url_key);
@@ -233,6 +247,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_lifecycle_events_idem
 CREATE INDEX IF NOT EXISTS idx_email_case ON email_messages(case_id);
 CREATE INDEX IF NOT EXISTS idx_email_assoc ON email_messages(association_status);
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON lifecycle_tasks(status);
+CREATE INDEX IF NOT EXISTS idx_followup_reminders_status ON followup_reminders(status);
+CREATE INDEX IF NOT EXISTS idx_followup_reminders_case ON followup_reminders(case_id);
 
 CREATE TABLE IF NOT EXISTS recruiting_contacts (
     id TEXT PRIMARY KEY,
@@ -416,6 +432,9 @@ class Database:
             self._ensure_lifecycle_event_schema(conn)
             self._backfill_lifecycle_events_if_needed(conn)
 
+            # 7) PR32 follow-up reminders (restart-persistent; never auto-send).
+            self._ensure_followup_reminders_schema(conn)
+
     @staticmethod
     def _ensure_lifecycle_event_schema(conn: sqlite3.Connection) -> None:
         case_cols = {
@@ -515,6 +534,34 @@ class Database:
                     1.0,
                 ),
             )
+
+    @staticmethod
+    def _ensure_followup_reminders_schema(conn: sqlite3.Connection) -> None:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS followup_reminders (
+                id TEXT PRIMARY KEY,
+                case_id TEXT DEFAULT '',
+                kind TEXT DEFAULT '',
+                title TEXT DEFAULT '',
+                body TEXT DEFAULT '',
+                status TEXT DEFAULT 'open',
+                due_at TEXT DEFAULT '',
+                created_at TEXT,
+                fired_at TEXT DEFAULT '',
+                auto_send INTEGER DEFAULT 0,
+                schema_version INTEGER NOT NULL DEFAULT 1
+            )
+            """
+        )
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_followup_reminders_status "
+            "ON followup_reminders(status)"
+        )
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_followup_reminders_case "
+            "ON followup_reminders(case_id)"
+        )
 
     @staticmethod
     def _invalidate_stale_ranking_scores(conn: sqlite3.Connection) -> None:
@@ -1813,6 +1860,68 @@ class Database:
                 ),
             )
         return tid
+
+    def save_followup_reminder(self, reminder: dict[str, Any]) -> str:
+        rid = reminder.get("id") or str(uuid.uuid4())
+        with self.connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO followup_reminders (
+                    id, case_id, kind, title, body, status, due_at, created_at,
+                    fired_at, auto_send, schema_version
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(id) DO UPDATE SET
+                    status=excluded.status,
+                    body=excluded.body,
+                    title=excluded.title,
+                    due_at=excluded.due_at,
+                    fired_at=excluded.fired_at,
+                    auto_send=0
+                """,
+                (
+                    rid,
+                    reminder.get("case_id") or "",
+                    reminder.get("kind") or "",
+                    reminder.get("title") or "",
+                    reminder.get("body") or "",
+                    reminder.get("status") or "open",
+                    reminder.get("due_at") or "",
+                    reminder.get("created_at") or utc_now_iso(),
+                    reminder.get("fired_at") or "",
+                    0,  # never auto-send
+                    int(reminder.get("schema_version") or 1),
+                ),
+            )
+        return rid
+
+    def list_followup_reminders(
+        self, *, status: str = "open", limit: int = 100
+    ) -> list[dict[str, Any]]:
+        with self.connection() as conn:
+            rows = conn.execute(
+                """
+                SELECT * FROM followup_reminders WHERE status = ?
+                ORDER BY due_at ASC, created_at DESC LIMIT ?
+                """,
+                (status, limit),
+            ).fetchall()
+        out = [dict(r) for r in rows]
+        for row in out:
+            row["auto_send"] = 0
+        return out
+
+    def update_followup_reminder(self, reminder_id: str, **fields: Any) -> None:
+        allowed = {"status", "fired_at", "body", "title", "due_at"}
+        updates = {k: v for k, v in fields.items() if k in allowed}
+        if not updates:
+            return
+        sets = ", ".join(f"{k} = ?" for k in updates)
+        values = list(updates.values()) + [reminder_id]
+        with self.connection() as conn:
+            conn.execute(
+                f"UPDATE followup_reminders SET {sets}, auto_send = 0 WHERE id = ?",
+                values,
+            )
 
     def list_lifecycle_tasks(
         self, *, status: str = "open", limit: int = 100

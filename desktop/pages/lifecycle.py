@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.case_pipeline import refresh_follow_up_tasks
+from integrations.followup import FollowUpPolicy
 from core.database import Database
 from core.lifecycle import CaseStatus
 from desktop.i18n import tr
@@ -168,11 +169,8 @@ class LifecyclePage(QWidget):
     def generate_followups(self) -> None:
         cfg = self.config_service.load()
         db = self._db()
-        n = refresh_follow_up_tasks(
-            db,
-            follow_up_days=int(cfg.settings.follow_up_days),
-            ghosted_days=int(cfg.settings.ghosted_days),
-        )
+        policy = FollowUpPolicy.from_settings(cfg.settings)
+        n = refresh_follow_up_tasks(db, policy=policy)
         QMessageBox.information(
             self, tr("nav.lifecycle"), tr("lifecycle.followups_done").format(n=n)
         )
