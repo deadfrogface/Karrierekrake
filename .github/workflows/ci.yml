@@ -160,3 +160,47 @@ jobs:
         if: always()
         shell: pwsh
         run: Add-Content $env:GITHUB_STEP_SUMMARY "## static-smoke`nPASS (if job green)"
+
+  lifecycle-e2e-benchmark:
+    name: lifecycle-e2e-benchmark
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Lifecycle E2E factory + matrix
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: >
+          python -m pytest -q
+          tests/test_lifecycle_e2e_factory.py
+          tests/test_lifecycle_e2e_matrix.py
+          --junitxml=junit-lifecycle-e2e.xml
+      - name: Publish deterministic benchmark report
+        shell: pwsh
+        run: |
+          python scripts/run_lifecycle_e2e_benchmark.py
+          if (!(Test-Path artifacts/lifecycle_e2e_report.json)) { throw "missing report" }
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lifecycle-e2e-report
+          path: |
+            artifacts/lifecycle_e2e_report.json
+            junit-lifecycle-e2e.xml
+          if-no-files-found: ignore
+      - name: Summary
+        if: always()
+        shell: pwsh
+        run: |
+          Add-Content $env:GITHUB_STEP_SUMMARY "## lifecycle-e2e-benchmark`n"
+          if (Test-Path artifacts/lifecycle_e2e_report.json) {
+            Get-Content artifacts/lifecycle_e2e_report.json | Add-Content $env:GITHUB_STEP_SUMMARY
+          }

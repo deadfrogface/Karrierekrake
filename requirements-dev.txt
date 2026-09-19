@@ -8,4 +8,7 @@ radon>=6.0
 vulture>=2.11
 # Cover-letter Writer prompt optimization only (not shipped in runtime).
 dspy==3.3.1
+# Lifecycle E2E factory (PR33) — optional property/time helpers; not required at runtime.
+hypothesis>=6.100.0
+freezegun>=1.5.0
 # Streamlit UI removed (ui/app.py deleted) — do not re-add for desktop builds
