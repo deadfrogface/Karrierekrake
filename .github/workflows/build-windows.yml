@@ -25,7 +25,7 @@ jobs:
       - name: Privacy scan
         run: python scripts/privacy_scan.py
       - name: Production content gate (unit)
-        run: python -m pytest -q tests/test_production_content_gate.py
+        run: python -m pytest -q tests/test_production_content_gate.py tests/test_privacy_scan.py
       - name: Full pytest
         env:
           QT_QPA_PLATFORM: offscreen

@@ -53,6 +53,8 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Privacy scan
         run: python scripts/privacy_scan.py
+      - name: Privacy allowlist regression
+        run: python -m pytest -q tests/test_privacy_scan.py
       - name: Build onefile EXE
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec

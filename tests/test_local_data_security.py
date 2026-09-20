@@ -128,11 +128,16 @@ def test_migration_impossible_wipes(monkeypatch, tmp_path: Path):
 
 
 def test_redaction_tokens_and_email():
-    raw = 'Bearer ya29.a0AfH6SMB_secret refresh_token=abc123 person@corp.example'
+    # Use example.com (and RFC-6761 .example) so privacy_scan never flags fixtures.
+    raw = (
+        "Bearer ya29.a0AfH6SMB_secret refresh_token=abc123 "
+        "person@corp.example.com other@fixture.example"
+    )
     out = redact_text(raw)
     assert "ya29" not in out
     assert "abc123" not in out
-    assert "@corp.example" not in out
+    assert "@corp.example.com" not in out
+    assert "@fixture.example" not in out
     assert "[REDACTED" in out
 
 

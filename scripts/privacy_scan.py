@@ -57,17 +57,30 @@ CV_FINGERPRINTS = _fingerprint_regexes()
 
 ALLOW_EMAIL_DOMAINS = {"example.com", "example.org", "example.net", "localhost"}
 
+# RFC 6761 special-use TLDs — safe for fixtures (corp.example, foo.test, …).
+_SPECIAL_USE_TLDS = frozenset({"example", "test", "invalid", "localhost"})
+
 # Apple asset catalogs use filenames like Icon@2x.png — not email addresses.
 _APPLE_SCALE_DOMAIN = re.compile(r"^\dx\.(?:png|jpe?g|gif|webp)$", re.I)
 
 
 def _email_domain_allowed(domain: str) -> bool:
-    d = domain.lower()
+    d = (domain or "").lower().rstrip(".")
+    if not d:
+        return False
     if d in ALLOW_EMAIL_DOMAINS:
         return True
     if _APPLE_SCALE_DOMAIN.match(d):
         return True
-    return any(d.endswith("." + root) for root in ALLOW_EMAIL_DOMAINS)
+    if any(d == root or d.endswith("." + root) for root in ALLOW_EMAIL_DOMAINS):
+        return True
+    # e.g. corp.example / mail.test — not real registrable domains
+    tld = d.rsplit(".", 1)[-1]
+    if tld in _SPECIAL_USE_TLDS:
+        return True
+    return False
+
+
 EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})\b")
 
 SKIP_SUFFIXES = {
