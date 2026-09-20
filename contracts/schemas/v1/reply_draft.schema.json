@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/reply_draft.schema.json",
+  "title": "ReplyDraft",
+  "description": "Employer reply draft. Maps to integrations.reply_draft.ReplyDraft. auto_send must always be false. Send transport is unspecified until sync architecture is approved.",
+  "type": "object",
+  "required": ["contract_version", "schema_id", "case_id", "action", "subject", "body"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "schema_id": { "const": "karrierekrake.reply_draft" },
+    "case_id": { "type": "string" },
+    "action": {
+      "type": "string",
+      "enum": [
+        "CONFIRM_INTERVIEW",
+        "PROPOSE_SLOTS",
+        "RESCHEDULE",
+        "DOCUMENT_REPLY",
+        "THANK_YOU",
+        "FOLLOWUP",
+        "WITHDRAW",
+        "DECLINE_OFFER",
+        "GENERAL_REPLY"
+      ]
+    },
+    "to_address": { "type": "string" },
+    "subject": { "type": "string" },
+    "body": { "type": "string" },
+    "created_at": { "$ref": "common.schema.json#/$defs/iso8601_or_empty" },
+    "approved": { "type": "boolean" },
+    "binding_review_approved": { "type": "boolean" },
+    "sent": { "type": "boolean" },
+    "send_error": { "type": "string" },
+    "draft_only": { "type": "boolean" },
+    "auto_send": { "type": "boolean", "const": false },
+    "requires_explicit_review": { "type": "boolean" },
+    "blocking_reasons": { "$ref": "common.schema.json#/$defs/string_list" },
+    "used_facts": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

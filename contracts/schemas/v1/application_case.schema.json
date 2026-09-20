@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/application_case.schema.json",
+  "title": "ApplicationCase",
+  "description": "One vacancy application case. Maps to core.lifecycle.ApplicationCase. Status must be canonical CaseStatus.",
+  "type": "object",
+  "required": ["contract_version", "schema_id", "id", "status"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "schema_id": { "const": "karrierekrake.application_case" },
+    "id": { "type": "string" },
+    "job_id": { "type": "string" },
+    "company": { "type": "string" },
+    "position": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": [
+        "to_apply",
+        "applied",
+        "confirmation",
+        "assessment",
+        "interview",
+        "offer",
+        "rejected",
+        "withdrawn",
+        "ghosted",
+        "closed"
+      ]
+    },
+    "source": { "type": "string" },
+    "url": { "type": "string" },
+    "application_url": { "type": "string" },
+    "contact_email": { "type": "string" },
+    "contact_name": { "type": "string" },
+    "contact_phone": { "type": "string" },
+    "applied_at": { "$ref": "common.schema.json#/$defs/iso8601_or_empty" },
+    "updated_at": { "$ref": "common.schema.json#/$defs/iso8601_or_empty" },
+    "created_at": { "$ref": "common.schema.json#/$defs/iso8601_or_empty" },
+    "notes": { "type": "string" },
+    "company_key": { "type": "string" },
+    "title_key": { "type": "string" },
+    "url_key": { "type": "string" },
+    "legacy_status": { "type": "string" }
+  }
+}

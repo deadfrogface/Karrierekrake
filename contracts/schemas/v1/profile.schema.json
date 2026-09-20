@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/profile.schema.json",
+  "title": "Profile",
+  "description": "Applicant identity / form-fill profile (PII). Maps to core.config.ApplicationProfile. Not SearchIntent.",
+  "type": "object",
+  "required": ["contract_version", "schema_id"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "schema_id": { "const": "karrierekrake.profile" },
+    "first_name": { "type": "string" },
+    "last_name": { "type": "string" },
+    "address": { "type": "string" },
+    "street": { "type": "string" },
+    "postal_code": { "type": "string" },
+    "city": { "type": "string" },
+    "country": { "type": "string" },
+    "email": { "type": "string" },
+    "phone": { "type": "string" },
+    "date_of_birth": { "type": "string" },
+    "driving_license": { "type": "string" },
+    "work_authorization": { "type": "string" },
+    "notice_period": { "type": "string" },
+    "earliest_start_date": { "type": "string" },
+    "salary_expectation": { "type": "string" },
+    "current_employment": { "type": "string" },
+    "education": { "type": "string" },
+    "work_experience": { "type": "string" },
+    "languages": { "type": "string" },
+    "willingness_to_travel": { "type": "string" },
+    "willingness_to_relocate": { "type": "string" },
+    "remote_preference": { "type": "string" },
+    "linkedin_url": { "type": "string" },
+    "portfolio_url": { "type": "string" },
+    "cv_path": {
+      "type": "string",
+      "description": "Desktop-local path; mobile must treat as opaque / non-portable."
+    },
+    "answers": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "field_origins": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "manual | cv | default"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/calendar_proposal.schema.json",
+  "title": "CalendarProposal",
+  "description": "Interview slot proposal before calendar write. Maps to integrations.calendar_scheduling.SchedulingProposal. Write to calendar requires separate approval gate — not this object alone.",
+  "type": "object",
+  "required": ["contract_version", "schema_id", "case_id", "timezone", "ranking_version", "prefs_schema_version"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "schema_id": { "const": "karrierekrake.calendar_proposal" },
+    "case_id": { "type": "string" },
+    "proposal_text": { "type": "string" },
+    "modality": { "type": "string" },
+    "timezone": { "type": "string", "minLength": 1 },
+    "ranking_version": { "type": "integer" },
+    "prefs_schema_version": { "type": "integer", "minimum": 1 },
+    "ranked_slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["start", "end"],
+        "additionalProperties": true,
+        "properties": {
+          "start": { "$ref": "common.schema.json#/$defs/iso8601_utc" },
+          "end": { "$ref": "common.schema.json#/$defs/iso8601_utc" },
+          "score": { "type": "number" },
+          "rank": { "type": "integer" },
+          "explanations": { "$ref": "common.schema.json#/$defs/string_list" },
+          "modality": { "type": "string" },
+          "timezone": { "type": "string" },
+          "ranking_version": { "type": "integer" }
+        }
+      }
+    },
+    "selected_slot_index": { "type": ["integer", "null"] },
+    "stop_reason": { "type": "string" },
+    "parse_errors": { "$ref": "common.schema.json#/$defs/string_list" },
+    "created_at": { "$ref": "common.schema.json#/$defs/iso8601_or_empty" },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "selected", "rejected", "no_slots"]
+    },
+    "lifecycle_event_hint": { "type": "string" }
+  }
+}

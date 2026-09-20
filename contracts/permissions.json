@@ -1,0 +1,78 @@
+{
+  "contract_bundle_version": "1.0.0",
+  "description": "Read/write permissions per shared domain object for companion-first mobile. Sync transport remains UNSPECIFIED.",
+  "objects": {
+    "profile": {
+      "schema_id": "karrierekrake.profile",
+      "pii": true,
+      "mobile_read": true,
+      "mobile_write": true,
+      "desktop_authoritative": false,
+      "offline_cacheable": true,
+      "notes": "User-owned PII. Device encryption required before any future sync."
+    },
+    "search_intent": {
+      "schema_id": "karrierekrake.search_intent",
+      "pii": false,
+      "mobile_read": true,
+      "mobile_write": true,
+      "desktop_authoritative": false,
+      "offline_cacheable": true,
+      "notes": "Explicit wish; must not silently expand STRICT."
+    },
+    "job": {
+      "schema_id": "karrierekrake.job",
+      "pii": false,
+      "mobile_read": true,
+      "mobile_write": false,
+      "desktop_authoritative": true,
+      "offline_cacheable": true,
+      "notes": "Discovery stays on desktop/agents; mobile consumes."
+    },
+    "application_case": {
+      "schema_id": "karrierekrake.application_case",
+      "pii": true,
+      "mobile_read": true,
+      "mobile_write": "limited",
+      "desktop_authoritative": true,
+      "offline_cacheable": true,
+      "notes": "Limited write: notes + auditable MANUAL_OVERRIDE only; no invented statuses."
+    },
+    "lifecycle_event": {
+      "schema_id": "karrierekrake.lifecycle_event",
+      "pii": false,
+      "mobile_read": true,
+      "mobile_write": "append_only",
+      "desktop_authoritative": true,
+      "offline_cacheable": true,
+      "notes": "Append-only; status is reduced from events."
+    },
+    "calendar_proposal": {
+      "schema_id": "karrierekrake.calendar_proposal",
+      "pii": false,
+      "mobile_read": true,
+      "mobile_write": "select_slot",
+      "desktop_authoritative": true,
+      "offline_cacheable": true,
+      "notes": "Slot selection OK; calendar write remains gated and transport UNSPECIFIED."
+    },
+    "reply_draft": {
+      "schema_id": "karrierekrake.reply_draft",
+      "pii": true,
+      "mobile_read": true,
+      "mobile_write": "draft_only",
+      "desktop_authoritative": true,
+      "offline_cacheable": true,
+      "notes": "Create/edit drafts; send requires approval. No Mobile OAuth via desktop loopback."
+    },
+    "guenther_result": {
+      "schema_id": "karrierekrake.guenther_result",
+      "pii": false,
+      "mobile_read": true,
+      "mobile_write": false,
+      "desktop_authoritative": true,
+      "offline_cacheable": true,
+      "notes": "Consume validated suggestions. Do not force multi-GB models onto phone."
+    }
+  }
+}

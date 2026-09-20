@@ -1,0 +1,25 @@
+name: karrierekrake_mobile
+description: >
+  Karrierekrake companion app for Android/iOS.
+  NEW Flutter application — NOT a port of the Windows/PySide desktop client.
+  Reuses only platform-independent contracts under ../contracts/.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # JSON contract decoding only — no desktop bridge.
+  # Keep dependencies minimal until sync architecture is approved.
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  # Brand assets may be referenced later from ../assets/brand (not desktop UI).

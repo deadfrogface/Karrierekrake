@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/common.schema.json",
+  "title": "Karrierekrake common definitions (v1)",
+  "$defs": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+$",
+      "description": "Semver for this envelope. Major 1 = PR37 baseline."
+    },
+    "iso8601_utc": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ISO-8601 timestamp; prefer UTC with Z or explicit offset. Empty string means unset."
+    },
+    "iso8601_or_empty": {
+      "type": "string",
+      "description": "ISO-8601 or empty when unknown — never invent a time."
+    },
+    "nonempty_string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "string_list": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": false
+    },
+    "country_code": {
+      "type": "string",
+      "pattern": "^([A-Z]{2})?$",
+      "description": "ISO 3166-1 alpha-2 or empty when unknown."
+    },
+    "permissions_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mobile_read": { "type": "boolean" },
+        "mobile_write": { "type": "boolean" },
+        "desktop_authoritative": { "type": "boolean" },
+        "offline_cacheable": { "type": "boolean" },
+        "pii": { "type": "boolean" }
+      }
+    }
+  }
+}
