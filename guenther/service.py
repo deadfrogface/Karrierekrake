@@ -100,6 +100,12 @@ class GuentherService:
             mid = mid if mid in installed else installed[0]
         if self._loaded_model_id == mid and self.provider.status() == ProviderStatus.READY:
             return ProviderStatus.READY
+        if self.provider.provider_id == "llama_cpp" and mid in self.manager.catalog:
+            try:
+                self.manager.assert_model_integrity(mid)
+            except Exception:
+                log_event("model_integrity_failed", model_id=mid)
+                return ProviderStatus.ERROR
         status = self.provider.load_model(mid)
         if status == ProviderStatus.READY:
             self._loaded_model_id = mid
