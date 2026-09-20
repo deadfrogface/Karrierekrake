@@ -425,6 +425,10 @@ class SettingsConfig:
     contact_verification_enabled: bool = True
     # When false: provenance/verification kept, writer ignores CONTACT_* claims.
     contact_writer_binding_enabled: bool = True
+    # --- Profile/Search UX (PR35) ---
+    # Temporary rollback: show legacy Bewerbungswunsch UI on Profile page.
+    # Prefer env KARRIEREKRAKE_LEGACY_PROFILE_SEARCH=1 for support hotfixes.
+    legacy_profile_search_ui: bool = False
 
 
 # Allowed jobs-per-search choices for the settings UI (0 = Max).

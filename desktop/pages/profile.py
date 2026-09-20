@@ -1,11 +1,17 @@
-"""Profile page — orchestrates section widgets and CV import/reset."""
+"""Profile page — who am I? (identity / evidence, not search wish).
+
+SearchIntent editing lives on ``desktop.pages.search.SearchPage``.
+Legacy combined Berufswunsch UI is feature-flaggable for rollback.
+"""
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from PySide6.QtWidgets import (
     QFileDialog,
+    QLabel,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
@@ -32,6 +38,21 @@ from desktop.services.profile_merge import (
 )
 from desktop.widgets.cv_import_dialog import CvImportDialog
 from desktop.widgets.scroll_page import wrap_scrollable
+from desktop.widgets.wheel_guard import apply_wheel_guard_to_spinboxes
+
+
+def legacy_profile_search_ui_enabled(settings=None) -> bool:
+    """Rollback: show combined Bewerbungswunsch UI on Profile.
+
+    Env ``KARRIEREKRAKE_LEGACY_PROFILE_SEARCH=1`` or
+    ``settings.legacy_profile_search_ui`` (temporary).
+    """
+    env = (os.environ.get("KARRIEREKRAKE_LEGACY_PROFILE_SEARCH") or "").strip().lower()
+    if env in {"1", "true", "yes", "on"}:
+        return True
+    if settings is not None and bool(getattr(settings, "legacy_profile_search_ui", False)):
+        return True
+    return False
 
 
 class ProfilePage(QWidget):
@@ -47,13 +68,23 @@ class ProfilePage(QWidget):
         layout.setSpacing(14)
         outer.addWidget(wrap_scrollable(inner))
 
+        self.page_title = QLabel()
+        self.page_title.setObjectName("PageTitle")
+        self.page_subtitle = QLabel()
+        self.page_subtitle.setObjectName("PageSubtitle")
+        self.page_subtitle.setWordWrap(True)
+        layout.addWidget(self.page_title)
+        layout.addWidget(self.page_subtitle)
+
+        legacy = legacy_profile_search_ui_enabled()
         self.career = CareerSection()
         self.career.suggest_titles_btn.clicked.connect(self.suggest_titles_from_cv)
+        self.career.setVisible(legacy)
         self.experience = ExperienceSection()
         self.education = EducationSection()
         self.qualifications = QualificationsSection()
         self.languages = LanguagesSection()
-        self.location_work = LocationWorkSection()
+        self.location_work = LocationWorkSection(include_search_fields=legacy)
         self.applicant = ApplicantSection()
         self.cv = CvSection()
         self.cv.cv_select.clicked.connect(self.select_cv)
@@ -78,10 +109,13 @@ class ProfilePage(QWidget):
         layout.addWidget(self.save_btn)
         layout.addStretch()
 
+        apply_wheel_guard_to_spinboxes(self)
         self.retranslate_ui()
 
     def retranslate_ui(self) -> None:
         no_cv = {table.get("profile.no_cv", "") for table in TRANSLATIONS.values()}
+        self.page_title.setText(tr("nav.profile"))
+        self.page_subtitle.setText(tr("profile.subtitle"))
         self.career.retranslate()
         self.experience.retranslate()
         self.education.retranslate()
@@ -92,7 +126,15 @@ class ProfilePage(QWidget):
         self.cv.retranslate(no_cv_tokens=no_cv)
         self.save_btn.setText(tr("btn.save_profile"))
 
+    def _apply_legacy_visibility(self) -> None:
+        cfg = self.config_service.load()
+        legacy = legacy_profile_search_ui_enabled(cfg.settings)
+        self.career.setVisible(legacy)
+        self.location_work._set_search_fields_visible(legacy)
+        self.location_work.retranslate()
+
     def load_from_config(self) -> None:
+        self._apply_legacy_visibility()
         cfg = self.config_service.load()
         p = cfg.profile
         self.career.load(p.jobs)
@@ -110,7 +152,6 @@ class ProfilePage(QWidget):
             or cfg.application.cv_path
             or tr("profile.no_cv")
         )
-
 
     def suggest_titles_from_cv(self) -> None:
         """Propose job titles from stored CV / qualifications — never overwrite manuals."""
@@ -160,7 +201,11 @@ class ProfilePage(QWidget):
         suggestions = suggest_job_titles(
             parsed, existing_desired=desired, existing_alternative=[]
         )
-        merged_d = list(dict.fromkeys(desired + suggestions.get("desired", []) + suggestions.get("alternative", [])))
+        merged_d = list(
+            dict.fromkeys(
+                desired + suggestions.get("desired", []) + suggestions.get("alternative", [])
+            )
+        )
         self.career.desired_titles.set_items(merged_d)
         unwanted = list(self.career.unwanted_titles.get_items())
         if not unwanted:
@@ -273,41 +318,47 @@ class ProfilePage(QWidget):
     def save(self) -> None:
         cfg = self.config_service.load()
         p = cfg.profile
-        self.career.save_into(p.jobs)
+        legacy = legacy_profile_search_ui_enabled(cfg.settings)
+        if legacy:
+            self.career.save_into(p.jobs)
         self.experience.save_into(p.qualifications)
         self.education.save_into(p.qualifications)
         self.qualifications.save_into(p.qualifications)
         self.languages.save_into(p.qualifications)
         self.location_work.save_into(p.location, p.employment, p.filters)
 
-        # PR22: keep SearchIntent in sync with clearly mapped career lists.
-        from core.search_intent import (
-            apply_clear_jobs_edit_to_intent,
-            empty_search_intent,
-            parse_search_intent,
-        )
+        # Only legacy combined UI may push career/location wish into SearchIntent.
+        # Default path: SearchPage owns intent — do not silently expand STRICT.
+        if legacy:
+            from core.search_intent import (
+                apply_clear_jobs_edit_to_intent,
+                apply_location_employment_to_intent,
+                empty_search_intent,
+                parse_search_intent,
+            )
 
-        raw_intent = getattr(p, "search_intent", None)
-        if raw_intent is None:
-            intent = empty_search_intent()
-        elif hasattr(raw_intent, "model_dump"):
-            intent = raw_intent
-        elif isinstance(raw_intent, dict):
-            intent = parse_search_intent(raw_intent)
-        else:
-            intent = empty_search_intent()
-        p.search_intent = apply_clear_jobs_edit_to_intent(intent, p.jobs)
-        from core.search_intent import apply_location_employment_to_intent
-
-        p.search_intent = apply_location_employment_to_intent(
-            p.search_intent, location=p.location, employment=p.employment
-        )
-        # Exclusion keywords remain on filters until dedicated UI; mirror clear excludes.
-        excl = [str(x).strip() for x in (p.filters.exclusion_keywords or []) if str(x).strip()]
-        if excl != list(p.search_intent.excluded_keywords):
-            data = p.search_intent.model_dump()
-            data["excluded_keywords"] = excl
-            p.search_intent = parse_search_intent(data)
+            raw_intent = getattr(p, "search_intent", None)
+            if raw_intent is None:
+                intent = empty_search_intent()
+            elif hasattr(raw_intent, "model_dump"):
+                intent = raw_intent
+            elif isinstance(raw_intent, dict):
+                intent = parse_search_intent(raw_intent)
+            else:
+                intent = empty_search_intent()
+            p.search_intent = apply_clear_jobs_edit_to_intent(intent, p.jobs)
+            p.search_intent = apply_location_employment_to_intent(
+                p.search_intent, location=p.location, employment=p.employment
+            )
+            excl = [
+                str(x).strip()
+                for x in (p.filters.exclusion_keywords or [])
+                if str(x).strip()
+            ]
+            if excl != list(p.search_intent.excluded_keywords):
+                data = p.search_intent.model_dump()
+                data["excluded_keywords"] = excl
+                p.search_intent = parse_search_intent(data)
 
         a = cfg.application
         sync_addr = self.applicant.save_into(a)

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from PySide6.QtWidgets import (
     QCheckBox,
-    QDoubleSpinBox,
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
@@ -34,6 +33,7 @@ from desktop.widgets.structured_editors import (
     ExperienceEditor,
     LanguageEditor,
 )
+from desktop.widgets.wheel_guard import IntentionalWheelDoubleSpinBox
 
 
 class CareerSection(QGroupBox):
@@ -198,10 +198,17 @@ class LanguagesSection(QGroupBox):
 
 
 class LocationWorkSection(QGroupBox):
-    def __init__(self, parent=None) -> None:
+    """Profile location — identity (where I live), not search wish.
+
+    Search wish fields (radius, remote mode, salary, working time) live on
+    SearchPage. Pass ``include_search_fields=True`` for legacy rollback UI.
+    """
+
+    def __init__(self, parent=None, *, include_search_fields: bool = False) -> None:
         super().__init__(parent)
+        self.include_search_fields = include_search_fields
         self.home_address = QLineEdit()
-        self.max_distance = QDoubleSpinBox()
+        self.max_distance = IntentionalWheelDoubleSpinBox()
         self.max_distance.setRange(1, 300)
         self.max_distance.setSuffix(" km")
         self.allow_remote = QCheckBox()
@@ -212,7 +219,7 @@ class LocationWorkSection(QGroupBox):
         self.remote = QCheckBox()
         self.hybrid = QCheckBox()
         self.onsite = QCheckBox()
-        self.min_salary = QDoubleSpinBox()
+        self.min_salary = IntentionalWheelDoubleSpinBox()
         self.min_salary.setRange(0, 500000)
         self.min_salary.setSuffix(" €")
         self.preferred_companies = ListEditor("placeholder.add_entry", visible_rows=3)
@@ -226,20 +233,40 @@ class LocationWorkSection(QGroupBox):
         self.lbl_pref_companies = QLabel()
         self.lbl_ex_companies = QLabel()
         form.addRow(self.lbl_home, self.home_address)
-        form.addRow(self.lbl_commute, self.max_distance)
+        form.addRow(self.lbl_country, self.country)
         form.addRow(self.allow_remote)
         form.addRow(self.allow_hybrid)
-        form.addRow(self.lbl_country, self.country)
+        form.addRow(self.lbl_pref_companies, self.preferred_companies)
+        form.addRow(self.lbl_ex_companies, self.excluded_companies)
+        # Legacy search-wish widgets — hidden unless rollback flag is on.
+        form.addRow(self.lbl_commute, self.max_distance)
         row = QHBoxLayout()
         for w in (self.full_time, self.part_time, self.remote, self.hybrid, self.onsite):
             row.addWidget(w)
         form.addRow(self.lbl_work_model, row)
         form.addRow(self.lbl_min_salary, self.min_salary)
-        form.addRow(self.lbl_pref_companies, self.preferred_companies)
-        form.addRow(self.lbl_ex_companies, self.excluded_companies)
+        self._set_search_fields_visible(include_search_fields)
+
+    def _set_search_fields_visible(self, visible: bool) -> None:
+        self.include_search_fields = visible
+        for w in (
+            self.lbl_commute,
+            self.max_distance,
+            self.lbl_work_model,
+            self.full_time,
+            self.part_time,
+            self.remote,
+            self.hybrid,
+            self.onsite,
+            self.lbl_min_salary,
+            self.min_salary,
+        ):
+            w.setVisible(visible)
 
     def retranslate(self) -> None:
-        self.setTitle(tr("profile.location_work"))
+        self.setTitle(
+            tr("profile.location") if not self.include_search_fields else tr("profile.location_work")
+        )
         self.lbl_home.setText(tr("profile.home"))
         self.lbl_commute.setText(tr("profile.commute"))
         self.allow_remote.setText(tr("profile.allow_remote"))
@@ -291,18 +318,20 @@ class LocationWorkSection(QGroupBox):
             location.home_longitude = None
             location.home_geocoded_address = ""
         location.home_address = new_home
-        location.max_distance_km = float(self.max_distance.value())
         location.allow_remote_germany = self.allow_remote.isChecked()
         location.allow_hybrid = self.allow_hybrid.isChecked()
         location.country = self.country.text().strip() or "DE"
-        employment.full_time = self.full_time.isChecked()
-        employment.part_time = self.part_time.isChecked()
-        employment.remote = self.remote.isChecked()
-        employment.hybrid = self.hybrid.isChecked()
-        employment.onsite = self.onsite.isChecked()
-        employment.minimum_salary = self.min_salary.value() or None
         filters.preferred_companies = self.preferred_companies.get_items()
         filters.excluded_companies = self.excluded_companies.get_items()
+        # Search-wish fields only when legacy combined UI is active.
+        if self.include_search_fields:
+            location.max_distance_km = float(self.max_distance.value())
+            employment.full_time = self.full_time.isChecked()
+            employment.part_time = self.part_time.isChecked()
+            employment.remote = self.remote.isChecked()
+            employment.hybrid = self.hybrid.isChecked()
+            employment.onsite = self.onsite.isChecked()
+            employment.minimum_salary = self.min_salary.value() or None
 
 
 class ApplicantSection(QGroupBox):
