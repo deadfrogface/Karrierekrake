@@ -31,6 +31,7 @@ from desktop.pages.jobs import JobsPage
 from desktop.pages.lifecycle import LifecyclePage
 from desktop.pages.logs import LogsPage
 from desktop.pages.profile import ProfilePage
+from desktop.pages.search import SearchPage
 from desktop.pages.settings import SettingsPage
 from desktop.services import ConfigService
 from desktop.services.schedule_service import ScheduleService
@@ -100,22 +101,28 @@ class MainWindow(QMainWindow):
         self.stack = QStackedWidget()
         self.stack.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.dashboard = DashboardPage(config_service)
+        self.profile = ProfilePage(config_service)
+        self.search = SearchPage(config_service)
         self.jobs = JobsPage(config_service)
         self.applications = ApplicationsPage(config_service)
         self.lifecycle = LifecyclePage(config_service)
-        self.profile = ProfilePage(config_service)
         self.settings = SettingsPage(config_service)
         self.logs = LogsPage(config_service)
 
+        # Primary mental model: Profil (who) → Suche (what now) → Jobs → …
+        # Günther maps to lifecycle surface (no lifecycle redesign in this PR).
+        # Dashboard/Logs remain reachable; legacy route via feature flag on Profile.
         self._nav_defs = [
-            ("nav.dashboard", self.dashboard),
+            ("nav.profile", self.profile),
+            ("nav.search", self.search),
             ("nav.jobs", self.jobs),
             ("nav.applications", self.applications),
-            ("nav.lifecycle", self.lifecycle),
-            ("nav.profile", self.profile),
+            ("nav.guenther", self.lifecycle),
             ("nav.settings", self.settings),
+            ("nav.dashboard", self.dashboard),
             ("nav.logs", self.logs),
         ]
+        self._page_index = {key: i for i, (key, _) in enumerate(self._nav_defs)}
         self.nav_buttons: list[QPushButton] = []
         for i, (key, page) in enumerate(self._nav_defs):
             self.stack.addWidget(page)
@@ -200,10 +207,11 @@ class MainWindow(QMainWindow):
         self.progress_label.setText(tr("status.ready"))
         for page in (
             self.dashboard,
+            self.profile,
+            self.search,
             self.jobs,
             self.applications,
             self.lifecycle,
-            self.profile,
             self.settings,
             self.logs,
         ):
@@ -236,8 +244,14 @@ class MainWindow(QMainWindow):
         self.jobs.refresh()
         self.applications.refresh()
         self.profile.load_from_config()
+        self.search.load_from_config()
         self.settings.load_from_config()
         self.logs.refresh()
+
+    def navigate_to(self, nav_key: str) -> None:
+        idx = self._page_index.get(nav_key)
+        if idx is not None:
+            self._navigate(idx)
 
     def start_apply_run(self) -> None:
         cfg = self.config_service.load()
@@ -394,7 +408,7 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, tr("msg.clear_jobs_title"), tr("msg.clear_jobs_done"))
 
     def open_review_queue(self) -> None:
-        self._navigate(2)
+        self.navigate_to("nav.applications")
         self.applications.show_review_only()
 
     def toggle_automation_paused(self) -> None:

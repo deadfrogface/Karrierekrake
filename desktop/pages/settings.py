@@ -15,7 +15,6 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QRadioButton,
-    QSpinBox,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -28,6 +27,7 @@ from desktop.services.browser_install import playwright_available
 from desktop.services.schedule_service import ScheduleService
 from desktop.widgets.about_dialog import AboutDialog
 from desktop.widgets.scroll_page import wrap_scrollable
+from desktop.widgets.wheel_guard import IntentionalWheelSpinBox, apply_wheel_guard_to_spinboxes
 from desktop.workers import (
     BrowserCheckWorker,
     BrowserRepairWorker,
@@ -121,11 +121,11 @@ class SettingsPage(QWidget):
         search_box = QGroupBox()
         self.search_box = search_box
         sform = QFormLayout(search_box)
-        self.published_days = QSpinBox()
+        self.published_days = IntentionalWheelSpinBox()
         self.published_days.setRange(1, 90)
-        self.min_match_dash = QSpinBox()
+        self.min_match_dash = IntentionalWheelSpinBox()
         self.min_match_dash.setRange(0, 100)
-        self.max_distance = QSpinBox()
+        self.max_distance = IntentionalWheelSpinBox()
         self.max_distance.setRange(1, 300)
         self.search_mode = QComboBox()
         self.search_mode.addItem("", "profile_discovery")
@@ -169,15 +169,15 @@ class SettingsPage(QWidget):
         apply_box = QGroupBox()
         self.apply_box = apply_box
         aform = QFormLayout(apply_box)
-        self.min_match_apply = QSpinBox()
+        self.min_match_apply = IntentionalWheelSpinBox()
         self.min_match_apply.setRange(0, 100)
-        self.max_per_run = QSpinBox()
+        self.max_per_run = IntentionalWheelSpinBox()
         self.max_per_run.setRange(1, 100)
-        self.max_per_day = QSpinBox()
+        self.max_per_day = IntentionalWheelSpinBox()
         self.max_per_day.setRange(1, 200)
-        self.max_fail = QSpinBox()
+        self.max_fail = IntentionalWheelSpinBox()
         self.max_fail.setRange(1, 50)
-        self.delay = QSpinBox()
+        self.delay = IntentionalWheelSpinBox()
         self.delay.setRange(0, 600)
         self.auto_cover = QCheckBox()
         self.auto_submit = QCheckBox()
@@ -205,9 +205,9 @@ class SettingsPage(QWidget):
         self.phone_available = QCheckBox()
         self.telephone_availability = QLineEdit()
         self.working_hours = QLineEdit()
-        self.follow_up_days = QSpinBox()
+        self.follow_up_days = IntentionalWheelSpinBox()
         self.follow_up_days.setRange(1, 90)
-        self.ghosted_days = QSpinBox()
+        self.ghosted_days = IntentionalWheelSpinBox()
         self.ghosted_days.setRange(1, 180)
         self.email_draft_only = QCheckBox()
         self.followup_enabled = QCheckBox()
@@ -256,7 +256,7 @@ class SettingsPage(QWidget):
         bform = QFormLayout(bg_box)
         self.run_auto = QCheckBox()
         self.schedule_mode = QComboBox()
-        self.interval_hours = QSpinBox()
+        self.interval_hours = IntentionalWheelSpinBox()
         self.interval_hours.setRange(1, 24)
         self.custom_times = QLineEdit()
         self.paused = QCheckBox()
@@ -297,6 +297,7 @@ class SettingsPage(QWidget):
         self.save_btn.clicked.connect(self.save)
         root.addWidget(self.save_btn)
 
+        apply_wheel_guard_to_spinboxes(self)
         self.retranslate_ui()
 
     def retranslate_ui(self) -> None:

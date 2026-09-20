@@ -16,7 +16,6 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
-    QSpinBox,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -31,6 +30,7 @@ from core.text_normalize import clean_text, display_or_dash
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
+from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
 class JobsPage(QWidget):
@@ -60,9 +60,9 @@ class JobsPage(QWidget):
         self.count_label = QLabel()
         self.count_label.setObjectName("PageSubtitle")
 
-        self.min_match = QSpinBox()
+        self.min_match = IntentionalWheelSpinBox()
         self.min_match.setRange(0, 100)
-        self.max_dist = QSpinBox()
+        self.max_dist = IntentionalWheelSpinBox()
         self.max_dist.setRange(1, 500)
         self.city = QLineEdit()
         self.title = QLineEdit()
@@ -75,7 +75,7 @@ class JobsPage(QWidget):
         self.chk_remote = QCheckBox()
         self.chk_hybrid = QCheckBox()
         self.chk_onsite = QCheckBox()
-        self.age_days = QSpinBox()
+        self.age_days = IntentionalWheelSpinBox()
         self.age_days.setRange(0, 90)
 
         self.lbl_min_match = QLabel()
