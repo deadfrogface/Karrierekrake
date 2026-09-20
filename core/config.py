@@ -390,6 +390,11 @@ class SettingsConfig:
     gmail_exclude_senders: list[str] = field(default_factory=list)
     calendar_freebusy_enabled: bool = False
     gmail_credentials_path: str = "private/gmail_credentials.json"
+    # Google OAuth production compliance (PR43) — URLs required for production consent.
+    oauth_privacy_policy_url: str = ""
+    oauth_homepage_url: str = ""
+    # development | production — separate Cloud Console projects required.
+    oauth_environment: str = "development"
     # --- Calendar scheduling engine (PR31) ---
     scheduling_timezone: str = "Europe/Berlin"
     interview_duration_minutes: int = 60
