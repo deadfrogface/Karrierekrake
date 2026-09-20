@@ -32,3 +32,14 @@ Uninstalling the mobile app deletes only the on-device SQLite file
 - iOS: `flutter build ios --no-codesign` on macOS
 
 Commercial / store release requires PR39 + security/privacy gates.
+
+## Flows shipped in this PR
+
+- Jobs list + detail sheet (read-only contracts)
+- Applications list + local note edit (limited write)
+- Timeline of LifecycleEvents (append-only MANUAL_OVERRIDE supported in repo)
+- Follow-up hints on Dashboard (no auto-send)
+- Reply draft viewer + local approval (send blocked)
+- Calendar proposal slot selection (calendar write blocked)
+- Profile light edit + SearchIntent edit (device-local Drift)
+
