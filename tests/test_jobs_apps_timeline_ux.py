@@ -259,16 +259,24 @@ def test_jobs_page_shows_fit_not_raw_percent(qapp, config_service):
 
 def test_jobs_detail_binds_fit_panel(qapp, config_service):
     from core.database import Database
+    from desktop.i18n import i18n, tr
     from desktop.pages.jobs import JobsPage
 
+    i18n.set_language("de")
     cfg = config_service.load()
     _seed_job(Database(cfg.db_path))
     page = JobsPage(config_service)
     page.refresh()
     page.table.selectRow(0)
     page._on_selection()
-    assert "passend" in page.fit_panel.headline.text().lower() or "Passend" in page.fit_panel.headline.text()
-    assert "✓" in page.fit_panel.body.text() or "SAP" in page.fit_panel.body.text()
+    headline = page.fit_panel.headline.text()
+    assert headline in {
+        tr("fit.sehr_passend"),
+        tr("fit.passend"),
+        tr("fit.teilweise_passend"),
+    }
+    body = page.fit_panel.body.text()
+    assert "✓" in body or "SAP" in body or "Zielberuf" in body
 
 
 def test_jobs_empty_detail_clears_fit(qapp, config_service):
