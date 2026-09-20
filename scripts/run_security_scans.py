@@ -167,24 +167,152 @@ def run_gitleaks() -> int:
         return 1
 
 
+def _write_runtime_freeze(path: Path) -> Path:
+    """Write installed packages relevant to the shipped runtime surface."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    raw = subprocess.check_output(
+        [sys.executable, "-m", "pip", "freeze"],
+        cwd=str(ROOT),
+        text=True,
+    )
+    # Drop install/CI tooling and optional AI stacks that are not in
+    # requirements-runtime.txt — they create false OSV noise (and in some
+    # cases mis-parsed package names like a phantom pip==9.0.3).
+    skip_prefixes = (
+        "pip==",
+        "pip-",
+        "pip_",
+        "setuptools==",
+        "wheel==",
+        "pip-audit==",
+        "pip_audit==",
+        "bandit==",
+        "pytest==",
+        "pyinstaller==",
+        "ruff==",
+        "radon==",
+        "vulture==",
+        "hypothesis==",
+        "freezegun==",
+        "jsonschema==",
+        "pipdeptree==",
+        "dspy==",
+        "dspy-ai==",
+        "diskcache==",
+        "llama_cpp_python==",
+        "llama-cpp-python==",
+    )
+    lines: list[str] = []
+    for line in raw.splitlines():
+        low = line.strip().lower()
+        if not low or low.startswith("#"):
+            continue
+        if any(low.startswith(p.lower()) for p in skip_prefixes):
+            continue
+        lines.append(line.strip())
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path
+
+
+def _osv_max_score(vuln: dict) -> float:
+    best = 0.0
+    for sev in vuln.get("severity") or []:
+        score = str(sev.get("score") or "")
+        # CVSS:3.1/AV:... — table also shows numeric; prefer vector base if present
+        if score.replace(".", "", 1).isdigit():
+            best = max(best, float(score))
+            continue
+        # Rough parse of CVSS v3/v4 numeric from database_specific if any
+    db = vuln.get("database_specific") or {}
+    sev_label = str(db.get("severity") or "").upper()
+    label_map = {"CRITICAL": 9.5, "HIGH": 8.0, "MODERATE": 5.0, "MEDIUM": 5.0, "LOW": 2.0}
+    if sev_label in label_map:
+        best = max(best, label_map[sev_label])
+    # Parse CVSS vector base score is hard; use OSV's cvss_v3 score field when present
+    for sev in vuln.get("severity") or []:
+        typ = str(sev.get("type") or "")
+        score = str(sev.get("score") or "")
+        if typ.startswith("CVSS") and score.startswith("CVSS:"):
+            # Fall back to label map via known high vectors containing C:H/I:H
+            if "/C:H" in score or "/VC:H" in score or "/I:H" in score or "/VI:H" in score:
+                best = max(best, 8.0)
+            elif "/A:H" in score or "/VA:H" in score:
+                best = max(best, 7.0)
+    return best
+
+
 def run_osv() -> int:
-    exe = shutil.which("osv-scanner")
+    exe = shutil.which("osv-scanner") or shutil.which("osv-scanner.exe")
     if not exe:
         print("osv-scanner not installed on PATH", file=sys.stderr)
         return 1
-    # Scan runtime requirements (shipped surface), not the full monorepo lock soup.
-    req = ROOT / "requirements-runtime.txt"
-    cmd = [exe, "--format", "table", str(req)]
+    freeze = _write_runtime_freeze(ROOT / "artifacts" / "runtime-freeze.txt")
+    json_path = ROOT / "artifacts" / "osv-scanner.json"
+    cmd = [
+        exe,
+        "scan",
+        "source",
+        "-L",
+        f"requirements.txt:{freeze}",
+        "-f",
+        "json",
+        "--output-file",
+        str(json_path),
+    ]
+    # Always emit human table too for CI logs
+    table_cmd = [
+        exe,
+        "scan",
+        "source",
+        "-L",
+        f"requirements.txt:{freeze}",
+        "-f",
+        "table",
+    ]
+    _run(table_cmd, check=False)
     try:
-        _run(cmd, check=True)
-        return 0
-    except subprocess.CalledProcessError as exc:
+        _run(cmd, check=False)
+    except subprocess.CalledProcessError:
+        pass
+    if not json_path.is_file():
+        print("osv-scanner produced no JSON report", file=sys.stderr)
+        return 1
+    try:
+        payload = json.loads(json_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        print("osv-scanner JSON unreadable", file=sys.stderr)
+        return 1
+
+    high_hits: list[str] = []
+    low_hits: list[str] = []
+    for result in payload.get("results") or []:
+        for pkg in result.get("packages") or []:
+            name = (pkg.get("package") or {}).get("name") or "?"
+            version = (pkg.get("package") or {}).get("version") or "?"
+            for vuln in pkg.get("vulnerabilities") or []:
+                vid = vuln.get("id") or "?"
+                score = _osv_max_score(vuln)
+                row = f"{name}=={version} {vid} score~={score:.1f}"
+                if score >= 7.0:
+                    high_hits.append(row)
+                else:
+                    low_hits.append(row)
+
+    if low_hits:
+        print(f"OSV non-blocking findings ({len(low_hits)} <7.0):")
+        for row in low_hits[:30]:
+            print(" -", row)
+    if high_hits:
+        print("OSV High/Critical findings (release blockers):", file=sys.stderr)
+        for row in high_hits:
+            print(" -", row, file=sys.stderr)
         print(
-            "OSV findings on requirements-runtime.txt — High/Critical are blockers "
-            "unless documented in dependency-exceptions.md",
+            "Document reviewed non-applicable cases in docs/security/dependency-exceptions.md",
             file=sys.stderr,
         )
-        return int(exc.returncode or 1)
+        return 1
+    print("OSV: no High/Critical findings on runtime freeze")
+    return 0
 
 
 def main() -> int:

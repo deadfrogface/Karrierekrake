@@ -15,6 +15,13 @@ High or Critical findings from pip-audit / OSV must not be silenced without revi
 |-------------|---------|----------|-----------|
 | PYSEC-2026-2447 (CVE-2025-69872) | diskcache ≤5.6.3 | Critical (pickle RCE if attacker can write the cache dir) | **Not installed** from `requirements-runtime.txt`. Pulled only by optional `llama-cpp-python` (commented out of runtime) and by `dspy` (dev/cover-opt only). Security CI audits the runtime environment. Re-open if llama.cpp is promoted to a default shipped dependency. |
 
+## OSV scan input
+
+CI runs OSV against `artifacts/runtime-freeze.txt` (exact installed versions after
+`pip install -r requirements-runtime.txt`), not against loose lower-bound
+resolution of the requirements file. Floor pins in `requirements-runtime.txt`
+still raise known High/Critical packages (`pypdf`, `anyio`, `idna`, `protobuf`).
+
 ## Machine-readable ignore list (pip-audit)
 
 IDs listed in `scripts/security_ignore_vulns.txt` must each have a row above.
