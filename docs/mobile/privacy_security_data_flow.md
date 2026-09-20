@@ -1,5 +1,8 @@
 # Privacy & security data flow (PR37)
 
+Mobile is a **separate Flutter companion** (`mobile/`) consuming contract JSON — not a desktop port.
+See [`mobile/ARCHITECTURE.md`](../../mobile/ARCHITECTURE.md).
+
 ## Classification
 
 | Object | PII | Sensitivity | Mobile cache |

@@ -18,6 +18,7 @@ must **STOP** until a separate architecture review approves:
 
 - Define JSON Schema contracts + fixtures
 - Python round-trip conformance
+- Flutter/Dart scaffold under `mobile/` consuming contracts natively
 - Local offline caches **on one device**
 - Document companion-first roles
 
@@ -26,6 +27,8 @@ must **STOP** until a separate architecture review approves:
 - Inventing REST/GraphQL/Firebase/Supabase/etc. “for convenience”
 - Shipping a mobile release that claims cloud sync
 - Auto-approve external actions via a hypothetical API
+- Porting / wrapping / embedding the Windows/PySide desktop app into Android/iOS
+  (see [`mobile/ARCHITECTURE.md`](../../mobile/ARCHITECTURE.md))
 
 ## Rollback
 

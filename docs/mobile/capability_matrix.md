@@ -1,5 +1,8 @@
 # Mobile capability matrix (PR37)
 
+> Hard rule: mobile is a **new Flutter app** under `mobile/` — not a desktop port.  
+> See [`mobile/ARCHITECTURE.md`](../../mobile/ARCHITECTURE.md).
+
 Maps product surfaces to companion capabilities. Values:
 
 - **full** — intended for mobile once sync exists  

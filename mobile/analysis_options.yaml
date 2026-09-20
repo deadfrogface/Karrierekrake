@@ -1,0 +1,14 @@
+# This file configures the analyzer for the Flutter companion app.
+# Desktop/PySide code is out of scope — do not analyze ../desktop here.
+
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    avoid_print: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"

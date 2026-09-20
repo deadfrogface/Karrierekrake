@@ -335,3 +335,30 @@ def test_docs_exist_and_sync_unspecified():
     sync = (root / "sync_decision.md").read_text(encoding="utf-8").lower()
     assert "unspecified" in sync
     assert "invent" in sync or "nicht" in sync or "forbidden" in sync
+
+
+def test_mobile_architecture_hard_rule_and_flutter_scaffold():
+    """Mobile must be a separate Flutter app — never a desktop port."""
+    arch = Path("mobile/ARCHITECTURE.md").read_text(encoding="utf-8").lower()
+    assert "new, separate flutter" in arch or "new, separate" in arch
+    assert "do not" in arch or "forbidden" in arch
+    assert "pyside" in arch
+    assert "port" in arch
+
+    companion = Path("docs/mobile/companion_architecture.md").read_text(encoding="utf-8").lower()
+    assert "architecture hard rule" in companion
+    assert "flutter" in companion
+    assert "port" in companion
+
+    contracts_readme = Path("contracts/README.md").read_text(encoding="utf-8").lower()
+    assert "flutter" in contracts_readme
+    assert "not" in contracts_readme and "port" in contracts_readme
+
+    pubspec = Path("mobile/pubspec.yaml").read_text(encoding="utf-8")
+    assert "karrierekrake_mobile" in pubspec
+    assert "NOT a port" in pubspec
+    assert Path("mobile/lib/main.dart").is_file()
+    assert Path("mobile/lib/contracts/search_intent_dto.dart").is_file()
+    # Guard: mobile must not vendor desktop Python UI
+    mobile_py = list(Path("mobile").rglob("*.py"))
+    assert mobile_py == [], f"unexpected Python under mobile/: {mobile_py}"

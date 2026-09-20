@@ -1,6 +1,10 @@
 # Karrierekrake shared contracts (PR37)
 
-Versioned JSON Schema contracts for **companion-first mobile** — not an app yet.
+Versioned JSON Schema contracts for **companion-first mobile**.
+
+The mobile client is a **new Flutter app** under `mobile/` — **not** a port of the Windows/PySide desktop product.  
+These contracts are the only approved shared surface between desktop/core and mobile.  
+See [`mobile/ARCHITECTURE.md`](../mobile/ARCHITECTURE.md) and [`docs/mobile/companion_architecture.md`](../docs/mobile/companion_architecture.md).
 
 ## Bundle
 
@@ -11,8 +15,8 @@ Versioned JSON Schema contracts for **companion-first mobile** — not an app ye
 
 ## Objects
 
-| Contract | Python source |
-|----------|---------------|
+| Contract | Python source (desktop/core reference) |
+|----------|----------------------------------------|
 | Profile | `core.config.ApplicationProfile` |
 | SearchIntent | `core.search_intent.SearchIntent` |
 | Job | `core.models.Job` |
@@ -21,6 +25,9 @@ Versioned JSON Schema contracts for **companion-first mobile** — not an app ye
 | CalendarProposal | `integrations.calendar_scheduling.SchedulingProposal` |
 | ReplyDraft | `integrations.reply_draft.ReplyDraft` |
 | GuentherResult | `guenther.contracts.GuentherEnvelope` |
+
+Python adapters (`core/shared_contracts.py`) prove desktop/core conformance.  
+Flutter/Dart DTOs under `mobile/lib/contracts/` mirror the same schemas independently.
 
 ## Compatibility
 
@@ -35,6 +42,7 @@ Versioned JSON Schema contracts for **companion-first mobile** — not an app ye
 
 ## Docs
 
+- `mobile/ARCHITECTURE.md` — hard rule (separate Flutter app)
 - `docs/mobile/companion_architecture.md`
 - `docs/mobile/capability_matrix.md`
 - `docs/mobile/privacy_security_data_flow.md`
