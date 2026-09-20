@@ -213,6 +213,29 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "profile.reset_done": "Profil zurückgesetzt.",
         "profile.reset_wipe_done": "Alle lokalen Karrierekrake-Daten wurden gelöscht.",
+        "profile.reset_wipe_failed": (
+            "Löschung konnte nicht verifiziert werden. Es wurden keine "
+            "„gelöscht“-Meldung bestätigt — bitte Logs prüfen und erneut versuchen."
+        ),
+        "privacy.tab": "Datenschutz",
+        "privacy.title": "Daten & Löschung",
+        "privacy.intro": (
+            "Lokale KI ist ein Datenschutzvorteil, aber kein automatischer "
+            "DSGVO-Nachweis. Rechtsgrundlagen: UNSPECIFIED / LEGAL REVIEW."
+        ),
+        "privacy.export": "Meine Daten exportieren…",
+        "privacy.export_confirm": (
+            "Der Export enthält personenbezogene Daten (kein OAuth-Token). Fortfahren?"
+        ),
+        "privacy.export_done": "Export gespeichert:",
+        "privacy.export_failed": "Export fehlgeschlagen oder abgebrochen.",
+        "privacy.disconnect_google": "Google-Verbindung trennen",
+        "privacy.delete_mail": "Mail-Cache löschen",
+        "privacy.delete_calendar": "Kalender-Cache löschen",
+        "privacy.delete_logs": "Logs löschen",
+        "privacy.delete_all": "ALLE lokalen Daten löschen",
+        "privacy.action_ok": "Erledigt und verifiziert.",
+        "privacy.action_failed": "Aktion fehlgeschlagen oder nicht verifiziert.",
         "cv_import.title": "Profil aus Lebenslauf",
         "cv_import.intro": "Erkannte Angaben prüfen. Empfohlen: Profil aus CV ersetzen.",
         "cv_import.mode": "Import-Modus",
@@ -774,6 +797,29 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "profile.reset_done": "Profile reset.",
         "profile.reset_wipe_done": "All local Karrierekrake data has been deleted.",
+        "profile.reset_wipe_failed": (
+            "Deletion could not be verified. Success was not confirmed — "
+            "check logs and try again."
+        ),
+        "privacy.tab": "Privacy",
+        "privacy.title": "Data & deletion",
+        "privacy.intro": (
+            "Local AI is a privacy advantage, not automatic GDPR compliance. "
+            "Legal bases: UNSPECIFIED / LEGAL REVIEW."
+        ),
+        "privacy.export": "Export my data…",
+        "privacy.export_confirm": (
+            "Export includes personal data (never OAuth tokens). Continue?"
+        ),
+        "privacy.export_done": "Export saved:",
+        "privacy.export_failed": "Export failed or cancelled.",
+        "privacy.disconnect_google": "Disconnect Google",
+        "privacy.delete_mail": "Delete mail cache",
+        "privacy.delete_calendar": "Delete calendar cache",
+        "privacy.delete_logs": "Delete logs",
+        "privacy.delete_all": "Delete ALL local data",
+        "privacy.action_ok": "Done and verified.",
+        "privacy.action_failed": "Action failed or was not verified.",
         "cv_import.title": "Import profile from CV",
         "cv_import.intro": "Review detected data. Recommended: replace profile from CV.",
         "cv_import.mode": "Import mode",

@@ -390,67 +390,56 @@ class ConfigService:
         """Alias: empty profile + delete stored CV/cover documents (same as reset)."""
         return self.reset_to_empty_profile(clear_search_prefs=clear_search_prefs)
 
-    def delete_all_local_data(self) -> dict[str, Any]:
-        """Remove all local Karrierekrake AppData contents (config, DB, logs, CVs, cache).
+    def privacy_lifecycle(self) -> "PrivacyLifecycleService":
+        """Factory for DSGVO-oriented export / disconnect / delete flows."""
+        from core.privacy.lifecycle import PrivacyLifecycleService
 
-        Recreates empty directory skeleton afterwards. Does not touch other users'
-        data or the install directory. Search prefs YAML are deleted with config;
-        next ``load()`` re-bootstraps from ``*.example`` (non-PII defaults only).
+        def _load_profile() -> dict[str, Any]:
+            cfg = self.load()
+            return {
+                "application": cfg.application.model_dump()
+                if hasattr(cfg.application, "model_dump")
+                else dict(cfg.application.__dict__),
+                "profile": cfg.profile.model_dump()
+                if hasattr(cfg.profile, "model_dump")
+                else {},
+            }
+
+        def _save_empty() -> None:
+            # Privacy deletes clear search prefs (location wish can be PII).
+            self.reset_to_empty_profile(clear_search_prefs=True)
+
+        def _list_docs() -> list[Path]:
+            out: list[Path] = []
+            for key in ("cvs", "cover_letters"):
+                root = self.dirs.get(key)
+                if not root or not root.exists():
+                    continue
+                out.extend([p for p in root.iterdir() if p.is_file()])
+            return out
+
+        db_path = self.dirs["data"] / "jobs.db"
+        return PrivacyLifecycleService(
+            dirs=self.dirs,
+            database_path=db_path,
+            token_dir=self.dirs["config"],
+            load_profile=_load_profile,
+            save_empty_profile=_save_empty,
+            list_documents=_list_docs,
+            clear_documents=self.clear_cv_storage,
+        )
+
+    def delete_all_local_data(self, *, create_rollback_backup: bool = False) -> dict[str, Any]:
+        """Remove all local Karrierekrake AppData personal data (verified).
+
+        Prefer PrivacyLifecycleService.delete_all — secrets never exported;
+        success only when verification finds no unexpected residuals.
         """
-        import time
-
         from desktop.services.profile_patch import PATCH_SCHEMA_VERSION
 
-        root = self.dirs["root"]
-        removed: list[str] = []
-        backup_hint = ""
-        # Best-effort snapshot of config before wipe (rollback aid)
-        stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-        backup_dir = root / f".wipe_backup_{stamp}"
-        try:
-            if self.dirs["config"].exists():
-                from core.security.export_gate import wipe_backup_should_skip
-
-                def _ignore(directory: str, names: list[str]) -> list[str]:
-                    return [
-                        n
-                        for n in names
-                        if wipe_backup_should_skip(Path(directory) / n)
-                    ]
-
-                shutil.copytree(
-                    self.dirs["config"],
-                    backup_dir / "config",
-                    dirs_exist_ok=True,
-                    ignore=_ignore,
-                )
-                backup_hint = str(backup_dir)
-        except OSError:
-            backup_hint = ""
-
-        for key, path in list(self.dirs.items()):
-            if key == "root":
-                continue
-            if not path.exists():
-                continue
-            try:
-                if path.is_dir():
-                    shutil.rmtree(path)
-                    removed.append(str(path))
-                elif path.is_file():
-                    path.unlink()
-                    removed.append(str(path))
-            except OSError:
-                continue
-        # meta.json lives on root
-        if self.meta_path.exists():
-            try:
-                self.meta_path.unlink()
-                removed.append(str(self.meta_path))
-            except OSError:
-                pass
-
-        # Recreate skeleton + empty-safe bootstrap
+        life = self.privacy_lifecycle()
+        result = life.delete_all(create_rollback_backup=create_rollback_backup)
+        # Recreate skeleton + empty-safe bootstrap regardless
         self.dirs = ensure_app_dirs()
         self.meta_path = self.dirs["root"] / "meta.json"
         self._config = None
@@ -460,8 +449,12 @@ class ConfigService:
             "cv_variants": [],
             "active_cv_id": "",
             "profile_patch_schema": PATCH_SCHEMA_VERSION,
-            "last_wipe_at": stamp,
-            "last_wipe_backup": backup_hint,
+            "last_wipe_at": result.detail.get("stamp", ""),
+            "last_wipe_verified": bool(result.verified and result.ok),
+            "last_wipe_residuals": list(result.residuals),
         }
         self.save_meta(meta)
-        return {"removed": removed, "backup": backup_hint, "schema": PATCH_SCHEMA_VERSION}
+        out = result.as_dict()
+        out["schema"] = PATCH_SCHEMA_VERSION
+        out["backup"] = ""
+        return out

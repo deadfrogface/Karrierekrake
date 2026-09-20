@@ -282,7 +282,15 @@ class ProfilePage(QWidget):
             )
             if confirm != QMessageBox.StandardButton.Yes:
                 return
-            self.config_service.delete_all_local_data()
+            result = self.config_service.delete_all_local_data()
+            if not result.get("ok") or not result.get("verified"):
+                QMessageBox.warning(
+                    self,
+                    tr("profile.reset_title"),
+                    tr("profile.reset_wipe_failed"),
+                )
+                self.load_from_config()
+                return
             done_msg = tr("profile.reset_wipe_done")
         elif clicked is profile_btn:
             confirm = QMessageBox.question(

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QButtonGroup,
@@ -292,6 +294,46 @@ class SettingsPage(QWidget):
         self.tabs.addTab(auto_page, "")
         self._browser_busy = False
 
+        # --- Privacy (DSGVO lifecycle controls) ---
+        privacy_page, privacy_layout = _scroll_form()
+        privacy_box = QGroupBox()
+        self.privacy_box = privacy_box
+        pform = QVBoxLayout(privacy_box)
+        self.privacy_intro = QLabel()
+        self.privacy_intro.setWordWrap(True)
+        self.privacy_intro.setObjectName("PageSubtitle")
+        pform.addWidget(self.privacy_intro)
+        self.privacy_export_btn = QPushButton()
+        self.privacy_export_btn.setObjectName("SecondaryButton")
+        self.privacy_export_btn.clicked.connect(self._privacy_export)
+        self.privacy_disconnect_btn = QPushButton()
+        self.privacy_disconnect_btn.setObjectName("SecondaryButton")
+        self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_google)
+        self.privacy_mail_btn = QPushButton()
+        self.privacy_mail_btn.setObjectName("SecondaryButton")
+        self.privacy_mail_btn.clicked.connect(self._privacy_delete_mail)
+        self.privacy_cal_btn = QPushButton()
+        self.privacy_cal_btn.setObjectName("SecondaryButton")
+        self.privacy_cal_btn.clicked.connect(self._privacy_delete_calendar)
+        self.privacy_logs_btn = QPushButton()
+        self.privacy_logs_btn.setObjectName("SecondaryButton")
+        self.privacy_logs_btn.clicked.connect(self._privacy_delete_logs)
+        self.privacy_all_btn = QPushButton()
+        self.privacy_all_btn.setObjectName("PrimaryButton")
+        self.privacy_all_btn.clicked.connect(self._privacy_delete_all)
+        for btn in (
+            self.privacy_export_btn,
+            self.privacy_disconnect_btn,
+            self.privacy_mail_btn,
+            self.privacy_cal_btn,
+            self.privacy_logs_btn,
+            self.privacy_all_btn,
+        ):
+            pform.addWidget(btn)
+        privacy_layout.addWidget(privacy_box)
+        privacy_layout.addStretch(1)
+        self.tabs.addTab(privacy_page, "")
+
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
         self.save_btn.clicked.connect(self.save)
@@ -305,6 +347,15 @@ class SettingsPage(QWidget):
         self.tabs.setTabText(1, tr("settings.search"))
         self.tabs.setTabText(2, tr("settings.applications"))
         self.tabs.setTabText(3, tr("settings.advanced"))
+        self.tabs.setTabText(4, tr("privacy.tab"))
+        self.privacy_box.setTitle(tr("privacy.title"))
+        self.privacy_intro.setText(tr("privacy.intro"))
+        self.privacy_export_btn.setText(tr("privacy.export"))
+        self.privacy_disconnect_btn.setText(tr("privacy.disconnect_google"))
+        self.privacy_mail_btn.setText(tr("privacy.delete_mail"))
+        self.privacy_cal_btn.setText(tr("privacy.delete_calendar"))
+        self.privacy_logs_btn.setText(tr("privacy.delete_logs"))
+        self.privacy_all_btn.setText(tr("privacy.delete_all"))
         self.general_box.setTitle(tr("settings.general"))
         self.appear_box.setTitle(tr("settings.general"))
         self.src_box.setTitle(tr("settings.sources"))
@@ -638,3 +689,57 @@ class SettingsPage(QWidget):
         connect_queued(worker.finished, done)
         self._browser_worker = worker
         self._browser_thread = thread
+
+    def _privacy_life(self):
+        return self.config_service.privacy_lifecycle()
+
+    def _privacy_report(self, result) -> None:
+        if getattr(result, "ok", False) and getattr(result, "verified", False):
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.action_ok"))
+        else:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.action_failed"))
+
+    def _privacy_export(self) -> None:
+        confirm = QMessageBox.question(self, tr("privacy.tab"), tr("privacy.export_confirm"))
+        if confirm != QMessageBox.StandardButton.Yes:
+            return
+        from PySide6.QtWidgets import QFileDialog
+
+        dest = QFileDialog.getExistingDirectory(self, tr("privacy.export"))
+        if not dest:
+            return
+        result = self._privacy_life().export_my_data(
+            Path(dest), user_confirmed_pii=True, include_document_bytes=False
+        )
+        if result.ok:
+            QMessageBox.information(
+                self,
+                tr("privacy.tab"),
+                f"{tr('privacy.export_done')}\n{result.path}",
+            )
+        else:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.export_failed"))
+
+    def _privacy_disconnect_google(self) -> None:
+        self._privacy_report(self._privacy_life().disconnect_google(revoke_remote=True))
+
+    def _privacy_delete_mail(self) -> None:
+        self._privacy_report(self._privacy_life().delete_mail_cache())
+
+    def _privacy_delete_calendar(self) -> None:
+        self._privacy_report(self._privacy_life().delete_calendar_cache())
+
+    def _privacy_delete_logs(self) -> None:
+        self._privacy_report(self._privacy_life().delete_logs())
+
+    def _privacy_delete_all(self) -> None:
+        confirm = QMessageBox.question(
+            self, tr("privacy.tab"), tr("profile.reset_confirm_wipe_all")
+        )
+        if confirm != QMessageBox.StandardButton.Yes:
+            return
+        result = self.config_service.delete_all_local_data()
+        if result.get("ok") and result.get("verified"):
+            QMessageBox.information(self, tr("privacy.tab"), tr("profile.reset_wipe_done"))
+        else:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("profile.reset_wipe_failed"))
