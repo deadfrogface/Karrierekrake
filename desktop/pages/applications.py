@@ -1,4 +1,4 @@
-"""Applications history and review queue."""
+"""Applications history, review queue, and case timeline."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QMessageBox,
     QPushButton,
+    QSplitter,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -23,6 +24,8 @@ from core.models import JobStatus
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
+from desktop.viewmodels.case_timeline import build_case_timeline_viewmodel
+from desktop.widgets.product_panels import CaseTimelinePanel
 
 
 STATUS_FILTERS = [
@@ -83,6 +86,7 @@ class ApplicationsPage(QWidget):
         self.table = QTableWidget(0, 9)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
+        self.table.itemSelectionChanged.connect(self._on_selection)
         header = self.table.horizontalHeader()
         header.setStretchLastSection(True)
         for col in (0, 3, 4, 5, 6, 7):
@@ -95,12 +99,25 @@ class ApplicationsPage(QWidget):
         self.empty.setObjectName("EmptyState")
         self.empty.setVisible(False)
 
+        list_wrap = QVBoxLayout()
+        list_wrap.setContentsMargins(0, 0, 0, 0)
+        list_host = QWidget()
+        list_host.setLayout(list_wrap)
+        list_wrap.addWidget(self.table)
+        list_wrap.addWidget(self.empty)
+
+        self.timeline = CaseTimelinePanel()
+        splitter = QSplitter()
+        splitter.addWidget(list_host)
+        splitter.addWidget(self.timeline)
+        splitter.setStretchFactor(0, 3)
+        splitter.setStretchFactor(1, 2)
+
         layout = QVBoxLayout(self)
         layout.addWidget(self.page_title)
         layout.addWidget(self.page_subtitle)
         layout.addLayout(filter_form)
-        layout.addWidget(self.table, 1)
-        layout.addWidget(self.empty)
+        layout.addWidget(splitter, 1)
 
         self.retranslate_ui()
 
@@ -123,7 +140,7 @@ class ApplicationsPage(QWidget):
                 tr("jobs.company"),
                 tr("jobs.title"),
                 tr("apps.ats"),
-                tr("apps.match"),
+                tr("col.fit"),
                 tr("jobs.status"),
                 tr("apps.cv"),
                 tr("apps.cover"),
@@ -137,6 +154,25 @@ class ApplicationsPage(QWidget):
             self.status.setCurrentIndex(idx)
         self.refresh()
 
+    def _on_selection(self) -> None:
+        row = self.table.currentRow()
+        if row < 0 or row >= len(self._records):
+            self.timeline.clear()
+            return
+        rec = self._records[row]
+        cfg = self.config_service.load()
+        db = Database(cfg.db_path)
+        case = None
+        if rec.job_id:
+            cases = db.list_cases(limit=500)
+            case = next((c for c in cases if c.job_id == rec.job_id), None)
+        if case is None:
+            self.timeline.clear()
+            return
+        events = db.list_lifecycle_events(case.id)
+        vm = build_case_timeline_viewmodel(case.id, events, current_status=case.status)
+        self.timeline.bind(vm)
+
     def refresh(self) -> None:
         cfg = self.config_service.load()
         db = Database(cfg.db_path)
@@ -147,9 +183,21 @@ class ApplicationsPage(QWidget):
         )
         self._records = records
         self.table.setRowCount(0)
+        from desktop.viewmodels.job_fit import build_job_fit_viewmodel
+
+        _fit_i18n = {
+            "sehr_passend": tr("fit.sehr_passend"),
+            "passend": tr("fit.passend"),
+            "teilweise_passend": tr("fit.teilweise_passend"),
+            "nicht_passend": tr("fit.nicht_passend"),
+            "unbekannt": tr("fit.unbekannt"),
+        }
         for rec in records:
             job = db.get_job(rec.job_id) if rec.job_id else None
-            match = str(job.match_score) if job else ""
+            fit_label = ""
+            if job is not None:
+                fit = build_job_fit_viewmodel(job, cfg)
+                fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
             ats = (job.ats_type if job else "") or rec.platform
             row = self.table.rowCount()
             self.table.insertRow(row)
@@ -158,7 +206,7 @@ class ApplicationsPage(QWidget):
                 rec.company,
                 rec.position,
                 ats,
-                match,
+                fit_label,
                 status_label(rec.status),
                 rec.cv_used,
                 tr("apps.cover_yes") if rec.cover_letter_used else "",
@@ -169,6 +217,8 @@ class ApplicationsPage(QWidget):
         empty = len(records) == 0
         self.table.setVisible(not empty)
         self.empty.setVisible(empty)
+        if empty:
+            self.timeline.clear()
 
     def open_selected(self) -> None:
         row = self.table.currentRow()

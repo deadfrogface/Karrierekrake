@@ -30,6 +30,8 @@ from core.text_normalize import clean_text, display_or_dash
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
+from desktop.viewmodels.job_fit import build_job_fit_viewmodel
+from desktop.widgets.product_panels import JobFitPanel
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
@@ -157,6 +159,7 @@ class JobsPage(QWidget):
         self.detail_meta.setObjectName("PageSubtitle")
         self.detail_meta.setWordWrap(True)
         self.detail_status = QLabel()
+        self.fit_panel = JobFitPanel()
         self.detail_body = QTextEdit()
         self.detail_body.setReadOnly(True)
         self.detail_body.setMinimumHeight(140)
@@ -173,6 +176,7 @@ class JobsPage(QWidget):
         detail_layout.addWidget(self.detail_title)
         detail_layout.addWidget(self.detail_meta)
         detail_layout.addWidget(self.detail_status)
+        detail_layout.addWidget(self.fit_panel)
         detail_layout.addWidget(self.detail_body, 1)
         detail_layout.addLayout(dbtns)
 
@@ -223,7 +227,7 @@ class JobsPage(QWidget):
                 tr("col.city"),
                 tr("col.distance"),
                 tr("col.remote"),
-                tr("col.match"),
+                tr("col.fit"),
                 tr("col.explanation"),
                 tr("col.source"),
                 tr("col.status"),
@@ -236,6 +240,7 @@ class JobsPage(QWidget):
         self.detail_title.setText(tr("jobs.detail_empty_title"))
         self.detail_meta.setText(tr("jobs.detail_empty_body"))
         self.detail_status.clear()
+        self.fit_panel.clear()
         self.detail_body.setPlainText("")
         self.detail_prepare.setEnabled(False)
         self.detail_open.setEnabled(False)
@@ -271,22 +276,15 @@ class JobsPage(QWidget):
             f"{display_or_dash(job.remote_type)} · {dist or '—'} · "
             f"{display_or_dash(job.salary_text)} · {display_or_dash(job.source)}"
         )
-        self.detail_status.setText(
-            f"{tr('jobs.status')}: {status_label(job.status)} · "
-            f"{tr('col.match')}: {job.match_score}"
-        )
-        reasons = ""
-        if getattr(job, "match_reasons", None):
-            reasons = "\n".join(f"• {r}" for r in (job.match_reasons or [])[:8])
-        reject = ""
-        if getattr(job, "rejection_reasons", None):
-            reject = "\n".join(f"• {r}" for r in (job.rejection_reasons or [])[:6])
+        self.detail_status.setText(f"{tr('jobs.status')}: {status_label(job.status)}")
+        cfg = self.config_service.load()
+        fit = build_job_fit_viewmodel(job, cfg)
+        self.fit_panel.bind(fit)
         body = clean_text(job.description)
-        chunks = []
-        if reasons:
-            chunks.append(f"{tr('jobs.match_reasons')}:\n{reasons}")
-        if reject:
-            chunks.append(f"{tr('jobs.reject_reasons')}:\n{reject}")
+        chunks: list[str] = []
+        lines = fit.primary_lines(limit=12)
+        if lines:
+            chunks.append(f"{tr('jobs.fit_detail')}:\n" + "\n".join(lines))
         if body:
             chunks.append(body[:4000])
         self.detail_body.setPlainText("\n\n".join(chunks) if chunks else tr("jobs.no_description"))
@@ -324,18 +322,28 @@ class JobsPage(QWidget):
         self._jobs = jobs
         self.table.setSortingEnabled(False)
         self.table.setRowCount(0)
+        cfg = self.config_service.load()
+        _fit_i18n = {
+            "sehr_passend": tr("fit.sehr_passend"),
+            "passend": tr("fit.passend"),
+            "teilweise_passend": tr("fit.teilweise_passend"),
+            "nicht_passend": tr("fit.nicht_passend"),
+            "unbekannt": tr("fit.unbekannt"),
+        }
         for job in jobs:
             row = self.table.rowCount()
             self.table.insertRow(row)
             dist = "" if job.distance_km is None else f"{job.distance_km:.1f}"
+            fit = build_job_fit_viewmodel(job, cfg)
+            fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
             values = [
                 display_or_dash(job.title),
                 display_or_dash(job.company),
                 display_or_dash(job.city),
                 dist or "—",
                 display_or_dash(job.remote_type),
-                str(int(job.match_score or 0)),
-                display_or_dash(job.match_explanation()),
+                fit_label,
+                " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation()),
                 display_or_dash(job.source),
                 status_label(job.status),
             ]
@@ -347,7 +355,8 @@ class JobsPage(QWidget):
                 if col == 0:
                     item.setData(Qt.ItemDataRole.UserRole, job.id)
                 if col == 5:
-                    item.setData(Qt.ItemDataRole.DisplayRole, int(job.match_score or 0))
+                    # Keep numeric sort hint without displaying fake precision.
+                    item.setData(Qt.ItemDataRole.UserRole + 1, int(job.match_score or 0))
                 self.table.setItem(row, col, item)
         self.table.setSortingEnabled(True)
         empty = len(jobs) == 0
