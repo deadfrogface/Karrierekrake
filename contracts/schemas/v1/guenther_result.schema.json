@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/guenther_result.schema.json",
+  "title": "GuentherResult",
+  "description": "Local AI suggestion envelope. Maps to guenther.contracts.GuentherEnvelope. LLM output is untrusted; validated=false means fail-closed.",
+  "type": "object",
+  "required": ["contract_version", "schema_id", "ok", "capability"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "schema_id": { "const": "karrierekrake.guenther_result" },
+    "ok": { "type": "boolean" },
+    "capability": { "type": "string" },
+    "suggestion": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "fallback_reason": { "type": "string" },
+    "provider_status": { "type": "string" },
+    "model_id": { "type": "string" },
+    "validated": { "type": "boolean" },
+    "safety_notes": { "$ref": "common.schema.json#/$defs/string_list" },
+    "architecture": { "type": "string" },
+    "validator_errors": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "repair_history": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "grounding_report": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

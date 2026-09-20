@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "target_roles": [
+    "Buchhalterin für Lohnabrechnung 🧾"
+  ],
+  "required_roles": [],
+  "excluded_roles": [],
+  "mandatory_skills": [
+    "S/4HANA"
+  ],
+  "preferred_skills": [],
+  "excluded_skills": [],
+  "required_keywords": [
+    "Gehaltsabrechnung"
+  ],
+  "excluded_keywords": [],
+  "preferred_industries": [],
+  "excluded_industries": [],
+  "strictness": null,
+  "remote_mode": null,
+  "employment_types": [],
+  "working_time": [],
+  "salary_min": null,
+  "countries": [],
+  "radius_km": null,
+  "needs_user_review": [],
+  "legacy_fields_deprecated": [],
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.search_intent"
+}

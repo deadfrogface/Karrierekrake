@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/search_intent.schema.json",
+  "title": "SearchIntent",
+  "description": "What to find now. Maps to core.search_intent.SearchIntent. Never invent silent STRICT expansion.",
+  "type": "object",
+  "required": ["contract_version", "schema_id", "schema_version"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "schema_id": { "const": "karrierekrake.search_intent" },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "target_roles": { "$ref": "common.schema.json#/$defs/string_list" },
+    "required_roles": { "$ref": "common.schema.json#/$defs/string_list" },
+    "excluded_roles": { "$ref": "common.schema.json#/$defs/string_list" },
+    "mandatory_skills": { "$ref": "common.schema.json#/$defs/string_list" },
+    "preferred_skills": { "$ref": "common.schema.json#/$defs/string_list" },
+    "excluded_skills": { "$ref": "common.schema.json#/$defs/string_list" },
+    "required_keywords": { "$ref": "common.schema.json#/$defs/string_list" },
+    "excluded_keywords": { "$ref": "common.schema.json#/$defs/string_list" },
+    "preferred_industries": { "$ref": "common.schema.json#/$defs/string_list" },
+    "excluded_industries": { "$ref": "common.schema.json#/$defs/string_list" },
+    "strictness": {
+      "type": ["string", "null"],
+      "enum": ["strict", "balanced", "explore", null]
+    },
+    "remote_mode": {
+      "type": ["string", "null"],
+      "enum": ["remote", "hybrid", "onsite", "flexible", null]
+    },
+    "employment_types": { "$ref": "common.schema.json#/$defs/string_list" },
+    "working_time": { "$ref": "common.schema.json#/$defs/string_list" },
+    "salary_min": { "type": ["number", "null"] },
+    "countries": { "$ref": "common.schema.json#/$defs/string_list" },
+    "radius_km": { "type": ["number", "null"] },
+    "needs_user_review": { "$ref": "common.schema.json#/$defs/string_list" },
+    "legacy_fields_deprecated": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

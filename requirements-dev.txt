@@ -11,4 +11,6 @@ dspy==3.3.1
 # Lifecycle E2E factory (PR33) — optional property/time helpers; not required at runtime.
 hypothesis>=6.100.0
 freezegun>=1.5.0
+# Shared mobile contracts (PR37) — schema validation in CI.
+jsonschema>=4.22
 # Streamlit UI removed (ui/app.py deleted) — do not re-add for desktop builds

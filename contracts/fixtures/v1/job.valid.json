@@ -1,0 +1,40 @@
+{
+  "id": "job-fixture-1",
+  "source": "bundesagentur",
+  "source_job_id": "",
+  "title": "SAP Lohnbuchhalter (m/w/d)",
+  "company": "Beispiel GmbH",
+  "description": "",
+  "city": "Berlin",
+  "postal_code": "",
+  "address": "",
+  "country_code": "DE",
+  "latitude": null,
+  "longitude": null,
+  "distance_km": 12.0,
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "salary_min": null,
+  "salary_max": null,
+  "salary_text": "",
+  "published_at": "2026-09-18T08:30:00+02:00",
+  "discovered_at": "2026-09-20T12:00:00+00:00",
+  "url": "",
+  "application_url": "",
+  "ats_type": "unknown",
+  "match_score": 80,
+  "match_reasons": [
+    "✓ Zielberuf",
+    "✓ SAP"
+  ],
+  "rejection_reasons": [
+    "keine direkte SAP-HCM-Erfahrung"
+  ],
+  "status": "matched",
+  "duplicate_of": null,
+  "alt_sources": [],
+  "run_id": "",
+  "ranking_version": "",
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job"
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karrierekrake.local/contracts/v1/lifecycle_event.schema.json",
+  "title": "LifecycleEvent",
+  "description": "Append-only lifecycle fact. Maps to core.lifecycle.LifecycleEvent. Status is derived — never mutated from LLM output alone.",
+  "type": "object",
+  "required": ["contract_version", "schema_id", "event_type"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "schema_id": { "const": "karrierekrake.lifecycle_event" },
+    "id": { "type": "string" },
+    "case_id": { "type": "string" },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "APPLICATION_CREATED",
+        "APPLICATION_SENT",
+        "APPLICATION_RECEIVED",
+        "UNDER_REVIEW",
+        "DOCUMENT_REQUESTED",
+        "ASSESSMENT_RECEIVED",
+        "INTERVIEW_REQUESTED",
+        "INTERVIEW_SCHEDULED",
+        "INTERVIEW_RESCHEDULED",
+        "INTERVIEW_CANCELLED",
+        "INTERVIEW_COMPLETED",
+        "OFFER_RECEIVED",
+        "REJECTION_RECEIVED",
+        "FOLLOWUP_SENT",
+        "WITHDRAWN",
+        "GHOSTED",
+        "ARCHIVED",
+        "MANUAL_OVERRIDE"
+      ]
+    },
+    "occurred_at": { "$ref": "common.schema.json#/$defs/iso8601_or_empty" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/iso8601_or_empty" },
+    "idempotency_key": { "type": "string" },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "source": { "type": "string" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}
