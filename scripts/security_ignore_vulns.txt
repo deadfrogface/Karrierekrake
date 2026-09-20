@@ -1,0 +1,4 @@
+# pip-audit ignore IDs — each line must be documented in
+# docs/security/dependency-exceptions.md (reviewed non-applicable / deferred).
+# Do not add High/Critical runtime findings here without that review.
+PYSEC-2026-1604

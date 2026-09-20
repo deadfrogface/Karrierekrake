@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import shutil
 import tempfile
 import urllib.error
 import urllib.request
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
 
+from core.security.model_integrity import (
+    ModelIntegrityError,
+    require_sha256,
+    sha256_file,
+    verify_file_sha256,
+)
 from guenther.privacy import log_event
 
 # No weights in git — catalog metadata only.
@@ -115,7 +120,24 @@ class ModelManager:
         if model_id not in self.catalog:
             return False
         path = self.model_path(model_id)
-        return path.is_file() and path.stat().st_size > 1_000_000
+        if not (path.is_file() and path.stat().st_size > 1_000_000):
+            return False
+        # Catalog must declare a SHA-256; empty digest ⇒ not considered installed.
+        try:
+            require_sha256(str(self.catalog[model_id].get("sha256") or ""))
+        except ModelIntegrityError:
+            return False
+        return True
+
+    def assert_model_integrity(self, model_id: str) -> str:
+        """Verify on-disk model matches catalog SHA-256 (fail closed)."""
+        meta = self.catalog.get(model_id)
+        if not meta:
+            raise ModelIntegrityError("unknown_model")
+        path = self.model_path(model_id)
+        if not path.is_file():
+            raise ModelIntegrityError("model_missing")
+        return verify_file_sha256(path, str(meta.get("sha256") or ""))
 
     def disk_free_bytes(self) -> int:
         usage = shutil.disk_usage(self.models_dir)
@@ -155,16 +177,12 @@ class ModelManager:
         return True
 
     def verify_checksum(self, path: Path, expected_sha256: str) -> bool:
-        if not expected_sha256:
-            return True  # REVIEW: empty sha means skip — user still opted in
-        h = hashlib.sha256()
-        with path.open("rb") as fh:
-            while True:
-                chunk = fh.read(1024 * 1024)
-                if not chunk:
-                    break
-                h.update(chunk)
-        return h.hexdigest().lower() == expected_sha256.lower()
+        """Require a real SHA-256; empty digest is a hard fail (no silent skip)."""
+        try:
+            require_sha256(expected_sha256)
+            return sha256_file(path) == expected_sha256.strip().lower()
+        except ModelIntegrityError:
+            return False
 
     def install(
         self,

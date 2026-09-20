@@ -8,7 +8,7 @@ python-dotenv>=1.0.0
 pydantic>=2.5
 playwright>=1.40
 pandas>=2.1
-pypdf>=4.0
+pypdf>=6.16.1
 python-docx>=1.1
 beautifulsoup4>=4.12
 lxml>=5.0
@@ -17,6 +17,11 @@ PySide6>=6.6
 # DACH offline PLZ + optional geocoding helpers (Nominatim still via httpx)
 pgeocode>=0.4.0
 geopy>=2.4.0
+# Floor pins for transitive deps with known High/Critical advisories when
+# resolved from loose lower bounds (OSV / pip-audit defense in depth).
+anyio>=4.14.2
+idna>=3.15
+protobuf>=5.29.6
 # Optional: Gmail / Calendar OAuth (features degrade gracefully if missing)
 google-api-python-client>=2.100.0
 google-auth-oauthlib>=1.2.0

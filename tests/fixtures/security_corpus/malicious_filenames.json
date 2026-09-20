@@ -1,0 +1,18 @@
+[
+  "../../etc/passwd",
+  "..\\..\\Windows\\System32\\config\\sam",
+  "CON",
+  "NUL.txt",
+  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.pdf",
+  "file\u0000.pdf",
+  "/abs/path/doc.pdf",
+  "C:\\Users\\victim\\doc.pdf",
+  "normal_ok.pdf",
+  "resume (final).docx",
+  "bewerbung_\u00e4\u00f6\u00fc.pdf",
+  ".hidden",
+  "..",
+  "",
+  "COM1",
+  "lpt9.docx"
+]

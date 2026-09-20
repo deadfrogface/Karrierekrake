@@ -1,0 +1,27 @@
+[
+  {
+    "id": "zip-traversal",
+    "type": "zip_name",
+    "name": "../evil.txt",
+    "expect_error": true
+  },
+  {
+    "id": "zip-abs",
+    "type": "zip_name",
+    "name": "/tmp/evil.txt",
+    "expect_error": true
+  },
+  {
+    "id": "zip-winabs",
+    "type": "zip_name",
+    "name": "C:/Windows/evil.txt",
+    "expect_error": true
+  },
+  {
+    "id": "ratio-bomb-meta",
+    "type": "limits",
+    "compress_size": 100,
+    "file_size": 50000000,
+    "expect_error": true
+  }
+]
