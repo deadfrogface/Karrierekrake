@@ -1,0 +1,9 @@
+# Bandit SAST config — medium/high signal; tests & vendored trees excluded.
+skips: []
+exclude_dirs:
+  - tests
+  - third_party
+  - .venv
+  - tools/cover_opt
+  - mobile
+  - artifacts

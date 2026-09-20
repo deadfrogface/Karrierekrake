@@ -204,3 +204,74 @@ jobs:
           if (Test-Path artifacts/lifecycle_e2e_report.json) {
             Get-Content artifacts/lifecycle_e2e_report.json | Add-Content $env:GITHUB_STEP_SUMMARY
           }
+
+  security:
+    name: security
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Runtime surface only for dependency audit (no dspy/dev-only trees).
+          pip install -r requirements-runtime.txt
+          pip install pytest pip-audit bandit
+      - name: Install gitleaks
+        shell: pwsh
+        run: |
+          $ver = "8.21.2"
+          $url = "https://github.com/gitleaks/gitleaks/releases/download/v$ver/gitleaks_${ver}_windows_x64.zip"
+          $zip = "$env:RUNNER_TEMP/gitleaks.zip"
+          Invoke-WebRequest -Uri $url -OutFile $zip
+          Expand-Archive -Path $zip -DestinationPath "$env:RUNNER_TEMP/gitleaks" -Force
+          Copy-Item "$env:RUNNER_TEMP/gitleaks/gitleaks.exe" "$env:RUNNER_TEMP/gitleaks.exe"
+          echo "$env:RUNNER_TEMP" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Install osv-scanner
+        shell: pwsh
+        run: |
+          $ver = "1.9.2"
+          $url = "https://github.com/google/osv-scanner/releases/download/v$ver/osv-scanner_${ver}_windows_amd64.exe"
+          $out = "$env:RUNNER_TEMP/osv-scanner.exe"
+          Invoke-WebRequest -Uri $url -OutFile $out
+          echo "$env:RUNNER_TEMP" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Privacy scan
+        run: python scripts/privacy_scan.py
+      - name: pip-audit (dependency advisories)
+        run: python scripts/run_security_scans.py --only pip-audit
+      - name: Bandit SAST (high severity gate)
+        run: python scripts/run_security_scans.py --only bandit
+      - name: Gitleaks secret scan
+        run: python scripts/run_security_scans.py --only gitleaks
+      - name: OSV scanner
+        run: python scripts/run_security_scans.py --only osv
+      - name: Security pytest (injection / malformed corpus)
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: >
+          python -m pytest -q
+          tests/test_untrusted_content_security.py
+          --junitxml=junit-security.xml
+      - name: Upload security artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan
+          path: |
+            artifacts/pip-audit.json
+            artifacts/gitleaks.json
+            artifacts/security-scan-summary.json
+            junit-security.xml
+          if-no-files-found: ignore
+      - name: Summary
+        if: always()
+        shell: pwsh
+        run: |
+          Add-Content $env:GITHUB_STEP_SUMMARY "## security`n"
+          Add-Content $env:GITHUB_STEP_SUMMARY "pip-audit + OSV + Bandit + Gitleaks + privacy + security pytest"
+          if (Test-Path artifacts/security-scan-summary.json) {
+            Get-Content artifacts/security-scan-summary.json | Add-Content $env:GITHUB_STEP_SUMMARY
+          }

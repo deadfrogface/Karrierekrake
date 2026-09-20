@@ -1,0 +1,15 @@
+title = "Karrierekrake gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Fixtures, venv, build trees"
+paths = [
+  '''tests/fixtures/security_corpus/.*''',
+  '''tests/fixtures/fictional_emails/.*''',
+  '''(.*?)(/|\\)\.venv(/|\\).*''',
+  '''(.*?)(/|\\)node_modules(/|\\).*''',
+  '''(.*?)(/|\\)artifacts(/|\\).*''',
+  '''(.*?)(/|\\)third_party(/|\\).*''',
+]
