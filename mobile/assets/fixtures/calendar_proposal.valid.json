@@ -1,0 +1,32 @@
+{
+  "case_id": "case-fixture-1",
+  "proposal_text": "Dienstag oder Mittwoch zwischen 9 und 15 Uhr",
+  "modality": "remote",
+  "timezone": "Europe/Berlin",
+  "ranking_version": 1,
+  "prefs_schema_version": 1,
+  "ranked_slots": [
+    {
+      "start": "2026-09-22T09:00:00+02:00",
+      "end": "2026-09-22T10:00:00+02:00",
+      "start_utc": "2026-09-22T07:00:00Z",
+      "end_utc": "2026-09-22T08:00:00Z",
+      "score": 0.91,
+      "rank": 1,
+      "explanations": [
+        "preferred window"
+      ],
+      "modality": "remote",
+      "timezone": "Europe/Berlin",
+      "ranking_version": 1
+    }
+  ],
+  "selected_slot_index": null,
+  "stop_reason": "",
+  "parse_errors": [],
+  "created_at": "2026-09-20T14:00:00+02:00",
+  "status": "proposed",
+  "lifecycle_event_hint": "interview_slots_proposed",
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.calendar_proposal"
+}

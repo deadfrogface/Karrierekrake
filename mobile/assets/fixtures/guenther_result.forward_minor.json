@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "capability": "interview_prep",
+  "suggestion": {
+    "talking_points": [
+      "SAP Erfahrung",
+      "Lohnbuchhaltung"
+    ]
+  },
+  "fallback_reason": "",
+  "provider_status": "ready",
+  "model_id": "phi4-mini",
+  "validated": true,
+  "safety_notes": [],
+  "architecture": "",
+  "validator_errors": [],
+  "repair_history": {},
+  "grounding_report": {},
+  "contract_version": "1.1.0",
+  "schema_id": "karrierekrake.guenther_result",
+  "future_hint": "ignore-me"
+}
