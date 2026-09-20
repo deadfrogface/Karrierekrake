@@ -471,14 +471,23 @@ QListWidget#EventList {{
 """
 
 
-def stylesheet_for(preference: str) -> str:
+def stylesheet_for(
+    preference: str,
+    *,
+    dpi_scale: float | None = None,
+    high_contrast: bool | None = None,
+) -> str:
     """Return the active app stylesheet.
 
     Uses the design-system overlay by default. Rollback: set env
     ``KARRIEREKRAKE_LEGACY_STYLES=1`` or call ``legacy_stylesheet_for``.
+
+    ``dpi_scale`` defaults to the primary screen DPR when available.
+    ``high_contrast`` defaults to env ``KARRIEREKRAKE_HIGH_CONTRAST=1``.
     """
     import os
 
+    from desktop.design_system.dpi import detect_dpi_scale
     from desktop.design_system.stylesheet import compose_app_stylesheet
 
     if os.environ.get("KARRIEREKRAKE_LEGACY_STYLES", "").strip() in {
@@ -487,7 +496,20 @@ def stylesheet_for(preference: str) -> str:
         "yes",
     }:
         return legacy_stylesheet_for(preference)
-    return compose_app_stylesheet(preference, use_design_layer=True)
+    if dpi_scale is None:
+        dpi_scale = detect_dpi_scale()
+    if high_contrast is None:
+        high_contrast = os.environ.get("KARRIEREKRAKE_HIGH_CONTRAST", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+    return compose_app_stylesheet(
+        preference,
+        use_design_layer=True,
+        dpi_scale=float(dpi_scale),
+        high_contrast=bool(high_contrast),
+    )
 
 
 def legacy_stylesheet_for(preference: str) -> str:

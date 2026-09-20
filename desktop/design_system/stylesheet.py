@@ -125,6 +125,51 @@ QLabel#KkErrorText {{
 QDialog#KkDialog {{
     background: {c.bg};
 }}
+/* === PR44 focus / keyboard surfaces === */
+QPushButton#NavButton:focus {{
+    outline: none;
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
+QTabBar::tab:focus {{
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
+QCheckBox:focus, QRadioButton:focus {{
+    outline: none;
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+    border-radius: {r.sm}px;
+}}
+QListWidget:focus, QTreeWidget:focus, QTableWidget:focus,
+QAbstractItemView:focus {{
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
+QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus {{
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
+"""
+
+
+def build_high_contrast_stylesheet(tokens: DesignTokens) -> str:
+    """Extra contrast rules — status still uses text glyphs (never color-only)."""
+    return f"""
+/* === High contrast overlay (PR44) === */
+QWidget {{
+    background: {tokens.colors.bg};
+    color: {tokens.colors.text};
+}}
+QPushButton#PrimaryButton, QPushButton#KkPrimary {{
+    border: 2px solid {tokens.colors.text};
+}}
+QPushButton#SecondaryButton, QPushButton#KkSecondary,
+QPushButton#NavButton {{
+    border: 2px solid {tokens.colors.border};
+}}
+QLineEdit, QTextEdit, QPlainTextEdit, QComboBox, QSpinBox, QDoubleSpinBox {{
+    border: 2px solid {tokens.colors.text};
+}}
+QLabel#KkErrorText, QLabel#BadgeDanger {{
+    font-weight: 700;
+    text-decoration: underline;
+}}
 """
 
 
@@ -133,6 +178,7 @@ def compose_app_stylesheet(
     *,
     use_design_layer: bool = True,
     dpi_scale: float = 1.0,
+    high_contrast: bool = False,
 ) -> str:
     """Legacy theme QSS + optional design-system overlay (rollback: use_design_layer=False)."""
     from desktop.design_system.tokens import with_dpi_scale
@@ -143,4 +189,7 @@ def compose_app_stylesheet(
         return legacy
     theme = resolve_theme(preference)
     tokens = with_dpi_scale(tokens_for_theme(theme), dpi_scale)  # type: ignore[arg-type]
-    return legacy + "\n" + build_design_stylesheet(tokens)
+    css = legacy + "\n" + build_design_stylesheet(tokens)
+    if high_contrast:
+        css += "\n" + build_high_contrast_stylesheet(tokens)
+    return css

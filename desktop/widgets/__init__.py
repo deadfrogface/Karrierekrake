@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 )
 
 from desktop.i18n import tr
+from desktop.design_system.a11y import annotate_list_editor
 
 
 class ListEditor(QWidget):
@@ -23,9 +24,11 @@ class ListEditor(QWidget):
         parent=None,
         *,
         visible_rows: int = 3,
+        accessible_list_name: str = "",
     ) -> None:
         super().__init__(parent)
         self._placeholder_key_or_text = placeholder
+        self._accessible_list_name = accessible_list_name
         self.list = QListWidget()
         self.list.setMinimumHeight(22 * max(2, visible_rows))
         self.list.setMaximumHeight(22 * max(3, visible_rows) + 8)
@@ -53,6 +56,17 @@ class ListEditor(QWidget):
         layout.addWidget(self.list)
         layout.addLayout(row)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self._apply_a11y()
+
+    def _apply_a11y(self) -> None:
+        annotate_list_editor(
+            list_widget=self.list,
+            input_widget=self.input,
+            add_button=self.add_btn,
+            remove_button=self.remove_btn,
+            list_name=self._accessible_list_name or tr("a11y.list_editor"),
+            input_name=self.input.placeholderText() or tr("placeholder.add_entry"),
+        )
 
     def _set_placeholder(self, text: str) -> None:
         self.input.setPlaceholderText(text or tr("placeholder.add_entry"))
@@ -68,6 +82,8 @@ class ListEditor(QWidget):
             self._set_placeholder(tr("placeholder.add_entry"))
         else:
             self._set_placeholder(ph)
+        if hasattr(self, "list"):
+            self._apply_a11y()
 
     def _add(self) -> None:
         text = self.input.text().strip()

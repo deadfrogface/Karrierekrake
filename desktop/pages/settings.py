@@ -91,6 +91,8 @@ class SettingsPage(QWidget):
         self.theme_label = QLabel()
         self.general_form.addRow(self.lang_label, self.lang_combo)
         self.general_form.addRow(self.theme_label, self.theme_combo)
+        self.high_contrast = QCheckBox()
+        self.general_form.addRow(self.high_contrast)
         self.general_form.addRow(self.start_windows)
         self.general_form.addRow(self.minimize_tray)
         self.about_btn = QPushButton()
@@ -348,7 +350,30 @@ class SettingsPage(QWidget):
         root.addWidget(self.save_btn)
 
         apply_wheel_guard_to_spinboxes(self)
+        self._annotate_a11y_controls()
         self.retranslate_ui()
+
+    def _annotate_a11y_controls(self) -> None:
+        from desktop.design_system.a11y import annotate_button, wire_form_row
+
+        wire_form_row(self.lang_label, self.lang_combo)
+        wire_form_row(self.theme_label, self.theme_combo)
+        annotate_button(self.high_contrast)
+        annotate_button(self.save_btn)
+        for btn in (
+            self.privacy_connect_gmail_btn,
+            self.privacy_connect_cal_btn,
+            self.privacy_export_btn,
+            self.privacy_disconnect_btn,
+            self.privacy_mail_btn,
+            self.privacy_cal_btn,
+            self.privacy_logs_btn,
+            self.privacy_all_btn,
+            self.check_browser_btn,
+            self.repair_browser_btn,
+            self.about_btn,
+        ):
+            annotate_button(btn)
 
     def retranslate_ui(self) -> None:
         self.tabs.setTabText(0, tr("settings.general"))
@@ -376,6 +401,8 @@ class SettingsPage(QWidget):
         self.br_box.setTitle(tr("settings.browser"))
         self.lang_label.setText(tr("settings.language"))
         self.theme_label.setText(tr("settings.theme"))
+        self.high_contrast.setText(tr("a11y.high_contrast"))
+        self.high_contrast.setToolTip(tr("a11y.high_contrast_hint"))
         self.start_windows.setText(tr("settings.start_windows"))
         self.minimize_tray.setText(tr("settings.minimize_tray"))
         self.lang_combo.setItemText(0, tr("lang.de"))
@@ -469,6 +496,7 @@ class SettingsPage(QWidget):
         self.repair_browser_btn.setText(tr("btn.repair_browser"))
         self.about_btn.setText(tr("about.open"))
         self.save_btn.setText(tr("btn.save_settings"))
+        self._annotate_a11y_controls()
 
     def open_about(self) -> None:
         AboutDialog(self).exec()
@@ -480,6 +508,7 @@ class SettingsPage(QWidget):
         self.lang_combo.setCurrentIndex(lang_idx if lang_idx >= 0 else 0)
         theme_idx = self.theme_combo.findData((s.theme or "system").lower())
         self.theme_combo.setCurrentIndex(theme_idx if theme_idx >= 0 else 0)
+        self.high_contrast.setChecked(bool(getattr(s, "high_contrast", False)))
         self.start_windows.setChecked(bool(getattr(s, "start_with_windows", False)))
         self.minimize_tray.setChecked(bool(getattr(s, "minimize_to_tray", False)))
         {
@@ -580,6 +609,7 @@ class SettingsPage(QWidget):
         old_lang = (cfg.settings.language or "de").lower()
         cfg.settings.language = self.lang_combo.currentData() or "de"
         cfg.settings.theme = self.theme_combo.currentData() or "system"
+        cfg.settings.high_contrast = self.high_contrast.isChecked()
         cfg.settings.start_with_windows = self.start_windows.isChecked()
         cfg.settings.minimize_to_tray = self.minimize_tray.isChecked()
         if self.mode_search.isChecked():

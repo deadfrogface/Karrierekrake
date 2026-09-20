@@ -68,6 +68,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "btn.save_settings": "Einstellungen speichern",
         "btn.add": "Hinzufügen",
         "btn.remove": "Entfernen",
+        "a11y.list_editor": "Eintragsliste",
+        "a11y.status_bar": "Anwendungsstatus",
+        "a11y.high_contrast": "Hoher Kontrast",
+        "a11y.high_contrast_hint": (
+            "Verstärkte Rahmen und Unterstreichungen für Status/Fehler. "
+            "Kein WCAG-Konformitätsnachweis."
+        ),
         "btn.edit": "Bearbeiten",
         "btn.filter": "Filtern",
         "btn.open_job": "Job öffnen",
@@ -668,6 +675,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "btn.save_settings": "Save settings",
         "btn.add": "Add",
         "btn.remove": "Remove",
+        "a11y.list_editor": "Entry list",
+        "a11y.status_bar": "Application status",
+        "a11y.high_contrast": "High contrast",
+        "a11y.high_contrast_hint": (
+            "Stronger borders and underlined status/errors. "
+            "Not a WCAG conformity claim."
+        ),
         "btn.edit": "Edit",
         "btn.filter": "Filter",
         "btn.open_job": "Open job",
