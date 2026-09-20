@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-005",
+  "title": "Stelle 5",
+  "company": "Firma 5",
+  "city": "München",
+  "country_code": "DE",
+  "match_score": 45,
+  "match_reasons": [
+    "skill-0"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "onsite",
+  "employment_type": "Vollzeit",
+  "distance_km": 5.0
+}

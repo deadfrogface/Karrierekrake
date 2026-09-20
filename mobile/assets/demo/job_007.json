@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-007",
+  "title": "Stelle 7",
+  "company": "Firma 0",
+  "city": "Zürich",
+  "country_code": "CH",
+  "match_score": 47,
+  "match_reasons": [
+    "skill-2"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "distance_km": 7.0
+}

@@ -1,0 +1,15 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.lifecycle_event",
+  "id": "evt-demo-005",
+  "case_id": "case-demo-005",
+  "event_type": "ASSESSMENT_RECEIVED",
+  "occurred_at": "2026-09-06T08:00:00Z",
+  "recorded_at": "2026-09-06T08:00:01Z",
+  "idempotency_key": "demo:5",
+  "payload": {
+    "n": 5
+  },
+  "source": "fixture",
+  "confidence": 0.5
+}

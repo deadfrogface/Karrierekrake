@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-034",
+  "title": "Stelle 34",
+  "company": "Firma 6",
+  "city": "Wien",
+  "country_code": "AT",
+  "match_score": 74,
+  "match_reasons": [
+    "skill-4"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "distance_km": 34.0
+}

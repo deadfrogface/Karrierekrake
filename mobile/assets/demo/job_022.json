@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-022",
+  "title": "Stelle 22",
+  "company": "Firma 1",
+  "city": "Wien",
+  "country_code": "AT",
+  "match_score": 62,
+  "match_reasons": [
+    "skill-2"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "distance_km": 22.0
+}

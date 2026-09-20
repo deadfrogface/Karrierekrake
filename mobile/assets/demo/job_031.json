@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-031",
+  "title": "Stelle 31",
+  "company": "Firma 3",
+  "city": "Zürich",
+  "country_code": "CH",
+  "match_score": 71,
+  "match_reasons": [
+    "skill-1"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "distance_km": 31.0
+}

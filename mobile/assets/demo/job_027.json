@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-027",
+  "title": "Stelle 27",
+  "company": "Firma 6",
+  "city": "Zürich",
+  "country_code": "CH",
+  "match_score": 67,
+  "match_reasons": [
+    "skill-2"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "remote",
+  "employment_type": "Vollzeit",
+  "distance_km": 27.0
+}

@@ -1,0 +1,14 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.application_case",
+  "id": "case-demo-000",
+  "job_id": "job-demo-000",
+  "company": "Firma 0",
+  "position": "Rolle 0",
+  "status": "to_apply",
+  "applied_at": "2026-08-01T10:00:00Z",
+  "created_at": "2026-08-01T09:00:00Z",
+  "updated_at": "2026-09-01T12:00:00Z",
+  "notes": "",
+  "contact_email": "hr0@example.com"
+}

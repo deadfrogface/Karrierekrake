@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-009",
+  "title": "Stelle 9",
+  "company": "Firma 2",
+  "city": "München",
+  "country_code": "DE",
+  "match_score": 49,
+  "match_reasons": [
+    "skill-4"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "remote",
+  "employment_type": "Vollzeit",
+  "distance_km": 9.0
+}

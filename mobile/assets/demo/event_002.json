@@ -1,0 +1,15 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.lifecycle_event",
+  "id": "evt-demo-002",
+  "case_id": "case-demo-002",
+  "event_type": "APPLICATION_RECEIVED",
+  "occurred_at": "2026-09-03T08:00:00Z",
+  "recorded_at": "2026-09-03T08:00:01Z",
+  "idempotency_key": "demo:2",
+  "payload": {
+    "n": 2
+  },
+  "source": "fixture",
+  "confidence": 0.7
+}

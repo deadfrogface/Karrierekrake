@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-037",
+  "title": "Stelle 37",
+  "company": "Firma 2",
+  "city": "München",
+  "country_code": "DE",
+  "match_score": 77,
+  "match_reasons": [
+    "skill-2"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "distance_km": 37.0
+}

@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-023",
+  "title": "Stelle 23",
+  "company": "Firma 2",
+  "city": "Zürich",
+  "country_code": "CH",
+  "match_score": 63,
+  "match_reasons": [
+    "skill-3"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "onsite",
+  "employment_type": "Vollzeit",
+  "distance_km": 23.0
+}

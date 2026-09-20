@@ -1,0 +1,15 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.lifecycle_event",
+  "id": "evt-demo-015",
+  "case_id": "case-demo-015",
+  "event_type": "GHOSTED",
+  "occurred_at": "2026-09-16T08:00:00Z",
+  "recorded_at": "2026-09-16T08:00:01Z",
+  "idempotency_key": "demo:15",
+  "payload": {
+    "n": 15
+  },
+  "source": "fixture",
+  "confidence": 0.5
+}

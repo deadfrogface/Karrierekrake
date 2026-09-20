@@ -1,0 +1,24 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.calendar_proposal",
+  "case_id": "case-demo-008",
+  "proposal_text": "Fenster 8",
+  "modality": "remote",
+  "timezone": "Europe/Berlin",
+  "ranking_version": 1,
+  "prefs_schema_version": 1,
+  "ranked_slots": [
+    {
+      "start": "2026-09-25T09:00:00+02:00",
+      "end": "2026-09-25T10:00:00+02:00",
+      "score": 0.74,
+      "rank": 1,
+      "explanations": [
+        "fixture"
+      ]
+    }
+  ],
+  "selected_slot_index": null,
+  "status": "proposed",
+  "created_at": "2026-09-20T12:00:00Z"
+}

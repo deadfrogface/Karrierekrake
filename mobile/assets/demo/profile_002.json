@@ -1,0 +1,11 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.profile",
+  "first_name": "A2",
+  "last_name": "B2",
+  "email": "a2@example.com",
+  "city": "Berlin",
+  "country": "DE",
+  "phone": "",
+  "cv_path": ""
+}

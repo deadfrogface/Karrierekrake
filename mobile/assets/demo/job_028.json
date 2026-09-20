@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-028",
+  "title": "Stelle 28",
+  "company": "Firma 0",
+  "city": "Berlin",
+  "country_code": "DE",
+  "match_score": 68,
+  "match_reasons": [
+    "skill-3"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "distance_km": 28.0
+}
