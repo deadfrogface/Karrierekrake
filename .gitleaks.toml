@@ -4,12 +4,20 @@ title = "Karrierekrake gitleaks"
 useDefault = true
 
 [allowlist]
-description = "Fixtures, venv, build trees"
+description = """
+Known non-secret trees:
+- test fixtures / fictional emails
+- local venv, node_modules, artifacts, vendored third_party
+- cover-letter optimization_cache: SHA-256 content hashes stored as JSON
+  field cache_key / evaluator_hash (deterministic offline cache keys, not API
+  credentials). Reviewed PR41 — do not broaden without justification.
+"""
 paths = [
-  '''tests/fixtures/security_corpus/.*''',
-  '''tests/fixtures/fictional_emails/.*''',
-  '''(.*?)(/|\\)\.venv(/|\\).*''',
-  '''(.*?)(/|\\)node_modules(/|\\).*''',
-  '''(.*?)(/|\\)artifacts(/|\\).*''',
-  '''(.*?)(/|\\)third_party(/|\\).*''',
+  '''(?i).*tests[/\\]fixtures[/\\]security_corpus[/\\].*''',
+  '''(?i).*tests[/\\]fixtures[/\\]fictional_emails[/\\].*''',
+  '''(?i).*[/\\]\.venv[/\\].*''',
+  '''(?i).*[/\\]node_modules[/\\].*''',
+  '''(?i).*[/\\]artifacts[/\\].*''',
+  '''(?i).*[/\\]third_party[/\\].*''',
+  '''(?i).*benchmark[/\\]cover_specialization[/\\]optimization_cache[/\\].*''',
 ]

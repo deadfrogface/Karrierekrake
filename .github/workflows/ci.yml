@@ -250,20 +250,46 @@ jobs:
           Get-Content artifacts/runtime-freeze.txt | Select-Object -First 20
         shell: pwsh
       - name: pip-audit (dependency advisories)
+        id: pip_audit
         run: python scripts/run_security_scans.py --only pip-audit
       - name: Bandit SAST (high severity gate)
+        id: bandit
+        if: success() || failure()
         run: python scripts/run_security_scans.py --only bandit
       - name: Gitleaks secret scan
+        id: gitleaks
+        if: success() || failure()
         run: python scripts/run_security_scans.py --only gitleaks
       - name: OSV scanner
+        id: osv
+        if: success() || failure()
         run: python scripts/run_security_scans.py --only osv
       - name: Security pytest (injection / malformed corpus)
+        id: sec_pytest
+        if: success() || failure()
         env:
           QT_QPA_PLATFORM: offscreen
         run: >
           python -m pytest -q
           tests/test_untrusted_content_security.py
           --junitxml=junit-security.xml
+      - name: Fail if any security gate failed
+        if: always()
+        shell: pwsh
+        run: |
+          $map = @{
+            pip_audit = "${{ steps.pip_audit.outcome }}"
+            bandit = "${{ steps.bandit.outcome }}"
+            gitleaks = "${{ steps.gitleaks.outcome }}"
+            osv = "${{ steps.osv.outcome }}"
+            sec_pytest = "${{ steps.sec_pytest.outcome }}"
+          }
+          $failed = @($map.GetEnumerator() | Where-Object { $_.Value -eq "failure" } | ForEach-Object { $_.Key })
+          if ($failed.Count -gt 0) {
+            Write-Error ("Security gates failed: " + ($failed -join ", "))
+            exit 1
+          }
+          Write-Host "All security gates passed"
       - name: Upload security artifacts
         if: always()
         uses: actions/upload-artifact@v4

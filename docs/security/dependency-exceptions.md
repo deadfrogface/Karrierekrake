@@ -22,6 +22,13 @@ CI runs OSV against `artifacts/runtime-freeze.txt` (exact installed versions aft
 resolution of the requirements file. Floor pins in `requirements-runtime.txt`
 still raise known High/Critical packages (`pypdf`, `anyio`, `idna`, `protobuf`).
 
+## Gitleaks path allowlist (non-secrets)
+
+Documented in `.gitleaks.toml`. Current justified paths include
+`benchmark/cover_specialization/optimization_cache/**` — JSON fields
+`cache_key` / `evaluator_hash` are SHA-256 content digests for an offline
+prompt-optimization cache, not API credentials (`generic-api-key` false positives).
+
 ## Machine-readable ignore list (pip-audit)
 
 IDs listed in `scripts/security_ignore_vulns.txt` must each have a row above.
