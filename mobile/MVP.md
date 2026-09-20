@@ -31,7 +31,9 @@ Uninstalling the mobile app deletes only the on-device SQLite file
 - Android: `flutter build apk` (debug/release) — no embedded secrets
 - iOS: `flutter build ios --no-codesign` on macOS
 
-Commercial / store release requires PR39 + security/privacy gates.
+Commercial / store release requires Privacy Manifests + OAuth client registration
+(see PR39 `docs/mobile/auth_security.md`). Remote push remains Future Work until
+sync transport is approved.
 
 ## Flows shipped in this PR
 

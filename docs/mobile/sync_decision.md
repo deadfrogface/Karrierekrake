@@ -21,6 +21,8 @@ must **STOP** until a separate architecture review approves:
 - Flutter/Dart scaffold under `mobile/` consuming contracts natively
 - Local offline caches **on one device**
 - Document companion-first roles
+- Native installed-app OAuth + PKCE + secure storage (PR39) — **no** sync backend
+- Local calendar **slot approval** (write still gated)
 
 ## What is forbidden now
 
@@ -29,6 +31,8 @@ must **STOP** until a separate architecture review approves:
 - Auto-approve external actions via a hypothetical API
 - Porting / wrapping / embedding the Windows/PySide desktop app into Android/iOS
   (see [`mobile/ARCHITECTURE.md`](../../mobile/ARCHITECTURE.md))
+- WebView OAuth, plaintext token fallback, invented push backends
+  (see [`docs/mobile/auth_security.md`](auth_security.md))
 
 ## Rollback
 
