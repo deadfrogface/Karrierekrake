@@ -101,7 +101,7 @@ void main() {
     test('pii body blocked', () {
       final v = const PushPolicy().validatePayload({
         'title': 'x',
-        'body': 'Schreib an hr@firma.de bitte',
+        'body': 'Schreib an hr@example.com bitte',
       });
       expect(v.allowed, isFalse);
     });
