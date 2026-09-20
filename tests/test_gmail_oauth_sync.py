@@ -40,12 +40,30 @@ from integrations.gmail_sync import (
 from integrations.secure_tokens import delete_token, load_token, store_token
 
 
+class _TestMemoryKeyring:
+    """In-process keyring for Linux CI / environments without an OS backend."""
+
+    def __init__(self) -> None:
+        self._data: dict[str, str] = {}
+
+    def set_password(self, service: str, account: str, password: str) -> None:
+        self._data[f"{service}:{account}"] = password
+
+    def get_password(self, service: str, account: str) -> str | None:
+        return self._data.get(f"{service}:{account}")
+
+    def delete_password(self, service: str, account: str) -> None:
+        self._data.pop(f"{service}:{account}", None)
+
+
 @pytest.fixture(autouse=True)
-def _isolate_gmail_token_storage(tmp_path: Path):
-    """Clear shared OS keyring between tests (Windows Credential Locker on CI)."""
+def _isolate_gmail_token_storage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Use isolated in-memory keyring (no plaintext files; no shared OS locker)."""
+    kr = _TestMemoryKeyring()
+    monkeypatch.setattr(secure_tokens, "_keyring", lambda: kr)
     sink = tmp_path / "_token_sink"
     delete_token(TOKEN_ACCOUNT, fallback_dir=sink)
-    yield
+    yield kr
     delete_token(TOKEN_ACCOUNT, fallback_dir=sink)
 
 
@@ -497,7 +515,9 @@ def test_disconnect_attempts_remote_revoke(tmp_path: Path, monkeypatch):
 def test_save_creds_never_writes_plaintext_next_to_logs(tmp_path: Path):
     fake = FakeCreds(token="super-secret-access")
     backend = save_creds_payload(fake, fallback_dir=tmp_path / "private")
-    assert backend in {"keyring", "file"}
+    assert backend == "keyring"
+    # No oauth_*.json plaintext files
+    assert list((tmp_path / "private").glob("oauth_*.json")) == []
     for p in (tmp_path / "private").rglob("*"):
         if p.is_file():
             assert "logs" not in p.parts
@@ -524,14 +544,14 @@ def test_logs_omit_token_and_mail_body(caplog, tmp_path: Path, monkeypatch):
     assert "SECRETTOKENXYZ" not in blob
 
 
-def test_file_fallback_corrupt_json(tmp_path: Path, monkeypatch):
-    monkeypatch.setattr(secure_tokens, "_keyring", lambda: None)
+def test_legacy_corrupt_json_wiped(tmp_path: Path, monkeypatch):
     path = tmp_path / f"oauth_{TOKEN_ACCOUNT}.json"
     path.write_text("{broken", encoding="utf-8")
     assert load_token(TOKEN_ACCOUNT, fallback_dir=tmp_path) is None
+    assert not path.is_file()
 
 
-def test_keyring_store_failure_falls_back_to_file(tmp_path: Path, monkeypatch):
+def test_keyring_store_failure_does_not_write_plaintext(tmp_path: Path, monkeypatch):
     class Boom:
         def set_password(self, *a, **k):
             raise RuntimeError("no keyring")
@@ -543,8 +563,40 @@ def test_keyring_store_failure_falls_back_to_file(tmp_path: Path, monkeypatch):
             raise RuntimeError("x")
 
     monkeypatch.setattr(secure_tokens, "_keyring", lambda: Boom())
-    assert store_token("acc", {"token": "t"}, fallback_dir=tmp_path) == "file"
-    assert (tmp_path / "oauth_acc.json").is_file()
+    with pytest.raises(secure_tokens.KeyringUnavailable):
+        store_token("acc", {"token": "t"}, fallback_dir=tmp_path)
+    assert not (tmp_path / "oauth_acc.json").is_file()
+
+
+def test_legacy_file_migrates_then_deletes(tmp_path: Path, monkeypatch):
+    memory: dict[str, str] = {}
+
+    class MemKr:
+        def set_password(self, service, account, password):
+            memory[f"{service}:{account}"] = password
+
+        def get_password(self, service, account):
+            return memory.get(f"{service}:{account}")
+
+        def delete_password(self, service, account):
+            memory.pop(f"{service}:{account}", None)
+
+    monkeypatch.setattr(secure_tokens, "_keyring", lambda: MemKr())
+    path = tmp_path / "oauth_acc.json"
+    path.write_text(json.dumps({"token": "legacy", "refresh_token": "r"}), encoding="utf-8")
+    loaded = load_token("acc", fallback_dir=tmp_path)
+    assert loaded is not None
+    assert loaded["token"] == "legacy"
+    assert not path.is_file()
+    assert memory.get(f"{secure_tokens.SERVICE_NAME}:acc")
+
+
+def test_legacy_file_wiped_when_keyring_unavailable(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(secure_tokens, "_keyring", lambda: None)
+    path = tmp_path / "oauth_acc.json"
+    path.write_text(json.dumps({"token": "legacy"}), encoding="utf-8")
+    assert load_token("acc", fallback_dir=tmp_path) is None
+    assert not path.is_file()
 
 
 def test_creds_from_payload_roundtrip():
