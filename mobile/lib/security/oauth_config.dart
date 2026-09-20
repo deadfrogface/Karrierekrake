@@ -68,10 +68,29 @@ class OAuthClientConfig {
     if (effectiveScopes.contains('*') || effectiveScopes.contains('all')) {
       errors.add('broad scope forbidden');
     }
-    // Refuse Gmail full-mailbox style scopes on companion by default.
+    // Refuse Gmail/Calendar full-access scopes on companion (PR43 allowlist).
+    // Companion is OIDC-only until a separate sync decision; never request these.
+    const forbidden = <String>[
+      'mail.google.com',
+      'gmail.modify',
+      'gmail.compose',
+      'gmail.send',
+      'gmail.insert',
+      'gmail.readonly', // desktop-only Restricted scope — not for companion yet
+      '/auth/calendar',
+    ];
     for (final s in effectiveScopes) {
-      if (s.contains('mail.google.com') || s.contains('gmail.modify')) {
-        errors.add('broad mail scope forbidden on companion: $s');
+      for (final marker in forbidden) {
+        if (s.contains(marker)) {
+          // Allow narrow calendar.freebusy / calendar.events only if ever approved.
+          if (marker == '/auth/calendar' &&
+              (s.contains('calendar.freebusy') ||
+                  s.contains('calendar.events'))) {
+            continue;
+          }
+          errors.add('forbidden Google scope on companion: $s');
+          break;
+        }
       }
     }
     return errors;

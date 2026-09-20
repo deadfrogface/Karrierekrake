@@ -16,8 +16,13 @@ from integrations.calendar_timezone import ensure_aware, isoformat_z, parse_iso_
 
 logger = logging.getLogger("karrierekrake.calendar")
 
+# Prefer freebusy over calendar.readonly (PR43 least privilege).
+# calendar.readonly remains defined only as a forbidden-comparison constant.
 CALENDAR_READONLY_SCOPE = "https://www.googleapis.com/auth/calendar.readonly"
 CALENDAR_FREEBUSY_SCOPE = "https://www.googleapis.com/auth/calendar.freebusy"
+
+# Production OAuth for FreeBusy: integrations.google_oauth.Feature.CALENDAR_SLOT_FINDING
+# → authorize via integrations.gmail_auth.authorize_calendar_freebusy (shared token).
 
 
 @dataclass(frozen=True)

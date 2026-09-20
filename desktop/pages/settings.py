@@ -303,6 +303,12 @@ class SettingsPage(QWidget):
         self.privacy_intro.setWordWrap(True)
         self.privacy_intro.setObjectName("PageSubtitle")
         pform.addWidget(self.privacy_intro)
+        self.privacy_connect_gmail_btn = QPushButton()
+        self.privacy_connect_gmail_btn.setObjectName("SecondaryButton")
+        self.privacy_connect_gmail_btn.clicked.connect(self._privacy_connect_gmail)
+        self.privacy_connect_cal_btn = QPushButton()
+        self.privacy_connect_cal_btn.setObjectName("SecondaryButton")
+        self.privacy_connect_cal_btn.clicked.connect(self._privacy_connect_calendar)
         self.privacy_export_btn = QPushButton()
         self.privacy_export_btn.setObjectName("SecondaryButton")
         self.privacy_export_btn.clicked.connect(self._privacy_export)
@@ -322,6 +328,8 @@ class SettingsPage(QWidget):
         self.privacy_all_btn.setObjectName("PrimaryButton")
         self.privacy_all_btn.clicked.connect(self._privacy_delete_all)
         for btn in (
+            self.privacy_connect_gmail_btn,
+            self.privacy_connect_cal_btn,
             self.privacy_export_btn,
             self.privacy_disconnect_btn,
             self.privacy_mail_btn,
@@ -350,6 +358,8 @@ class SettingsPage(QWidget):
         self.tabs.setTabText(4, tr("privacy.tab"))
         self.privacy_box.setTitle(tr("privacy.title"))
         self.privacy_intro.setText(tr("privacy.intro"))
+        self.privacy_connect_gmail_btn.setText(tr("privacy.connect_gmail"))
+        self.privacy_connect_cal_btn.setText(tr("privacy.connect_calendar"))
         self.privacy_export_btn.setText(tr("privacy.export"))
         self.privacy_disconnect_btn.setText(tr("privacy.disconnect_google"))
         self.privacy_mail_btn.setText(tr("privacy.delete_mail"))
@@ -719,6 +729,71 @@ class SettingsPage(QWidget):
             )
         else:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.export_failed"))
+
+    def _privacy_connect_gmail(self) -> None:
+        confirm = QMessageBox.question(
+            self, tr("privacy.tab"), tr("privacy.connect_gmail_confirm")
+        )
+        if confirm != QMessageBox.StandardButton.Yes:
+            return
+        from integrations.gmail_auth import authorize_gmail
+
+        app_cfg = self.config_service.load()
+        settings = app_cfg.settings
+        creds = Path(settings.gmail_credentials_path)
+        if not creds.is_file():
+            creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
+        outcome = authorize_gmail(
+            credentials_path=creds,
+            token_dir=self.config_service.dirs["config"],
+            interactive=True,
+            open_browser=True,
+            privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
+            homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
+            oauth_env=getattr(settings, "oauth_environment", None),
+        )
+        if outcome.service is not None and not outcome.denied_features:
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
+        elif outcome.credentials is not None and outcome.denied_features:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
+        else:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_failed"))
+
+    def _privacy_connect_calendar(self) -> None:
+        confirm = QMessageBox.question(
+            self, tr("privacy.tab"), tr("privacy.connect_calendar_confirm")
+        )
+        if confirm != QMessageBox.StandardButton.Yes:
+            return
+        from integrations.gmail_auth import authorize_calendar_freebusy
+
+        app_cfg = self.config_service.load()
+        settings = app_cfg.settings
+        if not getattr(settings, "calendar_freebusy_enabled", False):
+            QMessageBox.warning(
+                self,
+                tr("privacy.tab"),
+                tr("privacy.connect_failed"),
+            )
+            return
+        creds = Path(settings.gmail_credentials_path)
+        if not creds.is_file():
+            creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
+        outcome = authorize_calendar_freebusy(
+            credentials_path=creds,
+            token_dir=self.config_service.dirs["config"],
+            interactive=True,
+            open_browser=True,
+            privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
+            homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
+            oauth_env=getattr(settings, "oauth_environment", None),
+        )
+        if outcome.service is not None and not outcome.denied_features:
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
+        elif outcome.credentials is not None and outcome.denied_features:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
+        else:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_failed"))
 
     def _privacy_disconnect_google(self) -> None:
         self._privacy_report(self._privacy_life().disconnect_google(revoke_remote=True))

@@ -230,6 +230,22 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "privacy.export_done": "Export gespeichert:",
         "privacy.export_failed": "Export fehlgeschlagen oder abgebrochen.",
         "privacy.disconnect_google": "Google-Verbindung trennen",
+        "privacy.connect_gmail": "Gmail verbinden (nur Lesen)",
+        "privacy.connect_gmail_confirm": (
+            "Karrierekrake fordert nur gmail.readonly an, um Bewerbungsmails "
+            "zuzuordnen. Kein Senden/Ändern. Systembrowser wird geöffnet."
+        ),
+        "privacy.connect_calendar": "Kalender FreeBusy verbinden",
+        "privacy.connect_calendar_confirm": (
+            "Nur calendar.freebusy für Terminvorschläge — keine Event-Titel. "
+            "Scope-Upgrade nur bei aktivierter Funktion. Systembrowser wird geöffnet."
+        ),
+        "privacy.connect_ok": "Google-Verbindung hergestellt.",
+        "privacy.connect_failed": "Google-Verbindung fehlgeschlagen oder abgebrochen.",
+        "privacy.connect_partial": (
+            "Teilweise Zustimmung: nicht alle angeforderten Rechte wurden gewährt. "
+            "Betroffene Funktionen bleiben deaktiviert."
+        ),
         "privacy.delete_mail": "Mail-Cache löschen",
         "privacy.delete_calendar": "Kalender-Cache löschen",
         "privacy.delete_logs": "Logs löschen",
@@ -814,6 +830,22 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "privacy.export_done": "Export saved:",
         "privacy.export_failed": "Export failed or cancelled.",
         "privacy.disconnect_google": "Disconnect Google",
+        "privacy.connect_gmail": "Connect Gmail (read-only)",
+        "privacy.connect_gmail_confirm": (
+            "Karrierekrake requests only gmail.readonly to associate application "
+            "emails. No send/modify. The system browser will open."
+        ),
+        "privacy.connect_calendar": "Connect Calendar FreeBusy",
+        "privacy.connect_calendar_confirm": (
+            "Only calendar.freebusy for slot proposals — no event titles. "
+            "Scope upgrade only when the feature is enabled. System browser opens."
+        ),
+        "privacy.connect_ok": "Google account connected.",
+        "privacy.connect_failed": "Google connect failed or was cancelled.",
+        "privacy.connect_partial": (
+            "Partial consent: not all requested permissions were granted. "
+            "Related features stay disabled."
+        ),
         "privacy.delete_mail": "Delete mail cache",
         "privacy.delete_calendar": "Delete calendar cache",
         "privacy.delete_logs": "Delete logs",

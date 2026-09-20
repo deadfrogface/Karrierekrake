@@ -368,7 +368,10 @@ def test_oauth_expired_token_refreshes(tmp_path: Path, monkeypatch):
     store_token(TOKEN_ACCOUNT, payload, fallback_dir=token_dir)
     fake = FakeCreds(valid=False, expired=True, refresh_token="rt")
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
-    monkeypatch.setattr(gmail_auth, "creds_from_payload", lambda _p: fake)
+    from integrations import google_oauth as goa
+
+    monkeypatch.setattr(goa, "google_libs_available", lambda: True)
+    monkeypatch.setattr(goa, "creds_from_payload", lambda _p, **k: fake)
     with (
         patch("google.auth.transport.requests.Request"),
         patch("googleapiclient.discovery.build", return_value="SVC"),
@@ -391,10 +394,12 @@ def test_oauth_revoked_token_clears_and_needs_reauth(tmp_path: Path, monkeypatch
         fallback_dir=token_dir,
     )
     from google.auth.exceptions import RefreshError
+    from integrations import google_oauth as goa
 
     fake = FakeCreds(valid=False, expired=True, refresh_exc=RefreshError("invalid_grant"))
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
-    monkeypatch.setattr(gmail_auth, "creds_from_payload", lambda _p: fake)
+    monkeypatch.setattr(goa, "google_libs_available", lambda: True)
+    monkeypatch.setattr(goa, "creds_from_payload", lambda _p, **k: fake)
     with patch("google.auth.transport.requests.Request"):
         outcome = gmail_auth.authorize_gmail(
             credentials_path=tmp_path / "x.json", token_dir=token_dir
@@ -412,9 +417,12 @@ def test_oauth_refresh_success_via_authorize(tmp_path: Path, monkeypatch):
         {"token": "t", "refresh_token": "rt", "client_id": "c", "scopes": list(SCOPES)},
         fallback_dir=token_dir,
     )
+    from integrations import google_oauth as goa
+
     fake = FakeCreds(valid=False, expired=True)
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
-    monkeypatch.setattr(gmail_auth, "creds_from_payload", lambda _p: fake)
+    monkeypatch.setattr(goa, "google_libs_available", lambda: True)
+    monkeypatch.setattr(goa, "creds_from_payload", lambda _p, **k: fake)
     with (
         patch("google.auth.transport.requests.Request"),
         patch("googleapiclient.discovery.build", return_value="OK"),
@@ -428,8 +436,11 @@ def test_oauth_refresh_success_via_authorize(tmp_path: Path, monkeypatch):
 
 def test_corrupt_keyring_payload_returns_none(tmp_path: Path, monkeypatch):
     token_dir = tmp_path / "tok"
+    from integrations import google_oauth as goa
+
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
-    monkeypatch.setattr(gmail_auth, "load_token", lambda *a, **k: {"token": object()})
+    monkeypatch.setattr(goa, "google_libs_available", lambda: True)
+    monkeypatch.setattr(goa, "load_google_token", lambda **k: {"token": object()})
     outcome = gmail_auth.authorize_gmail(
         credentials_path=tmp_path / "missing.json", token_dir=token_dir
     )
@@ -471,7 +482,10 @@ def test_scope_mismatch_forces_reauth(tmp_path: Path, monkeypatch):
         },
         fallback_dir=token_dir,
     )
+    from integrations import google_oauth as goa
+
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
+    monkeypatch.setattr(goa, "google_libs_available", lambda: True)
     outcome = gmail_auth.authorize_gmail(
         credentials_path=tmp_path / "c.json",
         token_dir=token_dir,
@@ -1232,8 +1246,10 @@ def test_full_sync_query_default_not_entire_mailbox_unbounded():
 
 
 def test_revoke_remote_handles_network_failure(monkeypatch):
+    from integrations import google_oauth as goa
+
     monkeypatch.setattr(
-        gmail_auth,
+        goa,
         "_post_revoke",
         lambda _t: (_ for _ in ()).throw(ConnectionError("offline")),
     )
