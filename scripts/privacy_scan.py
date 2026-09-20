@@ -57,10 +57,15 @@ CV_FINGERPRINTS = _fingerprint_regexes()
 
 ALLOW_EMAIL_DOMAINS = {"example.com", "example.org", "example.net", "localhost"}
 
+# Apple asset catalogs use filenames like Icon@2x.png — not email addresses.
+_APPLE_SCALE_DOMAIN = re.compile(r"^\dx\.(?:png|jpe?g|gif|webp)$", re.I)
+
 
 def _email_domain_allowed(domain: str) -> bool:
     d = domain.lower()
     if d in ALLOW_EMAIL_DOMAINS:
+        return True
+    if _APPLE_SCALE_DOMAIN.match(d):
         return True
     return any(d.endswith("." + root) for root in ALLOW_EMAIL_DOMAINS)
 EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})\b")
@@ -87,6 +92,11 @@ ALLOWLIST_PATHS = {
 # Upstream audit snapshots retain original example addresses from MIT/Apache sources.
 ALLOWLIST_PREFIXES = (
     "third_party/post-application-audit/",
+)
+
+# Flutter/Xcode asset catalogs (Contents.json references *@2x.png etc.)
+ALLOWLIST_PATH_GLOBS_EMAIL = (
+    ".xcassets/",
 )
 
 
@@ -123,6 +133,8 @@ def scan_text(path: Path, text: str) -> list[str]:
             break
     for m in EMAIL_RE.finditer(text):
         domain = m.group(1).lower()
+        if any(token in rel for token in ALLOWLIST_PATH_GLOBS_EMAIL):
+            continue
         if not _email_domain_allowed(domain):
             hits.append(f"{rel}: non-example email domain @{domain}")
     return hits
