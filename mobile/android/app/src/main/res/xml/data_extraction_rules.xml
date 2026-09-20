@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Block cloud backup of app data — tokens live in EncryptedSharedPreferences / Keystore. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" path="."/>
+        <exclude domain="sharedpref" path="."/>
+        <exclude domain="database" path="."/>
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" path="."/>
+        <exclude domain="sharedpref" path="."/>
+        <exclude domain="database" path="."/>
+    </device-transfer>
+</data-extraction-rules>

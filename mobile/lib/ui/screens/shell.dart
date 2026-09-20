@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/companion_repository.dart';
 import '../../domain/approvals.dart';
 import '../../domain/follow_up.dart';
+import '../../security/oauth_session.dart';
 import '../widgets/state_views.dart';
 import 'approvals_screen.dart';
 import 'applications_screen.dart';
@@ -12,6 +13,7 @@ import 'drafts_screen.dart';
 import 'jobs_screen.dart';
 import 'profile_screen.dart';
 import 'search_intent_screen.dart';
+import 'security_settings_screen.dart';
 import 'timeline_screen.dart';
 
 class CompanionScope extends InheritedWidget {
@@ -19,11 +21,13 @@ class CompanionScope extends InheritedWidget {
     super.key,
     required this.repo,
     required this.refresh,
+    this.authSession,
     required super.child,
   });
 
   final CompanionRepository repo;
   final Future<void> Function() refresh;
+  final NativeOAuthSession? authSession;
 
   static CompanionScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<CompanionScope>();
@@ -33,13 +37,14 @@ class CompanionScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(CompanionScope oldWidget) =>
-      repo != oldWidget.repo;
+      repo != oldWidget.repo || authSession != oldWidget.authSession;
 }
 
 class CompanionShell extends StatefulWidget {
-  const CompanionShell({super.key, required this.repo});
+  const CompanionShell({super.key, required this.repo, this.authSession});
 
   final CompanionRepository repo;
+  final NativeOAuthSession? authSession;
 
   @override
   State<CompanionShell> createState() => _CompanionShellState();
@@ -76,11 +81,13 @@ class _CompanionShellState extends State<CompanionShell> {
       ApprovalsScreen(items: approvals),
       ProfileScreen(profile: repo.profile),
       SearchIntentScreen(intent: repo.searchIntent),
+      SecuritySettingsScreen(session: widget.authSession),
     ];
 
     return CompanionScope(
       repo: repo,
       refresh: _refresh,
+      authSession: widget.authSession,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Karrierekrake'),
@@ -150,11 +157,12 @@ class _CompanionShellState extends State<CompanionShell> {
                 _drawerItem(6, 'Freigaben', Icons.verified_user),
                 _drawerItem(7, 'Profil', Icons.person),
                 _drawerItem(8, 'SearchIntent', Icons.search),
+                _drawerItem(9, 'Sicherheit', Icons.security),
                 const Divider(),
                 const ListTile(
                   dense: true,
                   title: Text(
-                    'Kein Cloud-Backend · Kein Phi-Download · Kein Desktop-Port',
+                    'Kein Cloud-Backend · Kein WebView-OAuth · Kein Desktop-Port',
                     style: TextStyle(fontSize: 12),
                   ),
                 ),
