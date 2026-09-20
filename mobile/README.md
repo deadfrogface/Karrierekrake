@@ -1,52 +1,45 @@
-# Karrierekrake Mobile (Flutter companion)
+# Karrierekrake Mobile Companion MVP (PR38)
 
-> **Read [`ARCHITECTURE.md`](ARCHITECTURE.md) first.**  
-> This is a **new Flutter app**, not a port of the Windows/PySide desktop client.
+> Read [`ARCHITECTURE.md`](ARCHITECTURE.md). This is a **new Flutter app**, not a desktop port.
 
-## Status
+## Scope (MVP)
 
-Scaffold only. Shared contracts live in `../contracts/`. Sync transport is **UNSPECIFIED** — do not invent a cloud backend here.
+Dashboard · Jobs · Bewerbungen · Timeline · Follow-up Hinweise · Reply Drafts ·
+Calendar proposals · Freigaben · Profile Light Editing · SearchIntent Editing
 
-## What this app is
+## Explicitly out of scope
 
-- Companion-first Android/iOS client
-- Consumes versioned JSON contracts (`Profile`, `SearchIntent`, `Job`, …)
-- Native Flutter/Dart UI
+- Browser automation / Apply-Bot
+- Desktop feature parity
+- Forced Phi model download
+- Hidden cloud backend / production API secrets
 
-## What this app is not
+## Stack
 
-- Not a wrapper around `desktop/`
-- Not PySide / Python UI on a phone
-- Not desktop OAuth loopback
-- Not a vehicle for multi-GB on-device LLM downloads
+- [Flutter](https://github.com/flutter/flutter)
+- [Drift](https://github.com/simolus3/drift) local SQLite (`schemaVersion = 1`)
+- Shared contracts from `../contracts/` (bundled under `assets/fixtures/`)
+
+## Sync
+
+**Transport = UNSPECIFIED.** The app works offline on fixture/local data only.
+Deleting the app does not affect Windows desktop data.
 
 ## Develop
 
 ```bash
-# Requires Flutter SDK: https://docs.flutter.dev/get-started/install
 cd mobile
 flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+flutter analyze
 flutter test
-flutter run
 ```
 
-Contract fixtures for local validation:
+## Android / iOS
 
-```text
-../contracts/fixtures/v1/*.json
-../contracts/schemas/v1/*.schema.json
+```bash
+flutter build apk --debug
+flutter build ios --no-codesign   # macOS + Xcode required
 ```
 
-## Package layout
-
-```text
-mobile/
-  ARCHITECTURE.md          # hard rule
-  pubspec.yaml
-  lib/
-    main.dart              # entry (placeholder)
-    contracts/             # Dart DTOs mirroring shared schemas
-    app.dart
-  test/
-    contract_fixtures_test.dart
-```
+No API keys or OAuth secrets are embedded.

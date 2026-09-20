@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-024",
+  "title": "Stelle 24",
+  "company": "Firma 3",
+  "city": "Berlin",
+  "country_code": "DE",
+  "match_score": 64,
+  "match_reasons": [
+    "skill-4"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "remote",
+  "employment_type": "Vollzeit",
+  "distance_km": 24.0
+}

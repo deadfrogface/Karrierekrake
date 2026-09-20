@@ -1,0 +1,16 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.search_intent",
+  "schema_version": 1,
+  "target_roles": [
+    "Role-3"
+  ],
+  "mandatory_skills": [
+    "Skill-3"
+  ],
+  "strictness": null,
+  "countries": [
+    "DE"
+  ],
+  "radius_km": 30.0
+}

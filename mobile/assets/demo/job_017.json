@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-017",
+  "title": "Stelle 17",
+  "company": "Firma 3",
+  "city": "München",
+  "country_code": "DE",
+  "match_score": 57,
+  "match_reasons": [
+    "skill-2"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "onsite",
+  "employment_type": "Vollzeit",
+  "distance_km": 17.0
+}

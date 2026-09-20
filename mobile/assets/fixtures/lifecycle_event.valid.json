@@ -1,0 +1,15 @@
+{
+  "id": "evt-1",
+  "case_id": "case-fixture-1",
+  "event_type": "APPLICATION_SENT",
+  "occurred_at": "2026-09-02T09:00:00Z",
+  "recorded_at": "2026-09-02T09:00:01Z",
+  "idempotency_key": "apply:case-fixture-1:sent",
+  "payload": {
+    "note": "Bewerbung abgesendet"
+  },
+  "source": "apply",
+  "confidence": 1.0,
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.lifecycle_event"
+}

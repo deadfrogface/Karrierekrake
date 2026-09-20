@@ -1,8 +1,8 @@
 name: karrierekrake_mobile
 description: >
-  Karrierekrake companion app for Android/iOS.
+  Karrierekrake companion MVP for Android/iOS.
   NEW Flutter application — NOT a port of the Windows/PySide desktop client.
-  Reuses only platform-independent contracts under ../contracts/.
+  Local-only Drift persistence; sync transport remains UNSPECIFIED.
 publish_to: "none"
 version: 0.1.0+1
 
@@ -12,14 +12,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # JSON contract decoding only — no desktop bridge.
-  # Keep dependencies minimal until sync architecture is approved.
+  drift: ^2.21.0
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  collection: ^1.18.0
+  meta: ^1.15.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  drift_dev: ^2.21.0
+  build_runner: ^2.4.13
+  sqlite3: ^2.4.6
 
 flutter:
   uses-material-design: true
-  # Brand assets may be referenced later from ../assets/brand (not desktop UI).
+  assets:
+    - assets/fixtures/
+    - assets/demo/

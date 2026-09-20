@@ -1,6 +1,6 @@
 # Companion-first mobile architecture (PR37)
 
-**Status:** shared contracts + Flutter scaffold under `mobile/` — **no finished app**, no invented cloud backend.
+**Status:** shared contracts (PR37) + Flutter companion MVP scaffold (PR38) under `mobile/` — **no invented cloud backend**.
 
 ## ARCHITECTURE HARD RULE
 

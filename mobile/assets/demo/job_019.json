@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-019",
+  "title": "Stelle 19",
+  "company": "Firma 5",
+  "city": "Zürich",
+  "country_code": "CH",
+  "match_score": 59,
+  "match_reasons": [
+    "skill-4"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "hybrid",
+  "employment_type": "Vollzeit",
+  "distance_km": 19.0
+}

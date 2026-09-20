@@ -1,0 +1,16 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-edge-2",
+  "title": "Unicode ÄÖÜ ß — 2",
+  "company": "Beispiel",
+  "city": "München",
+  "match_score": 1,
+  "match_reasons": [],
+  "rejection_reasons": [],
+  "status": "matched",
+  "mobile_client_tag": "edge-2",
+  "forward_compat_field": {
+    "x": 2
+  }
+}

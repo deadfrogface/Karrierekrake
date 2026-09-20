@@ -1,0 +1,15 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.lifecycle_event",
+  "id": "evt-demo-014",
+  "case_id": "case-demo-014",
+  "event_type": "WITHDRAWN",
+  "occurred_at": "2026-09-15T08:00:00Z",
+  "recorded_at": "2026-09-15T08:00:01Z",
+  "idempotency_key": "demo:14",
+  "payload": {
+    "n": 14
+  },
+  "source": "fixture",
+  "confidence": 0.9
+}

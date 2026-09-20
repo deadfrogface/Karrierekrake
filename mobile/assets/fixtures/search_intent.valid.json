@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "target_roles": [
+    "Lohn- und Gehaltsbuchhaltung",
+    "Lohnbuchhalter"
+  ],
+  "required_roles": [],
+  "excluded_roles": [],
+  "mandatory_skills": [
+    "SAP"
+  ],
+  "preferred_skills": [],
+  "excluded_skills": [],
+  "required_keywords": [],
+  "excluded_keywords": [],
+  "preferred_industries": [],
+  "excluded_industries": [],
+  "strictness": "strict",
+  "remote_mode": null,
+  "employment_types": [],
+  "working_time": [],
+  "salary_min": null,
+  "countries": [
+    "DE",
+    "AT"
+  ],
+  "radius_km": 25.0,
+  "needs_user_review": [],
+  "legacy_fields_deprecated": [],
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.search_intent"
+}

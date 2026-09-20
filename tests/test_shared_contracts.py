@@ -359,6 +359,12 @@ def test_mobile_architecture_hard_rule_and_flutter_scaffold():
     assert "NOT a port" in pubspec
     assert Path("mobile/lib/main.dart").is_file()
     assert Path("mobile/lib/contracts/search_intent_dto.dart").is_file()
-    # Guard: mobile must not vendor desktop Python UI
-    mobile_py = list(Path("mobile").rglob("*.py"))
+    # Guard: mobile app must not vendor desktop Python UI.
+    # Dev-only generators under mobile/tool/ are allowed.
+    mobile_py = [
+        p
+        for p in Path("mobile").rglob("*.py")
+        if "mobile/tool" not in p.as_posix() and "mobile\\tool" not in str(p)
+    ]
     assert mobile_py == [], f"unexpected Python under mobile/: {mobile_py}"
+    assert Path("mobile/tool/generate_fixtures_and_tests.py").is_file()

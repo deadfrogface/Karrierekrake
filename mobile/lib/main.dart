@@ -1,8 +1,8 @@
-/// Karrierekrake mobile companion — Flutter entrypoint.
+/// Karrierekrake mobile companion MVP — Flutter entrypoint.
 ///
-/// HARD RULE: This application is a NEW Flutter codebase under `mobile/`.
-/// It must NOT wrap, embed, transpile, or port the Windows/PySide desktop app.
-/// Shared contracts live in `contracts/` at the repo root.
+/// HARD RULE: NEW Flutter codebase under `mobile/`.
+/// Do NOT wrap/embed/port the Windows/PySide desktop app.
+/// Local Drift persistence only — sync transport UNSPECIFIED.
 library;
 
 import 'package:flutter/material.dart';

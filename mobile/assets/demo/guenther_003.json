@@ -1,0 +1,13 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.guenther_result",
+  "ok": false,
+  "capability": "cap-3",
+  "validated": false,
+  "suggestion": {
+    "n": 3
+  },
+  "model_id": "n/a",
+  "provider_status": "fixture",
+  "safety_notes": []
+}

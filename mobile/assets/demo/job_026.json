@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-026",
+  "title": "Stelle 26",
+  "company": "Firma 5",
+  "city": "Wien",
+  "country_code": "AT",
+  "match_score": 66,
+  "match_reasons": [
+    "skill-1"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "onsite",
+  "employment_type": "Vollzeit",
+  "distance_km": 26.0
+}

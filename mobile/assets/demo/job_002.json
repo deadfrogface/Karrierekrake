@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-002",
+  "title": "Stelle 2",
+  "company": "Firma 2",
+  "city": "Wien",
+  "country_code": "AT",
+  "match_score": 42,
+  "match_reasons": [
+    "skill-2"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "onsite",
+  "employment_type": "Vollzeit",
+  "distance_km": 2.0
+}

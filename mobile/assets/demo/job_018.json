@@ -1,0 +1,18 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.job",
+  "id": "job-demo-018",
+  "title": "Stelle 18",
+  "company": "Firma 4",
+  "city": "Wien",
+  "country_code": "AT",
+  "match_score": 58,
+  "match_reasons": [
+    "skill-3"
+  ],
+  "rejection_reasons": [],
+  "status": "matched",
+  "remote_type": "remote",
+  "employment_type": "Vollzeit",
+  "distance_km": 18.0
+}

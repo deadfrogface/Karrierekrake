@@ -1,0 +1,15 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.lifecycle_event",
+  "id": "evt-demo-027",
+  "case_id": "case-demo-007",
+  "event_type": "INTERVIEW_CANCELLED",
+  "occurred_at": "2026-09-08T08:00:00Z",
+  "recorded_at": "2026-09-08T08:00:01Z",
+  "idempotency_key": "demo:27",
+  "payload": {
+    "n": 27
+  },
+  "source": "fixture",
+  "confidence": 0.7
+}

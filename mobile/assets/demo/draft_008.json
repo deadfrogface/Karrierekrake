@@ -1,0 +1,17 @@
+{
+  "contract_version": "1.0.0",
+  "schema_id": "karrierekrake.reply_draft",
+  "case_id": "case-demo-008",
+  "action": "GENERAL_REPLY",
+  "to_address": "hr8@example.com",
+  "subject": "Betreff 8",
+  "body": "Körpertext 8\n",
+  "created_at": "2026-09-20T12:00:00Z",
+  "approved": false,
+  "binding_review_approved": false,
+  "sent": false,
+  "draft_only": true,
+  "auto_send": false,
+  "requires_explicit_review": true,
+  "blocking_reasons": []
+}
