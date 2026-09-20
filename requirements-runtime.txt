@@ -35,3 +35,4 @@ holidays>=0.40
 # trafilatura>=1.6.0
 # Follow-up reminders ticker (PR32); stable pin only — no pre-releases
 APScheduler>=3.10.4,<4.0
+cryptography>=42.0.0

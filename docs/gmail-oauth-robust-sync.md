@@ -18,8 +18,15 @@
 - **Invalid historyId (404):** controlled **full sync fallback**; **never** wipe `email_messages`.
 - **Cursor:** versioned JSON in `app_meta` (`gmail_sync_cursor_v1`, `CURSOR_SCHEMA_VERSION`).
 - **Dedupe:** skip known `gmail_id` before callbacks; `process_parsed_email` returns `status=duplicate` (no duplicate lifecycle events).
-- **Tokens:** keyring / private file via `secure_tokens`; disconnect + optional remote revoke; refresh failures clear local token and signal `needs_reauth`.
-- **Logs:** exception types / message ids only — no bodies, no tokens.
+## Tokens (PR40)
+
+- **Storage:** OS credential store via `keyring` only (`integrations/secure_tokens.py`).
+- **No plaintext fallback.** Legacy `oauth_*.json` is migrated once into keyring then wiped;
+  if migration fails, the file is destroyed and the user must re-login.
+- Disconnect + optional remote revoke; refresh failures clear local token and signal `needs_reauth`.
+- **Logs:** exception types / message ids only — redaction filter strips tokens/mail/CV
+  (`core.security.redaction`). See `docs/security/local-data-threat-model.md`.
+
 
 ## Acceptance mapping
 
