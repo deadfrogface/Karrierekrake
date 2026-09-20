@@ -20,8 +20,10 @@ from urllib.request import Request as UrlRequest
 from urllib.request import urlopen
 
 from integrations.secure_tokens import delete_token, load_token, store_token
+from core.security.redaction import install_redaction_filter, safe_exc_str
 
 logger = logging.getLogger("karrierekrake.gmail")
+install_redaction_filter("karrierekrake")
 
 GMAIL_READONLY_SCOPE = "https://www.googleapis.com/auth/gmail.readonly"
 SCOPES = [GMAIL_READONLY_SCOPE]
@@ -123,6 +125,8 @@ def is_revocation_error(exc: BaseException) -> bool:
 
 
 def save_creds_payload(creds: Any, *, fallback_dir: Path) -> str:
+    from integrations.secure_tokens import KeyringUnavailable
+
     payload = {
         "token": getattr(creds, "token", None),
         "refresh_token": getattr(creds, "refresh_token", None),
@@ -132,7 +136,12 @@ def save_creds_payload(creds: Any, *, fallback_dir: Path) -> str:
         "scopes": list(getattr(creds, "scopes", None) or SCOPES),
         "expiry": creds.expiry.isoformat() if getattr(creds, "expiry", None) else None,
     }
-    return store_token(TOKEN_ACCOUNT, payload, fallback_dir=fallback_dir)
+    try:
+        return store_token(TOKEN_ACCOUNT, payload, fallback_dir=fallback_dir)
+    except KeyringUnavailable:
+        logger.error("OAuth token not stored — OS keyring unavailable (re-login required)")
+        raise
+
 
 
 def creds_from_payload(payload: dict[str, Any]):
@@ -187,7 +196,8 @@ def disconnect_gmail(*, token_dir: Path, revoke_remote: bool = False) -> None:
     payload = None
     try:
         payload = load_token(TOKEN_ACCOUNT, fallback_dir=token_dir)
-    except Exception:
+    except Exception as exc:
+        logger.warning("disconnect load failed: %s", type(exc).__name__)
         payload = None
     if revoke_remote and payload:
         for key in ("token", "refresh_token"):
@@ -240,8 +250,12 @@ def authorize_gmail(
                     creds.refresh(Request())
                     save_creds_payload(creds, fallback_dir=token_dir)
                 except Exception as exc:
+                    from integrations.secure_tokens import KeyringUnavailable
+
                     logger.warning("Gmail token refresh failed: %s", type(exc).__name__)
                     delete_token(TOKEN_ACCOUNT, fallback_dir=token_dir)
+                    if isinstance(exc, KeyringUnavailable):
+                        return AuthOutcome(needs_reauth=True, reason="keyring_unavailable")
                     reason = "revoked" if is_revocation_error(exc) else "refresh_failed"
                     if is_revocation_error(exc):
                         reason = (
@@ -264,7 +278,14 @@ def authorize_gmail(
                 return AuthOutcome(reason="client_config")
             flow = InstalledAppFlow.from_client_secrets_file(str(credentials_path), SCOPES)
             creds = flow.run_local_server(port=port)
-            save_creds_payload(creds, fallback_dir=token_dir)
+            try:
+                save_creds_payload(creds, fallback_dir=token_dir)
+            except Exception as exc:
+                from integrations.secure_tokens import KeyringUnavailable
+
+                if isinstance(exc, KeyringUnavailable):
+                    return AuthOutcome(needs_reauth=True, reason="keyring_unavailable")
+                raise
 
         service = build("gmail", "v1", credentials=creds, cache_discovery=False)
         return AuthOutcome(service=service, needs_reauth=False, reason="")

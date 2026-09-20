@@ -409,7 +409,21 @@ class ConfigService:
         backup_dir = root / f".wipe_backup_{stamp}"
         try:
             if self.dirs["config"].exists():
-                shutil.copytree(self.dirs["config"], backup_dir / "config", dirs_exist_ok=True)
+                from core.security.export_gate import wipe_backup_should_skip
+
+                def _ignore(directory: str, names: list[str]) -> list[str]:
+                    return [
+                        n
+                        for n in names
+                        if wipe_backup_should_skip(Path(directory) / n)
+                    ]
+
+                shutil.copytree(
+                    self.dirs["config"],
+                    backup_dir / "config",
+                    dirs_exist_ok=True,
+                    ignore=_ignore,
+                )
                 backup_hint = str(backup_dir)
         except OSError:
             backup_hint = ""
