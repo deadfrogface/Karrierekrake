@@ -39,8 +39,16 @@
 
 ## Production Google compliance
 
-**PR43** — Cloud Console verification / production OAuth branding & policy.
-This PR documents the dependency only; it does not implement Console verification.
+**PR43** — least-privilege production OAuth, incremental authorization, and
+Cloud Console verification materials live under `docs/google/`:
+
+- `docs/google/oauth-production.md` — feature → scope matrix
+- `docs/google/oauth-scope-justification.md` — verification copy
+- `docs/google/oauth-test-accounts.md` — test users
+- `docs/google/oauth-screencast-checklist.md` — screencast
+
+Runtime enforcement: `integrations/google_oauth.py` (allowlist, PKCE, revoke,
+migration of broader grants). Gmail entrypoint remains `integrations/gmail_auth.py`.
 
 ## Rollback
 
