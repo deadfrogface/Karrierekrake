@@ -245,7 +245,7 @@ def test_export_mail_meta_without_bodies_by_default(life, tmp_path: Path):
 
 
 def test_delete_profile(life):
-    life._profile["application"]["email"] = "real@firma.de"  # type: ignore[index]
+    life._profile["application"]["email"] = "real@firma.invalid"  # type: ignore[index]
     r = life.delete_profile()
     assert r.ok and r.verified
     assert life._profile["application"]["email"] == ""  # type: ignore[index]
@@ -389,7 +389,7 @@ def test_delete_all_verified(life, app_dirs):
     store_token("gmail_readonly", {"refresh_token": "R"}, fallback_dir=life.token_dir)
     (app_dirs["cvs"] / "cv.txt").write_text("CV", encoding="utf-8")
     (app_dirs["logs"] / "x.log").write_text("log", encoding="utf-8")
-    life._profile["application"]["email"] = "me@firma.de"  # type: ignore[index]
+    life._profile["application"]["email"] = "me@firma.invalid"  # type: ignore[index]
     r = life.delete_all()
     assert r.ok and r.verified
     assert r.residuals == []
@@ -404,7 +404,7 @@ def test_delete_all_removes_wipe_backups(life, app_dirs):
     bak = app_dirs["root"] / ".wipe_backup_test"
     bak.mkdir()
     (bak / "config").mkdir()
-    (bak / "config" / "profile.yaml").write_text("email: x@firma.de", encoding="utf-8")
+    (bak / "config" / "profile.yaml").write_text("email: x@firma.invalid", encoding="utf-8")
     r = life.delete_all()
     assert r.ok
     assert not bak.exists()
@@ -425,7 +425,7 @@ def test_e2e_export_then_delete_all_then_restart(life, app_dirs, tmp_path):
     cv = app_dirs["cvs"] / "lebenslauf.pdf"
     cv.write_bytes(b"%PDF-1.4")
     life._docs.append(cv)  # type: ignore[attr-defined]
-    life._profile["application"]["email"] = "candidate@firma.de"  # type: ignore[index]
+    life._profile["application"]["email"] = "candidate@firma.invalid"  # type: ignore[index]
     (app_dirs["logs"] / "run.log").write_text("info\n", encoding="utf-8")
 
     exported = life.export_my_data(tmp_path, user_confirmed_pii=True)
