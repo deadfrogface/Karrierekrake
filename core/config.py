@@ -394,6 +394,8 @@ class SettingsConfig:
     gmail_sync_enabled: bool = False
     gmail_exclude_senders: list[str] = field(default_factory=list)
     calendar_freebusy_enabled: bool = False
+    # Google Calendar OAuth mode before connect: A = FreeBusy only, B = FreeBusy + owned events.
+    calendar_google_mode: str = "A"
     gmail_credentials_path: str = "private/gmail_credentials.json"
     # Google OAuth production compliance (PR43) — URLs required for production consent.
     oauth_privacy_policy_url: str = ""

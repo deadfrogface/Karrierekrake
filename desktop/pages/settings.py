@@ -318,6 +318,18 @@ class SettingsPage(QWidget):
         oform.addWidget(self.calendar_provider)
         oform.addWidget(self.calendar_status)
 
+        self.lbl_calendar_mode = QLabel()
+        self.calendar_google_mode = QComboBox()
+        self.calendar_google_mode.addItem("", "A")
+        self.calendar_google_mode.addItem("", "B")
+        self.calendar_mode_rights = QLabel()
+        self.calendar_mode_rights.setWordWrap(True)
+        self.calendar_mode_rights.setObjectName("PageSubtitle")
+        self.calendar_google_mode.currentIndexChanged.connect(self._update_calendar_mode_rights)
+        oform.addWidget(self.lbl_calendar_mode)
+        oform.addWidget(self.calendar_google_mode)
+        oform.addWidget(self.calendar_mode_rights)
+
         self.provider_hint = QLabel()
         self.provider_hint.setWordWrap(True)
         oform.addWidget(self.provider_hint)
@@ -556,6 +568,16 @@ class SettingsPage(QWidget):
         if hasattr(self, "lbl_mail_provider"):
             self.lbl_mail_provider.setText(tr("integrations.mail.label"))
             self.lbl_calendar_provider.setText(tr("integrations.calendar.label"))
+            self.lbl_calendar_mode.setText(tr("integrations.calendar.mode_label"))
+            mode_cur = self.calendar_google_mode.currentData()
+            self.calendar_google_mode.blockSignals(True)
+            self.calendar_google_mode.clear()
+            self.calendar_google_mode.addItem(tr("integrations.calendar.mode_a"), "A")
+            self.calendar_google_mode.addItem(tr("integrations.calendar.mode_b"), "B")
+            midx = self.calendar_google_mode.findData(mode_cur or "A")
+            self.calendar_google_mode.setCurrentIndex(midx if midx >= 0 else 0)
+            self.calendar_google_mode.blockSignals(False)
+            self._update_calendar_mode_rights()
             self.provider_hint.setText(tr("integrations.no_fallback_hint"))
             # refresh combo labels
             for combo, keys in (
@@ -784,6 +806,12 @@ class SettingsPage(QWidget):
                 getattr(s, "calendar_provider", "none") or "none"
             )
             self.calendar_provider.setCurrentIndex(cp if cp >= 0 else max(0, self.calendar_provider.count() - 1))
+            mode = str(getattr(s, "calendar_google_mode", "A") or "A").upper()
+            if mode not in {"A", "B"}:
+                mode = "A"
+            mi = self.calendar_google_mode.findData(mode)
+            self.calendar_google_mode.setCurrentIndex(mi if mi >= 0 else 0)
+            self._update_calendar_mode_rights()
             self._refresh_provider_status(s)
         self.run_auto.setChecked(bool(s.run_automatically))
         idx = self.schedule_mode.findData(s.schedule_mode)
@@ -884,6 +912,11 @@ class SettingsPage(QWidget):
             cfg.settings.calendar_provider = str(
                 self.calendar_provider.currentData() or "none"
             )
+            cfg.settings.calendar_google_mode = str(
+                self.calendar_google_mode.currentData() or "A"
+            ).upper()
+            if cfg.settings.calendar_google_mode not in {"A", "B"}:
+                cfg.settings.calendar_google_mode = "A"
         cfg.settings.run_automatically = self.run_auto.isChecked()
         cfg.settings.schedule_mode = self.schedule_mode.currentData()
         cfg.settings.schedule_interval_hours = self.interval_hours.value()
@@ -1028,25 +1061,40 @@ class SettingsPage(QWidget):
         else:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_failed"))
 
+    def _update_calendar_mode_rights(self) -> None:
+        mode = str(self.calendar_google_mode.currentData() or "A").upper()
+        if mode == "B":
+            self.calendar_mode_rights.setText(tr("integrations.calendar.mode_b_rights"))
+        else:
+            self.calendar_mode_rights.setText(tr("integrations.calendar.mode_a_rights"))
+
     def _privacy_connect_calendar(self) -> None:
         if str(self.calendar_provider.currentData() or "") != "google_calendar":
             QMessageBox.warning(
                 self, tr("privacy.tab"), tr("integrations.wrong_calendar_provider")
             )
             return
-        confirm = QMessageBox.question(
-            self, tr("privacy.tab"), tr("privacy.connect_calendar_confirm")
+        mode = str(self.calendar_google_mode.currentData() or "A").upper()
+        if mode not in {"A", "B"}:
+            mode = "A"
+        rights_key = (
+            "integrations.calendar.mode_b_confirm"
+            if mode == "B"
+            else "integrations.calendar.mode_a_confirm"
         )
+        confirm = QMessageBox.question(self, tr("privacy.tab"), tr(rights_key))
         if confirm != QMessageBox.StandardButton.Yes:
             return
-        from integrations.gmail_auth import authorize_calendar_freebusy
+        from integrations.gmail_auth import authorize_calendar_mode
 
         app_cfg = self.config_service.load()
         settings = app_cfg.settings
+        settings.calendar_google_mode = mode
         creds = Path(settings.gmail_credentials_path)
         if not creds.is_file():
             creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
-        outcome = authorize_calendar_freebusy(
+        outcome = authorize_calendar_mode(
+            mode,
             credentials_path=creds,
             token_dir=self.config_service.dirs["config"],
             interactive=True,
@@ -1057,6 +1105,8 @@ class SettingsPage(QWidget):
         )
         if outcome.service is not None and not outcome.denied_features:
             app_cfg.settings.calendar_provider = "google_calendar"
+            app_cfg.settings.calendar_google_mode = mode
+            app_cfg.settings.calendar_freebusy_enabled = True
             self.config_service.save(app_cfg)
             QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
         elif outcome.credentials is not None and outcome.denied_features:

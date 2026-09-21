@@ -364,6 +364,31 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.calendar.microsoft": "Microsoft",
         "integrations.calendar.other": "Anderer Anbieter",
         "integrations.calendar.none_explicit": "Kein Kalender",
+        "integrations.calendar.mode_label": "Google-Kalender-Funktion",
+        "integrations.calendar.mode_a": "Nur Verfügbarkeit prüfen",
+        "integrations.calendar.mode_b": "Verfügbarkeit prüfen und bestätigte Termine eintragen",
+        "integrations.calendar.mode_a_rights": (
+            "KarriereKrake fragt Google nur nach freien/belegten Zeiten. "
+            "Termintitel und Beschreibungen werden nicht gelesen. "
+            "Daten bleiben auf diesem PC; es gibt keinen KarriereKrake-Server."
+        ),
+        "integrations.calendar.mode_b_rights": (
+            "Zusätzlich zu freien/belegten Zeiten darf KarriereKrake nach Ihrer "
+            "Zustimmung Termine in Ihren eigenen Kalender eintragen. "
+            "Kein automatisches Annehmen von Einladungen. "
+            "Daten bleiben auf diesem PC; es gibt keinen KarriereKrake-Server."
+        ),
+        "integrations.calendar.mode_a_confirm": (
+            "Google-Konto verbinden (nur Verfügbarkeit)?\n\n"
+            "Es werden nur freie und belegte Zeiten abgefragt. "
+            "Termindetails bleiben privat. Verbindung läuft direkt zu Google."
+        ),
+        "integrations.calendar.mode_b_confirm": (
+            "Google-Konto verbinden (Verfügbarkeit + Termine eintragen)?\n\n"
+            "KarriereKrake darf freie/belegte Zeiten lesen und nach Ihrer "
+            "Freigabe Termine in Ihren eigenen Kalender schreiben. "
+            "Verbindung läuft direkt zu Google — kein KarriereKrake-Server."
+        ),
         "integrations.no_fallback_hint": (
             "Mail und Kalender sind unabhängig wählbar. "
             "Bei Ausfall: Fehler anzeigen, neu verbinden oder Provider manuell wechseln — "
@@ -387,10 +412,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Karrierekrake fordert nur gmail.readonly an, um Bewerbungsmails "
             "zuzuordnen. Kein Senden/Ändern. Systembrowser wird geöffnet."
         ),
-        "privacy.connect_calendar": "Kalender FreeBusy verbinden",
+        "privacy.connect_calendar": "Google-Kalender verbinden",
         "privacy.connect_calendar_confirm": (
-            "Nur calendar.freebusy für Terminvorschläge — keine Event-Titel. "
-            "Scope-Upgrade nur bei aktivierter Funktion. Systembrowser wird geöffnet."
+            "Google-Kalender verbinden? Die Rechte hängen vom gewählten Modus "
+            "(nur Verfügbarkeit bzw. Verfügbarkeit + Termine) ab."
         ),
         "privacy.connect_ok": "Google-Verbindung hergestellt.",
         "privacy.connect_failed": "Google-Verbindung fehlgeschlagen oder abgebrochen.",
@@ -1146,6 +1171,31 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.calendar.microsoft": "Microsoft",
         "integrations.calendar.other": "Other provider",
         "integrations.calendar.none_explicit": "No calendar",
+        "integrations.calendar.mode_label": "Google Calendar feature",
+        "integrations.calendar.mode_a": "Check availability only",
+        "integrations.calendar.mode_b": "Check availability and add confirmed events",
+        "integrations.calendar.mode_a_rights": (
+            "KarriereKrake only asks Google for free/busy times. "
+            "Event titles and descriptions are not read. "
+            "Data stays on this PC; there is no KarriereKrake server."
+        ),
+        "integrations.calendar.mode_b_rights": (
+            "In addition to free/busy, KarriereKrake may create events in your "
+            "own calendar after you approve them. "
+            "Invitations are never accepted automatically. "
+            "Data stays on this PC; there is no KarriereKrake server."
+        ),
+        "integrations.calendar.mode_a_confirm": (
+            "Connect Google account (availability only)?\n\n"
+            "Only free and busy times are queried. Event details stay private. "
+            "The connection goes directly to Google."
+        ),
+        "integrations.calendar.mode_b_confirm": (
+            "Connect Google account (availability + write events)?\n\n"
+            "KarriereKrake may read free/busy and, after your approval, "
+            "create events in your own calendar. "
+            "Connection goes directly to Google — no KarriereKrake server."
+        ),
         "integrations.no_fallback_hint": (
             "Mail and calendar are chosen independently. "
             "On failure: show an error, reconnect, or change provider explicitly — "
@@ -1169,10 +1219,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Karrierekrake requests only gmail.readonly to associate application "
             "emails. No send/modify. The system browser will open."
         ),
-        "privacy.connect_calendar": "Connect Calendar FreeBusy",
+        "privacy.connect_calendar": "Connect Google Calendar",
         "privacy.connect_calendar_confirm": (
-            "Only calendar.freebusy for slot proposals — no event titles. "
-            "Scope upgrade only when the feature is enabled. System browser opens."
+            "Connect Google Calendar? Permissions depend on the selected mode "
+            "(availability only, or availability + write events)."
         ),
         "privacy.connect_ok": "Google account connected.",
         "privacy.connect_failed": "Google connect failed or was cancelled.",
