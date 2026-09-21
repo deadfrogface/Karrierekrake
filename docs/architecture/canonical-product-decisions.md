@@ -76,11 +76,16 @@ The product must **not** silently try another provider when the chosen one fails
 
 ### Implications for current code
 
+NEXT-03 implements explicit `mail_provider` / `calendar_provider` with registries
+that **forbid auto-fallback**. Google adapters wrap existing Gmail/FreeBusy code.
+Microsoft Graph (PKCE), IMAP, and CalDAV adapters are available; live account
+acceptance is separate from contract tests.
+
 Today:
 
-- Mail: **Gmail readonly only**.
-- Calendar: **Google FreeBusy** + write **gate**; ICS export; no Microsoft/CalDAV.
-- Target multi-provider is **NOT_IMPLEMENTED** (except Gmail/Google path PARTIAL).
+- Config: `mail_provider`, `calendar_provider` (independent).
+- Migration: legacy `gmail_sync_enabled` / `calendar_freebusy_enabled` → Google enums.
+- Settings UI: provider pickers + connect actions per service.
 
 ---
 

@@ -151,29 +151,29 @@ Columns:
 
 | Field | Content |
 |-------|---------|
-| CURRENT IMPLEMENTATION | Google Gmail **readonly** OAuth + robust sync; classify/associate/lifecycle local. |
-| CURRENT TEST EVIDENCE | FakeGmail unit/E2E lifecycle corpora; CI. |
-| REAL USER VERIFIED | **None** in CI (no real Google accounts). |
+| CURRENT IMPLEMENTATION | Explicit `mail_provider` (none/google_gmail/microsoft_graph/generic_imap). Google Gmail adapter reuses readonly OAuth+sync. Microsoft Graph + IMAP adapters with keyring secrets. **No auto-fallback.** |
+| CURRENT TEST EVIDENCE | `tests/test_next03_providers.py` contract corpus; existing Gmail OAuth suites. |
+| REAL USER VERIFIED | Google path historically partial; MS/IMAP live accounts **PENDING**. |
 | TARGET | User-selected: Gmail **or** Outlook/M365 **or** IMAP — **no auto-fallback**. |
 | KEEP | Readonly-first; draft-only send gates; association review; zero false confident link gates. |
-| CHANGE | Add Microsoft + IMAP as explicit choices. |
-| REMOVE | Any future silent provider hopping. |
-| OPEN BLOCKER | Google OAuth production URLs/website still required for commercial consent. |
-| STATUS | **PARTIAL** (Gmail); Outlook/IMAP **NOT_IMPLEMENTED** |
+| CHANGE | Live MS/IMAP acceptance; generalize DB `gmail_id` naming (alias kept). |
+| REMOVE | Silent provider hopping (**forbidden**). |
+| OPEN BLOCKER | Google OAuth production URLs/website; MS client ID for live. |
+| STATUS | **PARTIAL** (architecture **DONE**; live MS/IMAP acceptance pending) |
 
 ### 6. Calendar / interview scheduling
 
 | Field | Content |
 |-------|---------|
-| CURRENT IMPLEMENTATION | Scheduling engine + Google FreeBusy client + write **gate**; ICS; in-memory transport in tests. Google `events.insert` transport incomplete vs scopes. |
-| CURRENT TEST EVIDENCE | Calendar engine + lifecycle E2E matrix; CI. |
-| REAL USER VERIFIED | **None** for live Google write. |
+| CURRENT IMPLEMENTATION | Explicit `calendar_provider` (none/google_calendar/microsoft_graph/generic_caldav). Google FreeBusy + write gate; MS Graph + CalDAV adapters; iCloud as CalDAV preset. Independent of mail provider. |
+| CURRENT TEST EVIDENCE | NEXT-03 busy/create contract tests across adapters; lifecycle calendar matrix. |
+| REAL USER VERIFIED | **None** for live Google/MS/CalDAV write. |
 | TARGET | User-selected Google / Microsoft / CalDAV; no auto-fallback; duplicate event gate remains. |
 | KEEP | Draft/approve gates; timezone engine; idempotent write keys. |
-| CHANGE | Complete write transports; add MS + CalDAV. |
+| CHANGE | Complete live write transports; production MS app registration. |
 | REMOVE | — |
 | OPEN BLOCKER | Live OAuth calendar write UX. |
-| STATUS | **PARTIAL**; MS/CalDAV **NOT_IMPLEMENTED** |
+| STATUS | **PARTIAL** (architecture **DONE**; live acceptance pending) |
 
 ### 7. Application lifecycle / inbox UX
 
@@ -369,7 +369,7 @@ These documents (and similar shootout leftovers) must **not** be read as current
 | **NEXT-02** | Enforce ONE Phi model + CV Phi pipeline (**this package / PR**) |
 | **NEXT-03** | Google Maps Geocoding + Routes as sole commute authority |
 | **NEXT-04** | CV extract/layout fix + local black-box EXE acceptance |
-| **NEXT-05** | Mail/Calendar multi-provider (explicit choice, no fallback) |
+| **NEXT-03** | Mail/Calendar multi-provider (explicit choice, no fallback) — **this package** |
 | **NEXT-06** | Website + OAuth production URLs |
 | **NEXT-07** | Single commerce provider decision + implementation |
 | **NEXT-08** | Mobile sync transport decision |

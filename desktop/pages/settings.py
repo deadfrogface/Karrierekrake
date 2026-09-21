@@ -278,7 +278,7 @@ class SettingsPage(QWidget):
         comm_layout.addStretch(1)
         self.stack.addWidget(comm_page)
 
-        # --- 3 Integrationen (OAuth + Günther) ---
+        # --- 3 Integrationen (Mail / Kalender Providers + Günther) ---
         integ_page, integ_layout = _scroll_form()
         self.section_integrations = QLabel()
         self.section_integrations.setObjectName("PageTitle")
@@ -287,18 +287,61 @@ class SettingsPage(QWidget):
         oauth_box = QGroupBox()
         self.oauth_box = oauth_box
         oform = QVBoxLayout(oauth_box)
+
+        self.lbl_mail_provider = QLabel()
+        self.mail_provider = QComboBox()
+        for label, data in (
+            ("integrations.mail.none", "none"),
+            ("integrations.mail.google", "google_gmail"),
+            ("integrations.mail.microsoft", "microsoft_graph"),
+            ("integrations.mail.other", "generic_imap"),
+        ):
+            self.mail_provider.addItem(label, data)
+        self.mail_status = QLabel()
+        self.mail_status.setWordWrap(True)
+        oform.addWidget(self.lbl_mail_provider)
+        oform.addWidget(self.mail_provider)
+        oform.addWidget(self.mail_status)
+
+        self.lbl_calendar_provider = QLabel()
+        self.calendar_provider = QComboBox()
+        for label, data in (
+            ("integrations.calendar.google", "google_calendar"),
+            ("integrations.calendar.microsoft", "microsoft_graph"),
+            ("integrations.calendar.other", "generic_caldav"),
+            ("integrations.calendar.none_explicit", "none"),
+        ):
+            self.calendar_provider.addItem(label, data)
+        self.calendar_status = QLabel()
+        self.calendar_status.setWordWrap(True)
+        oform.addWidget(self.lbl_calendar_provider)
+        oform.addWidget(self.calendar_provider)
+        oform.addWidget(self.calendar_status)
+
+        self.provider_hint = QLabel()
+        self.provider_hint.setWordWrap(True)
+        oform.addWidget(self.provider_hint)
+
         self.privacy_connect_gmail_btn = QPushButton()
         self.privacy_connect_gmail_btn.setObjectName("SecondaryButton")
         self.privacy_connect_gmail_btn.clicked.connect(self._privacy_connect_gmail)
         self.privacy_connect_cal_btn = QPushButton()
         self.privacy_connect_cal_btn.setObjectName("SecondaryButton")
         self.privacy_connect_cal_btn.clicked.connect(self._privacy_connect_calendar)
+        self.privacy_connect_ms_mail_btn = QPushButton()
+        self.privacy_connect_ms_mail_btn.setObjectName("SecondaryButton")
+        self.privacy_connect_ms_mail_btn.clicked.connect(self._connect_microsoft_mail)
+        self.privacy_connect_ms_cal_btn = QPushButton()
+        self.privacy_connect_ms_cal_btn.setObjectName("SecondaryButton")
+        self.privacy_connect_ms_cal_btn.clicked.connect(self._connect_microsoft_calendar)
         self.privacy_disconnect_btn = QPushButton()
         self.privacy_disconnect_btn.setObjectName("SecondaryButton")
-        self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_google)
+        self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_selected)
         for btn in (
             self.privacy_connect_gmail_btn,
             self.privacy_connect_cal_btn,
+            self.privacy_connect_ms_mail_btn,
+            self.privacy_connect_ms_cal_btn,
             self.privacy_disconnect_btn,
         ):
             oform.addWidget(btn)
@@ -510,10 +553,46 @@ class SettingsPage(QWidget):
         self.danger_box.setTitle(tr("settings.danger_zone"))
         self.privacy_box.setTitle(tr("privacy.title"))
         self.privacy_intro.setText(tr("privacy.intro"))
+        if hasattr(self, "lbl_mail_provider"):
+            self.lbl_mail_provider.setText(tr("integrations.mail.label"))
+            self.lbl_calendar_provider.setText(tr("integrations.calendar.label"))
+            self.provider_hint.setText(tr("integrations.no_fallback_hint"))
+            # refresh combo labels
+            for combo, keys in (
+                (
+                    self.mail_provider,
+                    [
+                        ("integrations.mail.none", "none"),
+                        ("integrations.mail.google", "google_gmail"),
+                        ("integrations.mail.microsoft", "microsoft_graph"),
+                        ("integrations.mail.other", "generic_imap"),
+                    ],
+                ),
+                (
+                    self.calendar_provider,
+                    [
+                        ("integrations.calendar.google", "google_calendar"),
+                        ("integrations.calendar.microsoft", "microsoft_graph"),
+                        ("integrations.calendar.other", "generic_caldav"),
+                        ("integrations.calendar.none_explicit", "none"),
+                    ],
+                ),
+            ):
+                cur = combo.currentData()
+                combo.clear()
+                for key, data in keys:
+                    combo.addItem(tr(key), data)
+                idx = combo.findData(cur)
+                combo.setCurrentIndex(idx if idx >= 0 else 0)
+            self.mail_status.setText(tr("integrations.status.unknown"))
+            self.calendar_status.setText(tr("integrations.status.unknown"))
         self.privacy_connect_gmail_btn.setText(tr("privacy.connect_gmail"))
         self.privacy_connect_cal_btn.setText(tr("privacy.connect_calendar"))
+        if hasattr(self, "privacy_connect_ms_mail_btn"):
+            self.privacy_connect_ms_mail_btn.setText(tr("integrations.connect_microsoft_mail"))
+            self.privacy_connect_ms_cal_btn.setText(tr("integrations.connect_microsoft_calendar"))
         self.privacy_export_btn.setText(tr("privacy.export"))
-        self.privacy_disconnect_btn.setText(tr("privacy.disconnect_google"))
+        self.privacy_disconnect_btn.setText(tr("integrations.disconnect_selected"))
         self.privacy_mail_btn.setText(tr("privacy.delete_mail"))
         self.privacy_cal_btn.setText(tr("privacy.delete_calendar"))
         self.privacy_logs_btn.setText(tr("privacy.delete_logs"))
@@ -698,6 +777,14 @@ class SettingsPage(QWidget):
             )
         if hasattr(self, "guenther_enabled"):
             self.guenther_enabled.setChecked(bool(getattr(s, "guenther_enabled", False)))
+        if hasattr(self, "mail_provider"):
+            mp = self.mail_provider.findData(getattr(s, "mail_provider", "none") or "none")
+            self.mail_provider.setCurrentIndex(mp if mp >= 0 else 0)
+            cp = self.calendar_provider.findData(
+                getattr(s, "calendar_provider", "none") or "none"
+            )
+            self.calendar_provider.setCurrentIndex(cp if cp >= 0 else max(0, self.calendar_provider.count() - 1))
+            self._refresh_provider_status(s)
         self.run_auto.setChecked(bool(s.run_automatically))
         idx = self.schedule_mode.findData(s.schedule_mode)
         self.schedule_mode.setCurrentIndex(idx if idx >= 0 else 1)
@@ -792,6 +879,11 @@ class SettingsPage(QWidget):
             cfg.settings.guenther_enabled = self.guenther_enabled.isChecked()
             cfg.settings.guenther_model = "phi4-mini"
             cfg.settings.guenther_heuristic_fallback = False
+        if hasattr(self, "mail_provider"):
+            cfg.settings.mail_provider = str(self.mail_provider.currentData() or "none")
+            cfg.settings.calendar_provider = str(
+                self.calendar_provider.currentData() or "none"
+            )
         cfg.settings.run_automatically = self.run_auto.isChecked()
         cfg.settings.schedule_mode = self.schedule_mode.currentData()
         cfg.settings.schedule_interval_hours = self.interval_hours.value()
@@ -901,6 +993,11 @@ class SettingsPage(QWidget):
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.export_failed"))
 
     def _privacy_connect_gmail(self) -> None:
+        if str(self.mail_provider.currentData() or "") != "google_gmail":
+            QMessageBox.warning(
+                self, tr("privacy.tab"), tr("integrations.wrong_mail_provider")
+            )
+            return
         confirm = QMessageBox.question(
             self, tr("privacy.tab"), tr("privacy.connect_gmail_confirm")
         )
@@ -923,6 +1020,8 @@ class SettingsPage(QWidget):
             oauth_env=getattr(settings, "oauth_environment", None),
         )
         if outcome.service is not None and not outcome.denied_features:
+            app_cfg.settings.mail_provider = "google_gmail"
+            self.config_service.save(app_cfg)
             QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
         elif outcome.credentials is not None and outcome.denied_features:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
@@ -930,6 +1029,11 @@ class SettingsPage(QWidget):
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_failed"))
 
     def _privacy_connect_calendar(self) -> None:
+        if str(self.calendar_provider.currentData() or "") != "google_calendar":
+            QMessageBox.warning(
+                self, tr("privacy.tab"), tr("integrations.wrong_calendar_provider")
+            )
+            return
         confirm = QMessageBox.question(
             self, tr("privacy.tab"), tr("privacy.connect_calendar_confirm")
         )
@@ -939,13 +1043,6 @@ class SettingsPage(QWidget):
 
         app_cfg = self.config_service.load()
         settings = app_cfg.settings
-        if not getattr(settings, "calendar_freebusy_enabled", False):
-            QMessageBox.warning(
-                self,
-                tr("privacy.tab"),
-                tr("privacy.connect_failed"),
-            )
-            return
         creds = Path(settings.gmail_credentials_path)
         if not creds.is_file():
             creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
@@ -959,14 +1056,140 @@ class SettingsPage(QWidget):
             oauth_env=getattr(settings, "oauth_environment", None),
         )
         if outcome.service is not None and not outcome.denied_features:
+            app_cfg.settings.calendar_provider = "google_calendar"
+            self.config_service.save(app_cfg)
             QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
         elif outcome.credentials is not None and outcome.denied_features:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
         else:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_failed"))
 
+    def _connect_microsoft_mail(self) -> None:
+        if str(self.mail_provider.currentData() or "") != "microsoft_graph":
+            QMessageBox.warning(
+                self, tr("privacy.tab"), tr("integrations.wrong_mail_provider")
+            )
+            return
+        app_cfg = self.config_service.load()
+        client_id = str(getattr(app_cfg.settings, "microsoft_client_id", "") or "")
+        if not client_id:
+            QMessageBox.warning(
+                self, tr("privacy.tab"), tr("integrations.microsoft_client_missing")
+            )
+            return
+        from integrations.mail.microsoft.oauth_pkce import (
+            build_authorize_url,
+            mail_scopes,
+            make_pkce_session,
+            open_system_browser,
+        )
+
+        redirect = str(getattr(app_cfg.settings, "microsoft_redirect_uri", "") or "")
+        session = make_pkce_session(redirect_uri=redirect, scopes=mail_scopes())
+        url = build_authorize_url(client_id=client_id, session=session)
+        open_system_browser(url)
+        app_cfg.settings.mail_provider = "microsoft_graph"
+        self.config_service.save(app_cfg)
+        QMessageBox.information(
+            self, tr("privacy.tab"), tr("integrations.microsoft_browser_opened")
+        )
+
+    def _connect_microsoft_calendar(self) -> None:
+        if str(self.calendar_provider.currentData() or "") != "microsoft_graph":
+            QMessageBox.warning(
+                self, tr("privacy.tab"), tr("integrations.wrong_calendar_provider")
+            )
+            return
+        app_cfg = self.config_service.load()
+        client_id = str(getattr(app_cfg.settings, "microsoft_client_id", "") or "")
+        if not client_id:
+            QMessageBox.warning(
+                self, tr("privacy.tab"), tr("integrations.microsoft_client_missing")
+            )
+            return
+        from integrations.mail.microsoft.oauth_pkce import (
+            build_authorize_url,
+            calendar_scopes,
+            make_pkce_session,
+            open_system_browser,
+        )
+
+        redirect = str(getattr(app_cfg.settings, "microsoft_redirect_uri", "") or "")
+        write = bool(getattr(app_cfg.settings, "allow_calendar_write", False))
+        session = make_pkce_session(
+            redirect_uri=redirect, scopes=calendar_scopes(write=write)
+        )
+        url = build_authorize_url(client_id=client_id, session=session)
+        open_system_browser(url)
+        app_cfg.settings.calendar_provider = "microsoft_graph"
+        self.config_service.save(app_cfg)
+        QMessageBox.information(
+            self, tr("privacy.tab"), tr("integrations.microsoft_browser_opened")
+        )
+
+    def _privacy_disconnect_selected(self) -> None:
+        """Disconnect only the currently selected provider — no cross-provider wipe."""
+        mail = str(self.mail_provider.currentData() or "none")
+        cal = str(self.calendar_provider.currentData() or "none")
+        token_dir = self.config_service.dirs["config"]
+        errors: list[str] = []
+        try:
+            from integrations.mail.registry import resolve_mail_adapter
+            from integrations.calendar.registry import resolve_calendar_adapter
+
+            if mail != "none":
+                adapter = resolve_mail_adapter(mail, token_dir=token_dir, allow_none=False)
+                if adapter is not None:
+                    adapter.disconnect(revoke_remote=True)
+            if cal != "none":
+                cadapter = resolve_calendar_adapter(cal, token_dir=token_dir, allow_none=False)
+                if cadapter is not None:
+                    cadapter.disconnect(revoke_remote=True)
+        except Exception as exc:  # noqa: BLE001
+            errors.append(type(exc).__name__)
+        if errors:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.action_failed"))
+        else:
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.action_ok"))
+
     def _privacy_disconnect_google(self) -> None:
         self._privacy_report(self._privacy_life().disconnect_google(revoke_remote=True))
+
+    def _refresh_provider_status(self, settings) -> None:
+        from integrations.mail.registry import resolve_mail_adapter
+        from integrations.calendar.registry import resolve_calendar_adapter
+
+        token_dir = self.config_service.dirs["config"]
+        try:
+            mad = resolve_mail_adapter(
+                getattr(settings, "mail_provider", "none"),
+                token_dir=token_dir,
+                settings=settings,
+                allow_none=True,
+            )
+            if mad is None:
+                self.mail_status.setText(tr("integrations.status.none"))
+            elif mad.is_connected():
+                self.mail_status.setText(tr("integrations.status.connected"))
+            else:
+                self.mail_status.setText(tr("integrations.status.not_connected"))
+        except Exception:
+            self.mail_status.setText(tr("integrations.status.unknown"))
+        try:
+            cad = resolve_calendar_adapter(
+                getattr(settings, "calendar_provider", "none"),
+                token_dir=token_dir,
+                settings=settings,
+                allow_none=True,
+            )
+            if cad is None:
+                self.calendar_status.setText(tr("integrations.status.none"))
+            elif cad.is_connected():
+                self.calendar_status.setText(tr("integrations.status.connected"))
+            else:
+                self.calendar_status.setText(tr("integrations.status.not_connected"))
+        except Exception:
+            self.calendar_status.setText(tr("integrations.status.unknown"))
 
     def _privacy_delete_mail(self) -> None:
         self._privacy_report(self._privacy_life().delete_mail_cache())
