@@ -7,7 +7,9 @@ from PySide6.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
     QLabel,
+    QMenu,
     QPushButton,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -153,19 +155,26 @@ class DashboardPage(QWidget):
         self.btn_pause.clicked.connect(self.pause_requested.emit)
         self.btn_review.clicked.connect(self.review_requested.emit)
         self.btn_clear_jobs.clicked.connect(self.clear_jobs_requested.emit)
+        # Capability preserved; permanent button wall removed (overflow).
+        for btn in (
+            self.btn_cancel,
+            self.btn_apply,
+            self.btn_test,
+            self.btn_pause,
+            self.btn_review,
+            self.btn_clear_jobs,
+        ):
+            btn.hide()
 
-        row1 = QHBoxLayout()
-        row1.setSpacing(8)
-        for btn in (self.btn_cancel, self.btn_apply, self.btn_test):
-            row1.addWidget(btn)
-        row1.addStretch()
-        row2 = QHBoxLayout()
-        row2.setSpacing(8)
-        for btn in (self.btn_pause, self.btn_review, self.btn_clear_jobs):
-            row2.addWidget(btn)
-        row2.addStretch()
-        root.addLayout(row1)
-        root.addLayout(row2)
+        overflow_row = QHBoxLayout()
+        self.more_actions = QToolButton()
+        self.more_actions.setObjectName("SecondaryButton")
+        self.more_actions.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self._actions_menu = QMenu(self)
+        self.more_actions.setMenu(self._actions_menu)
+        overflow_row.addWidget(self.more_actions)
+        overflow_row.addStretch()
+        root.addLayout(overflow_row)
         root.addStretch()
 
         # Compatibility aliases used by older tests / callers
@@ -207,8 +216,25 @@ class DashboardPage(QWidget):
         self.btn_test.setText(tr("btn.apply_test"))
         self.btn_review.setText(tr("btn.review_queue"))
         self.btn_clear_jobs.setText(tr("btn.clear_jobs"))
+        self.more_actions.setText(tr("dash.more_actions"))
+        set_accessible_name(self.more_actions, tr("dash.more_actions"))
+        self._rebuild_actions_menu()
         self.status_label.setText(tr("status.ready"))
         self.refresh()
+
+    def _rebuild_actions_menu(self) -> None:
+        self._actions_menu.clear()
+        for btn in (
+            self.btn_cancel,
+            self.btn_apply,
+            self.btn_test,
+            self.btn_pause,
+            self.btn_review,
+            self.btn_clear_jobs,
+        ):
+            act = self._actions_menu.addAction(btn.text())
+            act.setEnabled(btn.isEnabled())
+            act.triggered.connect(btn.click)
 
     def set_pipeline_running(self, running: bool) -> None:
         self.btn_search.setEnabled(not running)
@@ -217,6 +243,7 @@ class DashboardPage(QWidget):
         self.btn_test.setEnabled(not running)
         self.btn_clear_jobs.setEnabled(not running)
         self.btn_primary.setEnabled(not running or self._next_action in {"review", "inbox"})
+        self._rebuild_actions_menu()
 
     def _compute_next_action(self, cfg, stats: dict) -> None:
         titles = [t for t in (cfg.profile.jobs.desired_titles or []) if str(t).strip()]
@@ -289,6 +316,7 @@ class DashboardPage(QWidget):
         self.btn_pause.setText(
             tr("btn.resume_automation") if paused else tr("btn.pause_automation")
         )
+        self._rebuild_actions_menu()
         meta = self.config_service.load_meta()
         self.last_run_label.setText(str(meta.get("last_search_run") or "—"))
         self.next_run_label.setText(str(meta.get("next_scheduled_run") or "—"))
