@@ -1,0 +1,290 @@
+{
+  "schema_version": "1.0.0",
+  "currency_primary": "EUR",
+  "currency_maps": "USD",
+  "fx_usd_eur": {
+    "value": 0.92,
+    "status": "ASSUMPTION",
+    "note": "Planning FX only — refresh before go-live; do not invent live rates."
+  },
+  "as_of": "2026-09-21",
+  "rules": {
+    "google_free_caps": "PROJECT_WIDE company buffer — never per-customer unit economics",
+    "unknown_policy": "UNKNOWN values must stay UNKNOWN — never invent",
+    "no_production_payments_yet": true
+  },
+  "sources": {
+    "google_maps_pricing": "https://developers.google.com/maps/billing-and-pricing/pricing",
+    "google_route_matrix_sku": "https://developers.google.com/maps/billing-and-pricing/sku-details",
+    "paddle_vs_competitors": "research snapshot 2026-09 (MoR fee 5% + ~$0.50)"
+  },
+  "line_items": [
+    {
+      "id": "maps.geocoding",
+      "category": "GOOGLE_MAPS",
+      "unit": "request",
+      "status": "KNOWN",
+      "sku": "Geocoding Essentials BAC8-4E68-E261",
+      "free_cap_per_month_project": 10000,
+      "price_per_1000_usd_tiers": [
+        {"up_to": 100000, "usd": 5.0},
+        {"up_to": 500000, "usd": 4.0},
+        {"up_to": 1000000, "usd": 3.0},
+        {"up_to": 5000000, "usd": 1.5},
+        {"up_to": null, "usd": 0.38}
+      ],
+      "unit_economics_rate_usd": 0.005,
+      "note": "Post-free paid rate for first paid band (1–100k). Free is project-wide."
+    },
+    {
+      "id": "maps.route_matrix_essentials",
+      "category": "GOOGLE_MAPS",
+      "unit": "element",
+      "status": "KNOWN",
+      "sku": "Routes: Compute Route Matrix Essentials 9392-1087-2045",
+      "free_cap_per_month_project": 10000,
+      "price_per_1000_usd_tiers": [
+        {"up_to": 100000, "usd": 5.0},
+        {"up_to": 500000, "usd": 4.0},
+        {"up_to": 1000000, "usd": 3.0},
+        {"up_to": 5000000, "usd": 1.5},
+        {"up_to": null, "usd": 0.38}
+      ],
+      "unit_economics_rate_usd": 0.005,
+      "note": "Essentials only — TRAFFIC_UNAWARE. Free is project-wide."
+    },
+    {
+      "id": "google.gmail_api",
+      "category": "GOOGLE_WORKSPACE",
+      "unit": "quota_unit",
+      "status": "KNOWN",
+      "variable_cost_eur": 0,
+      "note": "Gmail API itself has no per-call charge at consumer OAuth volumes; quota limits apply."
+    },
+    {
+      "id": "google.calendar_api",
+      "category": "GOOGLE_WORKSPACE",
+      "unit": "quota_unit",
+      "status": "KNOWN",
+      "variable_cost_eur": 0,
+      "note": "Calendar FreeBusy/API — no per-call list price at our usage pattern."
+    },
+    {
+      "id": "google.oauth_verification",
+      "category": "GOOGLE_WORKSPACE",
+      "unit": "one_time_or_recurring",
+      "status": "UNKNOWN",
+      "amount_eur": null,
+      "note": "Cloud Console verification / possible CASA security assessment — cost UNKNOWN until Google requests assessment."
+    },
+    {
+      "id": "google.security_assessment",
+      "category": "GOOGLE_WORKSPACE",
+      "unit": "assessment",
+      "status": "UNKNOWN",
+      "amount_eur": null,
+      "note": "External CASA / security assessment if required for sensitive scopes — UNKNOWN."
+    },
+    {
+      "id": "microsoft.graph_standard",
+      "category": "MICROSOFT",
+      "unit": "quota_unit",
+      "status": "KNOWN",
+      "variable_cost_eur": 0,
+      "note": "Microsoft Graph standard user-delegated usage for mail/calendar typically $0; Graph metered APIs not used."
+    },
+    {
+      "id": "microsoft.app_registration",
+      "category": "MICROSOFT",
+      "unit": "tenant",
+      "status": "KNOWN",
+      "amount_eur": 0,
+      "note": "App registration in Entra ID is free. Azure paid resources not required for PKCE desktop."
+    },
+    {
+      "id": "infra.maps_proxy",
+      "category": "INFRASTRUCTURE",
+      "unit": "month",
+      "status": "ASSUMPTION",
+      "amount_eur": 15,
+      "note": "Minimal authenticated Maps proxy host (small VPS). Replace with actual invoice."
+    },
+    {
+      "id": "infra.website",
+      "category": "INFRASTRUCTURE",
+      "unit": "month",
+      "status": "ASSUMPTION",
+      "amount_eur": 10,
+      "note": "Marketing/site hosting. Replace with actual invoice."
+    },
+    {
+      "id": "infra.model_download_hosting",
+      "category": "INFRASTRUCTURE",
+      "unit": "month",
+      "status": "ASSUMPTION",
+      "amount_eur": 25,
+      "note": "Phi GGUF delivery bandwidth/storage. Scale with downloads — refine with egress bills."
+    },
+    {
+      "id": "infra.update_hosting",
+      "category": "INFRASTRUCTURE",
+      "unit": "month",
+      "status": "ASSUMPTION",
+      "amount_eur": 15,
+      "note": "EXE/update artifact hosting."
+    },
+    {
+      "id": "infra.domain",
+      "category": "INFRASTRUCTURE",
+      "unit": "year",
+      "status": "ASSUMPTION",
+      "amount_eur": 15,
+      "note": "Domain registration annualized."
+    },
+    {
+      "id": "infra.backups",
+      "category": "INFRASTRUCTURE",
+      "unit": "month",
+      "status": "UNKNOWN",
+      "amount_eur": null,
+      "note": "Operator backups if any cloud backup used — UNKNOWN."
+    },
+    {
+      "id": "windows.code_signing",
+      "category": "WINDOWS",
+      "unit": "year",
+      "status": "ASSUMPTION",
+      "amount_eur": 350,
+      "note": "OV/EV code signing certificate range — refine with vendor quote."
+    },
+    {
+      "id": "commerce.payment_provider",
+      "category": "COMMERCE",
+      "unit": "transaction",
+      "status": "KNOWN",
+      "provider_decision": "paddle",
+      "fee_percent": 0.05,
+      "fee_fixed_usd": 0.5,
+      "fee_fixed_eur_assumption": 0.46,
+      "note": "Paddle MoR headline 5% + ~$0.50. Chosen in pricing-decision.md."
+    },
+    {
+      "id": "commerce.refunds_reserve",
+      "category": "COMMERCE",
+      "unit": "percent_of_gross",
+      "status": "ASSUMPTION",
+      "rate": 0.02,
+      "note": "2% refund reserve until real rates observed."
+    },
+    {
+      "id": "commerce.chargeback_reserve",
+      "category": "COMMERCE",
+      "unit": "percent_of_gross",
+      "status": "ASSUMPTION",
+      "rate": 0.005,
+      "note": "0.5% chargeback reserve until real rates observed."
+    },
+    {
+      "id": "commerce.vat_mor",
+      "category": "COMMERCE",
+      "unit": "percent",
+      "status": "KNOWN",
+      "de_standard_vat": 0.19,
+      "note": "DE 19% VAT. With MoR (Paddle), remittance is MoR responsibility; still model gross→net."
+    },
+    {
+      "id": "mobile.google_play",
+      "category": "MOBILE_LATER",
+      "unit": "year",
+      "status": "KNOWN",
+      "amount_usd": 25,
+      "note": "Deferred — not in desktop v1 unit economics."
+    },
+    {
+      "id": "mobile.apple_developer",
+      "category": "MOBILE_LATER",
+      "unit": "year",
+      "status": "KNOWN",
+      "amount_usd": 99,
+      "note": "Deferred — not in desktop v1 unit economics."
+    },
+    {
+      "id": "mobile.store_commission",
+      "category": "MOBILE_LATER",
+      "unit": "percent",
+      "status": "KNOWN",
+      "rate_typical": 0.15,
+      "note": "Store commission if IAP used later — exclude from desktop MoR path."
+    },
+    {
+      "id": "human.lawyer",
+      "category": "HUMAN_FIXED",
+      "unit": "year",
+      "status": "UNKNOWN",
+      "amount_eur": null
+    },
+    {
+      "id": "human.tax_adviser",
+      "category": "HUMAN_FIXED",
+      "unit": "year",
+      "status": "UNKNOWN",
+      "amount_eur": null
+    },
+    {
+      "id": "human.support_reserve",
+      "category": "HUMAN_FIXED",
+      "unit": "percent_of_gross",
+      "status": "ASSUMPTION",
+      "rate": 0.08,
+      "note": "8% support reserve until ticket load known."
+    },
+    {
+      "id": "human.accounting",
+      "category": "HUMAN_FIXED",
+      "unit": "year",
+      "status": "UNKNOWN",
+      "amount_eur": null
+    },
+    {
+      "id": "human.security_audit",
+      "category": "HUMAN_FIXED",
+      "unit": "year",
+      "status": "UNKNOWN",
+      "amount_eur": null
+    }
+  ],
+  "usage_assumptions": {
+    "geocode_per_road_routed_job": {
+      "value": 1.2,
+      "status": "ASSUMPTION",
+      "note": "Home cached; ~1 job geocode + partial cache miss / re-geocode."
+    },
+    "route_matrix_elements_per_road_routed_job": {
+      "value": 1.0,
+      "status": "KNOWN",
+      "note": "One origin (home) × one destination (job) per enrich."
+    },
+    "jobs_discovered_to_routed_ratio": {
+      "value": 1.4,
+      "status": "ASSUMPTION",
+      "note": "Discover more than we route after dedupe/prefilter."
+    },
+    "dedupe_drop_rate": {
+      "value": 0.15,
+      "status": "ASSUMPTION"
+    }
+  },
+  "fixed_monthly_eur_for_allocation": {
+    "status": "ASSUMPTION",
+    "includes": [
+      "infra.maps_proxy",
+      "infra.website",
+      "infra.model_download_hosting",
+      "infra.update_hosting",
+      "infra.domain/12",
+      "windows.code_signing/12"
+    ],
+    "computed_eur": 95.42,
+    "note": "15+10+25+15+1.25+29.17 = 95.42 — UNKNOWN human fixed excluded from allocation."
+  }
+}

@@ -385,7 +385,8 @@ Karrierekrake on **main** (`8c3ea87`) is a substantial desktop product with stro
 2. **Geo** is still Haversine/Nominatim/pgeocode → violates new ONE-GEO (Google) rule.  
 3. **CV import** remains a **real-world** risk despite green corpora.  
 4. **Payments / website / multi-mail-calendar** largely **NOT_IMPLEMENTED**.  
-5. **Real Windows black-box** and **real external provider** acceptance are **NOT DONE** — do **not** restore “OVERALL PRODUCT E2E PASS”.  
+5. **Real Windows black-box** and **real external provider** acceptance are **NOT DONE** — do **not** restore “OVERALL PRODUCT E2E PASS”.
+6. **Commercial (NEXT-07):** cost catalogs + **Paddle** decision landed; **no production payments** yet.
 6. Documentation debt is real; prefer this file + canonical decisions over tournament PDFs.
 
 **STOP after NEXT-01** — no large feature rewrites in this package.

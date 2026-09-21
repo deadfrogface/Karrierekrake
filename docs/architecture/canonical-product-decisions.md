@@ -93,13 +93,17 @@ Today:
 
 | Rule | Decision |
 |------|----------|
-| Production payments | **Exactly one** provider after pricing/tax/legal choice |
+| Production payments | **Exactly one** provider: **Paddle** (NEXT-07) |
 | Runtime chain Paddle → Stripe → LemonSqueezy | **Forbidden** |
-| Other providers | Research/docs only until decision |
+| Stripe / Lemon Squeezy | Research only — not production |
+| Google Maps free caps | **Company buffer only** — never per-customer unit economics |
+| Production payment code | **NOT_IMPLEMENTED** until a later NEXT (catalogs/decision only) |
 
 ### Implications
 
-Today: **NOT_IMPLEMENTED** (no payment integration).
+- Catalogs: `config/commercial_cost_catalog.json`, `config/plan_catalog.json`
+- Docs: `docs/commercial/cost-model.md`, `docs/commercial/pricing-decision.md`
+- Dev unlock: `core/commercial/entitlement.py` (rejected in production artifacts)
 
 ---
 
