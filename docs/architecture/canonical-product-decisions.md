@@ -51,16 +51,16 @@ Today (`main` post NEXT-02):
 | Route unavailable | Distance = **UNKNOWN** |
 | UI “Fahrtstrecke” | Only true road-route km; **never** air-line labeled as Fahrt |
 
-### Implications for current code (CHANGE required — NEXT follow-up)
+### Implications for current code
 
-Today:
+- Authoritative distance is **Google Route Matrix road km**.
+- Coordinates: **Google Geocoding** via authenticated maps proxy.
+- Haversine / Nominatim / pgeocode / OSRM are **not** production fallbacks.
+- Failure → `DISTANCE_UNKNOWN`.
 
-- Authoritative distance is **Haversine**.
-- Coordinates: pgeocode (offline) + Nominatim (network).
-- No Google Routes / Distance Matrix client.
-- Docs (`docs/dach-cross-border.md`) correctly describe Haversine — now **target architecture diverges**.
-
-Haversine may remain only as an internal diagnostic/prefilter **if** explicitly not used for user-facing commute claims — final product decision forbids Haversine as authoritative commute distance.
+Haversine may remain only as an internal diagnostic/prefilter for tests
+(airline vs road) — final product decision forbids Haversine as
+authoritative commute distance.
 
 ---
 

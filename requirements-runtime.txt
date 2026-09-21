@@ -14,9 +14,9 @@ beautifulsoup4>=4.12
 lxml>=5.0
 python-jobspy>=1.1.0
 PySide6>=6.6
-# DACH offline PLZ + optional geocoding helpers (Nominatim still via httpx)
+# Optional: diagnostic/tests only (NOT production geo). Production = Google Maps.
 pgeocode>=0.4.0
-geopy>=2.4.0
+# geopy unused in production path (Nominatim removed).
 # Floor pins for transitive deps with known High/Critical advisories when
 # resolved from loose lower bounds (OSV / pip-audit defense in depth).
 anyio>=4.14.2

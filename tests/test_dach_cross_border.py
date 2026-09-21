@@ -1,7 +1,7 @@
-"""DACH cross-border geo / border golden cases (public/fictional coords only).
+"""DACH cross-border geo tests (NEXT-05).
 
-~120 cases covering Haversine, DE↔CH, DE↔AT, ambiguous PLZ, remote, cache,
-offline resolution, Unicode places, and unknown-location behaviour.
+Haversine/pgeocode cases remain as diagnostics. LocationService enrich paths
+use an injected Google Maps fake (road km ≈ airline for golden border cases).
 """
 
 from __future__ import annotations
@@ -30,6 +30,9 @@ from core.geo_resolve import (
 )
 from core.location import LocationService, enrich_job_locations
 from core.models import RemoteType
+from integrations.maps.contracts import GeocodeResult, MapsError, RouteMatrixResult
+from integrations.maps.metering import reset_cost_meter_for_tests
+from integrations.maps.service import MapsGeoService, reset_maps_service_for_tests
 
 
 # ---------------------------------------------------------------------------
@@ -43,6 +46,37 @@ def _approx_km(a: tuple[float, float], b: tuple[float, float]) -> float:
     return haversine_km(a[0], a[1], b[0], b[1])
 
 
+class _MapsFakeAirlineAsRoad:
+    """Test double: Route Matrix returns ~airline metres (border golden cases)."""
+
+    def __init__(self, *, geocode_ok: bool = False) -> None:
+        self.geocode_ok = geocode_ok
+        self.geocode_calls = 0
+        self.matrix_calls = 0
+
+    def geocode(self, address: str, *, region: str = "de", run_id: str = "") -> GeocodeResult:
+        self.geocode_calls += 1
+        if not self.geocode_ok:
+            raise MapsError("MISS", "no geocode in this fixture")
+        return GeocodeResult(latitude=47.66, longitude=9.17, formatted_address=address)
+
+    def route_matrix(
+        self,
+        *,
+        origin_lat: float,
+        origin_lon: float,
+        dest_lat: float,
+        dest_lon: float,
+        run_id: str = "",
+    ) -> RouteMatrixResult:
+        self.matrix_calls += 1
+        km = haversine_km(origin_lat, origin_lon, dest_lat, dest_lon)
+        return RouteMatrixResult(
+            distance_meters=int(round(km * 1000)),
+            duration_seconds=int(round(km * 90)),  # ~90 s per km
+        )
+
+
 @dataclass
 class _Job:
     address: str = ""
@@ -52,6 +86,8 @@ class _Job:
     latitude: float | None = None
     longitude: float | None = None
     distance_km: float | None = None
+    commute_duration_minutes: float | None = None
+    distance_source: str = ""
     remote_type: str = RemoteType.ONSITE.value
     description: str = ""
 
@@ -64,7 +100,10 @@ def _svc(
     radius: float = 25.0,
     cross_border: bool = True,
     country: str = "DE",
+    geocode_ok: bool = False,
 ) -> LocationService:
+    reset_maps_service_for_tests()
+    reset_cost_meter_for_tests()
     db = Database(tmp_path / "geo.db")
     cfg = AppConfig(
         profile=SearchPreferences(
@@ -80,7 +119,9 @@ def _svc(
         ),
         settings=SettingsConfig(cross_border_dach_enabled=cross_border),
     )
-    return LocationService(db, cfg, timeout_s=0.2)
+    fake = _MapsFakeAirlineAsRoad(geocode_ok=geocode_ok)
+    maps = MapsGeoService(client=fake)  # type: ignore[arg-type]
+    return LocationService(db, cfg, timeout_s=0.2, maps=maps)
 
 
 # ---------------------------------------------------------------------------
@@ -200,13 +241,6 @@ def test_enrich_konstanz_example_e2e(tmp_path, monkeypatch):
     home = PUBLIC_REF_COORDS["konstanz_de"]
     svc = _svc(tmp_path, home_lat=home[0], home_lon=home[1], radius=25.0)
 
-    # Block network entirely
-    class _NoNet:
-        def __init__(self, *a, **k):
-            raise AssertionError("network forbidden")
-
-    monkeypatch.setattr("httpx.Client", _NoNet)
-
     de_20 = (home[0] + 20.0 / 111.2, home[1])
     jobs = [
         _Job(city="DE-near", latitude=de_20[0], longitude=de_20[1], country_code="DE"),
@@ -227,6 +261,7 @@ def test_enrich_konstanz_example_e2e(tmp_path, monkeypatch):
     assert jobs[0].distance_km is not None and jobs[0].distance_km <= 25
     assert jobs[1].distance_km is not None and jobs[1].distance_km <= 25
     assert jobs[2].distance_km is not None and jobs[2].distance_km > 25
+    assert all(j.distance_source == "google_route_matrix" for j in jobs if j.distance_km is not None)
 
 
 def test_cross_border_toggle_off_skips_foreign_plz(tmp_path, monkeypatch):
@@ -237,23 +272,9 @@ def test_cross_border_toggle_off_skips_foreign_plz(tmp_path, monkeypatch):
         home_lon=home[1],
         cross_border=False,
         country="DE",
+        geocode_ok=False,
     )
-
-    class _NoNet:
-        def __init__(self, *a, **k):
-            pass
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *a):
-            return False
-
-        def get(self, *a, **k):
-            raise AssertionError("should not need network for this case")
-
-    monkeypatch.setattr("httpx.Client", _NoNet)
-    # CH PLZ without coords — must stay UNKNOWN when cross-border off
+    # CH PLZ without coords — Google miss → UNKNOWN (no pgeocode authority)
     jobs = [_Job(city="Romanshorn", postal_code="8590", country_code="CH")]
     enrich_job_locations(jobs, svc)
     assert jobs[0].distance_km is None
@@ -353,12 +374,6 @@ def test_remote_within_radius():
 def test_enrich_remote_skips(tmp_path, monkeypatch):
     home = PUBLIC_REF_COORDS["konstanz_de"]
     svc = _svc(tmp_path, home_lat=home[0], home_lon=home[1])
-
-    class _Boom:
-        def __init__(self, *a, **k):
-            raise AssertionError("remote must not geocode")
-
-    monkeypatch.setattr("httpx.Client", _Boom)
     jobs = [_Job(city="Zürich", country_code="CH", remote_type=RemoteType.REMOTE.value)]
     enrich_job_locations(jobs, svc)
     assert jobs[0].distance_km is None
@@ -480,54 +495,25 @@ def test_job_country_code_column_migration(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# Offline resolve via pgeocode (Konstanz PLZ)
+# NEXT-05: without Google geocode, PLZ-only jobs stay UNKNOWN
+# (pgeocode is diagnostic-only — not production authority)
 # ---------------------------------------------------------------------------
 
-def test_offline_konstanz_plz_then_distance(tmp_path, monkeypatch):
+def test_plz_without_google_stays_unknown(tmp_path):
     home = PUBLIC_REF_COORDS["konstanz_de"]
-    svc = _svc(tmp_path, home_lat=home[0], home_lon=home[1], radius=25.0)
-
-    class _NoNet:
-        def __init__(self, *a, **k):
-            raise AssertionError("offline only")
-
-    monkeypatch.setattr("httpx.Client", _NoNet)
+    svc = _svc(tmp_path, home_lat=home[0], home_lon=home[1], radius=25.0, geocode_ok=False)
     jobs = [
         _Job(postal_code="8590", country_code="CH", city="Romanshorn"),
         _Job(postal_code="78462", country_code="DE", city="Konstanz"),
     ]
     enrich_job_locations(jobs, svc)
-    # Romanshorn CH ~15–25 km from Konstanz — within or near 25
-    assert jobs[0].latitude is not None
-    assert jobs[1].distance_km is not None
-    assert jobs[1].distance_km < 5.0
+    assert jobs[0].distance_km is None
+    assert jobs[1].distance_km is None
 
 
-def test_unknown_city_no_coords_stays_unknown(tmp_path, monkeypatch):
+def test_unknown_city_no_coords_stays_unknown(tmp_path):
     home = PUBLIC_REF_COORDS["konstanz_de"]
-    svc = _svc(tmp_path, home_lat=home[0], home_lon=home[1])
-
-    class _Client:
-        def __init__(self, *a, **k):
-            pass
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *a):
-            return False
-
-        def get(self, *a, **k):
-            class _R:
-                def raise_for_status(self):
-                    return None
-
-                def json(self):
-                    return []
-
-            return _R()
-
-    monkeypatch.setattr("httpx.Client", _Client)
+    svc = _svc(tmp_path, home_lat=home[0], home_lon=home[1], geocode_ok=False)
     jobs = [_Job(city="NirgendwoXYZ999", country_code="DE")]
     enrich_job_locations(jobs, svc)
     assert jobs[0].distance_km is None

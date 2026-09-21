@@ -1,8 +1,11 @@
-"""Offline-first DACH place → coordinate resolution.
+"""Place helpers + non-authoritative Haversine diagnostics (NEXT-05).
 
-Prefer pgeocode (GeoNames-backed, local) for DE/AT/CH postal codes.
-Nominatim is optional, rate-limited, and cached — never invent distances.
-Border is not a distance barrier: Haversine is country-independent.
+Production commute distance is **Google Route Matrix only**
+(``integrations.maps``). This module may still expose Haversine and legacy
+pgeocode helpers for tests / diagnostics — they must **never** write
+``Job.distance_km`` or user-facing „km Fahrt“ claims.
+
+On Google failure → DISTANCE_UNKNOWN (None). No Nominatim/OSRM/pgeocode fallback.
 """
 
 from __future__ import annotations
@@ -79,9 +82,10 @@ class PlaceResolution:
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Great-circle distance between two WGS84 points in kilometres.
+    """Great-circle (airline) distance — DIAGNOSTIC ONLY.
 
-    Country borders are irrelevant — only coordinates matter.
+    Forbidden as production ``Job.distance_km`` / commute radius authority
+    (NEXT-05). Use Google Compute Route Matrix road km instead.
     """
     r = 6371.0
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
@@ -98,7 +102,11 @@ def distance_km_or_unknown(
     home: tuple[float, float] | None,
     place: PlaceResolution,
 ) -> float | None:
-    """Return rounded km or None (UNKNOWN). Never invents a number."""
+    """DIAGNOSTIC airline km only — not production commute.
+
+    Production code must use ``integrations.maps.MapsGeoService.commute_decision``.
+    Kept for tests that compare airline vs road (airline < radius, road > radius).
+    """
     if home is None or not place.ok:
         return UNKNOWN_DISTANCE
     assert place.latitude is not None and place.longitude is not None
