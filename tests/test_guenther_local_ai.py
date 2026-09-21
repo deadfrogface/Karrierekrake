@@ -189,7 +189,7 @@ def test_disabled_fallback():
 
 def test_model_manager_no_silent_download(tmp_path):
     mm = ModelManager(tmp_path / "models")
-    prog = mm.install("qwen3-1.7b", allow_download=False)
+    prog = mm.install("phi4-mini", allow_download=False)
     assert prog.status == "error"
     assert prog.message == "download_not_confirmed"
 
@@ -198,17 +198,15 @@ def test_model_catalog_licenses_safe():
     for mid, meta in MODEL_CATALOG.items():
         assert meta["license"] in {"Apache-2.0", "MIT"}
         assert "gemma" not in mid
+        assert "qwen" not in mid
 
 
-def test_light_and_standard_model_pins():
-    light = MODEL_CATALOG["qwen3-1.7b"]
-    assert light["url"].startswith("https://huggingface.co/")
-    assert len(light["sha256"]) == 64
-    assert light["approx_bytes"] > 1_000_000_000
-    standard = MODEL_CATALOG["qwen3-4b"]
-    assert standard["url"].startswith("https://huggingface.co/Qwen/")
-    assert len(standard["sha256"]) == 64
-    # Phi-4-mini pinned to tournament provenance (MIT); not sole production default
+def test_phi_sole_production_pin():
+    from guenther.model_manager import HISTORICAL_MODEL_CATALOG
+
+    assert "qwen3-1.7b" not in MODEL_CATALOG
+    assert "qwen3-4b" not in MODEL_CATALOG
+    assert "qwen3-1.7b" in HISTORICAL_MODEL_CATALOG
     phi = MODEL_CATALOG["phi4-mini"]
     assert phi.get("url", "").startswith("https://huggingface.co/bartowski/")
     assert phi["filename"] == "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"
@@ -216,24 +214,22 @@ def test_light_and_standard_model_pins():
     assert phi["sha256"].startswith("01999f17")
     assert phi.get("deferred") is False
     assert phi["license"] == "MIT"
-    assert light["sha256"] != phi["sha256"]
+    assert phi.get("role") == "primary"
 
 
 def test_model_manager_requires_confirm_even_when_url_pinned(tmp_path):
     mm = ModelManager(tmp_path / "models")
-    prog = mm.install("qwen3-1.7b", allow_download=False)
+    prog = mm.install("phi4-mini", allow_download=False)
     assert prog.status == "error"
     assert prog.message == "download_not_confirmed"
 
 
-def test_hardware_auto_fallback(monkeypatch):
+def test_hardware_no_qwen_fallback(monkeypatch):
     monkeypatch.setenv("KARRIEREKRAKE_RAM_GB", "4")
-    # detect reads /proc first on Linux — override by patching _ram_gb via env only works as fallback
-    # so call graceful directly
-    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "qwen3-1.7b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "phi4-mini"
     assert graceful_model_fallback(HardwareTier.STANDARD, "auto") == "phi4-mini"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3-1.7b"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "qwen3-1.7b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "phi4-mini"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "phi4-mini"
 
 
 def test_extract_json_strips_think_blocks():
@@ -268,7 +264,8 @@ def test_guenther_settings_defaults():
 
     s = SettingsConfig()
     assert s.guenther_enabled is False
-    assert s.guenther_model == "auto"
+    assert s.guenther_model == "phi4-mini"
+    assert s.guenther_heuristic_fallback is False
 
 
 def test_packaging_spec_includes_guenther():
@@ -290,4 +287,9 @@ def test_paths_models_dir(tmp_path, monkeypatch):
 def test_fallback_envelope_codes():
     env = fallback_envelope("writing", reason="oom")
     assert not env.ok
-    assert "oom" in env.fallback_reason or "guenther_oom" in env.fallback_reason
+    assert (
+        "oom" in env.fallback_reason
+        or "guenther_oom" in env.fallback_reason
+        or "insufficient_ram" in env.fallback_reason
+        or "GUENTHER_UNAVAILABLE" in " ".join(env.safety_notes)
+    )

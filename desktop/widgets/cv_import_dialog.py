@@ -97,7 +97,24 @@ class CvImportDialog(QDialog):
         layout.addWidget(buttons)
 
         try:
-            self.parsed = filter_parsed_for_import(import_cv(cv_path))
+            guenther_on = False
+            manual: dict = {}
+            try:
+                from core.config import load_config
+
+                cfg = load_config()
+                guenther_on = bool(getattr(cfg.settings, "guenther_enabled", False))
+                app_prof = getattr(cfg, "application", None)
+                if app_prof is not None:
+                    manual = {
+                        "full_name": getattr(app_prof, "full_name", "") or "",
+                        "email": getattr(app_prof, "email", "") or "",
+                    }
+            except Exception:
+                guenther_on = False
+            self.parsed = filter_parsed_for_import(
+                import_cv(cv_path, guenther_enabled=guenther_on, manual_profile=manual)
+            )
             self.incoming = parsed_to_qualifications(self.parsed)
             self.personal_incoming = personal_from_parsed(self.parsed)
             self._refresh_preview()
@@ -123,6 +140,19 @@ class CvImportDialog(QDialog):
         else:
             lines.append(f"({tr('cv_import.none')})")
         conf = (self.parsed or {}).get("confidence") or {}
+        intel = (self.parsed or {}).get("intelligence_status") or ""
+        if intel:
+            lines.append("")
+            lines.append(f"=== Günther / Phi ===")
+            if intel == "phi_invoked":
+                mid = (self.parsed or {}).get("phi_model_id") or "phi4-mini"
+                lines.append(f"• Phi aktiv ({mid})")
+            elif intel == "GUENTHER_UNAVAILABLE":
+                reason = (self.parsed or {}).get("intelligence_fallback_reason") or ""
+                lines.append(f"• GUENTHER_UNAVAILABLE — {reason or 'nicht verfügbar'}")
+                lines.append("• Deterministischer Import läuft weiter (ohne AI-Ersatzmodell)")
+            else:
+                lines.append(f"• Status: {intel}")
         if conf:
             lines.append("")
             lines.append(f"=== {tr('cv_import.confidence')} ===")

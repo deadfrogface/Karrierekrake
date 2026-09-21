@@ -413,11 +413,11 @@ class SettingsConfig:
     allow_calendar_write: bool = False
     # --- Günther die Krake (optional local AI; off by default) ---
     # Never enables cloud AI. LLM output is untrusted and validated.
+    # NEXT-02: sole production model is phi4-mini — no Qwen / auto picker.
     guenther_enabled: bool = False
-    # auto | qwen3-1.7b | qwen3-4b | phi4-mini
-    guenther_model: str = "auto"
-    # When no GGUF installed, allow deterministic heuristic assist (still fail-closed)
-    guenther_heuristic_fallback: bool = True
+    guenther_model: str = "phi4-mini"
+    # Heuristic assist is NOT a production LLM substitute (default off).
+    guenther_heuristic_fallback: bool = False
     # --- Recruiting contact discovery (PR25; off by default) ---
     # Provenance-backed person contacts only; NOT_FOUND is a success path.
     contact_discovery_enabled: bool = False

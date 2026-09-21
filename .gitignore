@@ -56,3 +56,6 @@ dist/
 packaging/build/
 packaging/ms-playwright/
 artifacts/
+private/cvs/
+private/cvs/**
+!private/cvs/README.md

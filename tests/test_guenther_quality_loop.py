@@ -308,7 +308,7 @@ def test_cross_case_isolation_no_company_leak():
     assert "Beta" not in r1.suggestion.body
 
 
-def test_phi_primary_routing_and_light_fallback():
+def test_phi_primary_routing_no_qwen_fallback():
     d = resolve_model_for_capability(
         architecture=ArchitectureMode.AUTO, capability="writing", model_pref="auto"
     )
@@ -316,9 +316,10 @@ def test_phi_primary_routing_and_light_fallback():
     explicit = resolve_model_for_capability(
         architecture=ArchitectureMode.AUTO, capability="writing", model_pref="qwen3-1.7b"
     )
-    assert explicit.model_id == "qwen3-1.7b"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3-1.7b"
-    assert can_run_phi(HardwareTier.LIGHT) is False
+    # NEXT-02: Qwen prefs coerce to Phi
+    assert explicit.model_id == "phi4-mini"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "phi4-mini"
+    assert can_run_phi(HardwareTier.LIGHT, ram_gb=4.0) is False
     assert can_run_phi(HardwareTier.STANDARD) is True
 
 
@@ -331,7 +332,7 @@ def test_progress_strings_no_cot_branding():
 def test_service_quality_loop_heuristic_and_old_mode():
     svc = GuentherService(
         enabled=True,
-        model="qwen3-1.7b",
+        model="phi4-mini",
         allow_heuristic_when_no_llm=True,
         quality_loop_mode="full",
     )

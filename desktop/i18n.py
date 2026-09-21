@@ -411,16 +411,17 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther einschalten (nur lokal auf diesem PC)",
         "settings.guenther_model": "Modell",
+        "settings.guenther_model.phi_only": "Phi-4-mini (einziges Produktionsmodell)",
         "settings.guenther_model.auto": "Automatisch (Phi empfohlen)",
         "settings.guenther_model.primary": "Empfohlen — Phi-4-mini",
-        "settings.guenther_model.light": "Leicht — Qwen3-1.7B (Fallback)",
-        "settings.guenther_model.legacy4b": "Legacy — Qwen3-4B",
-        "settings.guenther_model.standard": "Legacy — Qwen3-4B",
+        "settings.guenther_model.light": "Entfernt — kein Qwen-Fallback",
+        "settings.guenther_model.legacy4b": "Entfernt — kein Legacy-Qwen",
+        "settings.guenther_model.standard": "Entfernt — kein Legacy-Qwen",
         "settings.guenther_model.alt": "Empfohlen — Phi-4-mini",
         "settings.guenther_hint": (
-            "Günther denkt mit — Karrierekrake entscheidet. "
-            "Keine Cloud-KI nötig. Modelle werden nur nach Ihrer Freigabe geladen. "
-            "Absenden, E-Mail-Versand und Termine bleiben bei Ihnen."
+            "Nur lokales Phi-4-mini. Fehlt das Modell oder schlägt das Laden fehl: "
+            "GUENTHER_UNAVAILABLE — kein anderes Modell, kein Heuristik-Ersatz. "
+            "Nicht-AI-Funktionen bleiben nutzbar. Günther schlägt vor — Karrierekrake entscheidet."
         ),
         "guenther.validator.unsupported_credential": (
             "Eine behauptete Qualifikation ist im Profil nicht belegt."
@@ -1153,16 +1154,17 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Enable Günther (local on this PC only)",
         "settings.guenther_model": "Model",
+        "settings.guenther_model.phi_only": "Phi-4-mini (sole production model)",
         "settings.guenther_model.auto": "Automatic (Phi recommended)",
         "settings.guenther_model.primary": "Recommended — Phi-4-mini",
-        "settings.guenther_model.light": "Light — Qwen3-1.7B (fallback)",
-        "settings.guenther_model.legacy4b": "Legacy — Qwen3-4B",
-        "settings.guenther_model.standard": "Legacy — Qwen3-4B",
+        "settings.guenther_model.light": "Removed — no Qwen fallback",
+        "settings.guenther_model.legacy4b": "Removed — no legacy Qwen",
+        "settings.guenther_model.standard": "Removed — no legacy Qwen",
         "settings.guenther_model.alt": "Recommended — Phi-4-mini",
         "settings.guenther_hint": (
-            "Günther may suggest — Karrierekrake decides. "
-            "No cloud AI required. Models load only with your approval. "
-            "Submit, email send, and calendar finalize stay with you."
+            "Local Phi-4-mini only. If the model is missing or fails to load: "
+            "GUENTHER_UNAVAILABLE — no alternate model, no heuristic substitute. "
+            "Non-AI features stay usable. Günther suggests — Karrierekrake decides."
         ),
         "guenther.validator.unsupported_credential": (
             "A claimed qualification is not supported by the profile."

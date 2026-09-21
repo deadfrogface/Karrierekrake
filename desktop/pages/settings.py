@@ -308,16 +308,12 @@ class SettingsPage(QWidget):
         self.guenther_box = guenther_box
         gform = QFormLayout(guenther_box)
         self.guenther_enabled = QCheckBox()
-        self.guenther_model = QComboBox()
-        self.guenther_model.addItem("Automatisch", "auto")
-        self.guenther_model.addItem("Empfohlen (Phi)", "phi4-mini")
-        self.guenther_model.addItem("Leicht", "qwen3-1.7b")
-        self.guenther_model.addItem("Legacy 4B", "qwen3-4b")
+        self.guenther_model_fixed = QLabel("Phi-4-mini (einziges Produktionsmodell)")
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
         self.lbl_guenther_model = QLabel()
         gform.addRow(self.guenther_enabled)
-        gform.addRow(self.lbl_guenther_model, self.guenther_model)
+        gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
         gform.addRow(self.guenther_hint)
         integ_layout.addWidget(guenther_box)
         integ_layout.addStretch(1)
@@ -593,15 +589,8 @@ class SettingsPage(QWidget):
             self.guenther_enabled.setText(tr("settings.guenther_enabled"))
             self.lbl_guenther_model.setText(tr("settings.guenther_model"))
             self.guenther_hint.setText(tr("settings.guenther_hint"))
-            # refresh model labels preserving data
-            cur = self.guenther_model.currentData()
-            self.guenther_model.clear()
-            self.guenther_model.addItem(tr("settings.guenther_model.auto"), "auto")
-            self.guenther_model.addItem(tr("settings.guenther_model.primary"), "phi4-mini")
-            self.guenther_model.addItem(tr("settings.guenther_model.light"), "qwen3-1.7b")
-            self.guenther_model.addItem(tr("settings.guenther_model.legacy4b"), "qwen3-4b")
-            idx = self.guenther_model.findData(cur or "auto")
-            self.guenther_model.setCurrentIndex(idx if idx >= 0 else 0)
+            if hasattr(self, "guenther_model_fixed"):
+                self.guenther_model_fixed.setText(tr("settings.guenther_model.phi_only"))
         self.run_auto.setText(tr("settings.run_auto"))
         self.lbl_schedule.setText(tr("settings.schedule"))
         self.lbl_interval.setText(tr("settings.interval"))
@@ -709,8 +698,6 @@ class SettingsPage(QWidget):
             )
         if hasattr(self, "guenther_enabled"):
             self.guenther_enabled.setChecked(bool(getattr(s, "guenther_enabled", False)))
-            gm = self.guenther_model.findData(getattr(s, "guenther_model", "auto") or "auto")
-            self.guenther_model.setCurrentIndex(gm if gm >= 0 else 0)
         self.run_auto.setChecked(bool(s.run_automatically))
         idx = self.schedule_mode.findData(s.schedule_mode)
         self.schedule_mode.setCurrentIndex(idx if idx >= 0 else 1)
@@ -803,7 +790,8 @@ class SettingsPage(QWidget):
             cfg.settings.allow_employer_email_send = self.allow_employer_email_send.isChecked()
         if hasattr(self, "guenther_enabled"):
             cfg.settings.guenther_enabled = self.guenther_enabled.isChecked()
-            cfg.settings.guenther_model = str(self.guenther_model.currentData() or "auto")
+            cfg.settings.guenther_model = "phi4-mini"
+            cfg.settings.guenther_heuristic_fallback = False
         cfg.settings.run_automatically = self.run_auto.isChecked()
         cfg.settings.schedule_mode = self.schedule_mode.currentData()
         cfg.settings.schedule_interval_hours = self.interval_hours.value()

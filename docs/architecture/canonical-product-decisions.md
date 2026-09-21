@@ -28,14 +28,13 @@ Future work is tracked as **NEXT-02, NEXT-03, …** — not as “PR52+ roadmap 
 
 ### Implications for current code (CHANGE required — NEXT follow-up)
 
-Today (`main` @ `8c3ea87`):
+Today (`main` post NEXT-02):
 
-- Catalog still contains `qwen3-1.7b` (light_fallback) and `qwen3-4b` (legacy).
-- Settings UI still offers Auto / Phi / Qwen light / Qwen legacy.
-- LIGHT hardware path can force Qwen.
-- Heuristic provider may activate when no LLM is loaded.
-
-These contradict this decision and must be removed or disabled in a dedicated NEXT task — **not** silently left as “temporary compatibility”.
+- Production catalog contains **only** `phi4-mini` (pinned GGUF + SHA).
+- Qwen entries live in `HISTORICAL_MODEL_CATALOG` only — not installable as production.
+- Settings: enable toggle + fixed Phi label (no model picker).
+- Load failure → `GUENTHER_UNAVAILABLE` (no alternate LLM, no heuristic substitute).
+- CV import invokes Phi via `suggest_cv_extract` when Guenther is enabled.
 
 ---
 

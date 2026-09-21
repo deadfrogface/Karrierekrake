@@ -86,7 +86,7 @@ def process_parsed_email(
         if getattr(cfg.settings, "guenther_enabled", False):
             g = get_guenther_service(
                 enabled=True,
-                model=getattr(cfg.settings, "guenther_model", "auto") or "auto",
+                model="phi4-mini",
             )
             env = g.suggest_email_class(
                 payload.get("subject") or "",

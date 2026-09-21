@@ -1,7 +1,7 @@
 """Hardware tier detection — LIGHT / STANDARD / POWER.
 
-PRIMARY recommended model: Phi-4-mini (when RAM sufficient).
-LIGHT fallback: Qwen3-1.7B.
+NEXT-02: Production recommends Phi-4-mini only. No Qwen hardware fallback.
+Insufficient RAM → Phi may be unavailable (GUENTHER_UNAVAILABLE), not another LLM.
 """
 
 from __future__ import annotations
@@ -9,6 +9,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from enum import Enum
+
+from guenther.model_manager import PRODUCTION_MODEL_ID
 
 
 class HardwareTier(str, Enum):
@@ -55,43 +57,47 @@ def detect_hardware() -> HardwareProfile:
             tier=HardwareTier.LIGHT,
             ram_gb=ram,
             cpu_count=cpus,
-            recommended_model_id="qwen3-1.7b",
-            notes=("low_ram_or_cpu", "phi_insufficient_use_light_fallback"),
+            recommended_model_id=PRODUCTION_MODEL_ID,
+            notes=(
+                "low_ram_or_cpu",
+                "phi_only_may_be_unavailable",
+                "no_qwen_fallback",
+            ),
         )
     if ram >= 24.0:
         return HardwareProfile(
             tier=HardwareTier.POWER,
             ram_gb=ram,
             cpu_count=cpus,
-            recommended_model_id="phi4-mini",
-            notes=("high_ram", "phi_primary"),
+            recommended_model_id=PRODUCTION_MODEL_ID,
+            notes=("high_ram", "phi_sole_production"),
         )
     return HardwareProfile(
         tier=HardwareTier.STANDARD,
         ram_gb=ram,
         cpu_count=cpus,
-        recommended_model_id="phi4-mini",
-        notes=("phi_primary",),
+        recommended_model_id=PRODUCTION_MODEL_ID,
+        notes=("phi_sole_production",),
     )
 
 
+def resolve_production_model(preferred: str = "auto") -> str:
+    """Always return the sole production Phi model. Ignore Qwen / auto prefs."""
+    _ = preferred  # legacy settings values are coerced
+    return PRODUCTION_MODEL_ID
+
+
 def graceful_model_fallback(tier: HardwareTier, preferred: str) -> str:
-    """If preferred unavailable / too heavy, degrade toward LIGHT Qwen3-1.7B."""
-    light = "qwen3-1.7b"
-    primary = "phi4-mini"
-    if preferred in {light, "qwen3-4b", primary, "auto"}:
-        if preferred == "auto":
-            return light if tier == HardwareTier.LIGHT else primary
-        if tier == HardwareTier.LIGHT and preferred != light:
-            return light
-        return preferred if preferred != "auto" else primary
-    return light
+    """NEXT-02: no model switching. Always Phi. Kept name for call-site stability."""
+    _ = tier
+    return resolve_production_model(preferred)
 
 
 def can_run_phi(tier: HardwareTier, ram_gb: float | None = None) -> bool:
-    """Conservative Phi gate — do not attempt on LIGHT tier."""
-    if tier == HardwareTier.LIGHT:
+    """Conservative Phi gate — LIGHT may still attempt load; caller handles failure."""
+    if ram_gb is not None and ram_gb < 5.0:
         return False
-    if ram_gb is not None and ram_gb < 8.0:
+    if tier == HardwareTier.LIGHT and ram_gb is not None and ram_gb < 8.0:
+        # Soft gate: UI may warn; load failure → GUENTHER_UNAVAILABLE (no alternate LLM).
         return False
     return True
