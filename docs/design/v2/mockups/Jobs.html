@@ -1,0 +1,218 @@
+<!-- 03_jobs_results.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karrierekrake - Jobs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { navy: '#132238', teal: '#18A999', tealHover: '#148F82', bgLight: '#F8FAFC', orange: '#E86A45' } } } }
+    </script>
+    <style> body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; } </style>
+</head>
+<body class="bg-bgLight text-gray-800 h-screen flex overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-navy text-white flex flex-col justify-between flex-shrink-0">
+        <div>
+            <div class="p-6 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded bg-teal flex items-center justify-center text-xl font-bold">K</div>
+                <span class="text-xl font-semibold tracking-wide">Karrierekrake</span>
+            </div>
+            <nav class="mt-4 flex flex-col space-y-1 px-3">
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Übersicht
+                </a>
+                <a href="#" class="px-3 py-2 bg-teal bg-opacity-20 text-teal rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Jobs
+                </a>
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Bewerbungen
+                </a>
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-md font-medium flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        Postfach
+                    </div>
+                </a>
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Profil
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Compact Search Bar -->
+        <header class="bg-white border-b border-gray-200 p-4 shrink-0 shadow-sm z-10">
+            <div class="flex items-center space-x-3 max-w-[1400px]">
+                <div class="flex-1 relative">
+                    <input type="text" placeholder="Beruf oder Stichwort" value="Office Manager" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-teal">
+                </div>
+                <div class="w-48 relative">
+                    <input type="text" placeholder="Ort" value="Berlin" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-teal">
+                </div>
+                <div class="w-32 relative">
+                    <select class="w-full pl-3 pr-8 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-teal appearance-none bg-white">
+                        <option>30 km (Luftlinie)</option>
+                        <option>50 km (Luftlinie)</option>
+                    </select>
+                </div>
+                <div class="w-40 relative">
+                    <select class="w-full pl-3 pr-8 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-teal appearance-none bg-white">
+                        <option>Alle Modelle</option>
+                        <option selected>Hybrid</option>
+                        <option>Remote</option>
+                        <option>Vor Ort</option>
+                    </select>
+                </div>
+                <button class="bg-teal hover:bg-tealHover text-white px-6 py-2 rounded text-sm font-semibold transition-colors">
+                    Suchen
+                </button>
+                <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    Weitere Filter
+                </button>
+            </div>
+            
+            <!-- Result Toolbar -->
+            <div class="flex items-center justify-between mt-4 text-sm max-w-[1400px]">
+                <div class="flex items-center space-x-4">
+                    <span class="font-semibold text-navy">12 Treffer</span>
+                    <div class="h-4 w-px bg-gray-300"></div>
+                    <div class="flex space-x-2">
+                        <span class="bg-teal/10 text-teal px-2 py-0.5 rounded text-xs font-medium flex items-center">
+                            Min. 75% Match <button class="ml-1 hover:text-navy">&times;</button>
+                        </span>
+                        <span class="bg-teal/10 text-teal px-2 py-0.5 rounded text-xs font-medium flex items-center">
+                            Letzte 14 Tage <button class="ml-1 hover:text-navy">&times;</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-500">Sortierung:</span>
+                    <select class="border-none bg-transparent font-medium text-navy cursor-pointer focus:outline-none">
+                        <option>Match (absteigend)</option>
+                        <option>Match (aufsteigend)</option>
+                        <option>Entfernung (nah zuerst)</option>
+                        <option>Neueste zuerst</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- 60/40 Split Content -->
+        <div class="flex-1 flex overflow-hidden">
+            
+            <!-- Left Side: List (60%) -->
+            <div class="w-[60%] border-r border-gray-200 overflow-y-auto bg-gray-50/50 p-4 space-y-3">
+                
+                <!-- Job Card (Selected) -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-teal cursor-pointer relative">
+                    <div class="absolute top-4 right-4 bg-teal text-white font-bold text-sm px-2 py-1 rounded">88%</div>
+                    <h3 class="text-lg font-bold text-navy pr-12">Office Manager (m/w/d)</h3>
+                    <div class="text-gray-600 text-sm mt-1">Nordlicht Consulting GmbH</div>
+                    <div class="flex items-center space-x-4 mt-3 text-xs text-gray-500">
+                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Berlin (8.5 km)</span>
+                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Hybrid</span>
+                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 48.000–55.000 €</span>
+                        <span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600">Neu</span>
+                    </div>
+                </div>
+
+                <!-- Job Card -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:border-gray-300 cursor-pointer relative transition-colors">
+                    <div class="absolute top-4 right-4 bg-gray-200 text-gray-700 font-bold text-sm px-2 py-1 rounded">76%</div>
+                    <h3 class="text-lg font-bold text-navy pr-12">Projektassistenz (w/m/d)</h3>
+                    <div class="text-gray-600 text-sm mt-1">Kiefer IT Solutions</div>
+                    <div class="flex items-center space-x-4 mt-3 text-xs text-gray-500">
+                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg> Remote DE</span>
+                        <span class="flex items-center"><svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> 100% Remote</span>
+                        <span class="bg-orange/10 text-orange px-2 py-0.5 rounded">Prüfung nötig</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Side: Details (40%) -->
+            <div class="w-[40%] bg-white overflow-y-auto flex flex-col">
+                <div class="p-6 border-b border-gray-100 flex-1">
+                    
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-navy">Office Manager (m/w/d)</h2>
+                            <p class="text-lg text-gray-600 mt-1">Nordlicht Consulting GmbH</p>
+                        </div>
+                        <div class="bg-teal text-white font-bold text-lg px-3 py-1.5 rounded shadow-sm">
+                            88% Match
+                        </div>
+                    </div>
+
+                    <!-- Meta -->
+                    <div class="grid grid-cols-2 gap-y-3 mb-8 text-sm">
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                            Berlin (8.5 km Luftlinie)
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            Hybrid (2 Tage Office)
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            48.000–55.000 €
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            Vor 2 Tagen veröffentlicht
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="bg-bgLight rounded-lg p-5 mb-8 border border-gray-100">
+                        <h4 class="font-semibold text-navy flex items-center mb-3">
+                            <span class="w-2 h-2 rounded-full bg-teal mr-2"></span> Warum passt der Job?
+                        </h4>
+                        <ul class="text-sm text-gray-700 space-y-2 list-disc pl-5">
+                            <li>Stellentitel und Kernaufgaben matchen perfekt mit deinem Profil.</li>
+                            <li>Gewünschtes Hybrid-Modell innerhalb der Pendelreichweite (Max 20km).</li>
+                            <li>Deine Excel- und DATEV-Skills werden explizit als Pluspunkt gefordert.</li>
+                        </ul>
+                        
+                        <h4 class="font-semibold text-orange flex items-center mt-5 mb-3">
+                            <span class="w-2 h-2 rounded-full bg-orange mr-2"></span> Was passt möglicherweise nicht?
+                        </h4>
+                        <ul class="text-sm text-gray-700 space-y-2 list-disc pl-5">
+                            <li>Fließendes Englisch wird gefordert (Dein Profil: "Gute Kenntnisse").</li>
+                        </ul>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="prose prose-sm text-gray-700">
+                        <h4 class="text-lg font-bold text-navy mb-2">Deine Aufgaben</h4>
+                        <p>Organisation des Büroalltags, Terminplanung und Schnittstelle zur Geschäftsführung. Du bist die erste Anlaufstelle für unsere Kunden und das Team...</p>
+                        <!-- Truncated for demo -->
+                    </div>
+
+                </div>
+
+                <!-- Sticky Actions bottom -->
+                <div class="p-4 border-t border-gray-200 bg-gray-50 flex space-x-3 shrink-0">
+                    <button class="flex-1 bg-teal hover:bg-tealHover text-white py-2.5 rounded shadow-sm font-semibold transition-colors">
+                        Bewerbung vorbereiten
+                    </button>
+                    <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded font-medium transition-colors">
+                        Original öffnen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

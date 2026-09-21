@@ -1,0 +1,250 @@
+<!-- 07_application_detail.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karrierekrake - Bewerbungsdetail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { navy: '#132238', teal: '#18A999', tealHover: '#148F82', bgLight: '#F8FAFC', orange: '#E86A45' } } } }
+    </script>
+    <style> body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; } </style>
+</head>
+<body class="bg-bgLight text-gray-800 h-screen flex overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-navy text-white flex flex-col justify-between flex-shrink-0">
+        <!-- Sidebar content identical to 06 -->
+        <div>
+            <div class="p-6 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded bg-teal flex items-center justify-center text-xl font-bold">K</div>
+                <span class="text-xl font-semibold tracking-wide">Karrierekrake</span>
+            </div>
+            <nav class="mt-4 flex flex-col space-y-1 px-3">
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Übersicht
+                </a>
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Jobs
+                </a>
+                <a href="#" class="px-3 py-2 bg-teal bg-opacity-20 text-teal rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Bewerbungen
+                </a>
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center justify-between">
+                    <div class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Postfach</div>
+                    <span class="bg-orange text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-y-auto relative">
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-8 py-5 flex justify-between items-center sticky top-0 z-20 shadow-sm">
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-400 hover:text-navy transition-colors flex items-center justify-center w-8 h-8 rounded hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <div>
+                    <div class="flex items-center space-x-3 mb-1">
+                        <h1 class="text-2xl font-bold text-navy">Office Manager</h1>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-teal/10 text-teal">Interview</span>
+                    </div>
+                    <p class="text-sm text-gray-500">RheinOffice GmbH</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center text-sm font-bold text-teal bg-teal/5 px-3 py-1.5 rounded border border-teal/20 mr-2">
+                    87% Match
+                </div>
+                <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded text-sm font-medium transition-colors">
+                    Original öffnen
+                </button>
+                <button class="bg-teal hover:bg-tealHover text-white px-5 py-2 rounded shadow text-sm font-semibold transition-colors">
+                    Interview planen
+                </button>
+            </div>
+        </header>
+
+        <div class="p-8 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">
+            
+            <!-- Left Column: Main Data -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Übersicht -->
+                <section>
+                    <h2 class="text-lg font-bold text-navy mb-4">Übersicht</h2>
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 grid grid-cols-2 gap-6">
+                        <div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">Firma</div>
+                            <div class="font-medium text-navy">RheinOffice GmbH</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">Stelle</div>
+                            <div class="font-medium text-navy">Office Manager</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">Bewerbungsdatum</div>
+                            <div class="font-medium text-navy">12. September 2026</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">Nächste Aktion</div>
+                            <div class="font-medium text-teal flex items-center">
+                                Termin für Interview wählen <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </div>
+                        </div>
+                        <div class="col-span-2 pt-4 border-t border-gray-100">
+                            <div class="text-xs text-gray-500 uppercase tracking-wider mb-2">Ansprechpartner</div>
+                            <div class="flex items-center justify-between bg-gray-50 p-3 rounded border border-gray-100">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold">AW</div>
+                                    <div>
+                                        <div class="font-medium text-navy text-sm">Anna Weber</div>
+                                        <div class="text-xs text-gray-500">Recruiting</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-green-700 bg-green-100 px-2 py-1 rounded flex items-center font-medium">
+                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    Verifiziert
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dokumente -->
+                <section>
+                    <h2 class="text-lg font-bold text-navy mb-4">Eingereichte Dokumente</h2>
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                        <div class="divide-y divide-gray-100">
+                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path></svg>
+                                    <div>
+                                        <div class="text-sm font-medium text-navy">Lebenslauf_Mustermann_2026.pdf</div>
+                                        <div class="text-xs text-gray-500">Standard-Profil-Lebenslauf (1.2 MB)</div>
+                                    </div>
+                                </div>
+                                <button class="text-teal hover:text-navy text-sm font-medium">Ansehen</button>
+                            </div>
+                            <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path></svg>
+                                    <div>
+                                        <div class="text-sm font-medium text-navy">Anschreiben_RheinOffice.txt</div>
+                                        <div class="text-xs text-gray-500">Automatisch generiert</div>
+                                    </div>
+                                </div>
+                                <button class="text-teal hover:text-navy text-sm font-medium">Ansehen</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kommunikation (Quick View) -->
+                <section>
+                    <div class="flex justify-between items-end mb-4">
+                        <h2 class="text-lg font-bold text-navy">Kommunikation</h2>
+                        <button class="text-sm text-teal font-medium hover:underline">Alle Nachrichten im Postfach</button>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded font-medium">Empfangen</span>
+                                <span class="text-sm font-bold text-navy">Anna Weber</span>
+                                <span class="text-sm text-gray-500">&lt;a.weber@rheinoffice.de&gt;</span>
+                            </div>
+                            <span class="text-xs text-gray-400">Gestern, 14:30 Uhr</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-navy mb-2">Einladung zum Interview</h3>
+                        <p class="text-sm text-gray-700 line-clamp-3">
+                            Sehr geehrter Herr Mustermann, vielen Dank für Ihre Bewerbung und Ihr Interesse an RheinOffice. Ihr Profil hat uns sehr angesprochen. Wir würden Sie gerne in einem kurzen Online-Gespräch näher kennenlernen. Bitte lassen Sie uns wissen, ob Ihnen einer der folgenden Termine passt: Dienstag oder Mittwoch zwischen 9 und 15 Uhr...
+                        </p>
+                    </div>
+
+                    <!-- Follow Up Action Block -->
+                    <div class="bg-blue-50 border border-blue-100 p-4 rounded-lg flex items-center justify-between">
+                        <div>
+                            <h4 class="text-sm font-bold text-navy">Antwort erforderlich</h4>
+                            <p class="text-xs text-gray-600 mt-1">Die Firma wartet auf deine Terminbestätigung.</p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm font-medium hover:bg-gray-50">Später erinnern</button>
+                            <button class="bg-teal text-white px-4 py-2 rounded text-sm font-semibold hover:bg-tealHover">Entwurf erstellen</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Right Column: Verlauf & Interview -->
+            <div class="space-y-8">
+                
+                <!-- Interview Teaser -->
+                <div class="bg-navy rounded-lg shadow-sm p-6 text-white relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-white opacity-5 rounded-bl-full"></div>
+                    <h3 class="font-bold text-lg mb-2 relative z-10">Interview steht an</h3>
+                    <p class="text-sm text-gray-300 mb-5 relative z-10">Bereite dich mit deinen individuellen Talking Points auf das Gespräch vor.</p>
+                    <button class="w-full bg-teal hover:bg-tealHover text-white py-2.5 rounded text-sm font-semibold transition-colors relative z-10 flex items-center justify-center">
+                        Zur Interviewvorbereitung
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Verlauf / Lifecycle -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                    <h2 class="text-lg font-bold text-navy mb-6">Verlauf</h2>
+                    
+                    <div class="relative border-l-2 border-gray-100 ml-3 space-y-6">
+                        
+                        <!-- Event: Interview -->
+                        <div class="relative pl-6">
+                            <div class="absolute -left-1.5 mt-1.5 w-3 h-3 rounded-full bg-teal shadow-[0_0_0_4px_#F8FAFC]"></div>
+                            <div class="text-xs text-gray-400 mb-0.5">20.09.2026, 14:30</div>
+                            <div class="text-sm font-bold text-navy">Interviewanfrage erhalten</div>
+                            <div class="text-xs text-gray-500 mt-1">Nachricht von Anna Weber.</div>
+                        </div>
+
+                        <!-- Event: Prüfung -->
+                        <div class="relative pl-6">
+                            <div class="absolute -left-1.5 mt-1.5 w-3 h-3 rounded-full bg-gray-300 shadow-[0_0_0_4px_#F8FAFC]"></div>
+                            <div class="text-xs text-gray-400 mb-0.5">16.09.2026, 09:12</div>
+                            <div class="text-sm font-medium text-gray-800">Bewerbung wird geprüft</div>
+                            <div class="text-xs text-gray-500 mt-1">Status im Zielsystem aktualisiert.</div>
+                        </div>
+
+                        <!-- Event: Eingangsbestätigung -->
+                        <div class="relative pl-6">
+                            <div class="absolute -left-1.5 mt-1.5 w-3 h-3 rounded-full bg-gray-300 shadow-[0_0_0_4px_#F8FAFC]"></div>
+                            <div class="text-xs text-gray-400 mb-0.5">13.09.2026, 10:05</div>
+                            <div class="text-sm font-medium text-gray-800">Eingangsbestätigung</div>
+                            <div class="text-xs text-gray-500 mt-1">Automatische E-Mail erhalten.</div>
+                        </div>
+
+                        <!-- Event: Versendet -->
+                        <div class="relative pl-6">
+                            <div class="absolute -left-1.5 mt-1.5 w-3 h-3 rounded-full bg-gray-300 shadow-[0_0_0_4px_#F8FAFC]"></div>
+                            <div class="text-xs text-gray-400 mb-0.5">13.09.2026, 10:02</div>
+                            <div class="text-sm font-medium text-gray-800">Bewerbung versendet</div>
+                            <div class="text-xs text-gray-500 mt-1">Über Karrierekrake übermittelt.</div>
+                        </div>
+
+                        <!-- Event: Vorbereitet -->
+                        <div class="relative pl-6">
+                            <div class="absolute -left-1.5 mt-1.5 w-3 h-3 rounded-full bg-gray-300 shadow-[0_0_0_4px_#F8FAFC]"></div>
+                            <div class="text-xs text-gray-400 mb-0.5">12.09.2026, 18:45</div>
+                            <div class="text-sm font-medium text-gray-800">Bewerbung vorbereitet</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</body>
+</html>

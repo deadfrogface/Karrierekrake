@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QDialog,
     QFrame,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
@@ -152,3 +154,158 @@ class ContentCard(QFrame):
 
     def body(self) -> QVBoxLayout:
         return self._body
+
+
+class IconActionButton(QPushButton):
+    """Compact secondary icon/text button (card header actions)."""
+
+    def __init__(self, text: str = "", *, accessible_name: str = "", parent: QWidget | None = None) -> None:
+        super().__init__(text, parent)
+        self.setObjectName("SecondaryButton")
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        set_accessible_name(self, accessible_name or text)
+
+
+class TagChip(QLabel):
+    """Compact tag / chip for skills and career goals."""
+
+    def __init__(
+        self,
+        text: str = "",
+        *,
+        kind: str = "neutral",
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(text, parent)
+        mapping = {
+            "wanted": "BadgeOk",
+            "unwanted": "BadgeDanger",
+            "neutral": "BadgeMuted",
+            "more": "BadgeMuted",
+        }
+        self.setObjectName(mapping.get(kind, "BadgeMuted"))
+        set_accessible_name(self, text)
+
+
+class DataItem(QWidget):
+    """Label + value stack used in profile data grids."""
+
+    def __init__(self, label: str = "", value: str = "—", parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(2)
+        self.label = QLabel(label)
+        self.label.setObjectName("KkHint")
+        self.value = QLabel(value or "—")
+        self.value.setObjectName("PageSubtitle")
+        self.value.setWordWrap(True)
+        layout.addWidget(self.label)
+        layout.addWidget(self.value)
+        set_accessible_name(self, f"{label}: {value or '—'}")
+
+    def set_pair(self, label: str, value: str) -> None:
+        self.label.setText(label)
+        self.value.setText(value or "—")
+        set_accessible_name(self, f"{label}: {value or '—'}")
+
+
+class ProfileSectionCard(QFrame):
+    """Demo-aligned profile section card with header action."""
+
+    def __init__(
+        self,
+        title: str = "",
+        *,
+        action_text: str = "",
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(parent)
+        self.setObjectName("Card")
+        self.setFrameShape(QFrame.Shape.StyledPanel)
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
+        header = QHBoxLayout()
+        header.setContentsMargins(16, 14, 16, 14)
+        self.title_label = QLabel(title)
+        self.title_label.setObjectName("NextActionTitle")
+        header.addWidget(self.title_label)
+        header.addStretch()
+        self.action_btn = IconActionButton(action_text)
+        self.action_btn.setVisible(bool(action_text))
+        header.addWidget(self.action_btn)
+        root.addLayout(header)
+        self._body = QVBoxLayout()
+        self._body.setContentsMargins(16, 0, 16, 16)
+        self._body.setSpacing(12)
+        root.addLayout(self._body)
+        set_accessible_name(self, title)
+
+    def body(self) -> QVBoxLayout:
+        return self._body
+
+    def set_title(self, title: str) -> None:
+        self.title_label.setText(title)
+        set_accessible_name(self, title)
+
+    def set_action_text(self, text: str) -> None:
+        self.action_btn.setText(text)
+        set_accessible_name(self.action_btn, text)
+        self.action_btn.setVisible(bool(text))
+
+
+class SectionEditDrawer(QDialog):
+    """Right-side edit drawer — Speichern / Abbrechen (demo pattern)."""
+
+    def __init__(self, title: str = "", parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        self.setModal(True)
+        self.setMinimumWidth(480)
+        self.setMaximumWidth(560)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 16)
+        layout.setSpacing(12)
+        self.title_label = QLabel(title)
+        self.title_label.setObjectName("PageTitle")
+        layout.addWidget(self.title_label)
+        self._host = QVBoxLayout()
+        self._host.setContentsMargins(0, 0, 0, 0)
+        layout.addLayout(self._host, stretch=1)
+        buttons = QHBoxLayout()
+        buttons.addStretch()
+        self.cancel_btn = QPushButton()
+        self.cancel_btn.setObjectName("SecondaryButton")
+        self.save_btn = QPushButton()
+        self.save_btn.setObjectName("PrimaryButton")
+        self.cancel_btn.clicked.connect(self.reject)
+        self.save_btn.clicked.connect(self.accept)
+        buttons.addWidget(self.cancel_btn)
+        buttons.addWidget(self.save_btn)
+        layout.addLayout(buttons)
+        self._content: QWidget | None = None
+
+    def set_texts(self, *, title: str, save: str, cancel: str) -> None:
+        self.setWindowTitle(title)
+        self.title_label.setText(title)
+        self.save_btn.setText(save)
+        self.cancel_btn.setText(cancel)
+        set_accessible_name(self.save_btn, save)
+        set_accessible_name(self.cancel_btn, cancel)
+
+    def present(self, content: QWidget) -> int:
+        if self._content is not None:
+            self._host.removeWidget(self._content)
+        self._content = content
+        content.setVisible(True)
+        self._host.addWidget(content)
+        return int(self.exec())
+
+    def take_content(self) -> QWidget | None:
+        content = self._content
+        if content is not None:
+            self._host.removeWidget(content)
+            content.setParent(None)
+            self._content = None
+        return content

@@ -1,0 +1,191 @@
+<!-- 09_inbox_review_reply.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karrierekrake - Zuordnung Prüfen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { navy: '#132238', teal: '#18A999', tealHover: '#148F82', bgLight: '#F8FAFC', orange: '#E86A45' } } } }
+    </script>
+    <style> body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; } </style>
+</head>
+<body class="bg-bgLight text-gray-800 h-screen flex overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-navy text-white flex flex-col justify-between flex-shrink-0 z-20">
+        <!-- Identical Sidebar layout -->
+        <div>
+            <div class="p-6 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded bg-teal flex items-center justify-center text-xl font-bold">K</div>
+                <span class="text-xl font-semibold tracking-wide">Karrierekrake</span>
+            </div>
+            <nav class="mt-4 flex flex-col space-y-1 px-3">
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Übersicht</a>
+                <a href="#" class="px-3 py-2 bg-teal bg-opacity-20 text-teal rounded-md font-medium flex items-center justify-between">
+                    <div class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Postfach</div>
+                    <span class="bg-orange text-white text-xs font-bold px-2 py-0.5 rounded-full">1</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold text-navy">Postfach</h1>
+            </div>
+        </header>
+
+        <!-- Split Pane Layout -->
+        <div class="flex-1 flex overflow-hidden">
+            
+            <!-- Left List (w-96) -->
+            <div class="w-96 bg-white border-r border-gray-200 overflow-y-auto flex flex-col pointer-events-none opacity-50">
+                <!-- Dimmed to focus on the active task on the right -->
+                <div class="p-4 cursor-pointer bg-orange/5 border-l-4 border-orange relative opacity-100 pointer-events-auto">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="font-bold text-navy text-sm">Acme Recruiting</span>
+                        <span class="text-xs text-orange font-medium">10:15</span>
+                    </div>
+                    <div class="text-sm font-bold text-navy mb-2">Ihre Bewerbung</div>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-orange/10 text-orange border border-orange/20">
+                        ? Zuordnung prüfen
+                    </span>
+                </div>
+                <div class="p-4 border-l-4 border-transparent"><span class="font-bold text-navy text-sm">RheinOffice GmbH</span></div>
+            </div>
+
+            <!-- Right Detail Panel (Review & Reply) -->
+            <div class="flex-1 bg-bgLight overflow-y-auto p-6 flex justify-center">
+                <div class="w-full max-w-3xl space-y-6">
+                    
+                    <!-- Alert Banner -->
+                    <div class="bg-orange/10 border border-orange/30 rounded-lg p-5 flex items-start space-x-4">
+                        <svg class="w-6 h-6 text-orange mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <div>
+                            <h2 class="text-lg font-bold text-navy">Diese Nachricht konnte nicht eindeutig zugeordnet werden.</h2>
+                            <p class="text-sm text-gray-700 mt-1">Die Firma betreut mehrere deiner offenen Bewerbungen. Bitte hilf bei der Zuordnung.</p>
+                        </div>
+                    </div>
+
+                    <!-- Email Preview (Collapsed/Compact) -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-navy">Von: Acme Recruiting</span>
+                            <span class="text-sm text-gray-500">Betreff: Ihre Bewerbung</span>
+                        </div>
+                        <div class="text-sm text-gray-600 bg-gray-50 p-3 rounded font-serif italic">
+                            "Hallo Herr Mustermann, können Sie uns noch ein aktuelles Zeugnis nachreichen, damit wir Ihre Akte vervollständigen können?"
+                        </div>
+                    </div>
+
+                    <!-- Matching Task -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                        <h3 class="font-bold text-navy mb-4">Welche Bewerbung gehört zu dieser Nachricht?</h3>
+                        
+                        <div class="space-y-3">
+                            <!-- Option 1 -->
+                            <label class="flex items-center justify-between p-4 border border-teal bg-teal/5 rounded cursor-pointer transition-colors">
+                                <div class="flex items-center space-x-4">
+                                    <input type="radio" name="match" class="w-5 h-5 text-teal focus:ring-teal" checked>
+                                    <div>
+                                        <div class="font-bold text-navy text-sm">Office Manager</div>
+                                        <div class="text-xs text-gray-500">Acme GmbH (Beworben am 10.09.)</div>
+                                    </div>
+                                </div>
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">82% Zuordnung</span>
+                            </label>
+
+                            <!-- Option 2 -->
+                            <label class="flex items-center justify-between p-4 border border-gray-200 hover:border-gray-300 rounded cursor-pointer transition-colors">
+                                <div class="flex items-center space-x-4">
+                                    <input type="radio" name="match" class="w-5 h-5 text-teal focus:ring-teal">
+                                    <div>
+                                        <div class="font-bold text-navy text-sm">Teamassistenz</div>
+                                        <div class="text-xs text-gray-500">Acme GmbH (Beworben am 11.09.)</div>
+                                    </div>
+                                </div>
+                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">77% Zuordnung</span>
+                            </label>
+
+                            <!-- Option None -->
+                            <label class="flex items-center p-4 border border-gray-200 hover:border-gray-300 rounded cursor-pointer transition-colors">
+                                <input type="radio" name="match" class="w-5 h-5 text-teal focus:ring-teal mr-4">
+                                <span class="font-medium text-gray-700 text-sm">Keine davon (Neue Bewerbung anlegen)</span>
+                            </label>
+                        </div>
+                        <div class="mt-4">
+                            <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm font-medium hover:bg-gray-50">Auswahl bestätigen</button>
+                        </div>
+                    </div>
+
+                    <!-- Draft Reply Section -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="font-bold text-navy">Vorgeschlagene Antwort</h3>
+                            <select class="text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:border-teal">
+                                <option>Dokumente senden/beantworten</option>
+                                <option>Termine vorschlagen</option>
+                                <option>Dankeschön</option>
+                                <option>Nachfassen</option>
+                                <option>Allgemeine Antwort</option>
+                            </select>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="grid grid-cols-[80px_1fr] gap-2 items-center text-sm">
+                                <span class="text-gray-500">An:</span>
+                                <input type="text" value="Acme Recruiting <info@acme-recruiting.de>" class="w-full border border-gray-200 rounded p-2 text-gray-800 bg-gray-50 focus:outline-none" readonly>
+                                
+                                <span class="text-gray-500">Betreff:</span>
+                                <input type="text" value="Re: Ihre Bewerbung - Fehlende Dokumente" class="w-full border border-gray-200 rounded p-2 text-gray-800 focus:outline-none focus:border-teal">
+                            </div>
+                            
+                            <div>
+                                <textarea class="w-full h-40 border border-gray-200 rounded p-3 text-sm text-gray-800 focus:outline-none focus:border-teal resize-none font-serif">Hallo liebes Acme-Team,
+
+vielen Dank für die Rückmeldung. Anbei sende ich Ihnen wie gewünscht mein aktuelles Arbeitszeugnis.
+
+Falls Sie noch weitere Unterlagen benötigen, lassen Sie es mich gerne wissen.
+
+Viele Grüße
+Max Mustermann</textarea>
+                            </div>
+                            
+                            <!-- Attachments -->
+                            <div class="flex items-center space-x-3 text-sm">
+                                <span class="text-gray-500">Anhänge:</span>
+                                <div class="bg-teal/10 text-teal px-3 py-1.5 rounded flex items-center font-medium border border-teal/20">
+                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                    Arbeitszeugnis_Mustermann.pdf
+                                    <button class="ml-2 hover:text-navy">&times;</button>
+                                </div>
+                                <button class="text-teal hover:underline text-xs">+ Weiteres Dokument</button>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+                            <button class="bg-white border border-gray-300 text-gray-700 px-5 py-2.5 rounded text-sm font-medium hover:bg-gray-50 transition-colors">
+                                Bearbeiten
+                            </button>
+                            <button class="bg-teal hover:bg-tealHover text-white px-5 py-2.5 rounded shadow text-sm font-semibold transition-colors">
+                                Entwurf in Gmail übernehmen
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Binding Action Area -->
+                    <div class="flex justify-end pt-4">
+                        <button class="text-gray-400 hover:text-red-600 text-xs font-medium transition-colors flex items-center">
+                            Bewerbung zurückziehen
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

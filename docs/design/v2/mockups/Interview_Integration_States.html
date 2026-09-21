@@ -1,0 +1,201 @@
+<!-- 19_interview_integration_states.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karrierekrake V2 - Interview & Integration States</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#132238',
+                        teal: { DEFAULT: '#18A999', hover: '#148F82' },
+                        orange: '#E86A45',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; color: #0F172A; font-family: 'Inter', sans-serif; padding: 2rem; -webkit-font-smoothing: antialiased; }
+        .state-container { background: white; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #E2E8F0; }
+        .state-header { font-size: 0.75rem; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #E2E8F0; }
+    </style>
+</head>
+<body class="max-w-4xl mx-auto">
+
+    <h1 class="text-2xl font-bold text-navy mb-8">Interview & Integration States</h1>
+
+    <!-- STATE A -->
+    <div class="state-container">
+        <div class="state-header">State A — Keine Interviewanfrage</div>
+        <div class="text-slate-500 text-sm flex items-center gap-2">
+            <i data-lucide="calendar" class="w-4 h-4"></i> Noch kein Interview geplant
+        </div>
+    </div>
+
+    <!-- STATE B -->
+    <div class="state-container">
+        <div class="state-header">State B — Interviewanfrage erkannt</div>
+        <div class="border border-slate-200 rounded-lg p-5 shadow-sm">
+            <div class="bg-slate-50 p-4 rounded-md mb-4 border-l-2 border-slate-300 text-sm text-slate-700 italic">
+                "...wir würden Sie gerne am Dienstag oder Mittwoch nächste Woche vormittags zu einem ersten Kennenlernen via Teams einladen..."
+            </div>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-sm text-navy font-medium">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-teal"></i> Karrierekrake hat mögliche Zeiträume erkannt.
+                </div>
+                <button class="bg-teal hover:bg-teal-hover text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                    Termine prüfen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE C -->
+    <div class="state-container">
+        <div class="state-header">State C — Termine werden geprüft</div>
+        <div class="py-4 space-y-3 pl-2">
+            <div class="flex items-center gap-3 text-sm text-slate-600">
+                <i data-lucide="check" class="w-4 h-4 text-teal"></i> Zeiträume erkannt
+            </div>
+            <div class="flex items-center gap-3 text-sm text-slate-600">
+                <i data-lucide="check" class="w-4 h-4 text-teal"></i> Arbeitszeiten geprüft
+            </div>
+            <div class="flex items-center gap-3 text-sm font-medium text-navy">
+                <i data-lucide="loader-2" class="w-4 h-4 text-slate-400 animate-spin"></i> Kalenderkonflikte werden geprüft
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE D -->
+    <div class="state-container">
+        <div class="state-header">State D — Mehrere gute Termine</div>
+        <div class="space-y-3">
+            <div class="border border-teal bg-teal/5 rounded-lg p-3 flex justify-between items-center cursor-pointer shadow-sm">
+                <div>
+                    <div class="text-sm font-medium text-navy">Dienstag, 15. Oktober</div>
+                    <div class="text-xs text-slate-500 mt-0.5">10:00 - 11:00 Uhr</div>
+                </div>
+                <span class="text-[10px] font-semibold text-teal uppercase tracking-wide bg-teal/10 px-2 py-1 rounded">Bester Fit</span>
+            </div>
+            <div class="border border-slate-200 hover:border-slate-300 bg-white rounded-lg p-3 flex justify-between items-center cursor-pointer transition-colors shadow-sm">
+                <div>
+                    <div class="text-sm font-medium text-navy">Mittwoch, 16. Oktober</div>
+                    <div class="text-xs text-slate-500 mt-0.5">09:30 - 10:30 Uhr</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE E -->
+    <div class="state-container">
+        <div class="state-header">State E — Kein konfliktfreier Termin</div>
+        <div class="border border-slate-200 bg-slate-50 rounded-lg p-6 text-center shadow-sm">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-slate-500 mx-auto mb-3 shadow-sm">
+                <i data-lucide="calendar-x" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-navy mb-1">Kein konfliktfreier Termin gefunden.</h3>
+            <p class="text-xs text-slate-500 mb-5 max-w-sm mx-auto">Die vorgeschlagenen Zeiten überschneiden sich mit bestehenden Kalendereinträgen.</p>
+            <div class="flex justify-center gap-3">
+                <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                    Andere Zeiten prüfen
+                </button>
+                <button class="bg-transparent text-slate-600 hover:text-navy px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300">
+                    Eigenen Vorschlag machen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE F -->
+    <div class="state-container">
+        <div class="state-header">State F — Kalender nicht verbunden (Banner in Context)</div>
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-2 text-sm text-slate-700">
+                <i data-lucide="calendar-off" class="w-4 h-4 text-slate-500"></i>
+                <span>Kalender nicht verbunden</span>
+            </div>
+            <div class="flex gap-2">
+                <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                    Kalender verbinden
+                </button>
+                <button class="bg-transparent text-slate-600 hover:text-navy px-4 py-2 rounded-md text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300">
+                    ICS exportieren
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE G -->
+    <div class="state-container">
+        <div class="state-header">State G — Kalendereintrag wartet auf Freigabe</div>
+        <div class="border border-slate-200 rounded-lg p-5 shadow-sm">
+            <h3 class="text-sm font-semibold text-navy mb-4">Termin bestätigen</h3>
+            
+            <div class="bg-slate-50 rounded-md p-4 mb-5 space-y-2 border border-slate-100">
+                <div class="flex gap-3 text-sm">
+                    <i data-lucide="clock" class="w-4 h-4 text-slate-400"></i>
+                    <div class="font-medium text-navy">Dienstag, 10:30–11:30</div>
+                </div>
+                <div class="flex gap-3 text-sm">
+                    <i data-lucide="building-2" class="w-4 h-4 text-slate-400"></i>
+                    <div class="text-slate-700">Acme GmbH — Product Manager</div>
+                </div>
+                <div class="flex gap-3 text-sm">
+                    <i data-lucide="video" class="w-4 h-4 text-slate-400"></i>
+                    <div class="text-slate-700">Remote (Microsoft Teams)</div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button class="text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-300">
+                    Abbrechen
+                </button>
+                <button class="bg-navy hover:bg-slate-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-1">
+                    <i data-lucide="calendar-plus" class="w-4 h-4"></i> In Kalender eintragen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE H -->
+    <div class="state-container">
+        <div class="state-header">State H — Kalendereintrag erfolgreich</div>
+        <div class="flex items-center gap-3 text-sm text-green-700 bg-green-50 p-4 rounded-lg border border-green-200 shadow-sm">
+            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+            <span class="font-medium">Termin wurde in deinen Kalender eingetragen.</span>
+        </div>
+    </div>
+
+    <!-- STATE I -->
+    <div class="state-container">
+        <div class="state-header">State I — Kalendereintrag fehlgeschlagen</div>
+        <div class="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-start gap-3">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600 shrink-0"></i>
+                <div class="text-sm">
+                    <div class="font-medium text-navy">Der Termin konnte nicht eingetragen werden.</div>
+                    <div class="text-slate-600 mt-0.5 text-xs">Möglicherweise fehlen Schreibrechte.</div>
+                </div>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button class="bg-white border border-slate-300 text-navy hover:bg-slate-50 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">Erneut versuchen</button>
+                <button class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">ICS exportieren</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
