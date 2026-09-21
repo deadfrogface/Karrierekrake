@@ -70,4 +70,4 @@ secondary actions in overflow.
 ## S — Remaining polish (non-blocking)
 - Optional visual screenshots of each page at 100/125/150% (manual / CI artifact)
 - Bewerbungsvorschau fine visual pass if demo still diverges
-- ManagePullRequest forge rename Jobhuntsaver→Karrierekrake blocks auto PR body sync
+- ManagePullRequest forge rename legacy repo rename→Karrierekrake blocks auto PR body sync
