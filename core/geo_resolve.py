@@ -1,20 +1,29 @@
-"""Place helpers + non-authoritative Haversine diagnostics (NEXT-05).
+"""Local DACH place resolution + Haversine airline distance (authoritative).
 
-Production commute distance is **Google Route Matrix only**
-(``integrations.maps``). This module may still expose Haversine and legacy
-pgeocode helpers for tests / diagnostics — they must **never** write
-``Job.distance_km`` or user-facing „km Fahrt“ claims.
+Production path (local-first):
+  1. Trusted explicit coordinates with provenance
+  2. country_code + postal_code via bundled/pgeocode GeoNames data
+  3. Unique country_code + city → city centroid
+  4. Otherwise UNKNOWN / AMBIGUOUS — never guess
 
-On Google failure → DISTANCE_UNKNOWN (None). No Nominatim/OSRM/pgeocode fallback.
+No Google Maps / Places / Routes / Distance Matrix.
+No public Nominatim production calls.
+Distance = great-circle (Luftlinie) with documented R = 6371.0088 km (haversine_v1).
 """
 
 from __future__ import annotations
 
 import logging
 import math
+import os
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, Literal
 
+from core.geo_dataset import (
+    EARTH_RADIUS_KM,
+    HAVERSINE_ALGORITHM,
+    get_geo_dataset_manager,
+)
 from core.geo_normalize import (
     DACH_COUNTRY_CODES,
     NormalizedPlace,
@@ -29,21 +38,26 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger("karrierekrake")
 
-# Versioned data sources for geocode_cache (migration / invalidation).
-GEO_DATA_SOURCE_COORDS = "explicit_coords"
+GEO_DATA_SOURCE_COORDS = "existing_source"
 GEO_DATA_VERSION_COORDS = "wgs84-1"
 GEO_DATA_SOURCE_PGEOCODE = "pgeocode"
+GEO_DATA_SOURCE_GEONAMES = "geonames"
 GEO_DATA_VERSION_PGEOCODE = "geonames-pgeocode-0.5"
-GEO_DATA_SOURCE_NOMINATIM = "nominatim"
-GEO_DATA_VERSION_NOMINATIM = "osm-nominatim-1"
 GEO_DATA_SOURCE_UNRESOLVED = "unresolved"
 GEO_DATA_VERSION_UNRESOLVED = "1"
 
 UNRESOLVED_MARKER = "__unresolved__"
-UNKNOWN_DISTANCE = None  # sentinel documentation: never invent a float
+UNKNOWN_DISTANCE = None
+DISTANCE_UNKNOWN = None  # alias for callers migrating from maps contracts
 
-# Public / textbook reference points for tests & docs (not user PII).
-# Approximate WGS84 — suitable for Haversine golden cases.
+Precision = Literal[
+    "exact_coordinates",
+    "postal_centroid",
+    "city_centroid",
+    "unknown",
+]
+
+# Public reference points for golden Haversine tests (not user PII).
 PUBLIC_REF_COORDS: dict[str, tuple[float, float, str]] = {
     "konstanz_de": (47.6603, 9.1753, "DE"),
     "kreuzlingen_ch": (47.6499, 9.1750, "CH"),
@@ -56,6 +70,7 @@ PUBLIC_REF_COORDS: dict[str, tuple[float, float, str]] = {
     "freilassing_de": (47.8408, 12.9811, "DE"),
     "passau_de": (48.5665, 13.4312, "DE"),
     "schaerding_at": (48.4522, 13.4372, "AT"),
+    "berlin_de": (52.5200, 13.4050, "DE"),
 }
 
 
@@ -71,6 +86,7 @@ class PlaceResolution:
     data_source: str = ""
     data_version: str = ""
     reason: str = ""
+    precision: Precision = "unknown"
 
     @property
     def ok(self) -> bool:
@@ -82,12 +98,20 @@ class PlaceResolution:
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    """Great-circle (airline) distance — DIAGNOSTIC ONLY.
+    """Great-circle distance in km (haversine_v1). Unrounded — UI rounds only.
 
-    Forbidden as production ``Job.distance_km`` / commute radius authority
-    (NEXT-05). Use Google Compute Route Matrix road km instead.
+    Earth radius R = 6371.0088 km (IUGG mean). Angles converted to radians.
+    Raises ValueError for non-finite or out-of-range coordinates.
     """
-    r = 6371.0
+    for name, v in (("lat1", lat1), ("lon1", lon1), ("lat2", lat2), ("lon2", lon2)):
+        if v is None or not isinstance(v, (int, float)) or not math.isfinite(float(v)):
+            raise ValueError(f"invalid coordinate {name}")
+    lat1, lon1, lat2, lon2 = float(lat1), float(lon1), float(lat2), float(lon2)
+    if not (-90.0 <= lat1 <= 90.0 and -90.0 <= lat2 <= 90.0):
+        raise ValueError("latitude out of range")
+    if not (-180.0 <= lon1 <= 180.0 and -180.0 <= lon2 <= 180.0):
+        raise ValueError("longitude out of range")
+    r = EARTH_RADIUS_KM
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
     dlambda = math.radians(lon2 - lon1)
@@ -95,22 +119,30 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         math.sin(dphi / 2) ** 2
         + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
     )
-    return 2 * r * math.asin(math.sqrt(a))
+    return 2 * r * math.asin(math.sqrt(min(1.0, a)))
+
+
+def format_airline_km(distance_km: float | None, *, decimals: int = 0) -> str:
+    """User-facing label — always Luftlinie, never Fahrt."""
+    if distance_km is None or not math.isfinite(float(distance_km)):
+        return ""
+    if decimals <= 0:
+        return f"ca. {int(round(float(distance_km)))} km Luftlinie"
+    return f"ca. {float(distance_km):.{decimals}f} km Luftlinie"
 
 
 def distance_km_or_unknown(
     home: tuple[float, float] | None,
     place: PlaceResolution,
 ) -> float | None:
-    """DIAGNOSTIC airline km only — not production commute.
-
-    Production code must use ``integrations.maps.MapsGeoService.commute_decision``.
-    Kept for tests that compare airline vs road (airline < radius, road > radius).
-    """
+    """Airline km for filter math (unrounded). UNKNOWN if home/place missing."""
     if home is None or not place.ok:
         return UNKNOWN_DISTANCE
     assert place.latitude is not None and place.longitude is not None
-    return round(haversine_km(home[0], home[1], place.latitude, place.longitude), 2)
+    try:
+        return haversine_km(home[0], home[1], place.latitude, place.longitude)
+    except ValueError:
+        return UNKNOWN_DISTANCE
 
 
 def within_radius(
@@ -119,9 +151,9 @@ def within_radius(
     *,
     remote: bool = False,
 ) -> bool | None:
-    """True/False if known; None if distance UNKNOWN (do not guess).
+    """True/False if known; None if distance UNKNOWN (do not guess as 0 km).
 
-    Remote jobs are treated as within radius for commute math (no workplace).
+    Fully remote jobs skip radius math when remote=True.
     """
     if remote:
         return True
@@ -133,7 +165,7 @@ def within_radius(
 
 
 def cache_query_key(place: NormalizedPlace) -> str:
-    """Stable, country-aware cache key (v2)."""
+    """Stable, country-aware cache key (canonical_location_key)."""
     if place.has_coords:
         return f"ll:{place.latitude:.5f},{place.longitude:.5f}"
     cc = (place.country_code or "").upper()
@@ -146,24 +178,39 @@ def cache_query_key(place: NormalizedPlace) -> str:
 _pgeocode_index: dict[str, Any] = {}
 
 
+def _ensure_geo_data() -> str:
+    """Ensure local dataset and return its version string."""
+    mgr = get_geo_dataset_manager()
+    info = mgr.ensure_active()
+    return info.version if info.valid else GEO_DATA_VERSION_PGEOCODE
+
+
 def _pgeocode_nominatim(country_code: str) -> Any | None:
+    """Offline GeoNames index — never calls the public Nominatim HTTP API."""
     cc = normalize_country_code(country_code)
     if cc not in DACH_COUNTRY_CODES:
         return None
     if cc in _pgeocode_index:
         return _pgeocode_index[cc]
+    _ensure_geo_data()
     try:
         import pgeocode
     except ImportError:
         logger.debug("pgeocode not installed — offline PLZ resolution unavailable")
         return None
+    # Block accidental online geopy/Nominatim defaults if imported elsewhere.
+    os.environ.setdefault("PGEOCODE_DATA_DIR", os.environ.get("PGEOCODE_DATA_DIR", ""))
     try:
         nom = pgeocode.Nominatim(cc.lower())
         _pgeocode_index[cc] = nom
         return nom
     except Exception as exc:
-        logger.warning("pgeocode init failed for %s: %s", cc, exc)
+        logger.warning("pgeocode init failed for %s: %s", cc, type(exc).__name__)
         return None
+
+
+def reset_pgeocode_index_for_tests() -> None:
+    _pgeocode_index.clear()
 
 
 def _finite(value: Any) -> float | None:
@@ -171,7 +218,7 @@ def _finite(value: Any) -> float | None:
         f = float(value)
     except (TypeError, ValueError):
         return None
-    if f != f or math.isinf(f):  # NaN / inf
+    if not math.isfinite(f):
         return None
     return f
 
@@ -180,9 +227,12 @@ def resolve_postal_pgeocode(
     postal_code: str,
     country_code: str,
 ) -> PlaceResolution:
-    """Resolve a single-country PLZ via pgeocode. Offline-friendly."""
+    """Resolve a single-country PLZ via local GeoNames/pgeocode data."""
     cc = normalize_country_code(country_code)
     digits = "".join(c for c in str(postal_code or "") if c.isdigit())
+    # Preserve leading zeros for DE (normalize may keep digits only).
+    if cc == "DE" and digits and len(digits) < 5:
+        digits = digits.zfill(5)
     if not cc or not digits:
         return PlaceResolution(
             status="UNKNOWN",
@@ -190,6 +240,7 @@ def resolve_postal_pgeocode(
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
+    version = _ensure_geo_data()
     nom = _pgeocode_nominatim(cc)
     if nom is None:
         return PlaceResolution(
@@ -202,7 +253,7 @@ def resolve_postal_pgeocode(
     try:
         row = nom.query_postal_code(digits)
     except Exception as exc:
-        logger.debug("pgeocode query failed %s %s: %s", cc, digits, exc)
+        logger.debug("pgeocode query failed %s %s: %s", cc, digits, type(exc).__name__)
         return PlaceResolution(
             status="UNKNOWN",
             reason="pgeocode_error",
@@ -230,13 +281,135 @@ def resolve_postal_pgeocode(
         longitude=lon,
         country_code=cc,
         display_name=display,
-        data_source=GEO_DATA_SOURCE_PGEOCODE,
-        data_version=GEO_DATA_VERSION_PGEOCODE,
+        data_source=GEO_DATA_SOURCE_GEONAMES,
+        data_version=version,
+        precision="postal_centroid",
+    )
+
+
+def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
+    """Resolve unique city within one country. Ambiguous → AMBIGUOUS, never guess."""
+    cc = normalize_country_code(country_code)
+    name = (city or "").strip()
+    if not cc or not name:
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="missing_city_or_country",
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    version = _ensure_geo_data()
+    nom = _pgeocode_nominatim(cc)
+    if nom is None:
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="pgeocode_unavailable",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    try:
+        frame = nom.query_location(name)
+    except Exception as exc:
+        logger.debug("city query failed %s %s: %s", cc, name, type(exc).__name__)
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_query_error",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    if frame is None or getattr(frame, "empty", True):
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_not_found",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    try:
+        import pandas as pd
+
+        df = frame if isinstance(frame, pd.DataFrame) else pd.DataFrame(frame)
+    except Exception:
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_frame_error",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    needle = name.casefold()
+    if "place_name" in df.columns:
+        exact = df[df["place_name"].astype(str).str.casefold() == needle]
+        if exact.empty:
+            exact = df[
+                df["place_name"].astype(str).str.casefold().str.contains(needle, na=False)
+            ]
+    else:
+        exact = df
+    if exact.empty:
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_not_found",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    names = {
+        str(n).casefold()
+        for n in exact["place_name"].tolist()
+        if str(n).strip()
+    }
+    if len(names) != 1:
+        return PlaceResolution(
+            status="AMBIGUOUS",
+            reason="city_multi_place",
+            country_code=cc,
+            display_name=name,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    lats = [_finite(v) for v in exact["latitude"].tolist()]
+    lons = [_finite(v) for v in exact["longitude"].tolist()]
+    pairs = [(a, b) for a, b in zip(lats, lons) if a is not None and b is not None]
+    if not pairs:
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_no_coords",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    # Spread check: same name in distant places → AMBIGUOUS
+    lat_vals = [p[0] for p in pairs]
+    lon_vals = [p[1] for p in pairs]
+    if max(lat_vals) - min(lat_vals) > 0.5 or max(lon_vals) - min(lon_vals) > 0.5:
+        return PlaceResolution(
+            status="AMBIGUOUS",
+            reason="city_spread",
+            country_code=cc,
+            display_name=name,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    lat = sum(lat_vals) / len(lat_vals)
+    lon = sum(lon_vals) / len(lon_vals)
+    display = f"{name}, {cc}"
+    return PlaceResolution(
+        status="RESOLVED",
+        latitude=lat,
+        longitude=lon,
+        country_code=cc,
+        display_name=display,
+        data_source=GEO_DATA_SOURCE_GEONAMES,
+        data_version=version,
+        precision="city_centroid",
     )
 
 
 def resolve_place_offline(place: NormalizedPlace) -> PlaceResolution:
-    """Resolve using explicit coords or pgeocode only (no network)."""
+    """Resolve using explicit coords, PLZ, or unique city — local data only."""
     if place.is_remote:
         return PlaceResolution(
             status="UNKNOWN",
@@ -253,57 +426,61 @@ def resolve_place_offline(place: NormalizedPlace) -> PlaceResolution:
             display_name=place.address or place.city or "coords",
             data_source=GEO_DATA_SOURCE_COORDS,
             data_version=GEO_DATA_VERSION_COORDS,
-        )
-    if not place.postal_code:
-        return PlaceResolution(
-            status="UNKNOWN",
-            reason="no_plz_offline",
-            country_code=place.country_code,
-            data_source=GEO_DATA_SOURCE_UNRESOLVED,
-            data_version=GEO_DATA_VERSION_UNRESOLVED,
+            precision="exact_coordinates",
         )
 
-    cc = place.country_code
-    if cc:
-        return resolve_postal_pgeocode(place.postal_code, cc)
-
-    candidates = plz_candidate_countries(place.postal_code)
-    hits: list[PlaceResolution] = []
-    for cand in candidates:
-        res = resolve_postal_pgeocode(place.postal_code, cand)
-        if res.ok:
-            # Optional city disambiguation when PLZ exists in AT and CH
-            if place.city:
-                dn = (res.display_name or "").casefold()
-                if place.city.casefold() in dn or dn.startswith(place.postal_code):
-                    # weak city match — keep as candidate
-                    hits.append(res)
-                else:
-                    hits.append(res)
-            else:
+    if place.postal_code:
+        cc = place.country_code
+        if cc:
+            return resolve_postal_pgeocode(place.postal_code, cc)
+        candidates = plz_candidate_countries(place.postal_code)
+        hits: list[PlaceResolution] = []
+        for cand in candidates:
+            res = resolve_postal_pgeocode(place.postal_code, cand)
+            if res.ok:
                 hits.append(res)
-    if not hits:
+        if not hits:
+            return PlaceResolution(
+                status="UNKNOWN",
+                reason="plz_unresolved_offline",
+                data_source=GEO_DATA_SOURCE_UNRESOLVED,
+                data_version=GEO_DATA_VERSION_UNRESOLVED,
+            )
+        if len(hits) == 1:
+            return hits[0]
+        if place.city:
+            city_hits = [
+                h
+                for h in hits
+                if place.city.casefold() in (h.display_name or "").casefold()
+            ]
+            if len(city_hits) == 1:
+                return city_hits[0]
         return PlaceResolution(
-            status="UNKNOWN",
-            reason="plz_unresolved_offline",
+            status="AMBIGUOUS",
+            reason="plz_multi_country",
+            display_name=place.postal_code,
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    if len(hits) == 1:
-        return hits[0]
-    # Same PLZ in multiple countries without reliable city match → AMBIGUOUS
-    if place.city:
-        city_hits = [
-            h
-            for h in hits
-            if place.city.casefold() in (h.display_name or "").casefold()
-        ]
-        if len(city_hits) == 1:
-            return city_hits[0]
+
+    if place.city and place.country_code:
+        return resolve_city_pgeocode(place.city, place.country_code)
+
+    if place.city and not place.country_code:
+        # Never guess country for same city name across DE/AT/CH
+        return PlaceResolution(
+            status="AMBIGUOUS" if place.city else "UNKNOWN",
+            reason="city_without_country",
+            display_name=place.city,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+
     return PlaceResolution(
-        status="AMBIGUOUS",
-        reason="plz_multi_country",
-        display_name=place.postal_code,
+        status="UNKNOWN",
+        reason="no_plz_or_city",
+        country_code=place.country_code,
         data_source=GEO_DATA_SOURCE_UNRESOLVED,
         data_version=GEO_DATA_VERSION_UNRESOLVED,
     )
@@ -314,13 +491,11 @@ def resolve_place(
     *,
     cross_border: bool = True,
     home_country: str = "DE",
-    allow_network: bool = True,
+    allow_network: bool = False,
     network_geocode: Callable[[str, list[str]], PlaceResolution | None] | None = None,
 ) -> PlaceResolution:
-    """Resolve place to coordinates. Prefer offline; network is optional.
-
-    When ``cross_border`` is False, restrict PLZ/network to ``home_country``.
-    """
+    """Resolve place locally. Network geocode is disabled by default (no Nominatim)."""
+    del network_geocode  # production must not call public Nominatim
     if place.is_remote:
         return PlaceResolution(
             status="UNKNOWN",
@@ -332,9 +507,7 @@ def resolve_place(
     working = place
     if not cross_border:
         hc = normalize_country_code(home_country) or "DE"
-        # Force single-country scope when toggle off
         if working.country_code and working.country_code != hc:
-            # Still allow explicit coords (math); skip foreign PLZ lookup
             if not working.has_coords:
                 return PlaceResolution(
                     status="UNKNOWN",
@@ -355,52 +528,12 @@ def resolve_place(
             )
 
     offline = resolve_place_offline(working)
-    if offline.status in {"RESOLVED", "AMBIGUOUS"}:
-        return offline
-    if offline.status == "UNKNOWN" and offline.reason == "remote_no_workplace":
-        return offline
-
-    if not allow_network or network_geocode is None:
-        return offline
-
-    # Build query + country filter for Nominatim
-    countries: list[str]
-    if cross_border:
-        countries = sorted(DACH_COUNTRY_CODES)
-    else:
-        countries = [normalize_country_code(home_country) or "DE"]
-    if working.country_code:
-        countries = [working.country_code]
-
-    query_parts = [p for p in (working.address, working.postal_code, working.city) if p]
-    if working.country_code:
-        query_parts.append(working.country_code)
-    query = ", ".join(query_parts)
-    if not query:
-        return PlaceResolution(
-            status="UNKNOWN",
-            reason="empty_query",
-            data_source=GEO_DATA_SOURCE_UNRESOLVED,
-            data_version=GEO_DATA_VERSION_UNRESOLVED,
+    if allow_network:
+        logger.debug(
+            "network geocode requested but disabled (local-first policy) for %s",
+            cache_query_key(working),
         )
-    try:
-        net = network_geocode(query, countries)
-    except Exception as exc:
-        logger.warning("network geocode failed for %r: %s", query, exc)
-        return PlaceResolution(
-            status="UNKNOWN",
-            reason="geocoder_failure",
-            data_source=GEO_DATA_SOURCE_UNRESOLVED,
-            data_version=GEO_DATA_VERSION_UNRESOLVED,
-        )
-    if net is None:
-        return PlaceResolution(
-            status="UNKNOWN",
-            reason="geocoder_miss",
-            data_source=GEO_DATA_SOURCE_UNRESOLVED,
-            data_version=GEO_DATA_VERSION_UNRESOLVED,
-        )
-    return net
+    return offline
 
 
 def place_from_job_like(obj: Any) -> NormalizedPlace:
@@ -416,3 +549,24 @@ def place_from_job_like(obj: Any) -> NormalizedPlace:
         remote_type=getattr(obj, "remote_type", "") or "",
         description=getattr(obj, "description", "") or "",
     )
+
+
+# Re-export algorithm id for UI / docs / cache provenance
+__all__ = [
+    "HAVERSINE_ALGORITHM",
+    "EARTH_RADIUS_KM",
+    "PlaceResolution",
+    "haversine_km",
+    "format_airline_km",
+    "distance_km_or_unknown",
+    "within_radius",
+    "cache_query_key",
+    "resolve_postal_pgeocode",
+    "resolve_city_pgeocode",
+    "resolve_place_offline",
+    "resolve_place",
+    "place_from_job_like",
+    "DISTANCE_UNKNOWN",
+    "UNKNOWN_DISTANCE",
+    "UNRESOLVED_MARKER",
+]

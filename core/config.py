@@ -36,6 +36,8 @@ class LocationConfig:
     # Search-only home for geocoding / commute filter (NOT applicant form address).
     # See core/search_preferences.py — do not auto-sync from ApplicationProfile.
     home_address: str = ""
+    postal_code: str = ""
+    city: str = ""
     max_distance_km: float = 20.0
     allow_remote_germany: bool = True
     allow_hybrid: bool = True
@@ -45,8 +47,8 @@ class LocationConfig:
     # Address text that home_latitude/longitude were geocoded for. When the
     # current home_address no longer matches, persisted coords are discarded.
     home_geocoded_address: str = ""
-    # When True (default), commute radius applies across DE/AT/CH via Google
-    # road routes (not Haversine). Toggle off to restrict geocode region.
+    # When True (default), airline radius applies across DE/AT/CH (local geo).
+    # Toggle off to restrict PLZ resolve to home country.
     cross_border_dach: bool = True
 
 
@@ -347,10 +349,9 @@ class SettingsConfig:
     enabled_sources: list[str] = field(
         default_factory=lambda: ["bundesagentur", "indeed"]
     )
-    # Production geocoder: Google Maps Platform only (via maps proxy).
-    # Legacy values (nominatim) are ignored — no provider fallback.
-    geocoder: str = "google"
-    # DACH cross-border commute (Google road route). Off → home-country region.
+    # Local DACH geo only (bundled GeoNames / pgeocode). Legacy google/nominatim ignored.
+    geocoder: str = "local"
+    # DACH cross-border airline distance. Off → home-country scope for PLZ resolve.
     # Does NOT claim full AT/CH job-board coverage — geography only.
     cross_border_dach_enabled: bool = True
     cover_letter_template: str = "templates/cover_letter.txt"
