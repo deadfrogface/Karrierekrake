@@ -3,7 +3,7 @@
 ## A. Branch / HEAD
 
 - Branch: `cursor/full-product-e2e-chaos-d85b`
-- Commit SHA: *(filled at commit time — see `artifacts/e2e/results.json`)*
+- Commit SHA: `c7b1a3917e127d6b4524acc8f026c5fd46254320`
 - Base: `main`
 
 ## B. Test environment
