@@ -348,6 +348,32 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "privacy.export_done": "Export gespeichert:",
         "privacy.export_failed": "Export fehlgeschlagen oder abgebrochen.",
         "privacy.disconnect_google": "Google-Verbindung trennen",
+        "integrations.mail.label": "E-Mail",
+        "integrations.mail.none": "Keine",
+        "integrations.mail.google": "Google",
+        "integrations.mail.microsoft": "Microsoft",
+        "integrations.mail.other": "Anderer Anbieter",
+        "integrations.calendar.label": "Kalender",
+        "integrations.calendar.google": "Google",
+        "integrations.calendar.microsoft": "Microsoft",
+        "integrations.calendar.other": "Anderer Anbieter",
+        "integrations.calendar.none_explicit": "Kein Kalender",
+        "integrations.no_fallback_hint": (
+            "Mail und Kalender sind unabhängig wählbar. "
+            "Bei Ausfall: Fehler anzeigen, neu verbinden oder Provider manuell wechseln — "
+            "kein automatischer Wechsel."
+        ),
+        "integrations.status.unknown": "Status: unbekannt",
+        "integrations.status.none": "Status: nicht gewählt",
+        "integrations.status.connected": "Status: verbunden",
+        "integrations.status.not_connected": "Status: nicht verbunden",
+        "integrations.connect_microsoft_mail": "Microsoft-Mail verbinden",
+        "integrations.connect_microsoft_calendar": "Microsoft-Kalender verbinden",
+        "integrations.disconnect_selected": "Gewählte Verbindung trennen",
+        "integrations.wrong_mail_provider": "Bitte zuerst den passenden E-Mail-Anbieter wählen.",
+        "integrations.wrong_calendar_provider": "Bitte zuerst den passenden Kalender-Anbieter wählen.",
+        "integrations.microsoft_client_missing": "Microsoft-Client-ID fehlt in den Einstellungen.",
+        "integrations.microsoft_browser_opened": "Systembrowser geöffnet — Anmeldung dort abschließen.",
         "privacy.connect_gmail": "Gmail verbinden (nur Lesen)",
         "privacy.connect_gmail_confirm": (
             "Karrierekrake fordert nur gmail.readonly an, um Bewerbungsmails "
@@ -1091,6 +1117,32 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "privacy.export_done": "Export saved:",
         "privacy.export_failed": "Export failed or cancelled.",
         "privacy.disconnect_google": "Disconnect Google",
+        "integrations.mail.label": "Email",
+        "integrations.mail.none": "None",
+        "integrations.mail.google": "Google",
+        "integrations.mail.microsoft": "Microsoft",
+        "integrations.mail.other": "Other provider",
+        "integrations.calendar.label": "Calendar",
+        "integrations.calendar.google": "Google",
+        "integrations.calendar.microsoft": "Microsoft",
+        "integrations.calendar.other": "Other provider",
+        "integrations.calendar.none_explicit": "No calendar",
+        "integrations.no_fallback_hint": (
+            "Mail and calendar are chosen independently. "
+            "On failure: show an error, reconnect, or change provider explicitly — "
+            "never auto-switch."
+        ),
+        "integrations.status.unknown": "Status: unknown",
+        "integrations.status.none": "Status: not selected",
+        "integrations.status.connected": "Status: connected",
+        "integrations.status.not_connected": "Status: not connected",
+        "integrations.connect_microsoft_mail": "Connect Microsoft mail",
+        "integrations.connect_microsoft_calendar": "Connect Microsoft calendar",
+        "integrations.disconnect_selected": "Disconnect selected",
+        "integrations.wrong_mail_provider": "Select the matching email provider first.",
+        "integrations.wrong_calendar_provider": "Select the matching calendar provider first.",
+        "integrations.microsoft_client_missing": "Microsoft client ID is missing in settings.",
+        "integrations.microsoft_browser_opened": "System browser opened — finish sign-in there.",
         "privacy.connect_gmail": "Connect Gmail (read-only)",
         "privacy.connect_gmail_confirm": (
             "Karrierekrake requests only gmail.readonly to associate application "

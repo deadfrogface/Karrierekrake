@@ -411,6 +411,21 @@ class SettingsConfig:
     schedule_max_ranked_slots: int = 5
     scheduling_preferences: dict | None = None
     allow_calendar_write: bool = False
+    # --- Explicit mail / calendar providers (NEXT-03) — NEVER auto-fallback ---
+    # MailProvider: none | google_gmail | microsoft_graph | generic_imap
+    mail_provider: str = "none"
+    # CalendarProvider: none | google_calendar | microsoft_graph | generic_caldav
+    calendar_provider: str = "none"
+    # Microsoft Graph app registration (desktop public client + PKCE)
+    microsoft_client_id: str = ""
+    microsoft_redirect_uri: str = "http://127.0.0.1:8765/oauth/callback"
+    # IMAP/CalDAV host fields are NOT for passwords — secrets live in keyring only.
+    imap_host: str = ""
+    imap_port: int = 993
+    imap_username: str = ""
+    caldav_base_url: str = ""
+    caldav_username: str = ""
+    caldav_preset: str = ""  # e.g. icloud
     # --- Günther die Krake (optional local AI; off by default) ---
     # Never enables cloud AI. LLM output is untrusted and validated.
     # NEXT-02: sole production model is phi4-mini — no Qwen / auto picker.
@@ -938,6 +953,14 @@ def load_config(
 
     if os.getenv("CV_PATH"):
         application.cv_path = os.environ["CV_PATH"]
+
+    # NEXT-03: coerce legacy Google flags → explicit providers (no token wipe).
+    try:
+        from integrations.providers.migration import migrate_provider_settings
+
+        migrate_provider_settings(settings)
+    except Exception:
+        pass
 
     return AppConfig(
         profile=profile,
