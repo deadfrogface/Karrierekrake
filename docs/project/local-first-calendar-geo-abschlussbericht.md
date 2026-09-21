@@ -31,7 +31,7 @@ python -m pytest -m "not network" --timeout=120 -q --tb=line
 
 - Log: `/tmp/full-pytest5.log`
 - Vorherige Suite (`--timeout=60`, `/tmp/full-pytest4.log`): **5 failed / 4585 passed**
-  - PR#54-Regressionen behoben: Brand-Casing `KarriereKrake`→`Karrierekrake`; `test_hard_exclude_unknown_distance_onsite` → `distance_exclude`
+  - PR#54-Regressionen behoben: Brand-Casing `Karrierekrake`→`Karrierekrake`; `test_hard_exclude_unknown_distance_onsite` → `distance_exclude`
   - Timeout-Flakes (adversarial / guenther) bei 60s unter Last → Re-Run mit `--timeout=120`
 
 *(Ergebnis der aktuellen Suite wird hier nach Abschluss eingetragen.)*

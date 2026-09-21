@@ -330,12 +330,16 @@ def test_progress_strings_no_cot_branding():
 
 
 def test_service_quality_loop_heuristic_and_old_mode():
+    """Quality-loop + old mode via HeuristicProvider (no llama_cpp load under suite load)."""
+    from guenther.runtime.heuristic_provider import HeuristicProvider
+
     svc = GuentherService(
         enabled=True,
         model="phi4-mini",
         allow_heuristic_when_no_llm=True,
         quality_loop_mode="full",
     )
+    svc.provider = HeuristicProvider()
     env = svc.suggest_writing(
         profile_text="Excel\nKundensupport\nDeutsch",
         job_text="Sachbearbeitung Office",
