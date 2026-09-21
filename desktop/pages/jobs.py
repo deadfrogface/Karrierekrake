@@ -15,6 +15,8 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLineEdit,
+    QListWidget,
+    QListWidgetItem,
     QMessageBox,
     QPushButton,
     QSplitter,
@@ -29,7 +31,7 @@ from core.database import Database
 from core.models import JobStatus
 from core.text_normalize import clean_text, display_or_dash
 from desktop.design_system.a11y import set_accessible_name
-from desktop.design_system.v2_chrome import PageHeader
+from desktop.design_system.v2_chrome import ContentCard, PageHeader, SectionEditDrawer
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
@@ -134,8 +136,7 @@ class JobsPage(QWidget):
         self.apply_btn.clicked.connect(self.refresh)
         self.more_filters_btn = QPushButton()
         self.more_filters_btn.setObjectName("SecondaryButton")
-        self.more_filters_btn.setCheckable(True)
-        self.more_filters_btn.toggled.connect(self._toggle_more_filters)
+        self.more_filters_btn.clicked.connect(self._open_more_filters)
         self.search_intent_btn = QPushButton()
         self.search_intent_btn.setObjectName("SecondaryButton")
         self.search_intent_btn.clicked.connect(self.open_search_intent)
@@ -152,7 +153,11 @@ class JobsPage(QWidget):
         more_form.addRow(self.lbl_company, self.company)
         more_form.addRow(self.lbl_source, self.source)
         more_form.addRow(self.lbl_status, self.status)
-        self.more_filters.setVisible(False)
+        self._filter_drawer = SectionEditDrawer(parent=self)
+        # Host for drawer content when closed
+        self._filter_host = QWidget(self)
+        self._filter_host.hide()
+        QVBoxLayout(self._filter_host).addWidget(self.more_filters)
 
         toolbar = QHBoxLayout()
         toolbar.setSpacing(12)
@@ -175,11 +180,11 @@ class JobsPage(QWidget):
         self.table = QTableWidget(0, len(self.COLS))
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
-        # Sorting is controlled by the explicit sort combo (never discards rows).
         self.table.setSortingEnabled(False)
         self.table.setAlternatingRowColors(True)
         self.table.itemSelectionChanged.connect(self._on_selection)
         self.table.doubleClicked.connect(self.open_selected)
+        self.table.hide()  # Demo uses cards; table kept for tests/compat
         header = self.table.horizontalHeader()
         header.setStretchLastSection(True)
         for col in (3, 4, 5, 7, 8):
@@ -187,6 +192,10 @@ class JobsPage(QWidget):
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(6, QHeaderView.ResizeMode.Stretch)
+
+        self.job_list = QListWidget()
+        self.job_list.setSpacing(6)
+        self.job_list.currentRowChanged.connect(self._on_card_row)
 
         self.empty = QLabel()
         self.empty.setObjectName("EmptyState")
@@ -197,6 +206,7 @@ class JobsPage(QWidget):
         list_wrap.setContentsMargins(0, 0, 0, 0)
         list_host = QWidget()
         list_host.setLayout(list_wrap)
+        list_wrap.addWidget(self.job_list)
         list_wrap.addWidget(self.table)
         list_wrap.addWidget(self.empty)
 
@@ -247,7 +257,6 @@ class JobsPage(QWidget):
         layout.addWidget(self.header)
         layout.addWidget(self.lbl_filters)
         layout.addLayout(primary)
-        layout.addWidget(self.more_filters)
         layout.addLayout(toolbar)
         layout.addLayout(action_row)
         layout.addWidget(splitter, 1)
@@ -255,8 +264,32 @@ class JobsPage(QWidget):
         self._clear_detail()
         self.retranslate_ui()
 
+    def _open_more_filters(self) -> None:
+        self.more_filters.setParent(None)
+        self._filter_drawer.set_texts(
+            title=tr("jobs.more_filters"),
+            save=tr("btn.filter"),
+            cancel=tr("btn.cancel"),
+        )
+        result = self._filter_drawer.present(self.more_filters)
+        self._filter_drawer.take_content()
+        self._filter_host.layout().addWidget(self.more_filters)
+        if result == SectionEditDrawer.DialogCode.Accepted:
+            self.refresh()
+
     def _toggle_more_filters(self, checked: bool) -> None:
-        self.more_filters.setVisible(checked)
+        # Compat for older callers — open drawer instead of inline expand.
+        if checked:
+            self._open_more_filters()
+        self.more_filters_btn.setChecked(False)
+
+    def _on_card_row(self, row: int) -> None:
+        if row < 0:
+            return
+        self.table.blockSignals(True)
+        self.table.selectRow(row)
+        self.table.blockSignals(False)
+        self._on_selection()
 
     def _on_sort_changed(self, _index: int = 0) -> None:
         if not self._jobs:
@@ -406,6 +439,7 @@ class JobsPage(QWidget):
 
     def _populate_table(self, jobs: list) -> None:
         self.table.setRowCount(0)
+        self.job_list.clear()
         cfg = self.config_service.load()
         _fit_i18n = {
             "sehr_passend": tr("fit.sehr_passend"),
@@ -420,6 +454,7 @@ class JobsPage(QWidget):
             dist = "" if job.distance_km is None else f"{job.distance_km:.1f}"
             fit = build_job_fit_viewmodel(job, cfg)
             fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
+            reason = " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation())
             values = [
                 display_or_dash(job.title),
                 display_or_dash(job.company),
@@ -427,7 +462,7 @@ class JobsPage(QWidget):
                 dist or "—",
                 display_or_dash(job.remote_type),
                 fit_label,
-                " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation()),
+                reason,
                 display_or_dash(job.source),
                 status_label(job.status),
             ]
@@ -440,12 +475,26 @@ class JobsPage(QWidget):
                 if col == 5:
                     item.setData(Qt.ItemDataRole.UserRole + 1, int(job.match_score or 0))
                 self.table.setItem(row, col, item)
+            # Demo card row (compact)
+            dist_txt = f"{dist} km" if dist else "—"
+            card = (
+                f"{display_or_dash(job.title)}\n"
+                f"{display_or_dash(job.company)} · {display_or_dash(job.city)} ({dist_txt}) · "
+                f"{display_or_dash(job.remote_type)}\n"
+                f"{fit_label} — {reason}"
+            )
+            list_item = QListWidgetItem(card)
+            list_item.setData(Qt.ItemDataRole.UserRole, job.id)
+            self.job_list.addItem(list_item)
         empty = len(jobs) == 0
-        self.table.setVisible(not empty)
+        self.table.hide()
+        self.job_list.setVisible(not empty)
         self.empty.setVisible(empty)
         self.count_label.setText(tr("jobs.count", n=len(jobs)))
         if empty:
             self._clear_detail()
+        elif self.job_list.count():
+            self.job_list.setCurrentRow(0)
 
     def refresh(self) -> None:
         cfg = self.config_service.load()
