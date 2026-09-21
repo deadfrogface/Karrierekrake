@@ -31,7 +31,7 @@ from core.database import Database
 from core.models import JobStatus
 from core.text_normalize import clean_text, display_or_dash
 from desktop.design_system.a11y import set_accessible_name
-from desktop.design_system.v2_chrome import ContentCard, PageHeader, SectionEditDrawer
+from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, PageHeader, SectionEditDrawer
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
@@ -197,10 +197,24 @@ class JobsPage(QWidget):
         self.job_list.setSpacing(6)
         self.job_list.currentRowChanged.connect(self._on_card_row)
 
-        self.empty = QLabel()
-        self.empty.setObjectName("EmptyState")
-        self.empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.empty = EmptyStatePanel()
         self.empty.setVisible(False)
+        self.empty.action_btn.hide()
+        self.empty_widen_btn = QPushButton()
+        self.empty_widen_btn.setObjectName("SecondaryButton")
+        self.empty_widen_btn.clicked.connect(self._widen_radius)
+        self.empty_filters_btn = QPushButton()
+        self.empty_filters_btn.setObjectName("PrimaryButton")
+        self.empty_filters_btn.clicked.connect(self._open_more_filters)
+        self.empty_intent_btn = QPushButton()
+        self.empty_intent_btn.setObjectName("SecondaryButton")
+        self.empty_intent_btn.clicked.connect(self._open_search_intent)
+        empty_actions = QHBoxLayout()
+        empty_actions.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        empty_actions.addWidget(self.empty_widen_btn)
+        empty_actions.addWidget(self.empty_filters_btn)
+        empty_actions.addWidget(self.empty_intent_btn)
+        self.empty.layout().addLayout(empty_actions)
 
         list_wrap = QVBoxLayout()
         list_wrap.setContentsMargins(0, 0, 0, 0)
@@ -277,6 +291,18 @@ class JobsPage(QWidget):
         if result == SectionEditDrawer.DialogCode.Accepted:
             self.refresh()
 
+    def _widen_radius(self) -> None:
+        self.max_dist.setValue(min(500, int(self.max_dist.value()) + 5))
+        self.refresh()
+
+    def _open_search_intent(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "open_search_intent"):
+            parent.open_search_intent()  # type: ignore[attr-defined]
+            return
+        if parent is not None and hasattr(parent, "navigate_to"):
+            parent.navigate_to("nav.search")  # type: ignore[attr-defined]
+
     def _toggle_more_filters(self, checked: bool) -> None:
         # Compat for older callers — open drawer instead of inline expand.
         if checked:
@@ -351,7 +377,11 @@ class JobsPage(QWidget):
         set_accessible_name(self.search_intent_btn, tr("jobs.open_search_intent"))
         self.detail_prepare.setText(tr("btn.prepare_application"))
         self.detail_open.setText(tr("btn.open_job"))
-        self.empty.setText(tr("jobs.empty"))
+        self.empty.set_texts(tr("jobs.empty_title"), tr("jobs.empty_body"))
+        self.empty.action_btn.hide()
+        self.empty_widen_btn.setText(tr("jobs.empty_widen"))
+        self.empty_filters_btn.setText(tr("jobs.empty_adjust_filters"))
+        self.empty_intent_btn.setText(tr("jobs.empty_search_intent"))
         self.status.setItemText(0, tr("jobs.all"))
         for i in range(1, self.status.count()):
             raw = self.status.itemData(i)

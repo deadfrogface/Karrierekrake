@@ -86,5 +86,28 @@ def test_overview_i18n_keys_present():
             "dash.section_kpis",
             "dash.section_advanced",
             "dash.next_inbox_cta",
+            "dash.more_actions",
+            "dash.search_running_title",
+            "dash.search_running_body",
+            "jobs.empty_title",
+            "jobs.empty_adjust_filters",
         ):
             assert key in TRANSLATIONS[lang]
+    assert set(TRANSLATIONS["de"]) == set(TRANSLATIONS["en"])
+
+
+def test_search_running_banner(qapp, config_service, monkeypatch):
+    monkeypatch.setattr(ScheduleService, "sync_from_config", lambda self: (True, "ok"))
+    i18n.set_language("de")
+    page = DashboardPage(config_service)
+    assert page.search_banner.isHidden()
+    assert page.btn_cancel.isHidden()
+    page.set_pipeline_running(True)
+    assert not page.search_banner.isHidden()
+    assert not page.btn_cancel.isHidden()
+    assert page.btn_cancel.isEnabled()
+    assert page.btn_search.isHidden()
+    assert page.header.title.text() == tr("dash.search_running_title")
+    page.set_pipeline_running(False)
+    assert page.search_banner.isHidden()
+    assert not page.btn_search.isHidden()

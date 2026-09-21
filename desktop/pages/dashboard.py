@@ -47,7 +47,30 @@ class DashboardPage(QWidget):
         self.btn_search.setObjectName("PrimaryButton")
         self.btn_search.clicked.connect(self.search_requested.emit)
         header_row.addWidget(self.btn_search, stretch=0)
+        self.btn_cancel = QPushButton()
+        self.btn_cancel.setObjectName("SecondaryButton")
+        self.btn_cancel.setEnabled(False)
+        self.btn_cancel.setVisible(False)
+        self.btn_cancel.clicked.connect(self.cancel_requested.emit)
+        header_row.addWidget(self.btn_cancel, stretch=0)
         root.addLayout(header_row)
+
+        self.search_banner = ContentCard()
+        self.search_banner.setObjectName("HeroCard")
+        self.search_banner.setVisible(False)
+        banner_body = self.search_banner.body()
+        banner_row = QHBoxLayout()
+        banner_col = QVBoxLayout()
+        self.search_banner_title = QLabel()
+        self.search_banner_title.setObjectName("NextActionTitle")
+        self.search_banner_body = QLabel()
+        self.search_banner_body.setObjectName("PageSubtitle")
+        self.search_banner_body.setWordWrap(True)
+        banner_col.addWidget(self.search_banner_title)
+        banner_col.addWidget(self.search_banner_body)
+        banner_row.addLayout(banner_col, stretch=1)
+        banner_body.addLayout(banner_row)
+        root.addWidget(self.search_banner)
 
         self.queue_section = QLabel()
         self.queue_section.setObjectName("KkHint")
@@ -136,9 +159,6 @@ class DashboardPage(QWidget):
         root.addWidget(self.advanced_stats)
         root.addWidget(self.run_detail_label)
 
-        self.btn_cancel = QPushButton()
-        self.btn_cancel.setObjectName("SecondaryButton")
-        self.btn_cancel.setEnabled(False)
         self.btn_apply = QPushButton()
         self.btn_apply.setObjectName("SecondaryButton")
         self.btn_test = QPushButton()
@@ -149,15 +169,14 @@ class DashboardPage(QWidget):
         self.btn_review.setObjectName("SecondaryButton")
         self.btn_clear_jobs = QPushButton()
         self.btn_clear_jobs.setObjectName("SecondaryButton")
-        self.btn_cancel.clicked.connect(self.cancel_requested.emit)
         self.btn_apply.clicked.connect(self.apply_requested.emit)
         self.btn_test.clicked.connect(self.test_requested.emit)
         self.btn_pause.clicked.connect(self.pause_requested.emit)
         self.btn_review.clicked.connect(self.review_requested.emit)
         self.btn_clear_jobs.clicked.connect(self.clear_jobs_requested.emit)
         # Capability preserved; permanent button wall removed (overflow).
+        # Cancel lives in the header during search (demo „Suche läuft“).
         for btn in (
-            self.btn_cancel,
             self.btn_apply,
             self.btn_test,
             self.btn_pause,
@@ -212,6 +231,9 @@ class DashboardPage(QWidget):
         self.btn_search.setText(tr("btn.find_jobs"))
         set_accessible_name(self.btn_search, tr("btn.find_jobs"))
         self.btn_cancel.setText(tr("btn.cancel_search"))
+        set_accessible_name(self.btn_cancel, tr("btn.cancel_search"))
+        self.search_banner_title.setText(tr("dash.search_running_title"))
+        self.search_banner_body.setText(tr("dash.search_running_body"))
         self.btn_apply.setText(tr("btn.start_apply"))
         self.btn_test.setText(tr("btn.apply_test"))
         self.btn_review.setText(tr("btn.review_queue"))
@@ -225,7 +247,6 @@ class DashboardPage(QWidget):
     def _rebuild_actions_menu(self) -> None:
         self._actions_menu.clear()
         for btn in (
-            self.btn_cancel,
             self.btn_apply,
             self.btn_test,
             self.btn_pause,
@@ -238,7 +259,16 @@ class DashboardPage(QWidget):
 
     def set_pipeline_running(self, running: bool) -> None:
         self.btn_search.setEnabled(not running)
+        self.btn_search.setVisible(not running)
         self.btn_cancel.setEnabled(running)
+        self.btn_cancel.setVisible(running)
+        self.search_banner.setVisible(running)
+        if running:
+            self.header.set_texts(tr("dash.search_running_title"), tr("dash.search_running_body"))
+            self.search_banner_title.setText(tr("dash.search_running_title"))
+            self.search_banner_body.setText(tr("dash.search_running_body"))
+        else:
+            self.header.set_texts(tr("dash.page_title"), tr("dash.page_subtitle"))
         self.btn_apply.setEnabled(not running)
         self.btn_test.setEnabled(not running)
         self.btn_clear_jobs.setEnabled(not running)
