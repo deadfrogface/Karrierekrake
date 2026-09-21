@@ -18,7 +18,7 @@ from core.database import Database
 from core.deduplicator import deduplicate
 from core.location import LocationService, enrich_job_locations, _city_from_address
 from core.logging import RunLogger
-from core.matcher import score_job
+from core.matcher import apply_distance_scoring, score_job
 from core.models import JobStatus, OperatingMode
 from core.source_health import SourceHealthStatus
 from search.base import SearchQuery
@@ -371,20 +371,6 @@ def run_pipeline(
     total = len(all_jobs)
     run.info(f"{total} total results")
 
-    if not cancelled and not stopped():
-        progress("Phase Standorte anreichern…")
-        progress("Standorte anreichern: 0/? …")
-        all_jobs = enrich_job_locations(
-            all_jobs,
-            location,
-            progress_callback=progress_callback,
-            should_stop=should_stop,
-        )
-        if stopped():
-            cancelled = True
-    else:
-        cancelled = cancelled or stopped()
-
     progress("Phase Deduplizierung…")
     progress("Duplikate entfernen…")
     all_jobs = deduplicate(all_jobs)
@@ -392,6 +378,7 @@ def run_pipeline(
     duplicates_removed = len(all_jobs) - len(primary)
     run.info(f"{duplicates_removed} duplicates marked")
 
+    # Fachliches Matching FIRST — no geo yet (local-first pipeline).
     progress("Phase Matching…")
     progress("Jobs matchen…")
     scored = []
@@ -399,6 +386,7 @@ def run_pipeline(
     new_count = 0
     known = 0
     ats_counts = {"supported": 0, "detected_unsupported": 0, "unknown": 0}
+    fachlich_candidates: list = []
     for job in primary:
         if stopped():
             cancelled = True
@@ -417,8 +405,6 @@ def run_pipeline(
         }:
             known += 1
             continue
-        # Global known-job suppression (ApplicationCase) — never count toward
-        # Jobs-pro-Suche as new; does not blacklist whole companies.
         suppress, suppress_reason = should_suppress_as_new(db, job)
         if suppress and "known_case" in suppress_reason:
             known += 1
@@ -428,28 +414,55 @@ def run_pipeline(
         bucket = ats_coverage_bucket(job.ats_type)
         ats_counts[bucket] = ats_counts.get(bucket, 0) + 1
         job.run_id = run_id
-        result = score_job(job, config, already_applied=already)
+        result = score_job(job, config, already_applied=already, apply_distance=False)
         job.match_score = result.score
         job.match_reasons = result.match_reasons
         job.rejection_reasons = result.rejection_reasons
         job.ranking_version = getattr(result, "ranking_version", "") or ""
         if result.excluded:
-            if result.exclude_reason and "km" in (result.exclude_reason or ""):
-                outside += 1
             job.status = JobStatus.IGNORED.value
         else:
             job.status = existing.status if existing else JobStatus.NEW.value
             if not existing:
                 new_count += 1
-        db.upsert_job(job)
+            fachlich_candidates.append(job)
         scored.append(job)
+
+    # Local geo + Luftlinie ONLY for fachlich suitable candidates (no Top-N cut).
+    if not cancelled and not stopped() and fachlich_candidates:
+        progress("Phase Standorte anreichern…")
+        progress(f"Standorte anreichern: 0/{len(fachlich_candidates)} …")
+        enrich_job_locations(
+            fachlich_candidates,
+            location,
+            progress_callback=progress_callback,
+            should_stop=should_stop,
+        )
+        if stopped():
+            cancelled = True
+        for job in fachlich_candidates:
+            prev_status = job.status
+            apply_distance_scoring(job, config)
+            if job.status == JobStatus.IGNORED.value and prev_status != JobStatus.IGNORED.value:
+                if any("km" in (r or "") for r in (job.rejection_reasons or [])):
+                    outside += 1
+            db.upsert_job(job)
+    else:
+        cancelled = cancelled or stopped()
+        for job in scored:
+            db.upsert_job(job)
+
+    # Persist fachlich-excluded scored jobs that were not candidates
+    for job in scored:
+        if job not in fachlich_candidates:
+            db.upsert_job(job)
 
     for job in all_jobs:
         if job.duplicate_of:
             job.run_id = run_id
             db.upsert_job(job)
 
-    run.info(f"{outside} outside {config.profile.location.max_distance_km} km removed/ignored")
+    run.info(f"{outside} outside {config.profile.location.max_distance_km} km Luftlinie removed/ignored")
     run.info(f"{known} already known/applied skipped")
     run.info(f"{new_count} new jobs")
     matches = [
@@ -490,6 +503,7 @@ def run_pipeline(
         "ats_attempted": 0,
         "ats_review_required": 0,
         "ats_completed": 0,
+        "fachlich_candidates": len(fachlich_candidates),
     }
 
     if cancelled:

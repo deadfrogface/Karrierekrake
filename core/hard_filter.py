@@ -58,22 +58,15 @@ def hard_exclude(job: Job, config: AppConfig, already_applied: bool = False) -> 
         if ind and ind in combined:
             return f"excluded industry: {ind}"
 
-    # Distance / remote / hybrid rules — allow flags apply even within radius.
+    # Remote / hybrid preference flags (fachlich) — radius is applied later.
     is_remote = job.remote_type == RemoteType.REMOTE.value
     is_hybrid = job.remote_type == RemoteType.HYBRID.value
     if is_remote and not loc.allow_remote_germany:
         return "remote not allowed"
     if is_hybrid and not loc.allow_hybrid:
         return "hybrid not allowed"
-    if is_remote and loc.allow_remote_germany:
-        pass  # remote may ignore physical distance
-    elif job.distance_km is None and not is_remote:
-        # Unknown commute for onsite/hybrid must not enter auto-apply.
-        return "distance unknown (onsite/hybrid)"
-    elif job.distance_km is not None and job.distance_km > loc.max_distance_km:
-        if is_hybrid:
-            return f"hybrid over {loc.max_distance_km} km ({job.distance_km} km)"
-        return f"over {loc.max_distance_km} km away ({job.distance_km} km)"
+    # Distance / radius is intentionally NOT applied here (local-first pipeline:
+    # fachliches Matching first, then local geo + Luftlinie + radius).
 
     published = _parse_date(job.published_at)
     if published:
@@ -83,4 +76,26 @@ def hard_exclude(job: Job, config: AppConfig, already_applied: bool = False) -> 
 
     if not job.title:
         return "missing title"
+    return None
+
+
+def distance_exclude(job: Job, config: AppConfig) -> str | None:
+    """Hard radius filter — call only AFTER local geo enrichment.
+
+    Fully remote: no radius. Hybrid/onsite with UNKNOWN: not within radius
+    (never treat as 0 km). Over-radius jobs are excluded.
+    """
+    loc = config.profile.location
+    is_remote = job.remote_type == RemoteType.REMOTE.value
+    is_hybrid = job.remote_type == RemoteType.HYBRID.value
+    if is_remote and loc.allow_remote_germany:
+        return None
+    if job.distance_km is None and not is_remote:
+        return "Standort nicht prüfbar (Luftlinie unbekannt)"
+    if job.distance_km is not None and job.distance_km > loc.max_distance_km:
+        km = job.distance_km
+        limit = loc.max_distance_km
+        if is_hybrid:
+            return f"hybrid over {limit} km Luftlinie ({km:.1f} km)"
+        return f"over {limit} km Luftlinie ({km:.1f} km)"
     return None
