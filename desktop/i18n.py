@@ -38,6 +38,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "inbox.hint_prepare_reply": "Antwort-Entwurf vorbereiten — Senden nur nach Freigabe.",
         "inbox.more_actions": "Weitere Aktionen",
         "inbox.refresh_failed": "Aktualisierung fehlgeschlagen",
+        "inbox.empty_title": "Keine neuen Bewerbungsnachrichten",
+        "inbox.empty_body": "Sobald Karrierekrake Mails spiegelt, erscheinen sie hier zur ruhigen Zuordnung.",
         "jobs.open_search_intent": "Suchparameter…",
         "jobs.section_result_filters": "ERGEBNISFILTER (bereits gefundene Jobs)",
         "jobs.more_filters": "Weitere Filter",
@@ -48,6 +50,14 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "jobs.sort_distance_far": "Entfernung (weit → nah)",
         "jobs.sort_newest": "Neueste zuerst",
         "settings.open_diagnose_logs": "Protokolle öffnen (Diagnose)",
+        "settings.nav.general": "Allgemein",
+        "settings.nav.automation": "Automation",
+        "settings.nav.communication": "Kommunikation & Termine",
+        "settings.nav.integrations": "Integrationen",
+        "settings.nav.privacy": "Daten & Datenschutz",
+        "settings.nav.advanced": "Erweitert",
+        "settings.safety_limits": "Sicherheitsgrenzen (Erweitert)",
+        "settings.danger_zone": "Gefahrenbereich",
         "lifecycle.subtitle": "Bewerbungsfälle, E-Mail-Zuordnung und Nachfass-Vorschläge (kein Auto-Versand).",
         "lifecycle.followups": "Nachfassen vorschlagen",
         "lifecycle.link_email": "E-Mail zuordnen",
@@ -622,8 +632,19 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "wizard.step_cv_skip": "Ohne Lebenslauf weiter — Angaben können Sie später im Profil ergänzen.",
         "wizard.step_prefs_title": "2 · Sucheinstellungen",
         "wizard.step_prefs_body": "Wunschberufe und Standort festlegen. Remote-Jobs in Deutschland können erlaubt werden.",
-        "wizard.step_ready_title": "3 · Bereit",
-        "wizard.step_ready_body": "Standard ist sicher: Nur Suche, Dry Run an. Sie können danach sofort Jobs finden.",
+        "wizard.step_ready_title": "Wie soll Karrierekrake arbeiten?",
+        "wizard.step_ready_body": (
+            "Wähle deinen Modus für den ersten Start. Du kannst dies später jederzeit "
+            "in den Einstellungen ändern. Dry Run bleibt an — kein stiller Versand."
+        ),
+        "wizard.mode_search_title": "Nur Jobs finden",
+        "wizard.mode_search_body": (
+            "Karrierekrake sucht nach passenden Stellen und zeigt sie dir in der Übersicht."
+        ),
+        "wizard.mode_review_title": "Bewerbungen vorbereiten",
+        "wizard.mode_review_body": (
+            "Formulare und Anschreiben werden vorbereitet. Du prüfst vor dem Absenden."
+        ),
         "wizard.cta_find_jobs": "Jobs finden",
         "settings.advanced": "Erweitert",
         "status_label.new": "Neu",
@@ -743,6 +764,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "inbox.hint_prepare_reply": "Prepare a reply draft — send only after approval.",
         "inbox.more_actions": "More actions",
         "inbox.refresh_failed": "Refresh failed",
+        "inbox.empty_title": "No new application messages",
+        "inbox.empty_body": "When Karrierekrake mirrors mail, messages appear here for calm association.",
         "jobs.open_search_intent": "Search parameters…",
         "jobs.section_result_filters": "RESULT FILTERS (already found jobs)",
         "jobs.more_filters": "More filters",
@@ -753,6 +776,14 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "jobs.sort_distance_far": "Distance (far → near)",
         "jobs.sort_newest": "Newest first",
         "settings.open_diagnose_logs": "Open logs (diagnostics)",
+        "settings.nav.general": "General",
+        "settings.nav.automation": "Automation",
+        "settings.nav.communication": "Communication & scheduling",
+        "settings.nav.integrations": "Integrations",
+        "settings.nav.privacy": "Data & privacy",
+        "settings.nav.advanced": "Advanced",
+        "settings.safety_limits": "Safety limits (advanced)",
+        "settings.danger_zone": "Danger zone",
         "lifecycle.subtitle": "Application cases, email linking, and follow-up suggestions (never auto-send).",
         "lifecycle.followups": "Suggest follow-ups",
         "lifecycle.link_email": "Link email",
@@ -1327,8 +1358,19 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "wizard.step_cv_skip": "Continue without a CV — add details later under Profile.",
         "wizard.step_prefs_title": "2 · Search preferences",
         "wizard.step_prefs_body": "Set desired roles and location. Fully remote jobs in Germany can be allowed.",
-        "wizard.step_ready_title": "3 · Ready",
-        "wizard.step_ready_body": "Safe defaults: search only, dry-run on. You can find jobs right after this.",
+        "wizard.step_ready_title": "How should Karrierekrake work?",
+        "wizard.step_ready_body": (
+            "Choose your first-run mode. You can change this anytime in Settings. "
+            "Dry-run stays on — nothing is sent silently."
+        ),
+        "wizard.mode_search_title": "Find jobs only",
+        "wizard.mode_search_body": (
+            "Karrierekrake searches for matching roles and shows them on the overview."
+        ),
+        "wizard.mode_review_title": "Prepare applications",
+        "wizard.mode_review_body": (
+            "Forms and cover letters are prepared. You review before anything is submitted."
+        ),
         "wizard.cta_find_jobs": "Find jobs",
         "settings.advanced": "Advanced",
         "status_label.new": "New",

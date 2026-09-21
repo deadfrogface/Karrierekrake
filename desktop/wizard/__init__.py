@@ -143,25 +143,50 @@ class PrefsStepPage(QWizardPage):
 
 
 class ReadyStepPage(QWizardPage):
-    """Step 3 — safe defaults reminder and finish."""
+    """Step 3 — mode choice with safe defaults (Ersteinrichtung demo)."""
 
     def __init__(self) -> None:
         super().__init__()
         self.body = QLabel()
         self.body.setWordWrap(True)
+        self.body.setObjectName("PageSubtitle")
         self.body.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+
         self.search_only = QRadioButton()
         self.search_only.setChecked(True)
+        self.search_desc = QLabel()
+        self.search_desc.setWordWrap(True)
+        self.search_desc.setObjectName("KkHint")
+
         self.review = QRadioButton()
+        self.review_desc = QLabel()
+        self.review_desc.setWordWrap(True)
+        self.review_desc.setObjectName("KkHint")
+
         self.dry = QCheckBox()
         self.dry.setChecked(True)
         self.dry.setEnabled(False)  # always on for first run safety messaging
+
+        search_card = QWidget()
+        search_card.setObjectName("Card")
+        sc = QVBoxLayout(search_card)
+        sc.setContentsMargins(14, 12, 14, 12)
+        sc.addWidget(self.search_only)
+        sc.addWidget(self.search_desc)
+
+        review_card = QWidget()
+        review_card.setObjectName("Card")
+        rc = QVBoxLayout(review_card)
+        rc.setContentsMargins(14, 12, 14, 12)
+        rc.addWidget(self.review)
+        rc.addWidget(self.review_desc)
+
         inner = QWidget()
         layout = QVBoxLayout(inner)
-        layout.setSpacing(10)
+        layout.setSpacing(12)
         layout.addWidget(self.body)
-        layout.addWidget(self.search_only)
-        layout.addWidget(self.review)
+        layout.addWidget(search_card)
+        layout.addWidget(review_card)
         layout.addWidget(self.dry)
         layout.addStretch()
         outer = QVBoxLayout(self)
@@ -172,8 +197,10 @@ class ReadyStepPage(QWizardPage):
     def retranslate_ui(self) -> None:
         self.setTitle(tr("wizard.step_ready_title"))
         self.body.setText(tr("wizard.step_ready_body"))
-        self.search_only.setText(tr("settings.mode.search"))
-        self.review.setText(tr("settings.mode.review"))
+        self.search_only.setText(tr("wizard.mode_search_title"))
+        self.search_desc.setText(tr("wizard.mode_search_body"))
+        self.review.setText(tr("wizard.mode_review_title"))
+        self.review_desc.setText(tr("wizard.mode_review_body"))
         self.dry.setText(tr("settings.dry_run"))
 
 

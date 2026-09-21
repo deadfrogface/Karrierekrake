@@ -26,7 +26,7 @@ from PySide6.QtWidgets import (
 
 from core.database import Database
 from desktop.design_system.a11y import set_accessible_name
-from desktop.design_system.v2_chrome import ContentCard, StatusChip
+from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, StatusChip
 from desktop.i18n import tr
 from desktop.pages.lifecycle import LifecyclePage
 from desktop.services import ConfigService
@@ -99,6 +99,9 @@ class InboxPage(QWidget):
         self.list = QListWidget()
         self.list.currentRowChanged.connect(self._on_select)
         left_l.addWidget(self.list, 1)
+        self.empty_panel = EmptyStatePanel()
+        self.empty_panel.setVisible(False)
+        left_l.addWidget(self.empty_panel, 1)
         splitter.addWidget(left)
 
         right = QWidget()
@@ -195,6 +198,7 @@ class InboxPage(QWidget):
         self.context_label.setText(tr("inbox.linked_application"))
         self.open_case_btn.setText(tr("inbox.open_application"))
         self.account_chip.setText(tr("inbox.mirrored_account"))
+        self.empty_panel.set_texts(tr("inbox.empty_title"), tr("inbox.empty_body"))
         if hasattr(self.lifecycle, "retranslate"):
             self.lifecycle.retranslate()
         self._rebuild_more_menu()
@@ -254,8 +258,12 @@ class InboxPage(QWidget):
             item.setData(Qt.ItemDataRole.UserRole, email.get("id"))
             self.list.addItem(item)
         if self._emails:
+            self.list.setVisible(True)
+            self.empty_panel.setVisible(False)
             self.list.setCurrentRow(0)
         else:
+            self.list.setVisible(False)
+            self.empty_panel.setVisible(True)
             self._clear_detail()
 
     def _on_select(self, row: int) -> None:

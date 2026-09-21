@@ -156,6 +156,48 @@ class ContentCard(QFrame):
         return self._body
 
 
+class EmptyStatePanel(QWidget):
+    """Calm empty / blocked state — title + body, optional primary CTA."""
+
+    def __init__(
+        self,
+        title: str = "",
+        body: str = "",
+        *,
+        action_text: str = "",
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(parent)
+        self.setObjectName("EmptyStatePanel")
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 32, 24, 32)
+        layout.setSpacing(8)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.title = QLabel(title)
+        self.title.setObjectName("NextActionTitle")
+        self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.title.setWordWrap(True)
+        self.body = QLabel(body)
+        self.body.setObjectName("PageSubtitle")
+        self.body.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.body.setWordWrap(True)
+        self.action_btn = QPushButton(action_text)
+        self.action_btn.setObjectName("SecondaryButton")
+        self.action_btn.setVisible(bool(action_text))
+        layout.addWidget(self.title)
+        layout.addWidget(self.body)
+        layout.addWidget(self.action_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        set_accessible_name(self, title or body)
+
+    def set_texts(self, title: str, body: str = "", *, action_text: str = "") -> None:
+        self.title.setText(title)
+        self.body.setText(body)
+        self.body.setVisible(bool(body))
+        self.action_btn.setText(action_text)
+        self.action_btn.setVisible(bool(action_text))
+        set_accessible_name(self, title or body)
+
+
 class IconActionButton(QPushButton):
     """Compact secondary icon/text button (card header actions)."""
 
