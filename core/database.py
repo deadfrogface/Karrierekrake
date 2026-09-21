@@ -1812,6 +1812,34 @@ class Database:
             ).fetchall()
         return [dict(r) for r in rows]
 
+    def list_inbox_emails(self, *, limit: int = 200, query: str = "") -> list[dict[str, Any]]:
+        """Recent mailbox messages for Postfach (needs-review first, then newest)."""
+        q = (query or "").strip().lower()
+        with self.connection() as conn:
+            rows = conn.execute(
+                """
+                SELECT * FROM email_messages
+                ORDER BY
+                  CASE
+                    WHEN association_status IN ('ambiguous', 'review_required') THEN 0
+                    ELSE 1
+                  END,
+                  COALESCE(NULLIF(received_at, ''), created_at) DESC
+                LIMIT ?
+                """,
+                (int(limit),),
+            ).fetchall()
+        out = [dict(r) for r in rows]
+        if not q:
+            return out
+        return [
+            e
+            for e in out
+            if q in (e.get("subject") or "").lower()
+            or q in (e.get("sender") or "").lower()
+            or q in (e.get("body_text") or "").lower()
+        ]
+
     def resolve_email_association(self, email_id: str, case_id: str) -> None:
         """Manual user confirmation — sets confirmed flag (rollback-safe)."""
         from integrations.email_associate import ASSOCIATION_POLICY_VERSION
