@@ -1081,6 +1081,20 @@ class Database:
             captcha = conn.execute(
                 "SELECT COUNT(*) AS c FROM jobs WHERE status = 'captcha'"
             ).fetchone()["c"]
+            applications_active = conn.execute(
+                """
+                SELECT COUNT(*) AS c FROM applications
+                WHERE LOWER(COALESCE(status, '')) NOT IN (
+                    'failed', 'closed', 'rejected', 'withdrawn', 'cancelled'
+                )
+                """
+            ).fetchone()["c"]
+            replies_attention = conn.execute(
+                """
+                SELECT COUNT(*) AS c FROM email_messages
+                WHERE association_status IN ('ambiguous', 'review_required')
+                """
+            ).fetchone()["c"]
             this_run = 0
             rid = run_id or self.latest_run_id()
             if rid:
@@ -1094,6 +1108,8 @@ class Database:
             "new_today": int(new),
             "matches_ge_75": int(matches),
             "applications_today": int(applied),
+            "applications_active": int(applications_active),
+            "replies_attention": int(replies_attention),
             "needs_review": int(needs),
             "errors": int(errors),
             "captcha": int(captcha),

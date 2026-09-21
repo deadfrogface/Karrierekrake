@@ -9,10 +9,10 @@
 - App shell V2 nav: Übersicht · Jobs · Bewerbungen · Postfach · Profil + Einstellungen · Hilfe
 - Suche / Protokolle preserved off primary nav (Jobs → Suchparameter, Settings → Diagnose)
 - Postfach page embeds Lifecycle mail tooling (no feature loss; no fake Gmail send)
+- **Phase 4 Übersicht:** Action Queue, 4 live KPIs (Passende Jobs / Prüfung nötig / Laufende Bewerbungen / Neue Antworten), System-Meta, technische Stats unter „Erweitert / Diagnose“
 
 ## Next phases (sequential)
 
-4. Übersicht visual pass (4 primary KPIs, quieter technical stats)
 5. Jobs 60/40 + filter/sort separation
 6. Bewerbungen + detail
 7. Postfach polish (without inventing send)

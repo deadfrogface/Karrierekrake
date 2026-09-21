@@ -101,6 +101,8 @@ class KpiCard(QFrame):
         self,
         label: str = "",
         value: str = "0",
+        *,
+        hint: str = "",
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
@@ -109,18 +111,31 @@ class KpiCard(QFrame):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 14, 16, 14)
         layout.setSpacing(4)
-        self.value_label = QLabel(value)
-        self.value_label.setObjectName("PageTitle")
         self.caption = QLabel(label)
         self.caption.setObjectName("PageSubtitle")
-        layout.addWidget(self.value_label)
+        self.value_label = QLabel(value)
+        self.value_label.setObjectName("PageTitle")
+        self.hint_label = QLabel(hint)
+        self.hint_label.setObjectName("KkHint")
+        self.hint_label.setVisible(bool(hint))
         layout.addWidget(self.caption)
+        layout.addWidget(self.value_label)
+        layout.addWidget(self.hint_label)
         set_accessible_name(self, f"{label}: {value}")
 
-    def set_value(self, value: str | int, label: str | None = None) -> None:
+    def set_value(
+        self,
+        value: str | int,
+        label: str | None = None,
+        *,
+        hint: str | None = None,
+    ) -> None:
         self.value_label.setText(str(value))
         if label is not None:
             self.caption.setText(label)
+        if hint is not None:
+            self.hint_label.setText(hint)
+            self.hint_label.setVisible(bool(hint))
         set_accessible_name(self, f"{self.caption.text()}: {self.value_label.text()}")
 
 
