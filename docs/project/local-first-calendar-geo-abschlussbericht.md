@@ -37,10 +37,11 @@ python -m pytest -m "not network" --timeout=120 -q --tb=line
 |------|-----|----------|
 | Vor Fix (`--timeout=60`) | `/tmp/full-pytest4.log` | 5 failed, 4585 passed, 21 skipped |
 | Nach Brand/Distance-Fix | `/tmp/full-pytest5.log` | 2 failed (Guenther-Timeout + Abschlussbericht-Casing), 4588 passed |
-| Re-Run nach Stabilisierung | `/tmp/full-pytest6.log` | *(läuft)* |
+| Re-Run nach Stabilisierung | `/tmp/full-pytest6.log` | 1 failed (Abschlussbericht enthielt noch verbotene Schreibweise), 4589 passed — behoben, siehe Lauf 7 |
+| Final | `/tmp/full-pytest7.log` | *(nach Docs-Fix)* |
 
 PR#54-Regressionen behoben:
-- Brand-Casing `KarriereKrake` → `Karrierekrake`
+- Brand-Schreibweise auf kanonisches `Karrierekrake` vereinheitlicht
 - `test_hard_exclude_unknown_distance_onsite` prüft Radius via `distance_exclude`
 - Guenther-Service-Test nutzt `HeuristicProvider` (kein llama_cpp-Load unter Suite-Last)
 
@@ -75,14 +76,17 @@ Native PE-Build auf diesem Linux-Agenten nicht möglich. Nachweis über GitHub A
 | Feld | Wert |
 |------|------|
 | Workflow | `windows-smoke.yml` |
-| Run | https://github.com/deadfrogface/Karrierekrake/actions/runs/35664670734 |
-| Head SHA | `c173afb48ef68c7f38c91dbdc8d55ba16ab1056f` |
+| Run | https://github.com/deadfrogface/Karrierekrake/actions/runs/35667530488 |
+| Head SHA | `6562e89b0e8b32c290cb0c52e86608e380b614d7` |
 | Conclusion | **success** (`qt-smoke` + `build-and-exe-smoke`) |
-| Artifact | `Karrierekrake-Windows-Smoke` (id `10669305932`, ~215 MB) |
-| Artifact-Digest (Actions) | `sha256:5ead8479b6b0ab91f7098efd7b24e29f5d3a460bfcae287f0729cfea6a646304` |
-| Gates im Job | Privacy-Scan, PyInstaller onefile, Production content gate, isolierter LOCALAPPDATA-EXE-Smoke, Legacy-DB-Migration, Reset-Check |
+| Artifact | `Karrierekrake-Windows-Smoke` |
+| EXE-Pfad (Artifact) | `Karrierekrake.exe` |
+| Größe | 216845026 Bytes |
+| SHA-256 | `cb6fd173ae2207db492ac6214fd7053cf3128db6bfe5ab93dc63e5f25d6aa441` |
+| Content-Gate | **passed**, hit_count=0 |
+| Isolierter LOCALAPPDATA-Smoke | **SMOKE_TEST_OK** (pages=8) |
+| Gates im Job | Privacy-Scan, PyInstaller onefile, Production content gate, isolierter EXE-Smoke, Legacy-DB-Migration, Reset-Check |
 
-> EXE-Dateihash (`build_metadata.txt` im Artifact) nach Token-Wiederherstellung nachziehen. Vorheriger erfolgreicher Smoke-EXE-Hash (älterer Commit `446e300`): `3e579aeae4851152d1b00e935829e70149f5a0e0ab22aaaac0ea91301ee78d0c`.
 
 ## 7. Content-Policy
 
@@ -95,4 +99,3 @@ Hinweis: Byte-String `client_secret` im Linux-Binary stammt nur aus OpenAI-SDK-M
 - Production Desktop-OAuth-Client + Consent/Verifizierung
 - Homepage-/Datenschutz-URLs
 - GeoNames-/OSS-Lizenzprüfung im Release
-- Agent: GitHub-Push-Credentials wiederherstellen (Remote-Token verloren), danach unpushed Commits + EXE-SHA256 aus Artifact finalisieren
