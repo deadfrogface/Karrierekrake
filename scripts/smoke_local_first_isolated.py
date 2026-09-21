@@ -175,7 +175,17 @@ def main() -> int:
     out = Path("/opt/cursor/artifacts") if Path("/opt/cursor/artifacts").is_dir() else base
     out.mkdir(parents=True, exist_ok=True)
     path = out / "local_first_isolated_smoke.json"
-    path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    payload = json.dumps(report, indent=2)
+    # Write via /tmp first — artifacts FS can return EAGAIN under load.
+    tmp = Path(tempfile.gettempdir()) / "local_first_isolated_smoke.json"
+    tmp.write_text(payload, encoding="utf-8")
+    try:
+        path.write_text(payload, encoding="utf-8")
+    except OSError:
+        try:
+            shutil.copyfile(tmp, path)
+        except OSError:
+            path = tmp
     print(f"report={path}")
     # Cleanup isolated dir except leave report
     shutil.rmtree(base, ignore_errors=True)
