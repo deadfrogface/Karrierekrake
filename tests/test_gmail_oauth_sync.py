@@ -40,6 +40,16 @@ from integrations.gmail_sync import (
 from integrations.secure_tokens import delete_token, load_token, store_token
 
 
+def _probeable_gmail_service() -> MagicMock:
+    """Service mock that satisfies NEXT-04 probe_google_gmail (users.getProfile)."""
+    svc = MagicMock(name="gmail_service")
+    svc.users.return_value.getProfile.return_value.execute.return_value = {
+        "emailAddress": "probe@example.test",
+        "messagesTotal": 1,
+    }
+    return svc
+
+
 class _TestMemoryKeyring:
     """In-process keyring for Linux CI / environments without an OS backend."""
 
@@ -328,15 +338,16 @@ def test_oauth_happy_path_builds_service(tmp_path: Path, monkeypatch):
     flow = MagicMock()
     flow.run_local_server.return_value = fake
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
+    fake_svc = _probeable_gmail_service()
     with (
         patch(
             "google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file",
             return_value=flow,
         ),
-        patch("googleapiclient.discovery.build", return_value="SERVICE") as build,
+        patch("googleapiclient.discovery.build", return_value=fake_svc) as build,
     ):
         svc = gmail_auth.get_gmail_service(credentials_path=creds_path, token_dir=token_dir)
-    assert svc == "SERVICE"
+    assert svc is fake_svc
     assert gmail_connected(token_dir=token_dir)
     build.assert_called_once()
     assert flow.run_local_server.called
@@ -372,13 +383,14 @@ def test_oauth_expired_token_refreshes(tmp_path: Path, monkeypatch):
 
     monkeypatch.setattr(goa, "google_libs_available", lambda: True)
     monkeypatch.setattr(goa, "creds_from_payload", lambda _p, **k: fake)
+    fake_svc = _probeable_gmail_service()
     with (
         patch("google.auth.transport.requests.Request"),
-        patch("googleapiclient.discovery.build", return_value="SVC"),
+        patch("googleapiclient.discovery.build", return_value=fake_svc),
     ):
         assert (
             gmail_auth.get_gmail_service(credentials_path=tmp_path / "x.json", token_dir=token_dir)
-            == "SVC"
+            is fake_svc
         )
     assert fake.refresh_calls == 1
     loaded = load_token(TOKEN_ACCOUNT, fallback_dir=token_dir)
@@ -423,14 +435,15 @@ def test_oauth_refresh_success_via_authorize(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
     monkeypatch.setattr(goa, "google_libs_available", lambda: True)
     monkeypatch.setattr(goa, "creds_from_payload", lambda _p, **k: fake)
+    fake_svc = _probeable_gmail_service()
     with (
         patch("google.auth.transport.requests.Request"),
-        patch("googleapiclient.discovery.build", return_value="OK"),
+        patch("googleapiclient.discovery.build", return_value=fake_svc),
     ):
         outcome = gmail_auth.authorize_gmail(
             credentials_path=tmp_path / "x.json", token_dir=token_dir
         )
-    assert outcome.service == "OK"
+    assert outcome.service is fake_svc
     assert outcome.needs_reauth is False
 
 
@@ -1165,15 +1178,17 @@ def test_reconnect_after_disconnect(tmp_path: Path, monkeypatch):
     flow = MagicMock()
     flow.run_local_server.return_value = fake
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
+    fake_svc = _probeable_gmail_service()
     with (
         patch(
             "google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file",
             return_value=flow,
         ),
-        patch("googleapiclient.discovery.build", return_value="NEW"),
+        patch("googleapiclient.discovery.build", return_value=fake_svc),
     ):
         assert (
-            gmail_auth.get_gmail_service(credentials_path=creds_path, token_dir=token_dir) == "NEW"
+            gmail_auth.get_gmail_service(credentials_path=creds_path, token_dir=token_dir)
+            is fake_svc
         )
     assert gmail_connected(token_dir=token_dir)
 
