@@ -27,8 +27,8 @@ from desktop.branding import icon_path
 from desktop.i18n import i18n, tr
 from desktop.pages.applications import ApplicationsPage
 from desktop.pages.dashboard import DashboardPage
+from desktop.pages.inbox import InboxPage
 from desktop.pages.jobs import JobsPage
-from desktop.pages.lifecycle import LifecyclePage
 from desktop.pages.logs import LogsPage
 from desktop.pages.profile import ProfilePage
 from desktop.pages.search import SearchPage
@@ -41,6 +41,7 @@ from desktop.tray import AppTray, app_icon
 from desktop.workers import PipelineWorker, connect_queued, start_worker, thread_is_running
 from desktop.wizard import FirstRunWizard
 from desktop.design_system.a11y import annotate_nav_button, set_accessible_name, set_accessible_description
+from desktop.widgets.about_dialog import AboutDialog
 
 
 class MainWindow(QMainWindow):
@@ -106,37 +107,80 @@ class MainWindow(QMainWindow):
         self.search = SearchPage(config_service)
         self.jobs = JobsPage(config_service)
         self.applications = ApplicationsPage(config_service)
-        self.lifecycle = LifecyclePage(config_service)
+        self.inbox = InboxPage(config_service)
+        # Lifecycle remains reachable via Postfach (embedded) — keep direct ref for refresh.
+        self.lifecycle = self.inbox.lifecycle
         self.settings = SettingsPage(config_service)
         self.logs = LogsPage(config_service)
 
-        # Primary mental model: Profil (who) → Suche (what now) → Jobs → …
-        # Günther maps to lifecycle surface (no lifecycle redesign in this PR).
-        # Dashboard/Logs remain reachable; legacy route via feature flag on Profile.
-        self._nav_defs = [
-            ("nav.profile", self.profile),
-            ("nav.search", self.search),
+        # V2 primary nav: Übersicht · Jobs · Bewerbungen · Postfach · Profil
+        # Bottom: Einstellungen · Hilfe
+        # Hidden stack pages (preserved): Suche, Protokolle
+        self._primary_nav: list[tuple[str, QWidget]] = [
+            ("nav.overview", self.dashboard),
             ("nav.jobs", self.jobs),
             ("nav.applications", self.applications),
-            ("nav.guenther", self.lifecycle),
+            ("nav.inbox", self.inbox),
+            ("nav.profile", self.profile),
+        ]
+        self._utility_nav: list[tuple[str, QWidget]] = [
             ("nav.settings", self.settings),
-            ("nav.dashboard", self.dashboard),
+        ]
+        # Full stack order (nav buttons only for primary + utility; search/logs via helpers)
+        self._nav_defs = [
+            *self._primary_nav,
+            *self._utility_nav,
+            ("nav.search", self.search),
             ("nav.logs", self.logs),
         ]
         self._page_index = {key: i for i, (key, _) in enumerate(self._nav_defs)}
-        self.nav_buttons: list[QPushButton] = []
-        total_nav = len(self._nav_defs)
-        for i, (key, page) in enumerate(self._nav_defs):
+        # Alias legacy keys so older navigate_to calls keep working
+        self._page_index["nav.dashboard"] = self._page_index["nav.overview"]
+        self._page_index["nav.guenther"] = self._page_index["nav.inbox"]
+        self._page_index["nav.lifecycle"] = self._page_index["nav.inbox"]
+
+        for _key, page in self._nav_defs:
             self.stack.addWidget(page)
+
+        self.nav_buttons: list[QPushButton] = []
+        primary_total = len(self._primary_nav) + len(self._utility_nav) + 1  # +Hilfe
+        for i, (key, _page) in enumerate(self._primary_nav):
             btn = QPushButton(tr(key))
             btn.setObjectName("NavButton")
             btn.setCheckable(True)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             btn.clicked.connect(lambda checked=False, idx=i: self._navigate(idx))
-            annotate_nav_button(btn, name=tr(key), position=i + 1, total=total_nav)
+            annotate_nav_button(btn, name=tr(key), position=i + 1, total=primary_total)
             self.nav_buttons.append(btn)
             side_layout.addWidget(btn)
+
         side_layout.addStretch(1)
+
+        for j, (key, _page) in enumerate(self._utility_nav):
+            idx = len(self._primary_nav) + j
+            btn = QPushButton(tr(key))
+            btn.setObjectName("NavButton")
+            btn.setCheckable(True)
+            btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+            btn.clicked.connect(lambda checked=False, i=idx: self._navigate(i))
+            annotate_nav_button(
+                btn, name=tr(key), position=len(self._primary_nav) + j + 1, total=primary_total
+            )
+            self.nav_buttons.append(btn)
+            side_layout.addWidget(btn)
+
+        self.help_btn = QPushButton(tr("nav.help"))
+        self.help_btn.setObjectName("NavButton")
+        self.help_btn.setCheckable(False)
+        self.help_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.help_btn.clicked.connect(self.open_help)
+        annotate_nav_button(
+            self.help_btn,
+            name=tr("nav.help"),
+            position=primary_total,
+            total=primary_total,
+        )
+        side_layout.addWidget(self.help_btn)
 
         shell.addWidget(self.sidebar, 0)
         content = QWidget()
@@ -207,10 +251,16 @@ class MainWindow(QMainWindow):
         self.brand.setText(tr("app.name"))
         if hasattr(self, "brand_tagline"):
             self.brand_tagline.setText(tr("brand.tagline"))
-        total = len(self._nav_defs)
-        for i, (btn, (key, _)) in enumerate(zip(self.nav_buttons, self._nav_defs)):
+        primary_total = len(self._primary_nav) + len(self._utility_nav) + 1
+        labeled = list(self._primary_nav) + list(self._utility_nav)
+        for i, (btn, (key, _)) in enumerate(zip(self.nav_buttons, labeled)):
             btn.setText(tr(key))
-            annotate_nav_button(btn, name=tr(key), position=i + 1, total=total)
+            annotate_nav_button(btn, name=tr(key), position=i + 1, total=primary_total)
+        if hasattr(self, "help_btn"):
+            self.help_btn.setText(tr("nav.help"))
+            annotate_nav_button(
+                self.help_btn, name=tr("nav.help"), position=primary_total, total=primary_total
+            )
         self.progress_label.setText(tr("status.ready"))
         set_accessible_name(self.progress_label, tr("status.ready"))
         for page in (
@@ -219,7 +269,7 @@ class MainWindow(QMainWindow):
             self.search,
             self.jobs,
             self.applications,
-            self.lifecycle,
+            self.inbox,
             self.settings,
             self.logs,
         ):
@@ -229,6 +279,26 @@ class MainWindow(QMainWindow):
                 page.retranslate_ui()
         if hasattr(self.tray, "retranslate_ui"):
             self.tray.retranslate_ui()
+
+    def open_help(self) -> None:
+        AboutDialog(self).exec()
+
+    def open_search_intent(self) -> None:
+        """Suche remains a first-class page, not primary nav (V2 IA)."""
+        self.navigate_to("nav.search")
+
+    def open_diagnose_logs(self) -> None:
+        self.navigate_to("nav.logs")
+
+    def _navigate(self, index: int) -> None:
+        self.stack.setCurrentIndex(index)
+        for i, btn in enumerate(self.nav_buttons):
+            btn.setChecked(i == index)
+        page = self.stack.widget(index)
+        if hasattr(page, "refresh"):
+            page.refresh()
+        if hasattr(page, "load_from_config"):
+            page.load_from_config()
 
     def apply_appearance_from_settings(self) -> None:
         cfg = self.config_service.load()
@@ -242,20 +312,11 @@ class MainWindow(QMainWindow):
             )
         i18n.set_language(cfg.settings.language or "de")
 
-    def _navigate(self, index: int) -> None:
-        self.stack.setCurrentIndex(index)
-        for i, btn in enumerate(self.nav_buttons):
-            btn.setChecked(i == index)
-        page = self.stack.widget(index)
-        if hasattr(page, "refresh"):
-            page.refresh()
-        if hasattr(page, "load_from_config"):
-            page.load_from_config()
-
     def refresh_all(self) -> None:
         self.dashboard.refresh()
         self.jobs.refresh()
         self.applications.refresh()
+        self.inbox.refresh()
         self.profile.load_from_config()
         self.search.load_from_config()
         self.settings.load_from_config()

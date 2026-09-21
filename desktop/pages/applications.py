@@ -1,18 +1,20 @@
-"""Applications history, review queue, and case timeline."""
+"""Bewerbungen — demo list + interactive detail (timeline/actions on detail)."""
 
 from __future__ import annotations
 
 import webbrowser
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QComboBox,
-    QFormLayout,
+    QFrame,
     QHBoxLayout,
     QHeaderView,
     QLabel,
+    QLineEdit,
     QMessageBox,
     QPushButton,
-    QSplitter,
+    QStackedWidget,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -21,9 +23,12 @@ from PySide6.QtWidgets import (
 
 from core.database import Database
 from core.models import JobStatus
+from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, StatusChip
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
+from desktop.util.human_time import format_human_datetime
 from desktop.viewmodels.case_timeline import build_case_timeline_viewmodel
 from desktop.widgets.product_panels import CaseTimelinePanel
 
@@ -45,79 +50,168 @@ class ApplicationsPage(QWidget):
         super().__init__(parent)
         self.config_service = config_service
         self._records = []
+        self._selected_row = -1
+
+        self.stack = QStackedWidget()
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.addWidget(self.stack)
+
+        # --- List surface (demo) ---
+        list_page = QWidget()
+        list_l = QVBoxLayout(list_page)
+        list_l.setContentsMargins(24, 16, 24, 16)
+        list_l.setSpacing(12)
 
         self.page_title = QLabel()
         self.page_title.setObjectName("PageTitle")
         self.page_subtitle = QLabel()
         self.page_subtitle.setObjectName("PageSubtitle")
         self.page_subtitle.setWordWrap(True)
+        list_l.addWidget(self.page_title)
+        list_l.addWidget(self.page_subtitle)
 
+        # Coherent toolbar — search + status together; sort on the right (demo)
+        toolbar = QHBoxLayout()
+        toolbar.setSpacing(10)
+        left_tools = QHBoxLayout()
+        left_tools.setSpacing(8)
+        self.search = QLineEdit()
+        self.search.setPlaceholderText(tr("apps.search_placeholder"))
+        self.search.setMaximumWidth(360)
+        self.search.textChanged.connect(self.refresh)
         self.status = QComboBox()
+        self.status.setMinimumWidth(160)
         self.status.addItem("", "")
         for s in STATUS_FILTERS:
             if s:
                 self.status.addItem(s, s)
-
+        self.status.currentIndexChanged.connect(self.refresh)
         self.lbl_status = QLabel()
-        self.refresh_btn = QPushButton()
-        self.refresh_btn.setObjectName("PrimaryButton")
+        self.lbl_status.hide()  # demo embeds status in control
+        left_tools.addWidget(self.search, stretch=1)
+        left_tools.addWidget(self.status)
+        self.refresh_btn = QPushButton("↻")
+        self.refresh_btn.setObjectName("SecondaryButton")
+        self.refresh_btn.setFixedWidth(36)
         self.refresh_btn.clicked.connect(self.refresh)
-        self.open_btn = QPushButton()
-        self.open_btn.setObjectName("SecondaryButton")
-        self.open_btn.clicked.connect(self.open_selected)
-        self.preview_btn = QPushButton()
-        self.preview_btn.setObjectName("SecondaryButton")
-        self.preview_btn.clicked.connect(self.preview_selected)
+        left_tools.addWidget(self.refresh_btn)
+        toolbar.addLayout(left_tools, stretch=1)
+        sort_row = QHBoxLayout()
+        self.lbl_sort = QLabel()
+        self.sort = QComboBox()
+        self.sort.addItem("", "updated")
+        self.sort.addItem("", "company")
+        self.sort.addItem("", "status")
+        self.sort.currentIndexChanged.connect(self.refresh)
+        sort_row.addWidget(self.lbl_sort)
+        sort_row.addWidget(self.sort)
+        toolbar.addLayout(sort_row)
+        list_l.addLayout(toolbar)
+
+        self.alert = QFrame()
+        self.alert.setObjectName("Card")
+        alert_l = QHBoxLayout(self.alert)
+        self.alert_text = QLabel()
+        self.alert_text.setWordWrap(True)
+        self.alert_btn = QPushButton()
+        self.alert_btn.setObjectName("SecondaryButton")
+        self.alert_btn.clicked.connect(self.show_review_only)
+        alert_l.addWidget(self.alert_text, stretch=1)
+        alert_l.addWidget(self.alert_btn)
+        self.alert.hide()
+        list_l.addWidget(self.alert)
+
         self.review_btn = QPushButton()
         self.review_btn.setObjectName("SecondaryButton")
         self.review_btn.clicked.connect(self.show_review_only)
+        self.review_btn.hide()  # use alert CTA / status filter instead of permanent wall
+        # Compatibility aliases (preview/open live on detail)
+        self.open_btn = QPushButton()
+        self.open_btn.hide()
+        self.open_btn.clicked.connect(self.open_selected)
+        self.preview_btn = QPushButton()
+        self.preview_btn.hide()
+        self.preview_btn.clicked.connect(self.preview_selected)
 
-        filter_form = QFormLayout()
-        filter_form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
-        filter_form.addRow(self.lbl_status, self.status)
-        btn_row = QHBoxLayout()
-        btn_row.addWidget(self.refresh_btn)
-        btn_row.addWidget(self.open_btn)
-        btn_row.addWidget(self.preview_btn)
-        btn_row.addWidget(self.review_btn)
-        btn_row.addStretch()
-        filter_form.addRow(btn_row)
+        content_wrap = QWidget()
+        content_wrap.setMaximumWidth(1100)
+        content_l = QVBoxLayout(content_wrap)
+        content_l.setContentsMargins(0, 0, 0, 0)
+        content_l.setSpacing(0)
 
-        self.table = QTableWidget(0, 9)
+        self.table = QTableWidget(0, 5)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
+        self.table.setSortingEnabled(False)
         self.table.itemSelectionChanged.connect(self._on_selection)
+        self.table.doubleClicked.connect(self._open_detail)
+        self.table.cellClicked.connect(lambda *_: self._open_detail())
         header = self.table.horizontalHeader()
         header.setStretchLastSection(True)
-        for col in (0, 3, 4, 5, 6, 7):
-            header.setSectionResizeMode(col, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(8, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
 
-        self.empty = QLabel()
-        self.empty.setObjectName("EmptyState")
+        self.empty = EmptyStatePanel()
         self.empty.setVisible(False)
+        self.empty.action_btn.clicked.connect(self._go_jobs)
+        content_l.addWidget(self.table, 1)
+        content_l.addWidget(self.empty, 1)
+        host = QHBoxLayout()
+        host.addStretch(1)
+        host.addWidget(content_wrap, stretch=6)
+        host.addStretch(1)
+        list_l.addLayout(host, stretch=1)
+        self.stack.addWidget(list_page)
 
-        list_wrap = QVBoxLayout()
-        list_wrap.setContentsMargins(0, 0, 0, 0)
-        list_host = QWidget()
-        list_host.setLayout(list_wrap)
-        list_wrap.addWidget(self.table)
-        list_wrap.addWidget(self.empty)
+        # --- Detail surface ---
+        detail_page = QWidget()
+        detail_l = QVBoxLayout(detail_page)
+        detail_l.setContentsMargins(16, 12, 16, 16)
+        detail_l.setSpacing(12)
+        top = QHBoxLayout()
+        self.back_btn = QPushButton()
+        self.back_btn.setObjectName("SecondaryButton")
+        self.back_btn.clicked.connect(self._back_to_list)
+        top.addWidget(self.back_btn)
+        top.addStretch()
+        detail_l.addLayout(top)
+
+        head = ContentCard()
+        hb = head.body()
+        self.detail_title = QLabel()
+        self.detail_title.setObjectName("PageTitle")
+        self.detail_title.setWordWrap(True)
+        self.detail_company = QLabel()
+        self.detail_company.setObjectName("PageSubtitle")
+        self.detail_status = StatusChip("", kind="info")
+        title_row = QHBoxLayout()
+        title_col = QVBoxLayout()
+        title_col.addWidget(self.detail_title)
+        title_col.addWidget(self.detail_company)
+        title_row.addLayout(title_col, stretch=1)
+        title_row.addWidget(self.detail_status)
+        hb.addLayout(title_row)
+        detail_l.addWidget(head)
+
+        actions = QHBoxLayout()
+        self.detail_open = QPushButton()
+        self.detail_open.setObjectName("SecondaryButton")
+        self.detail_open.clicked.connect(self.open_selected)
+        self.detail_preview = QPushButton()
+        self.detail_preview.setObjectName("PrimaryButton")
+        self.detail_preview.clicked.connect(self.preview_selected)
+        actions.addWidget(self.detail_preview)
+        actions.addWidget(self.detail_open)
+        actions.addStretch()
+        detail_l.addLayout(actions)
 
         self.timeline = CaseTimelinePanel()
-        splitter = QSplitter()
-        splitter.addWidget(list_host)
-        splitter.addWidget(self.timeline)
-        splitter.setStretchFactor(0, 3)
-        splitter.setStretchFactor(1, 2)
-
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.page_title)
-        layout.addWidget(self.page_subtitle)
-        layout.addLayout(filter_form)
-        layout.addWidget(splitter, 1)
+        detail_l.addWidget(self.timeline, 1)
+        self.stack.addWidget(detail_page)
 
         self.retranslate_ui()
 
@@ -125,26 +219,43 @@ class ApplicationsPage(QWidget):
         self.page_title.setText(tr("apps.page_title"))
         self.page_subtitle.setText(tr("apps.page_subtitle"))
         self.lbl_status.setText(tr("jobs.status"))
+        self.lbl_sort.setText(tr("apps.sort_label"))
+        self.search.setPlaceholderText(tr("apps.search_placeholder"))
         self.status.setItemText(0, tr("jobs.all"))
         for i in range(1, self.status.count()):
             raw = self.status.itemData(i)
             self.status.setItemText(i, status_label(str(raw)))
-        self.refresh_btn.setText(tr("btn.refresh"))
+        sort_labels = {
+            "updated": tr("apps.sort_updated"),
+            "company": tr("apps.sort_company"),
+            "status": tr("apps.sort_status"),
+        }
+        for i in range(self.sort.count()):
+            key = str(self.sort.itemData(i))
+            self.sort.setItemText(i, sort_labels.get(key, key))
+        self.refresh_btn.setText("↻")
+        self.refresh_btn.setToolTip(tr("btn.refresh"))
+        set_accessible_name(self.refresh_btn, tr("btn.refresh"))
+        self.review_btn.setText(tr("btn.review_only"))
         self.open_btn.setText(tr("btn.open_manual"))
         self.preview_btn.setText(tr("btn.preview_apply"))
-        self.review_btn.setText(tr("btn.review_only"))
-        self.empty.setText(tr("apps.empty"))
+        self.detail_open.setText(tr("btn.open_manual"))
+        self.detail_preview.setText(tr("btn.preview_apply"))
+        self.back_btn.setText(tr("apps.back"))
+        set_accessible_name(self.back_btn, tr("apps.back"))
+        self.empty.set_texts(
+            tr("apps.empty_title"),
+            tr("apps.empty_body"),
+            action_text=tr("apps.empty_cta"),
+        )
+        self.alert_btn.setText(tr("apps.alert_cta"))
         self.table.setHorizontalHeaderLabels(
             [
-                tr("apps.date"),
-                tr("jobs.company"),
-                tr("jobs.title"),
-                tr("apps.ats"),
-                tr("col.fit"),
+                tr("apps.col_company_role"),
                 tr("jobs.status"),
-                tr("apps.cv"),
-                tr("apps.cover"),
-                tr("apps.error"),
+                tr("apps.date"),
+                tr("apps.col_next"),
+                tr("col.fit"),
             ]
         )
 
@@ -152,13 +263,16 @@ class ApplicationsPage(QWidget):
         idx = self.status.findData(JobStatus.NEEDS_REVIEW.value)
         if idx >= 0:
             self.status.setCurrentIndex(idx)
+        self.stack.setCurrentIndex(0)
         self.refresh()
 
     def _on_selection(self) -> None:
-        row = self.table.currentRow()
+        self._selected_row = self.table.currentRow()
+        row = self._selected_row
         if row < 0 or row >= len(self._records):
             self.timeline.clear()
             return
+        # Keep timeline bound on selection for compatibility; detail page shows it.
         rec = self._records[row]
         cfg = self.config_service.load()
         db = Database(cfg.db_path)
@@ -173,6 +287,32 @@ class ApplicationsPage(QWidget):
         vm = build_case_timeline_viewmodel(case.id, events, current_status=case.status)
         self.timeline.bind(vm)
 
+    def _open_detail(self) -> None:
+        row = self.table.currentRow()
+        if row < 0 or row >= len(self._records):
+            return
+        self._selected_row = row
+        rec = self._records[row]
+        self.detail_title.setText(rec.position or "—")
+        self.detail_company.setText(rec.company or "—")
+        self.detail_status.set_status(status_label(rec.status), kind="info")
+        cfg = self.config_service.load()
+        db = Database(cfg.db_path)
+        case = None
+        if rec.job_id:
+            cases = db.list_cases(limit=500)
+            case = next((c for c in cases if c.job_id == rec.job_id), None)
+        if case is None:
+            self.timeline.clear()
+        else:
+            events = db.list_lifecycle_events(case.id)
+            vm = build_case_timeline_viewmodel(case.id, events, current_status=case.status)
+            self.timeline.bind(vm)
+        self.stack.setCurrentIndex(1)
+
+    def _back_to_list(self) -> None:
+        self.stack.setCurrentIndex(0)
+
     def refresh(self) -> None:
         cfg = self.config_service.load()
         db = Database(cfg.db_path)
@@ -181,7 +321,29 @@ class ApplicationsPage(QWidget):
             statuses=[status_val] if status_val else None,
             limit=500,
         )
+        q = self.search.text().strip().lower()
+        if q:
+            records = [
+                r
+                for r in records
+                if q in (r.company or "").lower() or q in (r.position or "").lower()
+            ]
+        key = str(self.sort.currentData() or "updated")
+        if key == "company":
+            records = sorted(records, key=lambda r: (r.company or "").lower())
+        elif key == "status":
+            records = sorted(records, key=lambda r: (r.status or "").lower())
+        else:
+            records = sorted(records, key=lambda r: r.application_date or "", reverse=True)
         self._records = records
+
+        needs = sum(1 for r in db.list_applications(limit=500) if r.status == JobStatus.NEEDS_REVIEW.value)
+        if needs:
+            self.alert_text.setText(tr("apps.alert_needs_help", n=needs))
+            self.alert.show()
+        else:
+            self.alert.hide()
+
         self.table.setRowCount(0)
         from desktop.viewmodels.job_fit import build_job_fit_viewmodel
 
@@ -198,19 +360,17 @@ class ApplicationsPage(QWidget):
             if job is not None:
                 fit = build_job_fit_viewmodel(job, cfg)
                 fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
-            ats = (job.ats_type if job else "") or rec.platform
             row = self.table.rowCount()
             self.table.insertRow(row)
+            company_role = f"{rec.company}\n{rec.position}"
+            next_step = rec.error_message or rec.result or "—"
+            when = format_human_datetime(rec.application_date, lang=(cfg.settings.language or "de"))
             values = [
-                (rec.application_date or "")[:19],
-                rec.company,
-                rec.position,
-                ats,
-                fit_label,
+                company_role,
                 status_label(rec.status),
-                rec.cv_used,
-                tr("apps.cover_yes") if rec.cover_letter_used else "",
-                rec.error_message or rec.result or "",
+                when,
+                next_step[:80],
+                fit_label,
             ]
             for col, value in enumerate(values):
                 self.table.setItem(row, col, QTableWidgetItem(value))
@@ -220,8 +380,13 @@ class ApplicationsPage(QWidget):
         if empty:
             self.timeline.clear()
 
+    def _go_jobs(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "navigate_to"):
+            parent.navigate_to("nav.jobs")  # type: ignore[attr-defined]
+
     def open_selected(self) -> None:
-        row = self.table.currentRow()
+        row = self._selected_row if self._selected_row >= 0 else self.table.currentRow()
         if row < 0 or row >= len(self._records):
             return
         rec = self._records[row]
@@ -234,12 +399,10 @@ class ApplicationsPage(QWidget):
         if url:
             webbrowser.open(url)
         else:
-            QMessageBox.information(
-                self, tr("nav.applications"), tr("jobs.no_url")
-            )
+            QMessageBox.information(self, tr("nav.applications"), tr("jobs.no_url"))
 
     def preview_selected(self) -> None:
-        row = self.table.currentRow()
+        row = self._selected_row if self._selected_row >= 0 else self.table.currentRow()
         if row < 0 or row >= len(self._records):
             return
         rec = self._records[row]
@@ -247,8 +410,8 @@ class ApplicationsPage(QWidget):
         db = Database(cfg.db_path)
         job = db.get_job(rec.job_id) if rec.job_id else None
         if job is None:
-            from desktop.widgets.apply_preview_dialog import ApplyPreviewDialog
             from apply.preview import ApplicationPreview
+            from desktop.widgets.apply_preview_dialog import ApplyPreviewDialog
 
             preview = ApplicationPreview(
                 job_id=rec.job_id,

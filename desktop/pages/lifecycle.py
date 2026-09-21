@@ -144,7 +144,32 @@ class LifecyclePage(QWidget):
         layout.addWidget(self.page_subtitle)
         layout.addLayout(btn_row)
         layout.addWidget(splitter, 1)
+        self._chrome_widgets = [
+            self.page_title,
+            self.page_subtitle,
+            self.refresh_btn,
+            self.followup_btn,
+            self.link_btn,
+            self.draft_btn,
+            self.calendar_btn,
+            self.prep_btn,
+            self.stats_label,
+            self.cases,
+            self.ambiguous_label,
+            self.emails,
+            self.tasks_label,
+            self.case_picker,
+        ]
+        self._btn_row_host = btn_row
         self.retranslate()
+
+    def set_embedded_inbox_mode(self, enabled: bool) -> None:
+        """When embedded in Postfach shell: hide permanent control wall."""
+        for w in self._chrome_widgets:
+            w.setVisible(not enabled)
+        # Keep approval + timeline + guenther for contextual use.
+        self.page_title.setVisible(False if enabled else True)
+        self.page_subtitle.setVisible(False if enabled else True)
 
     def retranslate(self) -> None:
         self.page_title.setText(tr("nav.guenther"))
@@ -287,6 +312,21 @@ class LifecyclePage(QWidget):
             return
         subject = self.emails.item(row, 0).text()
         sender = self.emails.item(row, 1).text()
+        self.prepare_link_email_ids(
+            email_id=email_id,
+            case_id=str(case_id),
+            subject=subject,
+            sender=sender,
+        )
+
+    def prepare_link_email_ids(
+        self,
+        *,
+        email_id: str,
+        case_id: str,
+        subject: str = "",
+        sender: str = "",
+    ) -> None:
         self._pending_mail = {"email_id": email_id, "case_id": str(case_id)}
         self._pending_draft = None
         self._pending_calendar = None
@@ -298,6 +338,7 @@ class LifecyclePage(QWidget):
                 sender=sender,
             )
         )
+        self.approval.setVisible(True)
 
     def prepare_followup_draft(self) -> None:
         case_id = self._selected_case_id()
@@ -418,12 +459,11 @@ class LifecyclePage(QWidget):
             evidence=evidence,
             match_reasons=match_reasons,
         )
-        points = "\n".join(f"• {p}" for p in prep.talking_points[:12]) or "—"
-        QMessageBox.information(
-            self,
-            tr("lifecycle.interview_prep"),
-            f"{prep.company} — {prep.position}\n\n{points}",
-        )
+        from desktop.widgets.interview_prep_dialog import InterviewPrepDialog
+
+        dlg = InterviewPrepDialog(prep, parent=self)
+        if dlg.exec() == dlg.DialogCode.Accepted and dlg.want_draft:
+            self.prepare_followup_draft()
 
     def _on_guenther_action(self, kind: str) -> None:
         case_id = self._selected_case_id() or ""

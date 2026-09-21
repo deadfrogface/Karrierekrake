@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karrierekrake - Ersteinrichtung</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --navy: #132238; --teal: #18A999; --teal-hover: #148F82; --bg: #F8FAFC;
+            --white: #FFFFFF; --orange: #E86A45; --text-dark: #1E293B; --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--navy); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 40px; background-image: radial-gradient(circle at 50% -20%, #1e3a5f 0%, var(--navy) 100%); }
+
+        .wizard-card { background: var(--white); width: 100%; max-width: 720px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* Stepper Header */
+        .stepper-header { padding: 32px 40px; border-bottom: 1px solid var(--border); background: var(--bg); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 18px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+        .logo i { color: var(--teal); font-size: 24px; }
+        
+        .steps { display: flex; gap: 24px; align-items: center; }
+        .step { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .step.active { color: var(--teal); }
+        .step-num { width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--text-muted); font-size: 12px; }
+        .step.active .step-num { border-color: var(--teal); background: var(--teal); color: var(--white); }
+        .step-line { width: 24px; height: 2px; background: var(--border); }
+
+        /* Content Area */
+        .wizard-body { padding: 40px; flex-grow: 1; }
+        .wizard-title { font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+        .wizard-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5; }
+
+        /* Step 1: Upload Area */
+        .upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 48px 24px; text-align: center; cursor: pointer; transition: 0.2s; background: var(--bg); margin-bottom: 24px; }
+        .upload-area:hover { border-color: var(--teal); background: #f0fdfa; }
+        .upload-icon { font-size: 48px; color: var(--teal); margin-bottom: 16px; }
+        .upload-title { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+        .upload-subtitle { font-size: 13px; color: var(--text-muted); }
+
+        /* Wizard Footer */
+        .wizard-footer { padding: 24px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--white); }
+        
+        .btn-ghost { background: transparent; border: none; color: var(--text-muted); font-size: 14px; font-weight: 500; cursor: pointer; padding: 10px 16px; border-radius: 6px; }
+        .btn-ghost:hover { background: var(--bg); color: var(--navy); }
+        .btn-primary { background: var(--teal); border: 1px solid var(--teal); color: var(--white); padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { background: var(--teal-hover); }
+
+        /* Demo Helpers for this UI output to show Step 3 as an example */
+        .step-container { display: none; }
+        .step-container.active { display: block; }
+
+        /* Step 3 specific styles */
+        .option-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: 0.2s; display: flex; align-items: flex-start; gap: 16px; position: relative; }
+        .option-card:hover { border-color: var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .option-card.active { border-color: var(--teal); background: #f0fdfa; border-width: 2px; padding: 19px; }
+        .option-icon { font-size: 24px; color: var(--navy); background: var(--bg); padding: 12px; border-radius: 8px; }
+        .option-card.active .option-icon { color: var(--teal); background: rgba(24, 169, 153, 0.1); }
+        .option-text h3 { font-size: 16px; color: var(--navy); margin-bottom: 4px; font-weight: 600; }
+        .option-text p { font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 0; }
+        .radio-circle { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 50%; position: absolute; right: 20px; top: 20px; }
+        .option-card.active .radio-circle { border-color: var(--teal); display: flex; justify-content: center; align-items: center; }
+        .option-card.active .radio-circle::after { content: ''; width: 10px; height: 10px; background: var(--teal); border-radius: 50%; }
+
+    </style>
+</head>
+<body>
+    <div class="wizard-card">
+        <div class="stepper-header">
+            <div class="logo"><i class="ph ph-tentacle"></i> Karrierekrake</div>
+            <div class="steps">
+                <div class="step"><div class="step-num"><i class="ph ph-check"></i></div> Profil</div>
+                <div class="step-line"></div>
+                <div class="step"><div class="step-num"><i class="ph ph-check"></i></div> Suche</div>
+                <div class="step-line"></div>
+                <div class="step active"><div class="step-num">3</div> Bereit</div>
+            </div>
+        </div>
+
+        <!-- Showing Step 3 directly as per prompt's "Wie soll arbeiten" important focus -->
+        <div class="wizard-body step-container active">
+            <h1 class="wizard-title">Wie soll Karrierekrake arbeiten?</h1>
+            <p class="wizard-desc">Wähle deinen Modus für den ersten Start. Du kannst dies später jederzeit in den Einstellungen ändern.</p>
+
+            <div class="option-card">
+                <div class="option-icon"><i class="ph ph-magnifying-glass"></i></div>
+                <div class="option-text">
+                    <h3>Nur Jobs finden</h3>
+                    <p>Karrierekrake sucht permanent nach passenden Stellen im Hintergrund und zeigt sie dir übersichtlich im Dashboard an.</p>
+                </div>
+                <div class="radio-circle"></div>
+            </div>
+
+            <div class="option-card active">
+                <div class="option-icon"><i class="ph ph-magic-wand"></i></div>
+                <div class="option-text">
+                    <h3>Bewerbungen vorbereiten</h3>
+                    <p>Karrierekrake füllt Formulare und Anschreiben automatisch vor. Du prüfst die Daten mit einem Klick, bevor sie abgesendet werden.</p>
+                </div>
+                <div class="radio-circle"></div>
+            </div>
+        </div>
+
+        <div class="wizard-footer">
+            <button class="btn-ghost">Zurück</button>
+            <button class="btn-primary">Jobs finden <i class="ph ph-arrow-right"></i></button>
+        </div>
+    </div>
+</body>
+</html>

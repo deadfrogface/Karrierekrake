@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karrierekrake - Einstellungen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --navy: #132238; --teal: #18A999; --teal-hover: #148F82; --bg: #F8FAFC;
+            --white: #FFFFFF; --orange: #E86A45; --text-dark: #1E293B; --text-muted: #64748B;
+            --border: #E2E8F0; --card-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { display: flex; height: 100vh; background-color: var(--bg); color: var(--text-dark); overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width: 260px; background-color: var(--navy); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo-area { padding: 24px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo-area i { color: var(--teal); font-size: 24px; }
+        .nav-menu { padding: 24px 12px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255,255,255,0.7); text-decoration: none; border-radius: 8px; font-weight: 500; }
+        .nav-item.active { background-color: var(--teal); color: var(--white); }
+
+        /* Main Area */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .header { padding: 24px 40px; background-color: var(--bg); border-bottom: 1px solid var(--border); z-index: 10; }
+        .header h1 { font-size: 24px; font-weight: 600; color: var(--navy); }
+        
+        /* Settings Layout */
+        .settings-container { display: flex; height: 100%; overflow: hidden; }
+        
+        /* Settings Nav (Left Inner) */
+        .settings-nav { width: 280px; background: var(--white); border-right: 1px solid var(--border); padding: 24px 16px; overflow-y: auto; }
+        .s-nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text-muted); font-weight: 500; font-size: 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 4px; }
+        .s-nav-item:hover { background: var(--bg); color: var(--navy); }
+        .s-nav-item.active { background: #f0fdfa; color: #0f766e; }
+        .s-nav-item i { font-size: 18px; }
+
+        /* Settings Content (Right Inner) */
+        .settings-content { flex-grow: 1; padding: 32px 40px; overflow-y: auto; }
+        .section-title { font-size: 20px; font-weight: 600; color: var(--navy); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        
+        .setting-block { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: var(--card-shadow); }
+        .block-header { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 16px; }
+        
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--bg); }
+        .row:last-child { border-bottom: none; padding-bottom: 0; }
+        .row:first-of-type { padding-top: 0; }
+        .row-info { display: flex; flex-direction: column; gap: 4px; max-width: 70%; }
+        .row-title { font-size: 14px; font-weight: 500; color: var(--text-dark); }
+        .row-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+        
+        /* Controls */
+        select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; background: var(--white); cursor: pointer; min-width: 150px; }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--teal); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--navy); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-outline:hover { background: var(--bg); }
+        .btn-danger { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-danger:hover { background: #fee2e2; }
+
+        /* Custom Cards */
+        .integration-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .integration-info { display: flex; align-items: center; gap: 16px; }
+        .integration-icon { width: 40px; height: 40px; background: var(--bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--navy); }
+        .status-badge { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 12px; display: inline-block; margin-top: 4px; }
+        .status-connected { background: #dcfce7; color: #166534; }
+        .status-disconnected { background: #f1f5f9; color: #475569; }
+
+        .collapsible { margin-top: 16px; border: 1px dashed var(--border); border-radius: 8px; overflow: hidden; }
+        .collapsible-header { padding: 12px 16px; background: var(--bg); font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .collapsible-content { padding: 16px; border-top: 1px dashed var(--border); display: none; /* JS toggles this */ }
+        .collapsible.open .collapsible-content { display: block; }
+        .collapsible.open .collapsible-header i { transform: rotate(180deg); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-area"><i class="ph ph-tentacle"></i> Karrierekrake</div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="#" class="nav-item"><i class="ph ph-briefcase"></i> Jobs</a>
+            <a href="#" class="nav-item"><i class="ph ph-paper-plane-tilt"></i> Bewerbungen</a>
+            <a href="#" class="nav-item"><i class="ph ph-user"></i> Profil</a>
+            <a href="#" class="nav-item active"><i class="ph ph-gear"></i> Einstellungen</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Einstellungen</h1>
+        </div>
+        
+        <div class="settings-container">
+            <!-- Settings Navigation -->
+            <div class="settings-nav">
+                <div class="s-nav-item"><i class="ph ph-faders"></i> Allgemein</div>
+                <div class="s-nav-item active"><i class="ph ph-robot"></i> Automation</div>
+                <div class="s-nav-item"><i class="ph ph-chat-circle-dots"></i> Kommunikation & Termine</div>
+                <div class="s-nav-item"><i class="ph ph-plugs-connected"></i> Integrationen</div>
+                <div class="s-nav-item"><i class="ph ph-shield-check"></i> Daten & Datenschutz</div>
+                <div class="s-nav-item"><i class="ph ph-wrench"></i> Erweitert</div>
+            </div>
+
+            <!-- Settings Content (Showing Automation as Default Example) -->
+            <div class="settings-content">
+                <div class="section-title">Automation</div>
+                
+                <div class="setting-block">
+                    <div class="block-header">Automatisierungsgrad</div>
+                    <div class="row">
+                        <div class="row-info">
+                            <div class="row-title">Wie soll Karrierekrake vorgehen?</div>
+                            <div class="row-desc">Bestimme, wie viel Kontrolle du vor dem Absenden behalten möchtest.</div>
+                        </div>
+                        <select>
+                            <option>Nur suchen (Manuelle Bewerbung)</option>
+                            <option selected>Vor Absenden prüfen (Empfohlen)</option>
+                            <option>Vollautomatisch bewerben</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-block">
+                    <div class="block-header">Automatische Jobsuche</div>
+                    <div class="row">
+                        <div class="row-info">
+                            <div class="row-title">Im Hintergrund nach Jobs suchen</div>
+                            <div class="row-desc">Karrierekrake durchsucht Jobquellen basierend auf deinem Zeitplan.</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="row">
+                        <div class="row-info">
+                            <div class="row-title">Zeitplan</div>
+                            <div class="row-desc">Wann soll die Suche ausgeführt werden?</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <select>
+                                <option>Bei Anmeldung</option>
+                                <option>Alle 4 Stunden</option>
+                                <option>Einmal täglich</option>
+                                <option selected>Zweimal täglich</option>
+                                <option>Eigene Zeiten</option>
+                            </select>
+                            <button class="btn-outline">Pausieren</button>
+                        </div>
+                    </div>
+
+                    <!-- Progressive Disclosure: Sicherheitsgrenzen -->
+                    <div class="collapsible open"> <!-- Added 'open' class for demo visibility -->
+                        <div class="collapsible-header">
+                            Sicherheitsgrenzen (Erweitert) <i class="ph ph-caret-down"></i>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="row">
+                                <div class="row-info">
+                                    <div class="row-title">Mindest-Match für automatische Bewerbung</div>
+                                    <div class="row-desc">Ab welcher Übereinstimmung darf eine Bewerbung vorbereitet werden?</div>
+                                </div>
+                                <select><option>70%</option><option selected>80%</option><option>90%</option></select>
+                            </div>
+                            <div class="row">
+                                <div class="row-info">
+                                    <div class="row-title">Max. Bewerbungen pro Tag</div>
+                                </div>
+                                <select><option>5</option><option selected>10</option><option>20</option><option>Unbegrenzt</option></select>
+                            </div>
+                            <div class="row">
+                                <div class="row-info">
+                                    <div class="row-title">Dry-Run Safety Guard</div>
+                                    <div class="row-desc">Simuliert die Formularübermittlung, ohne echte Daten an die Jobbörse zu senden. (Nur für Tests)</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example mock of Integration Section just to show styling rules applied -->
+                <div class="section-title" style="margin-top: 48px;">Integrationen</div>
+                
+                <div class="setting-block">
+                    <div class="integration-card">
+                        <div class="integration-info">
+                            <div class="integration-icon"><i class="ph ph-envelope-simple"></i></div>
+                            <div>
+                                <div class="row-title">Gmail</div>
+                                <div class="row-desc">Karrierekrake liest Bewerbungsnachrichten. Zugriff ist read-only.</div>
+                                <div class="status-badge status-connected">Verbunden</div>
+                            </div>
+                        </div>
+                        <button class="btn-outline">Trennen</button>
+                    </div>
+                    <div class="integration-card">
+                        <div class="integration-info">
+                            <div class="integration-icon"><i class="ph ph-calendar-blank"></i></div>
+                            <div>
+                                <div class="row-title">Kalender</div>
+                                <div class="row-desc">Termine werden nur nach deiner Freigabe eingetragen (FreeBusy).</div>
+                                <div class="status-badge status-disconnected">Anmeldung erforderlich</div>
+                            </div>
+                        </div>
+                        <button class="btn-outline">Verbinden</button>
+                    </div>
+                </div>
+
+                <!-- Data & Privacy Mock -->
+                <div class="section-title" style="margin-top: 48px;">Daten & Datenschutz</div>
+                <div class="setting-block">
+                    <div class="row">
+                        <div class="row-info">
+                            <div class="row-title">Lokale Datenspeicherung</div>
+                            <div class="row-desc">Alle deine Profil- und Bewerbungsdaten bleiben lokal auf deinem Gerät. Es gibt keine Cloud-Abhängigkeit.</div>
+                        </div>
+                    </div>
+                    <div class="collapsible open" style="border-color: #fecaca;">
+                        <div class="collapsible-header" style="background: #fef2f2; color: #dc2626;">Gefahrenbereich</div>
+                        <div class="collapsible-content">
+                            <div class="row">
+                                <div class="row-info">
+                                    <div class="row-title">Lokale Daten löschen</div>
+                                    <div class="row-desc">Entfernt das Profil, Dokumente oder alle Einstellungen unwiderruflich.</div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-outline">Lebenslauf entfernen</button>
+                                    <button class="btn-danger">Alle Daten löschen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

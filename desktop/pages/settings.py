@@ -1,10 +1,10 @@
-"""Settings page with categorized tabs and scrolling."""
+"""Settings page — V2 side-nav IA (demo Einstellungen) with scrolling sections."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QButtonGroup,
     QCheckBox,
@@ -14,15 +14,20 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QListWidget,
+    QListWidgetItem,
     QMessageBox,
     QPushButton,
     QRadioButton,
-    QTabWidget,
+    QStackedWidget,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
 from core.database import Database
+from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.v2_chrome import PageHeader
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.services.browser_install import playwright_available
@@ -47,17 +52,43 @@ SOURCES = [
     ("company_sites", "company_sites"),
 ]
 
+# Demo-aligned inner nav keys (order = stack index).
+_SETTINGS_NAV_KEYS = (
+    "settings.nav.general",
+    "settings.nav.automation",
+    "settings.nav.communication",
+    "settings.nav.integrations",
+    "settings.nav.privacy",
+    "settings.nav.advanced",
+)
+
 
 def _scroll_form() -> tuple[QWidget, QVBoxLayout]:
     inner = QWidget()
     layout = QVBoxLayout(inner)
-    layout.setContentsMargins(12, 12, 12, 12)
+    layout.setContentsMargins(16, 8, 24, 16)
     layout.setSpacing(14)
     page = QWidget()
     outer = QVBoxLayout(page)
     outer.setContentsMargins(0, 0, 0, 0)
-    outer.addWidget(wrap_scrollable(inner, min_content_width=560))
+    outer.addWidget(wrap_scrollable(inner, min_content_width=520))
     return page, layout
+
+
+def _collapsible_host(title_btn: QToolButton, body: QWidget) -> QWidget:
+    """Progressive-disclosure shell: checkable header toggles body visibility."""
+    host = QWidget()
+    lay = QVBoxLayout(host)
+    lay.setContentsMargins(0, 0, 0, 0)
+    lay.setSpacing(4)
+    title_btn.setCheckable(True)
+    title_btn.setChecked(False)
+    title_btn.setObjectName("SecondaryButton")
+    body.setVisible(False)
+    title_btn.toggled.connect(body.setVisible)
+    lay.addWidget(title_btn)
+    lay.addWidget(body)
+    return host
 
 
 class SettingsPage(QWidget):
@@ -72,11 +103,37 @@ class SettingsPage(QWidget):
 
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
-        self.tabs = QTabWidget()
-        root.addWidget(self.tabs)
+        root.setSpacing(0)
+        self.header = PageHeader(tr("nav.settings"))
+        root.addWidget(self.header)
 
-        # --- General (language, theme, Windows) ---
+        body = QHBoxLayout()
+        body.setContentsMargins(0, 0, 0, 0)
+        body.setSpacing(0)
+
+        self.nav = QListWidget()
+        self.nav.setObjectName("SettingsNav")
+        self.nav.setFixedWidth(240)
+        self.nav.setSpacing(2)
+        set_accessible_name(self.nav, tr("nav.settings"))
+        self.stack = QStackedWidget()
+        # Back-compat: older tests/helpers may still look for `.tabs`
+        self.tabs = self.stack
+
+        for key in _SETTINGS_NAV_KEYS:
+            item = QListWidgetItem(tr(key))
+            item.setData(Qt.ItemDataRole.UserRole, key)
+            self.nav.addItem(item)
+
+        body.addWidget(self.nav)
+        body.addWidget(self.stack, stretch=1)
+        root.addLayout(body, stretch=1)
+
+        # --- 0 Allgemein ---
         general_page, general_layout = _scroll_form()
+        self.section_general = QLabel()
+        self.section_general.setObjectName("PageTitle")
+        general_layout.addWidget(self.section_general)
         self.lang_combo = QComboBox()
         self.lang_combo.addItem("", "de")
         self.lang_combo.addItem("", "en")
@@ -105,57 +162,14 @@ class SettingsPage(QWidget):
         general_box.setLayout(self.general_form)
         general_layout.addWidget(general_box)
         general_layout.addStretch(1)
-        self.tabs.addTab(general_page, "")
+        self.stack.addWidget(general_page)
 
-        # --- Search ---
-        search_page, search_layout = _scroll_form()
-        self.source_checks: dict[str, QCheckBox] = {}
-        self.source_status = QLabel()
-        self.source_status.setWordWrap(True)
-        src_box = QGroupBox()
-        self.src_box = src_box
-        src_layout = QVBoxLayout(src_box)
-        for key, _label in SOURCES:
-            cb = QCheckBox()
-            self.source_checks[key] = cb
-            src_layout.addWidget(cb)
-        src_layout.addWidget(self.source_status)
-        search_layout.addWidget(src_box)
+        # --- 1 Automation (mode + schedule + safety limits) ---
+        auto_page, auto_layout = _scroll_form()
+        self.section_automation = QLabel()
+        self.section_automation.setObjectName("PageTitle")
+        auto_layout.addWidget(self.section_automation)
 
-        search_box = QGroupBox()
-        self.search_box = search_box
-        sform = QFormLayout(search_box)
-        self.published_days = IntentionalWheelSpinBox()
-        self.published_days.setRange(1, 90)
-        self.min_match_dash = IntentionalWheelSpinBox()
-        self.min_match_dash.setRange(0, 100)
-        self.max_distance = IntentionalWheelSpinBox()
-        self.max_distance.setRange(1, 300)
-        self.search_mode = QComboBox()
-        self.search_mode.addItem("", "profile_discovery")
-        self.search_mode.addItem("", "explicit_titles")
-        self.jobs_per_search = QComboBox()
-        from core.config import JOBS_PER_SEARCH_CHOICES
-
-        for n in JOBS_PER_SEARCH_CHOICES:
-            label = "Max" if n == 0 else str(n)
-            self.jobs_per_search.addItem(label, n)
-        self.lbl_published = QLabel()
-        self.lbl_min_match_dash = QLabel()
-        self.lbl_max_distance = QLabel()
-        self.lbl_search_mode = QLabel()
-        self.lbl_jobs_per_search = QLabel()
-        sform.addRow(self.lbl_search_mode, self.search_mode)
-        sform.addRow(self.lbl_jobs_per_search, self.jobs_per_search)
-        sform.addRow(self.lbl_published, self.published_days)
-        sform.addRow(self.lbl_min_match_dash, self.min_match_dash)
-        sform.addRow(self.lbl_max_distance, self.max_distance)
-        search_layout.addWidget(search_box)
-        search_layout.addStretch(1)
-        self.tabs.addTab(search_page, "")
-
-        # --- Applications ---
-        apps_page, apps_layout = _scroll_form()
         mode_box = QGroupBox()
         self.mode_box = mode_box
         mode_layout = QVBoxLayout(mode_box)
@@ -168,7 +182,26 @@ class SettingsPage(QWidget):
             mode_layout.addWidget(btn)
         self.dry_run = QCheckBox()
         mode_layout.addWidget(self.dry_run)
-        apps_layout.addWidget(mode_box)
+        auto_layout.addWidget(mode_box)
+
+        bg_box = QGroupBox()
+        self.bg_box = bg_box
+        bform = QFormLayout(bg_box)
+        self.run_auto = QCheckBox()
+        self.schedule_mode = QComboBox()
+        self.interval_hours = IntentionalWheelSpinBox()
+        self.interval_hours.setRange(1, 24)
+        self.custom_times = QLineEdit()
+        self.paused = QCheckBox()
+        self.lbl_schedule = QLabel()
+        self.lbl_interval = QLabel()
+        self.lbl_times = QLabel()
+        bform.addRow(self.run_auto)
+        bform.addRow(self.lbl_schedule, self.schedule_mode)
+        bform.addRow(self.lbl_interval, self.interval_hours)
+        bform.addRow(self.lbl_times, self.custom_times)
+        bform.addRow(self.paused)
+        auto_layout.addWidget(bg_box)
 
         apply_box = QGroupBox()
         self.apply_box = apply_box
@@ -197,8 +230,17 @@ class SettingsPage(QWidget):
         aform.addRow(self.lbl_delay, self.delay)
         aform.addRow(self.auto_cover)
         aform.addRow(self.auto_submit)
-        apps_layout.addWidget(apply_box)
+        self.safety_toggle = QToolButton()
+        self.safety_toggle.setCheckable(True)
+        auto_layout.addWidget(_collapsible_host(self.safety_toggle, apply_box))
+        auto_layout.addStretch(1)
+        self.stack.addWidget(auto_page)
 
+        # --- 2 Kommunikation & Termine ---
+        comm_page, comm_layout = _scroll_form()
+        self.section_communication = QLabel()
+        self.section_communication.setObjectName("PageTitle")
+        comm_layout.addWidget(self.section_communication)
         life_box = QGroupBox()
         self.life_box = life_box
         lform = QFormLayout(life_box)
@@ -232,7 +274,35 @@ class SettingsPage(QWidget):
         lform.addRow(self.followup_reminders_enabled)
         lform.addRow(self.email_draft_only)
         lform.addRow(self.allow_employer_email_send)
-        apps_layout.addWidget(life_box)
+        comm_layout.addWidget(life_box)
+        comm_layout.addStretch(1)
+        self.stack.addWidget(comm_page)
+
+        # --- 3 Integrationen (OAuth + Günther) ---
+        integ_page, integ_layout = _scroll_form()
+        self.section_integrations = QLabel()
+        self.section_integrations.setObjectName("PageTitle")
+        integ_layout.addWidget(self.section_integrations)
+
+        oauth_box = QGroupBox()
+        self.oauth_box = oauth_box
+        oform = QVBoxLayout(oauth_box)
+        self.privacy_connect_gmail_btn = QPushButton()
+        self.privacy_connect_gmail_btn.setObjectName("SecondaryButton")
+        self.privacy_connect_gmail_btn.clicked.connect(self._privacy_connect_gmail)
+        self.privacy_connect_cal_btn = QPushButton()
+        self.privacy_connect_cal_btn.setObjectName("SecondaryButton")
+        self.privacy_connect_cal_btn.clicked.connect(self._privacy_connect_calendar)
+        self.privacy_disconnect_btn = QPushButton()
+        self.privacy_disconnect_btn.setObjectName("SecondaryButton")
+        self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_google)
+        for btn in (
+            self.privacy_connect_gmail_btn,
+            self.privacy_connect_cal_btn,
+            self.privacy_disconnect_btn,
+        ):
+            oform.addWidget(btn)
+        integ_layout.addWidget(oauth_box)
 
         guenther_box = QGroupBox()
         self.guenther_box = guenther_box
@@ -249,30 +319,104 @@ class SettingsPage(QWidget):
         gform.addRow(self.guenther_enabled)
         gform.addRow(self.lbl_guenther_model, self.guenther_model)
         gform.addRow(self.guenther_hint)
-        apps_layout.addWidget(guenther_box)
-        apps_layout.addStretch(1)
-        self.tabs.addTab(apps_page, "")
+        integ_layout.addWidget(guenther_box)
+        integ_layout.addStretch(1)
+        self.stack.addWidget(integ_page)
 
-        # --- Advanced (automation + browser) ---
-        auto_page, auto_layout = _scroll_form()
-        bg_box = QGroupBox()
-        self.bg_box = bg_box
-        bform = QFormLayout(bg_box)
-        self.run_auto = QCheckBox()
-        self.schedule_mode = QComboBox()
-        self.interval_hours = IntentionalWheelSpinBox()
-        self.interval_hours.setRange(1, 24)
-        self.custom_times = QLineEdit()
-        self.paused = QCheckBox()
-        self.lbl_schedule = QLabel()
-        self.lbl_interval = QLabel()
-        self.lbl_times = QLabel()
-        bform.addRow(self.run_auto)
-        bform.addRow(self.lbl_schedule, self.schedule_mode)
-        bform.addRow(self.lbl_interval, self.interval_hours)
-        bform.addRow(self.lbl_times, self.custom_times)
-        bform.addRow(self.paused)
-        auto_layout.addWidget(bg_box)
+        # --- 4 Daten & Datenschutz ---
+        privacy_page, privacy_layout = _scroll_form()
+        self.section_privacy = QLabel()
+        self.section_privacy.setObjectName("PageTitle")
+        privacy_layout.addWidget(self.section_privacy)
+        privacy_box = QGroupBox()
+        self.privacy_box = privacy_box
+        pform = QVBoxLayout(privacy_box)
+        self.privacy_intro = QLabel()
+        self.privacy_intro.setWordWrap(True)
+        self.privacy_intro.setObjectName("PageSubtitle")
+        pform.addWidget(self.privacy_intro)
+        self.privacy_export_btn = QPushButton()
+        self.privacy_export_btn.setObjectName("SecondaryButton")
+        self.privacy_export_btn.clicked.connect(self._privacy_export)
+        pform.addWidget(self.privacy_export_btn)
+        privacy_layout.addWidget(privacy_box)
+
+        danger_box = QGroupBox()
+        self.danger_box = danger_box
+        dform = QVBoxLayout(danger_box)
+        self.privacy_mail_btn = QPushButton()
+        self.privacy_mail_btn.setObjectName("SecondaryButton")
+        self.privacy_mail_btn.clicked.connect(self._privacy_delete_mail)
+        self.privacy_cal_btn = QPushButton()
+        self.privacy_cal_btn.setObjectName("SecondaryButton")
+        self.privacy_cal_btn.clicked.connect(self._privacy_delete_calendar)
+        self.privacy_logs_btn = QPushButton()
+        self.privacy_logs_btn.setObjectName("SecondaryButton")
+        self.privacy_logs_btn.clicked.connect(self._privacy_delete_logs)
+        self.privacy_all_btn = QPushButton()
+        self.privacy_all_btn.setObjectName("PrimaryButton")
+        self.privacy_all_btn.clicked.connect(self._privacy_delete_all)
+        for btn in (
+            self.privacy_mail_btn,
+            self.privacy_cal_btn,
+            self.privacy_logs_btn,
+            self.privacy_all_btn,
+        ):
+            dform.addWidget(btn)
+        self.danger_toggle = QToolButton()
+        self.danger_toggle.setCheckable(True)
+        privacy_layout.addWidget(_collapsible_host(self.danger_toggle, danger_box))
+        privacy_layout.addStretch(1)
+        self.stack.addWidget(privacy_page)
+
+        # --- 5 Erweitert (sources, search knobs, browser, diagnose) ---
+        adv_page, adv_layout = _scroll_form()
+        self.section_advanced = QLabel()
+        self.section_advanced.setObjectName("PageTitle")
+        adv_layout.addWidget(self.section_advanced)
+
+        self.source_checks: dict[str, QCheckBox] = {}
+        self.source_status = QLabel()
+        self.source_status.setWordWrap(True)
+        src_box = QGroupBox()
+        self.src_box = src_box
+        src_layout = QVBoxLayout(src_box)
+        for key, _label in SOURCES:
+            cb = QCheckBox()
+            self.source_checks[key] = cb
+            src_layout.addWidget(cb)
+        src_layout.addWidget(self.source_status)
+        adv_layout.addWidget(src_box)
+
+        search_box = QGroupBox()
+        self.search_box = search_box
+        sform = QFormLayout(search_box)
+        self.published_days = IntentionalWheelSpinBox()
+        self.published_days.setRange(1, 90)
+        self.min_match_dash = IntentionalWheelSpinBox()
+        self.min_match_dash.setRange(0, 100)
+        self.max_distance = IntentionalWheelSpinBox()
+        self.max_distance.setRange(1, 300)
+        self.search_mode = QComboBox()
+        self.search_mode.addItem("", "profile_discovery")
+        self.search_mode.addItem("", "explicit_titles")
+        self.jobs_per_search = QComboBox()
+        from core.config import JOBS_PER_SEARCH_CHOICES
+
+        for n in JOBS_PER_SEARCH_CHOICES:
+            label = "Max" if n == 0 else str(n)
+            self.jobs_per_search.addItem(label, n)
+        self.lbl_published = QLabel()
+        self.lbl_min_match_dash = QLabel()
+        self.lbl_max_distance = QLabel()
+        self.lbl_search_mode = QLabel()
+        self.lbl_jobs_per_search = QLabel()
+        sform.addRow(self.lbl_search_mode, self.search_mode)
+        sform.addRow(self.lbl_jobs_per_search, self.jobs_per_search)
+        sform.addRow(self.lbl_published, self.published_days)
+        sform.addRow(self.lbl_min_match_dash, self.min_match_dash)
+        sform.addRow(self.lbl_max_distance, self.max_distance)
+        adv_layout.addWidget(search_box)
 
         br_box = QGroupBox()
         self.br_box = br_box
@@ -291,58 +435,34 @@ class SettingsPage(QWidget):
         btn_row.addStretch(1)
         br_layout.addWidget(self.browser_status)
         br_layout.addLayout(btn_row)
-        auto_layout.addWidget(br_box)
-        auto_layout.addStretch(1)
-        self.tabs.addTab(auto_page, "")
+        adv_layout.addWidget(br_box)
+
+        diag_box = QGroupBox()
+        self.diag_box = diag_box
+        dform = QVBoxLayout(diag_box)
+        self.diag_intro = QLabel()
+        self.diag_intro.setWordWrap(True)
+        self.diag_intro.setObjectName("PageSubtitle")
+        self.open_logs_btn = QPushButton()
+        self.open_logs_btn.setObjectName("SecondaryButton")
+        self.open_logs_btn.clicked.connect(self._open_diagnose_logs)
+        dform.addWidget(self.diag_intro)
+        dform.addWidget(self.open_logs_btn)
+        self.apply_test_btn = QPushButton()
+        self.apply_test_btn.setObjectName("SecondaryButton")
+        self.apply_test_btn.clicked.connect(self._request_apply_test)
+        self.clear_jobs_btn = QPushButton()
+        self.clear_jobs_btn.setObjectName("SecondaryButton")
+        self.clear_jobs_btn.clicked.connect(self._request_clear_jobs)
+        dform.addWidget(self.apply_test_btn)
+        dform.addWidget(self.clear_jobs_btn)
+        adv_layout.addWidget(diag_box)
+        adv_layout.addStretch(1)
+        self.stack.addWidget(adv_page)
         self._browser_busy = False
 
-        # --- Privacy (DSGVO lifecycle controls) ---
-        privacy_page, privacy_layout = _scroll_form()
-        privacy_box = QGroupBox()
-        self.privacy_box = privacy_box
-        pform = QVBoxLayout(privacy_box)
-        self.privacy_intro = QLabel()
-        self.privacy_intro.setWordWrap(True)
-        self.privacy_intro.setObjectName("PageSubtitle")
-        pform.addWidget(self.privacy_intro)
-        self.privacy_connect_gmail_btn = QPushButton()
-        self.privacy_connect_gmail_btn.setObjectName("SecondaryButton")
-        self.privacy_connect_gmail_btn.clicked.connect(self._privacy_connect_gmail)
-        self.privacy_connect_cal_btn = QPushButton()
-        self.privacy_connect_cal_btn.setObjectName("SecondaryButton")
-        self.privacy_connect_cal_btn.clicked.connect(self._privacy_connect_calendar)
-        self.privacy_export_btn = QPushButton()
-        self.privacy_export_btn.setObjectName("SecondaryButton")
-        self.privacy_export_btn.clicked.connect(self._privacy_export)
-        self.privacy_disconnect_btn = QPushButton()
-        self.privacy_disconnect_btn.setObjectName("SecondaryButton")
-        self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_google)
-        self.privacy_mail_btn = QPushButton()
-        self.privacy_mail_btn.setObjectName("SecondaryButton")
-        self.privacy_mail_btn.clicked.connect(self._privacy_delete_mail)
-        self.privacy_cal_btn = QPushButton()
-        self.privacy_cal_btn.setObjectName("SecondaryButton")
-        self.privacy_cal_btn.clicked.connect(self._privacy_delete_calendar)
-        self.privacy_logs_btn = QPushButton()
-        self.privacy_logs_btn.setObjectName("SecondaryButton")
-        self.privacy_logs_btn.clicked.connect(self._privacy_delete_logs)
-        self.privacy_all_btn = QPushButton()
-        self.privacy_all_btn.setObjectName("PrimaryButton")
-        self.privacy_all_btn.clicked.connect(self._privacy_delete_all)
-        for btn in (
-            self.privacy_connect_gmail_btn,
-            self.privacy_connect_cal_btn,
-            self.privacy_export_btn,
-            self.privacy_disconnect_btn,
-            self.privacy_mail_btn,
-            self.privacy_cal_btn,
-            self.privacy_logs_btn,
-            self.privacy_all_btn,
-        ):
-            pform.addWidget(btn)
-        privacy_layout.addWidget(privacy_box)
-        privacy_layout.addStretch(1)
-        self.tabs.addTab(privacy_page, "")
+        self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
+        self.nav.setCurrentRow(1)  # Automation as in demo default
 
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
@@ -372,15 +492,26 @@ class SettingsPage(QWidget):
             self.check_browser_btn,
             self.repair_browser_btn,
             self.about_btn,
+            self.open_logs_btn,
         ):
             annotate_button(btn)
 
     def retranslate_ui(self) -> None:
-        self.tabs.setTabText(0, tr("settings.general"))
-        self.tabs.setTabText(1, tr("settings.search"))
-        self.tabs.setTabText(2, tr("settings.applications"))
-        self.tabs.setTabText(3, tr("settings.advanced"))
-        self.tabs.setTabText(4, tr("privacy.tab"))
+        self.header.set_texts(tr("nav.settings"))
+        for i, key in enumerate(_SETTINGS_NAV_KEYS):
+            item = self.nav.item(i)
+            if item is not None:
+                item.setText(tr(key))
+        self.section_general.setText(tr("settings.nav.general"))
+        self.section_automation.setText(tr("settings.nav.automation"))
+        self.section_communication.setText(tr("settings.nav.communication"))
+        self.section_integrations.setText(tr("settings.nav.integrations"))
+        self.section_privacy.setText(tr("settings.nav.privacy"))
+        self.section_advanced.setText(tr("settings.nav.advanced"))
+        self.safety_toggle.setText(tr("settings.safety_limits"))
+        self.danger_toggle.setText(tr("settings.danger_zone"))
+        self.oauth_box.setTitle(tr("settings.nav.integrations"))
+        self.danger_box.setTitle(tr("settings.danger_zone"))
         self.privacy_box.setTitle(tr("privacy.title"))
         self.privacy_intro.setText(tr("privacy.intro"))
         self.privacy_connect_gmail_btn.setText(tr("privacy.connect_gmail"))
@@ -399,6 +530,11 @@ class SettingsPage(QWidget):
         self.apply_box.setTitle(tr("settings.auto_apply"))
         self.bg_box.setTitle(tr("settings.automation"))
         self.br_box.setTitle(tr("settings.browser"))
+        self.diag_box.setTitle(tr("settings.advanced"))
+        self.diag_intro.setText(tr("settings.open_diagnose_logs"))
+        self.open_logs_btn.setText(tr("settings.open_diagnose_logs"))
+        self.apply_test_btn.setText(tr("btn.apply_test"))
+        self.clear_jobs_btn.setText(tr("btn.clear_jobs"))
         self.lang_label.setText(tr("settings.language"))
         self.theme_label.setText(tr("settings.theme"))
         self.high_contrast.setText(tr("a11y.high_contrast"))
@@ -494,9 +630,25 @@ class SettingsPage(QWidget):
         self.custom_times.setPlaceholderText("08:00, 17:00")
         self.check_browser_btn.setText(tr("btn.check_browser"))
         self.repair_browser_btn.setText(tr("btn.repair_browser"))
+        self.open_logs_btn.setText(tr("settings.open_diagnose_logs"))
         self.about_btn.setText(tr("about.open"))
         self.save_btn.setText(tr("btn.save_settings"))
         self._annotate_a11y_controls()
+
+    def _open_diagnose_logs(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "open_diagnose_logs"):
+            parent.open_diagnose_logs()  # type: ignore[attr-defined]
+
+    def _request_apply_test(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "run_application_test"):
+            parent.run_application_test()  # type: ignore[attr-defined]
+
+    def _request_clear_jobs(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "clear_job_data"):
+            parent.clear_job_data()  # type: ignore[attr-defined]
 
     def open_about(self) -> None:
         AboutDialog(self).exec()

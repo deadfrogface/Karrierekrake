@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karrierekrake - Profil Bearbeiten & CV Import</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --navy: #132238; --teal: #18A999; --teal-hover: #148F82; --bg: #F8FAFC;
+            --white: #FFFFFF; --orange: #E86A45; --text-dark: #1E293B; --text-muted: #64748B;
+            --border: #E2E8F0; --overlay: rgba(19, 34, 56, 0.6);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { display: flex; height: 100vh; background-color: var(--bg); color: var(--text-dark); overflow: hidden; position: relative; }
+        
+        /* Background Mock (Simplified Profile) */
+        .sidebar { width: 260px; background-color: var(--navy); }
+        .main-content { flex-grow: 1; padding: 40px; filter: blur(2px); }
+
+        /* OVERLAY SYSTEM */
+        .overlay { position: absolute; inset: 0; background: var(--overlay); z-index: 100; display: flex; justify-content: flex-end; }
+        .overlay-center { justify-content: center; align-items: center; }
+
+        /* DRAWER (State A - Edit Profile Area) */
+        .drawer { width: 500px; background: var(--white); height: 100%; box-shadow: -4px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; transform: translateX(0); /* Simulation: already open */ }
+        .drawer-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .drawer-header h2 { font-size: 18px; color: var(--navy); }
+        .drawer-close { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; }
+        .drawer-body { padding: 24px; flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .drawer-footer { padding: 20px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; background: var(--bg); }
+
+        /* MODAL (State B - CV Import) - Hidden by default in this demo, toggle via CSS for viewing */
+        .modal-wrapper { display: none; /* Change to 'flex' to view State B */ position: absolute; inset: 0; background: var(--overlay); z-index: 200; justify-content: center; align-items: center; }
+        .modal { width: 700px; background: var(--white); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-header { padding: 24px; border-bottom: 1px solid var(--border); }
+        .modal-header h2 { font-size: 20px; color: var(--navy); margin-bottom: 4px; }
+        .modal-subtitle { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .modal-body { padding: 24px; overflow-y: auto; }
+        .modal-footer { padding: 20px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; background: var(--bg); border-radius: 0 0 12px 12px; }
+
+        /* Form Elements */
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        label { font-size: 13px; font-weight: 500; color: var(--navy); }
+        input[type="text"], input[type="date"], textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; transition: 0.2s; }
+        input:focus, textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(24, 169, 153, 0.1); }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-top: 4px; }
+        
+        /* Buttons */
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--navy); padding: 10px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .btn-outline:hover { background: var(--bg); }
+        .btn-primary { background: var(--teal); border: 1px solid var(--teal); color: var(--white); padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .btn-primary:hover { background: var(--teal-hover); }
+
+        /* CV Import specific */
+        .import-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .mode-card { border: 2px solid var(--border); border-radius: 8px; padding: 16px; cursor: pointer; transition: 0.2s; position: relative; }
+        .mode-card.active { border-color: var(--teal); background: rgba(24, 169, 153, 0.05); }
+        .mode-title { font-weight: 600; color: var(--navy); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .mode-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+        .mode-radio { position: absolute; right: 16px; top: 16px; accent-color: var(--teal); }
+
+        .status-categories { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+        .cat-chip { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+        .cat-full { background: #f0fdfa; color: #0f766e; border: 1px solid #ccfbf1; }
+        .cat-partial { background: #fffbeb; color: #b45309; border: 1px solid #fef3c7; }
+        .cat-none { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+        .conflict-box { border: 1px solid #fef3c7; background: #fffbeb; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+        .conflict-header { font-size: 13px; font-weight: 600; color: #b45309; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .conflict-options { display: flex; flex-direction: column; gap: 12px; }
+        .conflict-option { display: flex; align-items: flex-start; gap: 10px; }
+        .conflict-option input { margin-top: 3px; accent-color: var(--teal); }
+        .conflict-label { font-size: 14px; font-weight: 500; color: var(--text-dark); }
+        .conflict-source { font-size: 12px; color: var(--text-muted); }
+
+        .impact-summary { display: flex; gap: 24px; padding: 16px; background: var(--bg); border-radius: 8px; margin-top: 12px; border: 1px solid var(--border); }
+        .impact-col { flex: 1; }
+        .impact-title { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+        .impact-list { font-size: 13px; color: var(--text-dark); padding-left: 16px; }
+
+        /* DEMO TOGGLE BUTTON (Just for this file to show both states) */
+        .demo-toggle { position: absolute; bottom: 20px; left: 20px; z-index: 999; background: var(--orange); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- Background mock -->
+    <div class="sidebar"></div>
+    <div class="main-content"></div>
+
+    <!-- STATE A: DRAWER (Profilbereich bearbeiten) -->
+    <div class="overlay" id="state-a">
+        <div class="drawer">
+            <div class="drawer-header">
+                <h2>Berufserfahrung bearbeiten</h2>
+                <button class="drawer-close"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="drawer-body">
+                <div class="form-group">
+                    <label>Position</label>
+                    <input type="text" value="Office Manager">
+                </div>
+                <div class="form-group">
+                    <label>Firma</label>
+                    <input type="text" value="RheinOffice GmbH">
+                </div>
+                <div class="form-group">
+                    <label>Ort</label>
+                    <input type="text" value="Düsseldorf">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Beginn</label>
+                        <input type="date" value="2022-04-01">
+                    </div>
+                    <div class="form-group">
+                        <label>Ende</label>
+                        <input type="date" disabled style="background: var(--bg); color: var(--text-muted);">
+                        <label class="checkbox-group">
+                            <input type="checkbox" checked> Aktuell hier beschäftigt
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Aufgaben & Erfolge</label>
+                    <textarea rows="5">Verantwortlich für den reibungslosen Ablauf des Büroalltags, Koordination von Terminen und Vorbereitung von Buchhaltungsunterlagen.</textarea>
+                </div>
+            </div>
+            <div class="drawer-footer">
+                <button class="btn-outline">Abbrechen</button>
+                <button class="btn-primary">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE B: MODAL (CV Import) -->
+    <div class="modal-wrapper" id="state-b">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Daten aus Lebenslauf übernehmen</h2>
+                <div class="modal-subtitle"><i class="ph-fill ph-file-pdf" style="color: var(--orange);"></i> Lebenslauf_Damiano_2026.pdf</div>
+            </div>
+            <div class="modal-body">
+                <div class="import-modes">
+                    <label class="mode-card">
+                        <input type="radio" name="mode" class="mode-radio">
+                        <div class="mode-title"><i class="ph ph-arrows-clockwise"></i> Ersetzen</div>
+                        <div class="mode-desc">Übernimmt erkannte CV-Daten und überschreibt frühere Importe. Manuelle Felder bleiben geschützt.</div>
+                    </label>
+                    <label class="mode-card active">
+                        <input type="radio" name="mode" class="mode-radio" checked>
+                        <div class="mode-title"><i class="ph ph-plus-circle"></i> Zusammenführen</div>
+                        <div class="mode-desc">Ergänzt neue erkannte Informationen zu deinen bestehenden Profildaten.</div>
+                    </label>
+                </div>
+
+                <label style="display: block; margin-bottom: 12px;">Wir haben folgende Daten erkannt:</label>
+                <div class="status-categories">
+                    <span class="cat-chip cat-full"><i class="ph ph-check-circle"></i> Persönliche Daten</span>
+                    <span class="cat-chip cat-full"><i class="ph ph-check-circle"></i> Berufserfahrung</span>
+                    <span class="cat-chip cat-full"><i class="ph ph-check-circle"></i> Ausbildung</span>
+                    <span class="cat-chip cat-partial"><i class="ph ph-warning-circle"></i> Skills (teilweise)</span>
+                    <span class="cat-chip cat-none"><i class="ph ph-minus-circle"></i> Zertifikate (nicht erkannt)</span>
+                </div>
+
+                <div class="conflict-box">
+                    <div class="conflict-header"><i class="ph ph-warning"></i> Konflikt bei "Aktuelle Position"</div>
+                    <div class="conflict-options">
+                        <label class="conflict-option">
+                            <input type="radio" name="conflict1" checked>
+                            <div>
+                                <div class="conflict-label">Office Manager</div>
+                                <div class="conflict-source">Bestehenden Wert behalten (Default)</div>
+                            </div>
+                        </label>
+                        <label class="conflict-option">
+                            <input type="radio" name="conflict1">
+                            <div>
+                                <div class="conflict-label">Senior Office Manager</div>
+                                <div class="conflict-source">Wert aus Lebenslauf verwenden</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="impact-summary">
+                    <div class="impact-col">
+                        <div class="impact-title">Was wird geändert?</div>
+                        <ul class="impact-list">
+                            <li>2 neue Skills hinzugefügt</li>
+                            <li>Ausbildung aktualisiert (Zeitraum ergänzt)</li>
+                        </ul>
+                    </div>
+                    <div class="impact-col">
+                        <div class="impact-title">Was bleibt erhalten?</div>
+                        <ul class="impact-list">
+                            <li>Manuelle Gehaltsvorstellung</li>
+                            <li>Ausgeschlossene Branchen</li>
+                            <li>Bestehende Zertifikate</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline">Abbrechen</button>
+                <button class="btn-primary">Import übernehmen</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="demo-toggle" onclick="toggleState()">Wechsle Ansicht (A/B)</button>
+    <script>
+        function toggleState() {
+            const stateA = document.getElementById('state-a');
+            const stateB = document.getElementById('state-b');
+            if (stateA.style.display !== 'none') {
+                stateA.style.display = 'none';
+                stateB.style.display = 'flex';
+            } else {
+                stateA.style.display = 'flex';
+                stateB.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
