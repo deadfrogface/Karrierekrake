@@ -1,37 +1,16 @@
-# DACH cross-border commute (NEXT-05 — Google Maps)
+# DACH cross-border geography (local-first)
 
-> **Authoritative production geo:** Google Maps Platform only  
-> (Geocoding API + Routes Compute Route Matrix Essentials).  
-> Haversine / pgeocode / Nominatim are **not** production distance providers.
-
-Karrierekrake treats **commute radius as drivable road distance**
-(`max_commute_km` = road route kilometres via Google Route Matrix), not
-national borders and **not** straight-line (Haversine) distance.
+**Status:** BINDING with `docs/architecture/local_first_google_calendar_and_geo.md`
 
 ## Rules
 
-1. Home and job places are geocoded with **Google Geocoding** (via the
-   minimal authenticated maps proxy — API key never ships unrestricted
-   inside Karrierekrake.exe).
-2. Distance + duration come from **Compute Route Matrix Essentials**
-   (`TRAVEL_MODE=DRIVE`, `TRAFFIC_UNAWARE`).
-3. If Google fails → `DISTANCE_UNKNOWN` (`None`). **No** Haversine /
-   Nominatim / pgeocode / OSRM fallback.
-4. UI may show „km Fahrt“ / duration **only** when
-   `distance_source == google_route_matrix`.
-5. Cross-border DE/AT/CH: borders are not barriers; the road route may
-   cross them. Toggle `cross_border_dach` only affects geocode region bias.
+1. Distance is **airline (Luftlinie)** via local Haversine (`haversine_v1`).
+2. Coordinates come from the versioned GeoNames/pgeocode DACH snapshot — never Google Maps.
+3. Public Nominatim is **forbidden**.
+4. Cross-border DE/AT/CH distances are allowed when the toggle is on.
+5. Ambiguous / unknown places stay UNKNOWN — never invent 0 km.
+6. UI label: **„ca. X km Luftlinie“** (`distance_source == haversine_v1`).
 
-## Classic acceptance case
+## Pipeline order
 
-Airline (Haversine) < configured radius, but road route > radius  
-→ job is **OUTSIDE** radius.
-
-## Cost / security
-
-See `docs/project/next-05-google-maps-geo.md`.
-
-## Legacy note
-
-Older docs and `core/geo_resolve.haversine_km` remain for **diagnostics /
-unit tests only**. They must never write `Job.distance_km`.
+Fachliches matching first → local geo only for suitable candidates → radius filter.

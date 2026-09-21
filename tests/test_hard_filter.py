@@ -23,6 +23,8 @@ def _cfg(*, max_km: float = 20.0, allow_remote: bool = True, allow_hybrid: bool 
 
 
 def test_onsite_over_distance_excluded():
+    from core.hard_filter import distance_exclude
+
     job = Job(
         id="1",
         source="test",
@@ -34,7 +36,9 @@ def test_onsite_over_distance_excluded():
         remote_type=RemoteType.ONSITE.value,
         url="https://example.com/1",
     )
-    reason = hard_exclude(job, _cfg(max_km=20.0))
+    # Radius is applied after fachliches matching (distance_exclude), not hard_exclude.
+    assert hard_exclude(job, _cfg(max_km=20.0)) is None
+    reason = distance_exclude(job, _cfg(max_km=20.0))
     assert reason is not None
     assert "km" in reason
 
