@@ -18,6 +18,16 @@ def set_accessible_name(widget: "QWidget", name: str) -> None:
     widget.setAccessibleName(str(name or "").strip())
 
 
+def set_automation_id(widget: "QWidget", automation_id: str) -> None:
+    """Stable AutomationId for Windows UIA / pywinauto (Qt objectName).
+
+    Prefer ``kk.*`` ids — black-box acceptance must not scrape layout geometry.
+    """
+    aid = str(automation_id or "").strip()
+    if aid:
+        widget.setObjectName(aid)
+
+
 def set_accessible_description(widget: "QWidget", description: str) -> None:
     widget.setAccessibleDescription(str(description or "").strip())
 

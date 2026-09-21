@@ -154,6 +154,7 @@ class ProfilePage(QWidget):
         header.addLayout(title_col, stretch=1)
         self.import_cv_btn = QPushButton()
         self.import_cv_btn.setObjectName("PrimaryButton")
+        self.import_cv_btn.setAccessibleDescription("kk.profile.import_cv")
         self.import_cv_btn.clicked.connect(self.import_from_cv)
         header.addWidget(self.import_cv_btn)
         shell_layout.addLayout(header)

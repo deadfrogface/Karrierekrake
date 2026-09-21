@@ -272,7 +272,7 @@ Columns:
 | CHANGE | Add EXE/UIA black-box layer; real Gmail/Calendar/Maps acceptance when providers exist. |
 | REMOVE | Any claim that synthetic PASS equals real product acceptance. |
 | OPEN BLOCKER | Linux cloud ≠ Windows UIA; no real Google/MS accounts in CI. |
-| STATUS | Synthetic **DONE / PASS**; real acceptance **NOT DONE** → overall product acceptance still **PARTIAL** |
+| STATUS | Synthetic **DONE / PASS** (reclassified label); real Windows black-box harness **ADDED (NEXT-06)** but live EXE run **NOT DONE** on Linux agents → overall product acceptance still **PARTIAL** |
 
 ### 14. Commerce / payments
 

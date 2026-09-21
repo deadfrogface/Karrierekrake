@@ -10,6 +10,8 @@ class MailProvider(str, Enum):
     GOOGLE_GMAIL = "google_gmail"
     MICROSOFT_GRAPH = "microsoft_graph"
     GENERIC_IMAP = "generic_imap"
+    # Destructive / chaos black-box only — requires KARRIEREKRAKE_ALLOW_FAKE_PROVIDERS=1
+    FAKE_INPROCESS = "fake_inprocess"
 
 
 class CalendarProvider(str, Enum):
@@ -17,6 +19,7 @@ class CalendarProvider(str, Enum):
     GOOGLE_CALENDAR = "google_calendar"
     MICROSOFT_GRAPH = "microsoft_graph"
     GENERIC_CALDAV = "generic_caldav"
+    FAKE_INPROCESS = "fake_inprocess"
 
 
 class ProviderError(RuntimeError):
@@ -50,6 +53,8 @@ def parse_mail_provider(value: str | MailProvider | None) -> MailProvider:
         return MailProvider.MICROSOFT_GRAPH
     if raw in {"imap", "generic_imap", "other"}:
         return MailProvider.GENERIC_IMAP
+    if raw in {"fake", "fake_inprocess", "fake_mail"}:
+        return MailProvider.FAKE_INPROCESS
     if raw in {"none", "off", "disabled"}:
         return MailProvider.NONE
     try:
@@ -70,6 +75,8 @@ def parse_calendar_provider(value: str | CalendarProvider | None) -> CalendarPro
         return CalendarProvider.MICROSOFT_GRAPH
     if raw in {"caldav", "generic_caldav", "icloud", "other"}:
         return CalendarProvider.GENERIC_CALDAV
+    if raw in {"fake", "fake_inprocess", "fake_calendar"}:
+        return CalendarProvider.FAKE_INPROCESS
     if raw in {"none", "off", "disabled", "kein"}:
         return CalendarProvider.NONE
     try:

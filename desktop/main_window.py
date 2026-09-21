@@ -40,7 +40,7 @@ from desktop.theme import stylesheet_for
 from desktop.tray import AppTray, app_icon
 from desktop.workers import PipelineWorker, connect_queued, start_worker, thread_is_running
 from desktop.wizard import FirstRunWizard
-from desktop.design_system.a11y import annotate_nav_button, set_accessible_name, set_accessible_description
+from desktop.design_system.a11y import annotate_nav_button, set_accessible_name, set_accessible_description, set_automation_id
 from desktop.widgets.about_dialog import AboutDialog
 
 
@@ -56,6 +56,7 @@ class MainWindow(QMainWindow):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle(tr("app.name"))
         self.setWindowIcon(app_icon())
+        set_automation_id(self, "kk.main_window")
 
         central = QWidget()
         self.setCentralWidget(central)
@@ -146,7 +147,8 @@ class MainWindow(QMainWindow):
         primary_total = len(self._primary_nav) + len(self._utility_nav) + 1  # +Hilfe
         for i, (key, _page) in enumerate(self._primary_nav):
             btn = QPushButton(tr(key))
-            btn.setObjectName("NavButton")
+            slug = key.replace("nav.", "")
+            set_automation_id(btn, f"kk.nav.{slug}")
             btn.setCheckable(True)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             btn.clicked.connect(lambda checked=False, idx=i: self._navigate(idx))
@@ -159,7 +161,8 @@ class MainWindow(QMainWindow):
         for j, (key, _page) in enumerate(self._utility_nav):
             idx = len(self._primary_nav) + j
             btn = QPushButton(tr(key))
-            btn.setObjectName("NavButton")
+            slug = key.replace("nav.", "")
+            set_automation_id(btn, f"kk.nav.{slug}")
             btn.setCheckable(True)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             btn.clicked.connect(lambda checked=False, i=idx: self._navigate(i))
@@ -170,7 +173,7 @@ class MainWindow(QMainWindow):
             side_layout.addWidget(btn)
 
         self.help_btn = QPushButton(tr("nav.help"))
-        self.help_btn.setObjectName("NavButton")
+        set_automation_id(self.help_btn, "kk.nav.help")
         self.help_btn.setCheckable(False)
         self.help_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.help_btn.clicked.connect(self.open_help)

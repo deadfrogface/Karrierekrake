@@ -118,7 +118,7 @@ QLabel#BadgeWarn {{ background: #fce8d5; color: {COLOR_WARN}; }}
 QLabel#BadgeDanger {{ background: #f5d6d6; color: {COLOR_ERROR}; }}
 QLabel#BadgeMuted {{ background: #e6edf3; color: {COLOR_LIGHT_MUTED}; }}
 QLabel#BadgeInfo {{ background: #d5f0eb; color: #0f5c54; }}
-QPushButton#NavButton {{
+QPushButton#NavButton, QPushButton[objectName^="kk.nav."] {{
     text-align: left;
     padding: 10px 14px;
     border: none;
@@ -126,10 +126,10 @@ QPushButton#NavButton {{
     color: #d7e4ec;
     background: transparent;
 }}
-QPushButton#NavButton:hover {{
+QPushButton#NavButton:hover, QPushButton[objectName^="kk.nav."]:hover {{
     background: rgba(255,255,255,0.08);
 }}
-QPushButton#NavButton:checked {{
+QPushButton#NavButton:checked, QPushButton[objectName^="kk.nav."]:checked {{
     background: rgba(24, 169, 153, 0.40);
     color: #ffffff;
     font-weight: 600;
@@ -326,7 +326,7 @@ QLabel#BadgeWarn {{ background: #3d2a18; color: #f0c090; padding: 2px 8px; borde
 QLabel#BadgeDanger {{ background: #3d1a1a; color: #f0a0a0; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }}
 QLabel#BadgeMuted {{ background: #243343; color: {COLOR_DARK_MUTED}; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }}
 QLabel#BadgeInfo {{ background: #1a3040; color: #a8c8dc; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }}
-QPushButton#NavButton {{
+QPushButton#NavButton, QPushButton[objectName^="kk.nav."] {{
     text-align: left;
     padding: 10px 14px;
     border: none;
@@ -334,10 +334,10 @@ QPushButton#NavButton {{
     color: #c9d7e2;
     background: transparent;
 }}
-QPushButton#NavButton:hover {{
+QPushButton#NavButton:hover, QPushButton[objectName^="kk.nav."]:hover {{
     background: rgba(255,255,255,0.08);
 }}
-QPushButton#NavButton:checked {{
+QPushButton#NavButton:checked, QPushButton[objectName^="kk.nav."]:checked {{
     background: rgba(24, 169, 153, 0.50);
     color: #ffffff;
     font-weight: 600;
