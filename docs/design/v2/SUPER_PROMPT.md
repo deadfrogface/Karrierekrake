@@ -1,6 +1,6 @@
 # KARRIEREKRAKE V2 — FINAL UI/UX IMPLEMENTATION SUPER PROMPT
 
-Du arbeitest jetzt am FINALEN V2-UI-REFACTOR von KarriereKrake.
+Du arbeitest jetzt am FINALEN V2-UI-REFACTOR von Karrierekrake.
 
 WICHTIG:
 Diese Aufgabe beginnt erst, nachdem alle geplanten Funktions-PRs, Bugfixes und Issue-Fixes abgeschlossen und in den aktuellen Main-Branch integriert wurden.
@@ -8,7 +8,7 @@ Diese Aufgabe beginnt erst, nachdem alle geplanten Funktions-PRs, Bugfixes und I
 Das aktuelle Repository zum Zeitpunkt der Ausführung ist daher die verbindliche Quelle für den tatsächlichen Funktionsumfang.
 
 ZIEL:
-Die bestehende PySide6-Anwendung soll vollständig auf das neue KarriereKrake-V2-Design umgestellt werden, OHNE bestehende funktionierende Features zu verlieren, zu vereinfachen oder unbeabsichtigt zu verändern.
+Die bestehende PySide6-Anwendung soll vollständig auf das neue Karrierekrake-V2-Design umgestellt werden, OHNE bestehende funktionierende Features zu verlieren, zu vereinfachen oder unbeabsichtigt zu verändern.
 
 Dies ist primär ein UI-/UX-Refactor.
 
@@ -28,9 +28,9 @@ DAS REPOSITORY DEFINIERT DIE FUNKTIONALITÄT.
 
 Oder anders:
 
-HTML = WIE KarriereKrake aussehen und sich anfühlen soll.
+HTML = WIE Karrierekrake aussehen und sich anfühlen soll.
 
-Repository = WAS KarriereKrake tatsächlich können muss.
+Repository = WAS Karrierekrake tatsächlich können muss.
 
 Diese Trennung ist verbindlich.
 
@@ -242,7 +242,7 @@ Insbesondere NICHT:
 - externe Google-Fonts zur Laufzeit laden
 - Demo-Iconbibliotheken als Abhängigkeit übernehmen
 
-KarriereKrake bleibt eine echte PySide6-Desktop-Anwendung.
+Karrierekrake bleibt eine echte PySide6-Desktop-Anwendung.
 
 Übersetze lediglich die VISUELLE SPRACHE der Mockups in saubere, wiederverwendbare PySide6-Komponenten.
 
@@ -363,7 +363,7 @@ Keine riesigen SaaS-/Mobile-Headlines.
 
 Die HTML-Demo-Icons sind NICHT verbindlich.
 
-Die echten KarriereKrake-Assets existieren bereits bzw. befinden sich im Projekt:
+Die echten Karrierekrake-Assets existieren bereits bzw. befinden sich im Projekt:
 
 - Werbebild
 - Logo/Icon
@@ -921,7 +921,7 @@ Suchparameter gehören überwiegend zur Jobsuche, nicht in allgemeine Settings.
 33. GÜNTHER
 ============================================================
 
-Günther ist Bestandteil von KarriereKrake.
+Günther ist Bestandteil von Karrierekrake.
 
 Nicht als separates Produkt behandeln.
 
@@ -1090,7 +1090,7 @@ Mouse Wheel darf bei fokussierten Number Controls nicht ungewollt kritische Wert
 40. RESPONSIVE / ADAPTIVE DESKTOP UI
 ============================================================
 
-KarriereKrake ist Desktop-first.
+Karrierekrake ist Desktop-first.
 
 Die UI soll ungefähr bei typischen Größen wie:
 
@@ -1506,7 +1506,7 @@ klar als UNVERIFIED markieren.
 54. WICHTIGER ARBEITSGRUNDSATZ
 ============================================================
 
-KarriereKrake soll sich für den Nutzer einfach anfühlen, obwohl intern viel passiert.
+Karrierekrake soll sich für den Nutzer einfach anfühlen, obwohl intern viel passiert.
 
 Leitsatz:
 
@@ -1518,8 +1518,8 @@ UND:
 
 UND:
 
-„Gemini zeigt, wie KarriereKrake aussehen und sich anfühlen soll.
-Das Repository sagt, was KarriereKrake können muss.
+„Gemini zeigt, wie Karrierekrake aussehen und sich anfühlen soll.
+Das Repository sagt, was Karrierekrake können muss.
 Die V2-Implementierung verbindet beides.“
 
 

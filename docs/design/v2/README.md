@@ -1,4 +1,4 @@
-# KarriereKrake V2 UI — Design references & preservation
+# Karrierekrake V2 UI — Design references & preservation
 
 ## Sources
 
