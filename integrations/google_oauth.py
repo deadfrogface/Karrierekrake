@@ -673,6 +673,11 @@ def disconnect_google(*, token_dir: Path, revoke_remote: bool = True) -> None:
 
 
 def google_connected(*, token_dir: Path) -> bool:
+    """Legacy: token present. UI must use probe_google_* before showing Verbunden."""
+    return google_token_present(token_dir=token_dir)
+
+
+def google_token_present(*, token_dir: Path) -> bool:
     payload = load_google_token(token_dir=token_dir)
     return bool(payload and (payload.get("refresh_token") or payload.get("token")))
 
@@ -720,17 +725,23 @@ def authorize_google(
     oauth_env: str | None = None,
 ) -> AuthOutcome:
     """Authorize the given product features with least-privilege scopes."""
+    from integrations.providers.diagnostics import DiagStage, log_stage
+
+    provider = "google"
+    log_stage(DiagStage.CONFIG_LOAD, provider=provider, ok=True, detail="authorize_google")
     decision = scopes_for_features(features)
     if not decision.scopes:
         return AuthOutcome(reason="no_features")
 
     if not google_libs_available():
         logger.warning("Google API libraries not installed — OAuth disabled")
+        log_stage(DiagStage.ERROR, provider=provider, ok=False, detail="libs_unavailable")
         return AuthOutcome(reason="libs_unavailable")
 
     from google.auth.transport.requests import Request
     from google_auth_oauthlib.flow import InstalledAppFlow
 
+    log_stage(DiagStage.AUTH_START, provider=provider, ok=True, detail=",".join(sorted(f.value for f in decision.features)))
     creds = None
     payload = load_google_token(token_dir=token_dir)
     migrated = False
@@ -742,6 +753,7 @@ def authorize_google(
                 assessment.reason,
             )
             disconnect_google(token_dir=token_dir, revoke_remote=True)
+            log_stage(DiagStage.REVOKE, provider=provider, ok=True, detail="scope_mismatch")
             return AuthOutcome(needs_reauth=True, reason="scope_mismatch", migrated=True)
         if not scopes_are_compatible(payload):
             logger.warning("Stored Google scopes incompatible with allowlist")
@@ -767,6 +779,7 @@ def authorize_google(
                 try:
                     creds.refresh(Request())
                     save_creds_payload(creds, fallback_dir=token_dir)
+                    log_stage(DiagStage.TOKEN_STORE, provider=provider, ok=True, detail="refresh_ok")
                 except Exception as exc:
                     from integrations.secure_tokens import KeyringUnavailable
 
@@ -777,6 +790,7 @@ def authorize_google(
                     reason = "revoked" if is_revocation_error(exc) else "refresh_failed"
                     if is_revocation_error(exc) and "invalid_grant" in str(exc).lower():
                         reason = "invalid_grant"
+                    log_stage(DiagStage.ERROR, provider=provider, ok=False, detail=reason)
                     return AuthOutcome(needs_reauth=True, reason=reason)
             else:
                 creds = None
@@ -791,6 +805,7 @@ def authorize_google(
                 )
             client_type, client_config = load_client_config(credentials_path)
             if not client_type or not client_config:
+                log_stage(DiagStage.ERROR, provider=provider, ok=False, detail="missing_client")
                 return AuthOutcome(reason="missing_client")
             profile = build_client_profile(
                 client_type=client_type,
@@ -827,7 +842,10 @@ def authorize_google(
                 open_browser=open_browser,
                 include_granted_scopes=True,
             )
+            log_stage(DiagStage.BROWSER_OPEN, provider=provider, ok=True, detail=f"port={port}")
             creds = flow.run_local_server(**server_kw)
+            log_stage(DiagStage.CALLBACK, provider=provider, ok=True, detail="local_server_done")
+            log_stage(DiagStage.TOKEN_EXCHANGE, provider=provider, ok=True, detail="installed_app_flow")
 
             granted = normalize_scopes(getattr(creds, "scopes", None) or request_scopes)
             # Refuse to persist forbidden / non-allowlisted grants even if Google returned them.
@@ -840,6 +858,7 @@ def authorize_google(
             denied = partial_consent_denied_features(decision.features, granted)
             try:
                 save_creds_payload(creds, fallback_dir=token_dir, scopes=granted)
+                log_stage(DiagStage.TOKEN_STORE, provider=provider, ok=True, detail="saved")
             except Exception as exc:
                 from integrations.secure_tokens import KeyringUnavailable
 
@@ -869,6 +888,7 @@ def authorize_google(
         raise
     except Exception as exc:
         logger.error("Google auth failed: %s", type(exc).__name__)
+        log_stage(DiagStage.ERROR, provider=provider, ok=False, detail=type(exc).__name__)
         if is_revocation_error(exc):
             delete_google_token(token_dir=token_dir)
             return AuthOutcome(needs_reauth=True, reason="revoked")

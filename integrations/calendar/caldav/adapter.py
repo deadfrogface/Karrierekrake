@@ -117,9 +117,12 @@ class GenericCaldavCalendarAdapter:
 
     def is_connected(self) -> bool:
         if self._client is not None:
-            return True
-        secret = load_caldav_secret(token_dir=self.token_dir)
-        return bool(secret and secret.get("base_url") and secret.get("username"))
+            from integrations.providers.connection_probe import probe_caldav
+
+            return probe_caldav(token_dir=self.token_dir, client=self._client).connected
+        from integrations.providers.connection_probe import probe_caldav
+
+        return probe_caldav(token_dir=self.token_dir).connected
 
     def query_busy(self, q: FreeBusyQuery) -> list[BusyInterval]:
         client = self._require_client()

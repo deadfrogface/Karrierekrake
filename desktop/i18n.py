@@ -366,7 +366,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.status.unknown": "Status: unbekannt",
         "integrations.status.none": "Status: nicht gewählt",
         "integrations.status.connected": "Status: verbunden",
-        "integrations.status.not_connected": "Status: nicht verbunden",
+        "integrations.status.not_connected": "Status: nicht verbunden (API-Probe fehlt oder fehlgeschlagen)",
+        "integrations.status.probe_required": "Status: Token vorhanden — API-Probe ausstehend",
         "integrations.connect_microsoft_mail": "Microsoft-Mail verbinden",
         "integrations.connect_microsoft_calendar": "Microsoft-Kalender verbinden",
         "integrations.disconnect_selected": "Gewählte Verbindung trennen",
@@ -374,6 +375,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.wrong_calendar_provider": "Bitte zuerst den passenden Kalender-Anbieter wählen.",
         "integrations.microsoft_client_missing": "Microsoft-Client-ID fehlt in den Einstellungen.",
         "integrations.microsoft_browser_opened": "Systembrowser geöffnet — Anmeldung dort abschließen.",
+        "integrations.probe_failed": "Anmeldung speicherte ein Token, aber die API-Probe schlug fehl. Nicht als verbunden markiert.",
         "privacy.connect_gmail": "Gmail verbinden (nur Lesen)",
         "privacy.connect_gmail_confirm": (
             "Karrierekrake fordert nur gmail.readonly an, um Bewerbungsmails "
@@ -1135,7 +1137,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.status.unknown": "Status: unknown",
         "integrations.status.none": "Status: not selected",
         "integrations.status.connected": "Status: connected",
-        "integrations.status.not_connected": "Status: not connected",
+        "integrations.status.not_connected": "Status: not connected (API probe missing or failed)",
+        "integrations.status.probe_required": "Status: token present — API probe pending",
         "integrations.connect_microsoft_mail": "Connect Microsoft mail",
         "integrations.connect_microsoft_calendar": "Connect Microsoft calendar",
         "integrations.disconnect_selected": "Disconnect selected",
@@ -1143,6 +1146,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.wrong_calendar_provider": "Select the matching calendar provider first.",
         "integrations.microsoft_client_missing": "Microsoft client ID is missing in settings.",
         "integrations.microsoft_browser_opened": "System browser opened — finish sign-in there.",
+        "integrations.probe_failed": "Sign-in stored a token but the API probe failed. Not marked connected.",
         "privacy.connect_gmail": "Connect Gmail (read-only)",
         "privacy.connect_gmail_confirm": (
             "Karrierekrake requests only gmail.readonly to associate application "

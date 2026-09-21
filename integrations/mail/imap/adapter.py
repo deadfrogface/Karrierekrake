@@ -90,8 +90,9 @@ class GenericImapMailAdapter:
     def is_connected(self) -> bool:
         if self._mailbox is not None:
             return True
-        secret = load_imap_secret(token_dir=self.token_dir)
-        return bool(secret and secret.get("host") and secret.get("username"))
+        from integrations.providers.connection_probe import probe_imap
+
+        return probe_imap(token_dir=self.token_dir).connected
 
     def sync(self, *, cursor: MailSyncCursor | None = None) -> MailSyncResult:
         if self._mailbox is not None:

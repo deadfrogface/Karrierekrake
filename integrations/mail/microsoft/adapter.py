@@ -63,9 +63,20 @@ class MicrosoftGraphMailAdapter:
 
     def is_connected(self) -> bool:
         if self._client is not None:
-            return True
-        tok = load_ms_token(TOKEN_ACCOUNT_MAIL, token_dir=self.token_dir)
-        return bool(tok and (tok.get("access_token") or tok.get("refresh_token")))
+            # Injected test client still must pass /me-style probe when possible.
+            from integrations.providers.connection_probe import probe_microsoft_graph
+
+            return probe_microsoft_graph(
+                provider="microsoft_graph_mail",
+                token_dir=self.token_dir,
+                graph_get=lambda _p: self._client.get_profile(),
+                force=False,
+            ).connected
+        from integrations.providers.connection_probe import probe_microsoft_graph
+
+        return probe_microsoft_graph(
+            provider="microsoft_graph_mail", token_dir=self.token_dir
+        ).connected
 
     def sync(self, *, cursor: MailSyncCursor | None = None) -> MailSyncResult:
         client = self._client
