@@ -10,6 +10,8 @@ They must **not** be treated as the live architecture.
 
 Future work is tracked as **NEXT-02, NEXT-03, …** — not as “PR52+ roadmap aliases”.
 
+**Post-#46 fact (does not change these rules):** main includes synthetic offline product E2E regression (**PASS**) and a SearchIntent geo-preserve fix. That is **not** real Windows black-box acceptance and **not** real external provider acceptance. Do **not** restore “OVERALL PRODUCT E2E PASS”.
+
 ---
 
 ## 1. ONE AI MODEL
@@ -26,7 +28,7 @@ Future work is tracked as **NEXT-02, NEXT-03, …** — not as “PR52+ roadmap 
 
 ### Implications for current code (CHANGE required — NEXT follow-up)
 
-Today (`main` @ `d1ac05e`):
+Today (`main` @ `8c3ea87`):
 
 - Catalog still contains `qwen3-1.7b` (light_fallback) and `qwen3-4b` (legacy).
 - Settings UI still offers Auto / Phi / Qwen light / Qwen legacy.

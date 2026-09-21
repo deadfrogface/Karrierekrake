@@ -1,7 +1,8 @@
 # Current-State Reconciliation (NEXT-01)
 
 **Audit date:** 2026-09-21  
-**Repository HEAD (main):** `d1ac05e0defb82aeb632705193fc20e862d8fbce`  
+**Sync note:** Updated after GitHub **#46** merged onto main (synthetic E2E + SearchIntent geo preserve).  
+**Repository HEAD (main):** `8c3ea87a2660e68b3dce64f3e2eb6053014f1dab`  
 **Binding product decisions:** [`docs/architecture/canonical-product-decisions.md`](../architecture/canonical-product-decisions.md)
 
 ### Naming
@@ -37,16 +38,17 @@
 
 ### main HEAD
 
-- Commit: `d1ac05e` — *PR45: V2 UI — Matrix, Design Tokens & App Shell (#45)*
-- CI on that SHA: **CI success**, **Windows Smoke success** (2026-09-21)
+- Commit: `8c3ea87` — *Synthetic Offline Product E2E / Chaos Megapass (#46)*
+- Prior: `d1ac05e` — *PR45: V2 UI — Matrix, Design Tokens & App Shell (#45)*
+- CI on #46 merge SHA: **CI success**, **Windows Smoke success** (2026-09-21)
 
-### Open PRs (at audit time)
+### Open PRs (at sync time)
 
 | # | Title | State |
 |---|-------|-------|
-| **46** | Full Product E2E / Chaos Megapass + SearchIntent geo fix | **OPEN** (not on main) |
+| **47** | NEXT-01 reconciliation + canonical product decisions | **OPEN** (this branch) |
 
-### Merged GitHub PRs `#19`–`#45` (actual)
+### Merged GitHub PRs `#19`–`#46` (actual)
 
 | # | Title (short) | Merged |
 |---|----------------|--------|
@@ -77,6 +79,7 @@
 | 43 | Google production OAuth | 2026-09-20 |
 | 44 | Accessibility / BFSG engineering | 2026-09-21 |
 | 45 | V2 UI shell / tokens | 2026-09-21 |
+| 46 | Synthetic offline product E2E / chaos + SearchIntent geo preserve | 2026-09-21 |
 
 Earlier merges `#1`–`#18` cover branding, EXE smoke, adversarial gates, post-application lifecycle, etc.
 
@@ -120,11 +123,11 @@ Columns:
 
 | Field | Content |
 |-------|---------|
-| CURRENT IMPLEMENTATION | SearchIntent model + deterministic filter/rank; pipeline dry-run default; sources BA/Indeed etc. |
-| CURRENT TEST EVIDENCE | Intent corpora, hard_filter, matcher, CI. |
+| CURRENT IMPLEMENTATION | SearchIntent model + deterministic filter/rank; pipeline dry-run default; sources BA/Indeed etc. **#46 fix:** empty-role rebuild preserves explicit geo/salary/remote/strictness from `existing_intent` (no overwrite by LocationConfig defaults). |
+| CURRENT TEST EVIDENCE | Intent corpora, hard_filter, matcher, CI; #46 synthetic E2E + `tests/test_search_intent.py` regression. |
 | REAL USER VERIFIED | Partial historical EXE defects fixed in early PRs; ongoing UX polish via #45. |
 | TARGET | Keep deterministic authority; distance filter must consume Google route km when NEXT geo lands. |
-| KEEP | SearchIntent ≠ profile; dry-run; cancel/pause. |
+| KEEP | SearchIntent ≠ profile; dry-run; cancel/pause; geo-preserve on role-empty rebuild. |
 | CHANGE | Wire radius to route provider once Google geo ships. |
 | REMOVE | — |
 | OPEN BLOCKER | Live source flakiness (manual Live Sources workflow has failures). |
@@ -183,7 +186,7 @@ Columns:
 | KEEP | Zero false rejection/offer/association; draft-only send. |
 | CHANGE | Stronger black-box EXE proof (NEXT). |
 | REMOVE | Debug telemetry in normal UI (addressed in polish PRs). |
-| OPEN BLOCKER | #46 E2E megapass not merged. |
+| OPEN BLOCKER | Real Windows black-box EXE acceptance still absent. |
 | STATUS | **PARTIAL** |
 
 ### 8. V2 Desktop UI
@@ -260,15 +263,15 @@ Columns:
 
 | Field | Content |
 |-------|---------|
-| CURRENT IMPLEMENTATION | Lifecycle E2E on main (#33). Broader product E2E in **open #46** (not merged). |
-| CURRENT TEST EVIDENCE | #33 CI; #46 reported green on its branch. |
-| REAL USER VERIFIED | No. |
-| TARGET | Offline E2E + Windows black-box. |
-| KEEP | Lifecycle gates. |
-| CHANGE | Merge/review #46; add EXE layer. |
-| REMOVE | — |
-| OPEN BLOCKER | #46 unmerged; Linux cloud ≠ Windows UIA. |
-| STATUS | **PARTIAL** |
+| CURRENT IMPLEMENTATION | Lifecycle E2E (#33) + **synthetic offline product E2E / chaos** suite on main via **#46** (`tests/e2e/*`, FakeGmail/calendar, offscreen UI). Report: `docs/e2e/full-product-e2e-report.md`. |
+| CURRENT TEST EVIDENCE | **SYNTHETIC E2E REGRESSION: DONE / PASS** (fixture / fake providers / dry-run). CI unit + Windows smoke green on merge SHA. |
+| REAL USER VERIFIED | **REAL WINDOWS BLACK-BOX USER ACCEPTANCE: NOT DONE.** **REAL EXTERNAL PROVIDER ACCEPTANCE: NOT DONE.** |
+| TARGET | Keep synthetic regression green; add real Windows EXE black-box + real provider acceptance (NEXT). |
+| KEEP | Lifecycle gates; synthetic megapass; evidence classification that forbids “OVERALL PRODUCT E2E PASS”. |
+| CHANGE | Add EXE/UIA black-box layer; real Gmail/Calendar/Maps acceptance when providers exist. |
+| REMOVE | Any claim that synthetic PASS equals real product acceptance. |
+| OPEN BLOCKER | Linux cloud ≠ Windows UIA; no real Google/MS accounts in CI. |
+| STATUS | Synthetic **DONE / PASS**; real acceptance **NOT DONE** → overall product acceptance still **PARTIAL** |
 
 ### 14. Commerce / payments
 
@@ -352,7 +355,8 @@ These documents (and similar shootout leftovers) must **not** be read as current
 
 | Item | Note |
 |------|------|
-| GitHub **#46** | Full product E2E megapass — open; CI green on branch; **not** main |
+| GitHub **#46** | **MERGED** onto main (`8c3ea87`). Synthetic E2E **PASS**; SearchIntent geo preserve included. Does **not** prove real Windows / external acceptance. |
+| GitHub **#47** | NEXT-01 reconciliation (this branch) — sync against post-#46 main |
 | Local WIP stash `wip-blackbox-route-cv` | Incomplete OSRM/CV/UIA work on another branch — **not** main; superseded by new geo decision (**Google**, not OSRM) |
 
 ---
@@ -374,12 +378,13 @@ These documents (and similar shootout leftovers) must **not** be read as current
 
 ## F. Short verdict
 
-Karrierekrake on **main** is a substantial desktop product with strong CI/Windows smoke and deep lifecycle/mail safety engineering — but:
+Karrierekrake on **main** (`8c3ea87`) is a substantial desktop product with strong CI/Windows smoke, lifecycle/mail safety engineering, and a **merged synthetic offline E2E regression (DONE / PASS via #46)** — but:
 
 1. **AI** still allows Qwen fallback/picker → violates new ONE-MODEL rule.  
 2. **Geo** is still Haversine/Nominatim/pgeocode → violates new ONE-GEO (Google) rule.  
 3. **CV import** remains a **real-world** risk despite green corpora.  
 4. **Payments / website / multi-mail-calendar** largely **NOT_IMPLEMENTED**.  
-5. Documentation debt is real; prefer this file + canonical decisions over tournament PDFs.
+5. **Real Windows black-box** and **real external provider** acceptance are **NOT DONE** — do **not** restore “OVERALL PRODUCT E2E PASS”.  
+6. Documentation debt is real; prefer this file + canonical decisions over tournament PDFs.
 
 **STOP after NEXT-01** — no large feature rewrites in this package.
