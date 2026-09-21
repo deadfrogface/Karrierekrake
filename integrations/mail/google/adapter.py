@@ -37,9 +37,14 @@ class GoogleGmailAdapter:
         )
 
     def is_connected(self) -> bool:
-        from integrations.gmail_auth import gmail_connected
+        """NEXT-04: Verbunden only after successful Gmail API probe."""
+        from integrations.providers.connection_probe import probe_google_gmail
 
-        return bool(gmail_connected(token_dir=self.token_dir))
+        if self._service is not None:
+            return probe_google_gmail(
+                token_dir=self.token_dir, service=self._service, force=False
+            ).connected
+        return probe_google_gmail(token_dir=self.token_dir).connected
 
     def _service_or_raise(self) -> Any:
         if self._service is not None:

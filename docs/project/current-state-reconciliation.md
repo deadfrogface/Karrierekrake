@@ -370,7 +370,7 @@ These documents (and similar shootout leftovers) must **not** be read as current
 | **NEXT-03** | Google Maps Geocoding + Routes as sole commute authority |
 | **NEXT-04** | CV extract/layout fix + local black-box EXE acceptance |
 | **NEXT-03** | Mail/Calendar multi-provider (explicit choice, no fallback) — **this package** |
-| **NEXT-06** | Website + OAuth production URLs |
+| **NEXT-04** | Real integration acceptance via packaged EXE + API probe before Verbunden |
 | **NEXT-07** | Single commerce provider decision + implementation |
 | **NEXT-08** | Mobile sync transport decision |
 

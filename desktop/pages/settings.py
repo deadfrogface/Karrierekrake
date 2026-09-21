@@ -1078,21 +1078,49 @@ class SettingsPage(QWidget):
             )
             return
         from integrations.mail.microsoft.oauth_pkce import (
-            build_authorize_url,
+            TOKEN_ACCOUNT_MAIL,
             mail_scopes,
-            make_pkce_session,
-            open_system_browser,
+            run_local_pkce_login,
+            store_ms_token,
         )
+        from integrations.providers.connection_probe import clear_probe_cache, probe_microsoft_graph
+        from integrations.providers.diagnostics import DiagStage, log_stage
+        from urllib.parse import urlparse
 
         redirect = str(getattr(app_cfg.settings, "microsoft_redirect_uri", "") or "")
-        session = make_pkce_session(redirect_uri=redirect, scopes=mail_scopes())
-        url = build_authorize_url(client_id=client_id, session=session)
-        open_system_browser(url)
-        app_cfg.settings.mail_provider = "microsoft_graph"
-        self.config_service.save(app_cfg)
-        QMessageBox.information(
-            self, tr("privacy.tab"), tr("integrations.microsoft_browser_opened")
-        )
+        parsed = urlparse(redirect)
+        port = parsed.port or 8765
+        path = parsed.path or "/oauth/callback"
+        log_stage(DiagStage.AUTH_START, provider="microsoft_graph_mail", ok=True)
+        try:
+            tokens = run_local_pkce_login(
+                client_id=client_id,
+                scopes=mail_scopes(),
+                redirect_port=port,
+                redirect_path=path,
+                open_browser=True,
+            )
+            store_ms_token(TOKEN_ACCOUNT_MAIL, tokens, token_dir=self.config_service.dirs["config"])
+            clear_probe_cache("microsoft_graph_mail")
+            probe = probe_microsoft_graph(
+                provider="microsoft_graph_mail",
+                token_dir=self.config_service.dirs["config"],
+                force=True,
+            )
+            if not probe.connected:
+                QMessageBox.warning(
+                    self, tr("privacy.tab"), tr("integrations.probe_failed")
+                )
+                return
+            app_cfg.settings.mail_provider = "microsoft_graph"
+            self.config_service.save(app_cfg)
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.warning(
+                self,
+                tr("privacy.tab"),
+                f"{tr('privacy.connect_failed')}\n{type(exc).__name__}",
+            )
 
     def _connect_microsoft_calendar(self) -> None:
         if str(self.calendar_provider.currentData() or "") != "microsoft_graph":
@@ -1108,24 +1136,52 @@ class SettingsPage(QWidget):
             )
             return
         from integrations.mail.microsoft.oauth_pkce import (
-            build_authorize_url,
+            TOKEN_ACCOUNT_CALENDAR,
             calendar_scopes,
-            make_pkce_session,
-            open_system_browser,
+            run_local_pkce_login,
+            store_ms_token,
         )
+        from integrations.providers.connection_probe import clear_probe_cache, probe_microsoft_graph
+        from integrations.providers.diagnostics import DiagStage, log_stage
+        from urllib.parse import urlparse
 
         redirect = str(getattr(app_cfg.settings, "microsoft_redirect_uri", "") or "")
+        parsed = urlparse(redirect)
+        port = parsed.port or 8765
+        path = parsed.path or "/oauth/callback"
         write = bool(getattr(app_cfg.settings, "allow_calendar_write", False))
-        session = make_pkce_session(
-            redirect_uri=redirect, scopes=calendar_scopes(write=write)
-        )
-        url = build_authorize_url(client_id=client_id, session=session)
-        open_system_browser(url)
-        app_cfg.settings.calendar_provider = "microsoft_graph"
-        self.config_service.save(app_cfg)
-        QMessageBox.information(
-            self, tr("privacy.tab"), tr("integrations.microsoft_browser_opened")
-        )
+        log_stage(DiagStage.AUTH_START, provider="microsoft_graph_calendar", ok=True)
+        try:
+            tokens = run_local_pkce_login(
+                client_id=client_id,
+                scopes=calendar_scopes(write=write),
+                redirect_port=port,
+                redirect_path=path,
+                open_browser=True,
+            )
+            store_ms_token(
+                TOKEN_ACCOUNT_CALENDAR, tokens, token_dir=self.config_service.dirs["config"]
+            )
+            clear_probe_cache("microsoft_graph_calendar")
+            probe = probe_microsoft_graph(
+                provider="microsoft_graph_calendar",
+                token_dir=self.config_service.dirs["config"],
+                force=True,
+            )
+            if not probe.connected:
+                QMessageBox.warning(
+                    self, tr("privacy.tab"), tr("integrations.probe_failed")
+                )
+                return
+            app_cfg.settings.calendar_provider = "microsoft_graph"
+            self.config_service.save(app_cfg)
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.warning(
+                self,
+                tr("privacy.tab"),
+                f"{tr('privacy.connect_failed')}\n{type(exc).__name__}",
+            )
 
     def _privacy_disconnect_selected(self) -> None:
         """Disconnect only the currently selected provider — no cross-provider wipe."""
@@ -1158,6 +1214,7 @@ class SettingsPage(QWidget):
     def _refresh_provider_status(self, settings) -> None:
         from integrations.mail.registry import resolve_mail_adapter
         from integrations.calendar.registry import resolve_calendar_adapter
+        from integrations.providers.connection_probe import ConnectionState
 
         token_dir = self.config_service.dirs["config"]
         try:
@@ -1172,6 +1229,7 @@ class SettingsPage(QWidget):
             elif mad.is_connected():
                 self.mail_status.setText(tr("integrations.status.connected"))
             else:
+                # Token may exist but probe not OK — never show Verbunden.
                 self.mail_status.setText(tr("integrations.status.not_connected"))
         except Exception:
             self.mail_status.setText(tr("integrations.status.unknown"))
@@ -1190,6 +1248,7 @@ class SettingsPage(QWidget):
                 self.calendar_status.setText(tr("integrations.status.not_connected"))
         except Exception:
             self.calendar_status.setText(tr("integrations.status.unknown"))
+        _ = ConnectionState  # reserved for richer status labels
 
     def _privacy_delete_mail(self) -> None:
         self._privacy_report(self._privacy_life().delete_mail_cache())

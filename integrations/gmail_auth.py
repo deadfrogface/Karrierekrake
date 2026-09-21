@@ -89,10 +89,28 @@ def authorize_gmail(
     if outcome.credentials is not None and outcome.service is None:
         if goa.Feature.GMAIL_READ not in outcome.denied_features:
             try:
+                from integrations.providers.diagnostics import DiagStage, log_stage
+
+                log_stage(DiagStage.SERVICE_BUILD, provider="google_gmail", ok=True)
                 outcome.service = goa.build_gmail_service(outcome.credentials)
             except Exception as exc:
                 logger.error("Gmail service build failed: %s", type(exc).__name__)
                 return AuthOutcome(needs_reauth=True, reason=type(exc).__name__)
+            # NEXT-04: never treat as connected without API probe.
+            from integrations.providers.connection_probe import clear_probe_cache, probe_google_gmail
+
+            clear_probe_cache("google_gmail")
+            probe = probe_google_gmail(token_dir=token_dir, service=outcome.service, force=True)
+            if not probe.connected:
+                return AuthOutcome(
+                    credentials=outcome.credentials,
+                    service=None,
+                    needs_reauth=True,
+                    reason=f"api_probe_failed:{probe.detail}",
+                    granted_scopes=outcome.granted_scopes,
+                    denied_features=outcome.denied_features,
+                    migrated=outcome.migrated,
+                )
         else:
             outcome.reason = outcome.reason or "partial_consent"
     return outcome
@@ -133,10 +151,27 @@ def authorize_calendar_freebusy(
     )
     if outcome.credentials is not None and goa.Feature.CALENDAR_SLOT_FINDING not in outcome.denied_features:
         try:
+            from integrations.providers.diagnostics import DiagStage, log_stage
+
+            log_stage(DiagStage.SERVICE_BUILD, provider="google_calendar", ok=True)
             outcome.service = goa.build_calendar_service(outcome.credentials)
         except Exception as exc:
             logger.error("Calendar service build failed: %s", type(exc).__name__)
             return AuthOutcome(needs_reauth=True, reason=type(exc).__name__)
+        from integrations.providers.connection_probe import clear_probe_cache, probe_google_calendar
+
+        clear_probe_cache("google_calendar")
+        probe = probe_google_calendar(token_dir=token_dir, service=outcome.service, force=True)
+        if not probe.connected:
+            return AuthOutcome(
+                credentials=outcome.credentials,
+                service=None,
+                needs_reauth=True,
+                reason=f"api_probe_failed:{probe.detail}",
+                granted_scopes=outcome.granted_scopes,
+                denied_features=outcome.denied_features,
+                migrated=outcome.migrated,
+            )
     return outcome
 
 

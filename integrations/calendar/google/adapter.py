@@ -40,17 +40,10 @@ class GoogleCalendarAdapter:
         )
 
     def is_connected(self) -> bool:
-        from integrations.google_oauth import load_google_token
+        """NEXT-04: Verbunden only after successful FreeBusy probe."""
+        from integrations.providers.connection_probe import probe_google_calendar
 
-        try:
-            payload = load_google_token(token_dir=self.token_dir)
-        except Exception:
-            return False
-        if not payload:
-            return False
-        scopes = " ".join(str(s) for s in (payload.get("scopes") or payload.get("scope") or []))
-        # FreeBusy or events scopes count as calendar connection.
-        return "calendar" in scopes.lower() or "freebusy" in scopes.lower()
+        return probe_google_calendar(token_dir=self.token_dir).connected
 
     def query_busy(self, q: FreeBusyQuery) -> list[BusyInterval]:
         provider = self._freebusy
