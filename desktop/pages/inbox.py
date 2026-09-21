@@ -174,8 +174,9 @@ class InboxPage(QWidget):
         self.lifecycle = LifecyclePage(config_service)
         self.lifecycle.set_embedded_inbox_mode(True)
         self.lifecycle.hide()
+        self.lifecycle.guenther_bar.hide()  # contextual actions live on our bar, not a capability wall
         right_l.addWidget(self.lifecycle.approval)
-        right_l.addWidget(self.lifecycle.guenther_bar)
+        # Do not add guenther_bar to layout — permanent wall violates demo density.
         splitter.addWidget(right)
         splitter.setStretchFactor(0, 2)
         splitter.setStretchFactor(1, 3)
