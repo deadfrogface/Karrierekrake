@@ -28,7 +28,7 @@ Those rows mean: *synthetic / mocked path exercised successfully*.
 ## A. Branch / HEAD
 
 - Branch: `cursor/full-product-e2e-chaos-d85b`
-- Commit SHA: *(see tip after this correction commit)*
+- Commit SHA: *2f8251121783dcab8407771b8fce287ded88b660*
 - Base: `main`
 - GitHub PR: **#46**
 
