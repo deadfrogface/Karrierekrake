@@ -40,6 +40,25 @@ from desktop.widgets.product_panels import JobFitPanel
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
+def format_commute_label(job, *, with_duration: bool = True) -> str:
+    """UI commute text — „km Fahrt“ only with Google Route Matrix result.
+
+    Never labels Haversine / airline as Fahrtstrecke.
+    """
+    src = getattr(job, "distance_source", "") or ""
+    dist = getattr(job, "distance_km", None)
+    if dist is None or src != "google_route_matrix":
+        return tr("jobs.commute_unknown")
+    km = f"{dist:.0f}" if float(dist) == int(dist) else f"{float(dist):.1f}"
+    label = tr("jobs.commute_drive", km=km)
+    if with_duration:
+        dur = getattr(job, "commute_duration_minutes", None)
+        if dur is not None:
+            mins = int(round(float(dur)))
+            label = f"{label} · {tr('jobs.commute_duration', min=mins)}"
+    return label
+
+
 def _parse_discovered(value: str | None) -> datetime:
     raw = (value or "").strip()
     if not raw:
@@ -446,10 +465,10 @@ class JobsPage(QWidget):
             self._clear_detail()
             return
         self.detail_title.setText(display_or_dash(job.title))
-        dist = "" if job.distance_km is None else f"{job.distance_km:.1f} km"
+        dist = format_commute_label(job, with_duration=True)
         self.detail_meta.setText(
             f"{display_or_dash(job.company)} · {display_or_dash(job.city)} · "
-            f"{display_or_dash(job.remote_type)} · {dist or '—'} · "
+            f"{display_or_dash(job.remote_type)} · {dist} · "
             f"{display_or_dash(job.salary_text)} · {display_or_dash(job.source)}"
         )
         self.detail_status.setText(f"{tr('jobs.status')}: {status_label(job.status)}")
@@ -481,7 +500,7 @@ class JobsPage(QWidget):
         for job in jobs:
             row = self.table.rowCount()
             self.table.insertRow(row)
-            dist = "" if job.distance_km is None else f"{job.distance_km:.1f}"
+            dist = format_commute_label(job, with_duration=False)
             fit = build_job_fit_viewmodel(job, cfg)
             fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
             reason = " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation())
@@ -489,7 +508,7 @@ class JobsPage(QWidget):
                 display_or_dash(job.title),
                 display_or_dash(job.company),
                 display_or_dash(job.city),
-                dist or "—",
+                dist,
                 display_or_dash(job.remote_type),
                 fit_label,
                 reason,
@@ -506,7 +525,7 @@ class JobsPage(QWidget):
                     item.setData(Qt.ItemDataRole.UserRole + 1, int(job.match_score or 0))
                 self.table.setItem(row, col, item)
             # Demo card row (compact)
-            dist_txt = f"{dist} km" if dist else "—"
+            dist_txt = format_commute_label(job, with_duration=True)
             card = (
                 f"{display_or_dash(job.title)}\n"
                 f"{display_or_dash(job.company)} · {display_or_dash(job.city)} ({dist_txt}) · "

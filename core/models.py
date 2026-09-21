@@ -55,7 +55,12 @@ class Job:
     country_code: str = ""
     latitude: float | None = None
     longitude: float | None = None
+    # Road-route km from Google Route Matrix Essentials only (never Haversine).
     distance_km: float | None = None
+    # Minutes from Google Route Matrix (TRAFFIC_UNAWARE Essentials).
+    commute_duration_minutes: float | None = None
+    # "google_route_matrix" when distance_km is authoritative road distance.
+    distance_source: str = ""
     remote_type: str = RemoteType.UNKNOWN.value
     employment_type: str = ""
     salary_min: float | None = None

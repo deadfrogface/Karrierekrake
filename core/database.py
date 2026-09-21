@@ -68,6 +68,8 @@ CREATE TABLE IF NOT EXISTS jobs (
     latitude REAL,
     longitude REAL,
     distance_km REAL,
+    commute_duration_minutes REAL,
+    distance_source TEXT DEFAULT '',
     remote_type TEXT,
     employment_type TEXT,
     salary_min REAL,
@@ -319,6 +321,14 @@ class Database:
                 # Lazy-normalize on enrich; no mass backfill without backup.
                 conn.execute(
                     "ALTER TABLE jobs ADD COLUMN country_code TEXT DEFAULT ''"
+                )
+            if "commute_duration_minutes" not in cols:
+                conn.execute(
+                    "ALTER TABLE jobs ADD COLUMN commute_duration_minutes REAL"
+                )
+            if "distance_source" not in cols:
+                conn.execute(
+                    "ALTER TABLE jobs ADD COLUMN distance_source TEXT DEFAULT ''"
                 )
 
             # Geocode cache provenance (data_source / version) for DACH invalidation.

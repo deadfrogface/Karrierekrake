@@ -109,15 +109,16 @@ Columns:
 
 | Field | Content |
 |-------|---------|
-| CURRENT IMPLEMENTATION | **Haversine** authoritative for `Job.distance_km`. Coords: **pgeocode** + **Nominatim**. No Google Routes / Matrix. No OSRM on main. |
-| CURRENT TEST EVIDENCE | `tests/test_dach_cross_border.py`, `tests/test_location.py` (fixture). CI green. |
-| REAL USER VERIFIED | **None** for Google road km. Known product risk: air-line ≠ road. |
+| CURRENT IMPLEMENTATION | **Google Maps Platform only** — Geocoding + Route Matrix Essentials via authenticated proxy. `Job.distance_km` = road km. Failure → `DISTANCE_UNKNOWN`. Haversine/pgeocode/Nominatim not authoritative. |
+| TARGET | Same (NEXT-05 landed). |
+| CHANGE | Done on `cursor/next-05-google-maps-geo-d85b`. |
+| REMOVE | Production reliance on Nominatim, pgeocode, Haversine-as-commute. |
+| OPEN BLOCKER | Live Google billing/API keys for Windows acceptance (proxy env). |
+| CURRENT TEST EVIDENCE | `tests/test_next05_google_maps.py`, `tests/test_location.py`, `tests/test_dach_cross_border.py`. |
+| REAL USER VERIFIED | **None** for live Google road km (needs Maps API key + proxy). Known product risk if misconfigured: missing proxy → UNKNOWN. |
 | TARGET ARCHITECTURE | **Google Geocoding + Google Routes/Route Matrix only**; UNKNOWN if no route; never Luftlinie as Fahrt. |
 | KEEP | UNKNOWN semantics; remote skip; DACH country intent rules (separate from routing). |
-| CHANGE | Replace Nominatim/pgeocode/Haversine authority with Google Maps Platform. |
-| REMOVE | Production reliance on Nominatim, pgeocode, Haversine-as-commute. |
-| OPEN BLOCKER | Google billing/API keys, quotas, privacy notice, offline behavior policy. |
-| STATUS | **PARTIAL** (geo exists) vs target → **CHANGE**; docs `dach-cross-border.md` accurate for *current* code, stale vs *target*. |
+| STATUS | **PASS (code)** — live key acceptance still open. |
 
 ### 3. SearchIntent / job search / ranking
 
