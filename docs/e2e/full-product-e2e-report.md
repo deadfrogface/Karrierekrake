@@ -3,7 +3,7 @@
 ## A. Branch / HEAD
 
 - Branch: `cursor/full-product-e2e-chaos-d85b`
-- Commit SHA: `94fba3ad3d2ed142c3732d5fc5b47e250e4857ea`
+- Commit SHA: `5ea8d26ab9579ba89768b3330727f60a59297fa7` (branch tip)
 - Base: `main`
 
 ## B. Test environment
