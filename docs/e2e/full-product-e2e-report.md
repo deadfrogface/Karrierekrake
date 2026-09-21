@@ -1,10 +1,36 @@
-# Karrierekrake — Full Product E2E / Chaos Megapass Report
+# Karrierekrake — Synthetic Offline Product E2E / Chaos Megapass Report
+
+## Evidence classification (binding)
+
+| Claim | Result |
+|-------|--------|
+| **SYNTHETIC OFFLINE PRODUCT E2E / REGRESSION** | **PASS** |
+| **SYNTHETIC E2E REGRESSION READY** | **YES** |
+| **REAL PRODUCT ACCEPTANCE READY** | **NO** |
+| REAL WINDOWS BLACK-BOX USER ACCEPTANCE | **NOT RUN** |
+| REAL GMAIL CONNECTION | **NOT RUN** |
+| REAL GOOGLE CALENDAR CONNECTION | **NOT RUN** |
+| REAL MICROSOFT CONNECTION | **NOT RUN** |
+| REAL IMAP / CALDAV | **NOT RUN** |
+| REAL GOOGLE MAPS ROUTING | **NOT IMPLEMENTED / NOT RUN** |
+| REAL PRIVATE CV IMPORT THROUGH PACKAGED EXE | **NOT PASSED** |
+| REAL EXTERNAL INTEGRATION E2E | **NOT RUN** |
+
+This suite used **fake providers**, **no real mail/calendar/ATS/network**, and
+**offscreen/automated** execution. Passing results prove offline regression
+safety — **not** real Windows user acceptance or live integrations.
+
+Do **not** read subsystem rows below as “real Gmail/Calendar/EXE proven”.
+Those rows mean: *synthetic / mocked path exercised successfully*.
+
+---
 
 ## A. Branch / HEAD
 
 - Branch: `cursor/full-product-e2e-chaos-d85b`
-- Commit SHA: `5ea8d26ab9579ba89768b3330727f60a59297fa7` (branch tip)
+- Commit SHA: *(see tip after this correction commit)*
 - Base: `main`
+- GitHub PR: **#46**
 
 ## B. Test environment
 
@@ -42,7 +68,7 @@
 
 Parametrized + corpus-driven cases exercise far more logical scenarios than the pytest node count (classification ≥500, association ≥200, calendar idempotency ×80, etc.).
 
-## E. Full user journeys tested
+## E. Synthetic user journeys tested
 
 1. **Happy path** — profile → job → application → confirm → review → interview → calendar (idempotent) → reply draft (not sent) → follow-up → offer → restart persistence
 2. **Rejection path** — confirm → review → rejection; other role at another company not auto-rejected
@@ -51,10 +77,12 @@ Parametrized + corpus-driven cases exercise far more logical scenarios than the 
 5. **Offline** — profile/apps usable; failing job source does not corrupt DB
 6. **Persona restarts** — all 8 personas persist across reload
 
-## F–T. Subsystem results
+All journeys above are **fixture/fake-provider** driven.
 
-| Area | Result |
-|------|--------|
+## F–T. Subsystem results (synthetic / offline only)
+
+| Area | Synthetic result |
+|------|------------------|
 | Profile / CV destruction | PASS |
 | SearchIntent variants | PASS (after P1 fix) |
 | Search chaos (spam/cancel/fail/malformed) | PASS |
@@ -63,11 +91,11 @@ Parametrized + corpus-driven cases exercise far more logical scenarios than the 
 | Mail classification gates | PASS |
 | Association zero-gates | PASS |
 | Lifecycle transitions / full lifecycles | PASS |
-| Calendar / interview | PASS |
+| Calendar / interview (mocked FreeBusy + in-memory write) | PASS |
 | Reply / follow-up (never auto-send) | PASS |
 | Offline | PASS |
 | Recovery / reload mid-flow | PASS |
-| Accessibility / Qt shell | PASS (2 optional skips) |
+| Accessibility / Qt shell (offscreen) | PASS (2 optional skips) |
 | Layout / visual state seeds | PASS |
 | Privacy export / no real PII fixtures | PASS |
 | Chaos user / impossible workflows | PASS |
@@ -78,7 +106,7 @@ Parametrized + corpus-driven cases exercise far more logical scenarios than the 
 
 ### P0 — none open
 
-### P1 — found & fixed
+### P1 — found & fixed (KEEP)
 
 **SearchIntent geo/salary/remote overwritten by legacy LocationConfig defaults on save when roles empty.**
 
@@ -95,7 +123,7 @@ Parametrized + corpus-driven cases exercise far more logical scenarios than the 
 
 Clearing `search_intent` alone does not clear `jobs.desired_titles` mirrors; save may lift titles back. Clearing both is required for a full search reset (documented in E2E test).
 
-## Y. Critical zero-gate matrix
+## Y. Critical zero-gate matrix (synthetic)
 
 | Gate | Value |
 |------|------:|
@@ -111,30 +139,45 @@ Clearing `search_intent` alone does not clear `jobs.desired_titles` mirrors; sav
 
 ## Z. Final readiness verdicts
 
+### What this PR proves
+
 | Verdict | Result |
 |---------|--------|
-| FUNCTIONAL E2E | **PASS** |
-| DATA INTEGRITY | **PASS** |
-| SEARCH | **PASS** |
-| APPLICATION LIFECYCLE | **PASS** |
-| MAIL | **PASS** |
-| ASSOCIATION | **PASS** |
-| CALENDAR | **PASS** |
-| INTERVIEW | **PASS** |
-| GÜNTHER INTEGRATION | **PASS** (offline / draft paths; no live model required) |
-| RECOVERY | **PASS** |
-| OFFLINE | **PASS** |
-| ACCESSIBILITY | **PASS** (keyboard smoke + a11y name probe) |
-| PRIVACY | **PASS** |
-| SECURITY | **PASS** (hostile content / injection corpora) |
-| CHAOS USER | **PASS** |
-| **OVERALL PRODUCT E2E** | **PASS** |
+| SYNTHETIC OFFLINE FUNCTIONAL E2E | **PASS** |
+| SYNTHETIC DATA INTEGRITY | **PASS** |
+| SYNTHETIC SEARCH / INTENT | **PASS** |
+| SYNTHETIC APPLICATION LIFECYCLE | **PASS** |
+| SYNTHETIC MAIL PIPELINE (fake / corpus) | **PASS** |
+| SYNTHETIC ASSOCIATION GATES | **PASS** |
+| SYNTHETIC CALENDAR / INTERVIEW (mocked) | **PASS** |
+| SYNTHETIC RECOVERY / OFFLINE / CHAOS | **PASS** |
+| SYNTHETIC PRIVACY / SECURITY CORPORA | **PASS** |
+| **SYNTHETIC OFFLINE PRODUCT E2E / REGRESSION** | **PASS** |
+| **SYNTHETIC E2E REGRESSION READY** | **YES** |
+
+### What this PR does **not** prove
+
+| Verdict | Result |
+|---------|--------|
+| REAL WINDOWS BLACK-BOX USER ACCEPTANCE | **NOT RUN** |
+| REAL GMAIL CONNECTION | **NOT RUN** |
+| REAL GOOGLE CALENDAR CONNECTION | **NOT RUN** |
+| REAL MICROSOFT CONNECTION | **NOT RUN** |
+| REAL IMAP / CALDAV | **NOT RUN** |
+| REAL GOOGLE MAPS ROUTING | **NOT IMPLEMENTED / NOT RUN** |
+| REAL PRIVATE CV IMPORT THROUGH PACKAGED EXE | **NOT PASSED** |
+| REAL EXTERNAL INTEGRATION E2E | **NOT RUN** |
+| **REAL PRODUCT ACCEPTANCE READY** | **NO** |
+
+Deprecated wording from earlier drafts — **do not use**:
+
+~~OVERALL PRODUCT E2E: PASS~~
 
 ---
 
 ## Artifacts
 
-- `artifacts/e2e/results.json`
+- `artifacts/e2e/results.json` (local / gitignored)
 - `artifacts/e2e/reports/pytest_output.txt`
 - `artifacts/e2e/reports/junit.xml`
 - `artifacts/e2e/screenshots/*.txt` (state markers; optional PNG via `KARRIEREKRAKE_E2E_SHOTS=1`)
@@ -147,4 +190,5 @@ python scripts/run_full_product_e2e.py
 QT_QPA_PLATFORM=offscreen pytest tests/e2e tests/test_lifecycle_e2e_matrix.py tests/test_lifecycle_e2e_factory.py -q
 ```
 
-**STOP for human review — do not auto-merge.**
+**STOP for human review — do not auto-merge.**  
+Treat this PR as **synthetic regression readiness**, not real product acceptance.

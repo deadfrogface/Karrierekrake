@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Run full-product E2E megapass and write machine-readable results."""
+"""Run synthetic offline product E2E / chaos megapass and write results.
+
+Evidence scope: fake providers, isolated AppData, offscreen Qt — NOT real
+Windows black-box acceptance, NOT live Gmail/Calendar/Maps/EXE CV import.
+See docs/e2e/full-product-e2e-report.md.
+"""
 
 from __future__ import annotations
 
@@ -66,6 +71,18 @@ def main() -> int:
     results = {
         "commit_sha": sha,
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "evidence_class": "synthetic_offline_e2e_regression",
+        "synthetic_offline_product_e2e": "PASS" if proc.returncode == 0 else "FAIL",
+        "synthetic_e2e_regression_ready": proc.returncode == 0,
+        "real_product_acceptance_ready": False,
+        "real_windows_blackbox_user_acceptance": "NOT_RUN",
+        "real_gmail_connection": "NOT_RUN",
+        "real_google_calendar_connection": "NOT_RUN",
+        "real_microsoft_connection": "NOT_RUN",
+        "real_imap_caldav": "NOT_RUN",
+        "real_google_maps_routing": "NOT_IMPLEMENTED_OR_NOT_RUN",
+        "real_private_cv_import_packaged_exe": "NOT_PASSED",
+        "real_external_integration_e2e": "NOT_RUN",
         "total_tests": total,
         "passed": passed,
         "failed": failed,
