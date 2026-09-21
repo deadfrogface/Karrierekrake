@@ -49,6 +49,11 @@ def resolve_calendar_adapter(
 
         return GenericCaldavCalendarAdapter(token_dir=token_dir, settings=settings)
 
+    if chosen is CalendarProvider.FAKE_INPROCESS:
+        from integrations.calendar.fake.adapter import FakeInProcessCalendarAdapter
+
+        return FakeInProcessCalendarAdapter(token_dir=token_dir, settings=settings)
+
     raise ProviderError(
         "calendar", f"unsupported_calendar_provider:{chosen.value}", reconnectable=False
     )

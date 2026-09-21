@@ -54,6 +54,21 @@ def _client_file(path: Path, *, client_id: str = "cid-dev-test") -> Path:
     return path
 
 
+def _probeable_gmail_service() -> MagicMock:
+    svc = MagicMock(name="gmail_service")
+    svc.users.return_value.getProfile.return_value.execute.return_value = {
+        "emailAddress": "probe@example.test",
+        "messagesTotal": 1,
+    }
+    return svc
+
+
+def _probeable_calendar_service() -> MagicMock:
+    svc = MagicMock(name="calendar_service")
+    svc.freebusy.return_value.query.return_value.execute.return_value = {"calendars": {}}
+    return svc
+
+
 class FakeCreds:
     def __init__(self, scopes: list[str] | None = None, **kw: Any):
         self.valid = kw.get("valid", True)
@@ -461,17 +476,18 @@ def test_authorize_gmail_only_requests_readonly(tmp_path: Path, monkeypatch):
     flow.run_local_server.return_value = fake
     monkeypatch.setattr(gmail_auth, "gmail_libs_available", lambda: True)
     monkeypatch.setattr(goa, "google_libs_available", lambda: True)
+    fake_svc = _probeable_gmail_service()
     with (
         patch(
             "google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file",
             return_value=flow,
         ) as from_file,
-        patch("googleapiclient.discovery.build", return_value="GMAIL"),
+        patch("googleapiclient.discovery.build", return_value=fake_svc),
     ):
         outcome = authorize_gmail(
             credentials_path=creds_path, token_dir=tmp_path, interactive=True
         )
-    assert outcome.service == "GMAIL"
+    assert outcome.service is fake_svc
     assert list(from_file.call_args[0][1]) == [goa.GMAIL_READONLY]
     assert flow.run_local_server.call_args.kwargs.get("open_browser") is True
     assert flow.run_local_server.call_args.kwargs.get("include_granted_scopes") == "true"
@@ -484,17 +500,18 @@ def test_authorize_calendar_only_requests_freebusy(tmp_path: Path, monkeypatch):
     flow.code_verifier = "v" * 64
     flow.run_local_server.return_value = fake
     monkeypatch.setattr(goa, "google_libs_available", lambda: True)
+    fake_svc = _probeable_calendar_service()
     with (
         patch(
             "google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file",
             return_value=flow,
         ) as from_file,
-        patch("googleapiclient.discovery.build", return_value="CAL"),
+        patch("googleapiclient.discovery.build", return_value=fake_svc),
     ):
         outcome = authorize_calendar_freebusy(
             credentials_path=creds_path, token_dir=tmp_path, interactive=True
         )
-    assert outcome.service == "CAL"
+    assert outcome.service is fake_svc
     assert list(from_file.call_args[0][1]) == [goa.CALENDAR_FREEBUSY]
     assert goa.GMAIL_READONLY not in from_file.call_args[0][1]
 

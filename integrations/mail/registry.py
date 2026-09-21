@@ -54,6 +54,11 @@ def resolve_mail_adapter(
 
         return GenericImapMailAdapter(token_dir=token_dir, settings=settings)
 
+    if chosen is MailProvider.FAKE_INPROCESS:
+        from integrations.mail.fake.adapter import FakeInProcessMailAdapter
+
+        return FakeInProcessMailAdapter(token_dir=token_dir, settings=settings)
+
     raise ProviderError("mail", f"unsupported_mail_provider:{chosen.value}", reconnectable=False)
 
 

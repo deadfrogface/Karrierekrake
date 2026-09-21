@@ -57,6 +57,7 @@ class DashboardPage(QWidget):
         header_row.addWidget(self.header, stretch=1)
         self.btn_search = QPushButton()
         self.btn_search.setObjectName("PrimaryButton")
+        self.btn_search.setAccessibleDescription("kk.search.toggle")
         self.btn_search.setMinimumHeight(36)
         self.btn_search.setMinimumWidth(160)
         self.btn_search.clicked.connect(self._on_search_cta)
@@ -219,6 +220,7 @@ class DashboardPage(QWidget):
             self.btn_search.setEnabled(True)
         self.btn_search.setText(text)
         set_accessible_name(self.btn_search, text)
+        self.btn_search.setAccessibleDescription("kk.search.toggle")
         style = self.btn_search.style()
         if style is not None:
             style.unpolish(self.btn_search)
