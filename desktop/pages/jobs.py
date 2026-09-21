@@ -1,8 +1,9 @@
-"""Jobs listing page — focused columns + match explanation; never shows nan."""
+"""Jobs — V2: compact result filters, explicit sort, ~60/40 list+detail."""
 
 from __future__ import annotations
 
 import webbrowser
+from datetime import datetime
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -27,12 +28,26 @@ from PySide6.QtWidgets import (
 from core.database import Database
 from core.models import JobStatus
 from core.text_normalize import clean_text, display_or_dash
+from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.v2_chrome import PageHeader
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
 from desktop.viewmodels.job_fit import build_job_fit_viewmodel
 from desktop.widgets.product_panels import JobFitPanel
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
+
+
+def _parse_discovered(value: str | None) -> datetime:
+    raw = (value or "").strip()
+    if not raw:
+        return datetime.min
+    for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(raw.replace("Z", "+0000")[:26], fmt)
+        except ValueError:
+            continue
+    return datetime.min
 
 
 class JobsPage(QWidget):
@@ -54,11 +69,9 @@ class JobsPage(QWidget):
         self._jobs = []
         self._selected = None
 
-        self.page_title = QLabel()
-        self.page_title.setObjectName("PageTitle")
-        self.page_subtitle = QLabel()
-        self.page_subtitle.setObjectName("PageSubtitle")
-        self.page_subtitle.setWordWrap(True)
+        self.header = PageHeader()
+        self.page_title = self.header.title
+        self.page_subtitle = self.header.subtitle
         self.count_label = QLabel()
         self.count_label.setObjectName("PageSubtitle")
 
@@ -77,8 +90,10 @@ class JobsPage(QWidget):
         self.chk_remote = QCheckBox()
         self.chk_hybrid = QCheckBox()
         self.chk_onsite = QCheckBox()
+        # Dead control kept for compatibility — never surface in V2 (matrix HIDE).
         self.age_days = IntentionalWheelSpinBox()
         self.age_days.setRange(0, 90)
+        self.age_days.hide()
 
         self.lbl_min_match = QLabel()
         self.lbl_max_dist = QLabel()
@@ -87,48 +102,81 @@ class JobsPage(QWidget):
         self.lbl_company = QLabel()
         self.lbl_source = QLabel()
         self.lbl_status = QLabel()
+        self.lbl_sort = QLabel()
+        self.lbl_filters = QLabel()
+        self.lbl_filters.setObjectName("KkHint")
 
-        filter_form = QFormLayout()
-        filter_form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
-        filter_form.addRow(self.lbl_min_match, self.min_match)
-        filter_form.addRow(self.lbl_max_dist, self.max_dist)
-        filter_form.addRow(self.lbl_city, self.city)
-        filter_form.addRow(self.lbl_title, self.title)
-        filter_form.addRow(self.lbl_company, self.company)
-        filter_form.addRow(self.lbl_source, self.source)
-        filter_form.addRow(self.lbl_status, self.status)
+        self.sort = QComboBox()
+        self.sort.addItem("", "match_desc")
+        self.sort.addItem("", "match_asc")
+        self.sort.addItem("", "distance_near")
+        self.sort.addItem("", "distance_far")
+        self.sort.addItem("", "newest")
+        self.sort.currentIndexChanged.connect(self._on_sort_changed)
 
-        model_row = QHBoxLayout()
-        model_row.addWidget(self.chk_remote)
-        model_row.addWidget(self.chk_hybrid)
-        model_row.addWidget(self.chk_onsite)
-        model_row.addStretch()
-        filter_form.addRow(model_row)
-
+        # Compact primary filter row (result filters — not search parameters)
+        primary = QHBoxLayout()
+        primary.setSpacing(8)
+        for w in (
+            self.lbl_min_match,
+            self.min_match,
+            self.lbl_max_dist,
+            self.max_dist,
+            self.lbl_city,
+            self.city,
+            self.chk_remote,
+            self.chk_hybrid,
+            self.chk_onsite,
+        ):
+            primary.addWidget(w)
         self.apply_btn = QPushButton()
         self.apply_btn.setObjectName("PrimaryButton")
         self.apply_btn.clicked.connect(self.refresh)
+        self.more_filters_btn = QPushButton()
+        self.more_filters_btn.setObjectName("SecondaryButton")
+        self.more_filters_btn.setCheckable(True)
+        self.more_filters_btn.toggled.connect(self._toggle_more_filters)
+        self.search_intent_btn = QPushButton()
+        self.search_intent_btn.setObjectName("SecondaryButton")
+        self.search_intent_btn.clicked.connect(self.open_search_intent)
+        primary.addWidget(self.apply_btn)
+        primary.addWidget(self.more_filters_btn)
+        primary.addWidget(self.search_intent_btn)
+        primary.addStretch()
+
+        self.more_filters = QWidget()
+        more_form = QFormLayout(self.more_filters)
+        more_form.setContentsMargins(0, 4, 0, 0)
+        more_form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+        more_form.addRow(self.lbl_title, self.title)
+        more_form.addRow(self.lbl_company, self.company)
+        more_form.addRow(self.lbl_source, self.source)
+        more_form.addRow(self.lbl_status, self.status)
+        self.more_filters.setVisible(False)
+
+        toolbar = QHBoxLayout()
+        toolbar.setSpacing(12)
+        toolbar.addWidget(self.count_label)
+        toolbar.addStretch()
+        toolbar.addWidget(self.lbl_sort)
+        toolbar.addWidget(self.sort)
+
         self.open_btn = QPushButton()
         self.open_btn.setObjectName("SecondaryButton")
         self.open_btn.clicked.connect(self.open_selected)
         self.prepare_btn = QPushButton()
         self.prepare_btn.setObjectName("PrimaryButton")
         self.prepare_btn.clicked.connect(self.prepare_application)
-        self.search_intent_btn = QPushButton()
-        self.search_intent_btn.setObjectName("SecondaryButton")
-        self.search_intent_btn.clicked.connect(self.open_search_intent)
-        btn_row = QHBoxLayout()
-        btn_row.addWidget(self.apply_btn)
-        btn_row.addWidget(self.open_btn)
-        btn_row.addWidget(self.prepare_btn)
-        btn_row.addWidget(self.search_intent_btn)
-        btn_row.addStretch()
-        filter_form.addRow(btn_row)
+        action_row = QHBoxLayout()
+        action_row.addWidget(self.prepare_btn)
+        action_row.addWidget(self.open_btn)
+        action_row.addStretch()
 
         self.table = QTableWidget(0, len(self.COLS))
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
-        self.table.setSortingEnabled(True)
+        # Sorting is controlled by the explicit sort combo (never discards rows).
+        self.table.setSortingEnabled(False)
         self.table.setAlternatingRowColors(True)
         self.table.itemSelectionChanged.connect(self._on_selection)
         self.table.doubleClicked.connect(self.open_selected)
@@ -188,22 +236,69 @@ class JobsPage(QWidget):
         splitter.setOrientation(Qt.Orientation.Horizontal)
         splitter.addWidget(list_host)
         splitter.addWidget(self.detail)
+        # ~60/40
         splitter.setStretchFactor(0, 3)
         splitter.setStretchFactor(1, 2)
+        splitter.setSizes([600, 400])
 
         layout = QVBoxLayout(self)
-        layout.addWidget(self.page_title)
-        layout.addWidget(self.page_subtitle)
-        layout.addWidget(self.count_label)
-        layout.addLayout(filter_form)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(10)
+        layout.addWidget(self.header)
+        layout.addWidget(self.lbl_filters)
+        layout.addLayout(primary)
+        layout.addWidget(self.more_filters)
+        layout.addLayout(toolbar)
+        layout.addLayout(action_row)
         layout.addWidget(splitter, 1)
 
         self._clear_detail()
         self.retranslate_ui()
 
+    def _toggle_more_filters(self, checked: bool) -> None:
+        self.more_filters.setVisible(checked)
+
+    def _on_sort_changed(self, _index: int = 0) -> None:
+        if not self._jobs:
+            return
+        self._jobs = self._sorted_jobs(self._jobs)
+        self._populate_table(self._jobs)
+
+    def _sort_key(self) -> str:
+        return str(self.sort.currentData() or "match_desc")
+
+    def _sorted_jobs(self, jobs: list) -> list:
+        key = self._sort_key()
+        if key == "match_asc":
+            return sorted(jobs, key=lambda j: int(j.match_score or 0))
+        if key == "distance_near":
+            return sorted(
+                jobs,
+                key=lambda j: (
+                    j.distance_km is None,
+                    float(j.distance_km) if j.distance_km is not None else 0.0,
+                ),
+            )
+        if key == "distance_far":
+            return sorted(
+                jobs,
+                key=lambda j: (
+                    j.distance_km is None,
+                    -(float(j.distance_km) if j.distance_km is not None else 0.0),
+                ),
+            )
+        if key == "newest":
+            return sorted(
+                jobs,
+                key=lambda j: _parse_discovered(getattr(j, "discovered_at", None)),
+                reverse=True,
+            )
+        # match_desc (default)
+        return sorted(jobs, key=lambda j: int(j.match_score or 0), reverse=True)
+
     def retranslate_ui(self) -> None:
-        self.page_title.setText(tr("jobs.page_title"))
-        self.page_subtitle.setText(tr("jobs.page_subtitle"))
+        self.header.set_texts(tr("jobs.page_title"), tr("jobs.page_subtitle"))
+        self.lbl_filters.setText(tr("jobs.section_result_filters"))
         self.lbl_min_match.setText(tr("jobs.min_match"))
         self.lbl_max_dist.setText(tr("jobs.max_km"))
         self.lbl_city.setText(tr("jobs.city"))
@@ -211,13 +306,16 @@ class JobsPage(QWidget):
         self.lbl_company.setText(tr("jobs.company"))
         self.lbl_source.setText(tr("jobs.source"))
         self.lbl_status.setText(tr("jobs.status"))
+        self.lbl_sort.setText(tr("jobs.sort_label"))
         self.chk_remote.setText(tr("remote"))
         self.chk_hybrid.setText(tr("hybrid"))
         self.chk_onsite.setText(tr("onsite"))
         self.apply_btn.setText(tr("btn.filter"))
+        self.more_filters_btn.setText(tr("jobs.more_filters"))
         self.open_btn.setText(tr("btn.open_job"))
         self.prepare_btn.setText(tr("btn.prepare_application"))
         self.search_intent_btn.setText(tr("jobs.open_search_intent"))
+        set_accessible_name(self.search_intent_btn, tr("jobs.open_search_intent"))
         self.detail_prepare.setText(tr("btn.prepare_application"))
         self.detail_open.setText(tr("btn.open_job"))
         self.empty.setText(tr("jobs.empty"))
@@ -225,6 +323,16 @@ class JobsPage(QWidget):
         for i in range(1, self.status.count()):
             raw = self.status.itemData(i)
             self.status.setItemText(i, status_label(str(raw)))
+        sort_labels = {
+            "match_desc": tr("jobs.sort_match_desc"),
+            "match_asc": tr("jobs.sort_match_asc"),
+            "distance_near": tr("jobs.sort_distance_near"),
+            "distance_far": tr("jobs.sort_distance_far"),
+            "newest": tr("jobs.sort_newest"),
+        }
+        for i in range(self.sort.count()):
+            key = str(self.sort.itemData(i))
+            self.sort.setItemText(i, sort_labels.get(key, key))
         self.table.setHorizontalHeaderLabels(
             [
                 tr("col.title"),
@@ -296,6 +404,49 @@ class JobsPage(QWidget):
         self.detail_prepare.setEnabled(True)
         self.detail_open.setEnabled(True)
 
+    def _populate_table(self, jobs: list) -> None:
+        self.table.setRowCount(0)
+        cfg = self.config_service.load()
+        _fit_i18n = {
+            "sehr_passend": tr("fit.sehr_passend"),
+            "passend": tr("fit.passend"),
+            "teilweise_passend": tr("fit.teilweise_passend"),
+            "nicht_passend": tr("fit.nicht_passend"),
+            "unbekannt": tr("fit.unbekannt"),
+        }
+        for job in jobs:
+            row = self.table.rowCount()
+            self.table.insertRow(row)
+            dist = "" if job.distance_km is None else f"{job.distance_km:.1f}"
+            fit = build_job_fit_viewmodel(job, cfg)
+            fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
+            values = [
+                display_or_dash(job.title),
+                display_or_dash(job.company),
+                display_or_dash(job.city),
+                dist or "—",
+                display_or_dash(job.remote_type),
+                fit_label,
+                " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation()),
+                display_or_dash(job.source),
+                status_label(job.status),
+            ]
+            for col, value in enumerate(values):
+                if str(value).strip().lower() in {"nan", "none", "null"}:
+                    value = "—"
+                item = QTableWidgetItem(value)
+                if col == 0:
+                    item.setData(Qt.ItemDataRole.UserRole, job.id)
+                if col == 5:
+                    item.setData(Qt.ItemDataRole.UserRole + 1, int(job.match_score or 0))
+                self.table.setItem(row, col, item)
+        empty = len(jobs) == 0
+        self.table.setVisible(not empty)
+        self.empty.setVisible(empty)
+        self.count_label.setText(tr("jobs.count", n=len(jobs)))
+        if empty:
+            self._clear_detail()
+
     def refresh(self) -> None:
         cfg = self.config_service.load()
         self.min_match.setValue(self.min_match.value() or int(cfg.settings.minimum_match_for_dashboard))
@@ -324,52 +475,8 @@ class JobsPage(QWidget):
             source=self.source.text().strip() or None,
             limit=500,
         )
-        self._jobs = jobs
-        self.table.setSortingEnabled(False)
-        self.table.setRowCount(0)
-        cfg = self.config_service.load()
-        _fit_i18n = {
-            "sehr_passend": tr("fit.sehr_passend"),
-            "passend": tr("fit.passend"),
-            "teilweise_passend": tr("fit.teilweise_passend"),
-            "nicht_passend": tr("fit.nicht_passend"),
-            "unbekannt": tr("fit.unbekannt"),
-        }
-        for job in jobs:
-            row = self.table.rowCount()
-            self.table.insertRow(row)
-            dist = "" if job.distance_km is None else f"{job.distance_km:.1f}"
-            fit = build_job_fit_viewmodel(job, cfg)
-            fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
-            values = [
-                display_or_dash(job.title),
-                display_or_dash(job.company),
-                display_or_dash(job.city),
-                dist or "—",
-                display_or_dash(job.remote_type),
-                fit_label,
-                " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation()),
-                display_or_dash(job.source),
-                status_label(job.status),
-            ]
-            for col, value in enumerate(values):
-                # Never paint raw nan into the table.
-                if str(value).strip().lower() in {"nan", "none", "null"}:
-                    value = "—"
-                item = QTableWidgetItem(value)
-                if col == 0:
-                    item.setData(Qt.ItemDataRole.UserRole, job.id)
-                if col == 5:
-                    # Keep numeric sort hint without displaying fake precision.
-                    item.setData(Qt.ItemDataRole.UserRole + 1, int(job.match_score or 0))
-                self.table.setItem(row, col, item)
-        self.table.setSortingEnabled(True)
-        empty = len(jobs) == 0
-        self.table.setVisible(not empty)
-        self.empty.setVisible(empty)
-        self.count_label.setText(tr("jobs.count", n=len(jobs)))
-        if empty:
-            self._clear_detail()
+        self._jobs = self._sorted_jobs(jobs)
+        self._populate_table(self._jobs)
 
     def open_selected(self) -> None:
         job = self._selected or self._job_for_row(self.table.currentRow())
