@@ -94,4 +94,4 @@ Subscribed on branch head after push.
 
 ## 10. Commit SHA
 
-See `git log -1` on push (this pass).
+`172f477` (polish + Guenther-wall fix)
