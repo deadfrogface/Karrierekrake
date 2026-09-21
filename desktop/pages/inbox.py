@@ -329,17 +329,35 @@ class InboxPage(QWidget):
         if not email_id:
             QMessageBox.information(self, tr("nav.inbox"), tr("lifecycle.select_email"))
             return
-        case_id = self.lifecycle.case_picker.currentData() or email.get("case_id")
-        if not case_id and self.lifecycle.case_picker.count() == 1:
-            case_id = self.lifecycle.case_picker.itemData(0)
-        if not case_id:
-            # Prefer picker selection for ambiguous association.
-            if self.lifecycle.case_picker.count() == 0:
-                QMessageBox.information(self, tr("nav.inbox"), tr("lifecycle.select_case"))
-                return
-            case_id = self.lifecycle.case_picker.currentData()
-        if not case_id:
-            QMessageBox.information(self, tr("nav.inbox"), tr("lifecycle.select_case"))
+        from desktop.widgets.association_review_dialog import AssociationReviewDialog
+
+        db = self._db()
+        cases = db.list_cases(limit=100)
+        candidates = [
+            {
+                "id": c.id,
+                "company": c.company,
+                "position": c.position,
+                "updated_at": c.updated_at,
+                "created_at": getattr(c, "created_at", ""),
+            }
+            for c in cases
+        ]
+        dlg = AssociationReviewDialog(
+            subject=email.get("subject") or "",
+            sender=email.get("sender") or "",
+            excerpt=email.get("body_text") or "",
+            candidates=candidates,
+            parent=self,
+        )
+        if dlg.exec() != dlg.DialogCode.Accepted:
+            return
+        case_id = dlg.selected_case_id
+        if case_id is None:
+            return
+        if case_id == "":
+            # Explicit "none" — leave unlinked; do not guess.
+            QMessageBox.information(self, tr("nav.inbox"), tr("assoc.left_unlinked"))
             return
         self.lifecycle.prepare_link_email_ids(
             email_id=str(email_id),

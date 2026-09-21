@@ -459,12 +459,11 @@ class LifecyclePage(QWidget):
             evidence=evidence,
             match_reasons=match_reasons,
         )
-        points = "\n".join(f"• {p}" for p in prep.talking_points[:12]) or "—"
-        QMessageBox.information(
-            self,
-            tr("lifecycle.interview_prep"),
-            f"{prep.company} — {prep.position}\n\n{points}",
-        )
+        from desktop.widgets.interview_prep_dialog import InterviewPrepDialog
+
+        dlg = InterviewPrepDialog(prep, parent=self)
+        if dlg.exec() == dlg.DialogCode.Accepted and dlg.want_draft:
+            self.prepare_followup_draft()
 
     def _on_guenther_action(self, kind: str) -> None:
         case_id = self._selected_case_id() or ""
