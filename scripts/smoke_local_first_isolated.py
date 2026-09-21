@@ -27,6 +27,9 @@ def main() -> int:
     data.mkdir()
     cfg_dir.mkdir()
     os.environ["KARRIEREKRAKE_GEO_DATA_DIR"] = str(base / "geo_active")
+    # Isolate from any host developer profile / LOCALAPPDATA leftovers.
+    os.environ["LOCALAPPDATA"] = str(base / "LocalAppData")
+    os.environ["APPDATA"] = str(base / "AppData")
     report: dict = {"base": str(base), "steps": []}
 
     def step(name: str, ok: bool, detail: str = "") -> None:
@@ -39,9 +42,17 @@ def main() -> int:
         from core.config import AppConfig, LocationConfig, SearchPreferences, SettingsConfig
         from core.database import Database
         from core.location import LocationService, enrich_job_locations
-        from core.models import Job, RemoteType
+        from core.matcher import apply_distance_scoring, score_job
+        from core.models import Job, JobStatus, RemoteType
         from core.hard_filter import distance_exclude
         from integrations.ics_export import build_meetings_ics
+
+        # Gate 6: Erststart — empty user dir, no leftover profile/db.
+        step(
+            "first_start_empty_profile",
+            not (data / "jobs.db").exists() and cfg_dir.is_dir() and not any(cfg_dir.iterdir()),
+            str(base),
+        )
 
         reset_geo_dataset_manager_for_tests()
         reset_pgeocode_index_for_tests()
@@ -96,6 +107,38 @@ def main() -> int:
             "radius_excludes_far",
             distance_exclude(far, cfg) is not None,
             f"far={far.distance_km}",
+        )
+
+        # Gate 6: lokale Jobsuche — fachliches Matching vor Radius (kein Netzwerk).
+        candidate = Job(
+            id="local-near-1",
+            source="smoke",
+            title="Sachbearbeiter Büro",
+            company="Berlin GmbH",
+            description="Vollzeit Büro Berlin Mitte",
+            postal_code="10117",
+            city="Berlin",
+            country_code="DE",
+            remote_type=RemoteType.ONSITE.value,
+            url="https://example.invalid/job/1",
+        )
+        fachlich = score_job(candidate, cfg, apply_distance=False)
+        enrich_job_locations([candidate], svc)
+        apply_distance_scoring(candidate, cfg)
+        db.upsert_job(candidate)
+        stored = db.get_job(candidate.id) if hasattr(db, "get_job") else None
+        listed = getattr(db, "list_jobs", lambda **_: [])()
+        local_ok = (
+            not fachlich.excluded
+            and candidate.distance_km is not None
+            and candidate.distance_km < 15
+            and candidate.status != JobStatus.IGNORED.value
+            and (stored is not None or (isinstance(listed, list) and any(getattr(j, "id", None) == candidate.id for j in listed)))
+        )
+        step(
+            "local_job_search",
+            local_ok,
+            f"score={fachlich.score} dist={candidate.distance_km} status={candidate.status}",
         )
 
         ics1 = build_meetings_ics(
