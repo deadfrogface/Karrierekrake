@@ -1,5 +1,7 @@
 # Günther Final Intelligence / Grounding / Self-Correction Report
 
+> **STALE_DOCUMENTATION (NEXT-01):** Historical PR19 report. Binding AI rule = ONE Phi — [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md).
+
 **Branch:** `cursor/guenther-local-ai-megapass-d85b` (PR #19)  
 **Scope:** Claim grounding + bounded self-correction + architecture compare.  
 **Tournament evidence:** **UNTOUCHED** (`docs/guenther-model-tournament.md`, `benchmark/model_tournament_results.json`, `benchmark/model_tournament_raw/`).  

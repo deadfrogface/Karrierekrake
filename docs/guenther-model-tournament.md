@@ -1,5 +1,9 @@
 # Günther 10-Model Local AI Tournament (Evidence Pass)
 
+> **STALE_DOCUMENTATION (NEXT-01):** Historical evidence only.  
+> Binding rules: [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md) — **ONE Phi model**, no Qwen production/fallback.  
+> Current-state matrix: [`docs/project/current-state-reconciliation.md`](project/current-state-reconciliation.md).
+
 **Branch:** `cursor/guenther-local-ai-megapass-d85b` (PR #19)  
 **Scope:** Evidence-gathering only. **No** production default change. **No** winner implementation. **No** self-correction. **No** Qwen3-1.7B repair. **No** GGUF weights in git.  
 **Runtime:** REAL GGUF via `llama-cpp-python==0.3.35`, CPU, ~15 GB RAM, 4 threads, `n_ctx=4096`, identical `GuentherService` prompts / validators / schemas / fixtures (`/no_think` retained). **REPAIR: NONE.**  

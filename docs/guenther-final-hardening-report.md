@@ -1,5 +1,7 @@
 # Günther Final Hardening / Generalization / Release-Gate Report
 
+> **STALE_DOCUMENTATION (NEXT-01):** Qwen-as-default claims superseded by ONE-Phi decision — [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md).
+
 **Branch:** `cursor/guenther-local-ai-megapass-d85b`  
 **PR #19:** not merged (human only)  
 **Production default:** unchanged — Qwen3-1.7B Q4_K_M  

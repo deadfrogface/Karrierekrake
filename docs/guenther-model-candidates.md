@@ -1,5 +1,7 @@
 # Günther die Krake — Phase 2: Model Candidates
 
+> **STALE_DOCUMENTATION (NEXT-01):** Candidate research only. Production = ONE Phi — [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md).
+
 **Date:** 2026-09-15  
 **Branch:** `cursor/guenther-local-ai-megapass-d85b`  
 **Rule:** No weights in git. User downloads into `%LOCALAPPDATA%\Karrierekrake\models\`. Code license ≠ model license.
