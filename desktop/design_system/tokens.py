@@ -12,7 +12,8 @@ ThemeName = Literal["light", "dark"]
 
 @dataclass(frozen=True)
 class TypographyTokens:
-    font_family: str = '"Segoe UI", "Calibri", sans-serif'
+    # Desktop-safe stack — Inter only if installed locally; never load webfonts at runtime.
+    font_family: str = '"Segoe UI", "Calibri", "Helvetica Neue", sans-serif'
     mono_family: str = '"Cascadia Mono", "Consolas", monospace'
     size_xs: int = 11
     size_sm: int = 12
@@ -39,9 +40,9 @@ class SpacingTokens:
 @dataclass(frozen=True)
 class RadiusTokens:
     sm: int = 4
-    md: int = 6
-    lg: int = 8
-    xl: int = 10
+    md: int = 8  # controls (V2 ~8px)
+    lg: int = 10
+    xl: int = 12  # cards (V2 ~12px)
     pill: int = 999
 
 

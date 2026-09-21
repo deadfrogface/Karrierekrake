@@ -167,16 +167,10 @@ class DashboardPage(QWidget):
         if self._next_action == "review":
             self.review_requested.emit()
         elif self._next_action == "profile":
-            # Parent window navigates via review-style hooks; emit search as fallback
-            # after profile is complete — MainWindow wires search. Profile nav is via stack.
             parent = self.window()
-            if parent is not None and hasattr(parent, "_navigate"):
-                # profile is index 3 in main_window nav defs
-                try:
-                    parent._navigate(3)  # type: ignore[attr-defined]
-                    return
-                except Exception:
-                    pass
+            if parent is not None and hasattr(parent, "navigate_to"):
+                parent.navigate_to("nav.profile")  # type: ignore[attr-defined]
+                return
             self.search_requested.emit()
         else:
             self.search_requested.emit()

@@ -1,0 +1,182 @@
+<!-- 18_inbox_states.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KarriereKrake V2 - Inbox States</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#132238',
+                        teal: { DEFAULT: '#18A999', hover: '#148F82' },
+                        orange: '#E86A45',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; color: #0F172A; font-family: 'Inter', sans-serif; padding: 2rem; -webkit-font-smoothing: antialiased; }
+        .state-container { background: white; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #E2E8F0; }
+        .state-header { font-size: 0.75rem; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #E2E8F0; }
+    </style>
+</head>
+<body class="max-w-4xl mx-auto">
+
+    <h1 class="text-2xl font-bold text-navy mb-8">Inbox States</h1>
+
+    <!-- STATE A -->
+    <div class="state-container">
+        <div class="state-header">State A — Gmail nicht verbunden</div>
+        <div class="flex flex-col items-center justify-center py-10 text-center border border-slate-200 rounded-lg bg-slate-50 shadow-sm">
+            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm text-slate-600">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-base font-semibold text-navy mb-2">Postfach verbinden</h3>
+            <p class="text-sm text-slate-600 mb-2 max-w-sm">KarriereKrake kann Bewerbungsnachrichten lesen und deinen Bewerbungen zuordnen.</p>
+            <p class="text-xs text-slate-400 mb-6 flex items-center justify-center gap-1">
+                <i data-lucide="info" class="w-3 h-3"></i> Der aktuelle Gmail-Zugriff ist read-only.
+            </p>
+            <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-4 h-4"> Gmail verbinden
+            </button>
+        </div>
+    </div>
+
+    <!-- STATE B -->
+    <div class="state-container">
+        <div class="state-header">State B — Synchronisierung</div>
+        <div class="flex items-center justify-center py-10 gap-3">
+            <i data-lucide="refresh-cw" class="w-5 h-5 text-teal animate-spin"></i>
+            <span class="text-sm text-slate-600 font-medium">Postfach wird synchronisiert …</span>
+        </div>
+    </div>
+
+    <!-- STATE C -->
+    <div class="state-container">
+        <div class="state-header">State C — Leer</div>
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+            <div class="text-slate-300 mb-3">
+                <i data-lucide="inbox" class="w-10 h-10"></i>
+            </div>
+            <p class="text-sm text-slate-500 font-medium">Keine neuen Bewerbungsnachrichten</p>
+        </div>
+    </div>
+
+    <!-- STATE D -->
+    <div class="state-container">
+        <div class="state-header">State D — Normale Nachrichten</div>
+        <div class="border border-slate-200 rounded-lg divide-y divide-slate-100 shadow-sm overflow-hidden">
+            <div class="p-4 hover:bg-slate-50 transition-colors flex justify-between items-start gap-4">
+                <div class="flex-1">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-semibold text-navy">HR Team Acme GmbH</span>
+                        <span class="text-xs text-slate-400">Heute, 09:41</span>
+                    </div>
+                    <p class="text-sm font-medium text-slate-800 mb-1">Einladung zum Vorstellungsgespräch</p>
+                    <p class="text-xs text-slate-500 truncate">Hallo Günther, vielen Dank für deine Bewerbung. Wir möchten...</p>
+                </div>
+                <div class="shrink-0 mt-1">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-100 text-[10px] font-medium text-slate-600 uppercase tracking-wide">
+                        <i data-lucide="link" class="w-3 h-3"></i> Zugeordnet
+                    </span>
+                </div>
+            </div>
+            <div class="p-4 hover:bg-slate-50 transition-colors flex justify-between items-start gap-4 opacity-75">
+                <div class="flex-1">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-slate-700">TechCorp Recruiting</span>
+                        <span class="text-xs text-slate-400">Gestern</span>
+                    </div>
+                    <p class="text-sm text-slate-700 mb-1">Eingangsbestätigung</p>
+                    <p class="text-xs text-slate-500 truncate">Ihre Bewerbung als Frontend Developer ist bei uns eingegangen...</p>
+                </div>
+                <div class="shrink-0 mt-1">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-slate-100 text-[10px] font-medium text-slate-600 uppercase tracking-wide">
+                        <i data-lucide="link" class="w-3 h-3"></i> Zugeordnet
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE E -->
+    <div class="state-container">
+        <div class="state-header">State E — Zuordnung unklar (Action Queue)</div>
+        <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm mb-6 flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                <i data-lucide="git-merge" class="w-5 h-5"></i>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-sm font-semibold text-navy mb-1">2 Nachrichten müssen zugeordnet werden.</h3>
+                <p class="text-xs text-slate-600 mb-3">KarriereKrake konnte diese E-Mails keiner aktiven Bewerbung eindeutig zuweisen.</p>
+                <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                    Jetzt zuordnen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE F -->
+    <div class="state-container">
+        <div class="state-header">State F — Anmeldung erneut erforderlich</div>
+        <div class="border-l-4 border-orange bg-orange/5 p-4 rounded-r-md shadow-sm">
+            <div class="flex items-start gap-3">
+                <i data-lucide="key" class="w-5 h-5 text-orange shrink-0"></i>
+                <div>
+                    <h3 class="text-sm font-semibold text-navy mb-1">Gmail muss erneut verbunden werden.</h3>
+                    <p class="text-xs text-slate-600 mb-3">Deine Anmeldung ist abgelaufen oder wurde widerrufen.</p>
+                    <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                        Erneut verbinden
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE G -->
+    <div class="state-container">
+        <div class="state-header">State G — Sync teilweise fehlgeschlagen</div>
+        <div class="bg-slate-100 rounded-lg p-3 flex justify-between items-center mb-4 text-xs">
+            <div class="flex items-center gap-2 text-slate-600">
+                <i data-lucide="alert-circle" class="w-4 h-4"></i> Neue Nachrichten konnten gerade nicht vollständig geladen werden.
+            </div>
+            <div class="flex gap-3">
+                <button class="font-medium text-navy hover:text-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 rounded-sm px-1">Erneut versuchen</button>
+                <button class="font-medium text-slate-500 hover:text-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300 rounded-sm px-1">Details</button>
+            </div>
+        </div>
+        <div class="border border-slate-200 rounded-lg p-4 opacity-60 shadow-sm">
+            <div class="font-medium text-sm text-navy mb-1">Alte Nachricht (bereits geladen)</div>
+            <div class="text-xs text-slate-500">Diese bleibt weiterhin sichtbar.</div>
+        </div>
+    </div>
+
+    <!-- STATE H -->
+    <div class="state-container">
+        <div class="state-header">State H — Mail wurde manuell zugeordnet (Toast/Success)</div>
+        <div class="bg-slate-800 text-white p-3 rounded-lg shadow-lg flex items-center justify-between max-w-md text-sm">
+            <div class="flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-teal"></i>
+                <span>Nachricht wurde <strong>Office Manager</strong> zugeordnet.</span>
+            </div>
+            <button class="text-slate-300 hover:text-white font-medium transition-colors underline focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-sm px-1 ml-2">
+                Rückgängig
+            </button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

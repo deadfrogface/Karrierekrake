@@ -114,10 +114,14 @@ class JobsPage(QWidget):
         self.prepare_btn = QPushButton()
         self.prepare_btn.setObjectName("PrimaryButton")
         self.prepare_btn.clicked.connect(self.prepare_application)
+        self.search_intent_btn = QPushButton()
+        self.search_intent_btn.setObjectName("SecondaryButton")
+        self.search_intent_btn.clicked.connect(self.open_search_intent)
         btn_row = QHBoxLayout()
         btn_row.addWidget(self.apply_btn)
         btn_row.addWidget(self.open_btn)
         btn_row.addWidget(self.prepare_btn)
+        btn_row.addWidget(self.search_intent_btn)
         btn_row.addStretch()
         filter_form.addRow(btn_row)
 
@@ -213,6 +217,7 @@ class JobsPage(QWidget):
         self.apply_btn.setText(tr("btn.filter"))
         self.open_btn.setText(tr("btn.open_job"))
         self.prepare_btn.setText(tr("btn.prepare_application"))
+        self.search_intent_btn.setText(tr("jobs.open_search_intent"))
         self.detail_prepare.setText(tr("btn.prepare_application"))
         self.detail_open.setText(tr("btn.open_job"))
         self.empty.setText(tr("jobs.empty"))
@@ -389,3 +394,8 @@ class JobsPage(QWidget):
         meta = self.config_service.load_meta()
         preview = build_application_preview(job, cfg, meta=meta)
         ApplyPreviewDialog(preview, self).exec()
+
+    def open_search_intent(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "open_search_intent"):
+            parent.open_search_intent()  # type: ignore[attr-defined]

@@ -292,6 +292,19 @@ class SettingsPage(QWidget):
         br_layout.addWidget(self.browser_status)
         br_layout.addLayout(btn_row)
         auto_layout.addWidget(br_box)
+
+        diag_box = QGroupBox()
+        self.diag_box = diag_box
+        dform = QVBoxLayout(diag_box)
+        self.diag_intro = QLabel()
+        self.diag_intro.setWordWrap(True)
+        self.diag_intro.setObjectName("PageSubtitle")
+        self.open_logs_btn = QPushButton()
+        self.open_logs_btn.setObjectName("SecondaryButton")
+        self.open_logs_btn.clicked.connect(self._open_diagnose_logs)
+        dform.addWidget(self.diag_intro)
+        dform.addWidget(self.open_logs_btn)
+        auto_layout.addWidget(diag_box)
         auto_layout.addStretch(1)
         self.tabs.addTab(auto_page, "")
         self._browser_busy = False
@@ -372,6 +385,7 @@ class SettingsPage(QWidget):
             self.check_browser_btn,
             self.repair_browser_btn,
             self.about_btn,
+            self.open_logs_btn,
         ):
             annotate_button(btn)
 
@@ -399,6 +413,9 @@ class SettingsPage(QWidget):
         self.apply_box.setTitle(tr("settings.auto_apply"))
         self.bg_box.setTitle(tr("settings.automation"))
         self.br_box.setTitle(tr("settings.browser"))
+        self.diag_box.setTitle(tr("settings.advanced"))
+        self.diag_intro.setText(tr("settings.open_diagnose_logs"))
+        self.open_logs_btn.setText(tr("settings.open_diagnose_logs"))
         self.lang_label.setText(tr("settings.language"))
         self.theme_label.setText(tr("settings.theme"))
         self.high_contrast.setText(tr("a11y.high_contrast"))
@@ -494,9 +511,15 @@ class SettingsPage(QWidget):
         self.custom_times.setPlaceholderText("08:00, 17:00")
         self.check_browser_btn.setText(tr("btn.check_browser"))
         self.repair_browser_btn.setText(tr("btn.repair_browser"))
+        self.open_logs_btn.setText(tr("settings.open_diagnose_logs"))
         self.about_btn.setText(tr("about.open"))
         self.save_btn.setText(tr("btn.save_settings"))
         self._annotate_a11y_controls()
+
+    def _open_diagnose_logs(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "open_diagnose_logs"):
+            parent.open_diagnose_logs()  # type: ignore[attr-defined]
 
     def open_about(self) -> None:
         AboutDialog(self).exec()

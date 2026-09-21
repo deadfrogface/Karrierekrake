@@ -1,0 +1,205 @@
+<!-- 17_application_states.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KarriereKrake V2 - Application States</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#132238',
+                        teal: { DEFAULT: '#18A999', hover: '#148F82' },
+                        orange: '#E86A45',
+                        background: '#F8FAFC',
+                        surface: '#FFFFFF'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; color: #0F172A; font-family: 'Inter', sans-serif; padding: 2rem; -webkit-font-smoothing: antialiased; }
+        .state-container { background: white; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border: 1px solid #E2E8F0; }
+        .state-header { font-size: 0.75rem; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #E2E8F0; }
+    </style>
+</head>
+<body class="max-w-4xl mx-auto">
+
+    <h1 class="text-2xl font-bold text-navy mb-8">Application States</h1>
+
+    <!-- STATE A -->
+    <div class="state-container">
+        <div class="state-header">State A — Noch keine Bewerbungen</div>
+        <div class="flex flex-col items-center justify-center py-12 text-center">
+            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-4 text-slate-400">
+                <i data-lucide="file-text" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-navy mb-2">Noch keine Bewerbungen</h3>
+            <p class="text-sm text-slate-600 mb-6 max-w-sm">Wenn du eine passende Stelle auswählst und eine Bewerbung vorbereitest, erscheint sie hier.</p>
+            <button class="bg-teal hover:bg-teal-hover text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                <i data-lucide="arrow-right" class="w-4 h-4"></i> Zu Jobs
+            </button>
+        </div>
+    </div>
+
+    <!-- STATE B -->
+    <div class="state-container">
+        <div class="state-header">State B — Bewerbung wird vorbereitet</div>
+        <div class="py-4 px-4">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center text-teal">
+                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-semibold text-navy">Bewerbung wird vorbereitet …</h3>
+                    <p class="text-slate-500 text-sm mt-0.5">Product Manager (m/w/d) bei TechCorp</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 pl-4 border-l-2 border-slate-100 ml-4">
+                <div class="flex items-center gap-3 text-sm text-slate-600 relative">
+                    <div class="absolute -left-[21px] w-2 h-2 rounded-full bg-teal ring-4 ring-white"></div>
+                    <i data-lucide="check" class="w-4 h-4 text-teal"></i> Lebenslauf geprüft
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-600 relative">
+                    <div class="absolute -left-[21px] w-2 h-2 rounded-full bg-teal ring-4 ring-white"></div>
+                    <i data-lucide="check" class="w-4 h-4 text-teal"></i> Formularfelder vorbereitet
+                </div>
+                <div class="flex items-center gap-3 text-sm font-medium text-navy relative">
+                    <div class="absolute -left-[21px] w-2 h-2 rounded-full bg-slate-300 ring-4 ring-white"></div>
+                    <i data-lucide="loader-2" class="w-4 h-4 text-slate-400 animate-spin"></i> Anschreiben wird erstellt
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE C -->
+    <div class="state-container">
+        <div class="state-header">State C — Bereit</div>
+        <div class="border border-green-200 bg-green-50 rounded-lg p-4 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-navy">Bewerbung ist vorbereitet</h3>
+                    <p class="text-xs text-slate-600 mt-0.5">Alles ist bereit für deine Freigabe.</p>
+                </div>
+            </div>
+            <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-4 py-2 rounded-md font-medium transition-colors text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                Prüfen
+            </button>
+        </div>
+    </div>
+
+    <!-- STATE D -->
+    <div class="state-container">
+        <div class="state-header">State D — Prüfung nötig</div>
+        <div class="border border-yellow-200 bg-yellow-50 rounded-lg p-4 shadow-sm">
+            <div class="flex items-start gap-3 mb-3">
+                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 shrink-0">
+                    <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-navy">Diese Bewerbung braucht deine Hilfe.</h3>
+                    <ul class="text-xs text-slate-700 mt-1.5 space-y-1 list-disc list-inside">
+                        <li>Gehaltsangabe prüfen</li>
+                        <li>Plattform verlangt zusätzliche Antwort</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex justify-end mt-3">
+                <button class="bg-navy hover:bg-slate-800 text-white px-4 py-2 rounded-md font-medium transition-colors text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-1">
+                    Jetzt prüfen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE E -->
+    <div class="state-container">
+        <div class="state-header">State E — Manuelle Sicherheitsprüfung</div>
+        <div class="border border-slate-200 bg-white rounded-lg p-6 text-center shadow-sm">
+            <div class="inline-flex w-10 h-10 rounded-full bg-slate-100 items-center justify-center text-slate-500 mb-3">
+                <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-sm font-semibold text-navy mb-1">Die Stellenplattform benötigt kurz deine Hilfe.</h3>
+            <p class="text-xs text-slate-600 mb-5 max-w-sm mx-auto">Öffne die Bewerbung und schließe die Sicherheitsprüfung ab, damit es weitergehen kann.</p>
+            <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2 mx-auto focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">
+                <i data-lucide="external-link" class="w-4 h-4"></i> Bewerbung öffnen
+            </button>
+        </div>
+    </div>
+
+    <!-- STATE F -->
+    <div class="state-container">
+        <div class="state-header">State F — Bewerbung fehlgeschlagen</div>
+        <div class="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-lg shadow-sm">
+            <div class="flex gap-3">
+                <i data-lucide="x-circle" class="w-5 h-5 text-red-600 shrink-0"></i>
+                <div>
+                    <h3 class="text-sm font-semibold text-navy mb-0.5">Die Bewerbung konnte nicht vorbereitet werden.</h3>
+                    <p class="text-xs text-slate-600 mb-3">Das Karriereportal der Firma ist derzeit nicht erreichbar.</p>
+                    <div class="flex gap-2">
+                        <button class="text-xs font-medium text-navy hover:text-slate-700 transition-colors bg-white border border-slate-300 px-3 py-1.5 rounded-md shadow-sm">Erneut versuchen</button>
+                        <button class="text-xs font-medium text-slate-600 hover:text-navy transition-colors bg-white border border-slate-300 px-3 py-1.5 rounded-md shadow-sm">Manuell öffnen</button>
+                        <button class="text-xs font-medium text-slate-500 hover:text-slate-700 transition-colors px-2 py-1.5 rounded-md">Technische Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE G -->
+    <div class="state-container">
+        <div class="state-header">State G — Erfolgreich versendet</div>
+        <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-teal text-white flex items-center justify-center">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-navy">Bewerbung versendet</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">13. September · 10:42</p>
+                </div>
+            </div>
+            <button class="text-teal hover:text-teal-hover font-medium text-sm px-3 py-1.5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-teal/50">
+                Bewerbung ansehen
+            </button>
+        </div>
+    </div>
+
+    <!-- STATE H -->
+    <div class="state-container">
+        <div class="state-header">State H — Follow-up fällig</div>
+        <div class="border border-slate-200 rounded-lg p-4 bg-white relative overflow-hidden shadow-sm">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-orange"></div>
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i data-lucide="clock" class="w-4 h-4 text-orange"></i>
+                        <h3 class="text-sm font-semibold text-navy">Aktion empfohlen</h3>
+                    </div>
+                    <p class="text-xs text-slate-600 mb-4">Seit 14 Tagen keine Rückmeldung zur Bewerbung bei Acme Corp.</p>
+                    <div class="flex gap-2">
+                        <button class="bg-white border border-slate-300 hover:bg-slate-50 text-navy px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal focus:ring-offset-1">Entwurf übernehmen</button>
+                        <button class="bg-transparent text-slate-600 hover:text-navy px-3 py-1.5 rounded-md text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300">Später erinnern</button>
+                        <button class="bg-transparent text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-md text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300">Erledigt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

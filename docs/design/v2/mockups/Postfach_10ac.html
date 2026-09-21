@@ -1,0 +1,194 @@
+<!-- 08_inbox.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KarriereKrake - Postfach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { navy: '#132238', teal: '#18A999', tealHover: '#148F82', bgLight: '#F8FAFC', orange: '#E86A45' } } } }
+    </script>
+    <style> body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; } </style>
+</head>
+<body class="bg-bgLight text-gray-800 h-screen flex overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-navy text-white flex flex-col justify-between flex-shrink-0 z-20">
+        <div>
+            <div class="p-6 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded bg-teal flex items-center justify-center text-xl font-bold">K</div>
+                <span class="text-xl font-semibold tracking-wide">KarriereKrake</span>
+            </div>
+            <nav class="mt-4 flex flex-col space-y-1 px-3">
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Übersicht
+                </a>
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Jobs
+                </a>
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Bewerbungen
+                </a>
+                <a href="#" class="px-3 py-2 bg-teal bg-opacity-20 text-teal rounded-md font-medium flex items-center justify-between">
+                    <div class="flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> Postfach</div>
+                    <span class="bg-orange text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <!-- Minimal Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold text-navy">Postfach</h1>
+                <p class="text-sm text-gray-500">Deine Nachrichten im Überblick.</p>
+            </div>
+            <div class="flex items-center space-x-2 text-sm">
+                <span class="text-gray-500">Gespiegeltes Konto:</span>
+                <span class="font-medium bg-gray-100 px-2 py-1 rounded">max.mustermann@gmail.com</span>
+            </div>
+        </header>
+
+        <!-- Split Pane Layout -->
+        <div class="flex-1 flex overflow-hidden">
+            
+            <!-- Left List (w-96) -->
+            <div class="w-96 bg-white border-r border-gray-200 overflow-y-auto flex flex-col">
+                <div class="p-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between sticky top-0 z-10">
+                    <input type="text" placeholder="Nachrichten durchsuchen..." class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-teal">
+                </div>
+                
+                <div class="divide-y divide-gray-100">
+                    
+                    <!-- Item 1 (Needs Review) -->
+                    <div class="p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 border-orange bg-orange/5">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-navy text-sm truncate pr-2">Acme Recruiting</span>
+                            <span class="text-xs text-gray-500 whitespace-nowrap">10:15</span>
+                        </div>
+                        <div class="text-sm font-medium text-gray-800 mb-2 truncate">Ihre Bewerbung</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-orange/10 text-orange border border-orange/20">
+                            ? Zuordnung prüfen
+                        </span>
+                    </div>
+
+                    <!-- Item 2 (Active/Selected) -->
+                    <div class="p-4 cursor-pointer bg-teal/5 border-l-4 border-teal relative">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-navy text-sm truncate pr-2">RheinOffice GmbH</span>
+                            <span class="text-xs text-teal font-medium whitespace-nowrap">Gestern</span>
+                        </div>
+                        <div class="text-sm font-bold text-navy mb-2 truncate">Einladung zum Gespräch</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-teal/10 text-teal border border-teal/20">
+                            ✓ Automatisch zugeordnet
+                        </span>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 border-transparent">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-navy text-sm truncate pr-2">Kölner Medienhaus</span>
+                            <span class="text-xs text-gray-500 whitespace-nowrap">13. Sep</span>
+                        </div>
+                        <div class="text-sm font-medium text-gray-800 mb-2 truncate">Ihre Bewerbung ist eingegangen</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                            ✓ Eingangsbestätigung
+                        </span>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 border-transparent opacity-60">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-navy text-sm truncate pr-2">TechStart Berlin</span>
+                            <span class="text-xs text-gray-500 whitespace-nowrap">12. Sep</span>
+                        </div>
+                        <div class="text-sm font-medium text-gray-800 mb-2 truncate">Rückmeldung zu Ihrer Bewerbung</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-50 text-red-700 border border-red-100">
+                            Absage
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right Detail Panel -->
+            <div class="flex-1 bg-bgLight overflow-y-auto p-6 flex justify-center">
+                <div class="w-full max-w-3xl space-y-4">
+                    
+                    <!-- Context Card -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-teal/10 rounded-full flex items-center justify-center text-teal">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500 uppercase tracking-wider">Zugeordnete Bewerbung</div>
+                                <div class="font-bold text-navy">Office Manager bei RheinOffice GmbH</div>
+                            </div>
+                        </div>
+                        <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded text-sm font-medium transition-colors">
+                            Bewerbung öffnen
+                        </button>
+                    </div>
+
+                    <!-- Email View -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                        
+                        <!-- Mail Header -->
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <h2 class="text-xl font-bold text-navy">Einladung zum Gespräch</h2>
+                                <span class="bg-teal/10 text-teal border border-teal/20 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider">Interview</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center text-sm">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold">AW</div>
+                                    <div>
+                                        <div class="font-bold text-gray-900">Anna Weber <span class="text-gray-500 font-normal ml-1">&lt;a.weber@rheinoffice.de&gt;</span></div>
+                                        <div class="text-gray-500">an mich &lt;max.mustermann@gmail.com&gt;</div>
+                                    </div>
+                                </div>
+                                <div class="text-gray-500">20.09.2026, 14:30 Uhr</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mail Body -->
+                        <div class="p-6 text-gray-800 text-sm leading-relaxed whitespace-pre-line font-serif">
+Sehr geehrter Herr Mustermann,
+
+vielen Dank für Ihre Bewerbung und Ihr Interesse an der Position als Office Manager bei RheinOffice. 
+
+Ihr Profil hat uns sehr angesprochen. Wir würden Sie gerne in einem kurzen Online-Gespräch näher kennenlernen, um über Ihre Erfahrungen und die Details der Position zu sprechen.
+
+Bitte lassen Sie uns wissen, ob Ihnen einer der folgenden Termine passt:
+- Dienstag oder Mittwoch zwischen 9 und 15 Uhr
+
+Das Gespräch wird über Microsoft Teams stattfinden und ca. 45 Minuten dauern. Einen Einladungslink sende ich Ihnen nach Terminbestätigung zu.
+
+Wir freuen uns auf Ihre Rückmeldung.
+
+Mit freundlichen Grüßen,
+Anna Weber
+HR Managerin
+RheinOffice GmbH
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+                        <span class="text-sm text-gray-500">KarriereKrake hat erkannt, dass ein Interview geplant werden soll.</span>
+                        <button class="bg-teal hover:bg-tealHover text-white px-5 py-2.5 rounded shadow text-sm font-semibold transition-colors">
+                            Antwort vorbereiten
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

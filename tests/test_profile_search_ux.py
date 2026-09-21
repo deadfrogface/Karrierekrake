@@ -297,25 +297,33 @@ def test_search_page_tab_order_and_long_german_labels(qapp, config_service):
     assert page.salary_min.focusPolicy() == Qt.FocusPolicy.StrongFocus
 
 
-def test_main_window_nav_order_profile_then_search(qapp, config_service, monkeypatch, tmp_path):
+def test_main_window_v2_nav_order(qapp, config_service, monkeypatch, tmp_path):
     monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
     monkeypatch.setattr("desktop.tray.AppTray.showMessage", lambda *a, **k: None)
     from desktop.main_window import MainWindow
 
     win = MainWindow(config_service)
-    keys = [k for k, _ in win._nav_defs]
-    assert keys[0] == "nav.profile"
-    assert keys[1] == "nav.search"
-    assert keys[2] == "nav.jobs"
-    assert keys[3] == "nav.applications"
-    assert keys[4] == "nav.guenther"
-    assert keys[5] == "nav.settings"
+    primary = [k for k, _ in win._primary_nav]
+    assert primary == [
+        "nav.overview",
+        "nav.jobs",
+        "nav.applications",
+        "nav.inbox",
+        "nav.profile",
+    ]
+    assert [k for k, _ in win._utility_nav] == ["nav.settings"]
+    # Search + logs preserved off primary nav
     assert "nav.search" in win._page_index
+    assert "nav.logs" in win._page_index
+    # Legacy aliases
+    assert win._page_index["nav.dashboard"] == win._page_index["nav.overview"]
+    assert win._page_index["nav.guenther"] == win._page_index["nav.inbox"]
     win.navigate_to("nav.search")
     assert win.stack.currentWidget() is win.search
     win.navigate_to("nav.profile")
     assert win.stack.currentWidget() is win.profile
-    # DPI: page still lays out without crash at large min size
+    win.navigate_to("nav.overview")
+    assert win.stack.currentWidget() is win.dashboard
     win.resize(1400, 900)
     win.search.load_from_config()
     win.close()
@@ -327,12 +335,16 @@ def test_i18n_keys_parity_for_search(qapp):
     assert set(TRANSLATIONS["de"]) == set(TRANSLATIONS["en"])
     for key in (
         "nav.search",
+        "nav.overview",
+        "nav.inbox",
+        "nav.help",
         "nav.guenther",
         "search.target_roles",
         "search.mandatory_skills",
         "search.radius",
         "btn.save_search",
         "profile.subtitle",
+        "inbox.subtitle",
     ):
         assert key in TRANSLATIONS["de"]
         assert key in TRANSLATIONS["en"]

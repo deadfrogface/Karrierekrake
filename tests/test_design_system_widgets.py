@@ -50,7 +50,8 @@ def test_tokens_light_and_dark_differ():
     assert light.schema_version == "1.0.0"
     assert light.typography.size_md >= 12
     assert light.spacing.md == 12
-    assert light.radii.md == 6
+    assert light.radii.md == 8
+    assert light.radii.xl == 12
 
 
 def test_design_stylesheet_contains_focus_and_validation():

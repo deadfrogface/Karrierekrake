@@ -1,0 +1,204 @@
+<!-- 10_interview.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KarriereKrake - Interview Vorbereitung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { navy: '#132238', teal: '#18A999', tealHover: '#148F82', bgLight: '#F8FAFC', orange: '#E86A45' } } } }
+    </script>
+    <style> body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; } </style>
+</head>
+<body class="bg-bgLight text-gray-800 h-screen flex overflow-hidden">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-navy text-white flex flex-col justify-between flex-shrink-0">
+        <div>
+            <div class="p-6 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded bg-teal flex items-center justify-center text-xl font-bold">K</div>
+                <span class="text-xl font-semibold tracking-wide">KarriereKrake</span>
+            </div>
+            <nav class="mt-4 flex flex-col space-y-1 px-3">
+                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Übersicht</a>
+                <a href="#" class="px-3 py-2 bg-teal bg-opacity-20 text-teal rounded-md font-medium flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Bewerbungen
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto relative">
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-8 py-5 flex justify-between items-center sticky top-0 z-20 shadow-sm">
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-400 hover:text-navy transition-colors flex items-center justify-center w-8 h-8 rounded hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-navy">Interview vorbereiten</h1>
+                    <p class="text-sm text-gray-500">RheinOffice GmbH — Office Manager</p>
+                </div>
+            </div>
+            <span class="inline-flex items-center px-3 py-1 rounded text-sm font-bold bg-teal/10 text-teal border border-teal/20">
+                Interviewanfrage erhalten
+            </span>
+        </header>
+
+        <div class="p-8 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 pb-20">
+            
+            <!-- Left Area: B. Terminplanung (4 columns) -->
+            <div class="lg:col-span-5 space-y-6">
+                <h2 class="text-lg font-bold text-navy">Terminplanung</h2>
+                
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                    <div class="text-sm text-gray-500 mb-2">Auszug aus der E-Mail des Arbeitgebers:</div>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-100 text-sm text-gray-800 font-serif italic mb-6">
+                        "Dienstag oder Mittwoch zwischen 9 und 15 Uhr wäre möglich."
+                    </div>
+
+                    <h3 class="font-bold text-navy text-sm mb-3">Empfohlene Termine</h3>
+                    <div class="space-y-3">
+                        
+                        <!-- Slot 1 (Selected) -->
+                        <label class="block p-4 border border-teal bg-teal/5 rounded cursor-pointer relative transition-colors">
+                            <div class="flex items-start">
+                                <input type="radio" name="slot" class="w-4 h-4 text-teal focus:ring-teal mt-0.5 mr-3" checked>
+                                <div>
+                                    <div class="font-bold text-navy">Dienstag, 10:30–11:30 Uhr</div>
+                                    <div class="mt-2 space-y-1">
+                                        <div class="flex items-center text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            Keine Kalenderüberschneidung
+                                        </div>
+                                        <div class="flex items-center text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            Innerhalb deiner bevorzugten Zeit
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- Slot 2 -->
+                        <label class="block p-4 border border-gray-200 hover:border-gray-300 rounded cursor-pointer transition-colors">
+                            <div class="flex items-start">
+                                <input type="radio" name="slot" class="w-4 h-4 text-teal focus:ring-teal mt-0.5 mr-3">
+                                <div>
+                                    <div class="font-bold text-navy">Dienstag, 13:00–14:00 Uhr</div>
+                                    <div class="mt-2 flex items-center text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        Frei
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- Slot 3 -->
+                        <label class="block p-4 border border-gray-200 hover:border-gray-300 rounded cursor-pointer transition-colors">
+                            <div class="flex items-start">
+                                <input type="radio" name="slot" class="w-4 h-4 text-teal focus:ring-teal mt-0.5 mr-3">
+                                <div>
+                                    <div class="font-bold text-navy">Mittwoch, 09:30–10:30 Uhr</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Alternate actions if no slots -->
+                    <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
+                        <button class="text-teal text-sm font-medium hover:underline">Andere Zeiten prüfen</button>
+                        <button class="text-teal text-sm font-medium hover:underline">Eigenen Vorschlag machen</button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col space-y-3">
+                    <button class="w-full bg-teal hover:bg-tealHover text-white py-3 rounded shadow text-sm font-semibold transition-colors">
+                        Antwortentwurf erstellen
+                    </button>
+                    <div class="flex space-x-3">
+                        <button class="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2.5 rounded text-sm font-medium transition-colors">
+                            In Kalender übernehmen
+                        </button>
+                        <button class="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2.5 rounded text-sm font-medium transition-colors">
+                            ICS exportieren
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Area: A. Interviewvorbereitung (7 columns) -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="flex items-center space-x-2">
+                    <h2 class="text-lg font-bold text-navy">Vorbereitung</h2>
+                    <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full flex items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-teal mr-1.5"></span> KI-Vorschläge
+                    </span>
+                </div>
+
+                <!-- Match & Experience -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                    <h3 class="font-bold text-navy mb-4 flex items-center">
+                        <svg class="w-5 h-5 text-teal mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Warum du gut passt (Matchgründe)
+                    </h3>
+                    <ul class="list-disc pl-5 text-sm text-gray-700 space-y-2 mb-6">
+                        <li>Die Firma sucht jemanden für die <strong>Büroorganisation und Schnittstellenfunktion</strong>. Das entspricht exakt deinen letzten 3 Jahren.</li>
+                        <li>Deine Kenntnisse in <strong>DATEV und Excel</strong> werden explizit im Anforderungsprofil gefordert.</li>
+                    </ul>
+
+                    <h3 class="font-bold text-navy mb-4 border-t border-gray-100 pt-6">Relevante eigene Erfahrungen hervorheben</h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                            <div class="font-medium text-navy text-sm mb-1">Talking Point 1: Schnittstellenkommunikation</div>
+                            <p class="text-xs text-gray-600">Erwähne dein Projekt aus 2025, bei dem du die interne Kommunikation zwischen Vertrieb und Geschäftsführung optimiert hast.</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100">
+                            <div class="font-medium text-navy text-sm mb-1">Talking Point 2: Software-Einführung</div>
+                            <p class="text-xs text-gray-600">Betone, wie schnell du dich in neue Tools einarbeitest, z.B. bei der Einführung der neuen Zeiterfassung in deinem letzten Job.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions -->
+                <div class="grid grid-cols-2 gap-6">
+                    
+                    <!-- Mögliche Fragen -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                        <h3 class="font-bold text-navy mb-4 text-sm uppercase tracking-wider text-gray-500">Mögliche Fragen an dich</h3>
+                        <ul class="space-y-4 text-sm text-gray-800">
+                            <li class="flex items-start">
+                                <span class="text-orange mr-2 mt-0.5">Q:</span>
+                                <span>"Wie gehen Sie mit stressigen Situationen um, wenn mehrere Abteilungen gleichzeitig etwas von Ihnen brauchen?"</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-orange mr-2 mt-0.5">Q:</span>
+                                <span>"Ihr Englisch ist auf Level 'Gute Kenntnisse'. Trauen Sie sich zu, internationale Anrufe zu übernehmen?"</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Eigene Rückfragen -->
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+                        <h3 class="font-bold text-navy mb-4 text-sm uppercase tracking-wider text-gray-500">Gute Rückfragen von dir</h3>
+                        <ul class="space-y-4 text-sm text-gray-800">
+                            <li class="flex items-start">
+                                <span class="text-teal mr-2 mt-0.5">?</span>
+                                <span>"Wie groß ist das Team, das vor Ort im Büro arbeitet, an den zwei regulären Präsenztagen?"</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-teal mr-2 mt-0.5">?</span>
+                                <span>"Welche Aufgabe hat für diese Position in den ersten 3 Monaten die höchste Priorität?"</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
