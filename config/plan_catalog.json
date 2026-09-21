@@ -1,0 +1,415 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-09-21",
+  "payment_provider": "paddle",
+  "payment_fallback_chain": [],
+  "target_profit_margin": 0.35,
+  "vat_rate_de": 0.19,
+  "google_free_caps_policy": "company_buffer_only",
+  "breakpoint_probe": [
+    {
+      "road_routed_jobs_per_month": 100,
+      "maps_cost_eur_post_free": 1.012,
+      "price_floor_gross_eur": 6.2,
+      "suggested_list_gross_eur": 6.99,
+      "contribution_margin_pct_at_suggested": 0.4025,
+      "meets_target_at_100_users_alloc": true
+    },
+    {
+      "road_routed_jobs_per_month": 250,
+      "maps_cost_eur_post_free": 2.5300000000000002,
+      "price_floor_gross_eur": 10.08,
+      "suggested_list_gross_eur": 10.99,
+      "contribution_margin_pct_at_suggested": 0.3885,
+      "meets_target_at_100_users_alloc": true
+    },
+    {
+      "road_routed_jobs_per_month": 500,
+      "maps_cost_eur_post_free": 5.0600000000000005,
+      "price_floor_gross_eur": 16.55,
+      "suggested_list_gross_eur": 16.99,
+      "contribution_margin_pct_at_suggested": 0.3621,
+      "meets_target_at_100_users_alloc": true
+    },
+    {
+      "road_routed_jobs_per_month": 1000,
+      "maps_cost_eur_post_free": 10.120000000000001,
+      "price_floor_gross_eur": 29.48,
+      "suggested_list_gross_eur": 29.99,
+      "contribution_margin_pct_at_suggested": 0.3579,
+      "meets_target_at_100_users_alloc": true
+    },
+    {
+      "road_routed_jobs_per_month": 2000,
+      "maps_cost_eur_post_free": 20.240000000000002,
+      "price_floor_gross_eur": 55.35,
+      "suggested_list_gross_eur": 55.99,
+      "contribution_margin_pct_at_suggested": 0.3553,
+      "meets_target_at_100_users_alloc": true
+    },
+    {
+      "road_routed_jobs_per_month": 5000,
+      "maps_cost_eur_post_free": 50.6,
+      "price_floor_gross_eur": 132.95,
+      "suggested_list_gross_eur": 132.99,
+      "contribution_margin_pct_at_suggested": 0.3501,
+      "meets_target_at_100_users_alloc": true
+    }
+  ],
+  "tiers": [
+    {
+      "id": "starter",
+      "display_name": {
+        "de": "Starter",
+        "en": "Starter"
+      },
+      "road_routed_jobs_per_month": 250,
+      "list_price_gross_eur": 10.99,
+      "billing_period": "month",
+      "payment_provider": "paddle",
+      "economics_at_100_users": {
+        "tier_id": "starter",
+        "road_routed_jobs_per_month": 250,
+        "list_price_gross_eur": 10.99,
+        "vat_eur": 1.75,
+        "payment_fee_eur": 1.01,
+        "maps_cost_eur": 2.53,
+        "infra_alloc_eur": 0.66,
+        "signing_alloc_eur": 0.29,
+        "support_reserve_eur": 0.88,
+        "refund_chargeback_reserve_eur": 0.27,
+        "contribution_margin_eur": 3.59,
+        "contribution_margin_pct": 0.3885,
+        "meets_target_margin": true,
+        "break_even_users_approx": 26.6,
+        "notes": "Post-free Maps rates; free caps = company buffer only."
+      },
+      "scenarios": {
+        "users_100": {
+          "users": 100,
+          "tier_id": "starter",
+          "monthly_gross_eur": 1099.0,
+          "monthly_maps_eur": 253.0,
+          "monthly_contribution_eur": 359.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 263.58,
+          "per_user": {
+            "tier_id": "starter",
+            "road_routed_jobs_per_month": 250,
+            "list_price_gross_eur": 10.99,
+            "vat_eur": 1.75,
+            "payment_fee_eur": 1.01,
+            "maps_cost_eur": 2.53,
+            "infra_alloc_eur": 0.66,
+            "signing_alloc_eur": 0.29,
+            "support_reserve_eur": 0.88,
+            "refund_chargeback_reserve_eur": 0.27,
+            "contribution_margin_eur": 3.59,
+            "contribution_margin_pct": 0.3885,
+            "meets_target_margin": true,
+            "break_even_users_approx": 26.6,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        },
+        "users_1000": {
+          "users": 1000,
+          "tier_id": "starter",
+          "monthly_gross_eur": 10990.0,
+          "monthly_maps_eur": 2530.0,
+          "monthly_contribution_eur": 4450.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 4354.58,
+          "per_user": {
+            "tier_id": "starter",
+            "road_routed_jobs_per_month": 250,
+            "list_price_gross_eur": 10.99,
+            "vat_eur": 1.75,
+            "payment_fee_eur": 1.01,
+            "maps_cost_eur": 2.53,
+            "infra_alloc_eur": 0.07,
+            "signing_alloc_eur": 0.03,
+            "support_reserve_eur": 0.88,
+            "refund_chargeback_reserve_eur": 0.27,
+            "contribution_margin_eur": 4.45,
+            "contribution_margin_pct": 0.4815,
+            "meets_target_margin": true,
+            "break_even_users_approx": 21.5,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        },
+        "users_10000": {
+          "users": 10000,
+          "tier_id": "starter",
+          "monthly_gross_eur": 109900.0,
+          "monthly_maps_eur": 25300.0,
+          "monthly_contribution_eur": 45300.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 45204.58,
+          "per_user": {
+            "tier_id": "starter",
+            "road_routed_jobs_per_month": 250,
+            "list_price_gross_eur": 10.99,
+            "vat_eur": 1.75,
+            "payment_fee_eur": 1.01,
+            "maps_cost_eur": 2.53,
+            "infra_alloc_eur": 0.01,
+            "signing_alloc_eur": 0.0,
+            "support_reserve_eur": 0.88,
+            "refund_chargeback_reserve_eur": 0.27,
+            "contribution_margin_eur": 4.53,
+            "contribution_margin_pct": 0.4908,
+            "meets_target_margin": true,
+            "break_even_users_approx": 21.1,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        }
+      }
+    },
+    {
+      "id": "plus",
+      "display_name": {
+        "de": "Plus",
+        "en": "Plus"
+      },
+      "road_routed_jobs_per_month": 1000,
+      "list_price_gross_eur": 29.99,
+      "billing_period": "month",
+      "payment_provider": "paddle",
+      "economics_at_100_users": {
+        "tier_id": "plus",
+        "road_routed_jobs_per_month": 1000,
+        "list_price_gross_eur": 29.99,
+        "vat_eur": 4.79,
+        "payment_fee_eur": 1.96,
+        "maps_cost_eur": 10.12,
+        "infra_alloc_eur": 0.66,
+        "signing_alloc_eur": 0.29,
+        "support_reserve_eur": 2.4,
+        "refund_chargeback_reserve_eur": 0.75,
+        "contribution_margin_eur": 9.02,
+        "contribution_margin_pct": 0.3579,
+        "meets_target_margin": true,
+        "break_even_users_approx": 10.6,
+        "notes": "Post-free Maps rates; free caps = company buffer only."
+      },
+      "scenarios": {
+        "users_100": {
+          "users": 100,
+          "tier_id": "plus",
+          "monthly_gross_eur": 2999.0,
+          "monthly_maps_eur": 1012.0,
+          "monthly_contribution_eur": 902.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 806.58,
+          "per_user": {
+            "tier_id": "plus",
+            "road_routed_jobs_per_month": 1000,
+            "list_price_gross_eur": 29.99,
+            "vat_eur": 4.79,
+            "payment_fee_eur": 1.96,
+            "maps_cost_eur": 10.12,
+            "infra_alloc_eur": 0.66,
+            "signing_alloc_eur": 0.29,
+            "support_reserve_eur": 2.4,
+            "refund_chargeback_reserve_eur": 0.75,
+            "contribution_margin_eur": 9.02,
+            "contribution_margin_pct": 0.3579,
+            "meets_target_margin": true,
+            "break_even_users_approx": 10.6,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        },
+        "users_1000": {
+          "users": 1000,
+          "tier_id": "plus",
+          "monthly_gross_eur": 29990.0,
+          "monthly_maps_eur": 10120.0,
+          "monthly_contribution_eur": 9880.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 9784.58,
+          "per_user": {
+            "tier_id": "plus",
+            "road_routed_jobs_per_month": 1000,
+            "list_price_gross_eur": 29.99,
+            "vat_eur": 4.79,
+            "payment_fee_eur": 1.96,
+            "maps_cost_eur": 10.12,
+            "infra_alloc_eur": 0.07,
+            "signing_alloc_eur": 0.03,
+            "support_reserve_eur": 2.4,
+            "refund_chargeback_reserve_eur": 0.75,
+            "contribution_margin_eur": 9.88,
+            "contribution_margin_pct": 0.392,
+            "meets_target_margin": true,
+            "break_even_users_approx": 9.7,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        },
+        "users_10000": {
+          "users": 10000,
+          "tier_id": "plus",
+          "monthly_gross_eur": 299900.0,
+          "monthly_maps_eur": 101200.0,
+          "monthly_contribution_eur": 99600.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 99504.58,
+          "per_user": {
+            "tier_id": "plus",
+            "road_routed_jobs_per_month": 1000,
+            "list_price_gross_eur": 29.99,
+            "vat_eur": 4.79,
+            "payment_fee_eur": 1.96,
+            "maps_cost_eur": 10.12,
+            "infra_alloc_eur": 0.01,
+            "signing_alloc_eur": 0.0,
+            "support_reserve_eur": 2.4,
+            "refund_chargeback_reserve_eur": 0.75,
+            "contribution_margin_eur": 9.96,
+            "contribution_margin_pct": 0.3954,
+            "meets_target_margin": true,
+            "break_even_users_approx": 9.6,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        }
+      }
+    },
+    {
+      "id": "pro",
+      "display_name": {
+        "de": "Pro",
+        "en": "Pro"
+      },
+      "road_routed_jobs_per_month": 5000,
+      "list_price_gross_eur": 132.99,
+      "billing_period": "month",
+      "payment_provider": "paddle",
+      "economics_at_100_users": {
+        "tier_id": "pro",
+        "road_routed_jobs_per_month": 5000,
+        "list_price_gross_eur": 132.99,
+        "vat_eur": 21.23,
+        "payment_fee_eur": 7.11,
+        "maps_cost_eur": 50.6,
+        "infra_alloc_eur": 0.66,
+        "signing_alloc_eur": 0.29,
+        "support_reserve_eur": 10.64,
+        "refund_chargeback_reserve_eur": 3.32,
+        "contribution_margin_eur": 39.13,
+        "contribution_margin_pct": 0.3501,
+        "meets_target_margin": true,
+        "break_even_users_approx": 2.4,
+        "notes": "Post-free Maps rates; free caps = company buffer only."
+      },
+      "scenarios": {
+        "users_100": {
+          "users": 100,
+          "tier_id": "pro",
+          "monthly_gross_eur": 13299.0,
+          "monthly_maps_eur": 5060.0,
+          "monthly_contribution_eur": 3913.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 3817.58,
+          "per_user": {
+            "tier_id": "pro",
+            "road_routed_jobs_per_month": 5000,
+            "list_price_gross_eur": 132.99,
+            "vat_eur": 21.23,
+            "payment_fee_eur": 7.11,
+            "maps_cost_eur": 50.6,
+            "infra_alloc_eur": 0.66,
+            "signing_alloc_eur": 0.29,
+            "support_reserve_eur": 10.64,
+            "refund_chargeback_reserve_eur": 3.32,
+            "contribution_margin_eur": 39.13,
+            "contribution_margin_pct": 0.3501,
+            "meets_target_margin": true,
+            "break_even_users_approx": 2.4,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        },
+        "users_1000": {
+          "users": 1000,
+          "tier_id": "pro",
+          "monthly_gross_eur": 132990.0,
+          "monthly_maps_eur": 50600.0,
+          "monthly_contribution_eur": 39990.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 39894.58,
+          "per_user": {
+            "tier_id": "pro",
+            "road_routed_jobs_per_month": 5000,
+            "list_price_gross_eur": 132.99,
+            "vat_eur": 21.23,
+            "payment_fee_eur": 7.11,
+            "maps_cost_eur": 50.6,
+            "infra_alloc_eur": 0.07,
+            "signing_alloc_eur": 0.03,
+            "support_reserve_eur": 10.64,
+            "refund_chargeback_reserve_eur": 3.32,
+            "contribution_margin_eur": 39.99,
+            "contribution_margin_pct": 0.3578,
+            "meets_target_margin": true,
+            "break_even_users_approx": 2.4,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        },
+        "users_10000": {
+          "users": 10000,
+          "tier_id": "pro",
+          "monthly_gross_eur": 1329900.0,
+          "monthly_maps_eur": 506000.0,
+          "monthly_contribution_eur": 400700.0,
+          "fixed_monthly_eur": 95.42,
+          "company_profit_after_fixed_eur": 400604.58,
+          "per_user": {
+            "tier_id": "pro",
+            "road_routed_jobs_per_month": 5000,
+            "list_price_gross_eur": 132.99,
+            "vat_eur": 21.23,
+            "payment_fee_eur": 7.11,
+            "maps_cost_eur": 50.6,
+            "infra_alloc_eur": 0.01,
+            "signing_alloc_eur": 0.0,
+            "support_reserve_eur": 10.64,
+            "refund_chargeback_reserve_eur": 3.32,
+            "contribution_margin_eur": 40.07,
+            "contribution_margin_pct": 0.3586,
+            "meets_target_margin": true,
+            "break_even_users_approx": 2.4,
+            "notes": "Post-free Maps rates; free caps = company buffer only."
+          }
+        }
+      }
+    }
+  ],
+  "worst_case_usage": {
+    "note": "All users on Pro at cap; Maps post-free rates; no free-cap reliance.",
+    "pro_at_10000_users": {
+      "users": 10000,
+      "tier_id": "pro",
+      "monthly_gross_eur": 1329900.0,
+      "monthly_maps_eur": 506000.0,
+      "monthly_contribution_eur": 400700.0,
+      "fixed_monthly_eur": 95.42,
+      "company_profit_after_fixed_eur": 400604.58,
+      "per_user": {
+        "tier_id": "pro",
+        "road_routed_jobs_per_month": 5000,
+        "list_price_gross_eur": 132.99,
+        "vat_eur": 21.23,
+        "payment_fee_eur": 7.11,
+        "maps_cost_eur": 50.6,
+        "infra_alloc_eur": 0.01,
+        "signing_alloc_eur": 0.0,
+        "support_reserve_eur": 10.64,
+        "refund_chargeback_reserve_eur": 3.32,
+        "contribution_margin_eur": 40.07,
+        "contribution_margin_pct": 0.3586,
+        "meets_target_margin": true,
+        "break_even_users_approx": 2.4,
+        "notes": "Post-free Maps rates; free caps = company buffer only."
+      }
+    }
+  },
+  "stop": "No production payment integration in this NEXT — decision + catalogs only."
+}
