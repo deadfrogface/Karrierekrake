@@ -76,6 +76,28 @@ def test_save_lifts_desired_titles_when_intent_only_has_geo(tmp_path: Path):
     assert loaded.profile.search_intent.target_roles == ["Sachbearbeiter", "Assistent"]
 
 
+def test_explicit_geo_only_intent_not_overwritten_by_location_defaults(tmp_path: Path):
+    """P1 regression: radius/remote/countries must survive save when roles empty."""
+    cfg = empty_app_config(root=tmp_path)
+    # Location defaults typically DE / 20km — must not clobber explicit intent.
+    cfg.profile.location.country = "DE"
+    cfg.profile.location.max_distance_km = 20
+    cfg.profile.search_intent = SearchIntent(
+        countries=["AT", "CH"],
+        radius_km=0,
+        remote_mode="remote",
+        salary_min=1,
+    )
+    paths = _paths(tmp_path)
+    save_config(cfg, **paths)
+    loaded = load_config(**paths, root=tmp_path, strip_placeholders=False)
+    intent = loaded.profile.search_intent
+    assert intent.countries == ["AT", "CH"]
+    assert intent.radius_km == 0.0
+    assert intent.remote_mode == "remote"
+    assert intent.salary_min == 1.0
+
+
 
 def test_rejects_unknown_strictness():
     with pytest.raises(ValidationError):

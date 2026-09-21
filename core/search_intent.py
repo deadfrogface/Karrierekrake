@@ -401,6 +401,39 @@ def migrate_legacy_search_preferences(
         ])),
     )
 
+    # Role-empty intents are still "empty" for title-lift, but explicit geo /
+    # salary / remote / strictness on existing_intent must not be overwritten
+    # by LocationConfig/EmploymentConfig defaults (radius 20, country DE, …).
+    if existing_intent is not None:
+        data = intent.model_dump()
+        preserved: list[str] = []
+        if existing_intent.radius_km is not None:
+            data["radius_km"] = existing_intent.radius_km
+            preserved.append("radius_km")
+        if existing_intent.countries:
+            data["countries"] = list(existing_intent.countries)
+            preserved.append("countries")
+        if existing_intent.remote_mode is not None:
+            data["remote_mode"] = existing_intent.remote_mode
+            preserved.append("remote_mode")
+        if existing_intent.salary_min is not None:
+            data["salary_min"] = existing_intent.salary_min
+            preserved.append("salary_min")
+        if existing_intent.employment_types:
+            data["employment_types"] = list(existing_intent.employment_types)
+            preserved.append("employment_types")
+        if existing_intent.working_time:
+            data["working_time"] = list(existing_intent.working_time)
+            preserved.append("working_time")
+        if existing_intent.strictness is not None:
+            data["strictness"] = existing_intent.strictness
+            preserved.append("strictness")
+        if preserved:
+            intent = SearchIntent.model_validate(data)
+            notes.append(
+                "preserved_explicit_geo_from_existing_intent:" + ",".join(preserved)
+            )
+
     return SearchIntentMigrationResult(
         intent=intent,
         migrated_fields=migrated,
