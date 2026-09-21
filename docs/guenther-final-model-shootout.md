@@ -1,5 +1,9 @@
 # Günther Final Local Model Shootout
 
+> **STALE_DOCUMENTATION (NEXT-01):** Do not treat “production default Qwen” claims as current.  
+> Binding: [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md) (ONE Phi).  
+> Reconciliation: [`docs/project/current-state-reconciliation.md`](project/current-state-reconciliation.md).
+
 ## Verdict
 
 **BEST MEASURED MODEL:** `phi4-mini`  

@@ -1,6 +1,9 @@
 # Günther — Hardware tiers & graceful degradation (Phase 5)
 
-> **PR19 freeze note:** Current *recommended* primary for STANDARD/POWER is **Phi-4-mini**; LIGHT still falls back to **Qwen3-1.7B** in code. Long-term product decision is Phi-only (STANDARD+LIGHT). See `docs/pr19-guenther-phi-freeze.md`. Historical rows below may describe earlier Qwen Autopick.
+> **NEXT-01:** Binding target is **ONE Phi model** with unavailable/manual path — not Qwen fallback.  
+> See [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md).  
+> **PR19 freeze note:** Current *recommended* primary for STANDARD/POWER is **Phi-4-mini**; LIGHT still falls back to **Qwen3-1.7B** in code (CHANGE required). Historical rows below may describe earlier Qwen Autopick.
+
 
 
 | Tier | Detection | Default model | Degradation |

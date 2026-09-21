@@ -1,5 +1,10 @@
 # DACH Cross-Border Commute (PR24)
 
+> **NEXT-01 note:** This document describes **current main implementation** (Haversine + pgeocode + Nominatim).  
+> **Target architecture** is Google Maps Geocoding + Routes only — see  
+> [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md) §2.  
+> Until NEXT geo lands, do not cite this file as the long-term product decision.
+
 ## Summary
 
 Karrierekrake treats **commute radius mathematically** (Haversine on WGS84), not

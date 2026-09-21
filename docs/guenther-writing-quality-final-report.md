@@ -1,5 +1,7 @@
 # Günther Writing Quality Final Report (Phi-4-mini)
 
+> **STALE_DOCUMENTATION (NEXT-01):** “Production default Qwen” is outdated. See [`docs/architecture/canonical-product-decisions.md`](architecture/canonical-product-decisions.md).
+
 **Branch:** `cursor/guenther-local-ai-megapass-d85b`  
 **PR #19:** not merged  
 **Production default:** unchanged (Qwen3-1.7B)  
