@@ -31,3 +31,30 @@ def scale_font_pt(base_pt: float, scale: float) -> float:
 
 def scale_from_bucket(bucket: DpiBucket | str) -> float:
     return {"100": 1.0, "125": 1.25, "150": 1.5, "200": 2.0}.get(str(bucket), 1.0)
+
+
+def detect_dpi_scale() -> float:
+    """Best-effort device pixel ratio from the primary screen (1.0 offline/tests)."""
+    try:
+        from PySide6.QtGui import QGuiApplication
+
+        app = QGuiApplication.instance()
+        if app is None:
+            return 1.0
+        screen = app.primaryScreen()
+        if screen is None:
+            return 1.0
+        return float(screen.devicePixelRatio())
+    except Exception:
+        return 1.0
+
+
+def layout_min_sizes(scale: float) -> dict[str, int]:
+    """Minimum control sizes at a given scale — used by layout regression tests."""
+    return {
+        "touch": scale_px(28, scale),
+        "nav_height": scale_px(32, scale),
+        "input_height": scale_px(28, scale),
+        "focus_ring": max(2, scale_px(2, scale)),
+        "sidebar_min": scale_px(160, scale),
+    }

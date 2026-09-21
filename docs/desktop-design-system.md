@@ -56,7 +56,9 @@ Or call `desktop.theme.legacy_stylesheet_for(pref)` directly. Legacy QSS in `des
 | [qtawesome](https://github.com/spyder-ide/qtawesome) | Optional icons | MIT; soft-import only — **commercial packaging review = PR46** |
 | [qt-material](https://github.com/UN-GCPDS/qt-material) | Reference / spike only | **Not vendored**; license/distribution before any adoption |
 
-Accessibility Gate = **PR44**. Design-system commercial license pass = **PR46**.
+Accessibility Gate = **PR44** — see `docs/accessibility/bfsg-engineering-report.md`
+(BFSG legal applicability: **UNSPECIFIED / LEGAL REVIEW**). Design-system commercial
+license pass = **PR46**.
 
 ## Migration
 

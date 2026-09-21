@@ -363,6 +363,8 @@ class SettingsConfig:
     # Desktop UX
     theme: str = "system"  # system | light | dark
     language: str = "de"  # de | en
+    # Accessibility (PR44) — technical preference; not a WCAG/BFSG claim.
+    high_contrast: bool = False
     start_with_windows: bool = False
     minimize_to_tray: bool = False
     # Search UX — profile_discovery | explicit_titles

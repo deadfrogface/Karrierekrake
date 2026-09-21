@@ -31,6 +31,21 @@ def status_label(raw: str | None) -> str:
     return raw or "—"
 
 
+def status_label_with_cue(raw: str | None) -> str:
+    """Status text with a non-color glyph prefix (PR44 — never color-only)."""
+    from desktop.design_system.icons import status_glyph
+
+    kind_map = {
+        "ok": "success",
+        "warn": "warning",
+        "danger": "error",
+        "muted": "muted",
+        "info": "info",
+    }
+    kind = kind_map.get(status_badge_kind(raw), "info")
+    return f"{status_glyph(kind)}: {status_label(raw)}"
+
+
 def status_badge_kind(raw: str | None) -> str:
     """Simple badge kind for styling hints: ok / warn / danger / muted / info."""
     key = (raw or "").strip().lower()

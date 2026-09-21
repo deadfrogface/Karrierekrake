@@ -40,6 +40,7 @@ from desktop.theme import stylesheet_for
 from desktop.tray import AppTray, app_icon
 from desktop.workers import PipelineWorker, connect_queued, start_worker, thread_is_running
 from desktop.wizard import FirstRunWizard
+from desktop.design_system.a11y import annotate_nav_button, set_accessible_name, set_accessible_description
 
 
 class MainWindow(QMainWindow):
@@ -124,6 +125,7 @@ class MainWindow(QMainWindow):
         ]
         self._page_index = {key: i for i, (key, _) in enumerate(self._nav_defs)}
         self.nav_buttons: list[QPushButton] = []
+        total_nav = len(self._nav_defs)
         for i, (key, page) in enumerate(self._nav_defs):
             self.stack.addWidget(page)
             btn = QPushButton(tr(key))
@@ -131,6 +133,7 @@ class MainWindow(QMainWindow):
             btn.setCheckable(True)
             btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             btn.clicked.connect(lambda checked=False, idx=i: self._navigate(idx))
+            annotate_nav_button(btn, name=tr(key), position=i + 1, total=total_nav)
             self.nav_buttons.append(btn)
             side_layout.addWidget(btn)
         side_layout.addStretch(1)
@@ -146,6 +149,8 @@ class MainWindow(QMainWindow):
         self.status = QStatusBar()
         self.setStatusBar(self.status)
         self.progress_label = QLabel(tr("status.ready"))
+        set_accessible_name(self.progress_label, tr("status.ready"))
+        set_accessible_description(self.progress_label, tr("a11y.status_bar"))
         self.status.addPermanentWidget(self.progress_label)
 
         self.dashboard.search_requested.connect(self.start_search)
@@ -202,9 +207,12 @@ class MainWindow(QMainWindow):
         self.brand.setText(tr("app.name"))
         if hasattr(self, "brand_tagline"):
             self.brand_tagline.setText(tr("brand.tagline"))
-        for btn, (key, _) in zip(self.nav_buttons, self._nav_defs):
+        total = len(self._nav_defs)
+        for i, (btn, (key, _)) in enumerate(zip(self.nav_buttons, self._nav_defs)):
             btn.setText(tr(key))
+            annotate_nav_button(btn, name=tr(key), position=i + 1, total=total)
         self.progress_label.setText(tr("status.ready"))
+        set_accessible_name(self.progress_label, tr("status.ready"))
         for page in (
             self.dashboard,
             self.profile,
@@ -226,7 +234,12 @@ class MainWindow(QMainWindow):
         cfg = self.config_service.load()
         app = QApplication.instance()
         if app is not None:
-            app.setStyleSheet(stylesheet_for(cfg.settings.theme or "system"))
+            app.setStyleSheet(
+                stylesheet_for(
+                    cfg.settings.theme or "system",
+                    high_contrast=bool(getattr(cfg.settings, "high_contrast", False)),
+                )
+            )
         i18n.set_language(cfg.settings.language or "de")
 
     def _navigate(self, index: int) -> None:

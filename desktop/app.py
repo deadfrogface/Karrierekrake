@@ -82,7 +82,8 @@ def apply_appearance(app: QApplication, config_service: ConfigService) -> None:
         lang = "de"
     i18n.set_language(lang)
     theme_pref = cfg.settings.theme or "system"
-    app.setStyleSheet(stylesheet_for(theme_pref))
+    high_contrast = bool(getattr(cfg.settings, "high_contrast", False))
+    app.setStyleSheet(stylesheet_for(theme_pref, high_contrast=high_contrast))
 
 
 def _try_notify_existing_instance() -> bool:
