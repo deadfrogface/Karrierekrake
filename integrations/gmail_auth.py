@@ -205,3 +205,53 @@ def authorize_calendar_event_write(
             logger.error("Calendar write service build failed: %s", type(exc).__name__)
             return AuthOutcome(needs_reauth=True, reason=type(exc).__name__)
     return outcome
+
+
+def authorize_calendar_mode(
+    mode: str,
+    *,
+    credentials_path: Path,
+    token_dir: Path,
+    interactive: bool = True,
+    open_browser: bool = True,
+    privacy_policy_url: str = "",
+    homepage_url: str = "",
+    oauth_env: str | None = None,
+) -> AuthOutcome:
+    """Mode A = FreeBusy only; Mode B = FreeBusy + owned event write (re-consent).
+
+    Switching A→B always requests a new authorization with the expanded scope set.
+    """
+    mode_n = (mode or "A").strip().upper()
+    if mode_n in {"B", "WRITE", "EVENTS"}:
+        if not gmail_libs_available():
+            return AuthOutcome(reason="libs_unavailable")
+        outcome = goa.authorize_google(
+            credentials_path=credentials_path,
+            token_dir=token_dir,
+            features={
+                goa.Feature.CALENDAR_SLOT_FINDING,
+                goa.Feature.CALENDAR_EVENT_WRITE,
+            },
+            interactive=interactive,
+            open_browser=open_browser,
+            privacy_policy_url=privacy_policy_url,
+            homepage_url=homepage_url,
+            oauth_env=oauth_env,
+        )
+        if outcome.credentials is not None:
+            try:
+                outcome.service = goa.build_calendar_service(outcome.credentials)
+            except Exception as exc:
+                logger.error("Calendar mode-B service build failed: %s", type(exc).__name__)
+                return AuthOutcome(needs_reauth=True, reason=type(exc).__name__)
+        return outcome
+    return authorize_calendar_freebusy(
+        credentials_path=credentials_path,
+        token_dir=token_dir,
+        interactive=interactive,
+        open_browser=open_browser,
+        privacy_policy_url=privacy_policy_url,
+        homepage_url=homepage_url,
+        oauth_env=oauth_env,
+    )

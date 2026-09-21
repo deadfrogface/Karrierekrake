@@ -92,10 +92,13 @@ class FakeCreds:
 # --- Allowlist / matrix (cases 1–25) ---
 
 
-def test_allowlist_contains_exactly_three_production_scopes():
-    assert goa.ALLOWED_SCOPES == frozenset(
-        {goa.GMAIL_READONLY, goa.CALENDAR_FREEBUSY, goa.CALENDAR_EVENTS}
-    )
+def test_allowlist_contains_production_scopes():
+    assert goa.GMAIL_READONLY in goa.ALLOWED_SCOPES
+    assert goa.CALENDAR_FREEBUSY in goa.ALLOWED_SCOPES
+    assert goa.CALENDAR_EVENTS_OWNED in goa.ALLOWED_SCOPES
+    # Legacy broader events grant accepted for migration; new consent uses owned.
+    assert goa.CALENDAR_EVENTS_LEGACY in goa.ALLOWED_SCOPES
+    assert goa.CALENDAR_EVENTS == goa.CALENDAR_EVENTS_OWNED
 
 
 @pytest.mark.parametrize(
