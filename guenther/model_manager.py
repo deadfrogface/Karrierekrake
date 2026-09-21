@@ -1,4 +1,8 @@
-"""Model catalog + download manager (checksum, resumable, atomic, disk check)."""
+"""Model catalog + download manager (checksum, resumable, atomic, disk check).
+
+NEXT-02: Production catalog is Phi-only. Historical Qwen metadata is retained for
+benchmarks and must not be used as a production runtime path.
+"""
 
 from __future__ import annotations
 
@@ -20,47 +24,14 @@ from core.security.model_integrity import (
 )
 from guenther.privacy import log_event
 
+# Sole production LLM (tournament/shootout pin — do not substitute another Phi artifact).
+PRODUCTION_MODEL_ID = "phi4-mini"
+
 # No weights in git — catalog metadata only.
 # SHA256 values are Hugging Face LFS content OIDs (x-linked-etag), verified 2026-09-15.
 MODEL_CATALOG: dict[str, dict] = {
-    "qwen3-1.7b": {
-        "display_name": "Günther leicht (Qwen3 1.7B)",
-        "license": "Apache-2.0",
-        "approx_bytes": 1_282_439_584,
-        "ram_gb_min": 3.0,
-        "tier": "light",
-        # Official Qwen GGUF ships Q8_0 only; Q4_K_M from bartowski (base Apache-2.0).
-        "filename": "Qwen_Qwen3-1.7B-Q4_K_M.gguf",
-        "url": (
-            "https://huggingface.co/bartowski/Qwen_Qwen3-1.7B-GGUF/resolve/main/"
-            "Qwen_Qwen3-1.7B-Q4_K_M.gguf"
-        ),
-        "sha256": "72c5c3cb38fa32d5256e2fe30d03e7a64c6c79e668ad84057e3bd66e250b24fb",
-        "source_repo": "bartowski/Qwen_Qwen3-1.7B-GGUF",
-        "base_model": "Qwen/Qwen3-1.7B",
-        "hf_commit": "dcb19155b962dbb6389f4691a982043a8e651022",
-        "notes": "Apache-2.0 base; community Q4_K_M GGUF; LIGHT hardware/failsafe fallback only",
-        "role": "light_fallback",
-    },
-    "qwen3-4b": {
-        "display_name": "Günther Qwen3 4B (legacy option)",
-        "license": "Apache-2.0",
-        "approx_bytes": 2_497_280_256,
-        "ram_gb_min": 5.0,
-        "tier": "standard",
-        "filename": "Qwen3-4B-Q4_K_M.gguf",
-        "url": (
-            "https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/main/"
-            "Qwen3-4B-Q4_K_M.gguf"
-        ),
-        "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
-        "source_repo": "Qwen/Qwen3-4B-GGUF",
-        "base_model": "Qwen/Qwen3-4B",
-        "notes": "Legacy catalog option — not recommended primary after Phi lock-in",
-        "role": "legacy",
-    },
-    "phi4-mini": {
-        "display_name": "Günther (Phi-4-mini — empfohlen)",
+    PRODUCTION_MODEL_ID: {
+        "display_name": "Günther (Phi-4-mini)",
         "license": "MIT",
         "approx_bytes": 2_491_874_688,
         "ram_gb_min": 5.0,
@@ -77,13 +48,59 @@ MODEL_CATALOG: dict[str, dict] = {
         "upstream_license": "MIT",
         "quant": "Q4_K_M",
         "notes": (
-            "PRIMARY Günther model (final shootout). MIT upstream microsoft/Phi-4-mini-instruct. "
-            "Qwen3-1.7B remains LIGHT hardware/failsafe fallback only."
+            "SOLE production Günther model (NEXT-02). MIT upstream microsoft/Phi-4-mini-instruct. "
+            "No Qwen production fallback."
         ),
         "role": "primary",
         "deferred": False,
+        "production": True,
     },
 }
+
+# Historical / benchmark-only — NOT production runtime. Not installable via ModelManager.
+HISTORICAL_MODEL_CATALOG: dict[str, dict] = {
+    "qwen3-1.7b": {
+        "display_name": "Qwen3 1.7B (historical — not production)",
+        "license": "Apache-2.0",
+        "approx_bytes": 1_282_439_584,
+        "ram_gb_min": 3.0,
+        "tier": "light",
+        "filename": "Qwen_Qwen3-1.7B-Q4_K_M.gguf",
+        "url": (
+            "https://huggingface.co/bartowski/Qwen_Qwen3-1.7B-GGUF/resolve/main/"
+            "Qwen_Qwen3-1.7B-Q4_K_M.gguf"
+        ),
+        "sha256": "72c5c3cb38fa32d5256e2fe30d03e7a64c6c79e668ad84057e3bd66e250b24fb",
+        "source_repo": "bartowski/Qwen_Qwen3-1.7B-GGUF",
+        "base_model": "Qwen/Qwen3-1.7B",
+        "hf_commit": "dcb19155b962dbb6389f4691a982043a8e651022",
+        "notes": "HISTORICAL only — removed from production runtime (NEXT-02)",
+        "role": "historical",
+        "production": False,
+    },
+    "qwen3-4b": {
+        "display_name": "Qwen3 4B (historical — not production)",
+        "license": "Apache-2.0",
+        "approx_bytes": 2_497_280_256,
+        "ram_gb_min": 5.0,
+        "tier": "standard",
+        "filename": "Qwen3-4B-Q4_K_M.gguf",
+        "url": (
+            "https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/main/"
+            "Qwen3-4B-Q4_K_M.gguf"
+        ),
+        "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+        "source_repo": "Qwen/Qwen3-4B-GGUF",
+        "base_model": "Qwen/Qwen3-4B",
+        "notes": "HISTORICAL only — removed from production runtime (NEXT-02)",
+        "role": "historical",
+        "production": False,
+    },
+}
+
+
+def is_production_model(model_id: str) -> bool:
+    return model_id == PRODUCTION_MODEL_ID
 
 
 @dataclass
@@ -144,9 +161,13 @@ class ModelManager:
         return int(usage.free)
 
     def can_install(self, model_id: str) -> tuple[bool, str]:
+        if model_id in HISTORICAL_MODEL_CATALOG and model_id not in self.catalog:
+            return False, "historical_model_forbidden"
         meta = self.catalog.get(model_id)
         if not meta:
             return False, "unknown_model"
+        if not is_production_model(model_id):
+            return False, "not_a_production_model"
         need = int(meta.get("approx_bytes") or 0) + 500_000_000  # headroom
         free = self.disk_free_bytes()
         if free < need:

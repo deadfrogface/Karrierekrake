@@ -213,30 +213,58 @@ def validate_cv_extract(
     cv_text: str,
     manual_profile: dict[str, Any] | None = None,
 ) -> tuple[CVExtractSuggestion, list[str]]:
+    """Ground every claim in CV text. Ungrounded → DROP. Manual profile wins."""
     notes: list[str] = []
     manual = manual_profile or {}
     # Manual data wins — overwrite non-empty manual fields
     if manual.get("full_name"):
         model.full_name = str(manual["full_name"])
         notes.append("manual_name_wins")
-    # Drop skills/titles not grounded in CV text
-    grounded_skills = [s for s in model.skills if claim_supported_by_corpus(s, cv_text)]
-    if len(grounded_skills) < len(model.skills):
-        notes.append("ungrounded_skills_dropped")
-        model.invented_flag = True
-    model.skills = grounded_skills
-    grounded_titles = [
-        t for t in model.experience_titles if claim_supported_by_corpus(t, cv_text)
-    ]
-    if len(grounded_titles) < len(model.experience_titles):
-        notes.append("ungrounded_titles_dropped")
-        model.invented_flag = True
-    model.experience_titles = grounded_titles
-    grounded_edu = [e for e in model.education if claim_supported_by_corpus(e, cv_text)]
-    if len(grounded_edu) < len(model.education):
-        notes.append("ungrounded_education_dropped")
-        model.invented_flag = True
-    model.education = grounded_edu
+
+    def _ground_list(values: list[str], *, kind: str) -> list[str]:
+        kept: list[str] = []
+        dropped = 0
+        for v in values:
+            if claim_supported_by_corpus(v, cv_text):
+                kept.append(v)
+            else:
+                dropped += 1
+        if dropped:
+            notes.append(f"ungrounded_{kind}_dropped")
+            model.invented_flag = True
+        return kept
+
+    model.skills = _ground_list(list(model.skills), kind="skills")
+    model.experience_titles = _ground_list(
+        list(model.experience_titles), kind="experience_titles"
+    )
+    model.education = _ground_list(list(model.education), kind="education")
+    model.certificates = _ground_list(list(model.certificates), kind="certificates")
+    model.languages = _ground_list(list(model.languages), kind="languages")
+    # emails / phones must also appear in CV (or manual)
+    grounded_emails = []
+    for e in model.emails:
+        if manual.get("email") and e == manual.get("email"):
+            grounded_emails.append(e)
+        elif claim_supported_by_corpus(e, cv_text):
+            grounded_emails.append(e)
+        else:
+            notes.append("ungrounded_email_dropped")
+            model.invented_flag = True
+    model.emails = grounded_emails
+    grounded_phones = []
+    for p in model.phones:
+        if claim_supported_by_corpus(p, cv_text) or _norm(p) in _norm(cv_text):
+            grounded_phones.append(p)
+        else:
+            notes.append("ungrounded_phone_dropped")
+            model.invented_flag = True
+    model.phones = grounded_phones
+    if model.full_name and not manual.get("full_name"):
+        if not claim_supported_by_corpus(model.full_name, cv_text):
+            notes.append("ungrounded_name_dropped")
+            model.full_name = ""
+            model.invented_flag = True
     if model.invented_flag:
         model.confidence = ConfidenceLevel.LOW
     return model, notes

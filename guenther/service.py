@@ -7,14 +7,14 @@ import threading
 from typing import Any
 
 from guenther.contracts import GuentherEnvelope
-from guenther.fallbacks import fallback_envelope
-from guenther.hardware import HardwareTier, detect_hardware, graceful_model_fallback
+from guenther.fallbacks import fallback_envelope, map_status_to_unavailable_reason
+from guenther.hardware import HardwareTier, detect_hardware, resolve_production_model
 from guenther.inference import InferenceController
 from guenther.intelligence.interview_validate import validate_interview_grounded
 from guenther.intelligence.repair import run_bounded_repair
 from guenther.intelligence.routing import ArchitectureMode, resolve_model_for_capability
 from guenther.intelligence.writing_validate import validate_writing_grounded
-from guenther.model_manager import ModelManager, default_models_dir
+from guenther.model_manager import PRODUCTION_MODEL_ID, ModelManager, default_models_dir
 from guenther.privacy import log_event
 from guenther.prompts import SCHEMA_HINTS, build_layers
 from guenther.provider import GenerationRequest, LocalAIProvider, ProviderStatus
@@ -40,19 +40,20 @@ class GuentherService:
         self,
         *,
         enabled: bool = False,
-        model: str = "auto",
+        model: str = PRODUCTION_MODEL_ID,
         prefer_ollama: bool = False,
-        allow_heuristic_when_no_llm: bool = True,
-        architecture: str | ArchitectureMode = ArchitectureMode.AUTO,
+        allow_heuristic_when_no_llm: bool = False,
+        architecture: str | ArchitectureMode = ArchitectureMode.PHI_ALL,
         enable_repair: bool = True,
         quality_loop_mode: str = "plan_draft",
     ) -> None:
         self.enabled = enabled
-        self.model_pref = model
+        # NEXT-02: coerce any legacy Qwen/auto pref to sole Phi production model.
+        self.model_pref = resolve_production_model(model)
         self.architecture = (
             architecture
             if isinstance(architecture, ArchitectureMode)
-            else ArchitectureMode(str(architecture or "auto"))
+            else ArchitectureMode(str(architecture or "phi_all"))
         )
         self.enable_repair = bool(enable_repair)
         self.quality_loop_mode = str(quality_loop_mode or "plan_draft")
@@ -60,14 +61,14 @@ class GuentherService:
         self.models_dir = default_models_dir()
         self.manager = ModelManager(self.models_dir)
         self.provider: LocalAIProvider = self._select_provider(prefer_ollama=prefer_ollama)
-        if allow_heuristic_when_no_llm and not self.provider.is_available():
-            self._heuristic = HeuristicProvider()
-        else:
-            self._heuristic = HeuristicProvider() if allow_heuristic_when_no_llm else None
+        # Heuristic is test/dev assist only — never a production LLM substitute.
+        self._heuristic = HeuristicProvider() if allow_heuristic_when_no_llm else None
+        self._allow_heuristic = bool(allow_heuristic_when_no_llm)
         ram_tight = self.hardware.tier == HardwareTier.LIGHT
         self.inference = InferenceController(self.provider, ram_tight=ram_tight)
         self._lock = threading.Lock()
         self._loaded_model_id = ""
+        self._last_unavailable_reason = ""
 
     def _select_provider(self, *, prefer_ollama: bool) -> LocalAIProvider:
         if prefer_ollama:
@@ -85,19 +86,18 @@ class GuentherService:
             capability=capability,
             model_pref=self.model_pref,
         )
-        mid = decision.model_id
-        # Explicit prefs still get LIGHT hardware downgrade to avoid OOM.
-        return graceful_model_fallback(self.hardware.tier, mid)
+        return resolve_production_model(decision.model_id)
 
     def ensure_model_loaded(self, model_id: str | None = None) -> ProviderStatus:
         if not self.enabled:
+            self._last_unavailable_reason = "disabled"
             return ProviderStatus.UNAVAILABLE
-        mid = model_id or self._route_model("cv_extract")
+        mid = resolve_production_model(model_id or self._route_model("cv_extract"))
+        if mid != PRODUCTION_MODEL_ID:
+            mid = PRODUCTION_MODEL_ID
         if self.provider.provider_id == "llama_cpp" and not self.manager.is_installed(mid):
-            installed = [m["id"] for m in self.manager.list_catalog() if m["installed"]]
-            if not installed:
-                return ProviderStatus.MODEL_MISSING
-            mid = mid if mid in installed else installed[0]
+            self._last_unavailable_reason = "model_missing"
+            return ProviderStatus.MODEL_MISSING
         if self._loaded_model_id == mid and self.provider.status() == ProviderStatus.READY:
             return ProviderStatus.READY
         if self.provider.provider_id == "llama_cpp" and mid in self.manager.catalog:
@@ -105,10 +105,25 @@ class GuentherService:
                 self.manager.assert_model_integrity(mid)
             except Exception:
                 log_event("model_integrity_failed", model_id=mid)
+                self._last_unavailable_reason = "model_corrupted"
                 return ProviderStatus.ERROR
         status = self.provider.load_model(mid)
         if status == ProviderStatus.READY:
             self._loaded_model_id = mid
+            self._last_unavailable_reason = ""
+        else:
+            detail = ""
+            if status == ProviderStatus.OOM:
+                detail = "insufficient_ram"
+            elif status == ProviderStatus.ERROR:
+                detail = self._last_unavailable_reason or "runtime_error"
+            self._last_unavailable_reason = detail or status.value
+            log_event(
+                "guenther_unavailable",
+                model_id=mid,
+                status=status.value,
+                detail=self._last_unavailable_reason,
+            )
         return status
 
     def status_summary(self) -> dict[str, Any]:
@@ -117,6 +132,7 @@ class GuentherService:
             "provider": self.provider.provider_id,
             "provider_status": self.provider.status().value,
             "model_pref": self.model_pref,
+            "production_model": PRODUCTION_MODEL_ID,
             "architecture": self.architecture.value,
             "enable_repair": self.enable_repair,
             "hardware_tier": self.hardware.tier.value,
@@ -125,7 +141,20 @@ class GuentherService:
             "quality_loop_mode": self.quality_loop_mode,
             "models_dir": str(self.models_dir),
             "loaded_model_id": self._loaded_model_id,
+            "heuristic_allowed": self._allow_heuristic,
+            "last_unavailable_reason": self._last_unavailable_reason,
         }
+
+    def _unavailable_envelope(self, capability: str, status: ProviderStatus) -> GuentherEnvelope:
+        reason = map_status_to_unavailable_reason(
+            status, detail=self._last_unavailable_reason
+        )
+        return fallback_envelope(
+            capability,
+            reason=reason,
+            provider_status=status.value,
+            model_id=PRODUCTION_MODEL_ID,
+        )
 
     def _generate_validated(
         self,
@@ -135,14 +164,14 @@ class GuentherService:
         task: str,
         trusted: str,
         untrusted: str,
-        use_heuristic_fallback: bool = True,
+        use_heuristic_fallback: bool = False,
         timeout_s: float = 120.0,
         model_id: str | None = None,
     ) -> tuple[Any | None, GuentherEnvelope]:
         if not self.enabled:
             return None, fallback_envelope(capability, reason="disabled")
 
-        routed = model_id or self._route_model(capability)
+        routed = resolve_production_model(model_id or self._route_model(capability))
         system, trusted_b, untrusted_b = build_layers(
             task=task,
             schema_hint=SCHEMA_HINTS.get(schema_name, "{}"),
@@ -172,27 +201,27 @@ class GuentherService:
 
         status = self.ensure_model_loaded(routed)
         result = None
+        allow_h = bool(use_heuristic_fallback and self._allow_heuristic and self._heuristic)
         if status == ProviderStatus.READY or self.provider.status() == ProviderStatus.READY:
             result = self.provider.generate(req)
-        elif use_heuristic_fallback and self._heuristic is not None:
-            log_event("heuristic_fallback", capability=capability, status=status.value)
+        elif allow_h:
+            # Explicit test/dev path only — never production substitute for Phi.
+            log_event("heuristic_assist_dev_only", capability=capability, status=status.value)
             result = self._heuristic.generate(req)
         else:
-            return None, fallback_envelope(
-                capability,
-                reason=status.value,
-                provider_status=status.value,
-            )
+            return None, self._unavailable_envelope(capability, status)
 
         if not result.ok:
-            if use_heuristic_fallback and self._heuristic and result.provider_id != "heuristic":
+            if allow_h and result.provider_id != "heuristic":
                 result = self._heuristic.generate(req)
             if not result.ok:
+                detail = result.error_code or result.status.value
+                self._last_unavailable_reason = detail
                 return None, fallback_envelope(
                     capability,
-                    reason=result.error_code or result.status.value,
+                    reason=map_status_to_unavailable_reason(result.status, detail=detail),
                     provider_status=result.status.value,
-                    model_id=result.model_id,
+                    model_id=result.model_id or PRODUCTION_MODEL_ID,
                 )
 
         model = parse_contract(schema_name, result.parsed or result.text)
@@ -702,16 +731,17 @@ def get_guenther_service(
         if _SERVICE is None or refresh:
             _SERVICE = GuentherService(
                 enabled=bool(enabled) if enabled is not None else False,
-                model=model or "auto",
-                architecture=architecture or ArchitectureMode.AUTO,
+                model=resolve_production_model(model or PRODUCTION_MODEL_ID),
+                architecture=architecture or ArchitectureMode.PHI_ALL,
                 enable_repair=True if enable_repair is None else bool(enable_repair),
                 quality_loop_mode=quality_loop_mode or "plan_draft",
+                allow_heuristic_when_no_llm=False,
             )
         else:
             if enabled is not None:
                 _SERVICE.enabled = bool(enabled)
             if model is not None:
-                _SERVICE.model_pref = model
+                _SERVICE.model_pref = resolve_production_model(model)
             if architecture is not None:
                 _SERVICE.architecture = ArchitectureMode(str(architecture))
             if enable_repair is not None:

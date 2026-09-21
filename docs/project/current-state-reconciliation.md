@@ -95,15 +95,15 @@ Columns:
 
 | Field | Content |
 |-------|---------|
-| CURRENT IMPLEMENTATION | Catalog: `phi4-mini` (primary), `qwen3-1.7b` (light_fallback), `qwen3-4b` (legacy). One GGUF loaded at a time. Settings: enable + Auto/Phi/Qwen picker. LIGHT hardware can force Qwen. Heuristic provider when no LLM. Deterministic validators already authority over LLM output. |
-| CURRENT TEST EVIDENCE | CI unit/Guenther suites; tournament/shootout reports (partially stale). No GGUF in EXE. |
-| REAL USER VERIFIED | **None** for Phi-only production behavior. |
+| CURRENT IMPLEMENTATION | **ONE production LLM:** `phi4-mini` only (`microsoft_Phi-4-mini-instruct-Q4_K_M.gguf`, SHA `01999f17…c0c2`). Qwen retained in `HISTORICAL_MODEL_CATALOG` only. Settings: enable + fixed Phi label. Load failure → **GUENTHER_UNAVAILABLE** (no alternate LLM / no heuristic substitute). |
+| CURRENT TEST EVIDENCE | `tests/test_next02_phi_cv.py`, Guenther unit suites; CI. |
+| REAL USER VERIFIED | **None** for live Phi GGUF on Windows EXE in this agent. |
 | TARGET ARCHITECTURE | **ONE Phi model only**; no Qwen; no user picker; unavailable → manual path. |
 | KEEP | Deterministic validators; offline-first; fail-closed (no cloud LLM); quality/grounding gates. |
-| CHANGE | Freeze production to Phi only; Settings remove model choice; hardware path must not switch LLM. |
-| REMOVE | Qwen catalog roles as production/fallback; silent heuristic-as-LLM substitute if it masks “AI unavailable”. |
+| CHANGE | Packaging/download/consent UX for commercial Phi weights. |
+| REMOVE | ~~Qwen production/fallback/picker~~ (done NEXT-02). |
 | OPEN BLOCKER | Packaging still does not ship weights; download/consent UX incomplete for commercial. |
-| STATUS | **PARTIAL** + **STALE_DOCUMENTATION** (many Guenther reports still say “production default Qwen”). |
+| STATUS | **DONE** for ONE-Phi runtime policy; packaging **PARTIAL** |
 
 ### 2. Geo / commute distance
 
@@ -137,15 +137,15 @@ Columns:
 
 | Field | Content |
 |-------|---------|
-| CURRENT IMPLEMENTATION | `extract_text` (pypdf paragraphs; python-docx **paragraphs only** on main) → section split → parse → `CvImportDialog` → YAML persist. |
-| CURRENT TEST EVIDENCE | `cv_corpus` 10 PDFs green; **no DOCX table fixtures on main**. |
-| REAL USER VERIFIED | **BROKEN_REAL_WORLD** reports: Berufserfahrung/Ausbildung empty on real layouts (two-column/tables). Unit green ≠ accepted. |
+| CURRENT IMPLEMENTATION | Canonical pipeline: extract (pypdf **layout** + DOCX **tables**) → deterministic parse → **Phi** `suggest_cv_extract` when Guenther enabled → `validate_cv_extract` grounding → reconcile → `CvImportDialog` preview → YAML persist. |
+| CURRENT TEST EVIDENCE | `cv_corpus` PDFs; `test_next02_phi_cv` (DOCX tables, Phi wiring, grounding); import replace suites. |
+| REAL USER VERIFIED | Real private EXE accept **PENDING** (Windows black-box). Synthetic/layout improved; still treat real layouts as risk until EXE gate. |
 | TARGET | Real EXE import path must show correct sections after apply+restart; layout-capable extract. |
-| KEEP | Merge/replace semantics; no hallucinated profile; parser limits. |
-| CHANGE | Extraction for tables/columns; black-box EXE acceptance; private local CV dir (gitignored). |
+| KEEP | Merge/replace semantics; no hallucinated profile; parser limits; Phi grounding DROP. |
+| CHANGE | Complete Windows EXE black-box with private local CVs. |
 | REMOVE | Trust in “corpus green ⇒ product ready”. |
-| OPEN BLOCKER | No Windows black-box pywinauto gate on main; private CVs must stay local. |
-| STATUS | **BROKEN_REAL_WORLD** / **PARTIAL** |
+| OPEN BLOCKER | No Windows black-box pywinauto gate on main; private CVs must stay local (`private/cvs/`). |
+| STATUS | **PARTIAL** (Phi wired); real EXE **PENDING** |
 
 ### 5. Gmail / mail
 
@@ -366,7 +366,7 @@ These documents (and similar shootout leftovers) must **not** be read as current
 | ID | Intent |
 |----|--------|
 | **NEXT-01** | This reconciliation + canonical decisions (**this doc**) |
-| **NEXT-02** | Enforce ONE Phi model (remove Qwen production paths + Settings picker) |
+| **NEXT-02** | Enforce ONE Phi model + CV Phi pipeline (**this package / PR**) |
 | **NEXT-03** | Google Maps Geocoding + Routes as sole commute authority |
 | **NEXT-04** | CV extract/layout fix + local black-box EXE acceptance |
 | **NEXT-05** | Mail/Calendar multi-provider (explicit choice, no fallback) |

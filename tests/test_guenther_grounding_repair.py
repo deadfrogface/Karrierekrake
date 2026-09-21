@@ -36,11 +36,14 @@ PFLEGE_JOB = (
 
 
 def test_phi4_catalog_tournament_provenance():
+    from guenther.model_manager import HISTORICAL_MODEL_CATALOG
+
     phi = MODEL_CATALOG["phi4-mini"]
     assert phi["filename"] == "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"
     assert phi["sha256"] == "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2"
     assert phi["license"] == "MIT"
-    assert "qwen3-1.7b" in MODEL_CATALOG
+    assert "qwen3-1.7b" not in MODEL_CATALOG
+    assert "qwen3-1.7b" in HISTORICAL_MODEL_CATALOG
 
 
 def test_guenther_never_invents_missing_pflegeausbildung():
@@ -164,7 +167,7 @@ def test_repair_none_single_pass():
     assert history.repair_count == 0
 
 
-def test_routing_architecture_a_b():
+def test_routing_architecture_phi_only():
     a = resolve_model_for_capability(
         architecture=ArchitectureMode.PHI_ALL, capability="email_class"
     )
@@ -175,7 +178,8 @@ def test_routing_architecture_a_b():
     b_strong = resolve_model_for_capability(
         architecture=ArchitectureMode.TWO_TIER, capability="writing"
     )
-    assert b_light.model_id == "qwen3-1.7b"
+    # NEXT-02: TWO_TIER no longer routes to Qwen — sole production Phi.
+    assert b_light.model_id == "phi4-mini"
     assert b_strong.model_id == "phi4-mini"
 
 

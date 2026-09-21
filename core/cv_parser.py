@@ -1376,10 +1376,17 @@ def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
     )
 
 
-def import_cv(path: Path) -> dict[str, Any]:
-    text = extract_text(path)
-    # Privacy: never log CV body at INFO — only path + length.
-    logger.info("CV import: path=%s chars=%d", path.name, len(text or ""))
-    parsed = parse_cv_text(text)
-    parsed["source_path"] = str(path)
-    return parsed
+def import_cv(
+    path: Path,
+    *,
+    guenther_enabled: bool = False,
+    manual_profile: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Import CV via canonical pipeline (deterministic + optional Phi)."""
+    from core.cv_intelligence import import_cv_canonical
+
+    return import_cv_canonical(
+        path,
+        guenther_enabled=guenther_enabled,
+        manual_profile=manual_profile,
+    )

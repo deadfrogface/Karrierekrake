@@ -2,6 +2,9 @@
 
 Untrusted input: all file bytes are treated as hostile. Parser resource limits
 and ZIP traversal/bomb checks apply before text is returned.
+
+NEXT-02: DOCX tables included; PDF prefers pypdf layout mode for multi-column CVs
+(no new heavy dependency — pdfplumber not required).
 """
 
 from __future__ import annotations
@@ -60,13 +63,60 @@ def _extract_from_pdf(file_path: Path, *, limits: ParserLimits) -> str:
         raise ParserLimitError(f"too_many_pdf_pages:{n_pages}")
     pages: list[str] = []
     for page in reader.pages[: limits.max_pdf_pages]:
-        try:
-            text = page.extract_text() or ""
-        except Exception:
-            continue
+        text = _page_text_prefer_layout(page)
         if text.strip():
             pages.append(text.strip())
     return "\n\n".join(pages)
+
+
+def _page_text_prefer_layout(page: object) -> str:
+    """Choose plain vs layout extraction; keep section headings usable for the parser.
+
+    Multi-column layout mode can bury left-rail sections (languages/skills) inside
+    whitespace. Prefer the candidate with more recognizable CV section cues; ties
+    go to plain (historically better for our corpus traps).
+    """
+    extract = getattr(page, "extract_text", None)
+    if not callable(extract):
+        return ""
+    try:
+        plain = extract() or ""
+    except Exception:
+        plain = ""
+    try:
+        layout = extract(extraction_mode="layout") or ""
+    except TypeError:
+        layout = ""
+    except Exception:
+        layout = ""
+    if not layout.strip():
+        return plain
+    if not plain.strip():
+        return layout
+    cues = (
+        "Berufserfahrung",
+        "Berufliche Erfahrung",
+        "Ausbildung",
+        "Sprachen",
+        "Sprachkenntnisse",
+        "Führerschein",
+        "Kenntnisse",
+        "Employment",
+        "Experience",
+        "Education",
+        "Languages",
+        "Skills",
+        "Certificates",
+        "Weiterbildung",
+    )
+
+    def _cue_score(text: str) -> int:
+        low = text.lower()
+        return sum(1 for c in cues if c.lower() in low)
+
+    if _cue_score(plain) >= _cue_score(layout):
+        return plain
+    return layout
 
 
 def _extract_from_docx(file_path: Path, *, limits: ParserLimits) -> str:
@@ -79,4 +129,30 @@ def _extract_from_docx(file_path: Path, *, limits: ParserLimits) -> str:
         doc = Document(str(file_path))
     except Exception as exc:
         raise ParserLimitError(f"malformed_docx:{type(exc).__name__}") from exc
-    return "\n\n".join(p.text.strip() for p in doc.paragraphs if p.text.strip())
+
+    blocks: list[str] = []
+    for p in doc.paragraphs:
+        t = (p.text or "").strip()
+        if t:
+            blocks.append(t)
+    # Tables often hold Ausbildung / Berufserfahrung in real CVs.
+    for table in getattr(doc, "tables", []) or []:
+        for row in table.rows:
+            cells: list[str] = []
+            for cell in row.cells:
+                cell_text = " ".join(
+                    (p.text or "").strip() for p in cell.paragraphs if (p.text or "").strip()
+                ).strip()
+                if cell_text:
+                    cells.append(cell_text)
+            if cells:
+                # Deduplicate repeated merged-cell text while preserving order.
+                seen: set[str] = set()
+                uniq: list[str] = []
+                for c in cells:
+                    if c in seen:
+                        continue
+                    seen.add(c)
+                    uniq.append(c)
+                blocks.append(" | ".join(uniq))
+    return "\n\n".join(blocks)
