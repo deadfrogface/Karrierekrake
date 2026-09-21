@@ -368,15 +368,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.calendar.mode_a": "Nur Verfügbarkeit prüfen",
         "integrations.calendar.mode_b": "Verfügbarkeit prüfen und bestätigte Termine eintragen",
         "integrations.calendar.mode_a_rights": (
-            "KarriereKrake fragt Google nur nach freien/belegten Zeiten. "
+            "Karrierekrake fragt Google nur nach freien/belegten Zeiten. "
             "Termintitel und Beschreibungen werden nicht gelesen. "
-            "Daten bleiben auf diesem PC; es gibt keinen KarriereKrake-Server."
+            "Daten bleiben auf diesem PC; es gibt keinen Karrierekrake-Server."
         ),
         "integrations.calendar.mode_b_rights": (
-            "Zusätzlich zu freien/belegten Zeiten darf KarriereKrake nach Ihrer "
+            "Zusätzlich zu freien/belegten Zeiten darf Karrierekrake nach Ihrer "
             "Zustimmung Termine in Ihren eigenen Kalender eintragen. "
             "Kein automatisches Annehmen von Einladungen. "
-            "Daten bleiben auf diesem PC; es gibt keinen KarriereKrake-Server."
+            "Daten bleiben auf diesem PC; es gibt keinen Karrierekrake-Server."
         ),
         "integrations.calendar.mode_a_confirm": (
             "Google-Konto verbinden (nur Verfügbarkeit)?\n\n"
@@ -385,9 +385,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "integrations.calendar.mode_b_confirm": (
             "Google-Konto verbinden (Verfügbarkeit + Termine eintragen)?\n\n"
-            "KarriereKrake darf freie/belegte Zeiten lesen und nach Ihrer "
+            "Karrierekrake darf freie/belegte Zeiten lesen und nach Ihrer "
             "Freigabe Termine in Ihren eigenen Kalender schreiben. "
-            "Verbindung läuft direkt zu Google — kein KarriereKrake-Server."
+            "Verbindung läuft direkt zu Google — kein Karrierekrake-Server."
         ),
         "integrations.no_fallback_hint": (
             "Mail und Kalender sind unabhängig wählbar. "
@@ -1175,15 +1175,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.calendar.mode_a": "Check availability only",
         "integrations.calendar.mode_b": "Check availability and add confirmed events",
         "integrations.calendar.mode_a_rights": (
-            "KarriereKrake only asks Google for free/busy times. "
+            "Karrierekrake only asks Google for free/busy times. "
             "Event titles and descriptions are not read. "
-            "Data stays on this PC; there is no KarriereKrake server."
+            "Data stays on this PC; there is no Karrierekrake server."
         ),
         "integrations.calendar.mode_b_rights": (
-            "In addition to free/busy, KarriereKrake may create events in your "
+            "In addition to free/busy, Karrierekrake may create events in your "
             "own calendar after you approve them. "
             "Invitations are never accepted automatically. "
-            "Data stays on this PC; there is no KarriereKrake server."
+            "Data stays on this PC; there is no Karrierekrake server."
         ),
         "integrations.calendar.mode_a_confirm": (
             "Connect Google account (availability only)?\n\n"
@@ -1192,9 +1192,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "integrations.calendar.mode_b_confirm": (
             "Connect Google account (availability + write events)?\n\n"
-            "KarriereKrake may read free/busy and, after your approval, "
+            "Karrierekrake may read free/busy and, after your approval, "
             "create events in your own calendar. "
-            "Connection goes directly to Google — no KarriereKrake server."
+            "Connection goes directly to Google — no Karrierekrake server."
         ),
         "integrations.no_fallback_hint": (
             "Mail and calendar are chosen independently. "

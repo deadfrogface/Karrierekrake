@@ -1,8 +1,8 @@
-# Local-first Google Calendar & Geo (no KarriereKrake backend)
+# Local-first Google Calendar & Geo (no Karrierekrake backend)
 
 ## Decision
 
-KarriereKrake is a **local Windows desktop application**. There is **no** KarriereKrake
+Karrierekrake is a **local Windows desktop application**. There is **no** Karrierekrake
 backend server, **no** central user database, and **no** cloud sync for profiles,
 applications, calendar data, or OAuth tokens.
 
@@ -15,13 +15,13 @@ applications, calendar data, or OAuth tokens.
 ## Google data flow
 
 ```
-KarriereKrake (PC)
+Karrierekrake (PC)
   → system browser + Google consent
   → Google OAuth / Calendar API
   → OS credential store (keyring / Windows Credential Manager)
 ```
 
-No KarriereKrake host sits in the middle. Tokens are never written to SQLite, JSON,
+No Karrierekrake host sits in the middle. Tokens are never written to SQLite, JSON,
 `.env`, logs, crash reports, or backups.
 
 ## Scopes (minimal)
@@ -51,7 +51,7 @@ API keys, metered billing risk, and (in the proxy design) infrastructure. Bindin
 rules forbid:
 
 - Google Maps / Places / Distance Matrix / Routes
-- Any KarriereKrake Maps API key
+- Any Karrierekrake Maps API key
 - User-supplied Google Cloud developer keys for maps
 
 ## Why public Nominatim is forbidden

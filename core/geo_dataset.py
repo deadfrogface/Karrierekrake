@@ -1,6 +1,6 @@
 """Versioned local DACH geo dataset (GeoNames postal codes via pgeocode layout).
 
-No KarriereKrake server. Downloads (optional updates) go directly to the
+No Karrierekrake server. Downloads (optional updates) go directly to the
 documented GeoNames / postal-codes-data mirrors. Never send user addresses
 or coordinates as query parameters.
 """

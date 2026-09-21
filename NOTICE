@@ -125,6 +125,6 @@ is the default path — no scrape of login/paywall or LinkedIn as a required sou
 - **pgeocode** (BSD-3-Clause) — https://github.com/symerio/pgeocode
 - **postal-codes-data mirror** — https://github.com/symerio/postal-codes-data
 
-KarriereKrake ships a versioned DACH snapshot under `data/geo/` and may update
+Karrierekrake ships a versioned DACH snapshot under `data/geo/` and may update
 directly from the documented mirrors. Public Nominatim is not used in production.
 
