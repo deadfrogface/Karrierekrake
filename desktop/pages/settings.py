@@ -448,6 +448,14 @@ class SettingsPage(QWidget):
         self.open_logs_btn.clicked.connect(self._open_diagnose_logs)
         dform.addWidget(self.diag_intro)
         dform.addWidget(self.open_logs_btn)
+        self.apply_test_btn = QPushButton()
+        self.apply_test_btn.setObjectName("SecondaryButton")
+        self.apply_test_btn.clicked.connect(self._request_apply_test)
+        self.clear_jobs_btn = QPushButton()
+        self.clear_jobs_btn.setObjectName("SecondaryButton")
+        self.clear_jobs_btn.clicked.connect(self._request_clear_jobs)
+        dform.addWidget(self.apply_test_btn)
+        dform.addWidget(self.clear_jobs_btn)
         adv_layout.addWidget(diag_box)
         adv_layout.addStretch(1)
         self.stack.addWidget(adv_page)
@@ -525,6 +533,8 @@ class SettingsPage(QWidget):
         self.diag_box.setTitle(tr("settings.advanced"))
         self.diag_intro.setText(tr("settings.open_diagnose_logs"))
         self.open_logs_btn.setText(tr("settings.open_diagnose_logs"))
+        self.apply_test_btn.setText(tr("btn.apply_test"))
+        self.clear_jobs_btn.setText(tr("btn.clear_jobs"))
         self.lang_label.setText(tr("settings.language"))
         self.theme_label.setText(tr("settings.theme"))
         self.high_contrast.setText(tr("a11y.high_contrast"))
@@ -629,6 +639,16 @@ class SettingsPage(QWidget):
         parent = self.window()
         if parent is not None and hasattr(parent, "open_diagnose_logs"):
             parent.open_diagnose_logs()  # type: ignore[attr-defined]
+
+    def _request_apply_test(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "run_application_test"):
+            parent.run_application_test()  # type: ignore[attr-defined]
+
+    def _request_clear_jobs(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "clear_job_data"):
+            parent.clear_job_data()  # type: ignore[attr-defined]
 
     def open_about(self) -> None:
         AboutDialog(self).exec()

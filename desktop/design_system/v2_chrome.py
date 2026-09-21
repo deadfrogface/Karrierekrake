@@ -97,7 +97,7 @@ class StatusChip(QLabel):
 
 
 class KpiCard(QFrame):
-    """Quiet KPI tile for Übersicht — values must be live, never demo hardcodes."""
+    """Compact KPI tile — large number is the visual focus (demo hierarchy)."""
 
     def __init__(
         self,
@@ -109,14 +109,14 @@ class KpiCard(QFrame):
     ) -> None:
         super().__init__(parent)
         self.setObjectName("Card")
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 14, 16, 14)
-        layout.setSpacing(4)
+        layout.setSpacing(2)
         self.caption = QLabel(label)
         self.caption.setObjectName("PageSubtitle")
         self.value_label = QLabel(value)
-        self.value_label.setObjectName("PageTitle")
+        self.value_label.setObjectName("KpiValue")
         self.hint_label = QLabel(hint)
         self.hint_label.setObjectName("KkHint")
         self.hint_label.setVisible(bool(hint))

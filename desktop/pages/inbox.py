@@ -27,7 +27,8 @@ from PySide6.QtWidgets import (
 from core.database import Database
 from desktop.design_system.a11y import set_accessible_name
 from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, StatusChip
-from desktop.i18n import tr
+from desktop.util.human_time import format_human_date_short, format_human_datetime
+from desktop.i18n import i18n, tr
 from desktop.pages.lifecycle import LifecyclePage
 from desktop.services import ConfigService
 
@@ -205,12 +206,81 @@ class InboxPage(QWidget):
         self._reload_list()
 
     def _rebuild_more_menu(self) -> None:
+        """Populate overflow from selected email state — never the full capability set."""
         self._more_menu.clear()
-        self._more_menu.addAction(tr("lifecycle.link_email"), self._action_link)
-        self._more_menu.addAction(tr("lifecycle.draft_reply"), self._action_draft)
-        self._more_menu.addAction(tr("lifecycle.calendar_proposal"), self._action_calendar)
-        self._more_menu.addAction(tr("lifecycle.interview_prep"), self._action_prep)
-        self._more_menu.addAction(tr("lifecycle.followups"), self._action_followups)
+        email = self._selected
+        if not email:
+            return
+        for label, slot in self._contextual_actions(email):
+            if slot is self._on_primary:
+                continue  # primary lives on the bar
+            self._more_menu.addAction(label, slot)
+
+    def _email_kind(self, email: dict) -> str:
+        cat = (email.get("category") or email.get("lifecycle_class") or "").lower()
+        if cat in {"interview", "interview_invite", "interview_reschedule"}:
+            return "interview"
+        if cat in {"rejection", "reject"}:
+            return "rejection"
+        if cat in {"offer"}:
+            return "offer"
+        if cat in {"confirmation", "application_confirmation", "receipt"}:
+            return "confirmation"
+        return "generic"
+
+    def _contextual_actions(self, email: dict) -> list[tuple[str, object]]:
+        """Return (label, callable) pairs appropriate for this message."""
+        status = (email.get("association_status") or "").lower()
+        kind = self._email_kind(email)
+        case_id = (email.get("case_id") or "").strip()
+        actions: list[tuple[str, object]] = []
+
+        if status in {"ambiguous", "review_required"}:
+            actions.append((tr("inbox.action_review_association"), self._action_link))
+        elif status in {"unlinked", ""} and not case_id:
+            actions.append((tr("lifecycle.link_email"), self._action_link))
+
+        if case_id:
+            actions.append((tr("inbox.open_application"), self._open_application))
+
+        # Reply draft — only when responding makes sense (not rejection/confirmation-only)
+        if (
+            case_id
+            and status not in {"ambiguous", "review_required"}
+            and kind in {"interview", "offer", "generic"}
+        ):
+            actions.append((tr("lifecycle.draft_reply"), self._action_draft))
+
+        # Interview actions only for real interview domain state
+        if kind == "interview" and case_id:
+            actions.append((tr("lifecycle.interview_prep"), self._action_prep))
+            actions.append((tr("lifecycle.calendar_proposal"), self._action_calendar))
+
+        return actions
+
+    def _apply_contextual_chrome(self, email: dict) -> None:
+        actions = self._contextual_actions(email)
+        if not actions:
+            self.primary_action.setEnabled(False)
+            self.primary_action.setText(tr("inbox.action_prepare_reply"))
+            self.action_hint.setText("")
+            self._rebuild_more_menu()
+            return
+        primary_label, primary_slot = actions[0]
+        self.primary_action.setText(primary_label)
+        self.primary_action.setEnabled(True)
+        self._primary_slot = primary_slot
+        status = (email.get("association_status") or "").lower()
+        if status in {"ambiguous", "review_required"}:
+            self.action_hint.setText(tr("inbox.hint_needs_association"))
+        elif self._email_kind(email) == "interview":
+            self.action_hint.setText(tr("inbox.hint_interview"))
+        elif primary_slot == self._action_draft:
+            self.action_hint.setText(tr("inbox.hint_prepare_reply"))
+        else:
+            self.action_hint.setText("")
+        self._rebuild_more_menu()
+        self.more_btn.setVisible(len(actions) > 1)
 
     def refresh(self) -> None:
         self._reload_list()
@@ -253,7 +323,10 @@ class InboxPage(QWidget):
             subject = email.get("subject") or "—"
             status = email.get("association_status") or ""
             chip, _kind = _assoc_chip(status)
-            when = (email.get("received_at") or email.get("created_at") or "")[:16]
+            when = format_human_date_short(
+                email.get("received_at") or email.get("created_at"),
+                lang=i18n.language,
+            )
             item = QListWidgetItem(f"{sender}\n{subject}\n{chip} · {when}")
             item.setData(Qt.ItemDataRole.UserRole, email.get("id"))
             self.list.addItem(item)
@@ -282,20 +355,27 @@ class InboxPage(QWidget):
 
     def _clear_detail(self) -> None:
         self._selected = None
+        self._primary_slot = None
         self.mail_subject.setText(tr("inbox.no_selection_title"))
         self.mail_meta.setText(tr("inbox.no_selection_body"))
         self.mail_body.clear()
         self.mail_chip.set_status(tr("inbox.chip_unlinked"), kind="muted")
         self.context_case.setText("—")
         self.open_case_btn.setEnabled(False)
+        self.open_case_btn.setVisible(False)
         self.primary_action.setEnabled(False)
         self.primary_action.setText(tr("inbox.action_prepare_reply"))
         self.action_hint.setText("")
+        self._more_menu.clear()
+        self.more_btn.setVisible(False)
 
     def _bind_detail(self, email: dict) -> None:
         self.mail_subject.setText(email.get("subject") or "—")
         sender = email.get("sender") or "—"
-        when = email.get("received_at") or email.get("created_at") or ""
+        when = format_human_datetime(
+            email.get("received_at") or email.get("created_at"),
+            lang=i18n.language,
+        )
         self.mail_meta.setText(f"{sender}\n{when}")
         self.mail_body.setPlainText(email.get("body_text") or "")
         chip, kind = _assoc_chip(email.get("association_status") or "")
@@ -306,23 +386,23 @@ class InboxPage(QWidget):
             if case:
                 self.context_case.setText(f"{case.position} · {case.company}")
                 self.open_case_btn.setEnabled(True)
+                self.open_case_btn.setVisible(True)
             else:
                 self.context_case.setText(case_id)
                 self.open_case_btn.setEnabled(False)
+                self.open_case_btn.setVisible(False)
         else:
             self.context_case.setText(tr("inbox.no_linked_case"))
             self.open_case_btn.setEnabled(False)
-        status = (email.get("association_status") or "").lower()
-        if status in {"ambiguous", "review_required"}:
-            self.primary_action.setText(tr("inbox.action_review_association"))
-            self.action_hint.setText(tr("inbox.hint_needs_association"))
-        else:
-            self.primary_action.setText(tr("inbox.action_prepare_reply"))
-            self.action_hint.setText(tr("inbox.hint_prepare_reply"))
-        self.primary_action.setEnabled(True)
+            self.open_case_btn.setVisible(False)
+        self._apply_contextual_chrome(email)
 
     def _on_primary(self) -> None:
         if not self._selected:
+            return
+        slot = getattr(self, "_primary_slot", None)
+        if callable(slot):
+            slot()
             return
         status = (self._selected.get("association_status") or "").lower()
         if status in {"ambiguous", "review_required"}:

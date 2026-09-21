@@ -1,30 +1,26 @@
-<!-- 05_application_preview.html -->
+<!-- 04_jobs_filters_empty.html -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karrierekrake - Bewerbungsvorschau</title>
+    <title>KarriereKrake - Keine Treffer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { navy: '#132238', teal: '#18A999', bgLight: '#F8FAFC', orange: '#E86A45' } } } }
+        tailwind.config = { theme: { extend: { colors: { navy: '#132238', teal: '#18A999', tealHover: '#148F82', bgLight: '#F8FAFC', orange: '#E86A45' } } } }
     </script>
     <style> body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; } </style>
 </head>
 <body class="bg-bgLight text-gray-800 h-screen flex overflow-hidden">
     
     <!-- Sidebar -->
-    <aside class="w-64 bg-navy text-white flex flex-col justify-between flex-shrink-0">
+    <aside class="w-64 bg-navy text-white flex flex-col justify-between flex-shrink-0 z-20 relative">
         <div>
             <div class="p-6 flex items-center space-x-3">
                 <div class="w-8 h-8 rounded bg-teal flex items-center justify-center text-xl font-bold">K</div>
-                <span class="text-xl font-semibold tracking-wide">Karrierekrake</span>
+                <span class="text-xl font-semibold tracking-wide">KarriereKrake</span>
             </div>
             <nav class="mt-4 flex flex-col space-y-1 px-3">
-                <a href="#" class="px-3 py-2 text-gray-300 hover:text-white rounded-md font-medium flex items-center">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Übersicht
-                </a>
                 <a href="#" class="px-3 py-2 bg-teal bg-opacity-20 text-teal rounded-md font-medium flex items-center">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     Jobs
@@ -34,141 +30,107 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col overflow-y-auto">
+    <main class="flex-1 flex flex-col overflow-hidden relative">
         
-        <!-- Header -->
-        <header class="bg-white border-b border-gray-200 px-8 py-5 flex justify-between items-center sticky top-0 z-10">
-            <div class="flex items-center space-x-4">
-                <button class="text-gray-400 hover:text-navy transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                </button>
-                <div>
-                    <div class="flex items-center space-x-3 mb-1">
-                        <h1 class="text-2xl font-bold text-navy">Bewerbung vorbereiten</h1>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Bereit</span>
-                    </div>
-                    <p class="text-sm text-gray-500">Office Manager (m/w/d) bei Nordlicht Consulting GmbH</p>
+        <!-- Search Bar -->
+        <header class="bg-white border-b border-gray-200 p-4 shrink-0 shadow-sm z-10">
+            <div class="flex items-center space-x-3 max-w-[1400px]">
+                <div class="flex-1 relative">
+                    <input type="text" placeholder="Beruf oder Stichwort" value="Scrum Master" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-teal">
                 </div>
+                <div class="w-48 relative">
+                    <input type="text" placeholder="Ort" value="Erkrath" class="w-full pl-3 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-teal">
+                </div>
+                <div class="w-32 relative">
+                    <select class="w-full pl-3 pr-8 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-teal appearance-none bg-white">
+                        <option selected>10 km (Luftlinie)</option>
+                    </select>
+                </div>
+                <button class="bg-teal hover:bg-tealHover text-white px-6 py-2 rounded text-sm font-semibold transition-colors">
+                    Suchen
+                </button>
+                <button class="bg-teal/10 border border-teal text-teal px-4 py-2 rounded text-sm font-medium transition-colors flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    Weitere Filter (2)
+                </button>
             </div>
-            <button class="bg-teal hover:bg-tealHover text-white px-6 py-2.5 rounded shadow text-sm font-semibold transition-colors">
-                Bewerbung freigeben & übermitteln
-            </button>
         </header>
 
-        <div class="p-8 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Container for Filter Drawer and Empty State -->
+        <div class="flex-1 flex overflow-hidden relative">
             
-            <!-- Left Column: WIRD ÜBERMITTELT (A) -->
-            <div class="lg:col-span-2 space-y-6">
-                <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Wird an den Arbeitgeber übermittelt</h2>
-                
-                <!-- Personal Data Form preview -->
-                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                    <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="font-bold text-navy">Formulardaten</h3>
-                        <button class="text-teal text-sm font-medium hover:underline">Bearbeiten</button>
-                    </div>
-                    <div class="p-5 grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <span class="block text-gray-500 text-xs">Vorname, Nachname</span>
-                            <span class="font-medium text-gray-800">Max Mustermann</span>
-                        </div>
-                        <div>
-                            <span class="block text-gray-500 text-xs">E-Mail</span>
-                            <span class="font-medium text-gray-800">max.mustermann@example.com</span>
-                        </div>
-                        <div>
-                            <span class="block text-gray-500 text-xs">Telefon</span>
-                            <span class="font-medium text-gray-800">+49 170 1234567</span>
-                        </div>
-                        <div>
-                            <span class="block text-gray-500 text-xs">Kündigungsfrist</span>
-                            <span class="font-medium text-gray-800">4 Wochen zum Monatsende</span>
-                        </div>
-                    </div>
+            <!-- Empty State Area -->
+            <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-gray-50/50">
+                <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                 </div>
+                <h2 class="text-2xl font-bold text-navy mb-2">Keine passenden Jobs gefunden.</h2>
+                <p class="text-gray-500 max-w-md mb-8">118 Stellen wurden in deiner Region geprüft, aber keine erfüllt aktuell alle deine strengen Filter-Kriterien.</p>
+                
+                <div class="flex space-x-4">
+                    <button class="bg-white border border-gray-300 hover:border-teal hover:text-teal px-5 py-2.5 rounded font-medium transition-colors shadow-sm">
+                        Umkreis +5 km
+                    </button>
+                    <button class="bg-teal hover:bg-tealHover text-white px-5 py-2.5 rounded font-semibold shadow-sm transition-colors">
+                        Filter anpassen
+                    </button>
+                    <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-5 py-2.5 rounded font-medium transition-colors shadow-sm">
+                        Verworfene ansehen
+                    </button>
+                </div>
+            </div>
 
-                <!-- Documents -->
-                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                    <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="font-bold text-navy">Dokumente</h3>
-                        <button class="text-teal text-sm font-medium hover:underline">Dokumente anpassen</button>
-                    </div>
-                    <div class="p-5 space-y-3">
-                        <div class="flex items-center justify-between p-3 border border-gray-100 rounded bg-gray-50">
-                            <div class="flex items-center space-x-3">
-                                <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path></svg>
-                                <div>
-                                    <div class="text-sm font-medium text-navy">Lebenslauf_Mustermann_2026.pdf</div>
-                                    <div class="text-xs text-gray-500">Standard-Profil-Lebenslauf (1.2 MB)</div>
-                                </div>
+            <!-- Filter Drawer (Mockup) -->
+            <div class="w-80 bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-navy">Weitere Filter</h3>
+                    <button class="text-gray-400 hover:text-gray-600">&times;</button>
+                </div>
+                <div class="p-5 overflow-y-auto flex-1 space-y-6">
+                    
+                    <!-- Passung -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">Passung & Suchbreite</h4>
+                        <label class="block text-sm text-gray-600 mb-1">Mindest-Match (%)</label>
+                        <input type="range" min="0" max="100" value="80" class="w-full accent-teal">
+                        <div class="flex justify-between text-xs text-gray-400 mt-1"><span>0</span><span>80%</span><span>100</span></div>
+                        
+                        <div class="mt-4">
+                            <label class="block text-sm text-gray-600 mb-2">Fokus</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button class="border border-teal bg-teal/5 text-teal text-xs py-1.5 rounded font-medium">Präzise</button>
+                                <button class="border border-gray-200 text-gray-600 text-xs py-1.5 rounded">Ausgewogen</button>
+                                <button class="border border-gray-200 text-gray-600 text-xs py-1.5 rounded">Entdecken</button>
                             </div>
-                            <span class="text-teal text-xs font-medium bg-teal/10 px-2 py-1 rounded">Wird angehängt</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Cover Letter -->
-                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                    <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="font-bold text-navy">Anschreiben (Textfeld)</h3>
-                        <button class="text-teal text-sm font-medium hover:underline">Text bearbeiten</button>
+                    <!-- Alter -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">Anzeigealter</h4>
+                        <select class="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:border-teal bg-white">
+                            <option>Nur letzte 24h</option>
+                            <option selected>Max. 7 Tage</option>
+                            <option>Max. 30 Tage</option>
+                        </select>
                     </div>
-                    <div class="p-5">
-                        <div class="text-sm text-gray-700 whitespace-pre-line bg-gray-50 p-4 rounded border border-gray-100 font-serif">Sehr geehrte Frau Müller,
 
-mit großem Interesse habe ich Ihre Ausschreibung für die Position als Office Manager bei Nordlicht Consulting gelesen. Die beschriebenen Aufgaben, insbesondere die Schnittstellenfunktion und die Büroorganisation, decken sich perfekt mit meinen Erfahrungen aus den letzten drei Jahren bei...
+                    <!-- Gehalt -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">Mindestgehalt</h4>
+                        <div class="flex items-center">
+                            <input type="text" placeholder="65.000" class="flex-1 border border-gray-300 rounded-l p-2 text-sm focus:outline-none focus:border-teal">
+                            <span class="bg-gray-100 border border-l-0 border-gray-300 rounded-r px-3 py-2 text-sm text-gray-500">€ / Jahr</span>
                         </div>
                     </div>
-                </div>
 
+                </div>
+                <div class="p-4 border-t border-gray-200 bg-gray-50 flex space-x-3">
+                    <button class="flex-1 bg-white border border-gray-300 text-gray-700 py-2 rounded text-sm font-medium">Zurücksetzen</button>
+                    <button class="flex-1 bg-teal text-white py-2 rounded text-sm font-semibold">Ergebnisse (0)</button>
+                </div>
             </div>
 
-            <!-- Right Column: HINWEISE (B) -->
-            <div class="space-y-6">
-                <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Hinweise von Karrierekrake</h2>
-                
-                <!-- Match Score -->
-                <div class="bg-white border border-teal rounded-lg shadow-sm p-5 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-16 h-16 bg-teal/10 rounded-bl-full flex items-start justify-end p-2">
-                        <svg class="w-5 h-5 text-teal" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    </div>
-                    <div class="text-4xl font-bold text-navy mb-1">88%</div>
-                    <div class="text-sm font-medium text-teal mb-4">Sehr hohe Übereinstimmung</div>
-                    <p class="text-xs text-gray-600">Dein Profil erfüllt alle Kernkriterien. Das Anschreiben wurde automatisch auf Basis deines Profils generiert.</p>
-                </div>
-
-                <!-- Recruiter Info -->
-                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-                    <h3 class="font-bold text-navy text-sm mb-3">Ansprechpartner erkannt</h3>
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold">SM</div>
-                        <div>
-                            <div class="text-sm font-medium text-navy">Sabine Müller</div>
-                            <div class="text-xs text-gray-500">HR Managerin</div>
-                        </div>
-                    </div>
-                    <div class="mt-3 text-xs bg-gray-50 p-2 rounded text-gray-600 flex items-start">
-                        <svg class="w-4 h-4 text-green-500 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Verifiziert durch Stellenbeschreibung.
-                    </div>
-                </div>
-
-                <!-- Tech Details (Collapsible) -->
-                <details class="bg-white border border-gray-200 rounded-lg shadow-sm group">
-                    <summary class="px-5 py-4 cursor-pointer font-bold text-navy text-sm flex justify-between items-center list-none outline-none">
-                        Technische Details einblenden
-                        <svg class="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </summary>
-                    <div class="px-5 pb-5 pt-1 border-t border-gray-100 text-xs text-gray-500 font-mono space-y-2">
-                        <div><span class="text-gray-400">Adapter:</span> stepstone_v2</div>
-                        <div><span class="text-gray-400">submit_allowed:</span> true</div>
-                        <div><span class="text-gray-400">dry_run:</span> false</div>
-                        <div><span class="text-gray-400">internal_gate:</span> PASSED</div>
-                        <div><span class="text-gray-400">raw_warnings:</span> []</div>
-                    </div>
-                </details>
-                
-            </div>
         </div>
     </main>
 </body>

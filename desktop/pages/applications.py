@@ -24,10 +24,11 @@ from PySide6.QtWidgets import (
 from core.database import Database
 from core.models import JobStatus
 from desktop.design_system.a11y import set_accessible_name
-from desktop.design_system.v2_chrome import ContentCard, StatusChip
+from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, StatusChip
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.status_labels import status_label
+from desktop.util.human_time import format_human_datetime
 from desktop.viewmodels.case_timeline import build_case_timeline_viewmodel
 from desktop.widgets.product_panels import CaseTimelinePanel
 
@@ -59,7 +60,7 @@ class ApplicationsPage(QWidget):
         # --- List surface (demo) ---
         list_page = QWidget()
         list_l = QVBoxLayout(list_page)
-        list_l.setContentsMargins(16, 12, 16, 16)
+        list_l.setContentsMargins(24, 16, 24, 16)
         list_l.setSpacing(12)
 
         self.page_title = QLabel()
@@ -70,28 +71,42 @@ class ApplicationsPage(QWidget):
         list_l.addWidget(self.page_title)
         list_l.addWidget(self.page_subtitle)
 
+        # Coherent toolbar — search + status together; sort on the right (demo)
         toolbar = QHBoxLayout()
+        toolbar.setSpacing(10)
+        left_tools = QHBoxLayout()
+        left_tools.setSpacing(8)
         self.search = QLineEdit()
         self.search.setPlaceholderText(tr("apps.search_placeholder"))
+        self.search.setMaximumWidth(360)
         self.search.textChanged.connect(self.refresh)
         self.status = QComboBox()
+        self.status.setMinimumWidth(160)
         self.status.addItem("", "")
         for s in STATUS_FILTERS:
             if s:
                 self.status.addItem(s, s)
         self.status.currentIndexChanged.connect(self.refresh)
         self.lbl_status = QLabel()
+        self.lbl_status.hide()  # demo embeds status in control
+        left_tools.addWidget(self.search, stretch=1)
+        left_tools.addWidget(self.status)
+        self.refresh_btn = QPushButton("↻")
+        self.refresh_btn.setObjectName("SecondaryButton")
+        self.refresh_btn.setFixedWidth(36)
+        self.refresh_btn.clicked.connect(self.refresh)
+        left_tools.addWidget(self.refresh_btn)
+        toolbar.addLayout(left_tools, stretch=1)
+        sort_row = QHBoxLayout()
+        self.lbl_sort = QLabel()
         self.sort = QComboBox()
         self.sort.addItem("", "updated")
         self.sort.addItem("", "company")
         self.sort.addItem("", "status")
         self.sort.currentIndexChanged.connect(self.refresh)
-        self.lbl_sort = QLabel()
-        toolbar.addWidget(self.search, stretch=1)
-        toolbar.addWidget(self.lbl_status)
-        toolbar.addWidget(self.status)
-        toolbar.addWidget(self.lbl_sort)
-        toolbar.addWidget(self.sort)
+        sort_row.addWidget(self.lbl_sort)
+        sort_row.addWidget(self.sort)
+        toolbar.addLayout(sort_row)
         list_l.addLayout(toolbar)
 
         self.alert = QFrame()
@@ -107,12 +122,10 @@ class ApplicationsPage(QWidget):
         self.alert.hide()
         list_l.addWidget(self.alert)
 
-        self.refresh_btn = QPushButton()
-        self.refresh_btn.setObjectName("SecondaryButton")
-        self.refresh_btn.clicked.connect(self.refresh)
         self.review_btn = QPushButton()
         self.review_btn.setObjectName("SecondaryButton")
         self.review_btn.clicked.connect(self.show_review_only)
+        self.review_btn.hide()  # use alert CTA / status filter instead of permanent wall
         # Compatibility aliases (preview/open live on detail)
         self.open_btn = QPushButton()
         self.open_btn.hide()
@@ -120,11 +133,12 @@ class ApplicationsPage(QWidget):
         self.preview_btn = QPushButton()
         self.preview_btn.hide()
         self.preview_btn.clicked.connect(self.preview_selected)
-        secondary = QHBoxLayout()
-        secondary.addWidget(self.refresh_btn)
-        secondary.addWidget(self.review_btn)
-        secondary.addStretch()
-        list_l.addLayout(secondary)
+
+        content_wrap = QWidget()
+        content_wrap.setMaximumWidth(1100)
+        content_l = QVBoxLayout(content_wrap)
+        content_l.setContentsMargins(0, 0, 0, 0)
+        content_l.setSpacing(0)
 
         self.table = QTableWidget(0, 5)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
@@ -141,12 +155,16 @@ class ApplicationsPage(QWidget):
         header.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
 
-        self.empty = QLabel()
-        self.empty.setObjectName("EmptyState")
-        self.empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.empty = EmptyStatePanel()
         self.empty.setVisible(False)
-        list_l.addWidget(self.table, 1)
-        list_l.addWidget(self.empty)
+        self.empty.action_btn.clicked.connect(self._go_jobs)
+        content_l.addWidget(self.table, 1)
+        content_l.addWidget(self.empty, 1)
+        host = QHBoxLayout()
+        host.addStretch(1)
+        host.addWidget(content_wrap, stretch=6)
+        host.addStretch(1)
+        list_l.addLayout(host, stretch=1)
         self.stack.addWidget(list_page)
 
         # --- Detail surface ---
@@ -215,7 +233,9 @@ class ApplicationsPage(QWidget):
         for i in range(self.sort.count()):
             key = str(self.sort.itemData(i))
             self.sort.setItemText(i, sort_labels.get(key, key))
-        self.refresh_btn.setText(tr("btn.refresh"))
+        self.refresh_btn.setText("↻")
+        self.refresh_btn.setToolTip(tr("btn.refresh"))
+        set_accessible_name(self.refresh_btn, tr("btn.refresh"))
         self.review_btn.setText(tr("btn.review_only"))
         self.open_btn.setText(tr("btn.open_manual"))
         self.preview_btn.setText(tr("btn.preview_apply"))
@@ -223,7 +243,11 @@ class ApplicationsPage(QWidget):
         self.detail_preview.setText(tr("btn.preview_apply"))
         self.back_btn.setText(tr("apps.back"))
         set_accessible_name(self.back_btn, tr("apps.back"))
-        self.empty.setText(tr("apps.empty"))
+        self.empty.set_texts(
+            tr("apps.empty_title"),
+            tr("apps.empty_body"),
+            action_text=tr("apps.empty_cta"),
+        )
         self.alert_btn.setText(tr("apps.alert_cta"))
         self.table.setHorizontalHeaderLabels(
             [
@@ -340,10 +364,11 @@ class ApplicationsPage(QWidget):
             self.table.insertRow(row)
             company_role = f"{rec.company}\n{rec.position}"
             next_step = rec.error_message or rec.result or "—"
+            when = format_human_datetime(rec.application_date, lang=(cfg.settings.language or "de"))
             values = [
                 company_role,
                 status_label(rec.status),
-                (rec.application_date or "")[:19],
+                when,
                 next_step[:80],
                 fit_label,
             ]
@@ -354,6 +379,11 @@ class ApplicationsPage(QWidget):
         self.empty.setVisible(empty)
         if empty:
             self.timeline.clear()
+
+    def _go_jobs(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "navigate_to"):
+            parent.navigate_to("nav.jobs")  # type: ignore[attr-defined]
 
     def open_selected(self) -> None:
         row = self._selected_row if self._selected_row >= 0 else self.table.currentRow()

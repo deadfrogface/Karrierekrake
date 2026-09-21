@@ -87,6 +87,12 @@ QLabel#PageTitle {{
     font-weight: 700;
     color: {COLOR_NAVY};
 }}
+QLabel#KpiValue {{
+    font-size: 32px;
+    font-weight: 700;
+    color: {COLOR_NAVY};
+    letter-spacing: -0.5px;
+}}
 QLabel#PageSubtitle {{
     color: {COLOR_LIGHT_MUTED};
     font-size: 13px;
@@ -294,6 +300,12 @@ QLabel#PageTitle {{
     font-size: 20px;
     font-weight: 700;
     color: #f2f7fb;
+}}
+QLabel#KpiValue {{
+    font-size: 32px;
+    font-weight: 700;
+    color: #f2f7fb;
+    letter-spacing: -0.5px;
 }}
 QLabel#PageSubtitle {{
     color: {COLOR_DARK_MUTED};

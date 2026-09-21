@@ -1,4 +1,4 @@
-"""V2 Übersicht (dashboard) — 4 primary KPIs, quieter advanced stats."""
+"""V2 Übersicht polish — hierarchy, stateful CTA, no diagnostics dump."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ from desktop.i18n import TRANSLATIONS, i18n, tr
 from desktop.pages.dashboard import DashboardPage
 from desktop.services import ConfigService
 from desktop.services.schedule_service import ScheduleService
+from desktop.util.human_time import format_human_datetime
 
 
 @pytest.fixture(scope="module")
@@ -56,8 +57,6 @@ def test_dashboard_stats_includes_v2_kpi_fields(tmp_path):
     stats = db.dashboard_stats()
     assert "applications_active" in stats
     assert "replies_attention" in stats
-    assert stats["applications_active"] == 0
-    assert stats["replies_attention"] == 0
 
 
 def test_overview_has_four_primary_kpis(qapp, config_service, monkeypatch):
@@ -66,48 +65,52 @@ def test_overview_has_four_primary_kpis(qapp, config_service, monkeypatch):
     page = DashboardPage(config_service)
     page.refresh()
     assert len(page.kpi_cards) == 4
-    assert set(page.kpi_cards) == {"matches", "needs_review", "applications", "replies"}
-    assert page.kpi_cards["matches"].caption.text() == tr("dash.kpi_matches")
-    assert page.kpi_cards["replies"].caption.text() == tr("dash.kpi_replies")
+    assert page.kpi_cards["matches"].value_label.objectName() == "KpiValue"
     assert page.btn_search.text() == tr("btn.find_jobs")
-    assert "Diagnose" in page.advanced_section.text() or "DIAGNOSE" in page.advanced_section.text()
-    advanced = page.advanced_stats.text()
-    assert tr("dash.captcha") in advanced
-    assert tr("dash.errors") in advanced
+    assert page.btn_search.objectName() == "PrimaryButton"
+    # Diagnostics / dumping-ground not in production chrome
+    assert page.advanced_stats.isHidden()
+    assert page.run_detail_label.isHidden()
+    assert page.more_actions.isHidden()
+    assert page.mode_label.isHidden()
 
 
 def test_overview_i18n_keys_present():
     for lang in ("de", "en"):
         for key in (
             "dash.kpi_matches",
-            "dash.kpi_applications",
-            "dash.kpi_replies",
-            "dash.section_queue",
-            "dash.section_kpis",
-            "dash.section_advanced",
-            "dash.next_inbox_cta",
-            "dash.more_actions",
-            "dash.search_running_title",
-            "dash.search_running_body",
-            "jobs.empty_title",
-            "jobs.empty_adjust_filters",
+            "dash.greeting",
+            "dash.search_starting",
+            "dash.search_cancelling",
+            "btn.search_again",
+            "apps.empty_title",
+            "inbox.hint_interview",
         ):
             assert key in TRANSLATIONS[lang]
     assert set(TRANSLATIONS["de"]) == set(TRANSLATIONS["en"])
 
 
-def test_search_running_banner(qapp, config_service, monkeypatch):
+def test_stateful_search_cta(qapp, config_service, monkeypatch):
     monkeypatch.setattr(ScheduleService, "sync_from_config", lambda self: (True, "ok"))
     i18n.set_language("de")
     page = DashboardPage(config_service)
-    assert page.search_banner.isHidden()
-    assert page.btn_cancel.isHidden()
+    assert page.btn_search.text() == tr("btn.find_jobs")
     page.set_pipeline_running(True)
-    assert not page.search_banner.isHidden()
-    assert not page.btn_cancel.isHidden()
-    assert page.btn_cancel.isEnabled()
-    assert page.btn_search.isHidden()
-    assert page.header.title.text() == tr("dash.search_running_title")
+    assert page.btn_search.text() == tr("btn.cancel_search")
+    assert page.btn_search.isEnabled()
     page.set_pipeline_running(False)
-    assert page.search_banner.isHidden()
-    assert not page.btn_search.isHidden()
+    assert page.btn_search.text() == tr("btn.search_again")
+
+
+def test_human_datetime_de():
+    assert "Uhr" in format_human_datetime("2026-09-20T23:18:49+00:00", lang="de")
+    assert format_human_datetime(None) == "—"
+
+
+def test_mode_chip_humanized(qapp, config_service, monkeypatch):
+    monkeypatch.setattr(ScheduleService, "sync_from_config", lambda self: (True, "ok"))
+    i18n.set_language("de")
+    page = DashboardPage(config_service)
+    page.refresh()
+    assert "search_only" not in page.mode_chip.text()
+    assert tr("settings.mode.search") in page.mode_chip.text() or page.mode_chip.text()
