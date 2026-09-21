@@ -208,12 +208,19 @@ class LocationWorkSection(QGroupBox):
         super().__init__(parent)
         self.include_search_fields = include_search_fields
         self.home_address = QLineEdit()
+        self.postal_code = QLineEdit()
+        self.postal_code.setPlaceholderText("PLZ")
         self.max_distance = IntentionalWheelDoubleSpinBox()
         self.max_distance.setRange(1, 300)
-        self.max_distance.setSuffix(" km")
+        self.max_distance.setSuffix(" km Luftlinie")
         self.allow_remote = QCheckBox()
         self.allow_hybrid = QCheckBox()
         self.country = QLineEdit()
+        self.geo_status = QLabel()
+        self.geo_status.setWordWrap(True)
+        self.geo_update_btn = QPushButton()
+        self.geo_update_btn.setObjectName("SecondaryButton")
+        self.geo_update_btn.clicked.connect(self._update_geo_dataset)
         self.full_time = QCheckBox()
         self.part_time = QCheckBox()
         self.remote = QCheckBox()
@@ -226,14 +233,19 @@ class LocationWorkSection(QGroupBox):
         self.excluded_companies = ListEditor("placeholder.add_entry", visible_rows=3)
         form = QFormLayout(self)
         self.lbl_home = QLabel()
+        self.lbl_postal = QLabel()
         self.lbl_commute = QLabel()
         self.lbl_country = QLabel()
         self.lbl_work_model = QLabel()
         self.lbl_min_salary = QLabel()
         self.lbl_pref_companies = QLabel()
         self.lbl_ex_companies = QLabel()
+        self.lbl_geo = QLabel()
         form.addRow(self.lbl_home, self.home_address)
+        form.addRow(self.lbl_postal, self.postal_code)
         form.addRow(self.lbl_country, self.country)
+        form.addRow(self.lbl_geo, self.geo_status)
+        form.addRow(self.geo_update_btn)
         form.addRow(self.allow_remote)
         form.addRow(self.allow_hybrid)
         form.addRow(self.lbl_pref_companies, self.preferred_companies)
@@ -268,10 +280,13 @@ class LocationWorkSection(QGroupBox):
             tr("profile.location") if not self.include_search_fields else tr("profile.location_work")
         )
         self.lbl_home.setText(tr("profile.home"))
-        self.lbl_commute.setText(tr("profile.commute"))
+        self.lbl_postal.setText(tr("profile.postal"))
+        self.lbl_commute.setText(tr("profile.commute_airline"))
         self.allow_remote.setText(tr("profile.allow_remote"))
         self.allow_hybrid.setText(tr("profile.allow_hybrid"))
         self.lbl_country.setText(tr("profile.country"))
+        self.lbl_geo.setText(tr("profile.geo_dataset"))
+        self.geo_update_btn.setText(tr("profile.geo_update"))
         self.lbl_work_model.setText(tr("profile.work_model"))
         self.full_time.setText(tr("full_time"))
         self.part_time.setText(tr("part_time"))
@@ -283,6 +298,42 @@ class LocationWorkSection(QGroupBox):
         self.lbl_ex_companies.setText(tr("profile.ex_companies"))
         self.preferred_companies.retranslate()
         self.excluded_companies.retranslate()
+        self._refresh_geo_status()
+
+    def _refresh_geo_status(self) -> None:
+        try:
+            from core.geo_dataset import get_geo_dataset_manager
+
+            info = get_geo_dataset_manager().current_info()
+            if info.valid:
+                self.geo_status.setText(
+                    tr(
+                        "profile.geo_status_ok",
+                        version=info.version,
+                        source=info.source,
+                    )
+                )
+            else:
+                self.geo_status.setText(
+                    tr("profile.geo_status_bad", message=info.message or "—")
+                )
+        except Exception:
+            self.geo_status.setText(tr("profile.geo_status_bad", message="—"))
+
+    def _update_geo_dataset(self) -> None:
+        try:
+            from core.geo_dataset import get_geo_dataset_manager
+
+            info = get_geo_dataset_manager().update_from_upstream()
+            self._refresh_geo_status()
+            if not info.valid:
+                self.geo_status.setText(
+                    tr("profile.geo_status_bad", message=info.message or "Update fehlgeschlagen")
+                )
+        except Exception as exc:
+            self.geo_status.setText(
+                tr("profile.geo_status_bad", message=type(exc).__name__)
+            )
 
     def load(
         self,
@@ -291,6 +342,7 @@ class LocationWorkSection(QGroupBox):
         filters: FiltersConfig,
     ) -> None:
         self.home_address.setText(location.home_address)
+        self.postal_code.setText(getattr(location, "postal_code", "") or "")
         self.max_distance.setValue(float(location.max_distance_km))
         self.allow_remote.setChecked(location.allow_remote_germany)
         self.allow_hybrid.setChecked(location.allow_hybrid)
@@ -303,6 +355,7 @@ class LocationWorkSection(QGroupBox):
         self.min_salary.setValue(float(employment.minimum_salary or 0))
         self.preferred_companies.set_items(filters.preferred_companies)
         self.excluded_companies.set_items(filters.excluded_companies)
+        self._refresh_geo_status()
 
     def save_into(
         self,
@@ -311,19 +364,20 @@ class LocationWorkSection(QGroupBox):
         filters: FiltersConfig,
     ) -> None:
         new_home = self.home_address.text().strip()
-        if new_home != (location.home_address or "").strip():
-            # Address changed → invalidate cached coordinates so we never keep
-            # stale geocodes (and never silently fall back to generic DE coords).
+        new_plz = self.postal_code.text().strip()
+        if new_home != (location.home_address or "").strip() or new_plz != (
+            getattr(location, "postal_code", "") or ""
+        ):
             location.home_latitude = None
             location.home_longitude = None
             location.home_geocoded_address = ""
         location.home_address = new_home
+        location.postal_code = new_plz
         location.allow_remote_germany = self.allow_remote.isChecked()
         location.allow_hybrid = self.allow_hybrid.isChecked()
         location.country = self.country.text().strip() or "DE"
         filters.preferred_companies = self.preferred_companies.get_items()
         filters.excluded_companies = self.excluded_companies.get_items()
-        # Search-wish fields only when legacy combined UI is active.
         if self.include_search_fields:
             location.max_distance_km = float(self.max_distance.value())
             employment.full_time = self.full_time.isChecked()

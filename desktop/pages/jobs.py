@@ -41,22 +41,17 @@ from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
 def format_commute_label(job, *, with_duration: bool = True) -> str:
-    """UI commute text — „km Fahrt“ only with Google Route Matrix result.
-
-    Never labels Haversine / airline as Fahrtstrecke.
-    """
+    """UI distance text — always Luftlinie when haversine_v1; never „km Fahrt“."""
+    del with_duration  # no drive-time in v1
     src = getattr(job, "distance_source", "") or ""
     dist = getattr(job, "distance_km", None)
-    if dist is None or src != "google_route_matrix":
+    remote = (getattr(job, "remote_type", "") or "").lower()
+    if remote == "remote":
+        return tr("jobs.commute_remote")
+    if dist is None or src not in {"haversine_v1", "local_geo", "geonames", "pgeocode"}:
         return tr("jobs.commute_unknown")
     km = f"{dist:.0f}" if float(dist) == int(dist) else f"{float(dist):.1f}"
-    label = tr("jobs.commute_drive", km=km)
-    if with_duration:
-        dur = getattr(job, "commute_duration_minutes", None)
-        if dur is not None:
-            mins = int(round(float(dur)))
-            label = f"{label} · {tr('jobs.commute_duration', min=mins)}"
-    return label
+    return tr("jobs.commute_airline", km=km)
 
 
 def _parse_discovered(value: str | None) -> datetime:

@@ -19,7 +19,7 @@ enabled_sources:
   # - linkedin
   # - stepstone
   # - xing
-geocoder: nominatim
+geocoder: local
 cover_letter_template: templates/cover_letter.txt
 exclude_on_missing_mandatory: false
 # Search UX
