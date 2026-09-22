@@ -467,7 +467,7 @@ PLZ: D02 XY76
 ORT: Dublin
 LAND: Ireland
 ADRESSE_RAW: 7 Orchard Lane, Dublin D02 XY76, Ireland
-E-MAIL: sophia.bennett@example.ie
+E-MAIL: sophia.bennett@example.com
 TELEFON: +353 85 123 4567
 GEBURTSDATUM: NICHT VORHANDEN
 PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
