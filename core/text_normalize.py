@@ -76,14 +76,30 @@ _PHONE_CANDIDATE = re.compile(
     r")"
 )
 
+# Dates / employment periods that the phone regex may falsely match.
+_PHONE_DATE_FALSE = re.compile(
+    r"(?:"
+    r"\d{1,2}[./]\d{1,2}[./]\d{2,4}"  # DOB / calendar date
+    r"|"
+    r"\d{1,2}/\d{4}"  # MM/YYYY employment
+    r"|"
+    r"\d{4}\s*[-–—]\s*\d{4}"  # year range
+    r")"
+)
+
 
 def extract_german_phones(text: str) -> list[str]:
     """Extract German-friendly phone numbers (incl. ``(0xxx) …`` layouts)."""
     found: list[str] = []
     for m in _PHONE_CANDIDATE.finditer(text or ""):
         raw = m.group(0).strip()
+        if _PHONE_DATE_FALSE.search(raw):
+            continue
         digits = re.sub(r"\D", "", raw)
         if len(digits) < 7 or len(digits) > 15:
+            continue
+        # Employment snippets like "01/2019 - 04/2022" leave only year digits.
+        if re.search(r"(?i)\b(heute|present|current|seit)\b", raw):
             continue
         cleaned = re.sub(r"\s+", " ", raw).strip(" .-/")
         if cleaned not in found:

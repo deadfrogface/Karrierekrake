@@ -31,11 +31,33 @@
 | E | `desktop/widgets/dialog_geometry.py`; Drawer/CV-Import/Entry-Dialoge fit+scroll |
 | F | `tests/test_p0_profile_cv_dialogs.py` + Agent-Smoke JSON |
 
+## CV-Parser Sollwerte-Corpus (10 PDFs)
+
+Autoritative Sollwerte: `tests/fixtures/cv_corpus/CV_Parser_Sollwerte_Vollstaendig.txt`  
+Corpus: DE_01–05 + EN_01–05 (+ Leonie-Brandt Golden).
+
+| Pfad | Ergebnis |
+|------|----------|
+| Production (`guenther_enabled=False`) | **10/10** |
+| Phi/Guenther A/B (`--phi`) | **10/10** (~286 s) |
+
+Fixes in diesem Durchlauf:
+- Telefon-False-Positives (DOB / Beschäftigungszeiträume) in `core/text_normalize.py`
+- Experience: Prosa-Beschreibung vor `date \| title` nicht mehr als nächster Job-Titel (`core/cv_parser.py`)
+- Title-before-date bleibt erhalten (Regression `test_cv_title_before_date`)
+
+```bash
+python scripts/run_cv_sollwerte_corpus.py
+python scripts/run_cv_sollwerte_corpus.py --phi
+pytest -q tests/test_cv_sollwerte_corpus.py
+```
+
 ## Befehle / Evidenz
 
 ```bash
 export HOME=/home/ubuntu
-pytest -q tests/test_p0_profile_cv_dialogs.py   # focused P0 — 12 passed
+pytest -q tests/test_p0_profile_cv_dialogs.py   # focused P0
+pytest -q tests/test_cv_sollwerte_corpus.py
 ```
 
 ### Linux DEV onefile (Agent)

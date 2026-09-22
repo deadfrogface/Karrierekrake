@@ -838,20 +838,28 @@ def _parse_experience(body: str) -> list[ExperienceEntry]:
                 continue
             if _PERIOD.search(nxt) or _SINCE.match(nxt) or _SINCE_INLINE.match(nxt) or _is_heading(nxt):
                 break
-            # Next job starting as title/company before its date — leave for outer loop.
+            # Title-first next job (title [/ company] / date). Do not preempt when
+            # the next date line already embeds a title ("MM/YYYY - … | Role") —
+            # then ``nxt`` is still a prose responsibility of the current job.
             if not nxt.startswith(("•", "-", "–", "*")):
-                upcoming_date = False
+                date_line: str | None = None
+                intervening = 0
                 for j in range(i + 1, min(i + 4, len(lines))):
                     cand = lines[j].strip()
                     if not cand:
                         continue
                     if _PERIOD.search(cand) or _SINCE.match(cand) or _SINCE_INLINE.match(cand):
-                        upcoming_date = True
+                        date_line = cand
                         break
                     if cand.startswith(("•", "-", "–", "*")) or _is_heading(cand):
                         break
-                if upcoming_date:
-                    break
+                    intervening += 1
+                if date_line is not None:
+                    embeds_title = "|" in date_line or bool(
+                        _SINCE_INLINE.match(date_line) and not _PERIOD.search(date_line)
+                    )
+                    if not (embeds_title and intervening == 0):
+                        break
             cleaned = _normalize_bullet(nxt)
             if cleaned:
                 responsibilities.append(cleaned)

@@ -1,0 +1,510 @@
+KARRIEREKRAKE - VOLLSTAENDIGE SOLLWERTE FUER DEN CV-PARSER
+===========================================================
+
+Zweck
+-----
+Dieses Dokument ist das verbindliche Loesungsblatt fuer die 10 fiktiven Test-PDFs.
+Es enthaelt alle fachlich relevanten Daten, die ausdruecklich in den PDFs stehen.
+
+Vergleichsregeln
+----------------
+1. "NICHT VORHANDEN" und "KEINE BESCHREIBUNG VORHANDEN" bedeuten: Der Parser
+   muss null, leer oder kein Feld liefern. Diese Hinweistexte duerfen nicht als
+   erkannte Werte gespeichert werden.
+2. Nichts aus Stadt, Postleitzahl, Sprache, Arbeitgeber oder Dateiname ableiten.
+   Nicht ausdruecklich genannte Werte muessen leer bleiben.
+3. Dokumenttitel und Abschnittsueberschriften sind keine Personendaten.
+4. Gross-/Kleinschreibung, normale Leerzeichen, Bindestrichvarianten und eine rein
+   technische Datumsnormalisierung duerfen beim Vergleich normalisiert werden.
+   Inhalt, Zuordnung, Anzahl und Bedeutung muessen jedoch exakt stimmen.
+5. "heute", "Present" und "current" duerfen intern als laufende Beschaeftigung
+   normalisiert werden.
+6. Listen duerfen in anderer Reihenfolge ausgegeben werden, wenn das Produktschema
+   keine Reihenfolge garantiert. Beruf und Ausbildung muessen aber den richtigen
+   Zeitraumen, Positionen und Organisationen zugeordnet bleiben.
+7. Die PDFs und dieses Loesungsblatt duerfen nicht veraendert werden. Es duerfen
+   keine Namen, Dateinamen, Firmen oder exakten Testwerte in der Parserlogik
+   fest einprogrammiert werden.
+
+
+DATEI: DE_01_Klassisch.pdf
+---------------------------
+DOKUMENTSPRACHE: de
+DOKUMENTTITEL_NUR_LAYOUT: Lebenslauf
+VORNAME: Mara
+NACHNAME: König
+STRASSE: Buchenweg
+HAUSNUMMER: 14
+PLZ: 48143
+ORT: Münster
+LAND: NICHT VORHANDEN
+ADRESSE_RAW: Buchenweg 14, 48143 Münster
+E-MAIL: mara.koenig@example.com
+TELEFON: +49 151 20003000
+GEBURTSDATUM: 07.11.1994
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 3
+BERUF_1: 05/2022 - heute | Teamkoordinatorin Kundenservice | Westfalen Service GmbH, Münster | Koordination eines 8-köpfigen Teams, Reklamationsbearbeitung, KPI-Reporting und Prozessverbesserung.
+BERUF_2: 01/2019 - 04/2022 | Sachbearbeiterin Auftragsmanagement | HanseKontor Handel KG, Dortmund | Auftragsabwicklung, Stammdatenpflege, Lieferantenkontakt und Rechnungsprüfung.
+BERUF_3: 08/2016 - 12/2018 | Kaufmännische Mitarbeiterin | Rheinblick Versand GmbH, Essen | Telefonischer Kundenservice, Retouren, Disposition und Terminabstimmung.
+
+AUSBILDUNG_ANZAHL: 1
+AUSBILDUNG_1: 08/2013 - 06/2016 | Kauffrau für Büromanagement (IHK) | Berufskolleg Münster / BüroPartner West GmbH
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: Deutsch | C2 | zusätzlich ausdrücklich: Muttersprache
+SPRACHE_2: Englisch | C1
+SPRACHE_3: Französisch | B1
+
+FUEHRERSCHEINE_ANZAHL: 1
+FUEHRERSCHEIN_1: B
+
+SOFTWARE_ANZAHL: 6
+SOFTWARE: Microsoft 365 | SAP Business One | Salesforce | Jira | Confluence | DocuWare
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 3
+ZERTIFIKAT_1: IHK Beschwerdemanagement | 2024
+ZERTIFIKAT_2: Power BI Grundlagen | 2023
+ZERTIFIKAT_3: Ersthelferin | 2025
+
+SKILLS_ANZAHL: 5
+SKILLS: Kundenservice | Auftragsmanagement | KPI-Reporting | Prozessoptimierung | Reklamationsmanagement
+
+
+DATEI: DE_02_Zweispaltig_Trap.pdf
+---------------------------------
+DOKUMENTSPRACHE: de
+DOKUMENTTITEL_NUR_LAYOUT: FIKTIVER TEST-LEBENSLAUF
+VORNAME: Jonas
+NACHNAME: Falkenberg
+STRASSE: Hafenweg
+HAUSNUMMER: 87
+PLZ: 28195
+ORT: Bremen
+LAND: NICHT VORHANDEN
+ADRESSE_RAW: Hafenweg 87 · 28195 Bremen
+E-MAIL: jonas.falkenberg@example.com
+TELEFON: +49 151 11112222
+GEBURTSDATUM: 19.02.1991
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 4
+BERUF_1: 04/2023 - heute | Projektkoordinator Operations & Customer Solutions | WeserTech Anlagenservice GmbH | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: 01/2020 - 03/2023 | Sachbearbeiter Einkauf & Disposition | Nordstern Komponentenhandel KG | KEINE BESCHREIBUNG VORHANDEN
+BERUF_3: 08/2016 - 12/2019 | Kundenservice / Auftragsmanagement | Elbkontor Bürobedarf GmbH | KEINE BESCHREIBUNG VORHANDEN
+BERUF_4: 07/2013 - 07/2016 | Kaufmännischer Mitarbeiter | Moorland Versandservice GmbH | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 2
+AUSBILDUNG_1: 09/2010 - 06/2013 | Kaufmann für Groß- und Außenhandelsmanagement (IHK) | Nordwest Handelsakademie / Friesen Import GmbH | Note 2,1
+AUSBILDUNG_2: 08/2008 - 06/2010 | Fachhochschulreife Wirtschaft und Verwaltung | BBS Ammerland
+
+SPRACHEN_ANZAHL: 4
+SPRACHE_1: Deutsch | C2
+SPRACHE_2: Englisch | C1
+SPRACHE_3: Niederländisch | B1
+SPRACHE_4: Polnisch | A2
+
+FUEHRERSCHEINE_ANZAHL: 2
+FUEHRERSCHEIN_1: B
+FUEHRERSCHEIN_2: BE
+
+SOFTWARE_ANZAHL: 12
+SOFTWARE: Microsoft 365 | Dynamics 365 | SAP Business One | HubSpot CRM | Power BI | Power Query | Teams | SharePoint | Jira | Confluence | Adobe Acrobat | DocuWare
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 5
+ZERTIFIKATE/WEITERBILDUNGEN: IHK Projektmanagement kompakt | Power BI | Lean / 5S | Ersthelfer | Datenschutz / Informationssicherheit
+
+SKILLS_ANZAHL: 12
+SKILLS: B2B-Kundenbetreuung | Beschwerdemanagement | Einkauf | Disposition | Auftragsmanagement | Lieferantenmanagement | Prozessoptimierung | KPI-Reporting | Stammdatenpflege | Projektkoordination | Rechnungsprüfung | Bestandsmanagement
+
+FALLEN:
+- "FIKTIVER TEST-LEBENSLAUF" ist kein Name.
+- "WEITERE KENNTNISSE" ist eine Überschrift und keine Sprache/kein Skillwert.
+- C1, B1 und A2 in der Sprachspalte sind keine Führerscheinklassen.
+- Die linke und rechte Spalte dürfen nicht miteinander vermischt werden.
+
+
+DATEI: DE_03_C1_Kontextfalle.pdf
+--------------------------------
+DOKUMENTSPRACHE: de
+DOKUMENTTITEL_NUR_LAYOUT: Curriculum Vitae
+VORNAME: Selin
+NACHNAME: Aras
+STRASSE: Kastanienallee
+HAUSNUMMER: 6a
+PLZ: 40233
+ORT: Düsseldorf
+LAND: NICHT VORHANDEN
+ADRESSE_RAW: Kastanienallee 6a | 40233 Düsseldorf
+E-MAIL: selin.aras@example.net
+TELEFON: +49 160 3456789
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: Kaufmännische Allrounderin mit Schwerpunkt Einkauf, Kundenkontakt und Prozessorganisation.
+
+BERUFSERFAHRUNG_ANZAHL: 2
+BERUF_1: seit 03.2021 | Office & Procurement Specialist | Rheinwerk Technik GmbH | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: 09/2017 - 02/2021 | Customer Operations Specialist | Metroline Services KG | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 2
+AUSBILDUNG_1: 2014 - 2017 | Ausbildung zur Kauffrau für Büromanagement | IHK Düsseldorf
+AUSBILDUNG_2: 2012 - 2014 | Höhere Handelsschule | Berufskolleg Düsseldorf
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: Deutsch | C2
+SPRACHE_2: Englisch | C1
+SPRACHE_3: Türkisch | C1
+
+FUEHRERSCHEINE_ANZAHL: 2
+FUEHRERSCHEIN_1: B
+FUEHRERSCHEIN_2: C1
+
+SOFTWARE_ANZAHL: 6
+SOFTWARE: Excel | Word | Outlook | SAP S/4HANA | DATEV | Microsoft Teams
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 0
+ZERTIFIKATE/WEITERBILDUNGEN: NICHT VORHANDEN
+
+SKILLS_ANZAHL: 5
+SKILLS: Einkauf | Bestellwesen | Kundenkommunikation | Lieferantenbetreuung | Datenpflege
+
+FALLE: C1 ist bei Englisch/Türkisch ein Sprachniveau und im ausdrücklichen Abschnitt "Fahrerlaubnis" zugleich eine echte Führerscheinklasse. Der Kontext entscheidet.
+
+
+DATEI: DE_04_Unvollstaendige_Kontaktdaten.pdf
+------------------------------------------------
+DOKUMENTSPRACHE: de
+DOKUMENTTITEL_NUR_LAYOUT: NICHT VORHANDEN
+VORNAME: Nina
+NACHNAME: Sommer
+STRASSE: NICHT VORHANDEN
+HAUSNUMMER: NICHT VORHANDEN
+PLZ: NICHT VORHANDEN
+ORT: Leipzig
+LAND: NICHT VORHANDEN
+ADRESSE_RAW: Leipzig
+E-MAIL: nina.sommer@example.org
+TELEFON: NICHT VORHANDEN
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 2
+BERUF_1: 11/2023 - heute | Junior Project Manager | Elster Digital GmbH | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: 10/2021 - 10/2023 | Projektassistenz | Saxonia Media Services GmbH | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 2
+AUSBILDUNG_1: 10/2018 - 09/2021 | B.A. Betriebswirtschaftslehre | Hochschule Leipzig
+AUSBILDUNG_2: 08/2010 - 06/2018 | Abitur | Goethe-Gymnasium Leipzig
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: Deutsch | native | Originalwert: Muttersprache
+SPRACHE_2: Englisch | B2
+SPRACHE_3: Spanisch | A2
+
+FUEHRERSCHEINE_ANZAHL: 0
+FUEHRERSCHEINE: NICHT VORHANDEN
+
+SOFTWARE_ANZAHL: 5
+SOFTWARE: Notion | Asana | Jira | Microsoft 365 | Power BI
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 3
+ZERTIFIKATE/WEITERBILDUNGEN: Scrum Fundamentals Certified | Excel Advanced | Datenschutz-Basisschulung
+
+SKILLS_ANZAHL: 4
+SKILLS: Projektorganisation | Terminplanung | Reporting | Stakeholder-Kommunikation
+
+FALLE: Fehlende Kontakt- und Adressfelder dürfen weder ergänzt noch aus Ort, E-Mail oder sonstigem Kontext erfunden werden.
+
+
+DATEI: DE_05_Zweiseitig.pdf
+----------------------------
+DOKUMENTSPRACHE: de
+DOKUMENTTITEL_NUR_LAYOUT: Bewerbungsprofil
+VORNAME: Tobias
+NACHNAME: Renner
+STRASSE: Am Stadtpark
+HAUSNUMMER: 22b
+PLZ: 90402
+ORT: Nürnberg
+LAND: NICHT VORHANDEN
+ADRESSE_RAW: Am Stadtpark 22b, 90402 Nürnberg
+E-MAIL: tobias.renner@example.com
+TELEFON: +49 176 99887766
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 4
+BERUF_1: 02.2024 - heute | Operations Analyst | Franken Logistik Solutions GmbH | Disposition, Reporting, Kundenkontakt, Datenpflege und Prozesskoordination
+BERUF_2: 06.2021 - 01.2024 | Disponent | SüdCargo KG | Disposition, Reporting, Kundenkontakt, Datenpflege und Prozesskoordination
+BERUF_3: 01.2018 - 05.2021 | Kaufmännischer Sachbearbeiter | Bavaria Handel GmbH | Disposition, Reporting, Kundenkontakt, Datenpflege und Prozesskoordination
+BERUF_4: 08.2015 - 12.2017 | Service Mitarbeiter | MesseService Nürnberg GmbH | Disposition, Reporting, Kundenkontakt, Datenpflege und Prozesskoordination
+
+AUSBILDUNG_ANZAHL: 2
+AUSBILDUNG_1: 2012 - 2015 | Kaufmann für Spedition und Logistikdienstleistung (IHK) | Nürnberg
+AUSBILDUNG_2: 2008 - 2012 | Mittlere Reife | Realschule Nürnberg
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: Deutsch | C2
+SPRACHE_2: Englisch | B2
+SPRACHE_3: Tschechisch | A2
+
+FUEHRERSCHEINE_ANZAHL: 2
+FUEHRERSCHEIN_1: B
+FUEHRERSCHEIN_2: BE
+WEITERE_MOBILITAET: eigener PKW
+
+SOFTWARE_ANZAHL: 6
+SOFTWARE: Excel | Power Query | Power BI | SAP TM | Outlook | Teams
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 4
+ZERTIFIKATE/WEITERBILDUNGEN: Lean Management Basics | Excel Pivot & Power Query | Arbeitssicherheit 2025 | Grundlagen Zollabwicklung
+
+SKILLS_ANZAHL: 7
+SKILLS: Disposition | Logistik | Zoll | KPI-Reporting | Bestandsmanagement | Lieferantenkontakt | Reklamationsbearbeitung
+
+PROJEKT-/SONDERAUFGABEN_ANZAHL: 3
+PROJEKT-/SONDERAUFGABE_1: Einführung eines monatlichen KPI-Dashboards für Transportabweichungen.
+PROJEKT-/SONDERAUFGABE_2: Optimierung der Dispositionsübergabe zwischen Früh- und Spätschicht.
+PROJEKT-/SONDERAUFGABE_3: Unterstützung bei einer Stammdatenbereinigung in SAP TM.
+
+FALLE: Seite 2 gehört weiterhin zu Tobias Renner und darf weder ignoriert noch als neues Dokument/Profil behandelt werden.
+
+
+DATEI: EN_01_Classic_Resume.pdf
+--------------------------------
+DOKUMENTSPRACHE: en
+DOKUMENTTITEL_NUR_LAYOUT: Resume
+VORNAME: Emily
+NACHNAME: Carter
+STRASSE: Willow Street
+HAUSNUMMER: 18
+PLZ: BS1 4QF
+ORT: Bristol
+LAND: United Kingdom
+ADRESSE_RAW: 18 Willow Street, Bristol BS1 4QF, United Kingdom
+E-MAIL: emily.carter@example.com
+TELEFON: +44 7700 900123
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 3
+BERUF_1: Mar 2022 - Present | Customer Operations Lead | Harbour & Co Services Ltd | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: Jul 2019 - Feb 2022 | Order Management Specialist | Cedar Trading Group | KEINE BESCHREIBUNG VORHANDEN
+BERUF_3: Sep 2016 - Jun 2019 | Customer Service Coordinator | Northbridge Office Supplies | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 1
+AUSBILDUNG_1: 2013 - 2016 | BA Business Management | University of the West of England
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: English | native | Originalwert: Native
+SPRACHE_2: German | B2
+SPRACHE_3: French | A2
+
+FUEHRERSCHEINE_ANZAHL: 0
+FUEHRERSCHEINE: NICHT VORHANDEN
+
+SOFTWARE_ANZAHL: 6
+SOFTWARE: Microsoft 365 | Salesforce | HubSpot | Jira | Confluence | Power BI
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 3
+ZERTIFIKATE/WEITERBILDUNGEN: PRINCE2 Foundation | Advanced Excel | First Aid at Work
+
+SKILLS_ANZAHL: 5
+SKILLS: Customer operations | order management | KPI reporting | complaint handling | process improvement
+
+FALLE: "Resume" ist ein Dokumenttitel und kein Name.
+
+
+DATEI: EN_02_Two_Column_Trap.pdf
+--------------------------------
+DOKUMENTSPRACHE: en
+DOKUMENTTITEL_NUR_LAYOUT: CURRICULUM VITAE
+VORNAME: Daniel
+NACHNAME: Brooks
+STRASSE: Kingfisher Road
+HAUSNUMMER: 42
+PLZ: M1 2AB
+ORT: Manchester
+LAND: NICHT VORHANDEN
+ADRESSE_RAW: 42 Kingfisher Road · Manchester M1 2AB
+E-MAIL: daniel.brooks@example.org
+TELEFON: +44 7700 900555
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 3
+BERUF_1: 2023 - Present | Operations Coordinator | Redwood Mobility Ltd | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: 2020 - 2023 | Customer Success Specialist | Blue Peak Systems | KEINE BESCHREIBUNG VORHANDEN
+BERUF_3: 2017 - 2020 | Sales Support Administrator | Oakfield Distribution | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 2
+AUSBILDUNG_1: 2014 - 2017 | BSc Business & Management | Manchester Metropolitan University
+AUSBILDUNG_2: 2012 - 2014 | A Levels | Northside College
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: English | C2
+SPRACHE_2: Spanish | C1
+SPRACHE_3: German | B1
+
+FUEHRERSCHEINE_ANZAHL: 1
+FUEHRERSCHEIN_1: B
+
+SOFTWARE_ANZAHL: 7
+SOFTWARE: Excel | Power BI | SQL | Dynamics 365 | Zendesk | Jira | Confluence
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 3
+ZERTIFIKATE/WEITERBILDUNGEN: Lean Six Sigma Yellow Belt | Power BI Data Analyst Essentials | Information Security Awareness
+
+SKILLS_ANZAHL: 6
+SKILLS: Customer success | reporting | CRM administration | process mapping | stakeholder communication | order fulfilment
+
+FALLEN:
+- "CURRICULUM VITAE" ist kein Name.
+- C1 und B1 unter "Languages" sind keine Führerscheinklassen.
+- Die linke und rechte Spalte dürfen nicht miteinander vermischt werden.
+
+
+DATEI: EN_03_Missing_Address_Fields.pdf
+------------------------------------------
+DOKUMENTSPRACHE: en
+DOKUMENTTITEL_NUR_LAYOUT: NICHT VORHANDEN
+VORNAME: Aisha
+NACHNAME: Rahman
+STRASSE: NICHT VORHANDEN
+HAUSNUMMER: NICHT VORHANDEN
+PLZ: NICHT VORHANDEN
+ORT: Berlin
+LAND: Germany
+ADRESSE_RAW: Berlin, Germany
+E-MAIL: aisha.rahman@example.net
+TELEFON: NICHT VORHANDEN
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: Operations professional with experience in procurement, supplier communication and service delivery.
+
+BERUFSERFAHRUNG_ANZAHL: 2
+BERUF_1: 2024 - Present | Procurement Coordinator | Linden Works GmbH | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: 2021 - 2024 | Operations Assistant | Urban Supply Europe GmbH | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 1
+AUSBILDUNG_1: 2018 - 2021 | B.A. International Business | Berlin School of Economics
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: German | C1
+SPRACHE_2: English | C2
+SPRACHE_3: Arabic | native | Originalwert: Native
+
+FUEHRERSCHEINE_ANZAHL: 0
+FUEHRERSCHEINE: NICHT VORHANDEN
+
+SOFTWARE_ANZAHL: 5
+SOFTWARE: SAP Ariba | Excel | Teams | SharePoint | Trello
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 0
+ZERTIFIKATE/WEITERBILDUNGEN: NICHT VORHANDEN
+
+SKILLS_ANZAHL: 5
+SKILLS: Procurement | supplier management | scheduling | reporting | data quality
+
+FALLE: Fehlende Straßen-, Hausnummer-, PLZ-, Telefon- und Geburtsdaten müssen leer bleiben.
+
+
+DATEI: EN_04_German_Address_English_CV.pdf
+--------------------------------------------
+DOKUMENTSPRACHE: en
+DOKUMENTTITEL_NUR_LAYOUT: PROFILE
+VORNAME: Lucas
+NACHNAME: Meyer
+STRASSE: Seestraße
+HAUSNUMMER: 31
+PLZ: 78462
+ORT: Konstanz
+LAND: Germany
+ADRESSE_RAW: Seestraße 31, 78462 Konstanz, Germany
+E-MAIL: lucas.meyer@example.com
+TELEFON: +49 172 4000500
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 2
+BERUF_1: 04/2022 - current | Service Delivery Manager | Alpine Cloud Services GmbH | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: 01/2019 - 03/2022 | Support Operations Specialist | LakeTech Solutions AG | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 1
+AUSBILDUNG_1: 2015 - 2018 | B.Sc. Business Information Systems | HTWG Konstanz
+
+SPRACHEN_ANZAHL: 3
+SPRACHE_1: German | C2
+SPRACHE_2: English | C1
+SPRACHE_3: Italian | B2
+
+FUEHRERSCHEINE_ANZAHL: 2
+FUEHRERSCHEIN_1: B
+FUEHRERSCHEIN_2: BE
+
+SOFTWARE_ANZAHL: 6
+SOFTWARE: ServiceNow | Salesforce | Microsoft 365 | Jira | Confluence | Power BI
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 0
+ZERTIFIKATE/WEITERBILDUNGEN: NICHT VORHANDEN
+
+SKILLS_ANZAHL: 5
+SKILLS: Service delivery | SLA reporting | escalation management | stakeholder communication | process improvement
+
+FALLEN:
+- Das englische CV besitzt eine deutsche Adresse; Sprache und Adressformat müssen getrennt behandelt werden.
+- "PROFILE" ist nur eine Überschrift und kein Name oder Profiltext.
+
+
+DATEI: EN_05_Skills_Heavy.pdf
+--------------------------------
+DOKUMENTSPRACHE: en
+DOKUMENTTITEL_NUR_LAYOUT: NICHT VORHANDEN
+VORNAME: Sophia
+NACHNAME: Bennett
+STRASSE: Orchard Lane
+HAUSNUMMER: 7
+PLZ: D02 XY76
+ORT: Dublin
+LAND: Ireland
+ADRESSE_RAW: 7 Orchard Lane, Dublin D02 XY76, Ireland
+E-MAIL: sophia.bennett@example.ie
+TELEFON: +353 85 123 4567
+GEBURTSDATUM: NICHT VORHANDEN
+PROFIL/ZUSAMMENFASSUNG: NICHT VORHANDEN
+
+BERUFSERFAHRUNG_ANZAHL: 3
+BERUF_1: 2022 - Present | Purchasing Specialist | Greenline Medical Supplies Ltd | KEINE BESCHREIBUNG VORHANDEN
+BERUF_2: 2019 - 2022 | Supply Chain Administrator | Meridian Homeware Ltd | KEINE BESCHREIBUNG VORHANDEN
+BERUF_3: 2016 - 2019 | Order Processing Assistant | Cobalt Distribution Ltd | KEINE BESCHREIBUNG VORHANDEN
+
+AUSBILDUNG_ANZAHL: 1
+AUSBILDUNG_1: 2012 - 2016 | BCom | Dublin City University
+
+SPRACHEN_ANZAHL: 2
+SPRACHE_1: English | native | Originalwert: Native
+SPRACHE_2: German | B1
+
+FUEHRERSCHEINE_ANZAHL: 0
+FUEHRERSCHEINE: NICHT VORHANDEN
+
+SOFTWARE_ANZAHL: 6
+SOFTWARE: Microsoft 365 | Oracle NetSuite | Power BI | Power Query | DocuWare | Monday.com
+
+ZERTIFIKATE/WEITERBILDUNGEN_ANZAHL: 3
+ZERTIFIKAT_1: CIPS Procurement Essentials | 2024
+ZERTIFIKAT_2: Advanced Excel & Power Query | 2023
+ZERTIFIKAT_3: GDPR Awareness for Operations | 2022
+
+SKILLS_ANZAHL: 8
+SKILLS: Vendor management | inventory control | purchasing | order processing | KPI reporting | master data maintenance | contract administration | customer communication
+
+
+KURZE AUDIT-NOTIZ ZUM ALTEN expected_results.json
+=================================================
+Die dort vorhandenen konkreten Werte und Mengen stimmen mit den PDFs überein.
+Das Dokument ist aber nur ein Teil-Loesungsblatt und daher fuer einen strikten
+Volltest nicht ausreichend. Unter anderem fehlen viele E-Mail-Adressen,
+Telefonnummern, konkrete Berufs-/Ausbildungs-/Skillwerte, Jahresangaben und die
+Projektaufgaben auf Seite 2 von DE_05. Ausserdem werden vorhandene Geburtsdaten
+unter "dob", fehlende Geburtsdaten aber als "date_of_birth" bezeichnet. Fuer den
+vollstaendigen Regressionstest gilt deshalb dieses Textdokument als verbindlich.
