@@ -831,20 +831,29 @@ def test_indeed_home_office_spellings_and_remote_desktop():
 
 
 def test_hard_exclude_unknown_distance_onsite():
+    """Unknown onsite distance is excluded after matching (distance_exclude), not in hard_exclude."""
     from core.config import empty_app_config
-    from core.hard_filter import hard_exclude
+    from core.hard_filter import distance_exclude, hard_exclude
     from core.models import Job
 
     cfg = empty_app_config()
     cfg.profile.location.max_distance_km = 30
     cfg.profile.location.allow_remote_germany = True
-    reason = hard_exclude(
-        Job(id="m", source="t", title="T", company="C", city="München", remote_type="onsite", distance_km=None),
-        cfg,
+    onsite = Job(
+        id="m",
+        source="t",
+        title="T",
+        company="C",
+        city="München",
+        remote_type="onsite",
+        distance_km=None,
     )
-    assert reason and "distance" in reason.lower()
+    # Fachliches hard_exclude must not apply radius yet (local-first pipeline order).
+    assert hard_exclude(onsite, cfg) is None
+    reason = distance_exclude(onsite, cfg)
+    assert reason and ("distance" in reason.lower() or "luftlinie" in reason.lower() or "standort" in reason.lower())
     assert (
-        hard_exclude(
+        distance_exclude(
             Job(id="r", source="t", title="T", company="C", remote_type="remote", distance_km=None),
             cfg,
         )

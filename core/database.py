@@ -353,6 +353,36 @@ class Database:
                     conn.execute(
                         "ALTER TABLE geocode_cache ADD COLUMN resolution_status TEXT DEFAULT ''"
                     )
+                # Local-first migration: invalidate Google/Nominatim/empty-provenance rows.
+                # Old API keys are never migrated; LocationService ignores stale sources.
+                try:
+                    conn.execute(
+                        """
+                        UPDATE geocode_cache
+                        SET resolution_status = 'STALE',
+                            data_source = 'stale_cleared',
+                            data_version = '',
+                            latitude = 0.0,
+                            longitude = 0.0,
+                            display_name = '__unresolved__'
+                        WHERE lower(COALESCE(data_source, '')) IN (
+                            '', 'google_geocoding', 'google_route_matrix',
+                            'nominatim', 'maps', 'stale_cleared'
+                        )
+                        OR COALESCE(data_version, '') = ''
+                        """
+                    )
+                    conn.execute(
+                        """
+                        DELETE FROM app_meta WHERE key IN (
+                            'google_maps_api_key', 'maps_api_key',
+                            'GOOGLE_MAPS_API_KEY', 'KARRIEREKRAKE_GOOGLE_MAPS_API_KEY',
+                            'maps_proxy_token', 'maps_proxy_url'
+                        )
+                        """
+                    )
+                except Exception:
+                    pass
 
             conn.execute(
                 """

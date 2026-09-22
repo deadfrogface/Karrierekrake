@@ -1,0 +1,36 @@
+{
+  "dataset_id": "dach-geonames-postal-v1",
+  "version": "2026-03-geonames-pgeocode",
+  "source": "geonames",
+  "source_url": "https://download.geonames.org/export/zip/",
+  "license": "Creative Commons Attribution 4.0 (GeoNames)",
+  "attribution": "GeoNames.org \u2014 https://www.geonames.org/",
+  "countries": [
+    "DE",
+    "AT",
+    "CH"
+  ],
+  "algorithm": "haversine_v1",
+  "earth_radius_km": 6371.0088,
+  "bundled_at": "2026-09-21",
+  "files": {
+    "DE": {
+      "path": "geonames/DE.txt",
+      "sha256": "e2a39fbd4dca31d6aa829c4b51f71be393a295a1164124a0cfa90f41afa7158f",
+      "bytes": 2382873,
+      "lines": 23298
+    },
+    "AT": {
+      "path": "geonames/AT.txt",
+      "sha256": "78788584dcc94585a8d53b19b184e50fd1918be9982afca167fec9dcb8a78a52",
+      "bytes": 2135462,
+      "lines": 19226
+    },
+    "CH": {
+      "path": "geonames/CH.txt",
+      "sha256": "fa341c2a5ab0744e98000936ec9538a5ddbab3581c305f90e708dd33e5a98066",
+      "bytes": 421036,
+      "lines": 4521
+    }
+  }
+}

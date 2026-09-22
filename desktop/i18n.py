@@ -257,7 +257,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.languages": "Sprachen",
         "profile.location_work": "Standort & Arbeitsmodell",
         "profile.home": "Heimatadresse",
-        "profile.commute": "Max. Pendelweg",
+        "profile.postal": "PLZ",
+        "profile.commute": "Radius (Luftlinie)",
+        "profile.commute_airline": "Radius (Luftlinie)",
+        "profile.geo_dataset": "Geodaten",
+        "profile.geo_update": "Geodaten aktualisieren",
+        "profile.geo_status_ok": "Installiert: {version} ({source})",
+        "profile.geo_status_bad": "Geodaten nicht bereit: {message}",
         "profile.allow_remote": "Voll remote (DE) erlauben",
         "profile.allow_hybrid": "Hybrid erlauben",
         "profile.country": "Land",
@@ -281,7 +287,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "search.conditions": "Ort, Modell & Konditionen",
         "search.remote_mode": "Remote / Hybrid / Vor Ort",
         "search.remote_unset": "Nicht festgelegt",
-        "search.radius": "Radius (Pendelweg)",
+        "search.radius": "Radius (Luftlinie, km)",
         "search.countries": "Länder (DE / AT / CH)",
         "search.working_time": "Arbeitszeit",
         "search.employment_types": "Beschäftigungsart",
@@ -358,6 +364,31 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.calendar.microsoft": "Microsoft",
         "integrations.calendar.other": "Anderer Anbieter",
         "integrations.calendar.none_explicit": "Kein Kalender",
+        "integrations.calendar.mode_label": "Google-Kalender-Funktion",
+        "integrations.calendar.mode_a": "Nur Verfügbarkeit prüfen",
+        "integrations.calendar.mode_b": "Verfügbarkeit prüfen und bestätigte Termine eintragen",
+        "integrations.calendar.mode_a_rights": (
+            "Karrierekrake fragt Google nur nach freien/belegten Zeiten. "
+            "Termintitel und Beschreibungen werden nicht gelesen. "
+            "Daten bleiben auf diesem PC; es gibt keinen Karrierekrake-Server."
+        ),
+        "integrations.calendar.mode_b_rights": (
+            "Zusätzlich zu freien/belegten Zeiten darf Karrierekrake nach Ihrer "
+            "Zustimmung Termine in Ihren eigenen Kalender eintragen. "
+            "Kein automatisches Annehmen von Einladungen. "
+            "Daten bleiben auf diesem PC; es gibt keinen Karrierekrake-Server."
+        ),
+        "integrations.calendar.mode_a_confirm": (
+            "Google-Konto verbinden (nur Verfügbarkeit)?\n\n"
+            "Es werden nur freie und belegte Zeiten abgefragt. "
+            "Termindetails bleiben privat. Verbindung läuft direkt zu Google."
+        ),
+        "integrations.calendar.mode_b_confirm": (
+            "Google-Konto verbinden (Verfügbarkeit + Termine eintragen)?\n\n"
+            "Karrierekrake darf freie/belegte Zeiten lesen und nach Ihrer "
+            "Freigabe Termine in Ihren eigenen Kalender schreiben. "
+            "Verbindung läuft direkt zu Google — kein Karrierekrake-Server."
+        ),
         "integrations.no_fallback_hint": (
             "Mail und Kalender sind unabhängig wählbar. "
             "Bei Ausfall: Fehler anzeigen, neu verbinden oder Provider manuell wechseln — "
@@ -381,10 +412,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Karrierekrake fordert nur gmail.readonly an, um Bewerbungsmails "
             "zuzuordnen. Kein Senden/Ändern. Systembrowser wird geöffnet."
         ),
-        "privacy.connect_calendar": "Kalender FreeBusy verbinden",
+        "privacy.connect_calendar": "Google-Kalender verbinden",
         "privacy.connect_calendar_confirm": (
-            "Nur calendar.freebusy für Terminvorschläge — keine Event-Titel. "
-            "Scope-Upgrade nur bei aktivierter Funktion. Systembrowser wird geöffnet."
+            "Google-Kalender verbinden? Die Rechte hängen vom gewählten Modus "
+            "(nur Verfügbarkeit bzw. Verfügbarkeit + Termine) ab."
         ),
         "privacy.connect_ok": "Google-Verbindung hergestellt.",
         "privacy.connect_failed": "Google-Verbindung fehlgeschlagen oder abgebrochen.",
@@ -612,9 +643,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "col.company": "Firma",
         "col.city": "Stadt",
         "col.distance": "Fahrtstrecke",
-        "jobs.commute_drive": "{km} km Fahrt",
+        "jobs.commute_drive": "ca. {km} km Luftlinie",
+        "jobs.commute_airline": "ca. {km} km Luftlinie",
         "jobs.commute_duration": "ca. {min} Min.",
-        "jobs.commute_unknown": "—",
+        "jobs.commute_unknown": "Standort nicht prüfbar",
+        "jobs.commute_remote": "Remote (kein Radius)",
         "col.remote": "Remote",
         "col.explanation": "Begründung",
         "col.model": "Modell",
@@ -1031,7 +1064,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.languages": "Languages",
         "profile.location_work": "Location & work model",
         "profile.home": "Home address",
-        "profile.commute": "Max. commute",
+        "profile.postal": "Postal code",
+        "profile.commute": "Radius (straight-line)",
+        "profile.commute_airline": "Radius (straight-line)",
+        "profile.geo_dataset": "Geo dataset",
+        "profile.geo_update": "Update geo data",
+        "profile.geo_status_ok": "Installed: {version} ({source})",
+        "profile.geo_status_bad": "Geo data unavailable: {message}",
         "profile.allow_remote": "Allow fully remote (DE)",
         "profile.allow_hybrid": "Allow hybrid",
         "profile.country": "Country",
@@ -1055,7 +1094,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "search.conditions": "Location, model & conditions",
         "search.remote_mode": "Remote / hybrid / onsite",
         "search.remote_unset": "Not set",
-        "search.radius": "Radius (commute)",
+        "search.radius": "Radius (straight-line, km)",
         "search.countries": "Countries (DE / AT / CH)",
         "search.working_time": "Working time",
         "search.employment_types": "Employment type",
@@ -1132,6 +1171,31 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.calendar.microsoft": "Microsoft",
         "integrations.calendar.other": "Other provider",
         "integrations.calendar.none_explicit": "No calendar",
+        "integrations.calendar.mode_label": "Google Calendar feature",
+        "integrations.calendar.mode_a": "Check availability only",
+        "integrations.calendar.mode_b": "Check availability and add confirmed events",
+        "integrations.calendar.mode_a_rights": (
+            "Karrierekrake only asks Google for free/busy times. "
+            "Event titles and descriptions are not read. "
+            "Data stays on this PC; there is no Karrierekrake server."
+        ),
+        "integrations.calendar.mode_b_rights": (
+            "In addition to free/busy, Karrierekrake may create events in your "
+            "own calendar after you approve them. "
+            "Invitations are never accepted automatically. "
+            "Data stays on this PC; there is no Karrierekrake server."
+        ),
+        "integrations.calendar.mode_a_confirm": (
+            "Connect Google account (availability only)?\n\n"
+            "Only free and busy times are queried. Event details stay private. "
+            "The connection goes directly to Google."
+        ),
+        "integrations.calendar.mode_b_confirm": (
+            "Connect Google account (availability + write events)?\n\n"
+            "Karrierekrake may read free/busy and, after your approval, "
+            "create events in your own calendar. "
+            "Connection goes directly to Google — no Karrierekrake server."
+        ),
         "integrations.no_fallback_hint": (
             "Mail and calendar are chosen independently. "
             "On failure: show an error, reconnect, or change provider explicitly — "
@@ -1155,10 +1219,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Karrierekrake requests only gmail.readonly to associate application "
             "emails. No send/modify. The system browser will open."
         ),
-        "privacy.connect_calendar": "Connect Calendar FreeBusy",
+        "privacy.connect_calendar": "Connect Google Calendar",
         "privacy.connect_calendar_confirm": (
-            "Only calendar.freebusy for slot proposals — no event titles. "
-            "Scope upgrade only when the feature is enabled. System browser opens."
+            "Connect Google Calendar? Permissions depend on the selected mode "
+            "(availability only, or availability + write events)."
         ),
         "privacy.connect_ok": "Google account connected.",
         "privacy.connect_failed": "Google connect failed or was cancelled.",
@@ -1386,9 +1450,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "col.company": "Company",
         "col.city": "City",
         "col.distance": "Drive distance",
-        "jobs.commute_drive": "{km} km drive",
+        "jobs.commute_drive": "approx. {km} km straight-line",
+        "jobs.commute_airline": "approx. {km} km straight-line",
         "jobs.commute_duration": "approx. {min} min",
-        "jobs.commute_unknown": "—",
+        "jobs.commute_unknown": "Location not verifiable",
+        "jobs.commute_remote": "Remote (no radius)",
         "col.remote": "Remote",
         "col.explanation": "Why",
         "col.model": "Model",

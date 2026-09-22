@@ -40,7 +40,11 @@ install_redaction_filter("karrierekrake")
 
 GMAIL_READONLY = "https://www.googleapis.com/auth/gmail.readonly"
 CALENDAR_FREEBUSY = "https://www.googleapis.com/auth/calendar.freebusy"
-CALENDAR_EVENTS = "https://www.googleapis.com/auth/calendar.events"
+# Minimal write scope for calendars the user owns (Mode B).
+CALENDAR_EVENTS_OWNED = "https://www.googleapis.com/auth/calendar.events.owned"
+# Broader legacy write scope — accepted if already granted; new flows request OWNED.
+CALENDAR_EVENTS_LEGACY = "https://www.googleapis.com/auth/calendar.events"
+CALENDAR_EVENTS = CALENDAR_EVENTS_OWNED
 
 # Explicitly forbidden — never request, never silently keep.
 FORBIDDEN_SCOPES: frozenset[str] = frozenset(
@@ -67,7 +71,8 @@ ALLOWED_SCOPES: frozenset[str] = frozenset(
     {
         GMAIL_READONLY,
         CALENDAR_FREEBUSY,
-        CALENDAR_EVENTS,
+        CALENDAR_EVENTS_OWNED,
+        CALENDAR_EVENTS_LEGACY,  # migrate-accept only; new consent uses OWNED
     }
 )
 
@@ -96,13 +101,14 @@ class ScopeSensitivity(str, Enum):
 SCOPE_SENSITIVITY: dict[str, ScopeSensitivity] = {
     GMAIL_READONLY: ScopeSensitivity.RESTRICTED,  # existing product scope
     CALENDAR_FREEBUSY: ScopeSensitivity.SENSITIVE,
-    CALENDAR_EVENTS: ScopeSensitivity.SENSITIVE,
+    CALENDAR_EVENTS_OWNED: ScopeSensitivity.SENSITIVE,
+    CALENDAR_EVENTS_LEGACY: ScopeSensitivity.SENSITIVE,
 }
 
 FEATURE_SCOPE_MATRIX: dict[Feature, tuple[str, ...]] = {
     Feature.GMAIL_READ: (GMAIL_READONLY,),
     Feature.CALENDAR_SLOT_FINDING: (CALENDAR_FREEBUSY,),
-    Feature.CALENDAR_EVENT_WRITE: (CALENDAR_EVENTS,),
+    Feature.CALENDAR_EVENT_WRITE: (CALENDAR_EVENTS_OWNED,),
 }
 
 FEATURE_JUSTIFICATION: dict[Feature, str] = {
@@ -385,7 +391,11 @@ def partial_consent_denied_features(
 
 def feature_available(feature: Feature, granted_scopes: Iterable[str] | None) -> bool:
     granted = set(normalize_scopes(granted_scopes))
-    return all(s in granted for s in FEATURE_SCOPE_MATRIX[feature])
+    needed = FEATURE_SCOPE_MATRIX[feature]
+    if feature == Feature.CALENDAR_EVENT_WRITE:
+        # Accept owned (preferred) or legacy broader events grant.
+        return CALENDAR_EVENTS_OWNED in granted or CALENDAR_EVENTS_LEGACY in granted
+    return all(s in granted for s in needed)
 
 
 # ---------------------------------------------------------------------------

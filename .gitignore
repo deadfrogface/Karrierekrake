@@ -59,3 +59,4 @@ artifacts/
 private/cvs/
 private/cvs/**
 !private/cvs/README.md
+data/geo_active/

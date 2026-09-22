@@ -18,7 +18,7 @@ from core.config import AppConfig, LanguageEntry
 from core.hard_filter import hard_exclude
 from core.intent_aliases import ranking_version_token
 from core.intent_filter import apply_search_intent
-from core.models import Job, MatchResult, RemoteType
+from core.models import Job, JobStatus, MatchResult, RemoteType
 from core.salary import job_annual_salary, meets_minimum
 from core.text_normalize import clean_text
 
@@ -146,23 +146,26 @@ def _distance_points(
     remote_type: str,
     max_distance_km: float = 20.0,
 ) -> tuple[int, str | None, str | None]:
+    """Secondary tie-breaker points for airline km (after fachliches matching)."""
     if remote_type == RemoteType.REMOTE.value:
         return 20, "100% remote — no distance penalty", None
     if distance_km is None:
-        return 8, None, "Distance unknown"
+        return 0, None, "Standort nicht prüfbar (Luftlinie unbekannt)"
     limit = max(float(max_distance_km or 20.0), 1.0)
+    # Round only for display strings; comparison uses raw distance_km.
+    d_disp = f"{distance_km:.0f}" if float(distance_km) == int(distance_km) else f"{distance_km:.1f}"
     near_bands = (
-        (5.0, 20, "Only {d} km away"),
-        (10.0, 16, "Only {d} km away"),
-        (15.0, 12, "{d} km away"),
-        (20.0, 8, "{d} km away (acceptable)"),
+        (5.0, 20, "Nur ca. {d} km Luftlinie"),
+        (10.0, 16, "Nur ca. {d} km Luftlinie"),
+        (15.0, 12, "ca. {d} km Luftlinie"),
+        (20.0, 8, "ca. {d} km Luftlinie (akzeptabel)"),
     )
     for band_km, pts, msg in near_bands:
         if band_km <= limit and distance_km <= band_km:
-            return pts, msg.format(d=distance_km), None
+            return pts, msg.format(d=d_disp), None
     if distance_km <= limit:
-        return 8, f"{distance_km} km away (within {limit:g} km limit)", None
-    return 0, None, f"{distance_km} km exceeds commute limit ({limit:g} km)"
+        return 8, f"ca. {d_disp} km Luftlinie (innerhalb {limit:g} km)", None
+    return 0, None, f"ca. {d_disp} km Luftlinie überschreitet Radius ({limit:g} km)"
 
 
 def _norm(text: str) -> str:
@@ -314,7 +317,13 @@ def _profile_experience_blob(quals) -> str:
     return _norm(" ".join(parts))
 
 
-def score_job(job: Job, config: AppConfig, already_applied: bool = False) -> MatchResult:
+def score_job(
+    job: Job,
+    config: AppConfig,
+    already_applied: bool = False,
+    *,
+    apply_distance: bool = False,
+) -> MatchResult:
     exclude = hard_exclude(job, config, already_applied=already_applied)
     if exclude:
         return MatchResult(
@@ -666,16 +675,18 @@ def score_job(job: Job, config: AppConfig, already_applied: bool = False) -> Mat
     elif job.remote_type == RemoteType.ONSITE.value and emp.onsite:
         score += 3
 
-    d_pts, d_reason, d_issue = _distance_points(
-        job.distance_km,
-        job.remote_type,
-        max_distance_km=config.profile.location.max_distance_km,
-    )
-    score += d_pts
-    if d_reason:
-        reasons.append(d_reason)
-    if d_issue:
-        issues.append(d_issue)
+    d_pts, d_reason, d_issue = 0, None, None
+    if apply_distance:
+        d_pts, d_reason, d_issue = _distance_points(
+            job.distance_km,
+            job.remote_type,
+            max_distance_km=config.profile.location.max_distance_km,
+        )
+        score += d_pts
+        if d_reason:
+            reasons.append(d_reason)
+        if d_issue:
+            issues.append(d_issue)
 
     min_sal = emp.minimum_salary
     if min_sal is None:
@@ -733,6 +744,32 @@ def score_job(job: Job, config: AppConfig, already_applied: bool = False) -> Mat
         ranking_version=intent_result.ranking_version or ranking_version_token(),
         intent_explanation=intent_result.to_dict() if intent_result.why_shown or intent_result.criteria else {},
     )
+
+
+def apply_distance_scoring(job: Job, config: AppConfig) -> None:
+    """Append Luftlinie reasons/points after local geo + radius gate.
+
+    Mutates job.match_score / match_reasons / rejection_reasons in place.
+    Does not resurrect fachlich excluded jobs (caller must skip those).
+    """
+    from core.hard_filter import distance_exclude
+
+    reason = distance_exclude(job, config)
+    if reason:
+        job.rejection_reasons = list(dict.fromkeys([*(job.rejection_reasons or []), reason]))
+        job.status = JobStatus.IGNORED.value
+        # Keep fachliche score for explainability; mark excluded via status.
+        return
+    d_pts, d_reason, d_issue = _distance_points(
+        job.distance_km,
+        job.remote_type,
+        max_distance_km=config.profile.location.max_distance_km,
+    )
+    if d_reason:
+        job.match_reasons = list(dict.fromkeys([*(job.match_reasons or []), d_reason]))
+    if d_issue:
+        job.rejection_reasons = list(dict.fromkeys([*(job.rejection_reasons or []), d_issue]))
+    job.match_score = max(0, min(100, int(job.match_score or 0) + int(d_pts)))
 
 
 def explanation_summary(result: MatchResult, *, limit: int = 3) -> str:

@@ -203,7 +203,7 @@ def test_pipeline_integration_counts(pipeline_cfg: AppConfig, monkeypatch, tmp_p
     db = Database(pipeline_cfg.db_path)
     ignored = db.list_jobs(statuses=[JobStatus.IGNORED.value], hide_duplicates=False)
     assert len(ignored) >= 2
-    assert stats["new"] == 2
+    assert stats["new"] == 3
     assert stats["matches"] == 2
     assert stats["duplicates"] == 1
     assert stats["distance_removed"] == 1

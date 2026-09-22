@@ -118,3 +118,13 @@ is the default path — no scrape of login/paywall or LinkedIn as a required sou
 - **trafilatura** (Apache-2.0 / GPL-3.0+) — https://github.com/adbar/trafilatura
 - **schema.org JobPosting** — https://schema.org/JobPosting (vocabulary only)
 
+### Local DACH geo data
+
+- **GeoNames postal code export** — https://www.geonames.org/ /
+  https://download.geonames.org/export/zip/ — Creative Commons Attribution 4.0
+- **pgeocode** (BSD-3-Clause) — https://github.com/symerio/pgeocode
+- **postal-codes-data mirror** — https://github.com/symerio/postal-codes-data
+
+Karrierekrake ships a versioned DACH snapshot under `data/geo/` and may update
+directly from the documented mirrors. Public Nominatim is not used in production.
+

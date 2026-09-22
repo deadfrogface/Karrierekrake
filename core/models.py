@@ -55,11 +55,11 @@ class Job:
     country_code: str = ""
     latitude: float | None = None
     longitude: float | None = None
-    # Road-route km from Google Route Matrix Essentials only (never Haversine).
+    # Airline (Luftlinie) km via local Haversine — never invented drive distance.
     distance_km: float | None = None
-    # Minutes from Google Route Matrix (TRAFFIC_UNAWARE Essentials).
+    # Always None in v1 (no drive-time claims without a local router).
     commute_duration_minutes: float | None = None
-    # "google_route_matrix" when distance_km is authoritative road distance.
+    # "haversine_v1" when distance_km is authoritative airline distance.
     distance_source: str = ""
     remote_type: str = RemoteType.UNKNOWN.value
     employment_type: str = ""

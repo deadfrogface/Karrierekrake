@@ -38,29 +38,24 @@ Today (`main` post NEXT-02):
 
 ---
 
-## 2. ONE GEO PROVIDER
+## 2. LOCAL GEO (NO METERED MAPS)
 
 | Rule | Decision |
 |------|----------|
-| Production geocoding | **Google Maps Platform — Geocoding API** |
-| Production commute distance | **Google Routes / Compute Route Matrix** (road route) |
-| OSRM | **No production fallback** |
-| Nominatim | **No production fallback** |
-| pgeocode | **No production fallback** |
-| Haversine as final commute km | **Forbidden** |
-| Route unavailable | Distance = **UNKNOWN** |
-| UI “Fahrtstrecke” | Only true road-route km; **never** air-line labeled as Fahrt |
+| Production geocoding | **Local DACH GeoNames / pgeocode snapshot** (versioned, offline) |
+| Production distance | **Haversine airline** (`haversine_v1`, R=6371.0088 km) |
+| Google Maps / Places / Routes / Distance Matrix | **Forbidden** |
+| Public Nominatim (`nominatim.openstreetmap.org`) | **Forbidden** |
+| OSRM / GraphHopper in v1 | **Not shipped** (no Java/Docker server requirement) |
+| Unresolvable place | Distance = **UNKNOWN** (never invent 0 km) |
+| UI label | **„ca. X km Luftlinie“** — never „km Fahrt“ |
 
 ### Implications for current code
 
-- Authoritative distance is **Google Route Matrix road km**.
-- Coordinates: **Google Geocoding** via authenticated maps proxy.
-- Haversine / Nominatim / pgeocode / OSRM are **not** production fallbacks.
-- Failure → `DISTANCE_UNKNOWN`.
-
-Haversine may remain only as an internal diagnostic/prefilter for tests
-(airline vs road) — final product decision forbids Haversine as
-authoritative commute distance.
+- Authoritative distance is local airline km after fachliches matching.
+- Coordinates from bundled/updated GeoNames data or explicit trusted coords.
+- Maps proxy / API keys removed; legacy cache rows marked stale.
+- See `docs/architecture/local_first_google_calendar_and_geo.md`.
 
 ---
 

@@ -14,9 +14,9 @@ beautifulsoup4>=4.12
 lxml>=5.0
 python-jobspy>=1.1.0
 PySide6>=6.6
-# Optional: diagnostic/tests only (NOT production geo). Production = Google Maps.
+# Optional: local DACH geo (GeoNames via pgeocode — offline production path).
 pgeocode>=0.4.0
-# geopy unused in production path (Nominatim removed).
+# geopy intentionally NOT a production geocoder (Nominatim policy / no silent online).
 # Floor pins for transitive deps with known High/Critical advisories when
 # resolved from loose lower bounds (OSV / pip-audit defense in depth).
 anyio>=4.14.2
@@ -41,3 +41,4 @@ holidays>=0.40
 # Follow-up reminders ticker (PR32); stable pin only — no pre-releases
 APScheduler>=3.10.4,<4.0
 cryptography>=42.0.0
+# Google Maps / Places / Routes / Distance Matrix: NEVER add as runtime deps.

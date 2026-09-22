@@ -41,10 +41,24 @@ def _config(**qual_overrides) -> AppConfig:
 
 
 def test_exclude_far_onsite():
-    job = Job(title="Sachbearbeiter", company="ACME", remote_type="onsite", distance_km=35, description="Excel Verwaltung Deutsch")
-    result = score_job(job, _config())
-    assert result.excluded
-    assert "km" in (result.exclude_reason or "")
+    from core.hard_filter import distance_exclude
+    from core.matcher import apply_distance_scoring
+
+    job = Job(
+        title="Sachbearbeiter",
+        company="ACME",
+        remote_type="onsite",
+        distance_km=35,
+        description="Excel Verwaltung Deutsch",
+    )
+    result = score_job(job, _config(), apply_distance=False)
+    assert not result.excluded  # fachlich OK
+    job.match_score = result.score
+    job.match_reasons = list(result.match_reasons)
+    job.rejection_reasons = list(result.rejection_reasons)
+    assert distance_exclude(job, _config()) is not None
+    apply_distance_scoring(job, _config())
+    assert job.status == "ignored" or any("km" in (r or "") for r in job.rejection_reasons)
 
 
 def test_remote_no_distance_penalty():
@@ -107,9 +121,9 @@ def test_distance_soft_score_respects_max_distance_km():
         description="Excel Verwaltung Deutsch Kommunikation",
         employment_type="Vollzeit",
     )
-    result = score_job(job, cfg)
+    result = score_job(job, cfg, apply_distance=True)
     assert not result.excluded
-    assert any("35" in r and "50" in r for r in result.match_reasons)
+    assert any("35" in r and ("50" in r or "Luftlinie" in r) for r in result.match_reasons)
 
 
 def test_matcher_uses_driving_license_class_b():

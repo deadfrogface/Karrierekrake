@@ -1,15 +1,11 @@
-"""Geocoding cache and Google road-route commute (NEXT-05).
+"""Local geocoding cache and Haversine airline distance (local-first).
 
-Production authority: Google Maps Platform only
-  - Geocoding API (via minimal authenticated proxy)
-  - Routes API Compute Route Matrix Essentials
+Production authority: bundled/updated GeoNames DACH postal data + haversine_v1.
+No Google Maps / Places / Routes / Distance Matrix.
+No public Nominatim.
 
-Forbidden as authoritative distance:
-  - Haversine / airline
-  - Nominatim / pgeocode / OSRM / geopy
-
-On Google failure → DISTANCE_UNKNOWN (None). Never invent km.
-max_commute_km means drivable road route ≤ N km — not straight-line.
+On resolution failure → DISTANCE_UNKNOWN (None). Never invent km.
+max_commute_km means airline (Luftlinie) ≤ N km.
 
 Home coordinates are resolved once per LocationService instance / run.
 Failed home resolution must NOT silently use arbitrary Germany center coordinates.
@@ -21,21 +17,24 @@ import logging
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable
 
+from core.geo_dataset import get_geo_dataset_manager
 from core.geo_normalize import (
     normalize_country_code,
     normalize_place_fields,
 )
 from core.geo_resolve import (
+    DISTANCE_UNKNOWN,
+    GEO_DATA_SOURCE_GEONAMES,
     GEO_DATA_SOURCE_UNRESOLVED,
     GEO_DATA_VERSION_UNRESOLVED,
+    HAVERSINE_ALGORITHM,
     PlaceResolution,
     UNRESOLVED_MARKER,
     cache_query_key,
-    haversine_km,  # diagnostic / tests ONLY — never authoritative commute
+    haversine_km,
     place_from_job_like,
+    resolve_place,
 )
-from integrations.maps.contracts import DISTANCE_UNKNOWN
-from integrations.maps.service import MapsGeoService, get_maps_service
 
 if TYPE_CHECKING:
     from core.config import AppConfig
@@ -43,10 +42,10 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger("karrierekrake")
 
-# Re-export for existing imports / tests
 __all__ = [
     "UNRESOLVED_MARKER",
     "DISTANCE_UNKNOWN",
+    "HAVERSINE_ALGORITHM",
     "HomeResolution",
     "EnrichStats",
     "LocationService",
@@ -57,15 +56,30 @@ __all__ = [
 ]
 
 DEFAULT_GEOCODE_TIMEOUT_S = 12.0
-# Soft cap on unique geocode network attempts per enrich run (cached hits free).
-MAX_UNIQUE_GEOCODE_ATTEMPTS_PER_RUN = 80
-# Negative-cache TTL for unresolved lookups (seconds). Successes stay until cleared.
 UNRESOLVED_TTL_S = 6 * 60 * 60
 
-GEO_DATA_SOURCE_GOOGLE = "google_geocoding"
-GEO_DATA_VERSION_GOOGLE = "maps-geocoding-v1"
-GEO_DATA_SOURCE_ROUTE = "google_route_matrix"
-GEO_DATA_VERSION_ROUTE = "routes-matrix-essentials-v1"
+# Trusted cache sources for local geo (stale google_* rows are ignored).
+TRUSTED_GEO_SOURCES = frozenset(
+    {
+        "geonames",
+        "pgeocode",
+        "existing_source",
+        "explicit_coords",
+        "local_geo",
+    }
+)
+STALE_GEO_SOURCES = frozenset(
+    {
+        "google_geocoding",
+        "google_route_matrix",
+        "nominatim",
+        "maps",
+        "stale_cleared",
+        "",
+    }
+)
+
+GEO_DATA_SOURCE_LOCAL = "local_geo"
 
 
 def cross_border_dach_enabled(config: "AppConfig") -> bool:
@@ -85,7 +99,7 @@ class HomeResolution:
 
     coords: tuple[float, float] | None = None
     resolved: bool = False
-    source: str = ""  # persisted | google_geocoding | unresolved
+    source: str = ""
     warning: str = ""
     address_used: str = ""
     country_code: str = ""
@@ -105,6 +119,9 @@ class EnrichStats:
     unknown_locations: int = 0
     ambiguous_locations: int = 0
     cross_border_enabled: bool = True
+    airline_ok: int = 0
+    airline_unknown: int = 0
+    # Back-compat aliases used by older stats consumers
     google_route_ok: int = 0
     google_route_unknown: int = 0
 
@@ -140,27 +157,31 @@ def location_cache_key(
 
 @dataclass
 class LocationService:
-    """Geocode via Google proxy, cache in SQLite, commute via Route Matrix."""
+    """Local DACH resolve + SQLite cache + Haversine airline distance."""
 
     db: "Database"
     config: "AppConfig"
     timeout_s: float = DEFAULT_GEOCODE_TIMEOUT_S
-    maps: MapsGeoService | None = None
     _home: tuple[float, float] | None = field(default=None, init=False, repr=False)
     _home_resolution: HomeResolution | None = field(default=None, init=False, repr=False)
-    _memory_hits: dict[str, tuple[float, float, str] | None] = field(
+    _memory_hits: dict[str, PlaceResolution | None] = field(
         default_factory=dict, init=False, repr=False
     )
-    _route_cache: dict[str, tuple[float | None, float | None]] = field(
-        default_factory=dict, init=False, repr=False
-    )
-    _network_attempts: int = field(default=0, init=False, repr=False)
+    _dataset_version: str = field(default="", init=False, repr=False)
     home_updated: bool = field(default=False, init=False, repr=False)
     stats: EnrichStats = field(default_factory=EnrichStats, init=False)
 
     def __post_init__(self) -> None:
-        if self.maps is None:
-            self.maps = get_maps_service()
+        root = getattr(self.config, "root", None)
+        mgr = get_geo_dataset_manager(root)
+        info = mgr.ensure_active()
+        self._dataset_version = info.version if info.valid else GEO_DATA_VERSION_UNRESOLVED
+        # Drop maps-related settings values if present (ignored, not used).
+        settings = getattr(self.config, "settings", None)
+        if settings is not None:
+            geo = getattr(settings, "geocoder", "") or ""
+            if str(geo).lower() in {"google", "nominatim", "maps", "osrm"}:
+                settings.geocoder = "local"
 
     @property
     def home_resolved(self) -> bool:
@@ -180,17 +201,19 @@ class LocationService:
         loc = self.config.profile.location
         return normalize_country_code(getattr(loc, "country", "") or "") or "DE"
 
-    def _region(self) -> str:
-        return self.home_country().lower()
+    def dataset_info(self):
+        return get_geo_dataset_manager(getattr(self.config, "root", None)).current_info()
 
     def resolve_home(self) -> HomeResolution:
-        """Resolve home once via Google. Never uses a silent DE-center fallback."""
+        """Resolve home once locally. Never uses a silent DE-center fallback."""
         if self._home_resolution is not None:
             return self._home_resolution
 
         loc = self.config.profile.location
         address = (loc.home_address or "").strip()
-        current_fp = _address_fingerprint(address)
+        postal = getattr(loc, "postal_code", "") or ""
+        city = getattr(loc, "city", "") or ""
+        current_fp = _address_fingerprint(address or f"{postal}|{city}")
         stored_fp = _address_fingerprint(getattr(loc, "home_geocoded_address", "") or "")
         home_cc = self.home_country()
 
@@ -206,7 +229,7 @@ class LocationService:
                 loc.home_geocoded_address = ""
                 self.home_updated = True
             elif not stored_fp and current_fp:
-                loc.home_geocoded_address = address
+                loc.home_geocoded_address = address or current_fp
                 self.home_updated = True
 
         if loc.home_latitude is not None and loc.home_longitude is not None:
@@ -222,9 +245,15 @@ class LocationService:
             self.stats.home_resolved = True
             return self._home_resolution
 
-        if not address:
+        place = normalize_place_fields(
+            address=address,
+            city=city or _city_from_address(address),
+            postal_code=postal or _plz_from_address(address),
+            country_code=home_cc,
+        )
+        if not place.postal_code and not place.city and not address:
             warning = (
-                "Such-Standort fehlt: bitte eine Heimatadresse unter Profil/Standort setzen. "
+                "Such-Standort fehlt: bitte Wohnort/PLZ und Land unter Profil setzen. "
                 "Distanzfilter ist deaktiviert, bis der Standort auflösbar ist."
             )
             logger.warning(warning)
@@ -241,18 +270,17 @@ class LocationService:
             self.stats.skipped_distance_no_home = True
             return self._home_resolution
 
-        result = self.geocode(address)
-        if not result:
-            cityish = _city_from_address(address)
-            if cityish and cityish.lower() != address.lower():
-                suffix = _country_suffix(home_cc, self.cross_border)
-                result = self.geocode(f"{cityish}, {suffix}")
-
-        if not result:
+        resolution = resolve_place(
+            place,
+            cross_border=self.cross_border,
+            home_country=home_cc,
+            allow_network=False,
+        )
+        if not resolution.ok:
             warning = (
-                f"Heimatadresse konnte nicht geocodiert werden (Google): {address!r}. "
-                "Distanzfilter übersprungen — bitte Adresse korrigieren "
-                "(kein Haversine-/Nominatim-Fallback)."
+                f"Heimatstandort konnte lokal nicht aufgelöst werden "
+                f"(PLZ/Ort): {address or place.city or place.postal_code!r}. "
+                "Distanzfilter übersprungen — bitte PLZ und Land prüfen."
             )
             logger.warning(warning)
             self._home = None
@@ -269,115 +297,70 @@ class LocationService:
             self.stats.skipped_distance_no_home = True
             return self._home_resolution
 
-        coords = (float(result[0]), float(result[1]))
+        coords = (float(resolution.latitude), float(resolution.longitude))  # type: ignore[arg-type]
         self._home = coords
         loc.home_latitude = coords[0]
         loc.home_longitude = coords[1]
-        loc.home_geocoded_address = address
+        loc.home_geocoded_address = address or resolution.display_name
         self.home_updated = True
         self._home_resolution = HomeResolution(
             coords=coords,
             resolved=True,
-            source=GEO_DATA_SOURCE_GOOGLE,
-            address_used=address,
+            source=resolution.data_source or GEO_DATA_SOURCE_LOCAL,
+            address_used=address or resolution.display_name,
             country_code=home_cc,
         )
         self.stats.home_resolved = True
         return self._home_resolution
 
     def ensure_home_coords(self) -> tuple[float, float] | None:
-        """Resolve home once; return coords or None if unresolved (no DE fallback)."""
         res = self.resolve_home()
         return res.coords
 
-    def geocode(
-        self,
-        query: str,
-        *,
-        country_codes: list[str] | None = None,
-    ) -> tuple[float, float, str] | None:
-        """Google Geocoding via authenticated proxy. Failure → None."""
-        del country_codes  # region comes from home country; kept for API compat
-        query = (query or "").strip()
-        if not query:
+    def _cache_trusted(self, query: str) -> PlaceResolution | None:
+        rec = self.db.get_geocode_record(query)
+        if not rec:
             return None
-        key = query.lower()
-        if key in self._memory_hits:
-            self.stats.cached += 1
-            return self._memory_hits[key]
-
-        cached = self.db.get_geocode(query)
-        if cached is not None:
-            lat, lon, display, cached_at = cached[:4]
-            if display == UNRESOLVED_MARKER:
-                age = _age_seconds(cached_at)
-                if age is not None and age < UNRESOLVED_TTL_S:
-                    self._memory_hits[key] = None
-                    self.stats.cached += 1
-                    return None
-            else:
-                # Only trust Google-sourced cache as production authority.
-                rec = self.db.get_geocode_record(query)
-                src = (rec or {}).get("data_source") or ""
-                if src not in {GEO_DATA_SOURCE_GOOGLE, "google_geocoding"}:
-                    # Legacy Nominatim/pgeocode/empty rows — re-resolve via Google.
-                    logger.debug(
-                        "Ignoring non-Google geocode cache for %r (source=%s)",
-                        query,
-                        src or "empty",
-                    )
-                else:
-                    result = (lat, lon, display)
-                    self._memory_hits[key] = result
-                    self.stats.cached += 1
-                    return result
-
-        if self._network_attempts >= MAX_UNIQUE_GEOCODE_ATTEMPTS_PER_RUN:
-            logger.warning(
-                "Geocode attempt cap (%s) reached — skipping %r",
-                MAX_UNIQUE_GEOCODE_ATTEMPTS_PER_RUN,
-                query,
-            )
-            self.stats.failed += 1
+        src = (rec.get("data_source") or "").strip()
+        ver = (rec.get("data_version") or "").strip()
+        display = rec.get("display_name") or ""
+        if display == UNRESOLVED_MARKER:
+            age = _age_seconds(rec.get("cached_at"))
+            if age is not None and age < UNRESOLVED_TTL_S:
+                return PlaceResolution(
+                    status="UNKNOWN",
+                    reason="cached_unresolved",
+                    data_source=GEO_DATA_SOURCE_UNRESOLVED,
+                    data_version=GEO_DATA_VERSION_UNRESOLVED,
+                )
             return None
-
-        self._network_attempts += 1
-        assert self.maps is not None
-        geo = self.maps.geocode(query, region=self._region())
-        if geo is None:
-            self._store_unresolved(query)
-            self.stats.failed += 1
+        if src in STALE_GEO_SOURCES or src not in TRUSTED_GEO_SOURCES:
+            logger.debug("Ignoring stale geocode cache for %r (source=%s)", query, src or "empty")
             return None
-        self.db.set_geocode(
-            query,
-            geo.latitude,
-            geo.longitude,
-            geo.formatted_address or query,
-            data_source=GEO_DATA_SOURCE_GOOGLE,
-            data_version=GEO_DATA_VERSION_GOOGLE,
-            country_code=geo.country_code,
-            resolution_status="RESOLVED",
+        if self._dataset_version and ver and ver not in {
+            self._dataset_version,
+            GEO_DATA_VERSION_UNRESOLVED,
+            "wgs84-1",
+        }:
+            # Lazy re-resolve when dataset version changed
+            logger.debug("Stale geo dataset version for %r (%s != %s)", query, ver, self._dataset_version)
+            return None
+        lat, lon = rec.get("latitude"), rec.get("longitude")
+        if lat is None or lon is None:
+            return None
+        status = (rec.get("resolution_status") or "RESOLVED").upper()
+        if status not in {"RESOLVED", "UNKNOWN", "AMBIGUOUS"}:
+            status = "RESOLVED"
+        return PlaceResolution(
+            status=status,  # type: ignore[arg-type]
+            latitude=float(lat),
+            longitude=float(lon),
+            country_code=rec.get("country_code") or "",
+            display_name=display,
+            data_source=src,
+            data_version=ver or self._dataset_version,
+            precision="postal_centroid",
         )
-        result = (geo.latitude, geo.longitude, geo.formatted_address or query)
-        self._memory_hits[key] = result
-        self.stats.resolved += 1
-        return result
-
-    def _store_unresolved(self, query: str) -> None:
-        key = query.lower().strip()
-        self._memory_hits[key] = None
-        try:
-            self.db.set_geocode(
-                query,
-                0.0,
-                0.0,
-                UNRESOLVED_MARKER,
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-                resolution_status="UNKNOWN",
-            )
-        except Exception as exc:
-            logger.debug("Could not persist unresolved geocode for %r: %s", query, exc)
 
     def resolve_job_place(
         self,
@@ -390,87 +373,77 @@ class LocationService:
         country_code: str = "",
         remote_type: str = "",
     ) -> PlaceResolution:
-        """Resolve a job workplace via Google geocoding (or explicit coords)."""
-        if (remote_type or "").lower() == "remote":
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="remote_no_workplace",
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        if latitude is not None and longitude is not None:
-            return PlaceResolution(
-                status="RESOLVED",
-                latitude=float(latitude),
-                longitude=float(longitude),
-                country_code=normalize_country_code(country_code) or "",
-                display_name=address or city or "coords",
-                data_source="explicit_coords",
-                data_version="wgs84-1",
-            )
-        suffix = _country_suffix(
-            normalize_country_code(country_code) or self.home_country(),
-            self.cross_border,
+        """Resolve a job workplace locally (or explicit coords)."""
+        place = normalize_place_fields(
+            address=address,
+            city=city,
+            postal_code=postal_code,
+            latitude=latitude,
+            longitude=longitude,
+            country_code=country_code,
+            remote_type=remote_type,
         )
-        query_parts = [p for p in (address, postal_code, city) if p]
-        if not query_parts:
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="empty_query",
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        query = ", ".join(query_parts + [suffix])
-        result = self.geocode(query)
-        if not result and city:
-            result = self.geocode(f"{city}, {suffix}")
-        if not result and postal_code:
-            result = self.geocode(f"{postal_code}, {suffix}")
-        if not result:
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="google_geocode_miss",
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        lat, lon, display = result
-        return PlaceResolution(
-            status="RESOLVED",
-            latitude=lat,
-            longitude=lon,
-            country_code=normalize_country_code(country_code) or self.home_country(),
-            display_name=display,
-            data_source=GEO_DATA_SOURCE_GOOGLE,
-            data_version=GEO_DATA_VERSION_GOOGLE,
+        key = cache_query_key(place) or location_cache_key(
+            address=address,
+            city=city,
+            postal_code=postal_code,
+            latitude=latitude,
+            longitude=longitude,
+            country_code=country_code,
         )
+        if key and key in self._memory_hits:
+            hit = self._memory_hits[key]
+            self.stats.cached += 1
+            return hit or PlaceResolution(
+                status="UNKNOWN",
+                reason="memory_miss",
+                data_source=GEO_DATA_SOURCE_UNRESOLVED,
+                data_version=GEO_DATA_VERSION_UNRESOLVED,
+            )
 
-    def _road_commute(
-        self,
-        home: tuple[float, float],
-        job_lat: float,
-        job_lon: float,
-    ) -> tuple[float | None, float | None]:
-        """Return (distance_km, duration_minutes) from Google Route Matrix only."""
-        key = f"{home[0]:.5f},{home[1]:.5f}|{job_lat:.5f},{job_lon:.5f}"
-        if key in self._route_cache:
-            return self._route_cache[key]
-        assert self.maps is not None
-        decision = self.maps.commute_decision(
-            home_lat=home[0],
-            home_lon=home[1],
-            job_lat=job_lat,
-            job_lon=job_lon,
-            max_commute_km=None,
-            remote=False,
+        if key:
+            cached = self._cache_trusted(key)
+            if cached is not None:
+                self._memory_hits[key] = cached if cached.ok else None
+                self.stats.cached += 1
+                return cached
+
+        resolution = resolve_place(
+            place,
+            cross_border=self.cross_border,
+            home_country=self.home_country(),
+            allow_network=False,
         )
-        if decision.source != "google_route_matrix" or decision.distance_km is None:
-            self._route_cache[key] = (DISTANCE_UNKNOWN, None)
-            self.stats.google_route_unknown += 1
-            return DISTANCE_UNKNOWN, None
-        pair = (float(decision.distance_km), decision.duration_minutes)
-        self._route_cache[key] = pair
-        self.stats.google_route_ok += 1
-        return pair
+        if key:
+            self._memory_hits[key] = resolution if resolution.ok else None
+            try:
+                if resolution.ok:
+                    self.db.set_geocode(
+                        key,
+                        float(resolution.latitude),  # type: ignore[arg-type]
+                        float(resolution.longitude),  # type: ignore[arg-type]
+                        resolution.display_name or key,
+                        data_source=resolution.data_source or GEO_DATA_SOURCE_GEONAMES,
+                        data_version=resolution.data_version or self._dataset_version,
+                        country_code=resolution.country_code,
+                        resolution_status="RESOLVED",
+                    )
+                    self.stats.resolved += 1
+                else:
+                    self.db.set_geocode(
+                        key,
+                        0.0,
+                        0.0,
+                        UNRESOLVED_MARKER,
+                        data_source=GEO_DATA_SOURCE_UNRESOLVED,
+                        data_version=GEO_DATA_VERSION_UNRESOLVED,
+                        country_code=resolution.country_code,
+                        resolution_status=resolution.status,
+                    )
+                    self.stats.failed += 1
+            except Exception as exc:
+                logger.debug("geocode cache write failed: %s", type(exc).__name__)
+        return resolution
 
     def distance_for_job_location(
         self,
@@ -483,10 +456,7 @@ class LocationService:
         country_code: str = "",
         remote_type: str = "",
     ) -> tuple[float | None, float | None, float | None]:
-        """Return (lat, lon, road_distance_km). Unresolved / Google fail → UNKNOWN.
-
-        Never uses Haversine for the returned distance_km.
-        """
+        """Return (lat, lon, airline_km). Unresolved → UNKNOWN. Never invents 0 km."""
         home = self.ensure_home_coords()
         resolution = self.resolve_job_place(
             address=address,
@@ -499,15 +469,23 @@ class LocationService:
         )
         if resolution.status == "AMBIGUOUS":
             self.stats.ambiguous_locations += 1
+            self.stats.airline_unknown += 1
             return None, None, DISTANCE_UNKNOWN
         if not resolution.ok:
             self.stats.unknown_locations += 1
+            self.stats.airline_unknown += 1
             return None, None, DISTANCE_UNKNOWN
         lat, lon = float(resolution.latitude), float(resolution.longitude)  # type: ignore[arg-type]
         if home is None:
+            self.stats.airline_unknown += 1
             return lat, lon, DISTANCE_UNKNOWN
-        dist_km, _dur = self._road_commute(home, lat, lon)
-        return lat, lon, dist_km
+        try:
+            dist = haversine_km(home[0], home[1], lat, lon)
+        except ValueError:
+            self.stats.airline_unknown += 1
+            return lat, lon, DISTANCE_UNKNOWN
+        self.stats.airline_ok += 1
+        return lat, lon, dist
 
     def commute_for_job_location(
         self,
@@ -520,9 +498,11 @@ class LocationService:
         country_code: str = "",
         remote_type: str = "",
     ) -> tuple[float | None, float | None, float | None, float | None]:
-        """Return (lat, lon, road_km, duration_minutes). Google-only."""
-        home = self.ensure_home_coords()
-        resolution = self.resolve_job_place(
+        """Return (lat, lon, airline_km, duration_minutes).
+
+        duration is always None in v1 — no invented drive time.
+        """
+        lat, lon, dist = self.distance_for_job_location(
             address=address,
             city=city,
             postal_code=postal_code,
@@ -531,22 +511,7 @@ class LocationService:
             country_code=country_code,
             remote_type=remote_type,
         )
-        if not resolution.ok or home is None:
-            if resolution.status == "AMBIGUOUS":
-                self.stats.ambiguous_locations += 1
-            else:
-                self.stats.unknown_locations += 1
-            return None, None, DISTANCE_UNKNOWN, None
-        lat, lon = float(resolution.latitude), float(resolution.longitude)  # type: ignore[arg-type]
-        dist_km, dur = self._road_commute(home, lat, lon)
-        return lat, lon, dist_km, dur
-
-
-def _country_suffix(country_code: str, cross_border: bool) -> str:
-    del cross_border
-    cc = normalize_country_code(country_code) or "DE"
-    names = {"DE": "Germany", "AT": "Austria", "CH": "Switzerland"}
-    return names.get(cc, "Germany")
+        return lat, lon, dist, None
 
 
 def _age_seconds(cached_at: str | None) -> float | None:
@@ -565,8 +530,14 @@ def _age_seconds(cached_at: str | None) -> float | None:
 
 
 def _address_fingerprint(address: str) -> str:
-    """Normalize address text for comparing persisted geocode provenance."""
     return " ".join((address or "").strip().lower().split())
+
+
+def _plz_from_address(home_address: str) -> str:
+    import re
+
+    m = re.search(r"\b(\d{4,5})\b", home_address or "")
+    return m.group(1) if m else ""
 
 
 def _city_from_address(home_address: str) -> str:
@@ -615,10 +586,10 @@ def enrich_job_locations(
     progress_callback: Callable[[str], None] | None = None,
     should_stop: Callable[[], bool] | None = None,
 ) -> list:
-    """Enrich jobs with Google geocode + road distance. Dedupes identical queries.
+    """Enrich jobs with local geocode + airline distance. Dedupes identical queries.
 
-    Remote jobs skip workplace geocoding. Unknown / Google failure leave
-    distance_km as None (DISTANCE_UNKNOWN). Never writes Haversine as commute.
+    Call only for fachlich suitable candidates (after hard matching).
+    Remote jobs skip workplace geocoding. Unknown leave distance_km as None.
     """
 
     def progress(msg: str) -> None:
@@ -693,7 +664,7 @@ def enrich_job_locations(
             f"offen {location.stats.failed})"
         )
         sample_place = place_from_job_like(sample)
-        lat, lon, dist, dur = location.commute_for_job_location(
+        lat, lon, dist, _dur = location.commute_for_job_location(
             address=getattr(sample, "address", "") or "",
             city=getattr(sample, "city", "") or "",
             postal_code=getattr(sample, "postal_code", "") or "",
@@ -709,27 +680,24 @@ def enrich_job_locations(
             if dist is not None:
                 job.distance_km = dist
                 if hasattr(job, "distance_source"):
-                    job.distance_source = GEO_DATA_SOURCE_ROUTE
+                    job.distance_source = HAVERSINE_ALGORITHM
             else:
                 job.distance_km = None
                 if hasattr(job, "distance_source"):
                     job.distance_source = ""
             if hasattr(job, "commute_duration_minutes"):
-                job.commute_duration_minutes = dur
+                job.commute_duration_minutes = None
             cc = getattr(job, "country_code", "") or sample_place.country_code
             if cc and hasattr(job, "country_code"):
                 job.country_code = cc
 
+    location.stats.google_route_ok = location.stats.airline_ok
+    location.stats.google_route_unknown = location.stats.airline_unknown
     progress(
         f"Standorte fertig: {len(order)}/{total_q} Orte — "
         f"gelöst {location.stats.resolved}, Cache {location.stats.cached}, "
         f"ungeklärt {location.stats.failed}, Remote übersprungen {location.stats.remote_skipped}, "
-        f"Route OK {location.stats.google_route_ok}, Route UNKNOWN {location.stats.google_route_unknown}"
+        f"Luftlinie OK {location.stats.airline_ok}, UNKNOWN {location.stats.airline_unknown}"
         + ("" if home.resolved else " | Distanzfilter inaktiv (Heimat unklar)")
-        + (
-            " | DACH-Cross-Border an"
-            if location.cross_border
-            else " | DACH-Cross-Border aus"
-        )
     )
     return jobs

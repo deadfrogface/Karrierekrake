@@ -25,6 +25,7 @@ ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
     ("config/application_profile.yaml.example", "config"),
     ("config/settings.yaml.example", "config"),
     ("assets/brand", "assets/brand"),
+    ("data/geo", "data/geo"),
     ("NOTICE", "."),
     ("LICENSE", "."),
 )
