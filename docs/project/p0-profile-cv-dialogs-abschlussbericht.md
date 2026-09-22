@@ -1,7 +1,7 @@
 # P0 Gate: Profil / CV-Import / Dialoge — Abschlussbericht
 
 **Branch:** `cursor/p0-profile-cv-dialogs-d85b`  
-**Commit:** `61cce86cb44e31e416720d7a7e22db98f3396ce3`  
+**Commit (Windows-Smoke-Build):** `04a98838389a47c90eb1db1b06fe35e35d40bba7`  
 **Datum:** 2026-09-22  
 **Scope:** Nur P0-Gate (kein PR-#54 Feature-Weiterbau). Jobsuche / Bewerbung / Gmail / Calendar **nicht** als getestet markiert.
 
@@ -9,8 +9,8 @@
 
 | Datei | Status |
 |-------|--------|
-| `Fake_Lebenslauf_Neuer_Blindtest_Leonie_Brandt.pdf` | **Im Repo ursprünglich nicht gefunden** (Suche unter fixtures/testdata/private/docs/opt) |
-| Ersatz / Binding | `tests/fixtures/cv_corpus/Fake_Lebenslauf_Neuer_Blindtest_Leonie_Brandt.txt` + generiertes PDF gleichen Namens (fiktiv, Blindtest-Inhalt laut Problemlist) |
+| `tests/fixtures/cv_corpus/Fake_Lebenslauf_Neuer_Blindtest_Leonie_Brandt.pdf` | ✅ vorhanden |
+| `tests/fixtures/cv_corpus/Fake_Lebenslauf_Neuer_Blindtest_Leonie_Brandt.txt` | ✅ vorhanden (Blindtest-Inhalt) |
 
 ## Was kaputt war (Root Causes)
 
@@ -35,8 +35,7 @@
 
 ```bash
 export HOME=/home/ubuntu
-pytest -q tests/test_p0_profile_cv_dialogs.py   # focused P0
-# zusätzlich grün: test_cv_*, test_search_intent, test_profile_search_ux, test_qt_smoke, …
+pytest -q tests/test_p0_profile_cv_dialogs.py   # focused P0 — 12 passed
 ```
 
 ### Linux DEV onefile (Agent)
@@ -51,28 +50,37 @@ pytest -q tests/test_p0_profile_cv_dialogs.py   # focused P0
 
 Clean-profile Smoke (Agent, offscreen): Empty → Golden-CV-Import → Ausbildung/Sprachen/Skills/Weiterbildung → Berufsziel löschen → Restart → Dialog-Clamp — **ALL_OK**.
 
-### Windows EXE
+### Windows EXE (CI Windows Smoke)
 
-`windows-smoke` läuft auf `pull_request` + `push` zu `main` (+ `workflow_dispatch`).  
-In dieser Agent-Umgebung: **kein** ManagePullRequest-Tool, `gh` PR/dispatch → HTTP 403.  
-Branch ist gepusht — PR manuell öffnen, dann baut CI das Windows-EXE:
+| Feld | Wert |
+|------|------|
+| Run | https://github.com/deadfrogface/Karrierekrake/actions/runs/35679796168 |
+| Commit | `04a98838389a47c90eb1db1b06fe35e35d40bba7` |
+| Artifact | `Karrierekrake-Windows-Smoke` |
+| EXE size | 216136580 bytes |
+| SHA-256 | `324225f7cbc65604cd49aeda6cfb1d9828c68ce0d61c4f5f1c35772f8e78538f` |
+| console | false (WINDOWS_GUI) |
+| SMOKE_TEST_OK | **yes** |
+| Local copies | `/opt/cursor/artifacts/Karrierekrake.exe.sha256`, `build_metadata.txt`, `windows_smoke_test_result.txt`, `p0_windows_smoke_gate_status.md` |
 
+Trigger: temporärer Push-Trigger auf Branch `cursor/p0-profile-cv-dialogs-d85b` in `windows-smoke.yml` (ManagePullRequest / `workflow_dispatch` / `gh` PR → 403 in Agent-Env).
+
+Compare (PR manuell öffnen):  
 https://github.com/deadfrogface/Karrierekrake/compare/main...cursor/p0-profile-cv-dialogs-d85b
-
-Linux-Agent-Smoke (Clean-Profile + Golden-CV + Dialog-Clamp) ist **ALL_OK** unter  
-`docs/project/p0_profile_cv_dialogs_smoke.json` und `/opt/cursor/artifacts/p0_profile_cv_dialogs_smoke.json`.
 
 ### Done-Gate Status
 
 | Kriterium | Status |
 |-----------|--------|
 | Dialoge nutzbar / clamp | ✅ Code + Geometrie-Smoke |
-| Ausbildung aus PDF/Text | ✅ |
+| Aufbau aus PDF/Text | ✅ |
 | Sprachen / Skills / Software / WB getrennt | ✅ |
 | Kein unaufgefordertes Berufsziel | ✅ (Empty + Anti-Resurrection; Vorschläge nur Button) |
 | Werte editier-/löschbar + Restart | ✅ |
-| Windows EXE neu gebaut | ⏳ wartet auf PR / workflow_dispatch (403 hier) |
-| Full clean-profile Smoke evidenced | ✅ Linux-Agent; Windows = nach PR-CI |
+| Windows EXE neu gebaut | ✅ Run 35679796168 @ `04a9883` |
+| Packaged EXE Smoke | ✅ `SMOKE_TEST_OK` |
+| Full clean-profile Smoke (Profil/CV/Dialoge) | ✅ Linux-Agent; Windows = packaged startup/migration/reset smoke |
+| GitHub PR registriert | ❌ ManagePullRequest fehlt; Compare-URL nutzen |
 
 ## Nicht getestet (explizit)
 
