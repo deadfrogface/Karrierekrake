@@ -92,6 +92,25 @@ def test_bundled_dach_dataset_valid():
     assert ok, msg
 
 
+def test_validate_accepts_crlf_country_files(tmp_path):
+    """Windows autocrlf must not break manifest SHA-256 checks."""
+    import shutil
+
+    from core.geo_dataset import _normalize_geonames_files
+
+    src = bundled_geo_dir()
+    dst = tmp_path / "geo"
+    shutil.copytree(src, dst)
+    de = dst / "geonames" / "DE.txt"
+    de.write_bytes(de.read_bytes().replace(b"\n", b"\r\n"))
+    ok, msg = validate_dataset(dst)
+    assert ok, msg
+    _normalize_geonames_files(dst)
+    assert b"\r\n" not in (dst / "geonames" / "DE.txt").read_bytes()
+    ok2, msg2 = validate_dataset(dst)
+    assert ok2, msg2
+
+
 def test_plz_leading_zero_de():
     assert normalize_postal_code("01234", country_code="DE") == "01234"
     res = resolve_postal_pgeocode("01067", "DE")  # Dresden area

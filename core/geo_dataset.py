@@ -109,12 +109,33 @@ def _read_manifest(path: Path) -> dict[str, Any] | None:
         return None
 
 
+def _normalize_newlines(data: bytes) -> bytes:
+    """LF-only bytes — Git on Windows may check out bundled .txt as CRLF."""
+    return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
+
 def _sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    """SHA-256 of file contents with newlines normalized to LF.
+
+    Manifest hashes are computed on LF snapshots. Windows checkouts with
+    ``core.autocrlf`` must still validate against the same digests.
+    """
+    return hashlib.sha256(_normalize_newlines(path.read_bytes())).hexdigest()
+
+
+def _normalize_geonames_files(dataset_root: Path) -> None:
+    """Rewrite country files to LF so active dataset matches manifest digests."""
+    geo = dataset_root / "geonames"
+    if not geo.is_dir():
+        return
+    for cc in DACH_COUNTRIES:
+        path = geo / f"{cc}.txt"
+        if not path.is_file():
+            continue
+        raw = path.read_bytes()
+        norm = _normalize_newlines(raw)
+        if norm != raw:
+            path.write_bytes(norm)
 
 
 def validate_country_file(path: Path, country: str) -> tuple[bool, str]:
@@ -253,6 +274,7 @@ class GeoDatasetManager:
             except OSError:
                 shutil.rmtree(self.active_root, ignore_errors=True)
         shutil.copytree(src, self.active_root)
+        _normalize_geonames_files(self.active_root)
         info = info_from_path(self.active_root)
         if info.valid:
             self._export_pgeocode_env(self.active_root)

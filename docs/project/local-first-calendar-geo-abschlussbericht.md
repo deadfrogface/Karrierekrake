@@ -99,3 +99,7 @@ Hinweis: Byte-String `client_secret` im Linux-Binary stammt nur aus OpenAI-SDK-M
 - Production Desktop-OAuth-Client + Consent/Verifizierung
 - Homepage-/Datenschutz-URLs
 - GeoNames-/OSS-Lizenzprüfung im Release
+
+## 9. Windows CI Fix (Geo Hash)
+
+Windows `unit-tests` failed with `hash mismatch DE` because Git autocrlf turned bundled `data/geo/geonames/*.txt` into CRLF. Fix: LF-normalized SHA-256 in `core/geo_dataset.py`, rewrite-to-LF on seed, and `.gitattributes` `data/geo/** text eol=lf`.
