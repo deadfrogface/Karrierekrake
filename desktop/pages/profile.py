@@ -503,7 +503,7 @@ class ProfilePage(QWidget):
             if w is not None:
                 w.deleteLater()
         education = list(cfg.profile.qualifications.education or [])
-        for entry in education[:3]:
+        for entry in education[:8]:
             wrap = QWidget()
             vl = QVBoxLayout(wrap)
             vl.setContentsMargins(0, 0, 0, 8)

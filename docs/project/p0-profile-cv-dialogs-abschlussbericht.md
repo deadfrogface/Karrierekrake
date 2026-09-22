@@ -53,12 +53,16 @@ Clean-profile Smoke (Agent, offscreen): Empty → Golden-CV-Import → Ausbildun
 
 ### Windows EXE
 
-Build läuft über GitHub Actions `windows-smoke` auf dem Branch. Agent kann kein natives Windows-EXE ausführen; PE-Build + EXE-Smoke = CI-Artefakt.
+`windows-smoke` läuft auf `pull_request` + `push` zu `main` (+ `workflow_dispatch`).  
+In dieser Agent-Umgebung: **kein** ManagePullRequest-Tool, `gh` PR/dispatch → HTTP 403.  
+Branch ist gepusht — PR manuell öffnen, dann baut CI das Windows-EXE:
 
-PR-Erstellung via API/ManagePullRequest in dieser Umgebung **403 / Tool fehlt** — Branch ist gepusht:
 https://github.com/deadfrogface/Karrierekrake/compare/main...cursor/p0-profile-cv-dialogs-d85b
 
-## Done-Gate Status
+Linux-Agent-Smoke (Clean-Profile + Golden-CV + Dialog-Clamp) ist **ALL_OK** unter  
+`docs/project/p0_profile_cv_dialogs_smoke.json` und `/opt/cursor/artifacts/p0_profile_cv_dialogs_smoke.json`.
+
+### Done-Gate Status
 
 | Kriterium | Status |
 |-----------|--------|
@@ -67,8 +71,8 @@ https://github.com/deadfrogface/Karrierekrake/compare/main...cursor/p0-profile-c
 | Sprachen / Skills / Software / WB getrennt | ✅ |
 | Kein unaufgefordertes Berufsziel | ✅ (Empty + Anti-Resurrection; Vorschläge nur Button) |
 | Werte editier-/löschbar + Restart | ✅ |
-| Windows EXE neu gebaut | ⏳ CI `windows-smoke` |
-| Full clean-profile Smoke evidenced | ✅ Linux-Agent; Windows = CI |
+| Windows EXE neu gebaut | ⏳ wartet auf PR / workflow_dispatch (403 hier) |
+| Full clean-profile Smoke evidenced | ✅ Linux-Agent; Windows = nach PR-CI |
 
 ## Nicht getestet (explizit)
 
