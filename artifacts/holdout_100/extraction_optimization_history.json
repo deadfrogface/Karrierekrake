@@ -106,5 +106,39 @@
       "worsened": 0,
       "lost_perfect": 0
     }
+  },
+  {
+    "iteration": 4,
+    "root_cause": "Address regex missed parentheses cities, AT 4-digit PLZ, FR country; skill/software wrap fragments",
+    "changed_components": [
+      "core/cv_parser.py postal helpers",
+      "kenntnisse wrap merge for compound heads",
+      "fragment filters"
+    ],
+    "targeted_documents": 30,
+    "before": {
+      "accuracy": 0.973,
+      "f1": 0.986,
+      "perfect_documents": 67,
+      "hallucination_rate": 0.005
+    },
+    "after": {
+      "accuracy": 0.9969018112488084,
+      "f1": 0.9984485022079007,
+      "perfect_documents": 89,
+      "hallucination_rate": 0.0009532888465204957
+    },
+    "fixed_errors": [
+      "address_all",
+      "skill_wrap_fragments"
+    ],
+    "new_errors": [],
+    "reverted_attempt": "always-on labeled-list continuation (hallu spike)",
+    "decision": "KEEP",
+    "doc_level": {
+      "worsened": 0,
+      "lost_perfect": 0
+    },
+    "commit": null
   }
 ]

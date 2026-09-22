@@ -75,6 +75,10 @@ artifacts/holdout_100/**
 !artifacts/holdout_100/iter1_section_boundary_results.json
 !artifacts/holdout_100/iter2_category_cleanup_results.json
 !artifacts/holdout_100/iter3_werkzeuge_results.json
+!artifacts/holdout_100/final_per_document_results.json
+!artifacts/holdout_100/final_pipeline_comparison.json
+!artifacts/holdout_100/final_c1_fallback_analysis.json
+!artifacts/holdout_100/iter4_address_wrap_results.json
 private/cvs/
 private/cvs/**
 !private/cvs/README.md

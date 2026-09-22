@@ -32,7 +32,10 @@ Disponentin bei Firma Beispiel
 """
     parsed = parse_cv_text(text)
     assert "lena.winterfeld@example.com" in parsed["emails"]
-    assert any("Excel" in s for s in parsed["skills"])
+    # Tools listed under a bare "Skills" heading are classified as software when
+    # they match known product tokens (Excel/Outlook/SAP).
+    tools = " ".join([*parsed["skills"], *parsed["software"]])
+    assert "Excel" in tools
     assert not any("Master" in str(e) for e in parsed["education"])
 
 

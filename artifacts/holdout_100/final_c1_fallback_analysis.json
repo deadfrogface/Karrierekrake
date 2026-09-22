@@ -1,0 +1,24 @@
+{
+  "routing_old_definition": "languages empty OR education empty OR work_experience empty",
+  "n_routed_after_det_improvements": 0,
+  "note": "Current DET fills languages+education+work on all 100 corpus docs; old thin-routing never fires.",
+  "DET_global": {
+    "field_accuracy": 0.9969018112488084,
+    "f1": 0.9984485022079007,
+    "precision": 0.9990446620492,
+    "recall": 0.9978530534351145,
+    "hallucination_rate": 0.0009532888465204957,
+    "perfect_documents": 89
+  },
+  "C1_global_frozen_preds_rescored_v2": {
+    "field_accuracy": 0.5477682811016145,
+    "f1": 0.7078169100503129,
+    "precision": 0.7154552220292731,
+    "recall": 0.7003399708596406,
+    "hallucination_rate": 0.21652421652421652,
+    "perfect_documents": 0
+  },
+  "recommendation": "DISABLE_C1_FALLBACK",
+  "reason": "No documents trigger DET-thin routing after section/address fixes; DET F1 far above frozen C1 globally.",
+  "phi_role": "OPTIONAL / unused by default \u2014 no Frozen or Post-Analysis global gain over improved DET"
+}

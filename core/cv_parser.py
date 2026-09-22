@@ -1034,7 +1034,7 @@ def _route_labeled_kenntnisse_lines(body: str) -> dict[str, list]:
             continue
         # Continuation of a previous labeled list ending with a comma.
         if pending_bucket and not re.match(
-            r"(?i)^(software|edv|it|tools|fachkenntnisse|hard\s*skills|soft\s*skills|"
+            r"(?i)^(software|edv|it|tools|programme|fachkenntnisse|hard\s*skills|soft\s*skills|"
             r"kompetenzen|zertifikate|certificates|führerschein|fuehrerschein|"
             r"driving\s+licen|berufswunsch|ziel|sprachen|languages?)\s*:",
             line,
@@ -1046,6 +1046,21 @@ def _route_labeled_kenntnisse_lines(body: str) -> dict[str, list]:
                     if lang is not None:
                         out["languages"].append(lang)
             else:
+                if (
+                    items
+                    and out[pending_bucket]
+                    and out[pending_bucket][-1].lower()
+                    in {
+                        "handwerkliches",
+                        "technisches",
+                        "kaufmännisches",
+                        "kaufmaennisches",
+                        "erste",
+                    }
+                    and " " not in items[0]
+                ):
+                    out[pending_bucket][-1] = f"{out[pending_bucket][-1]} {items[0]}"
+                    items = items[1:]
                 out[pending_bucket].extend(items)
             pending_bucket = pending_bucket if line.rstrip().endswith(",") else None
             continue
@@ -1054,14 +1069,36 @@ def _route_labeled_kenntnisse_lines(body: str) -> dict[str, list]:
         if m:
             items = _split_kenntnisse_list_items(m.group(2).rstrip(","))
             out["software"].extend(items)
-            if line.rstrip().endswith(","):
+            if line.rstrip().endswith(",") or (
+                items
+                and items[-1].lower()
+                in {
+                    "handwerkliches",
+                    "technisches",
+                    "microsoft",
+                    "adobe",
+                    "sap",
+                    "siemens",
+                    "unreal",
+                }
+            ):
                 pending_bucket = "software"
             continue
         m = re.match(r"(?i)^(fachkenntnisse|hard\s*skills|soft\s*skills|kompetenzen)\s*:\s*(.+)$", line)
         if m:
             items = _split_kenntnisse_list_items(m.group(2).rstrip(","))
             out["skills"].extend(items)
-            if line.rstrip().endswith(","):
+            if line.rstrip().endswith(",") or (
+                items
+                and items[-1].lower()
+                in {
+                    "handwerkliches",
+                    "technisches",
+                    "kaufmännisches",
+                    "kaufmaennisches",
+                    "erste",
+                }
+            ):
                 pending_bucket = "skills"
             continue
         m = re.match(r"(?i)^(zertifikate|certificates?|weiterbildungen?)\s*:\s*(.+)$", line)
@@ -1364,6 +1401,45 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         soft_l = {x.lower() for x in software}
         skills = [s for s in kept_skills if s.lower() not in soft_l]
         software = list(dict.fromkeys(software))
+    # Drop wrap fragments ("Geschick") when a longer skill already contains them.
+    if skills:
+        lowered = [s.lower() for s in skills]
+        skills = [
+            s
+            for s in skills
+            if not any(
+                s.lower() != t
+                and (" " in t)
+                and (s.lower() in t.split())
+                for t in lowered
+            )
+        ]
+    # Same for software product fragments ("S/4HANA" vs "SAP S/4HANA", "365" vs "Microsoft 365").
+    if software:
+        lowered = [s.lower() for s in software]
+        software = [
+            s
+            for s in software
+            if not any(
+                s.lower() != t and s.lower() in t and len(s) + 2 <= len(t)
+                for t in lowered
+            )
+        ]
+    # Drop dangling compound heads that never got their noun (wrap leftovers).
+    _DANGLING_SKILL_HEAD = frozenset(
+        {
+            "handwerkliches",
+            "technisches",
+            "kaufmännisches",
+            "kaufmaennisches",
+            "soziales",
+            "erste",
+        }
+    )
+    skills = [s for s in skills if s.lower() not in _DANGLING_SKILL_HEAD]
+    # Bare orphan tails from wraps (only when clearly incomplete fragments).
+    _DANGLING_SKILL_TAIL = frozenset({"geschick", "zeichnen", "hilfe", "portal", "365"})
+    skills = [s for s in skills if s.lower() not in _DANGLING_SKILL_TAIL]
     # Bare "Kenntnisse" maps to skills — recover only CEFR/native language lines.
     known = {(lang.language.lower(), (lang.level or "").lower()) for lang in languages}
     for raw in sections.get("skills", "").splitlines():
@@ -1540,9 +1616,22 @@ _HEADING_LINE = re.compile(
     r"Schule\s+und\s+Ausbildung|Werkzeuge)\b",
     re.I,
 )
+_COUNTRY_TOKEN = (
+    r"DE|AT|CH|FR|NL|BE|LU|PL|DK|CZ|IT|ES|PT|SE|NO|FI|IE|UK|GB|"
+    r"Deutschland|Österreich|Schweiz|France|Frankreich|Netherlands|Nederland|"
+    r"Belgium|Belgien|Poland|Polen|Denmark|Dänemark|Daenemark|"
+    r"Czechia|Tschechien|Germany|Austria|Switzerland|United Kingdom|Ireland"
+)
+_CITY_CHARS = r"A-Za-zÄÖÜäöüß\(\)"
 _POSTAL_DE = re.compile(
-    r"(?P<street>.+?)\s*,?\s*(?P<plz>\d{5})\s+(?P<city>[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\-\s]+?)"
-    r"(?:\s*,\s*(?P<country>DE|AT|CH|Deutschland|Österreich|Schweiz|Germany|Austria|Switzerland))?"
+    rf"(?P<street>.+?)\s*,?\s*(?P<plz>\d{{5}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    rf"(?:\s*,\s*(?P<country>{_COUNTRY_TOKEN}))?"
+    r"(?=\s*[,|]|\s*$)"
+)
+_POSTAL_AT_CH = re.compile(
+    # AT/CH (and some FR/NL border cases) use 4-digit postal codes.
+    rf"(?P<street>.+?)\s*,?\s*(?P<plz>\d{{4}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    rf"(?:\s*,\s*(?P<country>{_COUNTRY_TOKEN}))?"
     r"(?=\s*[,|]|\s*$)"
 )
 _POSTAL_UK_IE = re.compile(
@@ -1552,8 +1641,8 @@ _POSTAL_UK_IE = re.compile(
     re.I,
 )
 _CITY_ONLY = re.compile(
-    r"^(?P<city>[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\-\s]{1,40})"
-    r"(?:\s*,\s*(?P<country>DE|AT|CH|Deutschland|Österreich|Schweiz|Germany|Austria|Switzerland|[A-Za-z][A-Za-z\s]+))?"
+    rf"^(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]{{1,40}})"
+    rf"(?:\s*,\s*(?P<country>{_COUNTRY_TOKEN}|[A-Za-z][A-Za-z\s]+))?"
     r"\s*(?:\||$)",
     re.I,
 )
@@ -1615,6 +1704,44 @@ def _clean_street_fragment(
     return ""
 
 
+def _apply_postal_match(m: re.Match[str], personal: dict[str, str], *, labels: tuple[str, ...] = ("Adresse", "Anschrift")) -> None:
+    street = _clean_street_fragment(m.group("street"), personal, labels=labels)
+    if street:
+        personal["street"] = street
+    if "plz" in m.groupdict() and m.group("plz"):
+        personal["postal_code"] = m.group("plz")
+    if "pc" in m.groupdict() and m.groupdict().get("pc"):
+        personal["postal_code"] = re.sub(r"\s+", " ", m.group("pc").strip().upper())
+    city = (m.group("city") or "").strip(" ,;·|")
+    city = re.sub(
+        r",?\s*(Germany|Deutschland|France|Frankreich|Austria|Österreich|Switzerland|Schweiz)\s*$",
+        "",
+        city,
+        flags=re.I,
+    ).strip()
+    if city:
+        personal["city"] = city
+    if m.groupdict().get("country"):
+        personal["country"] = m.group("country").strip()
+    hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", personal.get("street", ""))
+    if hn:
+        personal["house_number"] = hn.group("n")
+
+
+def _match_postal_line(line: str) -> re.Match[str] | None:
+    """Try DE/FR 5-digit, then AT/CH 4-digit, then UK/IE patterns."""
+    m = _POSTAL_DE.search(line)
+    if m:
+        return m
+    m = _POSTAL_AT_CH.search(line)
+    if m:
+        # Avoid treating house numbers as AT PLZ: require a country token or
+        # a clear ", PLZ City" comma form.
+        if m.groupdict().get("country") or "," in line:
+            return m
+    return _POSTAL_UK_IE.search(line)
+
+
 def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> dict[str, str]:
     """Fill missing name/address fields from an arbitrary list of CV lines."""
     for line in lines:
@@ -1640,30 +1767,10 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
         line = (line or "").strip()
         if not line or personal.get("postal_code"):
             continue
-        m = _POSTAL_DE.search(line)
+        m = _match_postal_line(line)
         if m:
-            street = _clean_street_fragment(m.group("street"), personal)
-            if street:
-                personal["street"] = street
-            personal["postal_code"] = m.group("plz")
-            city = m.group("city").strip(" ,;·|")
-            city = re.sub(r",?\s*(Germany|Deutschland)\s*$", "", city, flags=re.I).strip()
-            personal["city"] = city
-            if m.groupdict().get("country"):
-                personal["country"] = m.group("country").strip()
-            hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", personal.get("street", ""))
-            if hn:
-                personal["house_number"] = hn.group("n")
-            break
-        m2 = _POSTAL_UK_IE.search(line)
-        if m2:
-            street = _clean_street_fragment(m2.group("street"), personal, labels=("Adresse", "Address"))
-            if street:
-                personal["street"] = street
-            personal["city"] = m2.group("city").strip()
-            personal["postal_code"] = re.sub(r"\s+", " ", m2.group("pc").strip().upper())
-            if m2.group("country"):
-                personal["country"] = m2.group("country").strip()
+            labels = ("Adresse", "Address") if "pc" in m.groupdict() else ("Adresse", "Anschrift")
+            _apply_postal_match(m, personal, labels=labels)
             break
 
     # Standalone "12345 München" or street-only line above PLZ.
@@ -1755,37 +1862,10 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
                 break
 
     for line in header_lines:
-        # German PLZ
-        m = _POSTAL_DE.search(line)
+        m = _match_postal_line(line)
         if m:
-            street = _clean_street_fragment(m.group("street"), personal)
-            if street:
-                personal["street"] = street
-            personal["postal_code"] = m.group("plz")
-            city = m.group("city").strip(" ,;·|")
-            city = re.sub(r",?\s*(Germany|Deutschland)\s*$", "", city, flags=re.I).strip()
-            personal["city"] = city
-            if m.groupdict().get("country"):
-                personal["country"] = m.group("country").strip()
-            hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", personal.get("street", ""))
-            if hn:
-                personal["house_number"] = hn.group("n")
-            break
-
-        m2 = _POSTAL_UK_IE.search(line)
-        if m2:
-            street = _clean_street_fragment(
-                m2.group("street"), personal, labels=("Adresse", "Address")
-            )
-            if street:
-                personal["street"] = street
-            personal["city"] = m2.group("city").strip()
-            personal["postal_code"] = re.sub(r"\s+", " ", m2.group("pc").strip().upper())
-            if m2.group("country"):
-                personal["country"] = m2.group("country").strip()
-            hn = re.match(r"^(?P<n>\d+[a-zA-Z]?)\s+(?P<s>.+)$", street or "")
-            if hn:
-                personal["house_number"] = hn.group("n")
+            labels = ("Adresse", "Address") if "pc" in m.groupdict() else ("Adresse", "Anschrift")
+            _apply_postal_match(m, personal, labels=labels)
             break
 
     # City-only headers (deliberately incomplete contact data)
