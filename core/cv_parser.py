@@ -261,6 +261,12 @@ _KNOWN_LANGUAGES = frozenset(
         "gebärdensprache",
         "gebaerdensprache",
         "dgs",
+        # Additional real languages seen in DE CVs / minority languages
+        "romanes",
+        "romani",
+        "romanesisch",
+        "sinti",
+        "romanes-sintitikes",
     }
 )
 
@@ -1120,9 +1126,13 @@ _KNOWN_SOFTWARE_TOKENS = (
 
     "office", "excel", "word", "outlook", "powerpoint", "sap", "datev", "jira",
     "confluence", "salesforce", "teams", "windows", "linux", "photoshop",
-    "illustrator", "indesign", "autocad", "python", "java", "sql", "powerpoint",
+    "illustrator", "indesign", "adobe indesign", "autocad", "python", "java", "sql", "powerpoint",
     "power bi", "powerbi", "tableau", "zendesk", "hubspot", "navision", "odoo",
     "za office", "upway", "sage", "lexware", "tobii", "chrome", "firefox",
+    # Common tools in DE skilled-trade / tech CVs (secondary signal only)
+    "figma", "docker", "blender", "qgis", "protool", "davinci resolve", "davinci",
+    "unreal engine", "unreal engine 5", "siemens tia portal",
+    "tia portal", "s/4hana", "sap s/4hana",
 )
 
 
@@ -1331,6 +1341,29 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         software = [s for s in software if not _looks_like_soft_skill(s)]
         if relocated:
             skills = list(dict.fromkeys([*skills, *relocated]))
+    # Inverse: tools/languages that leaked into skills after labeled-block parsing
+    # (e.g. wrapped "Software: …,\nFigma" also seen by _parse_skills).
+    if skills:
+        kept_skills: list[str] = []
+        for s in skills:
+            lang_entry = _parse_one_language(s)
+            if lang_entry is not None:
+                key = (lang_entry.language.lower(), (lang_entry.level or "").lower())
+                known_keys = {(lang.language.lower(), (lang.level or "").lower()) for lang in languages}
+                if key not in known_keys:
+                    languages.append(lang_entry)
+                continue
+            # Certificate fragments like bare "Sicherheitsunterweisung" — drop from
+            # skills; the full "Role - Sicherheitsunterweisung" line is routed separately.
+            if re.search(r"(?i)sicherheitsunterweisung", s) and len(s.split()) <= 4:
+                continue
+            if _looks_like_software(s) or classify_non_language_token(s) == "software":
+                software.append(s)
+                continue
+            kept_skills.append(s)
+        soft_l = {x.lower() for x in software}
+        skills = [s for s in kept_skills if s.lower() not in soft_l]
+        software = list(dict.fromkeys(software))
     # Bare "Kenntnisse" maps to skills — recover only CEFR/native language lines.
     known = {(lang.language.lower(), (lang.level or "").lower()) for lang in languages}
     for raw in sections.get("skills", "").splitlines():
@@ -1367,9 +1400,14 @@ def parse_cv_text(text: str) -> dict[str, Any]:
     if routed_cert_names:
         existing = {c.name.lower() for c in certificates}
         for name in routed_cert_names:
-            if name.lower() not in existing:
-                certificates.append(CertificateEntry(name=name))
-                existing.add(name.lower())
+            nl = name.lower()
+            if nl in existing:
+                continue
+            # Skip fragments already covered by a longer certificate name.
+            if any(nl in ex or ex in nl for ex in existing if len(ex) >= 8):
+                continue
+            certificates.append(CertificateEntry(name=name))
+            existing.add(nl)
     edu_body = sections.get("education", "")
     exp_body = sections.get("experience", "")
     combo = sections.get("education_and_experience", "")

@@ -73,6 +73,7 @@ artifacts/holdout_100/**
 !artifacts/holdout_100/extraction_error_pareto.json
 !artifacts/holdout_100/extraction_optimization_history.json
 !artifacts/holdout_100/iter1_section_boundary_results.json
+!artifacts/holdout_100/iter2_category_cleanup_results.json
 private/cvs/
 private/cvs/**
 !private/cvs/README.md

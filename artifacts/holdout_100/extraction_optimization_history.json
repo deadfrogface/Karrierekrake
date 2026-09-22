@@ -36,6 +36,42 @@
       "improved": 74
     },
     "decision": "KEEP",
+    "commit": "e1f9700"
+  },
+  {
+    "iteration": 2,
+    "root_cause": "Software/language tokens left in skills after wrapped Kenntnisse labels; Romanes missing from language set; Sicherheitsunterweisung skill extras",
+    "changed_components": [
+      "core/cv_parser.py (_KNOWN_LANGUAGES, _KNOWN_SOFTWARE_TOKENS, post-routing skills cleanup)"
+    ],
+    "targeted_documents": 50,
+    "before": {
+      "accuracy": 0.887,
+      "f1": 0.94,
+      "perfect_documents": 39,
+      "hallucination_rate": 0.017
+    },
+    "after": {
+      "accuracy": 0.902,
+      "f1": 0.949,
+      "perfect_documents": 57,
+      "hallucination_rate": 0.003
+    },
+    "fixed_errors": [
+      "skills_software_misroute",
+      "romanes_language",
+      "skill_extra_sicherheitsunterweisung"
+    ],
+    "new_errors": [],
+    "performance_delta": {
+      "note": "DET still ~0.01s"
+    },
+    "doc_level": {
+      "lost_perfect": 0,
+      "worsened": 0,
+      "perfect_delta": 18
+    },
+    "decision": "KEEP",
     "commit": null
   }
 ]
