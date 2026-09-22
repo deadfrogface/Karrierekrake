@@ -1,9 +1,9 @@
 # Abschlussbericht — Local-first Geo + Google Calendar (PR #54)
 
 **Branch:** `cursor/local-first-calendar-geo-d85b`  
-**Aktualisiert:** 2026-09-22T00:10:00+00:00  
-**HEAD:** `d6c4214` (Abschlussbericht + Smoke-HOME-Fix)  
-**Windows Smoke Nachweis-Commit:** `f1d2c08` (run `35668828432`)
+**Aktualisiert:** 2026-09-22T00:50:15+00:00  
+**HEAD:** `cd67fbc`  
+**Windows Smoke Nachweis-Commit:** `cd67fbc` (run `35670758748`)  
 
 ## 1. Zielbild (erfüllt)
 
@@ -76,13 +76,13 @@ Native PE-Build auf diesem Linux-Agenten nicht möglich. Nachweis über GitHub A
 | Feld | Wert |
 |------|------|
 | Workflow | `windows-smoke.yml` |
-| Run | https://github.com/deadfrogface/Karrierekrake/actions/runs/35668828432 |
-| Head SHA | `f1d2c08e19cf23ac5249533027de5c49d1423a1b` |
+| Run | https://github.com/deadfrogface/Karrierekrake/actions/runs/35670758748 |
+| Head SHA | `cd67fbc40036c7e8a3bfb5f27f3fc260e97c38f6` |
 | Conclusion | **success** (`qt-smoke` + `build-and-exe-smoke`) |
 | Artifact | `Karrierekrake-Windows-Smoke` |
 | EXE-Pfad (Artifact) | `Karrierekrake.exe` |
-| Größe | 216843306 Bytes |
-| SHA-256 | `f8c54190204841bc0fade6dd6c5f9209d5d56fffac972974e35dc5bb8f00f049` |
+| Größe | 216845112 Bytes |
+| SHA-256 | `f2c9544e95c7a7f46c5dafda85ee256fe70bd21e6fd784ff65e5a00a5f7e45e0` |
 | Content-Gate | **passed**, hit_count=0 |
 | Isolierter LOCALAPPDATA-Smoke | **SMOKE_TEST_OK** (pages=8) |
 | Gates im Job | Privacy-Scan, PyInstaller onefile, Production content gate, isolierter EXE-Smoke, Legacy-DB-Migration, Reset-Check |
