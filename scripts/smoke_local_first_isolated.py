@@ -28,8 +28,10 @@ def main() -> int:
     cfg_dir.mkdir()
     os.environ["KARRIEREKRAKE_GEO_DATA_DIR"] = str(base / "geo_active")
     # Isolate from any host developer profile / LOCALAPPDATA leftovers.
+    old_home = os.environ.get("HOME")
     os.environ["LOCALAPPDATA"] = str(base / "LocalAppData")
     os.environ["APPDATA"] = str(base / "AppData")
+    # Do not override HOME — breaks git credential insteadOf / gh auth.
     report: dict = {"base": str(base), "steps": []}
 
     def step(name: str, ok: bool, detail: str = "") -> None:

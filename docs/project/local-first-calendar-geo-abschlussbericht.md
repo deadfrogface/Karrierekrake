@@ -38,7 +38,7 @@ python -m pytest -m "not network" --timeout=120 -q --tb=line
 | Vor Fix (`--timeout=60`) | `/tmp/full-pytest4.log` | 5 failed, 4585 passed, 21 skipped |
 | Nach Brand/Distance-Fix | `/tmp/full-pytest5.log` | 2 failed (Guenther-Timeout + Abschlussbericht-Casing), 4588 passed |
 | Re-Run nach Stabilisierung | `/tmp/full-pytest6.log` | 1 failed (Abschlussbericht enthielt noch verbotene Schreibweise), 4589 passed — behoben, siehe Lauf 7 |
-| Final | `/tmp/full-pytest7.log` | *(nach Docs-Fix)* |
+| Final | `/tmp/full-pytest7.log` | **4590 passed**, 21 skipped, 2 deselected in 1066.55s |
 
 PR#54-Regressionen behoben:
 - Brand-Schreibweise auf kanonisches `Karrierekrake` vereinheitlicht
@@ -55,7 +55,7 @@ python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
 |------|------|
 | Pfad | `/workspace/dist/Karrierekrake` |
 | Größe | 271103448 Bytes |
-| SHA-256 | `61d29b03fef452207d4bf7d6609b95806e5bdbb4cb4e9fa684987c71f9890306` |
+| SHA-256 | `f8c54190204841bc0fade6dd6c5f9209d5d56fffac972974e35dc5bb8f00f049` |
 | Content-Scan | `python scripts/scan_release_artifact.py --exe dist/Karrierekrake --dist dist --fail-on-empty` → **OK, 0 forbidden hits** (4042 paths) |
 | Isolierter EXE-Smoke | `LOCALAPPDATA=<empty> QT_QPA_PLATFORM=offscreen KARRIEREKRAKE_SMOKE_TEST=1 ./dist/Karrierekrake` → **SMOKE_TEST_OK** |
 
@@ -76,13 +76,13 @@ Native PE-Build auf diesem Linux-Agenten nicht möglich. Nachweis über GitHub A
 | Feld | Wert |
 |------|------|
 | Workflow | `windows-smoke.yml` |
-| Run | https://github.com/deadfrogface/Karrierekrake/actions/runs/35667530488 |
-| Head SHA | `6562e89b0e8b32c290cb0c52e86608e380b614d7` |
+| Run | https://github.com/deadfrogface/Karrierekrake/actions/runs/35668828432 |
+| Head SHA | `f1d2c08e19cf23ac5249533027de5c49d1423a1b` |
 | Conclusion | **success** (`qt-smoke` + `build-and-exe-smoke`) |
 | Artifact | `Karrierekrake-Windows-Smoke` |
 | EXE-Pfad (Artifact) | `Karrierekrake.exe` |
-| Größe | 216845026 Bytes |
-| SHA-256 | `cb6fd173ae2207db492ac6214fd7053cf3128db6bfe5ab93dc63e5f25d6aa441` |
+| Größe | 216843306 Bytes |
+| SHA-256 | `f8c54190204841bc0fade6dd6c5f9209d5d56fffac972974e35dc5bb8f00f049` |
 | Content-Gate | **passed**, hit_count=0 |
 | Isolierter LOCALAPPDATA-Smoke | **SMOKE_TEST_OK** (pages=8) |
 | Gates im Job | Privacy-Scan, PyInstaller onefile, Production content gate, isolierter EXE-Smoke, Legacy-DB-Migration, Reset-Check |
