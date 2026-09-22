@@ -85,20 +85,28 @@ jobs:
           pip install -r requirements.txt
       - name: CV corpus script
         run: python scripts/run_cv_corpus.py | Tee-Object -FilePath cv_corpus_matrix.txt
+      - name: CV Sollwerte corpus (10 PDFs, production path)
+        run: python scripts/run_cv_sollwerte_corpus.py | Tee-Object -FilePath cv_sollwerte_matrix.txt
       - name: CV corpus pytest
-        run: python -m pytest -q tests/test_cv_corpus.py tests/test_cv_parser_generic.py tests/test_cv_sections.py
+        run: python -m pytest -q tests/test_cv_corpus.py tests/test_cv_parser_generic.py tests/test_cv_sections.py tests/test_cv_sollwerte_corpus.py tests/test_p0_profile_cv_dialogs.py tests/test_cv_title_before_date.py
       - name: Upload corpus matrix
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cv-corpus-matrix
-          path: cv_corpus_matrix.txt
+          path: |
+            cv_corpus_matrix.txt
+            cv_sollwerte_matrix.txt
       - name: Summary
         if: always()
         shell: pwsh
         run: |
           Add-Content $env:GITHUB_STEP_SUMMARY "## cv-regression`n"
           if (Test-Path cv_corpus_matrix.txt) { Get-Content cv_corpus_matrix.txt | Add-Content $env:GITHUB_STEP_SUMMARY }
+          if (Test-Path cv_sollwerte_matrix.txt) {
+            Add-Content $env:GITHUB_STEP_SUMMARY "`n### Sollwerte`n"
+            Get-Content cv_sollwerte_matrix.txt | Add-Content $env:GITHUB_STEP_SUMMARY
+          }
 
   database-migration-tests:
     name: database-migration-tests

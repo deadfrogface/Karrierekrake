@@ -304,17 +304,23 @@ class SectionEditDrawer(QDialog):
         super().__init__(parent)
         self.setWindowTitle(title)
         self.setModal(True)
-        self.setMinimumWidth(480)
-        self.setMaximumWidth(560)
+        self.setMinimumWidth(420)
+        self.setMaximumWidth(720)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 16)
         layout.setSpacing(12)
         self.title_label = QLabel(title)
         self.title_label.setObjectName("PageTitle")
+        self.title_label.setWordWrap(True)
         layout.addWidget(self.title_label)
         self._host = QVBoxLayout()
         self._host.setContentsMargins(0, 0, 0, 0)
-        layout.addLayout(self._host, stretch=1)
+        from desktop.widgets.dialog_geometry import wrap_dialog_body
+
+        self._scroll_host = QWidget()
+        self._scroll_host.setLayout(self._host)
+        self._scroll = wrap_dialog_body(self._scroll_host)
+        layout.addWidget(self._scroll, stretch=1)
         buttons = QHBoxLayout()
         buttons.addStretch()
         self.cancel_btn = QPushButton()
@@ -331,6 +337,7 @@ class SectionEditDrawer(QDialog):
     def set_texts(self, *, title: str, save: str, cancel: str) -> None:
         self.setWindowTitle(title)
         self.title_label.setText(title)
+        self.title_label.setToolTip(title)
         self.save_btn.setText(save)
         self.cancel_btn.setText(cancel)
         set_accessible_name(self.save_btn, save)
@@ -342,6 +349,11 @@ class SectionEditDrawer(QDialog):
         self._content = content
         content.setVisible(True)
         self._host.addWidget(content)
+        from desktop.widgets.dialog_geometry import fit_dialog_to_screen
+
+        fit_dialog_to_screen(self, preferred_width=560, preferred_height=640)
+        self.save_btn.setDefault(True)
+        self.save_btn.setAutoDefault(True)
         return int(self.exec())
 
     def take_content(self) -> QWidget | None:

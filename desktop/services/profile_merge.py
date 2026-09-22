@@ -318,6 +318,9 @@ def filter_parsed_for_import(parsed: dict[str, Any]) -> dict[str, Any]:
 
     Missing sections stay empty lists/dicts so merge keeps manual data and
     replace only clears prior CV-sourced values — never invents replacements.
+
+    Non-section uncertain markers (e.g. ``languages_reclassified``) must not
+    wipe correctly classified data — reclassified tokens are already routed.
     """
     out = dict(parsed)
     conf = dict(parsed.get("confidence") or {})
@@ -332,10 +335,15 @@ def filter_parsed_for_import(parsed: dict[str, Any]) -> dict[str, Any]:
         "skills",
     )
     for key in section_keys:
+        # Only wipe when *this section* is uncertain/low — not sibling markers.
         if conf.get(key) == "low" or key in uncertain:
             out[key] = []
     if conf.get("personal") == "low" or "personal" in uncertain:
         out["personal"] = {}
+    # Surface reclassified / unclear tokens for import review UI (never silent).
+    unclear = list(parsed.get("uncertain_items") or [])
+    if unclear:
+        out["uncertain_items"] = unclear
     return out
 
 

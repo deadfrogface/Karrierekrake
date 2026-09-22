@@ -71,10 +71,17 @@ def _dash(value: object) -> str:
 
 
 def _entry_title(entry: object) -> str:
-    for attr in ("title", "degree", "name", "value"):
+    for attr in ("title", "qualification", "degree", "name", "value"):
         val = getattr(entry, attr, None)
         if val:
             return str(val)
+    if hasattr(entry, "label"):
+        try:
+            label = entry.label()
+            if label:
+                return str(label)
+        except Exception:
+            pass
     return "—"
 
 
@@ -89,6 +96,20 @@ def _entry_subtitle(entry: object) -> str:
     if start or end:
         parts.append(f"{start or '?'} – {end or tr('profile.present')}")
     return " · ".join(parts)
+
+
+def _entry_description(entry: object) -> str:
+    """Full experience/education body text — never silently truncate responsibilities."""
+    for attr in ("description", "summary"):
+        val = getattr(entry, attr, None)
+        if val and str(val).strip():
+            return str(val).strip()
+    resp = getattr(entry, "responsibilities", None)
+    if isinstance(resp, (list, tuple)):
+        lines = [str(x).strip() for x in resp if str(x).strip()]
+        if lines:
+            return "\n".join(f"• {line}" for line in lines)
+    return ""
 
 
 class ProfilePage(QWidget):
@@ -292,7 +313,7 @@ class ProfilePage(QWidget):
         self.card_experience.set_action_text(tr("profile.add"))
         self.card_education.set_title(tr("profile.education"))
         self.card_education.set_action_text(tr("profile.add"))
-        self.card_skills.set_title(tr("profile.card_skills"))
+        self.card_skills.set_title(tr("profile.card_skills_certs"))
         self.card_skills.set_action_text(tr("profile.edit"))
         self.card_languages.set_title(tr("profile.languages"))
         self.card_languages.set_action_text(tr("profile.edit"))
@@ -448,18 +469,24 @@ class ProfilePage(QWidget):
             block = QVBoxLayout()
             title = QLabel(_entry_title(entry))
             title.setObjectName("NextActionTitle")
+            title.setWordWrap(True)
+            title.setToolTip(_entry_title(entry))
             sub = QLabel(_entry_subtitle(entry))
             sub.setObjectName("KkHint")
-            desc = QLabel(_dash(getattr(entry, "description", "") or getattr(entry, "summary", "")))
+            sub.setWordWrap(True)
+            body = _entry_description(entry)
+            desc = QLabel(_dash(body) if body else "—")
             desc.setObjectName("PageSubtitle")
             desc.setWordWrap(True)
+            if body:
+                desc.setToolTip(body)
             wrap = QWidget()
             vl = QVBoxLayout(wrap)
             vl.setContentsMargins(0, 0, 0, 8)
             vl.setSpacing(2)
             vl.addWidget(title)
             vl.addWidget(sub)
-            if desc.text() != "—":
+            if body:
                 vl.addWidget(desc)
             self._exp_body.addWidget(wrap)
         if len(experiences) > self._exp_limit:
@@ -476,7 +503,7 @@ class ProfilePage(QWidget):
             if w is not None:
                 w.deleteLater()
         education = list(cfg.profile.qualifications.education or [])
-        for entry in education[:3]:
+        for entry in education[:8]:
             wrap = QWidget()
             vl = QVBoxLayout(wrap)
             vl.setContentsMargins(0, 0, 0, 8)
@@ -495,9 +522,20 @@ class ProfilePage(QWidget):
         self._clear_layout(self._skills_row)
         skills = list(cfg.profile.qualifications.skill_values() or [])
         software = list(cfg.profile.qualifications.software_values() or [])
-        chips = [str(s) for s in (skills + software) if str(s).strip()]
-        for chip in chips[: self._skill_limit]:
-            self._skills_row.addWidget(TagChip(chip, kind="neutral"))
+        certs = list(cfg.profile.qualifications.certificates or [])
+        chips: list[tuple[str, str]] = []
+        for s in skills:
+            if str(s).strip():
+                chips.append((str(s), "neutral"))
+        for s in software:
+            if str(s).strip():
+                chips.append((str(s), "wanted"))
+        for cert in certs:
+            title = _entry_title(cert)
+            if title and title != "—":
+                chips.append((title, "more"))
+        for chip, kind in chips[: self._skill_limit]:
+            self._skills_row.addWidget(TagChip(chip, kind=kind))
         remaining = len(chips) - self._skill_limit
         if remaining > 0:
             self._skills_row.addWidget(TagChip(tr("profile.more_tags", n=remaining), kind="more"))
@@ -511,15 +549,14 @@ class ProfilePage(QWidget):
             if w is not None:
                 w.deleteLater()
         langs = list(cfg.profile.qualifications.languages or [])
-        certs = list(cfg.profile.qualifications.certificates or [])
-        for lang in langs[:6]:
+        for lang in langs[:8]:
             name = getattr(lang, "language", None) or getattr(lang, "name", None) or getattr(lang, "value", "")
             level = getattr(lang, "level", None) or getattr(lang, "proficiency", "") or ""
             text = f"{name}" + (f" ({level})" if level else "")
-            self._lang_body.addWidget(TagChip(str(text), kind="neutral"))
-        for cert in certs[:4]:
-            self._lang_body.addWidget(TagChip(_entry_title(cert), kind="wanted"))
-        if not langs and not certs:
+            chip = TagChip(str(text), kind="neutral")
+            chip.setToolTip(str(text))
+            self._lang_body.addWidget(chip)
+        if not langs:
             empty = QLabel(tr("profile.empty_section"))
             empty.setObjectName("KkHint")
             self._lang_body.addWidget(empty)
@@ -576,17 +613,18 @@ class ProfilePage(QWidget):
         suggestions = suggest_job_titles(
             parsed, existing_desired=desired, existing_alternative=[]
         )
-        merged_d = list(
+        # Only propose desired titles — never silently prefill exclusions.
+        # User must add Ausschlüsse explicitly (or confirm via a future picker).
+        proposed = list(
             dict.fromkeys(
-                desired + suggestions.get("desired", []) + suggestions.get("alternative", [])
+                suggestions.get("desired", []) + suggestions.get("alternative", [])
             )
         )
+        if not proposed:
+            QMessageBox.information(self, tr("app.name"), tr("msg.titles_suggested"))
+            return
+        merged_d = list(dict.fromkeys(desired + proposed))
         self.career.desired_titles.set_items(merged_d)
-        unwanted = list(self.career.unwanted_titles.get_items())
-        if not unwanted:
-            self.career.unwanted_titles.set_items(
-                suggestions.get("exclusions_suggested", [])
-            )
         QMessageBox.information(self, tr("app.name"), tr("msg.titles_suggested"))
 
     def select_cv(self) -> None:
@@ -703,9 +741,27 @@ class ProfilePage(QWidget):
         p = cfg.profile
         legacy = legacy_profile_search_ui_enabled(cfg.settings)
         # Persist career goals when legacy OR when user edited Berufsziel drawer.
-        # Never push into SearchIntent unless legacy combined UI is on.
+        # Never push into SearchIntent unless legacy combined UI is on — except
+        # when clearing/editing Berufsziel: deleted profile values must not stay
+        # in SearchIntent (matching / hard filters).
         if legacy or self._career_persist:
             self.career.save_into(p.jobs)
+            from core.search_intent import (
+                apply_clear_jobs_edit_to_intent,
+                empty_search_intent,
+                parse_search_intent,
+            )
+
+            raw_intent = getattr(p, "search_intent", None)
+            if raw_intent is None:
+                intent = empty_search_intent()
+            elif hasattr(raw_intent, "model_dump"):
+                intent = raw_intent
+            elif isinstance(raw_intent, dict):
+                intent = parse_search_intent(raw_intent)
+            else:
+                intent = empty_search_intent()
+            p.search_intent = apply_clear_jobs_edit_to_intent(intent, p.jobs)
         self.experience.save_into(p.qualifications)
         self.education.save_into(p.qualifications)
         self.qualifications.save_into(p.qualifications)

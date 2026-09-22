@@ -26,6 +26,12 @@ from core.config import (
 )
 from desktop.i18n import tr
 from desktop.services.profile_merge import SOURCE_MANUAL
+from desktop.widgets.dialog_geometry import fit_dialog_to_screen
+
+
+def _run_entry_dialog(dlg: QDialog, *, preferred_width: int = 480, preferred_height: int = 420) -> int:
+    fit_dialog_to_screen(dlg, preferred_width=preferred_width, preferred_height=preferred_height)
+    return int(dlg.exec())
 
 
 class _EntryListEditor(QWidget):
@@ -139,7 +145,7 @@ class LanguageEditor(_EntryListEditor):
         layout = QVBoxLayout(dlg)
         layout.addLayout(form)
         layout.addWidget(buttons)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
+        if _run_entry_dialog(dlg, preferred_width=420, preferred_height=260) != QDialog.DialogCode.Accepted:
             return None
         if not lang.text().strip():
             return None
@@ -182,7 +188,7 @@ class EducationEditor(_EntryListEditor):
         layout = QVBoxLayout(dlg)
         layout.addLayout(form)
         layout.addWidget(buttons)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
+        if _run_entry_dialog(dlg, preferred_width=520, preferred_height=420) != QDialog.DialogCode.Accepted:
             return None
         entry = EducationEntry(**{k: w.text().strip() for k, w in fields.items()})
         entry.source = (existing.source if existing and existing.source else SOURCE_MANUAL)
@@ -213,6 +219,7 @@ class ExperienceEditor(_EntryListEditor):
         if existing:
             resp.setPlainText("\n".join(existing.responsibilities))
         resp.setPlaceholderText("Eine Aufgabe pro Zeile")
+        resp.setMinimumHeight(120)
         form = QFormLayout()
         form.addRow("Position", title)
         form.addRow("Firma", company)
@@ -228,7 +235,7 @@ class ExperienceEditor(_EntryListEditor):
         layout = QVBoxLayout(dlg)
         layout.addLayout(form)
         layout.addWidget(buttons)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
+        if _run_entry_dialog(dlg, preferred_width=560, preferred_height=560) != QDialog.DialogCode.Accepted:
             return None
         responsibilities = [
             ln.strip(" -•\t")
@@ -277,7 +284,7 @@ class CertificateEditor(_EntryListEditor):
         layout = QVBoxLayout(dlg)
         layout.addLayout(form)
         layout.addWidget(buttons)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
+        if _run_entry_dialog(dlg, preferred_width=480, preferred_height=300) != QDialog.DialogCode.Accepted:
             return None
         if not name.text().strip():
             return None

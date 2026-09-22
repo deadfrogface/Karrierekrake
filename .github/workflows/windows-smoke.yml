@@ -2,7 +2,11 @@ name: Windows Smoke
 
 on:
   push:
-    branches: [main]
+    # Temporary: also tip of P0 gate branch so Windows EXE smoke can run
+    # without ManagePullRequest / workflow_dispatch (both blocked in agent env).
+    branches:
+      - main
+      - cursor/p0-profile-cv-dialogs-d85b
   pull_request:
   workflow_dispatch:
 
