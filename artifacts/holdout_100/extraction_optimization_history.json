@@ -101,7 +101,7 @@
     ],
     "new_errors": [],
     "decision": "KEEP",
-    "commit": null,
+    "commit": "fbc1c7b",
     "doc_level": {
       "worsened": 0,
       "lost_perfect": 0
