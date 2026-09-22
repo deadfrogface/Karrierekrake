@@ -97,65 +97,56 @@ def evaluate() -> dict[str, Any]:
 
     # Prefer holdout_scorer_v2 when structure is compatible
     try:
-        from holdout_scorer_v2 import aggregate_v2, evaluate_doc_v2, perfect_document
+        from holdout_scorer_v2 import (
+            aggregate_v2,
+            build_evidence_for_doc,
+            evaluate_doc_v2,
+            perfect_document,
+        )
 
         results = []
+        all_facts: list[Any] = []
+        perfect_n = 0
         for doc, expected in sorted(gt.items()):
             pred = preds.get(doc)
             if pred is None:
-                # try stem match
                 stem = Path(doc).stem
-                pred = next(
-                    (
-                        preds[k]
-                        for k in preds
-                        if Path(k).stem == stem
-                    ),
-                    None,
-                )
+                pred = next((preds[k] for k in preds if Path(k).stem == stem), None)
             if pred is None:
-                results.append(
-                    {
-                        "document": doc,
-                        "error": "missing_prediction",
-                    }
-                )
+                results.append({"document": doc, "error": "missing_prediction"})
                 continue
-            # Scorer V2 expects evidence text; use empty if not provided in GT
             text = ""
             if isinstance(expected, dict):
                 text = str(expected.get("_evidence_text") or expected.get("raw_text") or "")
-            facts = evaluate_doc_v2(doc, expected, pred, text)
+            # Prefer reading CV text from sealed cvs/ when available
+            cv_path = HOLDOUT / "cvs" / doc
+            if cv_path.is_file():
+                try:
+                    from core.cv_extract import extract_text
+
+                    text = extract_text(cv_path) or text
+                except Exception:  # noqa: BLE001
+                    pass
+            evidence = build_evidence_for_doc(doc, expected if isinstance(expected, dict) else {}, text)
+            facts = evaluate_doc_v2(doc, expected if isinstance(expected, dict) else {}, pred, evidence)
+            all_facts.extend(facts)
+            is_perf = perfect_document(facts)
+            if is_perf:
+                perfect_n += 1
             results.append(
                 {
                     "document": doc,
-                    "facts": [f.__dict__ if hasattr(f, "__dict__") else f for f in facts]
-                    if not isinstance(facts, dict)
-                    else facts,
-                    "perfect": perfect_document(facts)
-                    if not isinstance(facts, dict)
-                    else False,
+                    "perfect": is_perf,
+                    "n_facts": len(facts),
+                    "n_errors": sum(1 for f in facts if f.status != "correct"),
                 }
             )
-        # Try aggregate if API matches
         try:
-            # rebuild FactResult list path used by holdout_100 runner
-            from holdout_scorer_v2 import FactResult
-
-            all_facts: list[Any] = []
-            for doc, expected in sorted(gt.items()):
-                pred = preds.get(doc) or preds.get(Path(doc).name)
-                if pred is None:
-                    continue
-                text = ""
-                if isinstance(expected, dict):
-                    text = str(
-                        expected.get("_evidence_text") or expected.get("raw_text") or ""
-                    )
-                all_facts.extend(evaluate_doc_v2(doc, expected, pred, text))
             summary = aggregate_v2(all_facts)
+            if isinstance(summary, dict):
+                summary["perfect_documents"] = perfect_n
         except Exception as exc:  # noqa: BLE001
-            summary = {"aggregate_error": str(exc), "n_docs": len(results)}
+            summary = {"aggregate_error": str(exc), "n_docs": len(results), "perfect_documents": perfect_n}
 
         report = {
             "phase": "B",
