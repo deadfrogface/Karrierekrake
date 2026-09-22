@@ -157,6 +157,179 @@ def _normalize_lang_level(level: str, meta: str = "", full_line: str = "") -> st
     return level
 
 
+# Real spoken/written languages only (DE + EN names). Never treat software,
+# soft skills, or Weiterbildungen as Sprachen.
+_KNOWN_LANGUAGES = frozenset(
+    {
+        "deutsch",
+        "englisch",
+        "französisch",
+        "franzoesisch",
+        "spanisch",
+        "italienisch",
+        "portugiesisch",
+        "niederländisch",
+        "niederlaendisch",
+        "holländisch",
+        "hollaendisch",
+        "russisch",
+        "polnisch",
+        "tschechisch",
+        "slowakisch",
+        "ungarisch",
+        "rumänisch",
+        "rumaenisch",
+        "bulgarisch",
+        "griechisch",
+        "türkisch",
+        "tuerkisch",
+        "arabisch",
+        "hebräisch",
+        "hebraeisch",
+        "chinesisch",
+        "japanisch",
+        "koreanisch",
+        "schwedisch",
+        "norwegisch",
+        "dänisch",
+        "daenisch",
+        "finnisch",
+        "isländisch",
+        "islaendisch",
+        "kroatisch",
+        "serbisch",
+        "bosnisch",
+        "slowenisch",
+        "ukrainisch",
+        "weißrussisch",
+        "weissrussisch",
+        "litauisch",
+        "lettisch",
+        "estnisch",
+        "albanisch",
+        "vietnamesisch",
+        "thailändisch",
+        "thailaendisch",
+        "hindi",
+        "persisch",
+        "farsi",
+        "kurdisch",
+        "latein",
+        "german",
+        "english",
+        "french",
+        "spanish",
+        "italian",
+        "portuguese",
+        "dutch",
+        "russian",
+        "polish",
+        "czech",
+        "slovak",
+        "hungarian",
+        "romanian",
+        "bulgarian",
+        "greek",
+        "turkish",
+        "arabic",
+        "hebrew",
+        "chinese",
+        "mandarin",
+        "cantonese",
+        "japanese",
+        "korean",
+        "swedish",
+        "norwegian",
+        "danish",
+        "finnish",
+        "icelandic",
+        "croatian",
+        "serbian",
+        "bosnian",
+        "slovenian",
+        "ukrainian",
+        "belarusian",
+        "lithuanian",
+        "latvian",
+        "estonian",
+        "albanian",
+        "vietnamese",
+        "thai",
+        "persian",
+        "latin",
+        "sign language",
+        "gebärdensprache",
+        "gebaerdensprache",
+        "dgs",
+    }
+)
+
+
+def is_known_language_name(name: str) -> bool:
+    """True only for real language names — not skills, tools, or certificates."""
+    raw = (name or "").strip()
+    if not raw:
+        return False
+    # Strip trailing CEFR / native markers for the name check.
+    raw = re.sub(
+        r"\s*(?:[–\-—|:]\s*)?(?:[ABC][12]|Muttersprache|Muttersprachler(?:in)?|"
+        r"native(?:\s+speaker)?)\s*$",
+        "",
+        raw,
+        flags=re.I,
+    ).strip(" -–—|():")
+    low = raw.lower()
+    if low in _KNOWN_LANGUAGES:
+        return True
+    # Multi-word: "American Sign Language", "British English"
+    tokens = re.split(r"[\s/]+", low)
+    if any(tok in _KNOWN_LANGUAGES for tok in tokens):
+        return True
+    return False
+
+
+def classify_non_language_token(value: str) -> str:
+    """Route a non-language token to software | skill | certificate | uncertain."""
+    text = (value or "").strip()
+    if not text:
+        return "uncertain"
+    if _looks_like_software(text):
+        return "software"
+    low = text.lower()
+    # Continuing education / compliance / methodology → certificates
+    # (checked before soft-skill compounds so "Lean Management" is Weiterbildung).
+    if any(
+        hint in low
+        for hint in (
+            "lean",
+            "six sigma",
+            "datenschutz",
+            "dsgvo",
+            "gdpr",
+            "zertifikat",
+            "certificate",
+            "weiterbildung",
+            "schulung",
+            "seminar",
+            "ihk",
+            "iso ",
+            "first aid",
+            "ersthelfer",
+            "staplerschein",
+            "beschwerdemanagement",
+        )
+    ):
+        return "certificate"
+    if _looks_like_soft_skill(text):
+        return "skill"
+    # Single product-ish tokens without language markers → software guess.
+    if _known_software_token_match(low) or re.search(r"\b(bi|erp|crm|sap|datev)\b", low):
+        return "software"
+    if len(text) >= 4:
+        return "certificate"
+    return "uncertain"
+
+
 def _parse_one_language(chunk: str) -> LanguageEntry | None:
     line = chunk.strip().strip("•-–—*· ")
     if not line or _is_heading_value(line):
@@ -177,7 +350,21 @@ def _parse_one_language(chunk: str) -> LanguageEntry | None:
         # "C1" splits as lang=C body=1 — reject single-letter fake languages.
         if re.fullmatch(r"[ABC]", lang, re.I) and re.fullmatch(r"[12]", body or ""):
             return None
+        # Multi-word non-languages ("Lean Management", "Power BI") must not
+        # collapse to the first token ("Lean", "Power").
+        if body and not re.fullmatch(
+            r"(?:[ABC][12]|Muttersprache|Muttersprachler(?:in)?|native(?:\s+speaker)?|"
+            r"fließend|fliesend|gut|grundkenntnisse|verhandlungssicher).*$",
+            body,
+            re.I,
+        ):
+            # Likely "Name Level" only when body is a level phrase; otherwise
+            # treat the whole line as a candidate below.
+            if not is_known_language_name(lang):
+                return None
         if lang and not _is_heading_value(lang):
+            if not is_known_language_name(lang):
+                return None
             level = _normalize_lang_level(body, full_line=line)
             if level or body:
                 return LanguageEntry(language=lang, level=level)
@@ -187,11 +374,15 @@ def _parse_one_language(chunk: str) -> LanguageEntry | None:
     level_m = _LEVEL.search(line)
     if level_m:
         lang = line[: level_m.start()].strip(" -–—|():")
-        if lang and not _is_heading_value(lang):
+        if lang and not _is_heading_value(lang) and is_known_language_name(lang):
             return LanguageEntry(
                 language=lang,
                 level=_normalize_lang_level(level_m.group(1), full_line=line),
             )
+    # Whole-line known language without separators.
+    if is_known_language_name(line) and not _LEVEL.search(line):
+        # Prefer canonical first token capitalization from the line itself.
+        return LanguageEntry(language=line.strip(), level="")
     return None
 
 
@@ -861,6 +1052,7 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         "phones": [],
         "personal": {},
         "uncertain": [],
+        "uncertain_items": [],
         "confidence": {},
     }
     if not text.strip():
@@ -889,10 +1081,42 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         personal["phone"] = phones[0]
 
     languages = _parse_languages(sections.get("languages", ""))
+    # Reclassify non-language lines that lived under Sprachen (Weiterbildung,
+    # software, soft skills) — never leave Lean Management / Power BI as a language.
+    relocated_certs: list[CertificateEntry] = []
+    relocated_skills: list[str] = []
+    relocated_software: list[str] = []
+    uncertain_tokens: list[str] = []
+    for raw in (sections.get("languages") or "").splitlines():
+        line = _normalize_bullet(raw)
+        if not line or _is_heading_value(line) or _is_heading(line):
+            continue
+        if _parse_one_language(line) is not None:
+            continue
+        # Ampersand language pairs already handled; skip orphan CEFR.
+        if re.fullmatch(r"[ABC][12]", line, re.I):
+            continue
+        kind = classify_non_language_token(line)
+        if kind == "software":
+            relocated_software.append(line)
+        elif kind == "skill":
+            relocated_skills.append(line)
+        elif kind == "certificate":
+            relocated_certs.append(CertificateEntry(name=line))
+        else:
+            uncertain_tokens.append(line)
+            # Still keep visible as certificate candidate rather than silent drop.
+            relocated_certs.append(CertificateEntry(name=line))
+    # Drop any residual non-language entries that slipped past chunk parsing.
+    languages = [lang for lang in languages if is_known_language_name(lang.language)]
     software = [
         s for s in _parse_software(sections.get("software", "")) if not _is_heading_value(s)
     ]
+    if relocated_software:
+        software = list(dict.fromkeys([*software, *relocated_software]))
     skills = _parse_skills(sections.get("skills", ""))
+    if relocated_skills:
+        skills = list(dict.fromkeys([*skills, *relocated_skills]))
     # If the CV only has EDV/IT/"Weitere Kenntnisse" (mapped to software), recover
     # non-tool competency lines as skills — never invent skills not present.
     if not skills:
@@ -944,6 +1168,12 @@ def parse_cv_text(text: str) -> dict[str, Any]:
     certificates = [
         c for c in _parse_certificates(sections.get("certificates", "")) if not _is_heading_value(c.name)
     ]
+    if relocated_certs:
+        existing = {c.name.lower() for c in certificates}
+        for c in relocated_certs:
+            if c.name.lower() not in existing:
+                certificates.append(c)
+                existing.add(c.name.lower())
     driving = _parse_driving(sections.get("license", ""))
     # Licence lines parked under Kenntnisse/Skills still count as driving licences.
     for raw in sections.get("skills", "").splitlines():
@@ -993,6 +1223,12 @@ def parse_cv_text(text: str) -> dict[str, Any]:
     uncertain: list[str] = []
     if driving and not all(re.fullmatch(r"[A-Z0-9]{1,3}", d) for d in driving):
         uncertain.append("driving_license")
+    if uncertain_tokens:
+        uncertain.append("languages_reclassified")
+        # Keep raw tokens visible for import review — never silent drop.
+        result_uncertain_items = list(dict.fromkeys(uncertain_tokens))
+    else:
+        result_uncertain_items = []
 
     # Semantic confidence downgrades
     confidence = {
@@ -1056,6 +1292,7 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         "phones": list(dict.fromkeys(p.strip() for p in phones)),
         "personal": personal,
         "uncertain": uncertain,
+        "uncertain_items": result_uncertain_items,
         "confidence": confidence,
     }
     return result

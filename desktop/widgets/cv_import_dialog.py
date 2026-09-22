@@ -34,6 +34,7 @@ from desktop.services.profile_merge import (
     summarize_incoming,
     sync_application_summaries,
 )
+from desktop.widgets.dialog_geometry import fit_dialog_to_screen
 
 
 class CvImportDialog(QDialog):
@@ -46,7 +47,7 @@ class CvImportDialog(QDialog):
     ) -> None:
         super().__init__(parent)
         self.setWindowTitle(tr("cv_import.title"))
-        self.resize(760, 640)
+        self.setMinimumSize(480, 360)
         self.existing = existing
         self.application = application
         self.incoming: QualificationsConfig | None = None
@@ -89,7 +90,9 @@ class CvImportDialog(QDialog):
         buttons.rejected.connect(self.reject)
 
         layout = QVBoxLayout(self)
-        layout.addWidget(QLabel(tr("cv_import.intro")))
+        intro = QLabel(tr("cv_import.intro"))
+        intro.setWordWrap(True)
+        layout.addWidget(intro)
         layout.addWidget(mode_box)
         layout.addWidget(QLabel(tr("cv_import.detected")))
         layout.addWidget(self.preview, 1)
@@ -121,6 +124,7 @@ class CvImportDialog(QDialog):
         except Exception as exc:  # noqa: BLE001
             QMessageBox.warning(self, tr("profile.cv"), f"{tr('cv_import.read_error')}\n{exc}")
             self.preview.setPlainText(str(exc))
+        fit_dialog_to_screen(self, preferred_width=760, preferred_height=640)
 
     def _current_mode(self) -> ImportMode:
         return "replace" if self.mode_replace.isChecked() else "merge"
@@ -170,6 +174,11 @@ class CvImportDialog(QDialog):
                 if status in {"Nicht erkannt", "Im Dokument nicht gefunden"}:
                     status = tr("cv_import.not_detected")
                 lines.append(f"• {label}: {status}")
+        unclear = list((self.parsed or {}).get("uncertain_items") or [])
+        if unclear:
+            lines.append("")
+            lines.append(f"=== {tr('cv_import.review_items')} ===")
+            lines.extend(f"• {item}" for item in unclear)
         lines.append("")
 
         for key, label in [

@@ -853,7 +853,10 @@ def save_config(
     if intent is None or (hasattr(intent, "is_empty") and intent.is_empty()):
         ensure_search_intent(config.profile)
         intent = config.profile.search_intent
-    # If jobs still carry titles the intent lacks (UI-only edit), copy them up.
+    # If jobs still carry titles the intent lacks (UI-only / wizard edit), copy
+    # them up. Do NOT lift an empty jobs list over a populated SearchIntent —
+    # Profile Berufsziel clears call apply_clear_jobs_edit_to_intent explicitly
+    # before save so intent is already empty when jobs are cleared.
     if hasattr(intent, "model_dump") and (
         list(jobs.desired_titles or []) != list(intent.target_roles or [])
         or list(jobs.unwanted_titles or []) != list(intent.excluded_roles or [])
@@ -862,8 +865,17 @@ def save_config(
             intent = apply_clear_jobs_edit_to_intent(intent, jobs)
             config.profile.search_intent = intent
     if hasattr(intent, "model_dump"):
-        if not intent.is_empty():
-            sync_legacy_jobs_from_intent(intent, config.profile.jobs)
+        # Dual-write for legacy readers. Anti-resurrection: never copy intent
+        # roles into an explicitly empty jobs list (deleted Berufsziel/Ausschluss).
+        jobs_has_roles = bool(
+            list(jobs.desired_titles or []) or list(jobs.unwanted_titles or [])
+        )
+        intent_has_roles = bool(
+            list(intent.target_roles or []) or list(intent.excluded_roles or [])
+        )
+        if jobs_has_roles or not intent_has_roles:
+            if not intent.is_empty() or jobs_has_roles:
+                sync_legacy_jobs_from_intent(intent, config.profile.jobs)
         intent_payload = intent.model_dump(mode="json")
     elif isinstance(intent, dict):
         intent_payload = intent
