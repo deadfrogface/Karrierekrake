@@ -1,5 +1,9 @@
 # PHI_EXTRACTION_FINAL_REPORT
 
+> Historical evaluation artifact.  
+> Not part of the current production extraction path.  
+> Production CV import is DET-only; see `ADR_REMOVE_PHI_FROM_CV_EXTRACTION.md`.
+
 **Branch:** `cursor/phi-extract-99-d85b`  
 **Date:** 2026-09-22  
 **Rule:** OLD ∪ NEW requirements; no ground-truth hacks; no test deletion.

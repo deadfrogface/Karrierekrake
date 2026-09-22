@@ -1,5 +1,9 @@
 # HOLDOUT_100_PIPELINE_COMPARISON
 
+> Historical evaluation artifact.  
+> Not part of the current production extraction path.  
+> Production winner: DET `parse_cv_text` (see `CV_EXTRACTION_PRODUCTION_PIPELINE.md`).
+
 ## Frozen holdout (unseen, first evaluation)
 
 | Rank | Pipeline | Strict/Field Acc | F1 | Hallu | Wrong Cat | Perfect | Avg s | Crit Docs | Quality* |

@@ -10,7 +10,7 @@ On the authoritative Sollwerte corpus:
 | Mode | Perfect docs | Field accuracy | Hallucinations |
 |------|--------------|----------------|----------------|
 | Deterministic + verify/repair | **10/10** | **1.000** | **0** |
-| + PHI_EXTRACT (temp=0, split languages) | **10/10** | **1.000** | **0** |
+| + PHI_EXTRACT (temp=0, split languages) *(historical; removed from production)* | **10/10** | **1.000** | **0** |
 
 **No remaining field failures on this corpus.**  
 `artifacts/phi_extraction/training_candidates.jsonl` is therefore empty (header comment only).
