@@ -1,7 +1,7 @@
 # P0 Gate: Profil / CV-Import / Dialoge — Abschlussbericht
 
 **Branch:** `cursor/p0-profile-cv-dialogs-d85b`  
-**Commit:** `585d210c88f125cda6a28af8e57e98d6cb049cee`  
+**Commit:** `6f92b5b46ac69e6688784f9f21736a809e70d6ef`  
 **Datum:** 2026-09-22  
 **Scope:** Nur P0-Gate (kein PR-#54 Feature-Weiterbau). Jobsuche / Bewerbung / Gmail / Calendar **nicht** als getestet markiert.
 
