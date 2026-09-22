@@ -185,48 +185,85 @@ def import_cv_canonical(
     guenther_enabled: bool = False,
     manual_profile: dict[str, Any] | None = None,
     guenther_service: Any | None = None,
+    document_backend: str = "current",
+    split_phi_passes: bool = True,
 ) -> dict[str, Any]:
-    """Canonical CV import. Always runs deterministic parse; Phi when enabled."""
-    text = extract_text(path)
-    logger.info("CV import: path=%s chars=%d", path.name, len(text or ""))
+    """Canonical CV import. Always runs deterministic parse; Phi when enabled.
+
+    Pipeline: document extract → parse → optional PHI_EXTRACT (split passes) →
+    reconcile → evidence/verify/targeted repair. PHI_WRITE is never invoked here.
+    """
+    if document_backend and document_backend != "current":
+        from core.cv_document_backends import extract_with_backend
+
+        try:
+            text = extract_with_backend(path, document_backend)
+        except Exception as exc:  # noqa: BLE001 — fall back to current
+            logger.debug("document backend %s failed: %s", document_backend, exc)
+            text = extract_text(path)
+            document_backend = f"current(fallback_from_{document_backend})"
+    else:
+        text = extract_text(path)
+        document_backend = "current"
+
+    logger.info("CV import: path=%s chars=%d backend=%s", path.name, len(text or ""), document_backend)
     parsed = parse_cv_text(text)
     parsed["source_path"] = str(path)
     parsed["raw_text_chars"] = len(text or "")
+    parsed["document_backend"] = document_backend
     parsed["intelligence_status"] = "deterministic_only"
     parsed["intelligence_notes"] = []
 
-    if not guenther_enabled:
-        return parsed
+    if guenther_enabled:
+        try:
+            if guenther_service is None:
+                from guenther.service import get_guenther_service
 
-    try:
-        if guenther_service is None:
-            from guenther.service import get_guenther_service
-
-            guenther_service = get_guenther_service(
-                enabled=True, model=PRODUCTION_MODEL_ID, refresh=False
-            )
-        env = guenther_service.suggest_cv_extract(text, manual_profile=manual_profile)
-        parsed["intelligence_provider_status"] = env.provider_status
-        parsed["intelligence_fallback_reason"] = env.fallback_reason
-        parsed["intelligence_safety_notes"] = list(env.safety_notes or [])
-        if not env.ok:
+                guenther_service = get_guenther_service(
+                    enabled=True, model=PRODUCTION_MODEL_ID, refresh=False
+                )
+            if split_phi_passes and callable(
+                getattr(type(guenther_service), "suggest_cv_extract_split", None)
+            ):
+                env = guenther_service.suggest_cv_extract_split(
+                    text, manual_profile=manual_profile
+                )
+            else:
+                env = guenther_service.suggest_cv_extract(
+                    text, manual_profile=manual_profile
+                )
+            parsed["intelligence_provider_status"] = env.provider_status
+            parsed["intelligence_fallback_reason"] = env.fallback_reason
+            parsed["intelligence_safety_notes"] = list(env.safety_notes or [])
+            if not env.ok:
+                parsed["intelligence_status"] = "GUENTHER_UNAVAILABLE"
+                parsed["intelligence_notes"] = list(env.safety_notes or []) + [
+                    env.fallback_reason or "guenther_unavailable"
+                ]
+            else:
+                suggestion = dict(env.suggestion or {})
+                suggestion["_model_id"] = env.model_id or PRODUCTION_MODEL_ID
+                parsed = reconcile_phi_into_parsed(parsed, suggestion, cv_text=text)
+                parsed["intelligence_status"] = "phi_invoked"
+                parsed["phi_invoked"] = True
+                parsed["phi_model_id"] = env.model_id or PRODUCTION_MODEL_ID
+        except Exception as exc:  # noqa: BLE001 — never fail import on AI errors
+            logger.debug("phi cv extract skipped: %s", type(exc).__name__)
             parsed["intelligence_status"] = "GUENTHER_UNAVAILABLE"
-            parsed["intelligence_notes"] = list(env.safety_notes or []) + [
-                env.fallback_reason or "guenther_unavailable"
+            parsed["intelligence_notes"] = [
+                "guenther_unavailable_runtime_error",
+                type(exc).__name__,
             ]
-            return parsed
-        suggestion = dict(env.suggestion or {})
-        suggestion["_model_id"] = env.model_id or PRODUCTION_MODEL_ID
-        parsed = reconcile_phi_into_parsed(parsed, suggestion, cv_text=text)
-        parsed["intelligence_status"] = "phi_invoked"
-        parsed["phi_invoked"] = True
-        parsed["phi_model_id"] = env.model_id or PRODUCTION_MODEL_ID
-        return parsed
-    except Exception as exc:  # noqa: BLE001 — never fail import on AI errors
-        logger.debug("phi cv extract skipped: %s", type(exc).__name__)
-        parsed["intelligence_status"] = "GUENTHER_UNAVAILABLE"
-        parsed["intelligence_notes"] = [
-            "guenther_unavailable_runtime_error",
-            type(exc).__name__,
-        ]
-        return parsed
+
+    # Always: evidence + verify + targeted repair (deterministic authority)
+    try:
+        from core.cv_verify_repair import apply_verify_repair_pipeline
+
+        parsed = apply_verify_repair_pipeline(parsed, text or "")
+    except Exception as exc:  # noqa: BLE001
+        logger.debug("verify/repair skipped: %s", type(exc).__name__)
+        notes = list(parsed.get("intelligence_notes") or [])
+        notes.append(f"verify_repair_error:{type(exc).__name__}")
+        parsed["intelligence_notes"] = notes
+
+    return parsed
