@@ -23,6 +23,10 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "tätigkeiten",
         "karriere",
         "erfahrung",
+        # Short standalone headings common in DE CVs (must end Kenntnisse blocks).
+        "stationen",
+        "werdegang",
+        "praxis",
     ),
     "education_and_experience": (
         "schul- und berufsausbildung und berufserfahrung",
@@ -36,6 +40,8 @@ HEADINGS: dict[str, tuple[str, ...]] = {
     ),
     "education": (
         "schul- und berufsausbildung",
+        "schule & ausbildung",
+        "schule und ausbildung",
         "academic background",
         "education & training",
         "education and training",
@@ -46,6 +52,7 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "schulbildung",
         "qualifikationen",
         "qualifikation",
+        "bildungsweg",
         "education",
         "studium",
         "schule",

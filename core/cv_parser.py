@@ -917,6 +917,21 @@ def _split_education_and_experience_body(body: str) -> tuple[str, str, str]:
 
 def _parse_skills(body: str) -> list[str]:
     skills: list[str] = []
+    # Employment / education lines that leaked into a Kenntnisse body.
+    _EMP_LEAK = re.compile(
+        r"(?i)^(?:"
+        r"\d{1,2}/\d{4}\s*[-–]"  # 01/2018 - …
+        r"|\d{4}\s*[-–]\s*(?:\d{4}|heute|ohne)"  # 2011 - 2014
+        r"|.+\|\s*.+\|\s*.+"  # date|role|company style
+        r")"
+    )
+    _NOISE_TOKEN = re.compile(
+        r"(?i)^(?:"
+        r"\d{1,2}"  # bare month
+        r"|\d{4}"  # bare year
+        r"|in|heute|praxis|bildungsweg|stationen|werdegang"
+        r")$"
+    )
     for raw in body.splitlines():
         line = _normalize_bullet(raw)
         if not line or _is_heading_value(line) or _is_heading(line):
@@ -937,24 +952,54 @@ def _parse_skills(body: str) -> list[str]:
         # Licence lines belong in driving_license, not skills.
         if _LICENCE_LINE.match(line):
             continue
+        # Reject employment/education leak lines entirely.
+        if _EMP_LEAK.match(line):
+            continue
+        if re.search(r"(?i)\b(gmbh| ug| ag| kg|e\.?\s*v\.?|mbh)\b", line) and re.search(
+            r"\d{4}", line
+        ):
+            continue
         # CEFR / native language lines under bare "Kenntnisse" belong in languages.
         if _LEVEL.search(line) and _parse_one_language(line) is not None:
             continue
         # "Deutsch: Muttersprache" style without relying solely on _LEVEL.
         if _parse_one_language(line) is not None:
             continue
-        parts = re.split(r"\s*[,;|/]\s*", line)
+        # Prefer semicolon/comma splits; keep "/" inside product names (S/4HANA)
+        # but still split role forms like "Praktikant/in" only when not a tool line.
+        if re.search(r"[,;|]", line):
+            parts = re.split(r"\s*[,;|]\s*", line)
+        elif re.search(r"(?i)\b(praktikant|aushilfe|mitarbeiter)/in\b", line):
+            parts = re.split(r"/", line)
+        else:
+            parts = [line]
         for part in parts:
             part = part.strip(" .")
-            if part and not _is_heading_value(part) and len(part) < 80:
-                if _LICENCE_LINE.match(part):
-                    continue
-                if _LEVEL.search(part) and _parse_one_language(part) is not None:
-                    continue
-                if _parse_one_language(part) is not None:
-                    continue
-                skills.append(part)
+            if not part or _is_heading_value(part) or len(part) >= 80:
+                continue
+            if _NOISE_TOKEN.match(part):
+                continue
+            if _LICENCE_LINE.match(part):
+                continue
+            if _LEVEL.search(part) and _parse_one_language(part) is not None:
+                continue
+            if _parse_one_language(part) is not None:
+                continue
+            # Company-like leftovers
+            if re.search(r"(?i)\b(gmbh| ug\b| ag\b| kg\b|e\.?\s*v\.?)\b", part):
+                continue
+            skills.append(part)
     return list(dict.fromkeys(skills))
+
+
+def _split_kenntnisse_list_items(payload: str) -> list[str]:
+    """Split labeled Kenntnisse payloads without breaking product slashes (S/4HANA)."""
+    parts: list[str] = []
+    for part in re.split(r"\s*[,;|]\s*", payload or ""):
+        part = part.strip(" .")
+        if part:
+            parts.append(part)
+    return parts
 
 
 def _route_labeled_kenntnisse_lines(body: str) -> dict[str, list]:
@@ -976,30 +1021,49 @@ def _route_labeled_kenntnisse_lines(body: str) -> dict[str, list]:
         "licenses": [],
         "target_role": [],
     }
+    pending_bucket: str | None = None
     for raw in (body or "").splitlines():
         line = _normalize_bullet(raw)
         if not line:
             continue
-        m = re.match(r"(?i)^(software|edv|it[- ]?kenntnisse|tools)\s*:\s*(.+)$", line)
+        # Continuation of a previous labeled list ending with a comma.
+        if pending_bucket and not re.match(
+            r"(?i)^(software|edv|it|tools|fachkenntnisse|hard\s*skills|soft\s*skills|"
+            r"kompetenzen|zertifikate|certificates|führerschein|fuehrerschein|"
+            r"driving\s+licen|berufswunsch|ziel|sprachen|languages?)\s*:",
+            line,
+        ):
+            items = _split_kenntnisse_list_items(line.rstrip(","))
+            if pending_bucket == "languages":
+                for item in items:
+                    lang = _parse_one_language(item)
+                    if lang is not None:
+                        out["languages"].append(lang)
+            else:
+                out[pending_bucket].extend(items)
+            pending_bucket = pending_bucket if line.rstrip().endswith(",") else None
+            continue
+        pending_bucket = None
+        m = re.match(r"(?i)^(software|edv|it[- ]?kenntnisse|tools|programme)\s*:\s*(.+)$", line)
         if m:
-            for part in re.split(r"\s*[,;|/]\s*", m.group(2)):
-                part = part.strip(" .")
-                if part:
-                    out["software"].append(part)
+            items = _split_kenntnisse_list_items(m.group(2).rstrip(","))
+            out["software"].extend(items)
+            if line.rstrip().endswith(","):
+                pending_bucket = "software"
             continue
         m = re.match(r"(?i)^(fachkenntnisse|hard\s*skills|soft\s*skills|kompetenzen)\s*:\s*(.+)$", line)
         if m:
-            for part in re.split(r"\s*[,;|/]\s*", m.group(2)):
-                part = part.strip(" .")
-                if part:
-                    out["skills"].append(part)
+            items = _split_kenntnisse_list_items(m.group(2).rstrip(","))
+            out["skills"].extend(items)
+            if line.rstrip().endswith(","):
+                pending_bucket = "skills"
             continue
         m = re.match(r"(?i)^(zertifikate|certificates?|weiterbildungen?)\s*:\s*(.+)$", line)
         if m:
-            for part in re.split(r"\s*[,;|/]\s*", m.group(2)):
-                part = part.strip(" .")
-                if part:
-                    out["certificates"].append(part)
+            items = _split_kenntnisse_list_items(m.group(2).rstrip(","))
+            out["certificates"].extend(items)
+            if line.rstrip().endswith(","):
+                pending_bucket = "certificates"
             continue
         m = re.match(r"(?i)^(führerschein|fuehrerschein|driving\s+licen[cs]e?)\s*:\s*(.+)$", line)
         if m:
@@ -1433,7 +1497,9 @@ _HEADING_LINE = re.compile(
     r"Academic Background|Language Proficiency|Certifications|Certificates|"
     r"Tech Stack|Tools|Systems|Additional Skills|Core Skills|Key Skills|"
     r"Capabilities|Praxiserfahrung|Fahrerlaubnis|Qualifikation|Weiterbildung|"
-    r"Persönliche Daten|Über mich|Profil|Zusammenfassung|Kontakt)\b",
+    r"Persönliche Daten|Über mich|Profil|Zusammenfassung|Kontakt|"
+    r"Praxis|Stationen|Werdegang|Bildungsweg|Schule\s*&\s*Ausbildung|"
+    r"Schule\s+und\s+Ausbildung)\b",
     re.I,
 )
 _POSTAL_DE = re.compile(

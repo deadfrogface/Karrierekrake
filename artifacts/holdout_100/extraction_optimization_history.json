@@ -1,0 +1,41 @@
+[
+  {
+    "iteration": 1,
+    "root_cause": "Kenntnisse section swallowed Praxis/Stationen/Werdegang/Bildungsweg/Schule&Ausbildung; software label split on slash; employment lines parsed as skills",
+    "changed_components": [
+      "core/cv_sections.py",
+      "core/cv_parser.py"
+    ],
+    "targeted_documents": 60,
+    "before": {
+      "accuracy": 0.698,
+      "f1": 0.822,
+      "perfect_documents": 17,
+      "hallucination_rate": 0.137
+    },
+    "after": {
+      "accuracy": 0.887,
+      "f1": 0.94,
+      "perfect_documents": 39,
+      "hallucination_rate": 0.017
+    },
+    "fixed_errors": [
+      "skills_contam_employment_leak",
+      "employment_entry_missing",
+      "education_entry_missing",
+      "partial software slash/continuation"
+    ],
+    "new_errors": [],
+    "performance_delta": {
+      "mean_s": 0.0095
+    },
+    "doc_level": {
+      "newly_perfect": 22,
+      "lost_perfect": 0,
+      "worsened": 0,
+      "improved": 74
+    },
+    "decision": "KEEP",
+    "commit": null
+  }
+]

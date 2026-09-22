@@ -70,6 +70,9 @@ artifacts/holdout_100/**
 !artifacts/holdout_100/scorer_v1_vs_v2_comparison.json
 !artifacts/holdout_100/c1_fallback_analysis_v2.json
 !artifacts/holdout_100/remaining_failures_v2_summary.json
+!artifacts/holdout_100/extraction_error_pareto.json
+!artifacts/holdout_100/extraction_optimization_history.json
+!artifacts/holdout_100/iter1_section_boundary_results.json
 private/cvs/
 private/cvs/**
 !private/cvs/README.md
