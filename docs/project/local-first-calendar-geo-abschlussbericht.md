@@ -1,8 +1,8 @@
 # Abschlussbericht — Local-first Geo + Google Calendar (PR #54)
 
 **Branch:** `cursor/local-first-calendar-geo-d85b`  
-**Aktualisiert:** 2026-09-22T00:50:15+00:00  
-**HEAD:** `cd67fbc`  
+**Aktualisiert:** 2026-09-22T01:28:29+00:00  
+**HEAD:** `c525d83`  
 **Windows Smoke Nachweis-Commit:** `cd67fbc` (run `35670758748`)  
 
 ## 1. Zielbild (erfüllt)
