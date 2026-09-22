@@ -1,0 +1,36 @@
+{
+  "reproduced": true,
+  "stdout_tail": [
+    "B4_phi_product_verify: acc=0.5074 F1=0.6732 hallu=0.3048 wcat=0.0253 perfect=0/100 crit_docs=99 quality=0.4029 avg_s=50.48800019830989",
+    "B5_phi_split: acc=0.5021 F1=0.6685 hallu=0.2998 wcat=0.0236 perfect=0/100 crit_docs=93 quality=0.4094 avg_s=45.81908183950989",
+    "C1_hybrid_uncertain: acc=0.5252 F1=0.6887 hallu=0.2808 wcat=0.0256 perfect=0/100 crit_docs=98 quality=0.4405 avg_s=21.13199583587004",
+    "C4_hybrid_fields: acc=0.5074 F1=0.6732 hallu=0.3048 wcat=0.0253 perfect=0/100 crit_docs=99 quality=0.4029 avg_s=50.48800019830989",
+    "C5_det_phi_verify: acc=0.5074 F1=0.6732 hallu=0.3048 wcat=0.0253 perfect=0/100 crit_docs=99 quality=0.4029 avg_s=50.48800019830989",
+    "D2_pymupdf4llm_det: acc=0.3050 F1=0.4674 hallu=0.0000 wcat=0.0000 perfect=0/100 crit_docs=0 quality=0.7683 avg_s=0.11068955620983616",
+    "D2_pymupdf4llm_phi: acc=0.4620 F1=0.6320 hallu=0.1590 wcat=0.0259 perfect=0/100 crit_docs=89 quality=0.5828 avg_s=51.3265386202099",
+    "RANKING:",
+    "  1. D2_pymupdf4llm_det acc=0.3050 F1=0.4674 hallu=0.0000 perfect=0 avg_s=0.11068955620983616 quality=0.7683",
+    "  2. B1_phi_only acc=0.4384 F1=0.6095 hallu=0.1184 perfect=0 avg_s=26.949804351520143 quality=0.6242",
+    "  3. D2_pymupdf4llm_phi acc=0.4620 F1=0.6320 hallu=0.1590 perfect=0 avg_s=51.3265386202099 quality=0.5828",
+    "  4. A3_det_evidence acc=0.4740 F1=0.6432 hallu=0.2311 perfect=0 avg_s=0.008984175969962961 quality=0.5040",
+    "  5. A4_det_verify_repair acc=0.4740 F1=0.6432 hallu=0.2311 perfect=0 avg_s=0.009239085089648142 quality=0.5040",
+    "  6. A1_det_raw acc=0.4740 F1=0.6432 hallu=0.2311 perfect=0 avg_s=0.009748081670259125 quality=0.5040",
+    "  7. A5_det_product acc=0.4740 F1=0.6432 hallu=0.2311 perfect=0 avg_s=0.010136824809596873 quality=0.5040",
+    "  8. C1_hybrid_uncertain acc=0.5252 F1=0.6887 hallu=0.2808 perfect=0 avg_s=21.13199583587004 quality=0.4405",
+    "  9. B5_phi_split acc=0.5021 F1=0.6685 hallu=0.2998 perfect=0 avg_s=45.81908183950989 quality=0.4094",
+    "  10. B4_phi_product_verify acc=0.5074 F1=0.6732 hallu=0.3048 perfect=0 avg_s=50.48800019830989 quality=0.4029",
+    "  11. C4_hybrid_fields acc=0.5074 F1=0.6732 hallu=0.3048 perfect=0 avg_s=50.48800019830989 quality=0.4029",
+    "  12. C5_det_phi_verify acc=0.5074 F1=0.6732 hallu=0.3048 perfect=0 avg_s=50.48800019830989 quality=0.4029"
+  ],
+  "A5": {
+    "acc": 0.474,
+    "f1": 0.6432,
+    "perfect": 0
+  },
+  "C1": {
+    "acc": 0.5252,
+    "f1": 0.6887,
+    "perfect": 0
+  },
+  "note": "Matches reported frozen scores within rounding."
+}

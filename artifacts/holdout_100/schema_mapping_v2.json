@@ -1,0 +1,93 @@
+{
+  "name.first_name": {
+    "parsed": "personal.first_name",
+    "profile": "personal.first_name",
+    "class": "A"
+  },
+  "name.last_name": {
+    "parsed": "personal.last_name",
+    "profile": "personal.last_name",
+    "class": "A"
+  },
+  "email": {
+    "parsed": "emails[0]",
+    "profile": "contact.email",
+    "class": "A"
+  },
+  "phone": {
+    "parsed": "phones[0]",
+    "profile": "contact.phone",
+    "class": "A"
+  },
+  "dob": {
+    "parsed": "personal.date_of_birth",
+    "profile": "personal.date_of_birth",
+    "class": "A"
+  },
+  "address.street": {
+    "parsed": "personal.street",
+    "profile": "address.street",
+    "class": "A"
+  },
+  "address.house_number": {
+    "parsed": "personal.house_number",
+    "profile": "address.house_number",
+    "class": "A"
+  },
+  "address.postal_code": {
+    "parsed": "personal.postal_code",
+    "profile": "address.postal_code",
+    "class": "A"
+  },
+  "address.city": {
+    "parsed": "personal.city",
+    "profile": "address.city",
+    "class": "A"
+  },
+  "address.country": {
+    "parsed": "personal.country",
+    "profile": "address.country",
+    "class": "A"
+  },
+  "languages": {
+    "parsed": "languages",
+    "profile": "qualifications.languages",
+    "class": "A"
+  },
+  "licenses": {
+    "parsed": "driving_license",
+    "profile": "qualifications.driving_license",
+    "class": "A"
+  },
+  "education": {
+    "parsed": "education",
+    "profile": "qualifications.education",
+    "class": "A"
+  },
+  "employment": {
+    "parsed": "work_experience",
+    "profile": "qualifications.work_experience",
+    "class": "A"
+  },
+  "skills": {
+    "parsed": "skills",
+    "profile": "qualifications.skills",
+    "class": "A"
+  },
+  "software": {
+    "parsed": "software",
+    "profile": "qualifications.software",
+    "class": "A"
+  },
+  "certificates": {
+    "parsed": "certificates",
+    "profile": "qualifications.certificates",
+    "class": "A"
+  },
+  "target_role": {
+    "parsed": "target_role",
+    "profile": "jobs.desired_titles (optional / SearchIntent)",
+    "class": "B",
+    "evidence_required": true
+  }
+}

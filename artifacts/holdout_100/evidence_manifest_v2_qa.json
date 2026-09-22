@@ -1,0 +1,81 @@
+{
+  "automatic_checks": {
+    "n_issues": 0,
+    "issues_sample": [],
+    "passed": true
+  },
+  "manual_sample": {
+    "normal_cvs_10": [
+      "HO_002_Forstwirt.pdf",
+      "HO_011_Kranführer.pdf",
+      "HO_012_Buchbinderin.pdf",
+      "HO_021_Mechatroniker.pdf",
+      "HO_022_Näherin.pdf",
+      "HO_031_Winzer.pdf",
+      "HO_032_Zerspanungsmechanikerin.pdf",
+      "HO_041_Immobilienkaufmann.pdf",
+      "HO_042_Journalistin.pdf",
+      "HO_051_Tatortreiniger.pdf"
+    ],
+    "complex_multicol_10": [
+      "HO_003_Notarfachangestellte.pdf",
+      "HO_004_Hafenlogistiker.pdf",
+      "HO_008_Bestatterin.pdf",
+      "HO_009_Schornsteinfeger.pdf",
+      "HO_010_Dolmetscherin.pdf",
+      "HO_013_Fachinformatiker_Systemintegration.pdf",
+      "HO_014_Floristin.pdf",
+      "HO_018_Justizfachwirt.pdf",
+      "HO_019_Koch.pdf",
+      "HO_020_Lokführerin.pdf"
+    ],
+    "missing_contact_all": [
+      "HO_012_Buchbinderin.pdf",
+      "HO_020_Lokführerin.pdf",
+      "HO_048_Produktdesignerin.pdf",
+      "HO_074_Übersetzerin.pdf",
+      "HO_083_Eisenbahner_im_Betriebsdienst.pdf"
+    ],
+    "uncertain_all": [
+      "HO_001_Bäckereifachverkäuferin.pdf",
+      "HO_024_Pflegehelferin.pdf",
+      "HO_047_Orthopädieschuhmacher.pdf",
+      "HO_070_Patentanwaltsfachangestellter.pdf",
+      "HO_093_Restauratorin.pdf"
+    ],
+    "two_page_all": [
+      "HO_009_Schornsteinfeger.pdf",
+      "HO_019_Koch.pdf",
+      "HO_029_Uhrmacher.pdf",
+      "HO_039_Geomatiker.pdf",
+      "HO_049_Revierjäger.pdf",
+      "HO_059_Disponent.pdf",
+      "HO_069_Operationstechnische_Assistentin.pdf",
+      "HO_079_Apotheker.pdf",
+      "HO_089_Lichtplanerin.pdf",
+      "HO_099_Zugbegleiterin.pdf"
+    ],
+    "c1_context_trap_docs": [
+      "HO_001_Bäckereifachverkäuferin.pdf",
+      "HO_020_Lokführerin.pdf",
+      "HO_039_Geomatiker.pdf",
+      "HO_058_CNC-Fräserin.pdf",
+      "HO_077_Yoga-Lehrer.pdf",
+      "HO_096_UX-Researcher.pdf"
+    ],
+    "c1_routed_subset_n": 64,
+    "c1_routed_sample_10": [
+      "HO_038_Fährkapitänin.pdf",
+      "HO_064_IT-Sicherheitsanalystin.pdf",
+      "HO_065_Konditor.pdf",
+      "HO_005_Zahntechnikerin.pdf",
+      "HO_093_Restauratorin.pdf",
+      "HO_007_Game-Designer.pdf",
+      "HO_085_Gärtnerin_Friedhof.pdf",
+      "HO_033_Archäologe.pdf",
+      "HO_060_E-Commerce-Managerin.pdf",
+      "HO_028_Tierpflegerin.pdf"
+    ],
+    "review_notes": "Manual spot-check: metadata excluded on all sampled docs; target_role only when Berufswunsch/Ziel label present; house numbers accepted via street+number co-occurrence; no filename-derived roles in evaluable set."
+  }
+}

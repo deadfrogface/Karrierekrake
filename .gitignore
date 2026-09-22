@@ -55,12 +55,27 @@ dist/
 *.spec.bak
 packaging/build/
 packaging/ms-playwright/
-artifacts/
+# Ignore artifact contents but allow Holdout Scorer V2 evaluation JSONs
+artifacts/*
+!artifacts/holdout_100/
+artifacts/holdout_100/**
+!artifacts/holdout_100/FROZEN_PREDICTIONS_INTEGRITY.json
+!artifacts/holdout_100/FROZEN_PREDICTIONS_INTEGRITY_VERIFY.json
+!artifacts/holdout_100/schema_mapping_v2.json
+!artifacts/holdout_100/evidence_manifest_v2.json
+!artifacts/holdout_100/evidence_manifest_v2_qa.json
+!artifacts/holdout_100/scorer_v1_reproduction.json
+!artifacts/holdout_100/scorer_v2_frozen_results.json
+!artifacts/holdout_100/scorer_v2_post_analysis_results.json
+!artifacts/holdout_100/scorer_v1_vs_v2_comparison.json
+!artifacts/holdout_100/c1_fallback_analysis_v2.json
+!artifacts/holdout_100/remaining_failures_v2_summary.json
 private/cvs/
 private/cvs/**
 !private/cvs/README.md
 data/geo_active/
 
 # Holdout unpack + local prediction artifacts (zip stays tracked from main)
-tests/holdout_100/
+tests/holdout_100/*
 !tests/holdout_100/README.md
+!tests/holdout_100/evaluation_manifest_v2.json

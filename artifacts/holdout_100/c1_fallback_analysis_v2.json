@@ -1,0 +1,214 @@
+{
+  "routing_definition": "DET languages empty OR education empty OR work_experience empty",
+  "n_routed": 64,
+  "routed_documents": [
+    "HO_038_Fährkapitänin.pdf",
+    "HO_064_IT-Sicherheitsanalystin.pdf",
+    "HO_065_Konditor.pdf",
+    "HO_005_Zahntechnikerin.pdf",
+    "HO_093_Restauratorin.pdf",
+    "HO_007_Game-Designer.pdf",
+    "HO_085_Gärtnerin_Friedhof.pdf",
+    "HO_033_Archäologe.pdf",
+    "HO_060_E-Commerce-Managerin.pdf",
+    "HO_028_Tierpflegerin.pdf",
+    "HO_022_Näherin.pdf",
+    "HO_042_Journalistin.pdf",
+    "HO_063_Hausmeister.pdf",
+    "HO_052_Umwelttechnikerin.pdf",
+    "HO_003_Notarfachangestellte.pdf",
+    "HO_015_Gerüstbauer.pdf",
+    "HO_087_Ingenieurin_Erneuerbare_Energien.pdf",
+    "HO_047_Orthopädieschuhmacher.pdf",
+    "HO_077_Yoga-Lehrer.pdf",
+    "HO_050_Schiffsmechanikerin.pdf",
+    "HO_072_Seiler.pdf",
+    "HO_046_Netzplanerin.pdf",
+    "HO_010_Dolmetscherin.pdf",
+    "HO_083_Eisenbahner_im_Betriebsdienst.pdf",
+    "HO_037_Erzieher.pdf",
+    "HO_088_Kaufmann_Spedition.pdf",
+    "HO_013_Fachinformatiker_Systemintegration.pdf",
+    "HO_082_Diätassistentin.pdf",
+    "HO_030_Veranstaltungstechnikerin.pdf",
+    "HO_095_Tischlerin.pdf",
+    "HO_091_Oberflächenbeschichterin.pdf",
+    "HO_045_Maskenbildner.pdf",
+    "HO_057_Bergbautechnologe.pdf",
+    "HO_027_Steuerfachangestellter.pdf",
+    "HO_032_Zerspanungsmechanikerin.pdf",
+    "HO_097_Veterinärassistentin.pdf",
+    "HO_043_Klavierbauer.pdf",
+    "HO_055_Zollanwärter.pdf",
+    "HO_023_Orgelbauer.pdf",
+    "HO_067_Maler_und_Lackierer.pdf",
+    "HO_012_Buchbinderin.pdf",
+    "HO_068_Nautischer_Offizier.pdf",
+    "HO_040_Hörakustikerin.pdf",
+    "HO_058_CNC-Fräserin.pdf",
+    "HO_048_Produktdesignerin.pdf",
+    "HO_020_Lokführerin.pdf",
+    "HO_035_Chemielaborant.pdf",
+    "HO_075_Verfahrensmechaniker.pdf",
+    "HO_053_Vermessungsingenieur.pdf",
+    "HO_008_Bestatterin.pdf",
+    "HO_018_Justizfachwirt.pdf",
+    "HO_025_Qualitätsprüfer.pdf",
+    "HO_073_Technischer_Produktmanager.pdf",
+    "HO_070_Patentanwaltsfachangestellter.pdf",
+    "HO_062_Goldschmiedin.pdf",
+    "HO_092_Postzusteller.pdf",
+    "HO_080_Binnenschifferin.pdf",
+    "HO_078_Zweiradmechatronikerin.pdf",
+    "HO_090_Milchtechnologe.pdf",
+    "HO_098_Webentwickler.pdf",
+    "HO_002_Forstwirt.pdf",
+    "HO_017_Industriekauffrau.pdf",
+    "HO_100_Quereinsteiger_Lager.pdf",
+    "HO_019_Koch.pdf"
+  ],
+  "DET_on_routed": {
+    "field_total": 2556,
+    "counts": {
+      "correct": 1087,
+      "missing": 791,
+      "hallucinated": 671,
+      "wrong": 7,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.42527386541471046,
+    "precision": 0.6158640226628895,
+    "recall": 0.5788072417465389,
+    "f1": 0.5967609113368103,
+    "hallucination_rate": 0.2625195618153365,
+    "missing_field_rate": 0.3094679186228482,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.2652582159624413,
+    "by_group": {
+      "personal": {
+        "correct": 192
+      },
+      "contact": {
+        "correct": 128
+      },
+      "address": {
+        "correct": 211,
+        "missing": 102,
+        "wrong": 7
+      },
+      "languages": {
+        "correct": 85,
+        "missing": 43
+      },
+      "licenses": {
+        "correct": 67
+      },
+      "education": {
+        "missing": 57,
+        "correct": 110,
+        "hallucinated": 2
+      },
+      "employment": {
+        "missing": 150,
+        "correct": 60
+      },
+      "skills": {
+        "correct": 205,
+        "hallucinated": 649,
+        "missing": 133
+      },
+      "software": {
+        "missing": 274
+      },
+      "certificates": {
+        "correct": 29,
+        "hallucinated": 20,
+        "missing": 31
+      },
+      "career_intent": {
+        "missing": 1
+      }
+    }
+  },
+  "C1_on_routed": {
+    "field_total": 3631,
+    "counts": {
+      "correct": 1639,
+      "missing": 1012,
+      "hallucinated": 973,
+      "wrong": 7,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.45139080143211235,
+    "precision": 0.6258113783886979,
+    "recall": 0.6182572614107884,
+    "f1": 0.622011385199241,
+    "hallucination_rate": 0.26797025612778846,
+    "missing_field_rate": 0.2787110988708345,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.26989809969705314,
+    "by_group": {
+      "personal": {
+        "correct": 192
+      },
+      "contact": {
+        "correct": 128
+      },
+      "address": {
+        "correct": 211,
+        "missing": 102,
+        "wrong": 7
+      },
+      "languages": {
+        "correct": 120,
+        "missing": 8
+      },
+      "licenses": {
+        "correct": 67
+      },
+      "education": {
+        "correct": 222,
+        "missing": 169,
+        "hallucinated": 41
+      },
+      "employment": {
+        "missing": 426,
+        "correct": 336,
+        "hallucinated": 37
+      },
+      "skills": {
+        "correct": 310,
+        "hallucinated": 867,
+        "missing": 28
+      },
+      "software": {
+        "missing": 274
+      },
+      "certificates": {
+        "correct": 53,
+        "hallucinated": 28,
+        "missing": 4
+      },
+      "career_intent": {
+        "missing": 1
+      }
+    }
+  },
+  "DET_global": {
+    "field_accuracy": 0.556563245823389,
+    "precision": 0.7340258105130626,
+    "recall": 0.6971599402092675,
+    "f1": 0.7151180619441888,
+    "hallucination_rate": 0.2
+  },
+  "C1_global": {
+    "field_accuracy": 0.5477682811016145,
+    "precision": 0.7154552220292731,
+    "recall": 0.7003399708596406,
+    "f1": 0.7078169100503129,
+    "hallucination_rate": 0.21652421652421652
+  },
+  "c1_f1_gain_on_routed": 0.025250473862430733,
+  "c1_hallu_delta_on_routed": 0.005450694312451987,
+  "recommendation": "KEEP_C1_FALLBACK"
+}

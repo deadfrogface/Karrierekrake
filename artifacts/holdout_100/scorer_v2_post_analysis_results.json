@@ -1,0 +1,75 @@
+{
+  "A5_det_product_v2": {
+    "metrics": {
+      "field_total": 3930,
+      "counts": {
+        "correct": 2743,
+        "missing": 642,
+        "hallucinated": 538,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.6979643765903308,
+      "precision": 0.8342457420924574,
+      "recall": 0.8103397341211226,
+      "f1": 0.8221189869623857,
+      "hallucination_rate": 0.13689567430025446,
+      "missing_field_rate": 0.1633587786259542,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.138676844783715,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 405,
+          "missing": 88,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 154,
+          "missing": 46
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "correct": 375,
+          "missing": 50,
+          "hallucinated": 2
+        },
+        "employment": {
+          "correct": 500,
+          "missing": 150
+        },
+        "skills": {
+          "correct": 367,
+          "hallucinated": 514,
+          "missing": 133
+        },
+        "software": {
+          "correct": 235,
+          "missing": 165,
+          "hallucinated": 9
+        },
+        "certificates": {
+          "correct": 90,
+          "missing": 10,
+          "hallucinated": 13
+        },
+        "career_intent": {
+          "correct": 14
+        }
+      },
+      "pipeline": "A5_det_product_v2",
+      "perfect_documents": 17,
+      "perfect_core_documents": 17,
+      "document_perfect_match_rate": 0.17,
+      "document_perfect_core_match_rate": 0.17
+    },
+    "n_errors": 1187
+  }
+}
