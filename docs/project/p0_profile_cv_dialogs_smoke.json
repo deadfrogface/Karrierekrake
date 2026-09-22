@@ -1,0 +1,81 @@
+{
+  "commit": "3b1ee19cb03c32ae7b4cc622c346a9a4f0272bd1",
+  "golden_pdf": "/workspace/tests/fixtures/cv_corpus/Fake_Lebenslauf_Neuer_Blindtest_Leonie_Brandt.pdf",
+  "golden_txt": "/workspace/tests/fixtures/cv_corpus/Fake_Lebenslauf_Neuer_Blindtest_Leonie_Brandt.txt",
+  "exe_path": "/workspace/dist/Karrierekrake",
+  "exe_sha256": "a1db6c4d22df213f207df91ba79b82f80dce9c627115f4526bceb639c71132e7",
+  "exe_size": 270408016,
+  "steps": [
+    {
+      "step": "empty_profile",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "ausbildung",
+      "ok": true,
+      "detail": "['Kauffrau fuer Bueromanagement (IHK)']"
+    },
+    {
+      "step": "languages_only",
+      "ok": true,
+      "detail": "{'Englisch', 'Schwedisch', 'Spanisch', 'Deutsch'}"
+    },
+    {
+      "step": "weiterbildung_not_language",
+      "ok": true,
+      "detail": "lean management | power bi | beschwerdemanagement | datenschutzgrundlagen"
+    },
+    {
+      "step": "power_bi_software_or_cert",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "skills_software_nonempty",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "long_experience_text",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "ui_entry_title_education",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "ui_experience_body",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "berufsziel_deleted_persists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "restart_education",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "restart_empty_jobs",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "step": "dialog_fit_drawer",
+      "ok": true,
+      "detail": "560x640"
+    },
+    {
+      "step": "dialog_clamp_oversize",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "all_ok": true
+}
