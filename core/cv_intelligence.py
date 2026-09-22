@@ -1,22 +1,25 @@
-"""Canonical CV import pipeline with optional Phi semantic extract (NEXT-02).
+"""Canonical CV import pipeline — deterministic DET only (no PHI_EXTRACT).
 
-FILE → document extraction → structural/deterministic parser → Phi semantic
-→ grounding validator → deterministic reconciliation → preview/approval/persist.
+FILE → document extraction → structural/deterministic parser →
+evidence / verify / targeted repair → preview/approval/persist.
 
-Phi is part of the pipeline when Guenther is enabled — not a silent substitute.
-If Phi is unavailable, deterministic import continues; AI surfaces GUENTHER_UNAVAILABLE.
-Manual profile fields remain authoritative.
+PHI_EXTRACT / C1 / hybrid extraction are removed from production.
+Historical evaluation helpers (`reconcile_phi_into_parsed`) remain for
+offline Holdout scripts only and are never invoked here.
+
+PHI_WRITE (cover letters, emails, etc.) lives in ``guenther.service`` and
+is untouched by this module.
 """
 
 from __future__ import annotations
 
 import logging
+import warnings
 from pathlib import Path
 from typing import Any
 
 from core.cv_extract import extract_text
 from core.cv_parser import parse_cv_text
-from guenther.model_manager import PRODUCTION_MODEL_ID
 
 logger = logging.getLogger(__name__)
 
@@ -62,12 +65,16 @@ def reconcile_phi_into_parsed(
     *,
     cv_text: str,
 ) -> dict[str, Any]:
-    """Deterministic reconciliation: parser authority; Phi fills grounded gaps only."""
+    """Historical evaluation helper — NOT used by production CV import.
+
+    Kept so Frozen Holdout / baseline scripts can still score old Phi merges.
+    """
+    from guenther.model_manager import PRODUCTION_MODEL_ID
+
     out = dict(parsed)
     notes: list[str] = list(out.get("intelligence_notes") or [])
     conf = dict(out.get("confidence") or {})
 
-    # Skills / software: add grounded Phi skills missing from parse
     skills = list(out.get("skills") or [])
     skill_norm = {_norm(s) for s in skills}
     for s in suggestion.get("skills") or []:
@@ -81,7 +88,6 @@ def reconcile_phi_into_parsed(
         notes.append("phi_skill_gap_filled")
     out["skills"] = skills
 
-    # Experience titles → work_experience gap fill (title-only rows when parser missed)
     work = list(out.get("work_experience") or [])
     for title in suggestion.get("experience_titles") or []:
         title = str(title).strip()
@@ -111,7 +117,6 @@ def reconcile_phi_into_parsed(
         ],
     ]
 
-    # Education gap fill
     education = list(out.get("education") or [])
     for edu in suggestion.get("education") or []:
         edu = str(edu).strip()
@@ -133,7 +138,6 @@ def reconcile_phi_into_parsed(
         notes.append("phi_education_gap_filled")
     out["education"] = education
 
-    # Certificates
     certs = list(out.get("certificates") or [])
     cert_norm = {_norm(str(c.get("name") if isinstance(c, dict) else c)) for c in certs}
     for c in suggestion.get("certificates") or []:
@@ -147,7 +151,6 @@ def reconcile_phi_into_parsed(
         notes.append("phi_certificate_gap_filled")
     out["certificates"] = certs
 
-    # Languages (string list from Phi → structured if parse empty)
     langs = list(out.get("languages") or [])
     if not langs:
         for lang in suggestion.get("languages") or []:
@@ -164,14 +167,14 @@ def reconcile_phi_into_parsed(
         "Im Dokument nicht gefunden",
         "Nicht erkannt",
     }:
-        conf["work_experience"] = "Erkannt (Phi + Parser)"
+        conf["work_experience"] = "Erkannt (historisch Phi + Parser)"
     if education and conf.get("education") in {
         None,
         "",
         "Im Dokument nicht gefunden",
         "Nicht erkannt",
     }:
-        conf["education"] = "Erkannt (Phi + Parser)"
+        conf["education"] = "Erkannt (historisch Phi + Parser)"
 
     out["confidence"] = conf
     out["intelligence_notes"] = notes
@@ -188,11 +191,27 @@ def import_cv_canonical(
     document_backend: str = "current",
     split_phi_passes: bool = True,
 ) -> dict[str, Any]:
-    """Canonical CV import. Always runs deterministic parse; Phi when enabled.
+    """Canonical CV import — deterministic DET only.
 
-    Pipeline: document extract → parse → optional PHI_EXTRACT (split passes) →
-    reconcile → evidence/verify/targeted repair. PHI_WRITE is never invoked here.
+    ``guenther_enabled``, ``guenther_service``, and ``split_phi_passes`` are
+    accepted for backward compatibility with old configs/callers but **never**
+    invoke PHI_EXTRACT. PHI_WRITE is not used here.
     """
+    del manual_profile  # reserved for future deterministic hints; unused
+    del split_phi_passes
+
+    if guenther_enabled or guenther_service is not None:
+        warnings.warn(
+            "guenther_enabled/guenther_service are ignored for CV import; "
+            "PHI_EXTRACT was removed from the production extraction path.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        logger.info(
+            "CV import: ignoring guenther_enabled=%s (PHI_EXTRACT removed)",
+            bool(guenther_enabled),
+        )
+
     if document_backend and document_backend != "current":
         from core.cv_document_backends import extract_with_backend
 
@@ -213,47 +232,8 @@ def import_cv_canonical(
     parsed["document_backend"] = document_backend
     parsed["intelligence_status"] = "deterministic_only"
     parsed["intelligence_notes"] = []
-
-    if guenther_enabled:
-        try:
-            if guenther_service is None:
-                from guenther.service import get_guenther_service
-
-                guenther_service = get_guenther_service(
-                    enabled=True, model=PRODUCTION_MODEL_ID, refresh=False
-                )
-            if split_phi_passes and callable(
-                getattr(type(guenther_service), "suggest_cv_extract_split", None)
-            ):
-                env = guenther_service.suggest_cv_extract_split(
-                    text, manual_profile=manual_profile
-                )
-            else:
-                env = guenther_service.suggest_cv_extract(
-                    text, manual_profile=manual_profile
-                )
-            parsed["intelligence_provider_status"] = env.provider_status
-            parsed["intelligence_fallback_reason"] = env.fallback_reason
-            parsed["intelligence_safety_notes"] = list(env.safety_notes or [])
-            if not env.ok:
-                parsed["intelligence_status"] = "GUENTHER_UNAVAILABLE"
-                parsed["intelligence_notes"] = list(env.safety_notes or []) + [
-                    env.fallback_reason or "guenther_unavailable"
-                ]
-            else:
-                suggestion = dict(env.suggestion or {})
-                suggestion["_model_id"] = env.model_id or PRODUCTION_MODEL_ID
-                parsed = reconcile_phi_into_parsed(parsed, suggestion, cv_text=text)
-                parsed["intelligence_status"] = "phi_invoked"
-                parsed["phi_invoked"] = True
-                parsed["phi_model_id"] = env.model_id or PRODUCTION_MODEL_ID
-        except Exception as exc:  # noqa: BLE001 — never fail import on AI errors
-            logger.debug("phi cv extract skipped: %s", type(exc).__name__)
-            parsed["intelligence_status"] = "GUENTHER_UNAVAILABLE"
-            parsed["intelligence_notes"] = [
-                "guenther_unavailable_runtime_error",
-                type(exc).__name__,
-            ]
+    parsed["phi_invoked"] = False
+    parsed["phi_extract_call_count"] = 0
 
     # Always: evidence + verify + targeted repair (deterministic authority)
     try:

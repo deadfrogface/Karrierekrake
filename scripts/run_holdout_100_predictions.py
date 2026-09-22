@@ -4,6 +4,9 @@
 CRITICAL: This script must NOT open expected_results_full.json or solution_sheet.csv.
 It only reads PDFs under tests/holdout_100/cvs/ and writes predictions.
 
+Historical evaluation artifact. Phi/C1 pipelines here call Guenther explicitly;
+production CV import (import_cv) is DET-only and never invokes PHI_EXTRACT.
+
 Usage:
   python scripts/run_holdout_100_predictions.py --pipelines A1,A5,D2_DET
   python scripts/run_holdout_100_predictions.py --all-available
@@ -178,17 +181,63 @@ def pipe_B1_phi_only(path: Path) -> dict[str, Any]:
 
 
 def pipe_B4_phi_verify(path: Path) -> dict[str, Any]:
-    from core.cv_parser import import_cv
+    """Historical Phi product path — NOT used by production import.
 
-    parsed = import_cv(path, guenther_enabled=True)
+    Production ``import_cv`` is DET-only; this pipe explicitly calls PHI_EXTRACT
+    for offline Holdout comparisons only.
+    """
+    from core.cv_extract import extract_text
+    from core.cv_intelligence import reconcile_phi_into_parsed
+    from core.cv_parser import import_cv
+    from core.cv_verify_repair import apply_verify_repair_pipeline
+    from guenther.model_manager import PRODUCTION_MODEL_ID
+    from guenther.service import get_guenther_service
+
+    text = extract_text(path) or ""
+    parsed = import_cv(path, guenther_enabled=False)
+    svc = get_guenther_service(enabled=True, model=PRODUCTION_MODEL_ID, refresh=False)
+    env = svc.suggest_cv_extract(text)
+    if env.ok:
+        sug = dict(env.suggestion or {})
+        sug["_model_id"] = env.model_id or PRODUCTION_MODEL_ID
+        parsed = reconcile_phi_into_parsed(parsed, sug, cv_text=text)
+        parsed = apply_verify_repair_pipeline(parsed, text)
+        parsed["phi_invoked"] = True
+        parsed["intelligence_status"] = "phi_invoked"
+    else:
+        parsed["intelligence_status"] = "GUENTHER_UNAVAILABLE"
+        parsed["phi_invoked"] = False
     parsed["pipeline"] = "B4_phi_product_verify"
     return parsed
 
 
 def pipe_B5_phi_split(path: Path) -> dict[str, Any]:
-    from core.cv_intelligence import import_cv_canonical
+    """Historical split-pass PHI_EXTRACT — offline evaluation only."""
+    from core.cv_extract import extract_text
+    from core.cv_intelligence import reconcile_phi_into_parsed
+    from core.cv_parser import import_cv
+    from core.cv_verify_repair import apply_verify_repair_pipeline
+    from guenther.model_manager import PRODUCTION_MODEL_ID
+    from guenther.service import get_guenther_service
 
-    parsed = import_cv_canonical(path, guenther_enabled=True, split_phi_passes=True)
+    text = extract_text(path) or ""
+    parsed = import_cv(path, guenther_enabled=False)
+    svc = get_guenther_service(enabled=True, model=PRODUCTION_MODEL_ID, refresh=False)
+    env = (
+        svc.suggest_cv_extract_split(text)
+        if hasattr(svc, "suggest_cv_extract_split")
+        else svc.suggest_cv_extract(text)
+    )
+    if env.ok:
+        sug = dict(env.suggestion or {})
+        sug["_model_id"] = env.model_id or PRODUCTION_MODEL_ID
+        parsed = reconcile_phi_into_parsed(parsed, sug, cv_text=text)
+        parsed = apply_verify_repair_pipeline(parsed, text)
+        parsed["phi_invoked"] = True
+        parsed["intelligence_status"] = "phi_invoked"
+    else:
+        parsed["intelligence_status"] = "GUENTHER_UNAVAILABLE"
+        parsed["phi_invoked"] = False
     parsed["pipeline"] = "B5_phi_split"
     return parsed
 
@@ -246,9 +295,26 @@ def pipe_D2_det(path: Path) -> dict[str, Any]:
 
 
 def pipe_D2_phi(path: Path) -> dict[str, Any]:
-    from core.cv_intelligence import import_cv_canonical
+    """Historical pymupdf4llm + PHI_EXTRACT — offline evaluation only."""
+    from core.cv_document_backends import extract_with_backend
+    from core.cv_intelligence import reconcile_phi_into_parsed
+    from core.cv_parser import parse_cv_text
+    from core.cv_verify_repair import apply_verify_repair_pipeline
+    from guenther.model_manager import PRODUCTION_MODEL_ID
+    from guenther.service import get_guenther_service
 
-    parsed = import_cv_canonical(path, guenther_enabled=True, document_backend="pymupdf4llm")
+    text = extract_with_backend(path, "pymupdf4llm")
+    parsed = parse_cv_text(text)
+    parsed = apply_verify_repair_pipeline(parsed, text)
+    svc = get_guenther_service(enabled=True, model=PRODUCTION_MODEL_ID, refresh=False)
+    env = svc.suggest_cv_extract(text)
+    if env.ok:
+        sug = dict(env.suggestion or {})
+        sug["_model_id"] = env.model_id or PRODUCTION_MODEL_ID
+        parsed = reconcile_phi_into_parsed(parsed, sug, cv_text=text)
+        parsed = apply_verify_repair_pipeline(parsed, text)
+        parsed["phi_invoked"] = True
+    parsed["document_backend"] = "pymupdf4llm"
     parsed["pipeline"] = "D2_pymupdf4llm_phi"
     return parsed
 

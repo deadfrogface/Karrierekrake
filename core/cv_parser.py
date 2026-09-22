@@ -1944,7 +1944,10 @@ def import_cv(
     guenther_enabled: bool = False,
     manual_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Import CV via canonical pipeline (deterministic + optional Phi)."""
+    """Import CV via deterministic DET pipeline (PHI_EXTRACT removed).
+
+    ``guenther_enabled`` is accepted for old callers/configs but ignored.
+    """
     from core.cv_intelligence import import_cv_canonical
 
     return import_cv_canonical(
