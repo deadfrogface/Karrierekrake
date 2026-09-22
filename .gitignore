@@ -60,3 +60,7 @@ private/cvs/
 private/cvs/**
 !private/cvs/README.md
 data/geo_active/
+
+# Holdout unpack + local prediction artifacts (zip stays tracked from main)
+tests/holdout_100/
+!tests/holdout_100/README.md
