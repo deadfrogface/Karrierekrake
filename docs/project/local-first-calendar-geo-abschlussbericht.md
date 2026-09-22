@@ -1,9 +1,9 @@
 # Abschlussbericht — Local-first Geo + Google Calendar (PR #54)
 
 **Branch:** `cursor/local-first-calendar-geo-d85b`  
-**Aktualisiert:** 2026-09-21T23:24:33.660816+00:00  
-**HEAD (lokal, unpushed Teil):** siehe `git log -3 --oneline`  
-**Letzter gepushter Commit mit Windows Smoke grün:** `c173afb`
+**Aktualisiert:** 2026-09-22T00:10:00+00:00  
+**HEAD:** `d6c4214` (Abschlussbericht + Smoke-HOME-Fix)  
+**Windows Smoke Nachweis-Commit:** `f1d2c08` (run `35668828432`)
 
 ## 1. Zielbild (erfüllt)
 
@@ -55,7 +55,7 @@ python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
 |------|------|
 | Pfad | `/workspace/dist/Karrierekrake` |
 | Größe | 271103448 Bytes |
-| SHA-256 | `f8c54190204841bc0fade6dd6c5f9209d5d56fffac972974e35dc5bb8f00f049` |
+| SHA-256 | `61d29b03fef452207d4bf7d6609b95806e5bdbb4cb4e9fa684987c71f9890306` |
 | Content-Scan | `python scripts/scan_release_artifact.py --exe dist/Karrierekrake --dist dist --fail-on-empty` → **OK, 0 forbidden hits** (4042 paths) |
 | Isolierter EXE-Smoke | `LOCALAPPDATA=<empty> QT_QPA_PLATFORM=offscreen KARRIEREKRAKE_SMOKE_TEST=1 ./dist/Karrierekrake` → **SMOKE_TEST_OK** |
 
