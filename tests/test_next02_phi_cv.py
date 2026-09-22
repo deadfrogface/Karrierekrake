@@ -1,9 +1,10 @@
-"""NEXT-02 production gates: sole Phi, no Qwen runtime, CV intelligence wiring."""
+"""NEXT-02 production gates: sole Phi for WRITE, no Phi on CV import."""
 
 from __future__ import annotations
 
 from pathlib import Path
 from unittest.mock import MagicMock
+import warnings
 
 import pytest
 
@@ -65,7 +66,6 @@ def test_no_model_fallback_on_light_hardware(monkeypatch):
     assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "phi4-mini"
     assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "phi4-mini"
     hw = detect_hardware()
-    # detect_hardware may read /proc first; graceful always Phi
     assert hw.recommended_model_id == "phi4-mini" or True
     assert "qwen" not in hw.recommended_model_id
 
@@ -125,6 +125,7 @@ def test_cv_grounding_drops_invented():
 
 
 def test_reconcile_phi_fills_gaps_only_when_grounded():
+    """Historical helper still grounds; production import never calls it."""
     parsed = {
         "skills": [],
         "work_experience": [],
@@ -151,7 +152,8 @@ def test_reconcile_phi_fills_gaps_only_when_grounded():
     assert out.get("phi_model_id") == "phi4-mini"
 
 
-def test_import_cv_canonical_phi_invoked_with_mock(tmp_path):
+def test_import_cv_canonical_never_calls_phi_extract(tmp_path):
+    """Production CV import must ignore guenther_enabled and never call PHI_EXTRACT."""
     cv_path = tmp_path / "cv.txt"
     cv_path.write_text(
         "Max Beispiel\nBerufserfahrung\nBuchhalterin bei Demo GmbH 2020-2024\n"
@@ -174,16 +176,20 @@ def test_import_cv_canonical_phi_invoked_with_mock(tmp_path):
             "languages": [],
         },
     )
-    parsed = import_cv_canonical(
-        cv_path, guenther_enabled=True, guenther_service=mock
-    )
-    assert parsed["intelligence_status"] == "phi_invoked"
-    assert parsed.get("phi_invoked") is True
-    assert parsed.get("phi_model_id") == "phi4-mini"
-    mock.suggest_cv_extract.assert_called_once()
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        parsed = import_cv_canonical(
+            cv_path, guenther_enabled=True, guenther_service=mock
+        )
+    assert parsed["intelligence_status"] == "deterministic_only"
+    assert parsed.get("phi_invoked") is False
+    assert parsed.get("phi_extract_call_count") == 0
+    mock.suggest_cv_extract.assert_not_called()
+    assert any(issubclass(w.category, DeprecationWarning) for w in caught)
 
 
-def test_import_cv_canonical_unavailable_still_parses(tmp_path):
+def test_import_cv_canonical_missing_model_still_parses(tmp_path):
+    """Missing Phi model must not block DET import; extract must not be called."""
     cv_path = tmp_path / "cv.txt"
     cv_path.write_text(
         "Berufserfahrung\nVerkäufer bei Shop GmbH\nAusbildung\nVerkäufer\n",
@@ -199,11 +205,14 @@ def test_import_cv_canonical_unavailable_still_parses(tmp_path):
         safety_notes=["GUENTHER_UNAVAILABLE", "no_model_fallback"],
         suggestion={},
     )
-    parsed = import_cv_canonical(
-        cv_path, guenther_enabled=True, guenther_service=mock
-    )
-    assert parsed["intelligence_status"] == "GUENTHER_UNAVAILABLE"
-    # Deterministic path still produced structure
+    with warnings.catch_warnings(record=True):
+        warnings.simplefilter("always")
+        parsed = import_cv_canonical(
+            cv_path, guenther_enabled=True, guenther_service=mock
+        )
+    assert parsed["intelligence_status"] == "deterministic_only"
+    assert parsed.get("phi_extract_call_count") == 0
+    mock.suggest_cv_extract.assert_not_called()
     assert "work_experience" in parsed
 
 
