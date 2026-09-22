@@ -1537,7 +1537,7 @@ _HEADING_LINE = re.compile(
     r"Capabilities|Praxiserfahrung|Fahrerlaubnis|Qualifikation|Weiterbildung|"
     r"Persönliche Daten|Über mich|Profil|Zusammenfassung|Kontakt|"
     r"Praxis|Stationen|Werdegang|Bildungsweg|Schule\s*&\s*Ausbildung|"
-    r"Schule\s+und\s+Ausbildung)\b",
+    r"Schule\s+und\s+Ausbildung|Werkzeuge)\b",
     re.I,
 )
 _POSTAL_DE = re.compile(

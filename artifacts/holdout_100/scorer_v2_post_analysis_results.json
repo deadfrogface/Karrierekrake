@@ -212,5 +212,89 @@
       },
       "perfect_documents": 57
     }
+  },
+  "A5_det_product_v5_werkzeuge": {
+    "metrics": {
+      "field_total": 4212,
+      "counts": {
+        "correct": 4097,
+        "missing": 95,
+        "hallucinated": 20,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9726970560303894,
+      "precision": 0.9951420937575904,
+      "recall": 0.9773377862595419,
+      "f1": 0.9861595859910939,
+      "hallucination_rate": 0.004748338081671415,
+      "missing_field_rate": 0.02255460588793922,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.004748338081671415,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 405,
+          "missing": 95
+        },
+        "languages": {
+          "correct": 200
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "correct": 625
+        },
+        "employment": {
+          "correct": 1250
+        },
+        "skills": {
+          "correct": 500,
+          "hallucinated": 17
+        },
+        "software": {
+          "correct": 400,
+          "hallucinated": 2
+        },
+        "certificates": {
+          "correct": 100,
+          "hallucinated": 1
+        },
+        "career_intent": {
+          "correct": 14
+        }
+      },
+      "perfect_documents": 67,
+      "document_perfect_match_rate": 0.67
+    },
+    "delta_vs_iter2": {
+      "f1": 0.03754100866892862,
+      "accuracy": 0.07043784081041315,
+      "perfect": 10,
+      "hallu": 0.0016567804122302734
+    },
+    "worsened": 0,
+    "lost_perfect": 0,
+    "by_group_errors": {
+      "address:missing": 95,
+      "software:hallucinated": 2,
+      "skills:hallucinated": 17,
+      "certificates:hallucinated": 1
+    },
+    "error_count_distribution": {
+      "0": 67,
+      "6": 2,
+      "1": 12,
+      "5": 14,
+      "2": 3,
+      "8": 1,
+      "7": 1
+    }
   }
 }

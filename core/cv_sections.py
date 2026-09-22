@@ -122,6 +122,7 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "kompetenzen",
         "fähigkeiten",
         "kenntnisse",
+        "werkzeuge",  # DE CVs: tools/languages/software block (same routing as Kenntnisse)
         "stärken",
         "skills",
     ),

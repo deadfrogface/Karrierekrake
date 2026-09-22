@@ -74,6 +74,7 @@ artifacts/holdout_100/**
 !artifacts/holdout_100/extraction_optimization_history.json
 !artifacts/holdout_100/iter1_section_boundary_results.json
 !artifacts/holdout_100/iter2_category_cleanup_results.json
+!artifacts/holdout_100/iter3_werkzeuge_results.json
 private/cvs/
 private/cvs/**
 !private/cvs/README.md

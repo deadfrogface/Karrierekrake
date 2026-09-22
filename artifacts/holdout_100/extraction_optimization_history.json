@@ -73,5 +73,38 @@
     },
     "decision": "KEEP",
     "commit": "5f32e6c"
+  },
+  {
+    "iteration": 3,
+    "root_cause": "Werkzeuge heading not recognized \u2014 tools/languages/skills swallowed by education/general",
+    "changed_components": [
+      "core/cv_sections.py",
+      "core/cv_parser.py _HEADING_LINE"
+    ],
+    "targeted_documents": 20,
+    "before": {
+      "accuracy": 0.902,
+      "f1": 0.949,
+      "perfect_documents": 57,
+      "hallucination_rate": 0.003
+    },
+    "after": {
+      "accuracy": 0.973,
+      "f1": 0.986,
+      "perfect_documents": 67,
+      "hallucination_rate": 0.005
+    },
+    "fixed_errors": [
+      "software_missing_in_education",
+      "language_missing_in_education",
+      "skills_missing_werkzeuge"
+    ],
+    "new_errors": [],
+    "decision": "KEEP",
+    "commit": null,
+    "doc_level": {
+      "worsened": 0,
+      "lost_perfect": 0
+    }
   }
 ]
