@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-"""Final Holdout — Phase A: blind sealed predictions.
+"""Holdout Phase A: blind sealed predictions (DET production path).
 
-Reads ONLY PDFs under:
-  tests/final_holdout/phase_a_pdfs/  (preferred)
-  tests/final_holdout/cvs/           (fallback)
+Default dataset: Final Holdout 50 (FH_001–FH_050).
+Also supports Mini Holdout 30 via --dataset mini_holdout_30.
+
+Reads ONLY PDFs under the configured dataset's phase_a_pdfs/ (or cvs/).
 
 Must NOT read any ground-truth / expected-results files.
 Must NOT import scorers or evaluate quality.
 
 Usage:
   python scripts/run_final_holdout_predictions.py
+  python scripts/run_final_holdout_predictions.py --dataset mini_holdout_30
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -29,6 +32,37 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+
+# Dataset registry — path / ID / count only; never changes extraction logic.
+DATASETS: dict[str, dict[str, Any]] = {
+    "final_holdout": {
+        "holdout_rel": Path("tests") / "final_holdout",
+        "out_rel": Path("artifacts") / "final_holdout",
+        "prefix": "FH_",
+        "expected_count": 50,
+        "dataset_id": "FINAL_HOLDOUT_50",
+        "document_range": "FH_001-FH_050",
+        "protocol": "FINAL_HOLDOUT_V1",
+        "zip_hint": "KarriereKrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip",
+    },
+    "mini_holdout_30": {
+        "holdout_rel": Path("tests") / "mini_holdout_30",
+        "out_rel": Path("artifacts") / "mini_holdout_30",
+        "prefix": "MH_",
+        "expected_count": 30,
+        "dataset_id": "MINI_HOLDOUT_30",
+        "document_range": "MH_001-MH_030",
+        "protocol": "MINI_HOLDOUT_30_PHASE_A",
+        "zip_hint": "KarriereKrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
+    },
+}
+
+DATASET_NAME = "final_holdout"
+DOC_PREFIX = "FH_"
+EXPECTED_COUNT = 50
+DATASET_ID = "FINAL_HOLDOUT_50"
+DOCUMENT_RANGE = "FH_001-FH_050"
+PROTOCOL = "FINAL_HOLDOUT_V1"
 
 HOLDOUT = ROOT / "tests" / "final_holdout"
 PHASE_A_PDFS = HOLDOUT / "phase_a_pdfs"
@@ -51,6 +85,37 @@ FORBIDDEN_NAMES = {
     "answers.json",
     "solutions.json",
 }
+
+
+def configure_dataset(name: str) -> None:
+    """Switch input/output paths and ID expectations. No parser changes."""
+    global DATASET_NAME, DOC_PREFIX, EXPECTED_COUNT, DATASET_ID, DOCUMENT_RANGE
+    global PROTOCOL, HOLDOUT, PHASE_A_PDFS, CVS, OUT
+    global PRED_DIR, META_PATH, INPUT_HASHES_PATH, PRED_HASHES_PATH
+    global HASHES_PATH, SEAL_PATH, SEAL_MARKER
+
+    if name not in DATASETS:
+        raise SystemExit(
+            f"Unknown dataset {name!r}. Choose from: {sorted(DATASETS)}"
+        )
+    cfg = DATASETS[name]
+    DATASET_NAME = name
+    DOC_PREFIX = cfg["prefix"]
+    EXPECTED_COUNT = int(cfg["expected_count"])
+    DATASET_ID = cfg["dataset_id"]
+    DOCUMENT_RANGE = cfg["document_range"]
+    PROTOCOL = cfg["protocol"]
+    HOLDOUT = ROOT / cfg["holdout_rel"]
+    PHASE_A_PDFS = HOLDOUT / "phase_a_pdfs"
+    CVS = HOLDOUT / "cvs"
+    OUT = ROOT / cfg["out_rel"]
+    PRED_DIR = OUT / "frozen_predictions"
+    META_PATH = OUT / "FROZEN_METADATA.json"
+    INPUT_HASHES_PATH = OUT / "FROZEN_INPUT_HASHES.json"
+    PRED_HASHES_PATH = OUT / "FROZEN_PREDICTION_HASHES.json"
+    HASHES_PATH = PRED_HASHES_PATH
+    SEAL_PATH = OUT / "PHASE_A_SEAL.json"
+    SEAL_MARKER = OUT / "PHASE_A_COMPLETE.json"
 
 PARSER_SOURCES = [
     ROOT / "core" / "cv_parser.py",
@@ -119,34 +184,46 @@ def _peak_rss_mb() -> float:
 def _resolve_pdf_dir() -> Path:
     phase_a = HOLDOUT / "phase_a_pdfs"
     cvs = HOLDOUT / "cvs"
-    if phase_a.is_dir() and any(phase_a.glob("FH_*.pdf")):
+    pattern = f"{DOC_PREFIX}*.pdf"
+    if phase_a.is_dir() and any(phase_a.glob(pattern)):
         return phase_a
     if cvs.is_dir():
         return cvs
+    zip_hint = DATASETS[DATASET_NAME]["zip_hint"]
     raise SystemExit(
         f"Missing PDFs under {phase_a} or {cvs}. "
-        "Extract KarriereKrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip first."
+        f"Extract {zip_hint} first."
     )
 
 
 def _list_cvs() -> list[Path]:
-    """List holdout CVs. Prefer FH_*.pdf set of exactly 50 when present."""
+    """List holdout CVs. Prefer PREFIX_*.pdf with exact expected count when present."""
     pdf_dir = _resolve_pdf_dir()
-    fh = sorted(pdf_dir.glob("FH_*.pdf"))
-    if fh:
-        if len(fh) != 50:
+    prefixed = sorted(pdf_dir.glob(f"{DOC_PREFIX}*.pdf"))
+    if prefixed:
+        invalid_prefix = (
+            "RESULT: MINI HOLDOUT PHASE A BLOCKED – INVALID DATASET\n"
+            if DATASET_NAME == "mini_holdout_30"
+            else ""
+        )
+        if len(prefixed) != EXPECTED_COUNT:
             raise SystemExit(
-                f"Invalid dataset: expected 50 FH_*.pdf in {pdf_dir}, found {len(fh)}"
+                f"{invalid_prefix}"
+                f"Invalid dataset: expected {EXPECTED_COUNT} {DOC_PREFIX}*.pdf "
+                f"in {pdf_dir}, found {len(prefixed)}"
             )
-        expected = {f"FH_{i:03d}.pdf" for i in range(1, 51)}
-        got = {p.name for p in fh}
+        expected = {
+            f"{DOC_PREFIX}{i:03d}.pdf" for i in range(1, EXPECTED_COUNT + 1)
+        }
+        got = {p.name for p in prefixed}
         missing = sorted(expected - got)
         extra = sorted(got - expected)
         if missing or extra:
             raise SystemExit(
+                f"{invalid_prefix}"
                 f"Invalid dataset IDs. missing={missing} extra={extra}"
             )
-        return fh
+        return prefixed
     files = sorted(
         p
         for p in pdf_dir.iterdir()
@@ -461,8 +538,11 @@ def run_phase_a() -> dict[str, Any]:
 
     meta = {
         "phase": "A",
-        "protocol": "FINAL_HOLDOUT_V1",
+        "protocol": PROTOCOL,
         "status": "SEALED",
+        "dataset": DATASET_ID,
+        "dataset_name": DATASET_NAME,
+        "document_range": DOCUMENT_RANGE,
         "started_at_utc": started,
         "sealed_at_utc": ended,
         "dataset_size": len(files),
@@ -530,9 +610,13 @@ def run_phase_a() -> dict[str, Any]:
         "status": "SEALED",
         "phase_a_complete": True,
         "sealed": True,
+        "dataset": DATASET_ID,
+        "dataset_name": DATASET_NAME,
         "dataset_size": len(files),
+        "document_range": DOCUMENT_RANGE,
         "pipeline": "DET_PRODUCTION",
         "git_commit": git["commit"],
+        "runner_commit": git["commit"],
         "git_branch": git["branch"],
         "git_dirty": git["dirty"],
         "predictions_manifest_sha256": pred_manifest["aggregate_sha256"],
@@ -577,10 +661,11 @@ def _verify_seal_integrity(
         pred = PRED_DIR / f"{p.stem}.json"
         if not pred.is_file():
             raise SystemExit(f"Seal integrity failure: missing prediction for {p.name}")
-    # Exactly 50 predictions matching PDFs
-    preds = sorted(PRED_DIR.glob("FH_*.json")) if any(
-        f.name.startswith("FH_") for f in files
-    ) else sorted(PRED_DIR.glob("*.json"))
+    # Exactly N predictions matching PDFs
+    if any(f.name.startswith(DOC_PREFIX) for f in files):
+        preds = sorted(PRED_DIR.glob(f"{DOC_PREFIX}*.json"))
+    else:
+        preds = sorted(PRED_DIR.glob("*.json"))
     if len(files) != len(preds):
         raise SystemExit(
             f"Seal integrity failure: {len(files)} PDFs vs {len(preds)} predictions"
@@ -611,6 +696,15 @@ def _verify_seal_integrity(
 def main() -> int:
     if os.environ.get("FINAL_HOLDOUT_FORCE_READ_GT") == "1":
         raise SystemExit("Refusing FINAL_HOLDOUT_FORCE_READ_GT in Phase A")
+    parser = argparse.ArgumentParser(description="Holdout Phase A blind seal")
+    parser.add_argument(
+        "--dataset",
+        default=os.environ.get("HOLDOUT_DATASET", "final_holdout"),
+        choices=sorted(DATASETS.keys()),
+        help="Dataset key (paths/IDs only; DET path unchanged)",
+    )
+    args = parser.parse_args()
+    configure_dataset(args.dataset)
     run_phase_a()
     return 0
 

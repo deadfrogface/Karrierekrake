@@ -122,6 +122,20 @@ artifacts/final_holdout/audit/**
 !artifacts/final_holdout/audit/layout_class_10_audit.json
 !artifacts/final_holdout/audit/scorer_audited_results.json
 !artifacts/final_holdout/audit/per_document_results_audited.json
+
+# Mini holdout 30 Phase A: zip tracked; PDFs ignored via *.pdf; seal hashes tracked
+tests/mini_holdout_30/phase_a_pdfs/*
+!tests/mini_holdout_30/phase_a_pdfs/PDF_MANIFEST.json
+!tests/mini_holdout_30/phase_a_pdfs/README_PHASE_A.txt
+!artifacts/mini_holdout_30/
+artifacts/mini_holdout_30/**
+!artifacts/mini_holdout_30/FROZEN_INPUT_HASHES.json
+!artifacts/mini_holdout_30/FROZEN_PREDICTION_HASHES.json
+!artifacts/mini_holdout_30/FROZEN_METADATA.json
+!artifacts/mini_holdout_30/PHASE_A_SEAL.json
+!artifacts/mini_holdout_30/PHASE_A_COMPLETE.json
+!artifacts/mini_holdout_30/FROZEN_HASHES.json
+!artifacts/mini_holdout_30/LOCAL_PREDICTIONS_PATH.txt
 !artifacts/final_holdout/audit/per_field_results_audited.json
 !artifacts/final_holdout/audit/field_group_metrics_audited.json
 !artifacts/final_holdout/audit/slice_metrics_audited.json
