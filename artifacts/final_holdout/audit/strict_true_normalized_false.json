@@ -1,0 +1,13 @@
+{
+  "definition_phase_b_bug": {
+    "strict_accuracy_was": "accuracy over SCALAR fields only (strict_scalar_stats)",
+    "normalized_accuracy_was": "Scorer V2 field_accuracy over ALL evaluable fields",
+    "same_fact_universe": false,
+    "why_normalized_lower": "Full V2 includes languages (100 FN), employment (many FN), skills (many FP), education mismatches. Scalar-only subset is easier (personal/contact mostly correct), so Strict Acc appeared higher."
+  },
+  "same_universe_strict_true_normalized_false_count": 0,
+  "same_universe_cases": [],
+  "old_metric_universe_mismatches_sample": [],
+  "old_metric_universe_mismatch_count": 0,
+  "old_strict_true_but_v2_not_correct": []
+}

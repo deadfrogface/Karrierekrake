@@ -192,37 +192,66 @@ def _pair_score_lang(exp: tuple[str, str], act: dict[str, str]) -> float:
     # level
     if not el:
         return 0.8
+    if not al:
+        # Expected level present but prediction omitted it → not a full pair.
+        return 0.4
     el_n = el.replace("muttersprache", "native")
     al_n = al.replace("muttersprache", "native")
-    if el_n == al_n or el_n in al_n or al_n in el_n:
+    if el_n == al_n:
+        return 1.0
+    # Avoid empty-string containment false positives ("" in "c2" is True in Python)
+    if el_n and al_n and (el_n in al_n or al_n in el_n):
         return 1.0
     if el_n in ("native", "c2") and al_n in ("native", "c2", "muttersprache"):
         return 1.0
     return 0.4  # name ok, level wrong
 
 
+def canonicalize_language_item(item: Any) -> tuple[str, str]:
+    """Neutral language structure adapter for evaluation only.
+
+    Accepts:
+      ["Deutsch", "C2"]
+      {"language": "Deutsch", "level": "C2"}
+      {"name": "Deutsch", "proficiency": "C2"}
+      "Deutsch - C2"
+    Does not invent missing levels or names.
+    """
+    if isinstance(item, (list, tuple)) and item:
+        return str(item[0]).strip(), (str(item[1]).strip() if len(item) > 1 else "")
+    if isinstance(item, dict):
+        name = str(
+            item.get("language")
+            or item.get("name")
+            or item.get("lang")
+            or ""
+        ).strip()
+        level = str(
+            item.get("level")
+            or item.get("proficiency")
+            or item.get("cefr")
+            or ""
+        ).strip()
+        return name, level
+    if isinstance(item, str):
+        parts = [p.strip() for p in item.replace("–", "-").split("-", 1)]
+        return parts[0], (parts[1] if len(parts) > 1 else "")
+    return "", ""
+
+
 def match_language_pairs(
     expected: list[Any], actual: list[Any]
 ) -> tuple[list[FactResult], dict[str, int]]:
     """Match language+level pairs; order-independent; level swap = wrong."""
-    exp_pairs: list[tuple[str, str]] = []
-    for item in expected or []:
-        if isinstance(item, (list, tuple)) and item:
-            exp_pairs.append((str(item[0]), str(item[1]) if len(item) > 1 else ""))
-        elif isinstance(item, dict):
-            exp_pairs.append((str(item.get("language") or ""), str(item.get("level") or "")))
-        elif isinstance(item, str):
-            parts = [p.strip() for p in item.replace("–", "-").split("-", 1)]
-            exp_pairs.append((parts[0], parts[1] if len(parts) > 1 else ""))
+    exp_pairs: list[tuple[str, str]] = [
+        canonicalize_language_item(item) for item in (expected or [])
+    ]
+    exp_pairs = [(n, lv) for n, lv in exp_pairs if n]
     act_list: list[dict[str, str]] = []
     for item in actual or []:
-        if isinstance(item, dict):
-            act_list.append(
-                {"language": str(item.get("language") or ""), "level": str(item.get("level") or "")}
-            )
-        else:
-            parts = [p.strip() for p in str(item).replace("–", "-").split("-", 1)]
-            act_list.append({"language": parts[0], "level": parts[1] if len(parts) > 1 else ""})
+        name, level = canonicalize_language_item(item)
+        if name or level:
+            act_list.append({"language": name, "level": level})
 
     stats = {"entry_tp": 0, "entry_fp": 0, "entry_fn": 0, "level_wrong": 0}
     rows: list[FactResult] = []
@@ -504,7 +533,8 @@ def build_evidence_for_doc(fname: str, gt: dict[str, Any], pdf_text: str) -> dic
     maybe_scalar("name.last_name", name.get("last_name"))
     maybe_scalar("email", gt.get("email"))
     maybe_scalar("phone", gt.get("phone"))
-    maybe_scalar("dob", gt.get("dob"))
+    # Accept date_of_birth as alias for dob (GT schema variant)
+    maybe_scalar("dob", gt.get("dob") if gt.get("dob") is not None else gt.get("date_of_birth"))
     maybe_scalar("address.street", addr.get("street"))
     maybe_scalar("address.house_number", addr.get("house_number"), evidence_hint=addr.get("house_number"))
     # house number often only as part of street line

@@ -1,0 +1,12 @@
+{
+  "documents_with_languages_in_gt": 50,
+  "documents_with_languages_in_frozen_prediction": 0,
+  "gt_language_pairs": 100,
+  "prediction_language_pairs": 0,
+  "exact_same_raw_pairs": 0,
+  "comparable_after_mapping": 0,
+  "language_name_seen_in_education_field": 32,
+  "language_name_seen_in_skills_field": 0,
+  "language_name_seen_in_raw_text_preview": 100,
+  "conclusion": "REAL_PARSER_ERROR: languages[] empty in all 50 sealed predictions; names only appear in raw_text_preview (and sometimes bleed into education strings). Scorer correctly scores 100 FN. Not a schema-mapping false zero."
+}

@@ -1,0 +1,33 @@
+{
+  "source": "scripts/run_final_holdout_phase_b_eval.py + artifacts/final_holdout/phase_b_results.json",
+  "seal_hash": "97c64fb31cf8dfff78e530364a546f759bcaa24f1df899af3844d4a4f8c9075c",
+  "reproduced": {
+    "strict_accuracy": 0.737,
+    "normalized_accuracy": 0.674,
+    "precision": 0.877,
+    "recall": 0.744,
+    "f1": 0.805,
+    "hallucination_rate": 0.071,
+    "languages_f1": 0.0,
+    "perfect_documents": 0,
+    "perfect_core_documents": 0
+  },
+  "expected_phase_b": {
+    "strict_accuracy": 0.737,
+    "normalized_accuracy": 0.674,
+    "precision": 0.877,
+    "recall": 0.744,
+    "f1": 0.805,
+    "hallucination_rate": 0.071,
+    "languages_f1": 0.0,
+    "perfect_documents": 0
+  },
+  "match_notes": "Rounded reproduction matches Phase B report within rounding.",
+  "strict_vs_normalized_definition_bug": {
+    "strict_was": "strict_scalar_stats() only \u2014 personal/contact/address/dob scalars with exact casefold",
+    "normalized_was": "full Scorer V2 aggregate_v2 over ALL evaluable fields including languages/employment/skills",
+    "same_fact_universe": false,
+    "implication": "Normalized Acc can appear lower than Strict Acc because denominators and field sets differ; not because normalization destroyed matches."
+  },
+  "reproduction_ok": true
+}

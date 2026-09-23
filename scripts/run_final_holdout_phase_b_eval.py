@@ -497,6 +497,12 @@ def run() -> dict[str, Any]:
             **agg,
             "strict_scalar_accuracy": strict_accuracy,
             "normalized_field_accuracy": agg["field_accuracy"],
+            "metric_note": (
+                "strict_scalar_accuracy covers personal/contact/address/dob scalars only; "
+                "normalized_field_accuracy is full Scorer V2 over all evaluable fields. "
+                "Do not compare them as Strict vs Normalized Accuracy on the same universe. "
+                "See docs/project/FINAL_HOLDOUT_SCORER_AUDIT_REPORT.md."
+            ),
             "perfect_documents": perfect_n,
             "perfect_core_documents": perfect_core_n,
             "document_perfect_match_rate": perfect_n / 50,

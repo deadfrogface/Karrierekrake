@@ -111,5 +111,21 @@ artifacts/final_holdout/**
 !artifacts/final_holdout/schema_extension_results.json
 !artifacts/final_holdout/PHASE_B_INTEGRITY.json
 !artifacts/final_holdout/PHASE_B_COMPLETE.json
+!artifacts/final_holdout/audit/
+artifacts/final_holdout/audit/**
+!artifacts/final_holdout/audit/scorer_original_reproduction.json
+!artifacts/final_holdout/audit/strict_true_normalized_false.json
+!artifacts/final_holdout/audit/language_comparison_traces.json
+!artifacts/final_holdout/audit/language_inventory.json
+!artifacts/final_holdout/audit/field_mapping_audit.json
+!artifacts/final_holdout/audit/fh011_elternzeit_trace.json
+!artifacts/final_holdout/audit/layout_class_10_audit.json
+!artifacts/final_holdout/audit/scorer_audited_results.json
+!artifacts/final_holdout/audit/per_document_results_audited.json
+!artifacts/final_holdout/audit/per_field_results_audited.json
+!artifacts/final_holdout/audit/field_group_metrics_audited.json
+!artifacts/final_holdout/audit/slice_metrics_audited.json
+!artifacts/final_holdout/audit/error_reclassification.json
+!artifacts/final_holdout/audit/ground_truth_review.json
 # Predictions stay local (not committed); hashes seal them
 artifacts/final_holdout/frozen_predictions/
