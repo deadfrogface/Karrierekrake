@@ -162,8 +162,8 @@ Section-Shuffle, Leerzeilen/Bullets, Heading-Case, FR/NL Muttersprachen-Äquival
 |------|------|
 | Branch | `cursor/ih2-det-kenntnisse-fix-d85b` |
 | Ausgangscommit | `3c9f5bd7cfdac328221c0a3bfae614501f82032c` |
-| Finaler Parser-Commit | *(siehe Git nach diesem Freeze-Commit)* |
-| Parser-Quellcode-Hash (SHA-256 über Parser-Quellen) | `feece3bdf434e720cf696b1159d508f0a83363f678f89ba048972a33126d71f9` *(vor Freeze-Commit; nach Commit neu berechnen und hier ergänzen)* |
+| Finaler Parser-Commit | `d6fd5c2dac8f9cdf81c0ad7f09807b3096d91abd` |
+| Parser-Quellcode-Hash (SHA-256 über Parser-Quellen) | `feece3bdf434e720cf696b1159d508f0a83363f678f89ba048972a33126d71f9` |
 | Phi-Aufrufe | 0 |
 | C1-Aufrufe | 0 |
 | Neuer unabhängiger 0.99-Nachweis | **nein** |

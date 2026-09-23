@@ -4,7 +4,7 @@
   "protocol": "FINAL_EXTERNAL_STYLE_HOLDOUT_PHASE_A",
   "min_pdfs": 50,
   "max_pdfs": 100,
-  "parser_commit": "03205a4c34258d6482347134ea1d6c11c24ddf02",
+  "parser_commit": "d6fd5c2dac8f9cdf81c0ad7f09807b3096d91abd",
   "parser_source_sha256": "feece3bdf434e720cf696b1159d508f0a83363f678f89ba048972a33126d71f9",
   "evaluation_in_phase_a": false,
   "reads_ground_truth": false,
@@ -12,5 +12,7 @@
   "layout_class_assumptions": false,
   "lora_training": false,
   "phi_production": false,
-  "note": "No predictions generated without an unknown blind PDF directory. Independent 0.99 is NOT claimed by runner readiness."
+  "note": "No predictions generated without an unknown blind PDF directory. Independent 0.99 is NOT claimed by runner readiness.",
+  "frozen_candidate": true,
+  "independent_f1_proven": false
 }
