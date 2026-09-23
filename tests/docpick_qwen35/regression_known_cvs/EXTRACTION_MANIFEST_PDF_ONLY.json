@@ -1,0 +1,249 @@
+{
+  "manifest_id": "REGRESSION_KNOWN_DE_EN_V1",
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "locked": true,
+  "documents": [
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_01",
+      "path": "tests/fixtures/cv_corpus/DE_01_Klassisch.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_02",
+      "path": "tests/fixtures/cv_corpus/DE_02_Zweispaltig_Trap.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_03",
+      "path": "tests/fixtures/cv_corpus/DE_03_C1_Kontextfalle.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_04",
+      "path": "tests/fixtures/cv_corpus/DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_05",
+      "path": "tests/fixtures/cv_corpus/DE_05_Zweiseitig.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_01",
+      "path": "tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_02",
+      "path": "tests/fixtures/cv_corpus/EN_02_Two_Column_Trap.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_03",
+      "path": "tests/fixtures/cv_corpus/EN_03_Missing_Address_Fields.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_04",
+      "path": "tests/fixtures/cv_corpus/EN_04_German_Address_English_CV.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_05",
+      "path": "tests/fixtures/cv_corpus/EN_05_Skills_Heavy.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_001",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_001.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_002",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_002.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_003",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_003.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_004",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_004.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_005",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_005.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_006",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_006.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_007",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_007.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_008",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_008.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_009",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_009.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_010",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_010.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_011",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_011.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_012",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_012.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_013",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_013.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_014",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_014.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_015",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_015.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_016",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_016.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_017",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_017.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_018",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_018.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_019",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_019.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_020",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_020.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_021",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_021.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_022",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_022.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_023",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_023.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_024",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_024.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_025",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_025.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_026",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_026.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_027",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_027.pdf",
+      "lang": "en"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_028",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_028.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_029",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_029.pdf",
+      "lang": "de"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_030",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_030.pdf",
+      "lang": "de"
+    }
+  ],
+  "n": 40,
+  "note": "Extraction input only. Ground truth paths intentionally omitted from this file."
+}
