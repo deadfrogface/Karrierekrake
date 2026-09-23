@@ -1,0 +1,2383 @@
+{
+  "corpus": "KarriereKrake Independent Mini Holdout 30",
+  "version": "1.0",
+  "created": "2026-09-23",
+  "rules": [
+    "Do not expose before Phase A predictions are sealed.",
+    "Only visibly evidenced, product-supported profile fields are included in documents.",
+    "Metadata is excluded from all quality metrics."
+  ],
+  "documents": {
+    "MH_001.pdf": {
+      "name": {
+        "first_name": "Ada",
+        "last_name": "Rademacher"
+      },
+      "address": {
+        "street": "Rheinpromenade",
+        "house_number": "5c",
+        "postal_code": "46446",
+        "city": "Emmerich am Rhein",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "02.01.1970",
+      "email": "ada.rademacher@example.de",
+      "phone": "+49 152 4100000",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Seestern Produktion GmbH",
+          "position": "Aquakulturwirtin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Protokollführung",
+            "Schadensanalyse"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Berufsschule Emmerich am Rhein",
+          "qualification": "Berufsreife",
+          "start_date": "2008",
+          "end_date": "2011"
+        },
+        {
+          "institution": "Bildungswerk Emmerich am Rhein",
+          "qualification": "Ausbildung Aquakulturwirtin",
+          "start_date": "2017",
+          "end_date": "2020"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2021"
+      ],
+      "software": [
+        "ZBrush",
+        "Grafana"
+      ],
+      "skills": [
+        "Protokollführung",
+        "Schadensanalyse",
+        "Kalibrierung"
+      ]
+    },
+    "MH_002.pdf": {
+      "name": {
+        "first_name": "Benedikt",
+        "last_name": "Şahin"
+      },
+      "address": {
+        "street": "Tumringer Straße",
+        "house_number": "22",
+        "postal_code": "79539",
+        "city": "Lörrach",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "03.08.1981",
+      "email": "benedikt.sahin@example.de",
+      "phone": "+49 153 4109001",
+      "target_role": null,
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Kronenwerk Technik KG",
+          "position": "Betriebstechniker",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Arbeitsvorbereitung",
+            "Lieferantenkoordination"
+          ]
+        },
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Messmittelverwaltung",
+            "Schadensanalyse"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Fachschule Lörrach",
+          "qualification": "Mittlerer Schulabschluss",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "SAP MM",
+        "Adobe Acrobat Pro",
+        "Tableau"
+      ],
+      "skills": [
+        "Arbeitsvorbereitung",
+        "Lieferantenkoordination",
+        "Messmittelverwaltung",
+        "Schadensanalyse"
+      ]
+    },
+    "MH_003.pdf": {
+      "name": {
+        "first_name": "Célina",
+        "last_name": "Wouters"
+      },
+      "address": {
+        "street": "Bautzner Straße",
+        "house_number": "39",
+        "postal_code": "02763",
+        "city": "Zittau",
+        "country": "Deutschland"
+      },
+      "date_of_birth": null,
+      "email": "celina.wouters@example.de",
+      "phone": "+49 154 4118002",
+      "target_role": null,
+      "languages": [
+        [
+          "Niederländisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Chirurgiemechanikerin",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Protokollführung",
+            "Technische Recherche"
+          ]
+        },
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Prozessüberwachung",
+            "Gefahrstoffmanagement"
+          ]
+        },
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Probenahme",
+            "Protokollführung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Hochschule Zittau",
+          "qualification": "Fachhochschulreife",
+          "start_date": "2010",
+          "end_date": "2013"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Oracle NetSuite",
+        "RStudio",
+        "ZBrush",
+        "Qlik Sense"
+      ],
+      "skills": [
+        "Protokollführung",
+        "Technische Recherche",
+        "Prozessüberwachung",
+        "Gefahrstoffmanagement",
+        "Probenahme"
+      ]
+    },
+    "MH_004.pdf": {
+      "name": {
+        "first_name": "Dragomir",
+        "last_name": "Becker"
+      },
+      "address": {
+        "street": "Schäferstraße",
+        "house_number": "56",
+        "postal_code": "66953",
+        "city": "Pirmasens",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "05.10.2003",
+      "email": "dragomir.becker@example.de",
+      "phone": "+49 155 4127003",
+      "target_role": "Deichbauer",
+      "languages": [
+        [
+          "Polnisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Deichbauer",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Materialdisposition",
+            "Bestandsprüfung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Gesamtschule Pirmasens",
+          "qualification": "Allgemeine Hochschulreife",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Microsoft Project",
+        "EPLAN Electric P8",
+        "GIMP",
+        "Inkscape",
+        "Ansys"
+      ],
+      "skills": [
+        "Materialdisposition",
+        "Bestandsprüfung",
+        "Technische Recherche",
+        "Prozessüberwachung",
+        "Kundenkommunikation",
+        "Probenahme"
+      ]
+    },
+    "MH_005.pdf": {
+      "name": {
+        "first_name": "Esra",
+        "last_name": "Lavigne"
+      },
+      "address": {
+        "street": "Münchener Straße",
+        "house_number": "73",
+        "postal_code": "83395",
+        "city": "Freilassing",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "06.05.1980",
+      "email": "esra.lavigne@example.de",
+      "phone": null,
+      "target_role": null,
+      "languages": [
+        [
+          "Arabisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Edelsteinschleiferin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Schadensanalyse",
+            "Dokumentenlenkung"
+          ]
+        },
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Materialdisposition",
+            "Schadensanalyse"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Berufsschule Freilassing",
+          "qualification": "Gesellenbrief",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2025"
+      ],
+      "software": [
+        "Minitab",
+        "Grafana"
+      ],
+      "skills": [
+        "Schadensanalyse",
+        "Dokumentenlenkung",
+        "Materialdisposition"
+      ]
+    },
+    "MH_006.pdf": {
+      "name": {
+        "first_name": "Florian",
+        "last_name": "Mazurek"
+      },
+      "address": {
+        "street": "Wallstraße",
+        "house_number": "90",
+        "postal_code": "48683",
+        "city": "Ahaus",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "07.12.1991",
+      "email": "florian.mazurek@example.de",
+      "phone": "+49 157 4145005",
+      "target_role": null,
+      "languages": [
+        [
+          "Spanisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Fahrzeuglackierer",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Probenahme",
+            "Arbeitsvorbereitung"
+          ]
+        },
+        {
+          "company": "Hafenring Logistik OHG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Gefahrstoffmanagement",
+            "Montageplanung"
+          ]
+        },
+        {
+          "company": "Albatros Systeme GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Probenahme",
+            "Arbeitsvorbereitung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Fachschule Ahaus",
+          "qualification": "Technikerabschluss",
+          "start_date": "2013",
+          "end_date": "2016"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Fusion 360",
+        "Qlik Sense",
+        "GIMP"
+      ],
+      "skills": [
+        "Probenahme",
+        "Arbeitsvorbereitung",
+        "Gefahrstoffmanagement",
+        "Montageplanung"
+      ]
+    },
+    "MH_007.pdf": {
+      "name": {
+        "first_name": "Giselle",
+        "last_name": "Papadopoulos"
+      },
+      "address": {
+        "city": "Cottbus",
+        "country": "Deutschland"
+      },
+      "date_of_birth": null,
+      "email": "giselle.papadopoulos@example.de",
+      "phone": "+49 152 4154006",
+      "target_role": null,
+      "languages": [
+        [
+          "Griechisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Hafenring Logistik OHG",
+          "position": "Glasveredlerin",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Kundenkommunikation",
+            "Dokumentenlenkung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Hochschule Cottbus",
+          "qualification": "Bachelor of Engineering",
+          "start_date": "2014",
+          "end_date": "2017"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "ZBrush",
+        "Tableau",
+        "LibreOffice Calc",
+        "Microsoft Project"
+      ],
+      "skills": [
+        "Kundenkommunikation",
+        "Dokumentenlenkung",
+        "Technische Recherche",
+        "Schadensanalyse",
+        "Schichtübergabe"
+      ]
+    },
+    "MH_008.pdf": {
+      "name": {
+        "first_name": "Hannes",
+        "last_name": "Rácz"
+      },
+      "address": {
+        "street": "Hafenstraße",
+        "house_number": "124",
+        "postal_code": "25813",
+        "city": "Husum",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "09.02.1979",
+      "email": "hannes.rcz@example.de",
+      "phone": "+49 153 4163007",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "C2"
+        ],
+        [
+          "Ungarisch",
+          "C1"
+        ]
+      ],
+      "licenses": [
+        "B",
+        "C1"
+      ],
+      "employment": [
+        {
+          "company": "Albatros Systeme GmbH",
+          "position": "Hafenschiffer",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Instandhaltung",
+            "Kalibrierung"
+          ]
+        },
+        {
+          "company": "Seestern Produktion GmbH",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Arbeitsvorbereitung",
+            "Schichtübergabe"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Gesamtschule Husum",
+          "qualification": "Meisterprüfung",
+          "start_date": "2015",
+          "end_date": "2018"
+        },
+        {
+          "institution": "Bildungswerk Husum",
+          "qualification": "Ausbildung Hafenschiffer",
+          "start_date": "2017",
+          "end_date": "2020"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Fusion 360",
+        "SAP MM",
+        "Adobe Acrobat Pro",
+        "EPLAN Electric P8",
+        "Minitab"
+      ],
+      "skills": [
+        "Instandhaltung",
+        "Kalibrierung",
+        "Arbeitsvorbereitung",
+        "Schichtübergabe",
+        "Bestandsprüfung",
+        "Messmittelverwaltung"
+      ]
+    },
+    "MH_009.pdf": {
+      "name": {
+        "first_name": "Imani",
+        "last_name": "Schulte"
+      },
+      "address": {
+        "street": "Oxfordstraße",
+        "house_number": "20",
+        "postal_code": "53111",
+        "city": "Bonn",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "10.09.1990",
+      "email": "imani.schulte@example.de",
+      "phone": "+49 154 4172008",
+      "target_role": "Imkerin",
+      "languages": [
+        [
+          "Ukrainisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Seestern Produktion GmbH",
+          "position": "Imkerin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Kundenkommunikation",
+            "Schichtübergabe"
+          ]
+        },
+        {
+          "company": "Kronenwerk Technik KG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Probenahme",
+            "Kundenkommunikation"
+          ]
+        },
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Schichtübergabe",
+            "Probenahme"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Berufsschule Bonn",
+          "qualification": "Studium abgebrochen",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2024"
+      ],
+      "software": [
+        "Minitab",
+        "LibreOffice Calc"
+      ],
+      "skills": [
+        "Kundenkommunikation",
+        "Schichtübergabe",
+        "Probenahme"
+      ]
+    },
+    "MH_010.pdf": {
+      "name": {
+        "first_name": "Joris",
+        "last_name": "Timmermans"
+      },
+      "address": {
+        "street": "Anger",
+        "house_number": "37c",
+        "postal_code": "99084",
+        "city": "Erfurt",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "11.04.2001",
+      "email": null,
+      "phone": "+49 155 4181009",
+      "target_role": null,
+      "languages": [
+        [
+          "Italienisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Kronenwerk Technik KG",
+          "position": "Kanalbauer",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Arbeitsvorbereitung",
+            "Kalibrierung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Fachschule Erfurt",
+          "qualification": "Schule ohne Abschluss",
+          "start_date": "2009",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Tableau",
+        "Grafana",
+        "Qlik Sense"
+      ],
+      "skills": [
+        "Arbeitsvorbereitung",
+        "Kalibrierung",
+        "Materialdisposition",
+        "Qualitätsprüfung"
+      ]
+    },
+    "MH_011.pdf": {
+      "name": {
+        "first_name": "Kateryna",
+        "last_name": "Weiß"
+      },
+      "address": {
+        "street": "Rue du Rhône",
+        "house_number": "54",
+        "postal_code": "1204",
+        "city": "Genève",
+        "country": "Schweiz"
+      },
+      "date_of_birth": "12.11.1978",
+      "email": "kateryna.weiss@example.de",
+      "phone": "+49 156 4190010",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Lebensmittelkontrolleurin",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Qualitätsprüfung",
+            "Kundenkommunikation"
+          ]
+        },
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Gefahrstoffmanagement",
+            "Technische Recherche"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Hochschule Genève",
+          "qualification": "Berufsreife",
+          "start_date": "2010",
+          "end_date": "2013"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Grafana",
+        "SAP MM",
+        "Microsoft Project",
+        "PostgreSQL"
+      ],
+      "skills": [
+        "Qualitätsprüfung",
+        "Kundenkommunikation",
+        "Gefahrstoffmanagement",
+        "Technische Recherche",
+        "Schadensanalyse"
+      ]
+    },
+    "MH_012.pdf": {
+      "name": {
+        "first_name": "Lars",
+        "last_name": "Abdelrahman"
+      },
+      "address": {
+        "street": "Quai de la Goffe",
+        "house_number": "71",
+        "postal_code": "4000",
+        "city": "Liège",
+        "country": "Belgien"
+      },
+      "date_of_birth": "13.06.1989",
+      "email": "lars.abdelrahman@example.de",
+      "phone": "+49 157 4199011",
+      "target_role": null,
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Medientechnologe Druck",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Bestandsprüfung",
+            "Schadensanalyse"
+          ]
+        },
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Qualitätsprüfung",
+            "Dokumentenlenkung"
+          ]
+        },
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Arbeitsvorbereitung",
+            "Gefahrstoffmanagement"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Gesamtschule Liège",
+          "qualification": "Mittlerer Schulabschluss",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Oracle NetSuite",
+        "Fusion 360",
+        "GIMP",
+        "Adobe Acrobat Pro",
+        "Grafana"
+      ],
+      "skills": [
+        "Bestandsprüfung",
+        "Schadensanalyse",
+        "Qualitätsprüfung",
+        "Dokumentenlenkung",
+        "Arbeitsvorbereitung",
+        "Gefahrstoffmanagement"
+      ]
+    },
+    "MH_013.pdf": {
+      "name": {
+        "first_name": "Malika",
+        "last_name": "Bork"
+      },
+      "address": {
+        "street": "Utrechtseweg",
+        "house_number": "88",
+        "postal_code": "6811",
+        "city": "Arnhem",
+        "country": "Niederlande"
+      },
+      "date_of_birth": "14.01.2000",
+      "email": "malika.bork@example.de",
+      "phone": "+49 152 4208012",
+      "target_role": null,
+      "languages": [
+        [
+          "Niederländisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Naturwerksteinmechanikerin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Schichtübergabe",
+            "Kundenkommunikation"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Berufsschule Arnhem",
+          "qualification": "Fachhochschulreife",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2023"
+      ],
+      "software": [
+        "SAP MM",
+        "LibreOffice Calc"
+      ],
+      "skills": [
+        "Schichtübergabe",
+        "Kundenkommunikation",
+        "Schadensanalyse"
+      ]
+    },
+    "MH_014.pdf": {
+      "name": {
+        "first_name": "Nevio",
+        "last_name": "Carlsen"
+      },
+      "address": {
+        "street": "Rue Serpenoise",
+        "house_number": "105",
+        "postal_code": "57000",
+        "city": "Metz",
+        "country": "Frankreich"
+      },
+      "date_of_birth": "15.08.1977",
+      "email": "nevio.carlsen@example.de",
+      "phone": "+49 153 4217013",
+      "target_role": null,
+      "languages": [
+        [
+          "Polnisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Ofenbauer",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Messmittelverwaltung",
+            "Lieferantenkoordination"
+          ]
+        },
+        {
+          "company": "Hafenring Logistik OHG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Materialdisposition",
+            "Gefahrstoffmanagement"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Fachschule Metz",
+          "qualification": "Allgemeine Hochschulreife",
+          "start_date": "2013",
+          "end_date": "2016"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "GIMP",
+        "EPLAN Electric P8",
+        "SAP MM"
+      ],
+      "skills": [
+        "Messmittelverwaltung",
+        "Lieferantenkoordination",
+        "Materialdisposition",
+        "Gefahrstoffmanagement"
+      ]
+    },
+    "MH_015.pdf": {
+      "name": {
+        "first_name": "Orla",
+        "last_name": "Demir"
+      },
+      "address": {
+        "street": "Museumstraße",
+        "house_number": "122",
+        "postal_code": "6020",
+        "city": "Innsbruck",
+        "country": "Österreich"
+      },
+      "date_of_birth": "16.03.1988",
+      "email": "orla.demir@example.de",
+      "phone": "+49 154 4226014",
+      "target_role": "Pferdewirtin",
+      "languages": [
+        [
+          "Arabisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Hafenring Logistik OHG",
+          "position": "Pferdewirtin",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Qualitätsprüfung",
+            "Gefahrstoffmanagement"
+          ]
+        },
+        {
+          "company": "Albatros Systeme GmbH",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Montageplanung",
+            "Bestandsprüfung"
+          ]
+        },
+        {
+          "company": "Seestern Produktion GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Technische Recherche",
+            "Qualitätsprüfung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Hochschule Innsbruck",
+          "qualification": "Gesellenbrief",
+          "start_date": "2014",
+          "end_date": "2017"
+        },
+        {
+          "institution": "Bildungswerk Innsbruck",
+          "qualification": "Ausbildung Pferdewirtin",
+          "start_date": "2017",
+          "end_date": "2020"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "SAP MM",
+        "Adobe Acrobat Pro",
+        "Grafana",
+        "ZBrush"
+      ],
+      "skills": [
+        "Qualitätsprüfung",
+        "Gefahrstoffmanagement",
+        "Montageplanung",
+        "Bestandsprüfung",
+        "Technische Recherche"
+      ]
+    },
+    "MH_016.pdf": {
+      "name": {
+        "first_name": "Ruben",
+        "last_name": "Engelhardt"
+      },
+      "address": {
+        "street": "Rheinpromenade",
+        "house_number": "18",
+        "postal_code": "46446",
+        "city": "Emmerich am Rhein",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "17.10.1999",
+      "email": "ruben.engelhardt@example.de",
+      "phone": "+49 155 4235015",
+      "target_role": null,
+      "languages": [
+        [
+          "Spanisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Albatros Systeme GmbH",
+          "position": "Requisiteur",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Bestandsprüfung",
+            "Schadensanalyse"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Gesamtschule Emmerich am Rhein",
+          "qualification": "Technikerabschluss",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Fusion 360",
+        "ZBrush",
+        "Qlik Sense",
+        "Tableau",
+        "RStudio"
+      ],
+      "skills": [
+        "Bestandsprüfung",
+        "Schadensanalyse",
+        "Technische Recherche",
+        "Arbeitsvorbereitung",
+        "Instandhaltung",
+        "Protokollführung"
+      ]
+    },
+    "MH_017.pdf": {
+      "name": {
+        "first_name": "Saskia",
+        "last_name": "Fadel"
+      },
+      "address": {
+        "street": "Tumringer Straße",
+        "house_number": "35",
+        "postal_code": "79539",
+        "city": "Lörrach",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "18.05.1976",
+      "email": "saskia.fadel@example.de",
+      "phone": "+49 156 4244016",
+      "target_role": null,
+      "languages": [
+        [
+          "Griechisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Seestern Produktion GmbH",
+          "position": "Straßenwärterin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Bestandsprüfung",
+            "Probenahme"
+          ]
+        },
+        {
+          "company": "Kronenwerk Technik KG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Prozessüberwachung",
+            "Bestandsprüfung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Berufsschule Lörrach",
+          "qualification": "Bachelor of Engineering",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2022"
+      ],
+      "software": [
+        "Bentley MicroStation",
+        "Tableau"
+      ],
+      "skills": [
+        "Bestandsprüfung",
+        "Probenahme",
+        "Prozessüberwachung"
+      ]
+    },
+    "MH_018.pdf": {
+      "name": {
+        "first_name": "Tarik",
+        "last_name": "Giese"
+      },
+      "address": {
+        "city": "Zittau",
+        "country": "Deutschland"
+      },
+      "date_of_birth": null,
+      "email": "tarik.giese@example.de",
+      "phone": "+49 157 4253017",
+      "target_role": null,
+      "languages": [
+        [
+          "Ungarisch",
+          "A2"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Kronenwerk Technik KG",
+          "position": "Textillaborant",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Bestandsprüfung",
+            "Schadensanalyse"
+          ]
+        },
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Gefahrstoffmanagement",
+            "Kalibrierung"
+          ]
+        },
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Bestandsprüfung",
+            "Schadensanalyse"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Fachschule Zittau",
+          "qualification": "Meisterprüfung",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "EPLAN Electric P8",
+        "PostgreSQL",
+        "Inkscape"
+      ],
+      "skills": [
+        "Bestandsprüfung",
+        "Schadensanalyse",
+        "Gefahrstoffmanagement",
+        "Kalibrierung"
+      ]
+    },
+    "MH_019.pdf": {
+      "name": {
+        "first_name": "Una",
+        "last_name": "Heinrich"
+      },
+      "address": {
+        "street": "Schäferstraße",
+        "house_number": "69c",
+        "postal_code": "66953",
+        "city": "Pirmasens",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "20.07.1998",
+      "email": "una.heinrich@example.de",
+      "phone": null,
+      "target_role": null,
+      "languages": [
+        [
+          "Ukrainisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Uhrentechnikerin",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Schichtübergabe",
+            "Qualitätsprüfung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Hochschule Pirmasens",
+          "qualification": "Studium abgebrochen",
+          "start_date": "2010",
+          "end_date": "2013"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Tableau",
+        "PostgreSQL",
+        "Ansys",
+        "Microsoft Project"
+      ],
+      "skills": [
+        "Schichtübergabe",
+        "Qualitätsprüfung",
+        "Instandhaltung",
+        "Bestandsprüfung",
+        "Montageplanung"
+      ]
+    },
+    "MH_020.pdf": {
+      "name": {
+        "first_name": "Vincent",
+        "last_name": "Kelm"
+      },
+      "address": {
+        "street": "Münchener Straße",
+        "house_number": "86",
+        "postal_code": "83395",
+        "city": "Freilassing",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "21.02.1975",
+      "email": "vincent.kelm@example.de",
+      "phone": "+49 153 4271019",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "C2"
+        ],
+        [
+          "Ungarisch",
+          "C1"
+        ]
+      ],
+      "licenses": [
+        "B",
+        "C1"
+      ],
+      "employment": [
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Vulkaniseur",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Kundenkommunikation",
+            "Dokumentenlenkung"
+          ]
+        },
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Lieferantenkoordination",
+            "Protokollführung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Gesamtschule Freilassing",
+          "qualification": "Schule ohne Abschluss",
+          "start_date": "2011",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Bentley MicroStation",
+        "RStudio",
+        "Fusion 360",
+        "Oracle NetSuite",
+        "Minitab"
+      ],
+      "skills": [
+        "Kundenkommunikation",
+        "Dokumentenlenkung",
+        "Lieferantenkoordination",
+        "Protokollführung",
+        "Gefahrstoffmanagement",
+        "Schichtübergabe"
+      ]
+    },
+    "MH_021.pdf": {
+      "name": {
+        "first_name": "Wanda",
+        "last_name": "Lopez"
+      },
+      "address": {
+        "street": "Wallstraße",
+        "house_number": "103",
+        "postal_code": "48683",
+        "city": "Ahaus",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "22.09.1986",
+      "email": "wanda.lopez@example.de",
+      "phone": "+49 154 4280020",
+      "target_role": "Werkfeuerwehrfrau",
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Werkfeuerwehrfrau",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Kundenkommunikation",
+            "Messmittelverwaltung"
+          ]
+        },
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Schichtübergabe",
+            "Kundenkommunikation"
+          ]
+        },
+        {
+          "company": "Hafenring Logistik OHG",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Messmittelverwaltung",
+            "Schichtübergabe"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Berufsschule Ahaus",
+          "qualification": "Berufsreife",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2021"
+      ],
+      "software": [
+        "Qlik Sense",
+        "Bentley MicroStation"
+      ],
+      "skills": [
+        "Kundenkommunikation",
+        "Messmittelverwaltung",
+        "Schichtübergabe"
+      ]
+    },
+    "MH_022.pdf": {
+      "name": {
+        "first_name": "Youssef",
+        "last_name": "Martens"
+      },
+      "address": {
+        "street": "Karl-Liebknecht-Straße",
+        "house_number": "120",
+        "postal_code": "03046",
+        "city": "Cottbus",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "23.04.1997",
+      "email": null,
+      "phone": "+49 155 4289021",
+      "target_role": null,
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Zahnradvorrichter",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Prozessüberwachung",
+            "Schadensanalyse"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Fachschule Cottbus",
+          "qualification": "Mittlerer Schulabschluss",
+          "start_date": "2013",
+          "end_date": "2016"
+        },
+        {
+          "institution": "Bildungswerk Cottbus",
+          "qualification": "Ausbildung Zahnradvorrichter",
+          "start_date": "2017",
+          "end_date": "2020"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "PostgreSQL",
+        "Inkscape",
+        "Minitab"
+      ],
+      "skills": [
+        "Prozessüberwachung",
+        "Schadensanalyse",
+        "Probenahme",
+        "Instandhaltung"
+      ]
+    },
+    "MH_023.pdf": {
+      "name": {
+        "first_name": "Zita",
+        "last_name": "Novak"
+      },
+      "address": {
+        "street": "Hafenstraße",
+        "house_number": "16",
+        "postal_code": "25813",
+        "city": "Husum",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "24.11.1974",
+      "email": "zita.novak@example.de",
+      "phone": "+49 156 4298022",
+      "target_role": null,
+      "languages": [
+        [
+          "Niederländisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Hafenring Logistik OHG",
+          "position": "Änderungsschneiderin",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Technische Recherche",
+            "Gefahrstoffmanagement"
+          ]
+        },
+        {
+          "company": "Albatros Systeme GmbH",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Instandhaltung",
+            "Qualitätsprüfung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Hochschule Husum",
+          "qualification": "Fachhochschulreife",
+          "start_date": "2014",
+          "end_date": "2017"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Qlik Sense",
+        "RStudio",
+        "ZBrush",
+        "Bentley MicroStation"
+      ],
+      "skills": [
+        "Technische Recherche",
+        "Gefahrstoffmanagement",
+        "Instandhaltung",
+        "Qualitätsprüfung",
+        "Schichtübergabe"
+      ]
+    },
+    "MH_024.pdf": {
+      "name": {
+        "first_name": "Alistair",
+        "last_name": "Perry"
+      },
+      "address": {
+        "street": "Oxfordstraße",
+        "house_number": "33",
+        "postal_code": "53111",
+        "city": "Bonn",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "25.06.1985",
+      "email": "alistair.perry@example.co.uk",
+      "phone": "+49 157 4307023",
+      "target_role": null,
+      "languages": [
+        [
+          "English",
+          "native"
+        ],
+        [
+          "German",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Albatros Systeme GmbH",
+          "position": "Conservation Assistant",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Montageplanung",
+            "Probenahme"
+          ]
+        },
+        {
+          "company": "Seestern Produktion GmbH",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Schadensanalyse",
+            "Schichtübergabe"
+          ]
+        },
+        {
+          "company": "Kronenwerk Technik KG",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Qualitätsprüfung",
+            "Dokumentenlenkung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Bristol Technical College",
+          "qualification": "Allgemeine Hochschulreife",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "ZBrush",
+        "Oracle NetSuite",
+        "Inkscape",
+        "Minitab",
+        "PostgreSQL"
+      ],
+      "skills": [
+        "Montageplanung",
+        "Probenahme",
+        "Schadensanalyse",
+        "Schichtübergabe",
+        "Qualitätsprüfung",
+        "Dokumentenlenkung"
+      ]
+    },
+    "MH_025.pdf": {
+      "name": {
+        "first_name": "Brooke",
+        "last_name": "Reed"
+      },
+      "address": {
+        "street": "Anger",
+        "house_number": "50",
+        "postal_code": "99084",
+        "city": "Erfurt",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "26.01.1996",
+      "email": "brooke.reed@example.co.uk",
+      "phone": "+49 152 4316024",
+      "target_role": null,
+      "languages": [
+        [
+          "English",
+          "native"
+        ],
+        [
+          "German",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Seestern Produktion GmbH",
+          "position": "Broadcast Engineer",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Messmittelverwaltung",
+            "Gefahrstoffmanagement"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Bristol Technical College",
+          "qualification": "Gesellenbrief",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2025"
+      ],
+      "software": [
+        "Minitab",
+        "Qlik Sense"
+      ],
+      "skills": [
+        "Messmittelverwaltung",
+        "Gefahrstoffmanagement",
+        "Technische Recherche"
+      ]
+    },
+    "MH_026.pdf": {
+      "name": {
+        "first_name": "Connor",
+        "last_name": "Smith"
+      },
+      "address": {
+        "city": "Genève",
+        "country": "Schweiz"
+      },
+      "date_of_birth": null,
+      "email": "connor.smith@example.co.uk",
+      "phone": "+49 153 4325025",
+      "target_role": null,
+      "languages": [
+        [
+          "English",
+          "native"
+        ],
+        [
+          "German",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Kronenwerk Technik KG",
+          "position": "Compliance Coordinator",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Qualitätsprüfung",
+            "Bestandsprüfung"
+          ]
+        },
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Technische Recherche",
+            "Montageplanung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Bristol Technical College",
+          "qualification": "Technikerabschluss",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "SAP MM",
+        "RStudio",
+        "ZBrush"
+      ],
+      "skills": [
+        "Qualitätsprüfung",
+        "Bestandsprüfung",
+        "Technische Recherche",
+        "Montageplanung"
+      ]
+    },
+    "MH_027.pdf": {
+      "name": {
+        "first_name": "Daisy",
+        "last_name": "Turner"
+      },
+      "address": {
+        "street": "Quai de la Goffe",
+        "house_number": "84",
+        "postal_code": "4000",
+        "city": "Liège",
+        "country": "Belgien"
+      },
+      "date_of_birth": "03.03.1984",
+      "email": "daisy.turner@example.co.uk",
+      "phone": "+49 154 4334026",
+      "target_role": "Digital Archivist",
+      "languages": [
+        [
+          "English",
+          "native"
+        ],
+        [
+          "German",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Mosaik Dienste AG",
+          "position": "Digital Archivist",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Arbeitsvorbereitung",
+            "Montageplanung"
+          ]
+        },
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Materialdisposition",
+            "Kalibrierung"
+          ]
+        },
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Kundenkommunikation",
+            "Arbeitsvorbereitung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Bristol Technical College",
+          "qualification": "Bachelor of Engineering",
+          "start_date": "2010",
+          "end_date": "2013"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "GIMP",
+        "Microsoft Project",
+        "Adobe Acrobat Pro",
+        "SAP MM"
+      ],
+      "skills": [
+        "Arbeitsvorbereitung",
+        "Montageplanung",
+        "Materialdisposition",
+        "Kalibrierung",
+        "Kundenkommunikation"
+      ]
+    },
+    "MH_028.pdf": {
+      "name": {
+        "first_name": "Felix",
+        "last_name": "Adler"
+      },
+      "address": {
+        "street": "Utrechtseweg",
+        "house_number": "101c",
+        "postal_code": "6811",
+        "city": "Arnhem",
+        "country": "Niederlande"
+      },
+      "date_of_birth": "04.10.1995",
+      "email": "felix.adler@example.de",
+      "phone": "+49 155 4343027",
+      "target_role": null,
+      "languages": [
+        [
+          "Ungarisch",
+          "A2"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "employment": [
+        {
+          "company": "Nordlicht Manufaktur",
+          "position": "Ergotherapeut",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Montageplanung",
+            "Messmittelverwaltung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Gesamtschule Arnhem",
+          "qualification": "Meisterprüfung",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Oracle NetSuite",
+        "Tableau",
+        "LibreOffice Calc",
+        "RStudio",
+        "Adobe Acrobat Pro"
+      ],
+      "skills": [
+        "Montageplanung",
+        "Messmittelverwaltung",
+        "Schadensanalyse",
+        "Instandhaltung",
+        "Kalibrierung",
+        "Protokollführung"
+      ]
+    },
+    "MH_029.pdf": {
+      "name": {
+        "first_name": "Hala",
+        "last_name": "Bensaïd"
+      },
+      "address": {
+        "street": "Rue Serpenoise",
+        "house_number": "118",
+        "postal_code": "57000",
+        "city": "Metz",
+        "country": "Frankreich"
+      },
+      "date_of_birth": "05.05.1972",
+      "email": "hala.bensaid@example.de",
+      "phone": "+49 156 4352028",
+      "target_role": null,
+      "languages": [
+        [
+          "Ukrainisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "Brückenbau West GmbH",
+          "position": "Fluggerätmechanikerin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Bestandsprüfung",
+            "Lieferantenkoordination"
+          ]
+        },
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Materialdisposition",
+            "Bestandsprüfung"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Berufsschule Metz",
+          "qualification": "Studium abgebrochen",
+          "start_date": "2012",
+          "end_date": "2015"
+        },
+        {
+          "institution": "Bildungswerk Metz",
+          "qualification": "Ausbildung Fluggerätmechanikerin",
+          "start_date": "2017",
+          "end_date": "2020"
+        }
+      ],
+      "certificates": [
+        "Arbeitssicherheit 2024"
+      ],
+      "software": [
+        "Adobe Acrobat Pro",
+        "ZBrush"
+      ],
+      "skills": [
+        "Bestandsprüfung",
+        "Lieferantenkoordination",
+        "Materialdisposition"
+      ]
+    },
+    "MH_030.pdf": {
+      "name": {
+        "first_name": "Mikołaj",
+        "last_name": "Czarnecki"
+      },
+      "address": {
+        "street": "Museumstraße",
+        "house_number": "14",
+        "postal_code": "6020",
+        "city": "Innsbruck",
+        "country": "Österreich"
+      },
+      "date_of_birth": "06.12.1983",
+      "email": "mikolaj.czarnecki@example.de",
+      "phone": "+49 157 4361029",
+      "target_role": null,
+      "languages": [
+        [
+          "Italienisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "employment": [
+        {
+          "company": "TerraNova Labor e.V.",
+          "position": "Küstengeologe",
+          "start_date": "02/2019",
+          "end_date": "08/2021",
+          "description": [
+            "Technische Recherche",
+            "Probenahme"
+          ]
+        },
+        {
+          "company": "Hafenring Logistik OHG",
+          "position": "Projektassistenz",
+          "start_date": "03/2020",
+          "end_date": "09/2022",
+          "description": [
+            "Kundenkommunikation",
+            "Messmittelverwaltung"
+          ]
+        },
+        {
+          "company": "Albatros Systeme GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "10/2023",
+          "description": [
+            "Technische Recherche",
+            "Probenahme"
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Fachschule Innsbruck",
+          "qualification": "Schule ohne Abschluss",
+          "start_date": "2013",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "PostgreSQL",
+        "Ansys",
+        "Oracle NetSuite"
+      ],
+      "skills": [
+        "Technische Recherche",
+        "Probenahme",
+        "Kundenkommunikation",
+        "Messmittelverwaltung"
+      ]
+    }
+  },
+  "metadata": {
+    "MH_001.pdf": {
+      "document_id": "MH_001",
+      "document_language": "de",
+      "layout_class": 0,
+      "source_type": "born_digital"
+    },
+    "MH_002.pdf": {
+      "document_id": "MH_002",
+      "document_language": "de",
+      "layout_class": 1,
+      "source_type": "born_digital"
+    },
+    "MH_003.pdf": {
+      "document_id": "MH_003",
+      "document_language": "de",
+      "layout_class": 2,
+      "source_type": "born_digital"
+    },
+    "MH_004.pdf": {
+      "document_id": "MH_004",
+      "document_language": "de",
+      "layout_class": 3,
+      "source_type": "born_digital"
+    },
+    "MH_005.pdf": {
+      "document_id": "MH_005",
+      "document_language": "de",
+      "layout_class": 4,
+      "source_type": "born_digital"
+    },
+    "MH_006.pdf": {
+      "document_id": "MH_006",
+      "document_language": "de",
+      "layout_class": 5,
+      "source_type": "born_digital"
+    },
+    "MH_007.pdf": {
+      "document_id": "MH_007",
+      "document_language": "de",
+      "layout_class": 6,
+      "source_type": "born_digital"
+    },
+    "MH_008.pdf": {
+      "document_id": "MH_008",
+      "document_language": "de",
+      "layout_class": 7,
+      "source_type": "born_digital"
+    },
+    "MH_009.pdf": {
+      "document_id": "MH_009",
+      "document_language": "de",
+      "layout_class": 8,
+      "source_type": "born_digital"
+    },
+    "MH_010.pdf": {
+      "document_id": "MH_010",
+      "document_language": "de",
+      "layout_class": 9,
+      "source_type": "born_digital"
+    },
+    "MH_011.pdf": {
+      "document_id": "MH_011",
+      "document_language": "de",
+      "layout_class": 10,
+      "source_type": "born_digital"
+    },
+    "MH_012.pdf": {
+      "document_id": "MH_012",
+      "document_language": "de",
+      "layout_class": 11,
+      "source_type": "born_digital"
+    },
+    "MH_013.pdf": {
+      "document_id": "MH_013",
+      "document_language": "de",
+      "layout_class": 0,
+      "source_type": "born_digital"
+    },
+    "MH_014.pdf": {
+      "document_id": "MH_014",
+      "document_language": "de",
+      "layout_class": 1,
+      "source_type": "born_digital"
+    },
+    "MH_015.pdf": {
+      "document_id": "MH_015",
+      "document_language": "de",
+      "layout_class": 2,
+      "source_type": "born_digital"
+    },
+    "MH_016.pdf": {
+      "document_id": "MH_016",
+      "document_language": "de",
+      "layout_class": 3,
+      "source_type": "born_digital"
+    },
+    "MH_017.pdf": {
+      "document_id": "MH_017",
+      "document_language": "de",
+      "layout_class": 4,
+      "source_type": "born_digital"
+    },
+    "MH_018.pdf": {
+      "document_id": "MH_018",
+      "document_language": "de",
+      "layout_class": 5,
+      "source_type": "born_digital"
+    },
+    "MH_019.pdf": {
+      "document_id": "MH_019",
+      "document_language": "de",
+      "layout_class": 6,
+      "source_type": "born_digital"
+    },
+    "MH_020.pdf": {
+      "document_id": "MH_020",
+      "document_language": "de",
+      "layout_class": 7,
+      "source_type": "born_digital"
+    },
+    "MH_021.pdf": {
+      "document_id": "MH_021",
+      "document_language": "de",
+      "layout_class": 8,
+      "source_type": "born_digital"
+    },
+    "MH_022.pdf": {
+      "document_id": "MH_022",
+      "document_language": "de",
+      "layout_class": 9,
+      "source_type": "born_digital"
+    },
+    "MH_023.pdf": {
+      "document_id": "MH_023",
+      "document_language": "de",
+      "layout_class": 10,
+      "source_type": "born_digital"
+    },
+    "MH_024.pdf": {
+      "document_id": "MH_024",
+      "document_language": "en",
+      "layout_class": 11,
+      "source_type": "born_digital"
+    },
+    "MH_025.pdf": {
+      "document_id": "MH_025",
+      "document_language": "en",
+      "layout_class": 0,
+      "source_type": "born_digital"
+    },
+    "MH_026.pdf": {
+      "document_id": "MH_026",
+      "document_language": "en",
+      "layout_class": 1,
+      "source_type": "born_digital"
+    },
+    "MH_027.pdf": {
+      "document_id": "MH_027",
+      "document_language": "en",
+      "layout_class": 2,
+      "source_type": "born_digital"
+    },
+    "MH_028.pdf": {
+      "document_id": "MH_028",
+      "document_language": "de",
+      "layout_class": 3,
+      "source_type": "born_digital"
+    },
+    "MH_029.pdf": {
+      "document_id": "MH_029",
+      "document_language": "de",
+      "layout_class": 4,
+      "source_type": "born_digital"
+    },
+    "MH_030.pdf": {
+      "document_id": "MH_030",
+      "document_language": "de",
+      "layout_class": 5,
+      "source_type": "born_digital"
+    }
+  }
+}

@@ -1,0 +1,3591 @@
+[
+  {
+    "document": "MH_001.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Protokollführung",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Kalibrierung",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Grafana",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Programme und Werkzeuge",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "ZBrush - Grundlagen",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Grafana - gute Kenntnisse",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "certificate_extra:3",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Fachkompetenzen",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "certificate_extra:4",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Protokollführung",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "certificate_extra:5",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Schadensanalyse",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_001.pdf",
+    "field": "certificate_extra:6",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Kalibrierung",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "name.first_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Benedikt",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "name.last_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Şahin",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Französisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "licenses",
+    "group": "licenses",
+    "status": "hallucinated",
+    "critical": true,
+    "expected": [],
+    "actual": "Französisch: B2 Englisch: B1 Programme und Werkzeuge SAP MM - Grundlagen Adobe Acrobat Pro - gute Kenntnisse Tableau - sehr gut Fachkompetenzen Arbeitsvorbereitung Lieferantenkoordination Messmittelverwaltung Schadensanalyse",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Arbeitsvorbereitung",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Lieferantenkoordination",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Messmittelverwaltung",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "SAP MM",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Adobe Acrobat Pro",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_002.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Tableau",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Protokollführung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Prozessüberwachung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Probenahme",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Oracle NetSuite",
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "RStudio",
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qlik Sense",
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_003.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Oracle NetSuite - Grundlagen",
+      "RStudio - gute Kenntnisse",
+      "ZBrush - sehr gut",
+      "Qlik Sense - Grundlagen",
+      "Fachkompetenzen",
+      "Protokollführung",
+      "Technische Recherche",
+      "Prozessüberwachung",
+      "Probenahme"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Materialdisposition",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Prozessüberwachung",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "skill:5",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Probenahme",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Microsoft Project",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "EPLAN Electric P8",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "GIMP",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Inkscape",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Ansys",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_004.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Microsoft Project - Grundlagen",
+      "EPLAN Electric P8 - gute Kenntnisse",
+      "GIMP - sehr gut",
+      "Inkscape - Grundlagen",
+      "Ansys - gute Kenntnisse",
+      "Fachkompetenzen",
+      "Materialdisposition",
+      "Bestandsprüfung",
+      "Technische Recherche",
+      "Prozessüberwachung",
+      "Probenahme"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Dokumentenlenkung",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Materialdisposition",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Minitab",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Grafana",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Programme und Werkzeuge",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Minitab - Grundlagen",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Grafana - gute Kenntnisse",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "certificate_extra:3",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Fachkompetenzen",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "certificate_extra:4",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Schadensanalyse",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "certificate_extra:5",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Dokumentenlenkung",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_005.pdf",
+    "field": "certificate_extra:6",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Materialdisposition",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Spanisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "licenses",
+    "group": "licenses",
+    "status": "hallucinated",
+    "critical": true,
+    "expected": [],
+    "actual": "Spanisch: B2 Englisch: B1 Programme und Werkzeuge Fusion 360 - Grundlagen Qlik Sense - gute Kenntnisse GIMP - sehr gut Fachkompetenzen Probenahme Arbeitsvorbereitung Gefahrstoffmanagement Montageplanung",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Probenahme",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Arbeitsvorbereitung",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Gefahrstoffmanagement",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Montageplanung",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Fusion 360",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qlik Sense",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_006.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "GIMP",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Dokumentenlenkung",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "LibreOffice Calc",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Microsoft Project",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_007.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "ZBrush - Grundlagen",
+      "LibreOffice Calc - sehr gut",
+      "Microsoft Project - Grundlagen",
+      "Fachkompetenzen",
+      "Dokumentenlenkung",
+      "Technische Recherche",
+      "Schadensanalyse",
+      "Schichtübergabe"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Instandhaltung",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Kalibrierung",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Arbeitsvorbereitung",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "skill:5",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Messmittelverwaltung",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Fusion 360",
+    "actual": [
+      "SAP MM - gute Kenntnisse"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Adobe Acrobat Pro",
+    "actual": [
+      "SAP MM - gute Kenntnisse"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "EPLAN Electric P8",
+    "actual": [
+      "SAP MM - gute Kenntnisse"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Minitab",
+    "actual": [
+      "SAP MM - gute Kenntnisse"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_008.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Fusion 360 - Grundlagen",
+      "Adobe Acrobat Pro - sehr gut",
+      "EPLAN Electric P8 - Grundlagen",
+      "Minitab - gute Kenntnisse",
+      "Fachkompetenzen",
+      "Instandhaltung",
+      "Kalibrierung",
+      "Arbeitsvorbereitung",
+      "Schichtübergabe",
+      "Bestandsprüfung",
+      "Messmittelverwaltung"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Probenahme",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Minitab",
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "LibreOffice Calc",
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Programme und Werkzeuge",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Minitab - Grundlagen",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "LibreOffice Calc - gute Kenntnisse",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "certificate_extra:3",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Fachkompetenzen",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "certificate_extra:4",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Schichtübergabe",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_009.pdf",
+    "field": "certificate_extra:5",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Probenahme",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Italienisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Arbeitsvorbereitung",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Kalibrierung",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Materialdisposition",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qualitätsprüfung",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Tableau",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Grafana",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_010.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qlik Sense",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Rue du Rhône",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "54",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "1204",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Genève",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qualitätsprüfung",
+    "actual": [
+      "Kundenkommunikation",
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [
+      "Kundenkommunikation",
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [
+      "Kundenkommunikation",
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Grafana",
+    "actual": [
+      "SAP MM - gute Kenntnisse"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Microsoft Project",
+    "actual": [
+      "SAP MM - gute Kenntnisse"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "PostgreSQL",
+    "actual": [
+      "SAP MM - gute Kenntnisse"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Grafana - Grundlagen",
+      "Microsoft Project - sehr gut",
+      "PostgreSQL - Grundlagen",
+      "Fachkompetenzen",
+      "Qualitätsprüfung",
+      "Technische Recherche",
+      "Schadensanalyse"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Quai de la Goffe",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "71",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "4000",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Liège",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qualitätsprüfung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Dokumentenlenkung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Arbeitsvorbereitung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Oracle NetSuite",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Fusion 360",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "GIMP",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Adobe Acrobat Pro",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Grafana",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Oracle NetSuite - Grundlagen",
+      "Fusion 360 - gute Kenntnisse",
+      "GIMP - sehr gut",
+      "Adobe Acrobat Pro - Grundlagen",
+      "Grafana - gute Kenntnisse",
+      "Fachkompetenzen",
+      "Bestandsprüfung",
+      "Schadensanalyse",
+      "Qualitätsprüfung",
+      "Dokumentenlenkung",
+      "Arbeitsvorbereitung"
+    ],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "LibreOffice Calc",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Programme und Werkzeuge",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "LibreOffice Calc - gute Kenntnisse",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Fachkompetenzen",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "certificate_extra:3",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Schichtübergabe",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_013.pdf",
+    "field": "certificate_extra:4",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Schadensanalyse",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "licenses",
+    "group": "licenses",
+    "status": "hallucinated",
+    "critical": true,
+    "expected": [],
+    "actual": "Polnisch: B1 Englisch: B1 Programme und Werkzeuge GIMP - Grundlagen EPLAN Electric P8 - gute Kenntnisse SAP MM - sehr gut Fachkompetenzen Messmittelverwaltung Lieferantenkoordination Materialdisposition Gefahrstoffmanagement",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Messmittelverwaltung",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Lieferantenkoordination",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Materialdisposition",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Gefahrstoffmanagement",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "GIMP",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "EPLAN Electric P8",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_014.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "SAP MM",
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qualitätsprüfung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Montageplanung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Adobe Acrobat Pro",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Grafana",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_015.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Adobe Acrobat Pro - gute Kenntnisse",
+      "Grafana - sehr gut",
+      "ZBrush - Grundlagen",
+      "Fachkompetenzen",
+      "Qualitätsprüfung",
+      "Montageplanung",
+      "Bestandsprüfung",
+      "Technische Recherche"
+    ],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Arbeitsvorbereitung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Instandhaltung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "skill:5",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Protokollführung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Fusion 360",
+    "actual": [
+      "Tableau - Grundlagen"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [
+      "Tableau - Grundlagen"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qlik Sense",
+    "actual": [
+      "Tableau - Grundlagen"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "RStudio",
+    "actual": [
+      "Tableau - Grundlagen"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_016.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Fusion 360 - Grundlagen",
+      "ZBrush - gute Kenntnisse",
+      "Qlik Sense - sehr gut",
+      "RStudio - gute Kenntnisse",
+      "Fachkompetenzen",
+      "Bestandsprüfung",
+      "Schadensanalyse",
+      "Technische Recherche",
+      "Arbeitsvorbereitung",
+      "Instandhaltung",
+      "Protokollführung"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Probenahme",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Prozessüberwachung",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bentley MicroStation",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Programme und Werkzeuge",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Bentley MicroStation - Grundlagen",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Fachkompetenzen",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "certificate_extra:3",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Bestandsprüfung",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "certificate_extra:4",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Probenahme",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_017.pdf",
+    "field": "certificate_extra:5",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Prozessüberwachung",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Ungarisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "licenses",
+    "group": "licenses",
+    "status": "hallucinated",
+    "critical": true,
+    "expected": [],
+    "actual": "Ungarisch: A2 Englisch: B1 Programme und Werkzeuge EPLAN Electric P8 - Grundlagen PostgreSQL - gute Kenntnisse Inkscape - sehr gut Fachkompetenzen Bestandsprüfung Schadensanalyse Gefahrstoffmanagement Kalibrierung",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Gefahrstoffmanagement",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Kalibrierung",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "EPLAN Electric P8",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "PostgreSQL",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_018.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Inkscape",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qualitätsprüfung",
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Instandhaltung",
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Montageplanung",
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "PostgreSQL",
+    "actual": [
+      "Tableau - Grundlagen"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Ansys",
+    "actual": [
+      "Tableau - Grundlagen"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Microsoft Project",
+    "actual": [
+      "Tableau - Grundlagen"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_019.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "PostgreSQL - gute Kenntnisse",
+      "Ansys - sehr gut",
+      "Microsoft Project - Grundlagen",
+      "Fachkompetenzen",
+      "Schichtübergabe",
+      "Qualitätsprüfung",
+      "Instandhaltung",
+      "Bestandsprüfung",
+      "Montageplanung"
+    ],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Dokumentenlenkung",
+    "actual": [
+      "Kundenkommunikation",
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Lieferantenkoordination",
+    "actual": [
+      "Kundenkommunikation",
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Protokollführung",
+    "actual": [
+      "Kundenkommunikation",
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "skill:5",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [
+      "Kundenkommunikation",
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bentley MicroStation",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "RStudio",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Fusion 360",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Oracle NetSuite",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Minitab",
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_020.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Bentley MicroStation - Grundlagen",
+      "RStudio - gute Kenntnisse",
+      "Fusion 360 - sehr gut",
+      "Oracle NetSuite - Grundlagen",
+      "Minitab - gute Kenntnisse",
+      "Fachkompetenzen",
+      "Dokumentenlenkung",
+      "Lieferantenkoordination",
+      "Protokollführung",
+      "Schichtübergabe"
+    ],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Messmittelverwaltung",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [
+      "Kundenkommunikation"
+    ],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qlik Sense",
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bentley MicroStation",
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Programme und Werkzeuge",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Qlik Sense - Grundlagen",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Bentley MicroStation - gute Kenntnisse",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "certificate_extra:3",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Fachkompetenzen",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "certificate_extra:4",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Messmittelverwaltung",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_021.pdf",
+    "field": "certificate_extra:5",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Schichtübergabe",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Französisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Prozessüberwachung",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Probenahme",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Instandhaltung",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "PostgreSQL",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Inkscape",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_022.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Minitab",
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Instandhaltung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qualitätsprüfung",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schichtübergabe",
+    "actual": [
+      "Gefahrstoffmanagement"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qlik Sense",
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "RStudio",
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bentley MicroStation",
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_023.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Qlik Sense - Grundlagen",
+      "RStudio - gute Kenntnisse",
+      "ZBrush - sehr gut",
+      "Bentley MicroStation - Grundlagen",
+      "Fachkompetenzen",
+      "Technische Recherche",
+      "Instandhaltung",
+      "Qualitätsprüfung",
+      "Schichtübergabe"
+    ],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_024.pdf",
+    "field": "dob",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "25.06.1985",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_024.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_024.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Oracle NetSuite",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_024.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Inkscape",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_024.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Minitab",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_024.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "PostgreSQL",
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_024.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Applications",
+      "ZBrush - Grundlagen",
+      "Oracle NetSuite - gute Kenntnisse",
+      "Inkscape - sehr gut",
+      "Minitab - Grundlagen",
+      "PostgreSQL - gute Kenntnisse"
+    ],
+    "layout_class": 11,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_025.pdf",
+    "field": "dob",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "26.01.1996",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_025.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Minitab",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_025.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Qlik Sense",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_025.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Applications",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_025.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Minitab - Grundlagen",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_025.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Qlik Sense - gute Kenntnisse",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_026.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Genève",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_026.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "RStudio",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_026.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_026.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Applications",
+      "RStudio - gute Kenntnisse",
+      "ZBrush - sehr gut"
+    ],
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "dob",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "03.03.1984",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Quai de la Goffe",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "84",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "4000",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Liège",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "GIMP",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Microsoft Project",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Adobe Acrobat Pro",
+    "actual": [
+      "SAP MM - Grundlagen"
+    ],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Applications",
+      "GIMP - Grundlagen",
+      "Microsoft Project - gute Kenntnisse",
+      "Adobe Acrobat Pro - sehr gut"
+    ],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Montageplanung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Messmittelverwaltung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Schadensanalyse",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Instandhaltung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "skill:4",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Kalibrierung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "skill:5",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Protokollführung",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Oracle NetSuite",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "LibreOffice Calc",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "RStudio",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Adobe Acrobat Pro",
+    "actual": [
+      "Tableau - gute Kenntnisse"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_028.pdf",
+    "field": "certificates",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": [],
+    "actual": [
+      "Programme und Werkzeuge",
+      "Oracle NetSuite - Grundlagen",
+      "LibreOffice Calc - sehr gut",
+      "RStudio - Grundlagen",
+      "Adobe Acrobat Pro - gute Kenntnisse",
+      "Fachkompetenzen",
+      "Montageplanung",
+      "Messmittelverwaltung",
+      "Schadensanalyse",
+      "Instandhaltung",
+      "Kalibrierung",
+      "Protokollführung"
+    ],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Bestandsprüfung",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Lieferantenkoordination",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Materialdisposition",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Adobe Acrobat Pro",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ZBrush",
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "certificate_extra:0",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Programme und Werkzeuge",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "certificate_extra:1",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Adobe Acrobat Pro - Grundlagen",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "certificate_extra:2",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "ZBrush - gute Kenntnisse",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "certificate_extra:3",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Fachkompetenzen",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "certificate_extra:4",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Bestandsprüfung",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "certificate_extra:5",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Lieferantenkoordination",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_029.pdf",
+    "field": "certificate_extra:6",
+    "group": "certificates",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Materialdisposition",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "name.first_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Mikołaj",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "name.last_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Czarnecki",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Italienisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "licenses",
+    "group": "licenses",
+    "status": "hallucinated",
+    "critical": true,
+    "expected": [],
+    "actual": "Italienisch: B1 Englisch: B1 Programme und Werkzeuge PostgreSQL - Grundlagen Ansys - gute Kenntnisse Oracle NetSuite - sehr gut Fachkompetenzen Technische Recherche Probenahme Kundenkommunikation Messmittelverwaltung",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "skill:0",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Technische Recherche",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "skill:1",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Probenahme",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "skill:2",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Kundenkommunikation",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "skill:3",
+    "group": "skills",
+    "status": "missing",
+    "critical": false,
+    "expected": "Messmittelverwaltung",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "PostgreSQL",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Ansys",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "MH_030.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Oracle NetSuite",
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  }
+]

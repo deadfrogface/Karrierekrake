@@ -1,0 +1,1 @@
+PHASE B ONLY: reveal after Phase A has been sealed. expected_results.json contains only visible, product-supported profile fields.

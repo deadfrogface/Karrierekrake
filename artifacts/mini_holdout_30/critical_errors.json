@@ -1,0 +1,58 @@
+{
+  "n_critical_events": 5,
+  "n_critical_invented": 5,
+  "documents": [
+    "MH_002.pdf",
+    "MH_006.pdf",
+    "MH_014.pdf",
+    "MH_018.pdf",
+    "MH_030.pdf"
+  ],
+  "events": [
+    {
+      "document": "MH_002.pdf",
+      "field": "licenses",
+      "group": "licenses",
+      "status": "hallucinated",
+      "kind": "invented_licence",
+      "expected": [],
+      "actual": "Französisch: B2 Englisch: B1 Programme und Werkzeuge SAP MM - Grundlagen Adobe Acrobat Pro - gute Kenntnisse Tableau - sehr gut Fachkompetenzen Arbeitsvorbereitung Lieferantenkoordination Messmittelverwaltung Schadensanalyse"
+    },
+    {
+      "document": "MH_006.pdf",
+      "field": "licenses",
+      "group": "licenses",
+      "status": "hallucinated",
+      "kind": "invented_licence",
+      "expected": [],
+      "actual": "Spanisch: B2 Englisch: B1 Programme und Werkzeuge Fusion 360 - Grundlagen Qlik Sense - gute Kenntnisse GIMP - sehr gut Fachkompetenzen Probenahme Arbeitsvorbereitung Gefahrstoffmanagement Montageplanung"
+    },
+    {
+      "document": "MH_014.pdf",
+      "field": "licenses",
+      "group": "licenses",
+      "status": "hallucinated",
+      "kind": "invented_licence",
+      "expected": [],
+      "actual": "Polnisch: B1 Englisch: B1 Programme und Werkzeuge GIMP - Grundlagen EPLAN Electric P8 - gute Kenntnisse SAP MM - sehr gut Fachkompetenzen Messmittelverwaltung Lieferantenkoordination Materialdisposition Gefahrstoffmanagement"
+    },
+    {
+      "document": "MH_018.pdf",
+      "field": "licenses",
+      "group": "licenses",
+      "status": "hallucinated",
+      "kind": "invented_licence",
+      "expected": [],
+      "actual": "Ungarisch: A2 Englisch: B1 Programme und Werkzeuge EPLAN Electric P8 - Grundlagen PostgreSQL - gute Kenntnisse Inkscape - sehr gut Fachkompetenzen Bestandsprüfung Schadensanalyse Gefahrstoffmanagement Kalibrierung"
+    },
+    {
+      "document": "MH_030.pdf",
+      "field": "licenses",
+      "group": "licenses",
+      "status": "hallucinated",
+      "kind": "invented_licence",
+      "expected": [],
+      "actual": "Italienisch: B1 Englisch: B1 Programme und Werkzeuge PostgreSQL - Grundlagen Ansys - gute Kenntnisse Oracle NetSuite - sehr gut Fachkompetenzen Technische Recherche Probenahme Kundenkommunikation Messmittelverwaltung"
+    }
+  ]
+}

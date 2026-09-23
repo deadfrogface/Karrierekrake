@@ -136,6 +136,16 @@ artifacts/mini_holdout_30/**
 !artifacts/mini_holdout_30/PHASE_A_COMPLETE.json
 !artifacts/mini_holdout_30/FROZEN_HASHES.json
 !artifacts/mini_holdout_30/LOCAL_PREDICTIONS_PATH.txt
+!artifacts/mini_holdout_30/phase_b_results.json
+!artifacts/mini_holdout_30/per_document_results.json
+!artifacts/mini_holdout_30/per_field_results.json
+!artifacts/mini_holdout_30/field_group_metrics.json
+!artifacts/mini_holdout_30/slice_metrics.json
+!artifacts/mini_holdout_30/error_inventory.json
+!artifacts/mini_holdout_30/critical_errors.json
+!artifacts/mini_holdout_30/PHASE_B_INTEGRITY.json
+!artifacts/mini_holdout_30/PHASE_B_COMPLETE.json
+!artifacts/mini_holdout_30/schema_extension_results.json
 !artifacts/final_holdout/audit/per_field_results_audited.json
 !artifacts/final_holdout/audit/field_group_metrics_audited.json
 !artifacts/final_holdout/audit/slice_metrics_audited.json
