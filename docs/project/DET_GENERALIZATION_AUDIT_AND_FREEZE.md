@@ -81,6 +81,10 @@ Keine Zeile mit `IH2_`, Dateiname, Dokument-ID, Hash-Routing oder Layout-Klasse 
 **Direkte Datenlecks:** 0 (nach Audit)  
 **Entfernte dokumentbezogene Regeln:** 0 (keine ID-Hacks vorhanden); entfernt wurden halluzinogene Licence-Muster und IH2-Beispielkommentare.
 
+### Follow-up nach Leakage-Audit
+
+Lücke aus dem Audit: `materni jezik` / `materinski jezik` fehlten in Parser-Level-Norm und Scorer-Aliases (IH2-GT nutzt den Marker; Parser ließ ihn roh). Nachgezogen als allgemeine SL/HR-Muttersprachen-Normalisierung → `native` (kein Dokument-ID-Hack).
+
 ---
 
 ## Phase 3 – Kontrastierende Tests
@@ -162,8 +166,8 @@ Section-Shuffle, Leerzeilen/Bullets, Heading-Case, FR/NL Muttersprachen-Äquival
 |------|------|
 | Branch | `cursor/ih2-det-kenntnisse-fix-d85b` |
 | Ausgangscommit | `3c9f5bd7cfdac328221c0a3bfae614501f82032c` |
-| Finaler Parser-Commit | `d6fd5c2dac8f9cdf81c0ad7f09807b3096d91abd` |
-| Parser-Quellcode-Hash (SHA-256 über Parser-Quellen) | `feece3bdf434e720cf696b1159d508f0a83363f678f89ba048972a33126d71f9` |
+| Finaler Parser-Commit | `f3a17c09fe8a2d4d196aabb58e49c8d97ecfcfc8` |
+| Parser-Quellcode-Hash (SHA-256 über Parser-Quellen) | `8e53ee6f35d33929c9ee7f80eb740d9387def883f021f3aca0f1f5083bebd211` |
 | Phi-Aufrufe | 0 |
 | C1-Aufrufe | 0 |
 | Neuer unabhängiger 0.99-Nachweis | **nein** |
