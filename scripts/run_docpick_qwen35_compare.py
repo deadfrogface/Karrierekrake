@@ -83,7 +83,11 @@ class EducationEntry(BaseModel):
 
 
 class KarrierekrakeCVSchema(BaseModel):
-    """Full productive CV-import field set for Docpick extraction."""
+    """Full productive CV-import field set for Docpick extraction.
+
+    Keep in sync with ``core.cv_docpick_import.KarrierekrakeCVSchema``:
+    list fields before employment/education; DE/EN section descriptions.
+    """
 
     name: NameModel | None = None
     email: str | None = None
@@ -91,12 +95,42 @@ class KarrierekrakeCVSchema(BaseModel):
     date_of_birth: str | None = None
     address: AddressModel | None = None
     languages: list[LanguageEntry] = Field(default_factory=list)
-    licenses: list[str] = Field(default_factory=list)
+    licenses: list[str] = Field(
+        default_factory=list,
+        description="Driving licence classes only (e.g. B, BE, C1), not CEFR language levels.",
+    )
+    skills: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Competencies from sections named Skills, Key Skills, Kenntnisse, "
+            "or similar. Do not put software tool names here."
+        ),
+    )
+    software: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Software, systems, and tools from sections named Software, Systems, "
+            "Tools, IT-Kenntnisse, or similar (e.g. Microsoft 365, SAP, Excel)."
+        ),
+    )
+    certificates: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Certificate and short-course titles from sections named Certificates, "
+            "Certifications, Training, Weiterbildung(en), Weiterbildungen, "
+            "or non-degree items under Education & Training. Extract each course "
+            "or certificate name as a string (year optional, not required). "
+            "Do not leave this array empty when such items appear in the text."
+        ),
+    )
     employment: list[EmploymentEntry] = Field(default_factory=list)
-    education: list[EducationEntry] = Field(default_factory=list)
-    skills: list[str] = Field(default_factory=list)
-    software: list[str] = Field(default_factory=list)
-    certificates: list[str] = Field(default_factory=list)
+    education: list[EducationEntry] = Field(
+        default_factory=list,
+        description=(
+            "Formal education / degrees only (school, university, apprenticeship). "
+            "Short trainings and certificates belong in certificates, not here."
+        ),
+    )
 
 
 def _peak_rss_mb() -> float:
