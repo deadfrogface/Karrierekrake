@@ -55,6 +55,18 @@ DATASETS: dict[str, dict[str, Any]] = {
         "protocol": "MINI_HOLDOUT_30_PHASE_A",
         "zip_hint": "KarriereKrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
     },
+    "final_independent_50_v2": {
+        "holdout_rel": Path("tests") / "final_independent_50_v2",
+        "out_rel": Path("artifacts") / "final_independent_50_v2",
+        "prefix": "IH2_",
+        "expected_count": 50,
+        "dataset_id": "FINAL_INDEPENDENT_50_V2",
+        "document_range": "IH2_001-IH2_050",
+        "protocol": "FINAL_INDEPENDENT_50_V2_PHASE_A",
+        "zip_hint": "KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip",
+        "named_seal": "FINAL_INDEPENDENT_50_V2_SEAL.json",
+        "repeatability": True,
+    },
 }
 
 DATASET_NAME = "final_holdout"
@@ -84,6 +96,8 @@ FORBIDDEN_NAMES = {
     "ground_truth.json",
     "answers.json",
     "solutions.json",
+    "precheck_report.json",
+    "PRECHECK_REPORT.json",
 }
 
 
@@ -309,6 +323,62 @@ def _count_uncertain(parsed: dict[str, Any]) -> int:
     return n
 
 
+def _import_one(path: Path) -> tuple[dict[str, Any], list[str]]:
+    """Production DET import. Errors are recorded, never repaired."""
+    from core.cv_parser import import_cv
+
+    err: list[str] = []
+    try:
+        parsed = import_cv(path, guenther_enabled=False)
+    except Exception as exc:  # noqa: BLE001 — record, do not fix
+        err.append(f"{type(exc).__name__}:{exc}")
+        parsed = {
+            "intelligence_status": "deterministic_only",
+            "phi_invoked": False,
+            "phi_extract_call_count": 0,
+            "errors": err,
+        }
+    return parsed, err
+
+
+def _canonical_prediction_payload(
+    *,
+    doc_id: str,
+    path: Path,
+    parsed: dict[str, Any],
+    err: list[str],
+    timing_ms: float,
+    phi_calls: int,
+    pdf_sha: str,
+    parser_commit: str,
+    started_iso: str,
+    ended_iso: str,
+    tech_status: str,
+) -> dict[str, Any]:
+    serialized = _serialize(parsed)
+    return {
+        "c1_calls": 0,
+        "document_id": doc_id,
+        "ended_at_utc": ended_iso,
+        "errors": err,
+        "parser_commit": parser_commit,
+        "parser_path": "core.cv_parser.import_cv → import_cv_canonical → parse_cv_text",
+        "pdf_sha256": pdf_sha,
+        "phi_calls": phi_calls,
+        "pipeline": "DET_PRODUCTION",
+        "prediction": serialized,
+        "source_filename": path.name,
+        "started_at_utc": started_iso,
+        "technical_status": tech_status,
+        "timing_ms": timing_ms,
+        "uncertain_fields": list(
+            parsed.get("uncertain_items") or parsed.get("review_items") or []
+        ),
+        "validation_findings": list(parsed.get("intelligence_notes") or []),
+        "warnings": list(err),
+    }
+
+
 def _is_empty_prediction(parsed: dict[str, Any]) -> bool:
     keys = (
         "work_experience",
@@ -364,8 +434,6 @@ def run_phase_a() -> dict[str, Any]:
     files = _list_cvs()
     manifest_info = _verify_pdf_manifest(pdf_dir, files)
 
-    from core.cv_parser import import_cv
-
     OUT.mkdir(parents=True, exist_ok=True)
     PRED_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -386,25 +454,19 @@ def run_phase_a() -> dict[str, Any]:
     empty_preds = 0
     uncertain_total = 0
     timings_ms: list[float] = []
+    run1_pred_only_hashes: dict[str, str] = {}
 
     for path in files:
         doc_id = path.stem
+        doc_started = datetime.now(timezone.utc).isoformat()
         st = time.perf_counter()
-        err: list[str] = []
-        try:
-            parsed = import_cv(path, guenther_enabled=False)
-        except Exception as exc:  # noqa: BLE001 — record, do not fix
-            tech_errors += 1
-            err.append(f"{type(exc).__name__}:{exc}")
-            parsed = {
-                "intelligence_status": "deterministic_only",
-                "phi_invoked": False,
-                "phi_extract_call_count": 0,
-                "errors": err,
-            }
+        parsed, err = _import_one(path)
         elapsed = time.perf_counter() - st
+        doc_ended = datetime.now(timezone.utc).isoformat()
         timing_ms = elapsed * 1000.0
         timings_ms.append(timing_ms)
+        if err:
+            tech_errors += 1
 
         phi_calls = int(parsed.get("phi_extract_call_count") or 0)
         if parsed.get("phi_invoked"):
@@ -417,28 +479,39 @@ def run_phase_a() -> dict[str, Any]:
 
         unc = _count_uncertain(parsed)
         uncertain_total += unc
-        if _is_empty_prediction(parsed):
+        empty = _is_empty_prediction(parsed)
+        if empty:
             empty_preds += 1
 
-        serialized = _serialize(parsed)
-        rec = {
-            "document_id": doc_id,
-            "source_filename": path.name,
-            "pipeline": "DET_PRODUCTION",
-            "prediction": serialized,
-            "validation_findings": list(parsed.get("intelligence_notes") or []),
-            "uncertain_fields": list(parsed.get("uncertain_items") or parsed.get("review_items") or []),
-            "errors": err,
-            "timing_ms": timing_ms,
-            "phi_calls": phi_calls,
-        }
+        pdf_sha = _sha256_file(path)
+        tech_status = "error" if err else ("empty" if empty else "ok")
+        rec = _canonical_prediction_payload(
+            doc_id=doc_id,
+            path=path,
+            parsed=parsed,
+            err=err,
+            timing_ms=timing_ms,
+            phi_calls=phi_calls,
+            pdf_sha=pdf_sha,
+            parser_commit=git["commit"],
+            started_iso=doc_started,
+            ended_iso=doc_ended,
+            tech_status=tech_status,
+        )
+        pred_body = json.dumps(
+            rec["prediction"],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        run1_pred_only_hashes[doc_id] = _sha256_bytes(pred_body.encode("utf-8"))
+
         out_path = PRED_DIR / f"{doc_id}.json"
         payload = json.dumps(rec, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
         out_path.write_text(payload, encoding="utf-8")
         pred_hashes[f"frozen_predictions/{doc_id}.json"] = _sha256_bytes(
             payload.encode("utf-8")
         )
-        pdf_sha = _sha256_file(path)
         pdf_hashes.append(
             {
                 "filename": path.name,
@@ -455,9 +528,75 @@ def run_phase_a() -> dict[str, Any]:
                 "phi_calls": phi_calls,
                 "uncertain_count": unc,
                 "tech_error": bool(err),
-                "empty": _is_empty_prediction(parsed),
+                "empty": empty,
                 "cv_sha256": pdf_sha,
+                "technical_status": tech_status,
+                "prediction_body_sha256": run1_pred_only_hashes[doc_id],
             }
+        )
+
+    # Optional second DET pass (comparison only; freeze remains run 1)
+    repeatability: dict[str, Any] = {
+        "enabled": False,
+        "identical": 0,
+        "diverged": 0,
+        "diverged_ids": [],
+        "run1_aggregate_sha256": "",
+        "run2_aggregate_sha256": "",
+        "phi_calls_run2": 0,
+        "c1_calls_run2": 0,
+        "tech_errors_run2": 0,
+    }
+    cfg = DATASETS[DATASET_NAME]
+    if cfg.get("repeatability"):
+        run2_hashes: dict[str, str] = {}
+        phi2 = 0
+        c12 = 0
+        err2 = 0
+        for path in files:
+            doc_id = path.stem
+            parsed2, e2 = _import_one(path)
+            if e2:
+                err2 += 1
+            p2 = int(parsed2.get("phi_extract_call_count") or 0)
+            if parsed2.get("phi_invoked"):
+                p2 = max(p2, 1)
+            phi2 += p2
+            c12 += int(bool(parsed2.get("phi_fallback_triggered")))
+            c12 += int(bool(parsed2.get("c1_fallback_triggered")))
+            c12 += int(bool(parsed2.get("thin_routing")))
+            body2 = json.dumps(
+                _serialize(parsed2),
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            run2_hashes[doc_id] = _sha256_bytes(body2.encode("utf-8"))
+        diverged = sorted(
+            d
+            for d in run1_pred_only_hashes
+            if run1_pred_only_hashes[d] != run2_hashes.get(d)
+        )
+        repeatability = {
+            "enabled": True,
+            "identical": len(run1_pred_only_hashes) - len(diverged),
+            "diverged": len(diverged),
+            "diverged_ids": diverged,
+            "run1_aggregate_sha256": _sha256_bytes(
+                json.dumps(run1_pred_only_hashes, sort_keys=True).encode("utf-8")
+            ),
+            "run2_aggregate_sha256": _sha256_bytes(
+                json.dumps(run2_hashes, sort_keys=True).encode("utf-8")
+            ),
+            "phi_calls_run2": phi2,
+            "c1_calls_run2": c12,
+            "tech_errors_run2": err2,
+            "note": "Official frozen predictions are run 1 only; run 2 is comparison-only.",
+        }
+        (OUT / "REPEATABILITY.json").write_text(
+            json.dumps(repeatability, ensure_ascii=False, indent=2, sort_keys=True)
+            + "\n",
+            encoding="utf-8",
         )
 
     if total_phi > 0 or total_c1 > 0:
@@ -466,7 +605,10 @@ def run_phase_a() -> dict[str, Any]:
             f"phi_extract_calls={total_phi} c1_related={total_c1}"
         )
 
-    wall = time.perf_counter() - t0
+    # Official timing is run-1 only (repeatability wall tracked separately if present)
+    wall = sum(d["elapsed_s"] for d in per_doc)
+    if not wall:
+        wall = time.perf_counter() - t0
     ended = datetime.now(timezone.utc).isoformat()
     rss1 = _peak_rss_mb()
     timings_sorted = sorted(timings_ms)
@@ -600,9 +742,66 @@ def run_phase_a() -> dict[str, Any]:
             "Phase A blind sealed predictions only.",
             "No ground truth read. No quality metrics computed.",
         ],
+        "repeatability": repeatability,
     }
     META_PATH.write_text(
         json.dumps(meta, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    # Aggregate frozen_predictions.json + PREDICTION_MANIFEST.json (protocol names)
+    frozen_bundle = {
+        "dataset": DATASET_ID,
+        "n_predictions": len(files),
+        "parser_commit": git["commit"],
+        "pipeline": "DET_PRODUCTION",
+        "predictions": {
+            d["document_id"]: json.loads(
+                (PRED_DIR / f"{d['document_id']}.json").read_text(encoding="utf-8")
+            )
+            for d in per_doc
+        },
+    }
+    frozen_bundle_path = OUT / "frozen_predictions.json"
+    frozen_bundle_payload = (
+        json.dumps(frozen_bundle, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    )
+    frozen_bundle_path.write_text(frozen_bundle_payload, encoding="utf-8")
+    frozen_bundle_sha = _sha256_bytes(frozen_bundle_payload.encode("utf-8"))
+
+    prediction_manifest = {
+        "dataset": DATASET_ID,
+        "document_range": DOCUMENT_RANGE,
+        "n_predictions": len(files),
+        "parser_commit": git["commit"],
+        "pipeline": "DET_PRODUCTION",
+        "documents": [
+            {
+                "c1_calls": 0,
+                "document_id": d["document_id"],
+                "parser_commit": git["commit"],
+                "parser_path": (
+                    "core.cv_parser.import_cv → import_cv_canonical → parse_cv_text"
+                ),
+                "pdf_filename": d["source_filename"],
+                "pdf_sha256": d["cv_sha256"],
+                "phi_calls": d["phi_calls"],
+                "prediction_filename": f"{d['document_id']}.json",
+                "prediction_sha256": pred_hashes[
+                    f"frozen_predictions/{d['document_id']}.json"
+                ],
+                "runtime_ms": d["timing_ms"],
+                "technical_status": d.get("technical_status", "ok"),
+            }
+            for d in per_doc
+        ],
+        "aggregate_prediction_file_sha256": pred_manifest["aggregate_sha256"],
+        "frozen_predictions_json_sha256": frozen_bundle_sha,
+    }
+    pred_man_path = OUT / "PREDICTION_MANIFEST.json"
+    pred_man_path.write_text(
+        json.dumps(prediction_manifest, ensure_ascii=False, indent=2, sort_keys=True)
+        + "\n",
         encoding="utf-8",
     )
 
@@ -615,25 +814,44 @@ def run_phase_a() -> dict[str, Any]:
         "dataset_size": len(files),
         "document_range": DOCUMENT_RANGE,
         "pipeline": "DET_PRODUCTION",
+        "parser_path": "core.cv_parser.import_cv → import_cv_canonical → parse_cv_text",
         "git_commit": git["commit"],
+        "parser_commit": git["commit"],
         "runner_commit": git["commit"],
         "git_branch": git["branch"],
         "git_dirty": git["dirty"],
         "predictions_manifest_sha256": pred_manifest["aggregate_sha256"],
+        "frozen_predictions_json_sha256": frozen_bundle_sha,
+        "prediction_manifest_file_sha256": _sha256_file(pred_man_path),
         "input_hashes_sha256": _sha256_file(INPUT_HASHES_PATH),
         "metadata_sha256": _sha256_file(META_PATH),
         "prediction_hashes_sha256": _sha256_file(PRED_HASHES_PATH),
+        "pdf_manifest": manifest_info,
         "sealed_at": ended,
         "ground_truth_used": False,
         "evaluation_performed": False,
         "phi_calls": total_phi,
         "c1_calls": total_c1,
+        "phi_calls_confirmation": total_phi == 0,
+        "c1_calls_confirmation": total_c1 == 0,
         "n_predictions": len(files),
         "predictions_dir": _rel(PRED_DIR),
+        "repeatability": repeatability,
     }
     seal_payload = json.dumps(seal, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     SEAL_PATH.write_text(seal_payload, encoding="utf-8")
     SEAL_MARKER.write_text(seal_payload, encoding="utf-8")
+    named_seal = cfg.get("named_seal")
+    if named_seal:
+        seal_dir = OUT / "seal"
+        seal_dir.mkdir(parents=True, exist_ok=True)
+        named_path = seal_dir / str(named_seal)
+        named_path.write_text(seal_payload, encoding="utf-8")
+        seal_file_sha = _sha256_file(named_path)
+        (seal_dir / f"{named_seal}.sha256").write_text(
+            seal_file_sha + "\n", encoding="utf-8"
+        )
+        print(f"Named seal: {named_path} sha256={seal_file_sha}")
     # Compat alias for older Phase-B verifier expecting FROZEN_HASHES.json
     compat = OUT / "FROZEN_HASHES.json"
     compat.write_text(
@@ -647,6 +865,11 @@ def run_phase_a() -> dict[str, Any]:
     print(f"Phase A sealed: {len(files)} predictions → {PRED_DIR}")
     print(f"Seal: {SEAL_PATH}")
     print(f"predictions_manifest_sha256={pred_manifest['aggregate_sha256']}")
+    if repeatability.get("enabled"):
+        print(
+            f"Repeatability identical={repeatability['identical']} "
+            f"diverged={repeatability['diverged']} ids={repeatability['diverged_ids']}"
+        )
     return seal
 
 

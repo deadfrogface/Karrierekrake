@@ -185,3 +185,25 @@ artifacts/final_holdout/post_analysis_remaining/**
 !artifacts/final_holdout/post_analysis_remaining/iter1_country.json
 !artifacts/final_holdout/post_analysis_remaining/iter2_employment_address.json
 !artifacts/final_holdout/post_analysis_remaining/iter3_splitdate_certs_skills.json
+
+# Final Independent Holdout 50 V2 Phase A: zip tracked; PDFs ignored; seal hashes tracked
+tests/final_independent_50_v2/phase_a_pdfs/*
+!tests/final_independent_50_v2/phase_a_pdfs/PDF_MANIFEST.json
+!tests/final_independent_50_v2/phase_a_pdfs/README_PHASE_A.txt
+!artifacts/final_independent_50_v2/
+artifacts/final_independent_50_v2/**
+!artifacts/final_independent_50_v2/FROZEN_INPUT_HASHES.json
+!artifacts/final_independent_50_v2/FROZEN_PREDICTION_HASHES.json
+!artifacts/final_independent_50_v2/FROZEN_METADATA.json
+!artifacts/final_independent_50_v2/PHASE_A_SEAL.json
+!artifacts/final_independent_50_v2/PHASE_A_COMPLETE.json
+!artifacts/final_independent_50_v2/FROZEN_HASHES.json
+!artifacts/final_independent_50_v2/PREDICTION_MANIFEST.json
+!artifacts/final_independent_50_v2/REPEATABILITY.json
+!artifacts/final_independent_50_v2/LOCAL_PREDICTIONS_PATH.txt
+!artifacts/final_independent_50_v2/seal/
+artifacts/final_independent_50_v2/seal/**
+!artifacts/final_independent_50_v2/seal/FINAL_INDEPENDENT_50_V2_SEAL.json
+!artifacts/final_independent_50_v2/seal/FINAL_INDEPENDENT_50_V2_SEAL.json.sha256
+artifacts/final_independent_50_v2/frozen_predictions/
+artifacts/final_independent_50_v2/frozen_predictions.json
