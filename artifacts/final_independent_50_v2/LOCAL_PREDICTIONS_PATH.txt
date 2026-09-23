@@ -1,0 +1,1 @@
+LOCAL: artifacts/final_independent_50_v2/frozen_predictions/
