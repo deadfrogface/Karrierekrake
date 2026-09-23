@@ -453,6 +453,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.confidence": "Erkennungsstatus",
         "cv_import.review_items": "Zur Prüfung (unklar / umklassifiziert)",
         "cv_import.read_error": "Konnte nicht gelesen werden:",
+        "cv_import.pipeline": "CV-Extraktion",
+        "cv_import.pipeline_det": "Deterministisch (ohne KI-Modell)",
         "btn.reset_profile": "Profil zurücksetzen",
         "settings.general": "Allgemein",
         "settings.appearance": "Darstellung",
@@ -480,9 +482,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther_model.standard": "Entfernt — kein Legacy-Qwen",
         "settings.guenther_model.alt": "Empfohlen — Phi-4-mini",
         "settings.guenther_hint": (
-            "Nur lokales Phi-4-mini. Fehlt das Modell oder schlägt das Laden fehl: "
-            "GUENTHER_UNAVAILABLE — kein anderes Modell, kein Heuristik-Ersatz. "
-            "Nicht-AI-Funktionen bleiben nutzbar. Günther schlägt vor — Karrierekrake entscheidet."
+            "Günther nutzt lokales Phi-4-mini nur für Schreibhilfe "
+            "(Anschreiben, E-Mails, Motivationstexte). "
+            "CV-Import ist rein deterministisch und lädt kein Modell. "
+            "Fehlt das Writer-Modell: GUENTHER_UNAVAILABLE — kein Heuristik-Ersatz. "
+            "Günther schlägt vor — Karrierekrake entscheidet."
         ),
         "guenther.validator.unsupported_credential": (
             "Eine behauptete Qualifikation ist im Profil nicht belegt."
@@ -1262,6 +1266,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.confidence": "Detection status",
         "cv_import.review_items": "Needs review (unclear / reclassified)",
         "cv_import.read_error": "Could not read:",
+        "cv_import.pipeline": "CV extraction",
+        "cv_import.pipeline_det": "Deterministic (no AI model)",
         "btn.reset_profile": "Reset profile",
         "settings.general": "General",
         "settings.appearance": "Appearance",
@@ -1289,9 +1295,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther_model.standard": "Removed — no legacy Qwen",
         "settings.guenther_model.alt": "Recommended — Phi-4-mini",
         "settings.guenther_hint": (
-            "Local Phi-4-mini only. If the model is missing or fails to load: "
-            "GUENTHER_UNAVAILABLE — no alternate model, no heuristic substitute. "
-            "Non-AI features stay usable. Günther suggests — Karrierekrake decides."
+            "Günther uses local Phi-4-mini only for writing assistance "
+            "(cover letters, emails, motivation texts). "
+            "CV import is fully deterministic and does not load a model. "
+            "If the writer model is missing: GUENTHER_UNAVAILABLE — no heuristic substitute. "
+            "Günther suggests — Karrierekrake decides."
         ),
         "guenther.validator.unsupported_credential": (
             "A claimed qualification is not supported by the profile."

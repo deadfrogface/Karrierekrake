@@ -1,0 +1,236 @@
+{
+  "phase": "B",
+  "dataset": "mini_holdout_30",
+  "dataset_size": 30,
+  "scorer": {
+    "file": "scripts/holdout_scorer_v2.py",
+    "version": "v2",
+    "sha256": "9aeb89887b952aff40ab7a47123260972618e70ef7d84fca001a8f315f4e435c",
+    "schema_mapping": {
+      "name.first_name": {
+        "parsed": "personal.first_name",
+        "profile": "personal.first_name",
+        "class": "A"
+      },
+      "name.last_name": {
+        "parsed": "personal.last_name",
+        "profile": "personal.last_name",
+        "class": "A"
+      },
+      "email": {
+        "parsed": "emails[0]",
+        "profile": "contact.email",
+        "class": "A"
+      },
+      "phone": {
+        "parsed": "phones[0]",
+        "profile": "contact.phone",
+        "class": "A"
+      },
+      "dob": {
+        "parsed": "personal.date_of_birth",
+        "profile": "personal.date_of_birth",
+        "class": "A"
+      },
+      "address.street": {
+        "parsed": "personal.street",
+        "profile": "address.street",
+        "class": "A"
+      },
+      "address.house_number": {
+        "parsed": "personal.house_number",
+        "profile": "address.house_number",
+        "class": "A"
+      },
+      "address.postal_code": {
+        "parsed": "personal.postal_code",
+        "profile": "address.postal_code",
+        "class": "A"
+      },
+      "address.city": {
+        "parsed": "personal.city",
+        "profile": "address.city",
+        "class": "A"
+      },
+      "address.country": {
+        "parsed": "personal.country",
+        "profile": "address.country",
+        "class": "A"
+      },
+      "languages": {
+        "parsed": "languages",
+        "profile": "qualifications.languages",
+        "class": "A"
+      },
+      "licenses": {
+        "parsed": "driving_license",
+        "profile": "qualifications.driving_license",
+        "class": "A"
+      },
+      "education": {
+        "parsed": "education",
+        "profile": "qualifications.education",
+        "class": "A"
+      },
+      "employment": {
+        "parsed": "work_experience",
+        "profile": "qualifications.work_experience",
+        "class": "A"
+      },
+      "skills": {
+        "parsed": "skills",
+        "profile": "qualifications.skills",
+        "class": "A"
+      },
+      "software": {
+        "parsed": "software",
+        "profile": "qualifications.software",
+        "class": "A"
+      },
+      "certificates": {
+        "parsed": "certificates",
+        "profile": "qualifications.certificates",
+        "class": "A"
+      },
+      "target_role": {
+        "parsed": "target_role",
+        "profile": "jobs.desired_titles (optional / SearchIntent)",
+        "class": "B",
+        "evidence_required": true
+      }
+    },
+    "metadata_fields_excluded": [
+      "document_id",
+      "expected_status",
+      "filename",
+      "language",
+      "layout",
+      "missing",
+      "region_note",
+      "traps"
+    ],
+    "commit": "00674c3"
+  },
+  "integrity": {
+    "seal_valid": true,
+    "seal_file_sha256": "4cc27cb7e08b5c384f5096d9b1048271db907b8b91d4510095f3603b40c927c4",
+    "predictions_manifest_sha256": "da50d4559e12f32bfa06eeb445b2964389f22b5a50331824fad7e644a873851d",
+    "n_predictions": 30,
+    "n_pdfs": 30,
+    "prediction_hash_mismatches": 0,
+    "pdf_hash_mismatches": 0,
+    "git_commit": "d5c3f42299256eb4447d3c6980f304091b0cdc42",
+    "runner_commit": "d5c3f42299256eb4447d3c6980f304091b0cdc42",
+    "phi_calls_phase_a": 0,
+    "dataset": "mini_holdout_30"
+  },
+  "precheck": {
+    "present": true,
+    "ok": true,
+    "report": {
+      "documents": 30,
+      "duplicate_languages": [],
+      "invalid_emails": [],
+      "unexpected_fields": []
+    }
+  },
+  "metrics": {
+    "field_total": 1163,
+    "counts": {
+      "correct": 868,
+      "missing": 228,
+      "hallucinated": 67,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.7463456577815993,
+    "precision": 0.9283422459893048,
+    "recall": 0.791970802919708,
+    "f1": 0.8547513540128016,
+    "hallucination_rate": 0.05760963026655202,
+    "missing_field_rate": 0.19604471195184867,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.05760963026655202,
+    "by_group": {
+      "personal": {
+        "correct": 79,
+        "missing": 7
+      },
+      "contact": {
+        "correct": 56
+      },
+      "address": {
+        "correct": 128,
+        "missing": 13
+      },
+      "languages": {
+        "correct": 46,
+        "missing": 14
+      },
+      "licenses": {
+        "correct": 27,
+        "hallucinated": 5
+      },
+      "education": {
+        "correct": 175
+      },
+      "employment": {
+        "correct": 300
+      },
+      "skills": {
+        "missing": 102,
+        "correct": 31
+      },
+      "software": {
+        "missing": 92,
+        "correct": 11
+      },
+      "certificates": {
+        "correct": 15,
+        "hallucinated": 62
+      }
+    },
+    "strict_scalar_accuracy": 0.9293286219081273,
+    "normalized_field_accuracy": 0.7463456577815993,
+    "metric_note": "strict_scalar_accuracy covers personal/contact/address/dob scalars only; normalized_field_accuracy is full Scorer V2 over all evaluable fields. Do not compare them as Strict vs Normalized Accuracy on the same universe. See docs/project/FINAL_HOLDOUT_SCORER_AUDIT_REPORT.md.",
+    "perfect_documents": 0,
+    "perfect_core_documents": 0,
+    "document_perfect_match_rate": 0.0,
+    "document_perfect_core_match_rate": 0.0,
+    "documents_with_errors": 30,
+    "documents_with_critical_errors": 5,
+    "error_bucket_distribution": {
+      ">5": 29,
+      "3-5": 1
+    },
+    "duplicate_rate": 0.0
+  },
+  "targets": {
+    "accuracy_ge_0_99": false,
+    "f1_ge_0_99": false,
+    "hallucination_le_0_01": false,
+    "no_critical_invented": false,
+    "overall_pass": false
+  },
+  "weakest_field_group": {
+    "name": "software",
+    "f1": 0.19298245614035087
+  },
+  "weakest_slice": {
+    "name": "layout_class:3",
+    "f1": 0.8135593220338982
+  },
+  "comparison_note": "100-CV / 50-CV Post-Analysis are development corpora; this 30-CV Mini Holdout is the independent sealed frozen test of the DET candidate.",
+  "baseline_100cv_post_analysis": {
+    "accuracy": 0.9969018112488084,
+    "f1": 0.9984485022079007,
+    "perfect": 89,
+    "hallucination_rate": 0.0009532888465204957
+  },
+  "baseline_50cv_post_analysis": {
+    "f1": 0.9985,
+    "perfect_core": 44,
+    "n": 50,
+    "note": "POST-ANALYSIS on Final Holdout corpus after Phase B reveal — not an independent frozen holdout."
+  }
+}

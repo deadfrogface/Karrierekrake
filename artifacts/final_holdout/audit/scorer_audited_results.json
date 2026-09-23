@@ -1,0 +1,155 @@
+{
+  "scorer": {
+    "file": "scripts/holdout_scorer_v2.py",
+    "version": "v2_audited",
+    "sha256": "9aeb89887b952aff40ab7a47123260972618e70ef7d84fca001a8f315f4e435c"
+  },
+  "metric_definitions": {
+    "scorer_v2_field_accuracy": "Normalized matching over ALL evaluable productive fields (primary)",
+    "scalar_exact_accuracy_subset": "Exact casefold/trim on personal/contact/address/dob scalars only \u2014 NOT comparable to full accuracy",
+    "forbidden_comparison": "Do not report scalar_exact_accuracy as Strict Accuracy vs full Acc; different fact universes caused Phase B Normalized < Strict paradox"
+  },
+  "metrics": {
+    "field_total": 1648,
+    "counts": {
+      "correct": 1110,
+      "missing": 382,
+      "hallucinated": 117,
+      "wrong": 39,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.6735436893203883,
+    "precision": 0.8767772511848341,
+    "recall": 0.7439678284182306,
+    "f1": 0.8049311094996373,
+    "hallucination_rate": 0.07099514563106796,
+    "missing_field_rate": 0.23179611650485438,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.09466019417475728,
+    "by_group": {
+      "personal": {
+        "correct": 139,
+        "missing": 6
+      },
+      "contact": {
+        "correct": 93,
+        "wrong": 3
+      },
+      "address": {
+        "correct": 163,
+        "missing": 73,
+        "wrong": 5
+      },
+      "languages": {
+        "missing": 100
+      },
+      "licenses": {
+        "correct": 52
+      },
+      "education": {
+        "correct": 190,
+        "missing": 78,
+        "wrong": 27,
+        "hallucinated": 1
+      },
+      "employment": {
+        "missing": 115,
+        "correct": 36,
+        "wrong": 4
+      },
+      "skills": {
+        "correct": 223,
+        "hallucinated": 116
+      },
+      "software": {
+        "correct": 166,
+        "missing": 7
+      },
+      "certificates": {
+        "correct": 48,
+        "missing": 2
+      },
+      "career_intent": {
+        "missing": 1
+      }
+    },
+    "scorer_v2_field_accuracy": 0.6735436893203883,
+    "scalar_exact_accuracy_subset": 0.7365145228215768,
+    "perfect_documents": 0,
+    "perfect_core_documents": 0,
+    "languages_f1": 0.0
+  },
+  "targets": {
+    "accuracy_ge_0_99": false,
+    "f1_ge_0_99": false,
+    "hallucination_le_0_01": false,
+    "overall_pass": false
+  },
+  "comparison_to_phase_b": {
+    "Strict Accuracy (Phase B label)": {
+      "original": 0.737,
+      "audited": null,
+      "note": "RELABELED \u2014 was scalar_exact only"
+    },
+    "scalar_exact_accuracy_subset": {
+      "original": 0.737,
+      "audited": 0.737,
+      "diff": -0.0,
+      "cause": "same subset; scorer date_of_birth alias may add trivial diffs"
+    },
+    "Normalized / Scorer V2 field_accuracy": {
+      "original": 0.674,
+      "audited": 0.674,
+      "diff": 0.0,
+      "cause": "language empty-level containment fix; dob alias \u2014 negligible on this corpus (no language predictions)"
+    },
+    "Precision": {
+      "original": 0.877,
+      "audited": 0.877
+    },
+    "Recall": {
+      "original": 0.744,
+      "audited": 0.744
+    },
+    "F1": {
+      "original": 0.805,
+      "audited": 0.805
+    },
+    "Hallucination Rate": {
+      "original": 0.071,
+      "audited": 0.071
+    },
+    "Perfect Documents": {
+      "original": "0/50",
+      "audited": "0/50"
+    },
+    "Perfect Core Profiles": {
+      "original": "0/50",
+      "audited": "0/50"
+    },
+    "Languages F1": {
+      "original": 0.0,
+      "audited": 0.0,
+      "cause": "unchanged \u2014 predictions still empty"
+    },
+    "kritische Fehler": {
+      "original": 1,
+      "audited": 1,
+      "cause": "FH_011 Elternzeit education still present in frozen prediction"
+    }
+  },
+  "integrity": {
+    "seal_valid": true,
+    "predictions_unchanged": true,
+    "re_extraction_calls": 0,
+    "phi_calls": 0,
+    "parser_changes": 0
+  },
+  "real_parser_quality": {
+    "note": "After audit, nearly all Phase B errors remain REAL_PARSER_ERROR",
+    "languages_f1": 0.0,
+    "employment_f1": 0.37696335078534027,
+    "skills_hallucination_rate": 0.3421828908554572,
+    "critical_invented_education": 1
+  }
+}

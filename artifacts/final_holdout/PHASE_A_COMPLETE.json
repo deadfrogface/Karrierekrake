@@ -1,0 +1,21 @@
+{
+  "c1_calls": 0,
+  "dataset_size": 50,
+  "evaluation_performed": false,
+  "git_branch": "cursor/holdout-100-d85b",
+  "git_commit": "f196378da7a2c77622c827c3b6ceef8dc7f3012c",
+  "git_dirty": false,
+  "ground_truth_used": false,
+  "input_hashes_sha256": "d046a33719420f74e5789a95bc757b6d94f919def7268e1f4722cc5ddbc8a0ab",
+  "metadata_sha256": "22d9bcaf15f3cfa9d0e4e985b598064a8b389b5c7a6546f934c6d9802165a68a",
+  "n_predictions": 50,
+  "phase_a_complete": true,
+  "phi_calls": 0,
+  "pipeline": "DET_PRODUCTION",
+  "prediction_hashes_sha256": "f37ae1882450e65028c742d5a14bdb74356804e06014b4de8657b013b097a7bd",
+  "predictions_dir": "artifacts/final_holdout/frozen_predictions",
+  "predictions_manifest_sha256": "97c64fb31cf8dfff78e530364a546f759bcaa24f1df899af3844d4a4f8c9075c",
+  "sealed": true,
+  "sealed_at": "2026-09-23T00:38:52.314198+00:00",
+  "status": "SEALED"
+}

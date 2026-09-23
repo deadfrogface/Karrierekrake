@@ -61,5 +61,7 @@ Microsoft 365, SAP
     assert langs.get("Deutsch") == "C2"
     assert langs.get("Englisch") == "C1"
     assert "Deutsch – C2" not in result["skills"]
-    assert "Microsoft 365" in result["skills"] or "SAP" in result["skills"]
+    # Tool tokens under Kenntnisse belong in software (or skills historically).
+    tools = " ".join([*result["skills"], *result["software"]])
+    assert "Microsoft 365" in tools or "SAP" in tools
     assert "Microsoft" not in langs

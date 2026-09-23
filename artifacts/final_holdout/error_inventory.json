@@ -1,0 +1,7285 @@
+[
+  {
+    "document": "FH_001.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_001.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Deutsch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_001.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_001.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "Berufskolleg Aachen",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_001.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2007",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_001.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_001.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Bootsbauerin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Fehlerdiagnose",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_001.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Hochschule Kehl",
+    "actual": "Weitere Angaben / Berufsziel: Milchtechnologe",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2008",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Milchtechnologe",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Qualitätssicherung",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Warenkontrolle",
+        "Bestandsführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Milchtechnologe",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_002.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Atelier Morgenrot",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Französisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Gesamtschule Görlitz",
+    "actual": "Sprachen & Fahrerlaubnis / Französisch - B2 / Englisch - B2",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2009",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Rechtsanwaltsfachangestellte",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Hygienemanagement",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Bestandsführung",
+        "Gefährdungsbeurteilung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Warenkontrolle",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_003.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Niederländisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Universität Flensburg",
+    "actual": "Sprachen & Fahrerlaubnis / Niederländisch - B1 / Englisch - C1",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Geoinformatiker",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Technisches Zeichnen",
+        "Maschinenführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Präzisionsarbeit",
+        "Qualitätssicherung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Kundenberatung",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Technisches Zeichnen",
+        "Maschinenführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_004.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_005.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_005.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_005.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_005.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Grenzpendlerin Kundenservice",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Schichtkoordination",
+        "Qualitätssicherung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_005.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_005.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Grenzpendlerin Kundenservice",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Türkisch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Hochschule Weil am Rhein",
+    "actual": "Sprachen & Fahrerlaubnis / Türkisch - Muttersprache / Englisch - B1",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2015",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Baumpfleger",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Prozessoptimierung",
+        "Schichtkoordination"
+      ]
+    },
+    "actual": null,
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Qualitätssicherung",
+        "Warenkontrolle"
+      ]
+    },
+    "actual": null,
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_006.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "name.first_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Greta",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "name.last_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Horváth",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "email",
+    "group": "contact",
+    "status": "wrong",
+    "critical": true,
+    "expected": "greta.horváth@example.de",
+    "actual": "th@example.de",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Arabisch",
+      "C2"
+    ],
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "Gesamtschule Passau",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2016",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Museumsregistrarin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Fehlerdiagnose",
+        "Bestandsführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Technisches Zeichnen",
+        "Qualitätssicherung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Projektsteuerung",
+        "Fehlerdiagnose"
+      ]
+    },
+    "actual": null,
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_007.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufsziel: Museumsregistrarin",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Ungarisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Heilerziehungspfleger",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Routenplanung",
+        "Bestandsführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Fehlerdiagnose",
+        "Projektsteuerung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Präzisionsarbeit",
+        "Dokumentation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Routenplanung",
+        "Bestandsführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Heilerziehungspfleger",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "skill_extra:8",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Stadtwerke West",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "skill_extra:10",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Teamassistenz",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "skill_extra:11",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "ViaNova Planung",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_008.pdf",
+    "field": "skill_extra:12",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Aushilfe",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Deutsch",
+      "C2"
+    ],
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Berufskolleg Saarbrücken",
+    "actual": "Sprachen & Fahrerlaubnis / Deutsch - C2 / Polnisch - C1 / Führerschein: B",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2015",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2018",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Keramikerin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Hygienemanagement",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_009.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_010.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_010.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Italienisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_010.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_010.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Kälteanlagenbauer",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Schichtkoordination",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_010.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Maschinenführung",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_010.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Spalenvorstadt",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "113",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "4051",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Basel",
+    "actual": "Deutsch - Muttersprache",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Schweiz",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Deutsch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Gesamtschule Basel",
+    "actual": "Weitere Angaben",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2008",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "education_extra:1",
+    "group": "education",
+    "status": "hallucinated",
+    "critical": true,
+    "expected": null,
+    "actual": {
+      "completion_date": "11/2022",
+      "end_date": "11/2022",
+      "institution": "",
+      "location": "",
+      "qualification": "Elternzeit",
+      "source": "cv",
+      "start_date": "03/2021"
+    },
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Laborassistentin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Stakeholder-Kommunikation",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Fehlerdiagnose",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Materialprüfung",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Laborassistentin",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "skill_extra:8",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Teamassistenz",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_011.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Atelier Morgenrot",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Oldenzaalsestraat",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "124",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "7511 AB",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Enschede",
+    "actual": "Berufspraxis",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Niederlande",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Universität Enschede",
+    "actual": "Sprachen & Fahrerlaubnis / Englisch - C1 / Englisch - C1",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2009",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Mediendesigner",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Teammoderation",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Prozessoptimierung",
+        "Präzisionsarbeit"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Technisches Zeichnen",
+        "Dokumentation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Teammoderation",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_012.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Frankreich",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Französisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "Berufskolleg Strasbourg",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Notfallsanitäterin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Routenplanung",
+        "Maschinenführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_013.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufsziel: Notfallsanitäterin",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Linzer Gasse",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "146",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "5020",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Salzburg",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Österreich",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Niederländisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Hochschule Salzburg",
+    "actual": "Weitere Angaben",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2014",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Optiker",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Dokumentation",
+        "Teammoderation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Präzisionsarbeit",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Optiker",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_014.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Rue de la Gare",
+    "actual": "",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "13",
+    "actual": "",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "L-1616",
+    "actual": "",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Luxembourg",
+    "actual": "Berufspraxis",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Luxemburg",
+    "actual": "",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Podologin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Reklamationsbearbeitung",
+        "Fehlerdiagnose"
+      ]
+    },
+    "actual": null,
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Stakeholder-Kommunikation",
+        "Dokumentation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Warenkontrolle",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_015.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Türkisch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Universität Hamburg",
+    "actual": "Sprachen & Fahrerlaubnis / Türkisch - Muttersprache / Englisch - C1",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2016",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Qualitätsmanager",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Prozessoptimierung",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Routenplanung",
+        "Teammoderation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Technisches Zeichnen",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Prozessoptimierung",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_016.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "name.first_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Rana",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "name.last_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Sørensen",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "email",
+    "group": "contact",
+    "status": "wrong",
+    "critical": true,
+    "expected": "rana.sørensen@example.org",
+    "actual": "rensen@example.org",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Arabisch",
+      "C2"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Berufskolleg Berlin",
+    "actual": "Weitere Angaben",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2014",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2017",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Rohrleitungsbauerin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Projektsteuerung",
+        "Präzisionsarbeit"
+      ]
+    },
+    "actual": null,
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Rohrleitungsbauerin",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_017.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Baltic Labor OHG",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_018.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_018.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Ungarisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_018.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_018.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Sattler",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Prozessoptimierung",
+        "Routenplanung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_018.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Hygienemanagement",
+        "Warenkontrolle"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_018.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Dänisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "Gesamtschule München",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2007",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Technische Redakteurin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Dokumentation",
+        "Materialprüfung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Reklamationsbearbeitung",
+        "Teammoderation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Warenkontrolle",
+        "Dokumentation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_019.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "email",
+    "group": "contact",
+    "status": "wrong",
+    "critical": true,
+    "expected": "veit.van dijk@example.org",
+    "actual": "dijk@example.org",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Italienisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Verkehrsplaner",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Gefährdungsbeurteilung",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Technisches Zeichnen",
+        "Teammoderation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Fehlerdiagnose",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Gefährdungsbeurteilung",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Verkehrsplaner",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "skill_extra:8",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "ViaNova Planung",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "skill_extra:10",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Teamassistenz",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "skill_extra:11",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Aushilfe",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_020.pdf",
+    "field": "skill_extra:12",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Atelier Morgenrot",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Deutsch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Berufskolleg Aachen",
+    "actual": "Sprachen & Fahrerlaubnis / Deutsch - Muttersprache / Englisch - A2 / Führerschein: B",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2009",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Weintechnologin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Teammoderation",
+        "Kundenberatung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_021.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Seit 2022 selbstständig nebenberuflich",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Hochschule Kehl",
+    "actual": "Sprachen & Fahrerlaubnis / Englisch - C1 / Englisch - B1",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "X-Ray Service Engineer",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Maschinenführung",
+        "Dokumentation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Bestandsführung",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_022.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "name.first_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Yuna",
+    "actual": "",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "name.last_name",
+    "group": "personal",
+    "status": "missing",
+    "critical": true,
+    "expected": "Çelik",
+    "actual": "",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Französisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Gesamtschule Görlitz",
+    "actual": "Weitere Angaben",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2014",
+    "actual": "",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Yogalehrer",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Materialprüfung",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Hygienemanagement",
+        "Präzisionsarbeit"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Gefährdungsbeurteilung",
+        "Materialprüfung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Yogalehrer",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Atelier Morgenrot",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "skill_extra:8",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_023.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Teamassistenz",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Niederländisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Universität Flensburg",
+    "actual": "Sprachen & Fahrerlaubnis / Niederländisch - B1 / Englisch - C1",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2015",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Zollfachkraft",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Materialprüfung",
+        "Technisches Zeichnen"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Präzisionsarbeit",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Schichtkoordination",
+        "Teammoderation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Materialprüfung",
+        "Technisches Zeichnen"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_024.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_025.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_025.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_025.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_025.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Aufbereitungsmechanikerin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Prozessoptimierung",
+        "Routenplanung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_025.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Türkisch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Hochschule Weil am Rhein",
+    "actual": "Weitere Angaben",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2014",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2017",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Bühnenmeister",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Kundenberatung",
+        "Gefährdungsbeurteilung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Bestandsführung",
+        "Maschinenführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Bühnenmeister",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_026.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Baltic Labor OHG",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Arabisch",
+      "C2"
+    ],
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Gesamtschule Passau",
+    "actual": "Sprachen & Fahrerlaubnis / Arabisch - C2 / Englisch - B2",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2015",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2018",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Chocolatier",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Technisches Zeichnen",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Präzisionsarbeit",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Projektsteuerung",
+        "Technisches Zeichnen"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_027.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Ungarisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Drohnenoperatorin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Hygienemanagement",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Materialprüfung",
+        "Bestandsführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Kundenberatung",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Hygienemanagement",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_028.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufsziel: Drohnenoperatorin",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Deutsch",
+      "C2"
+    ],
+    "actual": [],
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Berufskolleg Saarbrücken",
+    "actual": "Weitere Angaben",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2008",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Energieberater",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Maschinenführung",
+        "Fehlerdiagnose"
+      ]
+    },
+    "actual": null,
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_029.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Energieberater",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_030.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_030.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Italienisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_030.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_030.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Fachkraft Hafenlogistik",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Dokumentation",
+        "Qualitätssicherung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_030.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Prozessoptimierung",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_030.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Spalenvorstadt",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "45",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "4051",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Basel",
+    "actual": "Berufspraxis",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Schweiz",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Deutsch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "Gesamtschule Basel",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Gebärdensprachdolmetscherin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Routenplanung",
+        "Projektsteuerung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Schichtkoordination",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Prozessoptimierung",
+        "Routenplanung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_031.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 0,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Oldenzaalsestraat",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "56",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "7511 AB",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Enschede",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Niederlande",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Universität Enschede",
+    "actual": "Weitere Angaben",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2014",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Hörfunktechniker",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Prozessoptimierung",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Maschinenführung",
+        "Bestandsführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Warenkontrolle",
+        "Schichtkoordination"
+      ]
+    },
+    "actual": null,
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Prozessoptimierung",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Hörfunktechniker",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "skill_extra:8",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Atelier Morgenrot",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "skill_extra:10",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Teamassistenz",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_032.pdf",
+    "field": "skill_extra:11",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Aushilfe",
+    "layout_class": 1,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Frankreich",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Französisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Berufskolleg Strasbourg",
+    "actual": "Sprachen & Fahrerlaubnis / Französisch - B2 / Englisch - A2 / Führerschein: B",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2015",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Illustratorin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Kundenberatung",
+        "Teammoderation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_033.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 2,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Linzer Gasse",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "78",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "5020",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Salzburg",
+    "actual": "Berufspraxis",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Österreich",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Niederländisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Hochschule Salzburg",
+    "actual": "Sprachen & Fahrerlaubnis / Niederländisch - B1 / Englisch - B1",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2016",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Juwelier",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Prozessoptimierung",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Präzisionsarbeit",
+        "Fehlerdiagnose"
+      ]
+    },
+    "actual": null,
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_034.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufsziel: Juwelier",
+    "layout_class": 3,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Luxemburg",
+    "actual": "",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Kulturmanagerin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Teammoderation",
+        "Maschinenführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Qualitätssicherung",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Warenkontrolle",
+        "Teammoderation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Kulturmanagerin",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "skill_extra:8",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Teamassistenz",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_035.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Baltic Labor OHG",
+    "layout_class": 4,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Türkisch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Universität Hamburg",
+    "actual": "Sprachen & Fahrerlaubnis / Türkisch - Muttersprache / Englisch - C1",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2015",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2018",
+    "actual": "",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Landschaftsarchitekt",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Schichtkoordination",
+        "Dokumentation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Hygienemanagement",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Kundenberatung",
+        "Maschinenführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Schichtkoordination",
+        "Dokumentation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_036.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 5,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Arabisch",
+      "C2"
+    ],
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "Berufskolleg Berlin",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2007",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Mikrotechnologin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Kundenberatung",
+        "Materialprüfung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_037.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 6,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Ungarisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Netzwerkadministrator",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Gefährdungsbeurteilung",
+        "Fehlerdiagnose"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Materialprüfung",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Netzwerkadministrator",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Stadtwerke West",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_038.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 7,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Dänisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Gesamtschule München",
+    "actual": "Sprachen & Fahrerlaubnis / Dänisch - A2 / Englisch - B2",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2009",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Ozeanografin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Disposition",
+        "Kundenberatung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Teammoderation",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Bestandsführung",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_039.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "ProTool",
+    "actual": [
+      "SAP EWM",
+      "ProTool",
+      "Vectorworks"
+    ],
+    "layout_class": 8,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Italienisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Prozessleittechniker",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Reklamationsbearbeitung",
+        "Fehlerdiagnose"
+      ]
+    },
+    "actual": null,
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Gefährdungsbeurteilung",
+        "Technisches Zeichnen"
+      ]
+    },
+    "actual": null,
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Stakeholder-Kommunikation",
+        "Prozessoptimierung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Reklamationsbearbeitung",
+        "Fehlerdiagnose"
+      ]
+    },
+    "actual": null,
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_040.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 9,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Deutsch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Berufskolleg Aachen",
+    "actual": "Weitere Angaben",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2014",
+    "actual": "",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Restauratorin Papier",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Technisches Zeichnen",
+        "Bestandsführung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_041.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Restauratorin Papier",
+    "layout_class": 10,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Hochschule Kehl",
+    "actual": "Sprachen & Fahrerlaubnis / Englisch - C1 / Englisch - B1",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2012",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2015",
+    "actual": "",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Rheinbogen Service KG",
+      "position": "Seehafenlotse",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Maschinenführung",
+        "Qualitätssicherung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Warenkontrolle",
+        "Präzisionsarbeit"
+      ]
+    },
+    "actual": null,
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_042.pdf",
+    "field": "skill_extra:4",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 11,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Französisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "Gesamtschule Görlitz",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2016",
+    "actual": "",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Atelier Morgenrot",
+      "position": "Technische Konfektionärin",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "description": [
+        "Schichtkoordination",
+        "Routenplanung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Kundenberatung",
+        "Stakeholder-Kommunikation"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Dokumentation",
+        "Schichtkoordination"
+      ]
+    },
+    "actual": null,
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_043.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufsziel: Technische Konfektionärin",
+    "layout_class": 12,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Niederländisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Universität Flensburg",
+    "actual": "Weitere Angaben",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2014",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2017",
+    "actual": "",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Grenzland Technik AG",
+      "position": "Umweltpädagoge",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Qualitätssicherung",
+        "Warenkontrolle"
+      ]
+    },
+    "actual": null,
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Teammoderation",
+        "Disposition"
+      ]
+    },
+    "actual": null,
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Alpenblick Systeme GmbH",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Kundenberatung",
+        "Technisches Zeichnen"
+      ]
+    },
+    "actual": null,
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Baltic Labor OHG",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Qualitätssicherung",
+        "Warenkontrolle"
+      ]
+    },
+    "actual": null,
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Berufspraxis",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Umweltpädagoge",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "skill_extra:8",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Werkstudent/in",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Teamassistenz",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "skill_extra:10",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Aushilfe",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_044.pdf",
+    "field": "skill_extra:11",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Baltic Labor OHG",
+    "layout_class": 13,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_045.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_045.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Polnisch",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_045.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Englisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_045.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Elbe & Partner e.V.",
+      "position": "Verpackungsentwicklerin",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Bestandsführung",
+        "Projektsteuerung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_045.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 14,
+    "document_language": "de"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Türkisch",
+      "Muttersprache"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "German",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "University of Bristol",
+    "actual": "Languages & licences / Türkisch - Muttersprache / German - B1",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2007",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "employment:1.position",
+    "group": "employment",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Werkstudent/in",
+    "actual": "Reklamationsbearbeitung · Materialprüfung",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "skill_extra:0",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "SolidWorks: Grundlagen",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "skill_extra:1",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "GitLab: sehr gut",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "skill_extra:2",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Competencies",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "skill_extra:7",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "software:0",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "SolidWorks",
+    "actual": [
+      "Lexware: gut"
+    ],
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "software:2",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "GitLab",
+    "actual": [
+      "Lexware: gut"
+    ],
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_046.pdf",
+    "field": "certificate:0",
+    "group": "certificates",
+    "status": "missing",
+    "critical": false,
+    "expected": "Sicherheitsunterweisung 2023",
+    "actual": [],
+    "layout_class": 0,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Arabisch",
+      "C2"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "German",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "wrong",
+    "critical": true,
+    "expected": "University of Bristol",
+    "actual": "Weitere Angaben",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2008",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2011",
+    "actual": "",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "employment:1.position",
+    "group": "employment",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Werkstudent/in",
+    "actual": "Hygienemanagement · Prozessoptimierung",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "employment:2.position",
+    "group": "employment",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Teamassistenz",
+    "actual": "Warenkontrolle · Qualitätssicherung",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "skill_extra:0",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "GitLab - Grundlagen",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "skill_extra:1",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Competencies",
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_047.pdf",
+    "field": "software:3",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "GitLab",
+    "actual": [
+      "Siemens TIA Portal - Grundlagen",
+      "Navision - gut",
+      "Power BI - sehr gut"
+    ],
+    "layout_class": 1,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Ungarisch",
+      "B2"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "German",
+      "C1"
+    ],
+    "actual": [],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "employment_entry:0",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Stadtwerke West",
+      "position": "Data Steward",
+      "start_date": "01/2018",
+      "end_date": "06/2020",
+      "description": [
+        "Warenkontrolle",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "employment_entry:1",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "HanseKontor GmbH",
+      "position": "Werkstudent/in",
+      "start_date": "02/2019",
+      "end_date": "07/2021",
+      "description": [
+        "Prozessoptimierung",
+        "Materialprüfung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "employment_entry:2",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "ViaNova Planung",
+      "position": "Teamassistenz",
+      "start_date": "03/2020",
+      "end_date": "08/2022",
+      "description": [
+        "Fehlerdiagnose",
+        "Reklamationsbearbeitung"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "employment_entry:3",
+    "group": "employment",
+    "status": "missing",
+    "critical": true,
+    "expected": {
+      "company": "Nordkai Werke GmbH",
+      "position": "Aushilfe",
+      "start_date": "04/2021",
+      "end_date": "09/2023",
+      "description": [
+        "Warenkontrolle",
+        "Hygienemanagement"
+      ]
+    },
+    "actual": null,
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "skill_extra:0",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Vectorworks",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "skill_extra:2",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Competencies",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "skill_extra:3",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Warenkontrolle",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "skill_extra:9",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Vectorworks",
+    "actual": [
+      "Confluence",
+      "QGIS",
+      "DaVinci Resolve"
+    ],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_048.pdf",
+    "field": "software:4",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "DaVinci Resolve",
+    "actual": [
+      "Confluence",
+      "QGIS",
+      "DaVinci Resolve"
+    ],
+    "layout_class": 2,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Dänisch",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "German",
+      "A2"
+    ],
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "education:0.institution",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "University of Bristol",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "education:0.start_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2010",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "education:0.end_date",
+    "group": "education",
+    "status": "missing",
+    "critical": true,
+    "expected": "2013",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "skill_extra:0",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Vectorworks: gut",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "skill_extra:1",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Competencies",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "skill_extra:5",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Weitere Angaben",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "skill_extra:6",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Target role: Event Producer",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "software:1",
+    "group": "software",
+    "status": "missing",
+    "critical": false,
+    "expected": "Vectorworks",
+    "actual": [
+      "SAP EWM: Grundlagen"
+    ],
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "certificate:0",
+    "group": "certificates",
+    "status": "missing",
+    "critical": false,
+    "expected": "Sicherheitsunterweisung 2022",
+    "actual": [],
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_049.pdf",
+    "field": "target_role",
+    "group": "career_intent",
+    "status": "missing",
+    "critical": false,
+    "expected": "Event Producer",
+    "actual": "",
+    "layout_class": 3,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_050.pdf",
+    "field": "address.country",
+    "group": "address",
+    "status": "missing",
+    "critical": true,
+    "expected": "Deutschland",
+    "actual": "",
+    "layout_class": 4,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_050.pdf",
+    "field": "language:0",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "Italienisch",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_050.pdf",
+    "field": "language:1",
+    "group": "languages",
+    "status": "missing",
+    "critical": true,
+    "expected": [
+      "German",
+      "B1"
+    ],
+    "actual": [],
+    "layout_class": 4,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_050.pdf",
+    "field": "employment:1.position",
+    "group": "employment",
+    "status": "wrong",
+    "critical": true,
+    "expected": "Werkstudent/in",
+    "actual": "Hygienemanagement · Stakeholder-Kommunikation",
+    "layout_class": 4,
+    "document_language": "en"
+  },
+  {
+    "document": "FH_050.pdf",
+    "field": "skill_extra:0",
+    "group": "skills",
+    "status": "hallucinated",
+    "critical": false,
+    "expected": null,
+    "actual": "Competencies",
+    "layout_class": 4,
+    "document_language": "en"
+  }
+]

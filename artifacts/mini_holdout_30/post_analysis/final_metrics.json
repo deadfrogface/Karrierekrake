@@ -1,0 +1,222 @@
+{
+  "label": "POST-ANALYSIS",
+  "dataset": "MINI_HOLDOUT_30",
+  "commit": "3e9bcb3b021bf5767a2cb573e1196ef1802edd15",
+  "created_at": "2026-09-23T03:27:15.378891+00:00",
+  "frozen_reference": {
+    "f1": 0.8548,
+    "hallucination_rate": 0.0576,
+    "perfect_core": 0,
+    "software_f1": 0.193,
+    "invented_licence": 5,
+    "immutable": true
+  },
+  "metrics_30": {
+    "overall": {
+      "field_total": 1116,
+      "counts": {
+        "correct": 1103,
+        "missing": 13,
+        "hallucinated": 0,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9883512544802867,
+      "precision": 1.0,
+      "recall": 0.9883512544802867,
+      "f1": 0.9941415051825145,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.011648745519713262,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "by_group": {
+        "personal": {
+          "correct": 86
+        },
+        "contact": {
+          "correct": 56
+        },
+        "address": {
+          "correct": 128,
+          "missing": 13
+        },
+        "languages": {
+          "correct": 60
+        },
+        "licenses": {
+          "correct": 32
+        },
+        "education": {
+          "correct": 175
+        },
+        "employment": {
+          "correct": 300
+        },
+        "skills": {
+          "correct": 133
+        },
+        "software": {
+          "correct": 103
+        },
+        "certificates": {
+          "correct": 30
+        }
+      }
+    },
+    "f1": 0.9941415051825145,
+    "field_accuracy": 0.9883512544802867,
+    "hallucination_rate": 0.0,
+    "precision": 1.0,
+    "recall": 0.9883512544802867,
+    "perfect_all": 26,
+    "perfect_core": 26,
+    "invented_licence": 0,
+    "groups": {
+      "personal": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 86,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "contact": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 56,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "address": {
+        "f1": 0.9516728624535316,
+        "precision": 1.0,
+        "recall": 0.9078014184397163,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 128,
+          "missing": 13,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0
+        }
+      },
+      "languages": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 60,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "licenses": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 32,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "education": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 175,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "employment": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 300,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "skills": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 133,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "software": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 103,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      },
+      "certificates": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "counts": {
+          "correct": 30,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        }
+      }
+    }
+  },
+  "regressions": {
+    "final50_f1": 0.998491,
+    "final50_perfect_core": 44,
+    "holdout100_f1": 0.998449,
+    "holdout100_perfect": 89
+  },
+  "performance": {
+    "wall_s": 0.7586588260019198,
+    "avg_ms": 15.408813734150803,
+    "median_ms": 12.832061504013836,
+    "peak_rss_mb": 42.31640625,
+    "phi_calls": 0
+  },
+  "decision": "READY_FOR_INDEPENDENT_RECHECK",
+  "phi_calls_production": 0
+}

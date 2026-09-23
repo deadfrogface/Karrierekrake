@@ -1,0 +1,267 @@
+{
+  "personal": {
+    "field_total": 145,
+    "counts": {
+      "correct": 139,
+      "missing": 6,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.9586206896551724,
+    "precision": 1.0,
+    "recall": 0.9586206896551724,
+    "f1": 0.9788732394366197,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.041379310344827586,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0,
+    "by_group": {
+      "personal": {
+        "correct": 139,
+        "missing": 6
+      }
+    }
+  },
+  "contact": {
+    "field_total": 96,
+    "counts": {
+      "correct": 93,
+      "wrong": 3,
+      "hallucinated": 0,
+      "wrong_category": 0,
+      "missing": 0
+    },
+    "field_accuracy": 0.96875,
+    "precision": 0.96875,
+    "recall": 1.0,
+    "f1": 0.9841269841269841,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.0,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.03125,
+    "by_group": {
+      "contact": {
+        "correct": 93,
+        "wrong": 3
+      }
+    }
+  },
+  "address": {
+    "field_total": 241,
+    "counts": {
+      "correct": 163,
+      "missing": 73,
+      "wrong": 5,
+      "hallucinated": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.6763485477178424,
+    "precision": 0.9702380952380952,
+    "recall": 0.690677966101695,
+    "f1": 0.8069306930693069,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.3029045643153527,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.02074688796680498,
+    "by_group": {
+      "address": {
+        "correct": 163,
+        "missing": 73,
+        "wrong": 5
+      }
+    }
+  },
+  "languages": {
+    "field_total": 100,
+    "counts": {
+      "missing": 100,
+      "correct": 0,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 1.0,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0,
+    "by_group": {
+      "languages": {
+        "missing": 100
+      }
+    }
+  },
+  "licenses": {
+    "field_total": 52,
+    "counts": {
+      "correct": 52,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0,
+      "missing": 0
+    },
+    "field_accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.0,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0,
+    "by_group": {
+      "licenses": {
+        "correct": 52
+      }
+    }
+  },
+  "education": {
+    "field_total": 296,
+    "counts": {
+      "correct": 190,
+      "missing": 78,
+      "wrong": 27,
+      "hallucinated": 1,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.6418918918918919,
+    "precision": 0.8715596330275229,
+    "recall": 0.7089552238805971,
+    "f1": 0.7818930041152263,
+    "hallucination_rate": 0.0033783783783783786,
+    "missing_field_rate": 0.2635135135135135,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0945945945945946,
+    "by_group": {
+      "education": {
+        "correct": 190,
+        "missing": 78,
+        "wrong": 27,
+        "hallucinated": 1
+      }
+    }
+  },
+  "employment": {
+    "field_total": 155,
+    "counts": {
+      "missing": 115,
+      "correct": 36,
+      "wrong": 4,
+      "hallucinated": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.23225806451612904,
+    "precision": 0.9,
+    "recall": 0.23841059602649006,
+    "f1": 0.37696335078534027,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.7419354838709677,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.025806451612903226,
+    "by_group": {
+      "employment": {
+        "missing": 115,
+        "correct": 36,
+        "wrong": 4
+      }
+    }
+  },
+  "skills": {
+    "field_total": 339,
+    "counts": {
+      "correct": 223,
+      "hallucinated": 116,
+      "wrong": 0,
+      "wrong_category": 0,
+      "missing": 0
+    },
+    "field_accuracy": 0.6578171091445427,
+    "precision": 0.6578171091445427,
+    "recall": 1.0,
+    "f1": 0.793594306049822,
+    "hallucination_rate": 0.3421828908554572,
+    "missing_field_rate": 0.0,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.3421828908554572,
+    "by_group": {
+      "skills": {
+        "correct": 223,
+        "hallucinated": 116
+      }
+    }
+  },
+  "software": {
+    "field_total": 173,
+    "counts": {
+      "correct": 166,
+      "missing": 7,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.9595375722543352,
+    "precision": 1.0,
+    "recall": 0.9595375722543352,
+    "f1": 0.9793510324483776,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.04046242774566474,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0,
+    "by_group": {
+      "software": {
+        "correct": 166,
+        "missing": 7
+      }
+    }
+  },
+  "certificates": {
+    "field_total": 50,
+    "counts": {
+      "correct": 48,
+      "missing": 2,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.96,
+    "precision": 1.0,
+    "recall": 0.96,
+    "f1": 0.9795918367346939,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.04,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0,
+    "by_group": {
+      "certificates": {
+        "correct": 48,
+        "missing": 2
+      }
+    }
+  },
+  "career_intent": {
+    "field_total": 1,
+    "counts": {
+      "missing": 1,
+      "correct": 0,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 1.0,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0,
+    "by_group": {
+      "career_intent": {
+        "missing": 1
+      }
+    }
+  }
+}

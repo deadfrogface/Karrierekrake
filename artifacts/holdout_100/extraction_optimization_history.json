@@ -1,0 +1,144 @@
+[
+  {
+    "iteration": 1,
+    "root_cause": "Kenntnisse section swallowed Praxis/Stationen/Werdegang/Bildungsweg/Schule&Ausbildung; software label split on slash; employment lines parsed as skills",
+    "changed_components": [
+      "core/cv_sections.py",
+      "core/cv_parser.py"
+    ],
+    "targeted_documents": 60,
+    "before": {
+      "accuracy": 0.698,
+      "f1": 0.822,
+      "perfect_documents": 17,
+      "hallucination_rate": 0.137
+    },
+    "after": {
+      "accuracy": 0.887,
+      "f1": 0.94,
+      "perfect_documents": 39,
+      "hallucination_rate": 0.017
+    },
+    "fixed_errors": [
+      "skills_contam_employment_leak",
+      "employment_entry_missing",
+      "education_entry_missing",
+      "partial software slash/continuation"
+    ],
+    "new_errors": [],
+    "performance_delta": {
+      "mean_s": 0.0095
+    },
+    "doc_level": {
+      "newly_perfect": 22,
+      "lost_perfect": 0,
+      "worsened": 0,
+      "improved": 74
+    },
+    "decision": "KEEP",
+    "commit": "e1f9700"
+  },
+  {
+    "iteration": 2,
+    "root_cause": "Software/language tokens left in skills after wrapped Kenntnisse labels; Romanes missing from language set; Sicherheitsunterweisung skill extras",
+    "changed_components": [
+      "core/cv_parser.py (_KNOWN_LANGUAGES, _KNOWN_SOFTWARE_TOKENS, post-routing skills cleanup)"
+    ],
+    "targeted_documents": 50,
+    "before": {
+      "accuracy": 0.887,
+      "f1": 0.94,
+      "perfect_documents": 39,
+      "hallucination_rate": 0.017
+    },
+    "after": {
+      "accuracy": 0.902,
+      "f1": 0.949,
+      "perfect_documents": 57,
+      "hallucination_rate": 0.003
+    },
+    "fixed_errors": [
+      "skills_software_misroute",
+      "romanes_language",
+      "skill_extra_sicherheitsunterweisung"
+    ],
+    "new_errors": [],
+    "performance_delta": {
+      "note": "DET still ~0.01s"
+    },
+    "doc_level": {
+      "lost_perfect": 0,
+      "worsened": 0,
+      "perfect_delta": 18
+    },
+    "decision": "KEEP",
+    "commit": "5f32e6c"
+  },
+  {
+    "iteration": 3,
+    "root_cause": "Werkzeuge heading not recognized \u2014 tools/languages/skills swallowed by education/general",
+    "changed_components": [
+      "core/cv_sections.py",
+      "core/cv_parser.py _HEADING_LINE"
+    ],
+    "targeted_documents": 20,
+    "before": {
+      "accuracy": 0.902,
+      "f1": 0.949,
+      "perfect_documents": 57,
+      "hallucination_rate": 0.003
+    },
+    "after": {
+      "accuracy": 0.973,
+      "f1": 0.986,
+      "perfect_documents": 67,
+      "hallucination_rate": 0.005
+    },
+    "fixed_errors": [
+      "software_missing_in_education",
+      "language_missing_in_education",
+      "skills_missing_werkzeuge"
+    ],
+    "new_errors": [],
+    "decision": "KEEP",
+    "commit": "fbc1c7b",
+    "doc_level": {
+      "worsened": 0,
+      "lost_perfect": 0
+    }
+  },
+  {
+    "iteration": 4,
+    "root_cause": "Address regex missed parentheses cities, AT 4-digit PLZ, FR country; skill/software wrap fragments",
+    "changed_components": [
+      "core/cv_parser.py postal helpers",
+      "kenntnisse wrap merge for compound heads",
+      "fragment filters"
+    ],
+    "targeted_documents": 30,
+    "before": {
+      "accuracy": 0.973,
+      "f1": 0.986,
+      "perfect_documents": 67,
+      "hallucination_rate": 0.005
+    },
+    "after": {
+      "accuracy": 0.9969018112488084,
+      "f1": 0.9984485022079007,
+      "perfect_documents": 89,
+      "hallucination_rate": 0.0009532888465204957
+    },
+    "fixed_errors": [
+      "address_all",
+      "skill_wrap_fragments"
+    ],
+    "new_errors": [],
+    "reverted_attempt": "always-on labeled-list continuation (hallu spike)",
+    "decision": "KEEP",
+    "doc_level": {
+      "worsened": 0,
+      "lost_perfect": 0
+    },
+    "commit": "c9e91c9"
+  }
+]

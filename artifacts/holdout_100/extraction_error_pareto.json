@@ -1,0 +1,318 @@
+{
+  "corpus": "POST-ANALYSIS Development and Regression Corpus (100 CVs)",
+  "baseline_pipeline": "DET A5 + Kenntnisse-Routing (post_analysis A5_det_product_v2)",
+  "baseline_metrics": {
+    "field_accuracy": 0.6979643765903308,
+    "precision": 0.8342457420924574,
+    "recall": 0.8103397341211226,
+    "f1": 0.8221189869623857,
+    "hallucination_rate": 0.13689567430025446,
+    "missing_field_rate": 0.1633587786259542,
+    "wrong_category_rate": 0.0,
+    "field_total": 3930
+  },
+  "perfect_documents": 17,
+  "error_count_distribution": {
+    "0": 17,
+    "1": 4,
+    "2": 4,
+    "3": 6,
+    "4": 8,
+    "5": 8,
+    "6": 5,
+    "7": 2,
+    "8": 2,
+    "9": 1,
+    "11": 1,
+    "12": 1,
+    "13": 1,
+    "17": 6,
+    "18": 3,
+    "19": 7,
+    "20": 2,
+    "21": 1,
+    "22": 2,
+    "23": 1,
+    "24": 2,
+    "25": 1,
+    "26": 3,
+    "27": 1,
+    "28": 1,
+    "30": 1,
+    "32": 2,
+    "33": 2,
+    "37": 1,
+    "38": 3,
+    "46": 1
+  },
+  "near_perfect_1_error": [
+    "HO_006_Busfahrer.pdf",
+    "HO_019_Koch.pdf",
+    "HO_049_Revierjäger.pdf",
+    "HO_086_Hotelfachmann.pdf"
+  ],
+  "classes": [
+    {
+      "rank": 1,
+      "error_class": "skills_noise_or_prose_extra",
+      "fp": 297,
+      "fn": 0,
+      "wrong_category": 0,
+      "documents": 28,
+      "lost_perfect_matches": 28,
+      "severity": "high",
+      "root_cause": "Prose/soft fragments or split tokens in skills",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 297
+    },
+    {
+      "rank": 2,
+      "error_class": "skills_contam_employment_leak",
+      "fp": 171,
+      "fn": 0,
+      "wrong_category": 0,
+      "documents": 20,
+      "lost_perfect_matches": 20,
+      "severity": "critical",
+      "root_cause": "Kenntnisse section swallows Praxis/Bildungsweg/Stationen/Werdegang",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 171
+    },
+    {
+      "rank": 3,
+      "error_class": "software_missing_label_or_section",
+      "fp": 0,
+      "fn": 165,
+      "wrong_category": 0,
+      "documents": 45,
+      "lost_perfect_matches": 45,
+      "severity": "critical",
+      "root_cause": "Software not extracted from labeled/wrapped Kenntnisse lines",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 165
+    },
+    {
+      "rank": 4,
+      "error_class": "employment_entry_missing",
+      "fp": 0,
+      "fn": 150,
+      "wrong_category": 0,
+      "documents": 60,
+      "lost_perfect_matches": 60,
+      "severity": "critical",
+      "root_cause": "Experience headings unrecognized → empty work_experience",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 150
+    },
+    {
+      "rank": 5,
+      "error_class": "skills_missing",
+      "fp": 0,
+      "fn": 133,
+      "wrong_category": 0,
+      "documents": 19,
+      "lost_perfect_matches": 19,
+      "severity": "high",
+      "root_cause": "see class name",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 133
+    },
+    {
+      "rank": 6,
+      "error_class": "education_entry_missing",
+      "fp": 0,
+      "fn": 50,
+      "wrong_category": 0,
+      "documents": 40,
+      "lost_perfect_matches": 40,
+      "severity": "medium",
+      "root_cause": "Education headings unrecognized → empty education",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 50
+    },
+    {
+      "rank": 7,
+      "error_class": "skills_software_misroute",
+      "fp": 46,
+      "fn": 0,
+      "wrong_category": 0,
+      "documents": 25,
+      "lost_perfect_matches": 25,
+      "severity": "medium",
+      "root_cause": "Software tokens land in skills (label/continuation/slash split)",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 46
+    },
+    {
+      "rank": 8,
+      "error_class": "language_missing",
+      "fp": 0,
+      "fn": 46,
+      "wrong_category": 0,
+      "documents": 26,
+      "lost_perfect_matches": 26,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 46
+    },
+    {
+      "rank": 9,
+      "error_class": "address_missing_address.country",
+      "fp": 0,
+      "fn": 22,
+      "wrong_category": 0,
+      "documents": 22,
+      "lost_perfect_matches": 22,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 22
+    },
+    {
+      "rank": 10,
+      "error_class": "address_missing_address.street",
+      "fp": 0,
+      "fn": 18,
+      "wrong_category": 0,
+      "documents": 18,
+      "lost_perfect_matches": 18,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 18
+    },
+    {
+      "rank": 11,
+      "error_class": "address_missing_address.house_number",
+      "fp": 0,
+      "fn": 18,
+      "wrong_category": 0,
+      "documents": 18,
+      "lost_perfect_matches": 18,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 18
+    },
+    {
+      "rank": 12,
+      "error_class": "address_missing_address.postal_code",
+      "fp": 0,
+      "fn": 18,
+      "wrong_category": 0,
+      "documents": 18,
+      "lost_perfect_matches": 18,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 18
+    },
+    {
+      "rank": 13,
+      "error_class": "certificates_hallucinated",
+      "fp": 13,
+      "fn": 0,
+      "wrong_category": 0,
+      "documents": 1,
+      "lost_perfect_matches": 1,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 13
+    },
+    {
+      "rank": 14,
+      "error_class": "address_missing_address.city",
+      "fp": 0,
+      "fn": 12,
+      "wrong_category": 0,
+      "documents": 12,
+      "lost_perfect_matches": 12,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 12
+    },
+    {
+      "rank": 15,
+      "error_class": "certificates_missing",
+      "fp": 0,
+      "fn": 10,
+      "wrong_category": 0,
+      "documents": 10,
+      "lost_perfect_matches": 10,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 10
+    },
+    {
+      "rank": 16,
+      "error_class": "software_extra",
+      "fp": 9,
+      "fn": 0,
+      "wrong_category": 0,
+      "documents": 9,
+      "lost_perfect_matches": 9,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 9
+    },
+    {
+      "rank": 17,
+      "error_class": "address_wrong_address.city",
+      "fp": 0,
+      "fn": 0,
+      "wrong_category": 7,
+      "documents": 7,
+      "lost_perfect_matches": 7,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "field_parser",
+      "n": 7
+    },
+    {
+      "rank": 18,
+      "error_class": "education_extra",
+      "fp": 2,
+      "fn": 0,
+      "wrong_category": 0,
+      "documents": 2,
+      "lost_perfect_matches": 2,
+      "severity": "medium",
+      "root_cause": "see class name",
+      "pipeline_stage": "section_split+kenntnisse_routing",
+      "n": 2
+    }
+  ],
+  "by_field_group": {
+    "education": {
+      "missing": 50,
+      "hallucinated": 2
+    },
+    "employment": {
+      "missing": 150
+    },
+    "skills": {
+      "hallucinated": 514,
+      "missing": 133
+    },
+    "software": {
+      "missing": 165,
+      "hallucinated": 9
+    },
+    "address": {
+      "missing": 88,
+      "wrong": 7
+    },
+    "languages": {
+      "missing": 46
+    },
+    "certificates": {
+      "missing": 10,
+      "hallucinated": 13
+    }
+  }
+}

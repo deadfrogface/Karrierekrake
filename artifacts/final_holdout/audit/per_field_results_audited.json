@@ -1,0 +1,124 @@
+{
+  "address.country": {
+    "missing": 50
+  },
+  "language:0": {
+    "missing": 50
+  },
+  "language:1": {
+    "missing": 50
+  },
+  "education:0.institution": {
+    "missing": 8,
+    "wrong": 27
+  },
+  "education:0.start_date": {
+    "missing": 35
+  },
+  "education:0.end_date": {
+    "missing": 35
+  },
+  "employment_entry:0": {
+    "missing": 46
+  },
+  "skill_extra:3": {
+    "hallucinated": 13
+  },
+  "employment_entry:1": {
+    "missing": 34
+  },
+  "skill_extra:4": {
+    "hallucinated": 17
+  },
+  "skill_extra:5": {
+    "hallucinated": 18
+  },
+  "skill_extra:6": {
+    "hallucinated": 21
+  },
+  "skill_extra:7": {
+    "hallucinated": 12
+  },
+  "employment_entry:2": {
+    "missing": 23
+  },
+  "employment_entry:3": {
+    "missing": 12
+  },
+  "name.first_name": {
+    "missing": 3
+  },
+  "name.last_name": {
+    "missing": 3
+  },
+  "email": {
+    "wrong": 3
+  },
+  "skill_extra:8": {
+    "hallucinated": 7
+  },
+  "skill_extra:9": {
+    "hallucinated": 8
+  },
+  "skill_extra:10": {
+    "hallucinated": 4
+  },
+  "skill_extra:11": {
+    "hallucinated": 4
+  },
+  "skill_extra:12": {
+    "hallucinated": 2
+  },
+  "address.street": {
+    "missing": 7
+  },
+  "address.house_number": {
+    "missing": 7
+  },
+  "address.postal_code": {
+    "missing": 7
+  },
+  "address.city": {
+    "wrong": 5,
+    "missing": 2
+  },
+  "education_extra:1": {
+    "hallucinated": 1
+  },
+  "software:2": {
+    "missing": 2
+  },
+  "employment:1.position": {
+    "wrong": 3
+  },
+  "skill_extra:0": {
+    "hallucinated": 5
+  },
+  "skill_extra:1": {
+    "hallucinated": 3
+  },
+  "skill_extra:2": {
+    "hallucinated": 2
+  },
+  "software:0": {
+    "missing": 1
+  },
+  "certificate:0": {
+    "missing": 2
+  },
+  "employment:2.position": {
+    "wrong": 1
+  },
+  "software:3": {
+    "missing": 1
+  },
+  "software:1": {
+    "missing": 2
+  },
+  "software:4": {
+    "missing": 1
+  },
+  "target_role": {
+    "missing": 1
+  }
+}

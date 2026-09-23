@@ -1,0 +1,83 @@
+{
+  "n_documents": 3,
+  "documents": [
+    "FH_011.pdf",
+    "FH_026.pdf",
+    "FH_041.pdf"
+  ],
+  "metrics": {
+    "field_total": 96,
+    "counts": {
+      "correct": 56,
+      "missing": 24,
+      "wrong": 4,
+      "hallucinated": 12,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.5833333333333334,
+    "precision": 0.7777777777777778,
+    "recall": 0.7,
+    "f1": 0.7368421052631577,
+    "hallucination_rate": 0.125,
+    "missing_field_rate": 0.25,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.16666666666666666,
+    "by_group": {
+      "personal": {
+        "correct": 9
+      },
+      "contact": {
+        "correct": 6
+      },
+      "address": {
+        "missing": 6,
+        "wrong": 1,
+        "correct": 8
+      },
+      "languages": {
+        "missing": 6
+      },
+      "licenses": {
+        "correct": 3
+      },
+      "education": {
+        "correct": 6,
+        "wrong": 3,
+        "missing": 6,
+        "hallucinated": 1
+      },
+      "employment": {
+        "missing": 6
+      },
+      "skills": {
+        "correct": 12,
+        "hallucinated": 11
+      },
+      "software": {
+        "correct": 9
+      },
+      "certificates": {
+        "correct": 3
+      }
+    }
+  },
+  "error_count": 40,
+  "errors_by_group": {
+    "address": 7,
+    "languages": 6,
+    "education": 10,
+    "employment": 6,
+    "skills": 11
+  },
+  "errors_by_status": {
+    "missing": 24,
+    "wrong": 4,
+    "hallucinated": 12
+  },
+  "analysis": {
+    "scorer_share": "Languages 100% FN are real empty predictions (parser), not scorer mapping. Same as global.",
+    "parser_share": "Dominant: languages missing, employment missing, skill extras, education mismatches.",
+    "small_denominator": false,
+    "strict_normalized_special": "No special scorer pathology; weak because same real parser gaps."
+  }
+}

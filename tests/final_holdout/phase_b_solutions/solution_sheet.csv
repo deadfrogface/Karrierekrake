@@ -1,0 +1,51 @@
+﻿filename;name;city;employment;education;languages;licenses;software;skills;missing
+FH_001.pdf;Aylin Berger;Aachen;1;2;Deutsch: Muttersprache | Englisch: A2;B;Affinity Publisher | Navision;Fehlerdiagnose | Hygienemanagement | Prozessoptimierung;
+FH_002.pdf;Bruno Ceylan;Kehl;2;1;Englisch: C1 | Englisch: B1;;Adobe Illustrator | Power BI | AutoCAD;Qualitätssicherung | Prozessoptimierung | Warenkontrolle | Bestandsführung;
+FH_003.pdf;Cora Dreher;Görlitz;3;1;Französisch: B2 | Englisch: B2;;DaVinci Resolve | SketchUp | Docker | Revit;Hygienemanagement | Prozessoptimierung | Bestandsführung | Gefährdungsbeurteilung | Warenkontrolle;date_of_birth
+FH_004.pdf;Darius Eckert;Flensburg;4;1;Niederländisch: B1 | Englisch: C1;;DATEV | SketchUp | SolidWorks | Lexware | Power BI;Technisches Zeichnen | Maschinenführung | Präzisionsarbeit | Qualitätssicherung | Kundenberatung | Reklamationsbearbeitung;
+FH_005.pdf;Elif Fontaine;Konstanz;1;1;Polnisch: C1 | Englisch: A2;B;R | DaVinci Resolve;Schichtkoordination | Qualitätssicherung | Maschinenführung;phone
+FH_006.pdf;Falk Gronau;Weil am Rhein;2;1;Türkisch: Muttersprache | Englisch: B1;;Affinity Publisher | Jira | ProTool;Prozessoptimierung | Schichtkoordination | Qualitätssicherung | Warenkontrolle;
+FH_007.pdf;Greta Horváth;Passau;3;2;Arabisch: C2 | Englisch: B2;;Jira | Docker | Python | Confluence;Fehlerdiagnose | Bestandsführung | Technisches Zeichnen | Qualitätssicherung | Projektsteuerung;
+FH_008.pdf;Hugo Isenberg;Kleve;4;1;Ungarisch: B2 | Englisch: C1;;Docker | Python | GitLab | QGIS | Microsoft Excel;Routenplanung | Bestandsführung | Fehlerdiagnose | Projektsteuerung | Präzisionsarbeit | Dokumentation;street, house_number, postal_code, date_of_birth
+FH_009.pdf;Iva Jürgens;Saarbrücken;1;1;Deutsch: C2 | Polnisch: C1;B, C1;QGIS | Microsoft Excel;Hygienemanagement | Stakeholder-Kommunikation | Prozessoptimierung;
+FH_010.pdf;Jamal Kretschmer;Trier;2;1;Italienisch: B1 | Englisch: B1;;ProTool | Power BI | Microsoft Excel;Schichtkoordination | Hygienemanagement | Maschinenführung | Prozessoptimierung;
+FH_011.pdf;Klara Lindholm;Basel;3;1;Deutsch: Muttersprache | Englisch: B2;;Siemens TIA Portal | SketchUp | Adobe Illustrator | Docker;Stakeholder-Kommunikation | Reklamationsbearbeitung | Fehlerdiagnose | Hygienemanagement | Materialprüfung;
+FH_012.pdf;Levent Mancini;Enschede;4;1;Englisch: C1 | Englisch: C1;;Lexware | Python | Jira | QGIS | DATEV;Teammoderation | Disposition | Prozessoptimierung | Präzisionsarbeit | Technisches Zeichnen | Dokumentation;
+FH_013.pdf;Mina N'Diaye;Strasbourg;1;2;Französisch: B2 | Englisch: A2;B;Siemens TIA Portal | QGIS;Routenplanung | Maschinenführung | Prozessoptimierung;
+FH_014.pdf;Nils Obermann;Salzburg;2;1;Niederländisch: B1 | Englisch: B1;;Docker | Python | DaVinci Resolve;Dokumentation | Teammoderation | Präzisionsarbeit | Reklamationsbearbeitung;email
+FH_015.pdf;Olga Pietsch;Luxembourg;3;1;Polnisch: C1 | Englisch: B2;;DATEV | Confluence | SolidWorks | Navision;Reklamationsbearbeitung | Fehlerdiagnose | Stakeholder-Kommunikation | Dokumentation | Warenkontrolle;
+FH_016.pdf;Pavel Quint;Hamburg;4;1;Türkisch: Muttersprache | Englisch: C1;;Lexware | Power BI | ArcGIS Pro | Navision | AutoCAD;Prozessoptimierung | Stakeholder-Kommunikation | Routenplanung | Teammoderation | Technisches Zeichnen | Disposition;
+FH_017.pdf;Rana Sørensen;Berlin;1;1;Arabisch: C2 | Englisch: A2;B;R | Docker;Projektsteuerung | Präzisionsarbeit | Bestandsführung;
+FH_018.pdf;Silas Todorov;Leipzig;2;1;Ungarisch: B2 | Englisch: B1;;Vectorworks | Affinity Publisher | Docker;Prozessoptimierung | Routenplanung | Hygienemanagement | Warenkontrolle;
+FH_019.pdf;Tabea Uzun;München;3;2;Dänisch: A2 | Englisch: B2;;Python | DaVinci Resolve | DATEV | Power BI;Dokumentation | Materialprüfung | Reklamationsbearbeitung | Teammoderation | Warenkontrolle;
+FH_020.pdf;Veit van Dijk;Dresden;4;1;Italienisch: B1 | Englisch: C1;;Power BI | AutoCAD | Docker | Python | Siemens TIA Portal;Gefährdungsbeurteilung | Disposition | Technisches Zeichnen | Teammoderation | Fehlerdiagnose | Reklamationsbearbeitung;
+FH_021.pdf;Wiebke Aydin;Aachen;1;1;Deutsch: Muttersprache | Englisch: A2;B;Python | Docker;Teammoderation | Kundenberatung | Technisches Zeichnen;
+FH_022.pdf;Xaver Brenner;Kehl;2;1;Englisch: C1 | Englisch: B1;;Lexware | DATEV | SolidWorks;Maschinenführung | Dokumentation | Bestandsführung | Prozessoptimierung;
+FH_023.pdf;Yuna Çelik;Görlitz;3;1;Französisch: B2 | Englisch: B2;;Confluence | SolidWorks | Jira | Vectorworks;Materialprüfung | Prozessoptimierung | Hygienemanagement | Präzisionsarbeit | Gefährdungsbeurteilung;street, house_number, postal_code, date_of_birth
+FH_024.pdf;Zeno Dietrich;Flensburg;4;1;Niederländisch: B1 | Englisch: C1;;SAP EWM | Affinity Publisher | Confluence | Vectorworks | DaVinci Resolve;Materialprüfung | Technisches Zeichnen | Präzisionsarbeit | Reklamationsbearbeitung | Schichtkoordination | Teammoderation;
+FH_025.pdf;Amira El-Sayed;Konstanz;1;2;Polnisch: C1 | Englisch: A2;B;AutoCAD | Siemens TIA Portal;Prozessoptimierung | Routenplanung | Warenkontrolle;
+FH_026.pdf;Bjarne Falk;Weil am Rhein;2;1;Türkisch: Muttersprache | Englisch: B1;;Adobe Illustrator | QGIS | SolidWorks;Kundenberatung | Gefährdungsbeurteilung | Bestandsführung | Maschinenführung;
+FH_027.pdf;Chiara Gomes;Passau;3;1;Arabisch: C2 | Englisch: B2;;Power BI | Lexware | SketchUp | Jira;Technisches Zeichnen | Hygienemanagement | Präzisionsarbeit | Stakeholder-Kommunikation | Projektsteuerung;
+FH_028.pdf;Deniz Hagen;Kleve;4;1;Ungarisch: B2 | Englisch: C1;;DATEV | Navision | Lexware | SAP EWM | GitLab;Hygienemanagement | Prozessoptimierung | Materialprüfung | Bestandsführung | Kundenberatung | Stakeholder-Kommunikation;
+FH_029.pdf;Edda Iliev;Saarbrücken;1;1;Deutsch: C2 | Polnisch: C1;B, C1;Navision | SolidWorks;Maschinenführung | Fehlerdiagnose | Technisches Zeichnen;
+FH_030.pdf;Farid Jost;Trier;2;1;Italienisch: B1 | Englisch: B1;;AutoCAD | Navision | SketchUp;Dokumentation | Qualitätssicherung | Prozessoptimierung | Reklamationsbearbeitung;
+FH_031.pdf;Gesine Kovac;Basel;3;2;Deutsch: Muttersprache | Englisch: B2;;AutoCAD | QGIS | ProTool | SAP EWM;Routenplanung | Projektsteuerung | Schichtkoordination | Hygienemanagement | Prozessoptimierung;
+FH_032.pdf;Hamza Leclerc;Enschede;4;1;Englisch: C1 | Englisch: C1;;QGIS | GitLab | SAP EWM | Siemens TIA Portal | Navision;Prozessoptimierung | Stakeholder-Kommunikation | Maschinenführung | Bestandsführung | Warenkontrolle | Schichtkoordination;phone
+FH_033.pdf;Isabel Möller;Strasbourg;1;1;Französisch: B2 | Englisch: A2;B;Power BI | Adobe Illustrator;Kundenberatung | Teammoderation | Fehlerdiagnose;
+FH_034.pdf;Janek Neumann;Salzburg;2;1;Niederländisch: B1 | Englisch: B1;;Confluence | ArcGIS Pro | Python;Prozessoptimierung | Reklamationsbearbeitung | Präzisionsarbeit | Fehlerdiagnose;
+FH_035.pdf;Khadija Oltmann;Luxembourg;3;1;Polnisch: C1 | Englisch: B2;;SketchUp | Python | ProTool | GitLab;Teammoderation | Maschinenführung | Qualitätssicherung | Prozessoptimierung | Warenkontrolle;street, house_number, postal_code, date_of_birth
+FH_036.pdf;Lennart Pavic;Hamburg;4;1;Türkisch: Muttersprache | Englisch: C1;;Siemens TIA Portal | Microsoft Excel | GitLab | DaVinci Resolve | Power BI;Schichtkoordination | Dokumentation | Hygienemanagement | Disposition | Kundenberatung | Maschinenführung;
+FH_037.pdf;Merve Reuter;Berlin;1;2;Arabisch: C2 | Englisch: A2;B;Vectorworks | GitLab;Kundenberatung | Materialprüfung | Disposition;
+FH_038.pdf;Noah Savic;Leipzig;2;1;Ungarisch: B2 | Englisch: B1;;Vectorworks | DaVinci Resolve | Jira;Gefährdungsbeurteilung | Fehlerdiagnose | Materialprüfung | Hygienemanagement;
+FH_039.pdf;Oana Thiel;München;3;1;Dänisch: A2 | Englisch: B2;;SAP EWM | R | ProTool | Vectorworks;Disposition | Kundenberatung | Teammoderation | Prozessoptimierung | Bestandsführung;
+FH_040.pdf;Peer Unger;Dresden;4;1;Italienisch: B1 | Englisch: C1;;ProTool | Microsoft Excel | SolidWorks | AutoCAD | Confluence;Reklamationsbearbeitung | Fehlerdiagnose | Gefährdungsbeurteilung | Technisches Zeichnen | Stakeholder-Kommunikation | Prozessoptimierung;
+FH_041.pdf;Rieke Vasquez;Aachen;1;1;Deutsch: Muttersprache | Englisch: A2;B;ProTool | Navision;Technisches Zeichnen | Bestandsführung | Kundenberatung;
+FH_042.pdf;Samir Wolff;Kehl;2;1;Englisch: C1 | Englisch: B1;;Affinity Publisher | Python | AutoCAD;Maschinenführung | Qualitätssicherung | Warenkontrolle | Präzisionsarbeit;email
+FH_043.pdf;Tilda Xu;Görlitz;3;2;Französisch: B2 | Englisch: B2;;SketchUp | DATEV | ArcGIS Pro | Microsoft Excel;Schichtkoordination | Routenplanung | Kundenberatung | Stakeholder-Kommunikation | Dokumentation;
+FH_044.pdf;Uwe Yildirim;Flensburg;4;1;Niederländisch: B1 | Englisch: C1;;Confluence | Revit | ProTool | Lexware | SAP EWM;Qualitätssicherung | Warenkontrolle | Teammoderation | Disposition | Kundenberatung | Technisches Zeichnen;
+FH_045.pdf;Vera Zander;Konstanz;1;1;Polnisch: C1 | Englisch: A2;B;Microsoft Excel | Lexware;Bestandsführung | Projektsteuerung | Qualitätssicherung;
+FH_046.pdf;William Hart;Weil am Rhein;2;1;Türkisch: Muttersprache | German: B1;;SolidWorks | Lexware | GitLab;Reklamationsbearbeitung | Materialprüfung | Routenplanung | Dokumentation;
+FH_047.pdf;Aisha Cole;Passau;3;1;Arabisch: C2 | German: B2;;Siemens TIA Portal | Navision | Power BI | GitLab;Hygienemanagement | Prozessoptimierung | Warenkontrolle | Qualitätssicherung | Routenplanung;date_of_birth
+FH_048.pdf;Ethan Ward;Kleve;4;1;Ungarisch: B2 | German: C1;;Confluence | Vectorworks | QGIS | R | DaVinci Resolve;Warenkontrolle | Hygienemanagement | Prozessoptimierung | Materialprüfung | Fehlerdiagnose | Reklamationsbearbeitung;
+FH_049.pdf;Grace Miller;Saarbrücken;1;2;Dänisch: A2 | German: A2;B;SAP EWM | Vectorworks;Stakeholder-Kommunikation | Technisches Zeichnen | Dokumentation;
+FH_050.pdf;Liam Stone;Trier;2;1;Italienisch: B1 | German: B1;;DATEV | Adobe Illustrator | Siemens TIA Portal;Hygienemanagement | Stakeholder-Kommunikation | Kundenberatung | Materialprüfung;

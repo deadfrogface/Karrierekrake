@@ -570,6 +570,27 @@ def validate_writing(
         model.invented_flag = True
         model.confidence = ConfidenceLevel.LOW
         notes.append("possible_invented_facts")
+
+    # PHI_WRITE hard guard: biographical claim phrases must be profile-grounded.
+    # Job text may *request* these; that does not authorize inventing them.
+    profile_l = (profile_text or "").lower()
+    body_l = (model.body or "").lower()
+    bio_claims = (
+        ("führungserfahrung", ("führung", "leitungs", "teamlead", "vorgesetzt")),
+        ("führerschein", ("führerschein", "fahrerlaubnis", "klasse ")),
+        ("abschluss_master", ("master in", "master of", "m.sc", "msc ")),
+        ("sap_skill", (" sap", "sap ", "sap,")),
+    )
+    invented_bio: list[str] = []
+    for label, needles in bio_claims:
+        body_hit = any(n in body_l for n in needles)
+        profile_hit = any(n in profile_l for n in needles)
+        if body_hit and not profile_hit:
+            invented_bio.append(label)
+    if invented_bio:
+        model.invented_flag = True
+        model.confidence = ConfidenceLevel.LOW
+        notes.append("invented_bio_claims:" + ",".join(invented_bio))
     return model, notes
 
 

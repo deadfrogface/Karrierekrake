@@ -1,0 +1,403 @@
+{
+  "schema_version": 2,
+  "note": "Historical V1 scores remain valid as scorer-v1 artifacts; V2 is the corrected evaluation.",
+  "metadata_impact": {
+    "metadata_fields": [
+      "document_id",
+      "filename",
+      "layout",
+      "region_note",
+      "traps",
+      "missing",
+      "expected_status",
+      "language"
+    ],
+    "appeared_in_v1_field_totals": false,
+    "evidence": "evaluate_holdout_100.py never appends rows for these keys; only profile fields + target_role_not_employment trap",
+    "target_role_trap_v1": {
+      "field_name": "target_role_not_employment",
+      "scored_on_every_document_with_nonempty_target_role": true,
+      "note": "GT has target_role on essentially all docs; trap counted regardless of PDF evidence",
+      "A5_v1_wrong_category_from_counts": 40,
+      "C1_v1_wrong_category_from_counts": 97,
+      "estimated_rows_contributed_per_pipeline": 100,
+      "A5_v1_field_total": 3544,
+      "share_of_A5_field_total": 0.0282
+    },
+    "target_role_v2": {
+      "evaluable_documents": 14,
+      "non_evaluable_reason": "No explicit target-role evidence in PDF"
+    }
+  },
+  "post_analysis": {
+    "v1_post_analysis_A5": {
+      "accuracy": 0.6294,
+      "f1": 0.7725,
+      "perfect_documents": 0,
+      "source": "eval_post_analysis.txt"
+    },
+    "v2_post_analysis_A5": {
+      "accuracy": 0.6979643765903308,
+      "f1": 0.8221189869623857,
+      "perfect_documents": 17,
+      "source": "scorer_v2_post_analysis_results.json"
+    }
+  },
+  "pipelines": [
+    {
+      "pipeline": "A1_det_raw",
+      "v1": {
+        "accuracy": 0.47404063205417607,
+        "f1": 0.6431852986217457,
+        "precision": 0.6598586017282011,
+        "recall": 0.6273338312173263,
+        "hallucination_rate": 0.23109480812641084,
+        "perfect_documents": 0,
+        "field_total": 3544,
+        "wrong_category_rate": 0.011286681715575621
+      },
+      "v2": {
+        "accuracy": 0.556563245823389,
+        "f1": 0.7151180619441888,
+        "precision": 0.7340258105130626,
+        "recall": 0.6971599402092675,
+        "hallucination_rate": 0.2,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 4190,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.08252261376921294,
+      "delta_f1": 0.07193276332244314,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "A2_det_validators",
+      "status": "NOT_AVAILABLE"
+    },
+    {
+      "pipeline": "A3_det_evidence",
+      "v1": {
+        "accuracy": 0.47404063205417607,
+        "f1": 0.6431852986217457,
+        "precision": 0.6598586017282011,
+        "recall": 0.6273338312173263,
+        "hallucination_rate": 0.23109480812641084,
+        "perfect_documents": 0,
+        "field_total": 3544,
+        "wrong_category_rate": 0.011286681715575621
+      },
+      "v2": {
+        "accuracy": 0.556563245823389,
+        "f1": 0.7151180619441888,
+        "precision": 0.7340258105130626,
+        "recall": 0.6971599402092675,
+        "hallucination_rate": 0.2,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 4190,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.08252261376921294,
+      "delta_f1": 0.07193276332244314,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "A4_det_verify_repair",
+      "v1": {
+        "accuracy": 0.47404063205417607,
+        "f1": 0.6431852986217457,
+        "precision": 0.6598586017282011,
+        "recall": 0.6273338312173263,
+        "hallucination_rate": 0.23109480812641084,
+        "perfect_documents": 0,
+        "field_total": 3544,
+        "wrong_category_rate": 0.011286681715575621
+      },
+      "v2": {
+        "accuracy": 0.556563245823389,
+        "f1": 0.7151180619441888,
+        "precision": 0.7340258105130626,
+        "recall": 0.6971599402092675,
+        "hallucination_rate": 0.2,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 4190,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.08252261376921294,
+      "delta_f1": 0.07193276332244314,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "A5_det_product",
+      "v1": {
+        "accuracy": 0.47404063205417607,
+        "f1": 0.6431852986217457,
+        "precision": 0.6598586017282011,
+        "recall": 0.6273338312173263,
+        "hallucination_rate": 0.23109480812641084,
+        "perfect_documents": 0,
+        "field_total": 3544,
+        "wrong_category_rate": 0.011286681715575621
+      },
+      "v2": {
+        "accuracy": 0.556563245823389,
+        "f1": 0.7151180619441888,
+        "precision": 0.7340258105130626,
+        "recall": 0.6971599402092675,
+        "hallucination_rate": 0.2,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 4190,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.08252261376921294,
+      "delta_f1": 0.07193276332244314,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "B1_phi_only",
+      "v1": {
+        "accuracy": 0.4383694597217729,
+        "f1": 0.6095366621682411,
+        "precision": 0.7457347275729224,
+        "recall": 0.5154050969950551,
+        "hallucination_rate": 0.11840828210934973,
+        "perfect_documents": 0,
+        "field_total": 3091,
+        "wrong_category_rate": 0.03008735037204788
+      },
+      "v2": {
+        "accuracy": 0.37841468875951634,
+        "f1": 0.5490578297595841,
+        "precision": 0.8121095627102355,
+        "recall": 0.4147239263803681,
+        "hallucination_rate": 0.08687863860277653,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 4466,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": -0.05995477096225654,
+      "delta_f1": -0.060478832408657035,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "B4_phi_product_verify",
+      "v1": {
+        "accuracy": 0.5073979591836735,
+        "f1": 0.6732103570824167,
+        "precision": 0.6045592705167173,
+        "recall": 0.7594501718213058,
+        "hallucination_rate": 0.3048469387755102,
+        "perfect_documents": 0,
+        "field_total": 3920,
+        "wrong_category_rate": 0.025255102040816328
+      },
+      "v2": {
+        "accuracy": 0.5295300786249771,
+        "f1": 0.6924088463837418,
+        "precision": 0.6852815901561761,
+        "recall": 0.6996859144720947,
+        "hallucination_rate": 0.24190894130554033,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 5469,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.022132119441303666,
+      "delta_f1": 0.01919848930132506,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "B5_phi_split",
+      "v1": {
+        "accuracy": 0.5020554984583762,
+        "f1": 0.6684912760862128,
+        "precision": 0.606832298136646,
+        "recall": 0.7440974866717441,
+        "hallucination_rate": 0.2998458376156218,
+        "perfect_documents": 0,
+        "field_total": 3892,
+        "wrong_category_rate": 0.023638232271325797
+      },
+      "v2": {
+        "accuracy": 0.5287313432835821,
+        "f1": 0.6917256529167685,
+        "precision": 0.6876971608832808,
+        "recall": 0.6958016204272035,
+        "hallucination_rate": 0.23880597014925373,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 5360,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.026675844825205908,
+      "delta_f1": 0.023234376830555625,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "C1_hybrid_uncertain",
+      "v1": {
+        "accuracy": 0.525204539456321,
+        "f1": 0.6887004672088597,
+        "precision": 0.630145661811273,
+        "recall": 0.759252193819153,
+        "hallucination_rate": 0.2808128793877012,
+        "perfect_documents": 0,
+        "field_total": 3789,
+        "wrong_category_rate": 0.0256004222750066
+      },
+      "v2": {
+        "accuracy": 0.5477682811016145,
+        "f1": 0.7078169100503129,
+        "precision": 0.7154552220292731,
+        "recall": 0.7003399708596406,
+        "hallucination_rate": 0.21652421652421652,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 5265,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.02256374164529351,
+      "delta_f1": 0.019116442841453196,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "C4_hybrid_fields",
+      "v1": {
+        "accuracy": 0.5073979591836735,
+        "f1": 0.6732103570824167,
+        "precision": 0.6045592705167173,
+        "recall": 0.7594501718213058,
+        "hallucination_rate": 0.3048469387755102,
+        "perfect_documents": 0,
+        "field_total": 3920,
+        "wrong_category_rate": 0.025255102040816328
+      },
+      "v2": {
+        "accuracy": 0.5295300786249771,
+        "f1": 0.6924088463837418,
+        "precision": 0.6852815901561761,
+        "recall": 0.6996859144720947,
+        "hallucination_rate": 0.24190894130554033,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 5469,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.022132119441303666,
+      "delta_f1": 0.01919848930132506,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "C5_det_phi_verify",
+      "v1": {
+        "accuracy": 0.5073979591836735,
+        "f1": 0.6732103570824167,
+        "precision": 0.6045592705167173,
+        "recall": 0.7594501718213058,
+        "hallucination_rate": 0.3048469387755102,
+        "perfect_documents": 0,
+        "field_total": 3920,
+        "wrong_category_rate": 0.025255102040816328
+      },
+      "v2": {
+        "accuracy": 0.5295300786249771,
+        "f1": 0.6924088463837418,
+        "precision": 0.6852815901561761,
+        "recall": 0.6996859144720947,
+        "hallucination_rate": 0.24190894130554033,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 5469,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": 0.022132119441303666,
+      "delta_f1": 0.01919848930132506,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "D2_pymupdf4llm_det",
+      "v1": {
+        "accuracy": 0.30495412844036696,
+        "f1": 0.46737907761529807,
+        "precision": 1.0,
+        "recall": 0.30495412844036696,
+        "hallucination_rate": 0.0,
+        "perfect_documents": 0,
+        "field_total": 2725,
+        "wrong_category_rate": 0.0
+      },
+      "v2": {
+        "accuracy": 0.2912332838038633,
+        "f1": 0.45109321058688145,
+        "precision": 1.0,
+        "recall": 0.2912332838038633,
+        "hallucination_rate": 0.0,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 2692,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": -0.013720844636503637,
+      "delta_f1": -0.016285867028416612,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "D2_pymupdf4llm_phi",
+      "v1": {
+        "accuracy": 0.462037037037037,
+        "f1": 0.6320455984800507,
+        "precision": 0.7142175572519084,
+        "recall": 0.5668307459295722,
+        "hallucination_rate": 0.15895061728395063,
+        "perfect_documents": 0,
+        "field_total": 3240,
+        "wrong_category_rate": 0.025925925925925925
+      },
+      "v2": {
+        "accuracy": 0.39499553172475427,
+        "f1": 0.5663036515054451,
+        "precision": 0.7680278019113814,
+        "recall": 0.4485032978183663,
+        "hallucination_rate": 0.1193029490616622,
+        "perfect_documents": 0,
+        "perfect_core_documents": 0,
+        "field_total": 4476,
+        "wrong_category_rate": 0.0
+      },
+      "delta_accuracy": -0.06704150531228276,
+      "delta_f1": -0.06574194697460556,
+      "delta_perfect": 0,
+      "cause_of_difference": "V2 drops target_role_not_employment trap on all docs; evidence-gates target_role (14/100); bipartite employment/education match; metadata never counted (also not in V1 field totals); primary metric = precision/recall/F1 on evaluable facts only."
+    },
+    {
+      "pipeline": "D3_docling_det",
+      "status": "NOT_AVAILABLE"
+    },
+    {
+      "pipeline": "D3_docling_phi",
+      "status": "NOT_AVAILABLE"
+    },
+    {
+      "pipeline": "D4_marker",
+      "status": "NOT_AVAILABLE"
+    }
+  ],
+  "frozen_winner_v1": "C1_hybrid_uncertain",
+  "frozen_winner_v2": "A5_det_product",
+  "ranking_flip_reason": "C1 won V1 largely via recall on dense Phi fills + trap dynamics; V2 evidence-gated scoring and set/entry matching favor DET precision."
+}

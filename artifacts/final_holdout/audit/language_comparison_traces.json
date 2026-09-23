@@ -1,0 +1,675 @@
+[
+  {
+    "document": "FH_001",
+    "ground_truth_raw": [
+      [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "A2"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "A2"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "deutsch",
+        "muttersprache"
+      ],
+      [
+        "englisch",
+        "a2"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Deutsch",
+          "Muttersprache"
+        ]
+      },
+      {
+        "expected": [
+          "Englisch",
+          "A2"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Deutsch",
+        "Englisch"
+      ]
+    }
+  },
+  {
+    "document": "FH_002",
+    "ground_truth_raw": [
+      [
+        "Englisch",
+        "C1"
+      ],
+      [
+        "Englisch",
+        "B1"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Englisch",
+        "C1"
+      ],
+      [
+        "Englisch",
+        "B1"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "englisch",
+        "c1"
+      ],
+      [
+        "englisch",
+        "b1"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Englisch",
+          "C1"
+        ]
+      },
+      {
+        "expected": [
+          "Englisch",
+          "B1"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Englisch",
+        "Englisch"
+      ]
+    }
+  },
+  {
+    "document": "FH_008",
+    "ground_truth_raw": [
+      [
+        "Ungarisch",
+        "B2"
+      ],
+      [
+        "Englisch",
+        "C1"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Ungarisch",
+        "B2"
+      ],
+      [
+        "Englisch",
+        "C1"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "ungarisch",
+        "b2"
+      ],
+      [
+        "englisch",
+        "c1"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Ungarisch",
+          "B2"
+        ]
+      },
+      {
+        "expected": [
+          "Englisch",
+          "C1"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Ungarisch",
+        "Englisch"
+      ]
+    }
+  },
+  {
+    "document": "FH_011",
+    "ground_truth_raw": [
+      [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "B2"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "B2"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "deutsch",
+        "muttersprache"
+      ],
+      [
+        "englisch",
+        "b2"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Deutsch",
+          "Muttersprache"
+        ]
+      },
+      {
+        "expected": [
+          "Englisch",
+          "B2"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Deutsch",
+        "Englisch"
+      ]
+    }
+  },
+  {
+    "document": "FH_018",
+    "ground_truth_raw": [
+      [
+        "Ungarisch",
+        "B2"
+      ],
+      [
+        "Englisch",
+        "B1"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Ungarisch",
+        "B2"
+      ],
+      [
+        "Englisch",
+        "B1"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "ungarisch",
+        "b2"
+      ],
+      [
+        "englisch",
+        "b1"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Ungarisch",
+          "B2"
+        ]
+      },
+      {
+        "expected": [
+          "Englisch",
+          "B1"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Ungarisch",
+        "Englisch"
+      ]
+    }
+  },
+  {
+    "document": "FH_026",
+    "ground_truth_raw": [
+      [
+        "Türkisch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "B1"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Türkisch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "B1"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "türkisch",
+        "muttersprache"
+      ],
+      [
+        "englisch",
+        "b1"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Türkisch",
+          "Muttersprache"
+        ]
+      },
+      {
+        "expected": [
+          "Englisch",
+          "B1"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Türkisch",
+        "Englisch"
+      ]
+    }
+  },
+  {
+    "document": "FH_041",
+    "ground_truth_raw": [
+      [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "A2"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      [
+        "Englisch",
+        "A2"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "deutsch",
+        "muttersprache"
+      ],
+      [
+        "englisch",
+        "a2"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Deutsch",
+          "Muttersprache"
+        ]
+      },
+      {
+        "expected": [
+          "Englisch",
+          "A2"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Deutsch",
+        "Englisch"
+      ]
+    }
+  },
+  {
+    "document": "FH_046",
+    "ground_truth_raw": [
+      [
+        "Türkisch",
+        "Muttersprache"
+      ],
+      [
+        "German",
+        "B1"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Türkisch",
+        "Muttersprache"
+      ],
+      [
+        "German",
+        "B1"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "türkisch",
+        "muttersprache"
+      ],
+      [
+        "german",
+        "b1"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Türkisch",
+          "Muttersprache"
+        ]
+      },
+      {
+        "expected": [
+          "German",
+          "B1"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [
+        "Türkisch",
+        "German"
+      ],
+      "names_in_raw_preview": [
+        "Türkisch",
+        "German"
+      ]
+    }
+  },
+  {
+    "document": "FH_047",
+    "ground_truth_raw": [
+      [
+        "Arabisch",
+        "C2"
+      ],
+      [
+        "German",
+        "B2"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Arabisch",
+        "C2"
+      ],
+      [
+        "German",
+        "B2"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "arabisch",
+        "c2"
+      ],
+      [
+        "german",
+        "b2"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Arabisch",
+          "C2"
+        ]
+      },
+      {
+        "expected": [
+          "German",
+          "B2"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Arabisch",
+        "German"
+      ]
+    }
+  },
+  {
+    "document": "FH_048",
+    "ground_truth_raw": [
+      [
+        "Ungarisch",
+        "B2"
+      ],
+      [
+        "German",
+        "C1"
+      ]
+    ],
+    "prediction_raw": [],
+    "ground_truth_projected": [
+      [
+        "Ungarisch",
+        "B2"
+      ],
+      [
+        "German",
+        "C1"
+      ]
+    ],
+    "prediction_projected": [],
+    "ground_truth_normalized": [
+      [
+        "ungarisch",
+        "b2"
+      ],
+      [
+        "german",
+        "c1"
+      ]
+    ],
+    "prediction_normalized": [],
+    "matched_pairs": [],
+    "false_negatives": [
+      {
+        "expected": [
+          "Ungarisch",
+          "B2"
+        ]
+      },
+      {
+        "expected": [
+          "German",
+          "C1"
+        ]
+      }
+    ],
+    "false_positives": [],
+    "wrong_level_pairs": [],
+    "scorer_decision": {
+      "n_language_facts": 2,
+      "statuses": {
+        "missing": 2
+      },
+      "note": "prediction languages[] empty → all expected pairs missing"
+    },
+    "bleed": {
+      "names_in_education": [],
+      "names_in_raw_preview": [
+        "Ungarisch",
+        "German"
+      ]
+    }
+  }
+]

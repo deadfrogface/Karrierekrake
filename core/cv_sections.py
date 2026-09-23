@@ -13,16 +13,24 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "berufserfahrung",
         "berufliche stationen",
         "professional experience",
+        "expérience professionnelle",
+        "experience professionnelle",
         "employment history",
         "work experience",
         "career history",
+        "werkervaring",
         "praxiserfahrung",
+        "berufspraxis",
         "beschäftigung",
         "employment",
         "experience",
         "tätigkeiten",
         "karriere",
         "erfahrung",
+        # Short standalone headings common in DE CVs (must end Kenntnisse blocks).
+        "stationen",
+        "werdegang",
+        "praxis",
     ),
     "education_and_experience": (
         "schul- und berufsausbildung und berufserfahrung",
@@ -36,6 +44,11 @@ HEADINGS: dict[str, tuple[str, ...]] = {
     ),
     "education": (
         "schul- und berufsausbildung",
+        "schule & ausbildung",
+        "schule und ausbildung",
+        "education / ausbildung",
+        "education/ausbildung",
+        "education & ausbildung",
         "academic background",
         "education & training",
         "education and training",
@@ -46,7 +59,10 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "schulbildung",
         "qualifikationen",
         "qualifikation",
+        "bildungsweg",
         "education",
+        "formation",
+        "opleiding",
         "studium",
         "schule",
     ),
@@ -69,15 +85,55 @@ HEADINGS: dict[str, tuple[str, ...]] = {
     "languages": (
         "sprachen / it / mobilität",
         "sprachen / it / mobilitaet",
+        "sprachen und fahrerlaubnis",
+        "sprachen und führerschein",
+        "sprachen und fuehrerschein",
+        "sprachen & fahrerlaubnis",
+        "sprachen & führerschein",
+        "sprachen & fuehrerschein",
+        "sprachkenntnisse und fahrerlaubnis",
+        "sprachkenntnisse und führerschein",
+        "sprachkenntnisse und fuehrerschein",
+        "sprachkenntnisse & fahrerlaubnis",
+        "sprachkenntnisse & führerschein",
+        "sprachkenntnisse & fuehrerschein",
+        "languages and driving licence",
+        "languages and driving license",
+        "languages and licences",
+        "languages and licenses",
+        "languages & mobility",
+        "languages and mobility",
+        "langues et mobilité",
+        "langues et mobilite",
+        "talen en mobiliteit",
+        "langues et permis",
+        "kenntnisse sprachen",
+        "skills languages",
         "language proficiency",
+        "language skills",
+        "language skill",
         "sprachkenntnisse",
         "fremdsprachen",
         "languages",
+        "langues",
+        "talen",
         "sprachen",
     ),
     "software": (
         "applications & platforms",
         "applications and platforms",
+        "applications / programme",
+        "applications/programme",
+        "applications / programmes",
+        "programme und werkzeuge",
+        "programme & werkzeuge",
+        "digitale werkzeuge",
+        "outils numériques",
+        "outils numeriques",
+        "digitale tools",
+        "software tools",
+        "technical tools",
+        "digital tools",
         "weitere kenntnisse",
         "edv-kenntnisse",
         "edv kenntnisse",
@@ -89,6 +145,9 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "pc kenntnisse",
         "tech stack",
         "it skills",
+        "anwendungen",
+        "programme",
+        "logiciels",
         "systems",
         "software",
         "tools",
@@ -98,23 +157,43 @@ HEADINGS: dict[str, tuple[str, ...]] = {
     "license": (
         "führerscheinklassen",
         "fuehrerscheinklassen",
+        "fahrerlaubnisklassen",
+        "fahrerlaubnisklasse",
+        "führerscheinklasse",
+        "fuehrerscheinklasse",
         "driving licence",
         "driving license",
+        "licence class",
+        "license class",
+        "driving permits",
         "fahrerlaubnis",
         "führerschein",
         "fuehrerschein",
     ),
     "skills": (
         "schlüsselkompetenzen",
+        "fachkompetenzen",
+        "kernkompetenzen",
+        "kompetenzprofil",
+        "core competencies",
+        "key competencies",
         "additional skills",
+        "professional skills",
+        "compétences professionnelles",
+        "competences professionnelles",
         "fachkenntnisse",
         "core skills",
         "key skills",
         "soft skills",
         "capabilities",
+        "competencies",
+        "compétences",
+        "competences",
+        "vaardigheden",
         "kompetenzen",
         "fähigkeiten",
         "kenntnisse",
+        "werkzeuge",  # DE CVs: tools/languages/software block (same routing as Kenntnisse)
         "stärken",
         "skills",
     ),
@@ -125,6 +204,14 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "ueber mich",
         "zusammenfassung",
         "projekt- und sonderaufgaben",
+        "additional information",
+        "informations complémentaires",
+        "informations complementaires",
+        "aanvullende informatie",
+        "zusätzliche angaben",
+        "zusaetzliche angaben",
+        "weitere angaben",
+        "sonstiges",
         "summary",
         "profil",
         "kontakt",
@@ -172,6 +259,25 @@ _COMPOSITE_REST_OK = {
     "mobilität",
     "mobilitaet",
     "tools",
+    # Language + licence composite headings (e.g. "Sprachen & Fahrerlaubnis")
+    "fahrerlaubnis",
+    "führerschein",
+    "fuehrerschein",
+    "führerscheine",
+    "fuehrerscheine",
+    "licence",
+    "license",
+    "licences",
+    "licenses",
+    "driving",
+    "mobility",
+    "mobiliteit",
+    "werkzeuge",
+    "programme",
+    "programmes",
+    "anwendungen",
+    "platforms",
+    "ausbildung",
     # Compound headings like "Ausbildung und Berufserfahrung"
     "und",
     "and",
@@ -184,6 +290,11 @@ _COMPOSITE_REST_OK = {
     "employment",
     "schulische",
 }
+
+
+_HEADING_TRAILING_JOIN = re.compile(
+    r"(?i)^(?P<head>.+?)\s*(?P<join>&|und|and|/)\s*$"
+)
 
 
 def normalize_bullet(line: str) -> str:
@@ -200,6 +311,8 @@ def is_document_title(line: str) -> bool:
 def _normalize_heading_key(line: str) -> str:
     cleaned = line.strip().lower().rstrip(":").strip()
     cleaned = cleaned.replace("&", " & ")
+    # Treat en/em dashes like spaces so "Kenntnisse – Sprachen" matches.
+    cleaned = re.sub(r"[–—−]", " ", cleaned)
     cleaned = re.sub(r"\s+", " ", cleaned)
     return cleaned
 
@@ -237,16 +350,92 @@ def is_heading_value(text: str) -> bool:
     return is_document_title(text)
 
 
+def _join_wrapped_heading_lines(lines: list[str]) -> list[str]:
+    """Merge ``Sprachkenntnisse &`` + ``Führerschein`` into one heading line.
+
+    PDF extractors often wrap composite headings after ``&`` / ``und`` / ``and``.
+    Only join when the next non-empty line is itself a heading token or a
+    composite-rest token — never swallow body content.
+    """
+    out: list[str] = []
+    i = 0
+    while i < len(lines):
+        raw = lines[i]
+        line = raw.strip()
+        m = _HEADING_TRAILING_JOIN.match(line) if line else None
+        if m:
+            # Peek next non-empty line
+            j = i + 1
+            while j < len(lines) and not lines[j].strip():
+                j += 1
+            if j < len(lines):
+                nxt = lines[j].strip()
+                joined = f"{m.group('head')} {m.group('join')} {nxt}"
+                # Accept join when the combined line is a known heading, or when
+                # the head alone is a heading prefix and nxt is a rest-ok token.
+                if is_heading(joined) or (
+                    is_heading(m.group("head"))
+                    and _normalize_heading_key(nxt) in _COMPOSITE_REST_OK
+                ):
+                    out.append(joined)
+                    i = j + 1
+                    continue
+        out.append(raw)
+        i += 1
+    return out
+
+
+_CONTEXTUAL_SOFTWARE_HEADINGS = frozenset(
+    {
+        "applications",
+        "application",
+        "anwendungen",
+    }
+)
+
+_SOFTWARE_LINE_HINT = re.compile(
+    r"(?i)(-|\u2013|\u2014|:)\s*(grundlagen|grundkenntnisse|gute\s+kenntnisse|"
+    r"sehr\s+gut|fortgeschritten|kenntnisse|beginner|intermediate|advanced)\s*$"
+    r"|\b(sap|office|excel|sql|python|java|linux|windows|studio|tableau|"
+    r"grafana|postgres|oracle|adobe|fusion|gimp|ansys|minitab|qgis|jira)\b"
+)
+
+
+def _following_looks_like_software(lines: list[str], start: int, *, limit: int = 6) -> bool:
+    """True when upcoming lines look like tool entries (not job-application prose)."""
+    seen = 0
+    for j in range(start, min(len(lines), start + limit)):
+        line = lines[j].strip()
+        if not line:
+            continue
+        if is_heading(line):
+            break
+        seen += 1
+        if _SOFTWARE_LINE_HINT.search(line) or (
+            len(line) <= 40 and re.search(r"[A-Z]{2,}|\d|[A-Z][a-z]+[A-Z]", line)
+        ):
+            return True
+        if seen >= 3:
+            break
+    return False
+
+
 def split_named_sections(text: str) -> dict[str, str]:
-    lines = text.splitlines()
+    lines = _join_wrapped_heading_lines(text.splitlines())
     sections: dict[str, list[str]] = {"general": []}
     current = "general"
-    for raw in lines:
+    for idx, raw in enumerate(lines):
         line = raw.strip()
         if not line:
             sections.setdefault(current, []).append("")
             continue
         heading = is_heading(line)
+        if not heading:
+            key = _normalize_heading_key(line)
+            if key in _CONTEXTUAL_SOFTWARE_HEADINGS and _following_looks_like_software(
+                lines, idx + 1
+            ):
+                heading = "software"
         if heading:
             current = heading
             sections.setdefault(current, [])

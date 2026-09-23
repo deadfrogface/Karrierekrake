@@ -1,0 +1,117 @@
+{
+  "pipeline": "A5_det_product (frozen, scorer v2)",
+  "n_errors": 1858,
+  "top_classes": [
+    {
+      "group": "skills",
+      "status": "hallucinated",
+      "field_prefix": "skill_extra",
+      "n": 814
+    },
+    {
+      "group": "software",
+      "status": "missing",
+      "field_prefix": "software",
+      "n": 400
+    },
+    {
+      "group": "employment",
+      "status": "missing",
+      "field_prefix": "employment_entry",
+      "n": 150
+    },
+    {
+      "group": "skills",
+      "status": "missing",
+      "field_prefix": "skill",
+      "n": 133
+    },
+    {
+      "group": "address",
+      "status": "missing",
+      "field_prefix": "address.country",
+      "n": 96
+    },
+    {
+      "group": "education",
+      "status": "missing",
+      "field_prefix": "education_entry",
+      "n": 59
+    },
+    {
+      "group": "certificates",
+      "status": "missing",
+      "field_prefix": "certificate",
+      "n": 49
+    },
+    {
+      "group": "languages",
+      "status": "missing",
+      "field_prefix": "language",
+      "n": 46
+    },
+    {
+      "group": "address",
+      "status": "missing",
+      "field_prefix": "address.street",
+      "n": 18
+    },
+    {
+      "group": "address",
+      "status": "missing",
+      "field_prefix": "address.house_number",
+      "n": 18
+    },
+    {
+      "group": "address",
+      "status": "missing",
+      "field_prefix": "address.postal_code",
+      "n": 18
+    },
+    {
+      "group": "certificates",
+      "status": "hallucinated",
+      "field_prefix": "certificate_extra",
+      "n": 17
+    },
+    {
+      "group": "career_intent",
+      "status": "missing",
+      "field_prefix": "target_role",
+      "n": 14
+    },
+    {
+      "group": "address",
+      "status": "missing",
+      "field_prefix": "address.city",
+      "n": 12
+    },
+    {
+      "group": "address",
+      "status": "wrong",
+      "field_prefix": "address.city",
+      "n": 7
+    },
+    {
+      "group": "certificates",
+      "status": "hallucinated",
+      "field_prefix": "certificates",
+      "n": 4
+    },
+    {
+      "group": "education",
+      "status": "hallucinated",
+      "field_prefix": "education_extra",
+      "n": 3
+    }
+  ],
+  "post_analysis_pipeline": "A5_det_product_v2",
+  "post_analysis_perfect_docs": 17,
+  "largest_remaining_classes": [
+    "skills hallucinations (skill_extra)",
+    "software missing (unlabeled tools)",
+    "employment entry missing / partial",
+    "address incomplete (street/house)",
+    "languages missing on nonstandard layouts"
+  ]
+}

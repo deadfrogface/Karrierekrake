@@ -1,0 +1,16 @@
+{
+  "label": "POST-ANALYSIS",
+  "decision": "SKIP_FALLBACK",
+  "reason": "DET repaired already recovers languages on 50/50 docs (Language F1 0.974, Precision 1.0, 0 language hallucinations). No GT-free failure subset remains where Phi Language-only would add net quality worth ~19s/CV and model RAM.",
+  "triggers_considered": [
+    "explicit language heading present but DET languages empty",
+    "unresolved language/licence C1 conflict",
+    "unclassified CEFR pairs in section"
+  ],
+  "triggers_fired_after_det_repair": 0,
+  "docs_routed_to_phi": 0,
+  "hybrid_overall_f1": null,
+  "net_gain_vs_det": 0,
+  "new_errors": 0,
+  "phi_call_rate": 0.0
+}

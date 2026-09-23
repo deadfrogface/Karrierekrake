@@ -1,0 +1,4332 @@
+{
+  "corpus": "KarriereKrake Final Holdout 50",
+  "version": "1.0",
+  "created": "2026-09-23",
+  "rules": [
+    "Only values visibly present in the corresponding PDF are evaluable.",
+    "Metadata is excluded from extraction metrics.",
+    "Do not expose this file before Phase A predictions are sealed."
+  ],
+  "documents": {
+    "FH_001.pdf": {
+      "name": {
+        "first_name": "Aylin",
+        "last_name": "Berger"
+      },
+      "address": {
+        "street": "Lütticher Straße",
+        "house_number": "3a",
+        "postal_code": "52064",
+        "city": "Aachen",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "01.01.1968",
+      "email": "aylin.berger@example.de",
+      "phone": "+49 151 2300000",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Hauptschulabschluss",
+          "institution": "Berufskolleg Aachen",
+          "start_date": "2007",
+          "end_date": "2010"
+        },
+        {
+          "qualification": "Ausbildung Bootsbauerin",
+          "institution": "Bildungszentrum Aachen",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Bootsbauerin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Fehlerdiagnose",
+            "Hygienemanagement"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2022"
+      ],
+      "software": [
+        "Affinity Publisher",
+        "Navision"
+      ],
+      "skills": [
+        "Fehlerdiagnose",
+        "Hygienemanagement",
+        "Prozessoptimierung"
+      ],
+      "career_notes": []
+    },
+    "FH_002.pdf": {
+      "name": {
+        "first_name": "Bruno",
+        "last_name": "Ceylan"
+      },
+      "address": {
+        "street": "Straßburger Straße",
+        "house_number": "14",
+        "postal_code": "77694",
+        "city": "Kehl",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "02.06.1975",
+      "email": "bruno.ceylan@example.org",
+      "phone": "+49 152 2308123",
+      "target_role": "Milchtechnologe",
+      "languages": [
+        [
+          "Englisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Mittlere Reife",
+          "institution": "Hochschule Kehl",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Milchtechnologe",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Qualitätssicherung",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Warenkontrolle",
+            "Bestandsführung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Adobe Illustrator",
+        "Power BI",
+        "AutoCAD"
+      ],
+      "skills": [
+        "Qualitätssicherung",
+        "Prozessoptimierung",
+        "Warenkontrolle",
+        "Bestandsführung"
+      ],
+      "career_notes": []
+    },
+    "FH_003.pdf": {
+      "name": {
+        "first_name": "Cora",
+        "last_name": "Dreher"
+      },
+      "address": {
+        "street": "Uferstraße",
+        "house_number": "25",
+        "postal_code": "02826",
+        "city": "Görlitz",
+        "country": "Deutschland"
+      },
+      "date_of_birth": null,
+      "email": "cora.dreher@example.net",
+      "phone": "+49 153 2316246",
+      "target_role": null,
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Fachhochschulreife",
+          "institution": "Gesamtschule Görlitz",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Rechtsanwaltsfachangestellte",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Hygienemanagement",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Bestandsführung",
+            "Gefährdungsbeurteilung"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Warenkontrolle",
+            "Hygienemanagement"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "DaVinci Resolve",
+        "SketchUp",
+        "Docker",
+        "Revit"
+      ],
+      "skills": [
+        "Hygienemanagement",
+        "Prozessoptimierung",
+        "Bestandsführung",
+        "Gefährdungsbeurteilung",
+        "Warenkontrolle"
+      ],
+      "career_notes": []
+    },
+    "FH_004.pdf": {
+      "name": {
+        "first_name": "Darius",
+        "last_name": "Eckert"
+      },
+      "address": {
+        "street": "Norderhofenden",
+        "house_number": "36",
+        "postal_code": "24937",
+        "city": "Flensburg",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "04.04.1989",
+      "email": "darius.eckert@example.de",
+      "phone": "+49 154 2324369",
+      "target_role": null,
+      "languages": [
+        [
+          "Niederländisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Abitur",
+          "institution": "Universität Flensburg",
+          "start_date": "2010",
+          "end_date": "2013"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Geoinformatiker",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Technisches Zeichnen",
+            "Maschinenführung"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Präzisionsarbeit",
+            "Qualitätssicherung"
+          ]
+        },
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Kundenberatung",
+            "Reklamationsbearbeitung"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Technisches Zeichnen",
+            "Maschinenführung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2025"
+      ],
+      "software": [
+        "DATEV",
+        "SketchUp",
+        "SolidWorks",
+        "Lexware",
+        "Power BI"
+      ],
+      "skills": [
+        "Technisches Zeichnen",
+        "Maschinenführung",
+        "Präzisionsarbeit",
+        "Qualitätssicherung",
+        "Kundenberatung",
+        "Reklamationsbearbeitung"
+      ],
+      "career_notes": []
+    },
+    "FH_005.pdf": {
+      "name": {
+        "first_name": "Elif",
+        "last_name": "Fontaine"
+      },
+      "address": {
+        "street": "Seestraße",
+        "house_number": "47",
+        "postal_code": "78462",
+        "city": "Konstanz",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "05.09.1996",
+      "email": "elif.fontaine@example.org",
+      "phone": null,
+      "target_role": null,
+      "languages": [
+        [
+          "Polnisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung abgeschlossen",
+          "institution": "Berufskolleg Konstanz",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Grenzpendlerin Kundenservice",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Schichtkoordination",
+            "Qualitätssicherung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "R",
+        "DaVinci Resolve"
+      ],
+      "skills": [
+        "Schichtkoordination",
+        "Qualitätssicherung",
+        "Maschinenführung"
+      ],
+      "career_notes": []
+    },
+    "FH_006.pdf": {
+      "name": {
+        "first_name": "Falk",
+        "last_name": "Gronau"
+      },
+      "address": {
+        "street": "Basler Straße",
+        "house_number": "58",
+        "postal_code": "79576",
+        "city": "Weil am Rhein",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "06.02.2003",
+      "email": "falk.gronau@example.net",
+      "phone": "+49 156 2340615",
+      "target_role": null,
+      "languages": [
+        [
+          "Türkisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "B.Sc. Geoinformatik",
+          "institution": "Hochschule Weil am Rhein",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Baumpfleger",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Prozessoptimierung",
+            "Schichtkoordination"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Qualitätssicherung",
+            "Warenkontrolle"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Affinity Publisher",
+        "Jira",
+        "ProTool"
+      ],
+      "skills": [
+        "Prozessoptimierung",
+        "Schichtkoordination",
+        "Qualitätssicherung",
+        "Warenkontrolle"
+      ],
+      "career_notes": []
+    },
+    "FH_007.pdf": {
+      "name": {
+        "first_name": "Greta",
+        "last_name": "Horváth"
+      },
+      "address": {
+        "street": "Innstraße",
+        "house_number": "69",
+        "postal_code": "94032",
+        "city": "Passau",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "07.07.1973",
+      "email": "greta.horváth@example.de",
+      "phone": "+49 157 2348738",
+      "target_role": "Museumsregistrarin",
+      "languages": [
+        [
+          "Arabisch",
+          "C2"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "M.A. Kulturwissenschaft",
+          "institution": "Gesamtschule Passau",
+          "start_date": "2013",
+          "end_date": "2016"
+        },
+        {
+          "qualification": "Ausbildung Museumsregistrarin",
+          "institution": "Bildungszentrum Passau",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Museumsregistrarin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Fehlerdiagnose",
+            "Bestandsführung"
+          ]
+        },
+        {
+          "company": "Stadtwerke West",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Technisches Zeichnen",
+            "Qualitätssicherung"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Projektsteuerung",
+            "Fehlerdiagnose"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2024"
+      ],
+      "software": [
+        "Jira",
+        "Docker",
+        "Python",
+        "Confluence"
+      ],
+      "skills": [
+        "Fehlerdiagnose",
+        "Bestandsführung",
+        "Technisches Zeichnen",
+        "Qualitätssicherung",
+        "Projektsteuerung"
+      ],
+      "career_notes": []
+    },
+    "FH_008.pdf": {
+      "name": {
+        "first_name": "Hugo",
+        "last_name": "Isenberg"
+      },
+      "address": {
+        "city": "Kleve",
+        "country": "Deutschland"
+      },
+      "date_of_birth": null,
+      "email": "hugo.isenberg@example.org",
+      "phone": "+49 151 2356861",
+      "target_role": null,
+      "languages": [
+        [
+          "Ungarisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Meisterbrief",
+          "institution": "Universität Kleve",
+          "start_date": "2014",
+          "end_date": "2017"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Stadtwerke West",
+          "position": "Heilerziehungspfleger",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Routenplanung",
+            "Bestandsführung"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Fehlerdiagnose",
+            "Projektsteuerung"
+          ]
+        },
+        {
+          "company": "ViaNova Planung",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Präzisionsarbeit",
+            "Dokumentation"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Routenplanung",
+            "Bestandsführung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Docker",
+        "Python",
+        "GitLab",
+        "QGIS",
+        "Microsoft Excel"
+      ],
+      "skills": [
+        "Routenplanung",
+        "Bestandsführung",
+        "Fehlerdiagnose",
+        "Projektsteuerung",
+        "Präzisionsarbeit",
+        "Dokumentation"
+      ],
+      "career_notes": []
+    },
+    "FH_009.pdf": {
+      "name": {
+        "first_name": "Iva",
+        "last_name": "Jürgens"
+      },
+      "address": {
+        "street": "Mainzer Straße",
+        "house_number": "91a",
+        "postal_code": "66111",
+        "city": "Saarbrücken",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "09.05.1987",
+      "email": "iva.juergens@example.net",
+      "phone": "+49 152 2364984",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "C2"
+        ],
+        [
+          "Polnisch",
+          "C1"
+        ]
+      ],
+      "licenses": [
+        "B",
+        "C1"
+      ],
+      "education": [
+        {
+          "qualification": "Studium ohne Abschluss",
+          "institution": "Berufskolleg Saarbrücken",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "employment": [
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Keramikerin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Hygienemanagement",
+            "Stakeholder-Kommunikation"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "QGIS",
+        "Microsoft Excel"
+      ],
+      "skills": [
+        "Hygienemanagement",
+        "Stakeholder-Kommunikation",
+        "Prozessoptimierung"
+      ],
+      "career_notes": []
+    },
+    "FH_010.pdf": {
+      "name": {
+        "first_name": "Jamal",
+        "last_name": "Kretschmer"
+      },
+      "address": {
+        "street": "Simeonstraße",
+        "house_number": "102",
+        "postal_code": "54290",
+        "city": "Trier",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "10.10.1994",
+      "email": "jamal.kretschmer@example.de",
+      "phone": "+49 153 2373107",
+      "target_role": null,
+      "languages": [
+        [
+          "Italienisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Hauptschule ohne Abschluss",
+          "institution": "Hochschule Trier",
+          "start_date": "2007",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "employment": [
+        {
+          "company": "ViaNova Planung",
+          "position": "Kälteanlagenbauer",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Schichtkoordination",
+            "Hygienemanagement"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Maschinenführung",
+            "Prozessoptimierung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2023"
+      ],
+      "software": [
+        "ProTool",
+        "Power BI",
+        "Microsoft Excel"
+      ],
+      "skills": [
+        "Schichtkoordination",
+        "Hygienemanagement",
+        "Maschinenführung",
+        "Prozessoptimierung"
+      ],
+      "career_notes": []
+    },
+    "FH_011.pdf": {
+      "name": {
+        "first_name": "Klara",
+        "last_name": "Lindholm"
+      },
+      "address": {
+        "street": "Spalenvorstadt",
+        "house_number": "113",
+        "postal_code": "4051",
+        "city": "Basel",
+        "country": "Schweiz"
+      },
+      "date_of_birth": "11.03.2001",
+      "email": "klara.lindholm@example.org",
+      "phone": "+49 154 2381230",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Hauptschulabschluss",
+          "institution": "Gesamtschule Basel",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Laborassistentin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Stakeholder-Kommunikation",
+            "Reklamationsbearbeitung"
+          ]
+        },
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Fehlerdiagnose",
+            "Hygienemanagement"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Materialprüfung",
+            "Stakeholder-Kommunikation"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Siemens TIA Portal",
+        "SketchUp",
+        "Adobe Illustrator",
+        "Docker"
+      ],
+      "skills": [
+        "Stakeholder-Kommunikation",
+        "Reklamationsbearbeitung",
+        "Fehlerdiagnose",
+        "Hygienemanagement",
+        "Materialprüfung"
+      ],
+      "career_notes": [
+        "03/2021 - 11/2022 Elternzeit"
+      ]
+    },
+    "FH_012.pdf": {
+      "name": {
+        "first_name": "Levent",
+        "last_name": "Mancini"
+      },
+      "address": {
+        "street": "Oldenzaalsestraat",
+        "house_number": "124",
+        "postal_code": "7511 AB",
+        "city": "Enschede",
+        "country": "Niederlande"
+      },
+      "date_of_birth": "12.08.1971",
+      "email": "levent.mancini@example.net",
+      "phone": "+49 155 2389353",
+      "target_role": null,
+      "languages": [
+        [
+          "Englisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Mittlere Reife",
+          "institution": "Universität Enschede",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Mediendesigner",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Teammoderation",
+            "Disposition"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Prozessoptimierung",
+            "Präzisionsarbeit"
+          ]
+        },
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Technisches Zeichnen",
+            "Dokumentation"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Teammoderation",
+            "Disposition"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Lexware",
+        "Python",
+        "Jira",
+        "QGIS",
+        "DATEV"
+      ],
+      "skills": [
+        "Teammoderation",
+        "Disposition",
+        "Prozessoptimierung",
+        "Präzisionsarbeit",
+        "Technisches Zeichnen",
+        "Dokumentation"
+      ],
+      "career_notes": []
+    },
+    "FH_013.pdf": {
+      "name": {
+        "first_name": "Mina",
+        "last_name": "N'Diaye"
+      },
+      "address": {
+        "street": "Rue du Faubourg",
+        "house_number": "135",
+        "postal_code": "67000",
+        "city": "Strasbourg",
+        "country": "Frankreich"
+      },
+      "date_of_birth": "13.01.1978",
+      "email": "mina.ndiaye@example.de",
+      "phone": "+49 156 2397476",
+      "target_role": "Notfallsanitäterin",
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Fachhochschulreife",
+          "institution": "Berufskolleg Strasbourg",
+          "start_date": "2010",
+          "end_date": "2013"
+        },
+        {
+          "qualification": "Ausbildung Notfallsanitäterin",
+          "institution": "Bildungszentrum Strasbourg",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Notfallsanitäterin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Routenplanung",
+            "Maschinenführung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2022"
+      ],
+      "software": [
+        "Siemens TIA Portal",
+        "QGIS"
+      ],
+      "skills": [
+        "Routenplanung",
+        "Maschinenführung",
+        "Prozessoptimierung"
+      ],
+      "career_notes": []
+    },
+    "FH_014.pdf": {
+      "name": {
+        "first_name": "Nils",
+        "last_name": "Obermann"
+      },
+      "address": {
+        "street": "Linzer Gasse",
+        "house_number": "146",
+        "postal_code": "5020",
+        "city": "Salzburg",
+        "country": "Österreich"
+      },
+      "date_of_birth": "14.06.1985",
+      "email": null,
+      "phone": "+49 157 2405599",
+      "target_role": null,
+      "languages": [
+        [
+          "Niederländisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Abitur",
+          "institution": "Hochschule Salzburg",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Optiker",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Dokumentation",
+            "Teammoderation"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Präzisionsarbeit",
+            "Reklamationsbearbeitung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Docker",
+        "Python",
+        "DaVinci Resolve"
+      ],
+      "skills": [
+        "Dokumentation",
+        "Teammoderation",
+        "Präzisionsarbeit",
+        "Reklamationsbearbeitung"
+      ],
+      "career_notes": []
+    },
+    "FH_015.pdf": {
+      "name": {
+        "first_name": "Olga",
+        "last_name": "Pietsch"
+      },
+      "address": {
+        "street": "Rue de la Gare",
+        "house_number": "13",
+        "postal_code": "L-1616",
+        "city": "Luxembourg",
+        "country": "Luxemburg"
+      },
+      "date_of_birth": "15.11.1992",
+      "email": "olga.pietsch@example.net",
+      "phone": "+49 151 2413722",
+      "target_role": null,
+      "languages": [
+        [
+          "Polnisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Ausbildung abgeschlossen",
+          "institution": "Gesamtschule Luxembourg",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Podologin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Reklamationsbearbeitung",
+            "Fehlerdiagnose"
+          ]
+        },
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Stakeholder-Kommunikation",
+            "Dokumentation"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Warenkontrolle",
+            "Reklamationsbearbeitung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "DATEV",
+        "Confluence",
+        "SolidWorks",
+        "Navision"
+      ],
+      "skills": [
+        "Reklamationsbearbeitung",
+        "Fehlerdiagnose",
+        "Stakeholder-Kommunikation",
+        "Dokumentation",
+        "Warenkontrolle"
+      ],
+      "career_notes": []
+    },
+    "FH_016.pdf": {
+      "name": {
+        "first_name": "Pavel",
+        "last_name": "Quint"
+      },
+      "address": {
+        "street": "Am Sandtorkai",
+        "house_number": "24",
+        "postal_code": "20457",
+        "city": "Hamburg",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "16.04.1999",
+      "email": "pavel.quint@example.de",
+      "phone": "+49 152 2421845",
+      "target_role": null,
+      "languages": [
+        [
+          "Türkisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "B.Sc. Geoinformatik",
+          "institution": "Universität Hamburg",
+          "start_date": "2013",
+          "end_date": "2016"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Qualitätsmanager",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Prozessoptimierung",
+            "Stakeholder-Kommunikation"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Routenplanung",
+            "Teammoderation"
+          ]
+        },
+        {
+          "company": "Stadtwerke West",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Technisches Zeichnen",
+            "Disposition"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Prozessoptimierung",
+            "Stakeholder-Kommunikation"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2025"
+      ],
+      "software": [
+        "Lexware",
+        "Power BI",
+        "ArcGIS Pro",
+        "Navision",
+        "AutoCAD"
+      ],
+      "skills": [
+        "Prozessoptimierung",
+        "Stakeholder-Kommunikation",
+        "Routenplanung",
+        "Teammoderation",
+        "Technisches Zeichnen",
+        "Disposition"
+      ],
+      "career_notes": []
+    },
+    "FH_017.pdf": {
+      "name": {
+        "first_name": "Rana",
+        "last_name": "Sørensen"
+      },
+      "address": {
+        "street": "Skalitzer Straße",
+        "house_number": "35a",
+        "postal_code": "10997",
+        "city": "Berlin",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "17.09.1969",
+      "email": "rana.sørensen@example.org",
+      "phone": "+49 153 2429968",
+      "target_role": null,
+      "languages": [
+        [
+          "Arabisch",
+          "C2"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "M.A. Kulturwissenschaft",
+          "institution": "Berufskolleg Berlin",
+          "start_date": "2014",
+          "end_date": "2017"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Rohrleitungsbauerin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Projektsteuerung",
+            "Präzisionsarbeit"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "R",
+        "Docker"
+      ],
+      "skills": [
+        "Projektsteuerung",
+        "Präzisionsarbeit",
+        "Bestandsführung"
+      ],
+      "career_notes": []
+    },
+    "FH_018.pdf": {
+      "name": {
+        "first_name": "Silas",
+        "last_name": "Todorov"
+      },
+      "address": {
+        "street": "Nikolaistraße",
+        "house_number": "46",
+        "postal_code": "04109",
+        "city": "Leipzig",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "18.02.1976",
+      "email": "silas.todorov@example.net",
+      "phone": "+49 154 2438091",
+      "target_role": null,
+      "languages": [
+        [
+          "Ungarisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Meisterbrief",
+          "institution": "Hochschule Leipzig",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Stadtwerke West",
+          "position": "Sattler",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Prozessoptimierung",
+            "Routenplanung"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Hygienemanagement",
+            "Warenkontrolle"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Vectorworks",
+        "Affinity Publisher",
+        "Docker"
+      ],
+      "skills": [
+        "Prozessoptimierung",
+        "Routenplanung",
+        "Hygienemanagement",
+        "Warenkontrolle"
+      ],
+      "career_notes": []
+    },
+    "FH_019.pdf": {
+      "name": {
+        "first_name": "Tabea",
+        "last_name": "Uzun"
+      },
+      "address": {
+        "street": "Tal",
+        "house_number": "57",
+        "postal_code": "80331",
+        "city": "München",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "19.07.1983",
+      "email": "tabea.uzun@example.de",
+      "phone": "+49 155 2446214",
+      "target_role": null,
+      "languages": [
+        [
+          "Dänisch",
+          "A2"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Studium ohne Abschluss",
+          "institution": "Gesamtschule München",
+          "start_date": "2007",
+          "end_date": "2010"
+        },
+        {
+          "qualification": "Ausbildung Technische Redakteurin",
+          "institution": "Bildungszentrum München",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Technische Redakteurin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Dokumentation",
+            "Materialprüfung"
+          ]
+        },
+        {
+          "company": "ViaNova Planung",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Reklamationsbearbeitung",
+            "Teammoderation"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Warenkontrolle",
+            "Dokumentation"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2024"
+      ],
+      "software": [
+        "Python",
+        "DaVinci Resolve",
+        "DATEV",
+        "Power BI"
+      ],
+      "skills": [
+        "Dokumentation",
+        "Materialprüfung",
+        "Reklamationsbearbeitung",
+        "Teammoderation",
+        "Warenkontrolle"
+      ],
+      "career_notes": []
+    },
+    "FH_020.pdf": {
+      "name": {
+        "first_name": "Veit",
+        "last_name": "van Dijk"
+      },
+      "address": {
+        "street": "Ostra-Allee",
+        "house_number": "68",
+        "postal_code": "01067",
+        "city": "Dresden",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "20.12.1990",
+      "email": "veit.van dijk@example.org",
+      "phone": "+49 156 2454337",
+      "target_role": "Verkehrsplaner",
+      "languages": [
+        [
+          "Italienisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Hauptschule ohne Abschluss",
+          "institution": "Universität Dresden",
+          "start_date": "2008",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "employment": [
+        {
+          "company": "ViaNova Planung",
+          "position": "Verkehrsplaner",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Gefährdungsbeurteilung",
+            "Disposition"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Technisches Zeichnen",
+            "Teammoderation"
+          ]
+        },
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Fehlerdiagnose",
+            "Reklamationsbearbeitung"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Gefährdungsbeurteilung",
+            "Disposition"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Power BI",
+        "AutoCAD",
+        "Docker",
+        "Python",
+        "Siemens TIA Portal"
+      ],
+      "skills": [
+        "Gefährdungsbeurteilung",
+        "Disposition",
+        "Technisches Zeichnen",
+        "Teammoderation",
+        "Fehlerdiagnose",
+        "Reklamationsbearbeitung"
+      ],
+      "career_notes": []
+    },
+    "FH_021.pdf": {
+      "name": {
+        "first_name": "Wiebke",
+        "last_name": "Aydin"
+      },
+      "address": {
+        "street": "Lütticher Straße",
+        "house_number": "79",
+        "postal_code": "52064",
+        "city": "Aachen",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "21.05.1997",
+      "email": "wiebke.aydin@example.net",
+      "phone": "+49 157 2462460",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Hauptschulabschluss",
+          "institution": "Berufskolleg Aachen",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Weintechnologin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Teammoderation",
+            "Kundenberatung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Python",
+        "Docker"
+      ],
+      "skills": [
+        "Teammoderation",
+        "Kundenberatung",
+        "Technisches Zeichnen"
+      ],
+      "career_notes": [
+        "Seit 2022 selbstständig nebenberuflich"
+      ]
+    },
+    "FH_022.pdf": {
+      "name": {
+        "first_name": "Xaver",
+        "last_name": "Brenner"
+      },
+      "address": {
+        "street": "Straßburger Straße",
+        "house_number": "90",
+        "postal_code": "77694",
+        "city": "Kehl",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "22.10.2004",
+      "email": "xaver.brenner@example.de",
+      "phone": "+49 151 2470583",
+      "target_role": null,
+      "languages": [
+        [
+          "Englisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Mittlere Reife",
+          "institution": "Hochschule Kehl",
+          "start_date": "2010",
+          "end_date": "2013"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "X-Ray Service Engineer",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Maschinenführung",
+            "Dokumentation"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Bestandsführung",
+            "Prozessoptimierung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2023"
+      ],
+      "software": [
+        "Lexware",
+        "DATEV",
+        "SolidWorks"
+      ],
+      "skills": [
+        "Maschinenführung",
+        "Dokumentation",
+        "Bestandsführung",
+        "Prozessoptimierung"
+      ],
+      "career_notes": []
+    },
+    "FH_023.pdf": {
+      "name": {
+        "first_name": "Yuna",
+        "last_name": "Çelik"
+      },
+      "address": {
+        "city": "Görlitz",
+        "country": "Deutschland"
+      },
+      "date_of_birth": null,
+      "email": "yuna.celik@example.org",
+      "phone": "+49 152 2478706",
+      "target_role": null,
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Fachhochschulreife",
+          "institution": "Gesamtschule Görlitz",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Yogalehrer",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Materialprüfung",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Hygienemanagement",
+            "Präzisionsarbeit"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Gefährdungsbeurteilung",
+            "Materialprüfung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Confluence",
+        "SolidWorks",
+        "Jira",
+        "Vectorworks"
+      ],
+      "skills": [
+        "Materialprüfung",
+        "Prozessoptimierung",
+        "Hygienemanagement",
+        "Präzisionsarbeit",
+        "Gefährdungsbeurteilung"
+      ],
+      "career_notes": []
+    },
+    "FH_024.pdf": {
+      "name": {
+        "first_name": "Zeno",
+        "last_name": "Dietrich"
+      },
+      "address": {
+        "street": "Norderhofenden",
+        "house_number": "112",
+        "postal_code": "24937",
+        "city": "Flensburg",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "24.08.1981",
+      "email": "zeno.dietrich@example.net",
+      "phone": "+49 153 2486829",
+      "target_role": null,
+      "languages": [
+        [
+          "Niederländisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Abitur",
+          "institution": "Universität Flensburg",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Zollfachkraft",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Materialprüfung",
+            "Technisches Zeichnen"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Präzisionsarbeit",
+            "Reklamationsbearbeitung"
+          ]
+        },
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Schichtkoordination",
+            "Teammoderation"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Materialprüfung",
+            "Technisches Zeichnen"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "SAP EWM",
+        "Affinity Publisher",
+        "Confluence",
+        "Vectorworks",
+        "DaVinci Resolve"
+      ],
+      "skills": [
+        "Materialprüfung",
+        "Technisches Zeichnen",
+        "Präzisionsarbeit",
+        "Reklamationsbearbeitung",
+        "Schichtkoordination",
+        "Teammoderation"
+      ],
+      "career_notes": []
+    },
+    "FH_025.pdf": {
+      "name": {
+        "first_name": "Amira",
+        "last_name": "El-Sayed"
+      },
+      "address": {
+        "street": "Seestraße",
+        "house_number": "123a",
+        "postal_code": "78462",
+        "city": "Konstanz",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "25.01.1988",
+      "email": "amira.el-sayed@example.de",
+      "phone": "+49 154 2494952",
+      "target_role": null,
+      "languages": [
+        [
+          "Polnisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung abgeschlossen",
+          "institution": "Berufskolleg Konstanz",
+          "start_date": "2013",
+          "end_date": "2016"
+        },
+        {
+          "qualification": "Ausbildung Aufbereitungsmechanikerin",
+          "institution": "Bildungszentrum Konstanz",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Aufbereitungsmechanikerin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Prozessoptimierung",
+            "Routenplanung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2022"
+      ],
+      "software": [
+        "AutoCAD",
+        "Siemens TIA Portal"
+      ],
+      "skills": [
+        "Prozessoptimierung",
+        "Routenplanung",
+        "Warenkontrolle"
+      ],
+      "career_notes": []
+    },
+    "FH_026.pdf": {
+      "name": {
+        "first_name": "Bjarne",
+        "last_name": "Falk"
+      },
+      "address": {
+        "street": "Basler Straße",
+        "house_number": "134",
+        "postal_code": "79576",
+        "city": "Weil am Rhein",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "26.06.1995",
+      "email": "bjarne.falk@example.org",
+      "phone": "+49 155 2503075",
+      "target_role": null,
+      "languages": [
+        [
+          "Türkisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "B.Sc. Geoinformatik",
+          "institution": "Hochschule Weil am Rhein",
+          "start_date": "2014",
+          "end_date": "2017"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Bühnenmeister",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Kundenberatung",
+            "Gefährdungsbeurteilung"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Bestandsführung",
+            "Maschinenführung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Adobe Illustrator",
+        "QGIS",
+        "SolidWorks"
+      ],
+      "skills": [
+        "Kundenberatung",
+        "Gefährdungsbeurteilung",
+        "Bestandsführung",
+        "Maschinenführung"
+      ],
+      "career_notes": []
+    },
+    "FH_027.pdf": {
+      "name": {
+        "first_name": "Chiara",
+        "last_name": "Gomes"
+      },
+      "address": {
+        "street": "Innstraße",
+        "house_number": "145",
+        "postal_code": "94032",
+        "city": "Passau",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "27.11.2002",
+      "email": "chiara.gomes@example.net",
+      "phone": "+49 156 2511198",
+      "target_role": null,
+      "languages": [
+        [
+          "Arabisch",
+          "C2"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "M.A. Kulturwissenschaft",
+          "institution": "Gesamtschule Passau",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Chocolatier",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Technisches Zeichnen",
+            "Hygienemanagement"
+          ]
+        },
+        {
+          "company": "Stadtwerke West",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Präzisionsarbeit",
+            "Stakeholder-Kommunikation"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Projektsteuerung",
+            "Technisches Zeichnen"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Power BI",
+        "Lexware",
+        "SketchUp",
+        "Jira"
+      ],
+      "skills": [
+        "Technisches Zeichnen",
+        "Hygienemanagement",
+        "Präzisionsarbeit",
+        "Stakeholder-Kommunikation",
+        "Projektsteuerung"
+      ],
+      "career_notes": []
+    },
+    "FH_028.pdf": {
+      "name": {
+        "first_name": "Deniz",
+        "last_name": "Hagen"
+      },
+      "address": {
+        "street": "Spyckstraße",
+        "house_number": "12",
+        "postal_code": "47533",
+        "city": "Kleve",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "01.04.1972",
+      "email": "deniz.hagen@example.de",
+      "phone": "+49 157 2519321",
+      "target_role": "Drohnenoperatorin",
+      "languages": [
+        [
+          "Ungarisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Meisterbrief",
+          "institution": "Universität Kleve",
+          "start_date": "2007",
+          "end_date": "2010"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Stadtwerke West",
+          "position": "Drohnenoperatorin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Hygienemanagement",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Materialprüfung",
+            "Bestandsführung"
+          ]
+        },
+        {
+          "company": "ViaNova Planung",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Kundenberatung",
+            "Stakeholder-Kommunikation"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Hygienemanagement",
+            "Prozessoptimierung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2025"
+      ],
+      "software": [
+        "DATEV",
+        "Navision",
+        "Lexware",
+        "SAP EWM",
+        "GitLab"
+      ],
+      "skills": [
+        "Hygienemanagement",
+        "Prozessoptimierung",
+        "Materialprüfung",
+        "Bestandsführung",
+        "Kundenberatung",
+        "Stakeholder-Kommunikation"
+      ],
+      "career_notes": []
+    },
+    "FH_029.pdf": {
+      "name": {
+        "first_name": "Edda",
+        "last_name": "Iliev"
+      },
+      "address": {
+        "street": "Mainzer Straße",
+        "house_number": "23",
+        "postal_code": "66111",
+        "city": "Saarbrücken",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "02.09.1979",
+      "email": "edda.iliev@example.org",
+      "phone": "+49 151 2527444",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "C2"
+        ],
+        [
+          "Polnisch",
+          "C1"
+        ]
+      ],
+      "licenses": [
+        "B",
+        "C1"
+      ],
+      "education": [
+        {
+          "qualification": "Studium ohne Abschluss",
+          "institution": "Berufskolleg Saarbrücken",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "employment": [
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Energieberater",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Maschinenführung",
+            "Fehlerdiagnose"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Navision",
+        "SolidWorks"
+      ],
+      "skills": [
+        "Maschinenführung",
+        "Fehlerdiagnose",
+        "Technisches Zeichnen"
+      ],
+      "career_notes": []
+    },
+    "FH_030.pdf": {
+      "name": {
+        "first_name": "Farid",
+        "last_name": "Jost"
+      },
+      "address": {
+        "street": "Simeonstraße",
+        "house_number": "34",
+        "postal_code": "54290",
+        "city": "Trier",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "03.02.1986",
+      "email": "farid.jost@example.net",
+      "phone": "+49 152 2535567",
+      "target_role": null,
+      "languages": [
+        [
+          "Italienisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Hauptschule ohne Abschluss",
+          "institution": "Hochschule Trier",
+          "start_date": "2009",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "employment": [
+        {
+          "company": "ViaNova Planung",
+          "position": "Fachkraft Hafenlogistik",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Dokumentation",
+            "Qualitätssicherung"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Prozessoptimierung",
+            "Reklamationsbearbeitung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "AutoCAD",
+        "Navision",
+        "SketchUp"
+      ],
+      "skills": [
+        "Dokumentation",
+        "Qualitätssicherung",
+        "Prozessoptimierung",
+        "Reklamationsbearbeitung"
+      ],
+      "career_notes": []
+    },
+    "FH_031.pdf": {
+      "name": {
+        "first_name": "Gesine",
+        "last_name": "Kovac"
+      },
+      "address": {
+        "street": "Spalenvorstadt",
+        "house_number": "45",
+        "postal_code": "4051",
+        "city": "Basel",
+        "country": "Schweiz"
+      },
+      "date_of_birth": "04.07.1993",
+      "email": "gesine.kovac@example.de",
+      "phone": "+49 153 2543690",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Hauptschulabschluss",
+          "institution": "Gesamtschule Basel",
+          "start_date": "2010",
+          "end_date": "2013"
+        },
+        {
+          "qualification": "Ausbildung Gebärdensprachdolmetscherin",
+          "institution": "Bildungszentrum Basel",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Gebärdensprachdolmetscherin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Routenplanung",
+            "Projektsteuerung"
+          ]
+        },
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Schichtkoordination",
+            "Hygienemanagement"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Prozessoptimierung",
+            "Routenplanung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2024"
+      ],
+      "software": [
+        "AutoCAD",
+        "QGIS",
+        "ProTool",
+        "SAP EWM"
+      ],
+      "skills": [
+        "Routenplanung",
+        "Projektsteuerung",
+        "Schichtkoordination",
+        "Hygienemanagement",
+        "Prozessoptimierung"
+      ],
+      "career_notes": [
+        "06/2020 - 12/2020 arbeitssuchend"
+      ]
+    },
+    "FH_032.pdf": {
+      "name": {
+        "first_name": "Hamza",
+        "last_name": "Leclerc"
+      },
+      "address": {
+        "street": "Oldenzaalsestraat",
+        "house_number": "56",
+        "postal_code": "7511 AB",
+        "city": "Enschede",
+        "country": "Niederlande"
+      },
+      "date_of_birth": "05.12.2000",
+      "email": "hamza.leclerc@example.org",
+      "phone": null,
+      "target_role": null,
+      "languages": [
+        [
+          "Englisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Mittlere Reife",
+          "institution": "Universität Enschede",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Hörfunktechniker",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Prozessoptimierung",
+            "Stakeholder-Kommunikation"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Maschinenführung",
+            "Bestandsführung"
+          ]
+        },
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Warenkontrolle",
+            "Schichtkoordination"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Prozessoptimierung",
+            "Stakeholder-Kommunikation"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "QGIS",
+        "GitLab",
+        "SAP EWM",
+        "Siemens TIA Portal",
+        "Navision"
+      ],
+      "skills": [
+        "Prozessoptimierung",
+        "Stakeholder-Kommunikation",
+        "Maschinenführung",
+        "Bestandsführung",
+        "Warenkontrolle",
+        "Schichtkoordination"
+      ],
+      "career_notes": []
+    },
+    "FH_033.pdf": {
+      "name": {
+        "first_name": "Isabel",
+        "last_name": "Möller"
+      },
+      "address": {
+        "street": "Rue du Faubourg",
+        "house_number": "67a",
+        "postal_code": "67000",
+        "city": "Strasbourg",
+        "country": "Frankreich"
+      },
+      "date_of_birth": "06.05.1970",
+      "email": "isabel.moeller@example.net",
+      "phone": "+49 155 2559936",
+      "target_role": null,
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Fachhochschulreife",
+          "institution": "Berufskolleg Strasbourg",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Illustratorin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Kundenberatung",
+            "Teammoderation"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Power BI",
+        "Adobe Illustrator"
+      ],
+      "skills": [
+        "Kundenberatung",
+        "Teammoderation",
+        "Fehlerdiagnose"
+      ],
+      "career_notes": []
+    },
+    "FH_034.pdf": {
+      "name": {
+        "first_name": "Janek",
+        "last_name": "Neumann"
+      },
+      "address": {
+        "street": "Linzer Gasse",
+        "house_number": "78",
+        "postal_code": "5020",
+        "city": "Salzburg",
+        "country": "Österreich"
+      },
+      "date_of_birth": "07.10.1977",
+      "email": "janek.neumann@example.de",
+      "phone": "+49 156 2568059",
+      "target_role": "Juwelier",
+      "languages": [
+        [
+          "Niederländisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Abitur",
+          "institution": "Hochschule Salzburg",
+          "start_date": "2013",
+          "end_date": "2016"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Juwelier",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Prozessoptimierung",
+            "Reklamationsbearbeitung"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Präzisionsarbeit",
+            "Fehlerdiagnose"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2023"
+      ],
+      "software": [
+        "Confluence",
+        "ArcGIS Pro",
+        "Python"
+      ],
+      "skills": [
+        "Prozessoptimierung",
+        "Reklamationsbearbeitung",
+        "Präzisionsarbeit",
+        "Fehlerdiagnose"
+      ],
+      "career_notes": []
+    },
+    "FH_035.pdf": {
+      "name": {
+        "first_name": "Khadija",
+        "last_name": "Oltmann"
+      },
+      "address": {
+        "city": "Luxembourg",
+        "country": "Luxemburg"
+      },
+      "date_of_birth": null,
+      "email": "khadija.oltmann@example.org",
+      "phone": "+49 157 2576182",
+      "target_role": null,
+      "languages": [
+        [
+          "Polnisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Ausbildung abgeschlossen",
+          "institution": "Gesamtschule Luxembourg",
+          "start_date": "2014",
+          "end_date": "2017"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Kulturmanagerin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Teammoderation",
+            "Maschinenführung"
+          ]
+        },
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Qualitätssicherung",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Warenkontrolle",
+            "Teammoderation"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "SketchUp",
+        "Python",
+        "ProTool",
+        "GitLab"
+      ],
+      "skills": [
+        "Teammoderation",
+        "Maschinenführung",
+        "Qualitätssicherung",
+        "Prozessoptimierung",
+        "Warenkontrolle"
+      ],
+      "career_notes": []
+    },
+    "FH_036.pdf": {
+      "name": {
+        "first_name": "Lennart",
+        "last_name": "Pavic"
+      },
+      "address": {
+        "street": "Am Sandtorkai",
+        "house_number": "100",
+        "postal_code": "20457",
+        "city": "Hamburg",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "09.08.1991",
+      "email": "lennart.pavic@example.net",
+      "phone": "+49 151 2584305",
+      "target_role": null,
+      "languages": [
+        [
+          "Türkisch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "B.Sc. Geoinformatik",
+          "institution": "Universität Hamburg",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Landschaftsarchitekt",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Schichtkoordination",
+            "Dokumentation"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Hygienemanagement",
+            "Disposition"
+          ]
+        },
+        {
+          "company": "Stadtwerke West",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Kundenberatung",
+            "Maschinenführung"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Schichtkoordination",
+            "Dokumentation"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Siemens TIA Portal",
+        "Microsoft Excel",
+        "GitLab",
+        "DaVinci Resolve",
+        "Power BI"
+      ],
+      "skills": [
+        "Schichtkoordination",
+        "Dokumentation",
+        "Hygienemanagement",
+        "Disposition",
+        "Kundenberatung",
+        "Maschinenführung"
+      ],
+      "career_notes": []
+    },
+    "FH_037.pdf": {
+      "name": {
+        "first_name": "Merve",
+        "last_name": "Reuter"
+      },
+      "address": {
+        "street": "Skalitzer Straße",
+        "house_number": "111",
+        "postal_code": "10997",
+        "city": "Berlin",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "10.01.1998",
+      "email": "merve.reuter@example.de",
+      "phone": "+49 152 2592428",
+      "target_role": null,
+      "languages": [
+        [
+          "Arabisch",
+          "C2"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "M.A. Kulturwissenschaft",
+          "institution": "Berufskolleg Berlin",
+          "start_date": "2007",
+          "end_date": "2010"
+        },
+        {
+          "qualification": "Ausbildung Mikrotechnologin",
+          "institution": "Bildungszentrum Berlin",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Mikrotechnologin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Kundenberatung",
+            "Materialprüfung"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2022"
+      ],
+      "software": [
+        "Vectorworks",
+        "GitLab"
+      ],
+      "skills": [
+        "Kundenberatung",
+        "Materialprüfung",
+        "Disposition"
+      ],
+      "career_notes": []
+    },
+    "FH_038.pdf": {
+      "name": {
+        "first_name": "Noah",
+        "last_name": "Savic"
+      },
+      "address": {
+        "street": "Nikolaistraße",
+        "house_number": "122",
+        "postal_code": "04109",
+        "city": "Leipzig",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "11.06.1968",
+      "email": "noah.savic@example.org",
+      "phone": "+49 153 2600551",
+      "target_role": null,
+      "languages": [
+        [
+          "Ungarisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Meisterbrief",
+          "institution": "Hochschule Leipzig",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Stadtwerke West",
+          "position": "Netzwerkadministrator",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Gefährdungsbeurteilung",
+            "Fehlerdiagnose"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Materialprüfung",
+            "Hygienemanagement"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Vectorworks",
+        "DaVinci Resolve",
+        "Jira"
+      ],
+      "skills": [
+        "Gefährdungsbeurteilung",
+        "Fehlerdiagnose",
+        "Materialprüfung",
+        "Hygienemanagement"
+      ],
+      "career_notes": []
+    },
+    "FH_039.pdf": {
+      "name": {
+        "first_name": "Oana",
+        "last_name": "Thiel"
+      },
+      "address": {
+        "street": "Tal",
+        "house_number": "133",
+        "postal_code": "80331",
+        "city": "München",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "12.11.1975",
+      "email": "oana.thiel@example.net",
+      "phone": "+49 154 2608674",
+      "target_role": null,
+      "languages": [
+        [
+          "Dänisch",
+          "A2"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Studium ohne Abschluss",
+          "institution": "Gesamtschule München",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "employment": [
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Ozeanografin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Disposition",
+            "Kundenberatung"
+          ]
+        },
+        {
+          "company": "ViaNova Planung",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Teammoderation",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Bestandsführung",
+            "Disposition"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "SAP EWM",
+        "R",
+        "ProTool",
+        "Vectorworks"
+      ],
+      "skills": [
+        "Disposition",
+        "Kundenberatung",
+        "Teammoderation",
+        "Prozessoptimierung",
+        "Bestandsführung"
+      ],
+      "career_notes": []
+    },
+    "FH_040.pdf": {
+      "name": {
+        "first_name": "Peer",
+        "last_name": "Unger"
+      },
+      "address": {
+        "street": "Ostra-Allee",
+        "house_number": "144",
+        "postal_code": "01067",
+        "city": "Dresden",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "13.04.1982",
+      "email": "peer.unger@example.de",
+      "phone": "+49 155 2616797",
+      "target_role": null,
+      "languages": [
+        [
+          "Italienisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Hauptschule ohne Abschluss",
+          "institution": "Universität Dresden",
+          "start_date": "2010",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "employment": [
+        {
+          "company": "ViaNova Planung",
+          "position": "Prozessleittechniker",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Reklamationsbearbeitung",
+            "Fehlerdiagnose"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Gefährdungsbeurteilung",
+            "Technisches Zeichnen"
+          ]
+        },
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Stakeholder-Kommunikation",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Reklamationsbearbeitung",
+            "Fehlerdiagnose"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2025"
+      ],
+      "software": [
+        "ProTool",
+        "Microsoft Excel",
+        "SolidWorks",
+        "AutoCAD",
+        "Confluence"
+      ],
+      "skills": [
+        "Reklamationsbearbeitung",
+        "Fehlerdiagnose",
+        "Gefährdungsbeurteilung",
+        "Technisches Zeichnen",
+        "Stakeholder-Kommunikation",
+        "Prozessoptimierung"
+      ],
+      "career_notes": []
+    },
+    "FH_041.pdf": {
+      "name": {
+        "first_name": "Rieke",
+        "last_name": "Vasquez"
+      },
+      "address": {
+        "street": "Lütticher Straße",
+        "house_number": "11a",
+        "postal_code": "52064",
+        "city": "Aachen",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "14.09.1989",
+      "email": "rieke.vasquez@example.org",
+      "phone": "+49 156 2624920",
+      "target_role": null,
+      "languages": [
+        [
+          "Deutsch",
+          "Muttersprache"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Hauptschulabschluss",
+          "institution": "Berufskolleg Aachen",
+          "start_date": "2011",
+          "end_date": "2014"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Restauratorin Papier",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Technisches Zeichnen",
+            "Bestandsführung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "ProTool",
+        "Navision"
+      ],
+      "skills": [
+        "Technisches Zeichnen",
+        "Bestandsführung",
+        "Kundenberatung"
+      ],
+      "career_notes": [
+        "Parallelbeschäftigung 04/2021 - 09/2022"
+      ]
+    },
+    "FH_042.pdf": {
+      "name": {
+        "first_name": "Samir",
+        "last_name": "Wolff"
+      },
+      "address": {
+        "street": "Straßburger Straße",
+        "house_number": "22",
+        "postal_code": "77694",
+        "city": "Kehl",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "15.02.1996",
+      "email": null,
+      "phone": "+49 157 2633043",
+      "target_role": null,
+      "languages": [
+        [
+          "Englisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Mittlere Reife",
+          "institution": "Hochschule Kehl",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Rheinbogen Service KG",
+          "position": "Seehafenlotse",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Maschinenführung",
+            "Qualitätssicherung"
+          ]
+        },
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Warenkontrolle",
+            "Präzisionsarbeit"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Affinity Publisher",
+        "Python",
+        "AutoCAD"
+      ],
+      "skills": [
+        "Maschinenführung",
+        "Qualitätssicherung",
+        "Warenkontrolle",
+        "Präzisionsarbeit"
+      ],
+      "career_notes": []
+    },
+    "FH_043.pdf": {
+      "name": {
+        "first_name": "Tilda",
+        "last_name": "Xu"
+      },
+      "address": {
+        "street": "Uferstraße",
+        "house_number": "33",
+        "postal_code": "02826",
+        "city": "Görlitz",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "16.07.2003",
+      "email": "tilda.xu@example.de",
+      "phone": "+49 151 2641166",
+      "target_role": "Technische Konfektionärin",
+      "languages": [
+        [
+          "Französisch",
+          "B2"
+        ],
+        [
+          "Englisch",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Fachhochschulreife",
+          "institution": "Gesamtschule Görlitz",
+          "start_date": "2013",
+          "end_date": "2016"
+        },
+        {
+          "qualification": "Ausbildung Technische Konfektionärin",
+          "institution": "Bildungszentrum Görlitz",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Atelier Morgenrot",
+          "position": "Technische Konfektionärin",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Schichtkoordination",
+            "Routenplanung"
+          ]
+        },
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Kundenberatung",
+            "Stakeholder-Kommunikation"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Dokumentation",
+            "Schichtkoordination"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2024"
+      ],
+      "software": [
+        "SketchUp",
+        "DATEV",
+        "ArcGIS Pro",
+        "Microsoft Excel"
+      ],
+      "skills": [
+        "Schichtkoordination",
+        "Routenplanung",
+        "Kundenberatung",
+        "Stakeholder-Kommunikation",
+        "Dokumentation"
+      ],
+      "career_notes": []
+    },
+    "FH_044.pdf": {
+      "name": {
+        "first_name": "Uwe",
+        "last_name": "Yildirim"
+      },
+      "address": {
+        "street": "Norderhofenden",
+        "house_number": "44",
+        "postal_code": "24937",
+        "city": "Flensburg",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "17.12.1973",
+      "email": "uwe.yildirim@example.org",
+      "phone": "+49 152 2649289",
+      "target_role": null,
+      "languages": [
+        [
+          "Niederländisch",
+          "B1"
+        ],
+        [
+          "Englisch",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Abitur",
+          "institution": "Universität Flensburg",
+          "start_date": "2014",
+          "end_date": "2017"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Grenzland Technik AG",
+          "position": "Umweltpädagoge",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Qualitätssicherung",
+            "Warenkontrolle"
+          ]
+        },
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Teammoderation",
+            "Disposition"
+          ]
+        },
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Kundenberatung",
+            "Technisches Zeichnen"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Qualitätssicherung",
+            "Warenkontrolle"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Confluence",
+        "Revit",
+        "ProTool",
+        "Lexware",
+        "SAP EWM"
+      ],
+      "skills": [
+        "Qualitätssicherung",
+        "Warenkontrolle",
+        "Teammoderation",
+        "Disposition",
+        "Kundenberatung",
+        "Technisches Zeichnen"
+      ],
+      "career_notes": []
+    },
+    "FH_045.pdf": {
+      "name": {
+        "first_name": "Vera",
+        "last_name": "Zander"
+      },
+      "address": {
+        "street": "Seestraße",
+        "house_number": "55",
+        "postal_code": "78462",
+        "city": "Konstanz",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "18.05.1980",
+      "email": "vera.zander@example.net",
+      "phone": "+49 153 2657412",
+      "target_role": null,
+      "languages": [
+        [
+          "Polnisch",
+          "C1"
+        ],
+        [
+          "Englisch",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung abgeschlossen",
+          "institution": "Berufskolleg Konstanz",
+          "start_date": "2015",
+          "end_date": "2018"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Elbe & Partner e.V.",
+          "position": "Verpackungsentwicklerin",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Bestandsführung",
+            "Projektsteuerung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Microsoft Excel",
+        "Lexware"
+      ],
+      "skills": [
+        "Bestandsführung",
+        "Projektsteuerung",
+        "Qualitätssicherung"
+      ],
+      "career_notes": []
+    },
+    "FH_046.pdf": {
+      "name": {
+        "first_name": "William",
+        "last_name": "Hart"
+      },
+      "address": {
+        "street": "Basler Straße",
+        "house_number": "66",
+        "postal_code": "79576",
+        "city": "Weil am Rhein",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "19.10.1987",
+      "email": "william.hart@example.de",
+      "phone": "+49 154 2665535",
+      "target_role": null,
+      "languages": [
+        [
+          "Türkisch",
+          "Muttersprache"
+        ],
+        [
+          "German",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "B.Sc. Geoinformatik",
+          "institution": "University of Bristol",
+          "start_date": "2007",
+          "end_date": "2010"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Alpenblick Systeme GmbH",
+          "position": "Warehouse Coordinator",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Reklamationsbearbeitung",
+            "Materialprüfung"
+          ]
+        },
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Routenplanung",
+            "Dokumentation"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2023"
+      ],
+      "software": [
+        "SolidWorks",
+        "Lexware",
+        "GitLab"
+      ],
+      "skills": [
+        "Reklamationsbearbeitung",
+        "Materialprüfung",
+        "Routenplanung",
+        "Dokumentation"
+      ],
+      "career_notes": []
+    },
+    "FH_047.pdf": {
+      "name": {
+        "first_name": "Aisha",
+        "last_name": "Cole"
+      },
+      "address": {
+        "street": "Innstraße",
+        "house_number": "77",
+        "postal_code": "94032",
+        "city": "Passau",
+        "country": "Deutschland"
+      },
+      "date_of_birth": null,
+      "email": "aisha.cole@example.org",
+      "phone": "+49 155 2673658",
+      "target_role": null,
+      "languages": [
+        [
+          "Arabisch",
+          "C2"
+        ],
+        [
+          "German",
+          "B2"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "M.A. Kulturwissenschaft",
+          "institution": "University of Bristol",
+          "start_date": "2008",
+          "end_date": "2011"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Baltic Labor OHG",
+          "position": "Aircraft Mechanic",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Hygienemanagement",
+            "Prozessoptimierung"
+          ]
+        },
+        {
+          "company": "Stadtwerke West",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Warenkontrolle",
+            "Qualitätssicherung"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Routenplanung",
+            "Hygienemanagement"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Siemens TIA Portal",
+        "Navision",
+        "Power BI",
+        "GitLab"
+      ],
+      "skills": [
+        "Hygienemanagement",
+        "Prozessoptimierung",
+        "Warenkontrolle",
+        "Qualitätssicherung",
+        "Routenplanung"
+      ],
+      "career_notes": []
+    },
+    "FH_048.pdf": {
+      "name": {
+        "first_name": "Ethan",
+        "last_name": "Ward"
+      },
+      "address": {
+        "street": "Spyckstraße",
+        "house_number": "88",
+        "postal_code": "47533",
+        "city": "Kleve",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "21.08.2001",
+      "email": "ethan.ward@example.net",
+      "phone": "+49 156 2681781",
+      "target_role": null,
+      "languages": [
+        [
+          "Ungarisch",
+          "B2"
+        ],
+        [
+          "German",
+          "C1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Meisterbrief",
+          "institution": "University of Bristol",
+          "start_date": "2009",
+          "end_date": "2012"
+        }
+      ],
+      "employment": [
+        {
+          "company": "Stadtwerke West",
+          "position": "Data Steward",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Warenkontrolle",
+            "Hygienemanagement"
+          ]
+        },
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Prozessoptimierung",
+            "Materialprüfung"
+          ]
+        },
+        {
+          "company": "ViaNova Planung",
+          "position": "Teamassistenz",
+          "start_date": "03/2020",
+          "end_date": "08/2022",
+          "description": [
+            "Fehlerdiagnose",
+            "Reklamationsbearbeitung"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Aushilfe",
+          "start_date": "04/2021",
+          "end_date": "09/2023",
+          "description": [
+            "Warenkontrolle",
+            "Hygienemanagement"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "Confluence",
+        "Vectorworks",
+        "QGIS",
+        "R",
+        "DaVinci Resolve"
+      ],
+      "skills": [
+        "Warenkontrolle",
+        "Hygienemanagement",
+        "Prozessoptimierung",
+        "Materialprüfung",
+        "Fehlerdiagnose",
+        "Reklamationsbearbeitung"
+      ],
+      "career_notes": []
+    },
+    "FH_049.pdf": {
+      "name": {
+        "first_name": "Grace",
+        "last_name": "Miller"
+      },
+      "address": {
+        "street": "Mainzer Straße",
+        "house_number": "99a",
+        "postal_code": "66111",
+        "city": "Saarbrücken",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "22.01.1971",
+      "email": "grace.miller@example.de",
+      "phone": "+49 157 2689904",
+      "target_role": "Event Producer",
+      "languages": [
+        [
+          "Dänisch",
+          "A2"
+        ],
+        [
+          "German",
+          "A2"
+        ]
+      ],
+      "licenses": [
+        "B"
+      ],
+      "education": [
+        {
+          "qualification": "Studium ohne Abschluss",
+          "institution": "University of Bristol",
+          "start_date": "2010",
+          "end_date": "2013"
+        },
+        {
+          "qualification": "Ausbildung Event Producer",
+          "institution": "Bildungszentrum Saarbrücken",
+          "start_date": "2016",
+          "end_date": "2019"
+        }
+      ],
+      "employment": [
+        {
+          "company": "HanseKontor GmbH",
+          "position": "Event Producer",
+          "start_date": "01/2018",
+          "end_date": "heute",
+          "description": [
+            "Stakeholder-Kommunikation",
+            "Technisches Zeichnen"
+          ]
+        }
+      ],
+      "certificates": [
+        "Sicherheitsunterweisung 2022"
+      ],
+      "software": [
+        "SAP EWM",
+        "Vectorworks"
+      ],
+      "skills": [
+        "Stakeholder-Kommunikation",
+        "Technisches Zeichnen",
+        "Dokumentation"
+      ],
+      "career_notes": []
+    },
+    "FH_050.pdf": {
+      "name": {
+        "first_name": "Liam",
+        "last_name": "Stone"
+      },
+      "address": {
+        "street": "Simeonstraße",
+        "house_number": "110",
+        "postal_code": "54290",
+        "city": "Trier",
+        "country": "Deutschland"
+      },
+      "date_of_birth": "23.06.1978",
+      "email": "liam.stone@example.org",
+      "phone": "+49 151 2698027",
+      "target_role": null,
+      "languages": [
+        [
+          "Italienisch",
+          "B1"
+        ],
+        [
+          "German",
+          "B1"
+        ]
+      ],
+      "licenses": [],
+      "education": [
+        {
+          "qualification": "Hauptschule ohne Abschluss",
+          "institution": "University of Bristol",
+          "start_date": "2011",
+          "end_date": "ohne Abschluss"
+        }
+      ],
+      "employment": [
+        {
+          "company": "ViaNova Planung",
+          "position": "Marine Surveyor",
+          "start_date": "01/2018",
+          "end_date": "06/2020",
+          "description": [
+            "Hygienemanagement",
+            "Stakeholder-Kommunikation"
+          ]
+        },
+        {
+          "company": "Nordkai Werke GmbH",
+          "position": "Werkstudent/in",
+          "start_date": "02/2019",
+          "end_date": "07/2021",
+          "description": [
+            "Kundenberatung",
+            "Materialprüfung"
+          ]
+        }
+      ],
+      "certificates": [],
+      "software": [
+        "DATEV",
+        "Adobe Illustrator",
+        "Siemens TIA Portal"
+      ],
+      "skills": [
+        "Hygienemanagement",
+        "Stakeholder-Kommunikation",
+        "Kundenberatung",
+        "Materialprüfung"
+      ],
+      "career_notes": []
+    }
+  },
+  "metadata": {
+    "FH_001.pdf": {
+      "document_id": "FH_001",
+      "document_language": "de",
+      "layout_class": 0,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_002.pdf": {
+      "document_id": "FH_002",
+      "document_language": "de",
+      "layout_class": 1,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_003.pdf": {
+      "document_id": "FH_003",
+      "document_language": "de",
+      "layout_class": 2,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "date_of_birth"
+      ]
+    },
+    "FH_004.pdf": {
+      "document_id": "FH_004",
+      "document_language": "de",
+      "layout_class": 3,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_005.pdf": {
+      "document_id": "FH_005",
+      "document_language": "de",
+      "layout_class": 4,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "phone"
+      ]
+    },
+    "FH_006.pdf": {
+      "document_id": "FH_006",
+      "document_language": "de",
+      "layout_class": 5,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_007.pdf": {
+      "document_id": "FH_007",
+      "document_language": "de",
+      "layout_class": 6,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_008.pdf": {
+      "document_id": "FH_008",
+      "document_language": "de",
+      "layout_class": 7,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "street",
+        "house_number",
+        "postal_code",
+        "date_of_birth"
+      ]
+    },
+    "FH_009.pdf": {
+      "document_id": "FH_009",
+      "document_language": "de",
+      "layout_class": 8,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_010.pdf": {
+      "document_id": "FH_010",
+      "document_language": "de",
+      "layout_class": 9,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_011.pdf": {
+      "document_id": "FH_011",
+      "document_language": "de",
+      "layout_class": 10,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_012.pdf": {
+      "document_id": "FH_012",
+      "document_language": "de",
+      "layout_class": 11,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_013.pdf": {
+      "document_id": "FH_013",
+      "document_language": "de",
+      "layout_class": 12,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_014.pdf": {
+      "document_id": "FH_014",
+      "document_language": "de",
+      "layout_class": 13,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "email"
+      ]
+    },
+    "FH_015.pdf": {
+      "document_id": "FH_015",
+      "document_language": "de",
+      "layout_class": 14,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_016.pdf": {
+      "document_id": "FH_016",
+      "document_language": "de",
+      "layout_class": 0,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_017.pdf": {
+      "document_id": "FH_017",
+      "document_language": "de",
+      "layout_class": 1,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_018.pdf": {
+      "document_id": "FH_018",
+      "document_language": "de",
+      "layout_class": 2,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_019.pdf": {
+      "document_id": "FH_019",
+      "document_language": "de",
+      "layout_class": 3,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_020.pdf": {
+      "document_id": "FH_020",
+      "document_language": "de",
+      "layout_class": 4,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_021.pdf": {
+      "document_id": "FH_021",
+      "document_language": "de",
+      "layout_class": 5,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_022.pdf": {
+      "document_id": "FH_022",
+      "document_language": "de",
+      "layout_class": 6,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_023.pdf": {
+      "document_id": "FH_023",
+      "document_language": "de",
+      "layout_class": 7,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "street",
+        "house_number",
+        "postal_code",
+        "date_of_birth"
+      ]
+    },
+    "FH_024.pdf": {
+      "document_id": "FH_024",
+      "document_language": "de",
+      "layout_class": 8,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_025.pdf": {
+      "document_id": "FH_025",
+      "document_language": "de",
+      "layout_class": 9,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_026.pdf": {
+      "document_id": "FH_026",
+      "document_language": "de",
+      "layout_class": 10,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_027.pdf": {
+      "document_id": "FH_027",
+      "document_language": "de",
+      "layout_class": 11,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_028.pdf": {
+      "document_id": "FH_028",
+      "document_language": "de",
+      "layout_class": 12,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_029.pdf": {
+      "document_id": "FH_029",
+      "document_language": "de",
+      "layout_class": 13,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_030.pdf": {
+      "document_id": "FH_030",
+      "document_language": "de",
+      "layout_class": 14,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_031.pdf": {
+      "document_id": "FH_031",
+      "document_language": "de",
+      "layout_class": 0,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_032.pdf": {
+      "document_id": "FH_032",
+      "document_language": "de",
+      "layout_class": 1,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "phone"
+      ]
+    },
+    "FH_033.pdf": {
+      "document_id": "FH_033",
+      "document_language": "de",
+      "layout_class": 2,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_034.pdf": {
+      "document_id": "FH_034",
+      "document_language": "de",
+      "layout_class": 3,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_035.pdf": {
+      "document_id": "FH_035",
+      "document_language": "de",
+      "layout_class": 4,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "street",
+        "house_number",
+        "postal_code",
+        "date_of_birth"
+      ]
+    },
+    "FH_036.pdf": {
+      "document_id": "FH_036",
+      "document_language": "de",
+      "layout_class": 5,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_037.pdf": {
+      "document_id": "FH_037",
+      "document_language": "de",
+      "layout_class": 6,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_038.pdf": {
+      "document_id": "FH_038",
+      "document_language": "de",
+      "layout_class": 7,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_039.pdf": {
+      "document_id": "FH_039",
+      "document_language": "de",
+      "layout_class": 8,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_040.pdf": {
+      "document_id": "FH_040",
+      "document_language": "de",
+      "layout_class": 9,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_041.pdf": {
+      "document_id": "FH_041",
+      "document_language": "de",
+      "layout_class": 10,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_042.pdf": {
+      "document_id": "FH_042",
+      "document_language": "de",
+      "layout_class": 11,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "email"
+      ]
+    },
+    "FH_043.pdf": {
+      "document_id": "FH_043",
+      "document_language": "de",
+      "layout_class": 12,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_044.pdf": {
+      "document_id": "FH_044",
+      "document_language": "de",
+      "layout_class": 13,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_045.pdf": {
+      "document_id": "FH_045",
+      "document_language": "de",
+      "layout_class": 14,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_046.pdf": {
+      "document_id": "FH_046",
+      "document_language": "en",
+      "layout_class": 0,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_047.pdf": {
+      "document_id": "FH_047",
+      "document_language": "en",
+      "layout_class": 1,
+      "source_type": "born_digital",
+      "missing_annotations": [
+        "date_of_birth"
+      ]
+    },
+    "FH_048.pdf": {
+      "document_id": "FH_048",
+      "document_language": "en",
+      "layout_class": 2,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_049.pdf": {
+      "document_id": "FH_049",
+      "document_language": "en",
+      "layout_class": 3,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    },
+    "FH_050.pdf": {
+      "document_id": "FH_050",
+      "document_language": "en",
+      "layout_class": 4,
+      "source_type": "born_digital",
+      "missing_annotations": []
+    }
+  }
+}

@@ -1,0 +1,1 @@
+PHASE B ONLY. Do not place this package in the repository until Phase A predictions are sealed and hashed. expected_results.json contains only visible, evaluable profile fields; metadata is excluded from accuracy/F1.

@@ -1,0 +1,12 @@
+{
+  "c1_calls_run2": 0,
+  "diverged": 0,
+  "diverged_ids": [],
+  "enabled": true,
+  "identical": 50,
+  "note": "Official frozen predictions are run 1 only; run 2 is comparison-only.",
+  "phi_calls_run2": 0,
+  "run1_aggregate_sha256": "0ce77e7eece1d820c0a46d68a62a116302f55bc54b9760b70d9ad4b073ed8da6",
+  "run2_aggregate_sha256": "0ce77e7eece1d820c0a46d68a62a116302f55bc54b9760b70d9ad4b073ed8da6",
+  "tech_errors_run2": 0
+}

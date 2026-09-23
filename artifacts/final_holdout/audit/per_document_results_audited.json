@@ -1,0 +1,3324 @@
+{
+  "FH_001.pdf": {
+    "n_errors": 8,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 7,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_002.pdf": {
+    "n_errors": 12,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 20,
+      "missing": 7,
+      "wrong": 1,
+      "hallucinated": 4
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_003.pdf": {
+    "n_errors": 10,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 21,
+      "missing": 8,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_004.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 24,
+      "missing": 9,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_005.pdf": {
+    "n_errors": 6,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 20,
+      "missing": 4,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_006.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 20,
+      "missing": 7,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_007.pdf": {
+    "n_errors": 14,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "missing": 11,
+      "wrong": 1,
+      "correct": 24,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing"
+      },
+      {
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "missing"
+      },
+      {
+        "field": "email",
+        "group": "contact",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_008.pdf": {
+    "n_errors": 14,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 7,
+      "hallucinated": 7
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:8",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:10",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:11",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:12",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_009.pdf": {
+    "n_errors": 8,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 19,
+      "missing": 6,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_010.pdf": {
+    "n_errors": 6,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 5,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_011.pdf": {
+    "n_errors": 19,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 18,
+      "missing": 11,
+      "wrong": 2,
+      "hallucinated": 6
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education_extra:1",
+        "group": "education",
+        "status": "hallucinated"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:8",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_012.pdf": {
+    "n_errors": 15,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 20,
+      "missing": 12,
+      "wrong": 2,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_013.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 7,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_014.pdf": {
+    "n_errors": 15,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 15,
+      "missing": 11,
+      "wrong": 1,
+      "hallucinated": 3
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_015.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 21,
+      "missing": 9,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_016.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 24,
+      "missing": 9,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_017.pdf": {
+    "n_errors": 13,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "missing": 8,
+      "wrong": 2,
+      "correct": 15,
+      "hallucinated": 3
+    },
+    "errors": [
+      {
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing"
+      },
+      {
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "missing"
+      },
+      {
+        "field": "email",
+        "group": "contact",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_018.pdf": {
+    "n_errors": 6,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 5,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_019.pdf": {
+    "n_errors": 10,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 27,
+      "missing": 9,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_020.pdf": {
+    "n_errors": 15,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 26,
+      "wrong": 1,
+      "missing": 7,
+      "hallucinated": 7
+    },
+    "errors": [
+      {
+        "field": "email",
+        "group": "contact",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:8",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:10",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:11",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:12",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_021.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 18,
+      "missing": 6,
+      "wrong": 1,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_022.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 20,
+      "missing": 7,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_023.pdf": {
+    "n_errors": 16,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "missing": 10,
+      "correct": 16,
+      "wrong": 1,
+      "hallucinated": 5
+    },
+    "errors": [
+      {
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing"
+      },
+      {
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "missing"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:8",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_024.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 24,
+      "missing": 9,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_025.pdf": {
+    "n_errors": 5,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 26,
+      "missing": 4,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_026.pdf": {
+    "n_errors": 12,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 20,
+      "missing": 7,
+      "wrong": 1,
+      "hallucinated": 4
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_027.pdf": {
+    "n_errors": 10,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 22,
+      "missing": 8,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_028.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 27,
+      "missing": 7,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_029.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 19,
+      "missing": 6,
+      "wrong": 1,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_030.pdf": {
+    "n_errors": 6,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 5,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_031.pdf": {
+    "n_errors": 14,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 12,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_032.pdf": {
+    "n_errors": 20,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 19,
+      "missing": 13,
+      "wrong": 1,
+      "hallucinated": 6
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:8",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:10",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:11",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_033.pdf": {
+    "n_errors": 8,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 18,
+      "missing": 6,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_034.pdf": {
+    "n_errors": 14,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 16,
+      "missing": 10,
+      "wrong": 2,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "wrong"
+      },
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_035.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 21,
+      "missing": 6,
+      "hallucinated": 5
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:8",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_036.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 24,
+      "missing": 9,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_037.pdf": {
+    "n_errors": 8,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 7,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_038.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 23,
+      "missing": 5,
+      "hallucinated": 4
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_039.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 21,
+      "missing": 9,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "software:2",
+        "group": "software",
+        "status": "missing"
+      }
+    ]
+  },
+  "FH_040.pdf": {
+    "n_errors": 8,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 27,
+      "missing": 7,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_041.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 18,
+      "missing": 6,
+      "wrong": 1,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_042.pdf": {
+    "n_errors": 9,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 19,
+      "missing": 7,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:4",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_043.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 27,
+      "missing": 9,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_044.pdf": {
+    "n_errors": 16,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 24,
+      "missing": 9,
+      "wrong": 1,
+      "hallucinated": 6
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:8",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:10",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:11",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_045.pdf": {
+    "n_errors": 5,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 21,
+      "missing": 4,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  },
+  "FH_046.pdf": {
+    "n_errors": 14,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 26,
+      "missing": 8,
+      "wrong": 2,
+      "hallucinated": 4
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment:1.position",
+        "group": "employment",
+        "status": "wrong"
+      },
+      {
+        "field": "skill_extra:0",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:1",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:2",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:7",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "software:0",
+        "group": "software",
+        "status": "missing"
+      },
+      {
+        "field": "software:2",
+        "group": "software",
+        "status": "missing"
+      },
+      {
+        "field": "certificate:0",
+        "group": "certificates",
+        "status": "missing"
+      }
+    ]
+  },
+  "FH_047.pdf": {
+    "n_errors": 11,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 33,
+      "missing": 6,
+      "wrong": 3,
+      "hallucinated": 2
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "wrong"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "employment:1.position",
+        "group": "employment",
+        "status": "wrong"
+      },
+      {
+        "field": "employment:2.position",
+        "group": "employment",
+        "status": "wrong"
+      },
+      {
+        "field": "skill_extra:0",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:1",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "software:3",
+        "group": "software",
+        "status": "missing"
+      }
+    ]
+  },
+  "FH_048.pdf": {
+    "n_errors": 13,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 25,
+      "missing": 9,
+      "hallucinated": 4
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:1",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:2",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "employment_entry:3",
+        "group": "employment",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:0",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:2",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:3",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:9",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "software:1",
+        "group": "software",
+        "status": "missing"
+      },
+      {
+        "field": "software:4",
+        "group": "software",
+        "status": "missing"
+      }
+    ]
+  },
+  "FH_049.pdf": {
+    "n_errors": 13,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 26,
+      "missing": 9,
+      "hallucinated": 4
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.institution",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing"
+      },
+      {
+        "field": "skill_extra:0",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:1",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:5",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "skill_extra:6",
+        "group": "skills",
+        "status": "hallucinated"
+      },
+      {
+        "field": "software:1",
+        "group": "software",
+        "status": "missing"
+      },
+      {
+        "field": "certificate:0",
+        "group": "certificates",
+        "status": "missing"
+      },
+      {
+        "field": "target_role",
+        "group": "career_intent",
+        "status": "missing"
+      }
+    ]
+  },
+  "FH_050.pdf": {
+    "n_errors": 5,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 32,
+      "missing": 3,
+      "wrong": 1,
+      "hallucinated": 1
+    },
+    "errors": [
+      {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing"
+      },
+      {
+        "field": "language:0",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "language:1",
+        "group": "languages",
+        "status": "missing"
+      },
+      {
+        "field": "employment:1.position",
+        "group": "employment",
+        "status": "wrong"
+      },
+      {
+        "field": "skill_extra:0",
+        "group": "skills",
+        "status": "hallucinated"
+      }
+    ]
+  }
+}

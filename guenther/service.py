@@ -16,7 +16,7 @@ from guenther.intelligence.routing import ArchitectureMode, resolve_model_for_ca
 from guenther.intelligence.writing_validate import validate_writing_grounded
 from guenther.model_manager import PRODUCTION_MODEL_ID, ModelManager, default_models_dir
 from guenther.privacy import log_event
-from guenther.prompts import SCHEMA_HINTS, build_layers
+from guenther.prompts import SCHEMA_HINTS, SYSTEM_PHI_EXTRACT, SYSTEM_PHI_WRITE, build_layers
 from guenther.provider import GenerationRequest, LocalAIProvider, ProviderStatus
 from guenther.runtime.heuristic_provider import HeuristicProvider
 from guenther.runtime.llama_cpp_provider import LlamaCppProvider
@@ -167,6 +167,8 @@ class GuentherService:
         use_heuristic_fallback: bool = False,
         timeout_s: float = 120.0,
         model_id: str | None = None,
+        system_core: str | None = None,
+        temperature: float | None = None,
     ) -> tuple[Any | None, GuentherEnvelope]:
         if not self.enabled:
             return None, fallback_envelope(capability, reason="disabled")
@@ -177,6 +179,7 @@ class GuentherService:
             schema_hint=SCHEMA_HINTS.get(schema_name, "{}"),
             trusted=trusted,
             untrusted=untrusted,
+            system_core=system_core,
         )
         token_budget = {
             "email_class": 256,
@@ -189,6 +192,9 @@ class GuentherService:
             "writing_plan": 768,
             "writing_critique": 512,
         }.get(schema_name, 512)
+        # PHI_EXTRACT: deterministic; PHI_WRITE may keep slight creativity.
+        if temperature is None:
+            temperature = 0.0 if capability in {"cv_extract", "job_analysis"} else 0.1
         req = GenerationRequest(
             system=system,
             trusted=trusted_b,
@@ -196,7 +202,7 @@ class GuentherService:
             schema_name=schema_name,
             timeout_s=timeout_s,
             max_tokens=token_budget,
-            temperature=0.1,
+            temperature=float(temperature),
         )
 
         status = self.ensure_model_loaded(routed)
@@ -248,9 +254,14 @@ class GuentherService:
         model, env = self._generate_validated(
             capability="cv_extract",
             schema_name="cv_extract",
-            task="Extrahiere nur im Text belegte CV-Fakten als JSON.",
+            task=(
+                "PHI_EXTRACT: Extrahiere nur im Text belegte CV-Fakten als JSON. "
+                "Keine Sprachen außer echten Sprachnamen. Keine erfundenen Werte."
+            ),
             trusted=json.dumps({"manual": manual_profile or {}}, ensure_ascii=False),
             untrusted=cv_text[:20000],
+            system_core=SYSTEM_PHI_EXTRACT,
+            temperature=0.0,
         )
         if model is None:
             return env
@@ -264,6 +275,75 @@ class GuentherService:
             ok=True,
             provider_status=env.provider_status,
             model_id=env.model_id,
+            safety_notes=notes,
+            validated=True,
+            architecture=self.architecture.value,
+        )
+
+    def suggest_cv_extract_split(
+        self, cv_text: str, *, manual_profile: dict[str, Any] | None = None
+    ) -> GuentherEnvelope:
+        """Split PHI_EXTRACT into focused passes, then merge into CVExtractSuggestion.
+
+        Falls back to single-pass suggest_cv_extract if a pass fails.
+        """
+        from guenther.contracts import CVExtractSuggestion
+
+        base = self.suggest_cv_extract(cv_text, manual_profile=manual_profile)
+        if not base.ok:
+            return base
+        merged = dict(base.suggestion or {})
+        notes = list(base.safety_notes or [])
+        # Focused language pass — category discipline
+        lang_task = (
+            "PHI_EXTRACT Pass LANGUAGES: Liste nur echte Sprachen mit Level aus dem Text. "
+            'JSON: {"languages":["Deutsch - C2"],"skills":[],"software":[],'
+            '"certificates":[],"confidence":"low","notes":[],"invented_flag":false,'
+            '"full_name":"","emails":[],"phones":[],"experience_titles":[],"education":[]}. '
+            "Kurse/Software/Zertifikate gehören in skills/software/certificates, nie languages."
+        )
+        model, env = self._generate_validated(
+            capability="cv_extract",
+            schema_name="cv_extract",
+            task=lang_task,
+            trusted=json.dumps({"manual": manual_profile or {}, "pass": "languages"}, ensure_ascii=False),
+            untrusted=cv_text[:20000],
+            system_core=SYSTEM_PHI_EXTRACT,
+            temperature=0.0,
+        )
+        if model is not None and env.ok:
+            assert isinstance(model, CVExtractSuggestion)
+            model, n2 = validate_cv_extract(model, cv_text=cv_text, manual_profile=manual_profile)
+            notes.extend(n2)
+            # Prefer language-pass languages if non-empty and grounded
+            if model.languages:
+                merged["languages"] = list(model.languages)
+            for key in ("skills", "certificates"):
+                extra = list(getattr(model, key, None) or [])
+                if extra:
+                    cur = list(merged.get(key) or [])
+                    for item in extra:
+                        if item not in cur:
+                            cur.append(item)
+                    merged[key] = cur
+            notes.append("phi_extract_split:languages")
+        else:
+            notes.append("phi_extract_split:languages_skipped")
+
+        try:
+            suggestion = CVExtractSuggestion.model_validate(merged)
+        except Exception:  # noqa: BLE001
+            return base
+        suggestion, n3 = validate_cv_extract(
+            suggestion, cv_text=cv_text, manual_profile=manual_profile
+        )
+        notes.extend(n3)
+        return envelope_from_model(
+            capability="cv_extract",
+            model=suggestion,
+            ok=True,
+            provider_status=base.provider_status,
+            model_id=base.model_id,
             safety_notes=notes,
             validated=True,
             architecture=self.architecture.value,
@@ -556,6 +636,8 @@ class GuentherService:
                 trusted=trusted,
                 untrusted=untrusted,
                 model_id=routed,
+                system_core=SYSTEM_PHI_WRITE,
+                temperature=0.2,
             )
             if model is None:
                 return (

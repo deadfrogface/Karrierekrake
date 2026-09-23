@@ -1,0 +1,128 @@
+[
+  {
+    "ground_truth": "name.first_name/last_name",
+    "prediction_field": "personal.first_name/last_name",
+    "type_gt": "object",
+    "type_pred": "object",
+    "adapter": "pred_view",
+    "main_metric": true,
+    "problem": null
+  },
+  {
+    "ground_truth": "address.*",
+    "prediction_field": "personal.street/house_number/postal_code/city/country",
+    "type_gt": "object",
+    "type_pred": "object",
+    "adapter": "pred_view",
+    "main_metric": true,
+    "problem": "street often includes house number — V2 partially recovers house_number"
+  },
+  {
+    "ground_truth": "date_of_birth",
+    "prediction_field": "personal.date_of_birth",
+    "type_gt": "string",
+    "type_pred": "string",
+    "adapter": "Phase B maps GT dob alias",
+    "main_metric": true,
+    "problem": "Scorer V2 reads gt[\"dob\"]; eval adapts date_of_birth→dob (not a false failure)"
+  },
+  {
+    "ground_truth": "email",
+    "prediction_field": "emails[0]",
+    "type_gt": "string",
+    "type_pred": "list[str]",
+    "adapter": "pred_view",
+    "main_metric": true,
+    "problem": null
+  },
+  {
+    "ground_truth": "phone",
+    "prediction_field": "phones[0] or personal.phone",
+    "type_gt": "string",
+    "type_pred": "list",
+    "adapter": "pred_view uses phones[0]",
+    "main_metric": true,
+    "problem": null
+  },
+  {
+    "ground_truth": "target_role",
+    "prediction_field": "target_role",
+    "type_gt": "string|null",
+    "type_pred": "string",
+    "adapter": "evidence-gated",
+    "main_metric": true,
+    "problem": "optional class B"
+  },
+  {
+    "ground_truth": "languages [[name,level]]",
+    "prediction_field": "languages[]",
+    "type_gt": "list of pairs",
+    "type_pred": "list of objects or empty",
+    "adapter": "match_language_pairs",
+    "main_metric": true,
+    "problem": "REAL_PARSER_ERROR: all predictions empty languages[]"
+  },
+  {
+    "ground_truth": "licenses",
+    "prediction_field": "driving_license",
+    "type_gt": "list[str]",
+    "type_pred": "str|list[dict]",
+    "adapter": "pred_view flattens",
+    "main_metric": true,
+    "problem": null
+  },
+  {
+    "ground_truth": "education",
+    "prediction_field": "education",
+    "type_gt": "list[dict]",
+    "type_pred": "list[dict]",
+    "adapter": "match_entries",
+    "main_metric": true,
+    "problem": "qualification|institution fusion reduces match quality"
+  },
+  {
+    "ground_truth": "employment",
+    "prediction_field": "work_experience",
+    "type_gt": "list[dict]",
+    "type_pred": "list[dict]",
+    "adapter": "SCHEMA_MAPPING + pred_view",
+    "main_metric": true,
+    "problem": "REAL_PARSER_ERROR: mostly empty work_experience"
+  },
+  {
+    "ground_truth": "certificates",
+    "prediction_field": "certificates",
+    "type_gt": "list[str]",
+    "type_pred": "list[dict|str]",
+    "adapter": "name extraction",
+    "main_metric": true,
+    "problem": null
+  },
+  {
+    "ground_truth": "software",
+    "prediction_field": "software",
+    "type_gt": "list[str]",
+    "type_pred": "list",
+    "adapter": "set match",
+    "main_metric": true,
+    "problem": null
+  },
+  {
+    "ground_truth": "skills",
+    "prediction_field": "skills",
+    "type_gt": "list[str]",
+    "type_pred": "list",
+    "adapter": "set match",
+    "main_metric": true,
+    "problem": "many FP extras (parser)"
+  },
+  {
+    "ground_truth": "career_notes",
+    "prediction_field": "(none)",
+    "type_gt": "list",
+    "type_pred": "absent",
+    "adapter": "SCHEMA_EXTENSION excluded from core",
+    "main_metric": false,
+    "problem": null
+  }
+]

@@ -1,0 +1,114 @@
+{
+  "document": "FH_011",
+  "ground_truth_education": [
+    {
+      "qualification": "Hauptschulabschluss",
+      "institution": "Gesamtschule Basel",
+      "start_date": "2008",
+      "end_date": "2011"
+    }
+  ],
+  "ground_truth_career_notes": [
+    "03/2021 - 11/2022 Elternzeit"
+  ],
+  "prediction_education": [
+    {
+      "completion_date": "",
+      "end_date": "",
+      "institution": "Weitere Angaben",
+      "location": "",
+      "qualification": "Hauptschulabschluss | Gesamtschule Basel",
+      "source": "cv",
+      "start_date": ""
+    },
+    {
+      "completion_date": "11/2022",
+      "end_date": "11/2022",
+      "institution": "",
+      "location": "",
+      "qualification": "Elternzeit",
+      "source": "cv",
+      "start_date": "03/2021"
+    }
+  ],
+  "prediction_career_notes": null,
+  "prediction_work_experience": [],
+  "scorer_education_rows": [
+    {
+      "field": "education:0.qualification",
+      "status": "correct",
+      "expected": "Hauptschulabschluss",
+      "actual": "Hauptschulabschluss | Gesamtschule Basel",
+      "critical": true
+    },
+    {
+      "field": "education:0.institution",
+      "status": "wrong",
+      "expected": "Gesamtschule Basel",
+      "actual": "Weitere Angaben",
+      "critical": true
+    },
+    {
+      "field": "education:0.start_date",
+      "status": "missing",
+      "expected": "2008",
+      "actual": "",
+      "critical": true
+    },
+    {
+      "field": "education:0.end_date",
+      "status": "missing",
+      "expected": "2011",
+      "actual": "",
+      "critical": true
+    },
+    {
+      "field": "education_entry:0",
+      "status": "correct",
+      "expected": {
+        "qualification": "Hauptschulabschluss",
+        "institution": "Gesamtschule Basel",
+        "start_date": "2008",
+        "end_date": "2011"
+      },
+      "actual": {
+        "completion_date": "",
+        "end_date": "",
+        "institution": "Weitere Angaben",
+        "location": "",
+        "qualification": "Hauptschulabschluss | Gesamtschule Basel",
+        "source": "cv",
+        "start_date": ""
+      },
+      "critical": true
+    },
+    {
+      "field": "education_extra:1",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": {
+        "completion_date": "11/2022",
+        "end_date": "11/2022",
+        "institution": "",
+        "location": "",
+        "qualification": "Elternzeit",
+        "source": "cv",
+        "start_date": "03/2021"
+      },
+      "critical": true
+    }
+  ],
+  "classification": "REAL_PARSER_ERROR",
+  "reasoning": "Frozen prediction contains an education entry with qualification=\"Elternzeit\". Scorer did not invent this; evaluate_doc_v2 matched/extra-counted it as education_extra hallucinated. career_notes not projected into education by scorer. GT career_notes separately list Elternzeit as schema-extension content.",
+  "evidence_in_prediction": [
+    {
+      "completion_date": "11/2022",
+      "end_date": "11/2022",
+      "institution": "",
+      "location": "",
+      "qualification": "Elternzeit",
+      "source": "cv",
+      "start_date": "03/2021"
+    }
+  ]
+}

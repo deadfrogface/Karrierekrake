@@ -1,0 +1,1 @@
+PHASE B ONLY. Reveal only after Phase A is sealed. Verify the PDF manifest and frozen prediction hashes before evaluation. Keep Frozen and Post-Analysis metrics separate.

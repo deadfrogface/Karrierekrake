@@ -1,0 +1,546 @@
+{
+  "original_gt_unchanged": true,
+  "n_reviews": 54,
+  "by_class": {
+    "GROUND_TRUTH_CONFIRMED": 50,
+    "SCHEMA_EXTENSION_FIELD": 4
+  },
+  "reviews": [
+    {
+      "document": "FH_001.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_002.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Englisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_003.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Franz\u00f6sisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_004.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Niederl\u00e4ndisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_005.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Polnisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_006.pdf",
+      "field": "languages",
+      "gt_value": [
+        "T\u00fcrkisch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_007.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Arabisch",
+        "C2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_008.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Ungarisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_009.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Deutsch",
+        "C2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_010.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Italienisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_011.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_011.pdf",
+      "field": "career_notes",
+      "gt_value": [
+        "03/2021 - 11/2022 Elternzeit"
+      ],
+      "classification": "SCHEMA_EXTENSION_FIELD",
+      "note": "Not part of productive core profile metric"
+    },
+    {
+      "document": "FH_012.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Englisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_013.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Franz\u00f6sisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_014.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Niederl\u00e4ndisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_015.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Polnisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_016.pdf",
+      "field": "languages",
+      "gt_value": [
+        "T\u00fcrkisch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_017.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Arabisch",
+        "C2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_018.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Ungarisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_019.pdf",
+      "field": "languages",
+      "gt_value": [
+        "D\u00e4nisch",
+        "A2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_020.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Italienisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_021.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_021.pdf",
+      "field": "career_notes",
+      "gt_value": [
+        "Seit 2022 selbstst\u00e4ndig nebenberuflich"
+      ],
+      "classification": "SCHEMA_EXTENSION_FIELD",
+      "note": "Not part of productive core profile metric"
+    },
+    {
+      "document": "FH_022.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Englisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_023.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Franz\u00f6sisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_024.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Niederl\u00e4ndisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_025.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Polnisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_026.pdf",
+      "field": "languages",
+      "gt_value": [
+        "T\u00fcrkisch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_027.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Arabisch",
+        "C2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_028.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Ungarisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_029.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Deutsch",
+        "C2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_030.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Italienisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_031.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_031.pdf",
+      "field": "career_notes",
+      "gt_value": [
+        "06/2020 - 12/2020 arbeitssuchend"
+      ],
+      "classification": "SCHEMA_EXTENSION_FIELD",
+      "note": "Not part of productive core profile metric"
+    },
+    {
+      "document": "FH_032.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Englisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_033.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Franz\u00f6sisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_034.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Niederl\u00e4ndisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_035.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Polnisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_036.pdf",
+      "field": "languages",
+      "gt_value": [
+        "T\u00fcrkisch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_037.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Arabisch",
+        "C2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_038.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Ungarisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_039.pdf",
+      "field": "languages",
+      "gt_value": [
+        "D\u00e4nisch",
+        "A2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_040.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Italienisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_041.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Deutsch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_041.pdf",
+      "field": "career_notes",
+      "gt_value": [
+        "Parallelbesch\u00e4ftigung 04/2021 - 09/2022"
+      ],
+      "classification": "SCHEMA_EXTENSION_FIELD",
+      "note": "Not part of productive core profile metric"
+    },
+    {
+      "document": "FH_042.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Englisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_043.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Franz\u00f6sisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_044.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Niederl\u00e4ndisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_045.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Polnisch",
+        "C1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_046.pdf",
+      "field": "languages",
+      "gt_value": [
+        "T\u00fcrkisch",
+        "Muttersprache"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_047.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Arabisch",
+        "C2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_048.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Ungarisch",
+        "B2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_049.pdf",
+      "field": "languages",
+      "gt_value": [
+        "D\u00e4nisch",
+        "A2"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    },
+    {
+      "document": "FH_050.pdf",
+      "field": "languages",
+      "gt_value": [
+        "Italienisch",
+        "B1"
+      ],
+      "classification": "GROUND_TRUTH_CONFIRMED",
+      "pdf_text_contains_name": true
+    }
+  ]
+}

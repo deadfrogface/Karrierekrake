@@ -1,0 +1,446 @@
+{
+  "metrics_50": {
+    "f1": 0.9959657085224408,
+    "field_accuracy": 0.9919638372677047,
+    "hallucination_rate": 0.0,
+    "perfect_core": 39,
+    "zero_error": 39,
+    "language_f1": 0.9743589743589743,
+    "by_group": {
+      "personal": {
+        "correct": 139,
+        "missing": 6
+      },
+      "contact": {
+        "correct": 93,
+        "wrong": 3
+      },
+      "address": {
+        "correct": 241
+      },
+      "languages": {
+        "correct": 95,
+        "missing": 5
+      },
+      "licenses": {
+        "correct": 52
+      },
+      "education": {
+        "correct": 295
+      },
+      "employment": {
+        "correct": 615
+      },
+      "skills": {
+        "correct": 223
+      },
+      "software": {
+        "correct": 171,
+        "missing": 2
+      },
+      "certificates": {
+        "correct": 50
+      },
+      "career_intent": {
+        "correct": 1
+      }
+    },
+    "counts": {
+      "correct": 1975,
+      "missing": 13,
+      "wrong": 3,
+      "hallucinated": 0,
+      "wrong_category": 0
+    }
+  },
+  "metrics_100": {
+    "f1": 0.9984485022079007,
+    "perfect_core": 89,
+    "hallucination_rate": 0.0009532888465204957,
+    "by_group": {
+      "personal": {
+        "correct": 300
+      },
+      "contact": {
+        "correct": 200
+      },
+      "address": {
+        "correct": 500
+      },
+      "languages": {
+        "correct": 200
+      },
+      "licenses": {
+        "correct": 103
+      },
+      "education": {
+        "correct": 625
+      },
+      "employment": {
+        "correct": 1250
+      },
+      "skills": {
+        "correct": 491,
+        "missing": 9
+      },
+      "software": {
+        "correct": 400,
+        "hallucinated": 3
+      },
+      "certificates": {
+        "correct": 100,
+        "hallucinated": 1
+      },
+      "career_intent": {
+        "correct": 14
+      }
+    }
+  },
+  "runtime_50": {
+    "ms_mean": 14.545657660346478,
+    "peak_rss_mb": 43.77734375
+  },
+  "per_document": {
+    "FH_001.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_002.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_003.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_004.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_005.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_006.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_007.pdf": {
+      "n_errors": 3,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "name.first_name",
+          "group": "personal",
+          "status": "missing"
+        },
+        {
+          "field": "name.last_name",
+          "group": "personal",
+          "status": "missing"
+        },
+        {
+          "field": "email",
+          "group": "contact",
+          "status": "wrong"
+        }
+      ]
+    },
+    "FH_008.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_009.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_010.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_011.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_012.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_013.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_014.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_015.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_016.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_017.pdf": {
+      "n_errors": 3,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "name.first_name",
+          "group": "personal",
+          "status": "missing"
+        },
+        {
+          "field": "name.last_name",
+          "group": "personal",
+          "status": "missing"
+        },
+        {
+          "field": "email",
+          "group": "contact",
+          "status": "wrong"
+        }
+      ]
+    },
+    "FH_018.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_019.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_020.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "email",
+          "group": "contact",
+          "status": "wrong"
+        }
+      ]
+    },
+    "FH_021.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_022.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_023.pdf": {
+      "n_errors": 2,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "name.first_name",
+          "group": "personal",
+          "status": "missing"
+        },
+        {
+          "field": "name.last_name",
+          "group": "personal",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_024.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_025.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_026.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_027.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_028.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_029.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_030.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_031.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_032.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_033.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_034.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_035.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_036.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_037.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_038.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_039.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "software:2",
+          "group": "software",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_040.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_041.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_042.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_043.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_044.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_045.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_046.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_047.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_048.pdf": {
+      "n_errors": 1,
+      "perfect_core": false,
+      "errors": [
+        {
+          "field": "software:4",
+          "group": "software",
+          "status": "missing"
+        }
+      ]
+    },
+    "FH_049.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    },
+    "FH_050.pdf": {
+      "n_errors": 0,
+      "perfect_core": true,
+      "errors": []
+    }
+  }
+}

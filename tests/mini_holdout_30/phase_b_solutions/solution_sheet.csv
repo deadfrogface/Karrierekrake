@@ -1,0 +1,31 @@
+﻿filename;name;city;work_count;education_count;languages;licenses;software;skills
+MH_001.pdf;Ada Rademacher;Emmerich am Rhein;1;2;Deutsch: Muttersprache | Englisch: A2;B;ZBrush | Grafana;Protokollführung | Schadensanalyse | Kalibrierung
+MH_002.pdf;Benedikt Şahin;Lörrach;2;1;Französisch: B2 | Englisch: B1;;SAP MM | Adobe Acrobat Pro | Tableau;Arbeitsvorbereitung | Lieferantenkoordination | Messmittelverwaltung | Schadensanalyse
+MH_003.pdf;Célina Wouters;Zittau;3;1;Niederländisch: C1 | Englisch: B2;;Oracle NetSuite | RStudio | ZBrush | Qlik Sense;Protokollführung | Technische Recherche | Prozessüberwachung | Gefahrstoffmanagement | Probenahme
+MH_004.pdf;Dragomir Becker;Pirmasens;1;1;Polnisch: B1 | Englisch: C1;B;Microsoft Project | EPLAN Electric P8 | GIMP | Inkscape | Ansys;Materialdisposition | Bestandsprüfung | Technische Recherche | Prozessüberwachung | Kundenkommunikation | Probenahme
+MH_005.pdf;Esra Lavigne;Freilassing;2;1;Arabisch: Muttersprache | Englisch: A2;;Minitab | Grafana;Schadensanalyse | Dokumentenlenkung | Materialdisposition
+MH_006.pdf;Florian Mazurek;Ahaus;3;1;Spanisch: B2 | Englisch: B1;;Fusion 360 | Qlik Sense | GIMP;Probenahme | Arbeitsvorbereitung | Gefahrstoffmanagement | Montageplanung
+MH_007.pdf;Giselle Papadopoulos;Cottbus;1;1;Griechisch: C1 | Englisch: B2;B;ZBrush | Tableau | LibreOffice Calc | Microsoft Project;Kundenkommunikation | Dokumentenlenkung | Technische Recherche | Schadensanalyse | Schichtübergabe
+MH_008.pdf;Hannes Rácz;Husum;2;2;Deutsch: C2 | Ungarisch: C1;B, C1;Fusion 360 | SAP MM | Adobe Acrobat Pro | EPLAN Electric P8 | Minitab;Instandhaltung | Kalibrierung | Arbeitsvorbereitung | Schichtübergabe | Bestandsprüfung | Messmittelverwaltung
+MH_009.pdf;Imani Schulte;Bonn;3;1;Ukrainisch: Muttersprache | Englisch: A2;;Minitab | LibreOffice Calc;Kundenkommunikation | Schichtübergabe | Probenahme
+MH_010.pdf;Joris Timmermans;Erfurt;1;1;Italienisch: B1 | Englisch: B1;B;Tableau | Grafana | Qlik Sense;Arbeitsvorbereitung | Kalibrierung | Materialdisposition | Qualitätsprüfung
+MH_011.pdf;Kateryna Weiß;Genève;2;1;Deutsch: Muttersprache | Englisch: B2;;Grafana | SAP MM | Microsoft Project | PostgreSQL;Qualitätsprüfung | Kundenkommunikation | Gefahrstoffmanagement | Technische Recherche | Schadensanalyse
+MH_012.pdf;Lars Abdelrahman;Liège;3;1;Französisch: B2 | Englisch: C1;;Oracle NetSuite | Fusion 360 | GIMP | Adobe Acrobat Pro | Grafana;Bestandsprüfung | Schadensanalyse | Qualitätsprüfung | Dokumentenlenkung | Arbeitsvorbereitung | Gefahrstoffmanagement
+MH_013.pdf;Malika Bork;Arnhem;1;1;Niederländisch: C1 | Englisch: A2;B;SAP MM | LibreOffice Calc;Schichtübergabe | Kundenkommunikation | Schadensanalyse
+MH_014.pdf;Nevio Carlsen;Metz;2;1;Polnisch: B1 | Englisch: B1;;GIMP | EPLAN Electric P8 | SAP MM;Messmittelverwaltung | Lieferantenkoordination | Materialdisposition | Gefahrstoffmanagement
+MH_015.pdf;Orla Demir;Innsbruck;3;2;Arabisch: Muttersprache | Englisch: B2;;SAP MM | Adobe Acrobat Pro | Grafana | ZBrush;Qualitätsprüfung | Gefahrstoffmanagement | Montageplanung | Bestandsprüfung | Technische Recherche
+MH_016.pdf;Ruben Engelhardt;Emmerich am Rhein;1;1;Spanisch: B2 | Englisch: C1;B;Fusion 360 | ZBrush | Qlik Sense | Tableau | RStudio;Bestandsprüfung | Schadensanalyse | Technische Recherche | Arbeitsvorbereitung | Instandhaltung | Protokollführung
+MH_017.pdf;Saskia Fadel;Lörrach;2;1;Griechisch: C1 | Englisch: A2;;Bentley MicroStation | Tableau;Bestandsprüfung | Probenahme | Prozessüberwachung
+MH_018.pdf;Tarik Giese;Zittau;3;1;Ungarisch: A2 | Englisch: B1;;EPLAN Electric P8 | PostgreSQL | Inkscape;Bestandsprüfung | Schadensanalyse | Gefahrstoffmanagement | Kalibrierung
+MH_019.pdf;Una Heinrich;Pirmasens;1;1;Ukrainisch: Muttersprache | Englisch: B2;B;Tableau | PostgreSQL | Ansys | Microsoft Project;Schichtübergabe | Qualitätsprüfung | Instandhaltung | Bestandsprüfung | Montageplanung
+MH_020.pdf;Vincent Kelm;Freilassing;2;1;Deutsch: C2 | Ungarisch: C1;B, C1;Bentley MicroStation | RStudio | Fusion 360 | Oracle NetSuite | Minitab;Kundenkommunikation | Dokumentenlenkung | Lieferantenkoordination | Protokollführung | Gefahrstoffmanagement | Schichtübergabe
+MH_021.pdf;Wanda Lopez;Ahaus;3;1;Deutsch: Muttersprache | Englisch: A2;;Qlik Sense | Bentley MicroStation;Kundenkommunikation | Messmittelverwaltung | Schichtübergabe
+MH_022.pdf;Youssef Martens;Cottbus;1;2;Französisch: B2 | Englisch: B1;B;PostgreSQL | Inkscape | Minitab;Prozessüberwachung | Schadensanalyse | Probenahme | Instandhaltung
+MH_023.pdf;Zita Novak;Husum;2;1;Niederländisch: C1 | Englisch: B2;;Qlik Sense | RStudio | ZBrush | Bentley MicroStation;Technische Recherche | Gefahrstoffmanagement | Instandhaltung | Qualitätsprüfung | Schichtübergabe
+MH_024.pdf;Alistair Perry;Bonn;3;1;English: native | German: C1;;ZBrush | Oracle NetSuite | Inkscape | Minitab | PostgreSQL;Montageplanung | Probenahme | Schadensanalyse | Schichtübergabe | Qualitätsprüfung | Dokumentenlenkung
+MH_025.pdf;Brooke Reed;Erfurt;1;1;English: native | German: A2;B;Minitab | Qlik Sense;Messmittelverwaltung | Gefahrstoffmanagement | Technische Recherche
+MH_026.pdf;Connor Smith;Genève;2;1;English: native | German: B1;;SAP MM | RStudio | ZBrush;Qualitätsprüfung | Bestandsprüfung | Technische Recherche | Montageplanung
+MH_027.pdf;Daisy Turner;Liège;3;1;English: native | German: B2;;GIMP | Microsoft Project | Adobe Acrobat Pro | SAP MM;Arbeitsvorbereitung | Montageplanung | Materialdisposition | Kalibrierung | Kundenkommunikation
+MH_028.pdf;Felix Adler;Arnhem;1;1;Ungarisch: A2 | Englisch: C1;B;Oracle NetSuite | Tableau | LibreOffice Calc | RStudio | Adobe Acrobat Pro;Montageplanung | Messmittelverwaltung | Schadensanalyse | Instandhaltung | Kalibrierung | Protokollführung
+MH_029.pdf;Hala Bensaïd;Metz;2;2;Ukrainisch: Muttersprache | Englisch: A2;;Adobe Acrobat Pro | ZBrush;Bestandsprüfung | Lieferantenkoordination | Materialdisposition
+MH_030.pdf;Mikołaj Czarnecki;Innsbruck;3;1;Italienisch: B1 | Englisch: B1;;PostgreSQL | Ansys | Oracle NetSuite;Technische Recherche | Probenahme | Kundenkommunikation | Messmittelverwaltung

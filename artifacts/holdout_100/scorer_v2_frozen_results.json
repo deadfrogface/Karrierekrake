@@ -1,0 +1,1302 @@
+{
+  "A1_det_raw": {
+    "metrics": {
+      "field_total": 4190,
+      "counts": {
+        "correct": 2332,
+        "missing": 1013,
+        "hallucinated": 838,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.556563245823389,
+      "precision": 0.7340258105130626,
+      "recall": 0.6971599402092675,
+      "f1": 0.7151180619441888,
+      "hallucination_rate": 0.2,
+      "missing_field_rate": 0.24176610978520285,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.2016706443914081,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 154,
+          "missing": 46
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "missing": 59,
+          "hallucinated": 3,
+          "correct": 330
+        },
+        "employment": {
+          "correct": 500,
+          "missing": 150
+        },
+        "skills": {
+          "correct": 367,
+          "hallucinated": 814,
+          "missing": 133
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "missing": 49,
+          "hallucinated": 21,
+          "correct": 47
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "A1_det_raw",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 0.9748081670259126,
+      "avg_s": 0.009748081670259125,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 33,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 20,
+            "missing": 7,
+            "hallucinated": 6
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 7,
+            "hallucinated": 22
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 32,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 10,
+            "hallucinated": 5
+          }
+        }
+      }
+    },
+    "n_errors": 1858
+  },
+  "A2_det_validators": {
+    "metrics": {
+      "pipeline": "A2_det_validators",
+      "status": "NOT_AVAILABLE",
+      "reason": "folded into A1/A5 (validators live inside parse_cv_text)"
+    },
+    "n_errors": null
+  },
+  "A3_det_evidence": {
+    "metrics": {
+      "field_total": 4190,
+      "counts": {
+        "correct": 2332,
+        "missing": 1013,
+        "hallucinated": 838,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.556563245823389,
+      "precision": 0.7340258105130626,
+      "recall": 0.6971599402092675,
+      "f1": 0.7151180619441888,
+      "hallucination_rate": 0.2,
+      "missing_field_rate": 0.24176610978520285,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.2016706443914081,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 154,
+          "missing": 46
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "missing": 59,
+          "hallucinated": 3,
+          "correct": 330
+        },
+        "employment": {
+          "correct": 500,
+          "missing": 150
+        },
+        "skills": {
+          "correct": 367,
+          "hallucinated": 814,
+          "missing": 133
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "missing": 49,
+          "hallucinated": 21,
+          "correct": 47
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "A3_det_evidence",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 0.8984175969962962,
+      "avg_s": 0.008984175969962961,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 33,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 20,
+            "missing": 7,
+            "hallucinated": 6
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 7,
+            "hallucinated": 22
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 32,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 10,
+            "hallucinated": 5
+          }
+        }
+      }
+    },
+    "n_errors": 1858
+  },
+  "A4_det_verify_repair": {
+    "metrics": {
+      "field_total": 4190,
+      "counts": {
+        "correct": 2332,
+        "missing": 1013,
+        "hallucinated": 838,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.556563245823389,
+      "precision": 0.7340258105130626,
+      "recall": 0.6971599402092675,
+      "f1": 0.7151180619441888,
+      "hallucination_rate": 0.2,
+      "missing_field_rate": 0.24176610978520285,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.2016706443914081,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 154,
+          "missing": 46
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "missing": 59,
+          "hallucinated": 3,
+          "correct": 330
+        },
+        "employment": {
+          "correct": 500,
+          "missing": 150
+        },
+        "skills": {
+          "correct": 367,
+          "hallucinated": 814,
+          "missing": 133
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "missing": 49,
+          "hallucinated": 21,
+          "correct": 47
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "A4_det_verify_repair",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 0.9239085089648142,
+      "avg_s": 0.009239085089648142,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 33,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 20,
+            "missing": 7,
+            "hallucinated": 6
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 7,
+            "hallucinated": 22
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 32,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 10,
+            "hallucinated": 5
+          }
+        }
+      }
+    },
+    "n_errors": 1858
+  },
+  "A5_det_product": {
+    "metrics": {
+      "field_total": 4190,
+      "counts": {
+        "correct": 2332,
+        "missing": 1013,
+        "hallucinated": 838,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.556563245823389,
+      "precision": 0.7340258105130626,
+      "recall": 0.6971599402092675,
+      "f1": 0.7151180619441888,
+      "hallucination_rate": 0.2,
+      "missing_field_rate": 0.24176610978520285,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.2016706443914081,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 154,
+          "missing": 46
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "missing": 59,
+          "hallucinated": 3,
+          "correct": 330
+        },
+        "employment": {
+          "correct": 500,
+          "missing": 150
+        },
+        "skills": {
+          "correct": 367,
+          "hallucinated": 814,
+          "missing": 133
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "missing": 49,
+          "hallucinated": 21,
+          "correct": 47
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "A5_det_product",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 1.0136824809596874,
+      "avg_s": 0.010136824809596873,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 33,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 20,
+            "missing": 7,
+            "hallucinated": 6
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 7,
+            "hallucinated": 22
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 32,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 10,
+            "hallucinated": 5
+          }
+        }
+      }
+    },
+    "n_errors": 1858
+  },
+  "B1_phi_only": {
+    "metrics": {
+      "field_total": 4466,
+      "counts": {
+        "missing": 2385,
+        "correct": 1690,
+        "hallucinated": 388,
+        "wrong": 3,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.37841468875951634,
+      "precision": 0.8121095627102355,
+      "recall": 0.4147239263803681,
+      "f1": 0.5490578297595841,
+      "hallucination_rate": 0.08687863860277653,
+      "missing_field_rate": 0.5340349305866547,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.08755038065382893,
+      "by_group": {
+        "personal": {
+          "missing": 107,
+          "correct": 193
+        },
+        "contact": {
+          "missing": 12,
+          "correct": 185,
+          "wrong": 3
+        },
+        "address": {
+          "missing": 485,
+          "correct": 15
+        },
+        "languages": {
+          "missing": 19,
+          "correct": 181
+        },
+        "licenses": {
+          "missing": 39,
+          "correct": 64
+        },
+        "education": {
+          "missing": 353,
+          "correct": 228,
+          "hallucinated": 32
+        },
+        "employment": {
+          "missing": 716,
+          "correct": 466,
+          "hallucinated": 52
+        },
+        "skills": {
+          "missing": 233,
+          "correct": 267,
+          "hallucinated": 294
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "missing": 7,
+          "correct": 91,
+          "hallucinated": 10
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "B1_phi_only",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 2694.9804351520143,
+      "avg_s": 26.949804351520143,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 23,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 23
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 44,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 19,
+            "hallucinated": 8
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 27,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 26,
+            "correct": 1
+          }
+        }
+      }
+    },
+    "n_errors": 2776
+  },
+  "B4_phi_product_verify": {
+    "metrics": {
+      "field_total": 5469,
+      "counts": {
+        "correct": 2896,
+        "missing": 1243,
+        "hallucinated": 1323,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.5295300786249771,
+      "precision": 0.6852815901561761,
+      "recall": 0.6996859144720947,
+      "f1": 0.6924088463837418,
+      "hallucination_rate": 0.24190894130554033,
+      "missing_field_rate": 0.22728103858109344,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.24318888279392942,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 156,
+          "missing": 44
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "correct": 447,
+          "missing": 170,
+          "hallucinated": 67
+        },
+        "employment": {
+          "correct": 784,
+          "hallucinated": 51,
+          "missing": 434
+        },
+        "skills": {
+          "correct": 486,
+          "hallucinated": 1176,
+          "missing": 14
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "correct": 89,
+          "hallucinated": 29,
+          "missing": 5
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "B4_phi_product_verify",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 5048.800019830989,
+      "avg_s": 50.48800019830989,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 28,
+            "missing": 7,
+            "hallucinated": 11
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 61,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 23,
+            "missing": 13,
+            "hallucinated": 25
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 57,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 26,
+            "missing": 17,
+            "hallucinated": 14
+          }
+        }
+      }
+    },
+    "n_errors": 2573
+  },
+  "B5_phi_split": {
+    "metrics": {
+      "field_total": 5360,
+      "counts": {
+        "correct": 2834,
+        "missing": 1239,
+        "hallucinated": 1280,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.5287313432835821,
+      "precision": 0.6876971608832808,
+      "recall": 0.6958016204272035,
+      "f1": 0.6917256529167685,
+      "hallucination_rate": 0.23880597014925373,
+      "missing_field_rate": 0.23115671641791044,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.24011194029850746,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 154,
+          "missing": 46
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "correct": 439,
+          "missing": 162,
+          "hallucinated": 59
+        },
+        "employment": {
+          "correct": 760,
+          "hallucinated": 51,
+          "missing": 410
+        },
+        "skills": {
+          "correct": 461,
+          "hallucinated": 1139,
+          "missing": 39
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "correct": 86,
+          "hallucinated": 31,
+          "missing": 6
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "B5_phi_split",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 4581.908183950989,
+      "avg_s": 45.81908183950989,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 47,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 28,
+            "missing": 7,
+            "hallucinated": 12
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 61,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 23,
+            "missing": 13,
+            "hallucinated": 25
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 32,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 10,
+            "hallucinated": 5
+          }
+        }
+      }
+    },
+    "n_errors": 2526
+  },
+  "C1_hybrid_uncertain": {
+    "metrics": {
+      "field_total": 5265,
+      "counts": {
+        "correct": 2884,
+        "missing": 1234,
+        "hallucinated": 1140,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.5477682811016145,
+      "precision": 0.7154552220292731,
+      "recall": 0.7003399708596406,
+      "f1": 0.7078169100503129,
+      "hallucination_rate": 0.21652421652421652,
+      "missing_field_rate": 0.23437796771130104,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.21785375118708453,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 189,
+          "missing": 11
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "missing": 171,
+          "hallucinated": 42,
+          "correct": 442
+        },
+        "employment": {
+          "correct": 776,
+          "missing": 426,
+          "hallucinated": 37
+        },
+        "skills": {
+          "correct": 472,
+          "hallucinated": 1032,
+          "missing": 28
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "missing": 22,
+          "hallucinated": 29,
+          "correct": 71
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "C1_hybrid_uncertain",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 2113.199583587004,
+      "avg_s": 21.13199583587004,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 33,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 20,
+            "missing": 7,
+            "hallucinated": 6
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 61,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 23,
+            "missing": 13,
+            "hallucinated": 25
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 32,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 17,
+            "missing": 10,
+            "hallucinated": 5
+          }
+        }
+      }
+    },
+    "n_errors": 2381
+  },
+  "C4_hybrid_fields": {
+    "metrics": {
+      "field_total": 5469,
+      "counts": {
+        "correct": 2896,
+        "missing": 1243,
+        "hallucinated": 1323,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.5295300786249771,
+      "precision": 0.6852815901561761,
+      "recall": 0.6996859144720947,
+      "f1": 0.6924088463837418,
+      "hallucination_rate": 0.24190894130554033,
+      "missing_field_rate": 0.22728103858109344,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.24318888279392942,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 156,
+          "missing": 44
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "correct": 447,
+          "missing": 170,
+          "hallucinated": 67
+        },
+        "employment": {
+          "correct": 784,
+          "hallucinated": 51,
+          "missing": 434
+        },
+        "skills": {
+          "correct": 486,
+          "hallucinated": 1176,
+          "missing": 14
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "correct": 89,
+          "hallucinated": 29,
+          "missing": 5
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "C4_hybrid_fields",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 5048.800019830989,
+      "avg_s": 50.48800019830989,
+      "alias_of": "B4_phi_product_verify",
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 28,
+            "missing": 7,
+            "hallucinated": 11
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 61,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 23,
+            "missing": 13,
+            "hallucinated": 25
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 57,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 26,
+            "missing": 17,
+            "hallucinated": 14
+          }
+        }
+      }
+    },
+    "n_errors": 2573
+  },
+  "C5_det_phi_verify": {
+    "metrics": {
+      "field_total": 5469,
+      "counts": {
+        "correct": 2896,
+        "missing": 1243,
+        "hallucinated": 1323,
+        "wrong": 7,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.5295300786249771,
+      "precision": 0.6852815901561761,
+      "recall": 0.6996859144720947,
+      "f1": 0.6924088463837418,
+      "hallucination_rate": 0.24190894130554033,
+      "missing_field_rate": 0.22728103858109344,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.24318888279392942,
+      "by_group": {
+        "personal": {
+          "correct": 300
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 162,
+          "wrong": 7
+        },
+        "languages": {
+          "correct": 156,
+          "missing": 44
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "correct": 447,
+          "missing": 170,
+          "hallucinated": 67
+        },
+        "employment": {
+          "correct": 784,
+          "hallucinated": 51,
+          "missing": 434
+        },
+        "skills": {
+          "correct": 486,
+          "hallucinated": 1176,
+          "missing": 14
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "correct": 89,
+          "hallucinated": 29,
+          "missing": 5
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "C5_det_phi_verify",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 5048.800019830989,
+      "avg_s": 50.48800019830989,
+      "alias_of": "B4_phi_product_verify",
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 28,
+            "missing": 7,
+            "hallucinated": 11
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 61,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 23,
+            "missing": 13,
+            "hallucinated": 25
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 57,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "correct": 26,
+            "missing": 17,
+            "hallucinated": 14
+          }
+        }
+      }
+    },
+    "n_errors": 2573
+  },
+  "D2_pymupdf4llm_det": {
+    "metrics": {
+      "field_total": 2692,
+      "counts": {
+        "missing": 1908,
+        "correct": 784,
+        "hallucinated": 0,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.2912332838038633,
+      "precision": 1.0,
+      "recall": 0.2912332838038633,
+      "f1": 0.45109321058688145,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.7087667161961367,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "by_group": {
+        "personal": {
+          "missing": 200,
+          "correct": 100
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 169
+        },
+        "languages": {
+          "missing": 200
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "missing": 125
+        },
+        "employment": {
+          "missing": 250
+        },
+        "skills": {
+          "missing": 500
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "missing": 50,
+          "correct": 50
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "D2_pymupdf4llm_det",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 11.068955620983616,
+      "avg_s": 0.11068955620983616,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 23,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 15,
+            "correct": 8
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 24,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 15,
+            "correct": 9
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 27,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 19,
+            "correct": 8
+          }
+        }
+      }
+    },
+    "n_errors": 1908
+  },
+  "D2_pymupdf4llm_phi": {
+    "metrics": {
+      "field_total": 4476,
+      "counts": {
+        "missing": 2174,
+        "correct": 1768,
+        "hallucinated": 534,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.39499553172475427,
+      "precision": 0.7680278019113814,
+      "recall": 0.4485032978183663,
+      "f1": 0.5663036515054451,
+      "hallucination_rate": 0.1193029490616622,
+      "missing_field_rate": 0.48570151921358357,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.1193029490616622,
+      "by_group": {
+        "personal": {
+          "missing": 200,
+          "correct": 100
+        },
+        "contact": {
+          "correct": 200
+        },
+        "address": {
+          "correct": 331,
+          "missing": 169
+        },
+        "languages": {
+          "missing": 164,
+          "correct": 36
+        },
+        "licenses": {
+          "correct": 103
+        },
+        "education": {
+          "correct": 200,
+          "missing": 325,
+          "hallucinated": 48
+        },
+        "employment": {
+          "missing": 676,
+          "correct": 426,
+          "hallucinated": 77
+        },
+        "skills": {
+          "correct": 277,
+          "hallucinated": 398,
+          "missing": 223
+        },
+        "software": {
+          "missing": 400
+        },
+        "certificates": {
+          "correct": 95,
+          "missing": 3,
+          "hallucinated": 11
+        },
+        "career_intent": {
+          "missing": 14
+        }
+      },
+      "pipeline": "D2_pymupdf4llm_phi",
+      "perfect_documents": 0,
+      "perfect_core_documents": 0,
+      "document_perfect_match_rate": 0.0,
+      "document_perfect_core_match_rate": 0.0,
+      "wall_s": 5132.65386202099,
+      "avg_s": 51.3265386202099,
+      "alias_of": null,
+      "per_document_summary": {
+        "HO_001_Bäckereifachverkäuferin.pdf": {
+          "n": 41,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 15,
+            "correct": 16,
+            "hallucinated": 10
+          }
+        },
+        "HO_002_Forstwirt.pdf": {
+          "n": 24,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 15,
+            "correct": 9
+          }
+        },
+        "HO_003_Notarfachangestellte.pdf": {
+          "n": 46,
+          "perfect": false,
+          "perfect_core": false,
+          "counts": {
+            "missing": 25,
+            "correct": 18,
+            "hallucinated": 3
+          }
+        }
+      }
+    },
+    "n_errors": 2708
+  },
+  "D3_docling_det": {
+    "metrics": {
+      "pipeline": "D3_docling_det",
+      "status": "NOT_AVAILABLE",
+      "reason": "docling not installed"
+    },
+    "n_errors": null
+  },
+  "D3_docling_phi": {
+    "metrics": {
+      "pipeline": "D3_docling_phi",
+      "status": "NOT_AVAILABLE",
+      "reason": "docling not installed"
+    },
+    "n_errors": null
+  },
+  "D4_marker": {
+    "metrics": {
+      "pipeline": "D4_marker",
+      "status": "NOT_AVAILABLE",
+      "reason": "marker not installed / disproportionate cost"
+    },
+    "n_errors": null
+  }
+}

@@ -1,0 +1,3032 @@
+{
+  "label": "POST-ANALYSIS",
+  "distribution": {
+    "0": 0,
+    "1": 4,
+    "2": 10,
+    "3-5": 24,
+    "6-10": 12,
+    ">10": 0
+  },
+  "top5_root_causes_blocking_perfect": [
+    {
+      "root_cause": "address_country_missing",
+      "field_group": "address",
+      "fp": 0,
+      "fn": 50,
+      "wrong": 0,
+      "total_errors": 50,
+      "documents": 50,
+      "blocked_perfect_profiles": 50,
+      "critical_errors": 50,
+      "top_fields": [
+        [
+          "address.country",
+          50
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "employment_title_wrong",
+      "field_group": "employment",
+      "fp": 0,
+      "fn": 0,
+      "wrong": 59,
+      "total_errors": 59,
+      "documents": 30,
+      "blocked_perfect_profiles": 30,
+      "critical_errors": 59,
+      "top_fields": [
+        [
+          "employment:1.position",
+          30
+        ],
+        [
+          "employment:2.position",
+          19
+        ],
+        [
+          "employment:3.position",
+          10
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "certificate_missing",
+      "field_group": "certificates",
+      "fp": 0,
+      "fn": 17,
+      "wrong": 0,
+      "total_errors": 17,
+      "documents": 17,
+      "blocked_perfect_profiles": 17,
+      "critical_errors": 0,
+      "top_fields": [
+        [
+          "certificate:0",
+          17
+        ]
+      ],
+      "severity": "medium",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "employment_entry_missing",
+      "field_group": "employment",
+      "fp": 0,
+      "fn": 24,
+      "wrong": 0,
+      "total_errors": 24,
+      "documents": 10,
+      "blocked_perfect_profiles": 10,
+      "critical_errors": 24,
+      "top_fields": [
+        [
+          "employment_entry:0",
+          10
+        ],
+        [
+          "employment_entry:1",
+          7
+        ],
+        [
+          "employment_entry:2",
+          5
+        ],
+        [
+          "employment_entry:3",
+          2
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "address_street_missing",
+      "field_group": "address",
+      "fp": 0,
+      "fn": 7,
+      "wrong": 0,
+      "total_errors": 7,
+      "documents": 7,
+      "blocked_perfect_profiles": 7,
+      "critical_errors": 7,
+      "top_fields": [
+        [
+          "address.street",
+          7
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    }
+  ],
+  "per_document": [
+    {
+      "document": "FH_001.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2022",
+          "actual": []
+        }
+      ],
+      "layout_class": 0
+    },
+    {
+      "document": "FH_002.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "languages": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "language_duplicate_gt_or_miss": 1,
+        "employment_title_wrong": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing",
+          "critical": true,
+          "expected": [
+            "Englisch",
+            "B1"
+          ],
+          "actual": [
+            {
+              "language": "Englisch",
+              "level": "C1"
+            }
+          ]
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Qualitätssicherung · Prozessoptimierung"
+        }
+      ],
+      "layout_class": 1
+    },
+    {
+      "document": "FH_003.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Atelier Morgenrot",
+            "position": "Rechtsanwaltsfachangestellte",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Hygienemanagement",
+              "Prozessoptimierung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:1",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Grenzland Technik AG",
+            "position": "Werkstudent/in",
+            "start_date": "02/2019",
+            "end_date": "07/2021",
+            "description": [
+              "Bestandsführung",
+              "Gefährdungsbeurteilung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:2",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Elbe & Partner e.V.",
+            "position": "Teamassistenz",
+            "start_date": "03/2020",
+            "end_date": "08/2022",
+            "description": [
+              "Warenkontrolle",
+              "Hygienemanagement"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 2
+    },
+    {
+      "document": "FH_004.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 3,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Technisches Zeichnen · Maschinenführung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Präzisionsarbeit · Qualitätssicherung"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Kundenberatung · Reklamationsbearbeitung"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2025",
+          "actual": []
+        }
+      ],
+      "layout_class": 3
+    },
+    {
+      "document": "FH_005.pdf",
+      "n_errors": 1,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1
+      },
+      "single_error_blocker": true,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        }
+      ],
+      "layout_class": 4
+    },
+    {
+      "document": "FH_006.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Prozessoptimierung · Schichtkoordination"
+        }
+      ],
+      "layout_class": 5
+    },
+    {
+      "document": "FH_007.pdf",
+      "n_errors": 7,
+      "perfect_core": false,
+      "by_group": {
+        "personal": 2,
+        "contact": 1,
+        "address": 1,
+        "employment": 2,
+        "certificates": 1
+      },
+      "root_causes": {
+        "personal_missing": 2,
+        "contact_wrong_normalization": 1,
+        "address_country_missing": 1,
+        "employment_title_wrong": 2,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "name.first_name",
+          "group": "personal",
+          "status": "missing",
+          "critical": true,
+          "expected": "Greta",
+          "actual": ""
+        },
+        {
+          "field": "name.last_name",
+          "group": "personal",
+          "status": "missing",
+          "critical": true,
+          "expected": "Horváth",
+          "actual": ""
+        },
+        {
+          "field": "email",
+          "group": "contact",
+          "status": "wrong",
+          "critical": true,
+          "expected": "greta.horváth@example.de",
+          "actual": "th@example.de"
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Fehlerdiagnose · Bestandsführung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Technisches Zeichnen · Qualitätssicherung"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2024",
+          "actual": []
+        }
+      ],
+      "layout_class": 6
+    },
+    {
+      "document": "FH_008.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Routenplanung · Bestandsführung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Fehlerdiagnose · Projektsteuerung"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Präzisionsarbeit · Dokumentation"
+        }
+      ],
+      "layout_class": 7
+    },
+    {
+      "document": "FH_009.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "HanseKontor GmbH",
+            "position": "Keramikerin",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Hygienemanagement",
+              "Stakeholder-Kommunikation"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 8
+    },
+    {
+      "document": "FH_010.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 1,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Schichtkoordination · Hygienemanagement"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2023",
+          "actual": []
+        }
+      ],
+      "layout_class": 9
+    },
+    {
+      "document": "FH_011.pdf",
+      "n_errors": 7,
+      "perfect_core": false,
+      "by_group": {
+        "address": 5,
+        "employment": 2
+      },
+      "root_causes": {
+        "address_street_missing": 1,
+        "address_house_number_missing": 1,
+        "address_postal_missing": 1,
+        "address_city_missing": 1,
+        "address_country_missing": 1,
+        "employment_title_wrong": 2
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.street",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Spalenvorstadt",
+          "actual": ""
+        },
+        {
+          "field": "address.house_number",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "113",
+          "actual": ""
+        },
+        {
+          "field": "address.postal_code",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "4051",
+          "actual": ""
+        },
+        {
+          "field": "address.city",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Basel",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Schweiz",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Stakeholder-Kommunikation · Reklamationsbearbeitung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Fehlerdiagnose · Hygienemanagement"
+        }
+      ],
+      "layout_class": 10
+    },
+    {
+      "document": "FH_012.pdf",
+      "n_errors": 9,
+      "perfect_core": false,
+      "by_group": {
+        "address": 5,
+        "languages": 1,
+        "employment": 3
+      },
+      "root_causes": {
+        "address_street_missing": 1,
+        "address_house_number_missing": 1,
+        "address_postal_missing": 1,
+        "address_city_missing": 1,
+        "address_country_missing": 1,
+        "language_duplicate_gt_or_miss": 1,
+        "employment_title_wrong": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.street",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Oldenzaalsestraat",
+          "actual": ""
+        },
+        {
+          "field": "address.house_number",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "124",
+          "actual": ""
+        },
+        {
+          "field": "address.postal_code",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "7511 AB",
+          "actual": ""
+        },
+        {
+          "field": "address.city",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Enschede",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Niederlande",
+          "actual": ""
+        },
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing",
+          "critical": true,
+          "expected": [
+            "Englisch",
+            "C1"
+          ],
+          "actual": [
+            {
+              "language": "Englisch",
+              "level": "C1"
+            }
+          ]
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Teammoderation · Disposition"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Prozessoptimierung · Präzisionsarbeit"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Technisches Zeichnen · Dokumentation"
+        }
+      ],
+      "layout_class": 11
+    },
+    {
+      "document": "FH_013.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Frankreich",
+          "actual": ""
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2022",
+          "actual": []
+        }
+      ],
+      "layout_class": 12
+    },
+    {
+      "document": "FH_014.pdf",
+      "n_errors": 6,
+      "perfect_core": false,
+      "by_group": {
+        "address": 5,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_street_missing": 1,
+        "address_house_number_missing": 1,
+        "address_postal_missing": 1,
+        "address_city_missing": 1,
+        "address_country_missing": 1,
+        "employment_title_wrong": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.street",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Linzer Gasse",
+          "actual": ""
+        },
+        {
+          "field": "address.house_number",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "146",
+          "actual": ""
+        },
+        {
+          "field": "address.postal_code",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "5020",
+          "actual": ""
+        },
+        {
+          "field": "address.city",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Salzburg",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Österreich",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Dokumentation · Teammoderation"
+        }
+      ],
+      "layout_class": 13
+    },
+    {
+      "document": "FH_015.pdf",
+      "n_errors": 8,
+      "perfect_core": false,
+      "by_group": {
+        "address": 5,
+        "employment": 3
+      },
+      "root_causes": {
+        "address_street_missing": 1,
+        "address_house_number_missing": 1,
+        "address_postal_missing": 1,
+        "address_city_missing": 1,
+        "address_country_missing": 1,
+        "employment_entry_missing": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.street",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Rue de la Gare",
+          "actual": ""
+        },
+        {
+          "field": "address.house_number",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "13",
+          "actual": ""
+        },
+        {
+          "field": "address.postal_code",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "L-1616",
+          "actual": ""
+        },
+        {
+          "field": "address.city",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Luxembourg",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Luxemburg",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Elbe & Partner e.V.",
+            "position": "Podologin",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Reklamationsbearbeitung",
+              "Fehlerdiagnose"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:1",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Alpenblick Systeme GmbH",
+            "position": "Werkstudent/in",
+            "start_date": "02/2019",
+            "end_date": "07/2021",
+            "description": [
+              "Stakeholder-Kommunikation",
+              "Dokumentation"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:2",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Baltic Labor OHG",
+            "position": "Teamassistenz",
+            "start_date": "03/2020",
+            "end_date": "08/2022",
+            "description": [
+              "Warenkontrolle",
+              "Reklamationsbearbeitung"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 14
+    },
+    {
+      "document": "FH_016.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 3,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Prozessoptimierung · Stakeholder-Kommunikation"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Routenplanung · Teammoderation"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Technisches Zeichnen · Disposition"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2025",
+          "actual": []
+        }
+      ],
+      "layout_class": 0
+    },
+    {
+      "document": "FH_017.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "personal": 2,
+        "contact": 1,
+        "address": 1
+      },
+      "root_causes": {
+        "personal_missing": 2,
+        "contact_wrong_normalization": 1,
+        "address_country_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "name.first_name",
+          "group": "personal",
+          "status": "missing",
+          "critical": true,
+          "expected": "Rana",
+          "actual": ""
+        },
+        {
+          "field": "name.last_name",
+          "group": "personal",
+          "status": "missing",
+          "critical": true,
+          "expected": "Sørensen",
+          "actual": ""
+        },
+        {
+          "field": "email",
+          "group": "contact",
+          "status": "wrong",
+          "critical": true,
+          "expected": "rana.sørensen@example.org",
+          "actual": "rensen@example.org"
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        }
+      ],
+      "layout_class": 1
+    },
+    {
+      "document": "FH_018.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 2
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 2
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Stadtwerke West",
+            "position": "Sattler",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Prozessoptimierung",
+              "Routenplanung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:1",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "HanseKontor GmbH",
+            "position": "Werkstudent/in",
+            "start_date": "02/2019",
+            "end_date": "07/2021",
+            "description": [
+              "Hygienemanagement",
+              "Warenkontrolle"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 2
+    },
+    {
+      "document": "FH_019.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 2,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 2,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Dokumentation · Materialprüfung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Reklamationsbearbeitung · Teammoderation"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2024",
+          "actual": []
+        }
+      ],
+      "layout_class": 3
+    },
+    {
+      "document": "FH_020.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "contact": 1,
+        "address": 1,
+        "employment": 3
+      },
+      "root_causes": {
+        "contact_wrong_normalization": 1,
+        "address_country_missing": 1,
+        "employment_title_wrong": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "email",
+          "group": "contact",
+          "status": "wrong",
+          "critical": true,
+          "expected": "veit.van dijk@example.org",
+          "actual": "dijk@example.org"
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Gefährdungsbeurteilung · Disposition"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Technisches Zeichnen · Teammoderation"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Fehlerdiagnose · Reklamationsbearbeitung"
+        }
+      ],
+      "layout_class": 4
+    },
+    {
+      "document": "FH_021.pdf",
+      "n_errors": 1,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1
+      },
+      "single_error_blocker": true,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        }
+      ],
+      "layout_class": 5
+    },
+    {
+      "document": "FH_022.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "languages": 1,
+        "employment": 1,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "language_duplicate_gt_or_miss": 1,
+        "employment_title_wrong": 1,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing",
+          "critical": true,
+          "expected": [
+            "Englisch",
+            "B1"
+          ],
+          "actual": [
+            {
+              "language": "Englisch",
+              "level": "C1"
+            }
+          ]
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Maschinenführung · Dokumentation"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2023",
+          "actual": []
+        }
+      ],
+      "layout_class": 6
+    },
+    {
+      "document": "FH_023.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "personal": 2,
+        "address": 1,
+        "employment": 2
+      },
+      "root_causes": {
+        "personal_missing": 2,
+        "address_country_missing": 1,
+        "employment_title_wrong": 2
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "name.first_name",
+          "group": "personal",
+          "status": "missing",
+          "critical": true,
+          "expected": "Yuna",
+          "actual": ""
+        },
+        {
+          "field": "name.last_name",
+          "group": "personal",
+          "status": "missing",
+          "critical": true,
+          "expected": "Çelik",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Materialprüfung · Prozessoptimierung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Hygienemanagement · Präzisionsarbeit"
+        }
+      ],
+      "layout_class": 7
+    },
+    {
+      "document": "FH_024.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 4
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 4
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Grenzland Technik AG",
+            "position": "Zollfachkraft",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Materialprüfung",
+              "Technisches Zeichnen"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:1",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Elbe & Partner e.V.",
+            "position": "Werkstudent/in",
+            "start_date": "02/2019",
+            "end_date": "07/2021",
+            "description": [
+              "Präzisionsarbeit",
+              "Reklamationsbearbeitung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:2",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Alpenblick Systeme GmbH",
+            "position": "Teamassistenz",
+            "start_date": "03/2020",
+            "end_date": "08/2022",
+            "description": [
+              "Schichtkoordination",
+              "Teammoderation"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:3",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Baltic Labor OHG",
+            "position": "Aushilfe",
+            "start_date": "04/2021",
+            "end_date": "09/2023",
+            "description": [
+              "Materialprüfung",
+              "Technisches Zeichnen"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 8
+    },
+    {
+      "document": "FH_025.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2022",
+          "actual": []
+        }
+      ],
+      "layout_class": 9
+    },
+    {
+      "document": "FH_026.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Kundenberatung · Gefährdungsbeurteilung"
+        }
+      ],
+      "layout_class": 10
+    },
+    {
+      "document": "FH_027.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 2
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 2
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Technisches Zeichnen · Hygienemanagement"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Präzisionsarbeit · Stakeholder-Kommunikation"
+        }
+      ],
+      "layout_class": 11
+    },
+    {
+      "document": "FH_028.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 3,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Hygienemanagement · Prozessoptimierung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Materialprüfung · Bestandsführung"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Kundenberatung · Stakeholder-Kommunikation"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2025",
+          "actual": []
+        }
+      ],
+      "layout_class": 12
+    },
+    {
+      "document": "FH_029.pdf",
+      "n_errors": 1,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1
+      },
+      "single_error_blocker": true,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        }
+      ],
+      "layout_class": 13
+    },
+    {
+      "document": "FH_030.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 2
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 2
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "ViaNova Planung",
+            "position": "Fachkraft Hafenlogistik",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Dokumentation",
+              "Qualitätssicherung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:1",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Nordkai Werke GmbH",
+            "position": "Werkstudent/in",
+            "start_date": "02/2019",
+            "end_date": "07/2021",
+            "description": [
+              "Prozessoptimierung",
+              "Reklamationsbearbeitung"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 14
+    },
+    {
+      "document": "FH_031.pdf",
+      "n_errors": 8,
+      "perfect_core": false,
+      "by_group": {
+        "address": 5,
+        "employment": 2,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_street_missing": 1,
+        "address_house_number_missing": 1,
+        "address_postal_missing": 1,
+        "address_city_missing": 1,
+        "address_country_missing": 1,
+        "employment_title_wrong": 2,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.street",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Spalenvorstadt",
+          "actual": ""
+        },
+        {
+          "field": "address.house_number",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "45",
+          "actual": ""
+        },
+        {
+          "field": "address.postal_code",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "4051",
+          "actual": ""
+        },
+        {
+          "field": "address.city",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Basel",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Schweiz",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Routenplanung · Projektsteuerung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Schichtkoordination · Hygienemanagement"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2024",
+          "actual": []
+        }
+      ],
+      "layout_class": 0
+    },
+    {
+      "document": "FH_032.pdf",
+      "n_errors": 9,
+      "perfect_core": false,
+      "by_group": {
+        "address": 5,
+        "languages": 1,
+        "employment": 3
+      },
+      "root_causes": {
+        "address_street_missing": 1,
+        "address_house_number_missing": 1,
+        "address_postal_missing": 1,
+        "address_city_missing": 1,
+        "address_country_missing": 1,
+        "language_duplicate_gt_or_miss": 1,
+        "employment_title_wrong": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.street",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Oldenzaalsestraat",
+          "actual": ""
+        },
+        {
+          "field": "address.house_number",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "56",
+          "actual": ""
+        },
+        {
+          "field": "address.postal_code",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "7511 AB",
+          "actual": ""
+        },
+        {
+          "field": "address.city",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Enschede",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Niederlande",
+          "actual": ""
+        },
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing",
+          "critical": true,
+          "expected": [
+            "Englisch",
+            "C1"
+          ],
+          "actual": [
+            {
+              "language": "Englisch",
+              "level": "C1"
+            }
+          ]
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Prozessoptimierung · Stakeholder-Kommunikation"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Maschinenführung · Bestandsführung"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Warenkontrolle · Schichtkoordination"
+        }
+      ],
+      "layout_class": 1
+    },
+    {
+      "document": "FH_033.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Frankreich",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Atelier Morgenrot",
+            "position": "Illustratorin",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Kundenberatung",
+              "Teammoderation"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 2
+    },
+    {
+      "document": "FH_034.pdf",
+      "n_errors": 7,
+      "perfect_core": false,
+      "by_group": {
+        "address": 5,
+        "employment": 1,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_street_missing": 1,
+        "address_house_number_missing": 1,
+        "address_postal_missing": 1,
+        "address_city_missing": 1,
+        "address_country_missing": 1,
+        "employment_title_wrong": 1,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.street",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Linzer Gasse",
+          "actual": ""
+        },
+        {
+          "field": "address.house_number",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "78",
+          "actual": ""
+        },
+        {
+          "field": "address.postal_code",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "5020",
+          "actual": ""
+        },
+        {
+          "field": "address.city",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Salzburg",
+          "actual": ""
+        },
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Österreich",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Prozessoptimierung · Reklamationsbearbeitung"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2023",
+          "actual": []
+        }
+      ],
+      "layout_class": 3
+    },
+    {
+      "document": "FH_035.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 2
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 2
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Luxemburg",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Teammoderation · Maschinenführung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Qualitätssicherung · Prozessoptimierung"
+        }
+      ],
+      "layout_class": 4
+    },
+    {
+      "document": "FH_036.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Schichtkoordination · Dokumentation"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Hygienemanagement · Disposition"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Kundenberatung · Maschinenführung"
+        }
+      ],
+      "layout_class": 5
+    },
+    {
+      "document": "FH_037.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2022",
+          "actual": []
+        }
+      ],
+      "layout_class": 6
+    },
+    {
+      "document": "FH_038.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Gefährdungsbeurteilung · Fehlerdiagnose"
+        }
+      ],
+      "layout_class": 7
+    },
+    {
+      "document": "FH_039.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3,
+        "software": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 3,
+        "software_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "HanseKontor GmbH",
+            "position": "Ozeanografin",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Disposition",
+              "Kundenberatung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:1",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "ViaNova Planung",
+            "position": "Werkstudent/in",
+            "start_date": "02/2019",
+            "end_date": "07/2021",
+            "description": [
+              "Teammoderation",
+              "Prozessoptimierung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:2",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Nordkai Werke GmbH",
+            "position": "Teamassistenz",
+            "start_date": "03/2020",
+            "end_date": "08/2022",
+            "description": [
+              "Bestandsführung",
+              "Disposition"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "software:2",
+          "group": "software",
+          "status": "missing",
+          "critical": false,
+          "expected": "ProTool",
+          "actual": [
+            "SAP EWM",
+            "ProTool",
+            "Vectorworks"
+          ]
+        }
+      ],
+      "layout_class": 8
+    },
+    {
+      "document": "FH_040.pdf",
+      "n_errors": 5,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 3,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Reklamationsbearbeitung · Fehlerdiagnose"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Gefährdungsbeurteilung · Technisches Zeichnen"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Stakeholder-Kommunikation · Prozessoptimierung"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2025",
+          "actual": []
+        }
+      ],
+      "layout_class": 9
+    },
+    {
+      "document": "FH_041.pdf",
+      "n_errors": 1,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1
+      },
+      "single_error_blocker": true,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        }
+      ],
+      "layout_class": 10
+    },
+    {
+      "document": "FH_042.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "languages": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "language_duplicate_gt_or_miss": 1,
+        "employment_title_wrong": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "language:1",
+          "group": "languages",
+          "status": "missing",
+          "critical": true,
+          "expected": [
+            "Englisch",
+            "B1"
+          ],
+          "actual": [
+            {
+              "language": "Englisch",
+              "level": "C1"
+            }
+          ]
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Maschinenführung · Qualitätssicherung"
+        }
+      ],
+      "layout_class": 11
+    },
+    {
+      "document": "FH_043.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 2,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 2,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Schichtkoordination · Routenplanung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Kundenberatung · Stakeholder-Kommunikation"
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2024",
+          "actual": []
+        }
+      ],
+      "layout_class": 12
+    },
+    {
+      "document": "FH_044.pdf",
+      "n_errors": 4,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 3
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 3
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Qualitätssicherung · Warenkontrolle"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Teammoderation · Disposition"
+        },
+        {
+          "field": "employment:3.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Aushilfe",
+          "actual": "Kundenberatung · Technisches Zeichnen"
+        }
+      ],
+      "layout_class": 13
+    },
+    {
+      "document": "FH_045.pdf",
+      "n_errors": 2,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Elbe & Partner e.V.",
+            "position": "Verpackungsentwicklerin",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Bestandsführung",
+              "Projektsteuerung"
+            ]
+          },
+          "actual": null
+        }
+      ],
+      "layout_class": 14
+    },
+    {
+      "document": "FH_046.pdf",
+      "n_errors": 8,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1,
+        "skills": 3,
+        "software": 2,
+        "certificates": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 1,
+        "skills_extra": 3,
+        "software_missing": 2,
+        "certificate_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Reklamationsbearbeitung · Materialprüfung"
+        },
+        {
+          "field": "skill_extra:0",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "SolidWorks: Grundlagen"
+        },
+        {
+          "field": "skill_extra:1",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "GitLab: sehr gut"
+        },
+        {
+          "field": "skill_extra:2",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Competencies"
+        },
+        {
+          "field": "software:0",
+          "group": "software",
+          "status": "missing",
+          "critical": false,
+          "expected": "SolidWorks",
+          "actual": [
+            "Lexware: gut"
+          ]
+        },
+        {
+          "field": "software:2",
+          "group": "software",
+          "status": "missing",
+          "critical": false,
+          "expected": "GitLab",
+          "actual": [
+            "Lexware: gut"
+          ]
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2023",
+          "actual": []
+        }
+      ],
+      "layout_class": 0
+    },
+    {
+      "document": "FH_047.pdf",
+      "n_errors": 6,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 2,
+        "skills": 2,
+        "software": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 2,
+        "skills_extra": 2,
+        "software_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Hygienemanagement · Prozessoptimierung"
+        },
+        {
+          "field": "employment:2.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Teamassistenz",
+          "actual": "Warenkontrolle · Qualitätssicherung"
+        },
+        {
+          "field": "skill_extra:0",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "GitLab - Grundlagen"
+        },
+        {
+          "field": "skill_extra:1",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Competencies"
+        },
+        {
+          "field": "software:3",
+          "group": "software",
+          "status": "missing",
+          "critical": false,
+          "expected": "GitLab",
+          "actual": [
+            "Siemens TIA Portal - Grundlagen",
+            "Navision - gut",
+            "Power BI - sehr gut"
+          ]
+        }
+      ],
+      "layout_class": 1
+    },
+    {
+      "document": "FH_048.pdf",
+      "n_errors": 10,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 4,
+        "skills": 3,
+        "software": 2
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_entry_missing": 4,
+        "skills_extra": 3,
+        "software_missing": 2
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment_entry:0",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Stadtwerke West",
+            "position": "Data Steward",
+            "start_date": "01/2018",
+            "end_date": "06/2020",
+            "description": [
+              "Warenkontrolle",
+              "Hygienemanagement"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:1",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "HanseKontor GmbH",
+            "position": "Werkstudent/in",
+            "start_date": "02/2019",
+            "end_date": "07/2021",
+            "description": [
+              "Prozessoptimierung",
+              "Materialprüfung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:2",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "ViaNova Planung",
+            "position": "Teamassistenz",
+            "start_date": "03/2020",
+            "end_date": "08/2022",
+            "description": [
+              "Fehlerdiagnose",
+              "Reklamationsbearbeitung"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "employment_entry:3",
+          "group": "employment",
+          "status": "missing",
+          "critical": true,
+          "expected": {
+            "company": "Nordkai Werke GmbH",
+            "position": "Aushilfe",
+            "start_date": "04/2021",
+            "end_date": "09/2023",
+            "description": [
+              "Warenkontrolle",
+              "Hygienemanagement"
+            ]
+          },
+          "actual": null
+        },
+        {
+          "field": "skill_extra:0",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Vectorworks"
+        },
+        {
+          "field": "skill_extra:2",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Competencies"
+        },
+        {
+          "field": "skill_extra:3",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Warenkontrolle"
+        },
+        {
+          "field": "software:1",
+          "group": "software",
+          "status": "missing",
+          "critical": false,
+          "expected": "Vectorworks",
+          "actual": [
+            "Confluence",
+            "QGIS",
+            "DaVinci Resolve"
+          ]
+        },
+        {
+          "field": "software:4",
+          "group": "software",
+          "status": "missing",
+          "critical": false,
+          "expected": "DaVinci Resolve",
+          "actual": [
+            "Confluence",
+            "QGIS",
+            "DaVinci Resolve"
+          ]
+        }
+      ],
+      "layout_class": 2
+    },
+    {
+      "document": "FH_049.pdf",
+      "n_errors": 6,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "skills": 2,
+        "software": 1,
+        "certificates": 1,
+        "career_intent": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "skills_extra": 2,
+        "software_missing": 1,
+        "certificate_missing": 1,
+        "target_role_missing": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "skill_extra:0",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Vectorworks: gut"
+        },
+        {
+          "field": "skill_extra:1",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Competencies"
+        },
+        {
+          "field": "software:1",
+          "group": "software",
+          "status": "missing",
+          "critical": false,
+          "expected": "Vectorworks",
+          "actual": [
+            "SAP EWM: Grundlagen"
+          ]
+        },
+        {
+          "field": "certificate:0",
+          "group": "certificates",
+          "status": "missing",
+          "critical": false,
+          "expected": "Sicherheitsunterweisung 2022",
+          "actual": []
+        },
+        {
+          "field": "target_role",
+          "group": "career_intent",
+          "status": "missing",
+          "critical": false,
+          "expected": "Event Producer",
+          "actual": ""
+        }
+      ],
+      "layout_class": 3
+    },
+    {
+      "document": "FH_050.pdf",
+      "n_errors": 3,
+      "perfect_core": false,
+      "by_group": {
+        "address": 1,
+        "employment": 1,
+        "skills": 1
+      },
+      "root_causes": {
+        "address_country_missing": 1,
+        "employment_title_wrong": 1,
+        "skills_extra": 1
+      },
+      "single_error_blocker": false,
+      "errors": [
+        {
+          "field": "address.country",
+          "group": "address",
+          "status": "missing",
+          "critical": true,
+          "expected": "Deutschland",
+          "actual": ""
+        },
+        {
+          "field": "employment:1.position",
+          "group": "employment",
+          "status": "wrong",
+          "critical": true,
+          "expected": "Werkstudent/in",
+          "actual": "Hygienemanagement · Stakeholder-Kommunikation"
+        },
+        {
+          "field": "skill_extra:0",
+          "group": "skills",
+          "status": "hallucinated",
+          "critical": false,
+          "expected": null,
+          "actual": "Competencies"
+        }
+      ],
+      "layout_class": 4
+    }
+  ]
+}

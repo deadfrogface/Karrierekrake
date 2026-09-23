@@ -1,0 +1,500 @@
+{
+  "label": "POST-ANALYSIS",
+  "error_count_distribution": {
+    "0": 0,
+    "1": 4,
+    "2": 10,
+    "3-5": 24,
+    "6-10": 12,
+    ">10": 0
+  },
+  "root_causes_ranked": [
+    {
+      "root_cause": "address_country_missing",
+      "field_group": "address",
+      "fp": 0,
+      "fn": 50,
+      "wrong": 0,
+      "total_errors": 50,
+      "documents": 50,
+      "blocked_perfect_profiles": 50,
+      "critical_errors": 50,
+      "top_fields": [
+        [
+          "address.country",
+          50
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "employment_title_wrong",
+      "field_group": "employment",
+      "fp": 0,
+      "fn": 0,
+      "wrong": 59,
+      "total_errors": 59,
+      "documents": 30,
+      "blocked_perfect_profiles": 30,
+      "critical_errors": 59,
+      "top_fields": [
+        [
+          "employment:1.position",
+          30
+        ],
+        [
+          "employment:2.position",
+          19
+        ],
+        [
+          "employment:3.position",
+          10
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "certificate_missing",
+      "field_group": "certificates",
+      "fp": 0,
+      "fn": 17,
+      "wrong": 0,
+      "total_errors": 17,
+      "documents": 17,
+      "blocked_perfect_profiles": 17,
+      "critical_errors": 0,
+      "top_fields": [
+        [
+          "certificate:0",
+          17
+        ]
+      ],
+      "severity": "medium",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "employment_entry_missing",
+      "field_group": "employment",
+      "fp": 0,
+      "fn": 24,
+      "wrong": 0,
+      "total_errors": 24,
+      "documents": 10,
+      "blocked_perfect_profiles": 10,
+      "critical_errors": 24,
+      "top_fields": [
+        [
+          "employment_entry:0",
+          10
+        ],
+        [
+          "employment_entry:1",
+          7
+        ],
+        [
+          "employment_entry:2",
+          5
+        ],
+        [
+          "employment_entry:3",
+          2
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "address_street_missing",
+      "field_group": "address",
+      "fp": 0,
+      "fn": 7,
+      "wrong": 0,
+      "total_errors": 7,
+      "documents": 7,
+      "blocked_perfect_profiles": 7,
+      "critical_errors": 7,
+      "top_fields": [
+        [
+          "address.street",
+          7
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "address_house_number_missing",
+      "field_group": "address",
+      "fp": 0,
+      "fn": 7,
+      "wrong": 0,
+      "total_errors": 7,
+      "documents": 7,
+      "blocked_perfect_profiles": 7,
+      "critical_errors": 7,
+      "top_fields": [
+        [
+          "address.house_number",
+          7
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "address_postal_missing",
+      "field_group": "address",
+      "fp": 0,
+      "fn": 7,
+      "wrong": 0,
+      "total_errors": 7,
+      "documents": 7,
+      "blocked_perfect_profiles": 7,
+      "critical_errors": 7,
+      "top_fields": [
+        [
+          "address.postal_code",
+          7
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "address_city_missing",
+      "field_group": "address",
+      "fp": 0,
+      "fn": 7,
+      "wrong": 0,
+      "total_errors": 7,
+      "documents": 7,
+      "blocked_perfect_profiles": 7,
+      "critical_errors": 7,
+      "top_fields": [
+        [
+          "address.city",
+          7
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "skills_extra",
+      "field_group": "skills",
+      "fp": 11,
+      "fn": 0,
+      "wrong": 0,
+      "total_errors": 11,
+      "documents": 5,
+      "blocked_perfect_profiles": 5,
+      "critical_errors": 0,
+      "top_fields": [
+        [
+          "skill_extra:0",
+          5
+        ],
+        [
+          "skill_extra:1",
+          3
+        ],
+        [
+          "skill_extra:2",
+          2
+        ],
+        [
+          "skill_extra:3",
+          1
+        ]
+      ],
+      "severity": "medium",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "software_missing",
+      "field_group": "software",
+      "fp": 0,
+      "fn": 7,
+      "wrong": 0,
+      "total_errors": 7,
+      "documents": 5,
+      "blocked_perfect_profiles": 5,
+      "critical_errors": 0,
+      "top_fields": [
+        [
+          "software:2",
+          2
+        ],
+        [
+          "software:1",
+          2
+        ],
+        [
+          "software:0",
+          1
+        ],
+        [
+          "software:3",
+          1
+        ],
+        [
+          "software:4",
+          1
+        ]
+      ],
+      "severity": "medium",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "language_duplicate_gt_or_miss",
+      "field_group": "languages",
+      "fp": 0,
+      "fn": 5,
+      "wrong": 0,
+      "total_errors": 5,
+      "documents": 5,
+      "blocked_perfect_profiles": 5,
+      "critical_errors": 5,
+      "top_fields": [
+        [
+          "language:1",
+          5
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "personal_missing",
+      "field_group": "personal",
+      "fp": 0,
+      "fn": 6,
+      "wrong": 0,
+      "total_errors": 6,
+      "documents": 3,
+      "blocked_perfect_profiles": 3,
+      "critical_errors": 6,
+      "top_fields": [
+        [
+          "name.first_name",
+          3
+        ],
+        [
+          "name.last_name",
+          3
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "contact_wrong_normalization",
+      "field_group": "contact",
+      "fp": 0,
+      "fn": 0,
+      "wrong": 3,
+      "total_errors": 3,
+      "documents": 3,
+      "blocked_perfect_profiles": 3,
+      "critical_errors": 3,
+      "top_fields": [
+        [
+          "email",
+          3
+        ]
+      ],
+      "severity": "critical",
+      "general_fix_possible": true
+    },
+    {
+      "root_cause": "target_role_missing",
+      "field_group": "career_intent",
+      "fp": 0,
+      "fn": 1,
+      "wrong": 0,
+      "total_errors": 1,
+      "documents": 1,
+      "blocked_perfect_profiles": 1,
+      "critical_errors": 0,
+      "top_fields": [
+        [
+          "target_role",
+          1
+        ]
+      ],
+      "severity": "low",
+      "general_fix_possible": true
+    }
+  ],
+  "field_groups": [
+    {
+      "group": "address",
+      "precision": 1.0,
+      "recall": 0.6763,
+      "f1": 0.8069,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 0,
+      "affected_documents": 50,
+      "error_potential": 3900
+    },
+    {
+      "group": "employment",
+      "precision": 0.8808,
+      "recall": 0.9478,
+      "f1": 0.9131,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 10,
+      "affected_documents": 40,
+      "error_potential": 3320
+    },
+    {
+      "group": "certificates",
+      "precision": 1.0,
+      "recall": 0.66,
+      "f1": 0.7952,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 33,
+      "affected_documents": 17,
+      "error_potential": 289
+    },
+    {
+      "group": "skills",
+      "precision": 0.953,
+      "recall": 1.0,
+      "f1": 0.9759,
+      "hallucination_rate": 0.047,
+      "perfect_field_group_count": 45,
+      "affected_documents": 5,
+      "error_potential": 55
+    },
+    {
+      "group": "software",
+      "precision": 1.0,
+      "recall": 0.9595,
+      "f1": 0.9794,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 45,
+      "affected_documents": 5,
+      "error_potential": 35
+    },
+    {
+      "group": "languages",
+      "precision": 1.0,
+      "recall": 0.95,
+      "f1": 0.9744,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 45,
+      "affected_documents": 5,
+      "error_potential": 25
+    },
+    {
+      "group": "personal",
+      "precision": 1.0,
+      "recall": 0.9586,
+      "f1": 0.9789,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 47,
+      "affected_documents": 3,
+      "error_potential": 18
+    },
+    {
+      "group": "contact",
+      "precision": 0.9688,
+      "recall": 1.0,
+      "f1": 0.9841,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 47,
+      "affected_documents": 3,
+      "error_potential": 9
+    },
+    {
+      "group": "career_intent",
+      "precision": 0,
+      "recall": 0.0,
+      "f1": 0,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 49,
+      "affected_documents": 1,
+      "error_potential": 1
+    },
+    {
+      "group": "licenses",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 50,
+      "affected_documents": 0,
+      "error_potential": 0
+    },
+    {
+      "group": "education",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "hallucination_rate": 0.0,
+      "perfect_field_group_count": 50,
+      "affected_documents": 0,
+      "error_potential": 0
+    }
+  ],
+  "top5_perfect_blockers": [
+    "address_country_missing",
+    "employment_title_wrong",
+    "certificate_missing",
+    "employment_entry_missing",
+    "address_street_missing"
+  ],
+  "single_error_documents": [
+    {
+      "document": "FH_005.pdf",
+      "error": {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing",
+        "critical": true,
+        "expected": "Deutschland",
+        "actual": ""
+      },
+      "root_cause": "address_country_missing"
+    },
+    {
+      "document": "FH_021.pdf",
+      "error": {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing",
+        "critical": true,
+        "expected": "Deutschland",
+        "actual": ""
+      },
+      "root_cause": "address_country_missing"
+    },
+    {
+      "document": "FH_029.pdf",
+      "error": {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing",
+        "critical": true,
+        "expected": "Deutschland",
+        "actual": ""
+      },
+      "root_cause": "address_country_missing"
+    },
+    {
+      "document": "FH_041.pdf",
+      "error": {
+        "field": "address.country",
+        "group": "address",
+        "status": "missing",
+        "critical": true,
+        "expected": "Deutschland",
+        "actual": ""
+      },
+      "root_cause": "address_country_missing"
+    }
+  ]
+}

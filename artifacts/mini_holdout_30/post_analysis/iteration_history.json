@@ -1,0 +1,81 @@
+{
+  "label": "POST-ANALYSIS",
+  "iterations": [
+    {
+      "iteration": 1,
+      "root_cause": "licence_blob_split_heading_and_raw_fallback",
+      "before": {
+        "f1": 0.8548,
+        "hallu": 0.0576,
+        "perfect_core": 0,
+        "invented_licence": 5
+      },
+      "change": "Join wrapped Sprachkenntnisse & + Führerschein; _parse_driving never returns raw lines; section_context for bare C1",
+      "after": {
+        "note": "measured cumulatively"
+      },
+      "decision": "KEEP"
+    },
+    {
+      "iteration": 2,
+      "root_cause": "software_section_taxonomy_and_levels",
+      "before": {
+        "software_f1": 0.193
+      },
+      "change": "HEADINGS programme und werkzeuge; strip proficiency suffixes; contextual Applications heading",
+      "after": {
+        "software_f1": 1.0
+      },
+      "decision": "KEEP"
+    },
+    {
+      "iteration": 3,
+      "root_cause": "skills_section_fachkompetenzen",
+      "before": {
+        "skills_f1": 0.378
+      },
+      "change": "HEADINGS fachkompetenzen/kernkompetenzen; do not recover unknown tools as skills",
+      "after": {
+        "skills_f1": 1.0
+      },
+      "decision": "KEEP"
+    },
+    {
+      "iteration": 4,
+      "root_cause": "certificate_hallucination_default_dump",
+      "before": {
+        "certs_f1": 0.326,
+        "hallu": 0.0576
+      },
+      "change": "classify_non_language_token no longer defaults to certificate; Weitere Angaben only via Zertifikate: labels",
+      "after": {
+        "certs_f1": 1.0,
+        "hallu": 0.0
+      },
+      "decision": "KEEP"
+    },
+    {
+      "iteration": 5,
+      "root_cause": "cross_field_and_unicode_dob",
+      "before": {
+        "perfect_core": 22
+      },
+      "change": "Born: DOB; Unicode NAME_RE with apostrophe/hyphen; Applications contextual routing",
+      "after": {
+        "perfect_core": 26,
+        "f1": 0.9941,
+        "hallu": 0.0
+      },
+      "decision": "KEEP"
+    }
+  ],
+  "final_pipeline": "DET_ONLY",
+  "stop_condition": "A_TARGET_REACHED",
+  "phi_calls_production": 0,
+  "final": {
+    "f1": 0.9941415051825145,
+    "hallucination_rate": 0.0,
+    "perfect_core": 26,
+    "invented_licence": 0
+  }
+}
