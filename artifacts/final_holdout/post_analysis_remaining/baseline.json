@@ -1,0 +1,89 @@
+{
+  "label": "POST-ANALYSIS",
+  "commit": "fb8be36",
+  "created_at": "2026-09-23T02:02:20.478272+00:00",
+  "frozen_reference": {
+    "f1": 0.805,
+    "languages_f1": 0.0,
+    "perfect_core": 0,
+    "immutable": true
+  },
+  "metrics_50": {
+    "overall": {
+      "field_total": 1906,
+      "counts": {
+        "correct": 1695,
+        "missing": 138,
+        "wrong": 62,
+        "hallucinated": 11,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.8892969569779643,
+      "precision": 0.958710407239819,
+      "recall": 0.9247135842880524,
+      "f1": 0.94140516523188,
+      "hallucination_rate": 0.005771248688352571,
+      "missing_field_rate": 0.07240293809024134,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.03830010493179433,
+      "by_group": {
+        "personal": {
+          "correct": 139,
+          "missing": 6
+        },
+        "contact": {
+          "correct": 93,
+          "wrong": 3
+        },
+        "address": {
+          "correct": 163,
+          "missing": 78
+        },
+        "languages": {
+          "correct": 95,
+          "missing": 5
+        },
+        "licenses": {
+          "correct": 52
+        },
+        "education": {
+          "correct": 295
+        },
+        "employment": {
+          "correct": 436,
+          "wrong": 59,
+          "missing": 24
+        },
+        "skills": {
+          "correct": 223,
+          "hallucinated": 11
+        },
+        "software": {
+          "correct": 166,
+          "missing": 7
+        },
+        "certificates": {
+          "missing": 17,
+          "correct": 33
+        },
+        "career_intent": {
+          "missing": 1
+        }
+      }
+    },
+    "language_f1": 0.9744,
+    "perfect_core": 0,
+    "perfect_all": 0,
+    "hallucination_rate": 0.005771248688352571,
+    "f1": 0.94140516523188,
+    "field_accuracy": 0.8892969569779643
+  },
+  "runtime_50": {
+    "wall_s": 1.235,
+    "timing_ms_mean": 14.574,
+    "timing_ms_median": 13.442,
+    "timing_ms_p95": 16.256,
+    "peak_rss_mb": 43.4
+  },
+  "phi_calls_production": 0
+}

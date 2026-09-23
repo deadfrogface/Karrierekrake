@@ -131,6 +131,7 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "key skills",
         "soft skills",
         "capabilities",
+        "competencies",
         "kompetenzen",
         "fähigkeiten",
         "kenntnisse",

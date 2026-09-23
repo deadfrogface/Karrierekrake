@@ -139,4 +139,17 @@ artifacts/final_holdout/post_analysis_language/**
 !artifacts/final_holdout/post_analysis_language/fallback_results.json
 !artifacts/final_holdout/post_analysis_language/pipeline_comparison.json
 !artifacts/final_holdout/post_analysis_language/iteration_history.json
-!artifacts/final_holdout/post_analysis_language/holdout100_regression.json
+# Remaining Final-50 error distribution (Pareto) — update after optimizations
+# POST-ANALYSIS remaining artifacts
+!artifacts/final_holdout/post_analysis_remaining/
+artifacts/final_holdout/post_analysis_remaining/**
+!artifacts/final_holdout/post_analysis_remaining/baseline.json
+!artifacts/final_holdout/post_analysis_remaining/error_pareto.json
+!artifacts/final_holdout/post_analysis_remaining/perfect_core_blockers.json
+!artifacts/final_holdout/post_analysis_remaining/iteration_history.json
+!artifacts/final_holdout/post_analysis_remaining/final_metrics.json
+!artifacts/final_holdout/post_analysis_remaining/per_document_results.json
+!artifacts/final_holdout/post_analysis_remaining/per_field_results.json
+!artifacts/final_holdout/post_analysis_remaining/iter1_country.json
+!artifacts/final_holdout/post_analysis_remaining/iter2_employment_address.json
+!artifacts/final_holdout/post_analysis_remaining/iter3_splitdate_certs_skills.json

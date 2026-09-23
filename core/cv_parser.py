@@ -50,6 +50,8 @@ _SINCE_INLINE = re.compile(
     rf"^(?:Seit|seit)\s+(?P<start>{_DATE})\s*[–\-—]?\s+(?P<title>.+)$",
     re.IGNORECASE,
 )
+# Standalone date line (split ranges: "01/2018" then "06/2020" on the next line).
+_DATE_ONLY_LINE = re.compile(rf"^(?P<date>{_DATE})\s*$", re.IGNORECASE)
 _ABSCHLUSS = re.compile(
     rf"Abschluss\s*:\s*(?P<date>{_DATE})",
     re.IGNORECASE,
@@ -766,20 +768,24 @@ def _parse_experience(body: str) -> list[ExperienceEntry]:
         title = ""
         company = ""
         location = ""
+        opened_by_date = False
 
         sm_inline = _SINCE_INLINE.match(line)
         pm = _PERIOD.search(line)
         sm = _SINCE.match(line)
+        date_only = _DATE_ONLY_LINE.match(line)
 
         if sm_inline and not pm:
             start = sm_inline.group("start")
             end = "aktuell"
             title = sm_inline.group("title").strip(" |–—-")
+            opened_by_date = True
             i += 1
         elif pm and pm.start() <= 2:
             start = pm.group("start").replace("Seit ", "").replace("seit ", "").strip()
             end = pm.group("end").strip()
             rest = line[pm.end() :].strip(" |–—-")
+            opened_by_date = True
             i += 1
             if rest:
                 # "date | title | company" or "date - title"
@@ -794,7 +800,22 @@ def _parse_experience(body: str) -> list[ExperienceEntry]:
         elif sm:
             start = sm.group("start")
             end = "aktuell"
+            opened_by_date = True
             i += 1
+        elif date_only:
+            # Split range on two consecutive date-only lines: "01/2018" / "06/2020"
+            start = date_only.group("date")
+            j = i + 1
+            while j < len(lines) and not lines[j].strip():
+                j += 1
+            end_m = _DATE_ONLY_LINE.match(lines[j].strip()) if j < len(lines) else None
+            if end_m:
+                end = end_m.group("date")
+                i = j + 1
+                opened_by_date = True
+            else:
+                i += 1
+                continue
         else:
             if line.startswith(("•", "-", "–", "*")):
                 i += 1
@@ -892,12 +913,18 @@ def _parse_experience(body: str) -> list[ExperienceEntry]:
                 ):
                     break
                 continue
-            if _PERIOD.search(nxt) or _SINCE.match(nxt) or _SINCE_INLINE.match(nxt) or _is_heading(nxt):
+            if (
+                _PERIOD.search(nxt)
+                or _SINCE.match(nxt)
+                or _SINCE_INLINE.match(nxt)
+                or _DATE_ONLY_LINE.match(nxt)
+                or _is_heading(nxt)
+            ):
                 break
-            # Title-first next job (title [/ company] / date). Do not preempt when
-            # the next date line already embeds a title ("MM/YYYY - … | Role") —
-            # then ``nxt`` is still a prose responsibility of the current job.
-            if not nxt.startswith(("•", "-", "–", "*")):
+            # Title-first next job (title [/ company] / date). Skip this heuristic
+            # for date-first records: the next job always starts with a date, so
+            # prose / middot duty lines before that date are responsibilities.
+            if not nxt.startswith(("•", "-", "–", "*")) and not opened_by_date:
                 date_line: str | None = None
                 intervening = 0
                 for j in range(i + 1, min(i + 4, len(lines))):
@@ -1321,7 +1348,10 @@ def parse_cv_text(text: str) -> dict[str, Any]:
 
     from core.text_normalize import extract_german_phones
 
-    emails = re.findall(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", text)
+    emails = re.findall(
+        r"[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
+        text,
+    )
     phones = extract_german_phones(text)
     sections = _split_named_sections(text)
     personal = _parse_personal_header(text, sections)
@@ -1377,6 +1407,11 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         skills = list(dict.fromkeys([*skills, *relocated_skills]))
     # Compact Kenntnisse blocks with "Software:" / "Fachkenntnisse:" / etc.
     routed = _route_labeled_kenntnisse_lines(sections.get("skills", ""))
+    # Profile / "Weitere Angaben" often holds "Zertifikate: …" / "Certificates: …".
+    routed_profile = _route_labeled_kenntnisse_lines(sections.get("profile", ""))
+    for key in ("skills", "software", "certificates", "languages", "licenses", "target_role"):
+        if routed_profile.get(key):
+            routed[key] = list(dict.fromkeys([*(routed.get(key) or []), *routed_profile[key]]))
     if routed["software"]:
         software = list(dict.fromkeys([*software, *routed["software"]]))
     if routed["skills"]:
@@ -1472,12 +1507,15 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             )
         ]
     # Same for software product fragments ("S/4HANA" vs "SAP S/4HANA", "365" vs "Microsoft 365").
+    # Require length >= 3 so single-letter tools like "R" are not dropped as substrings of
+    # longer product names ("ProTool").
     if software:
         lowered = [s.lower() for s in software]
         software = [
             s
             for s in software
-            if not any(
+            if len(s.strip()) < 3
+            or not any(
                 s.lower() != t and s.lower() in t and len(s) + 2 <= len(t)
                 for t in lowered
             )
@@ -1704,32 +1742,51 @@ _HEADING_LINE = re.compile(
 _COUNTRY_TOKEN = (
     r"DE|AT|CH|FR|NL|BE|LU|PL|DK|CZ|IT|ES|PT|SE|NO|FI|IE|UK|GB|"
     r"Deutschland|Österreich|Schweiz|France|Frankreich|Netherlands|Nederland|"
+    r"Niederlande|Luxemburg|Luxembourg|"
     r"Belgium|Belgien|Poland|Polen|Denmark|Dänemark|Daenemark|"
     r"Czechia|Tschechien|Germany|Austria|Switzerland|United Kingdom|Ireland"
 )
 _CITY_CHARS = r"A-Za-zÄÖÜäöüß\(\)"
 _POSTAL_DE = re.compile(
     rf"(?P<street>.+?)\s*,?\s*(?P<plz>\d{{5}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
-    rf"(?:\s*,\s*(?P<country>{_COUNTRY_TOKEN}))?"
-    r"(?=\s*[,|]|\s*$)"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
+    r"(?=\s*[,|·]|\s*$)"
 )
 _POSTAL_AT_CH = re.compile(
     # AT/CH (and some FR/NL border cases) use 4-digit postal codes.
     rf"(?P<street>.+?)\s*,?\s*(?P<plz>\d{{4}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
-    rf"(?:\s*,\s*(?P<country>{_COUNTRY_TOKEN}))?"
-    r"(?=\s*[,|]|\s*$)"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
+    r"(?=\s*[,|·]|\s*$)"
+)
+# Dutch: "7511 AB Enschede" (4 digits + 2 letters)
+_POSTAL_NL = re.compile(
+    rf"(?P<street>.+?)\s*[|,]?\s*(?P<plz>\d{{4}})\s+(?P<letters>[A-Z]{{2}})\s+"
+    rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
+    r"(?=\s*[,|·]|\s*$)",
+    re.I,
+)
+# Luxembourg: "L-1616 Luxembourg"
+_POSTAL_LU = re.compile(
+    rf"(?P<street>.+?)\s*[|,]?\s*L-?(?P<plz>\d{{4}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
+    r"(?=\s*[,|·]|\s*$)",
+    re.I,
 )
 _POSTAL_UK_IE = re.compile(
     r"(?P<street>.+?)\s*[·|,]\s*(?P<city>[A-Za-z][A-Za-z\-\s]+?)\s+"
     r"(?P<pc>(?:[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}|[A-Z]\d{2}\s*[A-Z0-9]{4}))"
-    r"(?:\s*,?\s*(?P<country>United Kingdom|Ireland|UK|IE))?",
+    r"(?:\s*[,|·]?\s*(?P<country>United Kingdom|Ireland|UK|IE))?",
     re.I,
 )
 _CITY_ONLY = re.compile(
     rf"^(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]{{1,40}})"
-    rf"(?:\s*,\s*(?P<country>{_COUNTRY_TOKEN}|[A-Za-z][A-Za-z\s]+))?"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}|[A-Za-z][A-Za-z\s]+))?"
     r"\s*(?:\||$)",
     re.I,
+)
+_COUNTRY_INLINE = re.compile(
+    rf"(?i)(?:^|[\s|·,])(?P<country>{_COUNTRY_TOKEN})(?=$|[\s|·,])"
 )
 _DOB = re.compile(
     r"(?:Geburtsdatum|geboren(?:\s+am)?|DoB|Date of birth)\s*[:\-]?\s*"
@@ -1737,7 +1794,8 @@ _DOB = re.compile(
     re.I,
 )
 _NAME_RE = re.compile(
-    r"^[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\-']+(?:\s+[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\-']+){1,3}$"
+    r"^[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß][A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß\-']+"
+    r"(?:\s+[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß][A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß\-']+){1,3}$"
 )
 
 
@@ -1794,12 +1852,16 @@ def _apply_postal_match(m: re.Match[str], personal: dict[str, str], *, labels: t
     if street:
         personal["street"] = street
     if "plz" in m.groupdict() and m.group("plz"):
-        personal["postal_code"] = m.group("plz")
+        plz = m.group("plz")
+        # Dutch postal codes keep the letter pair: "7511 AB"
+        if m.groupdict().get("letters"):
+            plz = f"{plz} {m.group('letters').upper()}"
+        personal["postal_code"] = plz
     if "pc" in m.groupdict() and m.groupdict().get("pc"):
         personal["postal_code"] = re.sub(r"\s+", " ", m.group("pc").strip().upper())
     city = (m.group("city") or "").strip(" ,;·|")
     city = re.sub(
-        r",?\s*(Germany|Deutschland|France|Frankreich|Austria|Österreich|Switzerland|Schweiz)\s*$",
+        r"[,|·]?\s*(Germany|Deutschland|France|Frankreich|Austria|Österreich|Switzerland|Schweiz)\s*$",
         "",
         city,
         flags=re.I,
@@ -1811,20 +1873,49 @@ def _apply_postal_match(m: re.Match[str], personal: dict[str, str], *, labels: t
     hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", personal.get("street", ""))
     if hn:
         personal["house_number"] = hn.group("n")
+        personal["street"] = hn.group("s").strip(" ,;·|")
 
 
 def _match_postal_line(line: str) -> re.Match[str] | None:
-    """Try DE/FR 5-digit, then AT/CH 4-digit, then UK/IE patterns."""
+    """Try DE/FR 5-digit, NL, LU, AT/CH 4-digit, then UK/IE patterns."""
     m = _POSTAL_DE.search(line)
+    if m:
+        return m
+    m = _POSTAL_NL.search(line)
+    if m:
+        return m
+    m = _POSTAL_LU.search(line)
     if m:
         return m
     m = _POSTAL_AT_CH.search(line)
     if m:
         # Avoid treating house numbers as AT PLZ: require a country token or
-        # a clear ", PLZ City" comma form.
-        if m.groupdict().get("country") or "," in line:
+        # a clear structured separator (", PLZ City" or pipe-separated header).
+        if m.groupdict().get("country") or "," in line or "|" in line:
             return m
     return _POSTAL_UK_IE.search(line)
+
+
+def _maybe_fill_country_from_line(line: str, personal: dict[str, str]) -> None:
+    """Capture an explicit country token from a contact/address line."""
+    if personal.get("country"):
+        return
+    # Prefer country after a separator so "Luxembourg | Luxemburg" keeps city≠country.
+    m_after = re.search(
+        rf"(?i)[,|·]\s*(?P<country>{_COUNTRY_TOKEN})(?=$|[\s|·,])",
+        line or "",
+    )
+    if m_after:
+        personal["country"] = m_after.group("country").strip()
+        return
+    m = _COUNTRY_INLINE.search(line or "")
+    if not m:
+        return
+    token = m.group("country").strip()
+    city = (personal.get("city") or "").strip()
+    if city and token.lower() == city.lower():
+        return
+    personal["country"] = token
 
 
 def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> dict[str, str]:
@@ -1856,7 +1947,9 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
         if m:
             labels = ("Adresse", "Address") if "pc" in m.groupdict() else ("Adresse", "Anschrift")
             _apply_postal_match(m, personal, labels=labels)
+            _maybe_fill_country_from_line(line, personal)
             break
+        _maybe_fill_country_from_line(line, personal)
 
     # Standalone "12345 München" or street-only line above PLZ.
     if not personal.get("postal_code"):
@@ -1951,11 +2044,44 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
         if m:
             labels = ("Adresse", "Address") if "pc" in m.groupdict() else ("Adresse", "Anschrift")
             _apply_postal_match(m, personal, labels=labels)
+            _maybe_fill_country_from_line(line, personal)
             break
+        _maybe_fill_country_from_line(line, personal)
 
     # City-only headers (deliberately incomplete contact data)
     if not personal.get("city"):
         for line in header_lines:
+            # "Luxembourg | Luxemburg · email" — city + country without street/PLZ
+            m_city_country = re.match(
+                rf"^(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]{{1,40}}?)\s*[|·,]\s*"
+                rf"(?P<country>{_COUNTRY_TOKEN})\b",
+                line,
+                re.I,
+            )
+            if m_city_country and not re.search(r"\d", m_city_country.group("city")):
+                city = m_city_country.group("city").strip()
+                country = m_city_country.group("country").strip()
+                # Allow city names that are also country tokens (e.g. Luxembourg | Luxemburg)
+                # when a distinct country token follows.
+                if city.lower() != country.lower():
+                    personal["city"] = city
+                    personal["country"] = country
+                    break
+                if city.lower() not in {
+                    "germany",
+                    "deutschland",
+                    "united kingdom",
+                    "ireland",
+                    "niederlande",
+                    "netherlands",
+                    "schweiz",
+                    "switzerland",
+                    "österreich",
+                    "austria",
+                }:
+                    personal["city"] = city
+                    personal["country"] = country
+                    break
             # Prefer the segment before "|" when contact is "City | email"
             candidate = line.split("|", 1)[0].strip()
             if "@" in candidate or re.search(r"\d", candidate):
@@ -1972,7 +2098,10 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
                     personal["city"] = city
                     if m3.group("country"):
                         personal["country"] = m3.group("country").strip()
+                    else:
+                        _maybe_fill_country_from_line(line, personal)
                     break
+            _maybe_fill_country_from_line(line, personal)
 
     dob_m = _DOB.search(text)
     if dob_m:

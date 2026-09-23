@@ -1,0 +1,68 @@
+{
+  "label": "POST-ANALYSIS",
+  "iterations": [
+    {
+      "iteration": 1,
+      "root_cause": "address_country_pipe_separator_and_intl_postal",
+      "affected_documents": 50,
+      "affected_facts": 50,
+      "before": {"f1": 0.941, "hallucination_rate": 0.006, "perfect_core": 0},
+      "change": "Country after |/·; NL/LU postal; Niederlande/Luxemburg tokens; city|country headers",
+      "after": {"f1": 0.963, "note": "continued into iter2 measurement"},
+      "fixed_errors": ["address.country missing on pipe headers"],
+      "new_errors": [],
+      "regressions": [],
+      "performance": {"ms_per_cv": 14.3, "peak_rss_mb": 43.3},
+      "decision": "KEEP",
+      "commit": null
+    },
+    {
+      "iteration": 2,
+      "root_cause": "employment_duty_line_as_next_title",
+      "affected_documents": 30,
+      "affected_facts": 59,
+      "before": {"f1": 0.963, "perfect_core": 4},
+      "change": "opened_by_date skips title-first peek so middot duties stay responsibilities",
+      "after": {"f1": 0.980, "perfect_core": 14, "employment_wrong": 0},
+      "fixed_errors": ["employment title wrong"],
+      "new_errors": [],
+      "regressions": [],
+      "performance": {"ms_per_cv": 14.4, "peak_rss_mb": 43.0},
+      "decision": "KEEP",
+      "commit": null
+    },
+    {
+      "iteration": 3,
+      "root_cause": "split_dates_profile_certs_competencies_heading",
+      "affected_documents": 27,
+      "affected_facts": 52,
+      "before": {"f1": 0.980, "perfect_core": 14, "hallucination_rate": 0.006},
+      "change": "DATE_ONLY pair ranges; Zertifikate from profile; competencies heading",
+      "after": {"f1": 0.996, "perfect_core": 39, "hallucination_rate": 0.0},
+      "fixed_errors": ["employment missing split dates", "certificates missing", "Competencies as skill"],
+      "new_errors": [],
+      "regressions": [],
+      "performance": {"ms_per_cv": 14.6, "peak_rss_mb": 43.8},
+      "decision": "KEEP",
+      "commit": null
+    },
+    {
+      "iteration": 4,
+      "root_cause": "unicode_names_emails_software_R_fragment",
+      "affected_documents": 5,
+      "affected_facts": 10,
+      "before": {"f1": 0.996, "perfect_core": 39},
+      "change": "Latin-1 in NAME_RE and email local-part; software fragment drop min length 3",
+      "after": {"f1": 0.9985, "perfect_core": 44, "hallucination_rate": 0.0},
+      "fixed_errors": ["Unicode names", "emails with diacritics", "software R kept"],
+      "new_errors": [],
+      "regressions": [],
+      "performance": {"ms_per_cv": 14.0, "peak_rss_mb": 43.3},
+      "decision": "KEEP",
+      "commit": null
+    }
+  ],
+  "final_pipeline": "DET_ONLY",
+  "stop_condition": "A_TARGET_REACHED",
+  "phi_calls_production": 0
+}
