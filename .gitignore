@@ -88,3 +88,18 @@ data/geo_active/
 tests/holdout_100/*
 !tests/holdout_100/README.md
 !tests/holdout_100/evaluation_manifest_v2.json
+
+# Final holdout: keep zip + protocol docs; PDFs ignored via *.pdf; seal hashes tracked
+tests/final_holdout/phase_a_pdfs/*
+!tests/final_holdout/phase_a_pdfs/PDF_MANIFEST.json
+!tests/final_holdout/phase_a_pdfs/README_PHASE_A.txt
+!artifacts/final_holdout/
+artifacts/final_holdout/**
+!artifacts/final_holdout/FROZEN_INPUT_HASHES.json
+!artifacts/final_holdout/FROZEN_PREDICTION_HASHES.json
+!artifacts/final_holdout/FROZEN_METADATA.json
+!artifacts/final_holdout/PHASE_A_SEAL.json
+!artifacts/final_holdout/PHASE_A_COMPLETE.json
+!artifacts/final_holdout/FROZEN_HASHES.json
+# Predictions stay local (not committed); hashes seal them
+artifacts/final_holdout/frozen_predictions/
