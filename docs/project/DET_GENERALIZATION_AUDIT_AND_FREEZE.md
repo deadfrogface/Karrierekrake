@@ -28,7 +28,7 @@ Scorer: `scripts/holdout_scorer_v2.py` (siehe Phase 4)
 | Core Competencies / Compétences / Vaardigheden | `cv_sections.HEADINGS[skills]` | Section Detection | Skill-Sektionen FR/NL/EN | low | skills |
 | Profile stoppers FR/NL | `cv_sections.HEADINGS[profile]` | Section Detection | Zusatzinfo-Stopper | low | boundary |
 | COMPOSITE_REST_OK mobility/programme/ausbildung | `cv_sections._COMPOSITE_REST_OK` | Section Detection | Composite-Überschriften | low | multi |
-| Muttersprachen-Aliase in Level-Norm | `_normalize_lang_level` | Languages / Normalization | moedertaal/langue maternelle/… → `native` | low | languages |
+| Muttersprachen-Aliase in Level-Norm | `_normalize_lang_level` | Languages / Normalization | moedertaal/langue maternelle/materni jezik/… → `native` | low | languages |
 | Endonyme in `_KNOWN_LANGUAGES` | `_KNOWN_LANGUAGES` | Languages | EU-Autonyme (čeština, nederlands, …) | med* | languages |
 | Software dump filter | `_looks_like_non_software_dump` | Software / Cross-Field | Datum/Heading/Middot-Skills ≠ Software | low | software |
 | Software accept heuristic | `_accept_software_item` | Software | Section + Tool-Struktur, kein Allowlist-only | med | software |

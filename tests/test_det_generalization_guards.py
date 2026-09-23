@@ -234,6 +234,27 @@ def test_language_fr_nl_headings():
     assert any("français" in a or "franz" in a for a, _ in langs)
 
 
+def test_language_materni_jezik_normalizes_to_native():
+    """SL/HR mother-tongue phrasing must normalize like Muttersprache."""
+    text = (
+        "Ada Beispiel\nada@example.com\n"
+        "Talen en mobiliteit\n"
+        "Slovenščina: materni jezik\n"
+        "Deutsch: B2\n"
+    )
+    langs = _langs(parse_cv_text(text))
+    assert any("sloven" in a and b == "native" for a, b in langs)
+    # Unknown language name still accepted with same structural marker.
+    text2 = (
+        "Ada Beispiel\nada@example.com\n"
+        "Sprachen\n"
+        "Hrvatski: materinski jezik\n"
+        "Englisch: B1\n"
+    )
+    langs2 = _langs(parse_cv_text(text2))
+    assert any("hrvatski" in a and b == "native" for a, b in langs2)
+
+
 # --- Skills ---
 
 

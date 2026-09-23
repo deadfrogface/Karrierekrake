@@ -202,6 +202,8 @@ def _native_level_aliases(level: str) -> str:
         "ojczysty",
         "modersmål",
         "modersmal",
+        "materni jezik",
+        "materinski jezik",
         "rodilý mluvčí",
         "rodily mluvci",
     }:
@@ -211,6 +213,8 @@ def _native_level_aliases(level: str) -> str:
     if "mother tongue" in low or "língua materna" in low or "lingua materna" in low:
         return "native"
     if "mammesprooch" in low or "ojczysty" in low or "modersm" in low:
+        return "native"
+    if "materni jezik" in low or "materinski jezik" in low:
         return "native"
     if "rodil" in low and "mluv" in low:
         return "native"

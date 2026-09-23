@@ -68,6 +68,7 @@ _LEVEL = re.compile(
     r"mammesprooch|"
     r"ojczysty|"
     r"modersm[aå]l|"
+    r"materni\s+jezik|materinski\s+jezik|"
     r"rodil[yý]\s+mluv[cč][ií]"
     r")\b",
     re.IGNORECASE,
@@ -176,6 +177,8 @@ def _normalize_lang_level(level: str, meta: str = "", full_line: str = "") -> st
         or "ojczysty" in low
         or "modersmål" in low
         or "modersmal" in low
+        or "materni jezik" in low
+        or "materinski jezik" in low
         or "rodilý mluvčí" in low
         or "rodily mluvci" in low
         or re.search(r"\bnative(?:\s+speaker)?\b", low)
@@ -347,6 +350,7 @@ def is_known_language_name(name: str) -> bool:
         r"native(?:\s+speaker)?|mother\s+tongue|maternal\s+language|"
         r"langue\s+maternelle|langue\s+natale|moedertaal|"
         r"l[ií]ngua\s+materna|mammesprooch|ojczysty|modersm[aå]l|"
+        r"materni\s+jezik|materinski\s+jezik|"
         r"rodil[yý]\s+mluv[cč][ií]"
         r")\s*$",
         "",
@@ -481,6 +485,7 @@ def _parse_one_language(chunk: str) -> LanguageEntry | None:
             r"mother\s+tongue|maternal\s+language|"
             r"langue\s+maternelle|langue\s+natale|moedertaal|"
             r"l[ií]ngua\s+materna|mammesprooch|ojczysty|modersm[aå]l|"
+            r"materni\s+jezik|materinski\s+jezik|"
             r"rodil[yý]\s+mluv[cč][ií]|"
             r"fließend|fliesend|gut|grundkenntnisse|verhandlungssicher).*$",
             body,
