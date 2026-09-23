@@ -1,8 +1,8 @@
 {
   "label": "POST-ANALYSIS",
   "dataset": "FINAL_INDEPENDENT_50_V2",
-  "commit": "539fe688610a000b8a2c160055cc3ca729481edf",
-  "created_at": "2026-09-23T06:50:11.270110+00:00",
+  "commit": "03205a4c34258d6482347134ea1d6c11c24ddf02",
+  "created_at": "2026-09-23T11:24:24.696538+00:00",
   "frozen_reference": {
     "f1": 0.7246,
     "hallucination_rate": 0.0983,
@@ -287,7 +287,7 @@
     "documents_with_critical": 0
   },
   "performance": {
-    "wall_s": 1.2557571699726395,
+    "wall_s": 1.2605119270156138,
     "phi_calls": 0,
     "n": 50
   },

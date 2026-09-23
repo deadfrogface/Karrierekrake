@@ -1,0 +1,16 @@
+{
+  "result": "FINAL_EXTERNAL_STYLE_HOLDOUT PHASE A RUNNER READY",
+  "dataset_id": "FINAL_EXTERNAL_STYLE_HOLDOUT",
+  "protocol": "FINAL_EXTERNAL_STYLE_HOLDOUT_PHASE_A",
+  "min_pdfs": 50,
+  "max_pdfs": 100,
+  "parser_commit": "03205a4c34258d6482347134ea1d6c11c24ddf02",
+  "parser_source_sha256": "feece3bdf434e720cf696b1159d508f0a83363f678f89ba048972a33126d71f9",
+  "evaluation_in_phase_a": false,
+  "reads_ground_truth": false,
+  "filename_assumptions": false,
+  "layout_class_assumptions": false,
+  "lora_training": false,
+  "phi_production": false,
+  "note": "No predictions generated without an unknown blind PDF directory. Independent 0.99 is NOT claimed by runner readiness."
+}

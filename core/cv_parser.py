@@ -606,6 +606,9 @@ def _accept_software_item(item: str, *, had_proficiency: bool = False) -> bool:
     text = (item or "").strip()
     if not text or _looks_like_non_software_dump(text):
         return False
+    # Bare year/version fragments from wrap splits ("365") are not products.
+    if re.fullmatch(r"\d{2,4}", text):
+        return False
     if _parse_one_language(text) is not None:
         return False
     kind = classify_non_language_token(text)
@@ -620,10 +623,16 @@ def _accept_software_item(item: str, *, had_proficiency: bool = False) -> bool:
     # Multi-word English product names (Solid Edge, Trimble Business Center).
     if " " in text and not re.search(r"[äöüß]", text.lower()) and not _looks_like_soft_skill(text):
         return True
-    # Single Latin TitleCase product token (Revit, Citavi) — not German -ung skills.
-    if re.fullmatch(r"[A-Z][A-Za-z0-9+\-.]{1,30}", text) and not re.search(
-        r"(?i)(ung|keit|schaft|tion)$", text
-    ):
+    # Single Latin TitleCase product token (Revit, Citavi, Notion) — not German
+    # morphology skills (-ung/-keit/-schaft). Long -tion nouns (Organisation, …)
+    # stay rejected; short product names ending in "tion" (Notion) are kept.
+    if re.fullmatch(r"[A-Z][A-Za-z0-9+\-.]{1,30}", text):
+        if re.search(r"(?i)(ung|keit|schaft)$", text):
+            return False
+        if re.search(r"(?i)tion$", text) and (
+            len(text) >= 10 or _looks_like_soft_skill(text)
+        ):
+            return False
         return True
     if kind == "skill":
         return False
@@ -653,6 +662,15 @@ def _join_software_wrap_lines(lines: list[str]) -> list[str]:
                 out.append(f"{line.rstrip().rstrip('-–—:').strip()} - {nxt}")
                 i += 2
                 continue
+        # "Software: … Microsoft" / next line "365, ProTool, …"
+        if out and re.fullmatch(
+            r"(?i)microsoft(?:\s+office)?|ms\s*office|adobe|google",
+            out[-1].strip().rstrip(",;"),
+        ):
+            nxt = line.strip()
+            if re.match(r"^\d{2,4}\b", nxt):
+                prev = out.pop().rstrip(",;")
+                line = f"{prev} {nxt}"
         out.append(line)
         i += 1
     return out
@@ -787,6 +805,10 @@ def _parse_driving(body: str, *, section_context: bool = False) -> list[str]:
     for line in lines:
         if _is_heading_value(line):
             continue
+        # Language lines under composite "Sprachen & Fahrerlaubnis" must never
+        # become licences (Türkisch→T, Dänisch→D false positives).
+        if _parse_one_language(line) is not None:
+            continue
         labelled = _inline_licence_mentions(line)
         if labelled:
             found.extend(labelled)
@@ -817,15 +839,18 @@ def _parse_driving(body: str, *, section_context: bool = False) -> list[str]:
 def _inline_licence_mentions(text: str) -> list[str]:
     """Only extract licences from explicit licence phrases — never bare CEFR tokens."""
     found: list[str] = []
+    # Same-line only: "Fahrerlaubnis\\nTürkisch" must NOT capture T from the
+    # language name (composite Sprachen & Fahrerlaubnis headings).
     patterns = (
         r"(?:Führerschein|Fuehrerschein|Führerscheinklasse(?:n)?|"
         r"Fahrerlaubnis|Fahrerlaubnisklasse(?:n)?|"
         r"Driving\s+Licen[cs]e|Licen[cs]e\s+Class(?:es)?|"
         r"Driving\s+Permits?|"
-        r"Rijbewijs|Permis\s+de\s+conduire|Permis\s+de\s+conducir)\s*[:\-]\s*([^\n|;]+)",
-        r"Klassen?\s+([A-Z0-9]{1,3}(?:\s*(?:und|,|/|&)\s*[A-Z0-9]{1,3})*)",
-        r"Category\s+([A-Z0-9]{1,3})",
-        r"Klasse\s+([A-Z0-9]{1,3})",
+        r"Rijbewijs|Permis\s+de\s+conduire|Permis\s+de\s+conducir)"
+        r"[^\S\n]*[:\-]?[^\S\n]*"
+        r"(?:Klassen?[^\S\n]+)?"
+        r"([A-Z0-9]{1,3}(?:[^\S\n]*(?:und|,|/|&)[^\S\n]*[A-Z0-9]{1,3})*)",
+        r"Category[^\S\n]+([A-Z0-9]{1,3})",
     )
     for pat in patterns:
         for m in re.finditer(pat, text, re.I):
@@ -1400,6 +1425,20 @@ def _route_labeled_kenntnisse_lines(body: str) -> dict[str, list]:
                 ):
                     out[pending_bucket][-1] = f"{out[pending_bucket][-1]} {items[0]}"
                     items = items[1:]
+                # "Microsoft" + "365, …" wrap under labeled Software: lines.
+                if (
+                    items
+                    and pending_bucket == "software"
+                    and out[pending_bucket]
+                    and out[pending_bucket][-1].lower()
+                    in {"microsoft", "adobe", "google", "ms office", "office"}
+                    and re.match(r"^\d{2,4}\b", items[0])
+                ):
+                    out[pending_bucket][-1] = f"{out[pending_bucket][-1]} {items[0]}"
+                    items = items[1:]
+                # Drop bare version fragments that still slip through.
+                if pending_bucket == "software":
+                    items = [it for it in items if not re.fullmatch(r"\d{2,4}", it.strip())]
                 out[pending_bucket].extend(items)
             pending_bucket = pending_bucket if line.rstrip().endswith(",") else None
             continue
@@ -2086,7 +2125,7 @@ _COUNTRY_TOKEN = (
 # Unicode letters for EU street/city names (ł, ś, å, é, č, …).
 # Latin-1 + Latin Extended-A/B cover PL/CZ/SI/SE/DK/FR accented letters.
 _CITY_CHARS = r"A-Za-zÀ-ÖØ-öø-ÿ\u0100-\u024FÄÖÜäöüß\(\)"
-# Optional street prefix so "6900 Bregenz | AT" and "350 02 Cheb | CZ" match.
+# Optional street prefix so city-only headers ("1234 City | AT", "350 02 City | CZ") match.
 _STREET_OPT = rf"(?:(?P<street>.+?)\s*[|,]?\s*)?"
 _POSTAL_DE = re.compile(
     rf"{_STREET_OPT}(?P<plz>\d{{5}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
@@ -2114,7 +2153,7 @@ _POSTAL_LU = re.compile(
     r"(?=\s*[,|·]|\s*$)",
     re.I,
 )
-# Poland: "69-100 Słubice" (street optional for city-only headers)
+# Poland: "NN-NNN City" (street optional for city-only headers)
 _POSTAL_PL = re.compile(
     rf"{_STREET_OPT}(?P<plz>\d{{2}}-\d{{3}})\s+"
     rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
@@ -2122,7 +2161,7 @@ _POSTAL_PL = re.compile(
     r"(?=\s*[,|·]|\s*$)",
     re.I,
 )
-# Czech / Swedish spaced postal codes: "350 02 Cheb", "211 34 Malmö"
+# Czech / Swedish spaced postal codes: "NNN NN City" / "NN NNN City"
 _POSTAL_SPACED = re.compile(
     rf"{_STREET_OPT}(?P<plz>\d{{3}}\s+\d{{2}}|\d{{2}}\s+\d{{3}})\s+"
     rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"

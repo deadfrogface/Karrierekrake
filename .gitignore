@@ -229,3 +229,11 @@ artifacts/final_independent_50_v2/post_analysis/**
 !artifacts/final_independent_50_v2/post_analysis/critical_errors.json
 !artifacts/final_independent_50_v2/post_analysis/POST_ANALYSIS_LOG.md
 artifacts/final_independent_50_v2/post_analysis/det_predictions/
+
+# DET candidate regression + external holdout runner readiness
+!artifacts/det_candidate_regression/
+artifacts/det_candidate_regression/**
+!artifacts/det_candidate_regression/regression_summary.json
+!artifacts/final_external_style_holdout/
+artifacts/final_external_style_holdout/**
+!artifacts/final_external_style_holdout/RUNNER_READY.json

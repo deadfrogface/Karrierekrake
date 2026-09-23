@@ -1,0 +1,1125 @@
+{
+  "label": "DET_CANDIDATE_REGRESSION",
+  "created_at": "2026-09-23T11:24:18.159504+00:00",
+  "honesty": {
+    "ih2_frozen_independent": {
+      "f1": 0.7246,
+      "hallu": 0.0983,
+      "perfect_core": "0/50"
+    },
+    "ih2_post_analysis_not_independent": true,
+    "status": "POST-ANALYSIS TARGET ACHIEVED – INDEPENDENT 0.99 NOT YET PROVEN"
+  },
+  "corpora": {
+    "holdout_100": {
+      "corpus": "holdout_100",
+      "n_docs_scored": 100,
+      "metrics": {
+        "f1": 0.9985676772499403,
+        "precision": 0.9992833253702819,
+        "recall": 0.9978530534351145,
+        "hallucination_rate": 0.0007151370679380214,
+        "field_accuracy": 0.9971394517282479,
+        "counts": {
+          "correct": 4183,
+          "hallucinated": 3,
+          "missing": 9,
+          "wrong": 0,
+          "wrong_category": 0
+        },
+        "perfect_documents": 89,
+        "perfect_core": 89,
+        "invented_critical": 2,
+        "by_group": {
+          "address": {
+            "field_total": 500,
+            "counts": {
+              "correct": 500,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "address": {
+                "correct": 500
+              }
+            }
+          },
+          "career_intent": {
+            "field_total": 14,
+            "counts": {
+              "correct": 14,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "career_intent": {
+                "correct": 14
+              }
+            }
+          },
+          "certificates": {
+            "field_total": 101,
+            "counts": {
+              "correct": 100,
+              "hallucinated": 1,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 0.9900990099009901,
+            "precision": 0.9900990099009901,
+            "recall": 1.0,
+            "f1": 0.9950248756218906,
+            "hallucination_rate": 0.009900990099009901,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.009900990099009901,
+            "by_group": {
+              "certificates": {
+                "correct": 100,
+                "hallucinated": 1
+              }
+            }
+          },
+          "contact": {
+            "field_total": 200,
+            "counts": {
+              "correct": 200,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "contact": {
+                "correct": 200
+              }
+            }
+          },
+          "education": {
+            "field_total": 625,
+            "counts": {
+              "correct": 625,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "education": {
+                "correct": 625
+              }
+            }
+          },
+          "employment": {
+            "field_total": 1250,
+            "counts": {
+              "correct": 1250,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "employment": {
+                "correct": 1250
+              }
+            }
+          },
+          "languages": {
+            "field_total": 200,
+            "counts": {
+              "correct": 200,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "languages": {
+                "correct": 200
+              }
+            }
+          },
+          "licenses": {
+            "field_total": 103,
+            "counts": {
+              "correct": 103,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "licenses": {
+                "correct": 103
+              }
+            }
+          },
+          "personal": {
+            "field_total": 300,
+            "counts": {
+              "correct": 300,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "personal": {
+                "correct": 300
+              }
+            }
+          },
+          "skills": {
+            "field_total": 500,
+            "counts": {
+              "correct": 491,
+              "missing": 9,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0
+            },
+            "field_accuracy": 0.982,
+            "precision": 1.0,
+            "recall": 0.982,
+            "f1": 0.9909182643794148,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.018,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "skills": {
+                "correct": 491,
+                "missing": 9
+              }
+            }
+          },
+          "software": {
+            "field_total": 402,
+            "counts": {
+              "correct": 400,
+              "hallucinated": 2,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 0.9950248756218906,
+            "precision": 0.9950248756218906,
+            "recall": 1.0,
+            "f1": 0.9975062344139651,
+            "hallucination_rate": 0.004975124378109453,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.004975124378109453,
+            "by_group": {
+              "software": {
+                "correct": 400,
+                "hallucinated": 2
+              }
+            }
+          }
+        }
+      },
+      "performance": {
+        "wall_s": 2.0087369569810107,
+        "peak_rss_mb": 45.36328125,
+        "phi_calls": 0,
+        "c1_calls": 0
+      }
+    },
+    "final_holdout_50": {
+      "corpus": "final_holdout_50",
+      "n_docs_scored": 50,
+      "metrics": {
+        "f1": 0.9984909456740443,
+        "precision": 0.999496475327291,
+        "recall": 0.9974874371859297,
+        "hallucination_rate": 0.0,
+        "field_accuracy": 0.9969864389753893,
+        "counts": {
+          "correct": 1985,
+          "missing": 5,
+          "wrong": 1,
+          "hallucinated": 0,
+          "wrong_category": 0
+        },
+        "perfect_documents": 44,
+        "perfect_core": 44,
+        "invented_critical": 0,
+        "by_group": {
+          "address": {
+            "field_total": 241,
+            "counts": {
+              "correct": 241,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "address": {
+                "correct": 241
+              }
+            }
+          },
+          "career_intent": {
+            "field_total": 1,
+            "counts": {
+              "correct": 1,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "career_intent": {
+                "correct": 1
+              }
+            }
+          },
+          "certificates": {
+            "field_total": 50,
+            "counts": {
+              "correct": 50,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "certificates": {
+                "correct": 50
+              }
+            }
+          },
+          "contact": {
+            "field_total": 96,
+            "counts": {
+              "correct": 95,
+              "wrong": 1,
+              "hallucinated": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 0.9895833333333334,
+            "precision": 0.9895833333333334,
+            "recall": 1.0,
+            "f1": 0.9947643979057591,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.010416666666666666,
+            "by_group": {
+              "contact": {
+                "correct": 95,
+                "wrong": 1
+              }
+            }
+          },
+          "education": {
+            "field_total": 295,
+            "counts": {
+              "correct": 295,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "education": {
+                "correct": 295
+              }
+            }
+          },
+          "employment": {
+            "field_total": 615,
+            "counts": {
+              "correct": 615,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "employment": {
+                "correct": 615
+              }
+            }
+          },
+          "languages": {
+            "field_total": 100,
+            "counts": {
+              "correct": 95,
+              "missing": 5,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0
+            },
+            "field_accuracy": 0.95,
+            "precision": 1.0,
+            "recall": 0.95,
+            "f1": 0.9743589743589743,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.05,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "languages": {
+                "correct": 95,
+                "missing": 5
+              }
+            }
+          },
+          "licenses": {
+            "field_total": 52,
+            "counts": {
+              "correct": 52,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "licenses": {
+                "correct": 52
+              }
+            }
+          },
+          "personal": {
+            "field_total": 145,
+            "counts": {
+              "correct": 145,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "personal": {
+                "correct": 145
+              }
+            }
+          },
+          "skills": {
+            "field_total": 223,
+            "counts": {
+              "correct": 223,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "skills": {
+                "correct": 223
+              }
+            }
+          },
+          "software": {
+            "field_total": 173,
+            "counts": {
+              "correct": 173,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "software": {
+                "correct": 173
+              }
+            }
+          }
+        }
+      },
+      "performance": {
+        "wall_s": 1.2334484729799442,
+        "peak_rss_mb": 45.36328125,
+        "phi_calls": 0,
+        "c1_calls": 0
+      }
+    },
+    "mini_holdout_30": {
+      "corpus": "mini_holdout_30",
+      "n_docs_scored": 30,
+      "metrics": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "field_accuracy": 1.0,
+        "counts": {
+          "correct": 1116,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "perfect_documents": 30,
+        "perfect_core": 30,
+        "invented_critical": 0,
+        "by_group": {
+          "address": {
+            "field_total": 141,
+            "counts": {
+              "correct": 141,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "address": {
+                "correct": 141
+              }
+            }
+          },
+          "certificates": {
+            "field_total": 30,
+            "counts": {
+              "correct": 30,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "certificates": {
+                "correct": 30
+              }
+            }
+          },
+          "contact": {
+            "field_total": 56,
+            "counts": {
+              "correct": 56,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "contact": {
+                "correct": 56
+              }
+            }
+          },
+          "education": {
+            "field_total": 175,
+            "counts": {
+              "correct": 175,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "education": {
+                "correct": 175
+              }
+            }
+          },
+          "employment": {
+            "field_total": 300,
+            "counts": {
+              "correct": 300,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "employment": {
+                "correct": 300
+              }
+            }
+          },
+          "languages": {
+            "field_total": 60,
+            "counts": {
+              "correct": 60,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "languages": {
+                "correct": 60
+              }
+            }
+          },
+          "licenses": {
+            "field_total": 32,
+            "counts": {
+              "correct": 32,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "licenses": {
+                "correct": 32
+              }
+            }
+          },
+          "personal": {
+            "field_total": 86,
+            "counts": {
+              "correct": 86,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "personal": {
+                "correct": 86
+              }
+            }
+          },
+          "skills": {
+            "field_total": 133,
+            "counts": {
+              "correct": 133,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "skills": {
+                "correct": 133
+              }
+            }
+          },
+          "software": {
+            "field_total": 103,
+            "counts": {
+              "correct": 103,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "software": {
+                "correct": 103
+              }
+            }
+          }
+        }
+      },
+      "performance": {
+        "wall_s": 0.7511979769915342,
+        "peak_rss_mb": 45.36328125,
+        "phi_calls": 0,
+        "c1_calls": 0
+      }
+    },
+    "final_independent_50_v2": {
+      "corpus": "final_independent_50_v2",
+      "n_docs_scored": 50,
+      "metrics": {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "hallucination_rate": 0.0,
+        "field_accuracy": 1.0,
+        "counts": {
+          "correct": 1859,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "perfect_documents": 50,
+        "perfect_core": 50,
+        "invented_critical": 0,
+        "by_group": {
+          "address": {
+            "field_total": 238,
+            "counts": {
+              "correct": 238,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "address": {
+                "correct": 238
+              }
+            }
+          },
+          "career_intent": {
+            "field_total": 2,
+            "counts": {
+              "correct": 2,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "career_intent": {
+                "correct": 2
+              }
+            }
+          },
+          "certificates": {
+            "field_total": 50,
+            "counts": {
+              "correct": 50,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "certificates": {
+                "correct": 50
+              }
+            }
+          },
+          "contact": {
+            "field_total": 93,
+            "counts": {
+              "correct": 93,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "contact": {
+                "correct": 93
+              }
+            }
+          },
+          "education": {
+            "field_total": 280,
+            "counts": {
+              "correct": 280,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "education": {
+                "correct": 280
+              }
+            }
+          },
+          "employment": {
+            "field_total": 495,
+            "counts": {
+              "correct": 495,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "employment": {
+                "correct": 495
+              }
+            }
+          },
+          "languages": {
+            "field_total": 128,
+            "counts": {
+              "correct": 128,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "languages": {
+                "correct": 128
+              }
+            }
+          },
+          "licenses": {
+            "field_total": 55,
+            "counts": {
+              "correct": 55,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "licenses": {
+                "correct": 55
+              }
+            }
+          },
+          "personal": {
+            "field_total": 140,
+            "counts": {
+              "correct": 140,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "personal": {
+                "correct": 140
+              }
+            }
+          },
+          "skills": {
+            "field_total": 221,
+            "counts": {
+              "correct": 221,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "skills": {
+                "correct": 221
+              }
+            }
+          },
+          "software": {
+            "field_total": 157,
+            "counts": {
+              "correct": 157,
+              "hallucinated": 0,
+              "wrong": 0,
+              "wrong_category": 0,
+              "missing": 0
+            },
+            "field_accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "hallucination_rate": 0.0,
+            "missing_field_rate": 0.0,
+            "wrong_category_rate": 0.0,
+            "false_positive_rate": 0.0,
+            "by_group": {
+              "software": {
+                "correct": 157
+              }
+            }
+          }
+        }
+      },
+      "performance": {
+        "wall_s": 1.1711060900124721,
+        "peak_rss_mb": 45.48828125,
+        "phi_calls": 0,
+        "c1_calls": 0
+      }
+    }
+  }
+}
