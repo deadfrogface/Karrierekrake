@@ -1,0 +1,53 @@
+{
+  "manifest_id": "PHI_VS_DET_COMPARE_8_V1",
+  "commit": "6ed658ecbc33a02e9f981029c65db54ae8f490b0",
+  "decision": "Phi-Versuch stoppen",
+  "det_f1": 1.0,
+  "phi_f1": 0.516624040920716,
+  "delta_f1": -0.483375959079284,
+  "det_de_f1": 1.0,
+  "phi_de_f1": 0.4830917874396135,
+  "det_en_f1": 1.0,
+  "phi_en_f1": 0.5543478260869564,
+  "performance": {
+    "det": {
+      "wall_s": 0.17071808298351243,
+      "avg_s_per_cv": 0.02110635650024051,
+      "peak_rss_mb": 41.7109375,
+      "rss_before_mb": 39.3359375
+    },
+    "phi": {
+      "wall_s": 172.230070686026,
+      "avg_s_per_cv": 21.50592206200963,
+      "peak_rss_mb": 5503.5
+    }
+  },
+  "gates": {
+    "target_host": "15 GiB RAM, no CUDA (docs/project/CV_PARSER_REPLACEMENT_PHASE0_BASELINE.md)",
+    "max_peak_rss_mb": 8192,
+    "max_peak_rss_rationale": "STANDARD Günther tier (8–16 GiB). Peak must leave headroom on 15 GiB host; phi4-mini catalog ram_gb_min=5.0.",
+    "max_avg_s_per_cv": null,
+    "max_avg_s_per_cv_note": "No explicit product CV-import latency SLA found in project docs. Time is measured and reported; absence of a numeric budget is flagged in the report.",
+    "clearly_better_delta_f1": 0.05,
+    "clearly_better_rule": "Recommend blindtest only if Phi F1 − DET F1 ≥ 0.05 on this sample AND peak RSS ≤ 8192 MB. Smoke/known-corpus win alone is insufficient for productive swap."
+  },
+  "gate_evaluation": {
+    "delta_f1": -0.483375959079284,
+    "clearly_better_f1": false,
+    "ram_ok": true,
+    "time_budget_specified": false
+  },
+  "tech_fix_used": 1,
+  "phi_invented": {
+    "invented_employment": 2,
+    "invented_education": 1
+  },
+  "disclaimer": "Known Mini-30 development sample — not an independent blind test. IH2 frozen F1 0.7246 is context only. PR#59 ~0.73 was section-accuracy, not F1.",
+  "not_proven": [
+    "Generalization to unseen real CVs",
+    "Independent blind-test superiority",
+    "Productive replacement safety",
+    "That section-accuracy equals F1 (it does not)",
+    "That IH2 post-analysis F1 1.0 is an independent result (it is not)"
+  ]
+}
