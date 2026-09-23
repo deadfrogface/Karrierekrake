@@ -1,0 +1,109 @@
+{
+  "manifest_id": "PHI_VS_DET_COMPARE_8_V1",
+  "locked": true,
+  "locked_before_any_scoring": true,
+  "created_utc": "2026-09-23T16:30:00Z",
+  "purpose": "Limited offline Phi vs DET comparison for DE/EN CVs. Development data only — not an independent blind test.",
+  "working_branch": "cursor/phi-vs-det-limited-compare-d85b",
+  "det_commit_under_test": "28e459a8e44d00c57adfb7652e55cf3dd42bf93d",
+  "det_freeze_commit_context_only": "f3a17c09fe8a2d4d196aabb58e49c8d97ecfcfc8",
+  "ih2_frozen_f1_context_only": 0.7246,
+  "ih2_post_analysis_f1_not_independent": 1.0,
+  "pr59_section_accuracy_not_f1": 0.7284,
+  "corpus": "tests/mini_holdout_30",
+  "ground_truth": "tests/mini_holdout_30/phase_b_solutions/expected_results.json",
+  "scorer": {
+    "file": "scripts/holdout_scorer_v2.py",
+    "version": "v2",
+    "sha256": "0d80bdd6c6b3f4d5a73563bb94163697faae4b878f73616668d6f6e626744f7e",
+    "unchanged": true
+  },
+  "pdf_text_extractor": "core.cv_extract.extract_text (CURRENT/pypdf) — identical for DET and Phi",
+  "productive_path_unchanged": true,
+  "selection_rules": [
+    "Fixed before any Phi or DET scoring on this sample.",
+    "Include all Mini-30 English CVs (only four exist by heading classification).",
+    "Match with four German CVs spanning classic, multi-employment, multipage, and abroad address.",
+    "Do not swap documents after seeing scores."
+  ],
+  "documents": [
+    {
+      "id": "MH_001",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_001.pdf",
+      "lang": "de",
+      "traits": ["classic", "single_page", "1_employment", "2_education"]
+    },
+    {
+      "id": "MH_015",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_015.pdf",
+      "lang": "de",
+      "traits": ["multi_employment", "abroad_address", "single_page"]
+    },
+    {
+      "id": "MH_020",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_020.pdf",
+      "lang": "de",
+      "traits": ["multipage", "2_employment"]
+    },
+    {
+      "id": "MH_030",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_030.pdf",
+      "lang": "de",
+      "traits": ["multi_employment", "abroad_address", "single_page"]
+    },
+    {
+      "id": "MH_024",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_024.pdf",
+      "lang": "en",
+      "traits": ["en_headings", "multipage", "multi_employment"]
+    },
+    {
+      "id": "MH_025",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_025.pdf",
+      "lang": "en",
+      "traits": ["en_headings", "classic", "single_page"]
+    },
+    {
+      "id": "MH_026",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_026.pdf",
+      "lang": "en",
+      "traits": ["en_headings", "sparse_address", "abroad_address"]
+    },
+    {
+      "id": "MH_027",
+      "path": "tests/mini_holdout_30/phase_a_pdfs/MH_027.pdf",
+      "lang": "en",
+      "traits": ["en_headings", "multi_employment", "abroad_address"]
+    }
+  ],
+  "phi_config": {
+    "id": "PHI_CFG_1",
+    "model_id": "phi4-mini",
+    "base_model": "microsoft/Phi-4-mini-instruct",
+    "quant": "Q4_K_M",
+    "gguf": "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
+    "license": "MIT",
+    "temperature": 0.0,
+    "prompt": "guenther.prompts.SYSTEM_PHI_EXTRACT",
+    "api": "guenther.service.GuentherService.suggest_cv_extract",
+    "mapping": "offline B1-style flat CVExtractSuggestion → parsed dict (no DET content fill)",
+    "cloud_api": false,
+    "lora": false,
+    "max_configs": 1,
+    "max_technical_fixes": 1
+  },
+  "det_config": {
+    "id": "DET_PRODUCT",
+    "entry": "core.cv_parser.import_cv(..., guenther_enabled=False)",
+    "note": "guenther_enabled is ignored; production path is DET-only"
+  },
+  "hardware_gates_predeclared": {
+    "target_host": "15 GiB RAM, no CUDA (docs/project/CV_PARSER_REPLACEMENT_PHASE0_BASELINE.md)",
+    "max_peak_rss_mb": 8192,
+    "max_peak_rss_rationale": "STANDARD Günther tier (8–16 GiB). Peak must leave headroom on 15 GiB host; phi4-mini catalog ram_gb_min=5.0.",
+    "max_avg_s_per_cv": null,
+    "max_avg_s_per_cv_note": "No explicit product CV-import latency SLA found in project docs. Time is measured and reported; absence of a numeric budget is flagged in the report.",
+    "clearly_better_delta_f1": 0.05,
+    "clearly_better_rule": "Recommend blindtest only if Phi F1 − DET F1 ≥ 0.05 on this sample AND peak RSS ≤ 8192 MB. Smoke/known-corpus win alone is insufficient for productive swap."
+  }
+}

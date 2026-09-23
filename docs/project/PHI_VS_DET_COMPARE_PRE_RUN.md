@@ -2,7 +2,7 @@
 
 | Feld | Wert |
 |------|------|
-| Manifest | `artifacts/phi_vs_det_compare/SAMPLE_MANIFEST_LOCKED.json` |
+| Manifest | `tests/phi_vs_det_compare/SAMPLE_MANIFEST_LOCKED.json` (locked before scoring) |
 | Sample | PHI_VS_DET_COMPARE_8_V1 (4 DE + 4 EN Mini-30) |
 | Scorer | `scripts/holdout_scorer_v2.py` unchanged (sha256 `0d80bdd6…`) |
 | DET | Current product `import_cv` @ HEAD (DET-only; `guenther_enabled` ignored) |

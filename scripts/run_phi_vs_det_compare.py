@@ -41,7 +41,9 @@ from run_final_holdout_phase_b_eval import (  # noqa: E402
 )
 
 OUT = ROOT / "artifacts" / "phi_vs_det_compare"
-MANIFEST_PATH = OUT / "SAMPLE_MANIFEST_LOCKED.json"
+# Versioned lockfile (artifacts/ may be gitignored); copy also written under artifacts at run time.
+MANIFEST_PATH = ROOT / "tests" / "phi_vs_det_compare" / "SAMPLE_MANIFEST_LOCKED.json"
+ARTIFACT_MANIFEST = OUT / "SAMPLE_MANIFEST_LOCKED.json"
 
 
 def _peak_rss_mb() -> float:
@@ -155,7 +157,9 @@ def run_phi_only(path: Path, *, text: str) -> dict[str, Any]:
         "phi_safety_notes": list(env.safety_notes or []),
         "phi_model_id": env.model_id or PRODUCTION_MODEL_ID,
         "phi_raw_ok": bool(env.ok),
-        "phi_error": None if env.ok else (env.error or env.provider_status),
+        "phi_error": None
+        if env.ok
+        else (env.fallback_reason or env.provider_status or "unavailable"),
     }
     name = (suggestion.get("full_name") or "").strip().split()
     if name:
@@ -271,11 +275,16 @@ def _score_side(
 
 
 def main() -> int:
-    if not MANIFEST_PATH.is_file():
+    src = MANIFEST_PATH if MANIFEST_PATH.is_file() else ARTIFACT_MANIFEST
+    if not src.is_file():
         print(f"missing locked manifest: {MANIFEST_PATH}", file=sys.stderr)
         return 2
 
-    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    OUT.mkdir(parents=True, exist_ok=True)
+    if src != ARTIFACT_MANIFEST:
+        ARTIFACT_MANIFEST.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
+
+    manifest = json.loads(src.read_text(encoding="utf-8"))
     assert manifest.get("locked") is True
     docs_meta = list(manifest["documents"])
     gt_path = ROOT / manifest["ground_truth"]
