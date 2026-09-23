@@ -1,0 +1,1062 @@
+{
+  "metric_name": "COMPLETE_GT_ONLY_V3",
+  "note": "Rescore of frozen Round3 predictions with V3; text via PyMuPDF/pypdf (no Docpick LLM). NOT a new extraction.",
+  "aggregate": {
+    "metric_name": "COMPLETE_GT_ONLY_V3",
+    "disclaimer": "Not overall F1. Excludes count-only employment/education/list fields as nicht_bewertbar. Does not replace Scorer V2 historical results.",
+    "complete_gt_scored": {
+      "field_total": 140,
+      "counts": {
+        "correct": 139,
+        "missing": 1,
+        "hallucinated": 0,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9928571428571429,
+      "precision": 1.0,
+      "recall": 0.9928571428571429,
+      "f1": 0.996415770609319,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.007142857142857143,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "by_group": {
+        "personal": {
+          "correct": 24
+        },
+        "contact": {
+          "correct": 8
+        },
+        "address": {
+          "correct": 43,
+          "missing": 1
+        },
+        "languages": {
+          "correct": 30
+        },
+        "licenses": {
+          "correct": 14
+        },
+        "skills": {
+          "correct": 5
+        },
+        "software": {
+          "correct": 12
+        },
+        "certificates": {
+          "correct": 3
+        }
+      },
+      "n_missing": 1,
+      "n_hallucinated": 0,
+      "n_wrong": 0,
+      "missing_fields": [
+        {
+          "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+          "field": "address.city",
+          "expected": "Leipzig"
+        }
+      ],
+      "hallucinated_fields": [],
+      "wrong_fields": []
+    },
+    "nicht_bewertbar": {
+      "n_fields": 46,
+      "by_group": {
+        "employment": 10,
+        "education": 10,
+        "skills": 9,
+        "software": 8,
+        "certificates": 9
+      },
+      "by_reason": {
+        "only work_count=3; no full employment list": 4,
+        "only education_count=1; no full education list": 5,
+        "only work_count=4; no full employment list": 2,
+        "only education_count=2; no full education list": 5,
+        "only skills_count=12; no full skills list": 1,
+        "only software_count=12; no full software list": 1,
+        "only certificates_count=5; no full certificates list": 1,
+        "only work_count=2; no full employment list": 4,
+        "no skills list and no count": 1,
+        "no certificates list and no count": 3,
+        "only skills_count=4; no full skills list": 1,
+        "only software_count=5; no full software list": 2,
+        "only certificates_count=3; no full certificates list": 4,
+        "only skills_count=7; no full skills list": 1,
+        "only software_count=6; no full software list": 4,
+        "only certificates_count=4; no full certificates list": 1,
+        "only skills_count=5; no full skills list": 3,
+        "only skills_count=6; no full skills list": 1,
+        "only software_count=7; no full software list": 1,
+        "only skills_count=8; no full skills list": 1
+      },
+      "cases": [
+        {
+          "document": "DE_01_Klassisch.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Teamkoordinatorin Kundenservice",
+              "company": "Westfalen Service GmbH",
+              "start_date": "2022-05",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Sachbearbeiterin Auftragsmanagement",
+              "company": "HanseKontor Handel KG",
+              "start_date": "2019-01",
+              "end_date": "2022-04",
+              "responsibilities": []
+            },
+            {
+              "title": "Kaufmännische Mitarbeiterin",
+              "company": "Rheinblick Versand GmbH",
+              "start_date": "2016-08",
+              "end_date": "2018-12",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_01_Klassisch.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+              "qualification": "Kauffrau für Büromanagement (IHK)",
+              "start_date": "2013-08",
+              "end_date": "2016-06"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_02_Zweispaltig_Trap.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=4; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Projektkoordinator Operations & Customer Solutions",
+              "company": "WeserTech Anlagenservice GmbH",
+              "start_date": "2023-04",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Sachbearbeiter Einkauf & Disposition",
+              "company": "Nordstern Komponentenhandel KG",
+              "start_date": "2020-01",
+              "end_date": "2023-03",
+              "responsibilities": []
+            },
+            {
+              "title": "Kundenservice / Auftragsmanagement",
+              "company": "Elbkontor Bürobedarf GmbH",
+              "start_date": "2016-08",
+              "end_date": "2019-12",
+              "responsibilities": []
+            },
+            {
+              "title": "Kaufmännischer Mitarbeiter",
+              "company": "Moorland Versandservice GmbH",
+              "start_date": "2013-07",
+              "end_date": "2016-07",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_02_Zweispaltig_Trap.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Nordwest Handelsakademie / Friesen Import GmbH",
+              "qualification": "Kaufmann für Groß- und Außenhandelsmanagement (IHK)",
+              "start_date": "2010-09",
+              "end_date": "2013-06"
+            },
+            {
+              "institution": "BBS Ammerland",
+              "qualification": "Fachhochschulreife Wirtschaft und Verwaltung",
+              "start_date": "2008-08",
+              "end_date": "2010-06"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_02_Zweispaltig_Trap.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=12; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "B2B-Kundenbetreuung",
+            "Beschwerdemanagement",
+            "Einkauf",
+            "Disposition",
+            "Auftragsmanagement",
+            "Lieferantenmanagement",
+            "Prozessoptimierung",
+            "KPI-Reporting",
+            "Stammdatenpflege",
+            "Projektkoordination",
+            "Rechnungsprüfung",
+            "Bestandsmanagement"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_02_Zweispaltig_Trap.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=12; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Microsoft 365",
+            "Dynamics 365",
+            "SAP Business One",
+            "HubSpot CRM",
+            "Power BI",
+            "Power Query",
+            "Teams",
+            "SharePoint",
+            "Jira",
+            "Confluence",
+            "Adobe Acrobat",
+            "DocuWare"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_02_Zweispaltig_Trap.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=5; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "IHK Projektmanagement kompakt",
+            "Ersthelfer",
+            "Datenschutz / Informationssicherheit"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_03_C1_Kontextfalle.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Office & Procurement Specialist",
+              "company": "Rheinwerk Technik GmbH",
+              "start_date": "2021-03",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Customer Operations Specialist",
+              "company": "Metroline Services KG",
+              "start_date": "2017-09",
+              "end_date": "2021-02",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_03_C1_Kontextfalle.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "IHK Düsseldorf",
+              "qualification": "Ausbildung zur Kauffrau für Büromanagement",
+              "start_date": "2014",
+              "end_date": "2017"
+            },
+            {
+              "institution": "Berufskolleg Düsseldorf",
+              "qualification": "Höhere Handelsschule",
+              "start_date": "2012",
+              "end_date": "2014"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_03_C1_Kontextfalle.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "no skills list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [
+            "Einkauf",
+            "Bestellwesen",
+            "Kundenkommunikation",
+            "Lieferantenbetreuung",
+            "Datenpflege"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_03_C1_Kontextfalle.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Junior Project Manager",
+              "company": "Elster Digital GmbH",
+              "start_date": "2023-11",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Projektassistenz",
+              "company": "Saxonia Media Services GmbH",
+              "start_date": "2021-10",
+              "end_date": "2023-10",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Hochschule Leipzig",
+              "qualification": "B.A. Betriebswirtschaftslehre",
+              "start_date": "2018-10",
+              "end_date": "2021-09"
+            },
+            {
+              "institution": "Goethe-Gymnasium Leipzig",
+              "qualification": "Abitur",
+              "start_date": "2010-08",
+              "end_date": "2018-06"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=4; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Projektorganisation",
+            "Terminplanung",
+            "Reporting",
+            "Stakeholder-Kommunikation"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=5; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Notion",
+            "Asana",
+            "Jira",
+            "Microsoft 365",
+            "Power BI"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "Scrum Fundamentals Certified",
+            "Excel Advanced",
+            "Datenschutz-Basisschulung"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_05_Zweiseitig.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=4; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Operations Analyst",
+              "company": "Franken Logistik Solutions GmbH",
+              "start_date": "2024-02",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Disponent",
+              "company": "SüdCargo KG",
+              "start_date": "2021-06",
+              "end_date": "2024-01",
+              "responsibilities": []
+            },
+            {
+              "title": "Kaufmännischer Sachbearbeiter",
+              "company": "Bavaria Handel GmbH",
+              "start_date": "2018-01",
+              "end_date": "2021-05",
+              "responsibilities": []
+            },
+            {
+              "title": "Service Mitarbeiter",
+              "company": "MesseService Nürnberg GmbH",
+              "start_date": "2015-08",
+              "end_date": "2017-12",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_05_Zweiseitig.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "",
+              "qualification": "Kaufmann für Spedition und Logistikdienstleistung (IHI)",
+              "start_date": "2012",
+              "end_date": "2015"
+            },
+            {
+              "institution": "Realschule Nürnberg",
+              "qualification": "Mittlere Reife",
+              "start_date": "2008",
+              "end_date": "2012"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_05_Zweiseitig.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=7; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Disposition",
+            "Logistik",
+            "Zoll",
+            "KPI-Reporting",
+            "Bestandsmanagement",
+            "Lieferantenkontakt",
+            "Reklamationsbearbeitung"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_05_Zweiseitig.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Excel",
+            "Power Query",
+            "Power BI",
+            "SAP TM",
+            "Outlook",
+            "Teams"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "DE_05_Zweiseitig.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=4; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "Lean Management Basics",
+            "Excel Pivot & Power Query",
+            "Arbeitssicherheit 2025",
+            "Grundlagen Zollabwicklung"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_01_Classic_Resume.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Customer Operations Lead",
+              "company": "Harbour & Co Services Ltd",
+              "start_date": "2022-03",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Order Management Specialist",
+              "company": "Cedar Trading Group",
+              "start_date": "2019-07",
+              "end_date": "2022-02",
+              "responsibilities": []
+            },
+            {
+              "title": "Customer Service Coordinator",
+              "company": "Northbridge Office Supplies",
+              "start_date": "2016-09",
+              "end_date": "2019-06",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_01_Classic_Resume.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "University of the West of England",
+              "qualification": "BA Business Management",
+              "start_date": "2013",
+              "end_date": "2016"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_01_Classic_Resume.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=5; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Customer operations",
+            "order management",
+            "KPI reporting",
+            "complaint handling",
+            "process improvement"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_01_Classic_Resume.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Microsoft 365",
+            "Salesforce",
+            "HubSpot",
+            "Jira",
+            "Confluence",
+            "Power BI"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_01_Classic_Resume.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "PRINCE2 Foundation",
+            "Advanced Excel",
+            "First Aid at Work"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_02_Two_Column_Trap.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Operations Coordinator",
+              "company": "Redwood Mobility Ltd",
+              "start_date": "2023-01-01",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Customer Success Specialist",
+              "company": "",
+              "start_date": "2020-01-01",
+              "end_date": "2023-12-31",
+              "responsibilities": []
+            },
+            {
+              "title": "",
+              "company": "Blue Peak Systems",
+              "start_date": "",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Sales Support Administrator",
+              "company": "Oakfield Distribution",
+              "start_date": "2017-01-01",
+              "end_date": "2020-12-31",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_02_Two_Column_Trap.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Manchester Metropolitan University",
+              "qualification": "BSc Business & Management",
+              "start_date": "2014-01-01",
+              "end_date": "2017-12-31"
+            },
+            {
+              "institution": "Northside College",
+              "qualification": "A Levels",
+              "start_date": "2012-01-01",
+              "end_date": "2014-12-31"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_02_Two_Column_Trap.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=6; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Customer success",
+            "reporting",
+            "CRM administration",
+            "process stakeholder communication",
+            "order fulfilment mapping"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_02_Two_Column_Trap.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=7; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Excel",
+            "Power BI",
+            "SQL",
+            "Dynamics 365",
+            "Zendesk",
+            "Jira",
+            "Confluence"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_02_Two_Column_Trap.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "EN_03_Missing_Address_Fields.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Procurement Coordinator",
+              "company": "Linden Works GmbH",
+              "start_date": "2024-01-01",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Operations Assistant",
+              "company": "Urban Supply Europe GmbH",
+              "start_date": "2021-01-01",
+              "end_date": "2024-12-31",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_03_Missing_Address_Fields.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Berlin School of Economics",
+              "qualification": "B.A. International Business",
+              "start_date": "2018-01-01",
+              "end_date": "2021-12-31"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_03_Missing_Address_Fields.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=5; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Procurement",
+            "supplier management",
+            "scheduling",
+            "reporting",
+            "data quality"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_03_Missing_Address_Fields.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=5; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "SAP Ariba",
+            "Excel",
+            "Teams",
+            "SharePoint",
+            "Trello"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_03_Missing_Address_Fields.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "EN_04_German_Address_English_CV.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Service Delivery Manager",
+              "company": "Alpine Cloud Services GmbH",
+              "start_date": "2022-04",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Support Operations Specialist",
+              "company": "LakeTech Solutions AG",
+              "start_date": "2019-01",
+              "end_date": "2022-03",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_04_German_Address_English_CV.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "HTWG Konstanz",
+              "qualification": "B.Sc. Business Information Systems",
+              "start_date": "",
+              "end_date": "2018"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_04_German_Address_English_CV.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=5; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Service delivery",
+            "SLA reporting",
+            "escalation management",
+            "stakeholder communication",
+            "process improvement"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_04_German_Address_English_CV.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "ServiceNow",
+            "Salesforce",
+            "Microsoft 365",
+            "Jira",
+            "Confluence",
+            "Power BI"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_04_German_Address_English_CV.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "EN_05_Skills_Heavy.pdf",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Purchasing Specialist",
+              "company": "Greenline Medical Supplies Ltd",
+              "start_date": "2022-01-01",
+              "end_date": "",
+              "responsibilities": []
+            },
+            {
+              "title": "Supply Chain Administrator",
+              "company": "Meridian Homeware Ltd",
+              "start_date": "2019-01-01",
+              "end_date": "2022-12-31",
+              "responsibilities": []
+            },
+            {
+              "title": "Order Processing Assistant",
+              "company": "Cobalt Distribution Ltd",
+              "start_date": "2016-01-01",
+              "end_date": "2019-12-31",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_05_Skills_Heavy.pdf",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Dublin City University",
+              "qualification": "BCom",
+              "start_date": "2012-01-01",
+              "end_date": "2016-12-31"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_05_Skills_Heavy.pdf",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=8; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Vendor management",
+            "inventory control",
+            "purchasing",
+            "order processing",
+            "KPI reporting",
+            "master data maintenance",
+            "contract administration",
+            "customer communication"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_05_Skills_Heavy.pdf",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Microsoft 365",
+            "Oracle NetSuite",
+            "Power BI",
+            "Power Query",
+            "DocuWare",
+            "Monday.com"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "EN_05_Skills_Heavy.pdf",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "CIPS Procurement Essentials",
+            "Advanced Excel & Power Query",
+            "GDPR Awareness for Operations"
+          ],
+          "text_grounded": true
+        }
+      ]
+    },
+    "quality_claim_scope": [
+      "COMPLETE_GT_ONLY_V3 F1 applies only to fields with full GT values.",
+      "Employment/education quality cannot be claimed when GT is count-only.",
+      "Not a blind-test result and not a 99% claim."
+    ]
+  }
+}

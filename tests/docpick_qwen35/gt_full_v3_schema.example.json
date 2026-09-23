@@ -1,0 +1,44 @@
+{
+  "schema_version": "karrierekrake_cv_gt_full_v3",
+  "description": "Example only — do not replace existing expected_results.json. Full employment/education lists required for V3 scoring.",
+  "documents": {
+    "EXAMPLE_DE.pdf": {
+      "language": "de",
+      "name": { "first_name": "Ada", "last_name": "Beispiel" },
+      "email": "ada@example.com",
+      "phone": "+49 170 0000000",
+      "dob": "01.01.1990",
+      "address": {
+        "street": "Musterstraße",
+        "house_number": "1",
+        "postal_code": "10115",
+        "city": "Berlin",
+        "country": "Deutschland"
+      },
+      "languages": [["Deutsch", "C2"], ["Englisch", "B2"]],
+      "licenses": ["B"],
+      "employment": [
+        {
+          "company": "Beispiel GmbH",
+          "position": "Sachbearbeiterin",
+          "start_date": "2020-01",
+          "end_date": null
+        }
+      ],
+      "education": [
+        {
+          "institution": "Beispiel-Berufskolleg",
+          "qualification": "Kauffrau für Büromanagement (IHK)",
+          "start_date": "2016-08",
+          "end_date": "2019-06"
+        }
+      ],
+      "skills": ["Kundenservice", "Reporting"],
+      "software": ["Microsoft 365", "SAP"],
+      "certificates": ["Ersthelfer"],
+      "work_count": 1,
+      "education_count": 1,
+      "missing": []
+    }
+  }
+}

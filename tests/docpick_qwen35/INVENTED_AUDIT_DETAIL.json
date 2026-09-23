@@ -1,0 +1,852 @@
+{
+  "schema_version": 1,
+  "metric_label": "INVENTED_AUDIT_ROUND3_NOT_A_RESCORE",
+  "note": "Does not modify Scorer V2 or GT. Classifies prior invented_critical flags.",
+  "n_invented_critical_flags": 28,
+  "verdict_counts": {
+    "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED": 28
+  },
+  "kind_counts": {
+    "invented_education": 10,
+    "invented_employment": 10,
+    "invented_software": 8
+  },
+  "cases": [
+    {
+      "document": "DE_01_Klassisch.pdf",
+      "lang": "de",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=1 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 1,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   Berufskolleg Münster / BüroPartner West GmbH Kauffrau für Büromanagement (IHK) ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Lebenslauf  ## Mara König  Buchenweg 14, 48143 Münster  mara.koenig@example.com | +49 151 20003000  Geboren: 07.11.1994  ## Berufserfahrung  ## 05/2022 - heute | Teamkoordinatorin Kundenservice  We"
+    },
+    {
+      "document": "DE_01_Klassisch.pdf",
+      "lang": "de",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=3 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 3,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Westfalen Service GmbH  Teamkoordinatorin Kundenservice   ",
+          "in_text": true
+        },
+        {
+          "blob": "HanseKontor Handel KG  Sachbearbeiterin Auftragsmanagement   ",
+          "in_text": true
+        },
+        {
+          "blob": "Rheinblick Versand GmbH  Kaufmännische Mitarbeiterin   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Lebenslauf  ## Mara König  Buchenweg 14, 48143 Münster  mara.koenig@example.com | +49 151 20003000  Geboren: 07.11.1994  ## Berufserfahrung  ## 05/2022 - heute | Teamkoordinatorin Kundenservice  We"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "lang": "de",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=2 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   Nordwest Handelsakademie / Friesen Import GmbH Kaufmann für Groß- und Außenhandelsmanagement (IHK) ",
+          "in_text": true
+        },
+        {
+          "blob": "   BBS Ammerland Fachhochschulreife Wirtschaft und Verwaltung ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## FIKTIVER TEST-LEBENSLAUF  ## Jonas Falkenberg  Hafenweg 87 · 28195 Bremen  jonas.falkenberg@example.com · +49 151 11112222  Geburtsdatum: 19.02.1991  ## BERUFSERFAHRUNG  04/2023 - heute  Projektkoo"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "lang": "de",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=4 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 4,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "WeserTech Anlagenservice GmbH  Projektkoordinator Operations & Customer Solutions   ",
+          "in_text": true
+        },
+        {
+          "blob": "Nordstern Komponentenhandel KG  Sachbearbeiter Einkauf & Disposition   ",
+          "in_text": true
+        },
+        {
+          "blob": "Elbkontor Bürobedarf GmbH  Kundenservice / Auftragsmanagement   ",
+          "in_text": true
+        },
+        {
+          "blob": "Moorland Versandservice GmbH  Kaufmännischer Mitarbeiter   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## FIKTIVER TEST-LEBENSLAUF  ## Jonas Falkenberg  Hafenweg 87 · 28195 Bremen  jonas.falkenberg@example.com · +49 151 11112222  Geburtsdatum: 19.02.1991  ## BERUFSERFAHRUNG  04/2023 - heute  Projektkoo"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "lang": "de",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=12 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 12,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Microsoft 365",
+          "in_text": true
+        },
+        {
+          "blob": "Dynamics 365",
+          "in_text": true
+        },
+        {
+          "blob": "SAP Business One",
+          "in_text": true
+        },
+        {
+          "blob": "HubSpot CRM",
+          "in_text": true
+        },
+        {
+          "blob": "Power BI",
+          "in_text": true
+        },
+        {
+          "blob": "Power Query",
+          "in_text": true
+        },
+        {
+          "blob": "Teams",
+          "in_text": true
+        },
+        {
+          "blob": "SharePoint",
+          "in_text": true
+        },
+        {
+          "blob": "Jira",
+          "in_text": true
+        },
+        {
+          "blob": "Confluence",
+          "in_text": true
+        },
+        {
+          "blob": "Adobe Acrobat",
+          "in_text": true
+        },
+        {
+          "blob": "DocuWare",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## FIKTIVER TEST-LEBENSLAUF  ## Jonas Falkenberg  Hafenweg 87 · 28195 Bremen  jonas.falkenberg@example.com · +49 151 11112222  Geburtsdatum: 19.02.1991  ## BERUFSERFAHRUNG  04/2023 - heute  Projektkoo"
+    },
+    {
+      "document": "DE_03_C1_Kontextfalle.pdf",
+      "lang": "de",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=2 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   IHK Düsseldorf Ausbildung zur Kauffrau für Büromanagement ",
+          "in_text": true
+        },
+        {
+          "blob": "   Berufskolleg Düsseldorf Höhere Handelsschule ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Curriculum Vitae  ## Selin Aras  Kastanienallee 6a | 40233 Düsseldorf | selin.aras@example.net Telefon +49 160 3456789  ## Profil  Kaufmännische Allrounderin mit Schwerpunkt Einkauf, Kundenkontakt "
+    },
+    {
+      "document": "DE_03_C1_Kontextfalle.pdf",
+      "lang": "de",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=2 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Rheinwerk Technik GmbH  Office & Procurement Specialist   ",
+          "in_text": true
+        },
+        {
+          "blob": "Metroline Services KG  Customer Operations Specialist   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Curriculum Vitae  ## Selin Aras  Kastanienallee 6a | 40233 Düsseldorf | selin.aras@example.net Telefon +49 160 3456789  ## Profil  Kaufmännische Allrounderin mit Schwerpunkt Einkauf, Kundenkontakt "
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "lang": "de",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=2 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   Hochschule Leipzig B.A. Betriebswirtschaftslehre ",
+          "in_text": true
+        },
+        {
+          "blob": "   Goethe-Gymnasium Leipzig Abitur ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Nina Sommer  Leipzig | nina.sommer@example.org  ## AUSBILDUNG  10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig  08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig  ## PRAXISERFA"
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "lang": "de",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=2 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Elster Digital GmbH  Junior Project Manager   ",
+          "in_text": true
+        },
+        {
+          "blob": "Saxonia Media Services GmbH  Projektassistenz   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Nina Sommer  Leipzig | nina.sommer@example.org  ## AUSBILDUNG  10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig  08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig  ## PRAXISERFA"
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "lang": "de",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=5 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 5,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Notion",
+          "in_text": true
+        },
+        {
+          "blob": "Asana",
+          "in_text": true
+        },
+        {
+          "blob": "Jira",
+          "in_text": true
+        },
+        {
+          "blob": "Microsoft 365",
+          "in_text": true
+        },
+        {
+          "blob": "Power BI",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Nina Sommer  Leipzig | nina.sommer@example.org  ## AUSBILDUNG  10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig  08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig  ## PRAXISERFA"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "lang": "de",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=2 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "    Kaufmann für Spedition und Logistikdienstleistung (IHI) ",
+          "in_text": true
+        },
+        {
+          "blob": "   Realschule Nürnberg Mittlere Reife ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Bewerbungsprofil  ## Tobias Renner  Am Stadtpark 22b, 90402 Nürnberg tobias.renner@example.com | +49 176 99887766  ## Erfahrung  ## 02.2024 - heute | Operations Analyst | Franken Logistik Solutions"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "lang": "de",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=4 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 4,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Franken Logistik Solutions GmbH  Operations Analyst   ",
+          "in_text": true
+        },
+        {
+          "blob": "SüdCargo KG  Disponent   ",
+          "in_text": true
+        },
+        {
+          "blob": "Bavaria Handel GmbH  Kaufmännischer Sachbearbeiter   ",
+          "in_text": true
+        },
+        {
+          "blob": "MesseService Nürnberg GmbH  Service Mitarbeiter   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Bewerbungsprofil  ## Tobias Renner  Am Stadtpark 22b, 90402 Nürnberg tobias.renner@example.com | +49 176 99887766  ## Erfahrung  ## 02.2024 - heute | Operations Analyst | Franken Logistik Solutions"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "lang": "de",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=6 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 6,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Excel",
+          "in_text": true
+        },
+        {
+          "blob": "Power Query",
+          "in_text": true
+        },
+        {
+          "blob": "Power BI",
+          "in_text": true
+        },
+        {
+          "blob": "SAP TM",
+          "in_text": true
+        },
+        {
+          "blob": "Outlook",
+          "in_text": true
+        },
+        {
+          "blob": "Teams",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Bewerbungsprofil  ## Tobias Renner  Am Stadtpark 22b, 90402 Nürnberg tobias.renner@example.com | +49 176 99887766  ## Erfahrung  ## 02.2024 - heute | Operations Analyst | Franken Logistik Solutions"
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "lang": "en",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=1 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 1,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   University of the West of England BA Business Management ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Resume  ## Emily Carter  18 Willow Street, Bristol BS1 4QF, United Kingdom emily.carter@example.com | +44 7700 900123  | Professional Experience                                                     "
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "lang": "en",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=3 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 3,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Harbour & Co Services Ltd  Customer Operations Lead   ",
+          "in_text": true
+        },
+        {
+          "blob": "Cedar Trading Group  Order Management Specialist   ",
+          "in_text": true
+        },
+        {
+          "blob": "Northbridge Office Supplies  Customer Service Coordinator   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Resume  ## Emily Carter  18 Willow Street, Bristol BS1 4QF, United Kingdom emily.carter@example.com | +44 7700 900123  | Professional Experience                                                     "
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "lang": "en",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=6 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 6,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Microsoft 365",
+          "in_text": true
+        },
+        {
+          "blob": "Salesforce",
+          "in_text": true
+        },
+        {
+          "blob": "HubSpot",
+          "in_text": true
+        },
+        {
+          "blob": "Jira",
+          "in_text": true
+        },
+        {
+          "blob": "Confluence",
+          "in_text": true
+        },
+        {
+          "blob": "Power BI",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Resume  ## Emily Carter  18 Willow Street, Bristol BS1 4QF, United Kingdom emily.carter@example.com | +44 7700 900123  | Professional Experience                                                     "
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "lang": "en",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=2 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   Manchester Metropolitan University BSc Business & Management ",
+          "in_text": true
+        },
+        {
+          "blob": "   Northside College A Levels ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## CURRICULUM VITAE  ## Daniel Brooks  42 Kingfisher Road · Manchester M1 2AB daniel.brooks@example.org · +44 7700 900555  ## EMPLOYMENT HISTORY  | Languages                   | 2023 - Present &#124; "
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "lang": "en",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=3 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 4,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Redwood Mobility Ltd  Operations Coordinator   ",
+          "in_text": true
+        },
+        {
+          "blob": "  Customer Success Specialist   ",
+          "in_text": true
+        },
+        {
+          "blob": "Blue Peak Systems     ",
+          "in_text": true
+        },
+        {
+          "blob": "Oakfield Distribution  Sales Support Administrator   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## CURRICULUM VITAE  ## Daniel Brooks  42 Kingfisher Road · Manchester M1 2AB daniel.brooks@example.org · +44 7700 900555  ## EMPLOYMENT HISTORY  | Languages                   | 2023 - Present &#124; "
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "lang": "en",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=7 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 7,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Excel",
+          "in_text": true
+        },
+        {
+          "blob": "Power BI",
+          "in_text": true
+        },
+        {
+          "blob": "SQL",
+          "in_text": true
+        },
+        {
+          "blob": "Dynamics 365",
+          "in_text": true
+        },
+        {
+          "blob": "Zendesk",
+          "in_text": true
+        },
+        {
+          "blob": "Jira",
+          "in_text": true
+        },
+        {
+          "blob": "Confluence",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## CURRICULUM VITAE  ## Daniel Brooks  42 Kingfisher Road · Manchester M1 2AB daniel.brooks@example.org · +44 7700 900555  ## EMPLOYMENT HISTORY  | Languages                   | 2023 - Present &#124; "
+    },
+    {
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "lang": "en",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=1 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 1,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   Berlin School of Economics B.A. International Business ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Aisha Rahman  Berlin, Germany | aisha.rahman@example.net  ## Summary  Operations professional with experience in procurement, supplier communication and service delivery.  ## Experience  2024 - Pre"
+    },
+    {
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "lang": "en",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=2 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Linden Works GmbH  Procurement Coordinator   ",
+          "in_text": true
+        },
+        {
+          "blob": "Urban Supply Europe GmbH  Operations Assistant   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Aisha Rahman  Berlin, Germany | aisha.rahman@example.net  ## Summary  Operations professional with experience in procurement, supplier communication and service delivery.  ## Experience  2024 - Pre"
+    },
+    {
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "lang": "en",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=5 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 5,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "SAP Ariba",
+          "in_text": true
+        },
+        {
+          "blob": "Excel",
+          "in_text": true
+        },
+        {
+          "blob": "Teams",
+          "in_text": true
+        },
+        {
+          "blob": "SharePoint",
+          "in_text": true
+        },
+        {
+          "blob": "Trello",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Aisha Rahman  Berlin, Germany | aisha.rahman@example.net  ## Summary  Operations professional with experience in procurement, supplier communication and service delivery.  ## Experience  2024 - Pre"
+    },
+    {
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "lang": "en",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=1 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 1,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   HTWG Konstanz B.Sc. Business Information Systems ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## PROFILE  ## Lucas Meyer  Seestraße 31, 78462 Konstanz, Germany lucas.meyer@example.com | +49 172 4000500  | Career History                                                                           "
+    },
+    {
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "lang": "en",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=2 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 2,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Alpine Cloud Services GmbH  Service Delivery Manager   ",
+          "in_text": true
+        },
+        {
+          "blob": "LakeTech Solutions AG  Support Operations Specialist   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## PROFILE  ## Lucas Meyer  Seestraße 31, 78462 Konstanz, Germany lucas.meyer@example.com | +49 172 4000500  | Career History                                                                           "
+    },
+    {
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "lang": "en",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=6 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 6,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "ServiceNow",
+          "in_text": true
+        },
+        {
+          "blob": "Salesforce",
+          "in_text": true
+        },
+        {
+          "blob": "Microsoft 365",
+          "in_text": true
+        },
+        {
+          "blob": "Jira",
+          "in_text": true
+        },
+        {
+          "blob": "Confluence",
+          "in_text": true
+        },
+        {
+          "blob": "Power BI",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## PROFILE  ## Lucas Meyer  Seestraße 31, 78462 Konstanz, Germany lucas.meyer@example.com | +49 172 4000500  | Career History                                                                           "
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "lang": "en",
+      "kind": "invented_education",
+      "field": "education",
+      "gt_note": "education_count=1 education_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 1,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "   Dublin City University BCom ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Sophia Bennett  7 Orchard Lane, Dublin D02 XY76, Ireland sophia.bennett@example.com | +353 85 123 4567  ## Key Skills  Vendor management · inventory control · purchasing · order processing · KPI re"
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "lang": "en",
+      "kind": "invented_employment",
+      "field": "employment",
+      "gt_note": "work_count=3 employment_list=NO (empty→expect_absent)",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 3,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Greenline Medical Supplies Ltd  Purchasing Specialist   ",
+          "in_text": true
+        },
+        {
+          "blob": "Meridian Homeware Ltd  Supply Chain Administrator   ",
+          "in_text": true
+        },
+        {
+          "blob": "Cobalt Distribution Ltd  Order Processing Assistant   ",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Sophia Bennett  7 Orchard Lane, Dublin D02 XY76, Ireland sophia.bennett@example.com | +353 85 123 4567  ## Key Skills  Vendor management · inventory control · purchasing · order processing · KPI re"
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "lang": "en",
+      "kind": "invented_software",
+      "field": "software",
+      "gt_note": "software_count=6 software_list=NO / empty→expect_absent; software=None",
+      "gt_complete_list": false,
+      "scorer_reason": "expect_absent=True because GT list empty; any extraction → hallucinated",
+      "n_extracted": 6,
+      "all_items_in_cv_text": true,
+      "any_item_in_cv_text": true,
+      "items": [
+        {
+          "blob": "Microsoft 365",
+          "in_text": true
+        },
+        {
+          "blob": "Oracle NetSuite",
+          "in_text": true
+        },
+        {
+          "blob": "Power BI",
+          "in_text": true
+        },
+        {
+          "blob": "Power Query",
+          "in_text": true
+        },
+        {
+          "blob": "DocuWare",
+          "in_text": true
+        },
+        {
+          "blob": "Monday.com",
+          "in_text": true
+        }
+      ],
+      "verdict": "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED",
+      "cv_snippet": "## Sophia Bennett  7 Orchard Lane, Dublin D02 XY76, Ireland sophia.bennett@example.com | +353 85 123 4567  ## Key Skills  Vendor management · inventory control · purchasing · order processing · KPI re"
+    }
+  ]
+}

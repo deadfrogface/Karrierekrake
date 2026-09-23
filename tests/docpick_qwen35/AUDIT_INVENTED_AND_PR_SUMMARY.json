@@ -1,0 +1,62 @@
+{
+  "audit_id": "docpick_round3_invented_and_pr_retention",
+  "branch": "cursor/docpick-qwen35-cv-replace-d85b",
+  "no_second_docpick_extraction": true,
+  "no_99_claim": true,
+  "invented_critical_v2_flags": {
+    "total": 28,
+    "echte_halluzinationen": 0,
+    "nicht_bewertbar": 28,
+    "breakdown": {
+      "invented_education": 10,
+      "invented_employment": 10,
+      "invented_software": 8
+    },
+    "reason": "GT had only *_count (or empty list → Scorer V2 expect_absent); all extracts text-grounded in CV"
+  },
+  "echte_missing_on_complete_gt": {
+    "total": 1,
+    "items": [
+      {
+        "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+        "field": "address.city",
+        "expected": "Leipzig"
+      }
+    ]
+  },
+  "metrics_not_reliable_as_overall_quality": [
+    "Scorer V2 overall F1 on SMOKE_DE_EN_10",
+    "Scorer V2 hallucination_rate on SMOKE_DE_EN_10",
+    "invented_critical / Perfect Core when employment+education GT is count-only"
+  ],
+  "new_metric": {
+    "name": "COMPLETE_GT_ONLY_V3",
+    "not_overall_f1": true,
+    "round3_rescore_f1": 0.996415770609319,
+    "round3_rescore_hallu": 0.0,
+    "round3_rescore_missing": 1,
+    "nicht_bewertbar_list_fields": 46,
+    "note": "Emp/Edu still not scored without full GT lists; high F1 is NOT a 99% product claim"
+  },
+  "pr_decisions": {
+    "56": "UEBERHOLT — Phi-Pfad; Infra bereits in #62 behalten",
+    "57": "UEBERHOLT DET-Routing — Scorer/Holdout-Infra in #62 behalten",
+    "58": "UEBERHOLT — DET-only, kein Cherry-Pick",
+    "59": "UEBERHOLT — SmartResume Gate failed",
+    "60": "UEBERHOLT — optionales Archiv der Compare-Artefakte; kein Phi",
+    "61": "UEBERHOLT — OSS-Versuch durch #62 ersetzt"
+  },
+  "productive_import_pr62": {
+    "path": "import_cv → import_cv_docpick",
+    "det_fallback": false,
+    "parse_cv_text": "raises RuntimeError"
+  },
+  "deliverables": [
+    "tests/docpick_qwen35/INVENTED_AUDIT_DETAIL.json",
+    "tests/docpick_qwen35/COMPLETE_GT_ONLY_METRICS.json",
+    "tests/docpick_qwen35/COMPLETE_GT_ONLY_V3_RESCORE.json",
+    "scripts/holdout_scorer_v3_complete_gt.py",
+    "docs/project/DE_EN_FULL_GT_AND_SCORER_V3_SPEC.md",
+    "docs/project/PR56_61_NON_DET_RETENTION_AUDIT.md"
+  ]
+}
