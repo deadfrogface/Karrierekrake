@@ -1,0 +1,662 @@
+{
+  "side_by_side": {
+    "V3": {
+      "metric": "COMPLETE_GT_ONLY_V3",
+      "f1": 0.933740191804708,
+      "precision": 0.903035413153457,
+      "recall": 0.9666064981949458,
+      "hallu": 0.001635322976287817,
+      "counts": {
+        "correct": 1071,
+        "missing": 37,
+        "hallucinated": 2,
+        "wrong": 113,
+        "wrong_category": 0
+      },
+      "by_lang": {
+        "de": {
+          "f1": 0.9363920750782065,
+          "precision": 0.904330312185297,
+          "recall": 0.9708108108108108,
+          "hallucination_rate": 0.000980392156862745,
+          "perfect_core": "4/31",
+          "counts": {
+            "correct": 898,
+            "missing": 27,
+            "wrong": 94,
+            "hallucinated": 1,
+            "wrong_category": 0
+          }
+        },
+        "en": {
+          "f1": 0.9202127659574468,
+          "precision": 0.8963730569948186,
+          "recall": 0.9453551912568307,
+          "hallucination_rate": 0.0049261083743842365,
+          "perfect_core": "4/9",
+          "counts": {
+            "correct": 173,
+            "hallucinated": 1,
+            "wrong": 19,
+            "missing": 10,
+            "wrong_category": 0
+          }
+        }
+      },
+      "perfect_core": "8/40"
+    },
+    "V3_1_DATE_NORM": {
+      "metric": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+      "f1": 0.9812578092461474,
+      "precision": 0.9932546374367622,
+      "recall": 0.9695473251028807,
+      "hallu": 0.001635322976287817,
+      "counts": {
+        "correct": 1178,
+        "missing": 37,
+        "hallucinated": 2,
+        "wrong": 6,
+        "wrong_category": 0
+      },
+      "date_norm_flipped_fields": 107,
+      "by_lang": {
+        "de": {
+          "f1": 0.9840637450199202,
+          "precision": 0.9949647532729103,
+          "recall": 0.9733990147783251,
+          "hallucination_rate": 0.000980392156862745,
+          "perfect_core": "15/31",
+          "counts": {
+            "correct": 988,
+            "missing": 27,
+            "wrong": 4,
+            "hallucinated": 1,
+            "wrong_category": 0
+          }
+        },
+        "en": {
+          "f1": 0.9669211195928753,
+          "precision": 0.9844559585492227,
+          "recall": 0.95,
+          "hallucination_rate": 0.0049261083743842365,
+          "perfect_core": "5/9",
+          "counts": {
+            "correct": 190,
+            "hallucinated": 1,
+            "wrong": 2,
+            "missing": 10,
+            "wrong_category": 0
+          }
+        }
+      },
+      "perfect_core": "20/40",
+      "note": "Scorer-only gain — NOT a parser improvement"
+    }
+  },
+  "remaining_errors_after_date_norm": {
+    "n": 45,
+    "by_status": {
+      "missing": 37,
+      "hallucinated": 2,
+      "wrong": 6
+    },
+    "by_group": {
+      "address": 7,
+      "education": 9,
+      "employment": 15,
+      "personal": 12,
+      "software": 2
+    },
+    "by_field": [
+      [
+        "name.first_name",
+        7
+      ],
+      [
+        "employment:0.end_date",
+        7
+      ],
+      [
+        "name.last_name",
+        5
+      ],
+      [
+        "education:0.end_date",
+        5
+      ],
+      [
+        "address.city",
+        3
+      ],
+      [
+        "education:0.start_date",
+        3
+      ],
+      [
+        "address.country",
+        2
+      ],
+      [
+        "employment_entry:0",
+        2
+      ],
+      [
+        "employment:0.position",
+        2
+      ],
+      [
+        "employment:0.start_date",
+        2
+      ],
+      [
+        "address.street",
+        1
+      ],
+      [
+        "education_entry:0",
+        1
+      ],
+      [
+        "employment:0.company",
+        1
+      ],
+      [
+        "employment_extra:1",
+        1
+      ],
+      [
+        "software:0",
+        1
+      ],
+      [
+        "software:1",
+        1
+      ],
+      [
+        "address.postal_code",
+        1
+      ]
+    ],
+    "cases": [
+      {
+        "corpus": "SMOKE_DE_EN_10_V1",
+        "doc": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+        "lang": "de",
+        "field": "address.city",
+        "group": "address",
+        "status": "missing",
+        "expected": "Leipzig",
+        "actual": ""
+      },
+      {
+        "corpus": "SMOKE_DE_EN_10_V1",
+        "doc": "EN_03_Missing_Address_Fields.pdf",
+        "lang": "en",
+        "field": "address.street",
+        "group": "address",
+        "status": "hallucinated",
+        "expected": null,
+        "actual": "Berlin"
+      },
+      {
+        "corpus": "SMOKE_DE_EN_10_V1",
+        "doc": "EN_03_Missing_Address_Fields.pdf",
+        "lang": "en",
+        "field": "address.city",
+        "group": "address",
+        "status": "wrong",
+        "expected": "Berlin",
+        "actual": "Germany"
+      },
+      {
+        "corpus": "SMOKE_DE_EN_10_V1",
+        "doc": "EN_03_Missing_Address_Fields.pdf",
+        "lang": "en",
+        "field": "address.country",
+        "group": "address",
+        "status": "missing",
+        "expected": "Germany",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_001.pdf",
+        "lang": "de",
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "2008",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_001.pdf",
+        "lang": "de",
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing",
+        "expected": {
+          "company": "Seestern Produktion GmbH",
+          "position": "Aquakulturwirtin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Protokollführung",
+            "Schadensanalyse"
+          ]
+        },
+        "actual": null
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_003.pdf",
+        "lang": "de",
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "wrong",
+        "expected": "Célina",
+        "actual": "Celina"
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_004.pdf",
+        "lang": "de",
+        "field": "employment:0.position",
+        "group": "employment",
+        "status": "wrong",
+        "expected": "Deichbauer",
+        "actual": "Materialdisposition · Bestandsprüfung"
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_005.pdf",
+        "lang": "de",
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Esra",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_005.pdf",
+        "lang": "de",
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Lavigne",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_005.pdf",
+        "lang": "de",
+        "field": "employment:0.start_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "02/2019",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_005.pdf",
+        "lang": "de",
+        "field": "employment:0.end_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "heute",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_007.pdf",
+        "lang": "de",
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "2014",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_007.pdf",
+        "lang": "de",
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "2017",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_007.pdf",
+        "lang": "de",
+        "field": "employment:0.position",
+        "group": "employment",
+        "status": "missing",
+        "expected": "Glasveredlerin",
+        "actual": null
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_009.pdf",
+        "lang": "de",
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Imani",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_009.pdf",
+        "lang": "de",
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Schulte",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_009.pdf",
+        "lang": "de",
+        "field": "employment:0.start_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "02/2019",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_009.pdf",
+        "lang": "de",
+        "field": "employment:0.end_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "heute",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_010.pdf",
+        "lang": "de",
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "ohne Abschluss",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_013.pdf",
+        "lang": "de",
+        "field": "education_entry:0",
+        "group": "education",
+        "status": "missing",
+        "expected": {
+          "institution": "Berufsschule Arnhem",
+          "qualification": "Fachhochschulreife",
+          "start_date": "2012",
+          "end_date": "2015"
+        },
+        "actual": null
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_013.pdf",
+        "lang": "de",
+        "field": "employment_entry:0",
+        "group": "employment",
+        "status": "missing",
+        "expected": {
+          "company": "Brückenbau West GmbH",
+          "position": "Naturwerksteinmechanikerin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Schichtübergabe",
+            "Kundenkommunikation"
+          ]
+        },
+        "actual": null
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_017.pdf",
+        "lang": "de",
+        "field": "employment:0.end_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "heute",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_019.pdf",
+        "lang": "de",
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Una",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_019.pdf",
+        "lang": "de",
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "wrong",
+        "expected": "Heinrich",
+        "actual": "Schäfer"
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_019.pdf",
+        "lang": "de",
+        "field": "employment:0.company",
+        "group": "employment",
+        "status": "missing",
+        "expected": "Mosaik Dienste AG",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_019.pdf",
+        "lang": "de",
+        "field": "employment:0.end_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "08/2021",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_019.pdf",
+        "lang": "de",
+        "field": "employment_extra:1",
+        "group": "employment",
+        "status": "hallucinated",
+        "expected": null,
+        "actual": {
+          "title": "",
+          "company": "Mosaik Dienste AG",
+          "start_date": "2021-08",
+          "end_date": "",
+          "responsibilities": []
+        }
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_020.pdf",
+        "lang": "de",
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "ohne Abschluss",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_021.pdf",
+        "lang": "de",
+        "field": "employment:0.end_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "heute",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_023.pdf",
+        "lang": "de",
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Zita",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_023.pdf",
+        "lang": "de",
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Novak",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_025.pdf",
+        "lang": "en",
+        "field": "employment:0.end_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "heute",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_025.pdf",
+        "lang": "en",
+        "field": "software:0",
+        "group": "software",
+        "status": "missing",
+        "expected": "Minitab",
+        "actual": []
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_025.pdf",
+        "lang": "en",
+        "field": "software:1",
+        "group": "software",
+        "status": "missing",
+        "expected": "Qlik Sense",
+        "actual": []
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_026.pdf",
+        "lang": "en",
+        "field": "address.city",
+        "group": "address",
+        "status": "wrong",
+        "expected": "Genève",
+        "actual": "Schweiz"
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_026.pdf",
+        "lang": "en",
+        "field": "address.country",
+        "group": "address",
+        "status": "missing",
+        "expected": "Schweiz",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_027.pdf",
+        "lang": "en",
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Daisy",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_027.pdf",
+        "lang": "en",
+        "field": "name.last_name",
+        "group": "personal",
+        "status": "missing",
+        "expected": "Turner",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_027.pdf",
+        "lang": "en",
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing",
+        "expected": "4000",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_027.pdf",
+        "lang": "en",
+        "field": "education:0.start_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "2010",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_027.pdf",
+        "lang": "en",
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "2013",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_029.pdf",
+        "lang": "de",
+        "field": "employment:0.end_date",
+        "group": "employment",
+        "status": "missing",
+        "expected": "heute",
+        "actual": ""
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_030.pdf",
+        "lang": "de",
+        "field": "name.first_name",
+        "group": "personal",
+        "status": "wrong",
+        "expected": "Mikołaj",
+        "actual": "Mikolaj"
+      },
+      {
+        "corpus": "MINI_HOLDOUT_30",
+        "doc": "MH_030.pdf",
+        "lang": "de",
+        "field": "education:0.end_date",
+        "group": "education",
+        "status": "missing",
+        "expected": "ohne Abschluss",
+        "actual": ""
+      }
+    ]
+  }
+}

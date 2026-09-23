@@ -11,6 +11,7 @@ On failure: raises ``CvImportError`` so the UI can show an error / manual path.
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import re
@@ -147,13 +148,18 @@ def _norm_licence(s: str) -> str:
     return t
 
 
+_docling_converter = None
+
+
 def extract_cv_text(path: Path) -> str:
     """Prefer Docling; on Docling failure raise (no DET text heuristics)."""
+    global _docling_converter
     try:
         from docling.document_converter import DocumentConverter
 
-        conv = DocumentConverter()
-        text = conv.convert(str(path)).document.export_to_markdown() or ""
+        if _docling_converter is None:
+            _docling_converter = DocumentConverter()
+        text = _docling_converter.convert(str(path)).document.export_to_markdown() or ""
     except Exception as exc:  # noqa: BLE001
         raise CvImportError(
             "pdf_extract_failed",
@@ -168,9 +174,49 @@ def extract_cv_text(path: Path) -> str:
     return text
 
 
+_GENERIC_EMAIL_LOCALS = frozenset(
+    {
+        "info",
+        "contact",
+        "office",
+        "mail",
+        "email",
+        "admin",
+        "hr",
+        "jobs",
+        "career",
+        "karriere",
+        "noreply",
+        "no-reply",
+        "bewerbung",
+    }
+)
+
+
+def _name_from_email_local(email: str) -> tuple[str, str] | None:
+    """Derive first/last from ``first.last@…`` when the PDF name line was an image.
+
+    General integration fallback only — rejects generic local-parts.
+    """
+    local = (email or "").strip().split("@", 1)[0].lower()
+    if not local or local in _GENERIC_EMAIL_LOCALS:
+        return None
+    local = local.replace("_", ".")
+    parts = [p for p in local.split(".") if p.isalpha() and len(p) >= 2]
+    if len(parts) < 2:
+        return None
+    return parts[0].capitalize(), parts[1].capitalize()
+
+
 def _llm_extract(text: str) -> dict[str, Any]:
+    """Docpick schema extract via local OpenAI-compatible server.
+
+    Uses a compact JSON schema in the prompt (no pretty-indent) to cut prompt
+    tokens — main measured latency is LLM inference, not Docling.
+    """
     try:
         from docpick.llm.vllm_provider import VLLMProvider
+        from docpick.llm.prompt import parse_llm_json
     except ImportError as exc:
         raise CvImportError(
             "docpick_missing",
@@ -192,7 +238,33 @@ def _llm_extract(text: str) -> dict[str, Any]:
             "Kein automatischer Wechsel auf den alten DET-Parser.",
         )
     try:
-        data = provider.extract_fields(text, KarrierekrakeCVSchema)
+        schema_json = json.dumps(
+            KarrierekrakeCVSchema.model_json_schema(),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a document data extraction assistant. "
+                    "Output ONLY valid JSON. No markdown. "
+                    "If a field is not found, use null. "
+                    "For arrays, include all matching items found. "
+                    "Do not invent values."
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"## JSON Schema\n{schema_json}\n\n"
+                    f"## Document Text\n{text}\n\n"
+                    "Extract the data and output valid JSON:"
+                ),
+            },
+        ]
+        raw_text = provider._call_chat(messages)
+        data = parse_llm_json(raw_text)
     except Exception as exc:  # noqa: BLE001
         raise CvImportError(
             "llm_extract_failed",
@@ -251,10 +323,22 @@ def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
             certs.append(c)
         else:
             certs.append({"name": str(c), "issuer": "", "year": ""})
+    first = str(name.get("first_name") or "")
+    last = str(name.get("last_name") or "")
+    email = str(data["email"]) if data.get("email") else ""
+    # When Docling replaces the name heading with an image, the LLM often
+    # leaves name empty while the email local-part still carries first.last.
+    if (not first.strip() or not last.strip()) and email:
+        derived = _name_from_email_local(email)
+        if derived:
+            if not first.strip():
+                first = derived[0]
+            if not last.strip():
+                last = derived[1]
     return {
         "personal": {
-            "first_name": str(name.get("first_name") or ""),
-            "last_name": str(name.get("last_name") or ""),
+            "first_name": first,
+            "last_name": last,
             "street": str(addr.get("street") or ""),
             "house_number": str(addr.get("house_number") or ""),
             "postal_code": str(addr.get("postal_code") or ""),
@@ -262,7 +346,7 @@ def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
             "country": str(addr.get("country") or ""),
             "date_of_birth": _norm_dob(str(data.get("date_of_birth") or "")),
         },
-        "emails": [str(data["email"])] if data.get("email") else [],
+        "emails": [email] if email else [],
         "phones": [str(data["phone"])] if data.get("phone") else [],
         "languages": langs,
         "driving_license": " ".join(p for p in lic_parts if p),

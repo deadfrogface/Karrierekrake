@@ -1,0 +1,22 @@
+{
+  "layers": {
+    "A_parser_baseline_V3": {
+      "f1": 0.9337,
+      "perfect_core": "8/40",
+      "note": "sealed preds + COMPLETE_GT_ONLY_V3"
+    },
+    "B_scorer_only_V3_1_date_norm": {
+      "f1": 0.9813,
+      "perfect_core": "20/40",
+      "date_flipped": 107,
+      "note": "NOT parser improvement"
+    },
+    "C_parser_name_from_email_on_sealed_preds_V3_1": {
+      "f1": 0.9851,
+      "perfect_core": "21/40",
+      "name_fills": 5,
+      "note": "mapping-only parser fix, same LLM outputs"
+    }
+  },
+  "pending": "full re-extract with compact schema prompt + docling cache for timing"
+}
