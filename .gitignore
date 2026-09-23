@@ -237,3 +237,6 @@ artifacts/det_candidate_regression/**
 !artifacts/final_external_style_holdout/
 artifacts/final_external_style_holdout/**
 !artifacts/final_external_style_holdout/RUNNER_READY.json
+
+.cache/
+
