@@ -116,12 +116,49 @@ def evidence_ok(value: str, text: str) -> bool:
     return False
 
 
-def filter_prediction(pred: dict[str, Any], text: str) -> dict[str, Any]:
+def _normalize_raw_schema(pred: dict[str, Any]) -> dict[str, Any]:
+    """One technical adapter fix: coerce common SmartResume shape drift to target schema.
+
+    Observed: ``name`` as full string; ``languages`` as list of dicts.
+    Not document-specific rules.
+    """
     out = json.loads(json.dumps(pred))
+    name = out.get("name")
+    if isinstance(name, str):
+        parts = name.strip().split()
+        out["name"] = {
+            "first_name": parts[0] if parts else "",
+            "last_name": " ".join(parts[1:]) if len(parts) > 1 else "",
+        }
+    elif not isinstance(name, dict):
+        out["name"] = {"first_name": "", "last_name": ""}
+    langs = []
+    for item in out.get("languages") or []:
+        if isinstance(item, dict):
+            langs.append(
+                [str(item.get("language") or item.get("name") or ""), str(item.get("level") or "")]
+            )
+        elif isinstance(item, (list, tuple)) and item:
+            langs.append([str(item[0]), str(item[1]) if len(item) > 1 else ""])
+        elif isinstance(item, str) and item.strip():
+            langs.append([item.strip(), ""])
+    out["languages"] = langs
+    if not isinstance(out.get("address"), dict):
+        out["address"] = {}
+    for k in ("software", "skills", "certificates", "licenses", "employment", "education"):
+        if out.get(k) is None:
+            out[k] = []
+    return out
+
+
+def filter_prediction(pred: dict[str, Any], text: str) -> dict[str, Any]:
+    out = _normalize_raw_schema(pred)
     for k in ("email", "phone", "date_of_birth"):
         if out.get(k) and not evidence_ok(str(out[k]), text):
             out[k] = ""
     name = out.get("name") or {}
+    if not isinstance(name, dict):
+        name = {"first_name": "", "last_name": ""}
     for k in ("first_name", "last_name"):
         if name.get(k) and not evidence_ok(str(name[k]), text):
             name[k] = ""
