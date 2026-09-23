@@ -155,20 +155,32 @@ QPushButton#PrimaryButton {{
     background: {COLOR_PRIMARY};
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 9px 16px;
+    border-radius: 8px;
+    padding: 10px 18px;
     font-weight: 600;
 }}
 QPushButton#PrimaryButton:hover {{ background: {COLOR_PRIMARY_HOVER}; }}
+QPushButton#PrimaryButton:pressed {{
+    background: {COLOR_PRIMARY_HOVER};
+    padding-top: 11px;
+    padding-bottom: 9px;
+}}
 QPushButton#PrimaryButton:disabled {{ background: #9bb5ad; color: #f2f2f2; }}
 QPushButton#SecondaryButton {{
     background: {COLOR_LIGHT_SURFACE};
     color: {COLOR_LIGHT_TEXT};
     border: 1px solid #b7c4d1;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 8px 14px;
 }}
-QPushButton#SecondaryButton:hover {{ background: #f3f7fa; }}
+QPushButton#SecondaryButton:hover {{
+    background: #f3f7fa;
+    border-color: {COLOR_PRIMARY};
+}}
+QPushButton#SecondaryButton:pressed {{
+    padding-top: 9px;
+    padding-bottom: 7px;
+}}
 QPushButton#GhostButton {{
     background: transparent;
     color: {COLOR_PRIMARY};
@@ -360,20 +372,32 @@ QPushButton#PrimaryButton {{
     background: {COLOR_TEAL};
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 9px 16px;
+    border-radius: 8px;
+    padding: 10px 18px;
     font-weight: 600;
 }}
 QPushButton#PrimaryButton:hover {{ background: {COLOR_PRIMARY_HOVER}; }}
+QPushButton#PrimaryButton:pressed {{
+    background: {COLOR_PRIMARY_HOVER};
+    padding-top: 11px;
+    padding-bottom: 9px;
+}}
 QPushButton#PrimaryButton:disabled {{ background: #3a4a55; color: #9aa8b4; }}
 QPushButton#SecondaryButton {{
     background: {COLOR_DARK_SURFACE};
     color: {COLOR_DARK_TEXT};
     border: 1px solid #3a4d60;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 8px 14px;
 }}
-QPushButton#SecondaryButton:hover {{ background: #223142; }}
+QPushButton#SecondaryButton:hover {{
+    background: #223142;
+    border-color: {COLOR_TEAL};
+}}
+QPushButton#SecondaryButton:pressed {{
+    padding-top: 9px;
+    padding-bottom: 7px;
+}}
 QPushButton#GhostButton {{
     background: transparent;
     color: #9fd5c4;

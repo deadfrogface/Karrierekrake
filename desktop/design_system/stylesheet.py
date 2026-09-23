@@ -23,12 +23,17 @@ QPushButton#KkPrimary, QPushButton#PrimaryButton {{
     color: #ffffff;
     border: none;
     border-radius: {r.md}px;
-    padding: {ctrl.button_pad_v}px {ctrl.button_pad_h}px;
+    padding: {ctrl.button_pad_v + 1}px {ctrl.button_pad_h + 4}px;
     font-weight: {ty.weight_semibold};
     min-height: {ctrl.min_touch}px;
 }}
 QPushButton#KkPrimary:hover, QPushButton#PrimaryButton:hover {{
     background: {c.primary_hover};
+}}
+QPushButton#KkPrimary:pressed, QPushButton#PrimaryButton:pressed {{
+    background: {c.primary_hover};
+    padding-top: {ctrl.button_pad_v + 2}px;
+    padding-bottom: {ctrl.button_pad_v}px;
 }}
 QPushButton#KkPrimary:disabled, QPushButton#PrimaryButton:disabled,
 QPushButton#KkSecondary:disabled, QPushButton#SecondaryButton:disabled {{
@@ -49,12 +54,24 @@ QPushButton#KkSecondary, QPushButton#SecondaryButton {{
     padding: {ctrl.button_pad_v - 1}px {ctrl.button_pad_h - 2}px;
     min-height: {ctrl.min_touch}px;
 }}
+QPushButton#KkSecondary:hover, QPushButton#SecondaryButton:hover {{
+    background: {c.bg};
+    border-color: {c.primary};
+}}
+QPushButton#KkSecondary:pressed, QPushButton#SecondaryButton:pressed {{
+    padding-top: {ctrl.button_pad_v}px;
+    padding-bottom: {ctrl.button_pad_v - 2}px;
+}}
 QPushButton#KkGhost, QPushButton#GhostButton {{
     background: transparent;
     color: {c.primary};
     border: {ctrl.focus_width}px solid transparent;
     padding: {ctrl.input_pad_v}px {ctrl.input_pad_h + 2}px;
     font-weight: {ty.weight_semibold};
+}}
+QPushButton#KkGhost:hover, QPushButton#GhostButton:hover {{
+    background: rgba(47, 122, 104, 0.08);
+    border-radius: {r.sm}px;
 }}
 QLineEdit#KkInput, QTextEdit#KkInput, QPlainTextEdit#KkInput,
 QComboBox#KkInput, QSpinBox#KkInput, QDoubleSpinBox#KkInput {{
@@ -88,6 +105,10 @@ QFrame#KkCard, QFrame#Card, QFrame#HeroCard, QFrame#DetailPanel {{
     background: {c.surface};
     border: 1px solid {c.border};
     border-radius: {r.xl}px;
+}}
+QWidget#SettingsFooter {{
+    background: {c.surface};
+    border-top: 1px solid {c.border};
 }}
 QLabel#KkStatusSuccess, QLabel#BadgeOk {{
     background: {c.success_bg};

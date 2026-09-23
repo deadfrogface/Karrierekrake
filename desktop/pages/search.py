@@ -31,6 +31,7 @@ from core.search_intent import (
     parse_search_intent,
     sync_legacy_jobs_from_intent,
 )
+from desktop.design_system.polish import apply_button_icon, footer_actions_layout, polish_interactive
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.widgets import ListEditor
@@ -182,7 +183,8 @@ class SearchPage(QWidget):
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
         self.save_btn.clicked.connect(self.save)
-        layout.addWidget(self.save_btn)
+        polish_interactive(self.save_btn)
+        layout.addLayout(footer_actions_layout(self.save_btn))
         layout.addStretch()
 
         self.retranslate_ui()
@@ -239,6 +241,7 @@ class SearchPage(QWidget):
         self.strictness.blockSignals(False)
 
         self.save_btn.setText(tr("btn.save_search"))
+        apply_button_icon(self.save_btn, "save", color="#ffffff")
 
     def _resolve_intent(self, profile) -> SearchIntent:
         raw = getattr(profile, "search_intent", None)

@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
 from core.case_pipeline import refresh_follow_up_tasks
 from core.database import Database
 from core.lifecycle import CaseStatus
+from desktop.design_system.polish import apply_button_icon, footer_actions_layout, polish_interactive
 from desktop.i18n import tr
 from desktop.services import ConfigService
 from desktop.viewmodels.approvals import (
@@ -54,8 +55,9 @@ class LifecyclePage(QWidget):
         self.page_subtitle.setWordWrap(True)
 
         self.refresh_btn = QPushButton()
-        self.refresh_btn.setObjectName("PrimaryButton")
+        self.refresh_btn.setObjectName("SecondaryButton")
         self.refresh_btn.clicked.connect(self.refresh)
+        polish_interactive(self.refresh_btn, blur=12.0, y_offset=2.0, alpha=28)
         self.followup_btn = QPushButton()
         self.followup_btn.setObjectName("SecondaryButton")
         self.followup_btn.clicked.connect(self.generate_followups)
@@ -72,17 +74,16 @@ class LifecyclePage(QWidget):
         self.calendar_btn.setObjectName("SecondaryButton")
         self.calendar_btn.clicked.connect(self.prepare_calendar_proposal)
 
-        btn_row = QHBoxLayout()
-        for b in (
+        # Actions sit in a bottom footer (not a top primary wall)
+        btn_row = footer_actions_layout(
             self.refresh_btn,
             self.followup_btn,
             self.link_btn,
             self.draft_btn,
             self.calendar_btn,
             self.prep_btn,
-        ):
-            btn_row.addWidget(b)
-        btn_row.addStretch()
+            spacing=8,
+        )
 
         self.guenther_bar = GuentherActionsBar()
         self.guenther_bar.action_triggered.connect(self._on_guenther_action)
@@ -142,8 +143,8 @@ class LifecyclePage(QWidget):
         layout = QVBoxLayout(self)
         layout.addWidget(self.page_title)
         layout.addWidget(self.page_subtitle)
-        layout.addLayout(btn_row)
         layout.addWidget(splitter, 1)
+        layout.addLayout(btn_row)
         self._chrome_widgets = [
             self.page_title,
             self.page_subtitle,
@@ -175,6 +176,7 @@ class LifecyclePage(QWidget):
         self.page_title.setText(tr("nav.guenther"))
         self.page_subtitle.setText(tr("lifecycle.subtitle"))
         self.refresh_btn.setText(tr("btn.refresh"))
+        apply_button_icon(self.refresh_btn, "refresh", color="#1c2430")
         self.followup_btn.setText(tr("lifecycle.followups"))
         self.link_btn.setText(tr("lifecycle.link_email"))
         self.draft_btn.setText(tr("lifecycle.draft_reply"))
