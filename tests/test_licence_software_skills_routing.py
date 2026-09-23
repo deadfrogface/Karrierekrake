@@ -231,3 +231,74 @@ def test_born_dob_and_unicode_name():
     assert personal.get("first_name") == "Mikołaj"
     assert personal.get("last_name") == "Czarnecki"
     assert personal.get("date_of_birth") == "06.12.1983"
+
+def test_fr_nl_headings_route_languages_and_skills():
+    text = (
+        "Jean Dupont\n"
+        "Langues et mobilité\n"
+        "Français: langue maternelle\n"
+        "Deutsch: B1\n"
+        "Anglais: B1\n"
+        "Outils numériques\n"
+        "Excel - Grundlagen\n"
+        "SAP MM - gute Kenntnisse\n"
+        "Compétences\n"
+        "Schichtkoordination\n"
+        "Routenplanung\n"
+        "Expérience professionnelle\n"
+        "01/2018 - 12/2021 Techniker | Firma SE\n"
+    )
+    secs = split_named_sections(text)
+    assert "languages" in secs
+    assert "skills" in secs
+    assert "software" in secs
+    assert "experience" in secs
+    parsed = parse_cv_text(text)
+    langs = {a for a, _ in _lang_pairs(parsed)}
+    assert "français" in langs or "francais" in langs
+    assert "deutsch" in langs
+    sw = [s.lower() for s in parsed["software"]]
+    assert any("excel" in s for s in sw)
+    assert "schichtkoordination" not in sw
+    assert "kompetenzprofil" not in sw
+    skills = [s.lower() for s in parsed["skills"]]
+    assert "schichtkoordination" in skills
+    assert "routenplanung" in skills
+
+
+def test_software_rejects_heading_and_skill_dump():
+    text = (
+        "Anna Beispiel\n"
+        "Digitale Werkzeuge\n"
+        "LibreOffice Calc - Grundlagen\n"
+        "Kompetenzprofil\n"
+        "Schichtkoordination\n"
+        "Zusätzliche Angaben\n"
+        "Zertifikate: Ersthelfer-Ausbildung 2020\n"
+    )
+    parsed = parse_cv_text(text)
+    sw = [s.lower() for s in parsed["software"]]
+    assert any("libreoffice" in s for s in sw)
+    assert "kompetenzprofil" not in sw
+    assert "schichtkoordination" not in sw
+    assert not any("zertifikat" in s or "ersthelfer" in s for s in sw)
+    skills = [s.lower() for s in parsed["skills"]]
+    assert "schichtkoordination" in skills
+
+
+def test_nederlands_moedertaal_and_vaardigheden():
+    text = (
+        "Sanne de Vries\n"
+        "Talen en mobiliteit\n"
+        "Nederlands: moedertaal\n"
+        "Deutsch: B2\n"
+        "Vaardigheden\n"
+        "Anlagenprüfung\n"
+        "Versuchsplanung\n"
+    )
+    parsed = parse_cv_text(text)
+    langs = _lang_pairs(parsed)
+    assert any(a == "nederlands" and "native" in b for a, b in langs)
+    assert any(a == "deutsch" and "b2" in b for a, b in langs)
+    skills = [s.lower() for s in parsed["skills"]]
+    assert "anlagenprüfung" in skills or "anlagenpruefung" in skills

@@ -181,6 +181,42 @@ def scalar_match(expected: Any, actual: Any, *, kind: str = "text") -> str:
     return "wrong"
 
 
+def _native_level_aliases(level: str) -> str:
+    """Map mother-tongue phrasing across languages to ``native`` for scoring."""
+    low = (level or "").strip().lower()
+    if not low:
+        return low
+    if low in {
+        "native",
+        "muttersprache",
+        "muttersprachler",
+        "muttersprachlerin",
+        "mother tongue",
+        "maternal language",
+        "langue maternelle",
+        "langue natale",
+        "moedertaal",
+        "lingua materna",
+        "língua materna",
+        "mammesprooch",
+        "ojczysty",
+        "modersmål",
+        "modersmal",
+        "rodilý mluvčí",
+        "rodily mluvci",
+    }:
+        return "native"
+    if "muttersprach" in low or "langue maternelle" in low or "moedertaal" in low:
+        return "native"
+    if "mother tongue" in low or "língua materna" in low or "lingua materna" in low:
+        return "native"
+    if "mammesprooch" in low or "ojczysty" in low or "modersm" in low:
+        return "native"
+    if "rodil" in low and "mluv" in low:
+        return "native"
+    return low
+
+
 def _pair_score_lang(exp: tuple[str, str], act: dict[str, str]) -> float:
     en, el = _norm(exp[0]), _norm(exp[1])
     an, al = _norm(act.get("language") or ""), _norm(act.get("level") or "")
@@ -195,8 +231,8 @@ def _pair_score_lang(exp: tuple[str, str], act: dict[str, str]) -> float:
     if not al:
         # Expected level present but prediction omitted it → not a full pair.
         return 0.4
-    el_n = el.replace("muttersprache", "native")
-    al_n = al.replace("muttersprache", "native")
+    el_n = _native_level_aliases(el)
+    al_n = _native_level_aliases(al)
     if el_n == al_n:
         return 1.0
     # Avoid empty-string containment false positives ("" in "c2" is True in Python)

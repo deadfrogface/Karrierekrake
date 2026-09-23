@@ -57,7 +57,19 @@ _ABSCHLUSS = re.compile(
     re.IGNORECASE,
 )
 _LEVEL = re.compile(
-    r"\b([ABC][12]|Muttersprache|Muttersprachler(?:in)?|native(?:\s+speaker)?)\b",
+    r"\b("
+    r"[ABC][12]|"
+    r"Muttersprache|Muttersprachler(?:in)?|"
+    r"native(?:\s+speaker)?|"
+    r"mother\s+tongue|maternal\s+language|"
+    r"langue\s+maternelle|langue\s+natale|"
+    r"moedertaal|"
+    r"l[ií]ngua\s+materna|"
+    r"mammesprooch|"
+    r"ojczysty|"
+    r"modersm[aå]l|"
+    r"rodil[yý]\s+mluv[cč][ií]"
+    r")\b",
     re.IGNORECASE,
 )
 
@@ -132,14 +144,13 @@ def _split_language_chunks(line: str) -> list[str]:
     # "English - Native | German - B2 | French - A2"
     # "Deutsch: Muttersprache; Englisch: B2"
     # Do NOT split "Deutsch | C2" (single pair).
-    cefr_hits = len(re.findall(r"\b(?:[ABC][12]|Muttersprache|Muttersprachler(?:in)?|native)\b", line, re.I))
+    level_hits = len(_LEVEL.findall(line))
     seps = len(re.findall(r"[|;]", line))
-    if seps >= 1 and cefr_hits >= 2:
+    if seps >= 1 and level_hits >= 2:
         return [p.strip() for p in re.split(r"\s*[|;]\s*", line) if p.strip()]
-    if re.search(r",\s*[A-Za-zÄÖÜäöüß].*(?:[ABC][12]|Muttersprache|native)", line, re.I):
+    if re.search(r",\s*[A-Za-zÄÖÜäöüßÀ-ÖØ-öø-ÿ].*", line, re.I) and level_hits >= 2:
         # "Deutsch C2, Englisch B2, Tschechisch A2"
-        if cefr_hits >= 2:
-            return [p.strip() for p in re.split(r"\s*,\s*", line) if p.strip()]
+        return [p.strip() for p in re.split(r"\s*,\s*", line) if p.strip()]
     return [line]
 
 
@@ -155,6 +166,18 @@ def _normalize_lang_level(level: str, meta: str = "", full_line: str = "") -> st
     if (
         "muttersprach" in low
         or "mother tongue" in low
+        or "maternal language" in low
+        or "langue maternelle" in low
+        or "langue natale" in low
+        or "moedertaal" in low
+        or "lingua materna" in low
+        or "língua materna" in low
+        or "mammesprooch" in low
+        or "ojczysty" in low
+        or "modersmål" in low
+        or "modersmal" in low
+        or "rodilý mluvčí" in low
+        or "rodily mluvci" in low
         or re.search(r"\bnative(?:\s+speaker)?\b", low)
     ):
         return "native"
@@ -273,6 +296,41 @@ _KNOWN_LANGUAGES = frozenset(
         "romanesisch",
         "sinti",
         "romanes-sintitikes",
+        # Endonyms / autonyms commonly printed on multilingual EU CVs
+        "français",
+        "francais",
+        "nederlands",
+        "português",
+        "portugues",
+        "español",
+        "espanol",
+        "italiano",
+        "polski",
+        "čeština",
+        "cestina",
+        "česky",
+        "cesky",
+        "dansk",
+        "svenska",
+        "norsk",
+        "suomi",
+        "magyar",
+        "română",
+        "romana",
+        "slovenčina",
+        "slovencina",
+        "slovenščina",
+        "slovenscina",
+        "hrvatski",
+        "српски",
+        "lëtzebuergesch",
+        "letzebuergesch",
+        "luxembourgish",
+        "luxembourgeois",
+        "català",
+        "catala",
+        "euskara",
+        "galego",
     }
 )
 
@@ -284,8 +342,13 @@ def is_known_language_name(name: str) -> bool:
         return False
     # Strip trailing CEFR / native markers for the name check.
     raw = re.sub(
-        r"\s*(?:[–\-—|:]\s*)?(?:[ABC][12]|Muttersprache|Muttersprachler(?:in)?|"
-        r"native(?:\s+speaker)?)\s*$",
+        r"\s*(?:[–\-—|:]\s*)?(?:"
+        r"[ABC][12]|Muttersprache|Muttersprachler(?:in)?|"
+        r"native(?:\s+speaker)?|mother\s+tongue|maternal\s+language|"
+        r"langue\s+maternelle|langue\s+natale|moedertaal|"
+        r"l[ií]ngua\s+materna|mammesprooch|ojczysty|modersm[aå]l|"
+        r"rodil[yý]\s+mluv[cč][ií]"
+        r")\s*$",
         "",
         raw,
         flags=re.I,
@@ -302,9 +365,9 @@ def is_known_language_name(name: str) -> bool:
 
 _SOFTWARE_PROFICIENCY = re.compile(
     r"(?i)\s*[-–—:]\s*(?:"
-    r"grundlagen|grundkenntnisse|"
+    r"grundlagen|grundkenntnisse|basis|täglich|taeglich|daily|"
     r"sehr\s+gute\s+kenntnisse|gute\s+kenntnisse|solide\s+kenntnisse|"
-    r"sehr\s+gut|gut|"
+    r"sehr\s+sicher|sehr\s+gut|gut|sicher|"
     r"fortgeschritten|experte|expert|"
     r"beginner|intermediate|advanced|basic|proficient|"
     r"kenntnisse"
@@ -400,10 +463,10 @@ def _parse_one_language(chunk: str) -> LanguageEntry | None:
         return None
 
     m = re.match(
-        r"^(?P<lang>[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\-/']*)\s*"
+        r"^(?P<lang>[^\W\d_](?:[^\W\d_]|[\-/'])*)\s*"
         r"(?:[–\-—|:]\s*)?(?P<body>.+)?$",
         line,
-        re.I,
+        re.I | re.UNICODE,
     )
     if m:
         lang = m.group("lang").strip(" :")
@@ -415,6 +478,10 @@ def _parse_one_language(chunk: str) -> LanguageEntry | None:
         # collapse to the first token ("Lean", "Power").
         if body and not re.fullmatch(
             r"(?:[ABC][12]|Muttersprache|Muttersprachler(?:in)?|native(?:\s+speaker)?|"
+            r"mother\s+tongue|maternal\s+language|"
+            r"langue\s+maternelle|langue\s+natale|moedertaal|"
+            r"l[ií]ngua\s+materna|mammesprooch|ojczysty|modersm[aå]l|"
+            r"rodil[yý]\s+mluv[cč][ií]|"
             r"fließend|fliesend|gut|grundkenntnisse|verhandlungssicher).*$",
             body,
             re.I,
@@ -430,7 +497,7 @@ def _parse_one_language(chunk: str) -> LanguageEntry | None:
             if level or body:
                 return LanguageEntry(language=lang, level=level)
             # Bare language name on its own line (level may follow/precede).
-            if re.fullmatch(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\-/']{1,}", lang):
+            if re.fullmatch(r"[^\W\d_](?:[^\W\d_]|[\-/']){1,}", lang, re.UNICODE):
                 return LanguageEntry(language=lang, level="")
     level_m = _LEVEL.search(line)
     if level_m:
@@ -467,7 +534,10 @@ def _parse_languages(body: str) -> list[LanguageEntry]:
             continue
         for chunk in _split_language_chunks(line):
             amp = re.match(
-                r"^(?P<langs>.+?)\s*[–\-—|:]\s*(?P<level>[ABC][12]|Muttersprache|native(?:\s+speaker)?)\s*$",
+                r"^(?P<langs>.+?)\s*[–\-—|:]\s*(?P<level>"
+                r"[ABC][12]|Muttersprache|native(?:\s+speaker)?|"
+                r"langue\s+maternelle|moedertaal|mother\s+tongue"
+                r")\s*$",
                 chunk,
                 re.I,
             )
@@ -498,15 +568,106 @@ def _parse_languages(body: str) -> list[LanguageEntry]:
     return unique
 
 
+_BARE_PROFICIENCY = re.compile(
+    r"(?i)^(grundlagen|grundkenntnisse|basis|täglich|taeglich|daily|fortgeschritten|sehr\s+sicher|"
+    r"sehr\s+gut|gut|sicher|beginner|intermediate|advanced|basic|proficient|"
+    r"gute\s+kenntnisse|sehr\s+gute\s+kenntnisse|solide\s+kenntnisse)$"
+)
+
+
+def _looks_like_non_software_dump(line: str) -> bool:
+    """Reject employment/education/heading/date dumps that leaked into software."""
+    text = (line or "").strip()
+    if not text:
+        return True
+    if _BARE_PROFICIENCY.match(text):
+        return True
+    if _is_heading_value(text) or _is_heading(text):
+        return True
+    if re.match(
+        r"(?i)^(zertifikat|zertifikate|certificates?|führerschein|fuehrerschein|"
+        r"fahrerlaubnis|driving\s+licen)",
+        text,
+    ):
+        return True
+    # Date ranges / employment timeline fragments.
+    if re.search(r"(?i)\b(0?[1-9]|1[0-2])/\d{4}\b", text):
+        return True
+    if re.search(r"(?i)^\d{4}\s*[-–—]\s*(?:\d{4}|heute|present|aktuell)\b", text):
+        return True
+    # Bullet skill lists glued with middots are skills, not tools.
+    if "•" in text or text.count("·") >= 2:
+        return True
+    return False
+
+
+def _accept_software_item(item: str, *, had_proficiency: bool = False) -> bool:
+    """Keep only tool-like values under a software section."""
+    text = (item or "").strip()
+    if not text or _looks_like_non_software_dump(text):
+        return False
+    if _parse_one_language(text) is not None:
+        return False
+    kind = classify_non_language_token(text)
+    if kind == "software":
+        return True
+    if kind == "certificate":
+        return False
+    # Proficiency-marked lines ("Revit - Basis") are tools even when the bare
+    # name looks like a TitleCase skill token after stripping.
+    if had_proficiency and 2 <= len(text) <= 60:
+        return True
+    # Multi-word English product names (Solid Edge, Trimble Business Center).
+    if " " in text and not re.search(r"[äöüß]", text.lower()) and not _looks_like_soft_skill(text):
+        return True
+    # Single Latin TitleCase product token (Revit, Citavi) — not German -ung skills.
+    if re.fullmatch(r"[A-Z][A-Za-z0-9+\-.]{1,30}", text) and not re.search(
+        r"(?i)(ung|keit|schaft|tion)$", text
+    ):
+        return True
+    if kind == "skill":
+        return False
+    # Under an explicit software section, keep remaining product-like unknowns.
+    if _looks_like_software(text) or _known_software_token_match(text.lower()):
+        return True
+    if re.search(r"[a-z][A-Z]|\d", text):
+        return True
+    # Single TitleCase German/NL/FR noun → skill leak, not software.
+    if re.fullmatch(r"[A-ZÀ-ÖØ-ÞÄÖÜ][a-zà-öø-ÿäöüß'’\-/]{2,}", text):
+        return False
+    # Multi-word prose with spaces and no product signal → reject.
+    if " " in text and not re.search(r"[A-Z]{2,}|\d", text):
+        return False
+    return True
+
+
+def _join_software_wrap_lines(lines: list[str]) -> list[str]:
+    """Join ``Microsoft Dynamics 365 -`` + ``fortgeschritten`` into one entry."""
+    out: list[str] = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line.rstrip().endswith(("-", "–", "—", ":")) and i + 1 < len(lines):
+            nxt = lines[i + 1].strip()
+            if nxt and _BARE_PROFICIENCY.match(nxt):
+                out.append(f"{line.rstrip().rstrip('-–—:').strip()} - {nxt}")
+                i += 2
+                continue
+        out.append(line)
+        i += 1
+    return out
+
+
 def _parse_software(body: str) -> list[str]:
     items: list[str] = []
-    for raw in body.splitlines():
-        line = _normalize_bullet(raw)
+    raw_lines = [_normalize_bullet(raw) for raw in body.splitlines()]
+    raw_lines = [ln for ln in raw_lines if ln]
+    for line in _join_software_wrap_lines(raw_lines):
         if not line or _is_heading_value(line):
             continue
         # Strip section-style labels pasted into a body line.
         line = re.sub(
-            r"(?i)^(software|edv|it|tools|programme|anwendungen)\s*:\s*",
+            r"(?i)^(software|edv|it|tools|programme|anwendungen|logiciels|outils)\s*:\s*",
             "",
             line,
         ).strip()
@@ -515,7 +676,10 @@ def _parse_software(body: str) -> list[str]:
         # Skip licence / mobility fragments accidentally mixed in.
         if re.match(r"(?i)^(führerschein|fuehrerschein|driving\s+licen)", line):
             continue
+        if _looks_like_non_software_dump(line):
+            continue
         # "LibreOffice Calc - Grundlagen" → name only (level is not the product).
+        had_prof = _strip_software_proficiency(line) != line
         line = _strip_software_proficiency(line)
         if not line:
             continue
@@ -523,7 +687,7 @@ def _parse_software(body: str) -> list[str]:
         if m:
             items.append(m.group("head"))
             inner = m.group("inner")
-            chunks = re.split(r",|/", inner)
+            chunks = re.split(r"\s*/\s*|,", inner)
             for chunk in chunks:
                 chunk = chunk.strip()
                 if not chunk:
@@ -539,20 +703,31 @@ def _parse_software(body: str) -> list[str]:
                 else:
                     items.append(chunk)
             continue
-        # Split on comma/pipe only — keep versioned product names like SAP S/4HANA.
-        if re.search(r"[,|]", line) and not re.search(r"\(.+[,|].+\)", line):
-            for part in re.split(r"[,|]", line):
+        # Split on comma/pipe OR spaced slash lists — keep S/4HANA intact
+        # (no spaces around the product slash).
+        if re.search(r"[,|]|\s/\s", line) and not re.search(r"\(.+(?:[,|]|\s/\s).+\)", line):
+            for part in re.split(r"\s*[,|]\s*|\s/\s", line):
+                part_had = _strip_software_proficiency(part.strip()) != part.strip()
                 part = _strip_software_proficiency(part.strip())
-                if part and not _is_heading_value(part):
+                if (
+                    part
+                    and not _is_heading_value(part)
+                    and _accept_software_item(part, had_proficiency=part_had or had_prof)
+                ):
                     items.append(part)
             continue
         paren = re.match(r"^(?P<desc>.+?)\s*\((?P<name>[^)]+)\)\s*$", line)
         if paren and len(paren.group("name")) < 40:
             # Keep a single canonical entry (name / description). Do NOT also
             # append the bare name — that creates ZA Office duplicates.
-            items.append(f"{paren.group('name').strip()} / {paren.group('desc').strip()}")
+            cand = f"{paren.group('name').strip()} / {paren.group('desc').strip()}"
+            if _accept_software_item(cand, had_proficiency=had_prof) or _accept_software_item(
+                paren.group("name").strip(), had_proficiency=had_prof
+            ):
+                items.append(cand)
             continue
-        items.append(line)
+        if _accept_software_item(line, had_proficiency=had_prof):
+            items.append(line)
     cleaned: list[str] = []
     seen: set[str] = set()
     for item in items:
@@ -646,7 +821,8 @@ def _inline_licence_mentions(text: str) -> list[str]:
         r"(?:Führerschein|Fuehrerschein|Führerscheinklasse(?:n)?|"
         r"Fahrerlaubnis|Fahrerlaubnisklasse(?:n)?|"
         r"Driving\s+Licen[cs]e|Licen[cs]e\s+Class(?:es)?|"
-        r"Driving\s+Permits?)\s*[:\-]\s*([^\n|;]+)",
+        r"Driving\s+Permits?|"
+        r"Rijbewijs|Permis\s+de\s+conduire|Permis\s+de\s+conducir)\s*[:\-]\s*([^\n|;]+)",
         r"Klassen?\s+([A-Z0-9]{1,3}(?:\s*(?:und|,|/|&)\s*[A-Z0-9]{1,3})*)",
         r"Category\s+([A-Z0-9]{1,3})",
         r"Klasse\s+([A-Z0-9]{1,3})",
@@ -1050,7 +1226,8 @@ def _parse_experience(body: str) -> list[ExperienceEntry]:
 
 
 _LICENCE_LINE = re.compile(
-    r"(?i)^(führerschein|fuehrerschein|fahrerlaubnis|driving\s+licen)"
+    r"(?i)^(führerschein|fuehrerschein|fahrerlaubnis|driving\s+licen|"
+    r"rijbewijs|permis\s+de\s+conduire|permis\s+de\s+conducir)"
 )
 
 _EDU_LINE_HINT = re.compile(
@@ -1111,6 +1288,14 @@ def _parse_skills(body: str) -> list[str]:
             line,
         ):
             continue
+        # Reject employment/education leak lines BEFORE middot→pipe conversion
+        # (otherwise "A • B • C" becomes pipe-separated and false-matches EMP_LEAK).
+        if _EMP_LEAK.match(line):
+            continue
+        if re.search(r"(?i)\b(gmbh| ug| ag| kg|e\.?\s*v\.?|mbh)\b", line) and re.search(
+            r"\d{4}", line
+        ):
+            continue
         # PDF extraction sometimes replaces middle-dots with control chars.
         line = re.sub(r"[\x00-\x1f\x7f•·∙⋅]+", "|", line)
         # Skip long prose / project descriptions
@@ -1118,13 +1303,6 @@ def _parse_skills(body: str) -> list[str]:
             continue
         # Licence lines belong in driving_license, not skills.
         if _LICENCE_LINE.match(line):
-            continue
-        # Reject employment/education leak lines entirely.
-        if _EMP_LEAK.match(line):
-            continue
-        if re.search(r"(?i)\b(gmbh| ug| ag| kg|e\.?\s*v\.?|mbh)\b", line) and re.search(
-            r"\d{4}", line
-        ):
             continue
         # CEFR / native language lines under bare "Kenntnisse" belong in languages.
         if _LEVEL.search(line) and _parse_one_language(line) is not None:
@@ -1262,14 +1440,21 @@ def _route_labeled_kenntnisse_lines(body: str) -> dict[str, list]:
             ):
                 pending_bucket = "skills"
             continue
-        m = re.match(r"(?i)^(zertifikate|certificates?|weiterbildungen?)\s*:\s*(.+)$", line)
+        m = re.match(
+            r"(?i)^(zertifikate|certificates?|certificaten|certificats?|weiterbildungen?)\s*:\s*(.+)$",
+            line,
+        )
         if m:
             items = _split_kenntnisse_list_items(m.group(2).rstrip(","))
             out["certificates"].extend(items)
             if line.rstrip().endswith(","):
                 pending_bucket = "certificates"
             continue
-        m = re.match(r"(?i)^(führerschein|fuehrerschein|driving\s+licen[cs]e?)\s*:\s*(.+)$", line)
+        m = re.match(
+            r"(?i)^(führerschein|fuehrerschein|driving\s+licen[cs]e?|"
+            r"rijbewijs|permis\s+de\s+conduire)\s*:\s*(.+)$",
+            line,
+        )
         if m:
             out["licenses"].extend(_inline_licence_mentions(m.group(0)) or _parse_driving(m.group(2)))
             continue
@@ -1446,6 +1631,18 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         personal["phone"] = phones[0]
 
     languages = _parse_languages(sections.get("languages", ""))
+    # Composite / FR-NL mobility blocks also carry language rows.
+    for extra_key in ("languages_tools_mobility", "skills", "profile", "software"):
+        extra_langs = _parse_languages(sections.get(extra_key, ""))
+        if extra_langs:
+            known_l = {
+                (lang.language.lower(), (lang.level or "").lower()) for lang in languages
+            }
+            for entry in extra_langs:
+                key = (entry.language.lower(), (entry.level or "").lower())
+                if key not in known_l:
+                    languages.append(entry)
+                    known_l.add(key)
     # Reclassify non-language lines that lived under Sprachen (Weiterbildung,
     # software, soft skills) — never leave Lean Management / Power BI as a language.
     # Licence lines stay out of certificates — they belong in driving_license.
@@ -1459,7 +1656,8 @@ def parse_cv_text(text: str) -> dict[str, Any]:
         if not line or _is_heading_value(line) or _is_heading(line):
             continue
         if _LICENCE_LINE.match(line) or re.match(
-            r"(?i)^(führerschein|fuehrerschein|fahrerlaubnis|driving\s+licen)",
+            r"(?i)^(führerschein|fuehrerschein|fahrerlaubnis|driving\s+licen|"
+            r"rijbewijs|permis\s+de\s+conduire)",
             line,
         ):
             languages_section_licences.extend(
@@ -1530,6 +1728,8 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             line = _normalize_bullet(raw)
             if not line or _is_heading_value(line) or _is_heading(line):
                 continue
+            if _looks_like_non_software_dump(line):
+                continue
             if _LEVEL.search(line) and _parse_one_language(line) is not None:
                 continue
             # Proficiency-marked tool lines are software, never soft skills.
@@ -1546,9 +1746,10 @@ def parse_cv_text(text: str) -> dict[str, Any]:
                     continue
                 if _looks_like_software(part) and not _looks_like_soft_skill(part):
                     continue
-                # Only recover explicit soft-skill phrases — never steal unknown
-                # product names (RStudio, Ansys, …) out of a software section.
-                if _looks_like_soft_skill(part):
+                # Recover soft-skill phrases AND TitleCase fachkompetenz tokens
+                # that classify as skill (Schichtkoordination, Anlagenprüfung).
+                kind = classify_non_language_token(part)
+                if _looks_like_soft_skill(part) or kind == "skill":
                     recovered.append(part)
         if recovered:
             skills = list(dict.fromkeys(recovered))
@@ -1558,9 +1759,15 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             software = [s for s in software if s.lower() not in soft_drop]
     # Always strip soft-skill phrases that leaked into software and relocate them
     # into skills — even when the skills list is already nonempty.
+    # Do NOT use classify==skill here: TitleCase product tokens (Revit, Ansys)
+    # would be stolen from a confirmed software section.
     if software:
         relocated = [s for s in software if _looks_like_soft_skill(s)]
-        software = [s for s in software if not _looks_like_soft_skill(s)]
+        software = [
+            s
+            for s in software
+            if not _looks_like_soft_skill(s) and not _looks_like_non_software_dump(s)
+        ]
         if relocated:
             skills = list(dict.fromkeys([*skills, *relocated]))
     # Inverse: tools/languages that leaked into skills after labeled-block parsing
@@ -1585,7 +1792,36 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             kept_skills.append(s)
         soft_l = {x.lower() for x in software}
         skills = [s for s in kept_skills if s.lower() not in soft_l]
-        software = list(dict.fromkeys(software))
+        software = list(
+            dict.fromkeys(
+                s for s in software if not _looks_like_non_software_dump(s)
+            )
+        )
+    # Harvest language lines from remaining section bodies when Sprachen heading
+    # was missing or multilingual (FR/NL) — never invent names not on a line.
+    if True:
+        harvest_bodies = [
+            sections.get("general", ""),
+            sections.get("profile", ""),
+            sections.get("skills", ""),
+            sections.get("software", ""),
+            sections.get("languages_tools_mobility", ""),
+        ]
+        known_l = {
+            (lang.language.lower(), (lang.level or "").lower()) for lang in languages
+        }
+        for body in harvest_bodies:
+            for raw in (body or "").splitlines():
+                line = _normalize_bullet(raw)
+                if not line or _is_heading(line) or _is_heading_value(line):
+                    continue
+                entry = _parse_one_language(line)
+                if entry is None:
+                    continue
+                key = (entry.language.lower(), (entry.level or "").lower())
+                if key not in known_l:
+                    languages.append(entry)
+                    known_l.add(key)
     # Canonicalise software names: drop proficiency suffixes from every path.
     if software:
         software = list(
@@ -1840,48 +2076,69 @@ _HEADING_LINE = re.compile(
     re.I,
 )
 _COUNTRY_TOKEN = (
-    r"DE|AT|CH|FR|NL|BE|LU|PL|DK|CZ|IT|ES|PT|SE|NO|FI|IE|UK|GB|"
+    r"DE|AT|CH|FR|NL|BE|LU|PL|DK|CZ|IT|ES|PT|SE|NO|FI|IE|UK|GB|SI|"
     r"Deutschland|Österreich|Schweiz|France|Frankreich|Netherlands|Nederland|"
     r"Niederlande|Luxemburg|Luxembourg|"
-    r"Belgium|Belgien|Poland|Polen|Denmark|Dänemark|Daenemark|"
-    r"Czechia|Tschechien|Germany|Austria|Switzerland|United Kingdom|Ireland"
+    r"Belgium|Belgien|Belgium|Poland|Polen|Polska|Denmark|Dänemark|Daenemark|"
+    r"Czechia|Tschechien|Germany|Austria|Switzerland|United Kingdom|Ireland|"
+    r"Sweden|Schweden|Sverige|Norway|Norwegen|Slovenia|Slowenien"
 )
-_CITY_CHARS = r"A-Za-zÄÖÜäöüß\(\)"
+# Unicode letters for EU street/city names (ł, ś, å, é, č, …).
+# Latin-1 + Latin Extended-A/B cover PL/CZ/SI/SE/DK/FR accented letters.
+_CITY_CHARS = r"A-Za-zÀ-ÖØ-öø-ÿ\u0100-\u024FÄÖÜäöüß\(\)"
+# Optional street prefix so "6900 Bregenz | AT" and "350 02 Cheb | CZ" match.
+_STREET_OPT = rf"(?:(?P<street>.+?)\s*[|,]?\s*)?"
 _POSTAL_DE = re.compile(
-    rf"(?P<street>.+?)\s*,?\s*(?P<plz>\d{{5}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    rf"{_STREET_OPT}(?P<plz>\d{{5}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
     rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
     r"(?=\s*[,|·]|\s*$)"
 )
 _POSTAL_AT_CH = re.compile(
-    # AT/CH (and some FR/NL border cases) use 4-digit postal codes.
-    rf"(?P<street>.+?)\s*,?\s*(?P<plz>\d{{4}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    # AT/CH/BE/DK (and some FR/NL border cases) use 4-digit postal codes.
+    rf"{_STREET_OPT}(?P<plz>\d{{4}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
     rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
     r"(?=\s*[,|·]|\s*$)"
 )
 # Dutch: "7511 AB Enschede" (4 digits + 2 letters)
 _POSTAL_NL = re.compile(
-    rf"(?P<street>.+?)\s*[|,]?\s*(?P<plz>\d{{4}})\s+(?P<letters>[A-Z]{{2}})\s+"
-    rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    rf"{_STREET_OPT}(?P<plz>\d{{4}})\s+(?P<letters>[A-Z]{{2}})\s+"
+    rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
     rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
     r"(?=\s*[,|·]|\s*$)",
     re.I,
 )
 # Luxembourg: "L-1616 Luxembourg"
 _POSTAL_LU = re.compile(
-    rf"(?P<street>.+?)\s*[|,]?\s*L-?(?P<plz>\d{{4}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]*?)"
+    rf"{_STREET_OPT}L-?(?P<plz>\d{{4}})\s+(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
+    r"(?=\s*[,|·]|\s*$)",
+    re.I,
+)
+# Poland: "69-100 Słubice" (street optional for city-only headers)
+_POSTAL_PL = re.compile(
+    rf"{_STREET_OPT}(?P<plz>\d{{2}}-\d{{3}})\s+"
+    rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
+    r"(?=\s*[,|·]|\s*$)",
+    re.I,
+)
+# Czech / Swedish spaced postal codes: "350 02 Cheb", "211 34 Malmö"
+_POSTAL_SPACED = re.compile(
+    rf"{_STREET_OPT}(?P<plz>\d{{3}}\s+\d{{2}}|\d{{2}}\s+\d{{3}})\s+"
+    rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*?)"
     rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}))?"
     r"(?=\s*[,|·]|\s*$)",
     re.I,
 )
 _POSTAL_UK_IE = re.compile(
-    r"(?P<street>.+?)\s*[·|,]\s*(?P<city>[A-Za-z][A-Za-z\-\s]+?)\s+"
+    r"(?P<street>.+?)\s*[·|,]\s*(?P<city>[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\-\s]+?)\s+"
     r"(?P<pc>(?:[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}|[A-Z]\d{2}\s*[A-Z0-9]{4}))"
     r"(?:\s*[,|·]?\s*(?P<country>United Kingdom|Ireland|UK|IE))?",
     re.I,
 )
 _CITY_ONLY = re.compile(
-    rf"^(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s]{{1,40}})"
-    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}|[A-Za-z][A-Za-z\s]+))?"
+    rf"^(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']{{1,40}})"
+    rf"(?:\s*[,|·]\s*(?P<country>{_COUNTRY_TOKEN}|[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s]+))?"
     r"\s*(?:\||$)",
     re.I,
 )
@@ -1889,7 +2146,8 @@ _COUNTRY_INLINE = re.compile(
     rf"(?i)(?:^|[\s|·,])(?P<country>{_COUNTRY_TOKEN})(?=$|[\s|·,])"
 )
 _DOB = re.compile(
-    r"(?:Geburtsdatum|geboren(?:\s+am)?|DoB|Date of birth|Born)\s*[:\-]?\s*"
+    r"(?:Geburtsdatum|geboren(?:\s+am)?|DoB|Date of birth|Born|"
+    r"N[eé]\s*\(\s*e\s*\)|Nee|Né|Ne)\s*[:\-]?\s*"
     r"(?P<dob>\d{1,2}\.\d{1,2}\.\d{2,4})",
     re.I,
 )
@@ -1943,14 +2201,20 @@ def _clean_street_fragment(
         return ""
     # Prefer streets that look like an address (digit or known street suffix).
     if re.search(r"\d", raw) or re.search(
-        r"(?i)\b(str(?:asse|\.|aße)?|weg|platz|allee|ring|gasse)\b", raw
+        r"(?i)\b("
+        r"str(?:asse|\.|aße)?|weg|platz|allee|ring|gasse|"
+        r"ul\.?|ulica|vej|gatan|gata|boulevard|blvd\.?|avenue|ave\.?|"
+        r"rue|route|laan|straat|chemin"
+        r")\b",
+        raw,
     ):
         return raw
     return ""
 
 
 def _apply_postal_match(m: re.Match[str], personal: dict[str, str], *, labels: tuple[str, ...] = ("Adresse", "Anschrift")) -> None:
-    street = _clean_street_fragment(m.group("street"), personal, labels=labels)
+    street_raw = m.groupdict().get("street") or ""
+    street = _clean_street_fragment(street_raw, personal, labels=labels)
     if street:
         personal["street"] = street
     if "plz" in m.groupdict() and m.group("plz"):
@@ -1958,12 +2222,15 @@ def _apply_postal_match(m: re.Match[str], personal: dict[str, str], *, labels: t
         # Dutch postal codes keep the letter pair: "7511 AB"
         if m.groupdict().get("letters"):
             plz = f"{plz} {m.group('letters').upper()}"
-        personal["postal_code"] = plz
+        # Preserve spaced CZ/SE codes as written.
+        personal["postal_code"] = re.sub(r"\s+", " ", plz.strip())
     if "pc" in m.groupdict() and m.groupdict().get("pc"):
         personal["postal_code"] = re.sub(r"\s+", " ", m.group("pc").strip().upper())
     city = (m.group("city") or "").strip(" ,;·|")
     city = re.sub(
-        r"[,|·]?\s*(Germany|Deutschland|France|Frankreich|Austria|Österreich|Switzerland|Schweiz)\s*$",
+        r"[,|·]?\s*(Germany|Deutschland|France|Frankreich|Austria|Österreich|"
+        r"Switzerland|Schweiz|Poland|Polen|Polska|Sweden|Schweden|Sverige|"
+        r"Belgium|Belgien|Slovenia|Slowenien|Denmark|Dänemark|Czechia|Tschechien)\s*$",
         "",
         city,
         flags=re.I,
@@ -1972,6 +2239,7 @@ def _apply_postal_match(m: re.Match[str], personal: dict[str, str], *, labels: t
         personal["city"] = city
     if m.groupdict().get("country"):
         personal["country"] = m.group("country").strip()
+    # House number: "... 22" or "ul. Name 22" — last numeric token.
     hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", personal.get("street", ""))
     if hn:
         personal["house_number"] = hn.group("n")
@@ -1979,8 +2247,14 @@ def _apply_postal_match(m: re.Match[str], personal: dict[str, str], *, labels: t
 
 
 def _match_postal_line(line: str) -> re.Match[str] | None:
-    """Try DE/FR 5-digit, NL, LU, AT/CH 4-digit, then UK/IE patterns."""
+    """Try DE/FR 5-digit, PL, spaced CZ/SE, NL, LU, AT/CH/BE 4-digit, then UK/IE."""
     m = _POSTAL_DE.search(line)
+    if m:
+        return m
+    m = _POSTAL_PL.search(line)
+    if m:
+        return m
+    m = _POSTAL_SPACED.search(line)
     if m:
         return m
     m = _POSTAL_NL.search(line)
@@ -2057,10 +2331,14 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
     if not personal.get("postal_code"):
         for idx, line in enumerate(lines):
             line = (line or "").strip()
-            m = re.match(r"^(?P<plz>\d{5})\s+(?P<city>[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\\-\\s]+)$", line)
+            m = re.match(
+                rf"^(?P<plz>\d{{5}}|\d{{4}}|\d{{2}}-\d{{3}}|\d{{3}}\s+\d{{2}}|\d{{2}}\s+\d{{3}})\s+"
+                rf"(?P<city>[{_CITY_CHARS}][{_CITY_CHARS}\-\s']*)$",
+                line,
+            )
             if not m:
                 continue
-            personal["postal_code"] = m.group("plz")
+            personal["postal_code"] = re.sub(r"\s+", " ", m.group("plz").strip())
             personal["city"] = m.group("city").strip()
             # Previous non-empty line may be the street
             if not personal.get("street") and idx > 0:

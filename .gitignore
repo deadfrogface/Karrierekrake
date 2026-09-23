@@ -219,3 +219,13 @@ artifacts/final_independent_50_v2/frozen_predictions.json
 !artifacts/final_independent_50_v2/PHASE_B_INTEGRITY.json
 !artifacts/final_independent_50_v2/PHASE_B_COMPLETE.json
 !artifacts/final_independent_50_v2/schema_extension_results.json
+
+# Final Independent 50 V2 post-analysis (DET repair iterations; Phase A/B seals stay immutable)
+!artifacts/final_independent_50_v2/post_analysis/
+artifacts/final_independent_50_v2/post_analysis/**
+!artifacts/final_independent_50_v2/post_analysis/final_metrics.json
+!artifacts/final_independent_50_v2/post_analysis/per_document_results.json
+!artifacts/final_independent_50_v2/post_analysis/error_inventory.json
+!artifacts/final_independent_50_v2/post_analysis/critical_errors.json
+!artifacts/final_independent_50_v2/post_analysis/POST_ANALYSIS_LOG.md
+artifacts/final_independent_50_v2/post_analysis/det_predictions/
