@@ -1,0 +1,107 @@
+{
+  "personal": {
+    "first_name": "Daniel",
+    "last_name": "Brooks",
+    "street": "Kingfisher Road",
+    "house_number": "42",
+    "postal_code": "M1 2AB",
+    "city": "Manchester",
+    "country": "",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "daniel.brooks@example.org"
+  ],
+  "phones": [
+    "+44 7700 900555"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "C2"
+    },
+    {
+      "language": "Spanish",
+      "level": "C1"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Manchester Metropolitan University",
+      "qualification": "BSc Business & Management",
+      "start_date": "2014-01-01",
+      "end_date": "2017-12-31"
+    },
+    {
+      "institution": "Northside College",
+      "qualification": "A Levels",
+      "start_date": "2012-01-01",
+      "end_date": "2014-12-31"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Operations Coordinator",
+      "company": "Redwood Mobility Ltd",
+      "start_date": "2023-01-01",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Customer Success Specialist",
+      "company": "",
+      "start_date": "2020-01-01",
+      "end_date": "2023-12-31",
+      "responsibilities": []
+    },
+    {
+      "title": "",
+      "company": "Blue Peak Systems",
+      "start_date": "",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Sales Support Administrator",
+      "company": "Oakfield Distribution",
+      "start_date": "2017-01-01",
+      "end_date": "2020-12-31",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Customer success",
+    "reporting",
+    "CRM administration",
+    "process stakeholder communication",
+    "order fulfilment mapping"
+  ],
+  "software": [
+    "Excel",
+    "Power BI",
+    "SQL",
+    "Dynamics 365",
+    "Zendesk",
+    "Jira",
+    "Confluence"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/EN_02_Two_Column_Trap.pdf",
+  "raw_text_chars": 2433,
+  "raw_text_preview": "## CURRICULUM VITAE\n\n## Daniel Brooks\n\n42 Kingfisher Road · Manchester M1 2AB daniel.brooks@example.org · +44 7700 900555\n\n## EMPLOYMENT HISTORY\n\n| Languages                   | 2023 - Present &#124; Operations Coordinator Redwood Mobility Ltd                                            |\n|-----------------------------|--------------------------------------------------------------------------------------------------------------|\n| English C2                  | 2020 - 2023 &#124; Customer Success ",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "EN_02",
+  "regression_lang": "en"
+}

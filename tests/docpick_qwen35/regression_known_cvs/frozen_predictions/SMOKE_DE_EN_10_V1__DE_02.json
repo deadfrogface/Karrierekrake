@@ -1,0 +1,149 @@
+{
+  "personal": {
+    "first_name": "Jonas",
+    "last_name": "Falkenberg",
+    "street": "Hafenweg",
+    "house_number": "87",
+    "postal_code": "28195",
+    "city": "Bremen",
+    "country": "",
+    "date_of_birth": "19.02.1991"
+  },
+  "emails": [
+    "jonas.falkenberg@example.com"
+  ],
+  "phones": [
+    "+49 151 11112222"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "C2"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    },
+    {
+      "language": "Niederländisch",
+      "level": "B1"
+    },
+    {
+      "language": "Polnisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B BE",
+  "education": [
+    {
+      "institution": "Nordwest Handelsakademie / Friesen Import GmbH",
+      "qualification": "Kaufmann für Groß- und Außenhandelsmanagement (IHK)",
+      "start_date": "2010-09",
+      "end_date": "2013-06"
+    },
+    {
+      "institution": "BBS Ammerland",
+      "qualification": "Fachhochschulreife Wirtschaft und Verwaltung",
+      "start_date": "2008-08",
+      "end_date": "2010-06"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Projektkoordinator Operations & Customer Solutions",
+      "company": "WeserTech Anlagenservice GmbH",
+      "start_date": "2023-04",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Sachbearbeiter Einkauf & Disposition",
+      "company": "Nordstern Komponentenhandel KG",
+      "start_date": "2020-01",
+      "end_date": "2023-03",
+      "responsibilities": []
+    },
+    {
+      "title": "Kundenservice / Auftragsmanagement",
+      "company": "Elbkontor Bürobedarf GmbH",
+      "start_date": "2016-08",
+      "end_date": "2019-12",
+      "responsibilities": []
+    },
+    {
+      "title": "Kaufmännischer Mitarbeiter",
+      "company": "Moorland Versandservice GmbH",
+      "start_date": "2013-07",
+      "end_date": "2016-07",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "B2B-Kundenbetreuung",
+    "Beschwerdemanagement",
+    "Einkauf",
+    "Disposition",
+    "Auftragsmanagement",
+    "Lieferantenmanagement",
+    "Prozessoptimierung",
+    "KPI-Reporting",
+    "Stammdatenpflege",
+    "Projektkoordination",
+    "Rechnungsprüfung",
+    "Bestandsmanagement"
+  ],
+  "software": [
+    "Microsoft 365",
+    "Dynamics 365",
+    "SAP Business One",
+    "HubSpot CRM",
+    "Power BI",
+    "Power Query",
+    "Teams",
+    "SharePoint",
+    "Jira",
+    "Confluence",
+    "Adobe Acrobat",
+    "DocuWare"
+  ],
+  "certificates": [
+    {
+      "name": "IHK Projektmanagement kompakt",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Power BI",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Lean / 5S",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Ersthelfer",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Datenschutz / Informationssicherheit",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/DE_02_Zweispaltig_Trap.pdf",
+  "raw_text_chars": 1398,
+  "raw_text_preview": "## FIKTIVER TEST-LEBENSLAUF\n\n## Jonas Falkenberg\n\nHafenweg 87 · 28195 Bremen\n\njonas.falkenberg@example.com · +49 151 11112222\n\nGeburtsdatum: 19.02.1991\n\n## BERUFSERFAHRUNG\n\n04/2023 - heute\n\nProjektkoordinator Operations &amp; Customer Solutions\n\nWeserTech Anlagenservice GmbH\n\n01/2020 - 03/2023\n\nSachbearbeiter Einkauf &amp; Disposition\n\nNordstern Komponentenhandel KG\n\n08/2016 - 12/2019\n\nKundenservice / Auftragsmanagement\n\nElbkontor Bürobedarf GmbH\n\n07/2013 - 07/2016\n\nKaufmännischer Mitarbeiter\n\nM",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "DE_02",
+  "regression_lang": "de"
+}

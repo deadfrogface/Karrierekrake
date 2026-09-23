@@ -1,0 +1,402 @@
+[32m[INFO] 2026-09-23 20:46:41,509 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:46:41,521 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:46:41,522 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:46:41,569 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:46:41,570 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:46:41,570 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:46:41,594 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:46:41,616 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 20:46:41,617 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+EXTRACT SMOKE_DE_EN_10_V1/DE_01 133.6s ok=True
+[32m[INFO] 2026-09-23 20:48:52,392 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:48:52,405 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:48:52,405 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:48:52,452 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:48:52,454 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:48:52,454 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:48:52,479 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:48:52,504 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 20:48:52,504 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/DE_02 193.9s ok=True
+[32m[INFO] 2026-09-23 20:52:06,304 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:52:06,318 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:52:06,318 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:52:06,367 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:52:06,368 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:52:06,368 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:52:06,393 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:52:06,418 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 20:52:06,418 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/DE_03 130.7s ok=True
+[32m[INFO] 2026-09-23 20:54:17,004 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:54:17,017 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:54:17,017 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:54:17,062 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:54:17,063 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:54:17,063 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:54:17,088 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:54:17,113 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 20:54:17,113 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/DE_04 123.3s ok=True
+[32m[INFO] 2026-09-23 20:56:20,299 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:56:20,312 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:56:20,312 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:56:20,361 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:56:20,362 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:56:20,362 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:56:20,388 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:56:20,413 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 20:56:20,413 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/DE_05 151.3s ok=True
+[32m[INFO] 2026-09-23 20:58:51,627 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:58:51,647 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:58:51,647 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 20:58:51,717 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:58:51,719 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:58:51,719 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 20:58:51,746 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 20:58:51,783 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 20:58:51,783 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/EN_01 91.7s ok=True
+[32m[INFO] 2026-09-23 21:00:23,716 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:00:23,727 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:00:23,728 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:00:23,774 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:00:23,775 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:00:23,775 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:00:23,801 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:00:23,823 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:00:23,824 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/EN_02 161.0s ok=True
+[32m[INFO] 2026-09-23 21:03:04,326 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:03:04,342 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:03:04,342 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:03:04,420 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:03:04,421 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:03:04,421 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:03:04,448 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:03:04,476 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:03:04,476 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/EN_03 89.4s ok=True
+[32m[INFO] 2026-09-23 21:04:33,733 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:04:33,746 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:04:33,746 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:04:33,796 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:04:33,797 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:04:33,798 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:04:33,825 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:04:33,849 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:04:33,850 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/EN_04 138.2s ok=True
+[32m[INFO] 2026-09-23 21:06:51,901 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:06:51,913 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:06:51,913 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:06:51,965 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:06:51,966 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:06:51,966 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:06:51,992 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:06:52,016 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:06:52,016 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT SMOKE_DE_EN_10_V1/EN_05 131.8s ok=True
+[32m[INFO] 2026-09-23 21:09:04,026 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:09:04,039 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:09:04,039 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:09:04,089 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:09:04,090 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:09:04,090 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:09:04,119 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:09:04,143 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:09:04,143 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_001 106.0s ok=True
+[32m[INFO] 2026-09-23 21:10:49,735 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:10:49,749 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:10:49,749 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:10:49,815 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:10:49,816 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:10:49,816 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:10:49,844 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:10:49,869 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:10:49,869 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_002 117.3s ok=True
+[32m[INFO] 2026-09-23 21:12:47,018 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:12:47,030 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:12:47,031 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:12:47,089 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:12:47,090 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:12:47,090 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:12:47,118 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:12:47,141 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:12:47,141 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_003 111.6s ok=True
+[32m[INFO] 2026-09-23 21:14:38,591 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:14:38,602 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:14:38,602 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:14:38,650 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:14:38,652 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:14:38,652 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:14:38,678 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:14:38,701 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:14:38,701 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_004 95.3s ok=True
+[32m[INFO] 2026-09-23 21:16:13,871 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:16:13,882 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:16:13,882 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:16:13,930 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:16:13,931 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:16:13,931 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:16:13,957 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:16:13,980 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:16:13,980 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_005 89.4s ok=True
+[32m[INFO] 2026-09-23 21:17:43,643 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:17:43,654 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:17:43,654 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:17:43,701 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:17:43,702 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:17:43,702 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:17:43,728 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:17:43,752 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:17:43,752 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_006 101.9s ok=True
+[32m[INFO] 2026-09-23 21:19:25,193 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:19:25,204 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:19:25,205 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:19:25,250 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:19:25,251 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:19:25,251 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:19:25,278 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:19:25,300 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:19:25,300 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_007 94.6s ok=True
+[32m[INFO] 2026-09-23 21:20:59,773 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:20:59,785 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:20:59,786 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:20:59,840 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:20:59,841 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:20:59,841 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:20:59,869 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:20:59,894 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:20:59,894 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_008 140.8s ok=True
+[32m[INFO] 2026-09-23 21:23:20,543 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:23:20,555 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:23:20,556 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:23:20,607 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:23:20,609 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:23:20,609 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:23:20,636 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:23:20,660 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:23:20,660 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_009 106.8s ok=True
+[32m[INFO] 2026-09-23 21:25:07,385 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:25:07,405 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:25:07,405 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:25:07,478 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:25:07,480 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:25:07,480 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:25:07,508 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:25:07,546 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:25:07,546 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_010 85.4s ok=True
+[32m[INFO] 2026-09-23 21:26:33,329 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:26:33,340 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:26:33,341 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:26:33,391 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:26:33,392 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:26:33,392 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:26:33,419 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:26:33,442 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:26:33,442 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_011 103.1s ok=True
+[32m[INFO] 2026-09-23 21:28:15,856 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:28:15,869 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:28:15,869 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:28:15,920 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:28:15,921 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:28:15,921 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:28:15,948 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:28:15,972 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:28:15,972 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_012 112.4s ok=True
+[32m[INFO] 2026-09-23 21:30:08,242 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:30:08,254 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:30:08,254 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:30:08,304 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:30:08,305 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:30:08,305 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:30:08,332 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:30:08,354 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:30:08,355 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_013 73.5s ok=True
+[32m[INFO] 2026-09-23 21:31:21,707 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:31:21,719 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:31:21,719 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:31:21,769 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:31:21,770 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:31:21,770 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:31:21,797 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:31:21,819 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:31:21,819 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_014 93.7s ok=True
+[32m[INFO] 2026-09-23 21:32:55,445 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:32:55,454 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:32:55,455 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:32:55,499 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:32:55,501 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:32:55,501 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:32:55,527 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:32:55,545 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:32:55,545 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_015 113.1s ok=True
+[32m[INFO] 2026-09-23 21:34:48,903 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:34:48,914 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:34:48,914 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:34:48,956 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:34:48,957 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:34:48,957 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:34:48,984 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:34:49,006 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:34:49,006 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_016 91.0s ok=True
+[32m[INFO] 2026-09-23 21:36:19,518 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:36:19,528 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:36:19,528 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:36:19,576 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:36:19,577 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:36:19,577 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:36:19,604 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:36:19,624 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:36:19,625 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_017 91.6s ok=True
+[32m[INFO] 2026-09-23 21:37:51,148 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:37:51,158 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:37:51,158 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:37:51,194 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:37:51,195 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:37:51,195 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:37:51,222 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:37:51,239 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:37:51,239 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_018 94.8s ok=True
+[32m[INFO] 2026-09-23 21:39:25,909 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:39:25,916 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:39:25,917 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:39:25,961 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:39:25,961 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:39:25,961 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:39:25,988 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:39:26,004 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:39:26,004 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_019 91.9s ok=True
+[32m[INFO] 2026-09-23 21:40:57,814 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:40:57,825 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:40:57,826 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:40:57,867 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:40:57,868 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:40:57,868 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:40:57,896 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:40:57,918 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:40:57,918 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_020 98.1s ok=True
+[32m[INFO] 2026-09-23 21:42:35,898 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:42:35,909 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:42:35,909 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:42:35,959 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:42:35,960 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:42:35,960 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:42:35,989 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:42:36,012 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:42:36,012 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_021 100.4s ok=True
+[32m[INFO] 2026-09-23 21:44:16,274 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:44:16,287 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:44:16,287 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:44:16,338 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:44:16,339 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:44:16,339 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:44:16,370 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:44:16,394 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:44:16,394 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_022 95.1s ok=True
+[32m[INFO] 2026-09-23 21:45:51,390 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:45:51,402 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:45:51,402 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:45:51,454 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:45:51,455 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:45:51,455 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:45:51,483 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:45:51,507 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:45:51,507 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_023 96.5s ok=True
+[32m[INFO] 2026-09-23 21:47:27,883 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:47:27,890 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:47:27,890 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:47:27,924 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:47:27,925 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:47:27,925 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:47:27,952 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:47:27,967 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:47:27,967 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_024 101.2s ok=True
+[32m[INFO] 2026-09-23 21:49:09,115 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:49:09,127 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:49:09,127 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:49:09,178 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:49:09,179 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:49:09,179 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:49:09,206 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:49:09,229 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:49:09,229 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_025 81.0s ok=True
+[32m[INFO] 2026-09-23 21:50:30,131 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:50:30,142 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:50:30,142 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:50:30,193 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:50:30,194 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:50:30,194 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:50:30,222 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:50:30,244 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:50:30,244 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_026 89.8s ok=True
+[32m[INFO] 2026-09-23 21:51:59,974 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:51:59,986 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:51:59,986 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:52:00,038 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:52:00,040 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:52:00,040 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:52:00,068 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:52:00,091 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:52:00,091 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_027 101.6s ok=True
+[32m[INFO] 2026-09-23 21:53:41,582 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:53:41,594 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:53:41,594 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:53:41,646 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:53:41,647 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:53:41,647 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:53:41,675 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:53:41,699 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:53:41,699 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_028 88.7s ok=True
+[32m[INFO] 2026-09-23 21:55:10,324 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:55:10,333 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:55:10,333 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:55:10,382 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:55:10,383 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:55:10,383 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:55:10,412 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:55:10,430 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:55:10,430 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_029 99.5s ok=True
+[32m[INFO] 2026-09-23 21:56:49,837 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:56:49,847 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:56:49,847 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_det_small.onnx[0m
+[32m[INFO] 2026-09-23 21:56:49,885 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:56:49,886 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:56:49,886 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx[0m
+[32m[INFO] 2026-09-23 21:56:49,913 [RapidOCR] base.py:23: Using engine_name: onnxruntime[0m
+[32m[INFO] 2026-09-23 21:56:49,933 [RapidOCR] download_file.py:60: File exists and is valid: /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+[32m[INFO] 2026-09-23 21:56:49,933 [RapidOCR] main.py:63: Using /workspace/.venv/lib/python3.12/site-packages/rapidocr/models/PP-OCRv6_rec_small.onnx[0m
+EXTRACT MINI_HOLDOUT_30/MH_030 98.9s ok=True
+SEALED /workspace/tests/docpick_qwen35/regression_known_cvs/PHASE_A_EXTRACTION_SEAL.json n_ok=40/40 avg_s=107.7

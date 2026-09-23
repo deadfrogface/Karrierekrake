@@ -1,0 +1,72 @@
+{
+  "personal": {
+    "first_name": "Brooke",
+    "last_name": "Reed",
+    "street": "Anger",
+    "house_number": "50",
+    "postal_code": "99084",
+    "city": "Erfurt",
+    "country": "Deutschland",
+    "date_of_birth": "26.01.1996"
+  },
+  "emails": [
+    "brooke.reed@example.co.uk"
+  ],
+  "phones": [
+    "+49 152 4316024"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "native"
+    },
+    {
+      "language": "German",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Bristol Technical College",
+      "qualification": "Gesellenbrief",
+      "start_date": "2008",
+      "end_date": "2011"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Broadcast Engineer",
+      "company": "Seestern Produktion GmbH",
+      "start_date": "2019-02",
+      "end_date": "",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Messmittelverwaltung",
+    "Gefahrstoffmanagement",
+    "Technische Recherche"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Arbeitssicherheit 2025",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_025.pdf",
+  "raw_text_chars": 624,
+  "raw_text_preview": "## Brooke Reed\n\nAnger 50 | 99084 Erfurt | Deutschland · brooke.reed@example.co.uk · +49 152 4316024 · Born: 26.01.1996\n\n## Professional Experience\n\n02/2019 - heute\n\nBroadcast Engineer | Seestern Produktion GmbH Messmittelverwaltung · Gefahrstoffmanagement\n\n## Education\n\n2008 - 2011\n\nGesellenbrief | Bristol Technical College\n\n## Languages &amp; Driving Licence\n\nEnglish: native\n\nGerman: A2\n\nDriving licence: B\n\n## Applications\n\nMinitab - Grundlagen Qlik Sense - gute Kenntnisse\n\n## Core Skills\n\nMess",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_025",
+  "regression_lang": "en"
+}

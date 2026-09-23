@@ -1,0 +1,34 @@
+{
+  "seal_type": "PARSER_CONFIG_SCORER_FREEZE",
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "created_at": "2026-09-23T20:46:38.538819+00:00",
+  "git_commit": "967497351783b3b9e097251a89890b91ef114866",
+  "det_parse_cv_text_blocked": true,
+  "productive_import": "core.cv_docpick_import.import_cv_docpick",
+  "cv_intelligence_uses_docpick": true,
+  "llm": {
+    "base_url": "http://127.0.0.1:8765/v1",
+    "model_path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+    "temperature": 0.0,
+    "schema": "KarrierekrakeCVSchema",
+    "module": "/workspace/core/cv_docpick_import.py"
+  },
+  "file_sha256": {
+    "core/cv_docpick_import.py": "4b7265e5470a3844d03e3da1b5da65813c9e25ff4df4c6fbfb98bfc741c12cda",
+    "core/cv_intelligence.py": "22aec9dbb198bf8c699fbda665f00c045f1ea8770a32d14eec50e4a24faae9b7",
+    "core/cv_parser.py": "421acdbfcc1d689362b2020518631987aa21e178b347da6a1670b340541ce82f",
+    "scripts/holdout_scorer_v2.py": "0d80bdd6c6b3f4d5a73563bb94163697faae4b878f73616668d6f6e626744f7e",
+    "scripts/holdout_scorer_v3_complete_gt.py": "c8e92da973c277b06ed2f965748cdb18b2840a8187069d4fe25c68bb0a893bda",
+    "scripts/run_docpick_regression_sealed_extract.py": "a809b052c77482caea774a520864f1afba7c5c171ce8439608cd9c7f4ef2dd00"
+  },
+  "manifest_sha256": "248daf5844f5898099d64f13017d4a95c532d00f66bfc01c44256bb2826bd3ed",
+  "forbidden_reads_during_extraction": [
+    "expected_results",
+    "Sollwerte",
+    "ground_truth",
+    "predictions_docpick",
+    "COMPLETE_GT",
+    "INVENTED_AUDIT"
+  ]
+}

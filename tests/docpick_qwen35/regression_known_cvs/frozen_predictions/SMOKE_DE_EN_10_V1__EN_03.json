@@ -1,0 +1,83 @@
+{
+  "personal": {
+    "first_name": "Aisha",
+    "last_name": "Rahman",
+    "street": "Berlin",
+    "house_number": "",
+    "postal_code": "",
+    "city": "Germany",
+    "country": "",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "aisha.rahman@example.net"
+  ],
+  "phones": [],
+  "languages": [
+    {
+      "language": "German",
+      "level": "C1"
+    },
+    {
+      "language": "English",
+      "level": "C2"
+    },
+    {
+      "language": "Arabic",
+      "level": "Native"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berlin School of Economics",
+      "qualification": "B.A. International Business",
+      "start_date": "2018-01-01",
+      "end_date": "2021-12-31"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Procurement Coordinator",
+      "company": "Linden Works GmbH",
+      "start_date": "2024-01-01",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Operations Assistant",
+      "company": "Urban Supply Europe GmbH",
+      "start_date": "2021-01-01",
+      "end_date": "2024-12-31",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Procurement",
+    "supplier management",
+    "scheduling",
+    "reporting",
+    "data quality"
+  ],
+  "software": [
+    "SAP Ariba",
+    "Excel",
+    "Teams",
+    "SharePoint",
+    "Trello"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/EN_03_Missing_Address_Fields.pdf",
+  "raw_text_chars": 587,
+  "raw_text_preview": "## Aisha Rahman\n\nBerlin, Germany | aisha.rahman@example.net\n\n## Summary\n\nOperations professional with experience in procurement, supplier communication and service delivery.\n\n## Experience\n\n2024 - Present | Procurement Coordinator | Linden Works GmbH\n\n2021 - 2024 | Operations Assistant | Urban Supply Europe GmbH\n\n## Education\n\n2018 - 2021 B.A. International Business, Berlin School of Economics\n\n## Languages\n\nGerman C1 | English C2 | Arabic Native\n\n## Tools\n\nSAP Ariba, Excel, Teams, SharePoint, T",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "EN_03",
+  "regression_lang": "en"
+}
