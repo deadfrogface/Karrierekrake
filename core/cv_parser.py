@@ -300,11 +300,46 @@ def is_known_language_name(name: str) -> bool:
     return False
 
 
+_SOFTWARE_PROFICIENCY = re.compile(
+    r"(?i)\s*[-–—:]\s*(?:"
+    r"grundlagen|grundkenntnisse|"
+    r"sehr\s+gute\s+kenntnisse|gute\s+kenntnisse|solide\s+kenntnisse|"
+    r"sehr\s+gut|gut|"
+    r"fortgeschritten|experte|expert|"
+    r"beginner|intermediate|advanced|basic|proficient|"
+    r"kenntnisse"
+    r")\s*$"
+)
+
+
+def _strip_software_proficiency(name: str) -> str:
+    """Remove trailing proficiency markers from a software entry name."""
+    cleaned = (name or "").strip()
+    if not cleaned:
+        return cleaned
+    cleaned = _SOFTWARE_PROFICIENCY.sub("", cleaned).strip(" -–—:")
+    return cleaned or name.strip()
+
+
 def classify_non_language_token(value: str) -> str:
     """Route a non-language token to software | skill | certificate | uncertain."""
     text = (value or "").strip()
     if not text:
         return "uncertain"
+    # Tool + proficiency ("SAP MM - Grundlagen") under a mixed block → software.
+    stripped = _strip_software_proficiency(text)
+    if stripped != text and (len(stripped) >= 2):
+        if _looks_like_software(stripped) or _known_software_token_match(stripped.lower()) or (
+            # Unknown tools under proficiency syntax still look like software,
+            # not certificates — never default proficiency lines to certs.
+            not _looks_like_soft_skill(stripped)
+            and not re.search(r"(?i)\b(zertifikat|certificate|weiterbildung|schulung)\b", stripped)
+        ):
+            return "software"
+    # CamelCase / PascalCase product names (RStudio, PostgreSQL, NetSuite).
+    if re.search(r"[a-z][A-Z]", text) or re.search(r"[A-Z]{2,}[a-z]", text):
+        if not _looks_like_soft_skill(text):
+            return "software"
     if _looks_like_software(text):
         return "software"
     low = text.lower()
@@ -329,6 +364,7 @@ def classify_non_language_token(value: str) -> str:
             "ersthelfer",
             "staplerschein",
             "beschwerdemanagement",
+            "arbeitssicherheit",
         )
     ):
         return "certificate"
@@ -337,8 +373,21 @@ def classify_non_language_token(value: str) -> str:
     # Single product-ish tokens without language markers → software guess.
     if _known_software_token_match(low) or re.search(r"\b(bi|erp|crm|sap|datev)\b", low):
         return "software"
-    if len(text) >= 4:
-        return "certificate"
+    # Competency-like single phrases (no year, no cert keyword) → skill, not cert.
+    if 3 <= len(text) <= 60 and (
+        " " not in text or (text.count(" ") <= 2 and not re.search(r"\d{4}", text))
+    ):
+        if not re.search(r"(?i)\b(zertifikat|certificate|certification)\b", text):
+            # Prefer skill for compound fachkompetenz-style tokens.
+            if _soft_skill_hint_match(low) or _SOFT_SKILL_COMPOUND.search(low):
+                return "skill"
+            # Plain lowercase/title single tokens under a skills section are skills;
+            # mixed alphanumeric product codes stay uncertain/software.
+            if re.fullmatch(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\-/]{2,}", text):
+                if text[0].isupper() and text[1:].islower():
+                    return "skill"
+    # Do NOT default unknown tokens to certificates — that caused mass FPs
+    # when software/skills leaked into a languages section.
     return "uncertain"
 
 
@@ -456,11 +505,19 @@ def _parse_software(body: str) -> list[str]:
         if not line or _is_heading_value(line):
             continue
         # Strip section-style labels pasted into a body line.
-        line = re.sub(r"(?i)^(software|edv|it|tools)\s*:\s*", "", line).strip()
+        line = re.sub(
+            r"(?i)^(software|edv|it|tools|programme|anwendungen)\s*:\s*",
+            "",
+            line,
+        ).strip()
         if not line:
             continue
         # Skip licence / mobility fragments accidentally mixed in.
         if re.match(r"(?i)^(führerschein|fuehrerschein|driving\s+licen)", line):
+            continue
+        # "LibreOffice Calc - Grundlagen" → name only (level is not the product).
+        line = _strip_software_proficiency(line)
+        if not line:
             continue
         m = re.match(r"^(?P<head>MS Office)\s*\((?P<inner>.+)\)$", line, re.I)
         if m:
@@ -485,7 +542,7 @@ def _parse_software(body: str) -> list[str]:
         # Split on comma/pipe only — keep versioned product names like SAP S/4HANA.
         if re.search(r"[,|]", line) and not re.search(r"\(.+[,|].+\)", line):
             for part in re.split(r"[,|]", line):
-                part = part.strip()
+                part = _strip_software_proficiency(part.strip())
                 if part and not _is_heading_value(part):
                     items.append(part)
             continue
@@ -537,29 +594,59 @@ def _parse_certificates(body: str) -> list[CertificateEntry]:
     return result
 
 
-def _parse_driving(body: str) -> list[str]:
+def _parse_driving(body: str, *, section_context: bool = False) -> list[str]:
+    """Extract licence class tokens only — never return raw body lines as licences.
+
+    Accepts:
+    * labelled phrases via ``_inline_licence_mentions`` (``Führerschein: B``)
+    * bare class-token lists (``B, BE``) whose residual text is empty after
+      removing known class tokens and licence keywords
+    * under an explicit licence *section* (``section_context=True``), bare
+      ambiguous tokens like ``C1`` / ``B1`` that would otherwise look like CEFR
+
+    Language lines (``Englisch: B2``), software, skills, or headings never
+    become licence values — that was the MH licence-blob failure mode.
+    """
     lines = [_normalize_bullet(raw) for raw in body.splitlines() if _normalize_bullet(raw)]
-    normalized = normalize_driving_license(lines)
-    if normalized:
-        return normalized
-    result: list[str] = []
+    found: list[str] = []
     for line in lines:
         if _is_heading_value(line):
             continue
-        low = line.lower()
-        if "führerschein" in low or "fuehrerschein" in low or "fahrerlaubnis" in low:
+        labelled = _inline_licence_mentions(line)
+        if labelled:
+            found.extend(labelled)
             continue
-        if "driving" in low and "licen" in low:
+        probe = line
+        if section_context and not _LICENCE_CONTEXT.search(line):
+            # Section heading already established licence context.
+            probe = f"Führerschein {line}"
+        codes = normalize_driving_license(probe)
+        if not codes:
             continue
-        result.append(line)
-    return list(dict.fromkeys(result))
+        remainder = _LICENSE_CLASS.sub(" ", line)
+        remainder = _LICENCE_CONTEXT.sub(" ", remainder)
+        remainder = re.sub(r"[\s,;/&\-:·•]+", "", remainder)
+        if remainder and not section_context:
+            # Leftover words → not a pure licence list (e.g. "Englisch: B2").
+            continue
+        if remainder and section_context:
+            # Under a licence heading still reject language/software sentences.
+            if _parse_one_language(line) is not None:
+                continue
+            if len(remainder) > 3 and not re.fullmatch(r"[A-Z0-9]+", remainder, re.I):
+                continue
+        found.extend(codes)
+    return list(dict.fromkeys(found))
 
 
 def _inline_licence_mentions(text: str) -> list[str]:
     """Only extract licences from explicit licence phrases — never bare CEFR tokens."""
     found: list[str] = []
     patterns = (
-        r"(?:Führerschein|Fuehrerschein|Fahrerlaubnis|Driving\s+Licen[cs]e)\s*[:\-]\s*([^\n|;]+)",
+        r"(?:Führerschein|Fuehrerschein|Führerscheinklasse(?:n)?|"
+        r"Fahrerlaubnis|Fahrerlaubnisklasse(?:n)?|"
+        r"Driving\s+Licen[cs]e|Licen[cs]e\s+Class(?:es)?|"
+        r"Driving\s+Permits?)\s*[:\-]\s*([^\n|;]+)",
         r"Klassen?\s+([A-Z0-9]{1,3}(?:\s*(?:und|,|/|&)\s*[A-Z0-9]{1,3})*)",
         r"Category\s+([A-Z0-9]{1,3})",
         r"Klasse\s+([A-Z0-9]{1,3})",
@@ -1386,15 +1473,14 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             continue
         kind = classify_non_language_token(line)
         if kind == "software":
-            relocated_software.append(line)
+            relocated_software.append(_strip_software_proficiency(line))
         elif kind == "skill":
             relocated_skills.append(line)
         elif kind == "certificate":
             relocated_certs.append(CertificateEntry(name=line))
         else:
             uncertain_tokens.append(line)
-            # Still keep visible as certificate candidate rather than silent drop.
-            relocated_certs.append(CertificateEntry(name=line))
+            # Do not invent certificates from uncertain leftovers.
     # Drop any residual non-language entries that slipped past chunk parsing.
     languages = [lang for lang in languages if is_known_language_name(lang.language)]
     software = [
@@ -1446,7 +1532,12 @@ def parse_cv_text(text: str) -> dict[str, Any]:
                 continue
             if _LEVEL.search(line) and _parse_one_language(line) is not None:
                 continue
+            # Proficiency-marked tool lines are software, never soft skills.
+            if _strip_software_proficiency(line) != line:
+                continue
             if _looks_like_software(line) and not _looks_like_soft_skill(line):
+                continue
+            if classify_non_language_token(line) == "software":
                 continue
             parts = re.split(r"\s*[,;|/]\s*", line) if re.search(r"[,;|/]", line) else [line]
             for part in parts:
@@ -1455,7 +1546,9 @@ def parse_cv_text(text: str) -> dict[str, Any]:
                     continue
                 if _looks_like_software(part) and not _looks_like_soft_skill(part):
                     continue
-                if _looks_like_soft_skill(part) or not _looks_like_software(part):
+                # Only recover explicit soft-skill phrases — never steal unknown
+                # product names (RStudio, Ansys, …) out of a software section.
+                if _looks_like_soft_skill(part):
                     recovered.append(part)
         if recovered:
             skills = list(dict.fromkeys(recovered))
@@ -1487,12 +1580,19 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             if re.search(r"(?i)sicherheitsunterweisung", s) and len(s.split()) <= 4:
                 continue
             if _looks_like_software(s) or classify_non_language_token(s) == "software":
-                software.append(s)
+                software.append(_strip_software_proficiency(s))
                 continue
             kept_skills.append(s)
         soft_l = {x.lower() for x in software}
         skills = [s for s in kept_skills if s.lower() not in soft_l]
         software = list(dict.fromkeys(software))
+    # Canonicalise software names: drop proficiency suffixes from every path.
+    if software:
+        software = list(
+            dict.fromkeys(
+                _strip_software_proficiency(s) for s in software if _strip_software_proficiency(s)
+            )
+        )
     # Drop wrap fragments ("Geschick") when a longer skill already contains them.
     if skills:
         lowered = [s.lower() for s in skills]
@@ -1557,7 +1657,7 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             if c.name.lower() not in existing:
                 certificates.append(c)
                 existing.add(c.name.lower())
-    driving = _parse_driving(sections.get("license", ""))
+    driving = _parse_driving(sections.get("license", ""), section_context=True)
     # Licence lines parked under Kenntnisse/Skills still count as driving licences.
     for raw in sections.get("skills", "").splitlines():
         line = _normalize_bullet(raw)
@@ -1789,13 +1889,15 @@ _COUNTRY_INLINE = re.compile(
     rf"(?i)(?:^|[\s|·,])(?P<country>{_COUNTRY_TOKEN})(?=$|[\s|·,])"
 )
 _DOB = re.compile(
-    r"(?:Geburtsdatum|geboren(?:\s+am)?|DoB|Date of birth)\s*[:\-]?\s*"
+    r"(?:Geburtsdatum|geboren(?:\s+am)?|DoB|Date of birth|Born)\s*[:\-]?\s*"
     r"(?P<dob>\d{1,2}\.\d{1,2}\.\d{2,4})",
     re.I,
 )
 _NAME_RE = re.compile(
-    r"^[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß][A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß\-']+"
-    r"(?:\s+[A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß][A-Za-zÀ-ÖØ-öø-ÿÄÖÜäöüß\-']+){1,3}$"
+    # Unicode letters (incl. Ş, ł) with optional internal apostrophe/hyphen
+    # (N'Diaye, El-Sayed). Digits and underscores rejected.
+    r"^[^\W\d_](?:[^\W\d_]|['\-])*(?:\s+[^\W\d_](?:[^\W\d_]|['\-])*){1,3}$",
+    re.UNICODE,
 )
 
 

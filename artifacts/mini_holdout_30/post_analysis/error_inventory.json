@@ -1,0 +1,106 @@
+[
+  {
+    "document": "MH_011.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "expected": "Rue du Rhône",
+    "actual": ""
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "expected": "54",
+    "actual": ""
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "expected": "1204",
+    "actual": ""
+  },
+  {
+    "document": "MH_011.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "expected": "Genève",
+    "actual": ""
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "expected": "Quai de la Goffe",
+    "actual": ""
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "expected": "71",
+    "actual": ""
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "expected": "4000",
+    "actual": ""
+  },
+  {
+    "document": "MH_012.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "expected": "Liège",
+    "actual": ""
+  },
+  {
+    "document": "MH_026.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "expected": "Genève",
+    "actual": ""
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.street",
+    "group": "address",
+    "status": "missing",
+    "expected": "Quai de la Goffe",
+    "actual": ""
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.house_number",
+    "group": "address",
+    "status": "missing",
+    "expected": "84",
+    "actual": ""
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.postal_code",
+    "group": "address",
+    "status": "missing",
+    "expected": "4000",
+    "actual": ""
+  },
+  {
+    "document": "MH_027.pdf",
+    "field": "address.city",
+    "group": "address",
+    "status": "missing",
+    "expected": "Liège",
+    "actual": ""
+  }
+]

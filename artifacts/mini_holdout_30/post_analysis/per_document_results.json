@@ -1,0 +1,371 @@
+{
+  "MH_001.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 34
+    },
+    "errors": []
+  },
+  "MH_002.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 36
+    },
+    "errors": []
+  },
+  "MH_003.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 42
+    },
+    "errors": []
+  },
+  "MH_004.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 35
+    },
+    "errors": []
+  },
+  "MH_005.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 33
+    },
+    "errors": []
+  },
+  "MH_006.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 41
+    },
+    "errors": []
+  },
+  "MH_007.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 29
+    },
+    "errors": []
+  },
+  "MH_008.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 46
+    },
+    "errors": []
+  },
+  "MH_009.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 39
+    },
+    "errors": []
+  },
+  "MH_010.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 30
+    },
+    "errors": []
+  },
+  "MH_011.pdf": {
+    "n_errors": 4,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 34,
+      "missing": 4
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing",
+        "expected": "Rue du Rhône",
+        "actual": ""
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing",
+        "expected": "54",
+        "actual": ""
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing",
+        "expected": "1204",
+        "actual": ""
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "missing",
+        "expected": "Genève",
+        "actual": ""
+      }
+    ]
+  },
+  "MH_012.pdf": {
+    "n_errors": 4,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 41,
+      "missing": 4
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing",
+        "expected": "Quai de la Goffe",
+        "actual": ""
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing",
+        "expected": "71",
+        "actual": ""
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing",
+        "expected": "4000",
+        "actual": ""
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "missing",
+        "expected": "Liège",
+        "actual": ""
+      }
+    ]
+  },
+  "MH_013.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 29
+    },
+    "errors": []
+  },
+  "MH_014.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 36
+    },
+    "errors": []
+  },
+  "MH_015.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 48
+    },
+    "errors": []
+  },
+  "MH_016.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 35
+    },
+    "errors": []
+  },
+  "MH_017.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 34
+    },
+    "errors": []
+  },
+  "MH_018.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 37
+    },
+    "errors": []
+  },
+  "MH_019.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 32
+    },
+    "errors": []
+  },
+  "MH_020.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 41
+    },
+    "errors": []
+  },
+  "MH_021.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 39
+    },
+    "errors": []
+  },
+  "MH_022.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 35
+    },
+    "errors": []
+  },
+  "MH_023.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 38
+    },
+    "errors": []
+  },
+  "MH_024.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 45
+    },
+    "errors": []
+  },
+  "MH_025.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 29
+    },
+    "errors": []
+  },
+  "MH_026.pdf": {
+    "n_errors": 1,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 31,
+      "missing": 1
+    },
+    "errors": [
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "missing",
+        "expected": "Genève",
+        "actual": ""
+      }
+    ]
+  },
+  "MH_027.pdf": {
+    "n_errors": 4,
+    "perfect": false,
+    "perfect_core": false,
+    "counts": {
+      "correct": 39,
+      "missing": 4
+    },
+    "errors": [
+      {
+        "field": "address.street",
+        "group": "address",
+        "status": "missing",
+        "expected": "Quai de la Goffe",
+        "actual": ""
+      },
+      {
+        "field": "address.house_number",
+        "group": "address",
+        "status": "missing",
+        "expected": "84",
+        "actual": ""
+      },
+      {
+        "field": "address.postal_code",
+        "group": "address",
+        "status": "missing",
+        "expected": "4000",
+        "actual": ""
+      },
+      {
+        "field": "address.city",
+        "group": "address",
+        "status": "missing",
+        "expected": "Liège",
+        "actual": ""
+      }
+    ]
+  },
+  "MH_028.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 35
+    },
+    "errors": []
+  },
+  "MH_029.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 39
+    },
+    "errors": []
+  },
+  "MH_030.pdf": {
+    "n_errors": 0,
+    "perfect": true,
+    "perfect_core": true,
+    "counts": {
+      "correct": 41
+    },
+    "errors": []
+  }
+}

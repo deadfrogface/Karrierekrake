@@ -146,6 +146,14 @@ artifacts/mini_holdout_30/**
 !artifacts/mini_holdout_30/PHASE_B_INTEGRITY.json
 !artifacts/mini_holdout_30/PHASE_B_COMPLETE.json
 !artifacts/mini_holdout_30/schema_extension_results.json
+!artifacts/mini_holdout_30/post_analysis/
+artifacts/mini_holdout_30/post_analysis/**
+!artifacts/mini_holdout_30/post_analysis/baseline.json
+!artifacts/mini_holdout_30/post_analysis/iteration_history.json
+!artifacts/mini_holdout_30/post_analysis/final_metrics.json
+!artifacts/mini_holdout_30/post_analysis/per_document_results.json
+!artifacts/mini_holdout_30/post_analysis/per_field_results.json
+!artifacts/mini_holdout_30/post_analysis/error_inventory.json
 !artifacts/final_holdout/audit/per_field_results_audited.json
 !artifacts/final_holdout/audit/field_group_metrics_audited.json
 !artifacts/final_holdout/audit/slice_metrics_audited.json

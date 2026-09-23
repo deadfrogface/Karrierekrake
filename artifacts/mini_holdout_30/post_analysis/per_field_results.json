@@ -1,0 +1,165 @@
+{
+  "address.city": {
+    "correct": 26,
+    "missing": 4
+  },
+  "address.country": {
+    "correct": 30
+  },
+  "address.house_number": {
+    "correct": 24,
+    "missing": 3
+  },
+  "address.postal_code": {
+    "correct": 24,
+    "missing": 3
+  },
+  "address.street": {
+    "correct": 24,
+    "missing": 3
+  },
+  "certificate:0": {
+    "correct": 8
+  },
+  "certificates": {
+    "correct": 22
+  },
+  "dob": {
+    "correct": 26
+  },
+  "education:0.end_date": {
+    "correct": 30
+  },
+  "education:0.institution": {
+    "correct": 30
+  },
+  "education:0.qualification": {
+    "correct": 30
+  },
+  "education:0.start_date": {
+    "correct": 30
+  },
+  "education:1.end_date": {
+    "correct": 5
+  },
+  "education:1.institution": {
+    "correct": 5
+  },
+  "education:1.qualification": {
+    "correct": 5
+  },
+  "education:1.start_date": {
+    "correct": 5
+  },
+  "education_entry:0": {
+    "correct": 30
+  },
+  "education_entry:1": {
+    "correct": 5
+  },
+  "email": {
+    "correct": 28
+  },
+  "employment:0.company": {
+    "correct": 30
+  },
+  "employment:0.end_date": {
+    "correct": 30
+  },
+  "employment:0.position": {
+    "correct": 30
+  },
+  "employment:0.start_date": {
+    "correct": 30
+  },
+  "employment:1.company": {
+    "correct": 20
+  },
+  "employment:1.end_date": {
+    "correct": 20
+  },
+  "employment:1.position": {
+    "correct": 20
+  },
+  "employment:1.start_date": {
+    "correct": 20
+  },
+  "employment:2.company": {
+    "correct": 10
+  },
+  "employment:2.end_date": {
+    "correct": 10
+  },
+  "employment:2.position": {
+    "correct": 10
+  },
+  "employment:2.start_date": {
+    "correct": 10
+  },
+  "employment_entry:0": {
+    "correct": 30
+  },
+  "employment_entry:1": {
+    "correct": 20
+  },
+  "employment_entry:2": {
+    "correct": 10
+  },
+  "language:0": {
+    "correct": 30
+  },
+  "language:1": {
+    "correct": 30
+  },
+  "license:0": {
+    "correct": 12
+  },
+  "license:1": {
+    "correct": 2
+  },
+  "licenses": {
+    "correct": 18
+  },
+  "name.first_name": {
+    "correct": 30
+  },
+  "name.last_name": {
+    "correct": 30
+  },
+  "phone": {
+    "correct": 28
+  },
+  "skill:0": {
+    "correct": 30
+  },
+  "skill:1": {
+    "correct": 30
+  },
+  "skill:2": {
+    "correct": 30
+  },
+  "skill:3": {
+    "correct": 22
+  },
+  "skill:4": {
+    "correct": 14
+  },
+  "skill:5": {
+    "correct": 7
+  },
+  "software:0": {
+    "correct": 30
+  },
+  "software:1": {
+    "correct": 30
+  },
+  "software:2": {
+    "correct": 22
+  },
+  "software:3": {
+    "correct": 14
+  },
+  "software:4": {
+    "correct": 7
+  }
+}
