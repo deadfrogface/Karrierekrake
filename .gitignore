@@ -207,3 +207,15 @@ artifacts/final_independent_50_v2/seal/**
 !artifacts/final_independent_50_v2/seal/FINAL_INDEPENDENT_50_V2_SEAL.json.sha256
 artifacts/final_independent_50_v2/frozen_predictions/
 artifacts/final_independent_50_v2/frozen_predictions.json
+
+# Final Independent 50 V2 Phase B results (predictions stay local)
+!artifacts/final_independent_50_v2/phase_b_results.json
+!artifacts/final_independent_50_v2/per_document_results.json
+!artifacts/final_independent_50_v2/per_field_results.json
+!artifacts/final_independent_50_v2/field_group_metrics.json
+!artifacts/final_independent_50_v2/slice_metrics.json
+!artifacts/final_independent_50_v2/error_inventory.json
+!artifacts/final_independent_50_v2/critical_errors.json
+!artifacts/final_independent_50_v2/PHASE_B_INTEGRITY.json
+!artifacts/final_independent_50_v2/PHASE_B_COMPLETE.json
+!artifacts/final_independent_50_v2/schema_extension_results.json

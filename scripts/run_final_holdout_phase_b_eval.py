@@ -70,6 +70,25 @@ DATASETS: dict[str, dict[str, Any]] = {
             "this 30-CV Mini Holdout is the independent sealed frozen test of the DET candidate."
         ),
     },
+    "final_independent_50_v2": {
+        "holdout_rel": Path("tests") / "final_independent_50_v2",
+        "out_rel": Path("artifacts") / "final_independent_50_v2",
+        "gt_subdir": "phase_b_solutions",
+        "prefix": "IH2_",
+        "expected_count": 50,
+        "expected_seal_file_sha256": (
+            "79a1a80a8e0a1dc85e47dd9afde710cfa52dcb9053a97df74726b7cfbb663b09"
+        ),
+        "expected_manifest_sha256": (
+            "f5fe1390d7750e48033b6a1e5c2f96d765d8aa9b965b3ea8e980427a6bca1a39"
+        ),
+        "baseline_note": (
+            "100-CV / prior 50-CV / Mini-30 Post-Analysis are development or earlier holdouts; "
+            "this Final Independent 50 V2 is a new independent sealed frozen evaluation "
+            "of DET at parser ancestor 3c9f5bd (Phase-A seal aa6fb96)."
+        ),
+        "strict_precheck": True,
+    },
 }
 
 DATASET_NAME = "final_holdout"
@@ -129,12 +148,16 @@ def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _phase_b_blocked(kind: str) -> str:
+    if DATASET_NAME == "mini_holdout_30":
+        return f"RESULT: MINI HOLDOUT PHASE B BLOCKED – {kind}\n"
+    if DATASET_NAME == "final_independent_50_v2":
+        return f"RESULT: FINAL INDEPENDENT 50 V2 PHASE B BLOCKED – {kind}\n"
+    return f"RESULT: PHASE B BLOCKED – {kind}\n"
+
+
 def verify_phase_a_seal() -> dict[str, Any]:
-    blocked = (
-        "RESULT: MINI HOLDOUT PHASE B BLOCKED – SEAL INTEGRITY FAILURE\n"
-        if DATASET_NAME == "mini_holdout_30"
-        else "RESULT: PHASE B BLOCKED – SEAL INTEGRITY FAILURE\n"
-    )
+    blocked = _phase_b_blocked("SEAL INTEGRITY FAILURE")
     if not SEAL_PATH.is_file():
         raise SystemExit(blocked + "missing PHASE_A_SEAL.json")
     seal_bytes = SEAL_PATH.read_bytes()
@@ -207,11 +230,13 @@ def verify_phase_a_seal() -> dict[str, Any]:
 
 
 def verify_precheck() -> dict[str, Any]:
+    strict = bool(DATASETS[DATASET_NAME].get("strict_precheck")) or (
+        DATASET_NAME == "mini_holdout_30"
+    )
     if not PRECHECK_PATH.is_file():
-        if DATASET_NAME == "mini_holdout_30":
+        if strict:
             raise SystemExit(
-                "RESULT: MINI HOLDOUT PHASE B BLOCKED – PRECHECK FAILURE\n"
-                "missing PRECHECK_REPORT.json"
+                _phase_b_blocked("PRECHECK FAILURE") + "missing PRECHECK_REPORT.json"
             )
         return {"present": False}
     pre = json.loads(PRECHECK_PATH.read_text(encoding="utf-8"))
@@ -225,10 +250,9 @@ def verify_precheck() -> dict[str, Any]:
         and inv == []
         and unexp == []
     )
-    if not ok and DATASET_NAME == "mini_holdout_30":
+    if not ok and strict:
         raise SystemExit(
-            "RESULT: MINI HOLDOUT PHASE B BLOCKED – PRECHECK FAILURE\n"
-            + json.dumps(pre, indent=2)
+            _phase_b_blocked("PRECHECK FAILURE") + json.dumps(pre, indent=2)
         )
     return {"present": True, "ok": ok, "report": pre}
 
@@ -236,45 +260,27 @@ def verify_precheck() -> dict[str, Any]:
 def load_and_validate_gt() -> tuple[dict[str, dict], dict[str, dict], str]:
     if not GT_PATH.is_file():
         raise SystemExit(
-            (
-                "RESULT: MINI HOLDOUT PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-                if DATASET_NAME == "mini_holdout_30"
-                else "RESULT: PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-            )
-            + "missing expected_results.json"
+            _phase_b_blocked("INVALID GROUND TRUTH") + "missing expected_results.json"
         )
     raw = GT_PATH.read_text(encoding="utf-8")
     data = json.loads(raw)
     docs = data.get("documents")
     if not isinstance(docs, dict) or len(docs) != EXPECTED_COUNT:
         raise SystemExit(
-            (
-                "RESULT: MINI HOLDOUT PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-                if DATASET_NAME == "mini_holdout_30"
-                else "RESULT: PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-            )
+            _phase_b_blocked("INVALID GROUND TRUTH")
             + f"n_docs={len(docs) if isinstance(docs, dict) else type(docs)}"
         )
     expected = {f"{DOC_PREFIX}{i:03d}.pdf" for i in range(1, EXPECTED_COUNT + 1)}
     got = set(docs.keys())
     if got != expected:
         raise SystemExit(
-            (
-                "RESULT: MINI HOLDOUT PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-                if DATASET_NAME == "mini_holdout_30"
-                else "RESULT: PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-            )
+            _phase_b_blocked("INVALID GROUND TRUTH")
             + f"missing={sorted(expected-got)} extra={sorted(got-expected)}"
         )
     meta = data.get("metadata") or {}
     if not isinstance(meta, dict) or len(meta) != EXPECTED_COUNT:
         raise SystemExit(
-            (
-                "RESULT: MINI HOLDOUT PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-                if DATASET_NAME == "mini_holdout_30"
-                else "RESULT: PHASE B BLOCKED – INVALID GROUND TRUTH\n"
-            )
-            + "metadata size"
+            _phase_b_blocked("INVALID GROUND TRUTH") + "metadata size"
         )
     # Adapt GT for Scorer V2 field names without mutating the on-disk file
     adapted: dict[str, dict] = {}
@@ -585,9 +591,9 @@ def run() -> dict[str, Any]:
     # Ensure no re-extraction occurred
     if IMPORT_CV_CALLS or CV_PARSE_CALLS:
         raise SystemExit(
-            "RESULT: MINI HOLDOUT PHASE B INVALID – RE-EXTRACTION OCCURRED"
-            if DATASET_NAME == "mini_holdout_30"
-            else "RESULT: PHASE B INVALID – RE-EXTRACTION OCCURRED"
+            _phase_b_blocked("RE-EXTRACTION OCCURRED").rstrip("\n").replace(
+                "BLOCKED – ", "INVALID – "
+            )
         )
 
     agg = aggregate_v2(all_rows)
@@ -745,13 +751,9 @@ def run() -> dict[str, Any]:
         "dataset": DATASET_NAME,
     }
     if pred_changed:
-        prefix = (
-            "RESULT: MINI HOLDOUT PHASE B BLOCKED – SEAL INTEGRITY FAILURE\n"
-            if DATASET_NAME == "mini_holdout_30"
-            else "RESULT: PHASE B BLOCKED – SEAL INTEGRITY FAILURE\n"
-        )
         raise SystemExit(
-            prefix + f"predictions changed during evaluation: {pred_changed}"
+            _phase_b_blocked("SEAL INTEGRITY FAILURE")
+            + f"predictions changed during evaluation: {pred_changed}"
         )
 
     # Write artifacts (do not touch Phase A seal / predictions)

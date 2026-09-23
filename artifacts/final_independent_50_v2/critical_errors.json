@@ -1,0 +1,1722 @@
+{
+  "n_critical_events": 163,
+  "n_critical_invented": 163,
+  "documents": [
+    "IH2_001.pdf",
+    "IH2_003.pdf",
+    "IH2_004.pdf",
+    "IH2_007.pdf",
+    "IH2_008.pdf",
+    "IH2_009.pdf",
+    "IH2_011.pdf",
+    "IH2_012.pdf",
+    "IH2_013.pdf",
+    "IH2_015.pdf",
+    "IH2_016.pdf",
+    "IH2_017.pdf",
+    "IH2_019.pdf",
+    "IH2_020.pdf",
+    "IH2_021.pdf",
+    "IH2_023.pdf",
+    "IH2_024.pdf",
+    "IH2_027.pdf",
+    "IH2_028.pdf",
+    "IH2_029.pdf",
+    "IH2_031.pdf",
+    "IH2_032.pdf",
+    "IH2_033.pdf",
+    "IH2_035.pdf",
+    "IH2_036.pdf",
+    "IH2_037.pdf",
+    "IH2_039.pdf",
+    "IH2_040.pdf",
+    "IH2_041.pdf",
+    "IH2_043.pdf",
+    "IH2_044.pdf",
+    "IH2_047.pdf",
+    "IH2_048.pdf",
+    "IH2_049.pdf"
+  ],
+  "events": [
+    {
+      "document": "IH2_001.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_001.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Schichtkoordination"
+    },
+    {
+      "document": "IH2_001.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Routenplanung"
+    },
+    {
+      "document": "IH2_001.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Zusätzliche Angaben"
+    },
+    {
+      "document": "IH2_001.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Zertifikate: Ersthelfer-Ausbildung 2020"
+    },
+    {
+      "document": "IH2_003.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_003.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Anlagenprüfung"
+    },
+    {
+      "document": "IH2_003.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Routenplanung"
+    },
+    {
+      "document": "IH2_003.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Versuchsplanung"
+    },
+    {
+      "document": "IH2_003.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Fahrplanabstimmung"
+    },
+    {
+      "document": "IH2_003.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_004.pdf",
+      "field": "employment_extra:1",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Fachschule Venlo",
+        "end_date": "2010",
+        "location": "",
+        "responsibilities": [
+          "Applications / Programme",
+          "SAP S/4HANA / Microsoft Dynamics 365 / MATLAB / Infor LN",
+          "Core Competencies",
+          "Lohnabrechnung • Einsatzplanung • Kundenberatung • Zollabwicklung • Reklamationsbearbeitung",
+          "Languages & Mobility",
+          "Lëtzebuergesch: Mammesprooch",
+          "Deutsch: C1"
+        ],
+        "source": "cv",
+        "start_date": "2007",
+        "title": "Fachabitur"
+      }
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Wartungsplanung"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Archivierung"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Werkervaring"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "07/2018 - 12/2021"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Fischwirtin"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Grenzland Mobilität SE"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:9",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Opleiding"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:10",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "2010 - 2013"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:11",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Staatlich geprüfte Technikerin"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:12",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Institut technique Flensburg"
+    },
+    {
+      "document": "IH2_007.pdf",
+      "field": "software_extra:13",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_008.pdf",
+      "field": "employment_extra:2",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Hogeschool Esch-sur-Alzette",
+        "end_date": "2014",
+        "location": "",
+        "responsibilities": [
+          "Languages & Mobility",
+          "Svenska: modersmål",
+          "Deutsch: C1",
+          "English: C1",
+          "Applications / Programme",
+          "Navision 2018 - Basis",
+          "Affinity Photo - fortgeschritten",
+          "Microsoft Dynamics 365 - sehr sicher",
+          "Core Competencies",
+          "Datenvalidierung",
+          "Gefährdungsbeurteilung",
+          "Lieferantenprüfung"
+        ],
+        "source": "cv",
+        "start_date": "2011",
+        "title": "Bachelor of Science"
+      }
+    },
+    {
+      "document": "IH2_009.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_009.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Datenvalidierung • Technische Dokumentation • Bauüberwachung • Archivierung"
+    },
+    {
+      "document": "IH2_011.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_011.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Störungsdiagnose"
+    },
+    {
+      "document": "IH2_011.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Versuchsplanung"
+    },
+    {
+      "document": "IH2_011.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Bauüberwachung"
+    },
+    {
+      "document": "IH2_011.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Fahrplanabstimmung"
+    },
+    {
+      "document": "IH2_011.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Werkstoffanalyse"
+    },
+    {
+      "document": "IH2_011.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_012.pdf",
+      "field": "employment_extra:3",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Institut technique Grevenmacher",
+        "end_date": "2007",
+        "location": "",
+        "responsibilities": [],
+        "source": "cv",
+        "start_date": "2004",
+        "title": "Licence professionnelle"
+      }
+    },
+    {
+      "document": "IH2_013.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_013.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Terminsteuerung"
+    },
+    {
+      "document": "IH2_013.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Lohnabrechnung"
+    },
+    {
+      "document": "IH2_013.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Zusätzliche Angaben"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Opleiding"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "2007 - 2010"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "CESS"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Lycée Namur"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:9",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Talen en mobiliteit"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:10",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Polski: ojczysty"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:11",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Deutsch: B2"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:12",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "English: B2"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:13",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Rijbewijs: B"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:14",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "BE"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:15",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_015.pdf",
+      "field": "software_extra:16",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Certificaten: Sachkundeprüfung UVV 2022"
+    },
+    {
+      "document": "IH2_016.pdf",
+      "field": "employment_extra:1",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Berufskolleg Kleve",
+        "end_date": "2011",
+        "location": "",
+        "responsibilities": [
+          "Languages & Mobility",
+          "Čeština: rodilý mluvčí",
+          "Deutsch: C1",
+          "Applications / Programme",
+          "Infor LN - Basis",
+          "Core Competencies",
+          "Bauüberwachung",
+          "Hydrologische Messung",
+          "Lieferantenprüfung",
+          "Zollabwicklung",
+          "Versuchsplanung"
+        ],
+        "source": "cv",
+        "start_date": "2008",
+        "title": "Bachelor professionnel"
+      }
+    },
+    {
+      "document": "IH2_017.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_017.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Befunddokumentation"
+    },
+    {
+      "document": "IH2_017.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Gefährdungsbeurteilung"
+    },
+    {
+      "document": "IH2_017.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Schadenskalkulation"
+    },
+    {
+      "document": "IH2_017.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Routenplanung"
+    },
+    {
+      "document": "IH2_019.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_019.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Talen en mobiliteit"
+    },
+    {
+      "document": "IH2_019.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Slovenščina: materni jezik"
+    },
+    {
+      "document": "IH2_019.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Deutsch: B2"
+    },
+    {
+      "document": "IH2_019.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_020.pdf",
+      "field": "employment_extra:2",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Lycée Weil am Rhein",
+        "end_date": "2015",
+        "location": "",
+        "responsibilities": [
+          "Languages & Mobility",
+          "Português: língua materna",
+          "Deutsch: C1",
+          "Englisch: C1"
+        ],
+        "source": "cv",
+        "start_date": "2012",
+        "title": "Fachabitur"
+      }
+    },
+    {
+      "document": "IH2_021.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_021.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Anlagenprüfung"
+    },
+    {
+      "document": "IH2_021.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Werkstoffanalyse"
+    },
+    {
+      "document": "IH2_021.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Datenvalidierung"
+    },
+    {
+      "document": "IH2_021.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Zusätzliche Angaben"
+    },
+    {
+      "document": "IH2_023.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_023.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Werkstoffanalyse"
+    },
+    {
+      "document": "IH2_023.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Gefährdungsbeurteilung"
+    },
+    {
+      "document": "IH2_023.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Anlagenprüfung"
+    },
+    {
+      "document": "IH2_023.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Befunddokumentation"
+    },
+    {
+      "document": "IH2_023.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Bestandsführung"
+    },
+    {
+      "document": "IH2_023.pdf",
+      "field": "software_extra:9",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_024.pdf",
+      "field": "employment_extra:3",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Fachschule Bregenz",
+        "end_date": "2008",
+        "location": "",
+        "responsibilities": [
+          "Applications / Programme",
+          "Trimble Business Center / Microsoft Dynamics 365 / SPSS / RStudio",
+          "Core Competencies",
+          "Terminsteuerung • Bauüberwachung • Routenplanung • Einsatzplanung • Störungsdiagnose • Zollabwicklung •",
+          "Werkstoffanalyse",
+          "Languages & Mobility",
+          "Lëtzebuergesch: Mammesprooch",
+          "Deutsch: C1",
+          "Englisch: C1"
+        ],
+        "source": "cv",
+        "start_date": "2005",
+        "title": "Bachelor of Science"
+      }
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Lieferantenprüfung"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Befunddokumentation"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Terminsteuerung"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Werkervaring"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "03/2018 - 08/2021"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:9",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Processoperatör"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:10",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Grenzland Mobilität SE"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:11",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "04/2019 - 09/2022"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:12",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Teamassistenz"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:13",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Juno Hydrotechnik GmbH"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:14",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "05/2020 - 10/2023"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:15",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Projektmitarbeiter"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:16",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Marex Marine BV"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:17",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Opleiding"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:18",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "2008 - abgebrochen"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:19",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Ausbildung abgebrochen"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:20",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Institut technique Malmö"
+    },
+    {
+      "document": "IH2_027.pdf",
+      "field": "software_extra:21",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_028.pdf",
+      "field": "employment_extra:1",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Hogeschool Verviers",
+        "end_date": "2012",
+        "location": "",
+        "responsibilities": [],
+        "source": "cv",
+        "start_date": "2009",
+        "title": "Licence professionnelle"
+      }
+    },
+    {
+      "document": "IH2_028.pdf",
+      "field": "employment_extra:2",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Weiterbildungszentrum Verviers",
+        "end_date": "2019",
+        "location": "",
+        "responsibilities": [
+          "Languages & Mobility",
+          "Svenska: modersmål",
+          "Deutsch: C1",
+          "Driving licence: B",
+          "Applications / Programme",
+          "Revit - Basis",
+          "SAP S/4HANA - fortgeschritten",
+          "LabWare LIMS - sehr sicher",
+          "Core Competencies",
+          "Bestandsführung",
+          "Schichtkoordination",
+          "Kundenberatung",
+          "Kartierung",
+          "Werkstoffanalyse"
+        ],
+        "source": "cv",
+        "start_date": "2018",
+        "title": "Fachlehrgang Werkstoffprüfer"
+      }
+    },
+    {
+      "document": "IH2_029.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_029.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Anlagenprüfung • Lohnabrechnung • Reklamationsbearbeitung • Versuchsplanung • Datenvalidierung • Einsatzplanung"
+    },
+    {
+      "document": "IH2_031.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_031.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Archivierung"
+    },
+    {
+      "document": "IH2_031.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Wartungsplanung"
+    },
+    {
+      "document": "IH2_031.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_032.pdf",
+      "field": "employment_extra:2",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Institut technique Trier",
+        "end_date": "2016",
+        "location": "",
+        "responsibilities": [],
+        "source": "cv",
+        "start_date": "2013",
+        "title": "Bachelor professionnel"
+      }
+    },
+    {
+      "document": "IH2_033.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_033.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Versuchsplanung"
+    },
+    {
+      "document": "IH2_033.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kalibrierung"
+    },
+    {
+      "document": "IH2_033.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Schichtkoordination"
+    },
+    {
+      "document": "IH2_033.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Einsatzplanung"
+    },
+    {
+      "document": "IH2_033.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Zusätzliche Angaben"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Opleiding"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "2005 - 2008"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Mittlerer Schulabschluss"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Lycée Roermond"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:9",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Talen en mobiliteit"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:10",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Polski: ojczysty"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:11",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Deutsch: B2"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:12",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "English: B2"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:13",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_035.pdf",
+      "field": "software_extra:14",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Gewenste functie: Planoloog"
+    },
+    {
+      "document": "IH2_036.pdf",
+      "field": "employment_extra:3",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Berufskolleg Liège",
+        "end_date": "2009",
+        "location": "",
+        "responsibilities": [
+          "Languages & Mobility",
+          "Čeština: rodilý mluvčí",
+          "Deutsch: C1",
+          "English: C1",
+          "Driving licence: C, CE",
+          "Applications / Programme",
+          "Jira - Basis",
+          "Core Competencies",
+          "Gefährdungsbeurteilung",
+          "Datenvalidierung",
+          "Befunddokumentation",
+          "Störungsdiagnose",
+          "Probennahme",
+          "Zollabwicklung",
+          "Einsatzplanung"
+        ],
+        "source": "cv",
+        "start_date": "2006",
+        "title": "Fachabitur"
+      }
+    },
+    {
+      "document": "IH2_037.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_037.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Anlagenprüfung"
+    },
+    {
+      "document": "IH2_037.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Gefährdungsbeurteilung"
+    },
+    {
+      "document": "IH2_039.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_039.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Lieferantenprüfung • Routenplanung • Störungsdiagnose • Anlagenprüfung"
+    },
+    {
+      "document": "IH2_039.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Talen en mobiliteit"
+    },
+    {
+      "document": "IH2_039.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Slovenščina: materni jezik"
+    },
+    {
+      "document": "IH2_039.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Deutsch: B2"
+    },
+    {
+      "document": "IH2_039.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "English: B2"
+    },
+    {
+      "document": "IH2_039.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_040.pdf",
+      "field": "employment_extra:1",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Lycée Arnhem",
+        "end_date": "2013",
+        "location": "",
+        "responsibilities": [
+          "Languages & Mobility",
+          "Português: língua materna",
+          "Deutsch: C1"
+        ],
+        "source": "cv",
+        "start_date": "2010",
+        "title": "Bachelor of Science"
+      }
+    },
+    {
+      "document": "IH2_041.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    },
+    {
+      "document": "IH2_041.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Technische Dokumentation"
+    },
+    {
+      "document": "IH2_041.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Terminsteuerung"
+    },
+    {
+      "document": "IH2_041.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Störungsdiagnose"
+    },
+    {
+      "document": "IH2_041.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Archivierung"
+    },
+    {
+      "document": "IH2_041.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kartierung"
+    },
+    {
+      "document": "IH2_041.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Zusätzliche Angaben"
+    },
+    {
+      "document": "IH2_043.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_043.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Fahrplanabstimmung"
+    },
+    {
+      "document": "IH2_043.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Gefährdungsbeurteilung"
+    },
+    {
+      "document": "IH2_043.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_043.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Certificaten: Sachkundeprüfung UVV 2020"
+    },
+    {
+      "document": "IH2_044.pdf",
+      "field": "employment_extra:2",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Fachschule Emmerich am Rhein",
+        "end_date": "2017",
+        "location": "",
+        "responsibilities": [
+          "Applications / Programme",
+          "Solid Edge / QGIS / Microsoft Power BI / Revit / BE-Plan",
+          "Core Competencies",
+          "Versuchsplanung • Bestandsführung • Störungsdiagnose",
+          "Languages & Mobility",
+          "Lëtzebuergesch: Mammesprooch",
+          "Deutsch: C1",
+          "Englisch: C1"
+        ],
+        "source": "cv",
+        "start_date": "2014",
+        "title": "Licence professionnelle"
+      }
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:2",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Vaardigheden"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:3",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Bestandsführung"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:4",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Datenvalidierung"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:5",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Werkervaring"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:6",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "11/2018 - 04/2021"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:7",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Sicherheitsingenieur"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:8",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Grenzland Mobilität SE"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:9",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "12/2019 - 05/2022"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:10",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Teamassistenz"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:11",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Juno Hydrotechnik GmbH"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:12",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Fahrplanabstimmung · Prozessfreigabe"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:13",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Opleiding"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:14",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "2006 - 2009"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:15",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "CESS"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:16",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Institut technique Zittau"
+    },
+    {
+      "document": "IH2_047.pdf",
+      "field": "software_extra:17",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Aanvullende informatie"
+    },
+    {
+      "document": "IH2_048.pdf",
+      "field": "employment_extra:3",
+      "group": "employment",
+      "status": "hallucinated",
+      "kind": "invented_employment",
+      "expected": null,
+      "actual": {
+        "company": "Hogeschool Lille",
+        "end_date": "2010",
+        "location": "",
+        "responsibilities": [
+          "Languages & Mobility",
+          "Svenska: modersmål",
+          "Deutsch: C1",
+          "English: C1",
+          "Applications / Programme",
+          "ProAlpha ERP - Basis",
+          "ArcGIS Pro - fortgeschritten",
+          "Infor LN - sehr sicher",
+          "Core Competencies",
+          "Lieferantenprüfung",
+          "Werkstoffanalyse",
+          "Befunddokumentation",
+          "Präventive Konservierung",
+          "Probennahme",
+          "Prozessfreigabe",
+          "Archivierung"
+        ],
+        "source": "cv",
+        "start_date": "2007",
+        "title": "Bachelor professionnel"
+      }
+    },
+    {
+      "document": "IH2_049.pdf",
+      "field": "software_extra:1",
+      "group": "software",
+      "status": "hallucinated",
+      "kind": "invented_software",
+      "expected": null,
+      "actual": "Kompetenzprofil"
+    }
+  ]
+}

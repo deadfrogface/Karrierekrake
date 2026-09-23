@@ -1,0 +1,273 @@
+{
+  "address.city": {
+    "correct": 42,
+    "wrong": 4,
+    "missing": 4
+  },
+  "address.country": {
+    "correct": 48,
+    "missing": 2
+  },
+  "address.house_number": {
+    "correct": 40,
+    "missing": 5
+  },
+  "address.postal_code": {
+    "correct": 40,
+    "missing": 8
+  },
+  "address.street": {
+    "correct": 40,
+    "missing": 5
+  },
+  "certificate:0": {
+    "missing": 5,
+    "correct": 3
+  },
+  "certificates": {
+    "correct": 42
+  },
+  "dob": {
+    "correct": 29,
+    "missing": 11
+  },
+  "education:0.end_date": {
+    "correct": 13
+  },
+  "education:0.institution": {
+    "correct": 13
+  },
+  "education:0.qualification": {
+    "correct": 13
+  },
+  "education:0.start_date": {
+    "correct": 13
+  },
+  "education:1.end_date": {
+    "correct": 2
+  },
+  "education:1.institution": {
+    "correct": 2
+  },
+  "education:1.qualification": {
+    "correct": 2
+  },
+  "education:1.start_date": {
+    "correct": 2
+  },
+  "education_entry:0": {
+    "correct": 13,
+    "missing": 37
+  },
+  "education_entry:1": {
+    "correct": 2,
+    "missing": 4
+  },
+  "email": {
+    "correct": 46
+  },
+  "employment:0.company": {
+    "correct": 25
+  },
+  "employment:0.end_date": {
+    "correct": 25
+  },
+  "employment:0.position": {
+    "correct": 25
+  },
+  "employment:0.start_date": {
+    "correct": 25
+  },
+  "employment:1.company": {
+    "correct": 16
+  },
+  "employment:1.end_date": {
+    "correct": 16
+  },
+  "employment:1.position": {
+    "correct": 16
+  },
+  "employment:1.start_date": {
+    "correct": 16
+  },
+  "employment:2.company": {
+    "correct": 8
+  },
+  "employment:2.end_date": {
+    "correct": 8
+  },
+  "employment:2.position": {
+    "correct": 8
+  },
+  "employment:2.start_date": {
+    "correct": 8
+  },
+  "employment_entry:0": {
+    "correct": 25,
+    "missing": 25
+  },
+  "employment_entry:1": {
+    "missing": 17,
+    "correct": 16
+  },
+  "employment_entry:2": {
+    "missing": 8,
+    "correct": 8
+  },
+  "employment_extra:1": {
+    "hallucinated": 4
+  },
+  "employment_extra:2": {
+    "hallucinated": 5
+  },
+  "employment_extra:3": {
+    "hallucinated": 4
+  },
+  "language:0": {
+    "correct": 3,
+    "missing": 47
+  },
+  "language:1": {
+    "missing": 36,
+    "correct": 12
+  },
+  "language:2": {
+    "missing": 24,
+    "correct": 6
+  },
+  "license:0": {
+    "missing": 8,
+    "correct": 8
+  },
+  "license:1": {
+    "correct": 3,
+    "missing": 2
+  },
+  "licenses": {
+    "correct": 34
+  },
+  "name.first_name": {
+    "correct": 50
+  },
+  "name.last_name": {
+    "correct": 50
+  },
+  "phone": {
+    "correct": 47
+  },
+  "skill:0": {
+    "missing": 44,
+    "correct": 6
+  },
+  "skill:1": {
+    "missing": 46,
+    "correct": 4
+  },
+  "skill:2": {
+    "missing": 40,
+    "correct": 1
+  },
+  "skill:3": {
+    "missing": 32
+  },
+  "skill:4": {
+    "missing": 24
+  },
+  "skill:5": {
+    "missing": 12,
+    "correct": 4
+  },
+  "skill:6": {
+    "missing": 8
+  },
+  "software:0": {
+    "correct": 25,
+    "missing": 25
+  },
+  "software:1": {
+    "missing": 25,
+    "correct": 15
+  },
+  "software:2": {
+    "correct": 11,
+    "missing": 20
+  },
+  "software:3": {
+    "missing": 16,
+    "correct": 5
+  },
+  "software:4": {
+    "correct": 5,
+    "missing": 8
+  },
+  "software:5": {
+    "correct": 1,
+    "missing": 1
+  },
+  "software_extra:1": {
+    "hallucinated": 10
+  },
+  "software_extra:10": {
+    "hallucinated": 5
+  },
+  "software_extra:11": {
+    "hallucinated": 5
+  },
+  "software_extra:12": {
+    "hallucinated": 5
+  },
+  "software_extra:13": {
+    "hallucinated": 5
+  },
+  "software_extra:14": {
+    "hallucinated": 4
+  },
+  "software_extra:15": {
+    "hallucinated": 3
+  },
+  "software_extra:16": {
+    "hallucinated": 3
+  },
+  "software_extra:17": {
+    "hallucinated": 2
+  },
+  "software_extra:18": {
+    "hallucinated": 1
+  },
+  "software_extra:19": {
+    "hallucinated": 1
+  },
+  "software_extra:2": {
+    "hallucinated": 13
+  },
+  "software_extra:20": {
+    "hallucinated": 1
+  },
+  "software_extra:21": {
+    "hallucinated": 1
+  },
+  "software_extra:3": {
+    "hallucinated": 17
+  },
+  "software_extra:4": {
+    "hallucinated": 17
+  },
+  "software_extra:5": {
+    "hallucinated": 17
+  },
+  "software_extra:6": {
+    "hallucinated": 14
+  },
+  "software_extra:7": {
+    "hallucinated": 12
+  },
+  "software_extra:8": {
+    "hallucinated": 8
+  },
+  "software_extra:9": {
+    "hallucinated": 6
+  },
+  "target_role": {
+    "correct": 2
+  }
+}
