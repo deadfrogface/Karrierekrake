@@ -248,4 +248,3 @@ artifacts/cv_parser_replacement/**
 artifacts/cv_parser_replacement/smoke/**
 !artifacts/cv_parser_replacement/smoke/VARIANT_A_SUMMARY.json
 !artifacts/cv_parser_replacement/SMOKE_GATE_RESULT.json
-

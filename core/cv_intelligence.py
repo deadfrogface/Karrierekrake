@@ -2,8 +2,10 @@
 
 FILE → Docling text → Docpick schema LLM → preview/approval/persist.
 
-Legacy DET ``parse_cv_text`` is not used. Historical helpers such as
-``reconcile_phi_into_parsed`` remain only for offline evaluation scripts.
+Legacy DET ``parse_cv_text`` is not used by production import. Historical
+helpers such as ``reconcile_phi_into_parsed`` remain only for offline
+evaluation scripts. PHI_WRITE lives in ``guenther.service`` and is
+untouched by this module.
 """
 
 from __future__ import annotations
@@ -57,7 +59,10 @@ def reconcile_phi_into_parsed(
     *,
     cv_text: str,
 ) -> dict[str, Any]:
-    """Historical evaluation helper — NOT used by production CV import."""
+    """Historical evaluation helper — NOT used by production CV import.
+
+    Kept so Frozen Holdout / baseline scripts can still score old Phi merges.
+    """
     from guenther.model_manager import PRODUCTION_MODEL_ID
 
     out = dict(parsed)
@@ -96,18 +101,18 @@ def reconcile_phi_into_parsed(
         notes.append("phi_experience_gap_filled")
     out["work_experience"] = work
 
-    edu = list(out.get("education") or [])
-    for e in suggestion.get("education") or []:
-        e = str(e).strip()
-        if not e or _edu_in_parsed(out, e):
+    education = list(out.get("education") or [])
+    for edu in suggestion.get("education") or []:
+        edu = str(edu).strip()
+        if not edu or _edu_in_parsed(out, edu):
             continue
-        if _norm(e) not in _norm(cv_text):
+        if _norm(edu) not in _norm(cv_text):
             continue
-        edu.append(
-            {"qualification": e, "institution": "", "start_date": "", "end_date": ""}
+        education.append(
+            {"qualification": edu, "institution": "", "start_date": "", "end_date": ""}
         )
         notes.append("phi_education_gap_filled")
-    out["education"] = edu
+    out["education"] = education
 
     emails = list(out.get("emails") or [])
     for em in suggestion.get("emails") or []:
@@ -125,8 +130,46 @@ def reconcile_phi_into_parsed(
             notes.append("phi_phone_gap_filled")
     out["phones"] = phones
 
-    out["intelligence_notes"] = notes
+    certs = list(out.get("certificates") or [])
+    cert_norm = {_norm(str(c.get("name") if isinstance(c, dict) else c)) for c in certs}
+    for c in suggestion.get("certificates") or []:
+        c = str(c).strip()
+        if not c or _norm(c) in cert_norm:
+            continue
+        if _norm(c) not in _norm(cv_text):
+            continue
+        certs.append({"name": c, "issuer": "", "date": "", "source": "cv_phi"})
+        cert_norm.add(_norm(c))
+        notes.append("phi_certificate_gap_filled")
+    out["certificates"] = certs
+
+    langs = list(out.get("languages") or [])
+    if not langs:
+        for lang in suggestion.get("languages") or []:
+            lang = str(lang).strip()
+            if not lang or _norm(lang) not in _norm(cv_text):
+                continue
+            langs.append({"language": lang, "level": "", "source": "cv_phi"})
+            notes.append("phi_language_gap_filled")
+        out["languages"] = langs
+
+    if work and conf.get("work_experience") in {
+        None,
+        "",
+        "Im Dokument nicht gefunden",
+        "Nicht erkannt",
+    }:
+        conf["work_experience"] = "Erkannt (historisch Phi + Parser)"
+    if education and conf.get("education") in {
+        None,
+        "",
+        "Im Dokument nicht gefunden",
+        "Nicht erkannt",
+    }:
+        conf["education"] = "Erkannt (historisch Phi + Parser)"
+
     out["confidence"] = conf
+    out["intelligence_notes"] = notes
     out["phi_model_id"] = suggestion.get("_model_id") or PRODUCTION_MODEL_ID
     return out
 
@@ -144,6 +187,7 @@ def import_cv_canonical(
 
     ``guenther_*`` / ``split_phi_passes`` accepted for old callers but ignored.
     ``document_backend`` other than docling is ignored (Docling is fixed frontend).
+    Never calls ``parse_cv_text`` / DET and never falls back to it.
     """
     del manual_profile
     del split_phi_passes

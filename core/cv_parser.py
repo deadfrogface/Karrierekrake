@@ -2608,6 +2608,7 @@ def import_cv(
 
     ``guenther_enabled`` is accepted for old callers/configs but ignored.
     Raises ``core.cv_docpick_import.CvImportError`` on failure (visible to UI).
+    Never falls back to DET ``parse_cv_text``.
     """
     from core.cv_intelligence import import_cv_canonical
 

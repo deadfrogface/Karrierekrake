@@ -101,6 +101,7 @@ class CvImportDialog(QDialog):
 
         try:
             # Productive path: Docpick + Qwen3.5-4B only. No DET fallback.
+            # Günther/Phi must never run here — guenther_enabled is PHI_WRITE only.
             self.parsed = filter_parsed_for_import(
                 import_cv(cv_path, guenther_enabled=False, manual_profile={})
             )
