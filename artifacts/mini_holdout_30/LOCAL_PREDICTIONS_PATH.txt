@@ -1,0 +1,4 @@
+Local (gitignored) frozen predictions for Mini Holdout 30 Phase A:
+  artifacts/mini_holdout_30/frozen_predictions/MH_001.json … MH_030.json
+Sealed hashes are tracked in this directory (FROZEN_*.json, PHASE_A_SEAL.json).
+Do not overwrite; a new run requires a new run-id directory.
