@@ -1628,6 +1628,28 @@ def _looks_like_software(value: str) -> bool:
 
 
 def parse_cv_text(text: str) -> dict[str, Any]:
+    """REMOVED from production.
+
+    Legacy DET rule parser. Productive import uses
+    ``core.cv_docpick_import.import_cv_docpick`` only.
+    Recoverable via git history; not a silent fallback.
+    """
+    raise RuntimeError(
+        "DET parse_cv_text was removed from the productive CV import. "
+        "Use core.cv_parser.import_cv / core.cv_docpick_import.import_cv_docpick. "
+        "No automatic DET fallback."
+    )
+
+
+def _legacy_parse_cv_text_det_REMOVED(text: str) -> dict[str, Any]:
+    """Archived DET body kept temporarily so git blame/history stays near code.
+
+    Not called from production. Will be deleted once the Docpick path is frozen.
+    """
+    return _legacy_det_parse_cv_text_impl(text)
+
+
+def _legacy_det_parse_cv_text_impl(text: str) -> dict[str, Any]:
     """Heuristic extraction — never invents values not present in text."""
     empty = {
         "raw_text_preview": text[:2000],
@@ -2582,9 +2604,10 @@ def import_cv(
     guenther_enabled: bool = False,
     manual_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Import CV via deterministic DET pipeline (PHI_EXTRACT removed).
+    """Import CV via Docpick + local Qwen3.5-4B (DET removed).
 
     ``guenther_enabled`` is accepted for old callers/configs but ignored.
+    Raises ``core.cv_docpick_import.CvImportError`` on failure (visible to UI).
     """
     from core.cv_intelligence import import_cv_canonical
 

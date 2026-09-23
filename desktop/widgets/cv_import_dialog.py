@@ -100,17 +100,28 @@ class CvImportDialog(QDialog):
         layout.addWidget(buttons)
 
         try:
-            # CV import is DET-only. Günther/Phi must never run here — even when
-            # settings.guenther_enabled is true (that flag is for PHI_WRITE only).
+            # Productive path: Docpick + Qwen3.5-4B only. No DET fallback.
             self.parsed = filter_parsed_for_import(
                 import_cv(cv_path, guenther_enabled=False, manual_profile={})
             )
+            if self.parsed.get("needs_manual_review"):
+                QMessageBox.information(
+                    self,
+                    tr("profile.cv"),
+                    tr("cv_import.needs_review"),
+                )
             self.incoming = parsed_to_qualifications(self.parsed)
             self.personal_incoming = personal_from_parsed(self.parsed)
             self._refresh_preview()
         except Exception as exc:  # noqa: BLE001
-            QMessageBox.warning(self, tr("profile.cv"), f"{tr('cv_import.read_error')}\n{exc}")
+            QMessageBox.warning(
+                self,
+                tr("profile.cv"),
+                f"{tr('cv_import.read_error')}\n{exc}\n\n{tr('cv_import.manual_hint')}",
+            )
             self.preview.setPlainText(str(exc))
+            self.parsed = None
+            self.incoming = None
         fit_dialog_to_screen(self, preferred_width=760, preferred_height=640)
 
     def _current_mode(self) -> ImportMode:
@@ -135,9 +146,12 @@ class CvImportDialog(QDialog):
         if intel:
             lines.append("")
             lines.append(f"=== {tr('cv_import.pipeline')} ===")
-            lines.append(f"• {tr('cv_import.pipeline_det')}")
-            if intel not in {"", "deterministic_only"}:
+            pipe = (self.parsed or {}).get("pipeline") or "docpick_qwen35_4b"
+            lines.append(f"• {pipe}")
+            if intel not in {"", "docpick_qwen35"}:
                 lines.append(f"• Status: {intel}")
+            if (self.parsed or {}).get("needs_manual_review"):
+                lines.append(f"• {tr('cv_import.needs_review')}")
         if conf:
             lines.append("")
             lines.append(f"=== {tr('cv_import.confidence')} ===")

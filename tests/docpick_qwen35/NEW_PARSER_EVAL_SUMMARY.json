@@ -1,0 +1,31 @@
+{
+  "status": "NEUER PARSER NOCH NICHT BEREIT",
+  "gate": {
+    "min_f1": 0.9,
+    "max_hallu": 0.03,
+    "max_invented": 0,
+    "perfect_core_target": ">0"
+  },
+  "metrics_after_one_adapter_fix": {
+    "f1_all": 0.8076923076923076,
+    "f1_de": 0.7764705882352941,
+    "f1_en": 0.8450704225352113,
+    "hallu": 0.22043010752688172,
+    "perfect_core": 0,
+    "invented_critical": 28
+  },
+  "performance": {
+    "avg_s_per_cv": 91.56582762708422,
+    "peak_rss_mb": 3426.5625
+  },
+  "test_status": "known_fixtures_development_not_blind",
+  "concrete_failures": [
+    "Perfect Core 0/10",
+    "F1 0.81 < 0.90 gate",
+    "Hallu ~0.22 (fixture GT lacks full emp/edu lists → many 'invented' marks; also real software/skill gaps)",
+    "Missing skills/software/certificates on DE_01 and similar",
+    "Secondary licence class often missing (BE vs B)"
+  ],
+  "productive_path": "docpick_qwen35_4b via import_cv; DET parse_cv_text raises; no DET fallback",
+  "no_99_claim": true
+}
