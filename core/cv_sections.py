@@ -17,6 +17,7 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "work experience",
         "career history",
         "praxiserfahrung",
+        "berufspraxis",
         "beschäftigung",
         "employment",
         "experience",
@@ -76,7 +77,18 @@ HEADINGS: dict[str, tuple[str, ...]] = {
     "languages": (
         "sprachen / it / mobilität",
         "sprachen / it / mobilitaet",
+        "sprachen und fahrerlaubnis",
+        "sprachen und führerschein",
+        "sprachen und fuehrerschein",
+        "languages and driving licence",
+        "languages and driving license",
+        "languages and licences",
+        "languages and licenses",
+        "kenntnisse sprachen",
+        "skills languages",
         "language proficiency",
+        "language skills",
+        "language skill",
         "sprachkenntnisse",
         "fremdsprachen",
         "languages",
@@ -133,6 +145,9 @@ HEADINGS: dict[str, tuple[str, ...]] = {
         "ueber mich",
         "zusammenfassung",
         "projekt- und sonderaufgaben",
+        "additional information",
+        "weitere angaben",
+        "sonstiges",
         "summary",
         "profil",
         "kontakt",
@@ -180,6 +195,17 @@ _COMPOSITE_REST_OK = {
     "mobilität",
     "mobilitaet",
     "tools",
+    # Language + licence composite headings (e.g. "Sprachen & Fahrerlaubnis")
+    "fahrerlaubnis",
+    "führerschein",
+    "fuehrerschein",
+    "führerscheine",
+    "fuehrerscheine",
+    "licence",
+    "license",
+    "licences",
+    "licenses",
+    "driving",
     # Compound headings like "Ausbildung und Berufserfahrung"
     "und",
     "and",
@@ -208,6 +234,8 @@ def is_document_title(line: str) -> bool:
 def _normalize_heading_key(line: str) -> str:
     cleaned = line.strip().lower().rstrip(":").strip()
     cleaned = cleaned.replace("&", " & ")
+    # Treat en/em dashes like spaces so "Kenntnisse – Sprachen" matches.
+    cleaned = re.sub(r"[–—−]", " ", cleaned)
     cleaned = re.sub(r"\s+", " ", cleaned)
     return cleaned
 

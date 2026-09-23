@@ -129,3 +129,14 @@ artifacts/final_holdout/audit/**
 !artifacts/final_holdout/audit/ground_truth_review.json
 # Predictions stay local (not committed); hashes seal them
 artifacts/final_holdout/frozen_predictions/
+# POST-ANALYSIS language benchmark summaries (not frozen predictions)
+!artifacts/final_holdout/post_analysis_language/
+artifacts/final_holdout/post_analysis_language/**
+!artifacts/final_holdout/post_analysis_language/det_language_results.json
+!artifacts/final_holdout/post_analysis_language/det_baseline_language_results.json
+!artifacts/final_holdout/post_analysis_language/phi_language_results.json
+!artifacts/final_holdout/post_analysis_language/phi_repeatability.json
+!artifacts/final_holdout/post_analysis_language/fallback_results.json
+!artifacts/final_holdout/post_analysis_language/pipeline_comparison.json
+!artifacts/final_holdout/post_analysis_language/iteration_history.json
+!artifacts/final_holdout/post_analysis_language/holdout100_regression.json

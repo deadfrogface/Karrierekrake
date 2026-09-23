@@ -1,0 +1,34 @@
+{
+  "label": "POST-ANALYSIS",
+  "repeat": 3,
+  "n_docs": 5,
+  "identical_rate": 0.8,
+  "documents": [
+    {
+      "document": "FH_001.pdf",
+      "identical": true,
+      "runs": 3
+    },
+    {
+      "document": "FH_002.pdf",
+      "identical": true,
+      "runs": 3
+    },
+    {
+      "document": "FH_003.pdf",
+      "identical": true,
+      "runs": 3
+    },
+    {
+      "document": "FH_004.pdf",
+      "identical": true,
+      "runs": 3
+    },
+    {
+      "document": "FH_005.pdf",
+      "identical": false,
+      "runs": 3
+    }
+  ],
+  "note": "Live 3x repeat on 5 representative docs after 50-doc main pass; identical_rate=0.8"
+}

@@ -150,7 +150,11 @@ def _normalize_lang_level(level: str, meta: str = "", full_line: str = "") -> st
     if cefr:
         return cefr[-1].upper()
     low = blob.lower()
-    if "muttersprach" in low or re.search(r"\bnative(?:\s+speaker)?\b", low):
+    if (
+        "muttersprach" in low
+        or "mother tongue" in low
+        or re.search(r"\bnative(?:\s+speaker)?\b", low)
+    ):
         return "native"
     if re.fullmatch(r"[ABC][12]", level, re.I):
         return level.upper()
@@ -399,6 +403,13 @@ def _parse_languages(body: str) -> list[LanguageEntry]:
         line = _normalize_bullet(raw)
         if not line:
             continue
+        # Licence / mobility lines in mixed language sections are not languages.
+        if re.match(
+            r"(?i)^(führerschein|fuehrerschein|fahrerlaubnis|driving\s+licen)",
+            line,
+        ):
+            pending_level = None
+            continue
         # Orphan CEFR token on its own line — attach to the next language name.
         if re.fullmatch(r"[ABC][12]", line, re.I):
             pending_level = line.upper()
@@ -578,6 +589,23 @@ def _looks_like_certificate_line(line: str) -> bool:
     return bool(re.match(r"^(?:19|20)\d{2}\s+\S+", line))
 
 
+_CAREER_BREAK = re.compile(
+    r"(?i)\b("
+    r"elternzeit|erziehungszeit|elternurlaub|mutterschutz|"
+    r"arbeitslosigkeit|arbeitssuchend|sabbatical|pflegezeit|"
+    r"unemployment|parental\s+leave|maternity\s+leave|career\s+break"
+    r")\b"
+)
+
+
+def _is_career_break_line(line: str) -> bool:
+    """True for parental leave / unemployment / sabbatical — not education."""
+    cleaned = _normalize_bullet(line)
+    if not cleaned:
+        return False
+    return bool(_CAREER_BREAK.search(cleaned))
+
+
 def _parse_education(body: str) -> tuple[list[EducationEntry], list[CertificateEntry]]:
     lines = [ln.rstrip() for ln in body.splitlines()]
     entries: list[EducationEntry] = []
@@ -594,6 +622,9 @@ def _parse_education(body: str) -> tuple[list[EducationEntry], list[CertificateE
         if _is_heading(line):
             i += 1
             continue
+        if _is_career_break_line(line):
+            i += 1
+            continue
 
         # Date-first layouts: "2013 - 2016 BA Business ..., University"
         pm = _PERIOD.search(line)
@@ -604,14 +635,25 @@ def _parse_education(body: str) -> tuple[list[EducationEntry], list[CertificateE
             qualification = rest
             institution = ""
             location = ""
+            # Entire date line is a career break (e.g. "03/2021 - 11/2022 Elternzeit")
+            if _is_career_break_line(line) or (qualification and _is_career_break_line(qualification)):
+                i += 1
+                continue
             j = i + 1
-            # Continuation lines for institution
+            # Continuation lines for institution / qualification on the next line
+            # (common layout: "2008 - 2011" then "Hauptschulabschluss | Schule").
             while j < len(lines):
                 nxt = lines[j].strip()
                 if not nxt:
                     j += 1
                     continue
-                if _PERIOD.search(nxt) or _QUAL_START.match(nxt) or _is_heading(nxt) or _looks_like_certificate_line(nxt):
+                if _is_career_break_line(nxt):
+                    break
+                if _PERIOD.search(nxt) or _is_heading(nxt) or _looks_like_certificate_line(nxt):
+                    break
+                # A second degree line ends this entry — but the first QUAL line
+                # fills an empty qualification from a date-only row.
+                if qualification and _QUAL_START.match(nxt):
                     break
                 if not qualification:
                     qualification = nxt
@@ -620,6 +662,11 @@ def _parse_education(body: str) -> tuple[list[EducationEntry], list[CertificateE
                 else:
                     institution = f"{institution} {nxt}".strip()
                 j += 1
+            if qualification and _is_career_break_line(qualification):
+                i = max(j, i + 1)
+                continue
+            if institution and _is_career_break_line(institution):
+                institution = ""
             if qualification and "|" in qualification:
                 left, right = [p.strip() for p in qualification.split("|", 1)]
                 qualification, institution = left, right or institution
@@ -1284,13 +1331,23 @@ def parse_cv_text(text: str) -> dict[str, Any]:
     languages = _parse_languages(sections.get("languages", ""))
     # Reclassify non-language lines that lived under Sprachen (Weiterbildung,
     # software, soft skills) — never leave Lean Management / Power BI as a language.
+    # Licence lines stay out of certificates — they belong in driving_license.
     relocated_certs: list[CertificateEntry] = []
     relocated_skills: list[str] = []
     relocated_software: list[str] = []
     uncertain_tokens: list[str] = []
+    languages_section_licences: list[str] = []
     for raw in (sections.get("languages") or "").splitlines():
         line = _normalize_bullet(raw)
         if not line or _is_heading_value(line) or _is_heading(line):
+            continue
+        if _LICENCE_LINE.match(line) or re.match(
+            r"(?i)^(führerschein|fuehrerschein|fahrerlaubnis|driving\s+licen)",
+            line,
+        ):
+            languages_section_licences.extend(
+                _inline_licence_mentions(line) or _parse_driving(line)
+            )
             continue
         if _parse_one_language(line) is not None:
             continue
@@ -1470,6 +1527,10 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             for code in _inline_licence_mentions(line) or _parse_driving(line):
                 if code not in driving:
                     driving.append(code)
+    # Mixed "Sprachen & Fahrerlaubnis" bodies: harvest licences from language section.
+    for code in languages_section_licences:
+        if code not in driving:
+            driving.append(code)
     for code in routed_licenses:
         if code not in driving:
             driving.append(code)
@@ -1498,6 +1559,29 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             if extra_soft:
                 software = list(dict.fromkeys([*software, *extra_soft]))
     education, edu_certs = _parse_education(edu_body)
+    # Safety net: never keep parental leave / unemployment as education.
+    education = [
+        e
+        for e in education
+        if not _is_career_break_line(e.qualification or "")
+        and not _is_career_break_line(e.institution or "")
+    ]
+    career_notes: list[str] = []
+    for raw in (sections.get("profile") or "").splitlines():
+        line = _normalize_bullet(raw)
+        if line and _is_career_break_line(line):
+            career_notes.append(line)
+    # Also scan full text for labeled career-break rows not under a profile heading.
+    for raw in text.splitlines():
+        line = _normalize_bullet(raw)
+        if line and _is_career_break_line(line) and line not in career_notes:
+            # Avoid pulling education/degree lines that merely mention a break keyword.
+            if _DEGREE_HINT.search(line) and not re.search(
+                r"(?i)^\d{2}/\d{4}\s*[–\-—]\s*\d{2}/\d{4}\s+\S+", line
+            ):
+                continue
+            if _PERIOD.search(line) or re.match(r"^(?:19|20)\d{2}\b", line):
+                career_notes.append(line)
     if edu_certs and not certificates:
         certificates.extend(edu_certs)
     elif edu_certs:
@@ -1591,6 +1675,7 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             for c in certificates
         ],
         "driving_license": [{"value": d, "source": "cv"} for d in dict.fromkeys(driving)],
+        "career_notes": list(dict.fromkeys(career_notes)),
         "experience_lines": [e.label() for e in experience],
         "emails": list(dict.fromkeys(emails)),
         "phones": list(dict.fromkeys(p.strip() for p in phones)),

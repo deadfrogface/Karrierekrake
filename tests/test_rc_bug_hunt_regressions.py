@@ -171,7 +171,8 @@ Englisch
 """
     )
     assert "Führerschein Klasse B" not in parsed["skills"]
-    assert "Python" in parsed["skills"]
+    # Programming tokens under Kenntnisse belong in software (or skills), not languages.
+    assert "Python" in parsed["skills"] or "Python" in parsed["software"]
     assert any(d.get("value") == "B" for d in parsed["driving_license"])
     langs = parsed["languages"]
     assert not any(lang.get("language") == "C" for lang in langs)

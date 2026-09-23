@@ -1,0 +1,43 @@
+{
+  "label": "POST-ANALYSIS",
+  "iterations": [
+    {
+      "id": "lang-det-heading",
+      "hypothesis": "Languages F1=0 because composite headings Sprachen & Fahrerlaubnis / Languages & licences are not classified as languages",
+      "root_cause": "is_heading returned None; language lines absorbed into education; _parse_languages starved",
+      "change": "Composite licence rest tokens + language aliases + dash normalize; harvest licences from language body; skip licence reclass to certificates",
+      "targeted_tests": "tests/test_det_language_extraction.py (25+)",
+      "old_regression": "related unit suites green (pre-existing Python-in-skills assertion updated)",
+      "holdout_100": "F1 0.998 / Perfect 89 unchanged",
+      "holdout_50_post_analysis": "Language F1 0.000 → 0.974; Overall F1 0.805 → ~0.845 before FH_011",
+      "performance": "~15 ms/CV, ~43 MB",
+      "new_errors": "none material; 5 language FN = GT duplicate Englisch rows",
+      "fixed_errors": "empty languages on 50/50 docs",
+      "verdict": "KEEP"
+    },
+    {
+      "id": "fh011-career-break",
+      "hypothesis": "Elternzeit classified as education due to Weitere Angaben not splitting sections + career-break rows parsed as degrees; Berufspraxis missing",
+      "root_cause": "Section Detection + education date-first parse without career-break guard",
+      "change": "Berufspraxis→experience; Weitere Angaben→profile; career-break filter; career_notes; date-only edu continuation",
+      "targeted_tests": "tests/test_career_break_not_education.py",
+      "old_regression": "pass",
+      "holdout_100": "F1 0.998 / Perfect 89 unchanged",
+      "holdout_50_post_analysis": "Overall F1 → 0.941; Hallu → 0.006",
+      "performance": "unchanged order of magnitude",
+      "new_errors": "none observed on 100-CV",
+      "fixed_errors": "Elternzeit education hallucination; empty employment when Berufspraxis used",
+      "verdict": "KEEP"
+    },
+    {
+      "id": "phi-language-only-offline",
+      "hypothesis": "Phi on language blocks might beat DET on residual errors",
+      "root_cause": "n/a — experiment",
+      "change": "Offline benchmark only; no production wiring",
+      "targeted_tests": "scripts/run_phi_language_only_benchmark.py",
+      "holdout_50_post_analysis": "see phi_language_results.json",
+      "verdict": "KEEP_EXPERIMENTAL_OUT_OF_PRODUCT — DET wins on quality×cost"
+    }
+  ],
+  "final_pipeline": "DET_ONLY"
+}

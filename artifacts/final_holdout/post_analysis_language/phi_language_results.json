@@ -1,0 +1,431 @@
+{
+  "protocol": "POST_ANALYSIS_PHI_LANGUAGE_ONLY_V1",
+  "label": "POST-ANALYSIS",
+  "created_at": "2026-09-23T01:53:13.895737+00:00",
+  "model_path": "/tmp/karrierekrake-models/phi4-mini/microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
+  "model_load_s": 2.064,
+  "n_documents": 50,
+  "language_precision": 0.9836,
+  "language_recall": 0.9836,
+  "language_f1": 0.9836,
+  "pair_accuracy": 0.6,
+  "licence_precision": 1.0,
+  "licence_recall": 0.8667,
+  "licence_f1": 0.9286,
+  "language_licence_confusion_count": 0,
+  "language_hallucination_count": 1,
+  "invalid_output_rate": 0.04,
+  "timing_s_mean": 16.112,
+  "timing_s_total": 805.598,
+  "peak_rss_mb": 5187.96,
+  "repeatability_identical_rate_5docs_x3": 0.8,
+  "production_integration": false,
+  "notes": [
+    "Pair accuracy much lower than headline Language F1 due to null Muttersprache levels",
+    "Repeatability identical_rate 0.8 on 5 docs x3 (temp=0) — not fully bit-stable",
+    "Peak RAM ~5.2 GB during model load; DET ~43 MB",
+    "~16s/CV vs DET ~15ms"
+  ],
+  "per_document": [
+    {
+      "document": "FH_001.json",
+      "timing_s": 18.394,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_002.json",
+      "timing_s": 13.094,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_003.json",
+      "timing_s": 15.268,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_004.json",
+      "timing_s": 12.655,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_005.json",
+      "timing_s": 18.687,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_006.json",
+      "timing_s": 15.377,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_007.json",
+      "timing_s": 17.736,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_008.json",
+      "timing_s": 18.419,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_009.json",
+      "timing_s": 23.206,
+      "invalid": true,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_010.json",
+      "timing_s": 12.341,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_011.json",
+      "timing_s": 14.03,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_012.json",
+      "timing_s": 15.716,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_013.json",
+      "timing_s": 18.6,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_014.json",
+      "timing_s": 15.077,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_015.json",
+      "timing_s": 17.352,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_016.json",
+      "timing_s": 16.247,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_017.json",
+      "timing_s": 17.898,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_018.json",
+      "timing_s": 14.837,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_019.json",
+      "timing_s": 12.648,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_020.json",
+      "timing_s": 14.964,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_021.json",
+      "timing_s": 17.299,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_022.json",
+      "timing_s": 15.723,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_023.json",
+      "timing_s": 12.494,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_024.json",
+      "timing_s": 15.119,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_025.json",
+      "timing_s": 18.313,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_026.json",
+      "timing_s": 12.81,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_027.json",
+      "timing_s": 16.613,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_028.json",
+      "timing_s": 17.069,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_029.json",
+      "timing_s": 21.159,
+      "invalid": true,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_030.json",
+      "timing_s": 14.833,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_031.json",
+      "timing_s": 13.665,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_032.json",
+      "timing_s": 15.581,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_033.json",
+      "timing_s": 18.815,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_034.json",
+      "timing_s": 15.261,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_035.json",
+      "timing_s": 17.099,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_036.json",
+      "timing_s": 12.962,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_037.json",
+      "timing_s": 17.96,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_038.json",
+      "timing_s": 16.953,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_039.json",
+      "timing_s": 14.674,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_040.json",
+      "timing_s": 14.823,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_041.json",
+      "timing_s": 17.39,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_042.json",
+      "timing_s": 19.851,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_043.json",
+      "timing_s": 17.749,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_044.json",
+      "timing_s": 17.125,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_045.json",
+      "timing_s": 19.826,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_046.json",
+      "timing_s": 14.57,
+      "invalid": false,
+      "lang_tp": 1,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_047.json",
+      "timing_s": 14.281,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_048.json",
+      "timing_s": 12.684,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_049.json",
+      "timing_s": 16.907,
+      "invalid": false,
+      "lang_tp": 2,
+      "lang_fp": 0,
+      "lang_fn": 0
+    },
+    {
+      "document": "FH_050.json",
+      "timing_s": 13.445,
+      "invalid": false,
+      "lang_tp": 0,
+      "lang_fp": 1,
+      "lang_fn": 1
+    }
+  ]
+}

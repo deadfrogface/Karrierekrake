@@ -1,0 +1,461 @@
+{
+  "created_at": "2026-09-23T01:29:46.030750+00:00",
+  "frozen_holdout_reference": {
+    "accuracy": 0.674,
+    "f1": 0.805,
+    "languages_f1": 0.0,
+    "note": "immutable; not overwritten by this run",
+    "perfect_core": 0
+  },
+  "frozen_prediction_hashes_intact": "f37ae1882450e65028c742d5a14bdb74356804e06014b4de8657b013b097a7bd",
+  "metrics": {
+    "hallucination_count": 11,
+    "hallucination_rate": 0.0058,
+    "label": "POST-ANALYSIS",
+    "language_licence": {
+      "docs_with_empty_language_pred": 0,
+      "language_f1": 0.9744,
+      "language_fn": 5,
+      "language_fp": 0,
+      "language_hallucination_count": 0,
+      "language_hallucination_rate": 0.0,
+      "language_licence_confusion_count": 0,
+      "language_precision": 1.0,
+      "language_recall": 0.95,
+      "language_tp": 95,
+      "licence_f1": 0.7647,
+      "licence_precision": 0.6842,
+      "licence_recall": 0.8667,
+      "pair_accuracy": 0.95,
+      "pair_correct": 95,
+      "pair_total": 100
+    },
+    "n_documents": 50,
+    "n_facts": 1906,
+    "overall": {
+      "by_group": {
+        "address": {
+          "correct": 163,
+          "missing": 78
+        },
+        "career_intent": {
+          "missing": 1
+        },
+        "certificates": {
+          "correct": 33,
+          "missing": 17
+        },
+        "contact": {
+          "correct": 93,
+          "wrong": 3
+        },
+        "education": {
+          "correct": 295
+        },
+        "employment": {
+          "correct": 436,
+          "missing": 24,
+          "wrong": 59
+        },
+        "languages": {
+          "correct": 95,
+          "missing": 5
+        },
+        "licenses": {
+          "correct": 52
+        },
+        "personal": {
+          "correct": 139,
+          "missing": 6
+        },
+        "skills": {
+          "correct": 223,
+          "hallucinated": 11
+        },
+        "software": {
+          "correct": 166,
+          "missing": 7
+        }
+      },
+      "counts": {
+        "correct": 1695,
+        "hallucinated": 11,
+        "missing": 138,
+        "wrong": 62,
+        "wrong_category": 0
+      },
+      "f1": 0.94140516523188,
+      "false_positive_rate": 0.03830010493179433,
+      "field_accuracy": 0.8892969569779643,
+      "field_total": 1906,
+      "hallucination_rate": 0.005771248688352571,
+      "missing_field_rate": 0.07240293809024134,
+      "precision": 0.958710407239819,
+      "recall": 0.9247135842880524,
+      "wrong_category_rate": 0.0
+    },
+    "per_document": [
+      {
+        "accuracy": null,
+        "document_id": "FH_001.pdf",
+        "f1": 0.9696969696969697,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_002.pdf",
+        "f1": 0.9565217391304348,
+        "languages_pred_n": 1,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_003.pdf",
+        "f1": 0.9285714285714286,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_004.pdf",
+        "f1": 0.9473684210526315,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_005.pdf",
+        "f1": 0.9818181818181818,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_006.pdf",
+        "f1": 0.9714285714285714,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_007.pdf",
+        "f1": 0.9213483146067416,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_008.pdf",
+        "f1": 0.9545454545454545,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_009.pdf",
+        "f1": 0.9600000000000001,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_010.pdf",
+        "f1": 0.9565217391304348,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_011.pdf",
+        "f1": 0.9113924050632912,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_012.pdf",
+        "f1": 0.9010989010989012,
+        "languages_pred_n": 1,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_013.pdf",
+        "f1": 0.9696969696969697,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_014.pdf",
+        "f1": 0.90625,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_015.pdf",
+        "f1": 0.8518518518518519,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_016.pdf",
+        "f1": 0.9473684210526315,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_017.pdf",
+        "f1": 0.9259259259259259,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_018.pdf",
+        "f1": 0.9433962264150945,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_019.pdf",
+        "f1": 0.9565217391304348,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_020.pdf",
+        "f1": 0.9473684210526316,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_021.pdf",
+        "f1": 0.9824561403508771,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_022.pdf",
+        "f1": 0.9411764705882354,
+        "languages_pred_n": 1,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_023.pdf",
+        "f1": 0.9315068493150684,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_024.pdf",
+        "f1": 0.9206349206349206,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_025.pdf",
+        "f1": 0.9696969696969697,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_026.pdf",
+        "f1": 0.9714285714285714,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_027.pdf",
+        "f1": 0.963855421686747,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_028.pdf",
+        "f1": 0.9473684210526315,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_029.pdf",
+        "f1": 0.983050847457627,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_030.pdf",
+        "f1": 0.9433962264150945,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_031.pdf",
+        "f1": 0.909090909090909,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_032.pdf",
+        "f1": 0.898876404494382,
+        "languages_pred_n": 1,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_033.pdf",
+        "f1": 0.9583333333333334,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_034.pdf",
+        "f1": 0.8923076923076922,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_035.pdf",
+        "f1": 0.9599999999999999,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_036.pdf",
+        "f1": 0.9583333333333333,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_037.pdf",
+        "f1": 0.9696969696969697,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_038.pdf",
+        "f1": 0.9714285714285714,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_039.pdf",
+        "f1": 0.9122807017543859,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_040.pdf",
+        "f1": 0.9473684210526315,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_041.pdf",
+        "f1": 0.9824561403508771,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_042.pdf",
+        "f1": 0.955223880597015,
+        "languages_pred_n": 1,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_043.pdf",
+        "f1": 0.9565217391304348,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_044.pdf",
+        "f1": 0.9583333333333333,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_045.pdf",
+        "f1": 0.9583333333333334,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_046.pdf",
+        "f1": 0.8857142857142857,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_047.pdf",
+        "f1": 0.9268292682926829,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_048.pdf",
+        "f1": 0.84375,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_049.pdf",
+        "f1": 0.9117647058823529,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      },
+      {
+        "accuracy": null,
+        "document_id": "FH_050.pdf",
+        "f1": 0.9577464788732395,
+        "languages_pred_n": 2,
+        "perfect_core": false
+      }
+    ],
+    "perfect_core_profiles": 0
+  },
+  "protocol": "POST_ANALYSIS_LANGUAGE_V1",
+  "runtime": {
+    "n": 50,
+    "peak_rss_mb": 42.26171875,
+    "pred_dir": "artifacts/final_holdout/post_analysis_language/det_predictions",
+    "timing_ms_mean": 14.986912502208725,
+    "timing_ms_p50": 13.417910959105939,
+    "timing_ms_total": 749.3456251104362
+  },
+  "variant": "det_repaired"
+}
