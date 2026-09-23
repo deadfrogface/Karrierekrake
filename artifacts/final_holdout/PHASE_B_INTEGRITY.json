@@ -1,0 +1,23 @@
+{
+  "seal_valid": true,
+  "original_seal_hash": "97c64fb31cf8dfff78e530364a546f759bcaa24f1df899af3844d4a4f8c9075c",
+  "pdf_hash_status": "OK",
+  "prediction_hash_status": "OK",
+  "prediction_hash_mismatches": 0,
+  "scorer_sha256": "eb6c7a3d1793a1bf6aac5d8f8b25094f717c0af89f40c028cf1debed6eb466f2",
+  "ground_truth_sha256": "81426292b452b97c89baba2358fd11e9b1f08c0eeaa2458f9dee8649297a869c",
+  "n_predictions": 50,
+  "n_ground_truth_documents": 50,
+  "re_extraction_calls": 0,
+  "import_cv_calls": 0,
+  "parse_cv_text_calls": 0,
+  "extract_text_calls_for_evidence_only": 50,
+  "phi_calls": 0,
+  "c1_calls": 0,
+  "writer_calls": 0,
+  "parser_changes": 0,
+  "ground_truth_changes": 0,
+  "predictions_modified": false,
+  "evaluated_at_utc": "2026-09-23T00:54:24.465585+00:00",
+  "git_commit_at_eval": "4b89f7863aa5001b4e2e2408250e48bb4b04770b"
+}

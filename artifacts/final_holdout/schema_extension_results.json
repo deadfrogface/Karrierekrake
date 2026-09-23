@@ -1,0 +1,43 @@
+{
+  "field": "career_notes",
+  "n_documents_with_notes": 4,
+  "documents": [
+    {
+      "document": "FH_011.pdf",
+      "expected_career_notes": [
+        "03/2021 - 11/2022 Elternzeit"
+      ],
+      "predicted_career_notes": null,
+      "status": "SCHEMA_EXTENSION_FIELD",
+      "counted_in_main_metric": false
+    },
+    {
+      "document": "FH_021.pdf",
+      "expected_career_notes": [
+        "Seit 2022 selbstständig nebenberuflich"
+      ],
+      "predicted_career_notes": null,
+      "status": "SCHEMA_EXTENSION_FIELD",
+      "counted_in_main_metric": false
+    },
+    {
+      "document": "FH_031.pdf",
+      "expected_career_notes": [
+        "06/2020 - 12/2020 arbeitssuchend"
+      ],
+      "predicted_career_notes": null,
+      "status": "SCHEMA_EXTENSION_FIELD",
+      "counted_in_main_metric": false
+    },
+    {
+      "document": "FH_041.pdf",
+      "expected_career_notes": [
+        "Parallelbeschäftigung 04/2021 - 09/2022"
+      ],
+      "predicted_career_notes": null,
+      "status": "SCHEMA_EXTENSION_FIELD",
+      "counted_in_main_metric": false
+    }
+  ],
+  "note": "Not part of productive profile main metric."
+}

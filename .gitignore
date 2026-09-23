@@ -101,5 +101,15 @@ artifacts/final_holdout/**
 !artifacts/final_holdout/PHASE_A_SEAL.json
 !artifacts/final_holdout/PHASE_A_COMPLETE.json
 !artifacts/final_holdout/FROZEN_HASHES.json
+!artifacts/final_holdout/phase_b_results.json
+!artifacts/final_holdout/per_document_results.json
+!artifacts/final_holdout/per_field_results.json
+!artifacts/final_holdout/field_group_metrics.json
+!artifacts/final_holdout/slice_metrics.json
+!artifacts/final_holdout/error_inventory.json
+!artifacts/final_holdout/critical_errors.json
+!artifacts/final_holdout/schema_extension_results.json
+!artifacts/final_holdout/PHASE_B_INTEGRITY.json
+!artifacts/final_holdout/PHASE_B_COMPLETE.json
 # Predictions stay local (not committed); hashes seal them
 artifacts/final_holdout/frozen_predictions/

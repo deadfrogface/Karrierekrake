@@ -1,0 +1,221 @@
+{
+  "phase": "B",
+  "scorer": {
+    "file": "scripts/holdout_scorer_v2.py",
+    "version": "v2",
+    "sha256": "eb6c7a3d1793a1bf6aac5d8f8b25094f717c0af89f40c028cf1debed6eb466f2",
+    "schema_mapping": {
+      "name.first_name": {
+        "parsed": "personal.first_name",
+        "profile": "personal.first_name",
+        "class": "A"
+      },
+      "name.last_name": {
+        "parsed": "personal.last_name",
+        "profile": "personal.last_name",
+        "class": "A"
+      },
+      "email": {
+        "parsed": "emails[0]",
+        "profile": "contact.email",
+        "class": "A"
+      },
+      "phone": {
+        "parsed": "phones[0]",
+        "profile": "contact.phone",
+        "class": "A"
+      },
+      "dob": {
+        "parsed": "personal.date_of_birth",
+        "profile": "personal.date_of_birth",
+        "class": "A"
+      },
+      "address.street": {
+        "parsed": "personal.street",
+        "profile": "address.street",
+        "class": "A"
+      },
+      "address.house_number": {
+        "parsed": "personal.house_number",
+        "profile": "address.house_number",
+        "class": "A"
+      },
+      "address.postal_code": {
+        "parsed": "personal.postal_code",
+        "profile": "address.postal_code",
+        "class": "A"
+      },
+      "address.city": {
+        "parsed": "personal.city",
+        "profile": "address.city",
+        "class": "A"
+      },
+      "address.country": {
+        "parsed": "personal.country",
+        "profile": "address.country",
+        "class": "A"
+      },
+      "languages": {
+        "parsed": "languages",
+        "profile": "qualifications.languages",
+        "class": "A"
+      },
+      "licenses": {
+        "parsed": "driving_license",
+        "profile": "qualifications.driving_license",
+        "class": "A"
+      },
+      "education": {
+        "parsed": "education",
+        "profile": "qualifications.education",
+        "class": "A"
+      },
+      "employment": {
+        "parsed": "work_experience",
+        "profile": "qualifications.work_experience",
+        "class": "A"
+      },
+      "skills": {
+        "parsed": "skills",
+        "profile": "qualifications.skills",
+        "class": "A"
+      },
+      "software": {
+        "parsed": "software",
+        "profile": "qualifications.software",
+        "class": "A"
+      },
+      "certificates": {
+        "parsed": "certificates",
+        "profile": "qualifications.certificates",
+        "class": "A"
+      },
+      "target_role": {
+        "parsed": "target_role",
+        "profile": "jobs.desired_titles (optional / SearchIntent)",
+        "class": "B",
+        "evidence_required": true
+      }
+    },
+    "metadata_fields_excluded": [
+      "document_id",
+      "expected_status",
+      "filename",
+      "language",
+      "layout",
+      "missing",
+      "region_note",
+      "traps"
+    ]
+  },
+  "integrity": {
+    "seal_valid": true,
+    "predictions_manifest_sha256": "97c64fb31cf8dfff78e530364a546f759bcaa24f1df899af3844d4a4f8c9075c",
+    "n_predictions": 50,
+    "n_pdfs": 50,
+    "prediction_hash_mismatches": 0,
+    "pdf_hash_mismatches": 0,
+    "git_commit": "f196378da7a2c77622c827c3b6ceef8dc7f3012c",
+    "phi_calls_phase_a": 0
+  },
+  "metrics": {
+    "field_total": 1648,
+    "counts": {
+      "correct": 1110,
+      "missing": 382,
+      "hallucinated": 117,
+      "wrong": 39,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.6735436893203883,
+    "precision": 0.8767772511848341,
+    "recall": 0.7439678284182306,
+    "f1": 0.8049311094996373,
+    "hallucination_rate": 0.07099514563106796,
+    "missing_field_rate": 0.23179611650485438,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.09466019417475728,
+    "by_group": {
+      "personal": {
+        "correct": 139,
+        "missing": 6
+      },
+      "contact": {
+        "correct": 93,
+        "wrong": 3
+      },
+      "address": {
+        "correct": 163,
+        "missing": 73,
+        "wrong": 5
+      },
+      "languages": {
+        "missing": 100
+      },
+      "licenses": {
+        "correct": 52
+      },
+      "education": {
+        "correct": 190,
+        "missing": 78,
+        "wrong": 27,
+        "hallucinated": 1
+      },
+      "employment": {
+        "missing": 115,
+        "correct": 36,
+        "wrong": 4
+      },
+      "skills": {
+        "correct": 223,
+        "hallucinated": 116
+      },
+      "software": {
+        "correct": 166,
+        "missing": 7
+      },
+      "certificates": {
+        "correct": 48,
+        "missing": 2
+      },
+      "career_intent": {
+        "missing": 1
+      }
+    },
+    "strict_scalar_accuracy": 0.7365145228215768,
+    "normalized_field_accuracy": 0.6735436893203883,
+    "perfect_documents": 0,
+    "perfect_core_documents": 0,
+    "document_perfect_match_rate": 0.0,
+    "document_perfect_core_match_rate": 0.0,
+    "documents_with_errors": 50,
+    "documents_with_critical_errors": 28,
+    "error_bucket_distribution": {
+      ">5": 47,
+      "3-5": 3
+    },
+    "duplicate_rate": 0.0
+  },
+  "targets": {
+    "accuracy_ge_0_99": false,
+    "f1_ge_0_99": false,
+    "hallucination_le_0_01": false,
+    "no_critical_invented": false,
+    "overall_pass": false
+  },
+  "weakest_field_group": {
+    "name": "languages",
+    "f1": 0.0
+  },
+  "weakest_slice": {
+    "name": "layout_class:10",
+    "f1": 0.7368421052631577
+  },
+  "comparison_note": "100-CV Post-Analysis was a development/regression corpus after visible analysis; this 50-CV Final Holdout is an independent sealed frozen evaluation.",
+  "baseline_100cv_post_analysis": {
+    "accuracy": 0.9969018112488084,
+    "f1": 0.9984485022079007,
+    "perfect": 89,
+    "hallucination_rate": 0.0009532888465204957
+  }
+}

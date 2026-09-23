@@ -1,0 +1,332 @@
+{
+  "n_critical_events": 32,
+  "n_critical_invented": 1,
+  "documents": [
+    "FH_002.pdf",
+    "FH_003.pdf",
+    "FH_004.pdf",
+    "FH_006.pdf",
+    "FH_009.pdf",
+    "FH_011.pdf",
+    "FH_012.pdf",
+    "FH_014.pdf",
+    "FH_016.pdf",
+    "FH_017.pdf",
+    "FH_021.pdf",
+    "FH_022.pdf",
+    "FH_023.pdf",
+    "FH_024.pdf",
+    "FH_026.pdf",
+    "FH_027.pdf",
+    "FH_029.pdf",
+    "FH_032.pdf",
+    "FH_033.pdf",
+    "FH_034.pdf",
+    "FH_036.pdf",
+    "FH_039.pdf",
+    "FH_041.pdf",
+    "FH_042.pdf",
+    "FH_044.pdf",
+    "FH_046.pdf",
+    "FH_047.pdf",
+    "FH_050.pdf"
+  ],
+  "events": [
+    {
+      "document": "FH_002.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Hochschule Kehl",
+      "actual": "Weitere Angaben / Berufsziel: Milchtechnologe"
+    },
+    {
+      "document": "FH_003.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Gesamtschule Görlitz",
+      "actual": "Sprachen & Fahrerlaubnis / Französisch - B2 / Englisch - B2"
+    },
+    {
+      "document": "FH_004.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Universität Flensburg",
+      "actual": "Sprachen & Fahrerlaubnis / Niederländisch - B1 / Englisch - C1"
+    },
+    {
+      "document": "FH_006.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Hochschule Weil am Rhein",
+      "actual": "Sprachen & Fahrerlaubnis / Türkisch - Muttersprache / Englisch - B1"
+    },
+    {
+      "document": "FH_009.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Berufskolleg Saarbrücken",
+      "actual": "Sprachen & Fahrerlaubnis / Deutsch - C2 / Polnisch - C1 / Führerschein: B"
+    },
+    {
+      "document": "FH_011.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Gesamtschule Basel",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_011.pdf",
+      "field": "education_extra:1",
+      "group": "education",
+      "status": "hallucinated",
+      "kind": "invented_education",
+      "expected": null,
+      "actual": {
+        "completion_date": "11/2022",
+        "end_date": "11/2022",
+        "institution": "",
+        "location": "",
+        "qualification": "Elternzeit",
+        "source": "cv",
+        "start_date": "03/2021"
+      }
+    },
+    {
+      "document": "FH_012.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Universität Enschede",
+      "actual": "Sprachen & Fahrerlaubnis / Englisch - C1 / Englisch - C1"
+    },
+    {
+      "document": "FH_014.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Hochschule Salzburg",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_016.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Universität Hamburg",
+      "actual": "Sprachen & Fahrerlaubnis / Türkisch - Muttersprache / Englisch - C1"
+    },
+    {
+      "document": "FH_017.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Berufskolleg Berlin",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_021.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Berufskolleg Aachen",
+      "actual": "Sprachen & Fahrerlaubnis / Deutsch - Muttersprache / Englisch - A2 / Führerschein: B"
+    },
+    {
+      "document": "FH_022.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Hochschule Kehl",
+      "actual": "Sprachen & Fahrerlaubnis / Englisch - C1 / Englisch - B1"
+    },
+    {
+      "document": "FH_023.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Gesamtschule Görlitz",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_024.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Universität Flensburg",
+      "actual": "Sprachen & Fahrerlaubnis / Niederländisch - B1 / Englisch - C1"
+    },
+    {
+      "document": "FH_026.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Hochschule Weil am Rhein",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_027.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Gesamtschule Passau",
+      "actual": "Sprachen & Fahrerlaubnis / Arabisch - C2 / Englisch - B2"
+    },
+    {
+      "document": "FH_029.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Berufskolleg Saarbrücken",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_032.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Universität Enschede",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_033.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Berufskolleg Strasbourg",
+      "actual": "Sprachen & Fahrerlaubnis / Französisch - B2 / Englisch - A2 / Führerschein: B"
+    },
+    {
+      "document": "FH_034.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Hochschule Salzburg",
+      "actual": "Sprachen & Fahrerlaubnis / Niederländisch - B1 / Englisch - B1"
+    },
+    {
+      "document": "FH_036.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Universität Hamburg",
+      "actual": "Sprachen & Fahrerlaubnis / Türkisch - Muttersprache / Englisch - C1"
+    },
+    {
+      "document": "FH_039.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Gesamtschule München",
+      "actual": "Sprachen & Fahrerlaubnis / Dänisch - A2 / Englisch - B2"
+    },
+    {
+      "document": "FH_041.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Berufskolleg Aachen",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_042.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Hochschule Kehl",
+      "actual": "Sprachen & Fahrerlaubnis / Englisch - C1 / Englisch - B1"
+    },
+    {
+      "document": "FH_044.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "Universität Flensburg",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_046.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "University of Bristol",
+      "actual": "Languages & licences / Türkisch - Muttersprache / German - B1"
+    },
+    {
+      "document": "FH_046.pdf",
+      "field": "employment:1.position",
+      "group": "employment",
+      "status": "wrong",
+      "kind": "wrong_employment",
+      "expected": "Werkstudent/in",
+      "actual": "Reklamationsbearbeitung · Materialprüfung"
+    },
+    {
+      "document": "FH_047.pdf",
+      "field": "education:0.institution",
+      "group": "education",
+      "status": "wrong",
+      "kind": "wrong_education",
+      "expected": "University of Bristol",
+      "actual": "Weitere Angaben"
+    },
+    {
+      "document": "FH_047.pdf",
+      "field": "employment:1.position",
+      "group": "employment",
+      "status": "wrong",
+      "kind": "wrong_employment",
+      "expected": "Werkstudent/in",
+      "actual": "Hygienemanagement · Prozessoptimierung"
+    },
+    {
+      "document": "FH_047.pdf",
+      "field": "employment:2.position",
+      "group": "employment",
+      "status": "wrong",
+      "kind": "wrong_employment",
+      "expected": "Teamassistenz",
+      "actual": "Warenkontrolle · Qualitätssicherung"
+    },
+    {
+      "document": "FH_050.pdf",
+      "field": "employment:1.position",
+      "group": "employment",
+      "status": "wrong",
+      "kind": "wrong_employment",
+      "expected": "Werkstudent/in",
+      "actual": "Hygienemanagement · Stakeholder-Kommunikation"
+    }
+  ]
+}
