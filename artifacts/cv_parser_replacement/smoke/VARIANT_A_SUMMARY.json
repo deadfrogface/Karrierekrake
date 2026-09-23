@@ -1,0 +1,277 @@
+{
+  "variant": "A_smartresume_qwen_local_de_en_prompts",
+  "model": "/workspace/.cache/karrierekrake/models/smartresume/Qwen3-0.6B",
+  "model_sha256": "a7c610ac45e69b57becd8e9cbae37fb85a0634615e7039c5f6d7d0940c249045",
+  "cold_load_s": 4.361787516041659,
+  "peak_rss_mb": 3938.0703125,
+  "n": 10,
+  "processing_success": 9,
+  "docs_pass_all_sections": 2,
+  "approx_section_accuracy": 0.7284,
+  "mean_s": 86.61690929289325,
+  "p95_s": 107.49400520097697,
+  "rows": [
+    {
+      "id": "DE_01",
+      "lang": "de",
+      "schema_ok": true,
+      "wall_s": 68.61497093201615,
+      "pass": false,
+      "fails": {
+        "personal": "phone",
+        "languages": "count 0<3; missing:Deutsch; missing:Englisch; missing:Franz\u00f6sisch",
+        "certificates": "missing:['IHK Beschwerdemanagement', 'Power BI Grundlagen', 'Ersthelferin']",
+        "software": "missing:['Microsoft 365', 'SAP Business One', 'Salesforce', 'Jira', 'Confluence', 'DocuWare']",
+        "skills": "missing:['Kundenservice', 'Auftragsmanagement', 'KPI-Reporting', 'Prozessoptimierung', 'Reklamationsmanagement']"
+      },
+      "n_emp": 3,
+      "n_edu": 2,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "date_of_birth",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "DE_02",
+      "lang": "de",
+      "schema_ok": true,
+      "wall_s": 92.3296631979756,
+      "pass": false,
+      "fails": {
+        "personal": "phone",
+        "certificates": "count 0<5",
+        "skills": "count 0<12"
+      },
+      "n_emp": 4,
+      "n_edu": 2,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "date_of_birth",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "DE_03",
+      "lang": "de",
+      "schema_ok": true,
+      "wall_s": 107.49400520097697,
+      "pass": true,
+      "fails": {},
+      "n_emp": 2,
+      "n_edu": 2,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "date_of_birth",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "DE_04",
+      "lang": "de",
+      "schema_ok": true,
+      "wall_s": 110.58637901599286,
+      "pass": false,
+      "fails": {
+        "languages": "count 2<3; missing:Spanisch",
+        "licenses": "invented:['SCRUM FUNDAMENTALS CERTIFIED', 'EXCEL ADVANCED', 'DATENSCHUTZ-BASISSCHULUNG']"
+      },
+      "n_emp": 2,
+      "n_edu": 2,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "date_of_birth",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "DE_05",
+      "lang": "de",
+      "schema_ok": true,
+      "wall_s": 75.69801201496739,
+      "pass": false,
+      "fails": {
+        "licenses": "missing:B; missing:BE",
+        "certificates": "count 0<4"
+      },
+      "n_emp": 4,
+      "n_edu": 2,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "EN_01",
+      "lang": "en",
+      "schema_ok": true,
+      "wall_s": 104.91020405298332,
+      "pass": false,
+      "fails": {
+        "address": "postal_code",
+        "work": "count 2<3"
+      },
+      "n_emp": 2,
+      "n_edu": 1,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "EN_02",
+      "lang": "en",
+      "schema_ok": true,
+      "wall_s": 96.2129313229816,
+      "pass": false,
+      "fails": {
+        "licenses": "missing:B",
+        "certificates": "count 0<3",
+        "skills": "count 5<6"
+      },
+      "n_emp": 3,
+      "n_edu": 2,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "EN_03",
+      "lang": "en",
+      "schema_ok": false,
+      "wall_s": 70.49172860500403,
+      "pass": false,
+      "fails": {
+        "all": true
+      },
+      "n_emp": 0,
+      "n_edu": 0,
+      "pred_keys": []
+    },
+    {
+      "id": "EN_04",
+      "lang": "en",
+      "schema_ok": true,
+      "wall_s": 53.74609925103141,
+      "pass": true,
+      "fails": {},
+      "n_emp": 2,
+      "n_edu": 1,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    },
+    {
+      "id": "EN_05",
+      "lang": "en",
+      "schema_ok": true,
+      "wall_s": 86.08509933500318,
+      "pass": false,
+      "fails": {
+        "address": "postal_code",
+        "languages": "count 0<2; missing:English; missing:German",
+        "certificates": "count 0<3",
+        "software": "count 0<6",
+        "skills": "count 0<8"
+      },
+      "n_emp": 3,
+      "n_edu": 1,
+      "pred_keys": [
+        "address",
+        "certificates",
+        "education",
+        "email",
+        "employment",
+        "languages",
+        "licenses",
+        "name",
+        "phone",
+        "skills",
+        "software"
+      ]
+    }
+  ],
+  "gate": {
+    "min_f1": 0.9,
+    "max_hallucination_rate": 0.03,
+    "max_invented_employment_education": 0,
+    "schema_validity": 1.0,
+    "min_processing_success": 10
+  },
+  "gate_passed": false,
+  "note": "approx_section_accuracy is fixture section pass-rate, not Scorer V2 F1"
+}
