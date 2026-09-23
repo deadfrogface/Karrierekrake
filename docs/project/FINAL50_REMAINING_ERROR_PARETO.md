@@ -59,6 +59,12 @@
 4. `employment_entry_missing`
 5. full address missing (street/hn/postal/city) on 4-digit postal layouts
 
-## Iteration priority
+## Update after optimization (commit `d70d71d`)
 
-**Iteration 1:** address country (+ AT/CH `|` acceptance) — unblocks all 50 for country; unlocks ~4 single-error Perfect Cores immediately.
+| Metric | After |
+| --- | ---: |
+| F1 | **0.9985** |
+| Hallucination Rate | **0.000** |
+| Perfect Core | **44/50** |
+
+Siehe `FINAL50_OPTIMIZATION_FINAL_REPORT.md` und `FINAL50_REMAINING_FAILURES.md`.
