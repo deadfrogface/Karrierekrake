@@ -500,6 +500,25 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
         "cv_import.cancel_btn": "Abbrechen",
         "cv_import.close": "Schließen",
+        "cv_import.progress": "Lebenslauf wird eingelesen…",
+        "cv_import.read_again": "Erneut einlesen",
+        "cv_import.choose_other": "Andere Datei wählen",
+        "cv_import.empty_title": "Nichts erkannt",
+        "cv_import.empty_body": (
+            "In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. "
+            "Wähle eine andere Datei oder schließe den Dialog."
+        ),
+        "cv_import.error_oom": (
+            "Nicht genug Arbeitsspeicher, um diese Datei einzulesen. Es wurde nichts übernommen. "
+            "Karrierekrake startet den Vorgang nicht automatisch neu."
+        ),
+        "cv_import.error_timeout": (
+            "Das Einlesen hat zu lange gedauert und wurde abgebrochen. Es wurde nichts übernommen. "
+            "Es wird nicht automatisch erneut versucht."
+        ),
+        "cv_import.error_generic": (
+            "Die Datei konnte nicht gelesen werden. Pfad und Eingaben bleiben erhalten."
+        ),
         "cv_import.empty": (
             "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
             "oder lies die Datei erneut ein."
@@ -1398,6 +1417,25 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.cancelled": "Reading cancelled. Nothing was applied.",
         "cv_import.cancel_btn": "Cancel",
         "cv_import.close": "Close",
+        "cv_import.progress": "Reading the CV…",
+        "cv_import.read_again": "Read again",
+        "cv_import.choose_other": "Choose another file",
+        "cv_import.empty_title": "Nothing detected",
+        "cv_import.empty_body": (
+            "No profile data was detected in this file. Nothing was applied. "
+            "Choose another file or close the dialog."
+        ),
+        "cv_import.error_oom": (
+            "Not enough memory to read this file. Nothing was applied. "
+            "Karrierekrake will not restart this on its own."
+        ),
+        "cv_import.error_timeout": (
+            "Reading took too long and was stopped. Nothing was applied. "
+            "It will not be tried again automatically."
+        ),
+        "cv_import.error_generic": (
+            "The file could not be read. The path and your entries stay as they are."
+        ),
         "cv_import.empty": (
             "Nothing was found in the document. Enter the profile manually "
             "or read the file again."

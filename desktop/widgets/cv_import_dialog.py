@@ -1,14 +1,16 @@
 """CV import confirmation dialog — Replace (default) or Merge with preview & conflicts.
 
-Parsing runs in a worker process off the UI thread. The first Cancel while a
-run is active stops that process group and shows the cancelled state before
-any result is applied. A second Cancel closes the dialog. OOM and timeout
-keep the current profile inputs and wait for a manual retry; the same run is
-not started again automatically.
+Parsing runs in a worker process off the UI thread. The dialog switches UX
+state from that worker's result: progress, cancelled, success, empty, or
+error (including OOM and timeout). Nothing here retries on its own or
+switches model.
 
-``KARRIEREKRAKE_CV_IMPORT_OBSERVE_S`` (default unset / 0) holds the worker
-before the child starts so Progress and Cancel can be checked. It is not a
-production delay.
+The first Cancel while a run is active stops that process group and shows the
+cancelled sentence before any result is applied. The dialog stays open. A
+later Schließen, after a short grace so a double-click cannot dismiss it,
+closes without applying. ``KARRIEREKRAKE_CV_IMPORT_OBSERVE_S`` (default unset
+/ 0) holds the worker before the child starts so Progress and Cancel can be
+checked. It is not a production delay.
 """
 
 from __future__ import annotations
@@ -22,6 +24,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
+    QFileDialog,
     QFormLayout,
     QGroupBox,
     QLabel,
@@ -30,6 +33,7 @@ from PySide6.QtWidgets import (
     QRadioButton,
     QTextEdit,
     QVBoxLayout,
+    QWidget,
 )
 
 from core.config import ApplicationProfile, QualificationsConfig
@@ -122,6 +126,7 @@ class CvImportDialog(QDialog):
         self._cancel_requested = False
         self._close_allowed_at = float("inf")
         self._last_kind = ""
+        self._phase = "idle"
         self.attempt_count = 0
 
         self.mode_replace = QRadioButton(tr("cv_import.mode_replace"))
@@ -134,8 +139,8 @@ class CvImportDialog(QDialog):
         mode_group.addButton(self.mode_merge)
         self.mode_replace.toggled.connect(self._refresh_preview)
 
-        mode_box = QGroupBox(tr("cv_import.mode"))
-        mode_layout = QVBoxLayout(mode_box)
+        self.mode_box = QGroupBox(tr("cv_import.mode"))
+        mode_layout = QVBoxLayout(self.mode_box)
         mode_layout.addWidget(self.mode_replace)
         mode_layout.addWidget(self.mode_merge)
         mode_layout.addWidget(self.mode_hint)
@@ -148,7 +153,7 @@ class CvImportDialog(QDialog):
         if not llm_allowed:
             self.llm_notice.setText(tr("settings.local_llm_cv_disabled_hint"))
 
-        self.status_label = QLabel(tr("cv_import.parsing"))
+        self.status_label = QLabel()
         self.status_label.setWordWrap(True)
         self.status_label.setObjectName("CvImportStatus")
         self._cancelled_banner = QLabel("")
@@ -162,12 +167,44 @@ class CvImportDialog(QDialog):
             " border: 1px solid #e0a060; padding: 12px; font-weight: 600;"
             "}"
         )
+        self.cancel_text = self._cancelled_banner
+        self.path_label = QLabel()
+        self.path_label.setWordWrap(True)
+        self.path_label.setObjectName("CvImportPath")
+        self.path_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.progress = QProgressBar()
         self.progress.setObjectName("CvImportProgress")
         self.progress.setRange(0, 0)
         self.progress.setMinimumHeight(18)
         self.progress.setTextVisible(False)
         self.progress.setVisible(False)
+
+        self.empty_box = QWidget()
+        self.empty_box.setObjectName("CvImportEmpty")
+        empty_layout = QVBoxLayout(self.empty_box)
+        empty_layout.setContentsMargins(0, 0, 0, 0)
+        self.empty_title = QLabel(tr("cv_import.empty_title"))
+        self.empty_title.setObjectName("CvImportEmptyTitle")
+        self.empty_title.setStyleSheet("font-weight: 600;")
+        self.empty_body = QLabel(tr("cv_import.empty_body"))
+        self.empty_body.setWordWrap(True)
+        self.empty_body.setObjectName("CvImportEmptyBody")
+        empty_layout.addWidget(self.empty_title)
+        empty_layout.addWidget(self.empty_body)
+
+        self.error_box = QWidget()
+        self.error_box.setObjectName("CvImportError")
+        error_layout = QVBoxLayout(self.error_box)
+        error_layout.setContentsMargins(0, 0, 0, 0)
+        self.error_text = QLabel()
+        self.error_text.setWordWrap(True)
+        self.error_text.setObjectName("CvImportErrorText")
+        self.error_detail = QLabel()
+        self.error_detail.setWordWrap(True)
+        self.error_detail.setObjectName("CvImportErrorDetail")
+        self.error_detail.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        error_layout.addWidget(self.error_text)
+        error_layout.addWidget(self.error_detail)
 
         self.preview = QTextEdit()
         self.preview.setReadOnly(True)
@@ -182,36 +219,49 @@ class CvImportDialog(QDialog):
         self._buttons = buttons
         self._ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
         self._ok_btn.setText(tr("cv_import.apply"))
+        self._ok_btn.setAutoDefault(False)
+        self._ok_btn.setDefault(False)
         self._ok_btn.setEnabled(False)
         self._cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
         self._cancel_btn.setObjectName("CvImportCancel")
         self._cancel_btn.setText(tr("cv_import.cancel_btn"))
         buttons.accepted.connect(self._accept)
-        buttons.rejected.connect(self._cancel_and_reject)
+        buttons.rejected.connect(self.reject)
         self._retry_btn = QPushButton(tr("cv_import.retry"))
         self._retry_btn.setObjectName("CvImportRetry")
         self._retry_btn.setVisible(False)
         self._retry_btn.clicked.connect(self._manual_retry)
         buttons.addButton(self._retry_btn, QDialogButtonBox.ButtonRole.ActionRole)
-        self._manual_btn = QPushButton(tr("cv_import.manual_profile"))
-        self._manual_btn.setObjectName("CvImportManual")
-        self._manual_btn.setVisible(False)
-        self._manual_btn.clicked.connect(self._keep_manual_profile)
-        buttons.addButton(self._manual_btn, QDialogButtonBox.ButtonRole.ActionRole)
+        self._read_again_btn = QPushButton(tr("cv_import.read_again"))
+        self._read_again_btn.setObjectName("CvImportReadAgain")
+        self._read_again_btn.setVisible(False)
+        self._read_again_btn.clicked.connect(self._read_again)
+        buttons.addButton(self._read_again_btn, QDialogButtonBox.ButtonRole.ActionRole)
+        self._choose_btn = QPushButton(tr("cv_import.choose_other"))
+        self._choose_btn.setObjectName("CvImportChooseOther")
+        self._choose_btn.setVisible(False)
+        self._choose_btn.clicked.connect(self._choose_other_file)
+        buttons.addButton(self._choose_btn, QDialogButtonBox.ButtonRole.ActionRole)
 
         layout = QVBoxLayout(self)
-        intro = QLabel(tr("cv_import.intro"))
-        intro.setWordWrap(True)
-        layout.addWidget(intro)
+        self._intro = QLabel(tr("cv_import.intro"))
+        self._intro.setWordWrap(True)
+        layout.addWidget(self._intro)
         layout.addWidget(self.llm_notice)
-        layout.addWidget(mode_box)
+        layout.addWidget(self.mode_box)
         layout.addWidget(self.status_label)
         layout.addWidget(self._cancelled_banner)
+        layout.addWidget(self.path_label)
         layout.addWidget(self.progress)
-        layout.addWidget(QLabel(tr("cv_import.detected")))
+        layout.addWidget(self.empty_box)
+        layout.addWidget(self.error_box)
+        self._detected_label = QLabel(tr("cv_import.detected"))
+        layout.addWidget(self._detected_label)
         layout.addWidget(self.preview, 1)
         layout.addWidget(self.conflict_box)
         layout.addWidget(buttons)
+        self._refresh_path_label()
+        self._apply_phase("idle")
         fit_dialog_to_screen(self, preferred_width=760, preferred_height=640)
 
         if autostart:
@@ -219,6 +269,10 @@ class CvImportDialog(QDialog):
             self._autostart.setSingleShot(True)
             self._autostart.timeout.connect(self.start_parse)
             self._autostart.start(0)
+
+    @property
+    def cv_path(self) -> Path:
+        return self._cv_path
 
     def start_parse(self) -> None:
         """Start one parse. A second call while running is ignored."""
@@ -237,11 +291,10 @@ class CvImportDialog(QDialog):
         self.plan = None
         self.result_quals = None
         self.result_application = None
+        self.preview.clear()
         self._ok_btn.setEnabled(False)
-        self._retry_btn.setVisible(False)
-        self._manual_btn.setVisible(False)
-        self.progress.setVisible(True)
-        self.status_label.setText(tr("cv_import.parsing"))
+        self._refresh_path_label()
+        self._apply_phase("progress")
         supervisor = CvImportSupervisor(
             self._cv_path,
             spawn=self._spawn,
@@ -254,18 +307,43 @@ class CvImportDialog(QDialog):
         self._thread = start_worker(worker)
 
     def _manual_retry(self) -> None:
-        """User-triggered retry. Never invoked automatically after OOM or timeout."""
-        if self._running:
-            return
-        if self._last_kind not in {"oom", "timeout", "error", "empty"}:
+        """One user-triggered retry of the same file. Never called by itself."""
+        if self._running or self._phase != "error":
             return
         self.start_parse()
 
+    def _read_again(self) -> None:
+        """Manual re-read after cancel. Does not start on its own."""
+        if self._running or self._phase != "cancelled":
+            return
+        self.start_parse()
+
+    def _choose_other_file(self) -> None:
+        """Pick another file from the empty state. Cancelling the picker keeps the path."""
+        if self._running or self._phase != "empty":
+            return
+        picked = self._pick_other_file()
+        if not picked:
+            self._refresh_path_label()
+            return
+        self._cv_path = Path(picked)
+        self._refresh_path_label()
+        self.start_parse()
+
+    def _pick_other_file(self) -> str:
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            tr("cv_import.choose_other"),
+            str(self._cv_path.parent) if str(self._cv_path.parent) else "",
+            "Dokumente (*.pdf *.docx);;Alle Dateien (*.*)",
+        )
+        return path or ""
+
     def _on_progress(self, _message: str) -> None:
-        if self._closing or self._cancel_requested:
+        if self._closing or self._cancel_requested or not self._running:
             return
         self.progress.setVisible(True)
-        self.status_label.setText(tr("cv_import.parsing"))
+        self.status_label.setText(tr("cv_import.progress"))
 
     def _on_attempt(self, result: object) -> None:
         self._running = False
@@ -277,49 +355,112 @@ class CvImportDialog(QDialog):
             self._present_cancelled()
             return
         if not isinstance(result, ImportAttemptResult):
+            self._last_kind = "error"
             self._show_failure("error", str(result))
             return
         self._last_kind = result.kind
-        self.progress.setVisible(False)
         if result.ok and isinstance(result.parsed, dict):
             self._apply_parsed(result.parsed)
             if self._detection_is_empty():
                 self._last_kind = "empty"
-                self.status_label.setText(tr("cv_import.empty"))
-                self._ok_btn.setEnabled(False)
-                self._retry_btn.setVisible(True)
-                self._manual_btn.setVisible(True)
+                self.preview.clear()
+                self._show_empty()
                 return
-            self.status_label.setText(tr("cv_import.ready"))
-            self._ok_btn.setEnabled(True)
-            self._retry_btn.setVisible(False)
-            self._manual_btn.setVisible(False)
+            self._show_success()
+            return
+        if result.kind == "cancelled":
+            self._show_cancelled()
             return
         self._show_failure(result.kind, result.message)
 
+    def _show_success(self) -> None:
+        self._apply_phase("success")
+        self.status_label.setText(tr("cv_import.ready"))
+        self._ok_btn.setEnabled(True)
+
+    def _show_empty(self) -> None:
+        self.result_quals = None
+        self.result_application = None
+        self._ok_btn.setEnabled(False)
+        self._apply_phase("empty")
+
+    def _show_cancelled(self) -> None:
+        self._present_cancelled()
+
     def _show_failure(self, kind: str, message: str) -> None:
+        self._clear_unapplied()
+        self.preview.clear()
+        if kind == "oom":
+            text = tr("cv_import.error_oom")
+        elif kind == "timeout":
+            text = tr("cv_import.error_timeout")
+        else:
+            text = tr("cv_import.error_generic")
+        self.error_text.setText(text)
+        detail = (message or "").strip()
+        if detail.lower() in {"", "oom", "timeout", "error", "cancelled"}:
+            self.error_detail.clear()
+            self.error_detail.setVisible(False)
+        else:
+            self.error_detail.setText(detail)
+            self.error_detail.setVisible(True)
+        self._apply_phase("error")
+
+    def _clear_unapplied(self) -> None:
         self.incoming = None
         self.parsed = None
+        self.personal_incoming = {}
         self.plan = None
         self.result_quals = None
         self.result_application = None
         self._ok_btn.setEnabled(False)
-        self.progress.setVisible(False)
-        if kind == "oom":
-            text = tr("cv_import.oom")
-        elif kind == "timeout":
-            text = tr("cv_import.timeout")
-        elif kind == "cancelled":
+
+    def _refresh_path_label(self) -> None:
+        self.path_label.setText(f"{tr('cv_import.file')}: {self._cv_path.name}\n{self._cv_path}")
+
+    def _apply_phase(self, phase: str) -> None:
+        """Show one state. Actions that must not run are hidden, not left as dead clicks."""
+        self._phase = phase
+        progress = phase == "progress"
+        success = phase == "success"
+        empty = phase == "empty"
+        error = phase == "error"
+        cancelled = phase == "cancelled"
+        review = phase in {"idle", "success"}
+
+        self.status_label.setVisible(progress or success or cancelled)
+        if progress:
+            self.status_label.setText(tr("cv_import.progress"))
+        if cancelled:
             text = tr("cv_import.cancelled")
+            self.status_label.setText(text)
+            self._cancelled_banner.setText(text)
+            self._cancelled_banner.setVisible(True)
+            self.preview.setPlainText(text)
         else:
-            text = f"{tr('cv_import.read_error')}\n{message}"
-        if message and kind in {"oom", "timeout", "error"}:
-            text = f"{text}\n{message}"
-        self.status_label.setText(text)
-        self.preview.setPlainText(text)
-        # Resource and read failures keep a manual CTA. Nothing starts by itself.
-        self._retry_btn.setVisible(kind in {"oom", "timeout", "error"})
-        self._manual_btn.setVisible(kind in {"oom", "timeout", "error"})
+            self._cancelled_banner.setVisible(False)
+        self.progress.setVisible(progress)
+        self.path_label.setVisible(True)
+        self.empty_box.setVisible(empty)
+        self.error_box.setVisible(error)
+        self._intro.setVisible(review)
+        self.mode_box.setVisible(review)
+        self._detected_label.setVisible(success)
+        self.preview.setVisible(success or cancelled)
+        if not success:
+            self.conflict_box.setVisible(False)
+
+        self._ok_btn.setVisible(success)
+        self._ok_btn.setDefault(success)
+        if not success:
+            self._ok_btn.setEnabled(False)
+        self._retry_btn.setVisible(error)
+        self._read_again_btn.setVisible(cancelled and not self._running)
+        self._choose_btn.setVisible(empty)
+        if progress or success:
+            self._cancel_btn.setText(tr("cv_import.cancel_btn"))
+        else:
+            self._cancel_btn.setText(tr("cv_import.close"))
 
     def _detection_is_empty(self) -> bool:
         if self.personal_incoming:
@@ -329,28 +470,11 @@ class CvImportDialog(QDialog):
         summary = summarize_incoming(self.incoming)
         return not any(summary.values())
 
-    def _keep_manual_profile(self) -> None:
-        """Close without writing the profile. Manual entry on the profile page stays."""
-        self._closing = True
-        self.result_quals = None
-        self.result_application = None
-        if self._worker is not None:
-            self._worker.request_cancel()
-        self.reject()
-
     def _apply_parsed(self, parsed: dict) -> None:
         self.parsed = filter_parsed_for_import(parsed)
         self.incoming = parsed_to_qualifications(self.parsed)
         self.personal_incoming = personal_from_parsed(self.parsed)
         self._refresh_preview()
-
-    def _discard_parse(self) -> None:
-        self.incoming = None
-        self.parsed = None
-        self.personal_incoming = {}
-        self.plan = None
-        self.result_quals = None
-        self.result_application = None
 
     def _should_keep_open(self) -> bool:
         """True until the cancelled sentence is on screen and the grace has elapsed."""
@@ -364,61 +488,41 @@ class CvImportDialog(QDialog):
             return True
         return time.monotonic() < self._close_allowed_at
 
-    def _show_cancelled_banner(self) -> None:
-        text = tr("cv_import.cancelled")
-        self._cancelled_banner.setText(text)
-        self._cancelled_banner.setVisible(True)
-        self.preview.setPlainText(text)
-        self._ok_btn.setEnabled(False)
-        self._retry_btn.setVisible(False)
-        self._manual_btn.setVisible(False)
-
     def _arm_cancel(self) -> None:
         """Stop the run and show the cancelled sentence without closing."""
         first = not self._cancel_requested
         self._cancel_requested = True
-        self._discard_parse()
-        self._show_cancelled_banner()
-        self._cancel_btn.setText(tr("cv_import.close"))
+        self._clear_unapplied()
+        self._apply_phase("cancelled")
+        if self._running:
+            self.progress.setVisible(True)
         if self._close_allowed_at == float("inf"):
             self._close_allowed_at = time.monotonic() + _CANCEL_CLOSE_GRACE_S
-        if self._running and self._last_kind != "cancelled":
-            self.progress.setVisible(True)
-            self.status_label.setText(tr("cv_import.cancelled"))
         if first and self._worker is not None:
             self._worker.request_cancel()
         if not self._running:
             self._present_cancelled()
 
     def _present_cancelled(self) -> None:
-        """Show the cancelled state while the dialog is still open."""
+        """Show the cancelled state while the dialog is still open. Nothing is applied."""
         self._running = False
         self._last_kind = "cancelled"
-        self._discard_parse()
+        self._cancel_requested = True
+        self._clear_unapplied()
+        self._apply_phase("cancelled")
         self.progress.setVisible(False)
-        text = tr("cv_import.cancelled")
-        self.status_label.setText(text)
-        self._show_cancelled_banner()
-        self._cancel_btn.setText(tr("cv_import.close"))
         if self._close_allowed_at == float("inf"):
             self._close_allowed_at = time.monotonic() + _CANCEL_CLOSE_GRACE_S
 
-    def _cancel_and_reject(self) -> None:
-        if self._running or self._cancel_requested:
-            if not self._should_keep_open():
-                self._finish_close()
-                return
-            self._arm_cancel()
-            return
-        self._finish_close()
-
     def _finish_close(self) -> None:
         self._closing = True
+        self.result_quals = None
+        self.result_application = None
         if self._worker is not None:
             self._worker.request_cancel()
         super().reject()
 
-    def reject(self) -> None:  # noqa: D102 — Qt override, first close becomes cancelled UI
+    def reject(self) -> None:  # noqa: D102 — first close becomes the cancelled state
         if self._closing:
             super().reject()
             return
@@ -432,7 +536,10 @@ class CvImportDialog(QDialog):
             event.ignore()
             self._arm_cancel()
             return
-        self._closing = True
+        if not self._closing:
+            self._closing = True
+            self.result_quals = None
+            self.result_application = None
         super().closeEvent(event)
 
     def _current_mode(self) -> ImportMode:
@@ -542,7 +649,9 @@ class CvImportDialog(QDialog):
             self._conflict_widgets[c.field] = box
 
     def _accept(self) -> None:
-        if self._running or self.incoming is None or self.plan is None:
+        if self._phase != "success" or self._running or self.incoming is None or self.plan is None:
+            return
+        if self._detection_is_empty():
             return
         mode = self._current_mode()
         self.import_mode = mode
