@@ -1,0 +1,2639 @@
+{
+  "metadata": {
+    "corpus": "NV3_50",
+    "documents": 50,
+    "languages": {
+      "DE": 25,
+      "EN": 25
+    },
+    "source": "Entirely synthetic people and CVs; generated independently of Cursor and PR #62.",
+    "date_semantics": "YYYY-MM, null for ongoing",
+    "schema_note": "Full semantic answer key; map fields to the frozen V3 scorer BEFORE viewing this package, without changing its rules."
+  },
+  "documents": [
+    {
+      "document_id": "NV3_001",
+      "document_language": "DE",
+      "name": "Mara Vogt",
+      "email": "mara.vogt.01@example.org",
+      "phone": "+49 151 4700137",
+      "date_of_birth": "04.06.1978",
+      "address": {
+        "street": "Seestraße 5",
+        "postal_code": "24937",
+        "city": "Flensburg",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Medizinische Fachangestellte",
+          "company": "Gemeinschaftspraxis Förde",
+          "start_date": "2018-02",
+          "end_date": null,
+          "description": "Sprechstundenkoordination"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Medizinische Fachangestellte, Berufsschule Flensburg"
+        }
+      ],
+      "skills": [
+        "Praxissoftware Medistar",
+        "Blutentnahme",
+        "Patientenaufnahme"
+      ],
+      "software": [
+        "Medistar",
+        "LibreOffice"
+      ],
+      "certificates": [
+        "Hygieneschulung"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_002",
+      "document_language": "DE",
+      "name": "Emir Kaya",
+      "email": "emir.kaya.02@example.org",
+      "phone": "+49 151 4700274",
+      "date_of_birth": "07.11.1979",
+      "address": {
+        "street": "Dammweg 6",
+        "postal_code": "02826",
+        "city": "Görlitz",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Bäcker",
+          "company": "Backhaus Morgenrot",
+          "start_date": "2019-03",
+          "end_date": null,
+          "description": "Teigbereitung und Ofenplanung"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Hauptschulabschluss, Oberschule Görlitz"
+        }
+      ],
+      "skills": [
+        "Sauerteigführung",
+        "HACCP",
+        "Nachtschichtorganisation"
+      ],
+      "software": [],
+      "certificates": [
+        "Hygienebelehrung"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "C2"
+        },
+        {
+          "name": "Englisch",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_003",
+      "document_language": "DE",
+      "name": "Lena Fischer",
+      "email": "lena.fischer.03@example.org",
+      "phone": "+49 151 4700411",
+      "date_of_birth": "10.04.1980",
+      "address": {
+        "street": "Brückenstraße 7",
+        "postal_code": "52062",
+        "city": "Aachen",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Grenzpendlerin - Pflegeassistenz",
+          "company": "Maison de Soins Liège",
+          "start_date": "2020-04",
+          "end_date": null,
+          "description": "Bewohnerbetreuung im Schichtdienst"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Berufsfachschule Pflege Aachen, Pflegeassistenz"
+        }
+      ],
+      "skills": [
+        "Grundpflege",
+        "Mobilisation",
+        "Dokumentation"
+      ],
+      "software": [
+        "CareCloud"
+      ],
+      "certificates": [
+        "Erste-Hilfe-Kurs"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        },
+        {
+          "name": "Französisch",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_004",
+      "document_language": "DE",
+      "name": "Niklas Berg",
+      "email": "niklas.berg.04@example.org",
+      "phone": "+49 151 4700548",
+      "date_of_birth": "13.09.1981",
+      "address": {
+        "street": "Rosenallee 8",
+        "postal_code": "18055",
+        "city": "Rostock",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Schiffselektriker",
+          "company": "Ostsee Werft",
+          "start_date": "2021-05",
+          "end_date": null,
+          "description": "Wartung von Bordelektrik"
+        },
+        {
+          "title": "Aushilfe",
+          "company": "Familienbetrieb",
+          "start_date": "2015-03",
+          "end_date": "2020-11",
+          "description": "Kundenkontakt und Dokumentation"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Elektroniker für Betriebstechnik"
+        }
+      ],
+      "skills": [
+        "Schaltplanlesen",
+        "Fehlersuche",
+        "Sicherheitsprüfungen"
+      ],
+      "software": [
+        "EPLAN"
+      ],
+      "certificates": [
+        "Arbeiten in engen Räumen"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_005",
+      "document_language": "DE",
+      "name": "Sofia Neumann",
+      "email": "sofia.neumann.05@example.org",
+      "phone": "+49 151 4700685",
+      "date_of_birth": "16.02.1982",
+      "address": {
+        "street": "Kirchplatz 9",
+        "postal_code": "79098",
+        "city": "Freiburg im Breisgau",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Umweltwissenschaftlerin",
+          "company": "Institut für Gewässeranalyse",
+          "start_date": "2022-06",
+          "end_date": null,
+          "description": "Probenplanung und Laborberichte"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "M.Sc. Umweltwissenschaften, Universität Freiburg"
+        }
+      ],
+      "skills": [
+        "Wasserprobenahme",
+        "Datenanalyse",
+        "GIS"
+      ],
+      "software": [
+        "QGIS",
+        "R"
+      ],
+      "certificates": [
+        "Sachkundenachweis Probenahme"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "C1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_006",
+      "document_language": "DE",
+      "name": "Jona Krüger",
+      "email": "jona.krger.06@example.org",
+      "phone": "+49 151 4700822",
+      "date_of_birth": "19.07.1983",
+      "address": {
+        "street": "Am Park 10",
+        "postal_code": "47051",
+        "city": "Duisburg",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Lagerhelfer",
+          "company": "Rheinlogistik GmbH",
+          "start_date": "2023-07",
+          "end_date": null,
+          "description": "Wareneingang und Retouren"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Schulbesuch bis Klasse 8; kein Schulabschluss"
+        }
+      ],
+      "skills": [
+        "Kommissionierung",
+        "Verpackung",
+        "Inventur"
+      ],
+      "software": [],
+      "certificates": [
+        "Staplerschein"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "A1"
+        }
+      ],
+      "career_note": "Beruflicher Wiedereinstieg nach Familienpause 2022 bis 2023."
+    },
+    {
+      "document_id": "NV3_007",
+      "document_language": "DE",
+      "name": "Alina Hoffmann",
+      "email": "alina.hoffmann.07@example.org",
+      "phone": "+49 151 4700959",
+      "date_of_birth": "22.12.1984",
+      "address": {
+        "street": "Marktstraße 11",
+        "postal_code": "94032",
+        "city": "Passau",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Hotelfachfrau",
+          "company": "Dreiflüssestadt Hotel",
+          "start_date": "2017-08",
+          "end_date": "2025-08",
+          "description": "Rezeption und Gästebetreuung"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Hotelfachfrau, Berufsschule Passau"
+        }
+      ],
+      "skills": [
+        "Check-in",
+        "Beschwerdemanagement",
+        "Reservierungen"
+      ],
+      "software": [
+        "Opera PMS",
+        "Excel"
+      ],
+      "certificates": [
+        "Brandschutzhelferin"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "C1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_008",
+      "document_language": "DE",
+      "name": "Felix Richter",
+      "email": "felix.richter.08@example.org",
+      "phone": "+49 151 4701096",
+      "date_of_birth": "25.05.1985",
+      "address": {
+        "street": "Wiesenweg 12",
+        "postal_code": "66111",
+        "city": "Saarbrücken",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Mechatroniker",
+          "company": "IndustrieService Saar",
+          "start_date": "2018-09",
+          "end_date": null,
+          "description": "Instandhaltung von Förderanlagen"
+        },
+        {
+          "title": "Aushilfe",
+          "company": "Warenlager Süd",
+          "start_date": "2014-03",
+          "end_date": "2017-11",
+          "description": "Kundenkontakt und Dokumentation"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Mechatroniker, IHK Saarland"
+        }
+      ],
+      "skills": [
+        "Hydraulik",
+        "Sensorik",
+        "Fehlersuche"
+      ],
+      "software": [
+        "TIA Portal"
+      ],
+      "certificates": [
+        "Elektrofachkraft für festgelegte Tätigkeiten"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_009",
+      "document_language": "DE",
+      "name": "Yasmin Özdemir",
+      "email": "yasmin.zdemir.09@example.org",
+      "phone": "+49 151 4701233",
+      "date_of_birth": "28.10.1986",
+      "address": {
+        "street": "Seestraße 13",
+        "postal_code": "24103",
+        "city": "Kiel",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Sozialarbeiterin",
+          "company": "Jugendzentrum Nord",
+          "start_date": "2019-10",
+          "end_date": null,
+          "description": "Offene Jugendarbeit"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "B.A. Soziale Arbeit, FH Kiel"
+        }
+      ],
+      "skills": [
+        "Krisengespräche",
+        "Projektplanung",
+        "Elternarbeit"
+      ],
+      "software": [],
+      "certificates": [
+        "Deeskalationstraining"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_010",
+      "document_language": "DE",
+      "name": "Paul Seidel",
+      "email": "paul.seidel.10@example.org",
+      "phone": "+49 151 4701370",
+      "date_of_birth": "03.03.1987",
+      "address": {
+        "street": "Dammweg 14",
+        "postal_code": "03046",
+        "city": "Cottbus",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Gärtner im Gartenbau",
+          "company": "Stadtgärtnerei Cottbus",
+          "start_date": "2020-11",
+          "end_date": null,
+          "description": "Pflege öffentlicher Grünanlagen"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Gärtner, Fachrichtung Garten- und Landschaftsbau"
+        }
+      ],
+      "skills": [
+        "Gehölzschnitt",
+        "Pflanzplanung",
+        "Bewässerung"
+      ],
+      "software": [],
+      "certificates": [
+        "Motorsägenschein"
+      ],
+      "licences": [
+        "BE"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_011",
+      "document_language": "DE",
+      "name": "Eva Adler",
+      "email": "eva.adler.11@example.org",
+      "phone": "+49 151 4701507",
+      "date_of_birth": "06.08.1988",
+      "address": {
+        "street": "Brückenstraße 15",
+        "postal_code": "78462",
+        "city": "Konstanz",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Laborantin",
+          "company": "Bodensee Diagnostik",
+          "start_date": "2021-12",
+          "end_date": null,
+          "description": "Probenvorbereitung und Qualitätssicherung"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Biologielaborantin"
+        }
+      ],
+      "skills": [
+        "PCR-Vorbereitung",
+        "Pipettieren",
+        "Laborhygiene"
+      ],
+      "software": [
+        "LIMS"
+      ],
+      "certificates": [
+        "GLP-Grundkurs"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_012",
+      "document_language": "DE",
+      "name": "Timo Brandt",
+      "email": "timo.brandt.12@example.org",
+      "phone": "+49 151 4701644",
+      "date_of_birth": "09.01.1989",
+      "address": {
+        "street": "Rosenallee 16",
+        "postal_code": "41460",
+        "city": "Neuss",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Fahrradmechaniker",
+          "company": "Pedalwerk Neuss",
+          "start_date": "2022-01",
+          "end_date": null,
+          "description": "Reparatur und Kundenberatung"
+        },
+        {
+          "title": "Aushilfe",
+          "company": "Kundenbüro West",
+          "start_date": "2013-03",
+          "end_date": "2021-11",
+          "description": "Kundenkontakt und Dokumentation"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Zweiradmechatroniker"
+        }
+      ],
+      "skills": [
+        "Laufradzentrierung",
+        "Bremsenservice",
+        "E-Bike-Diagnose"
+      ],
+      "software": [
+        "Bosch DiagnosticTool"
+      ],
+      "certificates": [
+        "E-Bike-Servicezertifikat"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        }
+      ],
+      "career_note": "Beruflicher Wiedereinstieg nach Familienpause 2022 bis 2023."
+    },
+    {
+      "document_id": "NV3_013",
+      "document_language": "DE",
+      "name": "Nora Petzold",
+      "email": "nora.petzold.13@example.org",
+      "phone": "+49 151 4701781",
+      "date_of_birth": "12.06.1990",
+      "address": {
+        "street": "Kirchplatz 17",
+        "postal_code": "48143",
+        "city": "Erfurt",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Buchhändlerin",
+          "company": "Kapitel & Kaffeebar",
+          "start_date": "2023-02",
+          "end_date": null,
+          "description": "Sortimentspflege und Veranstaltungen"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Buchhändlerin"
+        }
+      ],
+      "skills": [
+        "Kundenberatung",
+        "Lesungsplanung",
+        "Warenwirtschaft"
+      ],
+      "software": [
+        "Libri",
+        "Excel"
+      ],
+      "certificates": [],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "C1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_014",
+      "document_language": "DE",
+      "name": "David Wolf",
+      "email": "david.wolf.14@example.org",
+      "phone": "+49 151 4701918",
+      "date_of_birth": "15.11.1991",
+      "address": {
+        "street": "Am Park 18",
+        "postal_code": "54290",
+        "city": "Trier",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Koch",
+          "company": "Restaurant Moselufer",
+          "start_date": "2017-03",
+          "end_date": "2024-08",
+          "description": "À-la-carte-Service und Einkauf"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Koch, BBS Trier"
+        }
+      ],
+      "skills": [
+        "Mise en place",
+        "Speisekartenplanung",
+        "Lebensmittelhygiene"
+      ],
+      "software": [],
+      "certificates": [
+        "HACCP-Unterweisung"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_015",
+      "document_language": "DE",
+      "name": "Clara Witt",
+      "email": "clara.witt.15@example.org",
+      "phone": "+49 151 4702055",
+      "date_of_birth": "18.04.1992",
+      "address": {
+        "street": "Marktstraße 19",
+        "postal_code": "14467",
+        "city": "Potsdam",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "UX-Designerin",
+          "company": "Studio Havelland",
+          "start_date": "2018-04",
+          "end_date": null,
+          "description": "Prototypen und Nutzertests"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "B.A. Kommunikationsdesign, FH Potsdam"
+        }
+      ],
+      "skills": [
+        "Usability-Tests",
+        "Wireframing",
+        "Barrierefreiheit"
+      ],
+      "software": [
+        "Figma",
+        "Miro"
+      ],
+      "certificates": [],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "C1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_016",
+      "document_language": "DE",
+      "name": "Benno Schulz",
+      "email": "benno.schulz.16@example.org",
+      "phone": "+49 151 4702192",
+      "date_of_birth": "21.09.1993",
+      "address": {
+        "street": "Wiesenweg 20",
+        "postal_code": "28195",
+        "city": "Bremen",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Berufskraftfahrer",
+          "company": "Weser Kühltransport",
+          "start_date": "2019-05",
+          "end_date": null,
+          "description": "Temperaturgeführte Touren"
+        },
+        {
+          "title": "Aushilfe",
+          "company": "Stadtverwaltung",
+          "start_date": "2012-03",
+          "end_date": "2018-11",
+          "description": "Kundenkontakt und Dokumentation"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Hauptschulabschluss, Bremen"
+        }
+      ],
+      "skills": [
+        "Ladungssicherung",
+        "Tourenplanung",
+        "Fahrzeugkontrolle"
+      ],
+      "software": [],
+      "certificates": [
+        "ADR-Basiskurs"
+      ],
+      "licences": [
+        "CE"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_017",
+      "document_language": "DE",
+      "name": "Mina Roth",
+      "email": "mina.roth.17@example.org",
+      "phone": "+49 151 4702329",
+      "date_of_birth": "24.02.1994",
+      "address": {
+        "street": "Seestraße 21",
+        "postal_code": "99084",
+        "city": "Münster",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Erzieherin",
+          "company": "Kinderhaus Aasee",
+          "start_date": "2020-06",
+          "end_date": null,
+          "description": "Gruppenarbeit und Elterngespräche"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Staatlich anerkannte Erzieherin, Berufskolleg Münster"
+        }
+      ],
+      "skills": [
+        "Inklusionsbegleitung",
+        "Beobachtung",
+        "Projektarbeit"
+      ],
+      "software": [],
+      "certificates": [
+        "Kinderschutz-Fortbildung"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_018",
+      "document_language": "DE",
+      "name": "Oskar Heinz",
+      "email": "oskar.heinz.18@example.org",
+      "phone": "+49 151 4702466",
+      "date_of_birth": "27.07.1995",
+      "address": {
+        "street": "Dammweg 22",
+        "postal_code": "01067",
+        "city": "Dresden",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Bauzeichner",
+          "company": "Planbüro Elbe",
+          "start_date": "2021-07",
+          "end_date": null,
+          "description": "Ausführungspläne für Sanierungen"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Bauzeichner, Schwerpunkt Architektur"
+        }
+      ],
+      "skills": [
+        "Bemaßung",
+        "Bestandsaufnahme",
+        "Planprüfung"
+      ],
+      "software": [
+        "AutoCAD",
+        "Revit"
+      ],
+      "certificates": [],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        }
+      ],
+      "career_note": "Beruflicher Wiedereinstieg nach Familienpause 2022 bis 2023."
+    },
+    {
+      "document_id": "NV3_019",
+      "document_language": "DE",
+      "name": "Rosa Franke",
+      "email": "rosa.franke.19@example.org",
+      "phone": "+49 151 4702603",
+      "date_of_birth": "02.12.1996",
+      "address": {
+        "street": "Brückenstraße 23",
+        "postal_code": "34117",
+        "city": "Kassel",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Floristin",
+          "company": "Blumenatelier Wilhelmshöhe",
+          "start_date": "2022-08",
+          "end_date": null,
+          "description": "Hochzeitsfloristik und Verkauf"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Floristin"
+        }
+      ],
+      "skills": [
+        "Straußbindung",
+        "Dekoration",
+        "Kundenberatung"
+      ],
+      "software": [],
+      "certificates": [],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_020",
+      "document_language": "DE",
+      "name": "Malik Winter",
+      "email": "malik.winter.20@example.org",
+      "phone": "+49 151 4702740",
+      "date_of_birth": "05.05.1997",
+      "address": {
+        "street": "Rosenallee 24",
+        "postal_code": "23552",
+        "city": "Lübeck",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "IT-Systemadministrator",
+          "company": "Hanse Cloud eG",
+          "start_date": "2023-09",
+          "end_date": null,
+          "description": "Clientbetrieb und Nutzer-Support"
+        },
+        {
+          "title": "Aushilfe",
+          "company": "Familienbetrieb",
+          "start_date": "2011-03",
+          "end_date": "2022-11",
+          "description": "Kundenkontakt und Dokumentation"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Fachinformatiker Systemintegration, IHK Lübeck"
+        }
+      ],
+      "skills": [
+        "Linux-Administration",
+        "Netzwerkdiagnose",
+        "Backup"
+      ],
+      "software": [
+        "Proxmox",
+        "Ansible"
+      ],
+      "certificates": [
+        "Linux Essentials"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "C1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_021",
+      "document_language": "DE",
+      "name": "Leonie Schramm",
+      "email": "leonie.schramm.21@example.org",
+      "phone": "+49 151 4702877",
+      "date_of_birth": "08.10.1998",
+      "address": {
+        "street": "Kirchplatz 25",
+        "postal_code": "89073",
+        "city": "Ulm",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Physiotherapeutin",
+          "company": "Rehazentrum Donau",
+          "start_date": "2017-10",
+          "end_date": "2025-08",
+          "description": "Therapieplanung und Befundung"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Physiotherapie, Berufsfachschule Ulm"
+        }
+      ],
+      "skills": [
+        "Manuelle Therapie",
+        "Gangschule",
+        "Patientenaufklärung"
+      ],
+      "software": [
+        "Theorg"
+      ],
+      "certificates": [
+        "Manuelle Lymphdrainage"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_022",
+      "document_language": "DE",
+      "name": "Kian Becker",
+      "email": "kian.becker.22@example.org",
+      "phone": "+49 151 4703014",
+      "date_of_birth": "11.03.1999",
+      "address": {
+        "street": "Am Park 26",
+        "postal_code": "49074",
+        "city": "Osnabrück",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Veranstaltungstechniker",
+          "company": "Bühne Westfalen",
+          "start_date": "2018-11",
+          "end_date": null,
+          "description": "Licht- und Tonaufbau"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Fachkraft für Veranstaltungstechnik"
+        }
+      ],
+      "skills": [
+        "Mikrofonierung",
+        "Lichtsteuerung",
+        "Rigging"
+      ],
+      "software": [
+        "GrandMA3",
+        "QLab"
+      ],
+      "certificates": [
+        "Sachkunde Veranstaltungsrigging"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_023",
+      "document_language": "DE",
+      "name": "Helga Maurer",
+      "email": "helga.maurer.23@example.org",
+      "phone": "+49 151 4703151",
+      "date_of_birth": "14.08.2000",
+      "address": {
+        "street": "Marktstraße 27",
+        "postal_code": "93047",
+        "city": "Regensburg",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Bürokraft nach Wiedereinstieg",
+          "company": "Kanzlei Am Dom",
+          "start_date": "2019-12",
+          "end_date": null,
+          "description": "Terminorganisation und Korrespondenz"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Mittlere Reife, Realschule Regensburg"
+        }
+      ],
+      "skills": [
+        "Postbearbeitung",
+        "Ablage",
+        "Telefonservice"
+      ],
+      "software": [
+        "Word",
+        "DATEV"
+      ],
+      "certificates": [],
+      "licences": [],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_024",
+      "document_language": "DE",
+      "name": "Nele Kurz",
+      "email": "nele.kurz.24@example.org",
+      "phone": "+49 151 4703288",
+      "date_of_birth": "17.01.2001",
+      "address": {
+        "street": "Wiesenweg 28",
+        "postal_code": "02763",
+        "city": "Zittau",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Grenzpendlerin - Qualitätsprüferin",
+          "company": "Montagewerk Liberec",
+          "start_date": "2020-01",
+          "end_date": null,
+          "description": "Wareneingangsprüfung in Tschechien"
+        },
+        {
+          "title": "Aushilfe",
+          "company": "Warenlager Süd",
+          "start_date": "2015-03",
+          "end_date": "2019-11",
+          "description": "Kundenkontakt und Dokumentation"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Ausbildung Industriemechanikerin"
+        }
+      ],
+      "skills": [
+        "Sichtprüfung",
+        "Messprotokolle",
+        "Reklamationen"
+      ],
+      "software": [
+        "SAP"
+      ],
+      "certificates": [
+        "Messmittelkunde"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "B1"
+        },
+        {
+          "name": "Tschechisch",
+          "level": "A2"
+        }
+      ],
+      "career_note": "Beruflicher Wiedereinstieg nach Familienpause 2022 bis 2023."
+    },
+    {
+      "document_id": "NV3_025",
+      "document_language": "DE",
+      "name": "André Kaiser",
+      "email": "andr.kaiser.25@example.org",
+      "phone": "+49 151 4703425",
+      "date_of_birth": "20.06.1977",
+      "address": {
+        "street": "Seestraße 29",
+        "postal_code": "20095",
+        "city": "Hamburg",
+        "country": "Deutschland"
+      },
+      "employment": [
+        {
+          "title": "Hafenarbeiter",
+          "company": "Terminal Elbtor",
+          "start_date": "2021-02",
+          "end_date": null,
+          "description": "Containerumschlag und Kontrolle"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Schulbesuch bis Klasse 9; kein Abschluss"
+        }
+      ],
+      "skills": [
+        "Ladungssicherung",
+        "Schichtkoordination",
+        "Gefahrgutkontrolle"
+      ],
+      "software": [],
+      "certificates": [
+        "Unterweisung Ladungssicherung"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "Deutsch",
+          "level": "Muttersprache"
+        },
+        {
+          "name": "Englisch",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_026",
+      "document_language": "EN",
+      "name": "Amelia Porter",
+      "email": "amelia.porter.26@example.org",
+      "phone": "+44 7700 900026",
+      "date_of_birth": "1978-11-23",
+      "address": {
+        "street": "River Road 30",
+        "postal_code": "BS1 4ST",
+        "city": "Bristol",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Museum Registrar",
+          "company": "Harbour Museum",
+          "start_date": "2022-03",
+          "end_date": null,
+          "description": "Cataloguing travelling collections"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "BA Museum Studies, University of Bristol"
+        }
+      ],
+      "skills": [
+        "Object handling",
+        "Condition reporting",
+        "Loan records"
+      ],
+      "software": [
+        "CollectionSpace",
+        "Excel"
+      ],
+      "certificates": [
+        "Collections care workshop"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_027",
+      "document_language": "EN",
+      "name": "Noah Singh",
+      "email": "noah.singh.27@example.org",
+      "phone": "+44 7700 900027",
+      "date_of_birth": "1979-04-26",
+      "address": {
+        "street": "Hill Crescent 31",
+        "postal_code": "M1 3BE",
+        "city": "Manchester",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Wind Turbine Technician",
+          "company": "North Pennine Energy",
+          "start_date": "2023-04",
+          "end_date": null,
+          "description": "Inspection of offshore turbines"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Level 3 Diploma in Electrical Installation"
+        }
+      ],
+      "skills": [
+        "Electrical testing",
+        "Rope access",
+        "Fault logging"
+      ],
+      "software": [
+        "SCADA"
+      ],
+      "certificates": [
+        "GWO Basic Safety Training"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_028",
+      "document_language": "EN",
+      "name": "Chloe Reed",
+      "email": "chloe.reed.28@example.org",
+      "phone": "+44 7700 900028",
+      "date_of_birth": "1980-09-01",
+      "address": {
+        "street": "Oak Street 32",
+        "postal_code": "D02 PN40",
+        "city": "Dublin",
+        "country": "Ireland"
+      },
+      "employment": [
+        {
+          "title": "Pastry Chef",
+          "company": "Liffey Bakehouse",
+          "start_date": "2017-05",
+          "end_date": "2024-08",
+          "description": "Recipe development and morning production"
+        },
+        {
+          "title": "Operations Assistant",
+          "company": "Fieldwork Agency",
+          "start_date": "2014-03",
+          "end_date": "2016-11",
+          "description": "Customer enquiries and records"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Culinary Arts Diploma, Dublin College"
+        }
+      ],
+      "skills": [
+        "Lamination",
+        "Production scheduling",
+        "Food safety"
+      ],
+      "software": [],
+      "certificates": [
+        "Food Safety Level 2"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_029",
+      "document_language": "EN",
+      "name": "Isaac Chen",
+      "email": "isaac.chen.29@example.org",
+      "phone": "+44 7700 900029",
+      "date_of_birth": "1981-02-04",
+      "address": {
+        "street": "Market Place 33",
+        "postal_code": "3011 AA",
+        "city": "Rotterdam",
+        "country": "Netherlands"
+      },
+      "employment": [
+        {
+          "title": "Supply Chain Planner",
+          "company": "Delta Freight BV",
+          "start_date": "2018-06",
+          "end_date": null,
+          "description": "Forecasting freight capacity"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "BSc Logistics, Rotterdam University"
+        }
+      ],
+      "skills": [
+        "Demand planning",
+        "Inventory analysis",
+        "Vendor coordination"
+      ],
+      "software": [
+        "Power BI",
+        "SAP"
+      ],
+      "certificates": [
+        "Lean Yellow Belt"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "C2"
+        },
+        {
+          "name": "Dutch",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_030",
+      "document_language": "EN",
+      "name": "Grace Miller",
+      "email": "grace.miller.30@example.org",
+      "phone": "+44 7700 900030",
+      "date_of_birth": "1982-07-07",
+      "address": {
+        "street": "Bridge Avenue 34",
+        "postal_code": "EH1 3AA",
+        "city": "Edinburgh",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Community Librarian",
+          "company": "North Quarter Library",
+          "start_date": "2019-07",
+          "end_date": null,
+          "description": "Reading outreach and volunteer management"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "MLIS, University of Strathclyde"
+        }
+      ],
+      "skills": [
+        "Literacy sessions",
+        "Volunteer training",
+        "Cataloguing"
+      ],
+      "software": [
+        "Koha"
+      ],
+      "certificates": [
+        "Safeguarding Training"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B1"
+        }
+      ],
+      "career_note": "Career break for family care, 2022 to 2023."
+    },
+    {
+      "document_id": "NV3_031",
+      "document_language": "EN",
+      "name": "Oliver Hughes",
+      "email": "oliver.hughes.31@example.org",
+      "phone": "+44 7700 900031",
+      "date_of_birth": "1983-12-10",
+      "address": {
+        "street": "Station Lane 35",
+        "postal_code": "CF10 1EP",
+        "city": "Cardiff",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Sound Engineer",
+          "company": "Cwm Studios",
+          "start_date": "2020-08",
+          "end_date": null,
+          "description": "Recording live bands and editing dialogue"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "BTEC Level 3 Music Technology"
+        }
+      ],
+      "skills": [
+        "Microphone placement",
+        "Mixing",
+        "Session setup"
+      ],
+      "software": [
+        "Pro Tools",
+        "Reaper"
+      ],
+      "certificates": [],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_032",
+      "document_language": "EN",
+      "name": "Harper Scott",
+      "email": "harper.scott.32@example.org",
+      "phone": "+44 7700 900032",
+      "date_of_birth": "1984-05-13",
+      "address": {
+        "street": "Church Street 36",
+        "postal_code": "10115",
+        "city": "Berlin",
+        "country": "Germany"
+      },
+      "employment": [
+        {
+          "title": "Junior Data Analyst",
+          "company": "Spree Metrics",
+          "start_date": "2021-09",
+          "end_date": null,
+          "description": "Dashboard maintenance and QA"
+        },
+        {
+          "title": "Operations Assistant",
+          "company": "Local Services Ltd",
+          "start_date": "2013-03",
+          "end_date": "2020-11",
+          "description": "Customer enquiries and records"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "BSc Mathematics, University of Leeds"
+        }
+      ],
+      "skills": [
+        "SQL querying",
+        "Data cleaning",
+        "Stakeholder interviews"
+      ],
+      "software": [
+        "SQL",
+        "Tableau",
+        "Python"
+      ],
+      "certificates": [],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_033",
+      "document_language": "EN",
+      "name": "Luca Evans",
+      "email": "luca.evans.33@example.org",
+      "phone": "+44 7700 900033",
+      "date_of_birth": "1985-10-16",
+      "address": {
+        "street": "River Road 37",
+        "postal_code": "2000",
+        "city": "Antwerp",
+        "country": "Belgium"
+      },
+      "employment": [
+        {
+          "title": "Warehouse Operative",
+          "company": "Portland Cargo",
+          "start_date": "2022-10",
+          "end_date": null,
+          "description": "Picking and cycle counts"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Left school at 16 without qualifications"
+        }
+      ],
+      "skills": [
+        "Stock counting",
+        "Packing",
+        "Pallet handling"
+      ],
+      "software": [],
+      "certificates": [
+        "Forklift Operator Certificate"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "Dutch",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_034",
+      "document_language": "EN",
+      "name": "Freya Walsh",
+      "email": "freya.walsh.34@example.org",
+      "phone": "+44 7700 900034",
+      "date_of_birth": "1986-03-19",
+      "address": {
+        "street": "Hill Crescent 38",
+        "postal_code": "OX1 1BT",
+        "city": "Oxford",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Speech and Language Therapy Assistant",
+          "company": "Thames Community Clinic",
+          "start_date": "2023-11",
+          "end_date": null,
+          "description": "Supporting therapy sessions"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Health and Social Care Level 3"
+        }
+      ],
+      "skills": [
+        "Session notes",
+        "Family communication",
+        "Communication aids"
+      ],
+      "software": [],
+      "certificates": [
+        "Basic Life Support"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_035",
+      "document_language": "EN",
+      "name": "Mateo Brown",
+      "email": "mateo.brown.35@example.org",
+      "phone": "+44 7700 900035",
+      "date_of_birth": "1987-08-22",
+      "address": {
+        "street": "Oak Street 39",
+        "postal_code": "E1 6AN",
+        "city": "London",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Bicycle Courier Coordinator",
+          "company": "Swift Lane Dispatch",
+          "start_date": "2017-12",
+          "end_date": "2025-08",
+          "description": "Route allocation and safety briefings"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "GCSEs, East London School"
+        }
+      ],
+      "skills": [
+        "Dispatch planning",
+        "Rider onboarding",
+        "Incident logging"
+      ],
+      "software": [
+        "Onfleet",
+        "Sheets"
+      ],
+      "certificates": [
+        "First Aid at Work"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "Spanish",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_036",
+      "document_language": "EN",
+      "name": "Zara Ali",
+      "email": "zara.ali.36@example.org",
+      "phone": "+44 7700 900036",
+      "date_of_birth": "1988-01-25",
+      "address": {
+        "street": "Market Place 40",
+        "postal_code": "G12 8QQ",
+        "city": "Glasgow",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Textile Conservator",
+          "company": "Kelvin Collections",
+          "start_date": "2018-01",
+          "end_date": null,
+          "description": "Stabilising archival garments"
+        },
+        {
+          "title": "Operations Assistant",
+          "company": "Riverside Workshop",
+          "start_date": "2012-03",
+          "end_date": "2017-11",
+          "description": "Customer enquiries and records"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "MA Textile Conservation, University of Glasgow"
+        }
+      ],
+      "skills": [
+        "Stitch conservation",
+        "Condition reports",
+        "Storage design"
+      ],
+      "software": [],
+      "certificates": [],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B1"
+        }
+      ],
+      "career_note": "Career break for family care, 2022 to 2023."
+    },
+    {
+      "document_id": "NV3_037",
+      "document_language": "EN",
+      "name": "Ethan Brooks",
+      "email": "ethan.brooks.37@example.org",
+      "phone": "+44 7700 900037",
+      "date_of_birth": "1989-06-28",
+      "address": {
+        "street": "Bridge Avenue 41",
+        "postal_code": "BN1 1EF",
+        "city": "Brighton",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Marine Biologist",
+          "company": "CoastWatch Research",
+          "start_date": "2019-02",
+          "end_date": null,
+          "description": "Intertidal surveys and data capture"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "MSc Marine Biology, University of Sussex"
+        }
+      ],
+      "skills": [
+        "Species identification",
+        "Field sampling",
+        "Report writing"
+      ],
+      "software": [
+        "R",
+        "QGIS"
+      ],
+      "certificates": [
+        "Small Boat Safety"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_038",
+      "document_language": "EN",
+      "name": "Poppy Hayes",
+      "email": "poppy.hayes.38@example.org",
+      "phone": "+44 7700 900038",
+      "date_of_birth": "1990-11-03",
+      "address": {
+        "street": "Station Lane 42",
+        "postal_code": "YO1 7LA",
+        "city": "York",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Payroll Officer",
+          "company": "Northern Ledger",
+          "start_date": "2020-03",
+          "end_date": null,
+          "description": "Monthly payroll processing"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "AAT Level 3 Accounting"
+        }
+      ],
+      "skills": [
+        "Payroll reconciliation",
+        "Employee queries",
+        "Audit trails"
+      ],
+      "software": [
+        "Sage Payroll",
+        "Excel"
+      ],
+      "certificates": [
+        "Payroll Compliance Course"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_039",
+      "document_language": "EN",
+      "name": "James Nolan",
+      "email": "james.nolan.39@example.org",
+      "phone": "+44 7700 900039",
+      "date_of_birth": "1991-04-06",
+      "address": {
+        "street": "Church Street 43",
+        "postal_code": "T12 CP40",
+        "city": "Cork",
+        "country": "Ireland"
+      },
+      "employment": [
+        {
+          "title": "Electrician",
+          "company": "South Dock Services",
+          "start_date": "2021-04",
+          "end_date": null,
+          "description": "Residential rewiring and fault repair"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Electrical Apprenticeship, Cork Training Centre"
+        }
+      ],
+      "skills": [
+        "Cable installation",
+        "Testing",
+        "Site safety"
+      ],
+      "software": [],
+      "certificates": [
+        "Safe Electric Registration"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_040",
+      "document_language": "EN",
+      "name": "Ava Bennett",
+      "email": "ava.bennett.40@example.org",
+      "phone": "+44 7700 900040",
+      "date_of_birth": "1992-09-09",
+      "address": {
+        "street": "River Road 44",
+        "postal_code": "CB1 2AB",
+        "city": "Cambridge",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Science Teacher",
+          "company": "Fenway Secondary",
+          "start_date": "2022-05",
+          "end_date": null,
+          "description": "Teaching biology and chemistry"
+        },
+        {
+          "title": "Operations Assistant",
+          "company": "Community Co-op",
+          "start_date": "2011-03",
+          "end_date": "2021-11",
+          "description": "Customer enquiries and records"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "PGCE Secondary Science, University of Cambridge"
+        }
+      ],
+      "skills": [
+        "Lesson design",
+        "Lab supervision",
+        "Assessment"
+      ],
+      "software": [
+        "Google Classroom"
+      ],
+      "certificates": [
+        "Safeguarding Certificate"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_041",
+      "document_language": "EN",
+      "name": "Finn O’Connor",
+      "email": "finn.oconnor.41@example.org",
+      "phone": "+44 7700 900041",
+      "date_of_birth": "1993-02-12",
+      "address": {
+        "street": "Hill Crescent 45",
+        "postal_code": "BT1 5GS",
+        "city": "Belfast",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Customer Support Lead",
+          "company": "Beacon Devices",
+          "start_date": "2023-06",
+          "end_date": null,
+          "description": "Managing escalated hardware tickets"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Higher National Diploma in Computing"
+        }
+      ],
+      "skills": [
+        "Troubleshooting",
+        "Team coaching",
+        "Knowledge base writing"
+      ],
+      "software": [
+        "Zendesk",
+        "Jira"
+      ],
+      "certificates": [
+        "ITIL Foundation"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_042",
+      "document_language": "EN",
+      "name": "Maya Wilson",
+      "email": "maya.wilson.42@example.org",
+      "phone": "+44 7700 900042",
+      "date_of_birth": "1994-07-15",
+      "address": {
+        "street": "Oak Street 46",
+        "postal_code": "L1 8JQ",
+        "city": "Liverpool",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Care Home Activities Coordinator",
+          "company": "Mersey House",
+          "start_date": "2017-07",
+          "end_date": "2024-08",
+          "description": "Planning resident activities"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "College attendance; no completed diploma"
+        }
+      ],
+      "skills": [
+        "Group facilitation",
+        "Accessible events",
+        "Care documentation"
+      ],
+      "software": [],
+      "certificates": [
+        "Dementia Awareness Course"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A1"
+        }
+      ],
+      "career_note": "Career break for family care, 2022 to 2023."
+    },
+    {
+      "document_id": "NV3_043",
+      "document_language": "EN",
+      "name": "Theo Clark",
+      "email": "theo.clark.43@example.org",
+      "phone": "+44 7700 900043",
+      "date_of_birth": "1995-12-18",
+      "address": {
+        "street": "Market Place 47",
+        "postal_code": "BA1 2NT",
+        "city": "Bath",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Architectural Technician",
+          "company": "Limestone Works",
+          "start_date": "2018-08",
+          "end_date": null,
+          "description": "Documenting building retrofits"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "HNC Construction and the Built Environment"
+        }
+      ],
+      "skills": [
+        "Technical drawings",
+        "Site surveys",
+        "BIM coordination"
+      ],
+      "software": [
+        "Revit",
+        "AutoCAD"
+      ],
+      "certificates": [],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_044",
+      "document_language": "EN",
+      "name": "Isla Cooper",
+      "email": "isla.cooper.44@example.org",
+      "phone": "+44 7700 900044",
+      "date_of_birth": "1996-05-21",
+      "address": {
+        "street": "Bridge Avenue 48",
+        "postal_code": "LE1 6AB",
+        "city": "Leicester",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Horticulture Assistant",
+          "company": "Orchard City Gardens",
+          "start_date": "2019-09",
+          "end_date": null,
+          "description": "Maintaining community plots"
+        },
+        {
+          "title": "Operations Assistant",
+          "company": "Fieldwork Agency",
+          "start_date": "2015-03",
+          "end_date": "2018-11",
+          "description": "Customer enquiries and records"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Level 2 Horticulture Diploma"
+        }
+      ],
+      "skills": [
+        "Pruning",
+        "Composting",
+        "Volunteer support"
+      ],
+      "software": [],
+      "certificates": [
+        "Pesticide Handling Certificate"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_045",
+      "document_language": "EN",
+      "name": "Ravi Patel",
+      "email": "ravi.patel.45@example.org",
+      "phone": "+44 7700 900045",
+      "date_of_birth": "1997-10-24",
+      "address": {
+        "street": "Station Lane 49",
+        "postal_code": "B1 1TB",
+        "city": "Birmingham",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Cybersecurity Analyst",
+          "company": "Canal Security Ltd",
+          "start_date": "2020-10",
+          "end_date": null,
+          "description": "Reviewing access logs and incidents"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "BSc Computer Science, Aston University"
+        }
+      ],
+      "skills": [
+        "Incident triage",
+        "Log analysis",
+        "Risk reporting"
+      ],
+      "software": [
+        "Splunk",
+        "Wireshark"
+      ],
+      "certificates": [
+        "CompTIA Security+"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "B1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_046",
+      "document_language": "EN",
+      "name": "Ella Morgan",
+      "email": "ella.morgan.46@example.org",
+      "phone": "+44 7700 900046",
+      "date_of_birth": "1998-03-27",
+      "address": {
+        "street": "Church Street 50",
+        "postal_code": "NE1 4LP",
+        "city": "Newcastle upon Tyne",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Dental Receptionist",
+          "company": "Tyne Dental Practice",
+          "start_date": "2021-11",
+          "end_date": null,
+          "description": "Managing appointments and billing"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "GCSEs, Newcastle Academy"
+        }
+      ],
+      "skills": [
+        "Patient scheduling",
+        "Confidential records",
+        "Telephone triage"
+      ],
+      "software": [
+        "Dentally"
+      ],
+      "certificates": [
+        "Data Protection Training"
+      ],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_047",
+      "document_language": "EN",
+      "name": "Arthur Price",
+      "email": "arthur.price.47@example.org",
+      "phone": "+44 7700 900047",
+      "date_of_birth": "1999-08-02",
+      "address": {
+        "street": "River Road 51",
+        "postal_code": "NG1 2AS",
+        "city": "Nottingham",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Bus Driver",
+          "company": "East Midlands Transit",
+          "start_date": "2022-12",
+          "end_date": null,
+          "description": "Urban routes and passenger assistance"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Secondary school completion, Nottingham"
+        }
+      ],
+      "skills": [
+        "Vehicle checks",
+        "Customer service",
+        "Safe driving"
+      ],
+      "software": [],
+      "certificates": [
+        "Driver CPC"
+      ],
+      "licences": [
+        "D"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A1"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_048",
+      "document_language": "EN",
+      "name": "Nina Laurent",
+      "email": "nina.laurent.48@example.org",
+      "phone": "+44 7700 900048",
+      "date_of_birth": "2000-01-05",
+      "address": {
+        "street": "Hill Crescent 52",
+        "postal_code": "67000",
+        "city": "Strasbourg",
+        "country": "France"
+      },
+      "employment": [
+        {
+          "title": "Cross-border HR Coordinator",
+          "company": "Rhine People Partners",
+          "start_date": "2023-01",
+          "end_date": null,
+          "description": "Supporting German and French onboarding"
+        },
+        {
+          "title": "Operations Assistant",
+          "company": "Local Services Ltd",
+          "start_date": "2014-03",
+          "end_date": "2022-11",
+          "description": "Customer enquiries and records"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "BA Business Administration, University of Strasbourg"
+        }
+      ],
+      "skills": [
+        "Contract administration",
+        "Interview scheduling",
+        "Payroll liaison"
+      ],
+      "software": [
+        "Personio",
+        "Excel"
+      ],
+      "certificates": [],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "C1"
+        },
+        {
+          "name": "German",
+          "level": "C1"
+        },
+        {
+          "name": "French",
+          "level": "Native"
+        }
+      ],
+      "career_note": "Career break for family care, 2022 to 2023."
+    },
+    {
+      "document_id": "NV3_049",
+      "document_language": "EN",
+      "name": "Samira Khan",
+      "email": "samira.khan.49@example.org",
+      "phone": "+44 7700 900049",
+      "date_of_birth": "2001-06-08",
+      "address": {
+        "street": "Oak Street 53",
+        "postal_code": "S1 2DH",
+        "city": "Sheffield",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Furniture Maker",
+          "company": "Peak Joinery",
+          "start_date": "2017-02",
+          "end_date": "2025-08",
+          "description": "Building made-to-measure shelving"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "Level 3 Diploma in Furniture Making"
+        }
+      ],
+      "skills": [
+        "Joinery",
+        "Wood finishing",
+        "Workshop safety"
+      ],
+      "software": [
+        "SketchUp"
+      ],
+      "certificates": [
+        "Workshop First Aid"
+      ],
+      "licences": [
+        "B"
+      ],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "A2"
+        }
+      ]
+    },
+    {
+      "document_id": "NV3_050",
+      "document_language": "EN",
+      "name": "Cedar Jones",
+      "email": "cedar.jones.50@example.org",
+      "phone": "+44 7700 900050",
+      "date_of_birth": "1977-11-11",
+      "address": {
+        "street": "Market Place 54",
+        "postal_code": "NR1 3BJ",
+        "city": "Norwich",
+        "country": "United Kingdom"
+      },
+      "employment": [
+        {
+          "title": "Freelance Translator",
+          "company": "Self-employed",
+          "start_date": "2018-03",
+          "end_date": null,
+          "description": "Translating manuals and client emails"
+        }
+      ],
+      "education": [
+        {
+          "qualification": "BA Translation Studies, University of East Anglia"
+        }
+      ],
+      "skills": [
+        "Terminology management",
+        "Proofreading",
+        "Client communication"
+      ],
+      "software": [
+        "memoQ",
+        "Word"
+      ],
+      "certificates": [],
+      "licences": [],
+      "languages": [
+        {
+          "name": "English",
+          "level": "Native"
+        },
+        {
+          "name": "German",
+          "level": "C1"
+        }
+      ]
+    }
+  ]
+}

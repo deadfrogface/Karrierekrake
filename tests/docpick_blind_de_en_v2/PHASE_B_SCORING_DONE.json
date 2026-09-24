@@ -1,0 +1,6 @@
+{
+  "scored_at": "2026-09-24T19:30:25.005682+00:00",
+  "result_file": "tests/docpick_blind_de_en_v2/PHASE_B_COMPLETE_GT_ONLY_V3_1_RESULTS.json",
+  "result_sha256": "d33bc7ab5dc58237064fd40786ec0da7e3a3862c377b11bc56892546dc553e19",
+  "n_ok_scored": 50
+}
