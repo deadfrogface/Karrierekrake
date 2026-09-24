@@ -2,9 +2,9 @@
   "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
   "partial": true,
   "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
-  "disclaimer": "Partial or full Round3 score on known development CVs. NOT an independent blind test. NOT a 99% claim. Scored 18/40 documents so far.",
-  "created_at": "2026-09-24T01:39:43.514487+00:00",
-  "n_scored": 18,
+  "disclaimer": "Partial or full Round3 score on known development CVs. NOT an independent blind test. NOT a 99% claim. Scored 23/40 documents so far.",
+  "created_at": "2026-09-24T01:45:58.380847+00:00",
+  "n_scored": 23,
   "n_manifest": 40,
   "predictions": [
     {
@@ -62,6 +62,41 @@
       "lang": "de",
       "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_008.json",
       "sha256": "e87ed97409653f7bceaba5d2c4df152dc5d2d955e4ffda0902234b54b6456e47"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_009",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_009.json",
+      "sha256": "1e5d03b618c942ad199d9bb4f084eb1d0bd5aaf8d02e992ae54cdae7429d9eb0"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_010",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_010.json",
+      "sha256": "e5a379894575c1871843ad88f457934703e991206759f1cca3a69f38e1e130a5"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_011",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_011.json",
+      "sha256": "00a208e94ebaa4edd6a52109cf3825e795a6fdcf900998fe05af7da448fd28ec"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_012",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_012.json",
+      "sha256": "7a5995f948ebfdb61e36739bcb0190a2a8366b9e8b673f1e4a431769272397a8"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_013",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_013.json",
+      "sha256": "d7b0155817c64ee653cb5eb57505d4561f27d6284fd70bb6232b1696ad36d18e"
     },
     {
       "corpus_id": "SMOKE_DE_EN_10_V1",
@@ -135,59 +170,59 @@
     }
   ],
   "coverage": {
-    "n_documents_scored": 18,
-    "n_scored_fields_total": 430,
-    "perfect_core_on_scored_fields": "15/18"
+    "n_documents_scored": 23,
+    "n_scored_fields_total": 608,
+    "perfect_core_on_scored_fields": "20/23"
   },
   "metrics_complete_gt_only_v3_1": {
-    "field_total": 430,
+    "field_total": 608,
     "counts": {
-      "correct": 424,
+      "correct": 602,
       "wrong": 1,
       "missing": 5,
       "hallucinated": 0,
       "wrong_category": 0
     },
-    "field_accuracy": 0.986046511627907,
-    "precision": 0.9976470588235294,
-    "recall": 0.9883449883449883,
-    "f1": 0.9929742388758782,
+    "field_accuracy": 0.9901315789473685,
+    "precision": 0.9983416252072969,
+    "recall": 0.9917627677100495,
+    "f1": 0.9950413223140496,
     "hallucination_rate": 0.0,
-    "missing_field_rate": 0.011627906976744186,
+    "missing_field_rate": 0.008223684210526315,
     "wrong_category_rate": 0.0,
-    "false_positive_rate": 0.002325581395348837,
+    "false_positive_rate": 0.001644736842105263,
     "by_group": {
       "personal": {
-        "correct": 46
+        "correct": 61
       },
       "contact": {
-        "correct": 23
+        "correct": 32
       },
       "address": {
-        "correct": 76,
+        "correct": 101,
         "missing": 5
       },
       "languages": {
-        "correct": 46
+        "correct": 56
       },
       "licenses": {
-        "correct": 23
+        "correct": 28
       },
       "education": {
-        "correct": 50
+        "correct": 75
       },
       "employment": {
-        "correct": 74,
+        "correct": 124,
         "wrong": 1
       },
       "skills": {
-        "correct": 41
+        "correct": 62
       },
       "software": {
-        "correct": 40
+        "correct": 56
       },
       "certificates": {
-        "correct": 5
+        "correct": 7
       }
     },
     "n_missing": 5,
@@ -230,58 +265,58 @@
         "actual": "Materialdisposition"
       }
     ],
-    "perfect_core": "15/18"
+    "perfect_core": "20/23"
   },
   "by_lang": {
     "de": {
-      "field_total": 373,
+      "field_total": 551,
       "counts": {
-        "correct": 371,
+        "correct": 549,
         "wrong": 1,
         "missing": 1,
         "hallucinated": 0,
         "wrong_category": 0
       },
-      "field_accuracy": 0.9946380697050938,
-      "precision": 0.9973118279569892,
-      "recall": 0.9973118279569892,
-      "f1": 0.9973118279569892,
+      "field_accuracy": 0.9963702359346642,
+      "precision": 0.9981818181818182,
+      "recall": 0.9981818181818182,
+      "f1": 0.9981818181818182,
       "hallucination_rate": 0.0,
-      "missing_field_rate": 0.002680965147453083,
+      "missing_field_rate": 0.0018148820326678765,
       "wrong_category_rate": 0.0,
-      "false_positive_rate": 0.002680965147453083,
+      "false_positive_rate": 0.0018148820326678765,
       "by_group": {
         "personal": {
-          "correct": 35
+          "correct": 50
         },
         "contact": {
-          "correct": 21
+          "correct": 30
         },
         "address": {
-          "correct": 56,
+          "correct": 81,
           "missing": 1
         },
         "languages": {
-          "correct": 32
+          "correct": 42
         },
         "licenses": {
-          "correct": 17
+          "correct": 22
         },
         "education": {
-          "correct": 50
+          "correct": 75
         },
         "employment": {
-          "correct": 74,
+          "correct": 124,
           "wrong": 1
         },
         "skills": {
-          "correct": 41
+          "correct": 62
         },
         "software": {
-          "correct": 40
+          "correct": 56
         },
         "certificates": {
-          "correct": 5
+          "correct": 7
         }
       },
       "n_missing": 1,
@@ -304,8 +339,8 @@
           "actual": "Materialdisposition"
         }
       ],
-      "perfect_core": "11/13",
-      "n_documents": 13
+      "perfect_core": "16/18",
+      "n_documents": 18
     },
     "en": {
       "field_total": 57,

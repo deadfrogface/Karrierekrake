@@ -53,7 +53,7 @@ Label: `REGRESSION_KNOWN_CVS_NOT_BLIND`
 |--------|--------|
 | Extract | **läuft** (nicht killen); Predictions bisher ~21/40 unter `frozen_predictions/` |
 | `PHASE_A_EXTRACTION_SEAL.json` | **noch nicht** vorhanden |
-| Partial V3.1 (18/40 scored) | F1 **≈ 0,993**, Perfect Core **15/18**, Acc **0,986**, Hallu **0**; 1 wrong (MH_004 position), 5 missing (Adressen DE_04/EN_02) |
+| Partial V3.1 (23/40 scored) | F1 **≈ 0,995**, Perfect Core **20/23**, missing **5**, wrong **1**, Hallu **0**; DE F1 ≈ 0,998 / EN F1 ≈ 0,964 |
 | Voller Round3 F1 / Perfect Core / Ø s / Peak RSS | **Platzhalter** — nach Seal + `run_docpick_round3_sealed_score_v3_1.py` |
 
 Partial-Datei: `PHASE_B_PARTIAL_OR_FULL_V3_1_RESULTS.json` (Disclaimer: partial, kein 99%-Claim).
