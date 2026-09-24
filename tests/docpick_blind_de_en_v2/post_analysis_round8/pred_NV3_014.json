@@ -1,0 +1,69 @@
+{
+  "personal": {
+    "first_name": "David",
+    "last_name": "Wolf",
+    "street": "Am Park",
+    "house_number": "18",
+    "postal_code": "54290",
+    "city": "Trier",
+    "country": "Deutschland",
+    "date_of_birth": "15.11.1991"
+  },
+  "emails": [
+    "david.wolf.14@example.org"
+  ],
+  "phones": [
+    "+49 151 4701918"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "BBS Trier",
+      "qualification": "Ausbildung Koch",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Koch",
+      "company": "Restaurant Moselufer",
+      "start_date": "03/2017",
+      "end_date": "08/2024",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Mise en place",
+    "Speisekartenplanung",
+    "Lebensmittelhygiene"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "HACCP-Unterweisung",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_014.pdf",
+  "raw_text_chars": 536,
+  "raw_text_preview": "## David Wolf\n\n## Koch\n\n## Kontakt\n\ndavid.wolf.14@example.org | +49 151 4701918 Am Park 18, 54290 Trier, Deutschland Geboren: 15.11.1991\n\n## Kurzprofil\n\nBerufspraxis in Koch. À-la-carte-Service und Einkauf.\n\n## Berufserfahrung\n\n## Koch | Restaurant Moselufer\n\n03/2017 - 08/2024\n\nÀ-la-carte-Service und Einkauf\n\n## Kenntnisse\n\nMise en place · Speisekartenplanung Lebensmittelhygiene\n\n## Ausbildung\n\nAusbildung Koch, BBS Trier\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: B1\n\n## Führerschein\n\nB\n\n##",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false
+}

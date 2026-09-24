@@ -1,0 +1,71 @@
+{
+  "personal": {
+    "first_name": "Eva",
+    "last_name": "Adler",
+    "street": "Brückenstraße",
+    "house_number": "15",
+    "postal_code": "78462",
+    "city": "Konstanz",
+    "country": "Deutschland",
+    "date_of_birth": "06.08.1988"
+  },
+  "emails": [
+    "eva.adler.11@example.org"
+  ],
+  "phones": [
+    "+49 151 4701507"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Ausbildung Biologielaborantin",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Laborantin",
+      "company": "Bodensee Diagnostik",
+      "start_date": "12/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "PCR-Vorbereitung",
+    "Pipettieren",
+    "Laborhygiene"
+  ],
+  "software": [
+    "LIMS"
+  ],
+  "certificates": [
+    {
+      "name": "GLP-Grundkurs",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_011.pdf",
+  "raw_text_chars": 567,
+  "raw_text_preview": "## Eva Adler\n\n## Laborantin\n\n## Kontakt\n\neva.adler.11@example.org | +49 151 4701507 Brückenstraße 15, 78462 Konstanz, Deutschland Geboren: 06.08.1988\n\n## Kurzprofil\n\nBerufspraxis in Laborantin. Probenvorbereitung und Qualitätssicherung.\n\n## Berufserfahrung\n\n## Laborantin | Bodensee Diagnostik\n\n12/2021 - heute Probenvorbereitung und Qualitätssicherung\n\n## Ausbildung\n\nAusbildung Biologielaborantin\n\n## Kenntnisse\n\nPCR-Vorbereitung · Pipettieren · Laborhygiene\n\n## Programme\n\nLIMS\n\n## Sprachen\n\nDeuts",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false
+}

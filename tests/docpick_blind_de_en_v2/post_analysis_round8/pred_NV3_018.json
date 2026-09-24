@@ -1,0 +1,66 @@
+{
+  "personal": {
+    "first_name": "Oskar",
+    "last_name": "Heinz",
+    "street": "Dammweg",
+    "house_number": "22",
+    "postal_code": "01067",
+    "city": "Dresden",
+    "country": "Deutschland",
+    "date_of_birth": "27.07.1995"
+  },
+  "emails": [
+    "oskar.heinz.18@example.org"
+  ],
+  "phones": [
+    "+49 151 4702466"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Ausbildung Bauzeichner, Schwerpunkt Architektur",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Bauzeichner",
+      "company": "Planbüro Elbe",
+      "start_date": "07/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Bemaßung",
+    "Bestandsaufnahme",
+    "Planprüfung"
+  ],
+  "software": [
+    "AutoCAD",
+    "Revit"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_018.pdf",
+  "raw_text_chars": 635,
+  "raw_text_preview": "## Oskar Heinz\n\n## Bauzeichner\n\n## Kontakt\n\noskar.heinz.18@example.org | +49 151 4702466 Dammweg 22, 01067 Dresden, Deutschland Geboren: 27.07.1995\n\n## Kurzprofil\n\nBerufspraxis in Bauzeichner. Ausführungspläne für Sanierungen.\n\n## Ausbildung\n\nAusbildung Bauzeichner, Schwerpunkt Architektur\n\n## Berufserfahrung\n\n## Bauzeichner | Planbüro Elbe\n\n2021-07 - heute Ausführungspläne für Sanierungen\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: B1\n\n## Kenntnisse\n\nBemaßung · Bestandsaufnahme · Planprüfu",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false
+}

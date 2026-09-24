@@ -1,0 +1,66 @@
+{
+  "personal": {
+    "first_name": "Oliver",
+    "last_name": "Hughes",
+    "street": "Station Lane",
+    "house_number": "35",
+    "postal_code": "CF10 1EP",
+    "city": "Cardiff",
+    "country": "United Kingdom",
+    "date_of_birth": "10.12.1983"
+  },
+  "emails": [
+    "oliver.hughes.31@example.org"
+  ],
+  "phones": [
+    "+44 7700 900031"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "BTEC Level 3 Music Technology",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Sound Engineer",
+      "company": "Cwm Studios",
+      "start_date": "08/2020",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Microphone placement",
+    "Mixing",
+    "Session setup"
+  ],
+  "software": [
+    "Pro Tools",
+    "Reaper"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_031.pdf",
+  "raw_text_chars": 567,
+  "raw_text_preview": "## Oliver Hughes\n\n## Sound Engineer\n\n## Contact\n\noliver.hughes.31@example.org | +44 7700 900031 Station Lane 35, CF10 1EP Cardiff, United Kingdom Born: 1983-12-10\n\n## Profile\n\nExperience in Sound Engineer. Recording live bands and editing dialogue.\n\n## Work Experience\n\n## Sound Engineer | Cwm Studios\n\n2020-08 - Present Recording live bands and editing dialogue\n\n## Education\n\nBTEC Level 3 Music Technology\n\n## Core Skills\n\nMicrophone placement · Mixing · Session setup\n\n## Tools\n\nPro Tools / Reaper",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false
+}

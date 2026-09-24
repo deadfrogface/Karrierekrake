@@ -1,0 +1,71 @@
+{
+  "personal": {
+    "first_name": "Samira",
+    "last_name": "Khan",
+    "street": "Oak Street",
+    "house_number": "53",
+    "postal_code": "S1 2DH",
+    "city": "Sheffield",
+    "country": "United Kingdom",
+    "date_of_birth": "08.06.2001"
+  },
+  "emails": [
+    "samira.khan.49@example.org"
+  ],
+  "phones": [
+    "+44 7700 900049"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Level 3 Diploma in Furniture Making",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Furniture Maker",
+      "company": "Peak Joinery",
+      "start_date": "02/2017",
+      "end_date": "08/2025",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Joinery",
+    "Wood finishing",
+    "Workshop safety"
+  ],
+  "software": [
+    "SketchUp"
+  ],
+  "certificates": [
+    {
+      "name": "Workshop First Aid",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_049.pdf",
+  "raw_text_chars": 572,
+  "raw_text_preview": "## Samira Khan\n\n## Furniture Maker\n\n## Contact\n\nsamira.khan.49@example.org | +44 7700 900049 Oak Street 53, S1 2DH Sheffield, United Kingdom Born: 2001-06-08\n\n## Profile\n\nExperience in Furniture Maker. Building made-to-measure shelving.\n\n## Work Experience\n\n## Furniture Maker | Peak Joinery\n\n2017-02 - 2025-08 Building made-to-measure shelving\n\n## Core Skills\n\nJoinery · Wood finishing Workshop safety\n\n## Education\n\nLevel 3 Diploma in Furniture Making\n\n## Tools\n\nSketchUp\n\n## Languages\n\nEnglish: Na",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false
+}
