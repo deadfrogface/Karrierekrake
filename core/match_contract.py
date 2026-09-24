@@ -194,3 +194,20 @@ def evaluate_match_contract(
     if blockers:
         return MatchContract(status=DECISION_BLOCKED, blockers=blockers)
     return MatchContract(status=DECISION_READY, blockers=[])
+
+
+def auto_match_allowed(config: Any, job: Job, *, distance_used: bool = False) -> tuple[bool, str]:
+    """Unsupervised auto-match. No gold-set score is treated as a send decision.
+
+    Blocked when the extract is unconfirmed or in parser debt, or when a
+    required match input is missing/unknown. A numeric score is not enough.
+    """
+    from core.parser_debt import auto_actions_blocked
+
+    debt = auto_actions_blocked(config)
+    if debt.blocked:
+        return False, debt.reason
+    contract = evaluate_match_contract(job, config, distance_used=distance_used)
+    if not contract.ready:
+        return False, "needs_confirmation: " + ", ".join(contract.blockers)
+    return True, ""

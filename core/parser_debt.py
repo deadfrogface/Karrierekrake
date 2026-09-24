@@ -93,10 +93,24 @@ def false_current_job_debt(quals: QualificationsConfig, review: ExtractReview) -
     return False
 
 
+def unconfirmed_extract_debt(review: ExtractReview) -> bool:
+    """A CV extract is unsupervised until the user confirms the whole review.
+
+    There is no matching gold set. Unconfirmed extracts must not auto-match
+    or auto-send a cover letter. Manual profiles (no ``source=cv``) are not
+    this gate.
+    """
+    if (review.source or "").strip().lower() != "cv":
+        return False
+    return not bool(review.confirmed)
+
+
 def assess_parser_debt(config_or_quals: Any, review: ExtractReview | None = None) -> DebtGate:
     quals = _quals_of(config_or_quals)
     rev = review if isinstance(review, ExtractReview) else _review_of(config_or_quals)
     patterns: list[str] = []
+    if unconfirmed_extract_debt(rev):
+        patterns.append("unconfirmed_extract")
     if missing_education_debt(quals, rev):
         patterns.append("missing_education")
     if false_current_job_debt(quals, rev):

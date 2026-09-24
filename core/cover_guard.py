@@ -30,6 +30,13 @@ _CREDENTIAL = re.compile(
     r"\bausbildung\s+als\s+([A-Za-zÄÖÜäöüß0-9+\-]{3,})",
     re.I,
 )
+_METRIC = re.compile(
+    r"\b\d+(?:[.,]\d+)?\s*(?:%|prozent)\b|\b\d+\s*jahre\b",
+    re.I,
+)
+_EMPLOYER = re.compile(
+    r"\b(?:bei|für|fuer|arbeitgeber)\s+([A-ZÄÖÜ][\w&.'\-]+(?:\s+[A-ZÄÖÜ][\w&.'\-]+){0,3})",
+)
 
 # Glue that must never count as a personal qualification.
 _STOP = frozenset(
@@ -184,6 +191,14 @@ def find_unsubstantiated_personal_claims(
             name = next((g for g in match.groups() if g), "")
             if name and not _supported(name, confirmed_norm):
                 flagged.append(name)
+        for match in _METRIC.finditer(sentence):
+            snippet = match.group(0)
+            if snippet.casefold() not in confirmed_norm:
+                flagged.append(snippet)
+        for match in _EMPLOYER.finditer(sentence):
+            employer = match.group(1).strip()
+            if employer and not _supported(employer, confirmed_norm):
+                flagged.append(employer)
         for token in _CLAIM_TOKEN.findall(sentence):
             if token.casefold() in _STOP:
                 continue

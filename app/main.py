@@ -18,7 +18,7 @@ from core.database import Database
 from core.deduplicator import deduplicate
 from core.location import LocationService, enrich_job_locations, _city_from_address
 from core.logging import RunLogger
-from core.match_contract import evaluate_match_contract
+from core.match_contract import auto_match_allowed
 from core.matcher import apply_distance_scoring, score_job
 from core.models import JobStatus, OperatingMode
 from core.parser_debt import auto_actions_blocked
@@ -489,7 +489,8 @@ def run_pipeline(
             if any(str(r).startswith("needs_confirmation") for r in (j.rejection_reasons or [])):
                 continue
             distance_used = (j.remote_type or "") != "remote"
-            if not evaluate_match_contract(j, config, distance_used=distance_used).ready:
+            allowed, _why = auto_match_allowed(config, j, distance_used=distance_used)
+            if not allowed:
                 continue
             matches.append(j)
     run.info(f"{len(matches)} matches ≥{config.settings.minimum_match_for_auto_apply}%")

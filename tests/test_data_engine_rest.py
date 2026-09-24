@@ -210,9 +210,14 @@ def _assert_berlin_distance(tmp_path) -> None:
     assert resolved.country_code == "DE"
     assert resolved.latitude is not None and 52.3 < resolved.latitude < 52.7
     assert resolved.longitude is not None and 13.0 < resolved.longitude < 13.8
-    # Same-name towns that are not one city stay unresolved.
-    homonym = resolve_place(normalize_place_fields(city="Elbingerode", country_code="DE"))
-    assert not homonym.ok
+    # Exact name + 35 km spread (same rule as PR #64). Homonyms stay unresolved.
+    from core.geo_resolve import resolve_city_pgeocode
+
+    assert resolve_city_pgeocode("Halle", "DE").status == "AMBIGUOUS"
+    assert resolve_city_pgeocode("Frankfurt", "DE").status == "AMBIGUOUS"
+    halle = resolve_place(normalize_place_fields(city="Halle", country_code="DE"))
+    assert not halle.ok
+    assert halle.latitude is None and halle.longitude is None
 
     db = Database(tmp_path / "t.db", recover=False)
     cfg = _config(
@@ -240,6 +245,25 @@ def _assert_berlin_distance(tmp_path) -> None:
     assert distance_exclude(job, cfg) is None
     assert job.country_code == "DE"
 
+    ambiguous = Job(
+        title="Sachbearbeiter",
+        company="Beispiel",
+        city="Halle",
+        country_code="DE",
+        remote_type=RemoteType.ONSITE.value,
+    )
+    enrich_job_locations([ambiguous], svc)
+    assert ambiguous.latitude is None
+    assert ambiguous.longitude is None
+    assert ambiguous.distance_km is None
+    from core.matcher import apply_distance_scoring
+
+    ambiguous.match_score = 80
+    ambiguous.status = "new"
+    apply_distance_scoring(ambiguous, cfg)
+    assert ambiguous.status != "ignored"
+    assert ambiguous.distance_km is None
+
 
 def test_berlin_deutschland_resolves_for_distance_filter(tmp_path):
     from core.geo_dataset import reset_geo_dataset_manager_for_tests
@@ -261,6 +285,39 @@ def test_berlin_deutschland_resolves_for_distance_filter(tmp_path):
             os.environ.pop("KARRIEREKRAKE_GEO_DATA_DIR", None)
         else:
             os.environ["KARRIEREKRAKE_GEO_DATA_DIR"] = previous
+
+
+def test_unconfirmed_extract_blocks_auto_match_without_a_fake_score():
+    from core.match_contract import auto_match_allowed
+
+    quals = QualificationsConfig(
+        skills=[SourcedText("Excel", source="cv")],
+        education=[EducationEntry(qualification="Kaufmann", institution="IHK", source="cv")],
+        work_experience=[
+            ExperienceEntry(
+                title="Sachbearbeiter",
+                company="Alt GmbH",
+                end_date="2019",
+                source="cv",
+            )
+        ],
+    )
+    cfg = _config(
+        qualifications=quals,
+        extract_review=ExtractReview(source="cv", confirmed=False),
+    )
+    result = score_job(_job(), cfg)
+    assert result.decision_status == "needs_confirmation"
+    assert result.score == 0
+    assert "unconfirmed_extract" in (result.exclude_reason or "")
+    allowed, why = auto_match_allowed(cfg, _job(), distance_used=False)
+    assert not allowed
+    assert why.startswith("needs_confirmation")
+    assert render_cover_letter(_job(), cfg) == ""
+
+    cfg.profile.extract_review.confirmed = True
+    allowed_after, _ = auto_match_allowed(cfg, _job(), distance_used=False)
+    assert allowed_after
 
 
 def test_cover_letter_does_not_claim_job_ad_requirements():
@@ -292,6 +349,16 @@ def test_cover_letter_does_not_claim_job_ad_requirements():
         job_text="Excel Sachbearbeitung Kubernetes",
     )
     assert paraphrased == []
+
+    invented = find_unsubstantiated_personal_claims(
+        "Ich habe bei XYZ Company die Conversion um 20 % gesteigert und Kubernetes genutzt.",
+        confirmed_text="Excel Sachbearbeitung",
+        job_text="Kubernetes SAP",
+        allowed_context="Beispiel GmbH",
+    )
+    assert invented
+    blob = " ".join(invented).casefold()
+    assert "xyz" in blob or "20" in blob or "kubernetes" in blob
 
 
 def test_portal_schema_strips_html_and_normalizes_location():

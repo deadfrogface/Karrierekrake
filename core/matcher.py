@@ -804,6 +804,10 @@ def apply_distance_scoring(job: Job, config: AppConfig) -> None:
     reason = distance_exclude(job, config)
     if reason:
         job.rejection_reasons = list(dict.fromkeys([*(job.rejection_reasons or []), reason]))
+        # UNKNOWN/AMBIGUOUS has no coordinate. Skip the radius drop — do not
+        # invent kilometres and do not treat the gap as 0 km.
+        if job.distance_km is None and (job.remote_type or "") != RemoteType.REMOTE.value:
+            return
         job.status = JobStatus.IGNORED.value
         # Keep fachliche score for explainability; mark excluded via status.
         return

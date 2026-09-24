@@ -259,6 +259,25 @@ class ApplicationManager:
             return ApplyResult(success=False, error_message="already applied (safety)")
 
         cover = render_cover_letter(job, self.config)
+        from core.cover_guard import confirmed_profile_text, screen_cover_letter
+
+        debt = auto_actions_blocked(self.config)
+        claim_screen = screen_cover_letter(
+            cover,
+            confirmed_text=confirmed_profile_text(self.config),
+            job_text=f"{job.title} {job.description}",
+            allowed_context=f"{job.title} {job.company}",
+        )
+        if debt.blocked or not cover.strip() or not claim_screen.ok:
+            reason = debt.reason or (
+                "needs_confirmation: unsubstantiated_claims"
+                if not claim_screen.ok
+                else "needs_confirmation: cover_blocked"
+            )
+            job.status = JobStatus.NEEDS_REVIEW.value
+            job.rejection_reasons = list({*job.rejection_reasons, reason})
+            self.db.upsert_job(job)
+            return ApplyResult(success=False, needs_review=True, error_message=reason)
         cover_path = self.config.root / "cover_letters" / f"{job.id}.txt"
         save_cover_letter(cover, cover_path)
         cv_path = self._resolve_cv_path()
