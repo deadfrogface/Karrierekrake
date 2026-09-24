@@ -94,6 +94,26 @@ def test_norm_dob_formats() -> None:
     assert _norm_dob("19.02.1991") == "19.02.1991"
 
 
+def test_merge_partial_license_from_fuehrerschein_line() -> None:
+    """LLM may return only B while text lists B, C1 — merge from source text."""
+    parsed = suggestion_to_parsed(
+        {
+            "name": {"first_name": "A", "last_name": "B"},
+            "email": "a@example.com",
+            "licenses": ["B"],
+            "employment": [],
+            "education": [],
+            "skills": [],
+            "software": [],
+            "certificates": [],
+            "languages": [],
+        },
+        source_text="Führerschein: B, C1\nDeutsch C2 | Englisch C1\n",
+    )
+    assert "B" in parsed["driving_license"]
+    assert "C1" in parsed["driving_license"]
+
+
 def test_enrich_dob_and_repair_heute_from_text() -> None:
     from core.cv_docpick_import import _enrich_dob_from_text, _repair_invented_heute
 

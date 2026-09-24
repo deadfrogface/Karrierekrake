@@ -775,10 +775,19 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
             certs.append(c)
         else:
             certs.append({"name": cname, "issuer": "", "year": ""})
-    if source_text and not lic_codes:
+    if source_text:
+        # Merge classes from Führerschein lines even when LLM returned a partial list
+        # (e.g. only B while text has "B, C1").
         for line in source_text.splitlines():
             if re.search(r"führerschein|driving\s+licen[cs]e|licence|license", line, re.I):
                 for code in normalize_driving_license(line):
+                    if code not in lic_codes:
+                        lic_codes.append(code)
+            # DE wording without English keywords: "Klassen B und C1"
+            elif re.search(r"\bklassen?\b", line, re.I) and re.search(
+                r"\b[A-Z]{1,3}\d?E?\b", line
+            ):
+                for code in normalize_driving_license("Führerschein " + line):
                     if code not in lic_codes:
                         lic_codes.append(code)
     first = str(name.get("first_name") or "")
