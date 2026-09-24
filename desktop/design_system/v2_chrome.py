@@ -16,6 +16,11 @@ from PySide6.QtWidgets import (
 
 from desktop.design_system.a11y import set_accessible_name
 from desktop.design_system.icons import status_glyph
+from desktop.design_system.polish import (
+    apply_button_icon,
+    make_close_button,
+    polish_interactive,
+)
 
 
 class PageHeader(QWidget):
@@ -309,10 +314,17 @@ class SectionEditDrawer(QDialog):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 16)
         layout.setSpacing(12)
+        title_row = QHBoxLayout()
+        title_row.setContentsMargins(0, 0, 0, 0)
         self.title_label = QLabel(title)
         self.title_label.setObjectName("PageTitle")
         self.title_label.setWordWrap(True)
-        layout.addWidget(self.title_label)
+        title_row.addWidget(self.title_label, stretch=1)
+        # Top-right: close (X) only — primary Speichern stays bottom-right
+        self.close_btn = make_close_button(parent=self)
+        self.close_btn.clicked.connect(self.reject)
+        title_row.addWidget(self.close_btn, alignment=Qt.AlignmentFlag.AlignTop)
+        layout.addLayout(title_row)
         self._host = QVBoxLayout()
         self._host.setContentsMargins(0, 0, 0, 0)
         from desktop.widgets.dialog_geometry import wrap_dialog_body
@@ -327,6 +339,7 @@ class SectionEditDrawer(QDialog):
         self.cancel_btn.setObjectName("SecondaryButton")
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
+        polish_interactive(self.save_btn)
         self.cancel_btn.clicked.connect(self.reject)
         self.save_btn.clicked.connect(self.accept)
         buttons.addWidget(self.cancel_btn)
@@ -342,6 +355,9 @@ class SectionEditDrawer(QDialog):
         self.cancel_btn.setText(cancel)
         set_accessible_name(self.save_btn, save)
         set_accessible_name(self.cancel_btn, cancel)
+        apply_button_icon(self.save_btn, "save", color="#ffffff")
+        self.close_btn.setToolTip(cancel or "Schließen")
+        set_accessible_name(self.close_btn, cancel or "Schließen")
 
     def present(self, content: QWidget) -> int:
         if self._content is not None:

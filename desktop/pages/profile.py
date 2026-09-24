@@ -23,6 +23,12 @@ from PySide6.QtWidgets import (
 
 from core.salary import normalize_to_annual_gross_eur
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_card,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import (
     DataItem,
     ProfileSectionCard,
@@ -173,12 +179,14 @@ class ProfilePage(QWidget):
         title_col.addWidget(self.page_title)
         title_col.addWidget(self.page_subtitle)
         header.addLayout(title_col, stretch=1)
+        # Top-right reserved for secondary icon-actions only (no primary CTAs)
+        shell_layout.addLayout(header)
+
         self.import_cv_btn = QPushButton()
         self.import_cv_btn.setObjectName("PrimaryButton")
         self.import_cv_btn.setAccessibleDescription("kk.profile.import_cv")
         self.import_cv_btn.clicked.connect(self.import_from_cv)
-        header.addWidget(self.import_cv_btn)
-        shell_layout.addLayout(header)
+        polish_interactive(self.import_cv_btn)
 
         grid = QGridLayout()
         grid.setHorizontalSpacing(16)
@@ -288,7 +296,21 @@ class ProfilePage(QWidget):
         self.save_btn.setObjectName("PrimaryButton")
         self.save_btn.clicked.connect(self.save)
         self.save_btn.hide()
-        shell_layout.addWidget(self.save_btn)
+
+        # Primary import CTA — bottom-right of the profile shell
+        shell_layout.addLayout(footer_actions_layout(self.import_cv_btn, self.save_btn))
+
+        for card in (
+            self.card_personal,
+            self.card_career,
+            self.card_application,
+            self.card_docs,
+            self.card_experience,
+            self.card_education,
+            self.card_skills,
+            self.card_languages,
+        ):
+            polish_card(card)
 
         outer.addWidget(wrap_scrollable(shell))
 
@@ -301,6 +323,7 @@ class ProfilePage(QWidget):
         self.page_subtitle.setText(tr("profile.subtitle"))
         self.import_cv_btn.setText(tr("profile.import_from_cv"))
         set_accessible_name(self.import_cv_btn, tr("profile.import_from_cv"))
+        apply_button_icon(self.import_cv_btn, "import", color="#ffffff")
         self.card_personal.set_title(tr("profile.card_personal"))
         self.card_personal.set_action_text(tr("profile.edit"))
         self.card_career.set_title(tr("profile.card_career"))

@@ -60,6 +60,9 @@ ALLOW_EMAIL_DOMAINS = {"example.com", "example.org", "example.net", "localhost"}
 # RFC 6761 special-use TLDs — safe for fixtures (corp.example, foo.test, …).
 _SPECIAL_USE_TLDS = frozenset({"example", "test", "invalid", "localhost"})
 
+# Project fixture convention: example.<ccTLD> (example.de, example.at, …) and
+# example.co.uk — fictional mailbox labels, not production contact data.
+_EXAMPLE_SLD = re.compile(r"^example\.[a-z0-9.-]+$", re.I)
 # Apple asset catalogs use filenames like Icon@2x.png — not email addresses.
 _APPLE_SCALE_DOMAIN = re.compile(r"^\dx\.(?:png|jpe?g|gif|webp)$", re.I)
 
@@ -77,6 +80,9 @@ def _email_domain_allowed(domain: str) -> bool:
     # e.g. corp.example / mail.test — not real registrable domains
     tld = d.rsplit(".", 1)[-1]
     if tld in _SPECIAL_USE_TLDS:
+        return True
+    # Fixture mailboxes used across DE/EN holdout corpora
+    if _EXAMPLE_SLD.match(d):
         return True
     return False
 

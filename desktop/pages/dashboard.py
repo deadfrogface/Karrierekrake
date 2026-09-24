@@ -15,6 +15,12 @@ from PySide6.QtWidgets import (
 
 from core.database import Database
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_card,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import ContentCard, KpiCard, PageHeader
 from desktop.i18n import i18n, tr
 from desktop.services import ConfigService
@@ -47,7 +53,7 @@ class DashboardPage(QWidget):
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(0)
 
-        # White sticky-style header strip (demo)
+        # White sticky-style header strip — title only (primary CTAs live bottom-right)
         header_wrap = QWidget()
         header_wrap.setObjectName("Card")
         header_row = QHBoxLayout(header_wrap)
@@ -55,16 +61,17 @@ class DashboardPage(QWidget):
         header_row.setSpacing(12)
         self.header = PageHeader()
         header_row.addWidget(self.header, stretch=1)
+        outer.addWidget(header_wrap)
+
         self.btn_search = QPushButton()
         self.btn_search.setObjectName("PrimaryButton")
         self.btn_search.setAccessibleDescription("kk.search.toggle")
-        self.btn_search.setMinimumHeight(36)
-        self.btn_search.setMinimumWidth(160)
+        self.btn_search.setMinimumHeight(40)
+        self.btn_search.setMinimumWidth(180)
         self.btn_search.clicked.connect(self._on_search_cta)
-        header_row.addWidget(self.btn_search, stretch=0)
+        polish_interactive(self.btn_search)
         # Compat: cancel button aliases the same CTA when running
         self.btn_cancel = self.btn_search
-        outer.addWidget(header_wrap)
 
         # Constrained content column (demo max-w-6xl feel)
         content = QWidget()
@@ -178,7 +185,17 @@ class DashboardPage(QWidget):
         self.btn_clear_jobs.hide()
         self.btn_clear_jobs.clicked.connect(self.clear_jobs_requested.emit)
 
-        root.addStretch()
+        root.addStretch(1)
+
+        # Primary search CTA — bottom-right of the content column (not header)
+        self._cta_footer = footer_actions_layout(self.btn_search)
+        root.addLayout(self._cta_footer)
+
+        polish_card(self.hero)
+        for card in self.kpi_cards.values():
+            polish_card(card)
+        polish_card(self.last_run_card)
+        polish_card(self.next_run_card)
 
         self.page_title = self.header.title
         self.page_subtitle = self.header.subtitle
@@ -221,6 +238,14 @@ class DashboardPage(QWidget):
         self.btn_search.setText(text)
         set_accessible_name(self.btn_search, text)
         self.btn_search.setAccessibleDescription("kk.search.toggle")
+        icon_kind = "search"
+        icon_color = "#ffffff"
+        if self._search_state == self._SEARCH_IDLE:
+            icon_kind = "rocket" if not self._had_search else "search"
+        elif self._search_state in {self._SEARCH_RUNNING, self._SEARCH_CANCELLING}:
+            icon_kind = "close"
+            icon_color = "#1c2430"
+        apply_button_icon(self.btn_search, icon_kind, color=icon_color)
         style = self.btn_search.style()
         if style is not None:
             style.unpolish(self.btn_search)
@@ -309,7 +334,7 @@ class DashboardPage(QWidget):
             self.btn_primary.setText(tr("btn.review_queue"))
             self.hero.setVisible(True)
             return
-        # No queue item — hide redundant search card (primary CTA is header)
+        # No queue item — hide redundant search card (primary CTA is bottom footer)
         self._next_action = "search"
         self.hero.setVisible(False)
         self.next_title.setText(tr("dash.next_search_title"))

@@ -437,8 +437,15 @@ def classify_non_language_token(value: str) -> str:
         return "certificate"
     if _looks_like_soft_skill(text):
         return "skill"
-    # Single product-ish tokens without language markers → software guess.
+    # Bare product tokens (CRM, SAP, …). Multi-word competencies that merely
+    # mention a product category stay skills ("CRM administration").
     if _known_software_token_match(low) or re.search(r"\b(bi|erp|crm|sap|datev)\b", low):
+        if " " in low and re.search(
+            r"\b(administration|management|support|analysis|mapping|communication|"
+            r"success|reporting|fulfililment|fulfillment)\b",
+            low,
+        ):
+            return "skill"
         return "software"
     # Competency-like single phrases (no year, no cert keyword) → skill, not cert.
     if 3 <= len(text) <= 60 and (
@@ -1763,44 +1770,44 @@ def parse_cv_text(text: str) -> dict[str, Any]:
             s,
         )
     ]
-    # If the CV only has EDV/IT/"Weitere Kenntnisse" (mapped to software), recover
-    # non-tool competency lines as skills — never invent skills not present.
-    if not skills:
-        soft_body = sections.get("software", "")
-        recovered: list[str] = []
-        for raw in soft_body.splitlines():
-            line = _normalize_bullet(raw)
-            if not line or _is_heading_value(line) or _is_heading(line):
+    # Soft-skill lines under EDV/IT/"Weitere Kenntnisse" are rejected by
+    # ``_accept_software_item`` and never reach the software list — always
+    # recover them into skills (even when skills is already nonempty).
+    soft_body = sections.get("software", "")
+    recovered: list[str] = []
+    for raw in soft_body.splitlines():
+        line = _normalize_bullet(raw)
+        if not line or _is_heading_value(line) or _is_heading(line):
+            continue
+        if _looks_like_non_software_dump(line):
+            continue
+        if _LEVEL.search(line) and _parse_one_language(line) is not None:
+            continue
+        # Proficiency-marked tool lines are software, never soft skills.
+        if _strip_software_proficiency(line) != line:
+            continue
+        if _looks_like_software(line) and not _looks_like_soft_skill(line):
+            continue
+        if classify_non_language_token(line) == "software":
+            continue
+        parts = re.split(r"\s*[,;|/]\s*", line) if re.search(r"[,;|/]", line) else [line]
+        for part in parts:
+            part = part.strip(" .")
+            if not part or len(part) > 80:
                 continue
-            if _looks_like_non_software_dump(line):
+            if _looks_like_software(part) and not _looks_like_soft_skill(part):
                 continue
-            if _LEVEL.search(line) and _parse_one_language(line) is not None:
-                continue
-            # Proficiency-marked tool lines are software, never soft skills.
-            if _strip_software_proficiency(line) != line:
-                continue
-            if _looks_like_software(line) and not _looks_like_soft_skill(line):
-                continue
-            if classify_non_language_token(line) == "software":
-                continue
-            parts = re.split(r"\s*[,;|/]\s*", line) if re.search(r"[,;|/]", line) else [line]
-            for part in parts:
-                part = part.strip(" .")
-                if not part or len(part) > 80:
-                    continue
-                if _looks_like_software(part) and not _looks_like_soft_skill(part):
-                    continue
-                # Recover soft-skill phrases AND TitleCase fachkompetenz tokens
-                # that classify as skill (Schichtkoordination, Anlagenprüfung).
-                kind = classify_non_language_token(part)
-                if _looks_like_soft_skill(part) or kind == "skill":
-                    recovered.append(part)
-        if recovered:
-            skills = list(dict.fromkeys(recovered))
-            soft_drop = {s.lower() for s in skills}
-            # Remove recovered soft skills from software — keep all real tools,
-            # including unknown product names (DocuWare, Microsoft 365, …).
-            software = [s for s in software if s.lower() not in soft_drop]
+            # Soft-skill phrases always; TitleCase fachkompetenz only when
+            # skills was empty (avoid stealing product names like Revit).
+            kind = classify_non_language_token(part)
+            if _looks_like_soft_skill(part) or (not skills and kind == "skill"):
+                recovered.append(part)
+    if recovered:
+        skills = list(dict.fromkeys([*skills, *recovered]))
+        soft_drop = {s.lower() for s in recovered}
+        # Remove recovered soft skills from software — keep all real tools,
+        # including unknown product names (DocuWare, Microsoft 365, …).
+        software = [s for s in software if s.lower() not in soft_drop]
     # Always strip soft-skill phrases that leaked into software and relocate them
     # into skills — even when the skills list is already nonempty.
     # Do NOT use classify==skill here: TitleCase product tokens (Revit, Ansys)
@@ -2359,7 +2366,7 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
                 personal["last_name"] = " ".join(parts[1:])
                 break
 
-    for line in lines:
+    for idx, line in enumerate(lines):
         line = (line or "").strip()
         if not line or personal.get("postal_code"):
             continue
@@ -2368,6 +2375,19 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
             labels = ("Adresse", "Address") if "pc" in m.groupdict() else ("Adresse", "Anschrift")
             _apply_postal_match(m, personal, labels=labels)
             _maybe_fill_country_from_line(line, personal)
+            # City+PLZ-only match: previous non-empty line is often the street
+            # ("Beispielweg 5" / "80331 München").
+            if not personal.get("street") and idx > 0:
+                prev = (lines[idx - 1] or "").strip()
+                if prev and "@" not in prev and not re.match(r"^\d{5}\b", prev):
+                    if not (_NAME_RE.fullmatch(prev) and len(prev.split()) >= 2):
+                        cleaned = _clean_street_fragment(prev, personal)
+                        if cleaned:
+                            personal["street"] = cleaned
+                            hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", cleaned)
+                            if hn:
+                                personal["house_number"] = hn.group("n")
+                                personal["street"] = hn.group("s").strip(" ,;·|")
             break
         _maybe_fill_country_from_line(line, personal)
 
@@ -2395,6 +2415,7 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
                             hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", cleaned)
                             if hn:
                                 personal["house_number"] = hn.group("n")
+                                personal["street"] = hn.group("s").strip(" ,;·|")
             break
 
     if not personal.get("city"):
@@ -2416,8 +2437,12 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
                     break
 
     if personal.get("street") or personal.get("postal_code"):
+        street_disp = personal.get("street", "")
+        hn = personal.get("house_number", "")
+        if street_disp and hn and hn not in street_disp:
+            street_disp = f"{street_disp} {hn}"
         parts = [
-            personal.get("street", ""),
+            street_disp,
             f"{personal.get('postal_code', '')} {personal.get('city', '')}".strip(),
         ]
         personal["address"] = ", ".join(p for p in parts if p)
@@ -2532,8 +2557,12 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
         personal["date_of_birth"] = dob_m.group("dob")
 
     if personal.get("street") or personal.get("postal_code"):
+        street_disp = personal.get("street", "")
+        hn = personal.get("house_number", "")
+        if street_disp and hn and hn not in street_disp:
+            street_disp = f"{street_disp} {hn}"
         parts = [
-            personal.get("street", ""),
+            street_disp,
             f"{personal.get('postal_code', '')} {personal.get('city', '')}".strip(),
         ]
         personal["address"] = ", ".join(p for p in parts if p)

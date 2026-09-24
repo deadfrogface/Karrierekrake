@@ -31,6 +31,12 @@ from core.database import Database
 from core.models import JobStatus
 from core.text_normalize import clean_text, display_or_dash
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_card,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, PageHeader, SectionEditDrawer
 from desktop.i18n import tr
 from desktop.services import ConfigService
@@ -148,16 +154,18 @@ class JobsPage(QWidget):
         self.apply_btn = QPushButton()
         self.apply_btn.setObjectName("PrimaryButton")
         self.apply_btn.clicked.connect(self.refresh)
+        polish_interactive(self.apply_btn)
         self.more_filters_btn = QPushButton()
         self.more_filters_btn.setObjectName("SecondaryButton")
         self.more_filters_btn.clicked.connect(self._open_more_filters)
         self.search_intent_btn = QPushButton()
         self.search_intent_btn.setObjectName("SecondaryButton")
         self.search_intent_btn.clicked.connect(self.open_search_intent)
-        primary.addWidget(self.apply_btn)
+        # Filters stay compact; primary filter CTA sits at the row's trailing edge
+        primary.addStretch(1)
         primary.addWidget(self.more_filters_btn)
         primary.addWidget(self.search_intent_btn)
-        primary.addStretch()
+        primary.addWidget(self.apply_btn)
 
         self.more_filters = QWidget()
         more_form = QFormLayout(self.more_filters)
@@ -186,10 +194,9 @@ class JobsPage(QWidget):
         self.prepare_btn = QPushButton()
         self.prepare_btn.setObjectName("PrimaryButton")
         self.prepare_btn.clicked.connect(self.prepare_application)
-        action_row = QHBoxLayout()
-        action_row.addWidget(self.prepare_btn)
-        action_row.addWidget(self.open_btn)
-        action_row.addStretch()
+        polish_interactive(self.prepare_btn)
+        # List-level prepare/open live in a bottom footer (not above the splitter)
+        action_row = footer_actions_layout(self.open_btn, self.prepare_btn)
 
         self.table = QTableWidget(0, len(self.COLS))
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
@@ -256,13 +263,11 @@ class JobsPage(QWidget):
         self.detail_prepare = QPushButton()
         self.detail_prepare.setObjectName("PrimaryButton")
         self.detail_prepare.clicked.connect(self.prepare_application)
+        polish_interactive(self.detail_prepare)
         self.detail_open = QPushButton()
         self.detail_open.setObjectName("SecondaryButton")
         self.detail_open.clicked.connect(self.open_selected)
-        dbtns = QHBoxLayout()
-        dbtns.addWidget(self.detail_prepare)
-        dbtns.addWidget(self.detail_open)
-        dbtns.addStretch()
+        dbtns = footer_actions_layout(self.detail_open, self.detail_prepare)
         detail_layout.addWidget(self.detail_title)
         detail_layout.addWidget(self.detail_meta)
         detail_layout.addWidget(self.detail_status)
@@ -286,8 +291,10 @@ class JobsPage(QWidget):
         layout.addWidget(self.lbl_filters)
         layout.addLayout(primary)
         layout.addLayout(toolbar)
-        layout.addLayout(action_row)
         layout.addWidget(splitter, 1)
+        layout.addLayout(action_row)
+
+        polish_card(self.detail)
 
         self._clear_detail()
         self.retranslate_ui()
@@ -384,12 +391,15 @@ class JobsPage(QWidget):
         self.chk_hybrid.setText(tr("hybrid"))
         self.chk_onsite.setText(tr("onsite"))
         self.apply_btn.setText(tr("btn.filter"))
+        apply_button_icon(self.apply_btn, "filter", color="#ffffff")
         self.more_filters_btn.setText(tr("jobs.more_filters"))
         self.open_btn.setText(tr("btn.open_job"))
         self.prepare_btn.setText(tr("btn.prepare_application"))
+        apply_button_icon(self.prepare_btn, "apply", color="#ffffff")
         self.search_intent_btn.setText(tr("jobs.open_search_intent"))
         set_accessible_name(self.search_intent_btn, tr("jobs.open_search_intent"))
         self.detail_prepare.setText(tr("btn.prepare_application"))
+        apply_button_icon(self.detail_prepare, "apply", color="#ffffff")
         self.detail_open.setText(tr("btn.open_job"))
         self.empty.set_texts(tr("jobs.empty_title"), tr("jobs.empty_body"))
         self.empty.action_btn.hide()

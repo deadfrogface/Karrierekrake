@@ -21,7 +21,6 @@ import hashlib
 import json
 import os
 import platform
-import resource
 import statistics
 import subprocess
 import sys
@@ -29,6 +28,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+try:
+    import resource as _resource
+except ImportError:  # Windows — no POSIX resource module
+    _resource = None
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -43,7 +47,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "FINAL_HOLDOUT_50",
         "document_range": "FH_001-FH_050",
         "protocol": "FINAL_HOLDOUT_V1",
-        "zip_hint": "KarriereKrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip",
     },
     "mini_holdout_30": {
         "holdout_rel": Path("tests") / "mini_holdout_30",
@@ -53,7 +57,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "MINI_HOLDOUT_30",
         "document_range": "MH_001-MH_030",
         "protocol": "MINI_HOLDOUT_30_PHASE_A",
-        "zip_hint": "KarriereKrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
     },
     "final_independent_50_v2": {
         "holdout_rel": Path("tests") / "final_independent_50_v2",
@@ -63,7 +67,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "FINAL_INDEPENDENT_50_V2",
         "document_range": "IH2_001-IH2_050",
         "protocol": "FINAL_INDEPENDENT_50_V2_PHASE_A",
-        "zip_hint": "KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip",
         "named_seal": "FINAL_INDEPENDENT_50_V2_SEAL.json",
         "repeatability": True,
     },
@@ -174,6 +178,11 @@ def _sha256_file(path: Path) -> str:
     return _sha256_bytes(path.read_bytes())
 
 
+def _write_utf8(path: Path, text: str) -> None:
+    """Write UTF-8 with LF only — Path.write_text can CRLF on Windows and break seals."""
+    path.write_bytes(text.encode("utf-8"))
+
+
 def _serialize(parsed: dict[str, Any]) -> dict[str, Any]:
     def conv(o: Any) -> Any:
         if isinstance(o, dict):
@@ -192,7 +201,40 @@ def _serialize(parsed: dict[str, Any]) -> dict[str, Any]:
 
 
 def _peak_rss_mb() -> float:
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
+    if _resource is not None:
+        # Linux ru_maxrss is KiB; macOS is bytes — normalize roughly to MiB.
+        rss = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+        if sys.platform == "darwin":
+            return rss / (1024.0 * 1024.0)
+        return rss / 1024.0
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class PROCESS_MEMORY_COUNTERS(ctypes.Structure):
+            _fields_ = [
+                ("cb", wintypes.DWORD),
+                ("PageFaultCount", wintypes.DWORD),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            ]
+
+        counters = PROCESS_MEMORY_COUNTERS()
+        counters.cb = ctypes.sizeof(PROCESS_MEMORY_COUNTERS)
+        ctypes.windll.psapi.GetProcessMemoryInfo(  # type: ignore[attr-defined]
+            ctypes.windll.kernel32.GetCurrentProcess(),  # type: ignore[attr-defined]
+            ctypes.byref(counters),
+            counters.cb,
+        )
+        return float(counters.PeakWorkingSetSize) / (1024.0 * 1024.0)
+    except Exception:
+        return 0.0
 
 
 def _resolve_pdf_dir() -> Path:
@@ -508,7 +550,7 @@ def run_phase_a() -> dict[str, Any]:
 
         out_path = PRED_DIR / f"{doc_id}.json"
         payload = json.dumps(rec, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
-        out_path.write_text(payload, encoding="utf-8")
+        _write_utf8(out_path, payload)
         pred_hashes[f"frozen_predictions/{doc_id}.json"] = _sha256_bytes(
             payload.encode("utf-8")
         )
@@ -593,10 +635,10 @@ def run_phase_a() -> dict[str, Any]:
             "tech_errors_run2": err2,
             "note": "Official frozen predictions are run 1 only; run 2 is comparison-only.",
         }
-        (OUT / "REPEATABILITY.json").write_text(
+        _write_utf8(
+            OUT / "REPEATABILITY.json",
             json.dumps(repeatability, ensure_ascii=False, indent=2, sort_keys=True)
             + "\n",
-            encoding="utf-8",
         )
 
     if total_phi > 0 or total_c1 > 0:
@@ -654,9 +696,9 @@ def run_phase_a() -> dict[str, Any]:
         "runner": [runner_hash],
         "pdf_manifest": manifest_info,
     }
-    INPUT_HASHES_PATH.write_text(
+    _write_utf8(
+        INPUT_HASHES_PATH,
         json.dumps(input_hashes, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
     )
 
     # Deterministic prediction manifest (sorted paths)
@@ -673,9 +715,9 @@ def run_phase_a() -> dict[str, Any]:
             sort_keys=True,
         ).encode("utf-8")
     )
-    PRED_HASHES_PATH.write_text(
+    _write_utf8(
+        PRED_HASHES_PATH,
         json.dumps(pred_manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
     )
 
     meta = {
@@ -744,9 +786,9 @@ def run_phase_a() -> dict[str, Any]:
         ],
         "repeatability": repeatability,
     }
-    META_PATH.write_text(
+    _write_utf8(
+        META_PATH,
         json.dumps(meta, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
     )
 
     # Aggregate frozen_predictions.json + PREDICTION_MANIFEST.json (protocol names)
@@ -766,7 +808,7 @@ def run_phase_a() -> dict[str, Any]:
     frozen_bundle_payload = (
         json.dumps(frozen_bundle, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     )
-    frozen_bundle_path.write_text(frozen_bundle_payload, encoding="utf-8")
+    _write_utf8(frozen_bundle_path, frozen_bundle_payload)
     frozen_bundle_sha = _sha256_bytes(frozen_bundle_payload.encode("utf-8"))
 
     prediction_manifest = {
@@ -799,10 +841,10 @@ def run_phase_a() -> dict[str, Any]:
         "frozen_predictions_json_sha256": frozen_bundle_sha,
     }
     pred_man_path = OUT / "PREDICTION_MANIFEST.json"
-    pred_man_path.write_text(
+    _write_utf8(
+        pred_man_path,
         json.dumps(prediction_manifest, ensure_ascii=False, indent=2, sort_keys=True)
         + "\n",
-        encoding="utf-8",
     )
 
     seal = {
@@ -839,24 +881,22 @@ def run_phase_a() -> dict[str, Any]:
         "repeatability": repeatability,
     }
     seal_payload = json.dumps(seal, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
-    SEAL_PATH.write_text(seal_payload, encoding="utf-8")
-    SEAL_MARKER.write_text(seal_payload, encoding="utf-8")
+    _write_utf8(SEAL_PATH, seal_payload)
+    _write_utf8(SEAL_MARKER, seal_payload)
     named_seal = cfg.get("named_seal")
     if named_seal:
         seal_dir = OUT / "seal"
         seal_dir.mkdir(parents=True, exist_ok=True)
         named_path = seal_dir / str(named_seal)
-        named_path.write_text(seal_payload, encoding="utf-8")
+        _write_utf8(named_path, seal_payload)
         seal_file_sha = _sha256_file(named_path)
-        (seal_dir / f"{named_seal}.sha256").write_text(
-            seal_file_sha + "\n", encoding="utf-8"
-        )
+        _write_utf8(seal_dir / f"{named_seal}.sha256", seal_file_sha + "\n")
         print(f"Named seal: {named_path} sha256={seal_file_sha}")
     # Compat alias for older Phase-B verifier expecting FROZEN_HASHES.json
     compat = OUT / "FROZEN_HASHES.json"
-    compat.write_text(
+    _write_utf8(
+        compat,
         json.dumps(pred_manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
     )
 
     # Post-seal integrity verification

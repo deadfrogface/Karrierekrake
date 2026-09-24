@@ -27,6 +27,11 @@ from PySide6.QtWidgets import (
 
 from core.database import Database
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import PageHeader
 from desktop.i18n import tr
 from desktop.services import ConfigService
@@ -518,7 +523,12 @@ class SettingsPage(QWidget):
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
         self.save_btn.clicked.connect(self.save)
-        root.addWidget(self.save_btn)
+        polish_interactive(self.save_btn)
+        footer = QWidget()
+        footer.setObjectName("SettingsFooter")
+        footer.setLayout(footer_actions_layout(self.save_btn))
+        footer.layout().setContentsMargins(16, 12, 16, 16)
+        root.addWidget(footer)
 
         apply_wheel_guard_to_spinboxes(self)
         self._annotate_a11y_controls()
@@ -723,6 +733,7 @@ class SettingsPage(QWidget):
         self.open_logs_btn.setText(tr("settings.open_diagnose_logs"))
         self.about_btn.setText(tr("about.open"))
         self.save_btn.setText(tr("btn.save_settings"))
+        apply_button_icon(self.save_btn, "save", color="#ffffff")
         self._annotate_a11y_controls()
 
     def _open_diagnose_logs(self) -> None:

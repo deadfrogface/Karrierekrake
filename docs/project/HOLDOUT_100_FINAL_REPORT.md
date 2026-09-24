@@ -6,7 +6,7 @@
 |------|-------|
 | Branch | `cursor/holdout-100-d85b` |
 | Frozen prediction commit (approx) | harness `42cdbbb` + prior phi-extract tip |
-| Corpus | `tests/KarriereKrake_HOLDOUT_100.zip` → `tests/holdout_100/` (100 PDFs) |
+| Corpus | `tests/Karrierekrake_HOLDOUT_100.zip` → `tests/holdout_100/` (100 PDFs) |
 | Model | phi4-mini, temp=0 for extract |
 | Docling / Marker | NOT_AVAILABLE |
 | Hardware | Linux cloud agent CPU (see FROZEN_BASELINE_METADATA*.json) |

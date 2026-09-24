@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from desktop.design_system.polish import apply_button_icon, footer_actions_layout, polish_interactive
 from desktop.i18n import tr
 from desktop.services import ConfigService
 
@@ -96,23 +97,23 @@ class LogsPage(QWidget):
         splitter.setStretchFactor(1, 2)
 
         self.refresh_btn = QPushButton()
-        self.refresh_btn.setObjectName("PrimaryButton")
+        self.refresh_btn.setObjectName("SecondaryButton")
         self.refresh_btn.clicked.connect(self.refresh)
-        bar = QHBoxLayout()
-        bar.addWidget(self.refresh_btn)
-        bar.addStretch()
+        polish_interactive(self.refresh_btn, blur=12.0, y_offset=2.0, alpha=28)
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.page_title)
         layout.addWidget(self.page_subtitle)
-        layout.addLayout(bar)
         layout.addWidget(splitter, 1)
+        # Refresh is a secondary action — bottom-right, not a top primary CTA
+        layout.addLayout(footer_actions_layout(self.refresh_btn))
         self.retranslate_ui()
 
     def retranslate_ui(self) -> None:
         self.page_title.setText(tr("logs.page_title"))
         self.page_subtitle.setText(tr("logs.page_subtitle"))
         self.refresh_btn.setText(tr("logs.refresh"))
+        apply_button_icon(self.refresh_btn, "refresh", color="#1c2430")
         self.tech_label.setText(tr("logs.technical"))
 
     def _show_tech(self, row: int) -> None:
