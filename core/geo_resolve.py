@@ -287,6 +287,55 @@ def resolve_postal_pgeocode(
     )
 
 
+# One postal cloud, not two towns that share a name.
+# Berlin's PLZ span ~47 km with nearest-neighbour gaps under 5 km.
+# Homonyms such as Elbingerode sit ~38 km apart with no points in between.
+_CITY_CLOUD_DIAMETER_KM = 60.0
+_CITY_CLOUD_NN_KM = 12.0
+
+
+def _single_city_cloud(pairs: list[tuple[float, float]]) -> bool:
+    """True when coordinates are one connected city, not distant homonyms."""
+    if len(pairs) < 2:
+        return True
+    lats = [p[0] for p in pairs]
+    lons = [p[1] for p in pairs]
+    corners = (
+        (min(lats), min(lons)),
+        (min(lats), max(lons)),
+        (max(lats), min(lons)),
+        (max(lats), max(lons)),
+    )
+    diameter = 0.0
+    for i, a in enumerate(corners):
+        for b in corners[i + 1 :]:
+            diameter = max(diameter, haversine_km(a[0], a[1], b[0], b[1]))
+    if diameter > _CITY_CLOUD_DIAMETER_KM:
+        return False
+    sample = pairs
+    if len(pairs) > 400:
+        step = max(1, len(pairs) // 400)
+        sample = pairs[::step]
+    worst = 0.0
+    for i, a in enumerate(sample):
+        best: float | None = None
+        for j, b in enumerate(sample):
+            if i == j:
+                continue
+            dist = haversine_km(a[0], a[1], b[0], b[1])
+            if best is None or dist < best:
+                best = dist
+                if best <= _CITY_CLOUD_NN_KM:
+                    break
+        if best is None:
+            continue
+        if best > worst:
+            worst = best
+        if worst > _CITY_CLOUD_NN_KM:
+            return False
+    return True
+
+
 def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
     """Resolve unique city within one country. Ambiguous → AMBIGUOUS, never guess."""
     cc = normalize_country_code(country_code)
@@ -308,18 +357,22 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    try:
-        frame = nom.query_location(name)
-    except Exception as exc:
-        logger.debug("city query failed %s %s: %s", cc, name, type(exc).__name__)
-        return PlaceResolution(
-            status="UNKNOWN",
-            reason="city_query_error",
-            country_code=cc,
-            data_source=GEO_DATA_SOURCE_UNRESOLVED,
-            data_version=GEO_DATA_VERSION_UNRESOLVED,
-        )
+    # Full local postal table. query_location() is a capped substring search and
+    # returns company rows ("… Berlin …") before the city itself.
+    frame = getattr(nom, "_data", None)
     if frame is None or getattr(frame, "empty", True):
+        try:
+            frame = nom.query_location(name)
+        except Exception as exc:
+            logger.debug("city query failed %s %s: %s", cc, name, type(exc).__name__)
+            return PlaceResolution(
+                status="UNKNOWN",
+                reason="city_query_error",
+                country_code=cc,
+                data_source=GEO_DATA_SOURCE_UNRESOLVED,
+                data_version=GEO_DATA_VERSION_UNRESOLVED,
+            )
+    if frame is None or getattr(frame, "empty", True) or "place_name" not in getattr(frame, "columns", []):
         return PlaceResolution(
             status="UNKNOWN",
             reason="city_not_found",
@@ -327,27 +380,8 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    try:
-        import pandas as pd
-
-        df = frame if isinstance(frame, pd.DataFrame) else pd.DataFrame(frame)
-    except Exception:
-        return PlaceResolution(
-            status="UNKNOWN",
-            reason="city_frame_error",
-            country_code=cc,
-            data_source=GEO_DATA_SOURCE_UNRESOLVED,
-            data_version=GEO_DATA_VERSION_UNRESOLVED,
-        )
     needle = name.casefold()
-    if "place_name" in df.columns:
-        exact = df[df["place_name"].astype(str).str.casefold() == needle]
-        if exact.empty:
-            exact = df[
-                df["place_name"].astype(str).str.casefold().str.contains(needle, na=False)
-            ]
-    else:
-        exact = df
+    exact = frame[frame["place_name"].astype(str).str.casefold() == needle]
     if exact.empty:
         return PlaceResolution(
             status="UNKNOWN",
@@ -381,18 +415,20 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    # Spread check: same name in distant places → AMBIGUOUS
+    # Spread check: same name in distant places → AMBIGUOUS.
+    # A single dense city (Berlin's PLZ cloud is ~0.56° longitude) stays one centroid.
     lat_vals = [p[0] for p in pairs]
     lon_vals = [p[1] for p in pairs]
     if max(lat_vals) - min(lat_vals) > 0.5 or max(lon_vals) - min(lon_vals) > 0.5:
-        return PlaceResolution(
-            status="AMBIGUOUS",
-            reason="city_spread",
-            country_code=cc,
-            display_name=name,
-            data_source=GEO_DATA_SOURCE_UNRESOLVED,
-            data_version=GEO_DATA_VERSION_UNRESOLVED,
-        )
+        if not _single_city_cloud(pairs):
+            return PlaceResolution(
+                status="AMBIGUOUS",
+                reason="city_spread",
+                country_code=cc,
+                display_name=name,
+                data_source=GEO_DATA_SOURCE_UNRESOLVED,
+                data_version=GEO_DATA_VERSION_UNRESOLVED,
+            )
     lat = sum(lat_vals) / len(lat_vals)
     lon = sum(lon_vals) / len(lon_vals)
     display = f"{name}, {cc}"

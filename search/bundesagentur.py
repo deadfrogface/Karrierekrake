@@ -25,6 +25,7 @@ import httpx
 from core.deduplicator import make_job_id
 from core.models import Job, RemoteType
 from search.base import JobSource, SearchQuery
+from search.job_schema import normalize_portal_job
 
 logger = logging.getLogger("karrierekrake")
 
@@ -230,7 +231,7 @@ class BundesagenturSource(JobSource):
                 url=url,
                 application_url=url,
             )
-            return job
+            return normalize_portal_job(job)
         except Exception as exc:
             logger.warning("Failed to parse BA stub: %s", exc)
             return None
@@ -274,6 +275,7 @@ class BundesagenturSource(JobSource):
                             parts.append(sub)
             if parts:
                 job.description = "\n\n".join(parts)
+                normalize_portal_job(job)
             lohn = detail.get("verguetung") or detail.get("gehalt") or {}
             if isinstance(lohn, dict):
                 low, high, cur = lohn.get("von"), lohn.get("bis"), lohn.get("waehrung", "EUR")
@@ -285,7 +287,7 @@ class BundesagenturSource(JobSource):
                     except (TypeError, ValueError):
                         pass
             job.remote_type = _detect_remote(detail, job.description)
-            return job
+            return normalize_portal_job(job)
 
         order = {job.id: idx for idx, job in enumerate(stubs)}
         enriched: list[Job] = []

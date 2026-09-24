@@ -209,6 +209,14 @@ def build_application_preview(
         cover = f"(Anschreiben konnte nicht gerendert werden: {exc})"
 
     warnings: list[str] = []
+    if not cover:
+        from core.parser_debt import auto_actions_blocked
+
+        debt = auto_actions_blocked(config)
+        if debt.blocked:
+            warnings.append(
+                "Anschreiben blockiert bis zur Bestätigung: " + ", ".join(debt.patterns)
+            )
     if support == "partially_supported":
         warnings.append(
             "Teilweise Automatisierung — Felder werden vorausgefüllt; Abschluss prüfen."

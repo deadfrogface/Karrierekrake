@@ -15,8 +15,15 @@ from pathlib import Path
 from typing import Any
 
 from core.config import AppConfig, ExperienceEntry
+from core.cover_guard import (
+    confirmed_profile_text,
+    screen_cover_letter,
+    strip_unsubstantiated_claims,
+)
+from core.match_contract import section_confirmed
 from core.matcher import _is_glue_token, _meaningful_words, _norm, _token_in_text
 from core.models import Job
+from core.parser_debt import assess_parser_debt
 from core.text_normalize import clean_company, clean_text
 
 
@@ -101,18 +108,23 @@ def pick_relevant_experience(
     return experiences[0]
 
 
-def pick_relevant_skills(config: AppConfig, job: Job, *, limit: int = 6) -> list[str]:
+def pick_relevant_skills(
+    config: AppConfig,
+    job: Job,
+    *,
+    limit: int = 6,
+    include_skills: bool = True,
+    include_software: bool = True,
+) -> list[str]:
     """Skills/software that appear in the JD first; never invent new ones."""
     blob = _job_blob(job)
     quals = config.profile.qualifications
-    pool = list(
-        dict.fromkeys(
-            [
-                *[clean_text(s) for s in quals.skill_values()],
-                *[clean_text(s) for s in quals.software_values()],
-            ]
-        )
-    )
+    raw: list[str] = []
+    if include_skills:
+        raw.extend(clean_text(s) for s in quals.skill_values())
+    if include_software:
+        raw.extend(clean_text(s) for s in quals.software_values())
+    pool = list(dict.fromkeys(raw))
     pool = [s for s in pool if s and not _is_glue_token(s)]
     hits = [
         s
@@ -145,12 +157,32 @@ def _resolve_writer_claims(
     return WriterContactClaims.empty(writer_binding_enabled=binding)
 
 
+_MINIMAL_TEMPLATE = """{salutation},
+
+hiermit bewerbe ich mich um die Position als {job_title} bei {company}.
+
+Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
+
+Mit freundlichen Grüßen
+{full_name}
+"""
+
+
+def _review(config: AppConfig):
+    return getattr(config.profile, "extract_review", None)
+
+
 def render_cover_letter(
     job: Job,
     config: AppConfig,
     *,
     contact_claims: Any | None = None,
 ) -> str:
+    debt = assess_parser_debt(config)
+    if debt.blocked:
+        # No automatic letter until the user confirms the extract.
+        return ""
+
     template_path = resolve_cover_letter_template(config)
     if template_path is not None:
         template = template_path.read_text(encoding="utf-8")
@@ -161,10 +193,20 @@ def render_cover_letter(
     if not company:
         company = "Ihr Unternehmen"
 
-    skills_list = pick_relevant_skills(config, job)
+    review = _review(config)
+    skills_list = pick_relevant_skills(
+        config,
+        job,
+        include_skills=section_confirmed(review, "skills"),
+        include_software=section_confirmed(review, "software"),
+    )
     skills = ", ".join(skills_list) or "meine bisherigen beruflichen Erfahrungen"
 
-    exp = pick_relevant_experience(list(config.profile.qualifications.work_experience), job)
+    if section_confirmed(review, "work_experience"):
+        experiences = list(config.profile.qualifications.work_experience)
+    else:
+        experiences = []
+    exp = pick_relevant_experience(experiences, job)
     if exp is not None:
         label = exp.label() if hasattr(exp, "label") else str(exp)
         blob = _job_blob(job)
@@ -209,11 +251,44 @@ def render_cover_letter(
     except (ValueError, IndexError):
         text = DEFAULT_TEMPLATE.format_map(_Safe(mapping))
 
-    return sanitize_cover_body_for_claims(
+    text = sanitize_cover_body_for_claims(
         text,
         claims,
         applicant_name=mapping.get("full_name") or "",
     )
+    confirmed = confirmed_profile_text(config)
+    allowed = " ".join(
+        p
+        for p in (
+            mapping.get("job_title") or "",
+            mapping.get("company") or "",
+            mapping.get("full_name") or "",
+        )
+        if p
+    )
+    screened = screen_cover_letter(
+        text,
+        confirmed_text=confirmed,
+        job_text=_job_blob(job),
+        allowed_context=allowed,
+    )
+    if screened.ok:
+        return text
+    cleaned = strip_unsubstantiated_claims(
+        text,
+        confirmed_text=confirmed,
+        job_text=_job_blob(job),
+        allowed_context=allowed,
+    )
+    again = screen_cover_letter(
+        cleaned,
+        confirmed_text=confirmed,
+        job_text=_job_blob(job),
+        allowed_context=allowed,
+    )
+    if again.ok and cleaned.strip():
+        return cleaned
+    return _MINIMAL_TEMPLATE.format_map(_Safe(mapping))
 
 
 def save_cover_letter(text: str, path: Path) -> Path:

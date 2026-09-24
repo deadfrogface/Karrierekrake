@@ -21,6 +21,7 @@ from apply.successfactors import SuccessFactorsApplier
 from apply.workday import WorkdayApplier
 from core.config import AppConfig
 from core.cover_letter import render_cover_letter, save_cover_letter
+from core.parser_debt import auto_actions_blocked
 from core.database import Database
 from core.known_jobs import refuse_reapply
 from core.lifecycle import CaseStatus
@@ -103,6 +104,9 @@ class ApplicationManager:
 
     def can_auto_apply(self, job: Job) -> tuple[bool, str]:
         settings = self.config.settings
+        debt = auto_actions_blocked(self.config)
+        if debt.blocked:
+            return False, debt.reason
         if job.match_score < settings.minimum_match_for_auto_apply:
             return False, f"score {job.match_score} < {settings.minimum_match_for_auto_apply}"
         # Defense in depth: ApplicationCase known statuses even if search dedup failed.
@@ -166,6 +170,7 @@ class ApplicationManager:
                 or reason.startswith("CV file missing")
                 or reason.startswith("max applications")
                 or reason.startswith("max failed")
+                or reason.startswith("needs_confirmation")
             )
             if hard_block or mode == OperatingMode.FULLY_AUTOMATIC.value:
                 existing = self.db.get_job(job.id) if job.id else None

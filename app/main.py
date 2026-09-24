@@ -18,8 +18,10 @@ from core.database import Database
 from core.deduplicator import deduplicate
 from core.location import LocationService, enrich_job_locations, _city_from_address
 from core.logging import RunLogger
+from core.match_contract import evaluate_match_contract
 from core.matcher import apply_distance_scoring, score_job
 from core.models import JobStatus, OperatingMode
+from core.parser_debt import auto_actions_blocked
 from core.source_health import SourceHealthStatus
 from search.base import SearchQuery
 from search.registry import build_sources
@@ -428,7 +430,9 @@ def run_pipeline(
         job.match_reasons = result.match_reasons
         job.rejection_reasons = result.rejection_reasons
         job.ranking_version = getattr(result, "ranking_version", "") or ""
-        if result.excluded:
+        if getattr(result, "decision_status", "") == "needs_confirmation":
+            job.status = JobStatus.NEEDS_REVIEW.value
+        elif result.excluded:
             job.status = JobStatus.IGNORED.value
         else:
             job.status = existing.status if existing else JobStatus.NEW.value
@@ -474,12 +478,20 @@ def run_pipeline(
     run.info(f"{outside} outside {config.profile.location.max_distance_km} km Luftlinie removed/ignored")
     run.info(f"{known} already known/applied skipped")
     run.info(f"{new_count} new jobs")
-    matches = [
-        j
-        for j in scored
-        if j.match_score >= config.settings.minimum_match_for_auto_apply
-        and j.status != JobStatus.IGNORED.value
-    ]
+    profile_blocked = auto_actions_blocked(config).blocked
+    matches = []
+    if not profile_blocked:
+        for j in scored:
+            if j.match_score < config.settings.minimum_match_for_auto_apply:
+                continue
+            if j.status in {JobStatus.IGNORED.value, JobStatus.NEEDS_REVIEW.value}:
+                continue
+            if any(str(r).startswith("needs_confirmation") for r in (j.rejection_reasons or [])):
+                continue
+            distance_used = (j.remote_type or "") != "remote"
+            if not evaluate_match_contract(j, config, distance_used=distance_used).ready:
+                continue
+            matches.append(j)
     run.info(f"{len(matches)} matches ≥{config.settings.minimum_match_for_auto_apply}%")
 
     stats = {
