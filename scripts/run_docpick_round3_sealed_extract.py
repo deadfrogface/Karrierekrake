@@ -143,6 +143,7 @@ def main() -> int:
         "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
         "disclaimer": "Known CVs only. Not independent blind. Not a 99% claim.",
         "created_at": datetime.now(timezone.utc).isoformat(),
+        "gt_not_loaded": True,
         "parser_freeze": freeze,
         "manifest_id": manifest.get("id") or manifest.get("manifest_id"),
         "n_documents": len(predictions_meta),
