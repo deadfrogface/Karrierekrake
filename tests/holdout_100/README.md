@@ -1,4 +1,4 @@
-# KarriereKrake HOLDOUT 100
+# Karrierekrake HOLDOUT 100
 
 100 vollständig synthetische Lebensläufe für einen ungesehenen Akzeptanz-/Regressionstest. Keine echten Personen oder Kontaktdaten.
 

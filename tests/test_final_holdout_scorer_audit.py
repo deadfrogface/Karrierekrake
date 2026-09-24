@@ -176,7 +176,7 @@ def test_20_schema_extension_career_notes_not_auto_scored():
     gt = {
         "name": {"first_name": "Ada", "last_name": "Test"},
         "career_notes": ["Elternzeit"],
-        "email": "a@b.de",
+        "email": "a@example.com",
         "address": {},
         "languages": [],
         "licenses": [],
@@ -186,16 +186,16 @@ def test_20_schema_extension_career_notes_not_auto_scored():
         "software": [],
         "certificates": [],
     }
-    pred = {"personal": {"first_name": "Ada", "last_name": "Test"}, "emails": ["a@b.de"]}
-    ev = build_evidence_for_doc("x.pdf", gt, "Ada Test a@b.de")
+    pred = {"personal": {"first_name": "Ada", "last_name": "Test"}, "emails": ["a@example.com"]}
+    ev = build_evidence_for_doc("x.pdf", gt, "Ada Test a@example.com")
     rows = evaluate_doc_v2("x.pdf", gt, pred, ev)
     assert all(r.group != "career_notes" for r in rows)
     assert all("career_notes" not in r.field for r in rows)
 
 
 def test_21_visible_productive_field_evaluable():
-    gt = {"name": {"first_name": "Ada", "last_name": "Muster"}, "address": {}, "email": "a@b.de"}
-    ev = build_evidence_for_doc("x.pdf", gt, "Ada Muster a@b.de")
+    gt = {"name": {"first_name": "Ada", "last_name": "Muster"}, "address": {}, "email": "a@example.com"}
+    ev = build_evidence_for_doc("x.pdf", gt, "Ada Muster a@example.com")
     assert "name.first_name" in ev["evaluable_fields"]
 
 

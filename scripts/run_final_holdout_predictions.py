@@ -21,7 +21,6 @@ import hashlib
 import json
 import os
 import platform
-import resource
 import statistics
 import subprocess
 import sys
@@ -29,6 +28,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+try:
+    import resource as _resource
+except ImportError:  # Windows — no POSIX resource module
+    _resource = None
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -43,7 +47,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "FINAL_HOLDOUT_50",
         "document_range": "FH_001-FH_050",
         "protocol": "FINAL_HOLDOUT_V1",
-        "zip_hint": "KarriereKrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip",
     },
     "mini_holdout_30": {
         "holdout_rel": Path("tests") / "mini_holdout_30",
@@ -53,7 +57,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "MINI_HOLDOUT_30",
         "document_range": "MH_001-MH_030",
         "protocol": "MINI_HOLDOUT_30_PHASE_A",
-        "zip_hint": "KarriereKrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
     },
     "final_independent_50_v2": {
         "holdout_rel": Path("tests") / "final_independent_50_v2",
@@ -63,7 +67,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "FINAL_INDEPENDENT_50_V2",
         "document_range": "IH2_001-IH2_050",
         "protocol": "FINAL_INDEPENDENT_50_V2_PHASE_A",
-        "zip_hint": "KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip",
         "named_seal": "FINAL_INDEPENDENT_50_V2_SEAL.json",
         "repeatability": True,
     },
@@ -192,7 +196,40 @@ def _serialize(parsed: dict[str, Any]) -> dict[str, Any]:
 
 
 def _peak_rss_mb() -> float:
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
+    if _resource is not None:
+        # Linux ru_maxrss is KiB; macOS is bytes — normalize roughly to MiB.
+        rss = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+        if sys.platform == "darwin":
+            return rss / (1024.0 * 1024.0)
+        return rss / 1024.0
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class PROCESS_MEMORY_COUNTERS(ctypes.Structure):
+            _fields_ = [
+                ("cb", wintypes.DWORD),
+                ("PageFaultCount", wintypes.DWORD),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            ]
+
+        counters = PROCESS_MEMORY_COUNTERS()
+        counters.cb = ctypes.sizeof(PROCESS_MEMORY_COUNTERS)
+        ctypes.windll.psapi.GetProcessMemoryInfo(  # type: ignore[attr-defined]
+            ctypes.windll.kernel32.GetCurrentProcess(),  # type: ignore[attr-defined]
+            ctypes.byref(counters),
+            counters.cb,
+        )
+        return float(counters.PeakWorkingSetSize) / (1024.0 * 1024.0)
+    except Exception:
+        return 0.0
 
 
 def _resolve_pdf_dir() -> Path:

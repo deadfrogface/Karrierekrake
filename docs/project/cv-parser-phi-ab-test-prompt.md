@@ -1,7 +1,7 @@
 AUFGABE: CV-PARSER VOLLSTAENDIG PRUEFEN, REPARIEREN UND PHI OBJEKTIV BEWERTEN
 ================================================================================
 
-Arbeite autonom im vorhandenen KarriereKrake-Repository. Analysiere nicht nur,
+Arbeite autonom im vorhandenen Karrierekrake-Repository. Analysiere nicht nur,
 sondern fuehre den echten Parser aus, repariere die Ursachen gefundener Fehler,
 schreibe Regressionstests und wiederhole den gesamten Test ab Schritt 1, bis der
 gewaehlte Produktionspfad alle 10 PDFs fehlerfrei verarbeitet.

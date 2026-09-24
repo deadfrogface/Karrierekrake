@@ -9,7 +9,7 @@
 
 | Item | Value |
 | ---- | ----- |
-| Source archive | `tests/KarriereKrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip` |
+| Source archive | `tests/Karrierekrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip` |
 | PDF directory | `tests/final_holdout/phase_a_pdfs/` |
 | Count | **50** (`FH_001.pdf` … `FH_050.pdf`) |
 | Duplicates / missing IDs | 0 / 0 |

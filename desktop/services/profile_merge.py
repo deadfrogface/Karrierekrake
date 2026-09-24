@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, fields, replace
 from typing import Any, Literal
 
@@ -295,6 +296,11 @@ def personal_from_parsed(parsed: dict[str, Any]) -> dict[str, str]:
         val = str(personal.get(key) or "").strip()
         if val:
             out[key] = val
+    # Profile street is a single field — rejoin house_number when DET split it.
+    hn = str(personal.get("house_number") or "").strip()
+    street = out.get("street", "")
+    if street and hn and not re.search(rf"(?<!\d){re.escape(hn)}$", street):
+        out["street"] = f"{street} {hn}".strip()
     emails = parsed.get("emails") or []
     phones = parsed.get("phones") or []
     if emails and "email" not in out:
