@@ -1,8 +1,8 @@
 # Abschlussbericht – Docpick-Integrationslauf (Phasen 1–3)
 
 **Stand:** Branch `cursor/docpick-qwen35-cv-replace-d85b` (PR [#62](https://github.com/deadfrogface/Karrierekrake/pull/62)).  
-**Aktualisiert:** 2026-09-24 (Round3 Seal+Score 40/40).  
-**„99 % erreicht“:** **NEIN** — Blind-F1≥0,99 wurde nicht gemessen und darf nicht behauptet werden. Round3 F1 0,991 gilt nur für **bekannte** CVs.
+**Aktualisiert:** 2026-09-24 (Blind DE/EN v1 Seal+Score; #63 auf main).  
+**„99 % erreicht“:** **NEIN als Produktiv-Claim** — Blind-v1 F1 **0,996** bei **n=4** (informativ); `claim_99_percent=false` im Ergebnis. Round3 F1 0,991 gilt nur für **bekannte** CVs.
 
 ---
 
@@ -10,14 +10,14 @@
 
 | PR / Branch | Status | Entscheidung | Warum |
 |-------------|--------|--------------|--------|
-| **#62** `cursor/docpick-qwen35-cv-replace-d85b` | **offen** | Integrationsziel behalten | Docpick+Qwen auf dem Branch; Merge blockiert durch Blindtest, LLM-Laufzeit, Draft/CI |
-| **#63** `cursor/primary-actions-ui-polish-d85b` | **offen** | offen lassen | UI-Polish unabhängig; CI-Fixes (`1c5f550`); Merge erst bei grüner CI |
+| **#62** `cursor/docpick-qwen35-cv-replace-d85b` | **offen** | **offen lassen** bis Merge-Gate klar | Docpick+Qwen DET-frei auf Branch; Blind-v1 positiv aber klein; Maintainer entscheidet Ersatz |
+| **#63** `cursor/primary-actions-ui-polish-d85b` | **MERGED** (`cca25fc`) | erledigt | UI-Polish + CI-Fixes inkl. Windows Seal-LF; Squash auf main |
 | **#61** SmartResume-Spike | **offen** (Close 403) | **schließen** | überholt durch #62 |
 | **#60** Phi vs DET | **offen** (Close 403) | **schließen** | PHI_EXTRACT entfernt |
 | **#56** Phi ≥99 % | **offen** (Close 403) | **schließen** | PHI_EXTRACT entfernt |
 
-**Close-Versuch Agent:** Write-API 403. Texte: `docs/project/PR_CLOSE_COMMENTS_56_60_61.md`.  
-**Nicht in main integriert:** Docpick (#62). Main bleibt DET.
+**Close-Versuch Agent:** Write-API / `set_pr_status` 403. Texte: `docs/project/PR_CLOSE_COMMENTS_56_60_61.md`.  
+**Nicht in main integriert:** Docpick (#62). Main bleibt DET (+ UI aus #63).
 
 ### Importpfad (verifiziert)
 
@@ -38,10 +38,9 @@ Quelle: `docs/project/PHASE2_PERF_RESULTS.md` / `artifacts/perf_phase2/BASELINE.
 | App-Start (MainWindow) | — | **3,28 s**; Peak RSS **206 MB** |
 | Seitennavigation | — | **≤ 3 ms**/Seite |
 | Docling Folge-PDF (SHA-Cache) | erneut ~26 s | **0,0 s** |
-| LLM Qwen3.5-4B / CV (CPU) | dominant | **~101–118 s**/Call |
-| Full Docpick-Import (Folge) | — | **~106 s**; Peak **~2,5 GB** |
+| Full Docpick Warm (Blind-v1 Ø) | ~88 s Round3 | **59,5 s** (Budget ≤60 s) |
 
-**Größter UX-Gewinn:** Async-CV-Import. **Weiterhin langsam:** CPU-LLM.
+**Größter UX-Gewinn:** Async-CV-Import. Details Budget: `DOCPICK_RUNTIME_BUDGET.md`.
 
 ---
 
@@ -62,21 +61,28 @@ Label: `REGRESSION_KNOWN_CVS_NOT_BLIND`.
 | Round2 (40/40) | **0,989** | 23/40 | 87,8 | ~3,2 GB | vor Phase-3-Fixes |
 | Round3 (40/40 Seal+V3.1) | **0,991** | **33/40** | **88,2** | **~3,3 GB** | nach Present→heute + Prompt/Schema; DE F1 **0,995** / EN F1 **0,972** |
 
-Round3-Counts: correct 1214 / missing 19 / wrong 1 / hallucinated 1 (field_total 1235).  
-Phase-3-Cluster (7 Docs fehlendes ``heute``): **7/7** behoben.  
 Artefakte: `tests/docpick_qwen35/regression_known_cvs_round3/`.
 
 **Nicht** als „99 % erreicht“ werten (bekannte CVs).
 
-### 4b. Unabhängiger Blindtest
+### 4b. Unabhängiger Blindtest DE/EN v1
 
-- **Nicht durchgeführt**
-- Blocker: `docs/project/DOCPICK_BLIND_BLOCKER.md`
-- **Blind-F1 ≥ 0,99: nicht erreicht / nicht behauptet**
+Label: `INDEPENDENT_BLIND_DE_EN`. Freeze-Commit: `49b16d5`. Voller GT nach Seal. Scorer V3.1.
+
+| Kennzahl | Wert |
+|----------|------|
+| n | **4** (2 DE + 2 EN, synthetisch) |
+| F1 | **0,996** (119/120 correct; 1 missing `license:1` BE auf BL_DE_01) |
+| DE F1 / EN F1 | **0,992** / **1,0** |
+| Warm-Ø / Cold | **59,5 s** / **75,9 s** (innerhalb Budget) |
+| Peak RSS | **2,64 GB** |
+| `claim_99_percent` | **false** — n=4 nur informativ |
+
+Artefakte: `tests/docpick_blind_de_en_v1/`.
 
 ### 99%-Klausel
 
-> **„99 % erreicht“ nur bei Blind-F1 ≥ 0,99.** Hier: **NEIN**.
+> **„99 % erreicht“ nur bei Blind-F1 ≥ 0,99 auf ausreichend großem, vordeklariertem Korpus.** Hier: F1 0,996 bei n=4 → **kein Produktiv-99%-Claim**.
 
 ---
 
@@ -86,17 +92,18 @@ Artefakte: `tests/docpick_qwen35/regression_known_cvs_round3/`.
 |------|--------|
 | DET aus Import auf #62-Branch | **erfüllt** |
 | DET von main entfernt | **offen** (Merge #62) |
-| UI nicht einfrieren | **erfüllt** |
-| F1≥0,99 Blind DE/EN | **nicht erreicht** |
-| Round3 40/40 Seal+Score | **erledigt** (Regression F1 0,991) |
+| UI nicht einfrieren | **erfüllt** (+ #63 auf main) |
+| Laufzeitbudget ≤60 s warm | **Blind-v1 ok**; längere Einzel-CVs noch Risiko |
+| F1≥0,99 Blind DE/EN (Produktiv-Claim) | **nicht** (n=4 informativ trotz F1 0,996) |
+| Round3 40/40 Seal+Score | **erledigt** |
 | Spike-PRs geschlossen | **offen** (Maintainer 403) |
+| #63 gemerged | **erledigt** |
 
-**Restfehler:** u. a. 19 missing (Adressen/Software/Education), 1 wrong (Position), 1 Halluzination; EN schwächer als DE.
+**Restfehler Blind-v1:** 1 missing License BE. Round3: u. a. Adressen/Software/Education missing; EN schwächer.
 
 **Nächste Aktion:**
 
 1. Maintainer: #56/#60/#61 schließen (`PR_CLOSE_COMMENTS_56_60_61.md`).
-2. #63 CI grün abwarten, dann mergen.
-3. Unabhängigen DE/EN-Blindkorpus mit voller GT versiegeln.
-4. Bei Blind &lt; 0,99: größeres Modell oder Zwei-Pass — **nicht DET**.
-5. Merge #62 erst nach CI + akzeptierter Laufzeit (+ Blind wenn Pflicht).
+2. Entscheidung #62→main: Blind-v1 allein **nicht** als großer Ersatz-Beweis — größeren Blindkorpus oder explizite Abnahme.
+3. Bei Merge: Laufzeit auf realen CVs spot-checken (DE_01 war ~84 s warm).
+4. Kein DET-Fallback.

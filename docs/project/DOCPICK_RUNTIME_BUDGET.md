@@ -21,17 +21,28 @@ Konstanten in Code: `CV_IMPORT_BUDGET_WARM_S` / `CV_IMPORT_BUDGET_COLD_S` (`core
 | `max_tokens` | 2048 | **1024** | Cap gegen Runaways |
 | llama `n_ctx` | 4096 | **2048** | schnellere Attention bei kurzen CVs |
 
-## Messung (DE_01, nach Optimierung)
+## Messung A — Einzel-CV DE_01 (vor Blind, nach Prompt-Trim)
 
 | Lauf | Sekunden | Budget |
 |------|----------|--------|
 | Full cold | **~96 s** | 90 s — **knapp überschritten** |
 | Full warm | **~84 s** | 60 s — **nicht erreicht** |
 
-Vorher (Round3 Ø): **~88 s**/CV. Prompt-Trim: Warm **~84 s** (−~5–15 % je nach Messung).
+Vorher (Round3 Ø): **~88 s**/CV.
+
+## Messung B — Blind DE/EN v1 Seal (n=4, Freeze `49b16d5`)
+
+| Kennzahl | Wert | Budget |
+|----------|------|--------|
+| Cold (BL_DE_01) | **75,9 s** | ≤ 90 s — **ok** |
+| Warm-Ø (3 Folge-CVs) | **59,5 s** | ≤ 60 s — **ok** |
+| Peak RSS | **2,64 GB** | ≤ 3,5 GB — **ok** |
+
+Quelle: `tests/docpick_blind_de_en_v1/PHASE_B_COMPLETE_GT_ONLY_V3_1_RESULTS.json` → `performance_from_seal`.
 
 ## Entscheidung
 
 - **Budget bleibt 60 s warm / 90 s cold** (Produktziel), nicht nach oben „wegdefiniert“.
-- Aktueller CPU-Pfad **verfehlt** das Warm-Budget → Merge #62 zusätzlich zu Blindqualität durch Laufzeit blockiert.
-- Nächster Architektur-Schritt für ≤60 s: GPU-Offload, kleineres Modell, oder Zwei-Pass mit weniger Prefill — **nicht DET**.
+- Blind-v1-Korpus liegt **innerhalb** des Budgets; längere Einzel-CVs (Messung A) können es noch reißen.
+- Merge-Gate #62: Blindqualität **und** Laufzeit — Blind-v1 allein reicht nicht als großer 99%-Claim (`n=4`).
+- Weitere Architektur für robust ≤60 s auf allen CVs: GPU-Offload, kleineres Modell, oder Zwei-Pass — **nicht DET**.

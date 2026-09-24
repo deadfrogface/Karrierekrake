@@ -1,7 +1,8 @@
 # Vorbereitete Close-Kommentare für Spike-PRs
 
-**Status Agent:** `gh` Write + `ManagePullRequest set_pr_status closed` **nicht verfügbar**
-(HTTP 403 „Resource not accessible by integration“; ManagePullRequest-Tool in dieser Session nicht vorhanden).
+**Status Agent (2026-09-24):** Close erneut versucht — weiterhin **403**
+(`gh pr close` / `gh pr comment` / `ManagePullRequest set_pr_status`).
+**#63** wurde per Merge-API erfolgreich auf main gebracht; #62 bleibt offen.
 
 Maintainer kann die drei PRs mit den Texten unten schließen.
 
