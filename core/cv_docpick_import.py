@@ -112,10 +112,10 @@ class KarrierekrakeCVSchema(BaseModel):
     """Full CV-import schema (integration contract).
 
     Field order and descriptions are part of the Docpick prompt
-    (``model_json_schema``). Skills/software/certificates are listed
-    before bulky employment/education so the model fills them before
-    generation can stop early. Descriptions map common DE/EN section
-    headings onto the schema without document-specific rules.
+    (``model_json_schema``). Skills/software/certificates/education are listed
+    before bulky employment so the model fills them before generation can stop
+    early. Descriptions map common DE/EN section headings onto the schema
+    without document-specific rules.
     """
 
     name: NameModel | None = None
@@ -146,20 +146,27 @@ class KarrierekrakeCVSchema(BaseModel):
         default_factory=list,
         description=(
             "Certificate and short-course titles from sections named Certificates, "
-            "Certifications, Training, Weiterbildung(en), Weiterbildungen, "
-            "or non-degree items under Education & Training. Extract each course "
-            "or certificate name as a string (year optional, not required). "
-            "Do not leave this array empty when such items appear in the text."
+            "Certifications, Training, Weiterbildung(en), Weiterbildungen. "
+            "Extract each course or certificate name as a string (year optional). "
+            "Do not put Ausbildung, degrees, BTEC, HNC/HND, GCSEs, or school "
+            "qualifications here — those belong in education. "
+            "Do not leave this array empty when certificate items appear in the text."
         ),
     )
-    employment: list[EmploymentEntry] = Field(default_factory=list)
+    # Education before employment so the model fills it before bulky job lists
+    # can exhaust generation (NV3 miss pattern: Docling had Ausbildung, LLM []).
     education: list[EducationEntry] = Field(
         default_factory=list,
         description=(
-            "Formal education / degrees only (school, university, apprenticeship). "
-            "Short trainings and certificates belong in certificates, not here."
+            "Formal education outcomes from sections named Ausbildung, Education, "
+            "Studium, or Schulbildung: school leaving certificates, university "
+            "degrees, Ausbildung / dual apprenticeship, BTEC, HNC/HND, GCSEs, "
+            "A-levels, diplomas. Do not leave this array empty when such a "
+            "section exists. Short certificates and Weiterbildungen belong in "
+            "certificates, not here."
         ),
     )
+    employment: list[EmploymentEntry] = Field(default_factory=list)
 
 
 def _norm_dob(s: str) -> str:
@@ -182,12 +189,14 @@ def _norm_dob(s: str) -> str:
     return t
 
 
+# NOTE: do not leave a trailing empty alternative (`|`) — that matched "" and
+# turned missing education end_dates into invented ``heute``.
 _PRESENT_END_RE = re.compile(
     r"^(?:"
     r"heute|bis\s+heute|gegenwart|aktuell|laufend|jetzt|"
     r"present|current|ongoing|now|"
     r"aujourd'?hui|actuel|"
-    r"—|-|–|"
+    r"—|-|–"
     r")$",
     re.IGNORECASE,
 )
@@ -277,10 +286,11 @@ def _enrich_dob_from_text(pers: dict[str, str], text: str) -> dict[str, str]:
 def _repair_invented_heute(
     entries: list[dict[str, str]], text: str
 ) -> list[dict[str, str]]:
-    """If end_date is ``heute`` but the CV shows a concrete dated end near the job, prefer that.
+    """Replace invented ``heute`` only when the same job block has a dated end.
 
-    Does not invent dates — only replaces invented ``heute`` when a dated range
-    is visible in the source text next to the company/title.
+    Guard (Round5): require the dated range's start to match the entry's
+    ``start_date``, and search only inside the job block from the company/title
+    line to the next markdown heading — never borrow a neighbour job's end.
     """
     if not text or not entries:
         return entries
@@ -291,6 +301,10 @@ def _repair_invented_heute(
         if end != "heute":
             out.append(e)
             continue
+        start = (e.get("start_date") or "").strip()
+        if not start:
+            out.append(e)
+            continue
         anchor = (e.get("company") or e.get("title") or "").strip()
         if not anchor:
             out.append(e)
@@ -299,10 +313,19 @@ def _repair_invented_heute(
         if idx < 0:
             out.append(e)
             continue
-        window = text[max(0, idx - 100) : idx + len(anchor) + 140]
+        line_start = text.rfind("\n", 0, idx) + 1
+        rest = text[line_start:]
+        block_end = len(rest)
+        for hm in re.finditer(r"\n#{1,6}\s+\S+", rest):
+            if hm.start() > 0:
+                block_end = hm.start()
+                break
+        window = rest[: min(block_end, 350)]
+        start_norm = _norm_month_year(start)
         repaired = None
         for m in _DATE_RANGE_RE.finditer(window):
             end_raw = m.group("end").strip()
+            start_raw = m.group("start").strip()
             if _PRESENT_END_RE.match(end_raw) or end_raw.lower() in {
                 "present",
                 "current",
@@ -311,14 +334,64 @@ def _repair_invented_heute(
                 "bis heute",
             }:
                 continue
-            repaired = _norm_month_year(end_raw)
-            if repaired:
+            if _norm_month_year(start_raw) != start_norm:
+                continue
+            candidate = _norm_month_year(end_raw)
+            if candidate and candidate != "heute":
+                repaired = candidate
                 break
         if repaired:
             out.append({**e, "end_date": repaired})
         else:
             out.append(e)
     return out
+
+
+_EDU_SECTION_HEADING_RE = re.compile(
+    r"(?im)^(?:#{1,6}\s*)?(?:Ausbildung|Education|Studium|Schulbildung)\s*$"
+)
+
+
+def _enrich_education_from_text(
+    edu: list[dict[str, str]], text: str
+) -> list[dict[str, str]]:
+    """When the model left education empty, take lines under Ausbildung/Education.
+
+    General section recovery only — no document-specific rules. Does not run
+    when the model already returned education entries.
+    """
+    if edu or not text:
+        return edu
+    lines = text.splitlines()
+    out: list[dict[str, str]] = []
+    i = 0
+    while i < len(lines):
+        if not _EDU_SECTION_HEADING_RE.match(lines[i].strip()):
+            i += 1
+            continue
+        i += 1
+        while i < len(lines):
+            stripped = lines[i].strip()
+            if not stripped:
+                i += 1
+                continue
+            if _EDU_SECTION_HEADING_RE.match(stripped) or re.match(
+                r"^#{1,6}\s+\S+", stripped
+            ):
+                break
+            # Skip lone date lines; keep the educational outcome as printed.
+            if not re.match(r"^[\d./\-\s–—]+$", stripped):
+                out.append(
+                    {
+                        "institution": "",
+                        "qualification": stripped,
+                        "start_date": "",
+                        "end_date": "",
+                    }
+                )
+            i += 1
+        break
+    return out if out else edu
 
 
 def _split_street_house(street: str, house: str) -> tuple[str, str]:
@@ -706,6 +779,8 @@ def _llm_extract(text: str) -> dict[str, Any]:
                     "(e.g. Célina, Mikołaj). "
                     "employment.position is the job title only — never duty bullets. "
                     "When a job has no end date / is current, set end_date to 'heute'. "
+                    "Put Ausbildung, degrees, BTEC and school outcomes into education; "
+                    "short certificates into certificates. "
                     "Keep incomplete education outcomes in qualification "
                     "(Studium abgebrochen, Schule ohne Abschluss)."
                 ),
@@ -762,8 +837,10 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         )
     work = _fix_employment_pipe(work)
     work = _merge_split_employment(work)
-    # Note: auto-replacing LLM ``heute`` from nearby dated ranges over-corrected
-    # true current jobs (Round5: 5× expected heute → wrong MM/YYYY). Left disabled.
+    # Narrow same-block repair: only when start_date matches a dated range in
+    # the job block (avoids Round5 neighbour-job over-correction).
+    if source_text:
+        work = _repair_invented_heute(work, source_text)
     edu = []
     for e in data.get("education") or []:
         if not isinstance(e, dict):
@@ -778,12 +855,14 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         ):
             # LLM sometimes invents heute for incomplete education.
             end_norm = "ohne Abschluss"
-        elif _PRESENT_END_RE.match(end_raw) or (
-            end_raw and "heute" in end_raw.lower()
+        elif end_raw and (
+            _PRESENT_END_RE.match(end_raw) or "heute" in end_raw.lower()
         ):
             end_norm = "heute"
-        else:
+        elif end_raw:
             end_norm = _norm_month_year(end_raw)
+        else:
+            end_norm = ""
         edu.append(
             {
                 "institution": str(e.get("institution") or ""),
@@ -792,6 +871,8 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
                 "end_date": end_norm,
             }
         )
+    if source_text:
+        edu = _enrich_education_from_text(edu, source_text)
     # Licences: reuse DET helper only for class-code normalization (no DET import path).
     from core.cv_parser import normalize_driving_license
 

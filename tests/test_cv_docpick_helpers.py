@@ -129,6 +129,54 @@ def test_merge_partial_license_from_fuehrerschein_line() -> None:
     assert "C1" in parsed["driving_license"]
 
 
+def test_present_end_re_does_not_match_empty() -> None:
+    from core.cv_docpick_import import _PRESENT_END_RE
+
+    assert _PRESENT_END_RE.match("") is None
+    assert _PRESENT_END_RE.match("heute")
+    assert _norm_period_end("") == ""
+
+
+def test_education_null_end_stays_empty_not_heute() -> None:
+    parsed = suggestion_to_parsed(
+        {
+            "name": {"first_name": "A", "last_name": "B"},
+            "email": "a@example.com",
+            "employment": [],
+            "education": [
+                {
+                    "institution": "Berufsschule",
+                    "qualification": "Ausbildung X",
+                    "start_date": None,
+                    "end_date": None,
+                }
+            ],
+            "skills": [],
+            "software": [],
+            "certificates": [],
+            "languages": [],
+        }
+    )
+    assert parsed["education"][0]["end_date"] == ""
+
+
+def test_enrich_education_from_ausbildung_section() -> None:
+    from core.cv_docpick_import import _enrich_education_from_text
+
+    text = (
+        "## Berufserfahrung\n\n## Koch | Restaurant\n\n03/2017 - 08/2024\n\n"
+        "## Ausbildung\n\nAusbildung Koch, BBS Trier\n\n## Sprachen\n\nDeutsch\n"
+    )
+    filled = _enrich_education_from_text([], text)
+    assert len(filled) == 1
+    assert filled[0]["qualification"] == "Ausbildung Koch, BBS Trier"
+    # Do not overwrite non-empty LLM education.
+    assert _enrich_education_from_text(
+        [{"qualification": "keep", "institution": "", "start_date": "", "end_date": ""}],
+        text,
+    )[0]["qualification"] == "keep"
+
+
 def test_enrich_dob_and_repair_heute_from_text() -> None:
     from core.cv_docpick_import import _enrich_dob_from_text, _repair_invented_heute
 
@@ -150,6 +198,79 @@ def test_enrich_dob_and_repair_heute_from_text() -> None:
         "02/2019 - 08/2021 Deichbauer | Nordlicht Manufaktur Materialdisposition\n",
     )
     assert fixed[0]["end_date"] == "08/2021"
+
+
+def test_repair_heute_requires_matching_start_same_block() -> None:
+    from core.cv_docpick_import import _repair_invented_heute
+
+    # True current job — neighbour has a dated end; must NOT steal it.
+    text = (
+        "## Hotelfachfrau | Dreiflüssestadt Hotel\n\n"
+        "2017-08 - heute Rezeption\n\n"
+        "## Aushilfe | Café Altstadt\n\n"
+        "2015-01 - 2016-12 Service\n"
+    )
+    kept = _repair_invented_heute(
+        [
+            {
+                "title": "Hotelfachfrau",
+                "company": "Dreiflüssestadt Hotel",
+                "start_date": "08/2017",
+                "end_date": "heute",
+                "responsibilities": [],
+            }
+        ],
+        text,
+    )
+    assert kept[0]["end_date"] == "heute"
+
+    # Invented heute with matching dated end in same block → repair.
+    dated = (
+        "## Koch | Restaurant Moselufer\n\n"
+        "03/2017 - 08/2024\n\nÀ-la-carte-Service\n\n"
+        "## Ausbildung\n\nAusbildung Koch\n"
+    )
+    fixed = _repair_invented_heute(
+        [
+            {
+                "title": "Koch",
+                "company": "Restaurant Moselufer",
+                "start_date": "03/2017",
+                "end_date": "heute",
+                "responsibilities": [],
+            }
+        ],
+        dated,
+    )
+    assert fixed[0]["end_date"] == "08/2024"
+
+
+def test_suggestion_repair_heute_via_source_text() -> None:
+    parsed = suggestion_to_parsed(
+        {
+            "name": {"first_name": "David", "last_name": "Wolf"},
+            "email": "d@example.com",
+            "employment": [
+                {
+                    "company": "Restaurant Moselufer",
+                    "position": "Koch",
+                    "start_date": "03/2017",
+                    "end_date": "heute",
+                }
+            ],
+            "education": [],
+            "skills": [],
+            "software": [],
+            "certificates": [],
+            "languages": [],
+        },
+        source_text=(
+            "## Koch | Restaurant Moselufer\n\n03/2017 - 08/2024\n\n"
+            "## Ausbildung\n\nAusbildung Koch, BBS Trier\n"
+        ),
+    )
+    assert parsed["work_experience"][0]["end_date"] == "08/2024"
+    assert parsed["education"][0]["qualification"] == "Ausbildung Koch, BBS Trier"
 
 
 def test_suggestion_maps_current_job_end_date() -> None:
