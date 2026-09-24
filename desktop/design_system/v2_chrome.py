@@ -19,6 +19,8 @@ from desktop.design_system.icons import status_glyph
 from desktop.design_system.polish import (
     apply_button_icon,
     make_close_button,
+    polish_card,
+    polish_chip,
     polish_interactive,
 )
 
@@ -77,6 +79,7 @@ class StatusChip(QLabel):
     ) -> None:
         super().__init__(parent)
         self.set_status(text, kind=kind)
+        polish_chip(self)
 
     def set_status(self, text: str, *, kind: str = "info") -> None:
         glyph_kind = {
@@ -132,6 +135,7 @@ class KpiCard(QFrame):
         layout.addWidget(self.hint_label)
         set_accessible_name(self, f"{label}: {value}")
         self._clickable = False
+        polish_card(self)
 
     def set_clickable(self, clickable: bool, *, tooltip: str = "") -> None:
         """Only cards that actually navigate get the pointer/hover/focus affordance."""
@@ -198,6 +202,7 @@ class ContentCard(QFrame):
         self._body = QVBoxLayout(self)
         self._body.setContentsMargins(16, 16, 16, 16)
         self._body.setSpacing(12)
+        polish_card(self)
 
     def body(self) -> QVBoxLayout:
         return self._body
@@ -274,6 +279,7 @@ class TagChip(QLabel):
         }
         self.setObjectName(mapping.get(kind, "BadgeMuted"))
         set_accessible_name(self, text)
+        polish_chip(self)
 
 
 class DataItem(QWidget):
@@ -330,6 +336,7 @@ class ProfileSectionCard(QFrame):
         self._body.setSpacing(12)
         root.addLayout(self._body)
         set_accessible_name(self, title)
+        polish_card(self)
 
     def body(self) -> QVBoxLayout:
         return self._body

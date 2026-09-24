@@ -21,7 +21,7 @@ from desktop.design_system.polish import (
     polish_card,
     polish_interactive,
 )
-from desktop.design_system.v2_chrome import ContentCard, KpiCard, PageHeader
+from desktop.design_system.v2_chrome import ContentCard, KpiCard, PageHeader, TagChip
 from desktop.i18n import i18n, tr, tr_n
 from desktop.services import ConfigService
 from desktop.util.human_time import format_human_datetime
@@ -151,8 +151,7 @@ class DashboardPage(QWidget):
         self.next_run_caption.setObjectName("KkHint")
         self.next_run_label = QLabel("—")
         self.next_run_label.setObjectName("NextActionTitle")
-        self.mode_chip = QLabel()
-        self.mode_chip.setObjectName("BadgeMuted")
+        self.mode_chip = TagChip("", kind="neutral")
         next_body.addWidget(self.next_run_caption)
         next_body.addWidget(self.next_run_label)
         next_body.addWidget(self.mode_chip, alignment=Qt.AlignmentFlag.AlignLeft)

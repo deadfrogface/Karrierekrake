@@ -8,6 +8,10 @@ alive without changing the color scheme.
 
 from __future__ import annotations
 
+import os
+import shutil
+import subprocess
+import sys
 from typing import Literal
 
 from PySide6.QtCore import (
@@ -16,12 +20,13 @@ from PySide6.QtCore import (
     QEvent,
     QObject,
     QPropertyAnimation,
-    Qt,
     QSize,
+    Qt,
 )
 from PySide6.QtGui import QColor, QCursor, QIcon, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
+    QApplication,
     QGraphicsDropShadowEffect,
     QHBoxLayout,
     QPushButton,
@@ -153,6 +158,76 @@ def apply_button_icon(
     button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
 
+_SYSTEM_REDUCED_MOTION: bool | None = None
+
+
+def _env_flag(name: str) -> bool | None:
+    raw = os.environ.get(name, "").strip().lower()
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    return None
+
+
+def _detect_system_reduced_motion() -> bool:
+    """Best-effort OS setting. Offscreen runs skip the probe (CI / headless)."""
+    if os.environ.get("QT_QPA_PLATFORM", "").strip().lower() == "offscreen":
+        return False
+    if sys.platform == "win32":
+        try:
+            import ctypes
+
+            # SPI_GETCLIENTAREAANIMATION — 0 when the user turns animations off.
+            enabled = ctypes.c_bool()
+            ok = ctypes.windll.user32.SystemParametersInfoW(0x1042, 0, ctypes.byref(enabled), 0)
+            if ok:
+                return not bool(enabled.value)
+        except (OSError, AttributeError, ValueError):
+            return False
+        return False
+    if shutil.which("gsettings") is None:
+        return False
+    try:
+        proc = subprocess.run(
+            ["gsettings", "get", "org.gnome.desktop.interface", "enable-animations"],
+            capture_output=True,
+            text=True,
+            timeout=0.3,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    if proc.returncode != 0:
+        return False
+    return proc.stdout.strip().lower() == "false"
+
+
+def prefers_reduced_motion() -> bool:
+    """True when motion should snap instead of animate. Shadows stay on.
+
+    ``KK_REDUCED_MOTION`` and ``PREFERS_REDUCED_MOTION`` override the OS.
+    """
+    override = _env_flag("KK_REDUCED_MOTION")
+    if override is None:
+        override = _env_flag("PREFERS_REDUCED_MOTION")
+    if override is not None:
+        return override
+    global _SYSTEM_REDUCED_MOTION
+    if _SYSTEM_REDUCED_MOTION is None:
+        _SYSTEM_REDUCED_MOTION = _detect_system_reduced_motion()
+    return _SYSTEM_REDUCED_MOTION
+
+
+def _polished_effect(widget: QWidget) -> QGraphicsDropShadowEffect | None:
+    if widget.property("_kk_polish") is None:
+        return None
+    effect = widget.graphicsEffect()
+    if isinstance(effect, QGraphicsDropShadowEffect):
+        return effect
+    return None
+
+
 def soft_shadow(
     widget: QWidget,
     *,
@@ -170,45 +245,138 @@ def soft_shadow(
 
 
 class _InteractivePolish(QObject):
-    """Hover lift + active press via shadow / geometry micro-animation (~200ms)."""
+    """Hover darken + lift via the drop shadow only (no geometry changes).
 
-    def __init__(self, target: QWidget, shadow: QGraphicsDropShadowEffect) -> None:
+    Animations are created on first use and last ~180ms. They are skipped when
+    reduced motion is on, and when an ancestor already has a drop shadow —
+    animating blur inside that ancestor would reblur the whole card every frame.
+    """
+
+    def __init__(
+        self,
+        target: QWidget,
+        shadow: QGraphicsDropShadowEffect,
+        *,
+        animate: bool,
+        press: bool,
+        hover_blur: float,
+        hover_y: float,
+        hover_alpha: int,
+    ) -> None:
         super().__init__(target)
         self._target = target
         self._shadow = shadow
-        self._base_blur = shadow.blurRadius()
-        self._base_y = shadow.yOffset()
+        self._base_blur = float(shadow.blurRadius())
+        self._base_y = float(shadow.yOffset())
+        self._base_alpha = int(shadow.color().alpha())
+        self._allow_animation = bool(animate)
+        self._press = press
+        self._hover_blur = hover_blur
+        self._hover_y = hover_y
+        self._hover_alpha = hover_alpha
         self._hover = False
         self._pressed = False
-        self._blur_anim = QPropertyAnimation(shadow, b"blurRadius", self)
-        self._blur_anim.setDuration(180)
-        self._blur_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
-        self._y_anim = QPropertyAnimation(shadow, b"yOffset", self)
-        self._y_anim.setDuration(180)
-        self._y_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+        self._blur_anim: QPropertyAnimation | None = None
+        self._y_anim: QPropertyAnimation | None = None
+        self._color_anim: QPropertyAnimation | None = None
         target.installEventFilter(self)
 
-    def _animate_shadow(self, blur: float, y: float) -> None:
-        self._blur_anim.stop()
-        self._y_anim.stop()
+    def motions_enabled(self) -> bool:
+        """True when this control may run a short shadow animation."""
+        return self._should_animate()
+
+    def _should_animate(self) -> bool:
+        if not self._allow_animation:
+            return False
+        parent = self._target.parentWidget()
+        while parent is not None:
+            if isinstance(parent.graphicsEffect(), QGraphicsDropShadowEffect):
+                return False
+            parent = parent.parentWidget()
+        return True
+
+    def _ensure_anims(self) -> None:
+        if self._blur_anim is not None:
+            return
+        self._blur_anim = QPropertyAnimation(self._shadow, b"blurRadius", self)
+        self._blur_anim.setDuration(180)
+        self._blur_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+        self._y_anim = QPropertyAnimation(self._shadow, b"yOffset", self)
+        self._y_anim.setDuration(180)
+        self._y_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+        self._color_anim = QPropertyAnimation(self._shadow, b"color", self)
+        self._color_anim.setDuration(180)
+        self._color_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+    def _stop_anims(self) -> None:
+        for anim in (self._blur_anim, self._y_anim, self._color_anim):
+            if anim is not None:
+                anim.stop()
+
+    def _apply_immediate(self, blur: float, y: float, alpha: int) -> None:
+        self._shadow.setBlurRadius(blur)
+        self._shadow.setYOffset(y)
+        color = QColor(self._shadow.color())
+        color.setAlpha(int(alpha))
+        self._shadow.setColor(color)
+
+    def _targets(self) -> tuple[float, float, int]:
+        # Shadow only — layout-managed widgets cannot safely translateY.
+        if self._pressed and self._press:
+            return (
+                self._base_blur * 0.55,
+                max(1.0, self._base_y * 0.35),
+                self._base_alpha,
+            )
+        if self._hover:
+            return (
+                self._base_blur + self._hover_blur,
+                self._base_y + self._hover_y,
+                min(255, self._base_alpha + self._hover_alpha),
+            )
+        return (self._base_blur, self._base_y, self._base_alpha)
+
+    def _animate_shadow(self, blur: float, y: float, alpha: int) -> None:
+        if not self._should_animate():
+            self._stop_anims()
+            self._apply_immediate(blur, y, alpha)
+            return
+        self._ensure_anims()
+        assert self._blur_anim is not None
+        assert self._y_anim is not None
+        assert self._color_anim is not None
+        self._stop_anims()
         self._blur_anim.setStartValue(self._shadow.blurRadius())
         self._blur_anim.setEndValue(blur)
         self._y_anim.setStartValue(self._shadow.yOffset())
         self._y_anim.setEndValue(y)
+        end_color = QColor(self._shadow.color())
+        end_color.setAlpha(int(alpha))
+        self._color_anim.setStartValue(QColor(self._shadow.color()))
+        self._color_anim.setEndValue(end_color)
         self._blur_anim.start()
         self._y_anim.start()
+        self._color_anim.start()
 
     def _apply_state(self) -> None:
-        # Only animate shadow — layout-managed widgets cannot safely translateY.
-        if self._pressed:
-            self._animate_shadow(self._base_blur * 0.55, max(1.0, self._base_y * 0.35))
-            return
-        if self._hover:
-            self._animate_shadow(self._base_blur + 8.0, self._base_y + 3.0)
-            return
-        self._animate_shadow(self._base_blur, self._base_y)
+        blur, y, alpha = self._targets()
+        self._animate_shadow(blur, y, alpha)
 
-    def eventFilter(self, watched: QObject, event: QEvent) -> bool:  # noqa: N802
+    def _pointer_inside_descendant(self) -> bool:
+        """Leave fired because the pointer moved onto a child, not off the control."""
+        app = QApplication.instance()
+        if app is None:
+            return False
+        widget = app.widgetAt(QCursor.pos())
+        if widget is None or widget is self._target:
+            return False
+        while widget is not None:
+            if widget is self._target:
+                return True
+            widget = widget.parentWidget()
+        return False
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if watched is not self._target:
             return False
         et = event.type()
@@ -216,10 +384,12 @@ class _InteractivePolish(QObject):
             self._hover = True
             self._apply_state()
         elif et == QEvent.Type.Leave:
+            if self._pointer_inside_descendant():
+                return False
             self._hover = False
             self._pressed = False
             self._apply_state()
-        elif et == QEvent.Type.MouseButtonPress:
+        elif et == QEvent.Type.MouseButtonPress and self._press:
             self._pressed = True
             self._apply_state()
         elif et in {QEvent.Type.MouseButtonRelease, QEvent.Type.MouseButtonDblClick}:
@@ -234,18 +404,69 @@ def polish_interactive(
     blur: float = 16.0,
     y_offset: float = 4.0,
     alpha: int = 38,
+    cursor: bool = True,
+    hover_blur: float = 8.0,
+    hover_y: float = 3.0,
+    hover_alpha: int = 28,
+    press: bool = True,
 ) -> QGraphicsDropShadowEffect:
-    """Attach soft shadow + hover/press micro-interactions."""
+    """Attach soft shadow + hover/press micro-interactions.
+
+    Hover darkens (higher shadow alpha) and lifts (offset / blur). Reduced
+    motion snaps to that state with no ``QPropertyAnimation``.
+    """
+    existing = _polished_effect(widget)
+    if existing is not None:
+        return existing
     shadow = soft_shadow(widget, blur=blur, y_offset=y_offset, alpha=alpha)
-    widget.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    if cursor:
+        widget.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     # Keep filter alive on the widget
-    widget.setProperty("_kk_polish", _InteractivePolish(widget, shadow))
+    widget.setProperty(
+        "_kk_polish",
+        _InteractivePolish(
+            widget,
+            shadow,
+            animate=not prefers_reduced_motion(),
+            press=press,
+            hover_blur=hover_blur,
+            hover_y=hover_y,
+            hover_alpha=hover_alpha,
+        ),
+    )
     return shadow
 
 
+def polish_chip(widget: QWidget) -> QGraphicsDropShadowEffect:
+    """Light shadow + hover darken/lift for pills and badges.
+
+    No pointing-hand cursor — most chips are not buttons. Blur stays small so
+    a row of chips does not dominate the raster cost.
+    """
+    return polish_interactive(
+        widget,
+        blur=8.0,
+        y_offset=2.0,
+        alpha=34,
+        cursor=False,
+        hover_blur=4.0,
+        hover_y=1.5,
+        hover_alpha=26,
+    )
+
+
 def polish_card(widget: QWidget) -> QGraphicsDropShadowEffect:
-    """Softer static shadow for cards / surfaces."""
-    return soft_shadow(widget, blur=22.0, y_offset=6.0, alpha=28)
+    """Softer static shadow for cards / surfaces.
+
+    No hover animation: a card shadow already composites every child, and
+    animating it (or a chip inside it) every frame reblurs the whole surface.
+    """
+    existing = _polished_effect(widget)
+    if existing is not None:
+        return existing
+    effect = soft_shadow(widget, blur=22.0, y_offset=6.0, alpha=28)
+    widget.setProperty("_kk_polish", "card")
+    return effect
 
 
 def footer_actions_layout(*buttons: QWidget, spacing: int = 10) -> QHBoxLayout:
