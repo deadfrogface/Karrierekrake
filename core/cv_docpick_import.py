@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import re
+import time
 from pathlib import Path
 from typing import Any
 
@@ -613,6 +614,38 @@ CV_IMPORT_PEAK_RSS_MB_MAX = float(
     os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_MB_MAX", "3300")
 )
 CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_MB_MAX / 1024.0
+# Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
+CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "180"))
+
+# Frozen CV↔profile/matching field contract (parsed shape from suggestion_to_parsed).
+# Bump only with an explicit Diff + justification — no silent schema drift.
+PARSED_CV_CONTRACT_VERSION = 1
+PARSED_CV_TOP_LEVEL_KEYS: frozenset[str] = frozenset(
+    {
+        "personal",
+        "emails",
+        "phones",
+        "languages",
+        "driving_license",
+        "education",
+        "work_experience",
+        "skills",
+        "software",
+        "certificates",
+    }
+)
+PARSED_CV_PERSONAL_KEYS: frozenset[str] = frozenset(
+    {
+        "first_name",
+        "last_name",
+        "street",
+        "house_number",
+        "postal_code",
+        "city",
+        "country",
+        "date_of_birth",
+    }
+)
 
 
 def _schema_json_for_prompt() -> str:
@@ -692,14 +725,14 @@ def extract_cv_text(path: Path) -> str:
         text = _docling_converter.convert(str(path)).document.export_to_markdown() or ""
     except Exception as exc:  # noqa: BLE001
         raise CvImportError(
-            "pdf_extract_failed",
-            f"Dokumenttext konnte nicht gelesen werden ({type(exc).__name__}: {exc}). "
-            "Bitte Text manuell prüfen oder anderes PDF versuchen.",
+            "unreadable_cv",
+            f"CV unlesbar / beschädigt ({type(exc).__name__}: {exc}). "
+            "Bitte anderes PDF versuchen oder Felder manuell eintragen.",
         ) from exc
     if not text.strip():
         raise CvImportError(
-            "pdf_empty",
-            "Kein Text aus dem Dokument extrahiert. Scans ohne OCR-Inhalt oder leere Datei.",
+            "empty_cv",
+            "Leerer CV: kein Text extrahiert (leere Datei, Scan ohne Text, oder leeres Dokument).",
         )
     # Bound cache size (process-local); drop oldest-ish by clearing when large.
     if len(_docling_text_cache) >= 32:
@@ -762,7 +795,7 @@ def _llm_extract(text: str) -> dict[str, Any]:
         model=DEFAULT_MODEL,
         temperature=0.0,
         max_tokens=_LLM_MAX_TOKENS,
-        timeout=300,
+        timeout=max(5.0, min(300.0, CV_IMPORT_TIMEOUT_S)),
     )
     if not provider.is_available():
         raise CvImportError(
@@ -964,6 +997,65 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
     return has_name or has_contact
 
 
+def _self_rss_mb() -> float:
+    import resource
+
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
+
+
+def _llama_server_rss_mb() -> float:
+    """Sum VmRSS of local llama.cpp server processes (0 if none)."""
+    total = 0.0
+    try:
+        proc = Path("/proc")
+        for entry in proc.iterdir():
+            if not entry.name.isdigit():
+                continue
+            try:
+                cmdline = (entry / "cmdline").read_bytes().decode("utf-8", "ignore")
+            except OSError:
+                continue
+            if "llama_cpp.server" not in cmdline and "llama-server" not in cmdline:
+                continue
+            try:
+                for line in (entry / "status").read_text(encoding="utf-8").splitlines():
+                    if line.startswith("VmRSS:"):
+                        total += float(line.split()[1]) / 1024.0
+                        break
+            except OSError:
+                continue
+    except OSError:
+        return total
+    return total
+
+
+def cv_path_peak_rss_mb() -> float:
+    """Honest CV-path footprint: this process + local LLM server."""
+    return _self_rss_mb() + _llama_server_rss_mb()
+
+
+def _enforce_peak_rss(*, stage: str) -> None:
+    """Hard fail when CV-path Peak RSS exceeds 3.3 GB — no silent continue."""
+    rss = cv_path_peak_rss_mb()
+    if rss > CV_IMPORT_PEAK_RSS_MB_MAX:
+        raise CvImportError(
+            "peak_rss_exceeded",
+            f"Peak RSS {rss:.0f} MB über Hart-Limit {CV_IMPORT_PEAK_RSS_MB_MAX:.0f} MB "
+            f"(3,3 GB) bei Stufe '{stage}'. Import abgebrochen — kein Weiterlaufen "
+            f"über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
+        )
+
+
+def _enforce_timeout(t0: float, *, stage: str) -> None:
+    elapsed = time.monotonic() - t0
+    if elapsed > CV_IMPORT_TIMEOUT_S:
+        raise CvImportError(
+            "timeout",
+            f"CV-Parser-Timeout nach {elapsed:.0f}s (Limit {CV_IMPORT_TIMEOUT_S:.0f}s) "
+            f"bei Stufe '{stage}'. Kein stilles Hängen — bitte manuell fortsetzen.",
+        )
+
+
 def import_cv_docpick(
     path: Path,
     *,
@@ -974,12 +1066,17 @@ def import_cv_docpick(
 
     Raises ``CvImportError`` on failure. Never calls DET ``parse_cv_text``.
 
+    Explicit fail-cases (hard, no silent hang / no UI freeze forever):
+      - ``empty_cv`` — zero-byte or no extractable text
+      - ``unreadable_cv`` — corrupt / unreadable document
+      - ``timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
+      - ``peak_rss_exceeded`` — CV-path Peak RSS over 3.3 GB
+
     Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI
     honest about stages and allow cancel between Docling and the LLM call.
     """
     path = Path(path)
-    if not path.is_file():
-        raise CvImportError("file_missing", f"Datei nicht gefunden: {path}")
+    t0 = time.monotonic()
 
     def _cancelled() -> bool:
         return bool(should_cancel and should_cancel())
@@ -988,7 +1085,37 @@ def import_cv_docpick(
         if progress:
             progress(msg)
 
-    # Fail-fast: do not spend Docling time when the local model is down.
+    if not path.is_file():
+        raise CvImportError("file_missing", f"Datei nicht gefunden: {path}")
+    try:
+        size = path.stat().st_size
+    except OSError as exc:
+        raise CvImportError(
+            "unreadable_cv",
+            f"CV-Datei nicht lesbar ({type(exc).__name__}: {exc}).",
+        ) from exc
+    if size <= 0:
+        raise CvImportError("empty_cv", "Leerer CV: Datei hat 0 Bytes.")
+
+    # Cheap magic check before Docling/LLM — corrupt garbage fails fast.
+    try:
+        head = path.read_bytes()[:8]
+    except OSError as exc:
+        raise CvImportError(
+            "unreadable_cv",
+            f"CV-Datei nicht lesbar ({type(exc).__name__}: {exc}).",
+        ) from exc
+    if not (head.startswith(b"%PDF") or head.startswith(b"PK")):
+        raise CvImportError(
+            "unreadable_cv",
+            "CV unlesbar / kein erkennbares PDF- oder DOCX-Dokument.",
+        )
+
+    if _cancelled():
+        raise CvImportError("cancelled", "Import abgebrochen.")
+
+    # Fail-fast: do not spend Docling time when the local model is down —
+    # except empty/corrupt already rejected above.
     try:
         from docpick.llm.vllm_provider import VLLMProvider
     except ImportError as exc:
@@ -997,12 +1124,13 @@ def import_cv_docpick(
             "Docpick ist nicht installiert. Bitte Abhängigkeit 'docpick' installieren.",
         ) from exc
     _progress("llm_preflight")
+    _enforce_timeout(t0, stage="llm_preflight")
     preflight = VLLMProvider(
         base_url=DEFAULT_LLM_BASE,
         model=DEFAULT_MODEL,
         temperature=0.0,
         max_tokens=8,
-        timeout=30,
+        timeout=min(30.0, CV_IMPORT_TIMEOUT_S),
     )
     if not preflight.is_available():
         raise CvImportError(
@@ -1011,20 +1139,34 @@ def import_cv_docpick(
             "Bitte llama.cpp-Server mit Qwen3.5-4B starten oder Einstellungen prüfen. "
             "Kein automatischer Wechsel auf den alten DET-Parser.",
         )
+    # Peak gate before expensive work — hard fail if already over 3.3 GB.
+    _enforce_peak_rss(stage="preflight")
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
 
     _progress("pdf")
+    _enforce_timeout(t0, stage="pdf")
     text = extract_cv_text(path)
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
+    _enforce_peak_rss(stage="after_pdf")
+    _enforce_timeout(t0, stage="before_model")
 
     _progress("model")
     raw = _llm_extract(text)
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
+    _enforce_timeout(t0, stage="after_model")
+    _enforce_peak_rss(stage="after_model")
 
     parsed = suggestion_to_parsed(raw, source_text=text)
+    # Contract guard — top-level keys must remain stable for matching/profile.
+    missing = PARSED_CV_TOP_LEVEL_KEYS - frozenset(parsed)
+    if missing:
+        raise CvImportError(
+            "contract_drift",
+            f"Parsed-CV-Contract verletzt — fehlende Keys: {sorted(missing)}",
+        )
     if not _core_fields_present(parsed):
         raise CvImportError(
             "unreliable_extract",
@@ -1045,11 +1187,14 @@ def import_cv_docpick(
         (parsed.get("personal") or {}).get("first_name")
         and (parsed.get("emails") or parsed.get("phones"))
     )
+    parsed["parsed_cv_contract_version"] = PARSED_CV_CONTRACT_VERSION
+    parsed["peak_rss_mb_at_end"] = round(cv_path_peak_rss_mb(), 1)
     logger.info(
-        "CV import Docpick: path=%s chars=%d name=%s/%s",
+        "CV import Docpick: path=%s chars=%d name=%s/%s peak_rss_mb=%.1f",
         path.name,
         len(text),
         (parsed.get("personal") or {}).get("first_name"),
         (parsed.get("personal") or {}).get("last_name"),
+        parsed["peak_rss_mb_at_end"],
     )
     return parsed

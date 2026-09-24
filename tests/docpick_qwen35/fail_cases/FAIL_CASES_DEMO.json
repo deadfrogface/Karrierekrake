@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-09-24T23:09:03.324652+00:00",
+  "all_pass": true,
+  "cases": [
+    {
+      "case": "empty_cv",
+      "raised": true,
+      "code": "empty_cv",
+      "message": "empty_cv: Leerer CV: Datei hat 0 Bytes.",
+      "wall_s": 0.0,
+      "pass": true,
+      "exception_type": "CvImportError"
+    },
+    {
+      "case": "unreadable_cv",
+      "raised": true,
+      "code": "unreadable_cv",
+      "message": "unreadable_cv: CV unlesbar / kein erkennbares PDF- oder DOCX-Dokument.",
+      "wall_s": 0.0,
+      "pass": true,
+      "exception_type": "CvImportError"
+    },
+    {
+      "case": "timeout",
+      "raised": true,
+      "code": "timeout",
+      "message": "timeout: CV-Parser-Timeout nach 999s (Limit 180s) bei Stufe 'demo'. Kein stilles Hängen — bitte manuell fortsetzen.",
+      "wall_s": 0.0,
+      "pass": true,
+      "exception_type": "CvImportError"
+    },
+    {
+      "case": "peak_rss_exceeded",
+      "raised": true,
+      "code": "peak_rss_exceeded",
+      "message": "peak_rss_exceeded: Peak RSS 5560 MB über Hart-Limit 3300 MB (3,3 GB) bei Stufe 'demo'. Import abgebrochen — kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
+      "wall_s": 0.002,
+      "pass": true,
+      "exception_type": "CvImportError",
+      "measured_cv_path_rss_mb": 5560.1,
+      "gate_mb": 3300.0
+    }
+  ],
+  "note": "Fail-cases must raise CvImportError with stable codes; no silent hang / no infinite UI wait."
+}
