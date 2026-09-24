@@ -191,7 +191,176 @@ def _norm_period_end(s: str | None) -> str:
     low = t.lower()
     if "heute" in low or low in {"present", "current", "ongoing"}:
         return "heute"
+    return _norm_month_year(t)
+
+
+def _norm_month_year(s: str) -> str:
+    """Normalize ``YYYY-MM`` / ``YYYY/MM`` → ``MM/YYYY`` (scorer month form)."""
+    t = (s or "").strip()
+    m = re.match(r"^(\d{4})[-/.](\d{1,2})$", t)
+    if m:
+        return f"{int(m.group(2)):02d}/{m.group(1)}"
+    m = re.match(r"^(\d{1,2})[-/.](\d{4})$", t)
+    if m:
+        return f"{int(m.group(1)):02d}/{m.group(2)}"
     return t
+
+
+_STREET_HOUSE_RE = re.compile(
+    r"^(?P<street>.+?)\s+(?P<house>\d+[a-zA-Z]?(?:\s*[-/]\s*\d+[a-zA-Z]?)?)$"
+)
+_SOFTWARE_LEVEL_RE = re.compile(
+    r"\s*[-–—]\s*(?:"
+    r"grundlagen|gute\s+kenntnisse|sehr\s+gut|kenntnisse|"
+    r"basics?|beginner|intermediate|advanced|expert|"
+    r"basic\s+knowledge|good\s+knowledge|proficient|fluent"
+    r")\s*$",
+    re.IGNORECASE,
+)
+_PIPE_SPLIT_RE = re.compile(r"\s*[|｜]\s*")
+
+
+def _split_street_house(street: str, house: str) -> tuple[str, str]:
+    """If house is empty and street ends with a house number, split them."""
+    s = (street or "").strip()
+    h = (house or "").strip()
+    if h or not s:
+        return s, h
+    m = _STREET_HOUSE_RE.match(s)
+    if not m:
+        return s, h
+    return m.group("street").strip(), m.group("house").strip()
+
+
+def _strip_skill_level(label: str) -> str:
+    """Drop trailing proficiency tags (``Tool - Grundlagen`` → ``Tool``)."""
+    t = (label or "").strip()
+    if not t:
+        return ""
+    return _SOFTWARE_LEVEL_RE.sub("", t).strip() or t
+
+
+def _fix_employment_pipe(entries: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Recover ``Position | Company`` when the model jammed both into company."""
+    out: list[dict[str, str]] = []
+    for e in entries:
+        title = (e.get("title") or "").strip()
+        company = (e.get("company") or "").strip()
+        if "|" in company or "｜" in company:
+            parts = _PIPE_SPLIT_RE.split(company, maxsplit=1)
+            if len(parts) == 2 and parts[0] and parts[1]:
+                left, right = parts[0].strip(), parts[1].strip()
+                # Prefer left as job title when title empty or looks like a duty keyword
+                # already listed as a skill-like single token without spaces of company form.
+                if not title or (
+                    title
+                    and " " not in title
+                    and left
+                    and left.lower() != title.lower()
+                ):
+                    title, company = left, right
+                else:
+                    company = right
+        out.append({**e, "title": title, "company": company})
+    return out
+
+
+def _merge_split_employment(entries: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Merge adjacent rows when Docling tables split position and company."""
+    if len(entries) < 2:
+        return entries
+    merged: list[dict[str, str]] = []
+    i = 0
+    while i < len(entries):
+        cur = dict(entries[i])
+        if i + 1 < len(entries):
+            nxt = entries[i + 1]
+            cur_title = (cur.get("title") or "").strip()
+            cur_co = (cur.get("company") or "").strip()
+            nxt_title = (nxt.get("title") or "").strip()
+            nxt_co = (nxt.get("company") or "").strip()
+            if cur_title and not cur_co and nxt_co and not nxt_title:
+                cur["company"] = nxt_co
+                # Docling tables often emit: start|title then end|company
+                if not (cur.get("end_date") or "").strip() and (nxt.get("start_date") or "").strip():
+                    cur["end_date"] = nxt["start_date"]
+                elif not (cur.get("end_date") or "").strip() and (nxt.get("end_date") or "").strip():
+                    cur["end_date"] = nxt["end_date"]
+                merged.append(cur)
+                i += 2
+                continue
+        merged.append(cur)
+        i += 1
+    return merged
+
+
+def _enrich_address_from_text(pers: dict[str, str], text: str) -> dict[str, str]:
+    """Fill empty address fields from common DE/EN/CH header patterns in PDF text.
+
+    General patterns only — no document IDs or personal names.
+    """
+    if not text:
+        return pers
+    out = dict(pers)
+    has_any = any(
+        (out.get(k) or "").strip()
+        for k in ("street", "house_number", "postal_code", "city", "country")
+    )
+    if has_any:
+        # Still try street/house split below via caller
+        return out
+
+    head = "\n".join(text.splitlines()[:12])
+    # DE/AT: Street House | PLZ City | Country
+    m = re.search(
+        r"(?P<street>[\wÄÖÜäöüß.\-]+(?:\s+[\wÄÖÜäöüß.\-]+){0,3})"
+        r"\s+(?P<house>\d+[a-zA-Z]?)\s*[|·,]\s*"
+        r"(?P<plz>\d{4,5})\s+(?P<city>[\wÄÖÜäöüß.\-]+(?:\s+[\wÄÖÜäöüß.\-]+)?)"
+        r"(?:\s*[|·,]\s*(?P<country>[A-Za-zÄÖÜäöüß.\-]+))?",
+        head,
+    )
+    if m:
+        out["street"] = m.group("street").strip()
+        out["house_number"] = m.group("house").strip()
+        out["postal_code"] = m.group("plz").strip()
+        out["city"] = m.group("city").strip()
+        if m.group("country"):
+            out["country"] = m.group("country").strip()
+        return out
+
+    # UK: 42 Kingfisher Road · Manchester M1 2AB
+    m = re.search(
+        r"(?P<house>\d+[a-zA-Z]?)\s+(?P<street>[A-Za-z][A-Za-z\s]+?)"
+        r"\s*[·|,]\s*(?P<city>[A-Za-z][A-Za-z\s]+?)\s+"
+        r"(?P<pc>[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})\b",
+        head,
+    )
+    if m:
+        out["house_number"] = m.group("house").strip()
+        out["street"] = m.group("street").strip()
+        out["city"] = m.group("city").strip()
+        out["postal_code"] = re.sub(r"\s+", " ", m.group("pc").strip())
+        return out
+
+    # City | Country  OR  City | email@…
+    m = re.search(
+        r"(?P<city>[\wÄÖÜäöüßÉÈÊÀÂÔÛÇéèêàâôûç.\-]+)"
+        r"\s*[|·]\s*"
+        r"(?P<rest>[^\n]+)",
+        head,
+    )
+    if m:
+        city = m.group("city").strip()
+        rest = m.group("rest").strip()
+        # Skip if city looks like a section header
+        if city.lower() not in {"sprachen", "languages", "tools", "skills", "education"}:
+            out["city"] = city
+            # Country may sit before an email on the same line: "Schweiz · name@…"
+            country_cand = rest.split("·")[0].split(",")[0].strip()
+            if country_cand and "@" not in country_cand and len(country_cand.split()) <= 3:
+                out["country"] = country_cand
+            return out
+    return out
 
 
 def _norm_licence(s: str) -> str:
@@ -381,9 +550,14 @@ def _llm_extract(text: str) -> dict[str, Any]:
                 "content": (
                     "Extract CV fields as JSON only. No markdown. "
                     "null if missing; do not invent values. "
-                    "Preserve diacritics in names. "
+                    "Preserve diacritics in names and cities. "
+                    "Always fill address (street, house_number, postal_code, city, country) "
+                    "when present in header lines (incl. City|Country and UK house street · city postcode). "
+                    "Always fill software/Applications and skills/Core Skills lists. "
+                    "Strip proficiency tags from software names (keep tool name only). "
                     "employment.position = job title only (never duty bullets). "
-                    "Current job: end_date = 'heute'. "
+                    "When text has 'Title | Company', put Title in position and Company in company. "
+                    "Dates as MM/YYYY. Current job: end_date = 'heute'. "
                     "Incomplete education stays in qualification "
                     "(Studium abgebrochen / Schule ohne Abschluss)."
                 ),
@@ -413,7 +587,7 @@ def _llm_extract(text: str) -> dict[str, Any]:
     return data
 
 
-def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
+def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict[str, Any]:
     name = data.get("name") if isinstance(data.get("name"), dict) else {}
     addr = data.get("address") if isinstance(data.get("address"), dict) else {}
     langs = []
@@ -433,11 +607,13 @@ def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
             {
                 "title": str(e.get("position") or e.get("title") or ""),
                 "company": str(e.get("company") or ""),
-                "start_date": str(e.get("start_date") or ""),
+                "start_date": _norm_month_year(str(e.get("start_date") or "")),
                 "end_date": _norm_period_end(str(e.get("end_date") or "")),
                 "responsibilities": [],
             }
         )
+    work = _fix_employment_pipe(work)
+    work = _merge_split_employment(work)
     edu = []
     for e in data.get("education") or []:
         if not isinstance(e, dict):
@@ -450,11 +626,13 @@ def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
             end_raw and "heute" in end_raw.lower()
         ):
             end_norm = "heute"
+        else:
+            end_norm = _norm_month_year(end_raw)
         edu.append(
             {
                 "institution": str(e.get("institution") or ""),
                 "qualification": str(e.get("qualification") or ""),
-                "start_date": str(e.get("start_date") or ""),
+                "start_date": _norm_month_year(str(e.get("start_date") or "")),
                 "end_date": end_norm,
             }
         )
@@ -477,25 +655,40 @@ def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
                 first = derived[0]
             if not last.strip():
                 last = derived[1]
+    street = str(addr.get("street") or "")
+    house = str(addr.get("house_number") or "")
+    street, house = _split_street_house(street, house)
+    personal = {
+        "first_name": first,
+        "last_name": last,
+        "street": street,
+        "house_number": house,
+        "postal_code": str(addr.get("postal_code") or ""),
+        "city": str(addr.get("city") or ""),
+        "country": str(addr.get("country") or ""),
+        "date_of_birth": _norm_dob(str(data.get("date_of_birth") or "")),
+    }
+    if source_text:
+        personal = _enrich_address_from_text(personal, source_text)
+        personal["street"], personal["house_number"] = _split_street_house(
+            personal.get("street") or "", personal.get("house_number") or ""
+        )
     return {
-        "personal": {
-            "first_name": first,
-            "last_name": last,
-            "street": str(addr.get("street") or ""),
-            "house_number": str(addr.get("house_number") or ""),
-            "postal_code": str(addr.get("postal_code") or ""),
-            "city": str(addr.get("city") or ""),
-            "country": str(addr.get("country") or ""),
-            "date_of_birth": _norm_dob(str(data.get("date_of_birth") or "")),
-        },
+        "personal": personal,
         "emails": [email] if email else [],
         "phones": [str(data["phone"])] if data.get("phone") else [],
         "languages": langs,
         "driving_license": " ".join(p for p in lic_parts if p),
         "education": edu,
         "work_experience": work,
-        "skills": [str(x) for x in (data.get("skills") or [])],
-        "software": [str(x) for x in (data.get("software") or [])],
+        "skills": [
+            s for s in (_strip_skill_level(str(x)) for x in (data.get("skills") or [])) if s
+        ],
+        "software": [
+            s
+            for s in (_strip_skill_level(str(x)) for x in (data.get("software") or []))
+            if s
+        ],
         "certificates": certs,
     }
 
@@ -507,18 +700,67 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
     return has_name or has_contact
 
 
-def import_cv_docpick(path: Path) -> dict[str, Any]:
+def import_cv_docpick(
+    path: Path,
+    *,
+    progress: Any | None = None,
+    should_cancel: Any | None = None,
+) -> dict[str, Any]:
     """Productive CV import via Docling + Docpick + local Qwen3.5-4B.
 
     Raises ``CvImportError`` on failure. Never calls DET ``parse_cv_text``.
+
+    Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI
+    honest about stages and allow cancel between Docling and the LLM call.
     """
     path = Path(path)
     if not path.is_file():
         raise CvImportError("file_missing", f"Datei nicht gefunden: {path}")
 
+    def _cancelled() -> bool:
+        return bool(should_cancel and should_cancel())
+
+    def _progress(msg: str) -> None:
+        if progress:
+            progress(msg)
+
+    # Fail-fast: do not spend Docling time when the local model is down.
+    try:
+        from docpick.llm.vllm_provider import VLLMProvider
+    except ImportError as exc:
+        raise CvImportError(
+            "docpick_missing",
+            "Docpick ist nicht installiert. Bitte Abhängigkeit 'docpick' installieren.",
+        ) from exc
+    _progress("llm_preflight")
+    preflight = VLLMProvider(
+        base_url=DEFAULT_LLM_BASE,
+        model=DEFAULT_MODEL,
+        temperature=0.0,
+        max_tokens=8,
+        timeout=30,
+    )
+    if not preflight.is_available():
+        raise CvImportError(
+            "llm_unavailable",
+            f"Lokales CV-Modell nicht erreichbar unter {DEFAULT_LLM_BASE}. "
+            "Bitte llama.cpp-Server mit Qwen3.5-4B starten oder Einstellungen prüfen. "
+            "Kein automatischer Wechsel auf den alten DET-Parser.",
+        )
+    if _cancelled():
+        raise CvImportError("cancelled", "Import abgebrochen.")
+
+    _progress("pdf")
     text = extract_cv_text(path)
+    if _cancelled():
+        raise CvImportError("cancelled", "Import abgebrochen.")
+
+    _progress("model")
     raw = _llm_extract(text)
-    parsed = suggestion_to_parsed(raw)
+    if _cancelled():
+        raise CvImportError("cancelled", "Import abgebrochen.")
+
+    parsed = suggestion_to_parsed(raw, source_text=text)
     if not _core_fields_present(parsed):
         raise CvImportError(
             "unreliable_extract",

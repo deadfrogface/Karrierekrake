@@ -162,6 +162,11 @@ class CvImportDialog(QDialog):
         self.parsed = None
         self.incoming = None
         self.ok_btn.setEnabled(False)
+        QMessageBox.warning(
+            self,
+            tr("profile.cv"),
+            f"{tr('cv_import.read_error')}\n\n{message}",
+        )
 
     def _on_reject(self) -> None:
         if self._worker is not None:
