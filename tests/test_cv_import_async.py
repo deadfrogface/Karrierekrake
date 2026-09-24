@@ -1,0 +1,312 @@
+"""CV import must leave the UI thread and must not auto-retry resource failures."""
+
+from __future__ import annotations
+
+import inspect
+import json
+import os
+import threading
+import time
+from pathlib import Path
+
+import pytest
+
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+pytest.importorskip("PySide6.QtWidgets")
+
+from PySide6.QtWidgets import QApplication, QDialogButtonBox
+
+from core.config import ApplicationProfile, QualificationsConfig
+from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING
+from desktop.cv_import_supervisor import CvImportSupervisor
+from desktop.i18n import i18n
+from desktop.widgets.cv_import_dialog import CvImportDialog
+
+
+@pytest.fixture(scope="module")
+def qapp():
+    return QApplication.instance() or QApplication([])
+
+
+class _Proc:
+    def __init__(self, code: int | None) -> None:
+        self._code = code
+        self.terminated = False
+        self.returncode = code
+
+    def poll(self):
+        if self.terminated and self._code is None:
+            self.returncode = -15
+            return -15
+        return self._code
+
+    def terminate(self) -> None:
+        self.terminated = True
+        if self._code is None:
+            self._code = -15
+            self.returncode = -15
+
+    def wait(self, timeout=None):
+        self.terminate()
+        return self.returncode
+
+    def close(self) -> None:
+        return None
+
+
+def _parsed(path: Path) -> dict:
+    return {
+        "personal": {"first_name": "Ada", "last_name": "Lovelace"},
+        "emails": ["ada@example.com"],
+        "phones": [],
+        "languages": [],
+        "education": [],
+        "work_experience": [],
+        "certificates": [],
+        "software": [],
+        "skills": [],
+        "driving_license": [],
+        "confidence": {"personal": "high"},
+        "source_path": str(path),
+        "uncertain_items": [],
+        "intelligence_status": "deterministic_only",
+    }
+
+
+def _write(path: Path, payload: dict) -> None:
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+
+def _pump(qapp, predicate, timeout: float = 3.0) -> bool:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        qapp.processEvents()
+        if predicate():
+            return True
+        time.sleep(0.01)
+    return False
+
+
+def test_settings_checkbox_shows_kill_wording_and_persists(qapp, tmp_path, monkeypatch):
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
+    from desktop import paths as paths_mod
+
+    def fake_dirs():
+        root = tmp_path / "Karrierekrake"
+        dirs = {
+            "root": root,
+            "config": root / "config",
+            "data": root / "data",
+            "logs": root / "logs",
+            "browser_profile": root / "browser_profile",
+            "browsers": root / "browsers",
+            "cvs": root / "cvs",
+            "cache": root / "cache",
+            "cover_letters": root / "cover_letters",
+        }
+        for p in dirs.values():
+            p.mkdir(parents=True, exist_ok=True)
+        return dirs
+
+    monkeypatch.setattr(paths_mod, "ensure_app_dirs", fake_dirs)
+    monkeypatch.setattr("desktop.services.ensure_app_dirs", fake_dirs)
+    monkeypatch.setattr(
+        "desktop.services.schedule_service.ScheduleService.sync_from_config",
+        lambda self: (True, "ok"),
+    )
+    monkeypatch.setattr(
+        "desktop.pages.settings.QMessageBox.information",
+        lambda *args, **kwargs: None,
+    )
+    from desktop.services import ConfigService
+    from desktop.pages.settings import SettingsPage
+
+    i18n.set_language("de")
+    page = SettingsPage(ConfigService())
+    page.load_from_config()
+    page.show()
+    qapp.processEvents()
+    assert page.local_llm_cv_parsing.isChecked() is False
+    assert page.local_llm_cv_hint.text() == LOCAL_LLM_CV_KILL_WORDING
+    page.local_llm_cv_parsing.setChecked(True)
+    assert "Phi-Fallback" in page.local_llm_cv_hint.text()
+    page.save()
+    loaded = ConfigService().load()
+    assert loaded.settings.local_llm_cv_parsing_enabled is True
+
+
+def test_dialog_init_does_not_call_import_cv():
+    src = inspect.getsource(CvImportDialog.__init__)
+    assert "import_cv(" not in src
+
+
+def test_init_returns_before_spawn_starts(qapp, tmp_path: Path):
+    calls: list[int] = []
+
+    def spawn(cv: Path, out: Path):
+        calls.append(1)
+        _write(out, {"ok": True, "kind": "ok", "parsed": _parsed(cv), "message": ""})
+        return _Proc(0)
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(city="Hamburg"),
+        spawn=spawn,
+        autostart=True,
+    )
+    assert calls == []
+    assert dlg.attempt_count == 0
+    dlg._autostart.stop()
+    dlg.close()
+
+
+def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_path: Path):
+    i18n.set_language("de")
+    gui = threading.get_ident()
+    seen: list[int] = []
+    cv = tmp_path / "cv.txt"
+    cv.write_text("Ada\n", encoding="utf-8")
+
+    def spawn(path: Path, out: Path):
+        seen.append(threading.get_ident())
+        time.sleep(0.15)
+        _write(out, {"ok": True, "kind": "ok", "parsed": _parsed(path), "message": ""})
+        return _Proc(0)
+
+    app = ApplicationProfile(city="Hamburg", first_name="Manuell")
+    quals = QualificationsConfig()
+    dlg = CvImportDialog(cv, quals, app, spawn=spawn, autostart=False)
+    dlg.show()
+    qapp.processEvents()
+    assert dlg.llm_notice.isVisible()
+    assert dlg.llm_notice.text() == LOCAL_LLM_CV_KILL_WORDING
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg.progress.isVisible() and dlg._running)
+    assert seen and seen[0] != gui
+    assert dlg._ok_btn.isEnabled() is False
+    assert _pump(qapp, lambda: dlg.incoming is not None)
+    assert dlg._ok_btn.isEnabled()
+    assert "Ada" in dlg.preview.toPlainText()
+    assert app.city == "Hamburg"
+    assert app.first_name == "Manuell"
+    assert dlg.result_quals is None
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_oom_preserves_inputs_and_does_not_auto_retry(qapp, tmp_path: Path):
+    calls: list[int] = []
+    cv = tmp_path / "cv.txt"
+
+    def spawn(path: Path, out: Path):
+        calls.append(1)
+        _write(out, {"ok": False, "kind": "oom", "message": "MemoryError", "parsed": None})
+        return _Proc(3)
+
+    app = ApplicationProfile(city="Hamburg")
+    dlg = CvImportDialog(
+        cv,
+        QualificationsConfig(),
+        app,
+        spawn=spawn,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.mode_merge.setChecked(True)
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._retry_btn.isVisible())
+    assert calls == [1]
+    assert dlg.attempt_count == 1
+    assert dlg._last_kind == "oom"
+    assert dlg.result_quals is None
+    assert dlg.result_application is None
+    assert app.city == "Hamburg"
+    assert dlg.mode_merge.isChecked()
+    assert dlg._ok_btn.isEnabled() is False
+    time.sleep(0.2)
+    qapp.processEvents()
+    assert calls == [1]
+    dlg._retry_btn.click()
+    assert _pump(qapp, lambda: dlg.attempt_count == 2 and not dlg._running)
+    assert calls == [1, 1]
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_timeout_is_manual_retry_only(qapp, tmp_path: Path):
+    calls: list[int] = []
+
+    def spawn(path: Path, out: Path):
+        calls.append(1)
+        return _Proc(None)
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(city="Hamburg"),
+        spawn=spawn,
+        timeout_s=0.05,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._last_kind == "timeout", timeout=3)
+    assert calls == [1]
+    assert dlg._retry_btn.isVisible()
+    assert dlg.result_application is None
+    time.sleep(0.15)
+    qapp.processEvents()
+    assert calls == [1]
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
+    calls: list[int] = []
+    procs: list[_Proc] = []
+
+    def spawn(path: Path, out: Path):
+        calls.append(1)
+        proc = _Proc(None)
+        procs.append(proc)
+        return proc
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(),
+        spawn=spawn,
+        timeout_s=30,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: bool(calls) and dlg._running)
+    cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    cancel.click()
+    assert _pump(qapp, lambda: not dlg._running, timeout=3)
+    assert calls == [1]
+    assert procs[0].terminated
+    assert dlg.result_quals is None
+    qapp.processEvents()
+
+
+def test_supervisor_run_once_does_not_loop_on_oom(tmp_path: Path):
+    calls: list[int] = []
+
+    def spawn(path: Path, out: Path):
+        calls.append(threading.get_ident())
+        _write(out, {"ok": False, "kind": "oom", "message": "MemoryError", "parsed": None})
+        return _Proc(3)
+
+    sup = CvImportSupervisor(tmp_path / "cv.txt", spawn=spawn, timeout_s=2)
+    result = sup.run_once()
+    assert result.kind == "oom"
+    assert result.attempts == 1
+    assert result.ok is False
+    assert calls and calls[0] == threading.get_ident()
+    assert len(calls) == 1
