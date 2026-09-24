@@ -4,25 +4,32 @@ Hardware: Agent-VM Intel Xeon, **4 CPU**, ~15 GB RAM — **nicht** i3/8 GB. Ziel
 
 ## Diagnose R3→R5
 
-- PC 33→28: 5× `heute`→`09/2022` (Repair, bereits deaktiviert) + 3× fehlendes Lizenz-C1 + MH_028 company.
+- PC 33→28: 5× `heute`→`09/2022` (Repair) + 3× fehlendes Lizenz-C1 + MH_028 company.
 - EN-F1 0,988: MH_024 Positions / MH_025 Software — schon in R3.
-- Stage-Timing: Docling kalt 11–22 s (Warm ~0), **LLM ~65–85 s** (~6 tok/s, ~394 completion / ~1440 prompt), Postprocess <0,05 s.
-- Warm-Budget ≤60 s: auf dieser VM **strukturell nicht erreichbar** solange LLM allein ~66 s braucht.
+- Stage-Timing: Docling kalt 11–22 s (Warm ~0), **LLM ~65–85 s**, Postprocess <0,05 s.
 
 ## Iterationen
 
 | # | Hypothese | Änderung | Messung | KEEP/REVERT |
 |---|-----------|----------|---------|-------------|
-| 0 | Repair überschreibt echte heute | Repair default off | Targeted: MH_005/009/017 → heute wieder korrekt | **KEEP** disable |
-| 1 | C1 fehlt weil Enrich nur bei leerer Lizenz | Merge Führerschein-Zeilen immer | Targeted DE_03/MH_008/MH_020: `B`→`B C1` | **KEEP** |
-| 2a | Schema-Strip spart Prefill | Env STRIP=1 | MH_025 −5 s; EN_02 −27 s, aber DOB verloren | **REVERT** |
-| 2b | Tabellen-Pipeline abschalten | `do_table_structure=False` | EN_02 2433→1581 Chars | **REVERT** |
-| 2c | pypdf-first | Heuristik | EN Zwei-Spalten Ratio 0,31–0,33 | **REVERT** (Qualitätsrisiko) |
-| 2d | Compact JSON reduziert Completion-Tokens | Systemprompt: minified JSON | Round6: F1 0,987 EN 0,948 PC 27/40 Hallu↑ | **REVERT** |
-| 3 | Lizenz-Merge CEFR-Bleed | Nur Tail nach `Führerschein:` / Klassen unter Heading | Unit+Offline: C1 OK, keine B1/C1-Hallu | **KEEP** (Round7 bestätigt) |
+| 0 | Repair überschreibt echte heute | Repair default off | Targeted MH_005/009/017 → heute | **KEEP** disable |
+| 1a | C1 fehlt bei partieller LLM-Liste | Merge aus FS-Zeilen | Spot C1 OK; Round6 CEFR-Hallu | siehe 3 |
+| 2a | Schema-Strip spart Prefill | Env STRIP=1 | DOB-Verlust | **REVERT** |
+| 2b | Tabellen-Pipeline ab | `do_table_structure=False` | EN_02 Textverlust | **REVERT** |
+| 2c | pypdf-first | Heuristik | EN Zwei-Spalten Ratio ~0,3 | **REVERT** |
+| 2d | Compact JSON | Minified-Prompt | Round6 F1 0,987 EN 0,948 | **REVERT** |
+| 3 | CEFR-Bleed in 1a | Nur Tail nach `Führerschein:` / Klassen unter Heading | Round7: F1 0,997 PC 37/40 EN 0,995 Hallu 0 | **KEEP** |
 
-## Nächste Schritte
+Runtime-Stopp: drei aufeinanderfolgende Laufzeitversuche ohne messbaren Gewinn bei akzeptabler Qualität (2a–2d). Weitere LLM-Beschleunigung braucht anderes Modell/GPU oder Zielgerät.
 
-1. Round6 Seal+Score (Lizenz-Merge + ohne heute-Repair) auf 40 bekannten CVs.
-2. Compact-JSON nur bei messbarem Laufzeitgewinn ohne Qualitätsverlust.
-3. Blind-v2 und i3/8GB-Messung blockiert — Stoppregel.
+## Round7 (bekannte Regression, nicht Blind)
+
+- Gesamt-F1 **0,997**; DE **0,997**; EN **0,995**; Perfect Core **37/40**; Halluzinationen **0**
+- Verbleibend: MH_007 position; MH_019 skills×5; MH_025 software×2
+- Agent-VM Laufzeit (Log n=40): avg **88 s**, P95 **111 s**, Peak-RSS ~2,6–2,7 GB
+- Spot cold/warm: ~91–95 s / ~65–89 s — Budget warm ≤60 s **nicht** erreicht auf dieser VM
+
+## Blind / Freeze
+
+- Freeze für Blind **nicht** ausgerufen: Zielgeräte-Laufzeit OFFEN; Blind-Korpus ≥50 DE/EN+GT fehlt.
+- Blind-v1 n=4 informativ, kein 99-%-Anspruch.
