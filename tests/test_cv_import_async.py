@@ -290,9 +290,16 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     assert _pump(qapp, lambda: bool(calls) and dlg._running and dlg.progress.isVisible())
     cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
     cancel.click()
-    qapp.processEvents()
     assert dlg.isVisible()
     assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
+    assert dlg._cancelled_banner.isVisible()
+    assert dlg._cancelled_banner.text() == i18n.t("cv_import.cancelled")
+    assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
+    assert dlg._cancel_btn.text() == i18n.t("cv_import.close_btn")
+    # A second signal in the same click must not dismiss the dialog.
+    cancel.click()
+    dlg.reject()
+    assert dlg.isVisible()
     assert _pump(qapp, lambda: dlg._last_kind == "cancelled" and not dlg._running, timeout=3)
     assert calls == [1]
     assert procs[0].terminated
@@ -302,6 +309,7 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     assert dlg.progress.isVisible() is False
     assert dlg.result_quals is None
     assert dlg.result_application is None
+    assert _pump(qapp, lambda: not dlg._should_keep_open(), timeout=3)
     cancel.click()
     qapp.processEvents()
     assert dlg.isVisible() is False
@@ -443,20 +451,47 @@ def test_qa_observe_shows_progress_then_cancel_before_result(qapp, tmp_path: Pat
     cancel = dlg._cancel_btn
     assert cancel.isEnabled()
     cancel.click()
-    qapp.processEvents()
     assert dlg.isVisible()
     assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
+    assert dlg._cancelled_banner.isVisible()
+    assert dlg._cancelled_banner.text() == i18n.t("cv_import.cancelled")
+    assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
+    assert dlg._cancel_btn.text() == i18n.t("cv_import.close_btn")
+    cancel.click()
+    dlg.reject()
+    qapp.processEvents()
+    assert dlg.isVisible()
     assert _pump(qapp, lambda: dlg._last_kind == "cancelled" and not dlg._running, timeout=3)
     assert calls == []
     assert dlg.isVisible()
     assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
+    assert dlg._cancel_btn.text() == i18n.t("cv_import.close_btn")
     assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
     assert "Ada" not in dlg.preview.toPlainText()
     assert dlg._ok_btn.isEnabled() is False
     assert dlg.result_quals is None
     assert app.city == "Hamburg"
     assert app.first_name == "Manuell"
+    assert _pump(qapp, lambda: not dlg._should_keep_open(), timeout=3)
     cancel.click()
+    qapp.processEvents()
+    assert dlg.isVisible() is False
+
+
+def test_cancel_after_ready_still_closes(qapp, tmp_path: Path):
+    i18n.set_language("de")
+
+    def spawn(path: Path, out: Path):
+        _write(out, {"ok": True, "kind": "ok", "parsed": _parsed(path), "message": ""})
+        return _Proc(0)
+
+    dlg = CvImportDialog(tmp_path / "cv.txt", QualificationsConfig(), ApplicationProfile(), spawn=spawn, autostart=False)
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._ok_btn.isEnabled() and not dlg._running)
+    assert dlg._cancelled_banner.isVisible() is False
+    dlg._cancel_btn.click()
     qapp.processEvents()
     assert dlg.isVisible() is False
 

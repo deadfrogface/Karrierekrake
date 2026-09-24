@@ -13,6 +13,7 @@ production delay.
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 
 from PySide6.QtCore import QObject, Qt, QTimer, Signal
@@ -55,6 +56,9 @@ from desktop.services.profile_merge import (
 from desktop.widgets.confirm_dialog import label_button_box
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen
 from desktop.workers import start_worker
+
+# A second click in the same double-click must not dismiss the cancelled state.
+_CANCEL_CLOSE_GRACE_S = 0.8
 
 
 class _CvImportWorker(QObject):
@@ -116,6 +120,7 @@ class CvImportDialog(QDialog):
         self._running = False
         self._closing = False
         self._cancel_requested = False
+        self._close_allowed_at = float("inf")
         self._last_kind = ""
         self.attempt_count = 0
 
@@ -146,6 +151,17 @@ class CvImportDialog(QDialog):
         self.status_label = QLabel(tr("cv_import.parsing"))
         self.status_label.setWordWrap(True)
         self.status_label.setObjectName("CvImportStatus")
+        self._cancelled_banner = QLabel("")
+        self._cancelled_banner.setWordWrap(True)
+        self._cancelled_banner.setObjectName("CvImportCancelled")
+        self._cancelled_banner.setMinimumHeight(48)
+        self._cancelled_banner.setVisible(False)
+        self._cancelled_banner.setStyleSheet(
+            "QLabel#CvImportCancelled {"
+            " background: #fff4e5; color: #7a2e0e;"
+            " border: 1px solid #e0a060; padding: 12px; font-weight: 600;"
+            "}"
+        )
         self.progress = QProgressBar()
         self.progress.setObjectName("CvImportProgress")
         self.progress.setRange(0, 0)
@@ -190,6 +206,7 @@ class CvImportDialog(QDialog):
         layout.addWidget(self.llm_notice)
         layout.addWidget(mode_box)
         layout.addWidget(self.status_label)
+        layout.addWidget(self._cancelled_banner)
         layout.addWidget(self.progress)
         layout.addWidget(QLabel(tr("cv_import.detected")))
         layout.addWidget(self.preview, 1)
@@ -209,6 +226,9 @@ class CvImportDialog(QDialog):
             return
         self._running = True
         self._cancel_requested = False
+        self._close_allowed_at = float("inf")
+        self._cancelled_banner.setVisible(False)
+        self._cancel_btn.setText(tr("cv_import.cancel_btn"))
         self.attempt_count += 1
         self._last_kind = ""
         self.incoming = None
@@ -324,36 +344,96 @@ class CvImportDialog(QDialog):
         self.personal_incoming = personal_from_parsed(self.parsed)
         self._refresh_preview()
 
-    def _present_cancelled(self) -> None:
-        """Show the cancelled state while the dialog is still open."""
-        self._last_kind = "cancelled"
-        self._running = False
+    def _discard_parse(self) -> None:
         self.incoming = None
         self.parsed = None
         self.personal_incoming = {}
         self.plan = None
         self.result_quals = None
         self.result_application = None
-        self.progress.setVisible(False)
+
+    def _should_keep_open(self) -> bool:
+        """True until the cancelled sentence is on screen and the grace has elapsed."""
+        if self._closing:
+            return False
+        if self._running:
+            return True
+        if not self._cancel_requested:
+            return False
+        if self._last_kind != "cancelled":
+            return True
+        return time.monotonic() < self._close_allowed_at
+
+    def _show_cancelled_banner(self) -> None:
+        text = tr("cv_import.cancelled")
+        self._cancelled_banner.setText(text)
+        self._cancelled_banner.setVisible(True)
+        self.preview.setPlainText(text)
         self._ok_btn.setEnabled(False)
         self._retry_btn.setVisible(False)
         self._manual_btn.setVisible(False)
-        text = tr("cv_import.cancelled")
-        self.status_label.setText(text)
-        self.preview.setPlainText(text)
 
-    def _cancel_and_reject(self) -> None:
-        if self._running and not self._cancel_requested:
-            self._cancel_requested = True
-            if self._worker is not None:
-                self._worker.request_cancel()
+    def _arm_cancel(self) -> None:
+        """Stop the run and show the cancelled sentence without closing."""
+        first = not self._cancel_requested
+        self._cancel_requested = True
+        self._discard_parse()
+        self._show_cancelled_banner()
+        self._cancel_btn.setText(tr("cv_import.close_btn"))
+        if self._close_allowed_at == float("inf"):
+            self._close_allowed_at = time.monotonic() + _CANCEL_CLOSE_GRACE_S
+        if self._running and self._last_kind != "cancelled":
             self.progress.setVisible(True)
             self.status_label.setText(tr("cv_import.cancelling"))
+        if first and self._worker is not None:
+            self._worker.request_cancel()
+        if not self._running:
+            self._present_cancelled()
+
+    def _present_cancelled(self) -> None:
+        """Show the cancelled state while the dialog is still open."""
+        self._running = False
+        self._last_kind = "cancelled"
+        self._discard_parse()
+        self.progress.setVisible(False)
+        text = tr("cv_import.cancelled")
+        self.status_label.setText(text)
+        self._show_cancelled_banner()
+        self._cancel_btn.setText(tr("cv_import.close_btn"))
+        if self._close_allowed_at == float("inf"):
+            self._close_allowed_at = time.monotonic() + _CANCEL_CLOSE_GRACE_S
+
+    def _cancel_and_reject(self) -> None:
+        if self._running or self._cancel_requested:
+            if not self._should_keep_open():
+                self._finish_close()
+                return
+            self._arm_cancel()
             return
+        self._finish_close()
+
+    def _finish_close(self) -> None:
         self._closing = True
         if self._worker is not None:
             self._worker.request_cancel()
-        self.reject()
+        super().reject()
+
+    def reject(self) -> None:  # noqa: D102 — Qt override, first close becomes cancelled UI
+        if self._closing:
+            super().reject()
+            return
+        if self._should_keep_open():
+            self._arm_cancel()
+            return
+        self._finish_close()
+
+    def closeEvent(self, event) -> None:  # noqa: N802 — Qt override
+        if not self._closing and self._should_keep_open():
+            event.ignore()
+            self._arm_cancel()
+            return
+        self._closing = True
+        super().closeEvent(event)
 
     def _current_mode(self) -> ImportMode:
         return "replace" if self.mode_replace.isChecked() else "merge"
