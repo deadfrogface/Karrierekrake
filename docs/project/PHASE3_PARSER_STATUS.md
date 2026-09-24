@@ -1,6 +1,6 @@
 # Phase 3 – Parser-Weiterentwicklung (Zwischenstand)
 
-Stand Tip: `2e5fb03` (PR #62). Round3-Extract auf bekannten CVs **läuft** (36/40); Seal/Full-Score ausstehend.  
+Stand Tip: `8233ea9` (PR #62). Round3-Extract auf bekannten CVs **läuft** (36/40); Seal/Full-Score ausstehend.  
 Siehe `ABSCHLUSSBERICHT_DOCPICK_PHASEN.md` und `DOCPICK_BLIND_BLOCKER.md`.
 
 ## Budget (vor finalem Blindtest, Agent-VM CPU)

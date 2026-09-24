@@ -1,6 +1,6 @@
 # Phase 1 – PR/Branch-Bereinigung
 
-Stand: siehe `ABSCHLUSSBERICHT_DOCPICK_PHASEN.md` (Tip `2e5fb03`, PR #62).
+Stand: siehe `ABSCHLUSSBERICHT_DOCPICK_PHASEN.md` (Tip `8233ea9`, PR #62).
 
 ## Import-Pfad (verifiziert)
 
