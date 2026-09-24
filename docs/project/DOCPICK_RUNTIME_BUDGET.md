@@ -54,3 +54,11 @@ Quelle: `tests/docpick_blind_de_en_v1/PHASE_B_COMPLETE_GT_ONLY_V3_1_RESULTS.json
 - ``max_tokens`` Default **1536**.
 - Spot MH_025 nach Fix: Cold **43,6 s** / Warm **45,4 s** (Budget ok).
 - Round4-Seal Ø **78,8 s**/CV — Warm-Budget auf längeren CVs weiter riskant.
+
+## Update 2026-09-24 (Round7)
+
+- Hardware: Agent-VM Xeon **4 CPU / ~15 GB** — **nicht** i3/8 GB (Zielgeräte-Gate OFFEN).
+- Engpass bleibt LLM (~6 tok/s). Schema-Strip / Compact-JSON / Docling-ohne-Tabellen: **REVERT** (Qualität).
+- Round7-Seal (n=40, Log): Ø **88 s**, P95 **111 s**, Peak-RSS ~2,6 GB.
+- Spot nach Round7: Cold ~91–95 s / Warm ~65–89 s — Warm-Budget ≤60 s auf dieser VM **nicht** erfüllt.
+- Kein Hochrechnen auf i3/8 GB.
