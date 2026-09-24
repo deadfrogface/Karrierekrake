@@ -18,7 +18,7 @@ from PySide6.QtWidgets import QApplication, QDialogButtonBox
 
 from core.config import ApplicationProfile, QualificationsConfig
 from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING
-from desktop.cv_import_supervisor import CvImportSupervisor
+from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
 from desktop.i18n import i18n
 from desktop.widgets.cv_import_dialog import CvImportDialog
 
@@ -266,6 +266,7 @@ def test_timeout_is_manual_retry_only(qapp, tmp_path: Path):
 
 
 def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
+    i18n.set_language("de")
     calls: list[int] = []
     procs: list[_Proc] = []
 
@@ -278,7 +279,7 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     dlg = CvImportDialog(
         tmp_path / "cv.txt",
         QualificationsConfig(),
-        ApplicationProfile(),
+        ApplicationProfile(city="Hamburg"),
         spawn=spawn,
         timeout_s=30,
         autostart=False,
@@ -286,14 +287,24 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     dlg.show()
     qapp.processEvents()
     dlg.start_parse()
-    assert _pump(qapp, lambda: bool(calls) and dlg._running)
+    assert _pump(qapp, lambda: bool(calls) and dlg._running and dlg.progress.isVisible())
     cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
     cancel.click()
-    assert _pump(qapp, lambda: not dlg._running, timeout=3)
+    qapp.processEvents()
+    assert dlg.isVisible()
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
+    assert _pump(qapp, lambda: dlg._last_kind == "cancelled" and not dlg._running, timeout=3)
     assert calls == [1]
     assert procs[0].terminated
+    assert dlg.isVisible()
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
+    assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
+    assert dlg.progress.isVisible() is False
     assert dlg.result_quals is None
+    assert dlg.result_application is None
+    cancel.click()
     qapp.processEvents()
+    assert dlg.isVisible() is False
 
 
 def test_read_error_has_manual_retry_cta_and_does_not_auto_start(qapp, tmp_path: Path):
@@ -348,6 +359,106 @@ def test_empty_detection_offers_manual_entry_without_applying(qapp, tmp_path: Pa
     assert dlg.result() == dlg.DialogCode.Rejected
     assert app.city == "Hamburg"
     qapp.processEvents()
+
+
+def test_qa_observe_seconds_defaults_off(monkeypatch):
+    monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", raising=False)
+    assert qa_observe_seconds() == 0.0
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "")
+    assert qa_observe_seconds() == 0.0
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "nope")
+    assert qa_observe_seconds() == 0.0
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "-3")
+    assert qa_observe_seconds() == 0.0
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "1.5")
+    assert qa_observe_seconds() == 1.5
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "999")
+    assert qa_observe_seconds() == 120.0
+
+
+def test_supervisor_observe_cancel_skips_spawn(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "30")
+    calls: list[int] = []
+
+    def spawn(path: Path, out: Path):
+        calls.append(1)
+        return _Proc(0)
+
+    sup = CvImportSupervisor(tmp_path / "cv.txt", spawn=spawn, timeout_s=2)
+
+    def cancel_soon() -> None:
+        time.sleep(0.12)
+        sup.request_cancel()
+
+    threading.Thread(target=cancel_soon, daemon=True).start()
+    started = time.monotonic()
+    result = sup.run_once()
+    assert result.kind == "cancelled"
+    assert result.attempts == 1
+    assert calls == []
+    assert time.monotonic() - started < 5
+
+
+def test_supervisor_observe_delays_spawn(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "0.35")
+    calls: list[float] = []
+
+    def spawn(path: Path, out: Path):
+        calls.append(time.monotonic())
+        _write(out, {"ok": False, "kind": "error", "message": "stop", "parsed": None})
+        return _Proc(1)
+
+    sup = CvImportSupervisor(tmp_path / "cv.txt", spawn=spawn, timeout_s=2)
+    started = time.monotonic()
+    result = sup.run_once()
+    assert result.kind == "error"
+    assert calls and calls[0] - started >= 0.3
+
+
+def test_qa_observe_shows_progress_then_cancel_before_result(qapp, tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_OBSERVE_S", "4")
+    i18n.set_language("de")
+    calls: list[int] = []
+    cv = tmp_path / "cv.txt"
+    cv.write_text("Ada\n", encoding="utf-8")
+
+    def spawn(path: Path, out: Path):
+        calls.append(1)
+        _write(out, {"ok": True, "kind": "ok", "parsed": _parsed(path), "message": ""})
+        return _Proc(0)
+
+    app = ApplicationProfile(city="Hamburg", first_name="Manuell")
+    dlg = CvImportDialog(cv, QualificationsConfig(), app, spawn=spawn, autostart=False)
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(
+        qapp,
+        lambda: dlg.progress.isVisible() and dlg._running and dlg.status_label.text() == i18n.t("cv_import.parsing"),
+        timeout=2,
+    )
+    assert calls == []
+    assert dlg.incoming is None
+    assert "Ada" not in dlg.preview.toPlainText()
+    cancel = dlg._cancel_btn
+    assert cancel.isEnabled()
+    cancel.click()
+    qapp.processEvents()
+    assert dlg.isVisible()
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
+    assert _pump(qapp, lambda: dlg._last_kind == "cancelled" and not dlg._running, timeout=3)
+    assert calls == []
+    assert dlg.isVisible()
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
+    assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
+    assert "Ada" not in dlg.preview.toPlainText()
+    assert dlg._ok_btn.isEnabled() is False
+    assert dlg.result_quals is None
+    assert app.city == "Hamburg"
+    assert app.first_name == "Manuell"
+    cancel.click()
+    qapp.processEvents()
+    assert dlg.isVisible() is False
 
 
 def test_supervisor_run_once_does_not_loop_on_oom(tmp_path: Path):

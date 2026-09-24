@@ -54,7 +54,21 @@ OOM und Timeout starten denselben Modelllauf nicht erneut. Im Importdialog bleib
 
 ## UI-Freeze
 
-`import_cv` läuft nicht mehr in `CvImportDialog.__init__`. Ein Worker startet `python -m desktop.cv_import_child` in der Prozessgruppe. Der Dialog zeigt einen Fortschritt, Abbrechen beendet die Gruppe, die Oberfläche bleibt bedienbar.
+`import_cv` läuft nicht mehr in `CvImportDialog.__init__`. Ein Worker startet `python -m desktop.cv_import_child` in der Prozessgruppe. Der Dialog zeigt Fortschrittsbalken und Status „Lebenslauf wird gelesen …“, bevor das Ergebnis in der Vorschau steht. Der erste Klick auf „Abbrechen“ während des Laufs bleibt im Dialog: Status „Wird abgebrochen …“, danach „Import abgebrochen.“ Die Vorschau übernimmt das Parse-Ergebnis nicht. Ein zweiter Klick auf „Abbrechen“ schließt den Dialog. Die Oberfläche bleibt bedienbar.
+
+Deterministische Parses sind oft kürzer als ein Frame. Ohne gesetzte Variable startet der Kindprozess sofort (Produktionspfad). Zum Prüfen von Fortschritt und Abbruch vor dem Ergebnis:
+
+```bat
+set KARRIEREKRAKE_CV_IMPORT_OBSERVE_S=8
+```
+
+PowerShell:
+
+```powershell
+$env:KARRIEREKRAKE_CV_IMPORT_OBSERVE_S = "8"
+```
+
+Dann einen Lebenslauf importieren. Balken und „Lebenslauf wird gelesen …“ bleiben etwa 8 Sekunden, **bevor** der Parser startet. In diesem Fenster „Abbrechen“ klicken. Der Dialog bleibt offen und zeigt „Import abgebrochen.“ Variable löschen oder auf `0` setzen, bevor normal gearbeitet wird. Leere, ungültige und negative Werte gelten als aus. Die Obergrenze ist 120 Sekunden.
 
 ## Was nur am physischen Gerät geklärt werden kann
 

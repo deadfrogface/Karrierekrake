@@ -1,8 +1,14 @@
 """CV import confirmation dialog — Replace (default) or Merge with preview & conflicts.
 
-Parsing runs in a worker process off the UI thread. Cancel stops that process
-group. OOM and timeout keep the current profile inputs and wait for a manual
-retry; the same run is not started again automatically.
+Parsing runs in a worker process off the UI thread. The first Cancel while a
+run is active stops that process group and shows the cancelled state before
+any result is applied. A second Cancel closes the dialog. OOM and timeout
+keep the current profile inputs and wait for a manual retry; the same run is
+not started again automatically.
+
+``KARRIEREKRAKE_CV_IMPORT_OBSERVE_S`` (default unset / 0) holds the worker
+before the child starts so Progress and Cancel can be checked. It is not a
+production delay.
 """
 
 from __future__ import annotations
@@ -109,6 +115,7 @@ class CvImportDialog(QDialog):
         self._thread = None
         self._running = False
         self._closing = False
+        self._cancel_requested = False
         self._last_kind = ""
         self.attempt_count = 0
 
@@ -142,6 +149,8 @@ class CvImportDialog(QDialog):
         self.progress = QProgressBar()
         self.progress.setObjectName("CvImportProgress")
         self.progress.setRange(0, 0)
+        self.progress.setMinimumHeight(18)
+        self.progress.setTextVisible(False)
         self.progress.setVisible(False)
 
         self.preview = QTextEdit()
@@ -158,6 +167,9 @@ class CvImportDialog(QDialog):
         self._ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
         self._ok_btn.setText(tr("cv_import.apply"))
         self._ok_btn.setEnabled(False)
+        self._cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
+        self._cancel_btn.setObjectName("CvImportCancel")
+        self._cancel_btn.setText(tr("cv_import.cancel_btn"))
         buttons.accepted.connect(self._accept)
         buttons.rejected.connect(self._cancel_and_reject)
         self._retry_btn = QPushButton(tr("cv_import.retry"))
@@ -196,6 +208,7 @@ class CvImportDialog(QDialog):
         if self._running or self._closing:
             return
         self._running = True
+        self._cancel_requested = False
         self.attempt_count += 1
         self._last_kind = ""
         self.incoming = None
@@ -229,7 +242,7 @@ class CvImportDialog(QDialog):
         self.start_parse()
 
     def _on_progress(self, _message: str) -> None:
-        if self._closing:
+        if self._closing or self._cancel_requested:
             return
         self.progress.setVisible(True)
         self.status_label.setText(tr("cv_import.parsing"))
@@ -237,6 +250,11 @@ class CvImportDialog(QDialog):
     def _on_attempt(self, result: object) -> None:
         self._running = False
         if self._closing:
+            return
+        if self._cancel_requested or (
+            isinstance(result, ImportAttemptResult) and result.kind == "cancelled"
+        ):
+            self._present_cancelled()
             return
         if not isinstance(result, ImportAttemptResult):
             self._show_failure("error", str(result))
@@ -306,7 +324,32 @@ class CvImportDialog(QDialog):
         self.personal_incoming = personal_from_parsed(self.parsed)
         self._refresh_preview()
 
+    def _present_cancelled(self) -> None:
+        """Show the cancelled state while the dialog is still open."""
+        self._last_kind = "cancelled"
+        self._running = False
+        self.incoming = None
+        self.parsed = None
+        self.personal_incoming = {}
+        self.plan = None
+        self.result_quals = None
+        self.result_application = None
+        self.progress.setVisible(False)
+        self._ok_btn.setEnabled(False)
+        self._retry_btn.setVisible(False)
+        self._manual_btn.setVisible(False)
+        text = tr("cv_import.cancelled")
+        self.status_label.setText(text)
+        self.preview.setPlainText(text)
+
     def _cancel_and_reject(self) -> None:
+        if self._running and not self._cancel_requested:
+            self._cancel_requested = True
+            if self._worker is not None:
+                self._worker.request_cancel()
+            self.progress.setVisible(True)
+            self.status_label.setText(tr("cv_import.cancelling"))
+            return
         self._closing = True
         if self._worker is not None:
             self._worker.request_cancel()

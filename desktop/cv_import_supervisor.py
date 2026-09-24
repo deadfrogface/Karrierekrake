@@ -22,6 +22,9 @@ from devops.peak_rss_harness import ContainedProcess, launch_contained
 
 DEFAULT_CV_IMPORT_TIMEOUT_S = 180.0
 _ENV_TIMEOUT = "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"
+# QA only. Unset or 0 in production: the child starts immediately.
+_ENV_OBSERVE = "KARRIEREKRAKE_CV_IMPORT_OBSERVE_S"
+_OBSERVE_CAP_S = 120.0
 
 Spawn = Callable[[Path, Path], object]
 
@@ -40,6 +43,24 @@ def default_import_timeout_s() -> float:
     if raw is None or raw.strip() == "":
         return DEFAULT_CV_IMPORT_TIMEOUT_S
     return float(raw)
+
+
+def qa_observe_seconds() -> float:
+    """Seconds to hold before spawning the import child.
+
+    ``KARRIEREKRAKE_CV_IMPORT_OBSERVE_S`` is off unless a test explicitly sets
+    a positive number. Empty, invalid, and negative values stay at 0.
+    """
+    raw = os.environ.get(_ENV_OBSERVE)
+    if raw is None or raw.strip() == "":
+        return 0.0
+    try:
+        value = float(raw.strip())
+    except ValueError:
+        return 0.0
+    if value <= 0:
+        return 0.0
+    return min(value, _OBSERVE_CAP_S)
 
 
 def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
@@ -90,6 +111,8 @@ class CvImportSupervisor:
             return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
         if progress:
             progress("parsing")
+        if self._wait_qa_observe(progress):
+            return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
         fd, name = tempfile.mkstemp(prefix="kk-cv-import-", suffix=".json")
         os.close(fd)
         out_path = Path(name)
@@ -130,6 +153,23 @@ class CvImportSupervisor:
                 out_path.unlink(missing_ok=True)
             except OSError:
                 pass
+
+    def _wait_qa_observe(self, progress: Callable[[str], None] | None) -> bool:
+        """Hold on the worker thread so the progress bar can paint. True if cancelled."""
+        seconds = qa_observe_seconds()
+        if seconds <= 0:
+            return self._cancel.is_set()
+        deadline = time.monotonic() + seconds
+        next_pulse = 0.0
+        while time.monotonic() < deadline:
+            if self._cancel.is_set():
+                return True
+            now = time.monotonic()
+            if progress is not None and now >= next_pulse:
+                progress("parsing")
+                next_pulse = now + 0.2
+            time.sleep(0.05)
+        return self._cancel.is_set()
 
     def _stop(self, proc: object) -> None:
         terminate = getattr(proc, "terminate", None)
