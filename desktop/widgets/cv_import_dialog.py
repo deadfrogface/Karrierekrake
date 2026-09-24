@@ -379,12 +379,12 @@ class CvImportDialog(QDialog):
         self._cancel_requested = True
         self._discard_parse()
         self._show_cancelled_banner()
-        self._cancel_btn.setText(tr("cv_import.close_btn"))
+        self._cancel_btn.setText(tr("cv_import.close"))
         if self._close_allowed_at == float("inf"):
             self._close_allowed_at = time.monotonic() + _CANCEL_CLOSE_GRACE_S
         if self._running and self._last_kind != "cancelled":
             self.progress.setVisible(True)
-            self.status_label.setText(tr("cv_import.cancelling"))
+            self.status_label.setText(tr("cv_import.cancelled"))
         if first and self._worker is not None:
             self._worker.request_cancel()
         if not self._running:
@@ -399,7 +399,7 @@ class CvImportDialog(QDialog):
         text = tr("cv_import.cancelled")
         self.status_label.setText(text)
         self._show_cancelled_banner()
-        self._cancel_btn.setText(tr("cv_import.close_btn"))
+        self._cancel_btn.setText(tr("cv_import.close"))
         if self._close_allowed_at == float("inf"):
             self._close_allowed_at = time.monotonic() + _CANCEL_CLOSE_GRACE_S
 

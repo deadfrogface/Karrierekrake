@@ -291,11 +291,12 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
     cancel.click()
     assert dlg.isVisible()
-    assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
     assert dlg._cancelled_banner.isVisible()
-    assert dlg._cancelled_banner.text() == i18n.t("cv_import.cancelled")
+    assert dlg._cancelled_banner.text() == "Einlesen abgebrochen. Es wurde nichts übernommen."
     assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
-    assert dlg._cancel_btn.text() == i18n.t("cv_import.close_btn")
+    assert dlg._ok_btn.isEnabled() is False
+    assert dlg._cancel_btn.text() == i18n.t("cv_import.close")
     # A second signal in the same click must not dismiss the dialog.
     cancel.click()
     dlg.reject()
@@ -452,11 +453,12 @@ def test_qa_observe_shows_progress_then_cancel_before_result(qapp, tmp_path: Pat
     assert cancel.isEnabled()
     cancel.click()
     assert dlg.isVisible()
-    assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
     assert dlg._cancelled_banner.isVisible()
-    assert dlg._cancelled_banner.text() == i18n.t("cv_import.cancelled")
+    assert dlg._cancelled_banner.text() == "Einlesen abgebrochen. Es wurde nichts übernommen."
     assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
-    assert dlg._cancel_btn.text() == i18n.t("cv_import.close_btn")
+    assert dlg._ok_btn.isEnabled() is False
+    assert dlg._cancel_btn.text() == i18n.t("cv_import.close")
     cancel.click()
     dlg.reject()
     qapp.processEvents()
@@ -465,7 +467,7 @@ def test_qa_observe_shows_progress_then_cancel_before_result(qapp, tmp_path: Pat
     assert calls == []
     assert dlg.isVisible()
     assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
-    assert dlg._cancel_btn.text() == i18n.t("cv_import.close_btn")
+    assert dlg._cancel_btn.text() == i18n.t("cv_import.close")
     assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
     assert "Ada" not in dlg.preview.toPlainText()
     assert dlg._ok_btn.isEnabled() is False

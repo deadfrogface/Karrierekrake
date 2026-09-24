@@ -56,7 +56,7 @@ OOM und Timeout starten denselben Modelllauf nicht erneut. Im Importdialog bleib
 
 `import_cv` läuft nicht mehr in `CvImportDialog.__init__`. Ein Worker startet `python -m desktop.cv_import_child` in der Prozessgruppe. Der Dialog zeigt Fortschrittsbalken und Status „Lebenslauf wird gelesen …“, bevor das Ergebnis in der Vorschau steht.
 
-Der erste Klick auf „Abbrechen“ während des Laufs schließt den Dialog nicht. Auch ein Doppelklick, Escape oder das Schließen-Kreuz im selben Moment nicht. Sofort sichtbar: orangefarbenes Banner und Vorschau „Import abgebrochen.“ Der Status zeigt kurz „Wird abgebrochen …“, danach denselben Satz. Der Button wechselt zu „Schließen“. Ein weiterer Klick auf „Schließen“, nachdem der Satz stehen geblieben ist, schließt den Dialog. Die Vorschau übernimmt das Parse-Ergebnis nicht. Die Oberfläche bleibt bedienbar.
+Der erste Klick auf „Abbrechen“ während des Laufs schließt den Dialog nicht. Auch ein Doppelklick, Escape oder das Schließen-Kreuz im selben Moment nicht. Sofort sichtbar, derselbe Satz wie im Extrakt-UX-Vertrag (`cv_import.cancelled`): „Einlesen abgebrochen. Es wurde nichts übernommen.“ Status, Banner und Vorschau zeigen ihn. „Übernehmen“ bleibt aus. Der Button wechselt zu „Schließen“ (`cv_import.close`). Ein weiterer Klick auf „Schließen“, nachdem der Satz stehen geblieben ist, schließt den Dialog. Die Vorschau übernimmt das Parse-Ergebnis nicht. Es gibt keinen automatischen Neustart. Die Oberfläche bleibt bedienbar.
 
 Deterministische Parses sind oft kürzer als ein Frame. Ohne gesetzte Variable startet der Kindprozess sofort (Produktionspfad). Zum Prüfen von Fortschritt und Abbruch vor dem Ergebnis:
 
@@ -70,7 +70,7 @@ PowerShell:
 $env:KARRIEREKRAKE_CV_IMPORT_OBSERVE_S = "8"
 ```
 
-Dann einen Lebenslauf importieren. Balken und „Lebenslauf wird gelesen …“ bleiben etwa 8 Sekunden, **bevor** der Parser startet. In diesem Fenster **einmal** „Abbrechen“ klicken. Der Dialog bleibt offen: Banner und Vorschau zeigen „Import abgebrochen.“, der Status kurz „Wird abgebrochen …“, der Button wird zu „Schließen“. Ein Doppelklick schließt nicht. Danach einmal „Schließen“ klicken. Variable löschen oder auf `0` setzen, bevor normal gearbeitet wird. Leere, ungültige und negative Werte gelten als aus. Die Obergrenze ist 120 Sekunden.
+Dann einen Lebenslauf importieren. Balken und „Lebenslauf wird gelesen …“ bleiben etwa 8 Sekunden, **bevor** der Parser startet. In diesem Fenster **einmal** „Abbrechen“ klicken. Der Dialog bleibt offen: Status, Banner und Vorschau zeigen „Einlesen abgebrochen. Es wurde nichts übernommen.“ „Übernehmen“ bleibt aus. Der Button wird zu „Schließen“. Ein Doppelklick schließt nicht. Danach einmal „Schließen“ klicken. Variable löschen oder auf `0` setzen, bevor normal gearbeitet wird. Leere, ungültige und negative Werte gelten als aus. Die Obergrenze ist 120 Sekunden.
 
 ## Was nur am physischen Gerät geklärt werden kann
 

@@ -497,10 +497,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Zeitüberschreitung beim Lesen. Die Eingaben bleiben erhalten. "
             "Bitte manuell erneut versuchen."
         ),
-        "cv_import.cancelled": "Import abgebrochen.",
-        "cv_import.cancelling": "Wird abgebrochen …",
+        "cv_import.cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
         "cv_import.cancel_btn": "Abbrechen",
-        "cv_import.close_btn": "Schließen",
+        "cv_import.close": "Schließen",
         "cv_import.empty": (
             "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
             "oder lies die Datei erneut ein."
@@ -1389,10 +1388,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.timeout": (
             "Reading timed out. Your entries are unchanged. Try again manually."
         ),
-        "cv_import.cancelled": "Import cancelled.",
-        "cv_import.cancelling": "Cancelling…",
+        "cv_import.cancelled": "Reading cancelled. Nothing was applied.",
         "cv_import.cancel_btn": "Cancel",
-        "cv_import.close_btn": "Close",
+        "cv_import.close": "Close",
         "cv_import.empty": (
             "Nothing was found in the document. Enter the profile manually "
             "or read the file again."
