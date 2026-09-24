@@ -243,6 +243,13 @@ class LocationWorkSection(QGroupBox):
         self.lbl_geo = QLabel()
         form.addRow(self.lbl_home, self.home_address)
         form.addRow(self.lbl_postal, self.postal_code)
+        self.home_notice = QLabel()
+        self.home_notice.setWordWrap(True)
+        self.home_notice.setObjectName("WarningLabel")
+        form.addRow(self.home_notice)
+        self.home_address.editingFinished.connect(self.refresh_home_notice)
+        self.postal_code.editingFinished.connect(self.refresh_home_notice)
+        self.country.editingFinished.connect(self.refresh_home_notice)
         form.addRow(self.lbl_country, self.country)
         form.addRow(self.lbl_geo, self.geo_status)
         form.addRow(self.geo_update_btn)
@@ -299,6 +306,7 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.retranslate()
         self.excluded_companies.retranslate()
         self._refresh_geo_status()
+        self.refresh_home_notice()
 
     def _refresh_geo_status(self) -> None:
         try:
@@ -335,6 +343,24 @@ class LocationWorkSection(QGroupBox):
                 tr("profile.geo_status_bad", message=type(exc).__name__)
             )
 
+    def refresh_home_notice(self, location: LocationConfig | None = None) -> None:
+        """Re-read resolver status for the home fields. Does not guess a PLZ."""
+        from core.location import home_location_notice
+
+        if location is None:
+            location = LocationConfig(
+                home_address=self.home_address.text().strip(),
+                postal_code=self.postal_code.text().strip(),
+                country=self.country.text().strip() or "DE",
+            )
+        notice = home_location_notice(location)
+        if notice.status == "resolved" or not notice.notice_key:
+            self.home_notice.clear()
+            self.home_notice.setVisible(False)
+        else:
+            self.home_notice.setText(tr(notice.notice_key))
+            self.home_notice.setVisible(True)
+
     def load(
         self,
         location: LocationConfig,
@@ -356,6 +382,7 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.set_items(filters.preferred_companies)
         self.excluded_companies.set_items(filters.excluded_companies)
         self._refresh_geo_status()
+        self.refresh_home_notice(location)
 
     def save_into(
         self,
@@ -378,6 +405,7 @@ class LocationWorkSection(QGroupBox):
         location.country = self.country.text().strip() or "DE"
         filters.preferred_companies = self.preferred_companies.get_items()
         filters.excluded_companies = self.excluded_companies.get_items()
+        self.refresh_home_notice(location)
         if self.include_search_fields:
             location.max_distance_km = float(self.max_distance.value())
             employment.full_time = self.full_time.isChecked()

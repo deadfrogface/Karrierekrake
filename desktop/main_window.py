@@ -410,8 +410,11 @@ class MainWindow(QMainWindow):
                 extra = "\n" + tr("msg.empty_queries")
             if stats.get("source_errors"):
                 extra = (extra + "\n" if extra else "\n") + "\n".join(stats.get("source_errors") or [])
-            if stats.get("home_warning"):
-                extra += "\n\n" + str(stats.get("home_warning"))
+            from core.location import home_location_notice
+
+            notice = home_location_notice(self.config_service.load().profile.location)
+            if notice.ask_postal and notice.notice_key:
+                extra += "\n\n" + tr(notice.notice_key)
             if stats.get("ats_unknown") is not None:
                 extra += (
                     f"\nATS: supported={stats.get('ats_supported', 0)} "

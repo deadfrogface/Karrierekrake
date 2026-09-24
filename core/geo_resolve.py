@@ -322,8 +322,8 @@ def _multiple_place_names(nom: Any, needle: str) -> bool:
 def _exact_city_rows(nom: Any, needle: str) -> Any | None:
     """Exact place-name rows from the full local table.
 
-    ``query_location`` only returns the top fuzzy hits. For large cities those
-    hits are bulk-recipient names and can miss the plain city name.
+    Fuzzy ``query_location`` only returns the top hits and uses a regex scan
+    that can stall search. Exact rows already cover the full local table.
     """
     data = getattr(nom, "_data", None)
     columns = getattr(data, "columns", ())
@@ -362,29 +362,18 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
     # Exact name on the full local table. No fuzzy contains — that would guess.
+    # Do not call Nominatim.query_location: it scans with regex contains and can
+    # stall the search on workplace strings that will stay UNKNOWN/AMBIGUOUS.
     needle = name.casefold()
+    if len(needle) > 80:
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_not_found",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
     exact = _exact_city_rows(nom, needle)
-    if exact is None or getattr(exact, "empty", True):
-        try:
-            frame = nom.query_location(name)
-        except Exception as exc:
-            logger.debug("city query failed %s %s: %s", cc, name, type(exc).__name__)
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="city_query_error",
-                country_code=cc,
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        if frame is None or getattr(frame, "empty", True) or "place_name" not in getattr(frame, "columns", []):
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="city_not_found",
-                country_code=cc,
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        exact = frame[frame["place_name"].astype(str).str.casefold() == needle]
     if exact is None or getattr(exact, "empty", True):
         if _multiple_place_names(nom, needle):
             return PlaceResolution(

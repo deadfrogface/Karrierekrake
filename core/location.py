@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from core.geo_dataset import get_geo_dataset_manager
 from core.geo_normalize import (
@@ -53,6 +53,9 @@ __all__ = [
     "location_cache_key",
     "enrich_job_locations",
     "cross_border_dach_enabled",
+    "HOME_PLZ_HINT",
+    "HomeNotice",
+    "home_location_notice",
 ]
 
 DEFAULT_GEOCODE_TIMEOUT_S = 12.0
@@ -81,6 +84,12 @@ STALE_GEO_SOURCES = frozenset(
 
 GEO_DATA_SOURCE_LOCAL = "local_geo"
 
+# Shown when the home place is AMBIGUOUS or UNKNOWN. Never a guessed centroid.
+HOME_PLZ_HINT = (
+    "Standort nicht prüfbar. Bitte Postleitzahl angeben — "
+    "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
+)
+
 
 def cross_border_dach_enabled(config: "AppConfig") -> bool:
     """Feature toggle: DACH commute across DE/AT/CH (default on)."""
@@ -91,6 +100,58 @@ def cross_border_dach_enabled(config: "AppConfig") -> bool:
     if loc is not None and hasattr(loc, "cross_border_dach"):
         return bool(loc.cross_border_dach)
     return True
+
+
+@dataclass(frozen=True)
+class HomeNotice:
+    """Fresh home-resolution status for settings and the dashboard.
+
+    ``resolved`` clears the warning. ``ambiguous`` / ``unknown`` ask for a
+    postal code and do not invent coordinates.
+    """
+
+    status: str
+    ask_postal: bool
+    notice_key: str
+
+
+def home_location_notice(location: Any) -> HomeNotice:
+    """Re-read the current home place. Does not persist coordinates or guess a PLZ."""
+    address = (getattr(location, "home_address", "") or "").strip()
+    postal = (getattr(location, "postal_code", "") or "").strip()
+    city = (getattr(location, "city", "") or "").strip()
+    country = (getattr(location, "country", "") or "").strip() or "DE"
+    lat = getattr(location, "home_latitude", None)
+    lon = getattr(location, "home_longitude", None)
+    stored = _address_fingerprint(getattr(location, "home_geocoded_address", "") or "")
+    current = _address_fingerprint(address or (f"{postal}|{city}" if (postal or city) else ""))
+    coords_match = False
+    try:
+        if lat is not None and lon is not None and current:
+            lat_f, lon_f = float(lat), float(lon)
+            coords_match = (
+                -90.0 <= lat_f <= 90.0
+                and -180.0 <= lon_f <= 180.0
+                and (not stored or stored == current)
+            )
+    except (TypeError, ValueError):
+        coords_match = False
+    if coords_match:
+        return HomeNotice(status="resolved", ask_postal=False, notice_key="")
+    if not postal and not city and not address:
+        return HomeNotice(status="missing", ask_postal=True, notice_key="dash.home_missing")
+    place = normalize_place_fields(
+        address=address,
+        city=city or _city_from_address(address),
+        postal_code=postal or _plz_from_address(address),
+        country_code=normalize_country_code(country) or "DE",
+    )
+    resolution = resolve_place(place, allow_network=False)
+    if resolution.ok:
+        return HomeNotice(status="resolved", ask_postal=False, notice_key="")
+    if resolution.status == "AMBIGUOUS":
+        return HomeNotice(status="ambiguous", ask_postal=True, notice_key="dash.home_plz_hint")
+    return HomeNotice(status="unknown", ask_postal=True, notice_key="dash.home_plz_hint")
 
 
 @dataclass
@@ -277,11 +338,7 @@ class LocationService:
             allow_network=False,
         )
         if not resolution.ok:
-            warning = (
-                f"Heimatstandort konnte lokal nicht aufgelöst werden "
-                f"(PLZ/Ort): {address or place.city or place.postal_code!r}. "
-                "Distanzfilter übersprungen — bitte PLZ und Land prüfen."
-            )
+            warning = HOME_PLZ_HINT
             logger.warning(warning)
             self._home = None
             self._home_resolution = HomeResolution(
@@ -615,8 +672,25 @@ def enrich_job_locations(
         location.stats.home_resolved = False
         location.stats.home_warning = home.warning
         location.stats.skipped_distance_no_home = True
-    else:
-        location.stats.home_resolved = True
+        # Distance is already unknown. Skip workplace geocoding so the radius
+        # skip returns immediately and cannot stall on ambiguous place scans.
+        for job in jobs:
+            if getattr(job, "remote_type", "") == "remote":
+                job.distance_km = None
+                if hasattr(job, "commute_duration_minutes"):
+                    job.commute_duration_minutes = None
+                if hasattr(job, "distance_source"):
+                    job.distance_source = ""
+                location.stats.remote_skipped += 1
+                continue
+            job.distance_km = None
+            if hasattr(job, "distance_source"):
+                job.distance_source = ""
+            if hasattr(job, "commute_duration_minutes"):
+                job.commute_duration_minutes = None
+            location.stats.unknown_locations += 1
+        return jobs
+    location.stats.home_resolved = True
 
     groups: dict[str, list] = {}
     order: list[str] = []

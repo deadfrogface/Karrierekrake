@@ -205,12 +205,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Noch kein Wohnort hinterlegt. Trage im Profil Ort oder Postleitzahl ein, "
             "damit Jobs nach Entfernung gefiltert werden können."
         ),
-        "dash.home_unresolved": (
-            "Dein Wohnort „{place}“ ließ sich nicht eindeutig zuordnen. Trage im Profil "
-            "bitte eine Postleitzahl ein (z. B. 10115), damit Jobs nach Entfernung "
-            "gefiltert werden. Bis dahin zeigen wir Jobs unabhängig von der Entfernung."
-        ),
         "dash.kpi_open_hint": "Zum Öffnen klicken",
+        "dash.home_plz_hint": (
+            "Standort nicht prüfbar. Bitte Postleitzahl angeben — "
+            "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
+        ),
         "dash.run_stats": "Lauf-Statistik",
         "apps.preview_title": "Bewerbungsvorschau (vor Absenden)",
         "apps.preview_will_submit": "Finales Absenden wäre erlaubt.",
@@ -1069,12 +1068,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "No home location yet. Add a city or postal code in your profile so jobs "
             "can be filtered by distance."
         ),
-        "dash.home_unresolved": (
-            "We couldn't pin down your home location “{place}”. Please add a postal "
-            "code in your profile (e.g. 10115) so jobs can be filtered by distance. "
-            "Until then, jobs are shown regardless of distance."
-        ),
         "dash.kpi_open_hint": "Click to open",
+        "dash.home_plz_hint": (
+            "Location cannot be checked. Please enter a postal code — "
+            "without a postal code no place is guessed and the radius filter is skipped."
+        ),
         "dash.run_stats": "Run stats",
         "apps.preview_title": "Application preview (pre-submit)",
         "apps.preview_will_submit": "Final submit would be allowed.",

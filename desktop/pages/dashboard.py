@@ -425,14 +425,15 @@ class DashboardPage(QWidget):
         )
 
         loc = cfg.profile.location
-        home_text = (loc.home_address or "").strip()
-        home_known = loc.home_latitude is not None and loc.home_longitude is not None
-        if not home_text and not home_known:
-            self.home_warning_label.setText(tr("dash.home_missing"))
-            self.home_warning_label.setVisible(True)
-        else:
+        from core.location import home_location_notice
+
+        notice = home_location_notice(loc)
+        if notice.status == "resolved" or not notice.notice_key:
             self.home_warning_label.clear()
             self.home_warning_label.setVisible(False)
+        else:
+            self.home_warning_label.setText(tr(notice.notice_key))
+            self.home_warning_label.setVisible(True)
 
         # Keep diagnostics populated for tests / developer tooling — never shown.
         self.advanced_stats.setText(
@@ -462,12 +463,6 @@ class DashboardPage(QWidget):
                     st = json.loads(row["stats_json"] or "{}")
                 except Exception:
                     st = {}
-                # A warning from an older run is stale once the home resolved since.
-                if st.get("home_warning") and home_text and not home_known:
-                    self.home_warning_label.setText(
-                        tr("dash.home_unresolved", place=home_text)
-                    )
-                    self.home_warning_label.setVisible(True)
                 detail = (
                     f"raw={st.get('raw_results', st.get('total', '—'))} | "
                     f"dup={st.get('duplicates', '—')} | dist={st.get('distance_removed', st.get('outside', '—'))}"
