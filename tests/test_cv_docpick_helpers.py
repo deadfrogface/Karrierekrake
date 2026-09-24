@@ -94,6 +94,29 @@ def test_norm_dob_formats() -> None:
     assert _norm_dob("19.02.1991") == "19.02.1991"
 
 
+def test_enrich_dob_and_repair_heute_from_text() -> None:
+    from core.cv_docpick_import import _enrich_dob_from_text, _repair_invented_heute
+
+    pers = _enrich_dob_from_text(
+        {"date_of_birth": "02/1970"},
+        "Geburtsdatum: 02.01.1970\n",
+    )
+    assert pers["date_of_birth"] == "02.01.1970"
+    fixed = _repair_invented_heute(
+        [
+            {
+                "title": "Deichbauer",
+                "company": "Nordlicht Manufaktur",
+                "start_date": "02/2019",
+                "end_date": "heute",
+                "responsibilities": [],
+            }
+        ],
+        "02/2019 - 08/2021 Deichbauer | Nordlicht Manufaktur Materialdisposition\n",
+    )
+    assert fixed[0]["end_date"] == "08/2021"
+
+
 def test_suggestion_maps_current_job_end_date() -> None:
     parsed = suggestion_to_parsed(
         {

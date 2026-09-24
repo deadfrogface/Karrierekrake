@@ -232,6 +232,95 @@ _SOFTWARE_LEVEL_RE = re.compile(
 _PIPE_SPLIT_RE = re.compile(r"\s*[|｜]\s*")
 
 
+_DOB_IN_TEXT = re.compile(
+    r"(?:Geburtsdatum|geboren(?:\s+am)?|DoB|Date of birth|Born)\s*[:\-]?\s*"
+    r"(?P<dob>\d{1,2}[./]\d{1,2}[./]\d{2,4})",
+    re.I,
+)
+_DATE_RANGE_RE = re.compile(
+    r"(?P<start>\d{1,2}[./]\d{4}|\d{4}[-/.]\d{1,2})\s*[-–—]\s*"
+    r"(?P<end>\d{1,2}[./]\d{4}|\d{4}[-/.]\d{1,2}|"
+    r"heute|bis\s+heute|present|current|ongoing)",
+    re.I,
+)
+
+
+def _dob_incomplete(value: str) -> bool:
+    t = (value or "").strip()
+    if not t:
+        return True
+    if re.match(r"^\d{1,2}[./]\d{1,2}[./]\d{2,4}$", t):
+        return False
+    if re.match(r"^\d{4}[-/]\d{1,2}[-/]\d{1,2}$", t):
+        return False
+    return True
+
+
+def _enrich_dob_from_text(pers: dict[str, str], text: str) -> dict[str, str]:
+    """Fill/repair DOB from labelled header lines when missing or month-only."""
+    if not text or not _dob_incomplete(pers.get("date_of_birth") or ""):
+        return pers
+    m = _DOB_IN_TEXT.search(text)
+    if not m:
+        return pers
+    raw = m.group("dob").replace("/", ".")
+    parts = raw.split(".")
+    if len(parts) == 3 and len(parts[2]) == 2:
+        yy = int(parts[2])
+        parts[2] = str(2000 + yy if yy < 50 else 1900 + yy)
+        raw = ".".join(parts)
+    out = dict(pers)
+    out["date_of_birth"] = _norm_dob(raw)
+    return out
+
+
+def _repair_invented_heute(
+    entries: list[dict[str, str]], text: str
+) -> list[dict[str, str]]:
+    """If end_date is ``heute`` but the CV shows a concrete dated end near the job, prefer that.
+
+    Does not invent dates — only replaces invented ``heute`` when a dated range
+    is visible in the source text next to the company/title.
+    """
+    if not text or not entries:
+        return entries
+    out: list[dict[str, str]] = []
+    low_text = text.lower()
+    for e in entries:
+        end = (e.get("end_date") or "").strip()
+        if end != "heute":
+            out.append(e)
+            continue
+        anchor = (e.get("company") or e.get("title") or "").strip()
+        if not anchor:
+            out.append(e)
+            continue
+        idx = low_text.find(anchor.lower())
+        if idx < 0:
+            out.append(e)
+            continue
+        window = text[max(0, idx - 100) : idx + len(anchor) + 140]
+        repaired = None
+        for m in _DATE_RANGE_RE.finditer(window):
+            end_raw = m.group("end").strip()
+            if _PRESENT_END_RE.match(end_raw) or end_raw.lower() in {
+                "present",
+                "current",
+                "ongoing",
+                "heute",
+                "bis heute",
+            }:
+                continue
+            repaired = _norm_month_year(end_raw)
+            if repaired:
+                break
+        if repaired:
+            out.append({**e, "end_date": repaired})
+        else:
+            out.append(e)
+    return out
+
+
 def _split_street_house(street: str, house: str) -> tuple[str, str]:
     """If house is empty and street ends with a house number, split them."""
     s = (street or "").strip()
@@ -395,10 +484,10 @@ def _norm_licence(s: str) -> str:
 _docling_converter = None
 # Content-addressed text cache: only reuse when file bytes + Docling version match.
 _docling_text_cache: dict[tuple[str, str], str] = {}
-_SCHEMA_JSON_CACHE: str | None = None
+_SCHEMA_JSON_CACHE: dict[str, str] | None = None
 # Production LLM generation cap. Measured: outputs typically << 2048 tokens;
 # lower cap cuts rare runaway generations without changing typical quality.
-_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "1536"))
+_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "2048"))
 # Wall-clock budgets on target hardware (4-core CPU Agent-VM, Qwen3.5-4B Q4).
 # Blindtest may proceed only when warm extract stays within WARM_BUDGET_S.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
@@ -406,14 +495,20 @@ CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S",
 
 
 def _schema_json_for_prompt() -> str:
-    """Compact JSON Schema for the LLM prompt (strip descriptions / $defs noise).
+    """JSON Schema for the LLM prompt.
 
-    Field descriptions remain on the Pydantic model for docs; they inflate
-    prompt tokens and dominate measured prefill latency on CPU.
+    Round3 quality used the full schema (with field descriptions). Description
+    stripping is optional via ``KARRIEREKRAKE_CV_SCHEMA_STRIP=1`` for latency
+    experiments — default is full schema (REVERT of Round4 strip).
     """
     global _SCHEMA_JSON_CACHE
-    if _SCHEMA_JSON_CACHE is not None:
-        return _SCHEMA_JSON_CACHE
+    strip = os.environ.get("KARRIEREKRAKE_CV_SCHEMA_STRIP", "").strip() in {"1", "true", "yes"}
+    cache_key = "strip" if strip else "full"
+    if isinstance(_SCHEMA_JSON_CACHE, dict) and cache_key in _SCHEMA_JSON_CACHE:
+        return _SCHEMA_JSON_CACHE[cache_key]
+    # Migrate legacy single-string cache
+    if _SCHEMA_JSON_CACHE is not None and not isinstance(_SCHEMA_JSON_CACHE, dict):
+        _SCHEMA_JSON_CACHE = {}
 
     def _strip(obj: Any) -> Any:
         if isinstance(obj, dict):
@@ -427,12 +522,13 @@ def _schema_json_for_prompt() -> str:
             return [_strip(x) for x in obj]
         return obj
 
-    _SCHEMA_JSON_CACHE = json.dumps(
-        _strip(KarrierekrakeCVSchema.model_json_schema()),
-        ensure_ascii=False,
-        separators=(",", ":"),
-    )
-    return _SCHEMA_JSON_CACHE
+    raw = KarrierekrakeCVSchema.model_json_schema()
+    payload = _strip(raw) if strip else raw
+    rendered = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    if not isinstance(_SCHEMA_JSON_CACHE, dict):
+        _SCHEMA_JSON_CACHE = {}
+    _SCHEMA_JSON_CACHE[cache_key] = rendered
+    return rendered
 
 
 def _file_content_key(path: Path) -> str:
@@ -556,28 +652,31 @@ def _llm_extract(text: str) -> dict[str, Any]:
         )
     try:
         schema_json = _schema_json_for_prompt()
+        # Round3 system prompt (quality reference). Round4 compact/"Dates MM/YYYY"
+        # and aggressive heute instructions caused DOB + end_date regressions.
         messages = [
             {
                 "role": "system",
                 "content": (
-                    "Extract CV as compact JSON only (no markdown, no pretty-print). "
-                    "null if missing; do not invent. Preserve diacritics. "
-                    "Fill address when present (incl. City|Country, UK house street · city postcode). "
-                    "Fill software and skills lists; strip proficiency tags from tool names. "
-                    "employment.position = job title only; 'Title | Company' → split fields. "
-                    "Employment/education months as MM/YYYY. "
-                    "date_of_birth as DD.MM.YYYY (never MM/YYYY). "
-                    "end_date='heute' ONLY when the CV explicitly says present/current/heute/ongoing; "
-                    "never invent heute for a dated end. "
-                    "Incomplete education → qualification text (Studium abgebrochen / ohne Abschluss)."
+                    "You are a document data extraction assistant. "
+                    "Output ONLY valid JSON. No markdown. "
+                    "If a field is not found, use null. "
+                    "For arrays, include all matching items found. "
+                    "Do not invent values. "
+                    "Preserve diacritics and special letters in names exactly as written "
+                    "(e.g. Célina, Mikołaj). "
+                    "employment.position is the job title only — never duty bullets. "
+                    "When a job has no end date / is current, set end_date to 'heute'. "
+                    "Keep incomplete education outcomes in qualification "
+                    "(Studium abgebrochen, Schule ohne Abschluss)."
                 ),
             },
             {
                 "role": "user",
                 "content": (
-                    f"Schema:\n{schema_json}\n\n"
-                    f"CV:\n{text}\n\n"
-                    "JSON:"
+                    f"## JSON Schema\n{schema_json}\n\n"
+                    f"## Document Text\n{text}\n\n"
+                    "Extract the data and output valid JSON:"
                 ),
             },
         ]
@@ -624,13 +723,21 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         )
     work = _fix_employment_pipe(work)
     work = _merge_split_employment(work)
+    if source_text:
+        work = _repair_invented_heute(work, source_text)
     edu = []
     for e in data.get("education") or []:
         if not isinstance(e, dict):
             continue
         end_raw = str(e.get("end_date") or "").strip()
+        qual = str(e.get("qualification") or "")
         end_norm = end_raw
         if end_raw and re.search(r"ohne\s+abschluss", end_raw, re.I):
+            end_norm = "ohne Abschluss"
+        elif re.search(r"ohne\s+abschluss|abgebrochen|dropout", qual, re.I) and (
+            not end_raw or _PRESENT_END_RE.match(end_raw) or "heute" in end_raw.lower()
+        ):
+            # LLM sometimes invents heute for incomplete education.
             end_norm = "ohne Abschluss"
         elif _PRESENT_END_RE.match(end_raw) or (
             end_raw and "heute" in end_raw.lower()
@@ -641,18 +748,39 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         edu.append(
             {
                 "institution": str(e.get("institution") or ""),
-                "qualification": str(e.get("qualification") or ""),
+                "qualification": qual,
                 "start_date": _norm_month_year(str(e.get("start_date") or "")),
                 "end_date": end_norm,
             }
         )
-    lic_parts = [_norm_licence(str(x)) for x in (data.get("licenses") or [])]
+    # Licences: reuse DET helper only for class-code normalization (no DET import path).
+    from core.cv_parser import normalize_driving_license
+
+    lic_codes = normalize_driving_license(
+        [_norm_licence(str(x)) for x in (data.get("licenses") or [])]
+    )
     certs = []
     for c in data.get("certificates") or []:
         if isinstance(c, dict):
+            cname = str(c.get("name") or "")
+        else:
+            cname = str(c)
+        # Driving-licence lines misplaced into certificates → licences.
+        if re.search(r"führerschein|driving\s+licen[cs]e", cname, re.I):
+            for code in normalize_driving_license(cname):
+                if code not in lic_codes:
+                    lic_codes.append(code)
+            continue
+        if isinstance(c, dict):
             certs.append(c)
         else:
-            certs.append({"name": str(c), "issuer": "", "year": ""})
+            certs.append({"name": cname, "issuer": "", "year": ""})
+    if source_text and not lic_codes:
+        for line in source_text.splitlines():
+            if re.search(r"führerschein|driving\s+licen[cs]e|licence|license", line, re.I):
+                for code in normalize_driving_license(line):
+                    if code not in lic_codes:
+                        lic_codes.append(code)
     first = str(name.get("first_name") or "")
     last = str(name.get("last_name") or "")
     email = str(data["email"]) if data.get("email") else ""
@@ -683,12 +811,13 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         personal["street"], personal["house_number"] = _split_street_house(
             personal.get("street") or "", personal.get("house_number") or ""
         )
+        personal = _enrich_dob_from_text(personal, source_text)
     return {
         "personal": personal,
         "emails": [email] if email else [],
         "phones": [str(data["phone"])] if data.get("phone") else [],
         "languages": langs,
-        "driving_license": " ".join(p for p in lic_parts if p),
+        "driving_license": " ".join(lic_codes),
         "education": edu,
         "work_experience": work,
         "skills": [
