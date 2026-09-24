@@ -1,0 +1,88 @@
+{
+  "personal": {
+    "first_name": "Hala",
+    "last_name": "Bensaïd",
+    "street": "Rue Serpenoise",
+    "house_number": "118",
+    "postal_code": "57000",
+    "city": "Metz",
+    "country": "Frankreich",
+    "date_of_birth": "05.05.1972"
+  },
+  "emails": [
+    "hala.bensaid@example.de"
+  ],
+  "phones": [
+    "+49 156 4352028"
+  ],
+  "languages": [
+    {
+      "language": "Ukrainisch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufsschule Metz",
+      "qualification": "Studium abgebrochen",
+      "start_date": "2012",
+      "end_date": "2015"
+    },
+    {
+      "institution": "Bildungswerk Metz",
+      "qualification": "Ausbildung Fluggerätmechanikerin",
+      "start_date": "2017",
+      "end_date": "2020"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Fluggerätmechanikerin",
+      "company": "Brückenbau West GmbH",
+      "start_date": "02/2019",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "TerraNova Labor e.V.",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Bestandsprüfung",
+    "Lieferantenkoordination",
+    "Materialdisposition"
+  ],
+  "software": [
+    "Adobe Acrobat Pro",
+    "ZBrush"
+  ],
+  "certificates": [
+    {
+      "name": "Arbeitssicherheit 2024",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_029.pdf",
+  "raw_text_chars": 805,
+  "raw_text_preview": "## Hala Bensaïd\n\nRue Serpenoise 118 | 57000 Metz | Frankreich · hala.bensaid@example.de · +49 156 4352028 · Geburtsdatum: 05.05.1972\n\n## Berufserfahrung\n\n02/2019 - heute Fluggerätmechanikerin | Brückenbau West GmbH Bestandsprüfung · Lieferantenkoordination\n\n03/2020 - 09/2022\n\nProjektassistenz | TerraNova Labor e.V.\n\nMaterialdisposition · Bestandsprüfung\n\n## Schule und Ausbildung\n\n2012 - 2015 Studium abgebrochen | Berufsschule Metz 2017 - 2020\n\nAusbildung Fluggerätmechanikerin | Bildungswerk Metz",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_029",
+  "regression_lang": "de"
+}

@@ -1,0 +1,104 @@
+{
+  "personal": {
+    "first_name": "Nina",
+    "last_name": "Sommer",
+    "street": "",
+    "house_number": "",
+    "postal_code": "",
+    "city": "Leipzig",
+    "country": "",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "nina.sommer@example.org"
+  ],
+  "phones": [],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    },
+    {
+      "language": "Spanisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Hochschule Leipzig",
+      "qualification": "B.A. Betriebswirtschaftslehre",
+      "start_date": "10/2018",
+      "end_date": "09/2021"
+    },
+    {
+      "institution": "Goethe-Gymnasium Leipzig",
+      "qualification": "Abitur",
+      "start_date": "08/2010",
+      "end_date": "06/2018"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Junior Project Manager",
+      "company": "Elster Digital GmbH",
+      "start_date": "11/2023",
+      "end_date": "10/2023",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Saxonia Media Services GmbH",
+      "start_date": "10/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Projektorganisation",
+    "Terminplanung",
+    "Reporting",
+    "Stakeholder-Kommunikation"
+  ],
+  "software": [
+    "Notion",
+    "Asana",
+    "Jira",
+    "Microsoft 365",
+    "Power BI"
+  ],
+  "certificates": [
+    {
+      "name": "Scrum Fundamentals Certified",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Excel Advanced",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Datenschutz-Basisschulung",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/DE_04_Unvollstaendige_Kontaktdaten.pdf",
+  "raw_text_chars": 633,
+  "raw_text_preview": "## Nina Sommer\n\nLeipzig | nina.sommer@example.org\n\n## AUSBILDUNG\n\n10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig\n\n08/2010 - 06/2018 Abitur, Goethe-Gymnasium Leipzig\n\n## PRAXISERFAHRUNG\n\n11/2023 - heute Junior Project Manager | Elster Digital GmbH\n\n10/2021 - 10/2023 Projektassistenz | Saxonia Media Services GmbH\n\n## ZERTIFIKATE\n\nScrum Fundamentals Certified; Excel Advanced; Datenschutz-Basisschulung\n\n## TOOLS\n\nNotion | Asana | Jira | Microsoft 365 | Power BI\n\n## SPRACHEN\n\nDeu",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "DE_04",
+  "regression_lang": "de"
+}

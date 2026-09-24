@@ -1,0 +1,80 @@
+{
+  "personal": {
+    "first_name": "Esra",
+    "last_name": "Lavigne",
+    "street": "Münchener Straße",
+    "house_number": "73",
+    "postal_code": "83395",
+    "city": "Freilassing",
+    "country": "Deutschland",
+    "date_of_birth": "06.05.1980"
+  },
+  "emails": [
+    "esra.lavigne@example.de"
+  ],
+  "phones": [],
+  "languages": [
+    {
+      "language": "Arabisch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufsschule Freilassing",
+      "qualification": "Gesellenbrief",
+      "start_date": "2012",
+      "end_date": "2015"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Edelsteinschleiferin",
+      "company": "Brückenbau West GmbH",
+      "start_date": "02/2019",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "TerraNova Labor e.V.",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Schadensanalyse",
+    "Dokumentenlenkung",
+    "Materialdisposition"
+  ],
+  "software": [
+    "Minitab",
+    "Grafana"
+  ],
+  "certificates": [
+    {
+      "name": "Arbeitssicherheit 2025",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_005.pdf",
+  "raw_text_chars": 707,
+  "raw_text_preview": "<!-- image -->\n\nMünchener Straße 73 | 83395 Freilassing | Deutschland · esra.lavigne@example.de · Geburtsdatum: 06.05.1980\n\n## Berufserfahrung\n\n02/2019 - heute Edelsteinschleiferin | Brückenbau West GmbH Schadensanalyse · Dokumentenlenkung\n\n03/2020 - 09/2022\n\nProjektassistenz | TerraNova Labor e.V.\n\nMaterialdisposition · Schadensanalyse\n\n## Schule und Ausbildung\n\n2012 - 2015\n\nGesellenbrief | Berufsschule Freilassing\n\n## Sprachkenntnisse &amp; Führerschein\n\nArabisch: Muttersprache\n\nEnglisch: A2\n\n",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_005",
+  "regression_lang": "de"
+}

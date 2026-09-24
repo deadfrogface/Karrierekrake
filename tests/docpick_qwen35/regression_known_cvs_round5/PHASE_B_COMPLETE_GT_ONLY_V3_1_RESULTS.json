@@ -1,0 +1,1872 @@
+{
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "disclaimer": "Round5 re-extract after Phase-3 present→heute norm + schema/prompt fixes. Known development CVs only. NOT an independent blind test. NOT a 99% claim.",
+  "created_at": "2026-09-24T12:02:58.818793+00:00",
+  "prediction_seal_path": "tests/docpick_qwen35/regression_known_cvs_round5/PHASE_A_EXTRACTION_SEAL.json",
+  "prediction_hashes_verified": true,
+  "n_predictions_verified": 40,
+  "parser_freeze_commit": "e537b7714afb0f31c566ab3ea06c417fd3f40169",
+  "det_fallback": false,
+  "performance_from_seal": {
+    "wall_s": 3516.0942019919166,
+    "avg_s_per_cv": 87.90235504979792,
+    "peak_rss_mb": 3223.08203125,
+    "cold_start_doc": "DE_01",
+    "cold_start_s": 119.58232382801361,
+    "followup_doc": "DE_02",
+    "followup_s": 136.62103863002267,
+    "per_doc_s": {
+      "DE_01": 119.58232382801361,
+      "DE_02": 136.62103863002267,
+      "DE_03": 91.92932784406003,
+      "DE_04": 88.68512537598144,
+      "DE_05": 115.66995393589605,
+      "EN_01": 91.15947733202484,
+      "EN_02": 98.5897477529943,
+      "EN_03": 74.18837534205522,
+      "EN_04": 101.96800296998117,
+      "EN_05": 95.37874748802278,
+      "MH_001": 79.79547557304613,
+      "MH_002": 81.19319134706166,
+      "MH_003": 84.98925292596687,
+      "MH_004": 75.9961580419913,
+      "MH_005": 75.48778231604956,
+      "MH_006": 86.15436120599043,
+      "MH_007": 67.16435078100767,
+      "MH_008": 91.5754641169915,
+      "MH_009": 85.86892111599445,
+      "MH_010": 70.18439918698277,
+      "MH_011": 83.97860674699768,
+      "MH_012": 98.82237300206907,
+      "MH_013": 81.72842239099555,
+      "MH_014": 82.81838419009,
+      "MH_015": 99.57364826102275,
+      "MH_016": 85.30982146807946,
+      "MH_017": 90.50236863503233,
+      "MH_018": 84.67148094600998,
+      "MH_019": 74.11370481399354,
+      "MH_020": 89.65249599795789,
+      "MH_021": 94.20053492707666,
+      "MH_022": 81.88133272400592,
+      "MH_023": 82.84300986700691,
+      "MH_024": 85.12811574304942,
+      "MH_025": 63.49243333400227,
+      "MH_026": 67.09113851794973,
+      "MH_027": 91.94706949498504,
+      "MH_028": 75.28294996498153,
+      "MH_029": 93.08492086292244,
+      "MH_030": 97.73614115605596
+    }
+  },
+  "coverage": {
+    "n_documents_extracted": 40,
+    "n_documents_extract_ok": 40,
+    "n_documents_scored": 40,
+    "n_scored_fields_total": 1234,
+    "n_nicht_bewertbar_fields": 68,
+    "perfect_core_on_scored_fields": "28/40"
+  },
+  "metrics_complete_gt_only_v3_1": {
+    "field_total": 1234,
+    "counts": {
+      "correct": 1215,
+      "missing": 14,
+      "wrong": 5,
+      "hallucinated": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.9846029173419774,
+    "precision": 0.9959016393442623,
+    "recall": 0.9886086248982913,
+    "f1": 0.9922417313189057,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.011345218800648298,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.004051863857374392,
+    "by_group": {
+      "personal": {
+        "correct": 110
+      },
+      "contact": {
+        "correct": 64
+      },
+      "address": {
+        "correct": 185
+      },
+      "languages": {
+        "correct": 90
+      },
+      "licenses": {
+        "correct": 43,
+        "missing": 3
+      },
+      "skills": {
+        "correct": 133,
+        "missing": 5
+      },
+      "software": {
+        "correct": 113,
+        "missing": 2
+      },
+      "certificates": {
+        "correct": 11
+      },
+      "education": {
+        "correct": 175
+      },
+      "employment": {
+        "correct": 291,
+        "wrong": 5,
+        "missing": 4
+      }
+    },
+    "n_missing": 14,
+    "n_hallucinated": 0,
+    "n_wrong": 5,
+    "missing_fields": [
+      {
+        "document": "SMOKE_DE_EN_10_V1__DE_03",
+        "field": "license:1",
+        "expected": "C1"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_008",
+        "field": "license:1",
+        "expected": "C1"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:0",
+        "expected": "Schichtübergabe"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:1",
+        "expected": "Qualitätsprüfung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:2",
+        "expected": "Instandhaltung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:3",
+        "expected": "Bestandsprüfung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:4",
+        "expected": "Montageplanung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_020",
+        "field": "license:1",
+        "expected": "C1"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_024",
+        "field": "employment:0.position",
+        "expected": "Conservation Assistant"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_024",
+        "field": "employment:1.position",
+        "expected": "Projektassistenz"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_024",
+        "field": "employment:2.position",
+        "expected": "Aushilfe"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_025",
+        "field": "software:0",
+        "expected": "Minitab"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_025",
+        "field": "software:1",
+        "expected": "Qlik Sense"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_028",
+        "field": "employment:0.company",
+        "expected": "Nordlicht Manufaktur"
+      }
+    ],
+    "hallucinated_fields": [],
+    "wrong_fields": [
+      {
+        "document": "MINI_HOLDOUT_30__MH_005",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "heute",
+        "actual": "09/2022"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_009",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "heute",
+        "actual": "09/2022"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_017",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "heute",
+        "actual": "09/2022"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_021",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "heute",
+        "actual": "09/2022"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_029",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "heute",
+        "actual": "09/2022"
+      }
+    ],
+    "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+    "disclaimer": "Same COMPLETE_GT_ONLY scope as V3, plus semantic equality for employment/education start_date/end_date spellings (e.g. 02/2019 ≡ 2019-02). Not a parser change. Not overall F1. Does not replace V2 or V3 history.",
+    "date_norm_flipped_fields": 0,
+    "nicht_bewertbar": {
+      "n_fields": 68,
+      "by_group": {
+        "employment": 10,
+        "education": 10,
+        "skills": 9,
+        "software": 8,
+        "certificates": 31
+      },
+      "by_reason": {
+        "only work_count=3; no full employment list": 4,
+        "only education_count=1; no full education list": 5,
+        "only work_count=4; no full employment list": 2,
+        "only education_count=2; no full education list": 5,
+        "only skills_count=12; no full skills list": 1,
+        "only software_count=12; no full software list": 1,
+        "only certificates_count=5; no full certificates list": 1,
+        "only work_count=2; no full employment list": 4,
+        "no skills list and no count": 1,
+        "no certificates list and no count": 25,
+        "only skills_count=4; no full skills list": 1,
+        "only software_count=5; no full software list": 2,
+        "only certificates_count=3; no full certificates list": 4,
+        "only skills_count=7; no full skills list": 1,
+        "only software_count=6; no full software list": 4,
+        "only certificates_count=4; no full certificates list": 1,
+        "only skills_count=5; no full skills list": 3,
+        "only skills_count=6; no full skills list": 1,
+        "only software_count=7; no full software list": 1,
+        "only skills_count=8; no full skills list": 1
+      },
+      "cases": [
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_01",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Teamkoordinatorin Kundenservice",
+              "company": "Westfalen Service GmbH",
+              "start_date": "05/2022",
+              "end_date": "04/2022",
+              "responsibilities": []
+            },
+            {
+              "title": "Sachbearbeiterin Auftragsmanagement",
+              "company": "HanseKontor Handel KG",
+              "start_date": "01/2019",
+              "end_date": "04/2022",
+              "responsibilities": []
+            },
+            {
+              "title": "Kaufmännische Mitarbeiterin",
+              "company": "Rheinblick Versand GmbH",
+              "start_date": "08/2016",
+              "end_date": "12/2018",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_01",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+              "qualification": "Kauffrau für Büromanagement (IHK)",
+              "start_date": "08/2013",
+              "end_date": "06/2016"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_02",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=4; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Projektkoordinator Operations & Customer Solutions",
+              "company": "WeserTech Anlagenservice GmbH",
+              "start_date": "04/2023",
+              "end_date": "03/2023",
+              "responsibilities": []
+            },
+            {
+              "title": "Sachbearbeiter Einkauf & Disposition",
+              "company": "Nordstern Komponentenhandel KG",
+              "start_date": "01/2020",
+              "end_date": "03/2023",
+              "responsibilities": []
+            },
+            {
+              "title": "Kundenservice / Auftragsmanagement",
+              "company": "Elbkontor Bürobedarf GmbH",
+              "start_date": "08/2016",
+              "end_date": "12/2019",
+              "responsibilities": []
+            },
+            {
+              "title": "Kaufmännischer Mitarbeiter",
+              "company": "Moorland Versandservice GmbH",
+              "start_date": "07/2013",
+              "end_date": "07/2016",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_02",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Nordwest Handelsakademie / Friesen Import GmbH",
+              "qualification": "Kaufmann für Groß- und Außenhandelsmanagement (IHK)",
+              "start_date": "09/2010",
+              "end_date": "06/2013"
+            },
+            {
+              "institution": "BBS Ammerland",
+              "qualification": "Fachhochschulreife Wirtschaft und Verwaltung",
+              "start_date": "08/2008",
+              "end_date": "06/2010"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_02",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=12; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "B2B-Kundenbetreuung",
+            "Beschwerdemanagement",
+            "Einkauf",
+            "Disposition",
+            "Auftragsmanagement",
+            "Lieferantenmanagement",
+            "Prozessoptimierung",
+            "KPI-Reporting",
+            "Stammdatenpflege",
+            "Projektkoordination",
+            "Rechnungsprüfung",
+            "Bestandsmanagement"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_02",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=12; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Microsoft 365",
+            "Dynamics 365",
+            "SAP Business One",
+            "HubSpot CRM",
+            "Power BI",
+            "Power Query",
+            "Teams",
+            "SharePoint",
+            "Jira",
+            "Confluence",
+            "Adobe Acrobat",
+            "DocuWare"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_02",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=5; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "IHK Projektmanagement kompakt",
+            "Ersthelfer",
+            "Datenschutz / Informationssicherheit"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_03",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Office & Procurement Specialist",
+              "company": "Rheinwerk Technik GmbH",
+              "start_date": "03/2021",
+              "end_date": "02/2021",
+              "responsibilities": []
+            },
+            {
+              "title": "Customer Operations Specialist",
+              "company": "Metroline Services KG",
+              "start_date": "09/2017",
+              "end_date": "02/2021",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_03",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "IHK Düsseldorf",
+              "qualification": "Ausbildung zur Kauffrau für Büromanagement",
+              "start_date": "2014",
+              "end_date": "2017"
+            },
+            {
+              "institution": "Berufskolleg Düsseldorf",
+              "qualification": "Höhere Handelsschule",
+              "start_date": "2012",
+              "end_date": "2014"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_03",
+          "field": "skills",
+          "group": "skills",
+          "reason": "no skills list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [
+            "Einkauf",
+            "Bestellwesen",
+            "Kundenkommunikation",
+            "Lieferantenbetreuung",
+            "Datenpflege"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_03",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_04",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Junior Project Manager",
+              "company": "Elster Digital GmbH",
+              "start_date": "11/2023",
+              "end_date": "10/2023",
+              "responsibilities": []
+            },
+            {
+              "title": "Projektassistenz",
+              "company": "Saxonia Media Services GmbH",
+              "start_date": "10/2021",
+              "end_date": "10/2023",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_04",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Hochschule Leipzig",
+              "qualification": "B.A. Betriebswirtschaftslehre",
+              "start_date": "10/2018",
+              "end_date": "09/2021"
+            },
+            {
+              "institution": "Goethe-Gymnasium Leipzig",
+              "qualification": "Abitur",
+              "start_date": "08/2010",
+              "end_date": "06/2018"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_04",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=4; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Projektorganisation",
+            "Terminplanung",
+            "Reporting",
+            "Stakeholder-Kommunikation"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_04",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=5; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Notion",
+            "Asana",
+            "Jira",
+            "Microsoft 365",
+            "Power BI"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_04",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "Scrum Fundamentals Certified",
+            "Excel Advanced",
+            "Datenschutz-Basisschulung"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_05",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=4; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Operations Analyst",
+              "company": "Franken Logistik Solutions GmbH",
+              "start_date": "02/2024",
+              "end_date": "01/2024",
+              "responsibilities": []
+            },
+            {
+              "title": "Disponent",
+              "company": "SüdCargo KG",
+              "start_date": "06/2021",
+              "end_date": "01/2024",
+              "responsibilities": []
+            },
+            {
+              "title": "Kaufmännischer Sachbearbeiter",
+              "company": "Bavaria Handel GmbH",
+              "start_date": "01/2018",
+              "end_date": "05/2021",
+              "responsibilities": []
+            },
+            {
+              "title": "Service Mitarbeiter",
+              "company": "MesseService Nürnberg GmbH",
+              "start_date": "08/2015",
+              "end_date": "12/2017",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_05",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Nürnberg",
+              "qualification": "Kaufmann für Spedition und Logistikdienstleistung (IHK)",
+              "start_date": "2012",
+              "end_date": "2015"
+            },
+            {
+              "institution": "Realschule Nürnberg",
+              "qualification": "Mittlere Reife",
+              "start_date": "2008",
+              "end_date": "2012"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_05",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=7; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_05",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Excel",
+            "Power Query",
+            "Power BI",
+            "SAP TM",
+            "Outlook",
+            "Teams"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_05",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=4; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "Lean Management Basics",
+            "Excel Pivot & Power Query",
+            "Arbeitssicherheit 2025",
+            "Grundlagen Zollabwicklung"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_01",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Customer Operations Lead",
+              "company": "Harbour & Co Services Ltd",
+              "start_date": "Mar 2022",
+              "end_date": "heute",
+              "responsibilities": []
+            },
+            {
+              "title": "Order Management Specialist",
+              "company": "Cedar Trading Group",
+              "start_date": "Jul 2019",
+              "end_date": "Feb 2022",
+              "responsibilities": []
+            },
+            {
+              "title": "Customer Service Coordinator",
+              "company": "Northbridge Office Supplies",
+              "start_date": "Sep 2016",
+              "end_date": "Jun 2019",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_01",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "University of the West of England",
+              "qualification": "BA Business Management",
+              "start_date": "2013",
+              "end_date": "2016"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_01",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=5; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Customer operations",
+            "order management",
+            "KPI reporting",
+            "complaint handling",
+            "process improvement"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_01",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Microsoft 365",
+            "Salesforce",
+            "HubSpot",
+            "Jira",
+            "Confluence",
+            "Power BI"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_01",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "PRINCE2 Foundation",
+            "Advanced Excel",
+            "First Aid at Work"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=2; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Manchester Metropolitan University",
+              "qualification": "BSc Business & Management",
+              "start_date": "2014",
+              "end_date": "2017"
+            },
+            {
+              "institution": "Northside College",
+              "qualification": "A Levels",
+              "start_date": "2012",
+              "end_date": "2014"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=6; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Customer success",
+            "reporting",
+            "CRM administration",
+            "process stakeholder communication",
+            "order fulfilment mapping"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=7; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Excel",
+            "Power BI",
+            "SQL",
+            "Dynamics 365",
+            "Zendesk",
+            "Jira",
+            "Confluence"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "Lean Six Sigma Yellow Belt",
+            "Power BI Data Analyst Essentials",
+            "Information Security Awareness"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_03",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Procurement Coordinator",
+              "company": "Linden Works GmbH",
+              "start_date": "2024",
+              "end_date": "heute",
+              "responsibilities": []
+            },
+            {
+              "title": "Operations Assistant",
+              "company": "Urban Supply Europe GmbH",
+              "start_date": "2021",
+              "end_date": "2024",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_03",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Berlin School of Economics",
+              "qualification": "B.A. International Business",
+              "start_date": "2018",
+              "end_date": "2021"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_03",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=5; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Procurement",
+            "supplier management",
+            "scheduling",
+            "reporting",
+            "data quality"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_03",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=5; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "SAP Ariba",
+            "Excel",
+            "Teams",
+            "SharePoint",
+            "Trello"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_03",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_04",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=2; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Service Delivery Manager",
+              "company": "Alpine Cloud Services GmbH",
+              "start_date": "04/2022",
+              "end_date": "03/2022",
+              "responsibilities": []
+            },
+            {
+              "title": "Support Operations Specialist",
+              "company": "LakeTech Solutions AG",
+              "start_date": "01/2019",
+              "end_date": "03/2022",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_04",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "HTWG Konstanz",
+              "qualification": "B.Sc. Business Information Systems",
+              "start_date": "2015",
+              "end_date": "2018"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_04",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=5; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Service delivery",
+            "SLA reporting",
+            "escalation management",
+            "stakeholder communication",
+            "process improvement"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_04",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "ServiceNow",
+            "Salesforce",
+            "Microsoft 365",
+            "Jira",
+            "Confluence",
+            "Power BI"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_04",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_05",
+          "field": "employment",
+          "group": "employment",
+          "reason": "only work_count=3; no full employment list",
+          "gt_keys_present": [
+            "work_count"
+          ],
+          "pred_summary": [
+            {
+              "title": "Purchasing Specialist",
+              "company": "Greenline Medical Supplies Ltd",
+              "start_date": "2022",
+              "end_date": "heute",
+              "responsibilities": []
+            },
+            {
+              "title": "Supply Chain Administrator",
+              "company": "Meridian Homeware Ltd",
+              "start_date": "2019",
+              "end_date": "2022",
+              "responsibilities": []
+            },
+            {
+              "title": "Order Processing Assistant",
+              "company": "Cobalt Distribution Ltd",
+              "start_date": "2016",
+              "end_date": "2019",
+              "responsibilities": []
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_05",
+          "field": "education",
+          "group": "education",
+          "reason": "only education_count=1; no full education list",
+          "gt_keys_present": [
+            "education_count"
+          ],
+          "pred_summary": [
+            {
+              "institution": "Dublin City University",
+              "qualification": "BCom",
+              "start_date": "2012",
+              "end_date": "2016"
+            },
+            {
+              "institution": "",
+              "qualification": "CIPS Procurement Essentials",
+              "start_date": "2024",
+              "end_date": "heute"
+            }
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_05",
+          "field": "skills",
+          "group": "skills",
+          "reason": "only skills_count=8; no full skills list",
+          "gt_keys_present": [
+            "skills_count"
+          ],
+          "pred_summary": [
+            "Vendor management",
+            "inventory control",
+            "purchasing",
+            "order processing",
+            "KPI reporting",
+            "master data maintenance",
+            "contract administration",
+            "customer communication"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_05",
+          "field": "software",
+          "group": "software",
+          "reason": "only software_count=6; no full software list",
+          "gt_keys_present": [
+            "software_count"
+          ],
+          "pred_summary": [
+            "Microsoft 365",
+            "Oracle NetSuite",
+            "Power BI",
+            "Power Query",
+            "DocuWare",
+            "Monday.com"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_05",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "only certificates_count=3; no full certificates list",
+          "gt_keys_present": [
+            "certificates_count"
+          ],
+          "pred_summary": [
+            "CIPS Procurement Essentials",
+            "Advanced Excel & Power Query",
+            "GDPR Awareness for Operations"
+          ],
+          "text_grounded": true
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_002",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_003",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_004",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_006",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_007",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_008",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_010",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_011",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_012",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_014",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_015",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_016",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_018",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_020",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_022",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_023",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_024",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_026",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_027",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_028",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_030",
+          "field": "certificates",
+          "group": "certificates",
+          "reason": "no certificates list and no count",
+          "gt_keys_present": [
+            "certificates"
+          ],
+          "pred_summary": [],
+          "text_grounded": null
+        }
+      ]
+    },
+    "perfect_core": "28/40"
+  },
+  "by_lang": {
+    "de": {
+      "field_total": 1031,
+      "counts": {
+        "correct": 1017,
+        "missing": 9,
+        "wrong": 5,
+        "hallucinated": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9864209505334627,
+      "precision": 0.9951076320939335,
+      "recall": 0.9912280701754386,
+      "f1": 0.9931640625000001,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.008729388942774006,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.004849660523763337,
+      "by_group": {
+        "personal": {
+          "correct": 88
+        },
+        "contact": {
+          "correct": 54
+        },
+        "address": {
+          "correct": 144
+        },
+        "languages": {
+          "correct": 68
+        },
+        "licenses": {
+          "correct": 33,
+          "missing": 3
+        },
+        "skills": {
+          "correct": 115,
+          "missing": 5
+        },
+        "software": {
+          "correct": 101
+        },
+        "certificates": {
+          "correct": 10
+        },
+        "education": {
+          "correct": 155
+        },
+        "employment": {
+          "correct": 249,
+          "wrong": 5,
+          "missing": 1
+        }
+      },
+      "n_missing": 9,
+      "n_hallucinated": 0,
+      "n_wrong": 5,
+      "missing_fields": [
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_03",
+          "field": "license:1",
+          "expected": "C1"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_008",
+          "field": "license:1",
+          "expected": "C1"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:0",
+          "expected": "Schichtübergabe"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:1",
+          "expected": "Qualitätsprüfung"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:2",
+          "expected": "Instandhaltung"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:3",
+          "expected": "Bestandsprüfung"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:4",
+          "expected": "Montageplanung"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_020",
+          "field": "license:1",
+          "expected": "C1"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_028",
+          "field": "employment:0.company",
+          "expected": "Nordlicht Manufaktur"
+        }
+      ],
+      "hallucinated_fields": [],
+      "wrong_fields": [
+        {
+          "document": "MINI_HOLDOUT_30__MH_005",
+          "field": "employment:0.end_date",
+          "status": "wrong",
+          "expected": "heute",
+          "actual": "09/2022"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_009",
+          "field": "employment:0.end_date",
+          "status": "wrong",
+          "expected": "heute",
+          "actual": "09/2022"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_017",
+          "field": "employment:0.end_date",
+          "status": "wrong",
+          "expected": "heute",
+          "actual": "09/2022"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_021",
+          "field": "employment:0.end_date",
+          "status": "wrong",
+          "expected": "heute",
+          "actual": "09/2022"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_029",
+          "field": "employment:0.end_date",
+          "status": "wrong",
+          "expected": "heute",
+          "actual": "09/2022"
+        }
+      ],
+      "perfect_core": "21/31",
+      "n_documents": 31,
+      "metric_name": "COMPLETE_GT_ONLY_V3"
+    },
+    "en": {
+      "field_total": 203,
+      "counts": {
+        "correct": 198,
+        "missing": 5,
+        "hallucinated": 0,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9753694581280788,
+      "precision": 1.0,
+      "recall": 0.9753694581280788,
+      "f1": 0.9875311720698255,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.024630541871921183,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "by_group": {
+        "personal": {
+          "correct": 22
+        },
+        "address": {
+          "correct": 41
+        },
+        "languages": {
+          "correct": 22
+        },
+        "licenses": {
+          "correct": 10
+        },
+        "contact": {
+          "correct": 10
+        },
+        "education": {
+          "correct": 20
+        },
+        "employment": {
+          "correct": 42,
+          "missing": 3
+        },
+        "skills": {
+          "correct": 18
+        },
+        "software": {
+          "correct": 12,
+          "missing": 2
+        },
+        "certificates": {
+          "correct": 1
+        }
+      },
+      "n_missing": 5,
+      "n_hallucinated": 0,
+      "n_wrong": 0,
+      "missing_fields": [
+        {
+          "document": "MINI_HOLDOUT_30__MH_024",
+          "field": "employment:0.position",
+          "expected": "Conservation Assistant"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_024",
+          "field": "employment:1.position",
+          "expected": "Projektassistenz"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_024",
+          "field": "employment:2.position",
+          "expected": "Aushilfe"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_025",
+          "field": "software:0",
+          "expected": "Minitab"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_025",
+          "field": "software:1",
+          "expected": "Qlik Sense"
+        }
+      ],
+      "hallucinated_fields": [],
+      "wrong_fields": [],
+      "perfect_core": "7/9",
+      "n_documents": 9,
+      "metric_name": "COMPLETE_GT_ONLY_V3"
+    }
+  },
+  "real_errors_on_complete_gt": [
+    {
+      "document": "SMOKE_DE_EN_10_V1__DE_03",
+      "lang": "de",
+      "field": "license:1",
+      "group": "licenses",
+      "status": "missing",
+      "expected": "C1",
+      "actual": [
+        "B"
+      ]
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_005",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "heute",
+      "actual": "09/2022"
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_008",
+      "lang": "de",
+      "field": "license:1",
+      "group": "licenses",
+      "status": "missing",
+      "expected": "C1",
+      "actual": [
+        "B"
+      ]
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_009",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "heute",
+      "actual": "09/2022"
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_017",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "heute",
+      "actual": "09/2022"
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:0",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Schichtübergabe",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:1",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Qualitätsprüfung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:2",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Instandhaltung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:3",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Bestandsprüfung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:4",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Montageplanung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_020",
+      "lang": "de",
+      "field": "license:1",
+      "group": "licenses",
+      "status": "missing",
+      "expected": "C1",
+      "actual": [
+        "B"
+      ]
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_021",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "heute",
+      "actual": "09/2022"
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_024",
+      "lang": "en",
+      "field": "employment:0.position",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Conservation Assistant",
+      "actual": null
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_024",
+      "lang": "en",
+      "field": "employment:1.position",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Projektassistenz",
+      "actual": null
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_024",
+      "lang": "en",
+      "field": "employment:2.position",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Aushilfe",
+      "actual": null
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_025",
+      "lang": "en",
+      "field": "software:0",
+      "group": "software",
+      "status": "missing",
+      "expected": "Minitab",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_025",
+      "lang": "en",
+      "field": "software:1",
+      "group": "software",
+      "status": "missing",
+      "expected": "Qlik Sense",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_028",
+      "lang": "de",
+      "field": "employment:0.company",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Nordlicht Manufaktur",
+      "actual": ""
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_029",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "heute",
+      "actual": "09/2022"
+    }
+  ],
+  "error_status_counts": {
+    "missing": 14,
+    "wrong": 5
+  },
+  "error_group_counts": {
+    "licenses": 3,
+    "employment": 9,
+    "skills": 5,
+    "software": 2
+  }
+}

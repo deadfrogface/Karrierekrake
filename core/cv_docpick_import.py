@@ -723,8 +723,8 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         )
     work = _fix_employment_pipe(work)
     work = _merge_split_employment(work)
-    if source_text:
-        work = _repair_invented_heute(work, source_text)
+    # Note: auto-replacing LLM ``heute`` from nearby dated ranges over-corrected
+    # true current jobs (Round5: 5× expected heute → wrong MM/YYYY). Left disabled.
     edu = []
     for e in data.get("education") or []:
         if not isinstance(e, dict):

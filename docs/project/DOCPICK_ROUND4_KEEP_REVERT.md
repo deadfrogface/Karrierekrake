@@ -26,7 +26,7 @@ Normalisierung `_norm_period_end` / Scorer: **nicht** die Ursache der neuen DOB-
 | Address-Enrich aus Header | **KEEP** | UK/CH/City |
 | MM/YYYY-Norm Employment | **KEEP** | Datumsform |
 | DOB-Enrich aus Text | **KEEP (neu)** | repariert Prompt-Schaden allgemein |
-| heute-Repair aus Datumsrange im Text | **KEEP (neu)** | nur wenn datiertes Ende sichtbar |
+| heute-Repair aus Datumsrange im Text | **REVERT** | Round5: 5× true heute→falsches Datum |
 | `normalize_driving_license` (DET-Helfer, kein Import) | **KEEP (neu)** | Lizenz-Codes |
 | UI Fail-fast / Progress | **KEEP** | UX, keine Qualitätsregression |
 | Compact „Dates MM/YYYY“ Prompt | **REVERT** | DOB-Regression |
