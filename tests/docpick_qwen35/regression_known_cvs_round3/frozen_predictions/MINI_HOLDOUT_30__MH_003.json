@@ -1,0 +1,87 @@
+{
+  "personal": {
+    "first_name": "Célina",
+    "last_name": "Wouters",
+    "street": "Bautzner Straße 39",
+    "house_number": "",
+    "postal_code": "02763",
+    "city": "Zittau",
+    "country": "Deutschland",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "celina.wouters@example.de"
+  ],
+  "phones": [
+    "+49 154 4118002"
+  ],
+  "languages": [
+    {
+      "language": "Niederländisch",
+      "level": "C1"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Hochschule Zittau",
+      "qualification": "Fachhochschulreife",
+      "start_date": "2010",
+      "end_date": "2013"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Chirurgiemechanikerin",
+      "company": "Mosaik Dienste AG",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Nordlicht Manufaktur",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Brückenbau West GmbH",
+      "start_date": "04/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Protokollführung",
+    "Technische Recherche",
+    "Prozessüberwachung",
+    "Gefahrstoffmanagement",
+    "Probenahme"
+  ],
+  "software": [
+    "Oracle NetSuite",
+    "RStudio",
+    "ZBrush",
+    "Qlik Sense"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_003.pdf",
+  "raw_text_chars": 966,
+  "raw_text_preview": "<!-- image -->\n\nBautzner Straße 39 | 02763 Zittau | Deutschland · celina.wouters@example.de · +49 154 4118002\n\n## Berufserfahrung\n\n| 02/2019 08/2021   | Chirurgiemechanikerin Mosaik Dienste AG Protokollführung · Technische Recherche   |\n|-------------------|-----------------------------------------------------------------------------------|\n| 03/2020 09/2022   | Projektassistenz Nordlicht Manufaktur Prozessüberwachung · Gefahrstoffmanagement  |\n| 04/2021 10/2023   | Aushilfe Brückenbau West GmbH",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_003",
+  "regression_lang": "de"
+}

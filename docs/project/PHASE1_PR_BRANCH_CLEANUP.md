@@ -1,6 +1,6 @@
 # Phase 1 – PR/Branch-Bereinigung
 
-Stand: Tip `82ad289` auf `cursor/docpick-qwen35-cv-replace-d85b` (Integrationsziel für Docpick, PR #62).
+Stand: siehe `ABSCHLUSSBERICHT_DOCPICK_PHASEN.md` (Tip `2e5fb03`, PR #62).
 
 ## Import-Pfad (verifiziert)
 
@@ -9,28 +9,25 @@ Stand: Tip `82ad289` auf `cursor/docpick-qwen35-cv-replace-d85b` (Integrationszi
 | **main** | `import_cv_canonical` → `parse_cv_text` (DET) | **aktiv** |
 | **#62 Branch** | `import_cv_canonical` → `import_cv_docpick` | **kein Fallback** |
 
-UI auf dem Branch: `desktop/workers.py` / `cv_import_dialog.py` → `core.cv_parser.import_cv` → Canonical → Docpick.
-
 **Nicht behaupten:** Docpick ist produktiv auf main, solange #62 nicht gemerged ist.
 
 ## Offene PRs – Entscheidung
 
 | PR | Inhalt | Entscheidung |
 |----|--------|--------------|
-| **#62** | Docpick+Qwen CV-Import | **behalten / Integrationsziel**; Merge blockiert bis CI grün + Qualität/Laufzeit akzeptiert |
-| **#63** | UI Primary Actions Polish | **offen lassen** (unabhängig, MERGEABLE); nicht blockierend für Parser |
-| **#61** | Docling+SmartResume Prototyp (Gate failed) | **schließen** – überholt durch #62 |
-| **#60** | Phi vs DET Compare | **schließen** – Phi-Extract aus Produktion entfernt; DET bleibt nur auf main bis #62 |
-| **#56** | Phi EXTRACT/WRITE ≥99% | **schließen** – PHI_EXTRACT entfernt; WRITE bleibt unabhängig |
+| **#62** | Docpick+Qwen CV-Import | **behalten / Integrationsziel** |
+| **#63** | UI Primary Actions Polish | **offen lassen**; CI-Fix `1c5f550` gepusht; Merge erst bei grüner CI |
+| **#61** | Docling+SmartResume Spike | **schließen** – überholt durch #62 |
+| **#60** | Phi vs DET Compare | **schließen** – Phi-Extract entfernt |
+| **#56** | Phi EXTRACT/WRITE ≥99% | **schließen** – PHI_EXTRACT entfernt |
 
-## Merge-Blocker für #62 (explizit)
+**Close durch Agent:** fehlgeschlagen (HTTP 403 / kein ManagePullRequest).  
+Texte: `docs/project/PR_CLOSE_COMMENTS_56_60_61.md`.
 
-1. Qualität: Round2 F1 0,989; Round3 Partial ≈0,993 (18/40) – beides bekannte CVs, **kein** Blind-0,99
-2. Blindtest-Blocker: kein unberührter DE/EN-Korpus mit voller GT (`DOCPICK_BLIND_BLOCKER.md`)
-3. Laufzeit: LLM ~100 s/CV, Peak ~3,2 GB – Grenzen für Blindtest noch festzulegen
-4. Abhängigkeiten: lokales llama.cpp + Qwen-Modell + Docling (nicht in Standard-CI)
-5. Round3 voller Seal+Score noch ausstehend (Extract läuft)
+## Merge-Blocker für #62
 
-## Branches
-
-Arbeitsbranches der geschlossenen Spike-PRs bleiben remote, bis Commits nicht mehr referenziert werden; Löschung optional nach Close.
+1. Qualität: Round2 F1 0,989; Round3 Partial ≈0,990 (36/40) — bekannte CVs, **kein** Blind-0,99
+2. Blindtest-Blocker: `DOCPICK_BLIND_BLOCKER.md`
+3. Laufzeit: LLM ~100 s/CV, Peak ~2,5–3,2 GB
+4. Round3 voller Seal+Score noch ausstehend (Extract läuft)
+5. Abhängigkeiten: lokales llama.cpp + Qwen + Docling (nicht in Standard-CI)

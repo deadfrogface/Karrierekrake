@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Youssef",
+    "last_name": "Martens",
+    "street": "Karl-Liebknecht-Straße",
+    "house_number": "120",
+    "postal_code": "03046",
+    "city": "Cottbus",
+    "country": "Deutschland",
+    "date_of_birth": "23.04.1997"
+  },
+  "emails": [],
+  "phones": [
+    "+49 155 4289021"
+  ],
+  "languages": [
+    {
+      "language": "Französisch",
+      "level": "B2"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Fachschule Cottbus",
+      "qualification": "Mittlerer Schulabschluss",
+      "start_date": "2013",
+      "end_date": "2016"
+    },
+    {
+      "institution": "Bildungswerk Cottbus",
+      "qualification": "Ausbildung Zahnradvorrichter",
+      "start_date": "2017",
+      "end_date": "2020"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Zahnradvorrichter",
+      "company": "TerraNova Labor e.V.",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Prozessüberwachung",
+    "Schadensanalyse",
+    "Probenahme",
+    "Instandhaltung"
+  ],
+  "software": [
+    "PostgreSQL - Grundlagen",
+    "Inkscape - gute Kenntnisse",
+    "Minitab - sehr gut"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_022.pdf",
+  "raw_text_chars": 681,
+  "raw_text_preview": "## Youssef Martens\n\nKarl-Liebknecht-Straße 120 | 03046 Cottbus | Deutschland · +49 155 4289021 · Geburtsdatum: 23.04.1997\n\n## Sprachkenntnisse &amp; Führerschein\n\nFranzösisch: B2\n\nEnglisch: B1\n\nFührerschein: B\n\n## Programme und Werkzeuge\n\nPostgreSQL - Grundlagen\n\nInkscape - gute Kenntnisse\n\nMinitab - sehr gut\n\n## Fachkompetenzen\n\nProzessüberwachung\n\nSchadensanalyse\n\nProbenahme\n\nInstandhaltung\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Zahnradvorrichter | TerraNova Labor e.V. Prozessüberwachung · Sch",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_022",
+  "regression_lang": "de"
+}

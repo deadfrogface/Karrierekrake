@@ -1,0 +1,78 @@
+{
+  "personal": {
+    "first_name": "Nevio",
+    "last_name": "Carlsen",
+    "street": "Rue Serpenoise",
+    "house_number": "105",
+    "postal_code": "57000",
+    "city": "Metz",
+    "country": "Frankreich",
+    "date_of_birth": "15.08.1977"
+  },
+  "emails": [
+    "nevio.carlsen@example.de"
+  ],
+  "phones": [
+    "+49 153 4217013"
+  ],
+  "languages": [
+    {
+      "language": "Polnisch",
+      "level": "B1"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Fachschule Metz",
+      "qualification": "Allgemeine Hochschulreife",
+      "start_date": "2013",
+      "end_date": "2016"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Ofenbauer",
+      "company": "TerraNova Labor e.V.",
+      "start_date": "2019-02",
+      "end_date": "2021-08",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Hafenring Logistik OHG",
+      "start_date": "2020-03",
+      "end_date": "2022-09",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Messmittelverwaltung",
+    "Lieferantenkoordination",
+    "Materialdisposition",
+    "Gefahrstoffmanagement"
+  ],
+  "software": [
+    "GIMP",
+    "EPLAN Electric P8",
+    "SAP MM"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_014.pdf",
+  "raw_text_chars": 744,
+  "raw_text_preview": "## Nevio Carlsen\n\nRue Serpenoise 105 | 57000 Metz | Frankreich · nevio.carlsen@example.de · +49 153 4217013 · Geburtsdatum: 15.08.1977\n\n## Sprachkenntnisse &amp; Führerschein\n\nPolnisch: B1\n\nEnglisch: B1\n\n## Programme und Werkzeuge\n\nGIMP - Grundlagen\n\nEPLAN Electric P8 - gute Kenntnisse\n\nSAP MM - sehr gut\n\n## Fachkompetenzen\n\nMessmittelverwaltung\n\nLieferantenkoordination\n\nMaterialdisposition\n\nGefahrstoffmanagement\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Ofenbauer | TerraNova Labor e.V. Messmittelv",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_014",
+  "regression_lang": "de"
+}

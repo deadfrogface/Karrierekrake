@@ -1,6 +1,6 @@
 # Phase 2 – Desktop- und CV-Performance
 
-Stand: unverändert gültig für PR #62 Tip `82ad289` (siehe Abschlussbericht).
+Stand: gültig für PR #62 (siehe Abschlussbericht).  
 Messdaten: `artifacts/perf_phase2/BASELINE.json` (offscreen, gleiche Hardware wie Agent-VM).
 
 ## Vorher (bekannter Engpass)
@@ -28,7 +28,7 @@ Messdaten: `artifacts/perf_phase2/BASELINE.json` (offscreen, gleiche Hardware wi
 
 ## Weiterhin langsam
 
-- **LLM-Inferenz auf CPU** (~100 s/CV) bleibt der Bottleneck; kein Qualitäts-Trade-off in Phase 2 erzwungen.
+- **LLM-Inferenz auf CPU** (~100 s/CV) bleibt der Bottleneck.
 - Kaltstart Docling + RapidOCR (~2,2 GB RSS-Delta) beim ersten PDF im Prozess.
 
 ## Nicht behauptet

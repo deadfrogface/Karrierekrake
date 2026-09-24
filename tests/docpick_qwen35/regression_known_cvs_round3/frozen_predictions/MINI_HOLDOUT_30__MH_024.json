@@ -1,0 +1,89 @@
+{
+  "personal": {
+    "first_name": "Alistair",
+    "last_name": "Perry",
+    "street": "Oxfordstraße 33",
+    "house_number": "",
+    "postal_code": "53111",
+    "city": "Bonn",
+    "country": "Deutschland",
+    "date_of_birth": "25.06.1985"
+  },
+  "emails": [
+    "alistair.perry@example.co.uk"
+  ],
+  "phones": [
+    "+49 157 4307023"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "native"
+    },
+    {
+      "language": "German",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Bristol Technical College",
+      "qualification": "Allgemeine Hochschulreife",
+      "start_date": "2015",
+      "end_date": "2018"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "",
+      "company": "Albatros Systeme GmbH",
+      "start_date": "2019-02",
+      "end_date": "2021-08",
+      "responsibilities": []
+    },
+    {
+      "title": "",
+      "company": "Seestern Produktion GmbH",
+      "start_date": "2020-03",
+      "end_date": "2022-09",
+      "responsibilities": []
+    },
+    {
+      "title": "",
+      "company": "Kronenwerk Technik KG",
+      "start_date": "2021-04",
+      "end_date": "2023-10",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Montageplanung",
+    "Probenahme",
+    "Schadensanalyse",
+    "Schichtübergabe",
+    "Qualitätsprüfung",
+    "Dokumentenlenkung"
+  ],
+  "software": [
+    "ZBrush",
+    "Oracle NetSuite",
+    "Inkscape",
+    "Minitab",
+    "PostgreSQL"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_024.pdf",
+  "raw_text_chars": 857,
+  "raw_text_preview": "<!-- image -->\n\nOxfordstraße 33 | 53111 Bonn | Deutschland · alistair.perry@example.co.uk · +49 157 4307023 · Born: 25.06.1985\n\n## Professional Experience\n\n02/2019 - 08/2021 Conservation Assistant | Albatros Systeme GmbH Montageplanung · Probenahme 03/2020 - 09/2022 Projektassistenz | Seestern Produktion GmbH Schadensanalyse · Schichtübergabe 04/2021 - 10/2023 Aushilfe | Kronenwerk Technik KG\n\nQualitätsprüfung · Dokumentenlenkung\n\n## Education\n\n2015 - 2018 Allgemeine Hochschulreife | Bristol Tec",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_024",
+  "regression_lang": "en"
+}
