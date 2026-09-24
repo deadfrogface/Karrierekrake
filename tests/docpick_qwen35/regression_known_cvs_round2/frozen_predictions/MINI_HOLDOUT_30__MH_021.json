@@ -1,0 +1,89 @@
+{
+  "personal": {
+    "first_name": "Wanda",
+    "last_name": "Lopez",
+    "street": "Wallstraße",
+    "house_number": "103",
+    "postal_code": "48683",
+    "city": "Ahaus",
+    "country": "Deutschland",
+    "date_of_birth": "22.09.1986"
+  },
+  "emails": [
+    "wanda.lopez@example.de"
+  ],
+  "phones": [
+    "+49 154 4280020"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufsschule Ahaus",
+      "qualification": "Berufsreife",
+      "start_date": "2012",
+      "end_date": "2015"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Werkfeuerwehrfrau",
+      "company": "Brückenbau West GmbH",
+      "start_date": "2019-02",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "TerraNova Labor e.V.",
+      "start_date": "2020-03",
+      "end_date": "2022-09",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Hafenring Logistik OHG",
+      "start_date": "2021-04",
+      "end_date": "2023-10",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Kundenkommunikation",
+    "Messmittelverwaltung",
+    "Schichtübergabe"
+  ],
+  "software": [
+    "Qlik Sense - Grundlagen",
+    "Bentley MicroStation - gute Kenntnisse"
+  ],
+  "certificates": [
+    {
+      "name": "Arbeitssicherheit 2021",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_021.pdf",
+  "raw_text_chars": 850,
+  "raw_text_preview": "## Wanda Lopez\n\nWallstraße 103 | 48683 Ahaus | Deutschland · wanda.lopez@example.de · +49 154 4280020 · Geburtsdatum: 22.09.1986\n\n## Berufserfahrung\n\n02/2019 - heute\n\nWerkfeuerwehrfrau | Brückenbau West GmbH Kundenkommunikation · Messmittelverwaltung\n\n03/2020 - 09/2022 Projektassistenz | TerraNova Labor e.V. Schichtübergabe · Kundenkommunikation\n\n04/2021 - 10/2023 Aushilfe | Hafenring Logistik OHG Messmittelverwaltung · Schichtübergabe\n\n## Schule und Ausbildung\n\n2012 - 2015\n\nBerufsreife | Berufs",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_021",
+  "regression_lang": "de"
+}

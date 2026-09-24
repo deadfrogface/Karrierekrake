@@ -442,8 +442,8 @@
           "group": "contact",
           "status": "wrong",
           "critical": true,
-          "expected": "greta.horváth@example.de",
-          "actual": "th@example.de"
+          "expected": "greta.horváth@example.com",
+          "actual": "th@example.com"
         },
         {
           "field": "address.country",

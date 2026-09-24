@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "Giselle",
+    "last_name": "Papadopoulos",
+    "street": "",
+    "house_number": "",
+    "postal_code": "",
+    "city": "Cottbus",
+    "country": "Deutschland",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "giselle.papadopoulos@example.de"
+  ],
+  "phones": [
+    "+49 152 4154006"
+  ],
+  "languages": [
+    {
+      "language": "Griechisch",
+      "level": "C1"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Hochschule Cottbus",
+      "qualification": "Bachelor of Engineering",
+      "start_date": "2014",
+      "end_date": "2017"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Kundenkommunikation · Dokumentenlenkung",
+      "company": "Glasveredlerin Hafenring Logistik OHG",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Kundenkommunikation",
+    "Dokumentenlenkung",
+    "Technische Recherche",
+    "Schadensanalyse",
+    "Schichtübergabe"
+  ],
+  "software": [
+    "ZBrush",
+    "Tableau",
+    "LibreOffice Calc",
+    "Microsoft Project"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_007.pdf",
+  "raw_text_chars": 766,
+  "raw_text_preview": "## Giselle Papadopoulos\n\nCottbus | Deutschland · giselle.papadopoulos@example.de · +49 152 4154006\n\n## Berufserfahrung\n\n| 02/2019 08/2021   | Glasveredlerin Hafenring Logistik OHG Kundenkommunikation · Dokumentenlenkung   |\n|-------------------|---------------------------------------------------------------------------------|\n\n## Schule und Ausbildung\n\n2014 - 2017\n\nBachelor of Engineering | Hochschule Cottbus\n\n## Sprachkenntnisse &amp; Führerschein\n\nGriechisch: C1\n\nEnglisch: B2\n\nFührerschein: B\n",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_007",
+  "regression_lang": "de"
+}

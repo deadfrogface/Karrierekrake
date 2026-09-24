@@ -1628,24 +1628,17 @@ def _looks_like_software(value: str) -> bool:
 
 
 def parse_cv_text(text: str) -> dict[str, Any]:
-    """REMOVED from production.
+    """Offline / unit-test DET rule parser.
 
-    Legacy DET rule parser. Productive import uses
-    ``core.cv_docpick_import.import_cv_docpick`` only.
-    Recoverable via git history; not a silent fallback.
+    **Not** used by productive CV import. Production path is
+    ``core.cv_docpick_import.import_cv_docpick`` via ``import_cv`` /
+    ``import_cv_canonical`` only — there is no automatic DET fallback.
     """
-    raise RuntimeError(
-        "DET parse_cv_text was removed from the productive CV import. "
-        "Use core.cv_parser.import_cv / core.cv_docpick_import.import_cv_docpick. "
-        "No automatic DET fallback."
-    )
+    return _legacy_det_parse_cv_text_impl(text)
 
 
 def _legacy_parse_cv_text_det_REMOVED(text: str) -> dict[str, Any]:
-    """Archived DET body kept temporarily so git blame/history stays near code.
-
-    Not called from production. Will be deleted once the Docpick path is frozen.
-    """
+    """Alias kept for older offline scripts; same as ``parse_cv_text``."""
     return _legacy_det_parse_cv_text_impl(text)
 
 

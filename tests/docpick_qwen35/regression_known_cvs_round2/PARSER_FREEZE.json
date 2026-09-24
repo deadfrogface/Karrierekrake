@@ -1,0 +1,22 @@
+{
+  "seal_type": "PARSER_CONFIG_SCORER_FREEZE_ROUND2",
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "created_at": "2026-09-23T22:50:23.814470+00:00",
+  "git_commit": "72ea744b4bb9f8df7d6ebf824ee770b64797dc20",
+  "det_parse_cv_text_blocked": true,
+  "changes": [
+    "name_from_email",
+    "compact_llm_schema",
+    "docling_converter_cache"
+  ],
+  "llm": {
+    "base_url": "http://127.0.0.1:8765/v1",
+    "model_path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+  },
+  "file_sha256": {
+    "core/cv_docpick_import.py": "d7f4524c926f75e2346e38e750f26e84fa0451bcf27b595bed852b405448af1c",
+    "scripts/holdout_scorer_v3_1_date_norm.py": "33ccd073b5f9d470cc1c76808e326fdc67cbfb328f613d3a1bb690ddd6e86e4f",
+    "scripts/cv_date_normalize.py": "7c4e69ba0ab9d325110faf5b4fe66a417c4ccfd5e7a4be7273a93c148a520576"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "personal": {
+    "first_name": "Tobias",
+    "last_name": "Renner",
+    "street": "Am Stadtpark",
+    "house_number": "22b",
+    "postal_code": "90402",
+    "city": "Nürnberg",
+    "country": "",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "tobias.renner@example.com"
+  ],
+  "phones": [
+    "+49 176 99887766"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "C2"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    },
+    {
+      "language": "Tschechisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B BE",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Kaufmann für Spedition und Logistikdienstleistung (IHI)",
+      "start_date": "2012",
+      "end_date": "2015"
+    },
+    {
+      "institution": "Realschule Nürnberg",
+      "qualification": "Mittlere Reife",
+      "start_date": "2008",
+      "end_date": "2012"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Operations Analyst",
+      "company": "Franken Logistik Solutions GmbH",
+      "start_date": "02.2024",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Disponent",
+      "company": "SüdCargo KG",
+      "start_date": "06.2021",
+      "end_date": "01.2024",
+      "responsibilities": []
+    },
+    {
+      "title": "Kaufmännischer Sachbearbeiter",
+      "company": "Bavaria Handel GmbH",
+      "start_date": "01.2018",
+      "end_date": "05.2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Service Mitarbeiter",
+      "company": "MesseService Nürnberg GmbH",
+      "start_date": "08.2015",
+      "end_date": "12.2017",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Disposition",
+    "Logistik",
+    "Zoll",
+    "KPI-Reporting",
+    "Bestandsmanagement",
+    "Lieferantenkontakt",
+    "Reklamationsbearbeitung"
+  ],
+  "software": [
+    "Excel",
+    "Power Query",
+    "Power BI",
+    "SAP TM",
+    "Outlook",
+    "Teams"
+  ],
+  "certificates": [
+    {
+      "name": "Lean Management Basics",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Excel Pivot & Power Query",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Arbeitssicherheit 2025",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Grundlagen Zollabwicklung",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/DE_05_Zweiseitig.pdf",
+  "raw_text_chars": 1499,
+  "raw_text_preview": "## Bewerbungsprofil\n\n## Tobias Renner\n\nAm Stadtpark 22b, 90402 Nürnberg tobias.renner@example.com | +49 176 99887766\n\n## Erfahrung\n\n## 02.2024 - heute | Operations Analyst | Franken Logistik Solutions GmbH\n\nDisposition, Reporting, Kundenkontakt, Datenpflege und Prozesskoordination\n\n## 06.2021 - 01.2024 | Disponent | SüdCargo KG\n\nDisposition, Reporting, Kundenkontakt, Datenpflege und Prozesskoordination\n\n## 01.2018 - 05.2021 | Kaufmännischer Sachbearbeiter | Bavaria Handel GmbH\n\nDisposition, Repo",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "DE_05",
+  "regression_lang": "de"
+}

@@ -1,0 +1,82 @@
+{
+  "personal": {
+    "first_name": "Saskia",
+    "last_name": "Fadel",
+    "street": "Tumringer Straße",
+    "house_number": "35",
+    "postal_code": "79539",
+    "city": "Lörrach",
+    "country": "Deutschland",
+    "date_of_birth": "18.05.1976"
+  },
+  "emails": [
+    "saskia.fadel@example.de"
+  ],
+  "phones": [
+    "+49 156 4244016"
+  ],
+  "languages": [
+    {
+      "language": "Griechisch",
+      "level": "C1"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufsschule Lörrach",
+      "qualification": "Bachelor of Engineering",
+      "start_date": "2008",
+      "end_date": "2011"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Straßenwärterin",
+      "company": "Seestern Produktion GmbH",
+      "start_date": "02/2019",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Kronenwerk Technik KG",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Bestandsprüfung",
+    "Probenahme",
+    "Prozessüberwachung"
+  ],
+  "software": [
+    "Bentley MicroStation",
+    "Tableau"
+  ],
+  "certificates": [
+    {
+      "name": "Arbeitssicherheit 2022",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_017.pdf",
+  "raw_text_chars": 715,
+  "raw_text_preview": "## Saskia Fadel\n\nTumringer Straße 35 | 79539 Lörrach | Deutschland · saskia.fadel@example.de · +49 156 4244016 · Geburtsdatum: 18.05.1976\n\n## Berufserfahrung\n\n02/2019 - heute\n\nStraßenwärterin | Seestern Produktion GmbH Bestandsprüfung · Probenahme 03/2020 - 09/2022 Projektassistenz | Kronenwerk Technik KG\n\nProzessüberwachung · Bestandsprüfung\n\n## Schule und Ausbildung\n\n2008 - 2011\n\nBachelor of Engineering | Berufsschule Lörrach\n\n## Sprachkenntnisse &amp; Führerschein\n\nGriechisch: C1\n\nEnglisch: A",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_017",
+  "regression_lang": "de"
+}

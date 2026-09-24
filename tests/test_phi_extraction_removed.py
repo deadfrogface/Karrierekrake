@@ -69,11 +69,36 @@ def _sample_cv(
 def _assert_no_phi(parsed: dict, mock: MagicMock | None = None) -> None:
     assert parsed.get("phi_extract_call_count") == 0
     assert parsed.get("phi_invoked") is False
-    assert parsed.get("intelligence_status") == "deterministic_only"
+    assert parsed.get("intelligence_status") in {
+        "deterministic_only",  # historical DET-only label
+        "docpick_qwen35",
+    }
     if mock is not None:
         mock.suggest_cv_extract.assert_not_called()
         if hasattr(mock, "suggest_cv_extract_split"):
             mock.suggest_cv_extract_split.assert_not_called()
+
+
+@pytest.fixture(autouse=True)
+def _stub_docpick_offline(monkeypatch):
+    """Unit tests use text fixtures; stub Docpick so CI needs no Docling/LLM.
+
+    Production import still routes through import_cv_docpick — never parse_cv_text.
+    """
+
+    def _fake_docpick(path):
+        p = Path(path)
+        text = p.read_text(encoding="utf-8") if p.is_file() else ""
+        parsed = parse_cv_text(text)
+        parsed["source_path"] = str(path)
+        parsed["pipeline"] = "docpick_qwen35_4b"
+        parsed["intelligence_status"] = "docpick_qwen35"
+        parsed["phi_invoked"] = False
+        parsed["phi_extract_call_count"] = 0
+        parsed["intelligence_notes"] = list(parsed.get("intelligence_notes") or [])
+        return parsed
+
+    monkeypatch.setattr("core.cv_docpick_import.import_cv_docpick", _fake_docpick)
 
 
 @pytest.fixture
@@ -117,6 +142,7 @@ def test_04_english_cv_never_calls_phi(tmp_path, phi_spy):
 
 
 def test_05_validator_error_never_calls_phi(tmp_path, phi_spy):
+    """Docpick path does not run DET verify/repair; Phi must still stay off."""
     p = tmp_path / "cv.txt"
     p.write_text(_sample_cv(), encoding="utf-8")
 
@@ -126,8 +152,8 @@ def test_05_validator_error_never_calls_phi(tmp_path, phi_spy):
     with patch("core.cv_verify_repair.apply_verify_repair_pipeline", side_effect=boom):
         parsed = import_cv_canonical(p, guenther_enabled=True, guenther_service=phi_spy)
     _assert_no_phi(parsed, phi_spy)
-    notes = " ".join(parsed.get("intelligence_notes") or [])
-    assert "verify_repair_error" in notes
+    # Production Docpick import must not depend on DET verify/repair.
+    assert parsed.get("pipeline") == "docpick_qwen35_4b"
 
 
 def test_06_missing_required_fields_never_calls_phi(tmp_path, phi_spy):
@@ -144,15 +170,40 @@ def test_07_low_confidence_never_calls_phi(tmp_path, phi_spy):
     _assert_no_phi(parsed, phi_spy)
 
 
-def test_08_det_exception_never_falls_back_to_phi(tmp_path, phi_spy):
+def test_08_docpick_exception_never_falls_back_to_phi(tmp_path, phi_spy):
     p = tmp_path / "cv.txt"
     p.write_text(_sample_cv(), encoding="utf-8")
 
-    with patch("core.cv_intelligence.parse_cv_text", side_effect=ValueError("det_crash")):
-        with pytest.raises(ValueError, match="det_crash"):
+    with patch(
+        "core.cv_docpick_import.import_cv_docpick",
+        side_effect=ValueError("docpick_crash"),
+    ):
+        with pytest.raises(ValueError, match="docpick_crash"):
             import_cv_canonical(p, guenther_enabled=True, guenther_service=phi_spy)
     phi_spy.suggest_cv_extract.assert_not_called()
 
+
+def test_08b_import_never_calls_det_parse_cv_text(tmp_path, phi_spy, monkeypatch):
+    """Productive import must not invoke DET parse_cv_text (no silent fallback)."""
+    p = tmp_path / "cv.txt"
+    p.write_text(_sample_cv(), encoding="utf-8")
+
+    def _fake_docpick(_path):
+        return {
+            "pipeline": "docpick_qwen35_4b",
+            "intelligence_status": "docpick_qwen35",
+            "phi_invoked": False,
+            "phi_extract_call_count": 0,
+            "skills": ["Excel"],
+            "work_experience": [],
+            "source_path": str(p),
+        }
+
+    monkeypatch.setattr("core.cv_docpick_import.import_cv_docpick", _fake_docpick)
+    with patch("core.cv_parser.parse_cv_text", side_effect=AssertionError("DET must not run")):
+        parsed = import_cv_canonical(p, guenther_enabled=True, guenther_service=phi_spy)
+    assert parsed.get("pipeline") == "docpick_qwen35_4b"
+    _assert_no_phi(parsed, phi_spy)
 
 def test_09_legacy_enable_phi_fallback_config_ignored(tmp_path, phi_spy, monkeypatch):
     """Old config keys must not reactivate PHI_EXTRACT."""
