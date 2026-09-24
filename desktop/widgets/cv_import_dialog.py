@@ -1,4 +1,8 @@
-"""CV import confirmation dialog — Replace (default) or Merge with preview & conflicts."""
+"""CV import confirmation dialog — Replace (default) or Merge with preview & conflicts.
+
+Docpick extraction runs on a background QThread so the UI stays responsive.
+DET is never used as a fallback.
+"""
 
 from __future__ import annotations
 
@@ -13,13 +17,14 @@ from PySide6.QtWidgets import (
     QGroupBox,
     QLabel,
     QMessageBox,
+    QProgressBar,
     QRadioButton,
     QTextEdit,
     QVBoxLayout,
 )
 
 from core.config import ApplicationProfile, QualificationsConfig
-from core.cv_parser import import_cv, parsed_to_qualifications
+from core.cv_parser import parsed_to_qualifications
 from desktop.i18n import tr
 from desktop.services.profile_merge import (
     ImportMode,
@@ -35,6 +40,7 @@ from desktop.services.profile_merge import (
     sync_application_summaries,
 )
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen
+from desktop.workers import CvImportWorker, connect_queued, start_worker
 
 
 class CvImportDialog(QDialog):
@@ -48,6 +54,7 @@ class CvImportDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(tr("cv_import.title"))
         self.setMinimumSize(480, 360)
+        self.cv_path = Path(cv_path)
         self.existing = existing
         self.application = application
         self.incoming: QualificationsConfig | None = None
@@ -58,6 +65,8 @@ class CvImportDialog(QDialog):
         self.result_application: ApplicationProfile | None = None
         self.import_mode: ImportMode = "replace"
         self._conflict_widgets: dict[str, QComboBox] = {}
+        self._worker: CvImportWorker | None = None
+        self._thread = None
 
         self.mode_replace = QRadioButton(tr("cv_import.mode_replace"))
         self.mode_merge = QRadioButton(tr("cv_import.mode_merge"))
@@ -75,36 +84,60 @@ class CvImportDialog(QDialog):
         mode_layout.addWidget(self.mode_merge)
         mode_layout.addWidget(self.mode_hint)
 
+        self.status_label = QLabel(tr("cv_import.extracting"))
+        self.status_label.setWordWrap(True)
+        self.progress = QProgressBar()
+        self.progress.setRange(0, 0)  # indeterminate while extracting
+        self.progress.setTextVisible(False)
+
         self.preview = QTextEdit()
         self.preview.setReadOnly(True)
+        self.preview.setPlainText(tr("cv_import.extracting_hint"))
 
         self.conflict_box = QGroupBox(tr("cv_import.conflicts"))
         self.conflict_form = QFormLayout(self.conflict_box)
         self.conflict_box.setVisible(False)
 
-        buttons = QDialogButtonBox(
+        self.buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
-        buttons.button(QDialogButtonBox.StandardButton.Ok).setText(tr("cv_import.apply"))
-        buttons.accepted.connect(self._accept)
-        buttons.rejected.connect(self.reject)
+        self.ok_btn = self.buttons.button(QDialogButtonBox.StandardButton.Ok)
+        self.ok_btn.setText(tr("cv_import.apply"))
+        self.ok_btn.setEnabled(False)
+        self.buttons.accepted.connect(self._accept)
+        self.buttons.rejected.connect(self._on_reject)
 
         layout = QVBoxLayout(self)
         intro = QLabel(tr("cv_import.intro"))
         intro.setWordWrap(True)
         layout.addWidget(intro)
         layout.addWidget(mode_box)
+        layout.addWidget(self.status_label)
+        layout.addWidget(self.progress)
         layout.addWidget(QLabel(tr("cv_import.detected")))
         layout.addWidget(self.preview, 1)
         layout.addWidget(self.conflict_box)
-        layout.addWidget(buttons)
+        layout.addWidget(self.buttons)
 
+        fit_dialog_to_screen(self, preferred_width=760, preferred_height=640)
+        self._start_extract()
+
+    def _start_extract(self) -> None:
+        # Productive path: Docpick + Qwen3.5-4B only. No DET fallback.
+        self._worker = CvImportWorker(self.cv_path)
+        connect_queued(self._worker.progress, self._on_progress)
+        connect_queued(self._worker.finished, self._on_extracted)
+        connect_queued(self._worker.failed, self._on_extract_failed)
+        self._thread = start_worker(self._worker)
+
+    def _on_progress(self, msg: str) -> None:
+        self.status_label.setText(msg)
+
+    def _on_extracted(self, parsed: object) -> None:
+        self.progress.setRange(0, 1)
+        self.progress.setValue(1)
         try:
-            # Productive path: Docpick + Qwen3.5-4B only. No DET fallback.
-            # Günther/Phi must never run here — guenther_enabled is PHI_WRITE only.
-            self.parsed = filter_parsed_for_import(
-                import_cv(cv_path, guenther_enabled=False, manual_profile={})
-            )
+            self.parsed = filter_parsed_for_import(parsed if isinstance(parsed, dict) else {})
             if self.parsed.get("needs_manual_review"):
                 QMessageBox.information(
                     self,
@@ -113,17 +146,32 @@ class CvImportDialog(QDialog):
                 )
             self.incoming = parsed_to_qualifications(self.parsed)
             self.personal_incoming = personal_from_parsed(self.parsed)
+            self.status_label.setText(tr("cv_import.extract_done"))
+            self.ok_btn.setEnabled(True)
             self._refresh_preview()
         except Exception as exc:  # noqa: BLE001
-            QMessageBox.warning(
-                self,
-                tr("profile.cv"),
-                f"{tr('cv_import.read_error')}\n{exc}\n\n{tr('cv_import.manual_hint')}",
-            )
-            self.preview.setPlainText(str(exc))
-            self.parsed = None
-            self.incoming = None
-        fit_dialog_to_screen(self, preferred_width=760, preferred_height=640)
+            self._on_extract_failed(str(exc))
+
+    def _on_extract_failed(self, message: str) -> None:
+        self.progress.setRange(0, 1)
+        self.progress.setValue(0)
+        self.status_label.setText(tr("cv_import.read_error"))
+        self.preview.setPlainText(
+            f"{tr('cv_import.read_error')}\n{message}\n\n{tr('cv_import.manual_hint')}"
+        )
+        self.parsed = None
+        self.incoming = None
+        self.ok_btn.setEnabled(False)
+
+    def _on_reject(self) -> None:
+        if self._worker is not None:
+            self._worker.request_cancel()
+        self.reject()
+
+    def closeEvent(self, event) -> None:  # noqa: N802
+        if self._worker is not None:
+            self._worker.request_cancel()
+        super().closeEvent(event)
 
     def _current_mode(self) -> ImportMode:
         return "replace" if self.mode_replace.isChecked() else "merge"
@@ -229,7 +277,9 @@ class CvImportDialog(QDialog):
             box.addItem(tr("cv_import.keep_current"), "keep")
             box.setCurrentIndex(1)  # default: keep manual
             box.setToolTip(f"{c.current_value}  →  {c.incoming_value}")
-            label = QLabel(f"{c.label}\n{tr('cv_import.current')}: {c.current_value}\nCV: {c.incoming_value}")
+            label = QLabel(
+                f"{c.label}\n{tr('cv_import.current')}: {c.current_value}\nCV: {c.incoming_value}"
+            )
             label.setWordWrap(True)
             self.conflict_form.addRow(label, box)
             self._conflict_widgets[c.field] = box

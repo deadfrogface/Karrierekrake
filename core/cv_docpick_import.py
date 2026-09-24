@@ -72,16 +72,40 @@ class LanguageEntry(BaseModel):
 
 class EmploymentEntry(BaseModel):
     company: str | None = None
-    position: str | None = None
+    position: str | None = Field(
+        default=None,
+        description=(
+            "Job title / role only (e.g. Aquakulturwirtin, Project Assistant). "
+            "Never put duty bullet points or task lists here."
+        ),
+    )
     start_date: str | None = None
-    end_date: str | None = None
+    end_date: str | None = Field(
+        default=None,
+        description=(
+            "End date as printed, or the token 'heute' when the job is current "
+            "(Present, current, bis heute, ongoing, aujourd'hui)."
+        ),
+    )
 
 
 class EducationEntry(BaseModel):
     institution: str | None = None
-    qualification: str | None = None
+    qualification: str | None = Field(
+        default=None,
+        description=(
+            "Degree or school outcome as stated, including incomplete outcomes "
+            "(e.g. Studium abgebrochen, Schule ohne Abschluss, dropout)."
+        ),
+    )
     start_date: str | None = None
-    end_date: str | None = None
+    end_date: str | None = Field(
+        default=None,
+        description=(
+            "End date as printed, or 'ohne Abschluss' / 'heute' when the document "
+            "states that explicitly for this education entry."
+        ),
+    )
 
 
 class KarrierekrakeCVSchema(BaseModel):
@@ -146,6 +170,30 @@ def _norm_dob(s: str) -> str:
     return s
 
 
+_PRESENT_END_RE = re.compile(
+    r"^(?:"
+    r"heute|bis\s+heute|gegenwart|aktuell|laufend|jetzt|"
+    r"present|current|ongoing|now|"
+    r"aujourd'?hui|actuel|"
+    r"—|-|–|"
+    r")$",
+    re.IGNORECASE,
+)
+
+
+def _norm_period_end(s: str | None) -> str:
+    """Map common 'current job' spellings onto the scorer token ``heute``."""
+    t = (s or "").strip()
+    if not t:
+        return ""
+    if _PRESENT_END_RE.match(t):
+        return "heute"
+    low = t.lower()
+    if "heute" in low or low in {"present", "current", "ongoing"}:
+        return "heute"
+    return t
+
+
 def _norm_licence(s: str) -> str:
     t = (s or "").strip()
     for prefix in (
@@ -164,11 +212,43 @@ def _norm_licence(s: str) -> str:
 
 
 _docling_converter = None
+# Content-addressed text cache: only reuse when file bytes + Docling version match.
+_docling_text_cache: dict[tuple[str, str], str] = {}
+_SCHEMA_JSON_CACHE: str | None = None
+
+
+def _file_content_key(path: Path) -> str:
+    """SHA-256 of file bytes — never cache by path alone."""
+    import hashlib
+
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _docling_version() -> str:
+    try:
+        import docling
+
+        return str(getattr(docling, "__version__", "unknown"))
+    except Exception:  # noqa: BLE001
+        return "unknown"
 
 
 def extract_cv_text(path: Path) -> str:
-    """Prefer Docling; on Docling failure raise (no DET text heuristics)."""
+    """Prefer Docling; on Docling failure raise (no DET text heuristics).
+
+    Reuses DocumentConverter across calls. Caches extracted text only when the
+    SHA-256 of the PDF bytes and the Docling version both match (no stale reuse).
+    """
     global _docling_converter
+    path = Path(path)
+    cache_key = (_file_content_key(path), _docling_version())
+    cached = _docling_text_cache.get(cache_key)
+    if cached is not None:
+        return cached
     try:
         from docling.document_converter import DocumentConverter
 
@@ -186,6 +266,10 @@ def extract_cv_text(path: Path) -> str:
             "pdf_empty",
             "Kein Text aus dem Dokument extrahiert. Scans ohne OCR-Inhalt oder leere Datei.",
         )
+    # Bound cache size (process-local); drop oldest-ish by clearing when large.
+    if len(_docling_text_cache) >= 32:
+        _docling_text_cache.clear()
+    _docling_text_cache[cache_key] = text
     return text
 
 
@@ -229,6 +313,7 @@ def _llm_extract(text: str) -> dict[str, Any]:
     Uses a compact JSON schema in the prompt (no pretty-indent) to cut prompt
     tokens — main measured latency is LLM inference, not Docling.
     """
+    global _SCHEMA_JSON_CACHE
     try:
         from docpick.llm.vllm_provider import VLLMProvider
         from docpick.llm.prompt import parse_llm_json
@@ -253,11 +338,13 @@ def _llm_extract(text: str) -> dict[str, Any]:
             "Kein automatischer Wechsel auf den alten DET-Parser.",
         )
     try:
-        schema_json = json.dumps(
-            KarrierekrakeCVSchema.model_json_schema(),
-            ensure_ascii=False,
-            separators=(",", ":"),
-        )
+        if _SCHEMA_JSON_CACHE is None:
+            _SCHEMA_JSON_CACHE = json.dumps(
+                KarrierekrakeCVSchema.model_json_schema(),
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+        schema_json = _SCHEMA_JSON_CACHE
         messages = [
             {
                 "role": "system",
@@ -266,7 +353,13 @@ def _llm_extract(text: str) -> dict[str, Any]:
                     "Output ONLY valid JSON. No markdown. "
                     "If a field is not found, use null. "
                     "For arrays, include all matching items found. "
-                    "Do not invent values."
+                    "Do not invent values. "
+                    "Preserve diacritics and special letters in names exactly as written "
+                    "(e.g. Célina, Mikołaj). "
+                    "employment.position is the job title only — never duty bullets. "
+                    "When a job has no end date / is current, set end_date to 'heute'. "
+                    "Keep incomplete education outcomes in qualification "
+                    "(Studium abgebrochen, Schule ohne Abschluss)."
                 ),
             },
             {
@@ -315,7 +408,7 @@ def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
                 "title": str(e.get("position") or e.get("title") or ""),
                 "company": str(e.get("company") or ""),
                 "start_date": str(e.get("start_date") or ""),
-                "end_date": str(e.get("end_date") or ""),
+                "end_date": _norm_period_end(str(e.get("end_date") or "")),
                 "responsibilities": [],
             }
         )
@@ -323,12 +416,20 @@ def suggestion_to_parsed(data: dict[str, Any]) -> dict[str, Any]:
     for e in data.get("education") or []:
         if not isinstance(e, dict):
             continue
+        end_raw = str(e.get("end_date") or "").strip()
+        end_norm = end_raw
+        if end_raw and re.search(r"ohne\s+abschluss", end_raw, re.I):
+            end_norm = "ohne Abschluss"
+        elif _PRESENT_END_RE.match(end_raw) or (
+            end_raw and "heute" in end_raw.lower()
+        ):
+            end_norm = "heute"
         edu.append(
             {
                 "institution": str(e.get("institution") or ""),
                 "qualification": str(e.get("qualification") or ""),
                 "start_date": str(e.get("start_date") or ""),
-                "end_date": str(e.get("end_date") or ""),
+                "end_date": end_norm,
             }
         )
     lic_parts = [_norm_licence(str(x)) for x in (data.get("licenses") or [])]
