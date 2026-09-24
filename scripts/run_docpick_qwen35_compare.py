@@ -19,6 +19,7 @@ import time
 import traceback
 from collections import Counter
 from datetime import datetime, timezone
+import os
 from pathlib import Path
 from typing import Any
 
@@ -43,7 +44,7 @@ from run_final_holdout_phase_b_eval import (  # noqa: E402
 
 MANIFEST = ROOT / "tests" / "oss_cv_replace" / "SAMPLE_MANIFEST_LOCKED.json"
 OUT = ROOT / "artifacts" / "docpick_qwen35_compare"
-MODEL_ID = "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf"
+MODEL_ID = str(Path(os.sep) / "tmp" / "karrierekrake-models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf")
 LLM_BASE = "http://127.0.0.1:8765/v1"
 
 

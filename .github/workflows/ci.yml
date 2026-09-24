@@ -253,7 +253,7 @@ jobs:
         run: python scripts/privacy_scan.py
       - name: Freeze installed runtime (OSV input)
         run: |
-          mkdir -p artifacts
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
           python -m pip freeze > artifacts/runtime-freeze.txt
           Get-Content artifacts/runtime-freeze.txt | Select-Object -First 20
         shell: pwsh

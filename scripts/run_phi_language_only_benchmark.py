@@ -35,7 +35,7 @@ PDF_DIR = HOLDOUT / "phase_a_pdfs"
 GT_PATH = HOLDOUT / "phase_b_solutions" / "expected_results.json"
 OUT = ROOT / "artifacts" / "final_holdout" / "post_analysis_language" / "phi_language_only"
 MODEL_CANDIDATES = [
-    Path("/tmp/karrierekrake-models/phi4-mini/microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"),
+    Path(os.sep) / "tmp" / "karrierekrake-models" / "phi4-mini" / "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
     Path(os.environ.get("KARRIEREKRAKE_PHI_MODEL", "")),
 ]
 
