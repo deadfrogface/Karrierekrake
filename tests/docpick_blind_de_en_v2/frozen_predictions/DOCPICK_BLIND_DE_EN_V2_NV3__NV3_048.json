@@ -1,0 +1,81 @@
+{
+  "personal": {
+    "first_name": "Nina",
+    "last_name": "Laurent",
+    "street": "Hill Crescent",
+    "house_number": "52",
+    "postal_code": "67000",
+    "city": "Strasbourg",
+    "country": "France",
+    "date_of_birth": "05.01.2000"
+  },
+  "emails": [
+    "nina.laurent.48@example.org"
+  ],
+  "phones": [
+    "+44 7700 900048"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "C1"
+    },
+    {
+      "language": "German",
+      "level": "C1"
+    },
+    {
+      "language": "French",
+      "level": "Native"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "University of Strasbourg",
+      "qualification": "BA Business Administration",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Cross-border HR Coordinator",
+      "company": "Rhine People Partners",
+      "start_date": "01/2023",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Operations Assistant",
+      "company": "Local Services Ltd",
+      "start_date": "03/2014",
+      "end_date": "11/2022",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Contract administration",
+    "Interview scheduling",
+    "Payroll liaison"
+  ],
+  "software": [
+    "Personio",
+    "Excel"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_048.pdf",
+  "raw_text_chars": 824,
+  "raw_text_preview": "## Nina Laurent\n\n## Cross-border HR Coordinator\n\n## Contact\n\nnina.laurent.48@example.org | +44 7700 900048 Hill Crescent 52, 67000 Strasbourg, France Born: 2000-01-05\n\n## Profile\n\nExperience in Cross-border HR Coordinator. Supporting German and French onboarding.\n\n## Education\n\nBA Business Administration, University of Strasbourg\n\n## Work Experience\n\n## Cross-border HR Coordinator | Rhine People Partners\n\n2023-01 - Present Supporting German and French onboarding\n\n## Operations Assistant | Local ",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_048",
+  "blind_lang": "unknown",
+  "pdf_sha256": "9d98dd038a118fbefab5cee1dcfcf2bacc19196abb990752c074316513e6a0f5"
+}

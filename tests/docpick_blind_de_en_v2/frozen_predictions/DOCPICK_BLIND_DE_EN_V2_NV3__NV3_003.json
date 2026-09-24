@@ -1,0 +1,79 @@
+{
+  "personal": {
+    "first_name": "Lena",
+    "last_name": "Fischer",
+    "street": "Brückenstraße",
+    "house_number": "7",
+    "postal_code": "52062",
+    "city": "Aachen",
+    "country": "Deutschland",
+    "date_of_birth": "10.04.1980"
+  },
+  "emails": [
+    "lena.fischer.03@example.org"
+  ],
+  "phones": [
+    "+49 151 4700411"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    },
+    {
+      "language": "Französisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Berufsfachschule Pflege Aachen",
+      "qualification": "Pflegeassistenz",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Grenzpendlerin - Pflegeassistenz",
+      "company": "Maison de Soins Liège",
+      "start_date": "04/2020",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Grundpflege",
+    "Mobilisation",
+    "Dokumentation"
+  ],
+  "software": [
+    "CareCloud"
+  ],
+  "certificates": [
+    {
+      "name": "Erste-Hilfe-Kurs",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_003.pdf",
+  "raw_text_chars": 685,
+  "raw_text_preview": "## Lena Fischer\n\n## Grenzpendlerin - Pflegeassistenz\n\n## Kontakt\n\nlena.fischer.03@example.org | +49 151 4700411 Brückenstraße 7, 52062 Aachen, Deutschland Geboren: 10.04.1980\n\n## Kurzprofil\n\nBerufspraxis in Grenzpendlerin - Pflegeassistenz. Bewohnerbetreuung im Schichtdienst.\n\n## Ausbildung\n\nBerufsfachschule Pflege Aachen, Pflegeassistenz\n\n## Berufserfahrung\n\n## Grenzpendlerin - Pflegeassistenz | Maison de Soins Liège\n\n2020-04 - heute Bewohnerbetreuung im Schichtdienst\n\n## Sprachen\n\nDeutsch: Mut",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_003",
+  "blind_lang": "unknown",
+  "pdf_sha256": "cf056a8058b4724a01f9a82e0ca0bdea7589bfb638872efc6e446ed4e8d79e49"
+}

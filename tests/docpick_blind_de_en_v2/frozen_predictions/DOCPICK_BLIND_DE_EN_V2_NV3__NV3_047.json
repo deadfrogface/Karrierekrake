@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "Arthur",
+    "last_name": "Price",
+    "street": "River Road",
+    "house_number": "51",
+    "postal_code": "NG1 2AS",
+    "city": "Nottingham",
+    "country": "United Kingdom",
+    "date_of_birth": "02.08.1999"
+  },
+  "emails": [
+    "arthur.price.47@example.org"
+  ],
+  "phones": [
+    "+44 7700 900047"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A1"
+    }
+  ],
+  "driving_license": "D",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Secondary school completion",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Bus Driver",
+      "company": "East Midlands Transit",
+      "start_date": "12/2022",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Vehicle checks",
+    "Customer service",
+    "Safe driving"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Driver CPC",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_047.pdf",
+  "raw_text_chars": 567,
+  "raw_text_preview": "## Arthur Price\n\n## Bus Driver\n\n## Contact\n\narthur.price.47@example.org | +44 7700 900047 River Road 51, NG1 2AS Nottingham, United Kingdom Born: 1999-08-02\n\n## Profile\n\nExperience in Bus Driver. Urban routes and passenger assistance.\n\n## Core Skills\n\nVehicle checks · Customer service · Safe driving\n\n## Work Experience\n\n## Bus Driver | East Midlands Transit\n\n12/2022 - Present Urban routes and passenger assistance\n\n## Education\n\nSecondary school completion, Nottingham\n\n## Certificates\n\nDriver CPC",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_047",
+  "blind_lang": "unknown",
+  "pdf_sha256": "24103e637d01db7528c8cbcb935a5e0af0ef626f5174f37f99ff9859547cf891"
+}

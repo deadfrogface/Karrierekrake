@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "Mina",
+    "last_name": "Roth",
+    "street": "Seestraße",
+    "house_number": "21",
+    "postal_code": "99084",
+    "city": "Münster",
+    "country": "Deutschland",
+    "date_of_birth": "24.02.1994"
+  },
+  "emails": [
+    "mina.roth.17@example.org"
+  ],
+  "phones": [
+    "+49 151 4702329"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufskolleg Münster",
+      "qualification": "Staatlich anerkannte Erzieherin",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Erzieherin",
+      "company": "Kinderhaus Aasee",
+      "start_date": "06/2020",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Inklusionsbegleitung",
+    "Beobachtung",
+    "Projektarbeit"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Kinderschutz-Fortbildung",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_017.pdf",
+  "raw_text_chars": 563,
+  "raw_text_preview": "## Mina Roth\n\n## Erzieherin\n\n## Kontakt\n\nmina.roth.17@example.org | +49 151 4702329 Seestraße 21, 99084 Münster, Deutschland Geboren: 24.02.1994\n\n## Kurzprofil\n\nBerufspraxis in Erzieherin. Gruppenarbeit und Elterngespräche.\n\n## Kenntnisse\n\nInklusionsbegleitung · Beobachtung · Projektarbeit\n\n## Berufserfahrung\n\n## Erzieherin | Kinderhaus Aasee\n\n06/2020 - heute Gruppenarbeit und Elterngespräche\n\n## Ausbildung\n\nStaatlich anerkannte Erzieherin, Berufskolleg Münster\n\n## Weiterbildungen\n\nKinderschutz-",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_017",
+  "blind_lang": "unknown",
+  "pdf_sha256": "ad41e99020d5c7e91f1592045f119b4250f1a2b91f6bcf2726af5bbd6e775311"
+}

@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "Maya",
+    "last_name": "Wilson",
+    "street": "Oak Street",
+    "house_number": "46",
+    "postal_code": "L1 8JQ",
+    "city": "Liverpool",
+    "country": "United Kingdom",
+    "date_of_birth": "15.07.1994"
+  },
+  "emails": [
+    "maya.wilson.42@example.org"
+  ],
+  "phones": [
+    "+44 7700 900042"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "College attendance; no completed diploma",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Care Home Activities Coordinator",
+      "company": "Mersey House",
+      "start_date": "07/2017",
+      "end_date": "08/2024",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Group facilitation",
+    "Accessible events",
+    "Care documentation"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Dementia Awareness Course",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_042.pdf",
+  "raw_text_chars": 678,
+  "raw_text_preview": "## Maya Wilson\n\n## Care Home Activities Coordinator\n\n## Contact\n\nmaya.wilson.42@example.org | +44 7700 900042 Oak Street 46, L1 8JQ Liverpool, United Kingdom Born: 1994-07-15\n\n## Profile\n\nExperience in Care Home Activities Coordinator. Planning resident activities.\n\n## Core Skills\n\nGroup facilitation · Accessible events · Care documentation\n\n## Work Experience\n\n## Care Home Activities Coordinator | Mersey House\n\n2017-07 - 2024-08 Planning resident activities\n\n## Education\n\nCollege attendance; no",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_042",
+  "blind_lang": "unknown",
+  "pdf_sha256": "c92d156a9fb481ec2eca528c66262717449548f8d65f79cac4c258cea429a17b"
+}

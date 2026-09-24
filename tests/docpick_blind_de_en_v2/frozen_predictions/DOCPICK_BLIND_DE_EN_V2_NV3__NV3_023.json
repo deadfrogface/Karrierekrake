@@ -1,0 +1,70 @@
+{
+  "personal": {
+    "first_name": "Helga",
+    "last_name": "Maurer",
+    "street": "Marktstraße",
+    "house_number": "27",
+    "postal_code": "93047",
+    "city": "Regensburg",
+    "country": "Deutschland",
+    "date_of_birth": "14.08.2000"
+  },
+  "emails": [
+    "helga.maurer.23@example.org"
+  ],
+  "phones": [
+    "+49 151 4703151"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Realschule Regensburg",
+      "qualification": "Mittlere Reife",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Bürokraft nach Wiedereinstieg",
+      "company": "Kanzlei Am Dom",
+      "start_date": "12/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Postbearbeitung",
+    "Ablage",
+    "Telefonservice"
+  ],
+  "software": [
+    "Word",
+    "DATEV"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_023.pdf",
+  "raw_text_chars": 592,
+  "raw_text_preview": "## Helga Maurer\n\n## Bürokraft nach Wiedereinstieg\n\n## Kontakt\n\nhelga.maurer.23@example.org | +49 151 4703151 Marktstraße 27, 93047 Regensburg, Deutschland Geboren: 14.08.2000\n\n## Kurzprofil\n\nBerufspraxis in Bürokraft nach Wiedereinstieg. Terminorganisation und Korrespondenz.\n\n## Ausbildung\n\nMittlere Reife, Realschule Regensburg\n\n## Berufserfahrung\n\n## Bürokraft nach Wiedereinstieg | Kanzlei Am Dom\n\n12/2019 - heute Terminorganisation und Korrespondenz\n\n## Sprachen\n\nDeutsch: Muttersprache | Englis",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_023",
+  "blind_lang": "unknown",
+  "pdf_sha256": "57620a153fb54facca6130bc1b9dddec6fd9390d7bc54adce5978bbab876d8be"
+}

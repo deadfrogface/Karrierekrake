@@ -1,0 +1,82 @@
+{
+  "personal": {
+    "first_name": "Timo",
+    "last_name": "Brandt",
+    "street": "Rosenallee",
+    "house_number": "16",
+    "postal_code": "41460",
+    "city": "Neuss",
+    "country": "Deutschland",
+    "date_of_birth": "09.01.1989"
+  },
+  "emails": [
+    "timo.brandt.12@example.org"
+  ],
+  "phones": [
+    "+49 151 4701644"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Ausbildung Zweiradmechatroniker",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Fahrradmechaniker",
+      "company": "Pedalwerk Neuss",
+      "start_date": "01/2022",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Kundenbüro West",
+      "start_date": "03/2013",
+      "end_date": "11/2021",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Laufradzentrierung",
+    "Bremsenservice",
+    "E-Bike-Diagnose"
+  ],
+  "software": [
+    "Bosch DiagnosticTool"
+  ],
+  "certificates": [
+    {
+      "name": "E-Bike-Servicezertifikat",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_012.pdf",
+  "raw_text_chars": 777,
+  "raw_text_preview": "## Timo Brandt\n\n## Fahrradmechaniker\n\n## Kontakt\n\ntimo.brandt.12@example.org | +49 151 4701644 Rosenallee 16, 41460 Neuss, Deutschland Geboren: 09.01.1989\n\n## Kurzprofil\n\nBerufspraxis in Fahrradmechaniker. Reparatur und Kundenberatung.\n\n## Kenntnisse\n\nLaufradzentrierung · Bremsenservice · E-Bike-Diagnose\n\n## Programme\n\nBosch DiagnosticTool\n\n## Berufserfahrung\n\n## Fahrradmechaniker | Pedalwerk Neuss\n\n2022-01 - heute Reparatur und Kundenberatung\n\n## Aushilfe | Kundenbüro West\n\n2013-03 - 2021-11 Ku",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_012",
+  "blind_lang": "unknown",
+  "pdf_sha256": "9303d5d650f89cd97039cf02a67e3f4e95d493072e957280923b9ecf6a070641"
+}

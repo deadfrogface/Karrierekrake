@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Ella",
+    "last_name": "Morgan",
+    "street": "Church Street",
+    "house_number": "50",
+    "postal_code": "NE1 4LP",
+    "city": "Newcastle upon Tyne",
+    "country": "United Kingdom",
+    "date_of_birth": "27.03.1998"
+  },
+  "emails": [
+    "ella.morgan.46@example.org"
+  ],
+  "phones": [
+    "+44 7700 900046"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Newcastle Academy",
+      "qualification": "GCSEs",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Dental Receptionist",
+      "company": "Tyne Dental Practice",
+      "start_date": "11/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Patient scheduling",
+    "Confidential records",
+    "Telephone triage"
+  ],
+  "software": [
+    "Dentally"
+  ],
+  "certificates": [
+    {
+      "name": "Data Protection Training",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_046.pdf",
+  "raw_text_chars": 603,
+  "raw_text_preview": "## Ella Morgan\n\n## Dental Receptionist\n\n## Contact\n\nella.morgan.46@example.org | +44 7700 900046 Church Street 50, NE1 4LP Newcastle upon Tyne, United Kingdom Born: 1998-03-27\n\n## Profile\n\nExperience in Dental Receptionist. Managing appointments and billing.\n\n## Work Experience\n\n## Dental Receptionist | Tyne Dental Practice\n\n2021-11 - Present Managing appointments and billing\n\n## Education\n\nGCSEs, Newcastle Academy\n\n## Core Skills\n\nPatient scheduling · Confidential records · Telephone triage\n\n##",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_046",
+  "blind_lang": "unknown",
+  "pdf_sha256": "456db498498b3783e1a25f52ea0b29cc9a70ff32c5f4da0b17df38c0dd4d5a85"
+}

@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "Emir",
+    "last_name": "Kaya",
+    "street": "Dammweg",
+    "house_number": "6",
+    "postal_code": "02826",
+    "city": "Görlitz",
+    "country": "Deutschland",
+    "date_of_birth": "07.11.1979"
+  },
+  "emails": [
+    "emir.kaya.02@example.org"
+  ],
+  "phones": [
+    "+49 151 4700274"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "C2"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Oberschule Görlitz",
+      "qualification": "Hauptschulabschluss",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Bäcker",
+      "company": "Backhaus Morgenrot",
+      "start_date": "03/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Sauerteigführung",
+    "HACCP",
+    "Nachtschichtorganisation"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Hygienebelehrung",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_002.pdf",
+  "raw_text_chars": 530,
+  "raw_text_preview": "## Emir Kaya\n\n## Bäcker\n\n## Kontakt\n\nemir.kaya.02@example.org | +49 151 4700274 Dammweg 6, 02826 Görlitz, Deutschland Geboren: 07.11.1979\n\n## Kurzprofil\n\nBerufspraxis in Bäcker. Teigbereitung und Ofenplanung.\n\n## Kenntnisse\n\nSauerteigführung · HACCP · Nachtschichtorganisation\n\n## Berufserfahrung\n\n## Bäcker | Backhaus Morgenrot\n\n03/2019 - heute Teigbereitung und Ofenplanung\n\n## Ausbildung\n\nHauptschulabschluss, Oberschule Görlitz\n\n## Weiterbildungen\n\nHygienebelehrung\n\n## Sprachen\n\nDeutsch: C2 | En",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_002",
+  "blind_lang": "unknown",
+  "pdf_sha256": "21e72aca4756146ff06cbce2f2de681e2fc5bc4de5249f2e6ece069aa1053978"
+}

@@ -1,0 +1,80 @@
+{
+  "personal": {
+    "first_name": "Benno",
+    "last_name": "Schulz",
+    "street": "Wiesenweg",
+    "house_number": "20",
+    "postal_code": "28195",
+    "city": "Bremen",
+    "country": "Deutschland",
+    "date_of_birth": "21.09.1993"
+  },
+  "emails": [
+    "benno.schulz.16@example.org"
+  ],
+  "phones": [
+    "+49 151 4702192"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "CE",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Hauptschulabschluss",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Berufskraftfahrer",
+      "company": "Weser Kühltransport",
+      "start_date": "05/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Stadtverwaltung",
+      "start_date": "03/2012",
+      "end_date": "11/2018",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Ladungssicherung",
+    "Tourenplanung",
+    "Fahrzeugkontrolle"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "ADR-Basiskurs",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_016.pdf",
+  "raw_text_chars": 644,
+  "raw_text_preview": "## Benno Schulz\n\n## Berufskraftfahrer\n\n## Kontakt\n\nbenno.schulz.16@example.org | +49 151 4702192 Wiesenweg 20, 28195 Bremen, Deutschland Geboren: 21.09.1993\n\n## Kurzprofil\n\nBerufspraxis in Berufskraftfahrer. Temperaturgeführte Touren.\n\n## Berufserfahrung\n\n## Berufskraftfahrer | Weser Kühltransport\n\n2019-05 - heute Temperaturgeführte Touren\n\n## Aushilfe | Stadtverwaltung\n\n2012-03 - 2018-11 Kundenkontakt und Dokumentation\n\n## Ausbildung\n\nHauptschulabschluss, Bremen\n\n## Kenntnisse\n\nLadungssicherung",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_016",
+  "blind_lang": "unknown",
+  "pdf_sha256": "6fc7dc194274e515e0601ea154641a72fe427254a51e04d70f792bfb020c27ed"
+}

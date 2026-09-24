@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "André",
+    "last_name": "Kaiser",
+    "street": "Seestraße",
+    "house_number": "29",
+    "postal_code": "20095",
+    "city": "Hamburg",
+    "country": "Deutschland",
+    "date_of_birth": "20.06.1977"
+  },
+  "emails": [
+    "andr.kaiser.25@example.org"
+  ],
+  "phones": [
+    "+49 151 4703425"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Schulbesuch bis Klasse 9; kein Abschluss",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Hafenarbeiter",
+      "company": "Terminal Elbtor",
+      "start_date": "02/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Ladungssicherung",
+    "Schichtkoordination",
+    "Gefahrgutkontrolle"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Unterweisung Ladungssicherung",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_025.pdf",
+  "raw_text_chars": 593,
+  "raw_text_preview": "## André Kaiser\n\n## Hafenarbeiter\n\n## Kontakt\n\nandr.kaiser.25@example.org | +49 151 4703425 Seestraße 29, 20095 Hamburg, Deutschland Geboren: 20.06.1977\n\n## Kurzprofil\n\nBerufspraxis in Hafenarbeiter. Containerumschlag und Kontrolle.\n\n## Berufserfahrung\n\n## Hafenarbeiter | Terminal Elbtor\n\n2021-02 - heute Containerumschlag und Kontrolle\n\n## Ausbildung\n\nSchulbesuch bis Klasse 9; kein Abschluss\n\n## Weiterbildungen\n\nUnterweisung Ladungssicherung\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: A2\n\n#",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_025",
+  "blind_lang": "unknown",
+  "pdf_sha256": "b7b0100bba15a18d9869f5d82023d84f60e743711ed6e553142f70028afd7185"
+}

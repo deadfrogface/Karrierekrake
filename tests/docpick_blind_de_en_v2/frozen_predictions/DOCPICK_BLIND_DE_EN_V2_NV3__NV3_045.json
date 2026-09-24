@@ -1,0 +1,76 @@
+{
+  "personal": {
+    "first_name": "Ravi",
+    "last_name": "Patel",
+    "street": "Station Lane",
+    "house_number": "49",
+    "postal_code": "B1 1TB",
+    "city": "Birmingham",
+    "country": "United Kingdom",
+    "date_of_birth": "24.10.1997"
+  },
+  "emails": [
+    "ravi.patel.45@example.org"
+  ],
+  "phones": [
+    "+44 7700 900045"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Aston University",
+      "qualification": "BSc Computer Science",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Cybersecurity Analyst",
+      "company": "Canal Security Ltd",
+      "start_date": "10/2020",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Incident triage",
+    "Log analysis",
+    "Risk reporting"
+  ],
+  "software": [
+    "Splunk",
+    "Wireshark"
+  ],
+  "certificates": [
+    {
+      "name": "CompTIA Security+",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_045.pdf",
+  "raw_text_chars": 602,
+  "raw_text_preview": "## Ravi Patel\n\n## Cybersecurity Analyst\n\n## Contact\n\nravi.patel.45@example.org | +44 7700 900045 Station Lane 49, B1 1TB Birmingham, United Kingdom Born: 1997-10-24\n\n## Profile\n\nExperience in Cybersecurity Analyst. Reviewing access logs and incidents.\n\n## Work Experience\n\n## Cybersecurity Analyst | Canal Security Ltd\n\n2020-10 - Present Reviewing access logs and incidents\n\n## Education\n\nBSc Computer Science, Aston University\n\n## Certificates\n\nCompTIA Security+\n\n## Languages\n\nEnglish: Native | Ger",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_045",
+  "blind_lang": "unknown",
+  "pdf_sha256": "be1efcbec749528a61b33eb28f4ce1b54e3d2637f7cb1f14420bf27fe864087f"
+}
