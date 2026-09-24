@@ -215,6 +215,43 @@ _docling_converter = None
 # Content-addressed text cache: only reuse when file bytes + Docling version match.
 _docling_text_cache: dict[tuple[str, str], str] = {}
 _SCHEMA_JSON_CACHE: str | None = None
+# Production LLM generation cap. Measured: outputs typically << 2048 tokens;
+# lower cap cuts rare runaway generations without changing typical quality.
+_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "1024"))
+# Wall-clock budgets on target hardware (4-core CPU Agent-VM, Qwen3.5-4B Q4).
+# Blindtest may proceed only when warm extract stays within WARM_BUDGET_S.
+CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
+CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
+
+
+def _schema_json_for_prompt() -> str:
+    """Compact JSON Schema for the LLM prompt (strip descriptions / $defs noise).
+
+    Field descriptions remain on the Pydantic model for docs; they inflate
+    prompt tokens and dominate measured prefill latency on CPU.
+    """
+    global _SCHEMA_JSON_CACHE
+    if _SCHEMA_JSON_CACHE is not None:
+        return _SCHEMA_JSON_CACHE
+
+    def _strip(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            out = {}
+            for k, v in obj.items():
+                if k in {"description", "title", "examples", "default"}:
+                    continue
+                out[k] = _strip(v)
+            return out
+        if isinstance(obj, list):
+            return [_strip(x) for x in obj]
+        return obj
+
+    _SCHEMA_JSON_CACHE = json.dumps(
+        _strip(KarrierekrakeCVSchema.model_json_schema()),
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    return _SCHEMA_JSON_CACHE
 
 
 def _file_content_key(path: Path) -> str:
@@ -310,10 +347,9 @@ def _name_from_email_local(email: str) -> tuple[str, str] | None:
 def _llm_extract(text: str) -> dict[str, Any]:
     """Docpick schema extract via local OpenAI-compatible server.
 
-    Uses a compact JSON schema in the prompt (no pretty-indent) to cut prompt
-    tokens — main measured latency is LLM inference, not Docling.
+    Prompt uses a description-stripped compact schema + short system text to
+    cut prefill tokens (measured main latency on CPU).
     """
-    global _SCHEMA_JSON_CACHE
     try:
         from docpick.llm.vllm_provider import VLLMProvider
         from docpick.llm.prompt import parse_llm_json
@@ -327,7 +363,7 @@ def _llm_extract(text: str) -> dict[str, Any]:
         base_url=DEFAULT_LLM_BASE,
         model=DEFAULT_MODEL,
         temperature=0.0,
-        max_tokens=2048,
+        max_tokens=_LLM_MAX_TOKENS,
         timeout=300,
     )
     if not provider.is_available():
@@ -338,36 +374,26 @@ def _llm_extract(text: str) -> dict[str, Any]:
             "Kein automatischer Wechsel auf den alten DET-Parser.",
         )
     try:
-        if _SCHEMA_JSON_CACHE is None:
-            _SCHEMA_JSON_CACHE = json.dumps(
-                KarrierekrakeCVSchema.model_json_schema(),
-                ensure_ascii=False,
-                separators=(",", ":"),
-            )
-        schema_json = _SCHEMA_JSON_CACHE
+        schema_json = _schema_json_for_prompt()
         messages = [
             {
                 "role": "system",
                 "content": (
-                    "You are a document data extraction assistant. "
-                    "Output ONLY valid JSON. No markdown. "
-                    "If a field is not found, use null. "
-                    "For arrays, include all matching items found. "
-                    "Do not invent values. "
-                    "Preserve diacritics and special letters in names exactly as written "
-                    "(e.g. Célina, Mikołaj). "
-                    "employment.position is the job title only — never duty bullets. "
-                    "When a job has no end date / is current, set end_date to 'heute'. "
-                    "Keep incomplete education outcomes in qualification "
-                    "(Studium abgebrochen, Schule ohne Abschluss)."
+                    "Extract CV fields as JSON only. No markdown. "
+                    "null if missing; do not invent values. "
+                    "Preserve diacritics in names. "
+                    "employment.position = job title only (never duty bullets). "
+                    "Current job: end_date = 'heute'. "
+                    "Incomplete education stays in qualification "
+                    "(Studium abgebrochen / Schule ohne Abschluss)."
                 ),
             },
             {
                 "role": "user",
                 "content": (
-                    f"## JSON Schema\n{schema_json}\n\n"
-                    f"## Document Text\n{text}\n\n"
-                    "Extract the data and output valid JSON:"
+                    f"Schema:\n{schema_json}\n\n"
+                    f"CV:\n{text}\n\n"
+                    "JSON:"
                 ),
             },
         ]

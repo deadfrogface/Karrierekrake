@@ -1,0 +1,31 @@
+{
+  "id": "DOCPICK_BLIND_DE_EN_V1",
+  "locked": true,
+  "gt_not_loaded": true,
+  "documents": [
+    {
+      "id": "BL_DE_01",
+      "lang": "de",
+      "path": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_DE_01.pdf",
+      "corpus_id": "DOCPICK_BLIND_DE_EN_V1"
+    },
+    {
+      "id": "BL_DE_02",
+      "lang": "de",
+      "path": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_DE_02.pdf",
+      "corpus_id": "DOCPICK_BLIND_DE_EN_V1"
+    },
+    {
+      "id": "BL_EN_01",
+      "lang": "en",
+      "path": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_EN_01.pdf",
+      "corpus_id": "DOCPICK_BLIND_DE_EN_V1"
+    },
+    {
+      "id": "BL_EN_02",
+      "lang": "en",
+      "path": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_EN_02.pdf",
+      "corpus_id": "DOCPICK_BLIND_DE_EN_V1"
+    }
+  ]
+}
