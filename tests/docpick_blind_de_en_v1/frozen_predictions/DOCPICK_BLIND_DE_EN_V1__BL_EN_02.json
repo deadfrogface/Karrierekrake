@@ -1,0 +1,67 @@
+{
+  "personal": {
+    "first_name": "Daniel",
+    "last_name": "Okoro",
+    "street": "18 Harbour Street",
+    "house_number": "",
+    "postal_code": "D02 XY45",
+    "city": "Dublin",
+    "country": "Ireland",
+    "date_of_birth": "28.02.1987"
+  },
+  "emails": [
+    "daniel.okoro@example.net"
+  ],
+  "phones": [
+    "+353 85 1234567"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "C2"
+    },
+    {
+      "language": "French",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "TU Dublin",
+      "qualification": "Diploma in Building Services",
+      "start_date": "2006-09",
+      "end_date": "2010-06"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Facilities Supervisor",
+      "company": "GreenYard Facilities",
+      "start_date": "2017-11",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Vendor management",
+    "Health and safety coordination"
+  ],
+  "software": [
+    "Maximo",
+    "MS Outlook"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_EN_02.pdf",
+  "raw_text_chars": 406,
+  "raw_text_preview": "Daniel Okoro 18 Harbour Street, Dublin D02 XY45, Ireland daniel.okoro@example.net +353 85 1234567 Date of birth: 28.02.1987\n\nExperience 11/2017 - Present Facilities Supervisor GreenYard Facilities, Dublin\n\nEducation 09/2006 - 06/2010 Diploma in Building Services TU Dublin\n\nLanguages English C2 French A2\n\nDriving licence: B\n\nTools Maximo MS Outlook\n\nSkills Vendor management Health and safety coordination",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_doc_id": "BL_EN_02",
+  "blind_lang": "en"
+}

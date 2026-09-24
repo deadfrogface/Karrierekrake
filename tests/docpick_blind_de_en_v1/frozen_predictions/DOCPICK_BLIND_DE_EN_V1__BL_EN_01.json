@@ -1,0 +1,80 @@
+{
+  "personal": {
+    "first_name": "Emily",
+    "last_name": "Carter",
+    "street": "42 Willow Road",
+    "house_number": "",
+    "postal_code": "M1 2AB",
+    "city": "Manchester",
+    "country": "United Kingdom",
+    "date_of_birth": "12.07.1991"
+  },
+  "emails": [
+    "emily.carter@example.com"
+  ],
+  "phones": [
+    "+44 7700 900123"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "University of Leeds",
+      "qualification": "BSc Business Analytics",
+      "start_date": "09/2012",
+      "end_date": "06/2015"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Product Analyst",
+      "company": "Northern Apps Ltd",
+      "start_date": "06/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Junior Analyst",
+      "company": "Pennine Data Co",
+      "start_date": "02/2016",
+      "end_date": "05/2019",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Requirements gathering",
+    "Stakeholder reporting"
+  ],
+  "software": [
+    "SQL",
+    "Tableau",
+    "Python"
+  ],
+  "certificates": [
+    {
+      "name": "ISTQB Foundation",
+      "date": "2018"
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_EN_01.pdf",
+  "raw_text_chars": 497,
+  "raw_text_preview": "Emily Carter 42 Willow Road, Manchester M1 2AB, United Kingdom emily.carter@example.com +44 7700 900123 Date of birth: 12.07.1991\n\nWork Experience 06/2019 - Present Product Analyst Northern Apps Ltd, Manchester\n\n02/2016 - 05/2019 Junior Analyst Pennine Data Co, Leeds\n\nEducation 09/2012 - 06/2015 BSc Business Analytics University of Leeds\n\nLanguages English - Native German - B1\n\nSoftware SQL Tableau Python\n\nSkills Requirements gathering Stakeholder reporting\n\nCertificates ISTQB Foundation 2018",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_doc_id": "BL_EN_01",
+  "blind_lang": "en"
+}
