@@ -7,13 +7,14 @@ import sys
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QDesktopServices, QPixmap
+from PySide6.QtGui import QDesktopServices, QGuiApplication, QPixmap
 from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QLabel,
     QPushButton,
     QVBoxLayout,
+    QWidget,
 )
 
 from desktop import __version__
@@ -29,6 +30,7 @@ from desktop.branding import (
 from desktop.i18n import i18n, tr
 from desktop.tray import app_icon
 from desktop.widgets.confirm_dialog import label_button_box
+from desktop.widgets.dialog_geometry import fit_dialog_to_screen, wrap_dialog_body
 
 
 def executable_label() -> str:
@@ -50,7 +52,10 @@ class AboutDialog(QDialog):
         self.setWindowTitle(tr("about.title"))
         self.setWindowIcon(app_icon())
         self.setMinimumWidth(480)
-        layout = QVBoxLayout(self)
+        outer = QVBoxLayout(self)
+        body = QWidget()
+        layout = QVBoxLayout(body)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(12)
 
         self.art = QLabel()
@@ -60,7 +65,9 @@ class AboutDialog(QDialog):
             pix = QPixmap(str(path))
             if not pix.isNull():
                 self.art.setPixmap(
-                    pix.scaledToWidth(420, Qt.TransformationMode.SmoothTransformation)
+                    pix.scaledToWidth(
+                        self._logo_width(pix), Qt.TransformationMode.SmoothTransformation
+                    )
                 )
         layout.addWidget(self.art)
 
@@ -98,14 +105,34 @@ class AboutDialog(QDialog):
         self.tech.setWordWrap(True)
         self.tech.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.tech)
+        outer.addWidget(wrap_dialog_body(body), stretch=1)
 
         buttons = label_button_box(QDialogButtonBox(QDialogButtonBox.StandardButton.Ok))
         self.open_data_btn = QPushButton()
         self.open_data_btn.clicked.connect(self._open_data_dir)
         buttons.addButton(self.open_data_btn, QDialogButtonBox.ButtonRole.ActionRole)
         buttons.accepted.connect(self.accept)
-        layout.addWidget(buttons)
+        outer.addWidget(buttons)
         self.retranslate_ui()
+        margins = outer.contentsMargins()
+        fit_dialog_to_screen(
+            self,
+            preferred_width=max(480, body.sizeHint().width() + margins.left() + margins.right() + 24),
+            preferred_height=body.sizeHint().height()
+            + buttons.sizeHint().height()
+            + outer.spacing()
+            + margins.top()
+            + margins.bottom()
+            + 8,
+        )
+
+    def _logo_width(self, pix: QPixmap) -> int:
+        """Shrink the artwork on short screens so the text and buttons stay visible."""
+        screen = self.screen() or QGuiApplication.primaryScreen()
+        avail_h = screen.availableGeometry().height() if screen is not None else 900
+        ratio = pix.height() / max(1, pix.width())
+        max_art_h = max(120, int(avail_h * 0.38))
+        return max(160, min(420, int(max_art_h / max(ratio, 0.01))))
 
     def _open_data_dir(self) -> None:
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.data_dir)))
