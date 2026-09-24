@@ -19,6 +19,7 @@ Hardware: Agent-VM Intel Xeon, **4 CPU**, ~15 GB RAM — **nicht** i3/8 GB. Ziel
 | 2c | pypdf-first | Heuristik | EN Zwei-Spalten Ratio ~0,3 | **REVERT** |
 | 2d | Compact JSON | Minified-Prompt | Round6 F1 0,987 EN 0,948 | **REVERT** |
 | 3 | CEFR-Bleed in 1a | Nur Tail nach `Führerschein:` / Klassen unter Heading | Round7: F1 0,997 PC 37/40 EN 0,995 Hallu 0 | **KEEP** |
+| 4 | Education leer (NV3×10): Schema zuletzt + Wording; `_PRESENT_END_RE` matcht `""`→heute; LLM inventiert heute trotz datiertem Ende | Education vor Employment; Ausbildung/BTEC-Wording; PRESENT_END_RE fix; Section-Enrich; enger same-block+start_match heute-Repair | Targeted NV3: edu 10/10, heute 5/5; Round8 known läuft | **pending Round8** |
 
 Runtime-Stopp: drei aufeinanderfolgende Laufzeitversuche ohne messbaren Gewinn bei akzeptabler Qualität (2a–2d). Weitere LLM-Beschleunigung braucht anderes Modell/GPU oder Zielgerät.
 
@@ -28,6 +29,17 @@ Runtime-Stopp: drei aufeinanderfolgende Laufzeitversuche ohne messbaren Gewinn b
 - Verbleibend: MH_007 position; MH_019 skills×5; MH_025 software×2
 - Agent-VM Laufzeit (Log n=40): avg **88 s**, P95 **111 s**, Peak-RSS ~2,6–2,7 GB
 - Spot cold/warm: ~91–95 s / ~65–89 s — Budget warm ≤60 s **nicht** erreicht auf dieser VM
+
+## Blind NV3 (verbindlich)
+
+- Phase B Frozen F1 **0,980** — unverändert; Predictions/Scorer unangetastet
+- DOB-Audit 0,990 = Format only, **kein** Blind-/99-%-Claim
+
+## Round8 / Post-Analysis (in Arbeit)
+
+- Targeted 13 Docs: Education-Misses und erfundenes `heute` behoben (10/10, 5/5)
+- Restfehler auf Targeted (echt): 1× Software Theorg; 1× Skill↔Cert Communication aids; 5× DOB Format-only
+- Known DE/EN Round8 Extract läuft; Full-NV3 Post-Analysis danach
 
 ## Blind / Freeze
 

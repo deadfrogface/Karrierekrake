@@ -69,13 +69,14 @@ def main() -> int:
         "det_fallback_in_productive_import": False,
         "productive_import": "core.cv_docpick_import.import_cv_docpick",
         "changes": [
-            "education_before_employment_in_schema",
+            "education_after_employment_keep_order",
             "education_schema_ausbildung_btec_wording",
             "present_end_re_no_empty_alt",
             "enrich_education_from_section_when_empty",
             "heute_repair_same_block_start_match_only",
             "license_merge_fs_tail_only_no_cefr_bleed",
             "max_tokens_2048",
+            "round8a_reverted_education_before_employment_truncation",
         ],
         "llm": {
             "base_url": DEFAULT_LLM_BASE,

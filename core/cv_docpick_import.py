@@ -112,10 +112,12 @@ class KarrierekrakeCVSchema(BaseModel):
     """Full CV-import schema (integration contract).
 
     Field order and descriptions are part of the Docpick prompt
-    (``model_json_schema``). Skills/software/certificates/education are listed
-    before bulky employment so the model fills them before generation can stop
-    early. Descriptions map common DE/EN section headings onto the schema
-    without document-specific rules.
+    (``model_json_schema``). Skills/software/certificates are listed
+    before bulky employment/education so the model fills them before
+    generation can stop early. Descriptions map common DE/EN section
+    headings onto the schema without document-specific rules.
+    Education stays after employment; empty education is recovered from
+    section headings in postprocess (see ``_enrich_education_from_text``).
     """
 
     name: NameModel | None = None
@@ -153,8 +155,10 @@ class KarrierekrakeCVSchema(BaseModel):
             "Do not leave this array empty when certificate items appear in the text."
         ),
     )
-    # Education before employment so the model fills it before bulky job lists
-    # can exhaust generation (NV3 miss pattern: Docling had Ausbildung, LLM []).
+    employment: list[EmploymentEntry] = Field(default_factory=list)
+    # Keep education after employment so multi-job lists are not truncated
+    # when generation stops early (Round8 regression). Empty education is
+    # recovered via _enrich_education_from_text from section headings.
     education: list[EducationEntry] = Field(
         default_factory=list,
         description=(
@@ -166,7 +170,6 @@ class KarrierekrakeCVSchema(BaseModel):
             "certificates, not here."
         ),
     )
-    employment: list[EmploymentEntry] = Field(default_factory=list)
 
 
 def _norm_dob(s: str) -> str:
