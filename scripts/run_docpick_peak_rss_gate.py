@@ -177,10 +177,16 @@ def main() -> int:
         "test_type": "PEAK_RSS_HARD_GATE_3_3GB",
         "created_at": datetime.now(timezone.utc).isoformat(),
         "target_hardware": "Intel Core i3 (11th gen), exactly 8 GB RAM",
-        "measurement_host_note": (
-            "May run on Agent-VM (~15 GB); absolute RSS still applies for the gate."
-        ),
-        "pdf": str(pdf.relative_to(ROOT)),
+    "measurement_host_note": (
+        "Agent-VM / Cursor cloud — NOT the target i3/8GB Windows laptop. "
+        "These numbers are informational only and are NOT kill-or-ship evidence."
+    ),
+    "ship_evidence": False,
+    "kill_or_ship": (
+        "#62 only ships if full app flow on real i3/8GB Win laptop stays within "
+        "RAM, stable, acceptable quality/wait. Unmeasured gates stay open."
+    ),
+    "pdf": str(pdf.relative_to(ROOT)),
         "gate_peak_rss_mb": gate_mb,
         "gate_peak_rss_gb": round(gate_mb / 1024.0, 3),
         "obsolete_soft_gate_mb": 12000,

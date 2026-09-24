@@ -1,42 +1,59 @@
-# Acceptance criteria 1–4 status (PR #62 Docpick+Qwen)
+# Acceptance + Kill-or-Ship status (PR #62)
 
-## 1) Peak RSS ≤ 3.3 GB — **FAIL**
+**Kill-or-Ship:** #62 only ships if the full application flow on the **real Intel Core i3 / 8 GB Windows laptop** stays within the RAM limit, is stable, and has acceptable quality and wait time. **Every unmeasured gate stays open.**  
+**#64 = UI-only** — not mixed into this PR.
+
+## A) Target device Peak — **OPEN / FAIL (unmeasured on laptop)**
 
 | | |
 |--|--|
-| Measured combined CV-path Peak | **8.504 GB** (8707.7 MB) |
-| Gate | ≤ 3.3 GB (3300 MB) hard |
-| Command | `.venv/bin/python scripts/run_docpick_peak_rss_gate.py` |
-| Fixture | `tests/fixtures/cv_corpus/DE_01_Klassisch.pdf` |
-| Breakdown | import 1.81 GB + llama.cpp 6.89 GB |
-| Artifact | `tests/docpick_qwen35/peak_rss_gate/PEAK_RSS_GATE_RESULT.json` |
+| Required host | Real i3 (11th gen) / **exactly 8 GB** Windows laptop |
+| Agent-VM Peak | **NOT ship evidence** (prior ~2.6 GB import-only / ~8.5 GB combined) |
+| Laptop Peak | **Not measured in this environment** |
+| Protocol | `docs/project/DOCPICK_TARGET_DEVICE_MEASUREMENT_CHECKLIST.md` + `scripts/run_docpick_target_device_peak_windows.ps1` |
 
-Soft ≤12 GB is obsolete and not a pass.
+## B) Process-group Peak — **informational on Agent-VM only**
 
-## 2) Explicit fail-cases — **PASS** (implemented + demonstrated)
+| Host | Process-group Peak | Ship evidence? |
+|------|--------------------|----------------|
+| Agent-VM (llama `n_ctx=2048` loaded) | **~5.4 GB** LLM alone | **No** |
+| Agent-VM (prior import+LLM gate) | **8.50 GB** | **No** |
+| Real i3/8GB Win laptop | **unmeasured** | Required for ship |
 
-| Case | Code | Evidence |
-|------|------|----------|
-| empty CV | `empty_cv` | unit + `scripts/run_docpick_fail_cases_demo.py` → `FAIL_CASES_DEMO.json` |
-| corrupt/unreadable | `unreadable_cv` | same |
-| parser timeout | `timeout` | `_enforce_timeout` / `CV_IMPORT_TIMEOUT_S` |
-| Peak > 3.3 GB | `peak_rss_exceeded` | live RSS 5560 MB > 3300 → hard `CvImportError` |
+Also required on laptop: free RAM, crashes, import/parse duration.
 
-No silent hang: raises `CvImportError` immediately; UI worker surfaces `failed` signal.
+## C) Hard fail (crash / OOM / UI freeze / unusable) — **OPEN**
 
-## 3) Matching-Contract CV↔Job — **PASS** (stable, no silent drift)
+Cannot certify on Agent-VM. Code raises `peak_rss_exceeded` / `timeout` / `empty_cv` / `unreadable_cv` (no silent hang), but **laptop stability is unmeasured**.
 
-- Frozen contract: `docs/project/CV_JOB_MATCHING_CONTRACT.md`
-- Version `PARSED_CV_CONTRACT_VERSION = 1`
-- Keys unchanged vs prior Docpick parsed shape
-- Diff this PR: **none** on names/types (additive metadata only: `parsed_cv_contract_version`, `peak_rss_mb_at_end`)
-- Guard: `contract_drift` on missing top-level keys; unit `test_parsed_cv_matching_contract_stable`
+## D) Prior gates
 
-## 4) Output samples (extract JSON + cover letter) under 3.3 GB — **BLOCKED**
+| Gate | Status |
+|------|--------|
+| Peak ≤3.3 GB hard (constant 3300) | Code **PASS**; ship Peak **OPEN** until laptop |
+| Fail-cases empty/corrupt/timeout/OOM | **PASS** (demo + unit) |
+| Matching-Contract + Diff | **PASS** (v1, no drift) |
+| Extract + cover letter under limit | **BLOCKED** (needs Peak ≤3.3 on target) |
 
-Blocked by (1): a successful parse under ≤3.3 GB is not achievable on this stack (combined Peak 8.5 GB; even llama alone ~5.4–6.9 GB).  
-Therefore no compliant extract JSON / cover-letter sample can be produced under the hard limit without aborting or replacing the model.
+## E) E2E Profile → Matching → Cover letter — **OPEN**
 
-## Overall merge readiness
+Must be demonstrated **under** process-group ≤3.3 GB on the laptop; evaluate extract / matching / cover letter **separately**. Not run as ship evidence here.
 
-**Not done.** (1) FAIL, (4) BLOCKED by (1). (2) and (3) met.
+## F) #64 UI-only — **honored** (no UI QA mixed into #62 Peak work)
+
+---
+
+## What we can measure now vs laptop
+
+| Now (Agent-VM / CI) | Requires physical laptop |
+|---------------------|---------------------------|
+| Code hard-fail Peak/timeout/empty/corrupt | Process-group Peak on 8 GB Win |
+| Contract freeze + unit tests | Free RAM / crash / UI freeze |
+| Informational Agent-VM RSS (not ship) | Import duration on i3 |
+| Quality post-analysis (not Peak ship) | E2E Profile→Matching→Cover under limit |
+
+## Go / No-Go (Kill-or-Ship)
+
+**NO SHIP / NO-GO.**  
+
+Reasons: (A) target-device Peak **unmeasured** → gate stays **OPEN**; Agent-VM process-group already **~5.4–8.5 GB ≫ 3.3 GB** (abort signal, still not a substitute for laptop proof). Recommend abort of on-device Qwen3.5-4B for i3/8 GB unless the laptop run proves ≤3.3 GB process-group with stable E2E.
