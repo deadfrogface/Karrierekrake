@@ -1,37 +1,14 @@
 # Vorbereitete Close-Kommentare für Spike-PRs
 
-**Status Agent (2026-09-24):** Close erneut versucht — weiterhin **403**
-(`gh pr close` / `gh pr comment` / `ManagePullRequest set_pr_status`).
-**#63** wurde per Merge-API erfolgreich auf main gebracht; #62 bleibt offen.
+**Status (2026-09-24):** #56 / #60 / #61 sind **CLOSED** (Maintainer, ~05:27 UTC).  
+#63 **MERGED**. #62 bleibt offen (Draft) bis Merge-Gates.
 
-Maintainer kann die drei PRs mit den Texten unten schließen.
+| PR | Link | Status | Schließgrund |
+|----|------|--------|--------------|
+| #56 | https://github.com/deadfrogface/Karrierekrake/pull/56 | CLOSED | Phi-Spike überholt; produktiver Pfad Docpick/#62 |
+| #60 | https://github.com/deadfrogface/Karrierekrake/pull/60 | CLOSED | Phi-vs-DET-Vergleich überholt |
+| #61 | https://github.com/deadfrogface/Karrierekrake/pull/61 | CLOSED | SmartResume-Spike überholt durch Docpick/#62 |
+| #62 | https://github.com/deadfrogface/Karrierekrake/pull/62 | OPEN (Draft) | Docpick+Qwen — Merge erst nach Gates |
+| #63 | https://github.com/deadfrogface/Karrierekrake/pull/63 | MERGED | UI-Polish auf main |
 
----
-
-## PR #56 — Phi-Extraktion ≥99% Sollwerte
-
-```
-Schließen: überholt.
-
-PHI_EXTRACT wurde aus dem produktiven Pfad entfernt. Der aktuelle
-Integrationsversuch ist Docpick+Qwen auf PR #62 (DET-frei auf dem
-Feature-Branch). Kein Merge dieses Spikes.
-```
-
-## PR #60 — Phi vs DET begrenzter Vergleich
-
-```
-Schließen: überholt.
-
-Phi-Extract ist entfernt; der produktive Ersatzversuch läuft über
-Docpick+Qwen (PR #62). DET bleibt nur auf main, bis #62 mergefähig ist.
-```
-
-## PR #61 — OSS Docling+SmartResume Prototyp
-
-```
-Schließen: überholt durch Docpick/#62.
-
-SmartResume-/Docling-Spike nicht weiterverfolgen; neuer Importpfad ist
-Docpick+Qwen3.5-4B ohne DET-Fallback (Branch cursor/docpick-qwen35-cv-replace-d85b).
-```
+Keine Branches gelöscht.
