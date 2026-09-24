@@ -668,7 +668,8 @@ def _llm_extract(text: str) -> dict[str, Any]:
                     "employment.position is the job title only — never duty bullets. "
                     "When a job has no end date / is current, set end_date to 'heute'. "
                     "Keep incomplete education outcomes in qualification "
-                    "(Studium abgebrochen, Schule ohne Abschluss)."
+                    "(Studium abgebrochen, Schule ohne Abschluss). "
+                    "Emit minified JSON on one line (no pretty-print spaces/newlines)."
                 ),
             },
             {

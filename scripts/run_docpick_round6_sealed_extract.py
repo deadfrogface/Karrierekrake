@@ -71,6 +71,7 @@ def main() -> int:
         "changes": [
             "license_merge_partial_from_fuehrerschein_text",
             "heute_repair_disabled_default",
+            "minified_json_system_prompt",
             "keep_round5_prompt_and_postprocess",
             "max_tokens_2048",
         ],

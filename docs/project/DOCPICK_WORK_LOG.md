@@ -18,7 +18,7 @@ Hardware: Agent-VM Intel Xeon, **4 CPU**, ~15 GB RAM — **nicht** i3/8 GB. Ziel
 | 2a | Schema-Strip spart Prefill | Env STRIP=1 | MH_025 −5 s; EN_02 −27 s, aber DOB verloren | **REVERT** |
 | 2b | Tabellen-Pipeline abschalten | `do_table_structure=False` | EN_02 2433→1581 Chars | **REVERT** |
 | 2c | pypdf-first | Heuristik | EN Zwei-Spalten Ratio 0,31–0,33 | **REVERT** (Qualitätsrisiko) |
-| 2d | Compact JSON | (Messung) | folgt | … |
+| 2d | Compact JSON reduziert Completion-Tokens | Systemprompt: minified JSON | MH_025: 70,7→45,5 s (394→209 tok); Spot C1/heute OK | **KEEP** (vorläufig; Round6 bestätigt) |
 
 ## Nächste Schritte
 
