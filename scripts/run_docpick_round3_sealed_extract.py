@@ -98,6 +98,32 @@ def main() -> int:
     for meta in manifest["documents"]:
         pdf = ROOT / meta["path"]
         doc_key = f"{meta['corpus_id']}__{meta['id']}"
+        out_path = PRED_DIR / f"{doc_key}.json"
+        # Resume: skip already sealed predictions (speeds restarts / crash recovery).
+        if out_path.is_file() and "--force" not in sys.argv:
+            try:
+                existing = json.loads(out_path.read_text(encoding="utf-8"))
+                if not existing.get("tech_error"):
+                    elapsed = 0.0
+                    predictions_meta.append(
+                        {
+                            "corpus_id": meta["corpus_id"],
+                            "id": meta["id"],
+                            "lang": meta["lang"],
+                            "pdf": meta["path"],
+                            "prediction_file": str(out_path.relative_to(ROOT)),
+                            "sha256": hashlib.sha256(out_path.read_bytes()).hexdigest(),
+                            "elapsed_s": elapsed,
+                            "ok": True,
+                            "resumed": True,
+                        }
+                    )
+                    n_ok += 1
+                    timings[meta["id"]] = elapsed
+                    print(f"{doc_key} skip-existing", flush=True)
+                    continue
+            except Exception:  # noqa: BLE001
+                pass
         s = time.perf_counter()
         try:
             if not pdf.is_file():
@@ -120,7 +146,6 @@ def main() -> int:
         elapsed = time.perf_counter() - s
         timings[meta["id"]] = elapsed
         peak = max(peak, _peak_rss_mb())
-        out_path = PRED_DIR / f"{doc_key}.json"
         blob = json.dumps(pred, ensure_ascii=False, indent=2) + "\n"
         out_path.write_text(blob, encoding="utf-8")
         predictions_meta.append(

@@ -1,0 +1,436 @@
+{
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "partial": true,
+  "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "disclaimer": "Partial or full Round3 score on known development CVs. NOT an independent blind test. NOT a 99% claim. Scored 18/40 documents so far.",
+  "created_at": "2026-09-24T01:39:43.514487+00:00",
+  "n_scored": 18,
+  "n_manifest": 40,
+  "predictions": [
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_001",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_001.json",
+      "sha256": "684aceed9f3f7b252f02fe9609639a74501fbd39c40a4284db346f432fa5c821"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_002",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_002.json",
+      "sha256": "20835295a5bfb638d9259b1d3334176a7fcad828441136715ec4623c39ebd954"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_003",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_003.json",
+      "sha256": "44b4a9ff908af4ab2189bd19371a799478775c236c380d12ff86a92bbf77210f"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_004",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_004.json",
+      "sha256": "5d09bbd7e336eefae581ac588257a7379927abfb68783268cbc0b7dc0f112bed"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_005",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_005.json",
+      "sha256": "76c9c76c32f6f49d8ac5263a30b95f2e50763348e21e154196c6b395e12cef5a"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_006",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_006.json",
+      "sha256": "d25d8d5a4afc8efc579760ae0d6311e530e1a39ec820b1f057ea20dd4ade3d73"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_007",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_007.json",
+      "sha256": "b0b5a3c7eb9e504c3711cdabefc00d7e6d149ead9ce4c9931cc397c9d197af59"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_008",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_008.json",
+      "sha256": "e87ed97409653f7bceaba5d2c4df152dc5d2d955e4ffda0902234b54b6456e47"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_01",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_01.json",
+      "sha256": "4d8c8897c2f9ab9f986320fff9c8e736c93643759670665e5bb162778c73da89"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_02",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_02.json",
+      "sha256": "e54f87b81b8ffaa6e9ab37e5e8fa6dfea4b51c7a0115b7fdac27c3c05741629e"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_03",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_03.json",
+      "sha256": "f4ecb54af555947b788d191628b21fb319eb65fabe8eee67a528f38a918f8ecf"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_04",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_04.json",
+      "sha256": "02c482b7d41131582795c151d298d978584adaf1a647e1eb8a06d238f2d86d80"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_05",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_05.json",
+      "sha256": "9b27a8e7a4e18a34f71669bae44bd8805a1952135af6e706653abbd8276f0149"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_01",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_01.json",
+      "sha256": "4869164b96050ab78c30d6c5dd5b7234e62ce0f6d1bcd6ea37d92fcec43c6abe"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_02",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_02.json",
+      "sha256": "81acae475279d804889cb5343a5c7ee363914cb4297fb561754bfaff2ac85ec3"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_03",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_03.json",
+      "sha256": "1d4923980642d375c8cd7a10d974e4db2e0b296ccba67e25f983535375e64fc8"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_04",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_04.json",
+      "sha256": "f1235d8828d9d4196bf37a67295990cc54ce03816c9983fc77d0f24abdb8f086"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_05",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_05.json",
+      "sha256": "a78494c47cb8e2b1912eeaaefff34b4d873bb53b00ec13ec918be5207ac9fe78"
+    }
+  ],
+  "coverage": {
+    "n_documents_scored": 18,
+    "n_scored_fields_total": 430,
+    "perfect_core_on_scored_fields": "15/18"
+  },
+  "metrics_complete_gt_only_v3_1": {
+    "field_total": 430,
+    "counts": {
+      "correct": 424,
+      "wrong": 1,
+      "missing": 5,
+      "hallucinated": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.986046511627907,
+    "precision": 0.9976470588235294,
+    "recall": 0.9883449883449883,
+    "f1": 0.9929742388758782,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.011627906976744186,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.002325581395348837,
+    "by_group": {
+      "personal": {
+        "correct": 46
+      },
+      "contact": {
+        "correct": 23
+      },
+      "address": {
+        "correct": 76,
+        "missing": 5
+      },
+      "languages": {
+        "correct": 46
+      },
+      "licenses": {
+        "correct": 23
+      },
+      "education": {
+        "correct": 50
+      },
+      "employment": {
+        "correct": 74,
+        "wrong": 1
+      },
+      "skills": {
+        "correct": 41
+      },
+      "software": {
+        "correct": 40
+      },
+      "certificates": {
+        "correct": 5
+      }
+    },
+    "n_missing": 5,
+    "n_hallucinated": 0,
+    "n_wrong": 1,
+    "missing_fields": [
+      {
+        "document": "SMOKE_DE_EN_10_V1__DE_04",
+        "field": "address.city",
+        "expected": "Leipzig"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.street",
+        "expected": "Kingfisher Road"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.house_number",
+        "expected": "42"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.postal_code",
+        "expected": "M1 2AB"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.city",
+        "expected": "Manchester"
+      }
+    ],
+    "hallucinated_fields": [],
+    "wrong_fields": [
+      {
+        "document": "MINI_HOLDOUT_30__MH_004",
+        "field": "employment:0.position",
+        "status": "wrong",
+        "expected": "Deichbauer",
+        "actual": "Materialdisposition"
+      }
+    ],
+    "perfect_core": "15/18"
+  },
+  "by_lang": {
+    "de": {
+      "field_total": 373,
+      "counts": {
+        "correct": 371,
+        "wrong": 1,
+        "missing": 1,
+        "hallucinated": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9946380697050938,
+      "precision": 0.9973118279569892,
+      "recall": 0.9973118279569892,
+      "f1": 0.9973118279569892,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.002680965147453083,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.002680965147453083,
+      "by_group": {
+        "personal": {
+          "correct": 35
+        },
+        "contact": {
+          "correct": 21
+        },
+        "address": {
+          "correct": 56,
+          "missing": 1
+        },
+        "languages": {
+          "correct": 32
+        },
+        "licenses": {
+          "correct": 17
+        },
+        "education": {
+          "correct": 50
+        },
+        "employment": {
+          "correct": 74,
+          "wrong": 1
+        },
+        "skills": {
+          "correct": 41
+        },
+        "software": {
+          "correct": 40
+        },
+        "certificates": {
+          "correct": 5
+        }
+      },
+      "n_missing": 1,
+      "n_hallucinated": 0,
+      "n_wrong": 1,
+      "missing_fields": [
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_04",
+          "field": "address.city",
+          "expected": "Leipzig"
+        }
+      ],
+      "hallucinated_fields": [],
+      "wrong_fields": [
+        {
+          "document": "MINI_HOLDOUT_30__MH_004",
+          "field": "employment:0.position",
+          "status": "wrong",
+          "expected": "Deichbauer",
+          "actual": "Materialdisposition"
+        }
+      ],
+      "perfect_core": "11/13",
+      "n_documents": 13
+    },
+    "en": {
+      "field_total": 57,
+      "counts": {
+        "correct": 53,
+        "missing": 4,
+        "hallucinated": 0,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9298245614035088,
+      "precision": 1.0,
+      "recall": 0.9298245614035088,
+      "f1": 0.9636363636363636,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.07017543859649122,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "by_group": {
+        "personal": {
+          "correct": 11
+        },
+        "address": {
+          "correct": 20,
+          "missing": 4
+        },
+        "languages": {
+          "correct": 14
+        },
+        "licenses": {
+          "correct": 6
+        },
+        "contact": {
+          "correct": 2
+        }
+      },
+      "n_missing": 4,
+      "n_hallucinated": 0,
+      "n_wrong": 0,
+      "missing_fields": [
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.street",
+          "expected": "Kingfisher Road"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.house_number",
+          "expected": "42"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.postal_code",
+          "expected": "M1 2AB"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.city",
+          "expected": "Manchester"
+        }
+      ],
+      "hallucinated_fields": [],
+      "wrong_fields": [],
+      "perfect_core": "4/5",
+      "n_documents": 5
+    }
+  },
+  "real_errors_on_complete_gt": [
+    {
+      "document": "MINI_HOLDOUT_30__MH_004",
+      "lang": "de",
+      "field": "employment:0.position",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "Deichbauer",
+      "actual": "Materialdisposition"
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__DE_04",
+      "lang": "de",
+      "field": "address.city",
+      "group": "address",
+      "status": "missing",
+      "expected": "Leipzig",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.street",
+      "group": "address",
+      "status": "missing",
+      "expected": "Kingfisher Road",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.house_number",
+      "group": "address",
+      "status": "missing",
+      "expected": "42",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.postal_code",
+      "group": "address",
+      "status": "missing",
+      "expected": "M1 2AB",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.city",
+      "group": "address",
+      "status": "missing",
+      "expected": "Manchester",
+      "actual": ""
+    }
+  ],
+  "error_status_counts": {
+    "wrong": 1,
+    "missing": 5
+  }
+}
