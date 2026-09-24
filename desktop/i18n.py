@@ -498,6 +498,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Bitte manuell erneut versuchen."
         ),
         "cv_import.cancelled": "Import abgebrochen.",
+        "cv_import.empty": (
+            "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
+            "oder lies die Datei erneut ein."
+        ),
+        "cv_import.manual_profile": "Profil manuell eintragen",
         "cv_import.pipeline": "CV-Extraktion",
         "cv_import.pipeline_det": "Deterministisch (ohne KI-Modell)",
         "btn.reset_profile": "Profil zurücksetzen",
@@ -1382,6 +1387,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Reading timed out. Your entries are unchanged. Try again manually."
         ),
         "cv_import.cancelled": "Import cancelled.",
+        "cv_import.empty": (
+            "Nothing was found in the document. Enter the profile manually "
+            "or read the file again."
+        ),
+        "cv_import.manual_profile": "Enter profile manually",
         "cv_import.pipeline": "CV extraction",
         "cv_import.pipeline_det": "Deterministic (no AI model)",
         "btn.reset_profile": "Reset profile",

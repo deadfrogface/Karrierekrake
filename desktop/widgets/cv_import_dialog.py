@@ -165,6 +165,11 @@ class CvImportDialog(QDialog):
         self._retry_btn.setVisible(False)
         self._retry_btn.clicked.connect(self._manual_retry)
         buttons.addButton(self._retry_btn, QDialogButtonBox.ButtonRole.ActionRole)
+        self._manual_btn = QPushButton(tr("cv_import.manual_profile"))
+        self._manual_btn.setObjectName("CvImportManual")
+        self._manual_btn.setVisible(False)
+        self._manual_btn.clicked.connect(self._keep_manual_profile)
+        buttons.addButton(self._manual_btn, QDialogButtonBox.ButtonRole.ActionRole)
 
         layout = QVBoxLayout(self)
         intro = QLabel(tr("cv_import.intro"))
@@ -201,6 +206,7 @@ class CvImportDialog(QDialog):
         self.result_application = None
         self._ok_btn.setEnabled(False)
         self._retry_btn.setVisible(False)
+        self._manual_btn.setVisible(False)
         self.progress.setVisible(True)
         self.status_label.setText(tr("cv_import.parsing"))
         supervisor = CvImportSupervisor(
@@ -218,7 +224,7 @@ class CvImportDialog(QDialog):
         """User-triggered retry. Never invoked automatically after OOM or timeout."""
         if self._running:
             return
-        if self._last_kind not in {"oom", "timeout"}:
+        if self._last_kind not in {"oom", "timeout", "error", "empty"}:
             return
         self.start_parse()
 
@@ -239,9 +245,17 @@ class CvImportDialog(QDialog):
         self.progress.setVisible(False)
         if result.ok and isinstance(result.parsed, dict):
             self._apply_parsed(result.parsed)
+            if self._detection_is_empty():
+                self._last_kind = "empty"
+                self.status_label.setText(tr("cv_import.empty"))
+                self._ok_btn.setEnabled(False)
+                self._retry_btn.setVisible(True)
+                self._manual_btn.setVisible(True)
+                return
             self.status_label.setText(tr("cv_import.ready"))
             self._ok_btn.setEnabled(True)
             self._retry_btn.setVisible(False)
+            self._manual_btn.setVisible(False)
             return
         self._show_failure(result.kind, result.message)
 
@@ -265,7 +279,26 @@ class CvImportDialog(QDialog):
             text = f"{text}\n{message}"
         self.status_label.setText(text)
         self.preview.setPlainText(text)
-        self._retry_btn.setVisible(kind in {"oom", "timeout"})
+        # Resource and read failures keep a manual CTA. Nothing starts by itself.
+        self._retry_btn.setVisible(kind in {"oom", "timeout", "error"})
+        self._manual_btn.setVisible(kind in {"oom", "timeout", "error"})
+
+    def _detection_is_empty(self) -> bool:
+        if self.personal_incoming:
+            return False
+        if self.incoming is None:
+            return True
+        summary = summarize_incoming(self.incoming)
+        return not any(summary.values())
+
+    def _keep_manual_profile(self) -> None:
+        """Close without writing the profile. Manual entry on the profile page stays."""
+        self._closing = True
+        self.result_quals = None
+        self.result_application = None
+        if self._worker is not None:
+            self._worker.request_cancel()
+        self.reject()
 
     def _apply_parsed(self, parsed: dict) -> None:
         self.parsed = filter_parsed_for_import(parsed)

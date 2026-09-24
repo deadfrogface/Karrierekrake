@@ -225,6 +225,7 @@ def test_oom_preserves_inputs_and_does_not_auto_retry(qapp, tmp_path: Path):
     assert app.city == "Hamburg"
     assert dlg.mode_merge.isChecked()
     assert dlg._ok_btn.isEnabled() is False
+    assert dlg._manual_btn.isVisible()
     time.sleep(0.2)
     qapp.processEvents()
     assert calls == [1]
@@ -292,6 +293,60 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     assert calls == [1]
     assert procs[0].terminated
     assert dlg.result_quals is None
+    qapp.processEvents()
+
+
+def test_read_error_has_manual_retry_cta_and_does_not_auto_start(qapp, tmp_path: Path):
+    calls: list[int] = []
+
+    def spawn(path: Path, out: Path):
+        calls.append(1)
+        _write(out, {"ok": False, "kind": "error", "message": "broken", "parsed": None})
+        return _Proc(1)
+
+    app = ApplicationProfile(city="Hamburg")
+    dlg = CvImportDialog(tmp_path / "cv.txt", QualificationsConfig(), app, spawn=spawn, autostart=False)
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._retry_btn.isVisible() and dlg._manual_btn.isVisible())
+    assert calls == [1]
+    assert dlg._ok_btn.isEnabled() is False
+    assert app.city == "Hamburg"
+    time.sleep(0.15)
+    qapp.processEvents()
+    assert calls == [1]
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_empty_detection_offers_manual_entry_without_applying(qapp, tmp_path: Path):
+    cv = tmp_path / "cv.txt"
+
+    def spawn(path: Path, out: Path):
+        parsed = _parsed(path)
+        parsed["personal"] = {}
+        parsed["emails"] = []
+        parsed["confidence"] = {}
+        _write(out, {"ok": True, "kind": "ok", "parsed": parsed, "message": ""})
+        return _Proc(0)
+
+    app = ApplicationProfile(city="Hamburg", first_name="Manuell")
+    dlg = CvImportDialog(cv, QualificationsConfig(), app, spawn=spawn, autostart=False)
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._last_kind == "empty")
+    assert dlg._manual_btn.isVisible()
+    assert dlg._retry_btn.isVisible()
+    assert dlg._ok_btn.isEnabled() is False
+    assert dlg.result_quals is None
+    assert app.city == "Hamburg"
+    assert app.first_name == "Manuell"
+    dlg._manual_btn.click()
+    qapp.processEvents()
+    assert dlg.result() == dlg.DialogCode.Rejected
+    assert app.city == "Hamburg"
     qapp.processEvents()
 
 
