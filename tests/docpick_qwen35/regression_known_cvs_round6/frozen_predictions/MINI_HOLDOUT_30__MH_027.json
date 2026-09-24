@@ -1,0 +1,82 @@
+{
+  "personal": {
+    "first_name": "Daisy",
+    "last_name": "Turner",
+    "street": "Quai de la Goffe",
+    "house_number": "84",
+    "postal_code": "4000",
+    "city": "Liège",
+    "country": "Belgien",
+    "date_of_birth": "03.03.1984"
+  },
+  "emails": [
+    "daisy.turner@example.co.uk"
+  ],
+  "phones": [
+    "+49 154 4334026"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "native"
+    },
+    {
+      "language": "German",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Bristol Technical College",
+      "qualification": "Bachelor of Engineering",
+      "start_date": "2010",
+      "end_date": "2013"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Digital Archivist",
+      "company": "Mosaik Dienste AG",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Nordlicht Manufaktur",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Brückenbau West GmbH",
+      "start_date": "04/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Arbeitsvorbereitung",
+    "Montageplanung",
+    "Materialdisposition",
+    "Kalibrierung",
+    "Kundenkommunikation"
+  ],
+  "software": [],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_027.pdf",
+  "raw_text_chars": 984,
+  "raw_text_preview": "<!-- image -->\n\nQuai de la Goffe 84 | 4000 Liège | Belgien · daisy.turner@example.co.uk · +49 154 4334026 · Born: 03.03.1984\n\n## Professional Experience\n\n| 02/2019 08/2021   | Digital Archivist Mosaik Dienste AG Arbeitsvorbereitung · Montageplanung   |\n|-------------------|----------------------------------------------------------------------------|\n| 03/2020 09/2022   | Projektassistenz Nordlicht Manufaktur Materialdisposition · Kalibrierung   |\n| 04/2021 10/2023   | Aushilfe Brückenbau West Gm",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_027",
+  "regression_lang": "en"
+}

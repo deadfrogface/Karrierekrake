@@ -481,6 +481,45 @@ def _norm_licence(s: str) -> str:
     return t
 
 
+_FS_TAIL_RE = re.compile(
+    r"(?:führerschein|fahrerlaubnis|driving\s+licen[cs]e)\s*[:：]\s*(.+)$",
+    re.I,
+)
+_KLASSEN_LINE_RE = re.compile(r"^\s*klassen?\s+(.+)$", re.I)
+_LICENCE_HEADING_RE = re.compile(
+    r"führerschein|fahrerlaubnis|driving\s+licen[cs]e|\blicen[cs]e\b",
+    re.I,
+)
+
+
+def _license_codes_from_source_text(text: str) -> list[str]:
+    """Extract driving-licence class codes from CV text without CEFR bleed.
+
+    Only parse the tail after ``Führerschein:`` / ``Driving Licence:``, or a
+    ``Klassen …`` line that sits under a nearby licence heading. Never feed a
+    whole ``Sprachen … C1 … Führerschein: B`` line into the normalizer — that
+    turns CEFR levels into false licence classes.
+    """
+    from core.cv_parser import normalize_driving_license
+
+    codes: list[str] = []
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        m = _FS_TAIL_RE.search(line)
+        if m:
+            for code in normalize_driving_license("Führerschein: " + m.group(1)):
+                if code not in codes:
+                    codes.append(code)
+            continue
+        if _KLASSEN_LINE_RE.match(line):
+            window = "\n".join(lines[max(0, i - 3) : i + 1])
+            if _LICENCE_HEADING_RE.search(window):
+                for code in normalize_driving_license("Führerschein " + line):
+                    if code not in codes:
+                        codes.append(code)
+    return codes
+
+
 _docling_converter = None
 # Content-addressed text cache: only reuse when file bytes + Docling version match.
 _docling_text_cache: dict[tuple[str, str], str] = {}
@@ -668,8 +707,7 @@ def _llm_extract(text: str) -> dict[str, Any]:
                     "employment.position is the job title only — never duty bullets. "
                     "When a job has no end date / is current, set end_date to 'heute'. "
                     "Keep incomplete education outcomes in qualification "
-                    "(Studium abgebrochen, Schule ohne Abschluss). "
-                    "Emit minified JSON on one line (no pretty-print spaces/newlines)."
+                    "(Studium abgebrochen, Schule ohne Abschluss)."
                 ),
             },
             {
@@ -777,20 +815,9 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         else:
             certs.append({"name": cname, "issuer": "", "year": ""})
     if source_text:
-        # Merge classes from Führerschein lines even when LLM returned a partial list
-        # (e.g. only B while text has "B, C1").
-        for line in source_text.splitlines():
-            if re.search(r"führerschein|driving\s+licen[cs]e|licence|license", line, re.I):
-                for code in normalize_driving_license(line):
-                    if code not in lic_codes:
-                        lic_codes.append(code)
-            # DE wording without English keywords: "Klassen B und C1"
-            elif re.search(r"\bklassen?\b", line, re.I) and re.search(
-                r"\b[A-Z]{1,3}\d?E?\b", line
-            ):
-                for code in normalize_driving_license("Führerschein " + line):
-                    if code not in lic_codes:
-                        lic_codes.append(code)
+        for code in _license_codes_from_source_text(source_text):
+            if code not in lic_codes:
+                lic_codes.append(code)
     first = str(name.get("first_name") or "")
     last = str(name.get("last_name") or "")
     email = str(data["email"]) if data.get("email") else ""

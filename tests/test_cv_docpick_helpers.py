@@ -96,6 +96,21 @@ def test_norm_dob_formats() -> None:
 
 def test_merge_partial_license_from_fuehrerschein_line() -> None:
     """LLM may return only B while text lists B, C1 — merge from source text."""
+    from core.cv_docpick_import import _license_codes_from_source_text
+
+    assert _license_codes_from_source_text("Führerschein: B, C1\n") == ["B", "C1"]
+    # CEFR levels before Führerschein must not become licence classes.
+    assert _license_codes_from_source_text(
+        "Polnisch: B1 Englisch: C1 Führerschein: B\n"
+    ) == ["B"]
+    assert _license_codes_from_source_text(
+        "## Fahrerlaubnis\nKlassen B und C1\n"
+    ) == ["B", "C1"]
+    # Heading alone / languages without FS colon → no codes.
+    assert _license_codes_from_source_text(
+        "## Sprachkenntnisse & Führerschein\nGriechisch: C1\n"
+    ) == []
+
     parsed = suggestion_to_parsed(
         {
             "name": {"first_name": "A", "last_name": "B"},
