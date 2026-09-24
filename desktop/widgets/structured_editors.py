@@ -26,6 +26,7 @@ from core.config import (
 )
 from desktop.i18n import tr
 from desktop.services.profile_merge import SOURCE_MANUAL
+from desktop.widgets.confirm_dialog import label_button_box
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen
 
 
@@ -137,8 +138,8 @@ class LanguageEditor(_EntryListEditor):
         form = QFormLayout()
         form.addRow("Sprache", lang)
         form.addRow("Niveau", level)
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        buttons = label_button_box(
+            QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         )
         buttons.accepted.connect(dlg.accept)
         buttons.rejected.connect(dlg.reject)
@@ -180,8 +181,8 @@ class EducationEditor(_EntryListEditor):
         form.addRow("Beginn", fields["start_date"])
         form.addRow("Ende", fields["end_date"])
         form.addRow("Abschlussdatum", fields["completion_date"])
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        buttons = label_button_box(
+            QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         )
         buttons.accepted.connect(dlg.accept)
         buttons.rejected.connect(dlg.reject)
@@ -227,8 +228,8 @@ class ExperienceEditor(_EntryListEditor):
         form.addRow("Beginn", start)
         form.addRow("Ende / aktuell", end)
         form.addRow("Aufgaben", resp)
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        buttons = label_button_box(
+            QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         )
         buttons.accepted.connect(dlg.accept)
         buttons.rejected.connect(dlg.reject)
@@ -276,8 +277,8 @@ class CertificateEditor(_EntryListEditor):
         form.addRow("Bezeichnung", name)
         form.addRow("Anbieter", issuer)
         form.addRow("Datum", date)
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        buttons = label_button_box(
+            QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         )
         buttons.accepted.connect(dlg.accept)
         buttons.rejected.connect(dlg.reject)

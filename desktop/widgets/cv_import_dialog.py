@@ -34,6 +34,7 @@ from desktop.services.profile_merge import (
     summarize_incoming,
     sync_application_summaries,
 )
+from desktop.widgets.confirm_dialog import label_button_box
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen
 
 
@@ -82,8 +83,8 @@ class CvImportDialog(QDialog):
         self.conflict_form = QFormLayout(self.conflict_box)
         self.conflict_box.setVisible(False)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        buttons = label_button_box(
+            QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         )
         buttons.button(QDialogButtonBox.StandardButton.Ok).setText(tr("cv_import.apply"))
         buttons.accepted.connect(self._accept)

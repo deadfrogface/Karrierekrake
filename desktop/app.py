@@ -49,10 +49,10 @@ from desktop.branding import (
     LOCAL_SERVER_NAME,
     SINGLE_INSTANCE_KEY,
 )
-from desktop.i18n import i18n
+from desktop.i18n import i18n, install_qt_translator
 from desktop.main_window import MainWindow
 from desktop.services import ConfigService
-from desktop.theme import stylesheet_for
+from desktop.theme import apply_theme
 
 _INSTANCE_KEY = SINGLE_INSTANCE_KEY
 _INSTANCE_SERVER = LOCAL_SERVER_NAME
@@ -81,9 +81,10 @@ def apply_appearance(app: QApplication, config_service: ConfigService) -> None:
     if lang not in {"de", "en"}:
         lang = "de"
     i18n.set_language(lang)
+    install_qt_translator(app, lang)
     theme_pref = cfg.settings.theme or "system"
     high_contrast = bool(getattr(cfg.settings, "high_contrast", False))
-    app.setStyleSheet(stylesheet_for(theme_pref, high_contrast=high_contrast))
+    apply_theme(app, theme_pref, high_contrast=high_contrast)
 
 
 def _try_notify_existing_instance() -> bool:
@@ -329,7 +330,7 @@ def _smoke_test() -> int:
                     pass
         # Theme / language smoke
         for theme in ("system", "light", "dark"):
-            app.setStyleSheet(stylesheet_for(theme))
+            apply_theme(app, theme)
         for lang in ("en", "de"):
             i18n.set_language(lang)
             window.retranslate_ui()

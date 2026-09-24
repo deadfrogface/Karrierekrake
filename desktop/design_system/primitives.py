@@ -217,7 +217,9 @@ class KkDialog(QDialog):
         self._root.setSpacing(12)
         self.body = QVBoxLayout()
         self._root.addLayout(self.body)
-        self.button_box = QDialogButtonBox(buttons)
+        from desktop.widgets.confirm_dialog import label_button_box
+
+        self.button_box = label_button_box(QDialogButtonBox(buttons))
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
         self._root.addWidget(self.button_box)
