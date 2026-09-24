@@ -6,11 +6,17 @@ Widgets bind to this snapshot only. Domain scoring stays in ``core.matcher`` /
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Any, Iterable
 
 from core.intent_filter import apply_search_intent
 from core.models import Job
+
+_RADIUS_CLAIM = re.compile(
+    r"within radius|outside radius|luftlinie|radius skipped|\b\d+(?:[.,]\d+)?\s*km\b",
+    re.I,
+)
 
 
 # Qualitative headlines only — never "84 % Match" as the primary signal.
@@ -139,7 +145,21 @@ def _headline(bullets: tuple[FitBullet, ...], *, excluded: bool, sort_score: int
     return FIT_UNKNOWN
 
 
-def build_job_fit_viewmodel(job: Job, config: Any | None = None) -> JobFitViewModel:
+def _home_notice(config: Any | None):
+    loc = getattr(getattr(config, "profile", None), "location", None)
+    if loc is None:
+        return None
+    from core.location import home_location_notice
+
+    return home_location_notice(loc)
+
+
+def build_job_fit_viewmodel(
+    job: Job,
+    config: Any | None = None,
+    *,
+    home_notice: Any | None = None,
+) -> JobFitViewModel:
     """Deterministic fit snapshot for Jobs UI cards/detail."""
     explanation: dict[str, Any] | None = None
     excluded = False
@@ -174,11 +194,17 @@ def build_job_fit_viewmodel(job: Job, config: Any | None = None) -> JobFitViewMo
             if b.kind == "warn" and b.text.casefold() not in existing:
                 bullets.append(b)
 
-    # Distance / employment convenience bullets when present on the job.
-    if job.distance_km is not None:
+    notice = home_notice if home_notice is not None else _home_notice(config)
+    home_resolved = notice is None or getattr(notice, "status", "resolved") == "resolved"
+    if home_resolved and job.distance_km is not None:
         dist_txt = f"{job.distance_km:.0f} km"
         if not any("km" in b.text.casefold() for b in bullets):
             bullets.append(FitBullet(kind="pass", text=dist_txt))
+    elif not home_resolved:
+        from desktop.i18n import tr
+
+        bullets = [b for b in bullets if not _RADIUS_CLAIM.search(b.text or "")]
+        bullets.insert(0, FitBullet(kind="warn", text=tr("jobs.distance_skipped")))
     emp = (job.employment_type or "").strip()
     if emp and not any(emp.casefold() in b.text.casefold() for b in bullets):
         bullets.append(FitBullet(kind="pass", text=emp))

@@ -28,6 +28,21 @@ from desktop.util.human_time import format_human_datetime
 from desktop.widgets.scroll_page import wrap_scrollable
 
 
+def bind_home_notice_label(label, notice) -> None:
+    """Show the fresh home status. Resolved is an OK line; unclear asks for a PLZ."""
+    if not getattr(notice, "notice_key", ""):
+        label.clear()
+        label.setVisible(False)
+        return
+    label.setText(tr(notice.notice_key, place=getattr(notice, "place_label", "") or ""))
+    label.setObjectName("WarningLabel" if notice.ask_postal else "HomeStatusOk")
+    label.setVisible(True)
+    style = label.style()
+    if style is not None:
+        style.unpolish(label)
+        style.polish(label)
+
+
 class DashboardPage(QWidget):
     search_requested = Signal()
     apply_requested = Signal()
@@ -427,13 +442,7 @@ class DashboardPage(QWidget):
         loc = cfg.profile.location
         from core.location import home_location_notice
 
-        notice = home_location_notice(loc)
-        if notice.status == "resolved" or not notice.notice_key:
-            self.home_warning_label.clear()
-            self.home_warning_label.setVisible(False)
-        else:
-            self.home_warning_label.setText(tr(notice.notice_key))
-            self.home_warning_label.setVisible(True)
+        bind_home_notice_label(self.home_warning_label, home_location_notice(loc))
 
         # Keep diagnostics populated for tests / developer tooling — never shown.
         self.advanced_stats.setText(

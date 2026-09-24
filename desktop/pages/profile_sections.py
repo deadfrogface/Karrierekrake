@@ -353,13 +353,9 @@ class LocationWorkSection(QGroupBox):
                 postal_code=self.postal_code.text().strip(),
                 country=self.country.text().strip() or "DE",
             )
-        notice = home_location_notice(location)
-        if notice.status == "resolved" or not notice.notice_key:
-            self.home_notice.clear()
-            self.home_notice.setVisible(False)
-        else:
-            self.home_notice.setText(tr(notice.notice_key))
-            self.home_notice.setVisible(True)
+        from desktop.pages.dashboard import bind_home_notice_label
+
+        bind_home_notice_label(self.home_notice, home_location_notice(location))
 
     def load(
         self,

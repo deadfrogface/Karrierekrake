@@ -761,17 +761,12 @@ class SettingsPage(QWidget):
         AboutDialog(self, data_dir=self.config_service.dirs["root"]).exec()
 
     def _refresh_home_notice(self) -> None:
-        """Re-read home resolution. Resolved clears the hint; no PLZ is guessed."""
+        """Re-read home resolution. No PLZ is guessed."""
         from core.location import home_location_notice
+        from desktop.pages.dashboard import bind_home_notice_label
 
         cfg = self.config_service.load()
-        notice = home_location_notice(cfg.profile.location)
-        if notice.status == "resolved" or not notice.notice_key:
-            self.home_notice.clear()
-            self.home_notice.setVisible(False)
-        else:
-            self.home_notice.setText(tr(notice.notice_key))
-            self.home_notice.setVisible(True)
+        bind_home_notice_label(self.home_notice, home_location_notice(cfg.profile.location))
 
     def load_from_config(self) -> None:
         cfg = self.config_service.load()

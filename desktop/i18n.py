@@ -210,6 +210,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Standort nicht prüfbar. Bitte Postleitzahl angeben — "
             "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
         ),
+        "dash.home_resolved": "Wohnort aufgelöst: {place}. Distanzfilter aktiv.",
+        "jobs.distance_skipped": "Umkreis übersprungen — bitte PLZ angeben",
         "dash.run_stats": "Lauf-Statistik",
         "apps.preview_title": "Bewerbungsvorschau (vor Absenden)",
         "apps.preview_will_submit": "Finales Absenden wäre erlaubt.",
@@ -1073,6 +1075,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Location cannot be checked. Please enter a postal code — "
             "without a postal code no place is guessed and the radius filter is skipped."
         ),
+        "dash.home_resolved": "Home location resolved: {place}. Distance filter active.",
+        "jobs.distance_skipped": "Radius skipped — please enter a postal code",
         "dash.run_stats": "Run stats",
         "apps.preview_title": "Application preview (pre-submit)",
         "apps.preview_will_submit": "Final submit would be allowed.",

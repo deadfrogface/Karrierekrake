@@ -56,6 +56,7 @@ __all__ = [
     "HOME_PLZ_HINT",
     "HomeNotice",
     "home_location_notice",
+    "apply_visible_home",
 ]
 
 DEFAULT_GEOCODE_TIMEOUT_S = 12.0
@@ -104,15 +105,16 @@ def cross_border_dach_enabled(config: "AppConfig") -> bool:
 
 @dataclass(frozen=True)
 class HomeNotice:
-    """Fresh home-resolution status for settings and the dashboard.
+    """Fresh home-resolution status for settings, overview, and job labels.
 
-    ``resolved`` clears the warning. ``ambiguous`` / ``unknown`` ask for a
+    ``resolved`` is an explicit OK. ``ambiguous`` / ``unknown`` ask for a
     postal code and do not invent coordinates.
     """
 
     status: str
     ask_postal: bool
     notice_key: str
+    place_label: str = ""
 
 
 def home_location_notice(location: Any) -> HomeNotice:
@@ -136,8 +138,14 @@ def home_location_notice(location: Any) -> HomeNotice:
             )
     except (TypeError, ValueError):
         coords_match = False
+    label = city or _city_from_address(address) or address
     if coords_match:
-        return HomeNotice(status="resolved", ask_postal=False, notice_key="")
+        return HomeNotice(
+            status="resolved",
+            ask_postal=False,
+            notice_key="dash.home_resolved",
+            place_label=label,
+        )
     if not postal and not city and not address:
         return HomeNotice(status="missing", ask_postal=True, notice_key="dash.home_missing")
     place = normalize_place_fields(
@@ -148,10 +156,53 @@ def home_location_notice(location: Any) -> HomeNotice:
     )
     resolution = resolve_place(place, allow_network=False)
     if resolution.ok:
-        return HomeNotice(status="resolved", ask_postal=False, notice_key="")
+        return HomeNotice(
+            status="resolved",
+            ask_postal=False,
+            notice_key="dash.home_resolved",
+            place_label=resolution.display_name or label,
+        )
     if resolution.status == "AMBIGUOUS":
         return HomeNotice(status="ambiguous", ask_postal=True, notice_key="dash.home_plz_hint")
     return HomeNotice(status="unknown", ask_postal=True, notice_key="dash.home_plz_hint")
+
+
+def apply_visible_home(
+    location: Any,
+    *,
+    street: str = "",
+    postal_code: str = "",
+    city: str = "",
+    country: str = "",
+) -> bool:
+    """Copy the address the profile UI actually edits into the search home.
+
+    Returns True when persisted coordinates were cleared. Does not invent a PLZ.
+    Empty street/PLZ/city leaves an existing search home unchanged.
+    """
+    postal = (postal_code or "").strip()
+    city_n = (city or "").strip()
+    street_n = (street or "").strip()
+    country_n = (country or "").strip()
+    if not postal and not city_n and not street_n:
+        return False
+    parts = [part for part in (street_n, f"{postal} {city_n}".strip(), country_n) if part]
+    new_home = ", ".join(parts)
+    changed = (
+        new_home != (getattr(location, "home_address", "") or "").strip()
+        or postal != (getattr(location, "postal_code", "") or "").strip()
+        or city_n != (getattr(location, "city", "") or "").strip()
+    )
+    if changed:
+        location.home_latitude = None
+        location.home_longitude = None
+        location.home_geocoded_address = ""
+    location.home_address = new_home
+    location.postal_code = postal
+    location.city = city_n
+    if country_n:
+        location.country = country_n
+    return changed
 
 
 @dataclass

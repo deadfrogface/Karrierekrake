@@ -107,20 +107,23 @@ def test_berlin_resolve_clears_stale_home_warning(qapp, config_service, geo_read
 
     page = DashboardPage(config_service)
     page.refresh()
-    assert page.home_warning_label.text() == ""
-    assert page.home_warning_label.isHidden()
+    assert not page.home_warning_label.isHidden()
+    assert "aufgelöst" in page.home_warning_label.text()
+    assert "nicht prüfbar" not in page.home_warning_label.text()
+    assert "Berlin" in page.home_warning_label.text()
 
     settings = SettingsPage(config_service)
     settings.load_from_config()
-    assert settings.home_notice.text() == ""
-    assert settings.home_notice.isHidden()
+    assert not settings.home_notice.isHidden()
+    assert "aufgelöst" in settings.home_notice.text()
+    assert "nicht prüfbar" not in settings.home_notice.text()
 
     section = LocationWorkSection()
     section.home_address.setText("Berlin, Deutschland")
     section.country.setText("DE")
     section.refresh_home_notice()
-    assert section.home_notice.text() == ""
-    assert section.home_notice.isHidden()
+    assert "aufgelöst" in section.home_notice.text()
+    assert "nicht prüfbar" not in section.home_notice.text()
     assert config_service.load().profile.location.home_latitude is None
 
 
@@ -267,3 +270,110 @@ def test_resolved_home_skips_ambiguous_jobs_without_regex_scan(geo_ready, tmp_pa
     assert job.latitude is None
     assert job.status != "ignored"
     assert svc.home_resolved is True
+
+
+def test_known_km_is_shown_when_home_resolved_and_hidden_when_ambiguous():
+    from desktop.i18n import i18n
+    from desktop.pages.jobs import format_commute_label
+    from desktop.viewmodels.job_fit import build_job_fit_viewmodel
+    from core.config import AppConfig, SearchPreferences
+    from core.search_intent import SearchIntent
+
+    i18n.set_language("de")
+    job = Job(
+        id="row",
+        title="DevOps",
+        company="Alpen IT",
+        city="Berlin",
+        remote_type=RemoteType.HYBRID.value,
+        distance_km=14,
+        distance_source="",
+        match_score=80,
+        status="new",
+    )
+    label = format_commute_label(job, home_status="resolved")
+    assert "14" in label
+    assert "Luftlinie" in label
+    assert "nicht prüfbar" not in label
+    skipped = format_commute_label(job, home_status="ambiguous")
+    assert "PLZ" in skipped
+    assert "14" not in skipped
+
+    cfg = AppConfig(
+        profile=SearchPreferences(
+            location=LocationConfig(home_address="Halle", city="Halle", country="DE"),
+            search_intent=SearchIntent(radius_km=20, countries=["DE"]),
+        )
+    )
+    vm = build_job_fit_viewmodel(job, cfg)
+    text = " ".join(b.text for b in vm.bullets)
+    assert "within radius" not in text.casefold()
+    assert "PLZ" in text
+    assert "14" not in text
+
+
+def test_unknown_distance_does_not_claim_within_radius():
+    from core.intent_filter import apply_search_intent
+    from core.search_intent import SearchIntent
+
+    job = Job(
+        title="DevOps",
+        company="Alpen IT",
+        city="Berlin",
+        remote_type=RemoteType.HYBRID.value,
+        distance_km=None,
+    )
+    result = apply_search_intent(job, SearchIntent(radius_km=20, countries=["DE"]))
+    blob = " ".join(result.why_shown)
+    assert "within radius" not in blob.casefold()
+    assert result.included is True
+    assert result.excluded is False
+
+
+def test_profile_save_updates_overview_home_from_visible_address(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    from PySide6.QtWidgets import QMessageBox
+
+    from desktop.pages.profile import ProfilePage
+
+    monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
+    i18n.set_language("de")
+    page = ProfilePage(config_service)
+    page.load_from_config()
+    page.applicant.city.setText("Berlin, Deutschland")
+    page.applicant.postal_code.setText("")
+    page.applicant.app_country.setText("DE")
+    page.save()
+    loc = config_service.load().profile.location
+    assert "Berlin" in (loc.city or loc.home_address)
+    assert loc.home_latitude is None
+    notice = home_location_notice(loc)
+    assert notice.status == "resolved"
+    assert "aufgelöst" in page.home_status.text()
+    assert "nicht prüfbar" not in page.home_status.text()
+
+    dash = DashboardPage(config_service)
+    dash.refresh()
+    assert "aufgelöst" in dash.home_warning_label.text()
+
+    page.applicant.city.setText("Halle")
+    page.applicant.postal_code.setText("")
+    page.save()
+    loc = config_service.load().profile.location
+    assert home_location_notice(loc).status == "ambiguous"
+    assert loc.home_latitude is None and not (loc.postal_code or "").strip()
+    assert "Postleitzahl" in page.home_status.text()
+    dash.refresh()
+    assert "Postleitzahl" in dash.home_warning_label.text()
+
+    page.applicant.city.setText("Halle")
+    page.applicant.postal_code.setText("06108")
+    page.save()
+    loc = config_service.load().profile.location
+    assert home_location_notice(loc).status == "resolved"
+    assert "aufgelöst" in page.home_status.text()
+    dash.refresh()
+    assert "aufgelöst" in dash.home_warning_label.text()
+    assert "nicht prüfbar" not in dash.home_warning_label.text()
