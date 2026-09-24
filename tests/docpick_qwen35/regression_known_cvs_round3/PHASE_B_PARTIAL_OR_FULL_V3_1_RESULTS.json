@@ -2,9 +2,9 @@
   "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
   "partial": true,
   "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
-  "disclaimer": "Partial or full Round3 score on known development CVs. NOT an independent blind test. NOT a 99% claim. Scored 36/40 documents so far.",
-  "created_at": "2026-09-24T02:04:03.194243+00:00",
-  "n_scored": 36,
+  "disclaimer": "Partial or full Round3 score on known development CVs. NOT an independent blind test. NOT a 99% claim. Scored 38/40 documents so far.",
+  "created_at": "2026-09-24T02:06:49.396224+00:00",
+  "n_scored": 38,
   "n_manifest": 40,
   "predictions": [
     {
@@ -190,6 +190,20 @@
       "sha256": "ddaa1bb08aba80e64e44d4dc12cd1ff2853bfa9b1f6d7342be9ea7b0d381c804"
     },
     {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_027",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_027.json",
+      "sha256": "ca3561b3e97fb02388aec9f40fbded75293309fff38053bb6f5113e54bc4975a"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_028",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_028.json",
+      "sha256": "6c2fc068f6366ea7298361bf3c7ce02ee934a8bcc71768079fcee968f81e36e0"
+    },
+    {
       "corpus_id": "SMOKE_DE_EN_10_V1",
       "id": "DE_01",
       "lang": "de",
@@ -261,59 +275,59 @@
     }
   ],
   "coverage": {
-    "n_documents_scored": 36,
-    "n_scored_fields_total": 1080,
-    "perfect_core_on_scored_fields": "29/36"
+    "n_documents_scored": 38,
+    "n_scored_fields_total": 1156,
+    "perfect_core_on_scored_fields": "31/38"
   },
   "metrics_complete_gt_only_v3_1": {
-    "field_total": 1080,
+    "field_total": 1156,
     "counts": {
-      "correct": 1059,
+      "correct": 1135,
       "wrong": 1,
       "missing": 19,
       "hallucinated": 1,
       "wrong_category": 0
     },
-    "field_accuracy": 0.9805555555555555,
-    "precision": 0.998114985862394,
-    "recall": 0.9823747680890538,
-    "f1": 0.9901823281907434,
-    "hallucination_rate": 0.000925925925925926,
-    "missing_field_rate": 0.017592592592592594,
+    "field_accuracy": 0.9818339100346021,
+    "precision": 0.9982409850483729,
+    "recall": 0.9835355285961872,
+    "f1": 0.9908336970755128,
+    "hallucination_rate": 0.0008650519031141869,
+    "missing_field_rate": 0.01643598615916955,
     "wrong_category_rate": 0.0,
-    "false_positive_rate": 0.001851851851851852,
+    "false_positive_rate": 0.0017301038062283738,
     "by_group": {
       "personal": {
-        "correct": 98
+        "correct": 104
       },
       "contact": {
-        "correct": 56
+        "correct": 60
       },
       "address": {
-        "correct": 158,
+        "correct": 168,
         "missing": 7
       },
       "languages": {
-        "correct": 82
+        "correct": 86
       },
       "licenses": {
-        "correct": 42
+        "correct": 44
       },
       "education": {
-        "correct": 150
+        "correct": 160
       },
       "employment": {
-        "correct": 249,
+        "correct": 269,
         "wrong": 1,
         "missing": 5,
         "hallucinated": 1
       },
       "skills": {
-        "correct": 115,
+        "correct": 126,
         "missing": 5
       },
       "software": {
-        "correct": 99,
+        "correct": 108,
         "missing": 2
       },
       "certificates": {
@@ -443,58 +457,58 @@
         "actual": "Materialdisposition"
       }
     ],
-    "perfect_core": "29/36"
+    "perfect_core": "31/38"
   },
   "by_lang": {
     "de": {
-      "field_total": 919,
+      "field_total": 953,
       "counts": {
-        "correct": 909,
+        "correct": 943,
         "wrong": 1,
         "missing": 8,
         "hallucinated": 1,
         "wrong_category": 0
       },
-      "field_accuracy": 0.9891186071817193,
-      "precision": 0.9978046103183315,
-      "recall": 0.9912758996728462,
-      "f1": 0.9945295404814004,
-      "hallucination_rate": 0.001088139281828074,
-      "missing_field_rate": 0.008705114254624592,
+      "field_accuracy": 0.9895068205666316,
+      "precision": 0.9978835978835979,
+      "recall": 0.9915878023133544,
+      "f1": 0.9947257383966245,
+      "hallucination_rate": 0.001049317943336831,
+      "missing_field_rate": 0.008394543546694649,
       "wrong_category_rate": 0.0,
-      "false_positive_rate": 0.002176278563656148,
+      "false_positive_rate": 0.002098635886673662,
       "by_group": {
         "personal": {
-          "correct": 79
+          "correct": 82
         },
         "contact": {
-          "correct": 48
+          "correct": 50
         },
         "address": {
-          "correct": 128,
+          "correct": 133,
           "missing": 1
         },
         "languages": {
-          "correct": 62
+          "correct": 64
         },
         "licenses": {
-          "correct": 33
+          "correct": 34
         },
         "education": {
-          "correct": 135
+          "correct": 140
         },
         "employment": {
-          "correct": 222,
+          "correct": 227,
           "wrong": 1,
           "missing": 2,
           "hallucinated": 1
         },
         "skills": {
-          "correct": 102,
+          "correct": 108,
           "missing": 5
         },
         "software": {
-          "correct": 91
+          "correct": 96
         },
         "certificates": {
           "correct": 9
@@ -568,55 +582,55 @@
           "actual": "Materialdisposition"
         }
       ],
-      "perfect_core": "25/28",
-      "n_documents": 28
+      "perfect_core": "26/29",
+      "n_documents": 29
     },
     "en": {
-      "field_total": 161,
+      "field_total": 203,
       "counts": {
-        "correct": 150,
+        "correct": 192,
         "missing": 11,
         "hallucinated": 0,
         "wrong": 0,
         "wrong_category": 0
       },
-      "field_accuracy": 0.9316770186335404,
+      "field_accuracy": 0.9458128078817734,
       "precision": 1.0,
-      "recall": 0.9316770186335404,
-      "f1": 0.9646302250803859,
+      "recall": 0.9458128078817734,
+      "f1": 0.9721518987341772,
       "hallucination_rate": 0.0,
-      "missing_field_rate": 0.06832298136645963,
+      "missing_field_rate": 0.054187192118226604,
       "wrong_category_rate": 0.0,
       "false_positive_rate": 0.0,
       "by_group": {
         "personal": {
-          "correct": 19
+          "correct": 22
         },
         "contact": {
-          "correct": 8
+          "correct": 10
         },
         "address": {
-          "correct": 30,
+          "correct": 35,
           "missing": 6
         },
         "languages": {
-          "correct": 20
+          "correct": 22
         },
         "licenses": {
-          "correct": 9
+          "correct": 10
         },
         "education": {
-          "correct": 15
+          "correct": 20
         },
         "employment": {
-          "correct": 27,
+          "correct": 42,
           "missing": 3
         },
         "skills": {
-          "correct": 13
+          "correct": 18
         },
         "software": {
-          "correct": 8,
+          "correct": 12,
           "missing": 2
         },
         "certificates": {
@@ -685,8 +699,8 @@
       ],
       "hallucinated_fields": [],
       "wrong_fields": [],
-      "perfect_core": "4/8",
-      "n_documents": 8
+      "perfect_core": "5/9",
+      "n_documents": 9
     }
   },
   "real_errors_on_complete_gt": [

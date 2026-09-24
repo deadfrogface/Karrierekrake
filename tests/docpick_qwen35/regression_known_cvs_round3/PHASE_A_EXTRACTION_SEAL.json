@@ -1,0 +1,484 @@
+{
+  "seal_type": "PHASE_A_PREDICTION_SEAL_ROUND3",
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "disclaimer": "Known CVs only. Not independent blind. Not a 99% claim.",
+  "created_at": "2026-09-24T02:09:32.281123+00:00",
+  "parser_freeze": {
+    "seal_type": "PARSER_CONFIG_SCORER_FREEZE_ROUND3",
+    "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+    "disclaimer": "Known CVs only. Not independent blind. Not a 99% claim.",
+    "created_at": "2026-09-24T01:10:40.236018+00:00",
+    "git_commit": "d556fe7dd1826ccb3460c2870976f0290eaec916",
+    "det_fallback_in_productive_import": false,
+    "productive_import": "core.cv_docpick_import.import_cv_docpick",
+    "changes": [
+      "async_cv_dialog",
+      "docling_content_hash_cache",
+      "present_to_heute_norm",
+      "schema_position_end_date_hints"
+    ],
+    "llm": {
+      "base_url": "http://127.0.0.1:8765/v1",
+      "model_path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+      "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+      "temperature": 0.0
+    },
+    "file_sha256": {
+      "core/cv_docpick_import.py": "a695f601e66eb6efb24f71288d3ccad9c82a0c92183c7b2a18c8385c725c5c91",
+      "core/cv_intelligence.py": "aacc77e556eb24bba87c4c9ccd9a5dbbbd360cfc8d22c773e3bd300eed0447f4"
+    },
+    "manifest_sha256": "248daf5844f5898099d64f13017d4a95c532d00f66bfc01c44256bb2826bd3ed"
+  },
+  "manifest_id": "REGRESSION_KNOWN_DE_EN_V1",
+  "n_documents": 40,
+  "n_ok": 40,
+  "predictions": [
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_01",
+      "lang": "de",
+      "pdf": "tests/fixtures/cv_corpus/DE_01_Klassisch.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_01.json",
+      "sha256": "4d8c8897c2f9ab9f986320fff9c8e736c93643759670665e5bb162778c73da89",
+      "elapsed_s": 111.69652918702923,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_02",
+      "lang": "de",
+      "pdf": "tests/fixtures/cv_corpus/DE_02_Zweispaltig_Trap.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_02.json",
+      "sha256": "e54f87b81b8ffaa6e9ab37e5e8fa6dfea4b51c7a0115b7fdac27c3c05741629e",
+      "elapsed_s": 142.80300450092182,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_03",
+      "lang": "de",
+      "pdf": "tests/fixtures/cv_corpus/DE_03_C1_Kontextfalle.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_03.json",
+      "sha256": "f4ecb54af555947b788d191628b21fb319eb65fabe8eee67a528f38a918f8ecf",
+      "elapsed_s": 94.37550927093253,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_04",
+      "lang": "de",
+      "pdf": "tests/fixtures/cv_corpus/DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_04.json",
+      "sha256": "02c482b7d41131582795c151d298d978584adaf1a647e1eb8a06d238f2d86d80",
+      "elapsed_s": 86.73948979307897,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_05",
+      "lang": "de",
+      "pdf": "tests/fixtures/cv_corpus/DE_05_Zweiseitig.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_05.json",
+      "sha256": "9b27a8e7a4e18a34f71669bae44bd8805a1952135af6e706653abbd8276f0149",
+      "elapsed_s": 111.11753695097286,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_01",
+      "lang": "en",
+      "pdf": "tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_01.json",
+      "sha256": "4869164b96050ab78c30d6c5dd5b7234e62ce0f6d1bcd6ea37d92fcec43c6abe",
+      "elapsed_s": 92.90387831104454,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_02",
+      "lang": "en",
+      "pdf": "tests/fixtures/cv_corpus/EN_02_Two_Column_Trap.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_02.json",
+      "sha256": "81acae475279d804889cb5343a5c7ee363914cb4297fb561754bfaff2ac85ec3",
+      "elapsed_s": 91.43735856900457,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_03",
+      "lang": "en",
+      "pdf": "tests/fixtures/cv_corpus/EN_03_Missing_Address_Fields.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_03.json",
+      "sha256": "1d4923980642d375c8cd7a10d974e4db2e0b296ccba67e25f983535375e64fc8",
+      "elapsed_s": 74.21551637095399,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_04",
+      "lang": "en",
+      "pdf": "tests/fixtures/cv_corpus/EN_04_German_Address_English_CV.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_04.json",
+      "sha256": "f1235d8828d9d4196bf37a67295990cc54ce03816c9983fc77d0f24abdb8f086",
+      "elapsed_s": 104.5051802219823,
+      "ok": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_05",
+      "lang": "en",
+      "pdf": "tests/fixtures/cv_corpus/EN_05_Skills_Heavy.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_05.json",
+      "sha256": "a78494c47cb8e2b1912eeaaefff34b4d873bb53b00ec13ec918be5207ac9fe78",
+      "elapsed_s": 95.77672245004214,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_001",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_001.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_001.json",
+      "sha256": "684aceed9f3f7b252f02fe9609639a74501fbd39c40a4284db346f432fa5c821",
+      "elapsed_s": 82.10757136100437,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_002",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_002.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_002.json",
+      "sha256": "20835295a5bfb638d9259b1d3334176a7fcad828441136715ec4623c39ebd954",
+      "elapsed_s": 82.36384702299256,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_003",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_003.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_003.json",
+      "sha256": "44b4a9ff908af4ab2189bd19371a799478775c236c380d12ff86a92bbf77210f",
+      "elapsed_s": 92.63378645398188,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_004",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_004.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_004.json",
+      "sha256": "5d09bbd7e336eefae581ac588257a7379927abfb68783268cbc0b7dc0f112bed",
+      "elapsed_s": 79.35487984900828,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_005",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_005.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_005.json",
+      "sha256": "76c9c76c32f6f49d8ac5263a30b95f2e50763348e21e154196c6b395e12cef5a",
+      "elapsed_s": 77.30346897698473,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_006",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_006.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_006.json",
+      "sha256": "d25d8d5a4afc8efc579760ae0d6311e530e1a39ec820b1f057ea20dd4ade3d73",
+      "elapsed_s": 87.32546586997341,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_007",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_007.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_007.json",
+      "sha256": "b0b5a3c7eb9e504c3711cdabefc00d7e6d149ead9ce4c9931cc397c9d197af59",
+      "elapsed_s": 68.08657390798908,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_008",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_008.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_008.json",
+      "sha256": "e87ed97409653f7bceaba5d2c4df152dc5d2d955e4ffda0902234b54b6456e47",
+      "elapsed_s": 102.08364280103706,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_009",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_009.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_009.json",
+      "sha256": "1e5d03b618c942ad199d9bb4f084eb1d0bd5aaf8d02e992ae54cdae7429d9eb0",
+      "elapsed_s": 85.69266730407253,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_010",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_010.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_010.json",
+      "sha256": "e5a379894575c1871843ad88f457934703e991206759f1cca3a69f38e1e130a5",
+      "elapsed_s": 79.58191723702475,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_011",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_011.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_011.json",
+      "sha256": "00a208e94ebaa4edd6a52109cf3825e795a6fdcf900998fe05af7da448fd28ec",
+      "elapsed_s": 82.36470518808346,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_012",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_012.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_012.json",
+      "sha256": "7a5995f948ebfdb61e36739bcb0190a2a8366b9e8b673f1e4a431769272397a8",
+      "elapsed_s": 103.21553863992449,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_013",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_013.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_013.json",
+      "sha256": "d7b0155817c64ee653cb5eb57505d4561f27d6284fd70bb6232b1696ad36d18e",
+      "elapsed_s": 72.35564254305791,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_014",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_014.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_014.json",
+      "sha256": "d5c7cfa08c00f22db3bffdf7022455d50001a1f01d1d5c8a0b5e6fdd301af67e",
+      "elapsed_s": 91.5059231040068,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_015",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_015.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_015.json",
+      "sha256": "7c36e89e73b0c4779332aebc14a17c77b2c2a27da4cfd8fbe6a8fd12e4dc64c5",
+      "elapsed_s": 96.51583717495669,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_016",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_016.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_016.json",
+      "sha256": "33d2e804ef4dbc7e954649a725073b47ed6f92f74d3f5692e59c161a9f23f3b4",
+      "elapsed_s": 75.17952867900021,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_017",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_017.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_017.json",
+      "sha256": "e193bf488cbaf12a9bf1a2ec71125a0a4b6f332736a7f92e59061fefe8b37592",
+      "elapsed_s": 77.33955219690688,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_018",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_018.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_018.json",
+      "sha256": "c0548ef54c6a144e7ce8d987cc2321682efa4d871f197de9e4ee4cd7d9d8f2dd",
+      "elapsed_s": 88.29962221696042,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_019",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_019.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_019.json",
+      "sha256": "09295a69e46c070c977f224aa7a0a49e60ab49e2a3ca8881351863c9e25c3b6f",
+      "elapsed_s": 87.30542987200897,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_020",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_020.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_020.json",
+      "sha256": "f3314bb979c6eeaa982aeed263a1c04defae815d5625f96184482157b14a6081",
+      "elapsed_s": 84.35907186206896,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_021",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_021.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_021.json",
+      "sha256": "3c2e72357136101006f8987797a4a3a4ca7ecc7443fa1b0c06a190adb1b51830",
+      "elapsed_s": 97.85904898191802,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_022",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_022.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_022.json",
+      "sha256": "07fc075f38853e8ba4309724543d5bf8e3038a74bd8134fa53ff5ecd95d8840d",
+      "elapsed_s": 82.44749638391659,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_023",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_023.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_023.json",
+      "sha256": "03cf3dfb6f1f00f88c6f3d79df224bb2e3c632f58da5f4d3417a1f9373100ec9",
+      "elapsed_s": 81.8334961310029,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_024",
+      "lang": "en",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_024.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_024.json",
+      "sha256": "d6cdc593629b4f94bb4a96aa358d3355b89ed9dd0821982ec03d31f17afa00bd",
+      "elapsed_s": 86.334920114954,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_025",
+      "lang": "en",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_025.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_025.json",
+      "sha256": "d335387eee5e169c0daa93a1060dc674210faed3c66b17030f7260c0bdd5621f",
+      "elapsed_s": 71.40196280693635,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_026",
+      "lang": "en",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_026.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_026.json",
+      "sha256": "ddaa1bb08aba80e64e44d4dc12cd1ff2853bfa9b1f6d7342be9ea7b0d381c804",
+      "elapsed_s": 67.79711192497052,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_027",
+      "lang": "en",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_027.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_027.json",
+      "sha256": "ca3561b3e97fb02388aec9f40fbded75293309fff38053bb6f5113e54bc4975a",
+      "elapsed_s": 88.54821675806306,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_028",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_028.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_028.json",
+      "sha256": "6c2fc068f6366ea7298361bf3c7ce02ee934a8bcc71768079fcee968f81e36e0",
+      "elapsed_s": 73.64359236008022,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_029",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_029.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_029.json",
+      "sha256": "f5f711ac54f77782aaf02801aeb4f578c45d407268d417eb0480b856f8f74e93",
+      "elapsed_s": 85.7998742130585,
+      "ok": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_030",
+      "lang": "de",
+      "pdf": "tests/mini_holdout_30/phase_a_pdfs/MH_030.pdf",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_030.json",
+      "sha256": "23dca65bf376583e56d28e99e4b2f7b7c7dcad9ddaa038b5417906494c3399e7",
+      "elapsed_s": 90.65278515999671,
+      "ok": true
+    }
+  ],
+  "performance": {
+    "wall_s": 3526.9090059819864,
+    "avg_s_per_cv": 88.17272514954966,
+    "peak_rss_mb": 3298.3828125,
+    "per_doc_s": {
+      "DE_01": 111.69652918702923,
+      "DE_02": 142.80300450092182,
+      "DE_03": 94.37550927093253,
+      "DE_04": 86.73948979307897,
+      "DE_05": 111.11753695097286,
+      "EN_01": 92.90387831104454,
+      "EN_02": 91.43735856900457,
+      "EN_03": 74.21551637095399,
+      "EN_04": 104.5051802219823,
+      "EN_05": 95.77672245004214,
+      "MH_001": 82.10757136100437,
+      "MH_002": 82.36384702299256,
+      "MH_003": 92.63378645398188,
+      "MH_004": 79.35487984900828,
+      "MH_005": 77.30346897698473,
+      "MH_006": 87.32546586997341,
+      "MH_007": 68.08657390798908,
+      "MH_008": 102.08364280103706,
+      "MH_009": 85.69266730407253,
+      "MH_010": 79.58191723702475,
+      "MH_011": 82.36470518808346,
+      "MH_012": 103.21553863992449,
+      "MH_013": 72.35564254305791,
+      "MH_014": 91.5059231040068,
+      "MH_015": 96.51583717495669,
+      "MH_016": 75.17952867900021,
+      "MH_017": 77.33955219690688,
+      "MH_018": 88.29962221696042,
+      "MH_019": 87.30542987200897,
+      "MH_020": 84.35907186206896,
+      "MH_021": 97.85904898191802,
+      "MH_022": 82.44749638391659,
+      "MH_023": 81.8334961310029,
+      "MH_024": 86.334920114954,
+      "MH_025": 71.40196280693635,
+      "MH_026": 67.79711192497052,
+      "MH_027": 88.54821675806306,
+      "MH_028": 73.64359236008022,
+      "MH_029": 85.7998742130585,
+      "MH_030": 90.65278515999671
+    }
+  }
+}
