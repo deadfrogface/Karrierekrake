@@ -22,6 +22,7 @@ from core.geo_normalize import normalize_postal_code, normalize_place_fields
 from core.geo_resolve import (
     haversine_km,
     format_airline_km,
+    resolve_city_pgeocode,
     resolve_postal_pgeocode,
     resolve_place,
     within_radius,
@@ -157,6 +158,30 @@ def test_ambiguous_city_without_country():
     res = resolve_place(place)
     assert res.status in {"AMBIGUOUS", "UNKNOWN"}
     assert not res.ok
+
+
+def test_large_city_name_resolves_to_city_centroid():
+    # Fuzzy top-100 hits for "Berlin" are bulk-recipient PLZ names only.
+    res = resolve_city_pgeocode("Berlin", "DE")
+    assert res.status == "RESOLVED"
+    assert 52.3 < res.latitude < 52.7 and 13.0 < res.longitude < 13.8
+
+
+def test_homonym_city_names_stay_ambiguous():
+    assert resolve_city_pgeocode("Halle", "DE").status == "AMBIGUOUS"
+    assert resolve_city_pgeocode("Frankfurt", "DE").status == "AMBIGUOUS"
+
+
+def test_home_city_with_country_word_resolves(tmp_path):
+    from core.config import empty_app_config
+    from core.database import Database
+
+    cfg = empty_app_config(root=tmp_path)
+    cfg.profile.location.home_address = "Berlin, Deutschland"
+    loc = LocationService(Database(tmp_path / "h.db", recover=False), cfg)
+    home = loc.resolve_home()
+    assert home.resolved, home.warning
+    assert not home.warning
 
 
 def test_unicode_city_de():

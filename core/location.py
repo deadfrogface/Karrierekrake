@@ -277,10 +277,11 @@ class LocationService:
             allow_network=False,
         )
         if not resolution.ok:
+            shown = address or place.city or place.postal_code
             warning = (
-                f"Heimatstandort konnte lokal nicht aufgelöst werden "
-                f"(PLZ/Ort): {address or place.city or place.postal_code!r}. "
-                "Distanzfilter übersprungen — bitte PLZ und Land prüfen."
+                f"Wohnort „{shown}“ ließ sich nicht eindeutig zuordnen. Bitte im Profil "
+                "eine Postleitzahl ergänzen (z. B. 10115). Bis dahin werden Jobs "
+                "unabhängig von der Entfernung angezeigt."
             )
             logger.warning(warning)
             self._home = None
