@@ -782,8 +782,6 @@ def _llm_extract(text: str) -> dict[str, Any]:
                     "(e.g. Célina, Mikołaj). "
                     "employment.position is the job title only — never duty bullets. "
                     "When a job has no end date / is current, set end_date to 'heute'. "
-                    "Put Ausbildung, degrees, BTEC and school outcomes into education; "
-                    "short certificates into certificates. "
                     "Keep incomplete education outcomes in qualification "
                     "(Studium abgebrochen, Schule ohne Abschluss)."
                 ),

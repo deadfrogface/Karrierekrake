@@ -46,3 +46,24 @@ Runtime-Stopp: drei aufeinanderfolgende Laufzeitversuche ohne messbaren Gewinn b
 
 - Freeze für Blind **nicht** ausgerufen: Zielgeräte-Laufzeit OFFEN; Blind-Korpus ≥50 DE/EN+GT fehlt.
 - Blind-v1 n=4 informativ, kein 99-%-Anspruch.
+
+## Round8 KEEP (Education-Enrich + enger heute-Repair)
+
+**KEEP.** Scorer und Frozen NV3 Blind (F1 0,980) unverändert. Kein 99-%-Blindclaim.
+
+| Korpus | Vorher (R7 / Frozen) | Nachher (Post-Analysis) |
+|--------|----------------------|-------------------------|
+| Known DE/EN Round7→8 | F1 0,997 PC 37/40 Hallu 0 | F1 **0,999** PC **38/40** Hallu 0 |
+| NV3 Blind Frozen | F1 0,980 | unverändert (nicht neu gescored als Blind) |
+| NV3 Offline Postprocess | — | F1 **0,986** PC 22/50; edu+10; heute+5 |
+| NV3 Targeted Live (13) | edu leer×10; heute falsch×5 | edu **10/10**; heute **5/5** |
+
+Laufzeit/RAM Agent-VM: Round8 avg ~87 s/CV, Peak-RSS ~2,6–3,3 GB (wie R7). NV3 targeted ~70 s/CV, ~1,7 GB.
+
+### Reverts innerhalb von Round8
+- education-before-employment → Truncation (R8a F1 0,987) **REVERT**
+- System-Prompt-Zeile „Put Ausbildung…“ → leere Employment **REVERT**
+
+### Echte Restfehler (Post-Analysis / Known)
+- Known: MH_019 `heute` statt Tabellen-Ende 08/2021; MH_025 Software Minitab/Qlik (schon R7)
+- NV3 Offline: Position↔Duty NV3_001; Software↔Cert; Skill↔Cert; NV3_033 EN-Dropout vs „Schule ohne Abschluss“; Apostroph; Self-employed company — **keine** leeren Ausbildungen, **kein** erfundenes datiertes `heute` mehr

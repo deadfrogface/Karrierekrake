@@ -57,3 +57,11 @@ Audit flippt ausschließlich die 25 DOB-Wrongs → correct bei gleichem Kalender
 **Gezielte `heute`-Korrektur aus derselben Beschäftigungszeile:** Wenn Pred `end_date=heute`, aber im Quelltext zur selben Jobzeile ein explizites datiertes Ende steht (`YYYY-MM` / `MM/YYYY`), dieses Ende setzen — **nur** gleiche Zeile/Range, nicht Nachbarjobs (vermeidet Round5-Overcorrection).
 
 Begründung: klar abgegrenzt, messbar auf den 5 Fällen, ohne DOB-Scorer oder Education-Sonderregeln. Education-Leer bleibt der größere Qualitätshebel, braucht aber eine eigene, vorsichtigere Iteration.
+
+
+## 8. Round8 Fix-Ergebnis (Post-Analysis, kein Blind)
+
+Frozen Blind F1 **0,980** unverändert. Fixes: Section-Enrich Education, `_PRESENT_END_RE`, enger same-block+start_match `heute`-Repair.
+Offline Postprocess auf Frozen Preds: F1 **0,986**, Education-Misses 10/10 und erfundenes `heute` 5/5 behoben.
+Known DE/EN Round8: F1 **0,999** PC 38/40 (vs Round7 0,997 / 37/40) — **KEEP**.
+Kein DET. Kein 99-%-Blindclaim.

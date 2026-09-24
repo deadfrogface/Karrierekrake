@@ -1,0 +1,89 @@
+{
+  "personal": {
+    "first_name": "Imani",
+    "last_name": "Schulte",
+    "street": "Oxfordstraße",
+    "house_number": "20",
+    "postal_code": "53111",
+    "city": "Bonn",
+    "country": "Deutschland",
+    "date_of_birth": "10.09.1990"
+  },
+  "emails": [
+    "imani.schulte@example.de"
+  ],
+  "phones": [
+    "+49 154 4172008"
+  ],
+  "languages": [
+    {
+      "language": "Ukrainisch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufsschule Bonn",
+      "qualification": "Studium abgebrochen",
+      "start_date": "2008",
+      "end_date": "2011"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Imkerin",
+      "company": "Seestern Produktion GmbH",
+      "start_date": "02/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Kronenwerk Technik KG",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Mosaik Dienste AG",
+      "start_date": "04/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Kundenkommunikation",
+    "Schichtübergabe",
+    "Probenahme"
+  ],
+  "software": [
+    "Minitab",
+    "LibreOffice Calc"
+  ],
+  "certificates": [
+    {
+      "name": "Arbeitssicherheit 2024",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_009.pdf",
+  "raw_text_chars": 806,
+  "raw_text_preview": "<!-- image -->\n\nOxfordstraße 20 | 53111 Bonn | Deutschland · imani.schulte@example.de · +49 154 4172008 · Geburtsdatum: 10.09.1990\n\n## Berufserfahrung\n\n02/2019 - heute Imkerin | Seestern Produktion GmbH Kundenkommunikation · Schichtübergabe\n\n03/2020 - 09/2022\n\nProjektassistenz | Kronenwerk Technik KG\n\nProbenahme · Kundenkommunikation\n\n04/2021 - 10/2023 Aushilfe | Mosaik Dienste AG Schichtübergabe · Probenahme\n\n## Schule und Ausbildung\n\n2008 - 2011\n\nStudium abgebrochen | Berufsschule Bonn\n\n## Spr",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_009",
+  "regression_lang": "de"
+}

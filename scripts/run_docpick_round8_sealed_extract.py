@@ -70,7 +70,7 @@ def main() -> int:
         "productive_import": "core.cv_docpick_import.import_cv_docpick",
         "changes": [
             "education_after_employment_keep_order",
-            "education_schema_ausbildung_btec_wording",
+            "education_schema_ausbildung_btec_wording_no_sysprompt_line",
             "present_end_re_no_empty_alt",
             "enrich_education_from_section_when_empty",
             "heute_repair_same_block_start_match_only",
