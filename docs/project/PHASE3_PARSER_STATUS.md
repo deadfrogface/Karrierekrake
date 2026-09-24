@@ -1,5 +1,8 @@
 # Phase 3 – Parser-Weiterentwicklung (Zwischenstand)
 
+Stand Tip: `82ad289` (PR #62). Round3-Extract auf bekannten CVs **läuft**; voller Seal/Score ausstehend.
+Siehe auch `ABSCHLUSSBERICHT_DOCPICK_PHASEN.md` und `DOCPICK_BLIND_BLOCKER.md`.
+
 ## Budget (vor finalem Blindtest, Agent-VM CPU)
 
 | Größe | Grenze | Begründung |
@@ -29,11 +32,18 @@ Dominante Missing-Ursache: `employment.end_date` erwartet ``heute`` (Present/cur
 - MH_025: Software weiterhin leer (Minitab/Qlik Sense) — Restfehler
 - Wall ~582 s / 7 CVs, Peak RSS ~1,7 GB
 
-**Kein F1 auf dem Vollkorpus neu berechnet** in diesem Schritt (voller 40er-Lauf ≈ 1 h). Cluster belegt die Ursache-Fix-Richtung.
+**Kein F1 auf dem Vollkorpus neu berechnet** im Cluster-Schritt (voller 40er-Lauf ≈ 1 h). Cluster belegt die Ursache-Fix-Richtung.
+
+## Round3 (bekannte CVs, kein Blind)
+
+- Extract: `scripts/run_docpick_round3_sealed_extract.py` → `tests/docpick_qwen35/regression_known_cvs_round3/`
+- Score (nach Seal): `scripts/run_docpick_round3_sealed_score_v3_1.py`
+- Partial V3.1 (**18/40**): F1 **≈ 0,993**, Perfect Core **15/18** — Regression, **kein** 99%-Claim
+- Voller Round3 F1 / Perfect / Laufzeit: **Platzhalter** bis `PHASE_A_EXTRACTION_SEAL.json` existiert
 
 ## Unabhängiger Blindtest
 
-**Nicht durchgeführt / F1≥0,99 nicht behauptet.**
+**Nicht durchgeführt / F1≥0,99 nicht behauptet.** Blocker: `DOCPICK_BLIND_BLOCKER.md`.
 
 Nächster Nachweis braucht:
 
@@ -41,7 +51,7 @@ Nächster Nachweis braucht:
 2. Unberührten DE/EN-Korpus mit vollständiger GT
 3. Erst PDFs → versiegelte Predictions, dann GT + Score
 
-Kandidat für späteren Blindlauf: `Fake_Lebenslauf_Neuer_Blindtest_Leonie_Brandt.pdf` (+ ggf. neuer versiegelter Satz) — **nicht** Round2/Mini-Holdout als „neu“ verkaufen.
+Kandidat für späteren Blindlauf: neuer versiegelter DE/EN-Satz — **nicht** Round2/Round3/Mini-Holdout als „neu“ verkaufen.
 
 ## Architektur-Empfehlung falls Blind < 0,99
 

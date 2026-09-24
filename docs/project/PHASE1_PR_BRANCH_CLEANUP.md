@@ -1,13 +1,15 @@
 # Phase 1 – PR/Branch-Bereinigung
 
-Stand: Tip `cursor/docpick-qwen35-cv-replace-d85b` (Integrationsziel für Docpick).
+Stand: Tip `82ad289` auf `cursor/docpick-qwen35-cv-replace-d85b` (Integrationsziel für Docpick, PR #62).
 
 ## Import-Pfad (verifiziert)
 
 | Ref | Pfad | DET |
 |-----|------|-----|
-| **main** (`98109a9`) | `import_cv_canonical` → `parse_cv_text` (DET) | **aktiv** |
+| **main** | `import_cv_canonical` → `parse_cv_text` (DET) | **aktiv** |
 | **#62 Branch** | `import_cv_canonical` → `import_cv_docpick` | **kein Fallback** |
+
+UI auf dem Branch: `desktop/workers.py` / `cv_import_dialog.py` → `core.cv_parser.import_cv` → Canonical → Docpick.
 
 **Nicht behaupten:** Docpick ist produktiv auf main, solange #62 nicht gemerged ist.
 
@@ -23,10 +25,11 @@ Stand: Tip `cursor/docpick-qwen35-cv-replace-d85b` (Integrationsziel für Docpic
 
 ## Merge-Blocker für #62 (explizit)
 
-1. CI: cv-regression Pytest ohne Docling (fix: importorskip) + Windows `mkdir -p artifacts` (Fix: New-Item -Force)
-2. Qualität: Round2 F1 0,989 auf bekannten CVs, Perfect Core 23/40 – **kein** Blind-0,99
-3. Laufzeit: ~88 s/CV, Peak ~3,2 GB – Grenzen für Blindtest noch festzulegen
+1. Qualität: Round2 F1 0,989; Round3 Partial ≈0,993 (18/40) – beides bekannte CVs, **kein** Blind-0,99
+2. Blindtest-Blocker: kein unberührter DE/EN-Korpus mit voller GT (`DOCPICK_BLIND_BLOCKER.md`)
+3. Laufzeit: LLM ~100 s/CV, Peak ~3,2 GB – Grenzen für Blindtest noch festzulegen
 4. Abhängigkeiten: lokales llama.cpp + Qwen-Modell + Docling (nicht in Standard-CI)
+5. Round3 voller Seal+Score noch ausstehend (Extract läuft)
 
 ## Branches
 

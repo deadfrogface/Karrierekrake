@@ -1,5 +1,6 @@
 # Phase 2 – Desktop- und CV-Performance
 
+Stand: unverändert gültig für PR #62 Tip `82ad289` (siehe Abschlussbericht).
 Messdaten: `artifacts/perf_phase2/BASELINE.json` (offscreen, gleiche Hardware wie Agent-VM).
 
 ## Vorher (bekannter Engpass)
