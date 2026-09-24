@@ -19,7 +19,8 @@ Hardware: Agent-VM Intel Xeon, **4 CPU**, ~15 GB RAM — **nicht** i3/8 GB. Ziel
 | 2c | pypdf-first | Heuristik | EN Zwei-Spalten Ratio ~0,3 | **REVERT** |
 | 2d | Compact JSON | Minified-Prompt | Round6 F1 0,987 EN 0,948 | **REVERT** |
 | 3 | CEFR-Bleed in 1a | Nur Tail nach `Führerschein:` / Klassen unter Heading | Round7: F1 0,997 PC 37/40 EN 0,995 Hallu 0 | **KEEP** |
-| 4 | Education leer (NV3×10): Schema zuletzt + Wording; `_PRESENT_END_RE` matcht `""`→heute; LLM inventiert heute trotz datiertem Ende | Education vor Employment; Ausbildung/BTEC-Wording; PRESENT_END_RE fix; Section-Enrich; enger same-block+start_match heute-Repair | Targeted NV3: edu 10/10, heute 5/5; Round8 known läuft | **pending Round8** |
+| 4a | Education vor Employment | Schema-Reorder | Round8a F1 0,987 PC 31/40 (Employment-Truncation) | **REVERT** Reorder |
+| 4b | Education leer + erfundenes heute | PRESENT_END_RE fix; Section-Enrich; enger heute-Repair; Wording; order wie R7 | Offline NV3 Postprocess F1 0,986 (edu+10, heute+5); Round8b läuft | **pending Round8b** |
 
 Runtime-Stopp: drei aufeinanderfolgende Laufzeitversuche ohne messbaren Gewinn bei akzeptabler Qualität (2a–2d). Weitere LLM-Beschleunigung braucht anderes Modell/GPU oder Zielgerät.
 
@@ -37,9 +38,9 @@ Runtime-Stopp: drei aufeinanderfolgende Laufzeitversuche ohne messbaren Gewinn b
 
 ## Round8 / Post-Analysis (in Arbeit)
 
-- Targeted 13 Docs: Education-Misses und erfundenes `heute` behoben (10/10, 5/5)
-- Restfehler auf Targeted (echt): 1× Software Theorg; 1× Skill↔Cert Communication aids; 5× DOB Format-only
-- Known DE/EN Round8 Extract läuft; Full-NV3 Post-Analysis danach
+- Offline Postprocess auf Frozen Preds: edu 10/10, heute 5/5 → Post-Analysis F1 **0,986** / PC 22/50 (Frozen Blind 0,980 unverändert)
+- Round8a REVERT (education-before-employment Truncation)
+- Round8b (ohne Reorder) läuft; Full live NV3 Post-Analysis danach
 
 ## Blind / Freeze
 
