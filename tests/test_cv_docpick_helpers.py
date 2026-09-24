@@ -14,6 +14,15 @@ from core.cv_docpick_import import (
 )
 
 
+def test_peak_rss_hard_gate_is_3_3_gb_not_12_gb() -> None:
+    """Merge gate is ≤3.3 GB hard — soft ≤12 GB / 12000 MB must not be the default."""
+    from core.cv_docpick_import import CV_IMPORT_PEAK_RSS_GB_MAX, CV_IMPORT_PEAK_RSS_MB_MAX
+
+    assert CV_IMPORT_PEAK_RSS_MB_MAX == 3300.0
+    assert abs(CV_IMPORT_PEAK_RSS_GB_MAX - 3300.0 / 1024.0) < 1e-9
+    assert CV_IMPORT_PEAK_RSS_MB_MAX < 12000.0
+
+
 def test_norm_period_end_maps_present_spellings_to_heute() -> None:
     for raw in ("Present", "current", "bis heute", "ongoing", "jetzt", "—", "-", "heute"):
         assert _norm_period_end(raw) == "heute", raw

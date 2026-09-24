@@ -8,7 +8,7 @@ Siehe `ABSCHLUSSBERICHT_DOCPICK_PHASEN.md` und `DOCPICK_BLIND_BLOCKER.md`.
 | Größe | Grenze | Begründung |
 |-------|--------|------------|
 | Laufzeit/CV (warm LLM) | ≤ **120 s** praktikabel; Ziel ≤ **60 s** | gemessen ~100–118 s LLM |
-| Peak RSS Import | ≤ **3,5 GB** | Round2 Peak 3,2 GB; Baseline 2,45 GB |
+| Peak RSS Import | ≤ **3,3 GB** (hard) | Target: i3 / 8 GB RAM. Soft ≤12 GB is not a pass. |
 | UI-Freeze | **0 s** (Extract im Worker) | Phase 2 erfüllt |
 
 ## Bekannte Daten (Round2) — Regression, kein Blind-0,99

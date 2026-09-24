@@ -1,6 +1,7 @@
 # Arbeitsprotokoll Docpick #62 (autonome Schleife)
 
-Hardware: Agent-VM Intel Xeon, **4 CPU**, ~15 GB RAM — **nicht** i3/8 GB. Zielgeräte-Gate: **OFFEN**.
+Hardware: Agent-VM Intel Xeon, **4 CPU**, ~15 GB RAM — **nicht** Zielgerät.  
+**Zielgerät / Merge-Gate Peak RSS:** Intel Core i3 (11th gen), **8 GB RAM**, Peak CV-Pfad **≤ 3,3 GB hard** (soft ≤12 GB obsolete).
 
 ## Diagnose R3→R5
 

@@ -514,14 +514,23 @@ def main() -> int:
         timings=cand_timings,
     )
 
+    from core.cv_docpick_import import CV_IMPORT_PEAK_RSS_MB_MAX
+
     gate = {
         "min_f1": 0.90,
         "max_hallucination_rate": 0.03,
         "max_invented_employment_education": 0,
         "min_processing_success": 10,
-        "max_peak_rss_mb": 12000,
+        # Hard fail above 3.3 GB — target machine is i3 / 8 GB RAM.
+        # Soft ≤12000 MB is obsolete and must not be treated as success.
+        "max_peak_rss_mb": CV_IMPORT_PEAK_RSS_MB_MAX,
+        "max_peak_rss_gb": CV_IMPORT_PEAK_RSS_MB_MAX / 1024.0,
         "max_avg_s_per_cv": 120,
         "max_avg_s_note": "Assumption — no product CV-import latency SLA",
+        "peak_rss_note": (
+            "Hard Peak RSS ≤3.3 GB for Docling+Qwen CV path (import process + "
+            "local LLM server). Soft ≤12 GB is not a pass."
+        ),
     }
     m = cand_score["metrics_all"]
     n_ok = sum(1 for p in cand_preds.values() if not p.get("tech_error"))

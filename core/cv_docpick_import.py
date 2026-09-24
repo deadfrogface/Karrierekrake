@@ -603,10 +603,16 @@ _SCHEMA_JSON_CACHE: dict[str, str] | None = None
 # Production LLM generation cap. Measured: outputs typically << 2048 tokens;
 # lower cap cuts rare runaway generations without changing typical quality.
 _LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "2048"))
-# Wall-clock budgets on target hardware (4-core CPU Agent-VM, Qwen3.5-4B Q4).
-# Blindtest may proceed only when warm extract stays within WARM_BUDGET_S.
+# Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
+# Hard Peak-RSS gate for target hardware: Intel Core i3 (11th gen), exactly 8 GB RAM.
+# Soft ≤12 GB / ≤12000 MB is NOT success and must not appear as a pass condition.
+# Merge readiness = measured CV-path Peak RSS ≤ 3.3 GB (3300 MB). Hard fail above.
+CV_IMPORT_PEAK_RSS_MB_MAX = float(
+    os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_MB_MAX", "3300")
+)
+CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_MB_MAX / 1024.0
 
 
 def _schema_json_for_prompt() -> str:

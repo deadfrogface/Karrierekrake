@@ -10,7 +10,7 @@
 |--------|----------------|
 | Warm ≤ **60 s** | Warm-Ø **59,5 s** → **eingehalten** |
 | Cold ≤ **90 s** | Cold **75,9 s** → **eingehalten** |
-| Peak ≤ 3,5 GB | Peak **~2,6 GB** → ok |
+| Peak ≤ **3,3 GB** (hard) | Prior note ~2,6 GB was **import-process only** — soft ≤12 GB obsolete; see Peak-RSS gate report |
 
 Details Optimierung: `DOCPICK_RUNTIME_BUDGET.md`.
 
