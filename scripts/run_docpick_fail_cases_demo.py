@@ -46,11 +46,11 @@ def _run_case(name: str, fn) -> dict:
 
 def main() -> int:
     from core.cv_docpick_import import (
-        CV_IMPORT_PEAK_RSS_MB_MAX,
+        CV_IMPORT_PEAK_RSS_BYTES_MAX,
         CvImportError,
         _enforce_peak_rss,
         _enforce_timeout,
-        cv_path_peak_rss_mb,
+        cv_path_peak_rss_bytes,
         import_cv_docpick,
     )
 
@@ -80,12 +80,10 @@ def main() -> int:
         results[-1]["pass"] = True
 
     def _peak() -> None:
-        rss = cv_path_peak_rss_mb()
-        if rss <= CV_IMPORT_PEAK_RSS_MB_MAX:
-            # Still demonstrate the hard-fail path via enforce with staged label.
-            # On this host RSS is typically already over 3.3 GB with llama loaded.
+        rss = cv_path_peak_rss_bytes()
+        if rss <= CV_IMPORT_PEAK_RSS_BYTES_MAX:
             raise AssertionError(
-                f"expected peak>{CV_IMPORT_PEAK_RSS_MB_MAX}, got {rss:.1f} — "
+                f"expected peak>{CV_IMPORT_PEAK_RSS_BYTES_MAX}, got {rss} — "
                 "cannot demo peak fail on a thin footprint"
             )
         _enforce_peak_rss(stage="demo")
@@ -93,17 +91,19 @@ def main() -> int:
     peak_row = _run_case("peak_rss_exceeded", _peak)
     if peak_row["code"] == "peak_rss_exceeded":
         peak_row["pass"] = True
-    peak_row["measured_cv_path_rss_mb"] = round(cv_path_peak_rss_mb(), 1)
-    peak_row["gate_mb"] = CV_IMPORT_PEAK_RSS_MB_MAX
+    peak_row["measured_cv_path_rss_bytes"] = cv_path_peak_rss_bytes()
+    peak_row["gate_bytes"] = CV_IMPORT_PEAK_RSS_BYTES_MAX
     results.append(peak_row)
 
     summary = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "all_pass": all(r["pass"] for r in results),
+        "gate_peak_rss_bytes": CV_IMPORT_PEAK_RSS_BYTES_MAX,
         "cases": results,
         "note": (
             "Fail-cases must raise CvImportError with stable codes; "
-            "no silent hang / no infinite UI wait."
+            "no silent hang / no infinite UI wait. "
+            "Ship Peak requires Windows Job Object on real i3/8GB laptop."
         ),
     }
     out = OUT / "FAIL_CASES_DEMO.json"

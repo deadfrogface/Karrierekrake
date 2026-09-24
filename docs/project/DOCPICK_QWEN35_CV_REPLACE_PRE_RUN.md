@@ -23,13 +23,13 @@ Scorer V2 / `import_cv`: name, email, phone, dob, address (street, house_number,
 | Gate | Value | Rationale |
 |------|-------|-----------|
 | Host (target) | **Intel Core i3 (11th gen), exactly 8 GB RAM**, no CUDA | Product target machine |
-| Peak RSS (CV path) | **≤ 3.3 GB (3300 MB) — HARD FAIL above** | Soft ≤12 GB / ≤12000 MB is **obsolete** and is **not** success |
+| Peak RSS (CV path) | **≤ 3_300_000_000 bytes (Job Object PeakJobMemoryUsed) — HARD FAIL above** | Soft ≤12 GB obsolete; Agent-VM ≠ ship evidence |
 | Avg s/CV | ≤ **120 s** | **Assumption** (no CV-import latency SLA in docs) |
 | Quality | F1 ≥ 0.90, hallu ≤ 0.03, invented emp/edu = 0, process 10/10 | prior replace gate |
 
-Constant: `CV_IMPORT_PEAK_RSS_MB_MAX` in `core/cv_docpick_import.py` (default `3300`).
+Constant: `CV_IMPORT_PEAK_RSS_BYTES_MAX` in `core/cv_docpick_import.py` (default `3300000000`).
 
-**Merge readiness for #62 = measured Peak RSS ≤ 3.3 GB** on the Docling+Qwen CV path (import process **plus** local LLM server). Do not treat ≤12 GB as a pass.
+**Merge readiness for #62 = measured Job Object Peak ≤ 3_300_000_000 bytes** on the real i3 / 8 GB Windows laptop (App + Docling + Qwen + ALL import children). Do not treat ≤12 GB or Agent-VM numbers as a pass. **No automatic Phi fallback.** Kill path: `DOCPICK_KILL_PATH.md`.
 
 ## Sample (locked)
 

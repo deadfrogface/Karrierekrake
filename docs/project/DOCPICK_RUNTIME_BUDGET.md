@@ -1,27 +1,30 @@
 # Docpick CV-Import – Laufzeit- und Peak-RSS-Budget (vor Blindtest)
 
 **Zielgerät (Merge-Gate):** Intel Core i3 (11th gen), **genau 8 GB RAM**, kein CUDA.  
-Agent-VM (Xeon / ~15 GB) ist **nicht** das Zielgerät — Zahlen dort dürfen das 8‑GB-Gate nicht ersetzen.
+Agent-VM ist **nicht** das Zielgerät — Zahlen dort sind **kein Ship-Evidence**.
 
 ## Festgelegte Obergrenzen (Merge-Gate für #62)
 
 | Kennzahl | Budget | Art |
 |----------|--------|-----|
-| **Peak RSS CV-Pfad** (Import-Prozess **+** lokaler LLM-Server) | **≤ 3,3 GB (3300 MB)** | **HARD FAIL** darüber |
+| **PeakJobMemoryUsed** (Windows Job Object: App + Docling + Qwen + alle Import-Kinder) | **≤ 3_300_000_000 Bytes** | **HARD FAIL** darüber |
 | Warm-Extract (Folge-CV) | ≤ 60 s | sekundär |
 | Cold-Extract (erster PDF) | ≤ 90 s | sekundär |
 
-Konstante: `CV_IMPORT_PEAK_RSS_MB_MAX = 3300` in `core/cv_docpick_import.py`.
+Konstante: `CV_IMPORT_PEAK_RSS_BYTES_MAX = 3300000000` in `core/cv_docpick_import.py`.
 
-**Obsolete Soft-Gates (kein Pass):** Peak ≤ 12 GB / ≤ 12000 MB / ≤ 3,5 GB. Soft ≤12 GB ist **kein** Erfolg und kein Merge-Kriterium.
+**Obsolete Soft-Gates (kein Pass):** Peak ≤ 12 GB / ≤ 12000 MB / ≤ 3,5 GB / „3300 MB“ ohne Byte-Gate.
 
-## Messung
+## Messung (Ship)
 
-Siehe `scripts/run_docpick_peak_rss_gate.py` und `docs/project/DOCPICK_PEAK_RSS_GATE_3_3GB.md`.
+**Pflicht:** `scripts/run_docpick_job_object_peak_windows.ps1` auf dem echten i3/8‑GB-Windows-Laptop.  
+Kein Kind darf dem Job Object entkommen. Agent-VM `/proc`-Summen = nur informativ.
 
-Messung muss Import-Prozess **und** llama.cpp-Server erfassen. `RUSAGE_SELF` allein (nur Python) ist unzureichend, wenn das Modell in einem zweiten Prozess läuft.
+## Kill-Pfad
+
+Siehe `DOCPICK_KILL_PATH.md`. Kein automatischer Phi-Fallback.
 
 ## Entscheidung
 
-- Merge #62 nur bei **gemessenem** Peak ≤ 3,3 GB auf Zielgeräte-Constraints.
-- Liegt Peak darüber: Feature-Ausbau stoppen; Memory shrinken (Quantisierung, Docling unload, kein zweites LLM, kleinerer `n_ctx`) oder Ansatz für 8 GB abbrechen.
+- Merge #62 nur bei **gemessenem** Job-Object-Peak ≤ 3_300_000_000 Bytes auf dem Zielgerät.
+- Liegt Peak darüber nach Optimierung: Step 1 kleineres lokales Modell; sonst Step 2 — lokales LLM-CV-Parsing auf dieser Hardware streichen; manueller Profilimport bleibt.

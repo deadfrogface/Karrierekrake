@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from core.cv_docpick_import import (
+    CV_IMPORT_PEAK_RSS_BYTES_MAX,
     CV_IMPORT_PEAK_RSS_MB_MAX,
     PARSED_CV_CONTRACT_VERSION,
     PARSED_CV_PERSONAL_KEYS,
@@ -44,11 +45,15 @@ def test_timeout_hard_fails_without_hang(monkeypatch: pytest.MonkeyPatch) -> Non
 
 
 def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("core.cv_docpick_import.cv_path_peak_rss_mb", lambda: 9000.0)
+    monkeypatch.setattr(
+        "core.cv_docpick_import.cv_path_peak_rss_bytes",
+        lambda: 9_000_000_000,
+    )
     with pytest.raises(CvImportError) as ei:
         _enforce_peak_rss(stage="unit")
     assert ei.value.code == "peak_rss_exceeded"
-    assert CV_IMPORT_PEAK_RSS_MB_MAX == 3300.0
+    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
+    assert CV_IMPORT_PEAK_RSS_MB_MAX == 3_300_000_000 / (1024.0 * 1024.0)
 
 
 def test_parsed_cv_matching_contract_stable() -> None:

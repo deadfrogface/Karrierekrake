@@ -514,22 +514,26 @@ def main() -> int:
         timings=cand_timings,
     )
 
-    from core.cv_docpick_import import CV_IMPORT_PEAK_RSS_MB_MAX
+    from core.cv_docpick_import import (
+        CV_IMPORT_PEAK_RSS_BYTES_MAX,
+        CV_IMPORT_PEAK_RSS_MB_MAX,
+    )
 
     gate = {
         "min_f1": 0.90,
         "max_hallucination_rate": 0.03,
         "max_invented_employment_education": 0,
         "min_processing_success": 10,
-        # Hard fail above 3.3 GB — target machine is i3 / 8 GB RAM.
-        # Soft ≤12000 MB is obsolete and must not be treated as success.
+        # Hard fail above 3_300_000_000 bytes — Job Object on i3 / 8 GB Win.
+        # Soft ≤12000 MB is obsolete. Agent-VM ≠ ship evidence. No Phi fallback.
+        "max_peak_rss_bytes": CV_IMPORT_PEAK_RSS_BYTES_MAX,
         "max_peak_rss_mb": CV_IMPORT_PEAK_RSS_MB_MAX,
-        "max_peak_rss_gb": CV_IMPORT_PEAK_RSS_MB_MAX / 1024.0,
+        "max_peak_rss_gb": CV_IMPORT_PEAK_RSS_BYTES_MAX / 1e9,
         "max_avg_s_per_cv": 120,
         "max_avg_s_note": "Assumption — no product CV-import latency SLA",
         "peak_rss_note": (
-            "Hard Peak RSS ≤3.3 GB for Docling+Qwen CV path (import process + "
-            "local LLM server). Soft ≤12 GB is not a pass."
+            "Hard Peak ≤ 3_300_000_000 bytes (Windows Job Object process group). "
+            "Soft ≤12 GB is not a pass. Agent-VM numbers are not ship evidence."
         ),
     }
     m = cand_score["metrics_all"]

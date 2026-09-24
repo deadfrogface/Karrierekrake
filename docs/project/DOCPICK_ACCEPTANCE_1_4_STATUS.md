@@ -1,59 +1,41 @@
 # Acceptance + Kill-or-Ship status (PR #62)
 
 **Kill-or-Ship:** #62 only ships if the full application flow on the **real Intel Core i3 / 8 GB Windows laptop** stays within the RAM limit, is stable, and has acceptable quality and wait time. **Every unmeasured gate stays open.**  
-**#64 = UI-only** — not mixed into this PR.
+**#64 = UI-only.** **NO automatic Phi fallback.**
 
-## A) Target device Peak — **OPEN / FAIL (unmeasured on laptop)**
+## MEASUREMENT (mandatory)
 
-| | |
-|--|--|
-| Required host | Real i3 (11th gen) / **exactly 8 GB** Windows laptop |
-| Agent-VM Peak | **NOT ship evidence** (prior ~2.6 GB import-only / ~8.5 GB combined) |
-| Laptop Peak | **Not measured in this environment** |
-| Protocol | `docs/project/DOCPICK_TARGET_DEVICE_MEASUREMENT_CHECKLIST.md` + `scripts/run_docpick_target_device_peak_windows.ps1` |
+| Rule | Status |
+|------|--------|
+| Windows **Job Object** runner (App + Docling + Qwen + ALL import children; no escape) | **Plan ready** — `scripts/run_docpick_job_object_peak_windows.ps1` |
+| Hard gate **≤ 3_300_000_000 bytes** (`PeakJobMemoryUsed`) | Code constant set; **ship run NOT executed** |
+| Real i3 / 8 GB Win laptop only | **OPEN** (Agent-VM ≠ ship evidence) |
 
-## B) Process-group Peak — **informational on Agent-VM only**
+## Current Peak bytes
 
-| Host | Process-group Peak | Ship evidence? |
-|------|--------------------|----------------|
-| Agent-VM (llama `n_ctx=2048` loaded) | **~5.4 GB** LLM alone | **No** |
-| Agent-VM (prior import+LLM gate) | **8.50 GB** | **No** |
-| Real i3/8GB Win laptop | **unmeasured** | Required for ship |
+| Source | Peak bytes | Ship? |
+|--------|------------|-------|
+| Job Object on target laptop | **unmeasured** | Required |
+| Agent-VM combined (import+LLM, /proc sum) | **9_130_123_674** (8707.7 MiB) | **No** |
+| Agent-VM LLM-only snapshot | **~5_675_000_000+** (~5.4 GiB) | **No** |
+| Gate | **3_300_000_000** | — |
 
-Also required on laptop: free RAM, crashes, import/parse duration.
+## Kill-path step
 
-## C) Hard fail (crash / OOM / UI freeze / unusable) — **OPEN**
+**Step 1 pending** — try a smaller local model under the same quality/RAM/runtime gates (no Phi), once laptop Job Object confirms over-limit after optimization (Agent-VM already ≫ gate → prepare Step 1).  
+**Not Step 2 yet.** Step-2 wording reserved: *„wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.“*
 
-Cannot certify on Agent-VM. Code raises `peak_rss_exceeded` / `timeout` / `empty_cv` / `unreadable_cv` (no silent hang), but **laptop stability is unmeasured**.
+See `DOCPICK_KILL_PATH.md`.
 
-## D) Prior gates
+## Other gates (D)
 
 | Gate | Status |
 |------|--------|
-| Peak ≤3.3 GB hard (constant 3300) | Code **PASS**; ship Peak **OPEN** until laptop |
-| Fail-cases empty/corrupt/timeout/OOM | **PASS** (demo + unit) |
-| Matching-Contract + Diff | **PASS** (v1, no drift) |
-| Extract + cover letter under limit | **BLOCKED** (needs Peak ≤3.3 on target) |
+| Fail-cases empty/corrupt/timeout/OOM | **PASS** (code) |
+| Matching-Contract + Diff | **PASS** (v1) |
+| Extract + cover letter under limit | **BLOCKED** |
+| E2E Profile → Matching → Cover | **OPEN** (laptop) |
 
-## E) E2E Profile → Matching → Cover letter — **OPEN**
+## Go / No-Go
 
-Must be demonstrated **under** process-group ≤3.3 GB on the laptop; evaluate extract / matching / cover letter **separately**. Not run as ship evidence here.
-
-## F) #64 UI-only — **honored** (no UI QA mixed into #62 Peak work)
-
----
-
-## What we can measure now vs laptop
-
-| Now (Agent-VM / CI) | Requires physical laptop |
-|---------------------|---------------------------|
-| Code hard-fail Peak/timeout/empty/corrupt | Process-group Peak on 8 GB Win |
-| Contract freeze + unit tests | Free RAM / crash / UI freeze |
-| Informational Agent-VM RSS (not ship) | Import duration on i3 |
-| Quality post-analysis (not Peak ship) | E2E Profile→Matching→Cover under limit |
-
-## Go / No-Go (Kill-or-Ship)
-
-**NO SHIP / NO-GO.**  
-
-Reasons: (A) target-device Peak **unmeasured** → gate stays **OPEN**; Agent-VM process-group already **~5.4–8.5 GB ≫ 3.3 GB** (abort signal, still not a substitute for laptop proof). Recommend abort of on-device Qwen3.5-4B for i3/8 GB unless the laptop run proves ≤3.3 GB process-group with stable E2E.
+**NO SHIP / NO-GO.** Job Object Peak on target device unmeasured (OPEN). Informational Agent-VM Peak **9_130_123_674 ≫ 3_300_000_000**.

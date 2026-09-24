@@ -1,33 +1,32 @@
-# Target-device Peak checklist (Windows i3 / 8 GB)
+# Target-device Peak checklist (Windows i3 / 8 GB) — Job Object
 
 Run **on the physical Intel Core i3 (11th gen) / 8 GB RAM Windows laptop only**.  
-Agent-VM results are **not** ship evidence.
+Agent-VM results are **not** ship evidence. Soft ≤12 GB obsolete. **No Phi fallback.**
 
-## Before
+## Mandatory measurement
 
 1. Close browsers and other heavy apps.
-2. Note Windows Task Manager → Performance → Memory (total = 8 GB).
-3. Start Karrierekrake Desktop + local Qwen llama.cpp as used in production for #62.
-4. Open Task Manager → Details: note PIDs for app, Docling workers (if any), llama server.
+2. Confirm Task Manager → Memory total ≈ 8 GB.
+3. Run **Job Object** benchmark (children must start inside the job — no escape):
 
-## Measure (process group)
+```powershell
+.\scripts\run_docpick_job_object_peak_windows.ps1 `
+  -LlamaServerCmd '.venv\Scripts\python.exe -m llama_cpp.server --model MODEL.gguf --n_ctx 2048 --host 127.0.0.1 --port 8080' `
+  -ImportCmd '.venv\Scripts\python.exe -c "from core.cv_docpick_import import import_cv_docpick; from pathlib import Path; import_cv_docpick(Path(r''tests\fixtures\cv_corpus\DE_01_Klassisch.pdf''))"' `
+  -SampleSeconds 180
+```
 
-Preferred: run `scripts/run_docpick_target_device_peak_windows.ps1` from an elevated PowerShell in the repo.
+4. Record from `JOB_OBJECT_PEAK_RSS_RESULT.json`:
+   - `peak_job_memory_used_bytes` vs gate **3_300_000_000**
+   - free RAM before/after
+   - crashes / OOM / UI freeze
+   - import/parse duration
 
-Record:
+## If Peak > 3_300_000_000 / OOM / freeze after optimization
 
-- Process-group Peak Working Set (App + Docling + Qwen) in GB
-- Free RAM before / during / after import
-- Import/parse duration (seconds)
-- Crashes / OOM / UI freeze (yes/no)
-- Whether Peak ≤ 3.3 GB
+1. Try a **smaller local model** under the same quality/RAM/runtime gates (**no Phi**).
+2. If that fails: *„wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.“*
 
-## E2E under limit (only if Peak ≤ 3.3 GB)
+## E2E under limit (only if Peak ≤ gate)
 
-Evaluate separately:
-
-1. **Profile** — CV import extract JSON saved
-2. **Matching** — job match uses contract fields (no schema drift)
-3. **Cover letter** — one generated sample from that profile + fixture job
-
-If Peak cannot stay ≤ 3.3 GB: **NO SHIP / abort recommendation**. Do not mix #64 UI QA into this run.
+Evaluate separately: Profile extract → Matching → Cover letter. Do not mix #64 UI QA.

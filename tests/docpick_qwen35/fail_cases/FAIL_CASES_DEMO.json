@@ -1,6 +1,7 @@
 {
-  "created_at": "2026-09-24T23:09:03.324652+00:00",
+  "created_at": "2026-09-24T23:16:21.957867+00:00",
   "all_pass": true,
+  "gate_peak_rss_bytes": 3300000000,
   "cases": [
     {
       "case": "empty_cv",
@@ -33,13 +34,13 @@
       "case": "peak_rss_exceeded",
       "raised": true,
       "code": "peak_rss_exceeded",
-      "message": "peak_rss_exceeded: Peak RSS 5560 MB über Hart-Limit 3300 MB (3,3 GB) bei Stufe 'demo'. Import abgebrochen — kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
+      "message": "peak_rss_exceeded: Peak RSS 5830316032 Bytes über Hart-Limit 3300000000 Bytes (≤ 3,3 GB Process-Group) bei Stufe 'demo'. Import abgebrochen — kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
       "wall_s": 0.002,
       "pass": true,
       "exception_type": "CvImportError",
-      "measured_cv_path_rss_mb": 5560.1,
-      "gate_mb": 3300.0
+      "measured_cv_path_rss_bytes": 5830316032,
+      "gate_bytes": 3300000000
     }
   ],
-  "note": "Fail-cases must raise CvImportError with stable codes; no silent hang / no infinite UI wait."
+  "note": "Fail-cases must raise CvImportError with stable codes; no silent hang / no infinite UI wait. Ship Peak requires Windows Job Object on real i3/8GB laptop."
 }

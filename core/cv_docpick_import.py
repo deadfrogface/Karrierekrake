@@ -609,11 +609,15 @@ CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S",
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
 # Hard Peak-RSS gate for target hardware: Intel Core i3 (11th gen), exactly 8 GB RAM.
 # Soft ≤12 GB / ≤12000 MB is NOT success and must not appear as a pass condition.
-# Merge readiness = measured CV-path Peak RSS ≤ 3.3 GB (3300 MB). Hard fail above.
-CV_IMPORT_PEAK_RSS_MB_MAX = float(
-    os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_MB_MAX", "3300")
+# Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
+# (process group: App + Docling + Qwen/llama.cpp + ALL import children).
+# Agent-VM numbers are NOT ship evidence. No automatic Phi fallback.
+CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
+    os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX", "3300000000")
 )
-CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_MB_MAX / 1024.0
+# Derived MiB/GiB helpers for logs (primary compare is always BYTES).
+CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
+CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 ** 3)
 # Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
 CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "180"))
 
@@ -997,15 +1001,20 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
     return has_name or has_contact
 
 
-def _self_rss_mb() -> float:
+def _self_rss_bytes() -> int:
     import resource
 
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
+    # Linux: ru_maxrss is kilobytes; convert to bytes.
+    return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
 
 
-def _llama_server_rss_mb() -> float:
-    """Sum VmRSS of local llama.cpp server processes (0 if none)."""
-    total = 0.0
+def _self_rss_mb() -> float:
+    return _self_rss_bytes() / (1024.0 * 1024.0)
+
+
+def _llama_server_rss_bytes() -> int:
+    """Sum VmRSS (bytes) of local llama.cpp server processes (0 if none)."""
+    total = 0
     try:
         proc = Path("/proc")
         for entry in proc.iterdir():
@@ -1020,7 +1029,8 @@ def _llama_server_rss_mb() -> float:
             try:
                 for line in (entry / "status").read_text(encoding="utf-8").splitlines():
                     if line.startswith("VmRSS:"):
-                        total += float(line.split()[1]) / 1024.0
+                        # VmRSS is kB
+                        total += int(line.split()[1]) * 1024
                         break
             except OSError:
                 continue
@@ -1029,20 +1039,33 @@ def _llama_server_rss_mb() -> float:
     return total
 
 
+def _llama_server_rss_mb() -> float:
+    return _llama_server_rss_bytes() / (1024.0 * 1024.0)
+
+
+def cv_path_peak_rss_bytes() -> int:
+    """Honest CV-path footprint (bytes): this process + local LLM server.
+
+    Agent-VM /proc sum is informational only. Ship evidence requires a Windows
+    Job Object PeakJobMemoryUsed on the real i3 / 8 GB laptop.
+    """
+    return _self_rss_bytes() + _llama_server_rss_bytes()
+
+
 def cv_path_peak_rss_mb() -> float:
-    """Honest CV-path footprint: this process + local LLM server."""
-    return _self_rss_mb() + _llama_server_rss_mb()
+    """Honest CV-path footprint in MiB (derived from bytes)."""
+    return cv_path_peak_rss_bytes() / (1024.0 * 1024.0)
 
 
 def _enforce_peak_rss(*, stage: str) -> None:
-    """Hard fail when CV-path Peak RSS exceeds 3.3 GB — no silent continue."""
-    rss = cv_path_peak_rss_mb()
-    if rss > CV_IMPORT_PEAK_RSS_MB_MAX:
+    """Hard fail when CV-path Peak RSS exceeds 3_300_000_000 bytes."""
+    rss = cv_path_peak_rss_bytes()
+    if rss > CV_IMPORT_PEAK_RSS_BYTES_MAX:
         raise CvImportError(
             "peak_rss_exceeded",
-            f"Peak RSS {rss:.0f} MB über Hart-Limit {CV_IMPORT_PEAK_RSS_MB_MAX:.0f} MB "
-            f"(3,3 GB) bei Stufe '{stage}'. Import abgebrochen — kein Weiterlaufen "
-            f"über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
+            f"Peak RSS {rss} Bytes über Hart-Limit {CV_IMPORT_PEAK_RSS_BYTES_MAX} Bytes "
+            f"(≤ 3,3 GB Process-Group) bei Stufe '{stage}'. Import abgebrochen — "
+            f"kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
         )
 
 
@@ -1070,7 +1093,7 @@ def import_cv_docpick(
       - ``empty_cv`` — zero-byte or no extractable text
       - ``unreadable_cv`` — corrupt / unreadable document
       - ``timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
-      - ``peak_rss_exceeded`` — CV-path Peak RSS over 3.3 GB
+      - ``peak_rss_exceeded`` — CV-path Peak RSS over 3_300_000_000 bytes
 
     Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI
     honest about stages and allow cancel between Docling and the LLM call.
@@ -1139,7 +1162,7 @@ def import_cv_docpick(
             "Bitte llama.cpp-Server mit Qwen3.5-4B starten oder Einstellungen prüfen. "
             "Kein automatischer Wechsel auf den alten DET-Parser.",
         )
-    # Peak gate before expensive work — hard fail if already over 3.3 GB.
+    # Peak gate before expensive work — hard fail if already over 3_300_000_000 bytes.
     _enforce_peak_rss(stage="preflight")
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")

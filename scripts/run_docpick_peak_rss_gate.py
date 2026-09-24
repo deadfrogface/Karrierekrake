@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
-"""Hard Peak-RSS gate measurement for Docling + Qwen CV import.
+"""Informational Peak-RSS measurement for Docling + Qwen CV import (Agent-VM).
 
-Target hardware: Intel Core i3 (11th gen), exactly 8 GB RAM.
-Hard fail when Peak RSS of the CV path exceeds 3.3 GB (3300 MB).
+NOT ship evidence. Ship requires Windows Job Object PeakJobMemoryUsed on the
+real Intel Core i3 / 8 GB Windows laptop:
+  scripts/run_docpick_job_object_peak_windows.ps1
 
-Measures:
-  - import process RSS (this Python process)
-  - local llama.cpp server RSS (separate process on KARRIEREKRAKE_CV_LLM_BASE)
-  - combined = import + LLM (honest CV-path footprint)
-
-Soft ≤12 GB / ≤12000 MB is obsolete and must not be treated as success.
+Hard gate: ≤ 3_300_000_000 bytes (process group). Soft ≤12 GB obsolete.
+NO automatic Phi fallback.
 """
 
 from __future__ import annotations
@@ -108,6 +105,7 @@ def _pick_pdf() -> Path:
 def main() -> int:
     os.environ.setdefault("KARRIEREKRAKE_CV_LLM_BASE", "http://127.0.0.1:8765/v1")
     from core.cv_docpick_import import (
+        CV_IMPORT_PEAK_RSS_BYTES_MAX,
         CV_IMPORT_PEAK_RSS_MB_MAX,
         import_cv_docpick,
     )
@@ -167,36 +165,45 @@ def main() -> int:
     llama_peak = max((s["llama_rss_mb"] for s in samples), default=llama_before)
     combined_peak = max((s["combined_mb"] for s in samples), default=self_peak + llama_before)
 
+    gate_bytes = int(CV_IMPORT_PEAK_RSS_BYTES_MAX)
     gate_mb = float(CV_IMPORT_PEAK_RSS_MB_MAX)
-    # Honest CV-path peak = combined import + LLM server
+    # Honest CV-path peak = combined import + LLM server (MiB from /proc)
     measured_mb = combined_peak
-    passed = measured_mb <= gate_mb and ok and err is None
+    measured_bytes = int(round(combined_peak * 1024 * 1024))
+    passed = measured_bytes <= gate_bytes and ok and err is None
 
     result = {
         "schema_version": 1,
-        "test_type": "PEAK_RSS_HARD_GATE_3_3GB",
+        "test_type": "PEAK_RSS_INFORMATIONAL_AGENT_VM",
         "created_at": datetime.now(timezone.utc).isoformat(),
         "target_hardware": "Intel Core i3 (11th gen), exactly 8 GB RAM",
-    "measurement_host_note": (
-        "Agent-VM / Cursor cloud — NOT the target i3/8GB Windows laptop. "
-        "These numbers are informational only and are NOT kill-or-ship evidence."
-    ),
-    "ship_evidence": False,
-    "kill_or_ship": (
-        "#62 only ships if full app flow on real i3/8GB Win laptop stays within "
-        "RAM, stable, acceptable quality/wait. Unmeasured gates stay open."
-    ),
-    "pdf": str(pdf.relative_to(ROOT)),
+        "measurement_host_note": (
+            "Agent-VM / Cursor cloud — NOT the target i3/8GB Windows laptop. "
+            "These numbers are informational only and are NOT kill-or-ship evidence."
+        ),
+        "ship_evidence": False,
+        "ship_measurement": (
+            "Windows Job Object PeakJobMemoryUsed via "
+            "scripts/run_docpick_job_object_peak_windows.ps1"
+        ),
+        "kill_or_ship": (
+            "#62 only ships if full app flow on real i3/8GB Win laptop stays within "
+            "RAM, stable, acceptable quality/wait. Unmeasured gates stay open."
+        ),
+        "pdf": str(pdf.relative_to(ROOT)),
+        "gate_peak_rss_bytes": gate_bytes,
         "gate_peak_rss_mb": gate_mb,
-        "gate_peak_rss_gb": round(gate_mb / 1024.0, 3),
+        "gate_peak_rss_gb": round(gate_bytes / 1e9, 3),
         "obsolete_soft_gate_mb": 12000,
         "obsolete_soft_gate_note": "Soft ≤12 GB / ≤12000 MB is NOT success.",
+        "no_phi_fallback": True,
         "measured": {
             "import_process_peak_rss_mb": round(self_peak, 1),
             "llama_server_peak_rss_mb": round(llama_peak, 1),
             "llama_server_rss_mb_before_import": round(llama_before, 1),
             "llama_server_vmpeak_mb_before_import": round(llama_vmpeak_before, 1),
             "combined_cv_path_peak_rss_mb": round(combined_peak, 1),
+            "combined_cv_path_peak_rss_bytes": measured_bytes,
             "combined_cv_path_peak_rss_gb": round(combined_peak / 1024.0, 3),
             "wall_s": round(wall, 1),
             "n_samples": len(samples),
@@ -209,8 +216,8 @@ def main() -> int:
         "gate_passed": passed,
         "verdict": "GO" if passed else "NO-GO",
         "disclaimer": (
-            "Hard Peak RSS ≤3.3 GB for Docling+Qwen CV path. "
-            "Not a quality/blind claim."
+            "Informational Agent-VM Peak only. Ship gate is Job Object "
+            "≤ 3_300_000_000 bytes on real i3/8GB Win laptop. Not a quality/blind claim."
         ),
     }
     out_path = OUT / "PEAK_RSS_GATE_RESULT.json"
@@ -222,21 +229,21 @@ def main() -> int:
     report.write_text(
         "\n".join(
             [
-                "# Peak-RSS Hard Gate (≤ 3.3 GB)",
+                "# Peak-RSS (informational Agent-VM — NOT ship evidence)",
                 "",
-                f"- **Target:** Intel Core i3 (11th gen), 8 GB RAM",
-                f"- **Gate:** ≤ **3.3 GB** (hard fail above) — soft ≤12 GB is obsolete",
+                f"- **Target (ship):** Intel Core i3 (11th gen), 8 GB RAM Windows + Job Object",
+                f"- **Gate:** ≤ **3_300_000_000 bytes** (hard fail above) — soft ≤12 GB is obsolete",
                 f"- **PDF:** `{pdf.relative_to(ROOT)}`",
-                f"- **Import process Peak RSS:** {self_peak:.1f} MB",
-                f"- **llama.cpp server Peak RSS:** {llama_peak:.1f} MB",
-                f"- **Combined CV-path Peak RSS:** **{combined_peak:.1f} MB ({gb:.3f} GB)**",
+                f"- **Import process Peak RSS:** {self_peak:.1f} MiB",
+                f"- **llama.cpp server Peak RSS:** {llama_peak:.1f} MiB",
+                f"- **Combined CV-path Peak:** **{measured_bytes} bytes** ({combined_peak:.1f} MiB / {gb:.3f} GiB)",
                 f"- **Wall:** {wall:.1f} s",
                 f"- **UI froze:** {ui_froze} (CLI only — UI not exercised)",
-                f"- **Verdict:** **{result['verdict']}** (gate_passed={passed})",
+                f"- **Verdict (informational):** **{result['verdict']}** (gate_passed={passed})",
                 "",
-                "If NO-GO: stop feature expansion; shrink memory (quantization, unload "
-                "Docling after parse, no second LLM, smaller n_ctx) or abort this "
-                "approach for 8 GB hardware.",
+                "Ship evidence requires `run_docpick_job_object_peak_windows.ps1` on the laptop.",
+                "If over gate after optimization: kill path Step 1 (smaller local model, no Phi); "
+                "then Step 2 remove local LLM CV parsing on this hardware.",
                 "",
             ]
         ),
@@ -245,8 +252,8 @@ def main() -> int:
 
     print(json.dumps(result, indent=2), flush=True)
     print(
-        f"VERDICT={result['verdict']} combined_peak_gb={gb:.3f} "
-        f"gate_gb={gate_mb/1024:.3f}",
+        f"VERDICT={result['verdict']} combined_peak_bytes={measured_bytes} "
+        f"gate_bytes={gate_bytes}",
         flush=True,
     )
     return 0 if passed else 2
