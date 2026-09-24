@@ -1,6 +1,6 @@
 # Abschlussbericht – Docpick-Integrationslauf (Phasen 1–3)
 
-**Stand Tip:** `8233ea9` auf `cursor/docpick-qwen35-cv-replace-d85b` (PR [#62](https://github.com/deadfrogface/Karrierekrake/pull/62)).  
+**Stand Tip:** `447f5fd` auf `cursor/docpick-qwen35-cv-replace-d85b` (PR [#62](https://github.com/deadfrogface/Karrierekrake/pull/62)).  
 **Aktualisiert:** 2026-09-24 (dieser Bericht).  
 **„99 % erreicht“:** **NEIN** — Blind-F1≥0,99 wurde nicht gemessen und darf nicht behauptet werden.
 

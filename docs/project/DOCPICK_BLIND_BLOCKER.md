@@ -1,6 +1,6 @@
 # Blindtest-Blocker – Docpick Phase 3
 
-Stand Tip: `8233ea9` (PR #62). Round3-Regression auf bekannten CVs läuft (Partial 36/40); **kein** unabhängiger Blindnachweis.  
+Stand Tip: `447f5fd` (PR #62). Round3-Regression auf bekannten CVs läuft (Partial 36/40); **kein** unabhängiger Blindnachweis.  
 Konsistent mit `ABSCHLUSSBERICHT_DOCPICK_PHASEN.md`.
 
 ## Anforderung für unabhängigen Blind-F1≥0,99
