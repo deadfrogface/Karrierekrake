@@ -163,11 +163,23 @@ class KarrierekrakeCVSchema(BaseModel):
 
 
 def _norm_dob(s: str) -> str:
-    s = (s or "").strip()
-    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", s)
+    """Normalize birth dates to ``DD.MM.YYYY`` when day/month/year are present."""
+    t = (s or "").strip()
+    if not t:
+        return ""
+    # Already DD.MM.YYYY
+    m = re.match(r"^(\d{1,2})\.(\d{1,2})\.(\d{4})$", t)
     if m:
-        return f"{m.group(3)}.{m.group(2)}.{m.group(1)}"
-    return s
+        return f"{int(m.group(1)):02d}.{int(m.group(2)):02d}.{m.group(3)}"
+    # DD/MM/YYYY
+    m = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", t)
+    if m:
+        return f"{int(m.group(1)):02d}.{int(m.group(2)):02d}.{m.group(3)}"
+    # YYYY-MM-DD or YYYY/MM/DD
+    m = re.match(r"^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$", t)
+    if m:
+        return f"{int(m.group(3)):02d}.{int(m.group(2)):02d}.{m.group(1)}"
+    return t
 
 
 _PRESENT_END_RE = re.compile(
@@ -386,7 +398,7 @@ _docling_text_cache: dict[tuple[str, str], str] = {}
 _SCHEMA_JSON_CACHE: str | None = None
 # Production LLM generation cap. Measured: outputs typically << 2048 tokens;
 # lower cap cuts rare runaway generations without changing typical quality.
-_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "1024"))
+_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "1536"))
 # Wall-clock budgets on target hardware (4-core CPU Agent-VM, Qwen3.5-4B Q4).
 # Blindtest may proceed only when warm extract stays within WARM_BUDGET_S.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
@@ -548,18 +560,16 @@ def _llm_extract(text: str) -> dict[str, Any]:
             {
                 "role": "system",
                 "content": (
-                    "Extract CV fields as JSON only. No markdown. "
-                    "null if missing; do not invent values. "
-                    "Preserve diacritics in names and cities. "
-                    "Always fill address (street, house_number, postal_code, city, country) "
-                    "when present in header lines (incl. City|Country and UK house street · city postcode). "
-                    "Always fill software/Applications and skills/Core Skills lists. "
-                    "Strip proficiency tags from software names (keep tool name only). "
-                    "employment.position = job title only (never duty bullets). "
-                    "When text has 'Title | Company', put Title in position and Company in company. "
-                    "Dates as MM/YYYY. Current job: end_date = 'heute'. "
-                    "Incomplete education stays in qualification "
-                    "(Studium abgebrochen / Schule ohne Abschluss)."
+                    "Extract CV as compact JSON only (no markdown, no pretty-print). "
+                    "null if missing; do not invent. Preserve diacritics. "
+                    "Fill address when present (incl. City|Country, UK house street · city postcode). "
+                    "Fill software and skills lists; strip proficiency tags from tool names. "
+                    "employment.position = job title only; 'Title | Company' → split fields. "
+                    "Employment/education months as MM/YYYY. "
+                    "date_of_birth as DD.MM.YYYY (never MM/YYYY). "
+                    "end_date='heute' ONLY when the CV explicitly says present/current/heute/ongoing; "
+                    "never invent heute for a dated end. "
+                    "Incomplete education → qualification text (Studium abgebrochen / ohne Abschluss)."
                 ),
             },
             {

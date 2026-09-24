@@ -85,6 +85,15 @@ def test_enrich_address_uk_ch_city() -> None:
     assert de["city"] == "Leipzig"
 
 
+def test_norm_dob_formats() -> None:
+    from core.cv_docpick_import import _norm_dob
+
+    assert _norm_dob("1991-02-19") == "19.02.1991"
+    assert _norm_dob("19/02/1991") == "19.02.1991"
+    assert _norm_dob("1985/06/25") == "25.06.1985"
+    assert _norm_dob("19.02.1991") == "19.02.1991"
+
+
 def test_suggestion_maps_current_job_end_date() -> None:
     parsed = suggestion_to_parsed(
         {

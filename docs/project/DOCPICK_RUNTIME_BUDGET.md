@@ -46,3 +46,11 @@ Quelle: `tests/docpick_blind_de_en_v1/PHASE_B_COMPLETE_GT_ONLY_V3_1_RESULTS.json
 - Blind-v1-Korpus liegt **innerhalb** des Budgets; längere Einzel-CVs (Messung A) können es noch reißen.
 - Merge-Gate #62: Blindqualität **und** Laufzeit — Blind-v1 allein reicht nicht als großer 99%-Claim (`n=4`).
 - Weitere Architektur für robust ≤60 s auf allen CVs: GPU-Offload, kleineres Modell, oder Zwei-Pass — **nicht DET**.
+
+
+## Update 2026-09-24 (Round4)
+
+- Server-Empfehlung: ``n_ctx=4096`` (2048 schnitt lange JSON-Ausgaben ab).
+- ``max_tokens`` Default **1536**.
+- Spot MH_025 nach Fix: Cold **43,6 s** / Warm **45,4 s** (Budget ok).
+- Round4-Seal Ø **78,8 s**/CV — Warm-Budget auf längeren CVs weiter riskant.

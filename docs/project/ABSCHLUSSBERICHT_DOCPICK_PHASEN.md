@@ -1,7 +1,7 @@
 # Abschlussbericht – Docpick-Integrationslauf (Phasen 1–3)
 
 **Stand:** Branch `cursor/docpick-qwen35-cv-replace-d85b` (PR [#62](https://github.com/deadfrogface/Karrierekrake/pull/62)).  
-**Aktualisiert:** 2026-09-24 (Blind DE/EN v1 Seal+Score; #63 auf main).  
+**Aktualisiert:** 2026-09-24 (Round4; #56/#60/#61 closed; Blind-v2 Scaffold).
 **„99 % erreicht“:** **NEIN als Produktiv-Claim** — Blind-v1 F1 **0,996** bei **n=4** (informativ); `claim_99_percent=false` im Ergebnis. Round3 F1 0,991 gilt nur für **bekannte** CVs.
 
 ---
@@ -11,10 +11,10 @@
 | PR / Branch | Status | Entscheidung | Warum |
 |-------------|--------|--------------|--------|
 | **#62** `cursor/docpick-qwen35-cv-replace-d85b` | **offen** | **offen lassen** bis Merge-Gate klar | Docpick+Qwen DET-frei auf Branch; Blind-v1 positiv aber klein; Maintainer entscheidet Ersatz |
-| **#63** `cursor/primary-actions-ui-polish-d85b` | **MERGED** (`cca25fc`) | erledigt | UI-Polish + CI-Fixes inkl. Windows Seal-LF; Squash auf main |
-| **#61** SmartResume-Spike | **offen** (Close 403) | **schließen** | überholt durch #62 |
-| **#60** Phi vs DET | **offen** (Close 403) | **schließen** | PHI_EXTRACT entfernt |
-| **#56** Phi ≥99 % | **offen** (Close 403) | **schließen** | PHI_EXTRACT entfernt |
+| **#63** | **MERGED** | erledigt | UI-Polish auf main |
+| **#61** | **CLOSED** | erledigt | Spike überholt |
+| **#60** | **CLOSED** | erledigt | Spike überholt |
+| **#56** | **CLOSED** | erledigt | Spike überholt |
 
 **Close-Versuch Agent:** Write-API / `set_pr_status` 403. Texte: `docs/project/PR_CLOSE_COMMENTS_56_60_61.md`.  
 **Nicht in main integriert:** Docpick (#62). Main bleibt DET (+ UI aus #63).
@@ -79,6 +79,8 @@ Label: `INDEPENDENT_BLIND_DE_EN`. Freeze-Commit: `49b16d5`. Voller GT nach Seal.
 | `claim_99_percent` | **false** — n=4 nur informativ |
 
 Artefakte: `tests/docpick_blind_de_en_v1/`.
+
+Blind-v2: Scaffold bereit (`tests/docpick_blind_de_en_v2/`), **Datensatz fehlt** (≥20 neue DE/EN + volle GT) — Merge-Gate blockiert.
 
 ### 99%-Klausel
 
