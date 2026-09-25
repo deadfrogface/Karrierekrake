@@ -170,7 +170,7 @@ def test_watch_aborts_when_psutil_sample_crosses_limit(monkeypatch):
     monkeypatch.setattr(
         bench,
         "_kill_process_tree",
-        lambda proc, pgid: killed.append((proc.pid, pgid)),
+        lambda proc, pgid: killed.append((proc.pid, pgid)) or {"tree_dead": True, "method": "test"},
     )
     proc = _ExitingProc()
     peak, aborted = bench._watch_process_rss(proc, 0.0)
@@ -204,7 +204,8 @@ def test_main_exits_nonzero_when_no_rss_sample(monkeypatch, tmp_path, capsys):
     assert "Kein RSS-Messwert" in capsys.readouterr().err
 
 
-def test_linux_accounting_names_vmrss_and_vmhwm():
+def test_linux_accounting_names_vmrss_and_vmhwm(monkeypatch):
+    monkeypatch.setattr(bench.sys, "platform", "linux")
     fields = bench._limit_metric_fields()
     assert fields["limit_metric"] == "VmRSS"
     assert fields["process_high_water_metric"] == "VmHWM"
@@ -213,6 +214,10 @@ def test_linux_accounting_names_vmrss_and_vmhwm():
     assert accounting["sample_interval_ms"] == 50
     assert "VmRSS" in accounting["limit_metric_note"]
     assert "VmHWM" in accounting["limit_metric_note"]
+    payload: dict = {}
+    bench._stamp_peak(payload, 100, False, 0.05, object())
+    assert payload["sampled_group_rss_max_bytes"] == 100
+    assert payload["sampled_limit_metric_max_bytes"] == 100
 
 
 def test_windows_accounting_uses_peak_job_memory(monkeypatch):
@@ -222,19 +227,87 @@ def test_windows_accounting_uses_peak_job_memory(monkeypatch):
     assert "PeakProcessMemoryUsed" in fields["limit_metric_note"]
     assert "Working Set" in fields["limit_metric_note"]
     assert "Peak-Gate" in fields["limit_metric_note"]
+    accounting = bench._memory_accounting(0.05)
+    assert accounting["peak_is_sampled"] is False
+    assert accounting["abort_check_is_sampled"] is True
+    assert "Abbruchprüfung" in accounting["abort_check_note"]
+    payload: dict = {}
+    bench._stamp_peak(payload, 100, False, 0.05, object())
+    assert "sampled_group_rss_max_bytes" not in payload
+    assert payload["sampled_limit_metric_max_bytes"] == 100
 
 
 def test_job_object_kill_does_not_stop_at_the_root(monkeypatch):
     calls: list[object] = []
-    monkeypatch.setattr(bench, "_terminate_windows_job", lambda job: calls.append(job))
+
+    def _ok(job: object) -> bool:
+        calls.append(job)
+        return True
+
+    monkeypatch.setattr(bench, "_terminate_windows_job", _ok)
+    monkeypatch.setattr(bench, "_tree_still_alive", lambda _proc: False)
 
     def _no_killpg(_pgid: int | None) -> bool:
         raise AssertionError("killpg must not run when a job handle is set")
 
     monkeypatch.setattr(bench, "_posix_killpg", _no_killpg)
     proc = type("P", (), {"job": "JOB", "pid": 5})()
-    bench._kill_process_tree(proc, 5)
+    result = bench._kill_process_tree(proc, 5)
     assert calls == ["JOB"]
+    assert result["tree_dead"] is True
+    assert result["fallback_used"] is False
+
+
+def test_terminate_job_failure_falls_back_and_does_not_claim_abort(monkeypatch, capsys):
+    fallback: list[int] = []
+    monkeypatch.setattr(bench, "_terminate_windows_job", lambda _job: False)
+    monkeypatch.setattr(bench, "_load_psutil", lambda: object())
+    monkeypatch.setattr(bench, "_kill_psutil_tree", lambda pid: fallback.append(pid))
+    monkeypatch.setattr(bench, "_tree_still_alive", lambda _proc: True)
+
+    class _Proc:
+        pid = 9
+        job = "JOB"
+
+        def poll(self):
+            return None
+
+    proc = _Proc()
+    result = bench._kill_process_tree(proc, None)
+    err = capsys.readouterr().err
+    assert fallback == [9]
+    assert result["fallback_used"] is True
+    assert result["job_terminate_ok"] is False
+    assert result["tree_dead"] is False
+    assert "TerminateJobObject fehlgeschlagen" in err
+    assert "lebt nach dem Abbruch" in err
+
+    monkeypatch.setattr(bench, "_process_group_id", lambda _pid: None)
+    monkeypatch.setattr(bench, "_sample_against_limit", lambda _proc, _pgid: bench.PEAK_ABORT_BYTES)
+    watched = _Proc()
+    _peak, aborted = bench._watch_process_rss(watched, 0.0)
+    assert aborted is False
+    assert watched.kill_report["tree_dead"] is False
+    payload: dict = {}
+    bench._stamp_peak(payload, _peak, aborted, 0.05, watched)
+    assert payload["aborted_for_peak"] is False
+    assert payload["process_tree_kill"]["fallback_used"] is True
+
+
+def test_missing_pgid_without_psutil_kills_root_before_error(monkeypatch):
+    monkeypatch.setattr(bench, "_load_psutil", lambda: None)
+    killed: list[str] = []
+
+    class _Proc:
+        pid = 4
+        job = None
+
+        def kill(self):
+            killed.append("root")
+
+    with pytest.raises(bench.MemoryReadError, match="proc.kill"):
+        bench._kill_process_tree(_Proc(), None)
+    assert killed == ["root"]
 
 
 def test_windows_kill_hits_children_then_root(monkeypatch):
@@ -266,6 +339,7 @@ def test_windows_kill_hits_children_then_root(monkeypatch):
     assert killed == [2, 3, 1]
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Linux process group and /proc")
 def test_abort_kills_child_and_grandchild(tmp_path, monkeypatch):
     pidfile = tmp_path / "pids.txt"
     script = tmp_path / "child.py"
@@ -314,6 +388,88 @@ def _running(pid: int) -> bool:
         return False
     state = stat[stat.rfind(")") + 2 :].split()[0]
     return state not in {"Z", "X"}
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="echtes Windows Job Object")
+def test_windows_job_abort_kills_child_and_grandchild(tmp_path, monkeypatch):
+    import psutil
+
+    pidfile = tmp_path / "pids.txt"
+    ready = tmp_path / "go.txt"
+    script = tmp_path / "child.py"
+    # The go-file is created only after _spawn_captured returns, so the
+    # grandchild is born after AssignProcessToJobObject.
+    script.write_text(
+        "import os, subprocess, sys, time\n"
+        "from pathlib import Path\n"
+        "ready = Path(sys.argv[1])\n"
+        "pidfile = Path(sys.argv[2])\n"
+        "deadline = time.time() + 20\n"
+        "while not ready.exists():\n"
+        "    if time.time() > deadline:\n"
+        "        raise SystemExit('go file missing')\n"
+        "    time.sleep(0.02)\n"
+        "grand = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(120)'])\n"
+        "pidfile.write_text(str(os.getpid()) + '\\n' + str(grand.pid) + '\\n')\n"
+        "time.sleep(120)\n",
+        encoding="utf-8",
+    )
+    proc = bench._spawn_captured(
+        [sys.executable, str(script), str(ready), str(pidfile)],
+        os.environ.copy(),
+    )
+    try:
+        ready.write_text("go", encoding="utf-8")
+        deadline = time.time() + 20
+        lines: list[str] = []
+        while time.time() < deadline:
+            assert proc.poll() is None
+            if pidfile.exists():
+                lines = pidfile.read_text(encoding="utf-8").split()
+                if len(lines) >= 2:
+                    break
+            time.sleep(0.02)
+        assert len(lines) >= 2
+        child_pid = int(lines[0])
+        grand_pid = int(lines[1])
+        assert child_pid == proc.pid
+        assert proc.job is not None
+        monkeypatch.setattr(bench, "_query_peak_job_memory", lambda _job: bench.PEAK_ABORT_BYTES)
+        _peak, aborted = bench._watch_process_rss(proc, 0.0)
+        assert aborted is True
+        deadline = time.time() + 5
+        while time.time() < deadline and (psutil.pid_exists(child_pid) or psutil.pid_exists(grand_pid)):
+            time.sleep(0.05)
+        assert psutil.pid_exists(child_pid) is False
+        assert psutil.pid_exists(grand_pid) is False
+    finally:
+        proc.close_job()
+        if proc.poll() is None:
+            proc.kill()
+            proc.communicate()
+
+
+def test_close_job_after_communicate(monkeypatch):
+    closed: list[object] = []
+    monkeypatch.setattr(bench.sys, "platform", "win32")
+    monkeypatch.setattr(bench, "_close_job_handle", lambda job: closed.append(job))
+
+    class _Popen:
+        pid = 11
+        returncode = 0
+
+        def communicate(self):
+            return "ok", ""
+
+        def poll(self):
+            return 0
+
+    proc = bench._BenchmarkProcess(_Popen(), job="JOB")
+    assert proc.communicate() == ("ok", "")
+    assert closed == ["JOB"]
+    assert proc.job is None
+    proc.close_job()
+    assert closed == ["JOB"]
 
 
 def test_proc_read_failure_is_none_not_zero(monkeypatch):

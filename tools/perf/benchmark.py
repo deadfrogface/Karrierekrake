@@ -292,13 +292,40 @@ def _limit_metric_fields() -> dict[str, Any]:
 
 
 def _memory_accounting(interval_s: float) -> dict[str, Any]:
+    """Describe the limit metric.
+
+    Linux ``peak_is_sampled`` is true: the stored number is a VmRSS sample.
+    Windows ``peak_is_sampled`` is false: ``PeakJobMemoryUsed`` is the kernel
+    high-water mark. Only the moment of the abort check is sampled.
+    """
+    windows = sys.platform == "win32"
+    if windows:
+        abort_check_note = (
+            "Unter Windows ist PeakJobMemoryUsed der echte Höchststand des Job Objects. "
+            "Abgetastet wird nur der Zeitpunkt der Abbruchprüfung, nicht der Peak selbst."
+        )
+    else:
+        abort_check_note = (
+            "Unter Linux ist der geführte Peak eine Stichprobe der VmRSS-Summe."
+        )
     return {
-        "peak_is_sampled": True,
+        "peak_is_sampled": not windows,
+        "abort_check_is_sampled": True,
         "sample_interval_ms": int(round(interval_s * 1000)),
+        "abort_check_note": abort_check_note,
         "limit_bytes": PEAK_ABORT_BYTES,
         "gate_bytes": PEAK_GATE_BYTES,
         **_limit_metric_fields(),
     }
+
+
+def _report_memory_accounting() -> dict[str, Any]:
+    accounting = _memory_accounting(WORKER_SAMPLE_INTERVAL_S)
+    accounting["sample_interval_ms"] = {
+        "worker": int(round(WORKER_SAMPLE_INTERVAL_S * 1000)),
+        "importtime": int(round(IMPORTTIME_SAMPLE_INTERVAL_S * 1000)),
+    }
+    return accounting
 
 
 def _query_peak_job_memory(job: object) -> int | None:
@@ -371,30 +398,122 @@ def _kill_psutil_tree(root_pid: int) -> None:
         return
 
 
-def _terminate_windows_job(job: object) -> None:
+def _terminate_windows_job(job: object) -> bool:
+    """Return whether ``TerminateJobObject`` reported success."""
     from devops.win_job_object import kernel32
 
-    kernel32().TerminateJobObject(job, 1)
+    return bool(kernel32().TerminateJobObject(job, 1))
 
 
-def _kill_process_tree(proc: Any, pgid: int | None) -> None:
+def _kill_root(proc: Any) -> None:
+    kill = getattr(proc, "kill", None)
+    if callable(kill):
+        kill()
+
+
+def _pid_alive(pid: int) -> bool:
+    """True when ``pid`` is still running. Zombies count as dead."""
+    psutil = _load_psutil()
+    if psutil is not None:
+        try:
+            if not psutil.pid_exists(pid):
+                return False
+            process = psutil.Process(pid)
+            zombie = getattr(psutil, "STATUS_ZOMBIE", "zombie")
+            return bool(process.is_running()) and process.status() != zombie
+        except Exception:
+            return False
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    try:
+        stat = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+    except OSError:
+        return False
+    state = stat[stat.rfind(")") + 2 :].split()[0]
+    return state not in {"Z", "X"}
+
+
+def _tree_still_alive(proc: Any, *, wait_s: float = 1.0) -> bool:
+    """True if the root is still running after a short wait for SIGKILL to land."""
+    pid = getattr(proc, "pid", None)
+    if not isinstance(pid, int):
+        return False
+    deadline = time.monotonic() + wait_s
+    while True:
+        if not _pid_alive(pid):
+            return False
+        if time.monotonic() >= deadline:
+            return True
+        time.sleep(0.02)
+
+
+def _fallback_psutil_or_root(proc: Any, result: dict[str, Any]) -> None:
+    if _load_psutil() is None:
+        _kill_root(proc)
+        result["method"] = "proc_kill"
+        extra = "psutil fehlt; nur proc.kill() auf die Wurzel."
+        detail = f"{result.get('detail') or ''} {extra}".strip()
+        print(detail, file=sys.stderr)
+        result["detail"] = detail
+        return
+    _kill_psutil_tree(int(proc.pid))
+    result["method"] = "psutil_fallback"
+
+
+def _kill_process_tree(proc: Any, pgid: int | None) -> dict[str, Any]:
     """Kill the benchmark child and every descendant.
 
     Linux: the child is started with ``start_new_session=True``, so
     ``os.killpg`` reaches the grandchild that stays in that group.
-    Windows: ``TerminateJobObject`` when the #69-style job is attached
-    (``KILL_ON_JOB_CLOSE`` is set on that job). Otherwise psutil kills
-    ``children(recursive=True)`` and then the root.
+    Windows: ``TerminateJobObject`` when the job is attached. A failed call
+    falls back to the psutil tree and is reported; ``tree_dead`` stays false
+    while the root is still running, so the report must not claim ``aborted``.
+    Without a process group and without psutil, the root is ``proc.kill()``-ed
+    and then ``MemoryReadError`` is raised.
+
+    The job is assigned after ``Popen`` returns. A grandchild created in that
+    window is not in the job yet. The #69 gate avoids the window with
+    ``CREATE_SUSPENDED`` and ``ResumeThread``, but that launcher does not
+    capture the stdout JSON this benchmark needs, so the gap stays.
     """
+    result: dict[str, Any] = {
+        "method": None,
+        "job_terminate_ok": None,
+        "fallback_used": False,
+        "tree_dead": False,
+        "detail": None,
+    }
     job = getattr(proc, "job", None)
     if job is not None:
-        _terminate_windows_job(job)
-        return
+        ok = _terminate_windows_job(job)
+        result["job_terminate_ok"] = ok
+        result["method"] = "TerminateJobObject"
+        if not ok:
+            message = "TerminateJobObject fehlgeschlagen. Fallback auf den psutil-Prozessbaum."
+            print(message, file=sys.stderr)
+            result["detail"] = message
+            result["fallback_used"] = True
+            _fallback_psutil_or_root(proc, result)
+        result["tree_dead"] = not _tree_still_alive(proc)
+        if not result["tree_dead"]:
+            print("Prozessbaum lebt nach dem Abbruch weiter.", file=sys.stderr)
+        return result
     if _posix_killpg(pgid):
-        return
-    pid = getattr(proc, "pid", None)
-    if isinstance(pid, int):
-        _kill_psutil_tree(pid)
+        result["method"] = "killpg"
+        result["tree_dead"] = not _tree_still_alive(proc)
+        return result
+    if _load_psutil() is None:
+        _kill_root(proc)
+        raise MemoryReadError(
+            "Prozessbaum nicht beendbar: keine Prozessgruppe und psutil fehlt. "
+            "Die Wurzel wurde mit proc.kill() beendet."
+        )
+    _kill_psutil_tree(int(proc.pid))
+    result["method"] = "psutil"
+    result["tree_dead"] = not _tree_still_alive(proc)
+    return result
 
 
 def _watch_process_rss(proc: Any, interval: float) -> tuple[int | None, bool]:
@@ -413,8 +532,9 @@ def _watch_process_rss(proc: Any, interval: float) -> tuple[int | None, bool]:
             saw_sample = True
         peak, trip = _note_rss_sample(peak, sample)
         if trip:
-            aborted = True
-            _kill_process_tree(proc, pgid)
+            kill = _kill_process_tree(proc, pgid)
+            setattr(proc, "kill_report", kill)
+            aborted = bool(kill.get("tree_dead"))
             break
         if proc.poll() is not None:
             break
@@ -434,21 +554,50 @@ class _BenchmarkProcess:
         self._popen = popen
         self.job = job
         self.pid = int(popen.pid)
+        self.kill_report: dict[str, Any] | None = None
 
     def poll(self) -> int | None:
         return self._popen.poll()
 
+    def kill(self) -> None:
+        self._popen.kill()
+
     def communicate(self) -> tuple[str, str]:
-        out, err = self._popen.communicate()
-        return out or "", err or ""
+        try:
+            out, err = self._popen.communicate()
+            return out or "", err or ""
+        finally:
+            self.close_job()
+
+    def close_job(self) -> None:
+        """Close the job handle. ``KILL_ON_JOB_CLOSE`` reaps anything still inside."""
+        job = self.job
+        if job is None:
+            return
+        self.job = None
+        if sys.platform == "win32":
+            _close_job_handle(job)
 
     @property
     def returncode(self) -> int | None:
         return self._popen.returncode
 
 
+def _close_job_handle(job: object) -> None:
+    from devops.win_job_object import kernel32
+
+    kernel32().CloseHandle(job)
+
+
 def _attach_windows_job(proc: subprocess.Popen) -> object:
-    """Put ``proc`` in a job with ``KILL_ON_JOB_CLOSE``, same flags as the #69 gate."""
+    """Put ``proc`` in a job with ``KILL_ON_JOB_CLOSE``, same flags as the #69 gate.
+
+    Gap: ``Popen`` has already started the process. A grandchild spawned before
+    ``AssignProcessToJobObject`` returns is outside the job. The #69 gate
+    closes that window with ``CREATE_SUSPENDED`` plus ``ResumeThread``, but its
+    launcher does not capture stdout, which this benchmark needs for the JSON
+    line. The gap is therefore left in place.
+    """
     import ctypes
 
     from devops.win_job_object import (
@@ -485,7 +634,10 @@ def _attach_windows_job(proc: subprocess.Popen) -> object:
 
 
 def _spawn_captured(argv: list[str], env: dict[str, str]) -> _BenchmarkProcess:
-    """Start ``argv`` in its own session so a later killpg covers grandchildren."""
+    """Start ``argv`` in its own session so a later killpg covers grandchildren.
+
+    On Windows the job is attached after ``Popen`` (see ``_attach_windows_job``).
+    """
     proc = subprocess.Popen(
         argv,
         cwd=ROOT,
@@ -1896,6 +2048,18 @@ def _traced(section: str, appdata: Path) -> dict[str, Any]:
     return payload
 
 
+def _stamp_peak(payload: dict[str, Any], peak: int | None, aborted: bool, interval_s: float, proc: Any) -> None:
+    """Record the limit sample. ``sampled_group_rss_max_bytes`` is Linux VmRSS only."""
+    if sys.platform != "win32":
+        payload["sampled_group_rss_max_bytes"] = peak
+    payload["sampled_limit_metric_max_bytes"] = peak
+    payload["aborted_for_peak"] = aborted
+    kill_report = getattr(proc, "kill_report", None)
+    if kill_report:
+        payload["process_tree_kill"] = kill_report
+    payload["memory_accounting"] = _memory_accounting(interval_s)
+
+
 def _run_worker(section: str, appdata: Path, trace: bool = False) -> dict[str, Any]:
     name = f"{section}-trace" if trace else section
     env = _base_env(appdata)
@@ -1903,17 +2067,17 @@ def _run_worker(section: str, appdata: Path, trace: bool = False) -> dict[str, A
         [sys.executable, str(Path(__file__).resolve()), "--worker", name, "--appdata", str(appdata)],
         env,
     )
-    peak, aborted = _watch_process_rss(proc, WORKER_SAMPLE_INTERVAL_S)
-    out, err = proc.communicate()
+    try:
+        peak, aborted = _watch_process_rss(proc, WORKER_SAMPLE_INTERVAL_S)
+        out, err = proc.communicate()
+    finally:
+        proc.close_job()
     payload: dict[str, Any]
     try:
         payload = json.loads(out.strip().splitlines()[-1]) if out.strip() else {}
     except json.JSONDecodeError:
         payload = {"ok": False, "error": "json", "stdout_tail": out[-2000:]}
-    payload["sampled_group_rss_max_bytes"] = peak
-    payload["sampled_limit_metric_max_bytes"] = peak
-    payload["aborted_for_peak"] = aborted
-    payload["memory_accounting"] = _memory_accounting(WORKER_SAMPLE_INTERVAL_S)
+    _stamp_peak(payload, peak, aborted, WORKER_SAMPLE_INTERVAL_S, proc)
     payload["stderr_tail"] = err[-4000:]
     payload["returncode"] = proc.returncode
     return payload
@@ -2000,16 +2164,7 @@ def main(argv: list[str] | None = None) -> int:
         "peak_abort_bytes": PEAK_ABORT_BYTES,
         "llm": "disabled",
         "ci": "not a CI check; do not add to unit-tests or workflows",
-        "memory_accounting": {
-            "peak_is_sampled": True,
-            "sample_interval_ms": {
-                "worker": int(round(WORKER_SAMPLE_INTERVAL_S * 1000)),
-                "importtime": int(round(IMPORTTIME_SAMPLE_INTERVAL_S * 1000)),
-            },
-            "limit_bytes": PEAK_ABORT_BYTES,
-            "gate_bytes": PEAK_GATE_BYTES,
-            **_limit_metric_fields(),
-        },
+        "memory_accounting": _report_memory_accounting(),
         "sections": {},
     }
     try:
@@ -2038,7 +2193,7 @@ def _run_sections(report: dict[str, Any], sections: list[str], out: Path, *, tra
                 runs.append(_run_worker(section, appdata))
             print(
                 f"  run {i} ok={runs[-1].get('ok', True)} "
-                f"group_rss={_fmt_bytes(runs[-1].get('sampled_group_rss_max_bytes'))}",
+                f"limit_metric={_fmt_bytes(runs[-1].get('sampled_limit_metric_max_bytes'))}",
                 file=sys.stderr,
             )
         trace_run = None
@@ -2062,17 +2217,17 @@ def _run_importtime_sampled(appdata: Path) -> dict[str, Any]:
         [sys.executable, "-X", "importtime", "-c", "import desktop.app"],
         env,
     )
-    t0 = time.perf_counter()
-    peak, aborted = _watch_process_rss(proc, IMPORTTIME_SAMPLE_INTERVAL_S)
-    wall = time.perf_counter() - t0
-    _out, err = proc.communicate()
+    try:
+        t0 = time.perf_counter()
+        peak, aborted = _watch_process_rss(proc, IMPORTTIME_SAMPLE_INTERVAL_S)
+        wall = time.perf_counter() - t0
+        _out, err = proc.communicate()
+    finally:
+        proc.close_job()
     parsed = _parse_importtime(err or "")
     parsed["process_wall_s"] = wall
     parsed["returncode"] = proc.returncode
-    parsed["sampled_group_rss_max_bytes"] = peak
-    parsed["sampled_limit_metric_max_bytes"] = peak
-    parsed["aborted_for_peak"] = aborted
-    parsed["memory_accounting"] = _memory_accounting(IMPORTTIME_SAMPLE_INTERVAL_S)
+    _stamp_peak(parsed, peak, aborted, IMPORTTIME_SAMPLE_INTERVAL_S, proc)
     parsed["ok"] = proc.returncode == 0 and parsed["total_import_us"] > 0
     return parsed
 
