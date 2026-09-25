@@ -118,7 +118,16 @@ def test_no_wrong_karrierekrake_capitalization():
             continue
         if any(
             p in path.parts
-            for p in (".git", ".venv", "__pycache__", "dist", "build", ".pytest_cache", ".hypothesis")
+            for p in (
+                ".git",
+                ".venv",
+                "__pycache__",
+                "dist",
+                "build",
+                ".pytest_cache",
+                ".hypothesis",
+                "artifacts",
+            )
         ):
             continue
         if path.name == "test_product_rename_migration.py":

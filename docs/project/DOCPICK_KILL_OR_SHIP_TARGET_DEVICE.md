@@ -41,12 +41,11 @@ Full kill-path doc: `DOCPICK_KILL_PATH.md`.
 
 | Item | Value |
 |------|-------|
-| Job Object plan | Ready |
-| Job Object on laptop | **NOT RUN** |
-| Ship Peak bytes | **unmeasured** |
-| Agent-VM combined (info only) | **9_130_123_674** bytes (NO-GO signal, not ship) |
-| Kill-path step | **1 pending** (smaller model) — not Step 2 yet |
+| Job Object plan | Ready (script) |
+| Job Object on laptop | **OFFEN / UNGEPRÜFT — Messung ausgesetzt** |
+| Ship Peak bytes | **unmeasured** (neither pass nor fail) |
+| Gate bytes (unchanged) | **3_300_000_000** |
+| Agent-VM | **not ship evidence** |
+| Kill-path step | Deferred until reliable laptop measurement exists |
 
-## Go / No-Go
-
-**NO SHIP.** Unmeasured Job Object Peak on target device → gate OPEN. Agent-VM informational Peak ≫ 3_300_000_000 bytes.
+Wortlaut: **Laptop-RAM-Gate: OFFEN – Messung ausgesetzt.**

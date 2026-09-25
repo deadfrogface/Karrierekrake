@@ -1,6 +1,6 @@
 # HOLDOUT_100 – Scorer-Audit (V1 → V2)
 
-Audit des bisherigen Holdout-Scorers (`scripts/evaluate_holdout_100.py`) gegen produktive KarriereKrake-Profildaten. Original-GT `tests/holdout_100/expected_results_full.json` unverändert.
+Audit des bisherigen Holdout-Scorers (`scripts/evaluate_holdout_100.py`) gegen produktive Karrierekrake-Profildaten. Original-GT `tests/holdout_100/expected_results_full.json` unverändert.
 
 ## Was V1 bewertet hat
 

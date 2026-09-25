@@ -1002,8 +1002,11 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
 
 
 def _self_rss_bytes() -> int:
-    import resource
-
+    try:
+        import resource
+    except ImportError:
+        # Windows has no resource module — Peak ship evidence is Job Object only.
+        return 0
     # Linux: ru_maxrss is kilobytes; convert to bytes.
     return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
 
@@ -1198,6 +1201,7 @@ def import_cv_docpick(
         )
 
     parsed["source_path"] = str(path)
+    parsed["source_text"] = text
     parsed["raw_text_chars"] = len(text)
     parsed["raw_text_preview"] = text[:500]
     parsed["document_backend"] = "docling"
@@ -1206,7 +1210,25 @@ def import_cv_docpick(
     parsed["intelligence_notes"] = []
     parsed["phi_invoked"] = False
     parsed["phi_extract_call_count"] = 0
-    parsed["needs_manual_review"] = not bool(
+    # Ground education/employment before Matching/Cover letter consumers see them.
+    # Strip unconfirmed rows here; invented leftover into Matching/CL is a hard fail
+    # (see confirm_extract_for_downstream / filter_parsed_for_import).
+    from core.cv_extract_confirmation import confirm_extract_for_downstream
+
+    confirmed = confirm_extract_for_downstream(
+        parsed, source_text=text, fail_on_invented=False
+    )
+    parsed = confirmed.parsed
+    if confirmed.findings and any(
+        f.get("status") == "REJECTED" for f in confirmed.findings
+    ):
+        parsed["needs_manual_review"] = True
+        notes = list(parsed.get("intelligence_notes") or [])
+        notes.append("unconfirmed_edu_or_employment_stripped")
+        parsed["intelligence_notes"] = notes
+    parsed["needs_manual_review"] = bool(
+        parsed.get("needs_manual_review")
+    ) or not bool(
         (parsed.get("personal") or {}).get("first_name")
         and (parsed.get("emails") or parsed.get("phones"))
     )

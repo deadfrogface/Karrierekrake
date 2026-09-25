@@ -21,7 +21,10 @@ import hashlib
 import json
 import os
 import platform
-import resource
+try:
+    import resource as _resource
+except ImportError:  # Windows CI — resource is Unix-only
+    _resource = None  # type: ignore[assignment]
 import statistics
 import subprocess
 import sys
@@ -43,7 +46,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "FINAL_HOLDOUT_50",
         "document_range": "FH_001-FH_050",
         "protocol": "FINAL_HOLDOUT_V1",
-        "zip_hint": "KarriereKrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_FINAL_HOLDOUT_50_PHASE_A_BLIND.zip",
     },
     "mini_holdout_30": {
         "holdout_rel": Path("tests") / "mini_holdout_30",
@@ -53,7 +56,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "MINI_HOLDOUT_30",
         "document_range": "MH_001-MH_030",
         "protocol": "MINI_HOLDOUT_30_PHASE_A",
-        "zip_hint": "KarriereKrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip",
     },
     "final_independent_50_v2": {
         "holdout_rel": Path("tests") / "final_independent_50_v2",
@@ -63,7 +66,7 @@ DATASETS: dict[str, dict[str, Any]] = {
         "dataset_id": "FINAL_INDEPENDENT_50_V2",
         "document_range": "IH2_001-IH2_050",
         "protocol": "FINAL_INDEPENDENT_50_V2_PHASE_A",
-        "zip_hint": "KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip",
+        "zip_hint": "Karrierekrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip",
         "named_seal": "FINAL_INDEPENDENT_50_V2_SEAL.json",
         "repeatability": True,
     },
@@ -192,7 +195,10 @@ def _serialize(parsed: dict[str, Any]) -> dict[str, Any]:
 
 
 def _peak_rss_mb() -> float:
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
+    if _resource is None:
+        return 0.0
+    # Linux: kilobytes; macOS: bytes — historical holdout scripts used /1024.
+    return _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss / 1024.0
 
 
 def _resolve_pdf_dir() -> Path:

@@ -51,7 +51,7 @@ Integrity file: `artifacts/mini_holdout_30/PHASE_B_INTEGRITY.json`
 |---|---|
 | Documents | 30 |
 | IDs | `MH_001.pdf` … `MH_030.pdf` |
-| GT package | `tests/KarriereKrake_MINI_HOLDOUT_30_PHASE_B_SOLUTIONS.zip` |
+| GT package | `tests/Karrierekrake_MINI_HOLDOUT_30_PHASE_B_SOLUTIONS.zip` |
 | GT path | `tests/mini_holdout_30/phase_b_solutions/` |
 | Field scope | name, address, DOB, email/phone, target_role, languages, licenses, employment, education, certificates, software, skills |
 | Document language | de=26, en=4 |

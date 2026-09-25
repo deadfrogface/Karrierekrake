@@ -50,7 +50,7 @@ Integrity file: `artifacts/final_independent_50_v2/PHASE_B_INTEGRITY.json`
 |---|---|
 | Documents | 50 |
 | IDs | `IH2_001.pdf` … `IH2_050.pdf` |
-| GT package | `tests/KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_B_SOLUTIONS.zip` |
+| GT package | `tests/Karrierekrake_FINAL_INDEPENDENT_50_V2_PHASE_B_SOLUTIONS.zip` |
 | GT path | `tests/final_independent_50_v2/phase_b_solutions/` |
 | Predictions | `artifacts/final_independent_50_v2/frozen_predictions/` (sealed Phase A) |
 

@@ -17,7 +17,7 @@
 
 - Code: https://github.com/alibaba/SmartResume – Apache-2.0
 - Weights: https://huggingface.co/Alibaba-EI/SmartResume – `license: apache-2.0`, base `Qwen/Qwen3-0.6B`
-- Redistribution of weights in KarriereKrake installer: **allowed under Apache-2.0** with NOTICE retention; still prefer **cache download + SHA-256 manifest** (do not commit multi-GB weights).
+- Redistribution of weights in Karrierekrake installer: **allowed under Apache-2.0** with NOTICE retention; still prefer **cache download + SHA-256 manifest** (do not commit multi-GB weights).
 - DE support: project is layout-aware and LLM-based; **no strong published DE claim**. Must be measured on DE smoke set. Chinese-centric training risk for German headings.
 - Default config uses cloud DashScope API – **forbidden** for PII CVs. Production path must force `use_direct_models: true` / local only.
 

@@ -14,7 +14,7 @@
 |---|---|
 | PDF count | 30 |
 | ID range | `MH_001`–`MH_030` |
-| Source zip | `tests/KarriereKrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip` |
+| Source zip | `tests/Karrierekrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip` |
 | PDF directory | `tests/mini_holdout_30/phase_a_pdfs/` |
 | Total bytes | 1 353 730 |
 | Total pages | 37 |

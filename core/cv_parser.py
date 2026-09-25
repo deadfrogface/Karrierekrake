@@ -1778,10 +1778,11 @@ def _legacy_det_parse_cv_text_impl(text: str) -> dict[str, Any]:
             s,
         )
     ]
-    # If the CV only has EDV/IT/"Weitere Kenntnisse" (mapped to software), recover
-    # non-tool competency lines as skills — never invent skills not present.
-    if not skills:
-        soft_body = sections.get("software", "")
+    # Always recover soft-skill phrases from the software/EDV section body —
+    # even when Skills already has entries (soft skills must not stay stuck in
+    # EDV or vanish because _parse_software rejected them).
+    soft_body = sections.get("software", "")
+    if soft_body.strip():
         recovered: list[str] = []
         for raw in soft_body.splitlines():
             line = _normalize_bullet(raw)
@@ -1791,7 +1792,6 @@ def _legacy_det_parse_cv_text_impl(text: str) -> dict[str, Any]:
                 continue
             if _LEVEL.search(line) and _parse_one_language(line) is not None:
                 continue
-            # Proficiency-marked tool lines are software, never soft skills.
             if _strip_software_proficiency(line) != line:
                 continue
             if _looks_like_software(line) and not _looks_like_soft_skill(line):
@@ -1805,16 +1805,14 @@ def _legacy_det_parse_cv_text_impl(text: str) -> dict[str, Any]:
                     continue
                 if _looks_like_software(part) and not _looks_like_soft_skill(part):
                     continue
-                # Recover soft-skill phrases AND TitleCase fachkompetenz tokens
-                # that classify as skill (Schichtkoordination, Anlagenprüfung).
                 kind = classify_non_language_token(part)
-                if _looks_like_soft_skill(part) or kind == "skill":
+                # When skills already nonempty, only pull clear soft-skill phrases
+                # (avoid TitleCase product theft into skills).
+                if _looks_like_soft_skill(part) or (not skills and kind == "skill"):
                     recovered.append(part)
         if recovered:
-            skills = list(dict.fromkeys(recovered))
-            soft_drop = {s.lower() for s in skills}
-            # Remove recovered soft skills from software — keep all real tools,
-            # including unknown product names (DocuWare, Microsoft 365, …).
+            skills = list(dict.fromkeys([*skills, *recovered]))
+            soft_drop = {s.lower() for s in recovered}
             software = [s for s in software if s.lower() not in soft_drop]
     # Always strip soft-skill phrases that leaked into software and relocate them
     # into skills — even when the skills list is already nonempty.
@@ -2374,7 +2372,7 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
                 personal["last_name"] = " ".join(parts[1:])
                 break
 
-    for line in lines:
+    for idx, line in enumerate(lines):
         line = (line or "").strip()
         if not line or personal.get("postal_code"):
             continue
@@ -2383,6 +2381,22 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
             labels = ("Adresse", "Address") if "pc" in m.groupdict() else ("Adresse", "Anschrift")
             _apply_postal_match(m, personal, labels=labels)
             _maybe_fill_country_from_line(line, personal)
+            # PLZ+city line often has the street on the previous line.
+            if not personal.get("street") and idx > 0:
+                prev = (lines[idx - 1] or "").strip()
+                if (
+                    prev
+                    and "@" not in prev
+                    and not re.match(r"^\d{4,5}\b", prev)
+                    and not (_NAME_RE.fullmatch(prev) and len(prev.split()) >= 2)
+                ):
+                    cleaned = _clean_street_fragment(prev, personal)
+                    if cleaned:
+                        personal["street"] = cleaned
+                        hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", cleaned)
+                        if hn:
+                            personal["house_number"] = hn.group("n")
+                            personal["street"] = hn.group("s").strip(" ,;·|")
             break
         _maybe_fill_country_from_line(line, personal)
 

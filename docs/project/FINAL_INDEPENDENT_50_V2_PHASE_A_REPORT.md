@@ -15,7 +15,7 @@ Unabhängiger Blindlauf des produktiven DET-CV-Parsers auf 50 neuen PDFs.
 
 In Phase A:
 
-- nur das Phase-A-Paket `KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip`
+- nur das Phase-A-Paket `Karrierekrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip`
 - keine Ground Truth / keine Phase-B-Dateien
 - keine Parseränderungen
 - keine Scorer- oder Metrikberechnung gegen erwartete Werte
@@ -48,7 +48,7 @@ Abbruch bei Blindheitsverletzung: **nicht eingetreten**.
 | Check | Result |
 |---|---|
 | Phase-A-ZIP enthält `expected` / `solution` / `ground_truth` / `phase_b` / `precheck` | **nein** (0 Treffer) |
-| Lokale Datei `KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_B_SOLUTIONS.zip` | **nicht vorhanden** |
+| Lokale Datei `Karrierekrake_FINAL_INDEPENDENT_50_V2_PHASE_B_SOLUTIONS.zip` | **nicht vorhanden** |
 | Verzeichnis `tests/final_independent_50_v2/phase_b_solutions/` | **nicht vorhanden** |
 | Runner öffnet GT-Dateinamen | Leakage-Guard aktiv (`FORBIDDEN_NAMES`) |
 | Evaluation / Scorer gegen IH2 | **nicht ausgeführt** |
@@ -63,7 +63,7 @@ Abbruch bei Blindheitsverletzung: **nicht eingetreten**.
 
 | Property | Value |
 |---|---|
-| Source zip | `tests/KarriereKrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip` |
+| Source zip | `tests/Karrierekrake_FINAL_INDEPENDENT_50_V2_PHASE_A_BLIND.zip` |
 | PDF directory | `tests/final_independent_50_v2/phase_a_pdfs/` |
 | Count | **50** PDFs |
 | IDs | `IH2_001` … `IH2_050` (vollständig, keine Duplikate, keine Extra-IDs) |
