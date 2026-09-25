@@ -107,6 +107,13 @@ def test_company_placeholder_uses_the_same_normalizer():
         assert company.casefold() not in result.text.casefold()
 
 
+def test_blocked_demo_action_is_only_hide_demo():
+    spec = REFUSAL_REGISTRY[CoverReason.BLOCKED_DEMO]
+    assert spec.actions == ("hide_demo",)
+    assert TRANSLATIONS["de"]["cover.action.hide_demo"] == "Beispiele ausblenden"
+    assert TRANSLATIONS["en"]["cover.action.hide_demo"] == "Hide examples"
+
+
 def test_refusal_registry_covers_every_gate_code():
     """Enumerate codes from CoverReason. A new member without an entry fails."""
     assert set(REFUSAL_REGISTRY) == set(CoverReason)

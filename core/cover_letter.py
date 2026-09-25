@@ -278,7 +278,7 @@ class CoverReason(str, Enum):
 
     A new member without a ``REFUSAL_REGISTRY`` entry fails the registry test.
     ``blocked_demo`` keeps the i18n key ``cover.demo_excluded``.
-    ``hide_demo`` is a stand-in action until the Designer names the final one.
+    Its only action is ``hide_demo`` (de: Beispiele ausblenden).
     """
 
     JOB_INCOMPLETE = "job_incomplete"
