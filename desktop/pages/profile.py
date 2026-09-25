@@ -433,12 +433,19 @@ class ProfilePage(QWidget):
         )
         self.refresh_cards()
 
-    def refresh_cards(self) -> None:
-        cfg = self.config_service.load()
+    def refresh_home_status(self) -> None:
+        """Update only the home-notice line. Does not rebuild the cards."""
+        self._bind_home_status(self.config_service.load())
+
+    def _bind_home_status(self, cfg) -> None:
         from core.location import home_location_notice
         from desktop.pages.dashboard import bind_home_notice_label
 
         bind_home_notice_label(self.home_status, home_location_notice(cfg.profile.location))
+
+    def refresh_cards(self) -> None:
+        cfg = self.config_service.load()
+        self._bind_home_status(cfg)
         a = cfg.application
         pairs = [
             (tr("field.first_name"), a.first_name),
@@ -879,8 +886,11 @@ class ProfilePage(QWidget):
             return
         self.config_service.save(cfg)
         self._career_persist = False
-        self.refresh_cards()
         parent = self.window()
+        # refresh_all loads this page and builds the cards once. A direct
+        # refresh_cards() here would build them a second time in the same click.
         if parent is not None and hasattr(parent, "refresh_all"):
             parent.refresh_all()
+        else:
+            self.refresh_cards()
         QMessageBox.information(self, tr("nav.profile"), tr("profile.saved"))
