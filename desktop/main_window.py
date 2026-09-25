@@ -5,7 +5,7 @@ from __future__ import annotations
 from copy import deepcopy
 from datetime import datetime, timezone
 
-from PySide6.QtCore import QRect, Qt, QTimer
+from PySide6.QtCore import QObject, QRect, Qt, QTimer, Signal
 from PySide6.QtGui import QCloseEvent, QGuiApplication, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
@@ -45,11 +45,32 @@ from desktop.widgets.about_dialog import AboutDialog
 from desktop.widgets.confirm_dialog import confirm_action
 
 
+class _GeoIndexBridge(QObject):
+    """Hop from the geo-loader thread back onto the UI thread."""
+
+    ready = Signal()
+
+
 class MainWindow(QMainWindow):
     def __init__(self, config_service: ConfigService) -> None:
         super().__init__()
         self.config_service = config_service
         self._force_quit = False
+        self._geo_bridge = _GeoIndexBridge(self)
+        self._geo_bridge.ready.connect(self._refresh_home_notices_after_geo)
+        from core.geo_resolve import (
+            bind_ui_thread,
+            preload_geo_index_async,
+            when_geo_index_ready,
+        )
+
+        bind_ui_thread()
+
+        def _emit_geo_ready() -> None:
+            self._geo_bridge.ready.emit()
+
+        when_geo_index_ready(_emit_geo_ready)
+        preload_geo_index_async()
         self._shutting_down = False
         self._worker = None
         self._thread = None
@@ -316,6 +337,24 @@ class MainWindow(QMainWindow):
             )
             install_qt_translator(app, lang)
         i18n.set_language(lang)
+
+    def _refresh_home_notices_after_geo(self) -> None:
+        """Notice labels only. Does not rebuild profile cards."""
+        if self._shutting_down:
+            return
+        if not hasattr(self, "dashboard"):
+            QTimer.singleShot(0, self._refresh_home_notices_after_geo)
+            return
+        try:
+            self.dashboard.refresh()
+            self.profile.refresh_home_status()
+            self.profile.location_work.refresh_home_notice(
+                self.config_service.load().profile.location
+            )
+            self.settings._refresh_home_notice()
+            self.jobs.refresh()
+        except Exception:
+            return
 
     def refresh_all(self) -> None:
         self.dashboard.refresh()

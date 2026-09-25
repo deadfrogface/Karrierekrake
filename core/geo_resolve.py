@@ -16,6 +16,7 @@ from __future__ import annotations
 import logging
 import math
 import os
+import threading
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable, Literal
 
@@ -176,6 +177,115 @@ def cache_query_key(place: NormalizedPlace) -> str:
 
 
 _pgeocode_index: dict[str, Any] = {}
+_resolution_cache: dict[tuple, Any] = {}
+_load_lock = threading.Lock()
+_preload_thread: threading.Thread | None = None
+_preload_done = threading.Event()
+_ui_thread_id: int | None = None
+_ready_callbacks: list[Callable[[], None]] = []
+_test_hold: threading.Event | None = None
+_generation = 0
+_DACH_PRELOAD = ("DE", "AT", "CH")
+
+
+class _IndexLoading:
+    """Nominatim is still being built off the UI thread. Not a resolved place."""
+
+
+_INDEX_LOADING = _IndexLoading()
+
+
+def bind_ui_thread() -> None:
+    """Remember the Qt UI thread so place lookup does not load the index there."""
+    global _ui_thread_id
+    _ui_thread_id = threading.get_ident()
+
+
+def hold_geo_preload_for_tests(event: threading.Event | None) -> None:
+    """Test seam: the background loader waits on ``event`` before reading files."""
+    global _test_hold
+    _test_hold = event
+
+
+def _ui_must_not_block() -> bool:
+    if _ui_thread_id is None or threading.get_ident() != _ui_thread_id:
+        return False
+    worker = _preload_thread
+    if worker is None or not worker.is_alive() or _preload_done.is_set():
+        return False
+    return True
+
+
+def _all_countries_loaded() -> bool:
+    return all(cc in _pgeocode_index for cc in _DACH_PRELOAD)
+
+
+def when_geo_index_ready(callback: Callable[[], None]) -> None:
+    """Run ``callback`` once the shared DACH index is loaded.
+
+    If the load is still running, ``callback`` runs on the loader thread.
+    Callers that touch widgets must hop back to the UI thread themselves.
+    """
+    with _load_lock:
+        ready = _all_countries_loaded() and _preload_done.is_set()
+        if not ready:
+            _ready_callbacks.append(callback)
+            return
+    callback()
+
+
+def _fire_ready() -> None:
+    with _load_lock:
+        callbacks = list(_ready_callbacks)
+        _ready_callbacks.clear()
+    for callback in callbacks:
+        try:
+            callback()
+        except Exception:
+            logger.debug("geo index ready callback failed", exc_info=True)
+
+
+def preload_geo_index_async() -> threading.Thread | None:
+    """Load the shared DACH postal/place index once, off the caller thread."""
+    global _preload_thread
+    with _load_lock:
+        if _all_countries_loaded() and _preload_done.is_set():
+            thread = _preload_thread
+            callbacks = list(_ready_callbacks)
+            _ready_callbacks.clear()
+        else:
+            if _preload_thread is not None and _preload_thread.is_alive():
+                return _preload_thread
+            gen = _generation
+            thread = threading.Thread(
+                target=_preload_worker,
+                args=(gen,),
+                name="kk-geo-index",
+                daemon=True,
+            )
+            _preload_thread = thread
+            thread.start()
+            return thread
+    for callback in callbacks:
+        try:
+            callback()
+        except Exception:
+            logger.debug("geo index ready callback failed", exc_info=True)
+    return thread
+
+
+def _preload_worker(gen: int) -> None:
+    hold = _test_hold
+    if hold is not None:
+        hold.wait(timeout=10)
+    for cc in _DACH_PRELOAD:
+        if gen != _generation:
+            return
+        _pgeocode_nominatim(cc)
+    if gen != _generation:
+        return
+    _preload_done.set()
+    _fire_ready()
 
 
 def _ensure_geo_data() -> str:
@@ -186,12 +296,46 @@ def _ensure_geo_data() -> str:
 
 
 def _pgeocode_nominatim(country_code: str) -> Any | None:
-    """Offline GeoNames index — never calls the public Nominatim HTTP API."""
+    """Offline GeoNames index — never calls the public Nominatim HTTP API.
+
+    The constructed ``Nominatim`` is process-wide. The UI thread does not build
+    it while ``preload_geo_index_async`` is still running; callers then see
+    ``_INDEX_LOADING`` and must not invent coordinates.
+    """
     cc = normalize_country_code(country_code)
     if cc not in DACH_COUNTRY_CODES:
         return None
-    if cc in _pgeocode_index:
-        return _pgeocode_index[cc]
+    hit = _pgeocode_index.get(cc)
+    if hit is not None:
+        return hit
+    if _ui_must_not_block():
+        return _INDEX_LOADING
+    worker = _preload_thread
+    if (
+        worker is not None
+        and worker.is_alive()
+        and threading.current_thread() is not worker
+        and not _preload_done.is_set()
+    ):
+        worker.join(timeout=60)
+        hit = _pgeocode_index.get(cc)
+        if hit is not None:
+            return hit
+        if _ui_must_not_block():
+            return _INDEX_LOADING
+    with _load_lock:
+        hit = _pgeocode_index.get(cc)
+        if hit is not None:
+            return hit
+        gen = _generation
+        nom = _build_nominatim(cc)
+        if nom is not None and gen == _generation:
+            _pgeocode_index[cc] = nom
+            return nom
+        return _pgeocode_index.get(cc)
+
+
+def _build_nominatim(country_code: str) -> Any | None:
     _ensure_geo_data()
     try:
         import pgeocode
@@ -201,16 +345,33 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
     # Block accidental online geopy/Nominatim defaults if imported elsewhere.
     os.environ.setdefault("PGEOCODE_DATA_DIR", os.environ.get("PGEOCODE_DATA_DIR", ""))
     try:
-        nom = pgeocode.Nominatim(cc.lower())
-        _pgeocode_index[cc] = nom
-        return nom
+        return pgeocode.Nominatim(country_code.lower())
     except Exception as exc:
-        logger.warning("pgeocode init failed for %s: %s", cc, type(exc).__name__)
+        logger.warning("pgeocode init failed for %s: %s", country_code, type(exc).__name__)
         return None
 
 
+def _loading_resolution(country_code: str) -> PlaceResolution:
+    return PlaceResolution(
+        status="UNKNOWN",
+        reason="geo_index_loading",
+        country_code=country_code,
+        data_source=GEO_DATA_SOURCE_UNRESOLVED,
+        data_version=GEO_DATA_VERSION_UNRESOLVED,
+    )
+
+
 def reset_pgeocode_index_for_tests() -> None:
-    _pgeocode_index.clear()
+    global _generation, _preload_thread, _ui_thread_id, _test_hold
+    with _load_lock:
+        _generation += 1
+        _pgeocode_index.clear()
+        _resolution_cache.clear()
+        _ready_callbacks.clear()
+        _preload_thread = None
+        _ui_thread_id = None
+        _test_hold = None
+        _preload_done.clear()
 
 
 def _finite(value: Any) -> float | None:
@@ -240,8 +401,10 @@ def resolve_postal_pgeocode(
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    version = _ensure_geo_data()
     nom = _pgeocode_nominatim(cc)
+    if nom is _INDEX_LOADING:
+        return _loading_resolution(cc)
+    version = _ensure_geo_data()
     if nom is None:
         return PlaceResolution(
             status="UNKNOWN",
@@ -351,8 +514,10 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    version = _ensure_geo_data()
     nom = _pgeocode_nominatim(cc)
+    if nom is _INDEX_LOADING:
+        return _loading_resolution(cc)
+    version = _ensure_geo_data()
     if nom is None:
         return PlaceResolution(
             status="UNKNOWN",
@@ -521,6 +686,28 @@ def resolve_place_offline(place: NormalizedPlace) -> PlaceResolution:
     )
 
 
+def _result_cache_key(
+    place: NormalizedPlace,
+    *,
+    cross_border: bool,
+    home_country: str,
+    allow_network: bool,
+) -> tuple:
+    return (
+        (place.country_code or "").upper(),
+        (place.postal_code or "").strip(),
+        (place.city or "").casefold(),
+        (place.address or "").casefold(),
+        place.latitude,
+        place.longitude,
+        (place.remote_type or "").casefold(),
+        bool(place.is_remote),
+        bool(cross_border),
+        (home_country or "").upper(),
+        bool(allow_network),
+    )
+
+
 def resolve_place(
     place: NormalizedPlace,
     *,
@@ -529,7 +716,40 @@ def resolve_place(
     allow_network: bool = False,
     network_geocode: Callable[[str, list[str]], PlaceResolution | None] | None = None,
 ) -> PlaceResolution:
-    """Resolve place locally. Network geocode is disabled by default (no Nominatim)."""
+    """Resolve place locally. Network geocode is disabled by default (no Nominatim).
+
+    Identical inputs reuse one result. A click that asks several widgets for the
+    same home therefore hits the postal table at most once.
+    """
+    key = _result_cache_key(
+        place,
+        cross_border=cross_border,
+        home_country=home_country,
+        allow_network=allow_network,
+    )
+    cached = _resolution_cache.get(key)
+    if cached is not None:
+        return cached
+    result = _resolve_place_uncached(
+        place,
+        cross_border=cross_border,
+        home_country=home_country,
+        allow_network=allow_network,
+        network_geocode=network_geocode,
+    )
+    if result.reason != "geo_index_loading":
+        _resolution_cache[key] = result
+    return result
+
+
+def _resolve_place_uncached(
+    place: NormalizedPlace,
+    *,
+    cross_border: bool = True,
+    home_country: str = "DE",
+    allow_network: bool = False,
+    network_geocode: Callable[[str, list[str]], PlaceResolution | None] | None = None,
+) -> PlaceResolution:
     del network_geocode  # production must not call public Nominatim
     if place.is_remote:
         return PlaceResolution(
