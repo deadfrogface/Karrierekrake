@@ -72,6 +72,7 @@ def test_fresh_profile_load_does_not_recurse_shutdown_migration(tmp_path, monkey
 
     svc = ConfigService()
     previous_limit = sys.getrecursionlimit()
+    previous_trace = sys.gettrace()
     # Low enough that the old save()->load() cycle hits RecursionError quickly,
     # high enough for one real load (YAML + dataclasses).
     sys.setrecursionlimit(400)
@@ -79,7 +80,7 @@ def test_fresh_profile_load_does_not_recurse_shutdown_migration(tmp_path, monkey
     try:
         cfg = svc.load()
     finally:
-        sys.settrace(None)
+        sys.settrace(previous_trace)
         sys.setrecursionlimit(previous_limit)
 
     assert recursion_errors == []
@@ -139,6 +140,41 @@ def test_shutdown_fix_migration_retries_when_commit_fails_midway(tmp_path, monke
     kept = svc.load()
     assert kept.settings.minimize_to_tray is True
     assert _meta_text(svc).count("shutdown_fix_v1") == 1
+
+
+def test_save_meta_keeps_previous_file_if_replace_fails(tmp_path, monkeypatch):
+    """A failure after the temp file is written must leave the old meta.json readable."""
+    _isolate(tmp_path, monkeypatch)
+    import desktop.services as services_mod
+
+    svc = ConfigService()
+    original = {
+        "first_run_completed": True,
+        "shutdown_fix_v1": True,
+        "note": "alt",
+    }
+    svc.save_meta(original)
+    assert json.loads(svc.meta_path.read_text(encoding="utf-8")) == original
+
+    def abort_replace(src, dst):
+        assert Path(src).is_file()
+        assert Path(src).read_text(encoding="utf-8")
+        raise OSError("replace aborted after temp write")
+
+    monkeypatch.setattr(services_mod.os, "replace", abort_replace)
+    with pytest.raises(OSError, match="replace aborted after temp write"):
+        svc.save_meta(
+            {
+                "first_run_completed": False,
+                "shutdown_fix_v1": False,
+                "note": "neu",
+            }
+        )
+
+    again = json.loads(svc.meta_path.read_text(encoding="utf-8"))
+    assert again == original
+    tmp = svc.meta_path.with_suffix(svc.meta_path.suffix + ".tmp")
+    assert json.loads(tmp.read_text(encoding="utf-8"))["note"] == "neu"
 
 
 def test_existing_profile_with_shutdown_flag_keeps_minimize_to_tray(tmp_path, monkeypatch):

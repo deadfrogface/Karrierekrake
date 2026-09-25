@@ -981,10 +981,12 @@ def load_config(
 
         migrate_provider_settings(settings)
     except RecursionError:
+        # PyYAML builds nested structures recursively, so an absurdly deep YAML
+        # document can also raise RecursionError. Re-raising is intentional:
+        # a loud abort instead of a silent start with the wrong configuration.
         raise
     except Exception:
         # Import or provider-coercion failures must not block loading a profile.
-        # RecursionError is not a corrupt file and must surface.
         pass
 
     return AppConfig(

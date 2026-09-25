@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from copy import deepcopy
 from pathlib import Path
@@ -231,10 +232,18 @@ class ConfigService:
             return {"first_run_completed": False}
 
     def save_meta(self, meta: dict[str, Any]) -> None:
-        self.meta_path.write_text(
-            json.dumps(meta, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
+        """Atomically replace ``meta.json`` (temp file in the same directory, then replace).
+
+        If the write fails before ``os.replace``, the previous ``meta.json`` stays intact.
+        """
+        path = self.meta_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(path.suffix + ".tmp")
+        with tmp.open("w", encoding="utf-8") as handle:
+            handle.write(json.dumps(meta, indent=2, ensure_ascii=False))
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
 
     def mark_first_run_done(self) -> None:
         meta = self.load_meta()
