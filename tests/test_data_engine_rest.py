@@ -265,6 +265,48 @@ def _assert_berlin_distance(tmp_path) -> None:
     assert ambiguous.distance_km is None
 
 
+def test_substring_city_stays_unknown_and_multi_name_stays_ambiguous(monkeypatch):
+    """A partial name is never promoted to a centroid.
+
+    One substring hit stays UNKNOWN. Several distinct names are AMBIGUOUS
+    and carry no coordinates. Exact place_name still resolves.
+    """
+    import pandas as pd
+
+    from core.geo_resolve import resolve_city_pgeocode
+
+    class _Nom:
+        def __init__(self, names: list[str]) -> None:
+            self._data = pd.DataFrame(
+                {
+                    "place_name": names,
+                    "latitude": [52.5 + i * 0.01 for i in range(len(names))],
+                    "longitude": [13.4] * len(names),
+                }
+            )
+
+        def query_location(self, *_args, **_kwargs):
+            raise AssertionError("query_location must not resolve a city")
+
+    def _install(names: list[str]) -> None:
+        monkeypatch.setattr("core.geo_resolve._ensure_geo_data", lambda: "test")
+        monkeypatch.setattr("core.geo_resolve._pgeocode_nominatim", lambda _cc: _Nom(names))
+
+    _install(["Berlin"])
+    partial = resolve_city_pgeocode("Berl", "DE")
+    assert partial.status == "UNKNOWN"
+    assert partial.latitude is None and partial.longitude is None
+
+    exact = resolve_city_pgeocode("Berlin", "DE")
+    assert exact.status == "RESOLVED"
+    assert exact.latitude is not None and exact.longitude is not None
+
+    _install(["Berlin", "Bernau"])
+    many = resolve_city_pgeocode("Ber", "DE")
+    assert many.status == "AMBIGUOUS"
+    assert many.latitude is None and many.longitude is None
+
+
 def test_berlin_deutschland_resolves_for_distance_filter(tmp_path):
     from core.geo_dataset import reset_geo_dataset_manager_for_tests
     from core.geo_resolve import reset_pgeocode_index_for_tests
