@@ -251,9 +251,10 @@ class MainWindow(QMainWindow):
     def _start_geo_preload(self) -> None:
         if self._shutting_down:
             return
-        from core.geo_resolve import preload_geo_index_async
+        from core.geo_resolve import arm_geo_index_from_ui
 
-        preload_geo_index_async()
+        # GUI slot: publish the worker and return. No lock, no join, no wait.
+        arm_geo_index_from_ui()
 
     def _restore_geometry(self) -> None:
         state = self.config_service.get_window_state()

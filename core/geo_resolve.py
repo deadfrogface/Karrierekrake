@@ -247,8 +247,51 @@ def _fire_ready() -> None:
             logger.debug("geo index ready callback failed", exc_info=True)
 
 
+def arm_geo_index_from_ui() -> threading.Thread | None:
+    """Start the shared loader from a Qt GUI slot.
+
+    Never acquires ``_load_lock``, never joins, never waits. A live worker is
+    reused, so a second slot does not start a second Nominatim build. The
+    worker itself builds the index under the lock.
+    """
+    global _preload_thread
+    existing = _preload_thread
+    if existing is not None and existing.is_alive():
+        return existing
+    if _all_countries_loaded() and _preload_done.is_set():
+        return existing
+    gen = _generation
+    thread = threading.Thread(
+        target=_preload_worker,
+        args=(gen,),
+        name="kk-geo-index",
+        daemon=True,
+    )
+    published = _preload_thread
+    if published is not None and published.is_alive():
+        return published
+    _preload_thread = thread
+    if _preload_thread is not thread:
+        winner = _preload_thread
+        if winner is not None and winner.is_alive():
+            return winner
+        _preload_thread = thread
+    thread.start()
+    return thread
+
+
 def preload_geo_index_async() -> threading.Thread | None:
-    """Load the shared DACH postal/place index once, off the caller thread."""
+    """Load the shared DACH postal/place index once, off the caller thread.
+
+    On the Qt UI thread this only publishes the worker. It does not take
+    ``_load_lock`` and does not wait for the files.
+    """
+    if _caller_is_ui_thread():
+        return arm_geo_index_from_ui()
+    return _arm_preload_off_ui()
+
+
+def _arm_preload_off_ui() -> threading.Thread | None:
     global _preload_thread
     with _load_lock:
         if _all_countries_loaded() and _preload_done.is_set():
@@ -256,8 +299,11 @@ def preload_geo_index_async() -> threading.Thread | None:
             callbacks = list(_ready_callbacks)
             _ready_callbacks.clear()
         else:
-            if _preload_thread is not None and _preload_thread.is_alive():
-                return _preload_thread
+            current = _preload_thread
+            if current is not None and (
+                current.is_alive() or (current.ident is None and not _preload_done.is_set())
+            ):
+                return current
             gen = _generation
             thread = threading.Thread(
                 target=_preload_worker,

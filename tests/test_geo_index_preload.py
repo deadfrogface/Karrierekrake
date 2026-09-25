@@ -140,6 +140,43 @@ def test_main_window_preloads_off_gui_thread_only_after_show(qapp, config_servic
             worker.join(timeout=30)
 
 
+def test_ui_arm_returns_while_load_lock_is_held(geo_ready):
+    """The GUI starter must not acquire ``_load_lock``."""
+    bind_ui_thread()
+    held = threading.Event()
+    release = threading.Event()
+    finished = threading.Event()
+
+    def _hold() -> None:
+        geo_resolve._load_lock.acquire()
+        try:
+            held.set()
+            release.wait(timeout=5)
+        finally:
+            geo_resolve._load_lock.release()
+
+    def _unstick() -> None:
+        if not finished.wait(timeout=1.0):
+            release.set()
+
+    blocker = threading.Thread(target=_hold)
+    blocker.start()
+    assert held.wait(timeout=2)
+    threading.Thread(target=_unstick, daemon=True).start()
+    try:
+        started = time.monotonic()
+        thread = geo_resolve.arm_geo_index_from_ui()
+        elapsed = time.monotonic() - started
+        finished.set()
+    finally:
+        release.set()
+        blocker.join(timeout=5)
+    assert thread is not None
+    assert elapsed < 0.5
+    assert thread is not threading.current_thread()
+    _wait_thread(thread)
+
+
 def test_preload_runs_in_the_background(geo_ready):
     thread = preload_geo_index_async()
     assert thread is not None
@@ -349,7 +386,12 @@ def _pump_until_label(qapp: QApplication, label, predicate, timeout_s: float = 1
 def test_save_during_preload_resolves_10115_from_the_same_load(
     qapp, config_service, geo_ready, monkeypatch
 ):
-    """10115 saved while the index is held must become Berlin from that one load."""
+    """save() returns while the preload Event is still unset.
+
+    GeoNames ``DE.txt`` labels PLZ 10115 as place_name ``Berlin``
+    (52.5323, 13.3846), not the district name Berlin-Mitte. The queued
+    ready slot must publish that directory place from the same one load.
+    """
     monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
     from desktop.main_window import MainWindow
 
@@ -393,9 +435,10 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         page.applicant.postal_code.setText("10115")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        assert not hold.is_set()
         page.save_btn.click()
-        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
-
+        # save() has returned. A blocking save would still be inside click().
+        assert not hold.is_set()
         assert dialogs == ["Gespeichert."]
         assert builds == []
         assert geo_resolve._preload_thread is loader
@@ -406,7 +449,6 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         assert "nicht prüfbar" not in _persisted_place_text(saved)
 
         hold.set()
-        assert geo_resolve._preload_done.wait(timeout=30)
         text = _pump_until_label(
             qapp,
             page.home_status,
@@ -418,6 +460,9 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         loc = finished.profile.location
         assert loc.postal_code == "10115"
         assert loc.city == "Berlin"
+        # GeoNames place_name for 10115 is Berlin, not the district Berlin-Mitte.
+        assert "Berlin-Mitte" not in text
+        assert "Berlin-Mitte" not in _persisted_place_text(finished)
         assert loc.home_latitude == pytest.approx(52.5323)
         assert loc.home_longitude == pytest.approx(13.3846)
         assert "nicht auflösbar" not in _persisted_place_text(finished)
@@ -461,11 +506,15 @@ def test_unresolvable_plz_still_shows_the_hint_after_preload(
         page.applicant.postal_code.setText("00000")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        assert not hold.is_set()
         page.save_btn.click()
-        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        assert not hold.is_set()
         assert dialogs == ["Gespeichert."]
+        saved = config_service.load()
+        assert saved.application.postal_code == "00000"
+        assert saved.profile.location.postal_code == "00000"
+        assert "nicht auflösbar" not in _persisted_place_text(saved)
         hold.set()
-        assert geo_resolve._preload_done.wait(timeout=30)
         text = _pump_until_label(
             qapp,
             page.home_status,
