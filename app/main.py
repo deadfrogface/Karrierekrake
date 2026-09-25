@@ -437,39 +437,6 @@ def run_pipeline(
             fachlich_candidates.append(job)
         scored.append(job)
 
-    # find_existing_by_source, has_applied and should_suppress_as_new already
-    # ran above, each on its own connection against committed rows. They are
-    # not called again in the persist loops. upsert_job's get_job joins the
-    # open chunk connection, so attempt/APPLIED protection still sees earlier
-    # writes in that chunk. A stop that was already true before a loop still
-    # writes that loop (same as the old per-row commits). A stop that flips
-    # during a loop keeps finished chunks and skips the rest.
-    stop_seen = False
-    skipped_writes = False
-
-    def persist_jobs(jobs: list, *, watch_stop: bool) -> None:
-        nonlocal stop_seen, skipped_writes
-        if not jobs:
-            return
-        if stop_seen:
-            skipped_writes = True
-            return
-        if not watch_stop:
-            db.upsert_jobs(jobs)
-            return
-
-        def watch() -> bool:
-            nonlocal stop_seen
-            hit = stopped()
-            if hit:
-                stop_seen = True
-            return hit
-
-        written = db.upsert_jobs(jobs, should_stop=watch)
-        if written < len(jobs):
-            stop_seen = True
-            skipped_writes = True
-
     # Local geo + Luftlinie ONLY for fachlich suitable candidates (no Top-N cut).
     if not cancelled and not stopped() and fachlich_candidates:
         progress("Phase Standorte anreichern…")
@@ -482,31 +449,32 @@ def run_pipeline(
         )
         if stopped():
             cancelled = True
-        for job in fachlich_candidates:
-            prev_status = job.status
-            apply_distance_scoring(job, config)
-            if job.status == JobStatus.IGNORED.value and prev_status != JobStatus.IGNORED.value:
-                if any("km" in (r or "") for r in (job.rejection_reasons or [])):
-                    outside += 1
-        persist_jobs(fachlich_candidates, watch_stop=not stopped())
+        with db.batch(should_stop=stopped):
+            for job in fachlich_candidates:
+                prev_status = job.status
+                apply_distance_scoring(job, config)
+                if job.status == JobStatus.IGNORED.value and prev_status != JobStatus.IGNORED.value:
+                    if any("km" in (r or "") for r in (job.rejection_reasons or [])):
+                        outside += 1
+                db.upsert_job(job)
     else:
-        already_stopped = stopped()
-        cancelled = cancelled or already_stopped
-        persist_jobs(scored, watch_stop=not already_stopped)
+        cancelled = cancelled or stopped()
+        with db.batch(should_stop=stopped):
+            for job in scored:
+                db.upsert_job(job)
 
-    # Persist fachlich-excluded scored jobs that were not candidates.
-    # When the branch above already wrote every scored job, this second pass
-    # is the same idempotent rewrite as before.
-    rest = [job for job in scored if job not in fachlich_candidates]
-    persist_jobs(rest, watch_stop=not stopped())
+    # Persist fachlich-excluded scored jobs that were not candidates
+    with db.batch(should_stop=stopped):
+        for job in scored:
+            if job not in fachlich_candidates:
+                db.upsert_job(job)
 
-    duplicates = []
-    for job in all_jobs:
-        if job.duplicate_of:
-            job.run_id = run_id
-            duplicates.append(job)
-    persist_jobs(duplicates, watch_stop=not stopped())
-    if skipped_writes:
+    with db.batch(should_stop=stopped):
+        for job in all_jobs:
+            if job.duplicate_of:
+                job.run_id = run_id
+                db.upsert_job(job)
+    if db.batch_skipped_writes:
         cancelled = True
 
     run.info(f"{outside} outside {config.profile.location.max_distance_km} km Luftlinie removed/ignored")

@@ -288,6 +288,13 @@ class Database:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         # Must exist before _init_schema(), which uses connection().
         self._txn_conn: sqlite3.Connection | None = None
+        self._batch_scope = False
+        self._batch_halted = False
+        self._batch_skipped = False
+        self._batch_watch: Callable[[], Any] | None = None
+        self._batch_chunk_size = DEFAULT_UPSERT_CHUNK_SIZE
+        self._batch_count = 0
+        self._batch_written = 0
         self._init_schema()
         # Default off: GUI page opens construct Database() frequently and must not
         # mark a live search/apply as interrupted. Call with recover=True once at
@@ -305,9 +312,9 @@ class Database:
     def connection(self) -> Iterator[sqlite3.Connection]:
         """Yield a connection. Commit on the way out, unless a transaction() is open.
 
-        Inside transaction()/batch() this joins that connection and does not
-        commit or close it. Callers on the same Database then see uncommitted
-        rows (read-your-writes). A second Database() on the same file does not.
+        Inside transaction() or an open batch() this joins that connection and
+        does not commit or close it. Callers on the same Database then see
+        uncommitted rows. A second Database() on the same file does not.
         """
         if self._txn_conn is not None:
             yield self._txn_conn
@@ -326,7 +333,7 @@ class Database:
     def transaction(self) -> Iterator[sqlite3.Connection]:
         """Run the block on one connection. Commit on success, roll back on any exception.
 
-        Nested transaction()/batch() calls join the outermost transaction.
+        Nested transaction() calls join the outermost transaction.
         The exception is not swallowed. The connection is closed afterwards.
         """
         if self._txn_conn is not None:
@@ -348,10 +355,72 @@ class Database:
             conn.close()
 
     @contextmanager
-    def batch(self) -> Iterator[sqlite3.Connection]:
-        """Alias of transaction() for grouped writes."""
-        with self.transaction() as conn:
-            yield conn
+    def batch(
+        self,
+        should_stop: Callable[[], Any] | None = None,
+        chunk_size: int | None = None,
+    ) -> Iterator["Database"]:
+        """Commit upsert_job calls from this block in chunks.
+
+        The block keeps calling upsert_job. Every chunk_size writes (default
+        500) are committed. An exception rolls back only the open chunk.
+        If should_stop is already true when the block starts, every upsert in
+        the block is still written. If it becomes true between chunks, later
+        upsert_job calls in this Database are skipped and
+        batch_skipped_writes becomes true.
+        """
+        size = DEFAULT_UPSERT_CHUNK_SIZE if chunk_size is None else chunk_size
+        if size < 1:
+            raise ValueError("chunk_size must be >= 1")
+        if self._batch_scope or self._txn_conn is not None:
+            raise RuntimeError("batch() cannot nest inside transaction() or batch()")
+        self._batch_chunk_size = size
+        self._batch_count = 0
+        self._batch_written = 0
+        self._batch_scope = True
+        conn: sqlite3.Connection | None = None
+        try:
+            if self._batch_halted:
+                yield self
+                return
+            already = bool(should_stop()) if should_stop is not None else False
+            self._batch_watch = None if already else should_stop
+            conn = self._connect()
+            self._txn_conn = conn
+            yield self
+            if (
+                self._batch_count
+                and self._batch_watch is not None
+                and self._batch_watch()
+            ):
+                conn.rollback()
+                self._batch_written -= self._batch_count
+                self._batch_count = 0
+                self._batch_halted = True
+                self._batch_skipped = True
+            else:
+                conn.commit()
+        except BaseException:
+            if conn is not None:
+                try:
+                    conn.rollback()
+                except Exception:
+                    pass
+            raise
+        finally:
+            self._txn_conn = None
+            self._batch_scope = False
+            self._batch_watch = None
+            if conn is not None:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+
+    @property
+    def batch_skipped_writes(self) -> bool:
+        """True when a batch() refused an upsert after a committed chunk."""
+        return self._batch_skipped
 
     def _init_schema(self) -> None:
         with self.connection() as conn:
@@ -709,6 +778,32 @@ class Database:
 
 
     def upsert_job(self, job: Job) -> None:
+        if not self._batch_scope:
+            self._write_job(job)
+            return
+        if self._batch_halted:
+            self._batch_skipped = True
+            return
+        if (
+            self._batch_count == 0
+            and self._batch_watch is not None
+            and self._batch_watch()
+        ):
+            self._batch_halted = True
+            self._batch_skipped = True
+            return
+        self._write_job(job)
+        self._batch_written += 1
+        self._batch_count += 1
+        if self._batch_count >= self._batch_chunk_size:
+            if self._txn_conn is None:
+                raise RuntimeError("batch connection is closed")
+            self._txn_conn.commit()
+            self._batch_count = 0
+            if self._batch_watch is not None and self._batch_watch():
+                self._batch_halted = True
+
+    def _write_job(self, job: Job) -> None:
         data = job.to_dict()
         data["match_reasons"] = json.dumps(job.match_reasons, ensure_ascii=False)
         data["rejection_reasons"] = json.dumps(job.rejection_reasons, ensure_ascii=False)
@@ -765,48 +860,15 @@ class Database:
     ) -> int:
         """Upsert jobs in committed chunks. Returns how many upserts ran.
 
-        Each chunk is one transaction(). An exception inside a chunk rolls
-        that chunk back and propagates; earlier chunks stay committed.
-        ``should_stop`` is checked between chunks (and before a trailing
-        partial chunk). When it is true, already committed chunks stay and
-        the rest is not written.
-
-        Cannot run inside an open transaction(): chunks would not commit
-        until the outer block finished.
+        Same rules as upsert_job. An exception inside a chunk rolls that
+        chunk back and propagates; earlier chunks stay committed.
+        ``should_stop`` is checked between chunks. When it becomes true,
+        already committed chunks stay and the rest is not written.
         """
-        size = DEFAULT_UPSERT_CHUNK_SIZE if chunk_size is None else chunk_size
-        if size < 1:
-            raise ValueError("chunk_size must be >= 1")
-        if self._txn_conn is not None:
-            raise RuntimeError(
-                "upsert_jobs commits each chunk and cannot run inside transaction()"
-            )
-        written = 0
-        chunk: list[Job] = []
-
-        def flush() -> None:
-            nonlocal written
-            if not chunk:
-                return
-            with self.transaction():
-                for job in chunk:
-                    self.upsert_job(job)
-            written += len(chunk)
-            chunk.clear()
-
-        for job in jobs:
-            if not chunk and should_stop is not None and should_stop():
-                return written
-            chunk.append(job)
-            if len(chunk) >= size:
-                flush()
-                if should_stop is not None and should_stop():
-                    return written
-        if chunk:
-            if should_stop is not None and should_stop():
-                return written
-            flush()
-        return written
+        with self.batch(should_stop=should_stop, chunk_size=chunk_size):
+            for job in jobs:
+                self.upsert_job(job)
+        return self._batch_written
 
     def get_job(self, job_id: str) -> Job | None:
         with self.connection() as conn:
