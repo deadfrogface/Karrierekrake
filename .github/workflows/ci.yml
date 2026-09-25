@@ -72,6 +72,7 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
           PYTHONUTF8: "1"
+          PYTHONUNBUFFERED: "1"
         run: >
           python scripts/unit_test_shards.py run
           --splits 6
@@ -118,6 +119,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Self-check node-id gate
+        run: python3 scripts/unit_test_shards.py self-check
       - uses: actions/download-artifact@v4
         with:
           pattern: unit-tests-*

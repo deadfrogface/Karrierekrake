@@ -276,13 +276,22 @@ def _pytest_env() -> dict[str, str]:
     env = os.environ.copy()
     env["PYTHONUTF8"] = "1"
     env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUNBUFFERED"] = "1"
     env.setdefault("QT_QPA_PLATFORM", "offscreen")
     return env
 
 
 def _run_pytest(extra: list[str]) -> subprocess.CompletedProcess[bytes]:
-    cmd = [sys.executable, "-m", "pytest", *extra]
+    """Capture stdout. Used by ``collect``, which must save the node-id list."""
+    cmd = [sys.executable, "-u", "-m", "pytest", *extra]
     return subprocess.run(cmd, cwd=ROOT, env=_pytest_env(), capture_output=True, check=False)
+
+
+def _stream_pytest(extra: list[str]) -> int:
+    """Run pytest with inherited stdout/stderr so a hang shows up in the job log."""
+    cmd = [sys.executable, "-u", "-m", "pytest", *extra]
+    proc = subprocess.run(cmd, cwd=ROOT, env=_pytest_env(), check=False)
+    return proc.returncode
 
 
 def cmd_collect(args: argparse.Namespace) -> int:
@@ -310,7 +319,7 @@ def cmd_run(args: argparse.Namespace) -> int:
         print(f"missing durations file: {durations}", file=sys.stderr)
         return 2
     junit = Path(args.junitxml)
-    proc = _run_pytest(
+    return _stream_pytest(
         [
             "-q",
             *PYTEST_FILTERS,
@@ -327,9 +336,6 @@ def cmd_run(args: argparse.Namespace) -> int:
             "--durations=25",
         ]
     )
-    sys.stdout.buffer.write(proc.stdout)
-    sys.stderr.buffer.write(proc.stderr)
-    return proc.returncode
 
 
 def cmd_check(args: argparse.Namespace) -> int:
