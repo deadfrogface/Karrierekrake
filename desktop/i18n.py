@@ -254,6 +254,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.empty_section": "Noch keine Einträge.",
         "profile.empty_tags": "Keine Angaben",
         "profile.more_tags": "+ {n} weitere",
+        "profile.show_more_entry": "+ 1 weiteren Eintrag anzeigen",
         "profile.show_more_entries": "+ {n} weitere Einträge anzeigen",
         "profile.cv_meta": "Lebenslauf für Bewerbungen",
         "profile.no_linkedin": "Kein LinkedIn-Link hinterlegt",
@@ -1173,6 +1174,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.empty_section": "No entries yet.",
         "profile.empty_tags": "None listed",
         "profile.more_tags": "+ {n} more",
+        "profile.show_more_entry": "+ show 1 more entry",
         "profile.show_more_entries": "+ show {n} more entries",
         "profile.cv_meta": "CV used for applications",
         "profile.no_linkedin": "No LinkedIn link saved",
@@ -1920,3 +1922,10 @@ def install_qt_translator(app, lang: str) -> None:
     if translator.load(f"qtbase_{lang}", path):
         app.installTranslator(translator)
         app._karrierekrake_qt_translator = translator
+
+
+def tr_show_more_entries(n: int) -> str:
+    """Hidden-experience label. One row uses the singular key."""
+    if int(n) == 1:
+        return tr("profile.show_more_entry")
+    return tr("profile.show_more_entries", n=int(n))
