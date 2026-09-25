@@ -54,7 +54,7 @@ def test_fully_automatic_without_auto_submit_stays_dry(tmp_path: Path, monkeypat
     )
     job = Job(
         id="j1",
-        source="test",
+        source="indeed",
         title="Buchhalter",
         company="ACME",
         url="https://boards.greenhouse.io/acme/jobs/1",
@@ -92,7 +92,7 @@ def test_fully_automatic_with_auto_submit_can_request_submit(tmp_path: Path, mon
     )
     job = Job(
         id="j2",
-        source="test",
+        source="indeed",
         title="Buchhalter",
         company="ACME",
         url="https://boards.greenhouse.io/acme/jobs/2",
@@ -131,7 +131,7 @@ def test_partial_ats_never_gets_submit_under_full_auto(tmp_path: Path, monkeypat
     )
     job = Job(
         id="j-partial",
-        source="test",
+        source="indeed",
         title="Buchhalter",
         company="ACME",
         url="https://acme.jobs.personio.de/job/1",

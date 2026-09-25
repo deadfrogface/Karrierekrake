@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from core.config import AppConfig, ApplicationProfile, SettingsConfig
+from core.config import AppConfig, ApplicationProfile, SettingsConfig, SourcedText
 from core.contacts.models import (
     DEFAULT_VERIFICATION_STATUS,
     ContactCandidate,
@@ -397,6 +397,9 @@ def test_cover_letter_render_never_injects_unverified_person():
         source="test",
     )
     cfg = _cfg()
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Buchhaltung", source="manual")
+    )
     # Unverified / weak claims
     weak = build_writer_claims(
         verify_candidate(_person("Weak Sig", source=SourceType.RECRUITER_SIGNATURE.value))
@@ -457,7 +460,11 @@ def test_e2e_discovery_verification_plan_cover_only_verified():
         url="https://jobs.example.com/e2e",
         source="test",
     )
-    letter = render_cover_letter(job, _cfg(), contact_claims=claims)
+    cfg = _cfg()
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Buchhaltung", source="manual")
+    )
+    letter = render_cover_letter(job, cfg, contact_claims=claims)
     # Without salutation evidence → neutral, but name not freestyle-injected
     assert "Sehr geehrte Frau Verified" not in letter
     assert NEUTRAL_SALUTATION in letter

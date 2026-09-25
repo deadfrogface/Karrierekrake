@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 from apply.base import ApplyResult
 from apply.manager import ApplicationManager
-from core.config import empty_app_config
+from core.config import SourcedText, empty_app_config
 from core.database import Database
 from core.models import Job, JobStatus, OperatingMode
 
@@ -18,6 +18,9 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     cfg.application.last_name = "Musterfrau"
     cfg.application.email = "erika@example.org"
     cfg.application.phone = "+491701111111"
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Buchhaltung", source="manual")
+    )
     cfg.application.cv_path = str(tmp_path / "cv.pdf")
     (tmp_path / "cv.pdf").write_bytes(b"%PDF-1.4")
     cfg.settings.mode = OperatingMode.REVIEW_BEFORE_SUBMIT.value
@@ -27,7 +30,7 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     db = Database(tmp_path / "data" / "jobs.db")
     job = Job(
         id="job-cl-1",
-        source="test",
+        source="indeed",
         title="Buchhalter",
         company="ACME",
         url="https://boards.greenhouse.io/acme/jobs/1",
@@ -35,6 +38,7 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
         status=JobStatus.NEW.value,
         ats_type="greenhouse",
         match_score=90,
+        description="Buchhaltung und Monatsabschlüsse für den Mandantenstamm.",
     )
     mgr = ApplicationManager(cfg, db, MagicMock())
 

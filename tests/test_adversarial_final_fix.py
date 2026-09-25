@@ -36,7 +36,7 @@ def _cfg(tmp_path: Path, *, dry_run: bool, auto_submit: bool, mode: str) -> obje
 def _job(n: int = 1) -> Job:
     return Job(
         id=f"adv-{n}",
-        source="test",
+        source="indeed",
         title=f"Sachbearbeiter {n}",
         company=f"Fiktiv GmbH {n}",
         url=f"https://boards.greenhouse.io/fiktiv/jobs/{n}",
@@ -199,7 +199,7 @@ def test_blocked_reapply_does_not_demote_applied(tmp_path: Path):
     db.upsert_job(
         Job(
             id="kept",
-            source="t",
+            source="indeed",
             title="Sachbearbeiter",
             company="Fiktiv GmbH",
             url="https://boards.greenhouse.io/fiktiv/jobs/9",
@@ -223,7 +223,7 @@ def test_blocked_reapply_does_not_demote_applied(tmp_path: Path):
     result = mgr.prepare_and_apply(
         Job(
             id="kept",
-            source="t",
+            source="indeed",
             title="Sachbearbeiter",
             company="Fiktiv GmbH",
             url="https://boards.greenhouse.io/fiktiv/jobs/9",

@@ -20,7 +20,8 @@ from apply.stepstone import StepstoneApplier
 from apply.successfactors import SuccessFactorsApplier
 from apply.workday import WorkdayApplier
 from core.config import AppConfig
-from core.cover_letter import render_cover_letter, save_cover_letter
+from core.application_queue import is_application_source
+from core.cover_letter import compose_cover_letter, save_cover_letter
 from core.parser_debt import auto_actions_blocked
 from core.database import Database
 from core.known_jobs import refuse_reapply
@@ -107,6 +108,8 @@ class ApplicationManager:
         debt = auto_actions_blocked(self.config)
         if debt.blocked:
             return False, debt.reason
+        if not is_application_source(job):
+            return False, "source not allowlisted"
         if job.match_score < settings.minimum_match_for_auto_apply:
             return False, f"score {job.match_score} < {settings.minimum_match_for_auto_apply}"
         # Defense in depth: ApplicationCase known statuses even if search dedup failed.
@@ -170,6 +173,8 @@ class ApplicationManager:
                 or reason.startswith("CV file missing")
                 or reason.startswith("max applications")
                 or reason.startswith("max failed")
+                or reason.startswith("source not allowlisted")
+                or reason.startswith("demo source")
                 or reason.startswith("needs_confirmation")
             )
             if hard_block or mode == OperatingMode.FULLY_AUTOMATIC.value:
@@ -258,28 +263,31 @@ class ApplicationManager:
         if self.db.has_applied(job):
             return ApplyResult(success=False, error_message="already applied (safety)")
 
-        cover = render_cover_letter(job, self.config)
-        from core.cover_guard import confirmed_profile_text, screen_cover_letter
+        outcome = compose_cover_letter(job, self.config)
+        cover = outcome.text if outcome.ok else ""
+        cover_path: Path | str = ""
+        if outcome.ok:
+            from core.cover_guard import confirmed_profile_text, screen_cover_letter
 
-        debt = auto_actions_blocked(self.config)
-        claim_screen = screen_cover_letter(
-            cover,
-            confirmed_text=confirmed_profile_text(self.config),
-            job_text=f"{job.title} {job.description}",
-            allowed_context=f"{job.title} {job.company}",
-        )
-        if debt.blocked or not cover.strip() or not claim_screen.ok:
-            reason = debt.reason or (
-                "needs_confirmation: unsubstantiated_claims"
-                if not claim_screen.ok
-                else "needs_confirmation: cover_blocked"
+            debt = auto_actions_blocked(self.config)
+            claim_screen = screen_cover_letter(
+                cover,
+                confirmed_text=confirmed_profile_text(self.config),
+                job_text=f"{job.title} {job.description}",
+                allowed_context=f"{job.title} {job.company}",
             )
-            job.status = JobStatus.NEEDS_REVIEW.value
-            job.rejection_reasons = list({*job.rejection_reasons, reason})
-            self.db.upsert_job(job)
-            return ApplyResult(success=False, needs_review=True, error_message=reason)
-        cover_path = self.config.root / "cover_letters" / f"{job.id}.txt"
-        save_cover_letter(cover, cover_path)
+            if debt.blocked or not cover.strip() or not claim_screen.ok:
+                reason = debt.reason or (
+                    "needs_confirmation: unsubstantiated_claims"
+                    if not claim_screen.ok
+                    else "needs_confirmation: cover_blocked"
+                )
+                job.status = JobStatus.NEEDS_REVIEW.value
+                job.rejection_reasons = list({*job.rejection_reasons, reason})
+                self.db.upsert_job(job)
+                return ApplyResult(success=False, needs_review=True, error_message=reason)
+            cover_path = self.config.root / "cover_letters" / f"{job.id}.txt"
+            save_cover_letter(cover, cover_path)
         cv_path = self._resolve_cv_path()
 
         job.status = JobStatus.APPLYING.value

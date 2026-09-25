@@ -23,6 +23,7 @@ from core.matcher import apply_distance_scoring, score_job
 from core.models import JobStatus, OperatingMode
 from core.parser_debt import auto_actions_blocked
 from core.source_health import SourceHealthStatus
+from core.application_queue import filter_application_queue
 from search.base import SearchQuery
 from search.registry import build_sources
 
@@ -499,6 +500,7 @@ def run_pipeline(
             if not allowed:
                 continue
             matches.append(j)
+    matches = filter_application_queue(matches)
     run.info(f"{len(matches)} matches ≥{config.settings.minimum_match_for_auto_apply}%")
 
     stats = {
