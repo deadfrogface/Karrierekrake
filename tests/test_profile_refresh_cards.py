@@ -171,3 +171,37 @@ def test_more_button_not_visible_when_positions_drop_to_two(qapp, config_service
     assert not _more_button_in_body(page)
     assert not page._exp_more.isVisible()
     assert page._exp_more.isHidden()
+
+
+def test_more_button_not_visible_when_experience_cleared(qapp, config_service):
+    """An empty work_experience list (profile reset) must hide the more-button.
+
+    Same orphan as the two-position case: takeAt() without hide() leaves the
+    button visible on the shown card. Unpatched main fails isVisible().
+    """
+    i18n.set_language("de")
+    cfg = config_service.load()
+    cfg.profile.qualifications.work_experience = [
+        ExperienceEntry(title="Buchhalter", company="Nordlicht GmbH"),
+        ExperienceEntry(title="Teamleitung", company="Contoso Süd"),
+        ExperienceEntry(title="Sachbearbeitung", company="Fabrikam"),
+    ]
+    config_service.save(cfg)
+
+    page = ProfilePage(config_service)
+    page.show()
+    page.refresh_cards()
+    qapp.processEvents()
+    _flush_deferred_deletes()
+    assert page._exp_more.isVisible()
+    assert _more_button_in_body(page)
+
+    cfg = config_service.load()
+    cfg.profile.qualifications.work_experience = []
+    config_service.save(cfg)
+    page.refresh_cards()
+
+    assert _experience_titles(page) == []
+    assert not _more_button_in_body(page)
+    assert not page._exp_more.isVisible()
+    assert page._exp_more.isHidden()
