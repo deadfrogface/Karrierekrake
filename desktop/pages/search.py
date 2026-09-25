@@ -31,7 +31,8 @@ from core.search_intent import (
     parse_search_intent,
     sync_legacy_jobs_from_intent,
 )
-from desktop.i18n import tr
+from desktop.design_system.polish import apply_button_icon, footer_actions_layout, polish_interactive
+from desktop.i18n import escape_mnemonic, tr
 from desktop.services import ConfigService
 from desktop.widgets import ListEditor
 from desktop.widgets.scroll_page import wrap_scrollable
@@ -182,7 +183,8 @@ class SearchPage(QWidget):
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
         self.save_btn.clicked.connect(self.save)
-        layout.addWidget(self.save_btn)
+        polish_interactive(self.save_btn)
+        layout.addLayout(footer_actions_layout(self.save_btn))
         layout.addStretch()
 
         self.retranslate_ui()
@@ -190,7 +192,7 @@ class SearchPage(QWidget):
     def retranslate_ui(self) -> None:
         self.page_title.setText(tr("nav.search"))
         self.page_subtitle.setText(tr("search.subtitle"))
-        self.roles_box.setTitle(tr("search.roles_skills"))
+        self.roles_box.setTitle(escape_mnemonic(tr("search.roles_skills")))
         self.lbl_target_roles.setText(tr("search.target_roles"))
         self.lbl_mandatory_skills.setText(tr("search.mandatory_skills"))
         self.lbl_excluded_roles.setText(tr("search.excluded_roles"))
@@ -207,7 +209,7 @@ class SearchPage(QWidget):
         ):
             editor.retranslate()
 
-        self.conditions_box.setTitle(tr("search.conditions"))
+        self.conditions_box.setTitle(escape_mnemonic(tr("search.conditions")))
         self.lbl_remote.setText(tr("search.remote_mode"))
         self.remote_unset.setText(tr("search.remote_unset"))
         self.remote_remote.setText(tr("remote"))
@@ -239,6 +241,7 @@ class SearchPage(QWidget):
         self.strictness.blockSignals(False)
 
         self.save_btn.setText(tr("btn.save_search"))
+        apply_button_icon(self.save_btn, "save", color="#ffffff")
 
     def _resolve_intent(self, profile) -> SearchIntent:
         raw = getattr(profile, "search_intent", None)

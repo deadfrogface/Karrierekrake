@@ -51,6 +51,7 @@ class PipelineWorker(QObject):
                 mode=self.mode,
                 progress_callback=self.progress.emit,
                 should_stop=lambda: self._cancel.is_set() or self._pause.is_set(),
+                recover_interrupted=False,
             )
             if self._cancel.is_set():
                 self.progress.emit("Abgebrochen.")

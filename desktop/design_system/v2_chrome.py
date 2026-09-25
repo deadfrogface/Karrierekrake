@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -16,6 +16,13 @@ from PySide6.QtWidgets import (
 
 from desktop.design_system.a11y import set_accessible_name
 from desktop.design_system.icons import status_glyph
+from desktop.design_system.polish import (
+    apply_button_icon,
+    make_close_button,
+    polish_card,
+    polish_chip,
+    polish_interactive,
+)
 
 
 class PageHeader(QWidget):
@@ -72,6 +79,7 @@ class StatusChip(QLabel):
     ) -> None:
         super().__init__(parent)
         self.set_status(text, kind=kind)
+        polish_chip(self)
 
     def set_status(self, text: str, *, kind: str = "info") -> None:
         glyph_kind = {
@@ -99,6 +107,8 @@ class StatusChip(QLabel):
 class KpiCard(QFrame):
     """Compact KPI tile — large number is the visual focus (demo hierarchy)."""
 
+    activated = Signal()
+
     def __init__(
         self,
         label: str = "",
@@ -124,6 +134,47 @@ class KpiCard(QFrame):
         layout.addWidget(self.value_label)
         layout.addWidget(self.hint_label)
         set_accessible_name(self, f"{label}: {value}")
+        self._clickable = False
+        polish_card(self)
+
+    def set_clickable(self, clickable: bool, *, tooltip: str = "") -> None:
+        """Only cards that actually navigate get the pointer/hover/focus affordance."""
+        self._clickable = bool(clickable)
+        self.setProperty("kkClickable", "true" if clickable else "false")
+        self.setCursor(
+            Qt.CursorShape.PointingHandCursor if clickable else Qt.CursorShape.ArrowCursor
+        )
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus if clickable else Qt.FocusPolicy.NoFocus)
+        self.setToolTip(tooltip if clickable else "")
+        style = self.style()
+        if style is not None:
+            style.unpolish(self)
+            style.polish(self)
+
+    def is_clickable(self) -> bool:
+        return self._clickable
+
+    def mouseReleaseEvent(self, event) -> None:  # noqa: N802
+        if (
+            self._clickable
+            and event.button() == Qt.MouseButton.LeftButton
+            and self.rect().contains(event.position().toPoint())
+        ):
+            self.activated.emit()
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
+
+    def keyPressEvent(self, event) -> None:  # noqa: N802
+        if self._clickable and event.key() in (
+            Qt.Key.Key_Return,
+            Qt.Key.Key_Enter,
+            Qt.Key.Key_Space,
+        ):
+            self.activated.emit()
+            event.accept()
+            return
+        super().keyPressEvent(event)
 
     def set_value(
         self,
@@ -151,6 +202,7 @@ class ContentCard(QFrame):
         self._body = QVBoxLayout(self)
         self._body.setContentsMargins(16, 16, 16, 16)
         self._body.setSpacing(12)
+        polish_card(self)
 
     def body(self) -> QVBoxLayout:
         return self._body
@@ -227,6 +279,7 @@ class TagChip(QLabel):
         }
         self.setObjectName(mapping.get(kind, "BadgeMuted"))
         set_accessible_name(self, text)
+        polish_chip(self)
 
 
 class DataItem(QWidget):
@@ -283,6 +336,7 @@ class ProfileSectionCard(QFrame):
         self._body.setSpacing(12)
         root.addLayout(self._body)
         set_accessible_name(self, title)
+        polish_card(self)
 
     def body(self) -> QVBoxLayout:
         return self._body
@@ -309,10 +363,17 @@ class SectionEditDrawer(QDialog):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 16)
         layout.setSpacing(12)
+        title_row = QHBoxLayout()
+        title_row.setContentsMargins(0, 0, 0, 0)
         self.title_label = QLabel(title)
         self.title_label.setObjectName("PageTitle")
         self.title_label.setWordWrap(True)
-        layout.addWidget(self.title_label)
+        title_row.addWidget(self.title_label, stretch=1)
+        # Top-right: close (X) only — primary Speichern stays bottom-right
+        self.close_btn = make_close_button(parent=self)
+        self.close_btn.clicked.connect(self.reject)
+        title_row.addWidget(self.close_btn, alignment=Qt.AlignmentFlag.AlignTop)
+        layout.addLayout(title_row)
         self._host = QVBoxLayout()
         self._host.setContentsMargins(0, 0, 0, 0)
         from desktop.widgets.dialog_geometry import wrap_dialog_body
@@ -327,6 +388,7 @@ class SectionEditDrawer(QDialog):
         self.cancel_btn.setObjectName("SecondaryButton")
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
+        polish_interactive(self.save_btn)
         self.cancel_btn.clicked.connect(self.reject)
         self.save_btn.clicked.connect(self.accept)
         buttons.addWidget(self.cancel_btn)
@@ -342,6 +404,9 @@ class SectionEditDrawer(QDialog):
         self.cancel_btn.setText(cancel)
         set_accessible_name(self.save_btn, save)
         set_accessible_name(self.cancel_btn, cancel)
+        apply_button_icon(self.save_btn, "save", color="#ffffff")
+        self.close_btn.setToolTip(cancel or "Schließen")
+        set_accessible_name(self.close_btn, cancel or "Schließen")
 
     def present(self, content: QWidget) -> int:
         if self._content is not None:

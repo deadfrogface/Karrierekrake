@@ -24,6 +24,11 @@ from PySide6.QtWidgets import (
 from core.database import Database
 from core.models import JobStatus
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, StatusChip
 from desktop.i18n import tr
 from desktop.services import ConfigService
@@ -197,20 +202,17 @@ class ApplicationsPage(QWidget):
         hb.addLayout(title_row)
         detail_l.addWidget(head)
 
-        actions = QHBoxLayout()
+        self.timeline = CaseTimelinePanel()
+        detail_l.addWidget(self.timeline, 1)
+
         self.detail_open = QPushButton()
         self.detail_open.setObjectName("SecondaryButton")
         self.detail_open.clicked.connect(self.open_selected)
         self.detail_preview = QPushButton()
         self.detail_preview.setObjectName("PrimaryButton")
         self.detail_preview.clicked.connect(self.preview_selected)
-        actions.addWidget(self.detail_preview)
-        actions.addWidget(self.detail_open)
-        actions.addStretch()
-        detail_l.addLayout(actions)
-
-        self.timeline = CaseTimelinePanel()
-        detail_l.addWidget(self.timeline, 1)
+        polish_interactive(self.detail_preview)
+        detail_l.addLayout(footer_actions_layout(self.detail_open, self.detail_preview))
         self.stack.addWidget(detail_page)
 
         self.retranslate_ui()
@@ -241,6 +243,7 @@ class ApplicationsPage(QWidget):
         self.preview_btn.setText(tr("btn.preview_apply"))
         self.detail_open.setText(tr("btn.open_manual"))
         self.detail_preview.setText(tr("btn.preview_apply"))
+        apply_button_icon(self.detail_preview, "apply", color="#ffffff")
         self.back_btn.setText(tr("apps.back"))
         set_accessible_name(self.back_btn, tr("apps.back"))
         self.empty.set_texts(
@@ -435,4 +438,4 @@ class ApplicationsPage(QWidget):
         from desktop.widgets.apply_preview_dialog import ApplyPreviewDialog
 
         preview = build_application_preview(job, cfg)
-        ApplyPreviewDialog(preview, self).exec()
+        ApplyPreviewDialog(preview, self, config=cfg, job=job).exec()

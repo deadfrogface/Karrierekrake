@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-07-adr-schein-trap",
+  "tags": [
+    "missing_credential"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-07-adr-schein-trap",
+    "source": "indeed",
+    "source_job_id": "src-cl-07-adr-schein-trap",
+    "title": "Dispatcher (m/w/d)",
+    "company": "Ostkai Spedition GmbH",
+    "description": "Die Ostkai Spedition GmbH ist ein fiktiver Verlader am Ostkai. Wir fahren Stückgut für Werkstätten und kleine Produzenten in der Region. Der Hof ist überschaubar, die Disposition sitzt neben der Rampe, die Geschäftsführung ist tagsüber ansprechbar.\n\nEtwa fünfundzwanzig Menschen arbeiten in Halle und Büro. Wer neu kommt, geht die erste Woche mit auf den Hof. Uns ist wichtig, dass Zusagen gegenüber Verladern gehalten werden und dass Rückfragen nicht liegen bleiben.\n\nWas wir bieten, beschreiben wir zuerst.\n\nUnbefristete Vollzeit, dreißig Tage Urlaub, Jobticket und eine Kantine. Einarbeitung über eine Patin oder einen Paten für sechs Wochen. Weiterbildung nach der Probezeit über ein festes Budget. Parkplatz auf dem Hof, Hafenbus Linie 7, Haltestelle Ostkai. Mobiles Arbeiten nur an einzelnen Planungstagen nach Absprache.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent\n- Tourenplanung im Tagesgeschäft\n- praktischen Umgang mit SAP TM\n- einen gültigen ADR-Schein für Gefahrgutabwicklung\n- Bereitschaft, Gefahrgut-Sendungen selbst zu disponieren\n\nDen ADR-Schein setzen wir voraus. Bitte nennen Sie ihn nur, wenn Sie ihn wirklich besitzen.\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-07-adr-schein-trap",
+    "status": "new"
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Ostkai Spedition",
+    "Dispatcher",
+    "Nordkai Spedition",
+    "Tourenplanung",
+    "SAP TM"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "ADR-Schein",
+    "Gefahrgut",
+    "Gefahrgutabwicklung",
+    "15 Jahre",
+    "seit 2010"
+  ],
+  "rationale": "Die Anzeige fordert neben Disponent, Tourenplanung und SAP TM einen ADR-Schein und Gefahrgutabwicklung. Das Profil hat Staplerschein, aber keinen ADR-Schein und kein Gefahrgut. Ein Brief darf die belegten Punkte nennen und den ADR-Schein nicht behaupten. Eine solche Behauptung wäre Papierkorb."
+}

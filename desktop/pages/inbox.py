@@ -26,7 +26,13 @@ from PySide6.QtWidgets import (
 
 from core.database import Database
 from desktop.design_system.a11y import set_accessible_name
-from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, StatusChip
+from desktop.design_system.polish import apply_button_icon, polish_interactive
+from desktop.design_system.v2_chrome import (
+    ContentCard,
+    EmptyStatePanel,
+    StatusChip,
+    TagChip,
+)
 from desktop.util.human_time import format_human_date_short, format_human_datetime
 from desktop.i18n import i18n, tr
 from desktop.pages.lifecycle import LifecyclePage
@@ -69,8 +75,7 @@ class InboxPage(QWidget):
         title_col.addWidget(self.title)
         title_col.addWidget(self.subtitle)
         header.addLayout(title_col, stretch=1)
-        self.account_chip = QLabel()
-        self.account_chip.setObjectName("BadgeMuted")
+        self.account_chip = TagChip("", kind="neutral")
         header.addWidget(self.account_chip)
         self.refresh_btn = QToolButton()
         self.refresh_btn.setObjectName("SecondaryButton")
@@ -159,6 +164,7 @@ class InboxPage(QWidget):
         self.primary_action = QPushButton()
         self.primary_action.setObjectName("PrimaryButton")
         self.primary_action.clicked.connect(self._on_primary)
+        polish_interactive(self.primary_action)
         ab.addWidget(self.primary_action)
         self.more_btn = QToolButton()
         self.more_btn.setText("…")
@@ -264,11 +270,13 @@ class InboxPage(QWidget):
         if not actions:
             self.primary_action.setEnabled(False)
             self.primary_action.setText(tr("inbox.action_prepare_reply"))
+            apply_button_icon(self.primary_action, "apply", color="#ffffff")
             self.action_hint.setText("")
             self._rebuild_more_menu()
             return
         primary_label, primary_slot = actions[0]
         self.primary_action.setText(primary_label)
+        apply_button_icon(self.primary_action, "apply", color="#ffffff")
         self.primary_action.setEnabled(True)
         self._primary_slot = primary_slot
         status = (email.get("association_status") or "").lower()

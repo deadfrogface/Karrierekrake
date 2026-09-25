@@ -14,6 +14,7 @@ from core.deduplicator import make_job_id
 from core.geo_normalize import normalize_country_code, source_location_blob_to_fields
 from core.models import Job, RemoteType
 from search.base import JobSource, PartialResultsError, SearchQuery
+from search.job_schema import normalize_portal_job
 
 logger = logging.getLogger("karrierekrake")
 
@@ -172,7 +173,7 @@ class IndeedSource(JobSource):
         else:
             published = str(dp or "")
         source_job_id = str(row.get("id") or url)
-        return Job(
+        job = Job(
             id=make_job_id(self.source_id, source_job_id, url, title, company),
             source=self.source_id,
             source_job_id=source_job_id,
@@ -192,5 +193,6 @@ class IndeedSource(JobSource):
             url=url,
             application_url=str(row.get("job_url_direct") or url),
         )
+        return normalize_portal_job(job)
 
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 
 # Bump when alias tables change (invalidates persisted ranking caches).
 INTENT_ALIAS_TABLE_VERSION = 1
@@ -48,12 +49,21 @@ def _cf(s: str) -> str:
     return (s or "").casefold().strip()
 
 
+# Compiled once. The alias loop used to substitute these on the job text for
+# every alias; the patterns do not depend on the alias.
+_HYPHEN_RE = re.compile(r"[-_/]+")
+_WS_RE = re.compile(r"\s+")
+_TITLE_NOISE_RE = re.compile(
+    r"\b(senior|junior|m\s*w\s*d|w\s*m\s*d|all genders)\b"
+)
+
+
 def _norm_alias(s: str) -> str:
     """Normalize for alias lookup: casefold, unify hyphens/spaces."""
     t = _cf(s)
     t = t.replace("ß", "ss")
-    t = re.sub(r"[-_/]+", " ", t)
-    t = re.sub(r"\s+", " ", t).strip()
+    t = _HYPHEN_RE.sub(" ", t)
+    t = _WS_RE.sub(" ", t).strip()
     return t
 
 
@@ -62,6 +72,11 @@ def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
 
     Uses full-string ratio only — never partial/substring fuzzy that would
     expand ``Buchhalter`` into the payroll family.
+
+    Title-noise stripping depends only on the job text, so it runs once.
+    ``compact in aliases`` is likewise independent of the loop variable.
+    An empty-only alias set still returns false, matching the old
+    ``if not alias: continue`` before that membership test.
     """
     needle = _norm_alias(text)
     if not needle or not aliases:
@@ -72,17 +87,14 @@ def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
         from rapidfuzz import fuzz
     except ImportError:
         return False
+    compact = _TITLE_NOISE_RE.sub(" ", needle)
+    compact = _WS_RE.sub(" ", compact).strip(" ()[]")
+    if compact in aliases and any(aliases):
+        return True
     for alias in aliases:
         if not alias:
             continue
-        # Strip common title noise for comparison (senior, m/w/d, …)
-        compact = re.sub(
-            r"\b(senior|junior|m\s*w\s*d|w\s*m\s*d|all genders)\b",
-            " ",
-            needle,
-        )
-        compact = re.sub(r"\s+", " ", compact).strip(" ()[]")
-        if compact in aliases or fuzz.ratio(compact, alias) >= _ALIAS_FUZZY_THRESHOLD:
+        if fuzz.ratio(compact, alias) >= _ALIAS_FUZZY_THRESHOLD:
             return True
         if fuzz.ratio(needle, alias) >= _ALIAS_FUZZY_THRESHOLD:
             return True
@@ -142,6 +154,12 @@ _FAMILY_TITLE_RES: dict[str, re.Pattern[str]] = {
 }
 
 
+# Intent labels repeat on every job. The family tables are a frozen tuple of
+# frozen rows with frozenset aliases, so the label alone determines the id.
+_ROLE_FAMILY_CACHE_MAXSIZE = 64
+
+
+@lru_cache(maxsize=_ROLE_FAMILY_CACHE_MAXSIZE)
 def role_family_id_for_label(label: str) -> str | None:
     """Map an intent role label to a controlled family, or None if unknown."""
     key = _norm_alias(label)

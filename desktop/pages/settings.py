@@ -27,12 +27,18 @@ from PySide6.QtWidgets import (
 
 from core.database import Database
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import PageHeader
-from desktop.i18n import tr
+from desktop.i18n import escape_mnemonic, tr
 from desktop.services import ConfigService
 from desktop.services.browser_install import playwright_available
 from desktop.services.schedule_service import ScheduleService
 from desktop.widgets.about_dialog import AboutDialog
+from desktop.widgets.confirm_dialog import build_confirm_box, confirm_action
 from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox, apply_wheel_guard_to_spinboxes
 from desktop.workers import (
@@ -367,9 +373,18 @@ class SettingsPage(QWidget):
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
         self.lbl_guenther_model = QLabel()
+        self.local_llm_cv_parsing = QCheckBox()
+        self.local_llm_cv_parsing.setEnabled(False)
+        self.local_llm_cv_parsing.setChecked(False)
+        self.local_llm_cv_parsing.setAttribute(Qt.WidgetAttribute.WA_AlwaysShowToolTips, True)
+        self.local_llm_cv_hint = QLabel()
+        self.local_llm_cv_hint.setWordWrap(True)
+        self.local_llm_cv_parsing.toggled.connect(self._sync_local_llm_cv_hint)
         gform.addRow(self.guenther_enabled)
         gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
         gform.addRow(self.guenther_hint)
+        gform.addRow(self.local_llm_cv_parsing)
+        gform.addRow(self.local_llm_cv_hint)
         integ_layout.addWidget(guenther_box)
         integ_layout.addStretch(1)
         self.stack.addWidget(integ_page)
@@ -467,6 +482,10 @@ class SettingsPage(QWidget):
         sform.addRow(self.lbl_published, self.published_days)
         sform.addRow(self.lbl_min_match_dash, self.min_match_dash)
         sform.addRow(self.lbl_max_distance, self.max_distance)
+        self.home_notice = QLabel()
+        self.home_notice.setWordWrap(True)
+        self.home_notice.setObjectName("WarningLabel")
+        sform.addRow(self.home_notice)
         adv_layout.addWidget(search_box)
 
         br_box = QGroupBox()
@@ -518,7 +537,12 @@ class SettingsPage(QWidget):
         self.save_btn = QPushButton()
         self.save_btn.setObjectName("PrimaryButton")
         self.save_btn.clicked.connect(self.save)
-        root.addWidget(self.save_btn)
+        polish_interactive(self.save_btn)
+        footer = QWidget()
+        footer.setObjectName("SettingsFooter")
+        footer.setLayout(footer_actions_layout(self.save_btn))
+        footer.layout().setContentsMargins(16, 12, 16, 16)
+        root.addWidget(footer)
 
         apply_wheel_guard_to_spinboxes(self)
         self._annotate_a11y_controls()
@@ -563,7 +587,7 @@ class SettingsPage(QWidget):
         self.danger_toggle.setText(tr("settings.danger_zone"))
         self.oauth_box.setTitle(tr("settings.nav.integrations"))
         self.danger_box.setTitle(tr("settings.danger_zone"))
-        self.privacy_box.setTitle(tr("privacy.title"))
+        self.privacy_box.setTitle(escape_mnemonic(tr("privacy.title")))
         self.privacy_intro.setText(tr("privacy.intro"))
         if hasattr(self, "lbl_mail_provider"):
             self.lbl_mail_provider.setText(tr("integrations.mail.label"))
@@ -653,6 +677,7 @@ class SettingsPage(QWidget):
         self.lbl_published.setText(tr("settings.published_days"))
         self.lbl_min_match_dash.setText(tr("settings.min_match_dash"))
         self.lbl_max_distance.setText(tr("settings.max_distance"))
+        self._refresh_home_notice()
         self.lbl_search_mode.setText(tr("settings.search_mode"))
         self.lbl_jobs_per_search.setText(tr("settings.jobs_per_search"))
         cur_mode = self.search_mode.currentData()
@@ -692,6 +717,9 @@ class SettingsPage(QWidget):
             self.guenther_hint.setText(tr("settings.guenther_hint"))
             if hasattr(self, "guenther_model_fixed"):
                 self.guenther_model_fixed.setText(tr("settings.guenther_model.phi_only"))
+            if hasattr(self, "local_llm_cv_parsing"):
+                self.local_llm_cv_parsing.setText(tr("settings.local_llm_cv_parsing"))
+                self._sync_local_llm_cv_hint()
         self.run_auto.setText(tr("settings.run_auto"))
         self.lbl_schedule.setText(tr("settings.schedule"))
         self.lbl_interval.setText(tr("settings.interval"))
@@ -723,7 +751,16 @@ class SettingsPage(QWidget):
         self.open_logs_btn.setText(tr("settings.open_diagnose_logs"))
         self.about_btn.setText(tr("about.open"))
         self.save_btn.setText(tr("btn.save_settings"))
+        apply_button_icon(self.save_btn, "save", color="#ffffff")
         self._annotate_a11y_controls()
+
+    def _sync_local_llm_cv_hint(self) -> None:
+        if not hasattr(self, "local_llm_cv_hint"):
+            return
+        self.local_llm_cv_parsing.setEnabled(False)
+        self.local_llm_cv_parsing.setChecked(False)
+        self.local_llm_cv_parsing.setToolTip(tr("settings.local_llm_cv_unavailable"))
+        self.local_llm_cv_hint.setText(tr("settings.local_llm_cv_disabled_hint"))
 
     def _open_diagnose_logs(self) -> None:
         parent = self.window()
@@ -741,7 +778,15 @@ class SettingsPage(QWidget):
             parent.clear_job_data()  # type: ignore[attr-defined]
 
     def open_about(self) -> None:
-        AboutDialog(self).exec()
+        AboutDialog(self, data_dir=self.config_service.dirs["root"]).exec()
+
+    def _refresh_home_notice(self) -> None:
+        """Re-read home resolution. No PLZ is guessed."""
+        from core.location import home_location_notice
+        from desktop.pages.dashboard import bind_home_notice_label
+
+        cfg = self.config_service.load()
+        bind_home_notice_label(self.home_notice, home_location_notice(cfg.profile.location))
 
     def load_from_config(self) -> None:
         cfg = self.config_service.load()
@@ -776,6 +821,7 @@ class SettingsPage(QWidget):
             jps_idx = self.jobs_per_search.findData(normalize_jobs_per_search(jps))
         self.jobs_per_search.setCurrentIndex(jps_idx if jps_idx >= 0 else 3)
         self.max_distance.setValue(int(cfg.profile.location.max_distance_km))
+        self._refresh_home_notice()
         self.min_match_apply.setValue(int(s.minimum_match_for_auto_apply))
         self.max_per_run.setValue(int(s.max_applications_per_run))
         self.max_per_day.setValue(int(s.max_applications_per_day))
@@ -799,6 +845,9 @@ class SettingsPage(QWidget):
             )
         if hasattr(self, "guenther_enabled"):
             self.guenther_enabled.setChecked(bool(getattr(s, "guenther_enabled", False)))
+        if hasattr(self, "local_llm_cv_parsing"):
+            self.local_llm_cv_parsing.setEnabled(False)
+            self.local_llm_cv_parsing.setChecked(False)
         if hasattr(self, "mail_provider"):
             mp = self.mail_provider.findData(getattr(s, "mail_provider", "none") or "none")
             self.mail_provider.setCurrentIndex(mp if mp >= 0 else 0)
@@ -965,11 +1014,27 @@ class SettingsPage(QWidget):
             if ok:
                 QMessageBox.information(self, tr("settings.browser"), msg)
             else:
-                QMessageBox.warning(self, tr("settings.browser"), msg)
+                self._offer_browser_install()
 
         connect_queued(worker.finished, done)
         self._browser_worker = worker
         self._browser_thread = thread
+
+    def _offer_browser_install(self) -> None:
+        """Missing browser is optional — explain and offer (never auto-start) install."""
+        from desktop.services.browser_install import preferred_browsers_dir
+
+        box, install_btn, _later = build_confirm_box(
+            self,
+            tr("settings.browser"),
+            tr("settings.browser_missing_body", path=str(preferred_browsers_dir())),
+            confirm_text=tr("settings.browser_install_now"),
+            cancel_text=tr("settings.browser_later"),
+        )
+        box.setIcon(QMessageBox.Icon.Information)
+        box.exec()
+        if box.clickedButton() is install_btn:
+            self.repair_browser_component()
 
     def repair_browser_component(self) -> None:
         if self._browser_busy:
@@ -1005,8 +1070,12 @@ class SettingsPage(QWidget):
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.action_failed"))
 
     def _privacy_export(self) -> None:
-        confirm = QMessageBox.question(self, tr("privacy.tab"), tr("privacy.export_confirm"))
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("privacy.export_confirm"),
+            confirm_text=tr("privacy.export_confirm_btn"),
+        ):
             return
         from PySide6.QtWidgets import QFileDialog
 
@@ -1031,10 +1100,12 @@ class SettingsPage(QWidget):
                 self, tr("privacy.tab"), tr("integrations.wrong_mail_provider")
             )
             return
-        confirm = QMessageBox.question(
-            self, tr("privacy.tab"), tr("privacy.connect_gmail_confirm")
-        )
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("privacy.connect_gmail_confirm"),
+            confirm_text=tr("privacy.connect_confirm_btn"),
+        ):
             return
         from integrations.gmail_auth import authorize_gmail
 
@@ -1082,8 +1153,12 @@ class SettingsPage(QWidget):
             if mode == "B"
             else "integrations.calendar.mode_a_confirm"
         )
-        confirm = QMessageBox.question(self, tr("privacy.tab"), tr(rights_key))
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr(rights_key),
+            confirm_text=tr("privacy.connect_confirm_btn"),
+        ):
             return
         from integrations.gmail_auth import authorize_calendar_mode
 
@@ -1237,6 +1312,14 @@ class SettingsPage(QWidget):
         """Disconnect only the currently selected provider — no cross-provider wipe."""
         mail = str(self.mail_provider.currentData() or "none")
         cal = str(self.calendar_provider.currentData() or "none")
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("integrations.disconnect_confirm"),
+            confirm_text=tr("integrations.disconnect_confirm_btn"),
+            destructive=True,
+        ):
+            return
         token_dir = self.config_service.dirs["config"]
         errors: list[str] = []
         try:
@@ -1300,20 +1383,35 @@ class SettingsPage(QWidget):
             self.calendar_status.setText(tr("integrations.status.unknown"))
         _ = ConnectionState  # reserved for richer status labels
 
+    def _confirm_delete(self, body_key: str) -> bool:
+        return confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr(body_key),
+            confirm_text=tr("privacy.delete_confirm_btn"),
+            destructive=True,
+        )
+
     def _privacy_delete_mail(self) -> None:
-        self._privacy_report(self._privacy_life().delete_mail_cache())
+        if self._confirm_delete("privacy.delete_mail_confirm"):
+            self._privacy_report(self._privacy_life().delete_mail_cache())
 
     def _privacy_delete_calendar(self) -> None:
-        self._privacy_report(self._privacy_life().delete_calendar_cache())
+        if self._confirm_delete("privacy.delete_calendar_confirm"):
+            self._privacy_report(self._privacy_life().delete_calendar_cache())
 
     def _privacy_delete_logs(self) -> None:
-        self._privacy_report(self._privacy_life().delete_logs())
+        if self._confirm_delete("privacy.delete_logs_confirm"):
+            self._privacy_report(self._privacy_life().delete_logs())
 
     def _privacy_delete_all(self) -> None:
-        confirm = QMessageBox.question(
-            self, tr("privacy.tab"), tr("profile.reset_confirm_wipe_all")
-        )
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("profile.reset_confirm_wipe_all"),
+            confirm_text=tr("privacy.delete_all_confirm_btn"),
+            destructive=True,
+        ):
             return
         result = self.config_service.delete_all_local_data()
         if result.get("ok") and result.get("verified"):

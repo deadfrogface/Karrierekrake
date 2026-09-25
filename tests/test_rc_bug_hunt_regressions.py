@@ -426,6 +426,7 @@ def test_stored_unknown_ats_type_is_re_detected_from_url(tmp_path: Path):
     mgr = ApplicationManager(cfg, db)
     job = Job(
         id="1",
+        source="indeed",
         title="Dev",
         company="Acme",
         url="https://boards.greenhouse.io/acme/jobs/1",
@@ -737,16 +738,28 @@ def test_hcaptcha_detected():
 
 
 def test_cover_letter_unknown_placeholder_does_not_raise(tmp_path: Path):
-    from core.config import empty_app_config
+    from core.config import SourcedText, empty_app_config
     from core.cover_letter import render_cover_letter
     from core.models import Job
 
     cfg = empty_app_config()
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Entwicklung", source="manual")
+    )
     tpl = tmp_path / "cover.txt"
     tpl.write_text("{job_title} {bonus_line} {company}", encoding="utf-8")
     cfg.settings.cover_letter_template = str(tpl)
     cfg.root = tmp_path
-    text = render_cover_letter(Job(id="1", source="t", title="Dev", company="Acme"), cfg)
+    text = render_cover_letter(
+        Job(
+            id="1",
+            source="t",
+            title="Dev",
+            company="Acme",
+            description="Entwicklung von internen Diensten.",
+        ),
+        cfg,
+    )
     assert "Dev" in text and "Acme" in text
     assert "{bonus_line}" in text
 

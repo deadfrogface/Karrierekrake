@@ -121,6 +121,7 @@ def test_manager_refuses_known_case_even_without_job_row(db: Database, tmp_path:
     mgr = ApplicationManager(cfg, db)
     job = Job(
         id="new-id",
+        source="indeed",
         title="Sachbearbeiter Verwaltung",
         company="Nordlicht Beispiel GmbH",
         url="https://jobs.example.com/nordlicht/verwaltung-1",

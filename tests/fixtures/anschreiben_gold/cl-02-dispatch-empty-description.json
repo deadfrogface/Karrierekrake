@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-02-dispatch-empty-description",
+  "tags": [
+    "empty_description"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-02-dispatch-empty-description",
+    "source": "indeed",
+    "source_job_id": "src-cl-02-dispatch-empty-description",
+    "title": "Dispatcher",
+    "company": "HafenLogistik",
+    "description": "",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-02-dispatch-empty-description",
+    "status": "new"
+  },
+  "expected_outcome": "job_incomplete",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]"
+  ],
+  "rationale": "Dispatcher bei HafenLogistik mit leerer Beschreibung. Soll ist job_incomplete und kein Brief. Die bekannten Sätze „Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.“ und „Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.“ wären Papierkorb, wenn sie doch ausgegeben würden. Der Titel allein trägt keinen Brief."
+}

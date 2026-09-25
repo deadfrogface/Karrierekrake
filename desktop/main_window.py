@@ -5,8 +5,8 @@ from __future__ import annotations
 from copy import deepcopy
 from datetime import datetime, timezone
 
-from PySide6.QtCore import QRect, Qt
-from PySide6.QtGui import QCloseEvent, QGuiApplication, QPixmap
+from PySide6.QtCore import QObject, QRect, Qt, QTimer, Signal
+from PySide6.QtGui import QCloseEvent, QGuiApplication, QPixmap, QShowEvent
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -24,7 +24,7 @@ from PySide6.QtWidgets import (
 
 from desktop.branding import icon_path
 
-from desktop.i18n import i18n, tr
+from desktop.i18n import i18n, install_qt_translator, tr
 from desktop.pages.applications import ApplicationsPage
 from desktop.pages.dashboard import DashboardPage
 from desktop.pages.inbox import InboxPage
@@ -36,12 +36,19 @@ from desktop.pages.settings import SettingsPage
 from desktop.services import ConfigService
 from desktop.services.schedule_service import ScheduleService
 from desktop.services.shutdown import get_shutdown_manager
-from desktop.theme import stylesheet_for
+from desktop.theme import apply_theme
 from desktop.tray import AppTray, app_icon
 from desktop.workers import PipelineWorker, connect_queued, start_worker, thread_is_running
 from desktop.wizard import FirstRunWizard
 from desktop.design_system.a11y import annotate_nav_button, set_accessible_name, set_accessible_description, set_automation_id
 from desktop.widgets.about_dialog import AboutDialog
+from desktop.widgets.confirm_dialog import confirm_action
+
+
+class _GeoIndexBridge(QObject):
+    """Hop from the geo-loader thread back onto the UI thread."""
+
+    ready = Signal()
 
 
 class MainWindow(QMainWindow):
@@ -50,6 +57,20 @@ class MainWindow(QMainWindow):
         self.config_service = config_service
         self._force_quit = False
         self._shutting_down = False
+        self._geo_preload_armed = False
+        self._geo_bridge = _GeoIndexBridge(self)
+        self._geo_bridge.ready.connect(self._refresh_home_notices_after_geo)
+        from core.geo_resolve import (
+            bind_ui_thread,
+            when_geo_index_ready,
+        )
+
+        bind_ui_thread()
+
+        def _emit_geo_ready() -> None:
+            self._geo_bridge.ready.emit()
+
+        when_geo_index_ready(_emit_geo_ready)
         self._worker = None
         self._thread = None
         self.setMinimumSize(900, 650)
@@ -219,6 +240,22 @@ class MainWindow(QMainWindow):
         self._navigate(0)
         self.refresh_all()
 
+    def showEvent(self, event: QShowEvent) -> None:
+        super().showEvent(event)
+        if self._geo_preload_armed or self._shutting_down:
+            return
+        self._geo_preload_armed = True
+        # Queued so show() returns before the loader thread is started.
+        QTimer.singleShot(0, self._start_geo_preload)
+
+    def _start_geo_preload(self) -> None:
+        if self._shutting_down:
+            return
+        from core.geo_resolve import arm_geo_index_from_ui
+
+        # GUI slot: publish the worker and return. No lock, no join, no wait.
+        arm_geo_index_from_ui()
+
     def _restore_geometry(self) -> None:
         state = self.config_service.get_window_state()
         width = int(state.get("width") or 1180)
@@ -284,7 +321,7 @@ class MainWindow(QMainWindow):
             self.tray.retranslate_ui()
 
     def open_help(self) -> None:
-        AboutDialog(self).exec()
+        AboutDialog(self, data_dir=self.config_service.dirs["root"]).exec()
 
     def open_search_intent(self) -> None:
         """Suche remains a first-class page, not primary nav (V2 IA)."""
@@ -306,14 +343,40 @@ class MainWindow(QMainWindow):
     def apply_appearance_from_settings(self) -> None:
         cfg = self.config_service.load()
         app = QApplication.instance()
+        lang = cfg.settings.language or "de"
         if app is not None:
-            app.setStyleSheet(
-                stylesheet_for(
-                    cfg.settings.theme or "system",
-                    high_contrast=bool(getattr(cfg.settings, "high_contrast", False)),
-                )
+            apply_theme(
+                app,
+                cfg.settings.theme or "system",
+                high_contrast=bool(getattr(cfg.settings, "high_contrast", False)),
             )
-        i18n.set_language(cfg.settings.language or "de")
+            install_qt_translator(app, lang)
+        i18n.set_language(lang)
+
+    def _refresh_home_notices_after_geo(self) -> None:
+        """Notice labels only. Does not rebuild profile cards."""
+        if self._shutting_down:
+            return
+        if not hasattr(self, "dashboard"):
+            QTimer.singleShot(0, self._refresh_home_notices_after_geo)
+            return
+        from core.location import commit_loaded_home
+
+        cfg = self.config_service.load()
+        # Same in-flight index, UI thread, no second Nominatim. A save that
+        # happened while the loader was still running lands here once.
+        if commit_loaded_home(cfg.profile.location) == "resolved":
+            self.config_service.save(cfg)
+        try:
+            self.profile.refresh_home_status()
+            self.profile.location_work.refresh_home_notice(
+                self.config_service.load().profile.location
+            )
+            self.dashboard.refresh()
+            self.settings._refresh_home_notice()
+            self.jobs.refresh()
+        except Exception:
+            return
 
     def refresh_all(self) -> None:
         self.dashboard.refresh()
@@ -408,8 +471,11 @@ class MainWindow(QMainWindow):
                 extra = "\n" + tr("msg.empty_queries")
             if stats.get("source_errors"):
                 extra = (extra + "\n" if extra else "\n") + "\n".join(stats.get("source_errors") or [])
-            if stats.get("home_warning"):
-                extra += "\n\n" + str(stats.get("home_warning"))
+            from core.location import home_location_notice
+
+            notice = home_location_notice(self.config_service.load().profile.location)
+            if notice.ask_postal and notice.notice_key:
+                extra += "\n\n" + tr(notice.notice_key)
             if stats.get("ats_unknown") is not None:
                 extra += (
                     f"\nATS: supported={stats.get('ats_supported', 0)} "
@@ -427,6 +493,7 @@ class MainWindow(QMainWindow):
                     f"{tr('msg.applied')}: {stats.get('applied', 0)} | {tr('msg.review')}: {stats.get('needs_review', 0)}"
                     f"{extra}",
                 )
+                self._schedule_status_reset(tr("status.cancelled"))
             else:
                 QMessageBox.information(
                     self,
@@ -457,6 +524,26 @@ class MainWindow(QMainWindow):
         self._worker = worker
         self._thread = thread
 
+    STATUS_RESET_MS = 5000
+
+    def _schedule_status_reset(self, shown: str, delay_ms: int | None = None) -> None:
+        """Return a finished-run status (e.g. "Abgebrochen") to "Bereit" after a moment."""
+
+        def _reset() -> None:
+            try:
+                if self._shutting_down or self._pipeline_running():
+                    return
+                if self.progress_label.text() != shown:
+                    return
+                ready = tr("status.ready")
+                self.progress_label.setText(ready)
+                set_accessible_name(self.progress_label, ready)
+                self.dashboard.set_status(ready)
+            except RuntimeError:
+                pass
+
+        QTimer.singleShot(self.STATUS_RESET_MS if delay_ms is None else delay_ms, _reset)
+
     def cancel_pipeline(self) -> None:
         worker = getattr(self, "_worker", None)
         if worker is not None and hasattr(worker, "request_cancel"):
@@ -465,12 +552,13 @@ class MainWindow(QMainWindow):
             self.dashboard.set_status(tr("btn.cancel_search") + "…")
 
     def clear_job_data(self) -> None:
-        confirm = QMessageBox.question(
+        if not confirm_action(
             self,
             tr("msg.clear_jobs_title"),
             tr("msg.clear_jobs_body"),
-        )
-        if confirm != QMessageBox.StandardButton.Yes:
+            confirm_text=tr("btn.clear_jobs"),
+            destructive=True,
+        ):
             return
         cfg = self.config_service.load()
         from core.database import Database

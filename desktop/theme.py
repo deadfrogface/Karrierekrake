@@ -139,9 +139,6 @@ QFrame#Card, QFrame#HeroCard, QFrame#DetailPanel {{
     border: 1px solid {COLOR_LIGHT_BORDER};
     border-radius: 10px;
 }}
-QFrame#HeroCard {{
-    padding: 4px;
-}}
 QLabel#CardValue {{
     font-size: 22px;
     font-weight: 700;
@@ -155,20 +152,32 @@ QPushButton#PrimaryButton {{
     background: {COLOR_PRIMARY};
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 9px 16px;
+    border-radius: 8px;
+    padding: 10px 18px;
     font-weight: 600;
 }}
 QPushButton#PrimaryButton:hover {{ background: {COLOR_PRIMARY_HOVER}; }}
+QPushButton#PrimaryButton:pressed {{
+    background: {COLOR_PRIMARY_HOVER};
+    padding-top: 11px;
+    padding-bottom: 9px;
+}}
 QPushButton#PrimaryButton:disabled {{ background: #9bb5ad; color: #f2f2f2; }}
 QPushButton#SecondaryButton {{
     background: {COLOR_LIGHT_SURFACE};
     color: {COLOR_LIGHT_TEXT};
     border: 1px solid #b7c4d1;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 8px 14px;
 }}
-QPushButton#SecondaryButton:hover {{ background: #f3f7fa; }}
+QPushButton#SecondaryButton:hover {{
+    background: #f3f7fa;
+    border-color: {COLOR_PRIMARY};
+}}
+QPushButton#SecondaryButton:pressed {{
+    padding-top: 9px;
+    padding-bottom: 7px;
+}}
 QPushButton#GhostButton {{
     background: transparent;
     color: {COLOR_PRIMARY};
@@ -256,6 +265,7 @@ QMenu {{
 }}
 QMenu::item:selected {{ background: {COLOR_PRIMARY}; color: #ffffff; }}
 QLabel#WarningLabel {{ color: {COLOR_WARN}; font-weight: 600; }}
+QLabel#HomeStatusOk {{ color: {COLOR_SUCCESS}; font-weight: 600; }}
 QPlainTextEdit#LogPlain {{
     font-family: "Cascadia Mono", "Consolas", monospace;
     font-size: 12px;
@@ -360,20 +370,32 @@ QPushButton#PrimaryButton {{
     background: {COLOR_TEAL};
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 9px 16px;
+    border-radius: 8px;
+    padding: 10px 18px;
     font-weight: 600;
 }}
 QPushButton#PrimaryButton:hover {{ background: {COLOR_PRIMARY_HOVER}; }}
+QPushButton#PrimaryButton:pressed {{
+    background: {COLOR_PRIMARY_HOVER};
+    padding-top: 11px;
+    padding-bottom: 9px;
+}}
 QPushButton#PrimaryButton:disabled {{ background: #3a4a55; color: #9aa8b4; }}
 QPushButton#SecondaryButton {{
     background: {COLOR_DARK_SURFACE};
     color: {COLOR_DARK_TEXT};
     border: 1px solid #3a4d60;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 8px 14px;
 }}
-QPushButton#SecondaryButton:hover {{ background: #223142; }}
+QPushButton#SecondaryButton:hover {{
+    background: #223142;
+    border-color: {COLOR_TEAL};
+}}
+QPushButton#SecondaryButton:pressed {{
+    padding-top: 9px;
+    padding-bottom: 7px;
+}}
 QPushButton#GhostButton {{
     background: transparent;
     color: #9fd5c4;
@@ -471,6 +493,7 @@ QMenu::item:selected {{ background: {COLOR_TEAL}; color: #ffffff; }}
 QMessageBox {{ background: {COLOR_DARK_SURFACE}; }}
 QMessageBox QLabel {{ color: {COLOR_DARK_TEXT}; }}
 QLabel#WarningLabel {{ color: #f0c090; font-weight: 600; }}
+QLabel#HomeStatusOk {{ color: #8fd0b0; font-weight: 600; }}
 QPlainTextEdit#LogPlain {{
     font-family: "Cascadia Mono", "Consolas", monospace;
     font-size: 12px;
@@ -507,7 +530,12 @@ def stylesheet_for(
         "true",
         "yes",
     }:
-        return legacy_stylesheet_for(preference)
+        sheet = legacy_stylesheet_for(preference)
+        if resolve_theme(preference) == "dark":
+            from desktop.design_system.stylesheet import dark_chip_hover_qss
+
+            sheet += "\n" + dark_chip_hover_qss()
+        return sheet
     if dpi_scale is None:
         dpi_scale = detect_dpi_scale()
     if high_contrast is None:
@@ -527,4 +555,62 @@ def stylesheet_for(
 def legacy_stylesheet_for(preference: str) -> str:
     """Pre-design-system QSS path (rollback)."""
     theme = resolve_theme(preference)
-    return DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
+    sheet = DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
+    # Marker so chip polish can drop shadows when the app sheet is dark.
+    return f"/* kk-theme: {theme} */\n{sheet}"
+
+
+def dark_palette():
+    """QPalette matching the dark tokens.
+
+    QSS alone cannot recolor surfaces that paint from the palette (scroll-area
+    bodies with autoFillBackground, native dialog buttons, item views), so the
+    dark theme must ship a matching palette or those stay light.
+    """
+    from PySide6.QtGui import QColor, QPalette
+
+    role = QPalette.ColorRole
+    group = QPalette.ColorGroup
+    pal = QPalette()
+    colors = {
+        role.Window: COLOR_DARK_BG,
+        role.WindowText: COLOR_DARK_TEXT,
+        # Lighter than Window so unstyled check/radio indicators stay visible.
+        role.Base: "#243343",
+        role.AlternateBase: "#15202B",
+        role.Text: COLOR_DARK_TEXT,
+        role.Button: COLOR_DARK_SURFACE,
+        role.ButtonText: COLOR_DARK_TEXT,
+        role.BrightText: "#FFFFFF",
+        role.Highlight: COLOR_TEAL,
+        role.HighlightedText: "#FFFFFF",
+        role.ToolTipBase: COLOR_DARK_TEXT,
+        role.ToolTipText: "#121820",
+        role.PlaceholderText: COLOR_DARK_MUTED,
+        role.Link: "#9FD5C4",
+        role.LinkVisited: "#9FD5C4",
+        role.Light: "#2A3B4D",
+        role.Midlight: "#223142",
+        role.Mid: "#1B2632",
+        role.Dark: "#0B1117",
+        role.Shadow: "#000000",
+    }
+    for r, value in colors.items():
+        pal.setColor(r, QColor(value))
+    disabled_fg = QColor("#6B7C8C")
+    for r in (role.WindowText, role.Text, role.ButtonText):
+        pal.setColor(group.Disabled, r, disabled_fg)
+    pal.setColor(group.Disabled, role.Button, QColor("#16202A"))
+    return pal
+
+
+def apply_theme(app, preference: str, *, high_contrast: bool | None = None) -> str:
+    """Apply palette + stylesheet for *preference*; returns the resolved theme."""
+    theme = resolve_theme(preference)
+    style = app.style()
+    if theme == "dark":
+        app.setPalette(dark_palette())
+    elif style is not None:
+        app.setPalette(style.standardPalette())
+    app.setStyleSheet(stylesheet_for(preference, high_contrast=high_contrast))
+    return theme

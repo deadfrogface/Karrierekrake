@@ -130,6 +130,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "btn.review_queue": "Zur Prüfung",
         "btn.save": "Speichern",
         "btn.cancel": "Abbrechen",
+        "btn.ok": "OK",
         "btn.save_profile": "Profil speichern",
         "btn.save_search": "Suchwunsch speichern",
         "btn.save_settings": "Einstellungen speichern",
@@ -200,7 +201,17 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "dash.active": "aktiv",
         "dash.last_search": "Letzte Suche",
         "dash.next_run": "Nächster geplanter Lauf",
-        "dash.home_missing": "Warnung: Such-Heimatadresse fehlt — Distanzfilter inaktiv.",
+        "dash.home_missing": (
+            "Noch kein Wohnort hinterlegt. Trage im Profil Ort oder Postleitzahl ein, "
+            "damit Jobs nach Entfernung gefiltert werden können."
+        ),
+        "dash.kpi_open_hint": "Zum Öffnen klicken",
+        "dash.home_plz_hint": (
+            "Standort nicht prüfbar. Bitte Postleitzahl angeben — "
+            "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
+        ),
+        "dash.home_resolved": "Wohnort aufgelöst: {place}. Distanzfilter aktiv.",
+        "jobs.distance_skipped": "Umkreis übersprungen — bitte PLZ angeben",
         "dash.run_stats": "Lauf-Statistik",
         "apps.preview_title": "Bewerbungsvorschau (vor Absenden)",
         "apps.preview_will_submit": "Finales Absenden wäre erlaubt.",
@@ -244,6 +255,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.empty_section": "Noch keine Einträge.",
         "profile.empty_tags": "Keine Angaben",
         "profile.more_tags": "+ {n} weitere",
+        "profile.show_more_entry": "+ 1 weiteren Eintrag anzeigen",
         "profile.show_more_entries": "+ {n} weitere Einträge anzeigen",
         "profile.cv_meta": "Lebenslauf für Bewerbungen",
         "profile.no_linkedin": "Kein LinkedIn-Link hinterlegt",
@@ -345,13 +357,36 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "privacy.tab": "Datenschutz",
         "privacy.title": "Daten & Löschung",
         "privacy.intro": (
-            "Lokale KI ist ein Datenschutzvorteil, aber kein automatischer "
-            "DSGVO-Nachweis. Rechtsgrundlagen: UNSPECIFIED / LEGAL REVIEW."
+            "Karrierekrake speichert Profil, Lebenslauf, Jobs und Bewerbungen lokal "
+            "auf diesem Gerät. Es gibt kein Karrierekrake-Konto und keine Telemetrie. "
+            "Daten verlassen den Rechner nur durch Aktionen, die du startest – etwa "
+            "eine Jobsuche bei Jobportalen, eine Bewerbung oder das Verbinden von "
+            "E-Mail und Kalender. Hier kannst du deine Daten jederzeit exportieren "
+            "oder löschen."
         ),
         "privacy.export": "Meine Daten exportieren…",
         "privacy.export_confirm": (
             "Der Export enthält personenbezogene Daten (kein OAuth-Token). Fortfahren?"
         ),
+        "privacy.export_confirm_btn": "Exportieren",
+        "privacy.connect_confirm_btn": "Verbinden",
+        "privacy.delete_confirm_btn": "Löschen",
+        "privacy.delete_all_confirm_btn": "Alles löschen",
+        "privacy.delete_mail_confirm": (
+            "Lokalen Mail-Cache löschen? Dein Postfach beim Anbieter bleibt unverändert."
+        ),
+        "privacy.delete_calendar_confirm": (
+            "Lokalen Kalender-Cache löschen? Dein Kalender beim Anbieter bleibt unverändert."
+        ),
+        "privacy.delete_logs_confirm": (
+            "Alle lokalen Protokolle löschen? Sie werden nur für die Fehlersuche benötigt."
+        ),
+        "integrations.disconnect_confirm": (
+            "Gewählte Verbindung trennen? Gespeicherte Zugangsdaten werden entfernt; "
+            "du kannst dich später erneut verbinden."
+        ),
+        "integrations.disconnect_confirm_btn": "Trennen",
+        "dialog.confirm": "Bestätigen",
         "privacy.export_done": "Export gespeichert:",
         "privacy.export_failed": "Export fehlgeschlagen oder abgebrochen.",
         "privacy.disconnect_google": "Google-Verbindung trennen",
@@ -453,6 +488,44 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.confidence": "Erkennungsstatus",
         "cv_import.review_items": "Zur Prüfung (unklar / umklassifiziert)",
         "cv_import.read_error": "Konnte nicht gelesen werden:",
+        "cv_import.parsing": "Lebenslauf wird gelesen … Die Oberfläche bleibt bedienbar.",
+        "cv_import.ready": "Lebenslauf gelesen. Bitte prüfen und übernehmen.",
+        "cv_import.retry": "Erneut versuchen",
+        "cv_import.oom": (
+            "Zu wenig Arbeitsspeicher. Die Eingaben bleiben erhalten. "
+            "Es gibt keinen automatischen Neustart — bitte manuell erneut versuchen."
+        ),
+        "cv_import.timeout": (
+            "Zeitüberschreitung beim Lesen. Die Eingaben bleiben erhalten. "
+            "Bitte manuell erneut versuchen."
+        ),
+        "cv_import.cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
+        "cv_import.cancel_btn": "Abbrechen",
+        "cv_import.close": "Schließen",
+        "cv_import.progress": "Lebenslauf wird eingelesen…",
+        "cv_import.read_again": "Erneut einlesen",
+        "cv_import.choose_other": "Andere Datei wählen",
+        "cv_import.empty_title": "Nichts erkannt",
+        "cv_import.empty_body": (
+            "In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. "
+            "Wähle eine andere Datei oder schließe den Dialog."
+        ),
+        "cv_import.error_oom": (
+            "Nicht genug Arbeitsspeicher, um diese Datei einzulesen. Es wurde nichts übernommen. "
+            "Karrierekrake startet den Vorgang nicht automatisch neu."
+        ),
+        "cv_import.error_timeout": (
+            "Das Einlesen hat zu lange gedauert und wurde abgebrochen. Es wurde nichts übernommen. "
+            "Es wird nicht automatisch erneut versucht."
+        ),
+        "cv_import.error_generic": (
+            "Die Datei konnte nicht gelesen werden. Pfad und Eingaben bleiben erhalten."
+        ),
+        "cv_import.empty": (
+            "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
+            "oder lies die Datei erneut ein."
+        ),
+        "cv_import.manual_profile": "Profil manuell eintragen",
         "cv_import.pipeline": "CV-Extraktion",
         "cv_import.pipeline_det": "Docpick + Qwen3.5-4B (lokal)",
         "cv_import.manual_hint": "Bitte Felder manuell ergänzen. Es gibt keinen automatischen Wechsel auf den alten DET-Parser.",
@@ -496,6 +569,23 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "CV-Import ist rein deterministisch und lädt kein Modell. "
             "Fehlt das Writer-Modell: GUENTHER_UNAVAILABLE — kein Heuristik-Ersatz. "
             "Günther schlägt vor — Karrierekrake entscheidet."
+        ),
+        "settings.local_llm_cv_parsing": "Lokales LLM-CV-Parsing auf diesem PC erlauben",
+        "settings.local_llm_cv_kill": (
+            "wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; "
+            "der manuelle Profilimport bleibt möglich."
+        ),
+        "settings.local_llm_cv_escalation": (
+            "Erster Eskalationsschritt: kleineres lokales Modell unter denselben "
+            "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
+            "Phi-Fallback und kein neues Modell in diesem Schritt."
+        ),
+        "settings.local_llm_cv_disabled_hint": (
+            "Das lokale LLM-CV-Parsing ist derzeit deaktiviert. "
+            "Lebensläufe werden mit dem Standard-Parser gelesen."
+        ),
+        "settings.local_llm_cv_unavailable": (
+            "Erst verfügbar, wenn der Speichertest auf dem Zielgerät bestanden ist."
         ),
         "guenther.validator.unsupported_credential": (
             "Eine behauptete Qualifikation ist im Profil nicht belegt."
@@ -572,7 +662,18 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.source_login": "Login erforderlich",
         "settings.source_unavailable": "Nicht verfügbar",
         "settings.browser_ok": "Browser-Automatisierung: bereit",
-        "settings.browser_missing": "Browser-Automatisierung: nicht installiert",
+        "settings.browser_missing": (
+            "Browser-Automatisierung: noch nicht installiert (nur für das automatische "
+            "Ausfüllen von Bewerbungen nötig – die Jobsuche funktioniert auch ohne)."
+        ),
+        "settings.browser_missing_body": (
+            "Die Browser-Automatisierung ist noch nicht installiert. Du brauchst sie nur, "
+            "wenn Karrierekrake Bewerbungsformulare für dich ausfüllen soll – Jobsuche "
+            "und Übersicht funktionieren auch ohne.\n\n"
+            "Die Installation ist ein einmaliger Download (danach offline nutzbar) nach:\n{path}"
+        ),
+        "settings.browser_install_now": "Jetzt installieren",
+        "settings.browser_later": "Später",
         "settings.browser_installing": "Prüfung/Reparatur läuft…",
         "settings.browser_checking": "Browser-Komponente wird geprüft…",
         "settings.browser_repairing": "Browser-Komponente wird repariert…",
@@ -682,7 +783,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "dash.next_profile_title": "Als Nächstes: Profil ergänzen",
         "dash.next_profile_body": "Tragen Sie mindestens einen Wunschberuf ein, damit die Suche passende Stellen finden kann.",
         "dash.next_profile_cta": "Zum Profil",
-        "dash.next_inbox_title": "{n} Nachrichten müssen zugeordnet werden",
+        "dash.next_inbox_title.one": "1 Nachricht muss zugeordnet werden",
+        "dash.next_inbox_title.other": "{n} Nachrichten müssen zugeordnet werden",
         "dash.next_inbox_body": "Im Postfach liegen Antworten, die nicht eindeutig zugewiesen werden konnten.",
         "dash.next_inbox_cta": "Jetzt prüfen",
         "jobs.page_title": "Jobs",
@@ -758,7 +860,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_label.ignored": "Ignoriert",
         "about.title": "Über Karrierekrake",
         "about.open": "Über Karrierekrake…",
-        "about.tech": "{display} — {exe} · Daten: %LOCALAPPDATA%\\{data}",
+        "about.tech": "{display} — {exe}",
+        "about.data_dir": "Deine Daten liegen lokal unter:\n{path}",
+        "about.open_data_dir": "Datenordner öffnen",
+        "about.help_hint": (
+            "So geht's: Profil ausfüllen → Jobs suchen → Treffer prüfen. "
+            "Bei Problemen: Einstellungen → Erweitert → Protokolle öffnen."
+        ),
                 "col.fit": 'Passung',
         "jobs.fit_detail": 'Warum dieser Job',
         "fit.sehr_passend": 'Sehr passend',
@@ -827,6 +935,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.explain_job": 'Erklärt die Passung anhand SearchIntent und Match-Gründen.',
         "guenther.hint.prep_interview": 'Interview-Prep aus Fall- und Job-Kontext.',
         "brand.tagline": "FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK.",
+        "cover.job_incomplete": "Die Anzeige hat keinen Beschreibungstext.",
+        "cover.no_evidence": "Im Profil fehlt eine bestätigte berufliche Station und eine Kenntnis, die zur Anzeige passt.",
+        "cover.demo_excluded": "Demo-Anzeigen sind von Bewerbungen und Anschreiben ausgeschlossen.",
+        "cover.action.hide_demo": "Beispiele ausblenden",
+        "cover.company_missing": "In der Anzeige fehlt der Firmenname.",
+        "cover.saved": "Anschreiben gespeichert.",
     },
     "en": {
         "app.name": "Karrierekrake",
@@ -952,6 +1066,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "btn.review_queue": "Review queue",
         "btn.save": "Save",
         "btn.cancel": "Cancel",
+        "btn.ok": "OK",
         "btn.save_profile": "Save profile",
         "btn.save_search": "Save search intent",
         "btn.save_settings": "Save settings",
@@ -1022,7 +1137,17 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "dash.active": "active",
         "dash.last_search": "Last search",
         "dash.next_run": "Next scheduled run",
-        "dash.home_missing": "Warning: search home address missing — distance filter inactive.",
+        "dash.home_missing": (
+            "No home location yet. Add a city or postal code in your profile so jobs "
+            "can be filtered by distance."
+        ),
+        "dash.kpi_open_hint": "Click to open",
+        "dash.home_plz_hint": (
+            "Location cannot be checked. Please enter a postal code — "
+            "without a postal code no place is guessed and the radius filter is skipped."
+        ),
+        "dash.home_resolved": "Home location resolved: {place}. Distance filter active.",
+        "jobs.distance_skipped": "Radius skipped — please enter a postal code",
         "dash.run_stats": "Run stats",
         "apps.preview_title": "Application preview (pre-submit)",
         "apps.preview_will_submit": "Final submit would be allowed.",
@@ -1066,6 +1191,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.empty_section": "No entries yet.",
         "profile.empty_tags": "None listed",
         "profile.more_tags": "+ {n} more",
+        "profile.show_more_entry": "+ show 1 more entry",
         "profile.show_more_entries": "+ show {n} more entries",
         "profile.cv_meta": "CV used for applications",
         "profile.no_linkedin": "No LinkedIn link saved",
@@ -1167,13 +1293,35 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "privacy.tab": "Privacy",
         "privacy.title": "Data & deletion",
         "privacy.intro": (
-            "Local AI is a privacy advantage, not automatic GDPR compliance. "
-            "Legal bases: UNSPECIFIED / LEGAL REVIEW."
+            "Karrierekrake stores your profile, CV, jobs and applications locally "
+            "on this device. There is no Karrierekrake account and no telemetry. "
+            "Data only leaves this computer through actions you start — for example "
+            "a job search on job portals, an application, or connecting email and "
+            "calendar. You can export or delete your data here at any time."
         ),
         "privacy.export": "Export my data…",
         "privacy.export_confirm": (
             "Export includes personal data (never OAuth tokens). Continue?"
         ),
+        "privacy.export_confirm_btn": "Export",
+        "privacy.connect_confirm_btn": "Connect",
+        "privacy.delete_confirm_btn": "Delete",
+        "privacy.delete_all_confirm_btn": "Delete everything",
+        "privacy.delete_mail_confirm": (
+            "Delete the local mail cache? Your mailbox at the provider stays unchanged."
+        ),
+        "privacy.delete_calendar_confirm": (
+            "Delete the local calendar cache? Your calendar at the provider stays unchanged."
+        ),
+        "privacy.delete_logs_confirm": (
+            "Delete all local logs? They are only needed for troubleshooting."
+        ),
+        "integrations.disconnect_confirm": (
+            "Disconnect the selected account? Stored credentials are removed; "
+            "you can reconnect later."
+        ),
+        "integrations.disconnect_confirm_btn": "Disconnect",
+        "dialog.confirm": "Confirm",
         "privacy.export_done": "Export saved:",
         "privacy.export_failed": "Export failed or cancelled.",
         "privacy.disconnect_google": "Disconnect Google",
@@ -1275,6 +1423,43 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.confidence": "Detection status",
         "cv_import.review_items": "Needs review (unclear / reclassified)",
         "cv_import.read_error": "Could not read:",
+        "cv_import.parsing": "Reading the CV … The window stays responsive.",
+        "cv_import.ready": "CV read. Review it, then apply.",
+        "cv_import.retry": "Try again",
+        "cv_import.oom": (
+            "Out of memory. Your entries are unchanged. "
+            "There is no automatic restart — try again manually."
+        ),
+        "cv_import.timeout": (
+            "Reading timed out. Your entries are unchanged. Try again manually."
+        ),
+        "cv_import.cancelled": "Reading cancelled. Nothing was applied.",
+        "cv_import.cancel_btn": "Cancel",
+        "cv_import.close": "Close",
+        "cv_import.progress": "Reading the CV…",
+        "cv_import.read_again": "Read again",
+        "cv_import.choose_other": "Choose another file",
+        "cv_import.empty_title": "Nothing detected",
+        "cv_import.empty_body": (
+            "No profile data was detected in this file. Nothing was applied. "
+            "Choose another file or close the dialog."
+        ),
+        "cv_import.error_oom": (
+            "Not enough memory to read this file. Nothing was applied. "
+            "Karrierekrake will not restart this on its own."
+        ),
+        "cv_import.error_timeout": (
+            "Reading took too long and was stopped. Nothing was applied. "
+            "It will not be tried again automatically."
+        ),
+        "cv_import.error_generic": (
+            "The file could not be read. The path and your entries stay as they are."
+        ),
+        "cv_import.empty": (
+            "Nothing was found in the document. Enter the profile manually "
+            "or read the file again."
+        ),
+        "cv_import.manual_profile": "Enter profile manually",
         "cv_import.pipeline": "CV extraction",
         "cv_import.pipeline_det": "Docpick + Qwen3.5-4B (local)",
         "cv_import.manual_hint": "Please complete fields manually. There is no automatic fallback to the legacy DET parser.",
@@ -1318,6 +1503,23 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "CV import is fully deterministic and does not load a model. "
             "If the writer model is missing: GUENTHER_UNAVAILABLE — no heuristic substitute. "
             "Günther suggests — Karrierekrake decides."
+        ),
+        "settings.local_llm_cv_parsing": "Allow local LLM CV parsing on this PC",
+        "settings.local_llm_cv_kill": (
+            "Local LLM CV parsing is removed on this hardware; "
+            "manual profile import remains available."
+        ),
+        "settings.local_llm_cv_escalation": (
+            "First escalation: measure a smaller local model under the same "
+            "quality, RAM, and runtime gates. No automatic Phi fallback and "
+            "no new model in this step."
+        ),
+        "settings.local_llm_cv_disabled_hint": (
+            "Local LLM CV parsing is currently disabled. "
+            "CVs are read with the standard parser."
+        ),
+        "settings.local_llm_cv_unavailable": (
+            "Available only after the memory test on the target device has passed."
         ),
         "guenther.validator.unsupported_credential": (
             "A claimed qualification is not supported by the profile."
@@ -1394,7 +1596,18 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.source_login": "Login required",
         "settings.source_unavailable": "Unavailable",
         "settings.browser_ok": "Browser component: ready",
-        "settings.browser_missing": "Browser component: missing or damaged",
+        "settings.browser_missing": (
+            "Browser component: not installed yet (only needed to fill in application "
+            "forms automatically — job search works without it)."
+        ),
+        "settings.browser_missing_body": (
+            "The browser component is not installed yet. You only need it if Karrierekrake "
+            "should fill in application forms for you — job search and the overview work "
+            "without it.\n\n"
+            "Installing is a one-time download (works offline afterwards) to:\n{path}"
+        ),
+        "settings.browser_install_now": "Install now",
+        "settings.browser_later": "Later",
         "settings.browser_installing": "Check/repair in progress…",
         "settings.browser_checking": "Checking browser component…",
         "settings.browser_repairing": "Repairing browser component…",
@@ -1504,7 +1717,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "dash.next_profile_title": "Next: complete your profile",
         "dash.next_profile_body": "Add at least one desired job title so search can find matching roles.",
         "dash.next_profile_cta": "Go to profile",
-        "dash.next_inbox_title": "{n} messages need association",
+        "dash.next_inbox_title.one": "1 message needs association",
+        "dash.next_inbox_title.other": "{n} messages need association",
         "dash.next_inbox_body": "Your inbox has employer replies that could not be matched uniquely.",
         "dash.next_inbox_cta": "Review now",
         "jobs.page_title": "Jobs",
@@ -1580,7 +1794,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_label.ignored": "Ignored",
         "about.title": "About Karrierekrake",
         "about.open": "About Karrierekrake…",
-        "about.tech": "{display} — {exe} · data: %LOCALAPPDATA%\\{data}",
+        "about.tech": "{display} — {exe}",
+        "about.data_dir": "Your data is stored locally in:\n{path}",
+        "about.open_data_dir": "Open data folder",
+        "about.help_hint": (
+            "How it works: complete your profile → find jobs → review matches. "
+            "Having trouble? Settings → Advanced → Open logs."
+        ),
                 "col.fit": 'Fit',
         "jobs.fit_detail": 'Why this job',
         "fit.sehr_passend": 'Strong fit',
@@ -1649,6 +1869,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.explain_job": 'Explains fit from SearchIntent and match reasons.',
         "guenther.hint.prep_interview": 'Interview prep from case and job context.',
         "brand.tagline": "FIND. APPLY. KEEP THE OVERVIEW.",
+        "cover.job_incomplete": "The job ad has no description.",
+        "cover.no_evidence": "The profile has no confirmed work experience and no skill that matches this job ad.",
+        "cover.demo_excluded": "Demo listings are excluded from applications and cover letters.",
+        "cover.action.hide_demo": "Hide examples",
+        "cover.company_missing": "The company name is missing from the job ad.",
+        "cover.saved": "Cover letter saved.",
     },
 }
 
@@ -1702,3 +1928,36 @@ i18n = TranslationService("de")
 
 def tr(key: str, **kwargs: str) -> str:
     return i18n.t(key, **kwargs)
+
+
+def escape_mnemonic(text: str) -> str:
+    """Keep a literal "&" in widgets that treat it as a shortcut marker (QGroupBox titles)."""
+    return (text or "").replace("&", "&&")
+
+
+def tr_n(key: str, n: int, **kwargs: str) -> str:
+    """Count-aware lookup: ``{key}.one`` for n == 1, else ``{key}.other``."""
+    suffix = "one" if int(n) == 1 else "other"
+    return i18n.t(f"{key}.{suffix}", n=str(n), **kwargs)
+
+
+def install_qt_translator(app, lang: str) -> None:
+    """Localize Qt's own standard buttons/dialog strings (best effort)."""
+    from PySide6.QtCore import QLibraryInfo, QTranslator
+
+    previous = getattr(app, "_karrierekrake_qt_translator", None)
+    if previous is not None:
+        app.removeTranslator(previous)
+        app._karrierekrake_qt_translator = None
+    translator = QTranslator(app)
+    path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+    if translator.load(f"qtbase_{lang}", path):
+        app.installTranslator(translator)
+        app._karrierekrake_qt_translator = translator
+
+
+def tr_show_more_entries(n: int) -> str:
+    """Hidden-experience label. One row uses the singular key."""
+    if int(n) == 1:
+        return tr("profile.show_more_entry")
+    return tr("profile.show_more_entries", n=int(n))

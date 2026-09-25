@@ -296,11 +296,11 @@ def personal_from_parsed(parsed: dict[str, Any]) -> dict[str, str]:
         val = str(personal.get(key) or "").strip()
         if val:
             out[key] = val
-    # ApplicationProfile has street but no house_number — join for ATS forms.
-    house = str(personal.get("house_number") or "").strip()
-    street = out.get("street") or ""
-    if street and house and not re.search(rf"\b{re.escape(house)}$", street):
-        out["street"] = f"{street} {house}".strip()
+    # Profile street is a single field — rejoin house_number when DET split it.
+    hn = str(personal.get("house_number") or "").strip()
+    street = out.get("street", "")
+    if street and hn and not re.search(rf"(?<!\d){re.escape(hn)}$", street):
+        out["street"] = f"{street} {hn}".strip()
     emails = parsed.get("emails") or []
     phones = parsed.get("phones") or []
     if emails and "email" not in out:
@@ -327,10 +327,6 @@ def filter_parsed_for_import(parsed: dict[str, Any]) -> dict[str, Any]:
 
     Non-section uncertain markers (e.g. ``languages_reclassified``) must not
     wipe correctly classified data — reclassified tokens are already routed.
-
-    When ``source_text`` is present, education/employment without source
-    evidence are stripped so they cannot reach Matching / Cover letters.
-    Invented critical facts raise ``ExtractConfirmationError``.
     """
     out = dict(parsed)
     conf = dict(parsed.get("confidence") or {})
@@ -354,19 +350,6 @@ def filter_parsed_for_import(parsed: dict[str, Any]) -> dict[str, Any]:
     unclear = list(parsed.get("uncertain_items") or [])
     if unclear:
         out["uncertain_items"] = unclear
-
-    source_text = str(parsed.get("source_text") or parsed.get("raw_text") or "")
-    if source_text.strip() and (out.get("education") or out.get("work_experience")):
-        from core.cv_extract_confirmation import confirm_extract_for_downstream
-
-        # Import path: strip unconfirmed. Matching/CL callers must use
-        # fail_on_invented=True (see test_cv_extract_confirmation_gate).
-        confirmed = confirm_extract_for_downstream(
-            out, source_text=source_text, fail_on_invented=False
-        )
-        out = confirmed.parsed
-        if any(f.get("status") == "REJECTED" for f in confirmed.findings):
-            out["needs_manual_review"] = True
     return out
 
 

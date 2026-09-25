@@ -1,7 +1,7 @@
 """UI-E2E: Desktop CV import persists source_text → Anschreiben refuses unevidenced titles.
 
 Offscreen Qt path through CvImportDialog → config save → build_application_preview.
-No live Docpick/Qwen; worker is stubbed. DET is not used.
+No live Docpick/Qwen; parse result is injected. DET is not used.
 """
 
 from __future__ import annotations
@@ -109,21 +109,17 @@ def test_ui_e2e_import_persists_source_text_and_blocks_unevidenced_title(
     qapp, config_service, tmp_path, monkeypatch
 ):
     """Real desktop import path must feed Anschreiben guard via cv_source_text."""
+    from apply.preview import build_application_preview
     from core.config import ExperienceEntry
     from core.models import Job
-    from apply.preview import build_application_preview
+    from desktop.cv_import_supervisor import ImportAttemptResult
     from desktop.widgets import cv_import_dialog as dlg_mod
 
     cv_path = tmp_path / "fixture_cv.pdf"
     cv_path.write_bytes(b"%PDF-1.4 fixture")
 
-    # Avoid live Docpick: inject parsed result as if worker finished.
-    original_start = dlg_mod.CvImportDialog._start_extract
-
-    def _fake_start(self) -> None:
-        self._on_extracted(_stub_extract_parsed())
-
-    monkeypatch.setattr(dlg_mod.CvImportDialog, "_start_extract", _fake_start)
+    # Skip live Docpick/supervisor: inject a finished attempt after construct.
+    monkeypatch.setattr(dlg_mod.CvImportDialog, "start_parse", lambda self: None)
 
     cfg = config_service.load()
     cfg.application.cv_path = str(cv_path)
@@ -131,11 +127,19 @@ def test_ui_e2e_import_persists_source_text_and_blocks_unevidenced_title(
     cfg = config_service.load()
 
     dlg = dlg_mod.CvImportDialog(
-        cv_path, cfg.profile.qualifications, cfg.application, None
+        cv_path, cfg.profile.qualifications, cfg.application, None, autostart=False
+    )
+    dlg._on_attempt(
+        ImportAttemptResult(
+            ok=True,
+            kind="success",
+            message="",
+            parsed=_stub_extract_parsed(),
+        )
     )
     assert dlg.parsed is not None
     assert "source_text" in dlg.parsed
-    assert dlg.ok_btn.isEnabled()
+    assert dlg._ok_btn.isEnabled()
     dlg._accept()
     assert dlg.result_application is not None
     assert dlg.result_application.cv_source_text.strip() == SOURCE_CV.strip()
@@ -166,24 +170,19 @@ def test_ui_e2e_import_persists_source_text_and_blocks_unevidenced_title(
             f"{INVENTED_TITLE} {INVENTED_COMPANY} leadership Python Analyst Erfahrung"
         ),
         application_url="https://boards.greenhouse.io/example/jobs/e2e",
-        source="fixture",
+        source="indeed",
         match_score=90,
     )
     preview = build_application_preview(job, cfg)
     letter = preview.cover_letter_preview or ""
     report = preview.text_report()
 
-    # Experience claim must not use the unevidenced profile title/company.
     assert f"als {INVENTED_TITLE}" not in letter
     assert INVENTED_TITLE not in letter
     assert INVENTED_COMPANY not in letter
     assert INVENTED_TITLE not in report.split("=== Anschreiben")[-1]
-    # Guard must have been active (stored source available).
     assert cfg.application.cv_source_text
-    # Safe generic or grounded Analyst claim only.
     assert "Erfahrungen" in letter or "Analyst" in letter
-
-    monkeypatch.setattr(dlg_mod.CvImportDialog, "_start_extract", original_start)
 
 
 def test_ui_e2e_preview_without_source_text_still_renders(qapp, config_service):
@@ -207,7 +206,9 @@ def test_ui_e2e_preview_without_source_text_still_renders(qapp, config_service):
         id="e2e-nosrc",
         title="Analyst",
         company="Green Data GmbH",
+        description="Analyst Python Green Data Erfahrung",
         application_url="https://boards.greenhouse.io/example/jobs/nosrc",
+        source="indeed",
     )
     preview = build_application_preview(job, cfg)
     assert isinstance(preview.cover_letter_preview, str)

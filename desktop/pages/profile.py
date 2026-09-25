@@ -23,13 +23,19 @@ from PySide6.QtWidgets import (
 
 from core.salary import normalize_to_annual_gross_eur
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_card,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import (
     DataItem,
     ProfileSectionCard,
     SectionEditDrawer,
     TagChip,
 )
-from desktop.i18n import TRANSLATIONS, tr
+from desktop.i18n import TRANSLATIONS, tr, tr_show_more_entries
 from desktop.pages.profile_sections import (
     ApplicantSection,
     CareerSection,
@@ -46,6 +52,7 @@ from desktop.services.profile_merge import (
     keep_manual_qualifications,
     sync_application_summaries,
 )
+from desktop.widgets.confirm_dialog import confirm_action
 from desktop.widgets.cv_import_dialog import CvImportDialog
 from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import apply_wheel_guard_to_spinboxes
@@ -168,17 +175,22 @@ class ProfilePage(QWidget):
         self.page_subtitle = QLabel()
         self.page_subtitle.setObjectName("PageSubtitle")
         self.page_subtitle.setWordWrap(True)
+        self.home_status = QLabel()
+        self.home_status.setWordWrap(True)
         title_col = QVBoxLayout()
         title_col.setSpacing(2)
         title_col.addWidget(self.page_title)
         title_col.addWidget(self.page_subtitle)
+        title_col.addWidget(self.home_status)
         header.addLayout(title_col, stretch=1)
+        # Top-right reserved for secondary icon-actions only (no primary CTAs)
+        shell_layout.addLayout(header)
+
         self.import_cv_btn = QPushButton()
         self.import_cv_btn.setObjectName("PrimaryButton")
         self.import_cv_btn.setAccessibleDescription("kk.profile.import_cv")
         self.import_cv_btn.clicked.connect(self.import_from_cv)
-        header.addWidget(self.import_cv_btn)
-        shell_layout.addLayout(header)
+        polish_interactive(self.import_cv_btn)
 
         grid = QGridLayout()
         grid.setHorizontalSpacing(16)
@@ -288,7 +300,21 @@ class ProfilePage(QWidget):
         self.save_btn.setObjectName("PrimaryButton")
         self.save_btn.clicked.connect(self.save)
         self.save_btn.hide()
-        shell_layout.addWidget(self.save_btn)
+
+        # Primary import CTA — bottom-right of the profile shell
+        shell_layout.addLayout(footer_actions_layout(self.import_cv_btn, self.save_btn))
+
+        for card in (
+            self.card_personal,
+            self.card_career,
+            self.card_application,
+            self.card_docs,
+            self.card_experience,
+            self.card_education,
+            self.card_skills,
+            self.card_languages,
+        ):
+            polish_card(card)
 
         outer.addWidget(wrap_scrollable(shell))
 
@@ -301,6 +327,7 @@ class ProfilePage(QWidget):
         self.page_subtitle.setText(tr("profile.subtitle"))
         self.import_cv_btn.setText(tr("profile.import_from_cv"))
         set_accessible_name(self.import_cv_btn, tr("profile.import_from_cv"))
+        apply_button_icon(self.import_cv_btn, "import", color="#ffffff")
         self.card_personal.set_title(tr("profile.card_personal"))
         self.card_personal.set_action_text(tr("profile.edit"))
         self.card_career.set_title(tr("profile.card_career"))
@@ -406,8 +433,19 @@ class ProfilePage(QWidget):
         )
         self.refresh_cards()
 
+    def refresh_home_status(self) -> None:
+        """Update only the home-notice line. Does not rebuild the cards."""
+        self._bind_home_status(self.config_service.load())
+
+    def _bind_home_status(self, cfg) -> None:
+        from core.location import home_location_notice
+        from desktop.pages.dashboard import bind_home_notice_label
+
+        bind_home_notice_label(self.home_status, home_location_notice(cfg.profile.location))
+
     def refresh_cards(self) -> None:
         cfg = self.config_service.load()
+        self._bind_home_status(cfg)
         a = cfg.application
         pairs = [
             (tr("field.first_name"), a.first_name),
@@ -458,12 +496,18 @@ class ProfilePage(QWidget):
         else:
             self._linkedin.setText(tr("profile.no_linkedin"))
 
-        # Experience timeline (progressive)
+        # Experience timeline (progressive). _exp_more lives for the page
+        # lifetime and is only reparented; deleteLater would free the C++
+        # button while this attribute still points at it.
         while self._exp_body.count():
             item = self._exp_body.takeAt(0)
             w = item.widget()
-            if w is not None:
-                w.deleteLater()
+            if w is None:
+                continue
+            if w is self._exp_more:
+                w.hide()
+                continue
+            w.deleteLater()
         experiences = list(cfg.profile.qualifications.work_experience or [])
         for entry in experiences[: self._exp_limit]:
             block = QVBoxLayout()
@@ -490,7 +534,8 @@ class ProfilePage(QWidget):
                 vl.addWidget(desc)
             self._exp_body.addWidget(wrap)
         if len(experiences) > self._exp_limit:
-            self._exp_more.setText(tr("profile.show_more_entries", n=len(experiences) - self._exp_limit))
+            self._exp_more.setText(tr_show_more_entries(len(experiences) - self._exp_limit))
+            self._exp_more.show()
             self._exp_body.addWidget(self._exp_more)
         if not experiences:
             empty = QLabel(tr("profile.empty_section"))
@@ -650,13 +695,27 @@ class ProfilePage(QWidget):
             self.cv.cv_label.setText(info.get("label") or str(cv_path))
             cfg = self.config_service.load()
 
-        dlg = CvImportDialog(cv_path, cfg.profile.qualifications, cfg.application, self)
+        dlg = CvImportDialog(
+            cv_path,
+            cfg.profile.qualifications,
+            cfg.application,
+            self,
+            settings=cfg.settings,
+        )
         if dlg.exec() != dlg.DialogCode.Accepted or dlg.result_quals is None:
             return
+        # Empty/Error/Cancel never accept. A newly chosen file is copied only
+        # after Übernehmen; the previous stored CV is left in place.
+        chosen = Path(dlg.cv_path)
+        if chosen.resolve() != Path(cv_path).resolve():
+            chosen = self.config_service.copy_cv_into_storage(chosen, role="cv")
+            info = self.config_service.get_active_cv_info()
+            self.cv.cv_label.setText(info.get("label") or str(chosen))
+            cfg = self.config_service.load()
         cfg.profile.qualifications = dlg.result_quals
         if dlg.result_application is not None:
             cfg.application = dlg.result_application
-        cfg.application.cv_path = str(cv_path)
+        cfg.application.cv_path = str(chosen)
         self.config_service.save(cfg)
         self.load_from_config()
         QMessageBox.information(self, tr("profile.cv"), tr("profile.cv_updated"))
@@ -672,18 +731,21 @@ class ProfilePage(QWidget):
         wipe_btn = msg.addButton(
             tr("profile.reset_wipe_all_local"), QMessageBox.ButtonRole.DestructiveRole
         )
-        msg.addButton(QMessageBox.StandardButton.Cancel)
+        cancel_btn = msg.addButton(tr("btn.cancel"), QMessageBox.ButtonRole.RejectRole)
+        msg.setDefaultButton(cancel_btn)
+        msg.setEscapeButton(cancel_btn)
         msg.exec()
         clicked = msg.clickedButton()
-        if clicked is None or clicked == msg.button(QMessageBox.StandardButton.Cancel):
+        if clicked is None or clicked is cancel_btn:
             return
         if clicked is wipe_btn:
-            confirm = QMessageBox.question(
+            if not confirm_action(
                 self,
                 tr("profile.reset_title"),
                 tr("profile.reset_confirm_wipe_all"),
-            )
-            if confirm != QMessageBox.StandardButton.Yes:
+                confirm_text=tr("privacy.delete_all_confirm_btn"),
+                destructive=True,
+            ):
                 return
             result = self.config_service.delete_all_local_data()
             if not result.get("ok") or not result.get("verified"):
@@ -696,22 +758,24 @@ class ProfilePage(QWidget):
                 return
             done_msg = tr("profile.reset_wipe_done")
         elif clicked is profile_btn:
-            confirm = QMessageBox.question(
+            if not confirm_action(
                 self,
                 tr("profile.reset_title"),
                 tr("profile.reset_confirm_all"),
-            )
-            if confirm != QMessageBox.StandardButton.Yes:
+                confirm_text=tr("profile.reset_all"),
+                destructive=True,
+            ):
                 return
             self.config_service.reset_profile_and_documents(clear_search_prefs=False)
             done_msg = tr("profile.reset_done")
         elif clicked is cv_btn:
-            confirm = QMessageBox.question(
+            if not confirm_action(
                 self,
                 tr("profile.reset_title"),
                 tr("profile.reset_confirm_cv"),
-            )
-            if confirm != QMessageBox.StandardButton.Yes:
+                confirm_text=tr("profile.reset_cv_only"),
+                destructive=True,
+            ):
                 return
             self.config_service.clear_cv_storage()
             cfg = self.config_service.load()
@@ -792,24 +856,19 @@ class ProfilePage(QWidget):
         a = cfg.application
         sync_addr = self.applicant.save_into(a)
         self.config_service.set_sync_address_to_search(sync_addr)
-        if sync_addr:
-            parts = [
-                part
-                for part in (
-                    a.street.strip(),
-                    f"{a.postal_code} {a.city}".strip(),
-                    (a.country or "").strip(),
-                )
-                if part
-            ]
-            if parts:
-                new_home = ", ".join(parts)
-                if new_home != (p.location.home_address or "").strip():
-                    p.location.home_latitude = None
-                    p.location.home_longitude = None
-                    p.location.home_geocoded_address = ""
-                p.location.home_address = new_home
-                self.location_work.home_address.setText(p.location.home_address)
+        from core.location import apply_visible_home
+
+        apply_visible_home(
+            p.location,
+            street=a.street,
+            postal_code=a.postal_code,
+            city=a.city,
+            country=a.country,
+        )
+        self.location_work.home_address.setText(p.location.home_address or "")
+        self.location_work.postal_code.setText(p.location.postal_code or "")
+        self.location_work.country.setText(p.location.country or "")
+        self.location_work.refresh_home_notice(p.location)
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)
 
@@ -825,5 +884,11 @@ class ProfilePage(QWidget):
             return
         self.config_service.save(cfg)
         self._career_persist = False
-        self.refresh_cards()
+        parent = self.window()
+        # refresh_all loads this page and builds the cards once. A direct
+        # refresh_cards() here would build them a second time in the same click.
+        if parent is not None and hasattr(parent, "refresh_all"):
+            parent.refresh_all()
+        else:
+            self.refresh_cards()
         QMessageBox.information(self, tr("nav.profile"), tr("profile.saved"))

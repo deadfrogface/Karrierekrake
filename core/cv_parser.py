@@ -437,8 +437,15 @@ def classify_non_language_token(value: str) -> str:
         return "certificate"
     if _looks_like_soft_skill(text):
         return "skill"
-    # Single product-ish tokens without language markers → software guess.
+    # Bare product tokens (CRM, SAP, …). Multi-word competencies that merely
+    # mention a product category stay skills ("CRM administration").
     if _known_software_token_match(low) or re.search(r"\b(bi|erp|crm|sap|datev)\b", low):
+        if " " in low and re.search(
+            r"\b(administration|management|support|analysis|mapping|communication|"
+            r"success|reporting|fulfililment|fulfillment)\b",
+            low,
+        ):
+            return "skill"
         return "software"
     # Competency-like single phrases (no year, no cert keyword) → skill, not cert.
     if 3 <= len(text) <= 60 and (
@@ -1560,7 +1567,6 @@ _KNOWN_SOFTWARE_TOKENS = (
     "figma", "docker", "blender", "qgis", "protool", "davinci resolve", "davinci",
     "unreal engine", "unreal engine 5", "siemens tia portal",
     "tia portal", "s/4hana", "sap s/4hana",
-    "minitab", "qlik", "qlik sense", "qlikview",
 )
 
 
@@ -1629,21 +1635,6 @@ def _looks_like_software(value: str) -> bool:
 
 
 def parse_cv_text(text: str) -> dict[str, Any]:
-    """Offline / unit-test DET rule parser.
-
-    **Not** used by productive CV import. Production path is
-    ``core.cv_docpick_import.import_cv_docpick`` via ``import_cv`` /
-    ``import_cv_canonical`` only — there is no automatic DET fallback.
-    """
-    return _legacy_det_parse_cv_text_impl(text)
-
-
-def _legacy_parse_cv_text_det_REMOVED(text: str) -> dict[str, Any]:
-    """Alias kept for older offline scripts; same as ``parse_cv_text``."""
-    return _legacy_det_parse_cv_text_impl(text)
-
-
-def _legacy_det_parse_cv_text_impl(text: str) -> dict[str, Any]:
     """Heuristic extraction — never invents values not present in text."""
     empty = {
         "raw_text_preview": text[:2000],
@@ -1779,42 +1770,44 @@ def _legacy_det_parse_cv_text_impl(text: str) -> dict[str, Any]:
             s,
         )
     ]
-    # Always recover soft-skill phrases from the software/EDV section body —
-    # even when Skills already has entries (soft skills must not stay stuck in
-    # EDV or vanish because _parse_software rejected them).
+    # Soft-skill lines under EDV/IT/"Weitere Kenntnisse" are rejected by
+    # ``_accept_software_item`` and never reach the software list — always
+    # recover them into skills (even when skills is already nonempty).
     soft_body = sections.get("software", "")
-    if soft_body.strip():
-        recovered: list[str] = []
-        for raw in soft_body.splitlines():
-            line = _normalize_bullet(raw)
-            if not line or _is_heading_value(line) or _is_heading(line):
+    recovered: list[str] = []
+    for raw in soft_body.splitlines():
+        line = _normalize_bullet(raw)
+        if not line or _is_heading_value(line) or _is_heading(line):
+            continue
+        if _looks_like_non_software_dump(line):
+            continue
+        if _LEVEL.search(line) and _parse_one_language(line) is not None:
+            continue
+        # Proficiency-marked tool lines are software, never soft skills.
+        if _strip_software_proficiency(line) != line:
+            continue
+        if _looks_like_software(line) and not _looks_like_soft_skill(line):
+            continue
+        if classify_non_language_token(line) == "software":
+            continue
+        parts = re.split(r"\s*[,;|/]\s*", line) if re.search(r"[,;|/]", line) else [line]
+        for part in parts:
+            part = part.strip(" .")
+            if not part or len(part) > 80:
                 continue
-            if _looks_like_non_software_dump(line):
+            if _looks_like_software(part) and not _looks_like_soft_skill(part):
                 continue
-            if _LEVEL.search(line) and _parse_one_language(line) is not None:
-                continue
-            if _strip_software_proficiency(line) != line:
-                continue
-            if _looks_like_software(line) and not _looks_like_soft_skill(line):
-                continue
-            if classify_non_language_token(line) == "software":
-                continue
-            parts = re.split(r"\s*[,;|/]\s*", line) if re.search(r"[,;|/]", line) else [line]
-            for part in parts:
-                part = part.strip(" .")
-                if not part or len(part) > 80:
-                    continue
-                if _looks_like_software(part) and not _looks_like_soft_skill(part):
-                    continue
-                kind = classify_non_language_token(part)
-                # When skills already nonempty, only pull clear soft-skill phrases
-                # (avoid TitleCase product theft into skills).
-                if _looks_like_soft_skill(part) or (not skills and kind == "skill"):
-                    recovered.append(part)
-        if recovered:
-            skills = list(dict.fromkeys([*skills, *recovered]))
-            soft_drop = {s.lower() for s in recovered}
-            software = [s for s in software if s.lower() not in soft_drop]
+            # Soft-skill phrases always; TitleCase fachkompetenz only when
+            # skills was empty (avoid stealing product names like Revit).
+            kind = classify_non_language_token(part)
+            if _looks_like_soft_skill(part) or (not skills and kind == "skill"):
+                recovered.append(part)
+    if recovered:
+        skills = list(dict.fromkeys([*skills, *recovered]))
+        soft_drop = {s.lower() for s in recovered}
+        # Remove recovered soft skills from software — keep all real tools,
+        # including unknown product names (DocuWare, Microsoft 365, …).
+        software = [s for s in software if s.lower() not in soft_drop]
     # Always strip soft-skill phrases that leaked into software and relocate them
     # into skills — even when the skills list is already nonempty.
     # Do NOT use classify==skill here: TitleCase product tokens (Revit, Ansys)
@@ -2382,22 +2375,19 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
             labels = ("Adresse", "Address") if "pc" in m.groupdict() else ("Adresse", "Anschrift")
             _apply_postal_match(m, personal, labels=labels)
             _maybe_fill_country_from_line(line, personal)
-            # PLZ+city line often has the street on the previous line.
+            # City+PLZ-only match: previous non-empty line is often the street
+            # ("Beispielweg 5" / "80331 München").
             if not personal.get("street") and idx > 0:
                 prev = (lines[idx - 1] or "").strip()
-                if (
-                    prev
-                    and "@" not in prev
-                    and not re.match(r"^\d{4,5}\b", prev)
-                    and not (_NAME_RE.fullmatch(prev) and len(prev.split()) >= 2)
-                ):
-                    cleaned = _clean_street_fragment(prev, personal)
-                    if cleaned:
-                        personal["street"] = cleaned
-                        hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", cleaned)
-                        if hn:
-                            personal["house_number"] = hn.group("n")
-                            personal["street"] = hn.group("s").strip(" ,;·|")
+                if prev and "@" not in prev and not re.match(r"^\d{5}\b", prev):
+                    if not (_NAME_RE.fullmatch(prev) and len(prev.split()) >= 2):
+                        cleaned = _clean_street_fragment(prev, personal)
+                        if cleaned:
+                            personal["street"] = cleaned
+                            hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", cleaned)
+                            if hn:
+                                personal["house_number"] = hn.group("n")
+                                personal["street"] = hn.group("s").strip(" ,;·|")
             break
         _maybe_fill_country_from_line(line, personal)
 
@@ -2425,6 +2415,7 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
                             hn = re.search(r"^(?P<s>.+?)\s+(?P<n>\d+[a-zA-Z]?)$", cleaned)
                             if hn:
                                 personal["house_number"] = hn.group("n")
+                                personal["street"] = hn.group("s").strip(" ,;·|")
             break
 
     if not personal.get("city"):
@@ -2446,8 +2437,12 @@ def _extract_personal_from_lines(lines: list[str], personal: dict[str, str]) -> 
                     break
 
     if personal.get("street") or personal.get("postal_code"):
+        street_disp = personal.get("street", "")
+        hn = personal.get("house_number", "")
+        if street_disp and hn and hn not in street_disp:
+            street_disp = f"{street_disp} {hn}"
         parts = [
-            personal.get("street", ""),
+            street_disp,
             f"{personal.get('postal_code', '')} {personal.get('city', '')}".strip(),
         ]
         personal["address"] = ", ".join(p for p in parts if p)
@@ -2562,8 +2557,12 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
         personal["date_of_birth"] = dob_m.group("dob")
 
     if personal.get("street") or personal.get("postal_code"):
+        street_disp = personal.get("street", "")
+        hn = personal.get("house_number", "")
+        if street_disp and hn and hn not in street_disp:
+            street_disp = f"{street_disp} {hn}"
         parts = [
-            personal.get("street", ""),
+            street_disp,
             f"{personal.get('postal_code', '')} {personal.get('city', '')}".strip(),
         ]
         personal["address"] = ", ".join(p for p in parts if p)
@@ -2612,11 +2611,9 @@ def import_cv(
     guenther_enabled: bool = False,
     manual_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Import CV via Docpick + local Qwen3.5-4B (DET removed).
+    """Import CV via deterministic DET pipeline (PHI_EXTRACT removed).
 
     ``guenther_enabled`` is accepted for old callers/configs but ignored.
-    Raises ``core.cv_docpick_import.CvImportError`` on failure (visible to UI).
-    Never falls back to DET ``parse_cv_text``.
     """
     from core.cv_intelligence import import_cv_canonical
 

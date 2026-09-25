@@ -124,7 +124,7 @@ GPL-3.0. Herkunftshinweise: `NOTICE`, `docs/source-analysis.md`.
 
 ```bat
 call .venv\Scripts\activate.bat
-pip install -r requirements-dev.txt
+pip install -c constraints-runtime.txt -r requirements-dev.txt
 set PYTHONPATH=%cd%
 pytest -q
 python -m desktop.app

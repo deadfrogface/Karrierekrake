@@ -694,22 +694,38 @@ def apply_search_intent(
             return _excluded_result(criteria, criteria[-1], version)
 
     if intent.radius_km is not None:
-        ok = _radius_ok(norm, intent.radius_km)
-        criteria.append(
-            CriterionResult(
-                kind="radius",
-                label=str(intent.radius_km),
-                passed=ok,
-                hard=True,
-                detail=(
-                    f"within radius {intent.radius_km} km"
-                    if ok
-                    else f"outside radius {intent.radius_km} km"
-                ),
+        # Unknown distance is not inside the radius. Keep the job, but do not
+        # claim a pass — the UI must show the skip instead of "within radius".
+        if (
+            norm.remote_type != RemoteType.REMOTE.value
+            and norm.distance_km is None
+        ):
+            criteria.append(
+                CriterionResult(
+                    kind="radius",
+                    label=str(intent.radius_km),
+                    passed=False,
+                    hard=False,
+                    detail="radius skipped (location unresolved)",
+                )
             )
-        )
-        if not ok:
-            return _excluded_result(criteria, criteria[-1], version)
+        else:
+            ok = _radius_ok(norm, intent.radius_km)
+            criteria.append(
+                CriterionResult(
+                    kind="radius",
+                    label=str(intent.radius_km),
+                    passed=ok,
+                    hard=True,
+                    detail=(
+                        f"within radius {intent.radius_km} km"
+                        if ok
+                        else f"outside radius {intent.radius_km} km"
+                    ),
+                )
+            )
+            if not ok:
+                return _excluded_result(criteria, criteria[-1], version)
 
     # --- Soft ranking ONLY for included jobs --------------------------------------
     rank_score, soft_criteria = _soft_rank(norm, intent)

@@ -18,7 +18,13 @@ from core.config import AppConfig, LanguageEntry
 from core.hard_filter import hard_exclude
 from core.intent_aliases import ranking_version_token
 from core.intent_filter import apply_search_intent
+from core.match_contract import (
+    cv_field_status_map,
+    evaluate_match_contract,
+    hard_ko_allowed,
+)
 from core.models import Job, JobStatus, MatchResult, RemoteType
+from core.parser_debt import assess_parser_debt
 from core.salary import job_annual_salary, meets_minimum
 from core.text_normalize import clean_text
 
@@ -362,6 +368,22 @@ def score_job(
         )
 
     quals = profile.qualifications
+    review = getattr(profile, "extract_review", None)
+    field_status = cv_field_status_map(quals, review)
+    debt = assess_parser_debt(config)
+    if debt.blocked:
+        return MatchResult(
+            score=0,
+            match_reasons=[],
+            rejection_reasons=[debt.reason],
+            excluded=True,
+            exclude_reason=debt.reason,
+            evidence=[],
+            ranking_version=ranking_version_token(),
+            decision_status=debt.status,
+            decision_blockers=list(debt.patterns),
+            field_status=field_status,
+        )
     reasons: list[str] = []
     issues: list[str] = []
     evidence: list[MatchEvidence] = []
@@ -597,8 +619,18 @@ def score_job(
                         note=f"Sprache fehlt: {m}",
                     )
                 )
-            if config.settings.exclude_on_missing_mandatory and any(
-                "deutsch" in m or "german" in m for m in missing
+            german_missing = any("deutsch" in m or "german" in m for m in missing)
+            if german_missing and field_status.get("languages") == "unknown":
+                issues.append("Sprache: unknown")
+            if (
+                config.settings.exclude_on_missing_mandatory
+                and german_missing
+                and hard_ko_allowed(
+                    evidenced=True,
+                    field_name="languages",
+                    field_status=field_status,
+                    review=review,
+                )
             ):
                 return MatchResult(
                     score=0,
@@ -606,6 +638,8 @@ def score_job(
                     excluded=True,
                     exclude_reason="Mandatory German language missing",
                     evidence=[e.to_dict() for e in evidence],
+                    field_status=field_status,
+                    decision_status="ready",
                 )
     else:
         if any("deutsch" in _norm(l.language) or "german" in _norm(l.language) for l in quals.languages):
@@ -642,13 +676,22 @@ def score_job(
                     note="Führerschein möglicherweise erforderlich",
                 )
             )
-            if config.settings.exclude_on_missing_mandatory:
+            if field_status.get("driving_license") == "unknown":
+                issues.append("Führerschein: unknown")
+            if config.settings.exclude_on_missing_mandatory and hard_ko_allowed(
+                evidenced=True,
+                field_name="driving_license",
+                field_status=field_status,
+                review=review,
+            ):
                 return MatchResult(
                     score=0,
                     rejection_reasons=["Mandatory driving license missing"],
                     excluded=True,
                     exclude_reason="Mandatory driving license missing",
                     evidence=[e.to_dict() for e in evidence],
+                    field_status=field_status,
+                    decision_status="ready",
                 )
 
     # Employment type (0-5)
@@ -736,6 +779,7 @@ def score_job(
     score = max(0, min(100, score))
     # Deduplicate reason strings while preserving order
     reasons = list(dict.fromkeys(reasons))
+    contract = evaluate_match_contract(job, config, distance_used=apply_distance)
     return MatchResult(
         score=score,
         match_reasons=reasons,
@@ -743,6 +787,9 @@ def score_job(
         evidence=[e.to_dict() for e in evidence],
         ranking_version=intent_result.ranking_version or ranking_version_token(),
         intent_explanation=intent_result.to_dict() if intent_result.why_shown or intent_result.criteria else {},
+        decision_status=contract.status,
+        decision_blockers=list(contract.blockers),
+        field_status=field_status,
     )
 
 
@@ -757,6 +804,10 @@ def apply_distance_scoring(job: Job, config: AppConfig) -> None:
     reason = distance_exclude(job, config)
     if reason:
         job.rejection_reasons = list(dict.fromkeys([*(job.rejection_reasons or []), reason]))
+        # UNKNOWN/AMBIGUOUS has no coordinate. Skip the radius drop — do not
+        # invent kilometres and do not treat the gap as 0 km.
+        if job.distance_km is None and (job.remote_type or "") != RemoteType.REMOTE.value:
+            return
         job.status = JobStatus.IGNORED.value
         # Keep fachliche score for explainability; mark excluded via status.
         return

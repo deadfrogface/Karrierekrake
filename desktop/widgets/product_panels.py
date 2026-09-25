@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from desktop.design_system.polish import apply_button_icon, footer_actions_layout, polish_interactive
 from desktop.i18n import tr
 from desktop.viewmodels.approvals import ApprovalActionViewModel, GuentherActionViewModel
 from desktop.viewmodels.case_timeline import (
@@ -145,16 +146,14 @@ class ApprovalPanel(QFrame):
         self.gate = QLabel()
         self.gate.setWordWrap(True)
         self.gate.setObjectName("PageSubtitle")
-        row = QHBoxLayout()
         self.approve_btn = QPushButton()
         self.approve_btn.setObjectName("PrimaryButton")
         self.cancel_btn = QPushButton()
         self.cancel_btn.setObjectName("SecondaryButton")
         self.approve_btn.clicked.connect(self._on_approve)
         self.cancel_btn.clicked.connect(self.cancelled.emit)
-        row.addWidget(self.approve_btn)
-        row.addWidget(self.cancel_btn)
-        row.addStretch()
+        polish_interactive(self.approve_btn)
+        row = footer_actions_layout(self.cancel_btn, self.approve_btn)
         layout.addWidget(self.title)
         layout.addWidget(self.body)
         layout.addWidget(self.gate)
@@ -164,6 +163,7 @@ class ApprovalPanel(QFrame):
 
     def retranslate(self) -> None:
         self.approve_btn.setText(tr("approval.approve"))
+        apply_button_icon(self.approve_btn, "check", color="#ffffff")
         self.cancel_btn.setText(tr("approval.cancel"))
         if self._vm is not None:
             self.bind(self._vm)

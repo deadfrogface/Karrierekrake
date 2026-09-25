@@ -31,6 +31,12 @@ from core.database import Database
 from core.models import JobStatus
 from core.text_normalize import clean_text, display_or_dash
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_card,
+    polish_interactive,
+)
 from desktop.design_system.v2_chrome import ContentCard, EmptyStatePanel, PageHeader, SectionEditDrawer
 from desktop.i18n import tr
 from desktop.services import ConfigService
@@ -40,17 +46,23 @@ from desktop.widgets.product_panels import JobFitPanel
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
-def format_commute_label(job, *, with_duration: bool = True) -> str:
-    """UI distance text — always Luftlinie when haversine_v1; never „km Fahrt“."""
+def format_commute_label(job, *, with_duration: bool = True, home_status: str = "resolved") -> str:
+    """UI distance text. Luftlinie only when the current home is resolved.
+
+    A stored kilometre value is shown for a resolved home even if
+    ``distance_source`` was never persisted. An unresolved home never claims
+    a radius and does not keep a stale „Standort nicht prüfbar“ from an older run.
+    """
     del with_duration  # no drive-time in v1
-    src = getattr(job, "distance_source", "") or ""
-    dist = getattr(job, "distance_km", None)
     remote = (getattr(job, "remote_type", "") or "").lower()
     if remote == "remote":
         return tr("jobs.commute_remote")
-    if dist is None or src not in {"haversine_v1", "local_geo", "geonames", "pgeocode"}:
+    if home_status in {"ambiguous", "unknown", "missing"}:
+        return tr("jobs.distance_skipped")
+    dist = getattr(job, "distance_km", None)
+    if dist is None:
         return tr("jobs.commute_unknown")
-    km = f"{dist:.0f}" if float(dist) == int(dist) else f"{float(dist):.1f}"
+    km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
     return tr("jobs.commute_airline", km=km)
 
 
@@ -148,16 +160,18 @@ class JobsPage(QWidget):
         self.apply_btn = QPushButton()
         self.apply_btn.setObjectName("PrimaryButton")
         self.apply_btn.clicked.connect(self.refresh)
+        polish_interactive(self.apply_btn)
         self.more_filters_btn = QPushButton()
         self.more_filters_btn.setObjectName("SecondaryButton")
         self.more_filters_btn.clicked.connect(self._open_more_filters)
         self.search_intent_btn = QPushButton()
         self.search_intent_btn.setObjectName("SecondaryButton")
         self.search_intent_btn.clicked.connect(self.open_search_intent)
-        primary.addWidget(self.apply_btn)
+        # Filters stay compact; primary filter CTA sits at the row's trailing edge
+        primary.addStretch(1)
         primary.addWidget(self.more_filters_btn)
         primary.addWidget(self.search_intent_btn)
-        primary.addStretch()
+        primary.addWidget(self.apply_btn)
 
         self.more_filters = QWidget()
         more_form = QFormLayout(self.more_filters)
@@ -186,10 +200,9 @@ class JobsPage(QWidget):
         self.prepare_btn = QPushButton()
         self.prepare_btn.setObjectName("PrimaryButton")
         self.prepare_btn.clicked.connect(self.prepare_application)
-        action_row = QHBoxLayout()
-        action_row.addWidget(self.prepare_btn)
-        action_row.addWidget(self.open_btn)
-        action_row.addStretch()
+        polish_interactive(self.prepare_btn)
+        # List-level prepare/open live in a bottom footer (not above the splitter)
+        action_row = footer_actions_layout(self.open_btn, self.prepare_btn)
 
         self.table = QTableWidget(0, len(self.COLS))
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
@@ -256,13 +269,11 @@ class JobsPage(QWidget):
         self.detail_prepare = QPushButton()
         self.detail_prepare.setObjectName("PrimaryButton")
         self.detail_prepare.clicked.connect(self.prepare_application)
+        polish_interactive(self.detail_prepare)
         self.detail_open = QPushButton()
         self.detail_open.setObjectName("SecondaryButton")
         self.detail_open.clicked.connect(self.open_selected)
-        dbtns = QHBoxLayout()
-        dbtns.addWidget(self.detail_prepare)
-        dbtns.addWidget(self.detail_open)
-        dbtns.addStretch()
+        dbtns = footer_actions_layout(self.detail_open, self.detail_prepare)
         detail_layout.addWidget(self.detail_title)
         detail_layout.addWidget(self.detail_meta)
         detail_layout.addWidget(self.detail_status)
@@ -286,8 +297,10 @@ class JobsPage(QWidget):
         layout.addWidget(self.lbl_filters)
         layout.addLayout(primary)
         layout.addLayout(toolbar)
-        layout.addLayout(action_row)
         layout.addWidget(splitter, 1)
+        layout.addLayout(action_row)
+
+        polish_card(self.detail)
 
         self._clear_detail()
         self.retranslate_ui()
@@ -384,12 +397,15 @@ class JobsPage(QWidget):
         self.chk_hybrid.setText(tr("hybrid"))
         self.chk_onsite.setText(tr("onsite"))
         self.apply_btn.setText(tr("btn.filter"))
+        apply_button_icon(self.apply_btn, "filter", color="#ffffff")
         self.more_filters_btn.setText(tr("jobs.more_filters"))
         self.open_btn.setText(tr("btn.open_job"))
         self.prepare_btn.setText(tr("btn.prepare_application"))
+        apply_button_icon(self.prepare_btn, "apply", color="#ffffff")
         self.search_intent_btn.setText(tr("jobs.open_search_intent"))
         set_accessible_name(self.search_intent_btn, tr("jobs.open_search_intent"))
         self.detail_prepare.setText(tr("btn.prepare_application"))
+        apply_button_icon(self.detail_prepare, "apply", color="#ffffff")
         self.detail_open.setText(tr("btn.open_job"))
         self.empty.set_texts(tr("jobs.empty_title"), tr("jobs.empty_body"))
         self.empty.action_btn.hide()
@@ -460,7 +476,7 @@ class JobsPage(QWidget):
             self._clear_detail()
             return
         self.detail_title.setText(display_or_dash(job.title))
-        dist = format_commute_label(job, with_duration=True)
+        dist = format_commute_label(job, with_duration=True, home_status=self._home_status())
         self.detail_meta.setText(
             f"{display_or_dash(job.company)} · {display_or_dash(job.city)} · "
             f"{display_or_dash(job.remote_type)} · {dist} · "
@@ -468,7 +484,7 @@ class JobsPage(QWidget):
         )
         self.detail_status.setText(f"{tr('jobs.status')}: {status_label(job.status)}")
         cfg = self.config_service.load()
-        fit = build_job_fit_viewmodel(job, cfg)
+        fit = build_job_fit_viewmodel(job, cfg, home_notice=self._home_notice())
         self.fit_panel.bind(fit)
         body = clean_text(job.description)
         chunks: list[str] = []
@@ -492,11 +508,13 @@ class JobsPage(QWidget):
             "nicht_passend": tr("fit.nicht_passend"),
             "unbekannt": tr("fit.unbekannt"),
         }
+        home_status = self._home_status()
+        home_notice = self._home_notice()
         for job in jobs:
             row = self.table.rowCount()
             self.table.insertRow(row)
-            dist = format_commute_label(job, with_duration=False)
-            fit = build_job_fit_viewmodel(job, cfg)
+            dist = format_commute_label(job, with_duration=False, home_status=home_status)
+            fit = build_job_fit_viewmodel(job, cfg, home_notice=home_notice)
             fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
             reason = " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation())
             values = [
@@ -520,7 +538,7 @@ class JobsPage(QWidget):
                     item.setData(Qt.ItemDataRole.UserRole + 1, int(job.match_score or 0))
                 self.table.setItem(row, col, item)
             # Demo card row (compact)
-            dist_txt = format_commute_label(job, with_duration=True)
+            dist_txt = format_commute_label(job, with_duration=True, home_status=home_status)
             card = (
                 f"{display_or_dash(job.title)}\n"
                 f"{display_or_dash(job.company)} · {display_or_dash(job.city)} ({dist_txt}) · "
@@ -540,6 +558,15 @@ class JobsPage(QWidget):
         elif self.job_list.count():
             self.job_list.setCurrentRow(0)
 
+    def _home_notice(self):
+        from core.location import home_location_notice
+
+        cfg = self.config_service.load()
+        return home_location_notice(cfg.profile.location)
+
+    def _home_status(self) -> str:
+        return self._home_notice().status
+
     def refresh(self) -> None:
         cfg = self.config_service.load()
         self.min_match.setValue(self.min_match.value() or int(cfg.settings.minimum_match_for_dashboard))
@@ -547,6 +574,9 @@ class JobsPage(QWidget):
             self.max_dist.setValue(int(cfg.profile.location.max_distance_km))
             self._dist_init = True
         db = Database(cfg.db_path)
+        notice = self._home_notice()
+        # Unresolved home: do not drop jobs for a missing/stale radius.
+        distance_cap = None if notice.status != "resolved" else float(self.max_dist.value())
         remote_types = []
         if self.chk_remote.isChecked():
             remote_types.append("remote")
@@ -557,7 +587,7 @@ class JobsPage(QWidget):
         status_val = self.status.currentData()
         jobs = db.list_jobs(
             min_match=self.min_match.value(),
-            max_distance=float(self.max_dist.value()),
+            max_distance=distance_cap,
             statuses=[status_val] if status_val else None,
             hide_applied=cfg.settings.hide_already_applied,
             hide_duplicates=cfg.settings.hide_duplicates,
@@ -593,7 +623,7 @@ class JobsPage(QWidget):
 
         meta = self.config_service.load_meta()
         preview = build_application_preview(job, cfg, meta=meta)
-        ApplyPreviewDialog(preview, self).exec()
+        ApplyPreviewDialog(preview, self, config=cfg, job=job).exec()
 
     def open_search_intent(self) -> None:
         parent = self.window()

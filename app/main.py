@@ -18,9 +18,12 @@ from core.database import Database
 from core.deduplicator import deduplicate
 from core.location import LocationService, enrich_job_locations, _city_from_address
 from core.logging import RunLogger
+from core.match_contract import auto_match_allowed
 from core.matcher import apply_distance_scoring, score_job
 from core.models import JobStatus, OperatingMode
+from core.parser_debt import auto_actions_blocked
 from core.source_health import SourceHealthStatus
+from core.application_queue import filter_application_queue
 from search.base import SearchQuery
 from search.registry import build_sources
 
@@ -200,7 +203,16 @@ def run_pipeline(
     mode: str | None = None,
     progress_callback=None,
     should_stop=None,
+    recover_interrupted: bool = True,
 ) -> dict:
+    """Run search (+ optional apply) once.
+
+    ``recover_interrupted`` heals crash leftovers (``applying`` → ``needs_review``)
+    before the run. Headless/scheduler runs need it; the desktop app already heals
+    once at startup, and re-healing per search would bump review counters from a
+    search the user merely started (or cancelled).
+    """
+
     def progress(message: str) -> None:
         if progress_callback:
             try:
@@ -241,7 +253,7 @@ def run_pipeline(
     run_id = uuid.uuid4().hex
     run.info(f"Run started id={run_id}")
     progress("Suche gestartet…")
-    db = Database(config.db_path, recover=True)
+    db = Database(config.db_path, recover=recover_interrupted)
     db.start_search_run(run_id)
     location = LocationService(db, config)
     home = location.resolve_home()
@@ -419,7 +431,9 @@ def run_pipeline(
         job.match_reasons = result.match_reasons
         job.rejection_reasons = result.rejection_reasons
         job.ranking_version = getattr(result, "ranking_version", "") or ""
-        if result.excluded:
+        if getattr(result, "decision_status", "") == "needs_confirmation":
+            job.status = JobStatus.NEEDS_REVIEW.value
+        elif result.excluded:
             job.status = JobStatus.IGNORED.value
         else:
             job.status = existing.status if existing else JobStatus.NEW.value
@@ -440,37 +454,53 @@ def run_pipeline(
         )
         if stopped():
             cancelled = True
-        for job in fachlich_candidates:
-            prev_status = job.status
-            apply_distance_scoring(job, config)
-            if job.status == JobStatus.IGNORED.value and prev_status != JobStatus.IGNORED.value:
-                if any("km" in (r or "") for r in (job.rejection_reasons or [])):
-                    outside += 1
-            db.upsert_job(job)
+        with db.batch(should_stop=stopped):
+            for job in fachlich_candidates:
+                prev_status = job.status
+                apply_distance_scoring(job, config)
+                if job.status == JobStatus.IGNORED.value and prev_status != JobStatus.IGNORED.value:
+                    if any("km" in (r or "") for r in (job.rejection_reasons or [])):
+                        outside += 1
+                db.upsert_job(job)
     else:
         cancelled = cancelled or stopped()
-        for job in scored:
-            db.upsert_job(job)
+        with db.batch(should_stop=stopped):
+            for job in scored:
+                db.upsert_job(job)
 
     # Persist fachlich-excluded scored jobs that were not candidates
-    for job in scored:
-        if job not in fachlich_candidates:
-            db.upsert_job(job)
+    with db.batch(should_stop=stopped):
+        for job in scored:
+            if job not in fachlich_candidates:
+                db.upsert_job(job)
 
-    for job in all_jobs:
-        if job.duplicate_of:
-            job.run_id = run_id
-            db.upsert_job(job)
+    with db.batch(should_stop=stopped):
+        for job in all_jobs:
+            if job.duplicate_of:
+                job.run_id = run_id
+                db.upsert_job(job)
+    if db.batch_skipped_writes:
+        cancelled = True
 
     run.info(f"{outside} outside {config.profile.location.max_distance_km} km Luftlinie removed/ignored")
     run.info(f"{known} already known/applied skipped")
     run.info(f"{new_count} new jobs")
-    matches = [
-        j
-        for j in scored
-        if j.match_score >= config.settings.minimum_match_for_auto_apply
-        and j.status != JobStatus.IGNORED.value
-    ]
+    profile_blocked = auto_actions_blocked(config).blocked
+    matches = []
+    if not profile_blocked:
+        for j in scored:
+            if j.match_score < config.settings.minimum_match_for_auto_apply:
+                continue
+            if j.status in {JobStatus.IGNORED.value, JobStatus.NEEDS_REVIEW.value}:
+                continue
+            if any(str(r).startswith("needs_confirmation") for r in (j.rejection_reasons or [])):
+                continue
+            distance_used = (j.remote_type or "") != "remote"
+            allowed, _why = auto_match_allowed(config, j, distance_used=distance_used)
+            if not allowed:
+                continue
+            matches.append(j)
+    matches = filter_application_queue(matches)
     run.info(f"{len(matches)} matches ≥{config.settings.minimum_match_for_auto_apply}%")
 
     stats = {
@@ -623,6 +653,8 @@ def main(argv: list[str] | None = None) -> int:
             from desktop.services import ConfigService
 
             config = ConfigService().load()
+        except RecursionError:
+            raise
         except Exception as exc:
             if args.once:
                 logger.exception("AppData-Konfiguration fehlgeschlagen — Abbruch (--once)")

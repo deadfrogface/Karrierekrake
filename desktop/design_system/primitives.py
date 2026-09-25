@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 
 from desktop.design_system.a11y import bind_label, set_accessible_name
 from desktop.design_system.icons import status_glyph, try_qtawesome_icon
+from desktop.design_system.polish import polish_chip
 
 
 class ButtonVariant(str, Enum):
@@ -125,6 +126,7 @@ class KkStatusBadge(QLabel):
     ) -> None:
         super().__init__(parent)
         self.set_kind(kind, text)
+        polish_chip(self)
 
     def set_kind(
         self,
@@ -217,7 +219,9 @@ class KkDialog(QDialog):
         self._root.setSpacing(12)
         self.body = QVBoxLayout()
         self._root.addLayout(self.body)
-        self.button_box = QDialogButtonBox(buttons)
+        from desktop.widgets.confirm_dialog import label_button_box
+
+        self.button_box = label_button_box(QDialogButtonBox(buttons))
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
         self._root.addWidget(self.button_box)

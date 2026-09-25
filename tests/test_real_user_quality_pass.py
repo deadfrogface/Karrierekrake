@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from apply.preview import build_application_preview
 from core.config import (
     AppConfig,
@@ -20,7 +22,7 @@ from core.config import (
     soft_migrate_jobs_config,
     normalize_jobs_per_search,
 )
-from core.cover_letter import pick_relevant_experience, render_cover_letter
+from core.cover_letter import CoverLetterRefused, pick_relevant_experience, render_cover_letter
 from core.cv_parser import MISSING_IN_DOCUMENT, parse_cv_text
 from core.documents import active_cv_variant, normalize_variants
 from core.matcher import score_job
@@ -166,9 +168,12 @@ def test_nan_company_never_in_cover_letter():
     cfg = _cfg()
     job = Job(title="Sachbearbeiter", company=float("nan"), description="Excel DATEV")
     assert is_blankish(job.company) or clean_company(job.company) == ""
-    letter = render_cover_letter(job, cfg)
-    assert "bei nan" not in letter.lower()
-    assert "nan" not in letter.lower().split()
+    with pytest.raises(CoverLetterRefused) as caught:
+        render_cover_letter(job, cfg)
+    blob = str(caught.value).lower()
+    assert caught.value.refusal.reason_code == "company_missing"
+    assert "bei nan" not in blob
+    assert "nan" not in blob.split()
 
 
 def test_cover_letter_ranks_relevant_experience_not_newest():

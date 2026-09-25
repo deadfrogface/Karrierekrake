@@ -13,6 +13,7 @@ from core.geo_normalize import (
     source_location_blob_to_fields,
 )
 from core.models import Job, RemoteType
+from search.job_schema import normalize_portal_job
 
 
 def _is_job_posting_type(type_value: Any) -> bool:
@@ -158,7 +159,7 @@ def job_from_list_card(
     fields = source_location_blob_to_fields(city)
     city_n = fields["city"] or (city or "").strip()
     cc = normalize_country_code(country_code) or fields["country_code"]
-    return Job(
+    job = Job(
         id=make_job_id(source, url, url, title, company),
         source=source,
         source_job_id=url,
@@ -174,6 +175,7 @@ def job_from_list_card(
         url=url,
         application_url=url,
     )
+    return normalize_portal_job(job)
 
 
 def job_from_job_posting(
@@ -221,7 +223,7 @@ def job_from_job_posting(
         country_code = source_location_blob_to_fields(
             f"{postal} {city}".strip()
         ).get("country_code") or ""
-    return Job(
+    job = Job(
         id=make_job_id(source, url, url, title, company),
         source=source,
         source_job_id=url,
@@ -240,3 +242,4 @@ def job_from_job_posting(
         url=url,
         application_url=url,
     )
+    return normalize_portal_job(job)
