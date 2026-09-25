@@ -6,13 +6,69 @@ from desktop.design_system.tokens import DesignTokens, tokens_for_theme
 from desktop.theme import resolve_theme
 
 
+def _mix_toward_white(hex_color: str, amount: float) -> str:
+    """Lighten an existing token hex. Not a new palette entry."""
+    raw = hex_color.strip().lstrip("#")
+    if len(raw) != 6:
+        return hex_color
+    red, green, blue = int(raw[0:2], 16), int(raw[2:4], 16), int(raw[4:6], 16)
+
+    def channel(value: int) -> int:
+        mixed = value + (255 - value) * amount
+        return max(0, min(255, round(mixed)))
+
+    return f"#{channel(red):02x}{channel(green):02x}{channel(blue):02x}"
+
+
+# Resting fill of QLabel#BadgeMuted in the dark legacy sheet.
+_DARK_MUTED_CHIP_BG = "#243343"
+# Keeps muted text (#9AB5B6) at about 4.6:1 on the lifted fill.
+_DARK_CHIP_HOVER_LIFT = 0.08
+
+
+def dark_chip_hover_qss(tokens: DesignTokens | None = None) -> str:
+    """Instant :hover for dark chips — lighter border and fill, no animation.
+
+    Text color stays the existing foreground so contrast does not drop under
+    the small background lift. The border uses the dark focus-ring token.
+    """
+    colors = tokens.colors if tokens is not None else tokens_for_theme("dark").colors
+    pairs = (
+        ("QLabel#BadgeOk:hover, QLabel#KkStatusSuccess:hover", colors.success_bg, colors.success),
+        ("QLabel#BadgeWarn:hover, QLabel#KkStatusWarning:hover", colors.warning_bg, colors.warning),
+        ("QLabel#BadgeDanger:hover, QLabel#KkStatusError:hover", colors.error_bg, colors.error),
+        ("QLabel#BadgeMuted:hover", _DARK_MUTED_CHIP_BG, colors.muted),
+        ("QLabel#BadgeInfo:hover", colors.info_bg, colors.info_fg),
+    )
+    rules = [
+        """
+QLabel#BadgeOk, QLabel#KkStatusSuccess,
+QLabel#BadgeWarn, QLabel#KkStatusWarning,
+QLabel#BadgeDanger, QLabel#KkStatusError,
+QLabel#BadgeMuted, QLabel#BadgeInfo {
+    border: 1px solid transparent;
+}
+""".strip()
+    ]
+    for selector, background, foreground in pairs:
+        lifted = _mix_toward_white(background, _DARK_CHIP_HOVER_LIFT)
+        rules.append(
+            f"{selector} {{\n"
+            f"    background: {lifted};\n"
+            f"    color: {foreground};\n"
+            f"    border: 1px solid {colors.focus_ring};\n"
+            f"}}"
+        )
+    return "/* dark chip hover — stylesheet only */\n" + "\n".join(rules) + "\n"
+
+
 def build_design_stylesheet(tokens: DesignTokens) -> str:
     """Primitive focus / validation / status rules layered on shared object names."""
     c = tokens.colors
     r = tokens.radii
     ctrl = tokens.controls
     ty = tokens.typography
-    return f"""
+    css = f"""
 /* === Design system primitives (schema {tokens.schema_version}) === */
 QWidget#KkPrimitive {{
     font-family: {ty.font_family};
@@ -238,6 +294,9 @@ QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus {{
     border: {ctrl.focus_width}px solid {c.focus_ring};
 }}
 """
+    if tokens.theme == "dark":
+        css += "\n" + dark_chip_hover_qss(tokens)
+    return css
 
 
 def build_high_contrast_stylesheet(tokens: DesignTokens) -> str:
