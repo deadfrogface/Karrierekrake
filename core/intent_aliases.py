@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 
 # Bump when alias tables change (invalidates persisted ranking caches).
 INTENT_ALIAS_TABLE_VERSION = 1
@@ -153,6 +154,12 @@ _FAMILY_TITLE_RES: dict[str, re.Pattern[str]] = {
 }
 
 
+# Intent labels repeat on every job. The family tables are a frozen tuple of
+# frozen rows with frozenset aliases, so the label alone determines the id.
+_ROLE_FAMILY_CACHE_MAXSIZE = 64
+
+
+@lru_cache(maxsize=_ROLE_FAMILY_CACHE_MAXSIZE)
 def role_family_id_for_label(label: str) -> str | None:
     """Map an intent role label to a controlled family, or None if unknown."""
     key = _norm_alias(label)

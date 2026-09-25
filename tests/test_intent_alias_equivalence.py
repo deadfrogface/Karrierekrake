@@ -143,3 +143,47 @@ def test_fuzzy_matches_legacy_on_fixture_texts() -> None:
             assert _fuzzy_against_aliases(text, aliases) == _legacy_fuzzy_against_aliases(
                 text, aliases
             )
+
+
+def test_role_family_tables_are_immutable() -> None:
+    from dataclasses import FrozenInstanceError
+
+    from core.intent_aliases import RoleFamily
+
+    assert isinstance(ROLE_FAMILIES, tuple)
+    assert ROLE_FAMILIES
+    for fam in ROLE_FAMILIES:
+        assert isinstance(fam, RoleFamily)
+        assert fam.__dataclass_params__.frozen
+        assert isinstance(fam.aliases, frozenset)
+        with pytest.raises(FrozenInstanceError):
+            fam.family_id = "other"  # type: ignore[misc]
+        with pytest.raises(AttributeError):
+            fam.aliases.add("extra")  # type: ignore[attr-defined]
+
+
+def test_role_family_id_cache_matches_uncached_lookup() -> None:
+    from core import intent_aliases as aliases
+
+    labels = (
+        "Buchhalter",
+        "Lohnbuchhalter",
+        "lohnbuchhalter",
+        "Payroll Specialist",
+        "Disponentin",
+        "",
+    )
+    raw = aliases.role_family_id_for_label.__wrapped__
+    aliases.role_family_id_for_label.cache_clear()
+    cached = [aliases.role_family_id_for_label(label) for label in labels]
+    direct = [raw(label) for label in labels]
+    assert cached == direct
+    assert aliases.role_family_id_for_label("Buchhalter") is None
+    assert raw("Buchhalter") is None
+    assert aliases.role_family_id_for_label("Lohnbuchhalter") == "payroll"
+    assert raw("Lohnbuchhalter") == "payroll"
+    assert "lohnbuchhalter" in ROLE_FAMILIES[0].aliases
+    info = aliases.role_family_id_for_label.cache_info()
+    assert info.maxsize == aliases._ROLE_FAMILY_CACHE_MAXSIZE == 64
+    assert info.hits >= 1
+    assert info.currsize <= 64
