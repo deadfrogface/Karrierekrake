@@ -19,7 +19,7 @@ from PySide6.QtWidgets import QApplication, QDialogButtonBox
 
 from core.config import ApplicationProfile, QualificationsConfig
 from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
-from desktop.i18n import i18n, tr
+from desktop.i18n import TRANSLATIONS, i18n, tr
 from desktop.widgets.cv_import_dialog import CvImportDialog
 
 
@@ -164,8 +164,9 @@ def test_init_returns_before_spawn_starts(qapp, tmp_path: Path):
     dlg.close()
 
 
-def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_path: Path):
+def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_path: Path, monkeypatch):
     i18n.set_language("de")
+    monkeypatch.setitem(TRANSLATIONS[i18n.language], "cv_import.cancel_btn", "__cv_cancel__")
     gui = threading.get_ident()
     seen: list[int] = []
     cv = tmp_path / "cv.txt"
@@ -194,7 +195,7 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     assert cv.name in dlg.path_label.text()
     cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
     assert cancel is not None
-    assert cancel.text() == tr("cv_import.cancel_btn")
+    assert cancel.text() == "__cv_cancel__"
     assert _pump(qapp, lambda: dlg.incoming is not None)
     assert dlg._phase == "success"
     assert dlg._ok_btn.isVisible()
