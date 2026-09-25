@@ -486,6 +486,25 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.confidence": "Erkennungsstatus",
         "cv_import.review_items": "Zur Prüfung (unklar / umklassifiziert)",
         "cv_import.read_error": "Konnte nicht gelesen werden:",
+        "cv_import.parsing": "Lebenslauf wird gelesen … Die Oberfläche bleibt bedienbar.",
+        "cv_import.ready": "Lebenslauf gelesen. Bitte prüfen und übernehmen.",
+        "cv_import.retry": "Erneut versuchen",
+        "cv_import.oom": (
+            "Zu wenig Arbeitsspeicher. Die Eingaben bleiben erhalten. "
+            "Es gibt keinen automatischen Neustart — bitte manuell erneut versuchen."
+        ),
+        "cv_import.timeout": (
+            "Zeitüberschreitung beim Lesen. Die Eingaben bleiben erhalten. "
+            "Bitte manuell erneut versuchen."
+        ),
+        "cv_import.cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
+        "cv_import.cancel_btn": "Abbrechen",
+        "cv_import.close": "Schließen",
+        "cv_import.empty": (
+            "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
+            "oder lies die Datei erneut ein."
+        ),
+        "cv_import.manual_profile": "Profil manuell eintragen",
         "cv_import.pipeline": "CV-Extraktion",
         "cv_import.pipeline_det": "Deterministisch (ohne KI-Modell)",
         "btn.reset_profile": "Profil zurücksetzen",
@@ -520,6 +539,23 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "CV-Import ist rein deterministisch und lädt kein Modell. "
             "Fehlt das Writer-Modell: GUENTHER_UNAVAILABLE — kein Heuristik-Ersatz. "
             "Günther schlägt vor — Karrierekrake entscheidet."
+        ),
+        "settings.local_llm_cv_parsing": "Lokales LLM-CV-Parsing auf diesem PC erlauben",
+        "settings.local_llm_cv_kill": (
+            "wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; "
+            "der manuelle Profilimport bleibt möglich."
+        ),
+        "settings.local_llm_cv_escalation": (
+            "Erster Eskalationsschritt: kleineres lokales Modell unter denselben "
+            "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
+            "Phi-Fallback und kein neues Modell in diesem Schritt."
+        ),
+        "settings.local_llm_cv_disabled_hint": (
+            "Das lokale LLM-CV-Parsing ist derzeit deaktiviert. "
+            "Lebensläufe werden mit dem Standard-Parser gelesen."
+        ),
+        "settings.local_llm_cv_unavailable": (
+            "Erst verfügbar, wenn der Speichertest auf dem Zielgerät bestanden ist."
         ),
         "guenther.validator.unsupported_credential": (
             "Eine behauptete Qualifikation ist im Profil nicht belegt."
@@ -1349,6 +1385,24 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.confidence": "Detection status",
         "cv_import.review_items": "Needs review (unclear / reclassified)",
         "cv_import.read_error": "Could not read:",
+        "cv_import.parsing": "Reading the CV … The window stays responsive.",
+        "cv_import.ready": "CV read. Review it, then apply.",
+        "cv_import.retry": "Try again",
+        "cv_import.oom": (
+            "Out of memory. Your entries are unchanged. "
+            "There is no automatic restart — try again manually."
+        ),
+        "cv_import.timeout": (
+            "Reading timed out. Your entries are unchanged. Try again manually."
+        ),
+        "cv_import.cancelled": "Reading cancelled. Nothing was applied.",
+        "cv_import.cancel_btn": "Cancel",
+        "cv_import.close": "Close",
+        "cv_import.empty": (
+            "Nothing was found in the document. Enter the profile manually "
+            "or read the file again."
+        ),
+        "cv_import.manual_profile": "Enter profile manually",
         "cv_import.pipeline": "CV extraction",
         "cv_import.pipeline_det": "Deterministic (no AI model)",
         "btn.reset_profile": "Reset profile",
@@ -1383,6 +1437,23 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "CV import is fully deterministic and does not load a model. "
             "If the writer model is missing: GUENTHER_UNAVAILABLE — no heuristic substitute. "
             "Günther suggests — Karrierekrake decides."
+        ),
+        "settings.local_llm_cv_parsing": "Allow local LLM CV parsing on this PC",
+        "settings.local_llm_cv_kill": (
+            "Local LLM CV parsing is removed on this hardware; "
+            "manual profile import remains available."
+        ),
+        "settings.local_llm_cv_escalation": (
+            "First escalation: measure a smaller local model under the same "
+            "quality, RAM, and runtime gates. No automatic Phi fallback and "
+            "no new model in this step."
+        ),
+        "settings.local_llm_cv_disabled_hint": (
+            "Local LLM CV parsing is currently disabled. "
+            "CVs are read with the standard parser."
+        ),
+        "settings.local_llm_cv_unavailable": (
+            "Available only after the memory test on the target device has passed."
         ),
         "guenther.validator.unsupported_credential": (
             "A claimed qualification is not supported by the profile."
