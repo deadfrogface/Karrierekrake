@@ -3969,7 +3969,6 @@
   "tests/test_product_rename_migration.py::test_fresh_install_uses_only_karrierekrake": 0.011,
   "tests/test_product_rename_migration.py::test_legacy_migration_copies_and_is_idempotent": 0.014,
   "tests/test_product_rename_migration.py::test_no_wrong_karrierekrake_capitalization": 0.588,
-  "tests/test_product_rename_migration.py::test_repo_has_no_active_jobhuntsaver_identity": 2.917,
   "tests/test_production_content_gate.py::test_allowed_datas_exist_on_disk": 0.001,
   "tests/test_production_content_gate.py::test_allowed_runtime_paths_clean[PySide6/QtCore.pyd]": 0.001,
   "tests/test_production_content_gate.py::test_allowed_runtime_paths_clean[assets/brand/logo.png]": 0.001,
