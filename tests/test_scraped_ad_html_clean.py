@@ -180,18 +180,10 @@ SYNTHETIC_CORPUS: tuple[HtmlCase, ...] = (
 )
 
 
-PASSING = [case for case in SYNTHETIC_CORPUS]
-
-
-@pytest.mark.parametrize("case", PASSING, ids=lambda case: case.case_id)
-def test_synthetic_html_cleaner_keeps_lines_and_drops_tags(case: HtmlCase):
-    _assert_case(case)
-
-
-@pytest.mark.xfail(reason=_XFAIL_NBSP, strict=True)
-def test_nbsp_is_a_normal_space():
-    """&nbsp; between words should not survive as U+00A0."""
-    case = HtmlCase(
+# Further synthetic fixtures used by the xfail and section-split tests.
+# Same cleaner path as SYNTHETIC_CORPUS. Fictional employers only.
+EXTRA_REGRESSION_CASES: tuple[HtmlCase, ...] = (
+    HtmlCase(
         case_id="nbsp",
         portal="indeed",
         html="""
@@ -200,13 +192,8 @@ def test_nbsp_is_a_normal_space():
         """,
         forbid_nbsp=True,
         must_contain=("Python & SQL",),
-    )
-    _assert_case(case)
-
-
-@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
-def test_cookie_banner_is_removed():
-    case = HtmlCase(
+    ),
+    HtmlCase(
         case_id="stepstone_cookie",
         portal="stepstone",
         html="""
@@ -230,13 +217,8 @@ def test_cookie_banner_is_removed():
             "SYNTH_COOKIE_NOSCRIPT",
             "onetrust",
         ),
-    )
-    _assert_case(case)
-
-
-@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
-def test_apply_buttons_are_removed():
-    case = HtmlCase(
+    ),
+    HtmlCase(
         case_id="indeed_apply",
         portal="indeed",
         html="""
@@ -255,13 +237,8 @@ def test_apply_buttons_are_removed():
         """,
         exact_lines=("Design APIs", "Review pull requests"),
         must_absent=("Jetzt bewerben", "Apply now", "jobsearch-ApplyButton"),
-    )
-    _assert_case(case)
-
-
-@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
-def test_share_widget_is_removed():
-    case = HtmlCase(
+    ),
+    HtmlCase(
         case_id="linkedin_share",
         portal="linkedin",
         html="""
@@ -275,13 +252,8 @@ def test_share_widget_is_removed():
         """,
         must_contain=("Studium der Informatik",),
         must_absent=("Share this job", "Auf Xing teilen", "share-widget"),
-    )
-    _assert_case(case)
-
-
-@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
-def test_similar_jobs_block_is_removed():
-    case = HtmlCase(
+    ),
+    HtmlCase(
         case_id="stepstone_similar",
         portal="stepstone",
         html="""
@@ -297,14 +269,11 @@ def test_similar_jobs_block_is_removed():
         """,
         exact_lines=("DATEV-Kenntnisse",),
         must_absent=("Ähnliche Jobs", "Fremde Beispiel KG", "similar-jobs"),
-    )
-    _assert_case(case)
-
-
-def test_cookie_banner_does_not_destroy_requirement_lines():
-    """List structure still reaches the section splitter even while chrome remains."""
-    text = _cleaned(
-        """
+    ),
+    HtmlCase(
+        case_id="cookie_keeps_requirements",
+        portal="stepstone",
+        html="""
         <!-- SYNTHETIC. Fictional Nordlicht Beispiel GmbH. -->
         <div class="cookie-banner">Diese Website verwendet Cookies</div>
         <h2>Ihr Profil</h2>
@@ -312,17 +281,12 @@ def test_cookie_banner_does_not_destroy_requirement_lines():
           <li>Abgeschlossenes Studium</li>
           <li>Python und SQL</li>
         </ul>
-        """
-    )
-    assert "Abgeschlossenes Studium" in _lines(text)
-    assert "Python und SQL" in _lines(text)
-    sections = split_job_sections(text)
-    assert sections.requirements == ["Abgeschlossenes Studium", "Python und SQL"]
-
-
-def test_cleaned_stepstone_like_ad_splits_into_sections():
-    text = _cleaned(
-        """
+        """,
+    ),
+    HtmlCase(
+        case_id="stepstone_full_ad",
+        portal="stepstone",
+        html="""
         <!-- SYNTHETIC StepStone-like ad. Fictional Nordlicht Beispiel GmbH. -->
         <p>Die Nordlicht Beispiel GmbH baut fiktive Bojen.</p>
         <h2>Ihre Aufgaben</h2>
@@ -339,8 +303,77 @@ def test_cleaned_stepstone_like_ad_splits_into_sections():
         <ul><li>30 Tage Urlaub</li></ul>
         <h2>Ansprechpartner</h2>
         <p>Ada Beispiel</p>
-        """
-    )
+        """,
+    ),
+    HtmlCase(
+        case_id="qualifications_br_nested",
+        portal="indeed",
+        html="""
+        <!-- SYNTHETIC. Fictional Harbor Labs Example. -->
+        <h2>Qualifications</h2>
+        <ul>
+          <li>Analysieren<br>und dokumentieren</li>
+          <li>Degree
+            <ul><li>Computer science</li></ul>
+          </li>
+          <li>Python</li>
+        </ul>
+        """,
+    ),
+)
+
+REGRESSION_CASES: tuple[HtmlCase, ...] = SYNTHETIC_CORPUS + EXTRA_REGRESSION_CASES
+_CASES_BY_ID = {case.case_id: case for case in REGRESSION_CASES}
+
+PASSING = [case for case in SYNTHETIC_CORPUS]
+
+
+def regression_case(case_id: str) -> HtmlCase:
+    return _CASES_BY_ID[case_id]
+
+
+@pytest.mark.parametrize("case", PASSING, ids=lambda case: case.case_id)
+def test_synthetic_html_cleaner_keeps_lines_and_drops_tags(case: HtmlCase):
+    _assert_case(case)
+
+
+@pytest.mark.xfail(reason=_XFAIL_NBSP, strict=True)
+def test_nbsp_is_a_normal_space():
+    """&nbsp; between words should not survive as U+00A0."""
+    _assert_case(regression_case("nbsp"))
+
+
+@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
+def test_cookie_banner_is_removed():
+    _assert_case(regression_case("stepstone_cookie"))
+
+
+@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
+def test_apply_buttons_are_removed():
+    _assert_case(regression_case("indeed_apply"))
+
+
+@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
+def test_share_widget_is_removed():
+    _assert_case(regression_case("linkedin_share"))
+
+
+@pytest.mark.xfail(reason=_XFAIL_CHROME, strict=True)
+def test_similar_jobs_block_is_removed():
+    _assert_case(regression_case("stepstone_similar"))
+
+
+def test_cookie_banner_does_not_destroy_requirement_lines():
+    """List structure still reaches the section splitter even while chrome remains."""
+    text = _cleaned(regression_case("cookie_keeps_requirements").html)
+    assert "Abgeschlossenes Studium" in _lines(text)
+    assert "Python und SQL" in _lines(text)
+    sections = split_job_sections(text)
+    assert sections.requirements == ["Abgeschlossenes Studium", "Python und SQL"]
+
+
+def test_cleaned_stepstone_like_ad_splits_into_sections():
+    text = _cleaned(regression_case("stepstone_full_ad").html)
     assert "<" not in text
     sections = split_job_sections(text)
     assert "Nordlicht Beispiel" in sections.company_intro
@@ -352,19 +385,7 @@ def test_cleaned_stepstone_like_ad_splits_into_sections():
 
 
 def test_br_and_nested_list_become_requirement_items():
-    text = _cleaned(
-        """
-        <!-- SYNTHETIC. Fictional Harbor Labs Example. -->
-        <h2>Qualifications</h2>
-        <ul>
-          <li>Analysieren<br>und dokumentieren</li>
-          <li>Degree
-            <ul><li>Computer science</li></ul>
-          </li>
-          <li>Python</li>
-        </ul>
-        """
-    )
+    text = _cleaned(regression_case("qualifications_br_nested").html)
     sections = split_job_sections(text)
     assert "Analysieren und dokumentieren" in sections.requirements
     assert "Degree" in sections.requirements

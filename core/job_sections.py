@@ -196,6 +196,10 @@ _ABBREV = re.compile(
 )
 _SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+(?=[A-ZÄÖÜ\"“„(])")
 _KEEP = re.compile(r"[0-9A-Za-zÄÖÜäöüß]")
+# Hoisted so call paths never compile these. Both are one character class plus
+# a single quantifier: the engine advances, it does not retry nested groups.
+_COLLAPSE_WS = re.compile(r"\s+")
+_COLLAPSE_NL = re.compile(r"\n{3,}")
 
 
 @dataclass
@@ -324,7 +328,7 @@ def _prep_line(line: str) -> str:
 def _norm_key(value: str) -> str:
     cleaned = _GENDER.sub("", value).strip().rstrip(":").strip()
     cleaned = _WS.sub(" ", cleaned)
-    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    cleaned = _COLLAPSE_WS.sub(" ", cleaned).strip()
     return cleaned.casefold()
 
 
@@ -376,11 +380,11 @@ def _body(lines: list[str]) -> str:
     text = "\n".join(lines).strip()
     if not text:
         return ""
-    return re.sub(r"\n{3,}", "\n\n", text)
+    return _COLLAPSE_NL.sub("\n\n", text)
 
 
 def _squash(value: str) -> str:
-    return re.sub(r"\s+", " ", _WS.sub(" ", value)).strip()
+    return _COLLAPSE_WS.sub(" ", _WS.sub(" ", value)).strip()
 
 
 def _keep(value: str) -> bool:

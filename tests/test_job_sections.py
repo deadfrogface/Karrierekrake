@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import time
 from pathlib import Path
 
 import pytest
@@ -333,3 +334,95 @@ def test_english_ad_sections():
     assert sections.requirements == ["3 years Python", "Bachelor degree"]
     assert "Remote stipend" in sections.benefits
     assert "Ada Example" in sections.contact
+
+
+def test_patterns_are_compiled_at_import_only():
+    """re.compile / re.sub must not run inside functions or methods."""
+    source = (ROOT / "core" / "job_sections.py").read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    banned = {"compile", "sub", "search", "match", "fullmatch", "split", "findall", "finditer"}
+    offenders: list[tuple[str, str, int]] = []
+    for node in tree.body:
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        for sub in ast.walk(node):
+            if not isinstance(sub, ast.Call):
+                continue
+            func = sub.func
+            if (
+                isinstance(func, ast.Attribute)
+                and isinstance(func.value, ast.Name)
+                and func.value.id == "re"
+                and func.attr in banned
+            ):
+                offenders.append((node.name, func.attr, sub.lineno))
+    assert offenders == []
+
+
+# Lines stay under the 160-character heading cap so every row hits the matcher.
+_NO_HEADING_LINE = (
+    "Die Nordlicht Beispiel GmbH entwickelt fiktive Bojen und sucht Verstaerkung im Team vor Ort im Hafen."
+)
+_NEAR_HEADING_LINE = "Hinweis zur fiktiven Stelle, bitte Unterlagen sichten:"
+
+# VM, nicht i3 (2026-09-25, one core, scripts/bench_job_sections.py).
+# Warmed median of split_job_sections + requirements_first_excerpt:
+#   200 KB no headings: 0.038 s, tracemalloc peak 312 KiB
+#   200 KB near-headings: 0.062 s, tracemalloc peak 412 KiB
+# 50x the slower VM figure is 3.1 s. Bound is 4.0 s (above that, and at least 2 s).
+_LARGE_AD_BOUND_S = 4.0
+
+
+def _repeat_to_min_bytes(line: str, min_bytes: int = 200 * 1024) -> str:
+    row = line if line.endswith("\n") else line + "\n"
+    row_bytes = len(row.encode("utf-8"))
+    copies = max(1, (min_bytes + row_bytes - 1) // row_bytes)
+    text = row * copies
+    if len(text.encode("utf-8")) < min_bytes:
+        text += row
+    return text
+
+
+def synthetic_ad_no_headings(min_bytes: int = 200 * 1024) -> str:
+    """Long ad whose lines are prose, not section headings."""
+    return _repeat_to_min_bytes(_NO_HEADING_LINE, min_bytes)
+
+
+def synthetic_ad_near_headings(min_bytes: int = 200 * 1024) -> str:
+    """Long ad of colon-lines that are not real section headings."""
+    return _repeat_to_min_bytes(_NEAR_HEADING_LINE, min_bytes)
+
+
+def _time_pair(text: str) -> float:
+    started = time.perf_counter()
+    split_job_sections(text)
+    requirements_first_excerpt(text)
+    return time.perf_counter() - started
+
+
+def test_large_ad_without_headings_is_bounded():
+    text = synthetic_ad_no_headings()
+    assert len(text.encode("utf-8")) >= 200 * 1024
+    assert "\n" in text
+    elapsed = _time_pair(text)
+    sections = split_job_sections(text)
+    assert sections.requirements == []
+    assert sections.tasks == ""
+    assert sections.benefits == ""
+    assert sections.contact == ""
+    # VM value and bound: see _LARGE_AD_BOUND_S.
+    assert elapsed < _LARGE_AD_BOUND_S
+
+
+def test_large_ad_near_headings_is_bounded():
+    text = synthetic_ad_near_headings()
+    assert len(text.encode("utf-8")) >= 200 * 1024
+    lines = [row for row in text.splitlines() if row.strip()]
+    assert lines
+    assert all(row.endswith(":") and len(row) <= 160 for row in lines)
+    elapsed = _time_pair(text)
+    sections = split_job_sections(text)
+    assert sections.requirements == []
+    assert sections.tasks == ""
+    assert sections.company_intro == ""
+    assert elapsed < _LARGE_AD_BOUND_S
