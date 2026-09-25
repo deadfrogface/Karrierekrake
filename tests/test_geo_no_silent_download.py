@@ -508,10 +508,79 @@ def test_pgeocode_imported_first_reads_manifest_file(
             poison.write_bytes(previous)
 
 
+def test_pgeocode_contract_attributes_exist():
+    """Tripwire for the internals we patch. Red when a name or type moves.
+
+    Runs in the default CI job ``unit-tests`` (``pytest -q -m "not network"``).
+    No skip, no slow marker, no ``network`` marker.
+    """
+    import importlib
+
+    import pgeocode
+
+    importlib.reload(pgeocode)
+    storage = pgeocode.STORAGE_DIR
+    urls = pgeocode.DOWNLOAD_URL
+    open_url = pgeocode._open_extract_url
+    cycle_url = pgeocode._open_extract_cycle_url
+    assert isinstance(storage, str)
+    assert isinstance(urls, list)
+    assert callable(open_url)
+    assert callable(cycle_url)
+
+
+def test_removed_pgeocode_attribute_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
+):
+    """A missing internal must return None and must not build Nominatim."""
+    caplog.set_level(logging.WARNING, logger="karrierekrake")
+    import pgeocode
+
+    monkeypatch.delattr(pgeocode, "DOWNLOAD_URL")
+    constructed = _count_nominatim(monkeypatch)
+    _ready_dataset(tmp_path, monkeypatch)
+    res = resolve_postal_pgeocode("10115", "DE")
+    _assert_unresolved(res)
+    assert constructed == []
+    from core import geo_resolve
+
+    assert "DE" not in geo_resolve._pgeocode_index
+    refused = [
+        rec
+        for rec in caplog.records
+        if rec.levelno == logging.WARNING and "internals changed" in rec.getMessage()
+    ]
+    assert len(refused) == 1
+
+
+def test_wrong_type_pgeocode_attribute_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
+):
+    """A retyped internal must return None and must not build Nominatim."""
+    caplog.set_level(logging.WARNING, logger="karrierekrake")
+    import pgeocode
+
+    monkeypatch.setattr(pgeocode, "DOWNLOAD_URL", ("https://example.invalid/DE.zip",))
+    constructed = _count_nominatim(monkeypatch)
+    _ready_dataset(tmp_path, monkeypatch)
+    res = resolve_postal_pgeocode("10115", "DE")
+    _assert_unresolved(res)
+    assert constructed == []
+    from core import geo_resolve
+
+    assert "DE" not in geo_resolve._pgeocode_index
+    assert any("internals changed" in rec.getMessage() for rec in caplog.records)
+
+
 def test_missing_file_wrapper_blocks_download_without_sockets(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
-    """Nominatim must not urlopen when the country file is gone."""
+    """Nominatim must not urlopen when the country file is gone.
+
+    Part of the default CI job ``unit-tests``:
+    ``pytest -q --ignore=tests/test_cv_corpus.py -m "not network"``.
+    Not marked ``network``, not skipped, not optional.
+    """
     info = _ready_dataset(tmp_path, monkeypatch)
     country = Path(info.path) / "geonames" / "DE.txt"
     original = country.read_bytes()

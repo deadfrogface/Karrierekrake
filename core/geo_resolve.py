@@ -422,16 +422,45 @@ def _refuse_pgeocode_download(*_args: object, **_kwargs: object) -> Any:
     raise RuntimeError("refusing pgeocode download")
 
 
+def _read_pgeocode_contract(module: Any) -> None:
+    """Read the pgeocode internals this process patches.
+
+    Direct attribute access, not ``hasattr``. A renamed or retyped name
+    raises ``AttributeError`` or ``TypeError`` so the caller can refuse
+    ``Nominatim`` instead of leaving the download path open.
+    """
+    storage = module.STORAGE_DIR
+    urls = module.DOWNLOAD_URL
+    open_url = module._open_extract_url
+    cycle_url = module._open_extract_cycle_url
+    if not isinstance(storage, str):
+        raise TypeError(f"STORAGE_DIR is {type(storage).__name__}, expected str")
+    if not isinstance(urls, list):
+        raise TypeError(f"DOWNLOAD_URL is {type(urls).__name__}, expected list")
+    if not callable(open_url):
+        raise TypeError("_open_extract_url is not callable")
+    if not callable(cycle_url):
+        raise TypeError("_open_extract_cycle_url is not callable")
+
+
 def _lock_pgeocode_downloads(module: Any) -> None:
     """Make pgeocode's download branch unreachable in this process.
 
     ``_get_data`` calls ``urllib.request.urlopen`` with no timeout. Clearing
     ``DOWNLOAD_URL`` and replacing both helpers means a missing country file
-    raises here instead of blocking on DNS or a captive portal.
+    raises here instead of blocking on DNS or a captive portal. The caller
+    has already checked that these names exist.
     """
     module.DOWNLOAD_URL = []
     module._open_extract_url = _refuse_pgeocode_download
     module._open_extract_cycle_url = _refuse_pgeocode_download
+
+
+def _warn_pgeocode_contract(exc: BaseException) -> None:
+    if "contract" in _pgeocode_warned:
+        return
+    _pgeocode_warned.add("contract")
+    logger.warning("refusing pgeocode Nominatim, internals changed: %s", exc)
 
 
 def _import_pgeocode_offline() -> Any | None:
@@ -441,13 +470,20 @@ def _import_pgeocode_offline() -> Any | None:
     (default ``~/.cache/pgeocode``). This module cannot guarantee it is the
     first importer, and a later ``os.environ`` write does not move that
     global. Callers assign ``STORAGE_DIR`` explicitly before ``Nominatim``.
+    If ``STORAGE_DIR``, ``DOWNLOAD_URL`` or a download helper is missing or
+    has the wrong type, this returns None and does not construct Nominatim.
     """
     try:
         import pgeocode
     except ImportError:
         logger.debug("pgeocode not installed — offline PLZ resolution unavailable")
         return None
-    _lock_pgeocode_downloads(pgeocode)
+    try:
+        _read_pgeocode_contract(pgeocode)
+        _lock_pgeocode_downloads(pgeocode)
+    except (AttributeError, TypeError) as exc:
+        _warn_pgeocode_contract(exc)
+        return None
     return pgeocode
 
 
@@ -567,8 +603,8 @@ def _build_nominatim(country_code: str) -> Any | None:
         return None
     # Import-time STORAGE_DIR stays at ~/.cache/pgeocode when pgeocode was
     # imported before PGEOCODE_DATA_DIR existed. Assign the active dir here.
-    pgeocode.STORAGE_DIR = data_dir
     try:
+        pgeocode.STORAGE_DIR = data_dir
         nom = _construct_offline_nominatim(pgeocode, country_code, country_file)
     except Exception as exc:
         logger.warning(
@@ -794,11 +830,7 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    names = {
-        str(n).casefold()
-        for n in exact["place_name"].tolist()
-        if str(n).strip()
-    }
+    names = {str(n).casefold() for n in exact["place_name"].tolist() if str(n).strip()}
     if len(names) != 1:
         return PlaceResolution(
             status="AMBIGUOUS",
