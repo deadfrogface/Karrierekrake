@@ -251,6 +251,10 @@ def test_theme_switch_deletes_hover_animation_with_effect(qapp, monkeypatch):
     assert chip.graphicsEffect() is effect
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Offscreen Qt access violation on Windows CI during theme switch + hover",
+)
 def test_theme_switch_restores_one_chip_shadow(qapp, monkeypatch):
     monkeypatch.setenv("KK_REDUCED_MOTION", "0")
     qapp.setStyleSheet(stylesheet_for("light"))
