@@ -1,19 +1,25 @@
 # Blindtest-Status – Docpick
 
-Stand 2026-09-24.
+Stand 2026-09-25.
 
-## Erledigt
+## Verbindliche Blindwerte
+
+| Test | F1 | Hinweis |
+|------|-----|---------|
+| **NV3 Frozen Blind** | **0,980** | verbindlich |
+| DOB-Audit | 0,990 | nachträglich, **kein** 99%-Nachweis |
+| Round8 known | 0,999 | **Post-Analysis**, kein Blind |
+| Blind DE/EN v1 (n=4) | 0,996 | informativ |
+
+## Blind v3 (≥50 ungesehen)
 
 | Item | Status |
 |------|--------|
-| Blind DE/EN v1 (n=4) | F1 0,996 — informativ, kein 99%-Claim |
-| Spike-PRs #56/#60/#61 | CLOSED |
-| #63 | MERGED |
-| Blind v2 Scaffold | `tests/docpick_blind_de_en_v2/README.md` + Scripts (Exit 2 ohne Daten) |
+| Scaffold + Freeze-Skript | bereit |
+| PHASE_A_PDFS.zip (≥50 neu) | **FEHLT** |
+| PHASE_B_SOLUTIONS.zip | **FEHLT** (erst nach Phase-A-Seal) |
+| 99%-Claim | **nicht zulässig** bis Gate auf versiegeltem Blind v3 |
 
-## Blocker für Merge-Gate „ausreichend großer Blindtest“
+## Benötigt
 
-**Neuer unabhängiger DE/EN-Korpus fehlt** (≥20, ideal 40, volle V3-GT).  
-Bekannte CVs (Smoke/Mini/Round2–4/Blind-v1) nicht als „neu“ verwenden.
-
-Lieferung: siehe `tests/docpick_blind_de_en_v2/README.md`.
+Siehe `tests/docpick_blind_de_en_v3/README.md`.
