@@ -482,12 +482,18 @@ class ProfilePage(QWidget):
         else:
             self._linkedin.setText(tr("profile.no_linkedin"))
 
-        # Experience timeline (progressive)
+        # Experience timeline (progressive). _exp_more lives for the page
+        # lifetime and is only reparented; deleteLater would free the C++
+        # button while this attribute still points at it.
         while self._exp_body.count():
             item = self._exp_body.takeAt(0)
             w = item.widget()
-            if w is not None:
-                w.deleteLater()
+            if w is None:
+                continue
+            if w is self._exp_more:
+                w.hide()
+                continue
+            w.deleteLater()
         experiences = list(cfg.profile.qualifications.work_experience or [])
         for entry in experiences[: self._exp_limit]:
             block = QVBoxLayout()
@@ -515,6 +521,7 @@ class ProfilePage(QWidget):
             self._exp_body.addWidget(wrap)
         if len(experiences) > self._exp_limit:
             self._exp_more.setText(tr("profile.show_more_entries", n=len(experiences) - self._exp_limit))
+            self._exp_more.show()
             self._exp_body.addWidget(self._exp_more)
         if not experiences:
             empty = QLabel(tr("profile.empty_section"))
