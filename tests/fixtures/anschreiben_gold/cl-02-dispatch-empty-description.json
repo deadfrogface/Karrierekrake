@@ -127,7 +127,10 @@
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
     "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
     "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
     "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
     "[Ihr Name]"
   ],
   "rationale": "Dispatcher bei HafenLogistik mit leerer Beschreibung. Soll ist job_incomplete und kein Brief. Die bekannten Sätze „Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.“ und „Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.“ wären Papierkorb, wenn sie doch ausgegeben würden. Der Titel allein trägt keinen Brief."

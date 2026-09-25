@@ -28,7 +28,7 @@ Ein Brief ist nur dann `interview`, wenn alle fünf Punkte gelten.
 4. Keine Platzhalter- oder Allgemeinformel, die in jedem Brief als einzige Begründung stehen könnte. Die beiden Sätze aus Abschnitt 1 gehören dazu.
 5. Das Profil selbst ist korrekt. Eine Ausbildungszeile, die als Berufserfahrung gezählt wird, genügt für Papierkorb.
 
-Eine unbelegte konkrete Behauptung, eine falsche Anrede oder Firma, oder eine leere Schablonenfüllung (`Ihr Unternehmen`, `die ausgeschriebene Position`, `[Ihr Name]`) ist Papierkorb.
+Eine unbelegte konkrete Behauptung, eine falsche Anrede oder Firma, oder eine leere Schablonenfüllung (`Ihr Unternehmen`, `Ihrem Unternehmen`, `Ihres Unternehmens`, `die ausgeschriebene Position`, `der ausgeschriebenen Position`, `[Ihr Name]`) ist Papierkorb.
 
 ## 3. Vokabular
 
@@ -39,18 +39,20 @@ Eine unbelegte konkrete Behauptung, eine falsche Anrede oder Firma, oder eine le
 | `job_incomplete` | Die Stellenbeschreibung ist leer. | nein |
 | `no_evidence` | Keine belegte Station und kein belegter Skill treffen die Anzeige. | nein |
 | `blocked_demo` | `source` ist `demo`. | nein |
+| `company_missing` | Das Firmenfeld ist leer oder nur ein Platzhalter (`Firma 0`, `Ihr Unternehmen` und gebeugte Formen). | nein |
 
-`blocked_demo` ist keine fehlende Probe im Sinn von „Blockiert“ in der Checkliste. Es ist die Sperre für Demo-Stellen.
+`blocked_demo` ist die Sperre für Demo-Stellen. „Blockiert“ in der Checkliste bleibt der Fall, in dem die Probe fehlt.
 
 Vereinbartes Verhalten, das die Fälle festschreiben:
 
 - Leere Beschreibung, auch nach Trim nur Leerzeichen: `job_incomplete`, kein Brief.
 - Beschreibung vorhanden, aber keine belegte Station und kein belegter Skill: `no_evidence`, kein Brief.
+- Firmenfeld leer oder nur ein Platzhalter (`Firma 0`, `Ihr Unternehmen`, `Ihrem Unternehmen`, `Ihres Unternehmens`): `company_missing`, kein Brief. Die Sperre liegt vor dem Generator. Der Grund nennt die fehlende Firma. Eine vorhandene Beschreibung macht daraus kein `job_incomplete`.
 - `source == demo` bekommt nie einen Brief, auch wenn der Inhalt sonst tragen würde.
 - `source == fixture` darf einen Brief bekommen, wenn die fünf Kriterien erfüllt sind.
 - Eingefügte Beschreibungen laufen durch dieselbe Bereinigung und dasselbe Gate wie abgegriffene Anzeigen. HTML-Reste gehören nicht in den Brief. Ist der Text nach der Bereinigung leer, gilt `job_incomplete`.
 
-`papierkorb` ist das Urteil über den Inhalt. Ein erzeugter Text mit einem harten Fehler ist Papierkorb. Ein Interview-Urteil auf diesen Eingaben ist falsch.
+`papierkorb` folgt Punkt 6 in Abschnitt 5. Das Ergebnis ist nie `interview`. Kein Brief ist zulässig.
 
 ## 4. Form der Fälle
 
@@ -64,11 +66,26 @@ Eine Datei pro Fall unter `tests/fixtures/anschreiben_gold/`. Der Dateiname ist 
 | `profile` | Synthetisches Profil, siehe unten |
 | `job` | Synthetische Anzeige in der Form von `Job` in `core/models.py` |
 | `expected_outcome` | Ein Code aus Abschnitt 3 |
-| `must_mention` | Teilstrings, die ein Interview-Brief enthalten muss. Sonst leer. |
-| `must_not_contain` | Teilstrings, die in keinem Brief stehen dürfen. Enthält immer die beiden Platzhalter aus Abschnitt 1. |
+| `must_mention` | Teilstrings, die ein Interview-Brief enthalten muss. Sonst leer. Der Schlüssel heißt `must_mention`. Einen Schlüssel `must_contain` gibt es nicht. |
+| `must_not_contain` | Teilstrings, die in keinem Brief stehen dürfen. Enthält immer die gemeinsame Sperrliste unten. |
 | `rationale` | Kurze Begründung des Soll-Ausgangs |
 
+Unbekannte Schlüssel auf der obersten Ebene der JSON-Datei sind ungültig. Ein Schlüssel `must_contain` lässt den Schema-Test fehlschlagen.
+
 `must_mention` und `must_not_contain` gelten für den Brieftext. Wörter, die nur in der Anzeige stehen (etwa ein geforderter ADR-Schein), dürfen im Brief fehlen und müssen fehlen, wenn sie im Profil nicht belegt sind.
+
+`must_not_contain` wird ohne Rücksicht auf Großschreibung verglichen: `casefold`, als Teilstring. Ein Treffer liegt vor, wenn `banned.casefold()` in `text.casefold()` vorkommt. Dieselbe Regel gilt für jeden erzeugten Text, auch bei `papierkorb`.
+
+Gemeinsame Sperrliste, in jedem Fall vollständig vorhanden:
+
+- `Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.`
+- `Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.`
+- `Ihr Unternehmen`
+- `Ihrem Unternehmen`
+- `Ihres Unternehmens`
+- `die ausgeschriebene Position`
+- `der ausgeschriebenen Position`
+- `[Ihr Name]`
 
 Bei `interview` nennt `must_mention` mindestens zwei Fakten aus dem Profil (Station, Skill, Software) und dazu Titel, Firma und, wenn vorhanden, die Ansprechperson. Die Anforderungen sitzen in der Beschreibung in der unteren Hälfte, nach Betrieb und Angebot.
 
@@ -96,11 +113,11 @@ Minimales Profil, das der Anschreiben-Pfad liest. Suche, Filter, Settings und `s
 1. Die JSON-Datei lesen. Profil und Stelle nicht anreichern und nicht aus anderen Fällen mischen.
 2. `profile.qualifications` und `profile.application` in die Strukturen legen, die der Anschreiben-Pfad erwartet. `job` als `Job` lesen.
 3. Den Generator des Anschreiben-PR ausführen. Diesen Lauf macht der Gold-Stand nicht.
-4. Bei `interview`: es entsteht ein Brief. Jeder Eintrag aus `must_mention` kommt darin vor, keiner aus `must_not_contain`. Die fünf Kriterien gelten zusätzlich zur Teilstring-Liste.
-5. Bei `job_incomplete`, `no_evidence` und `blocked_demo`: kein Brief. Der Grundcode ist `expected_outcome`.
-6. Bei `papierkorb`: das Ergebnis ist kein `interview`. Entsteht Text, ist er Papierkorb. Die Einträge in `must_not_contain` sind die harten Fehler, zusätzlich zu den beiden Platzhaltern.
+4. Bei `interview`: es entsteht ein Brief. Jeder Eintrag aus `must_mention` kommt darin vor. Kein Eintrag aus `must_not_contain` kommt darin vor, verglichen per `casefold` als Teilstring. Die fünf Kriterien gelten zusätzlich zur Teilstring-Liste.
+5. Bei `job_incomplete`, `no_evidence`, `blocked_demo` und `company_missing`: kein Brief. Der Grundcode ist `expected_outcome`.
+6. Bei `papierkorb`: das Generator-Ergebnis ist nie `interview`. In jedem erzeugten Text fehlt jeder Eintrag aus `must_not_contain` (Vergleich `casefold`, Teilstring). Kein Brief ist ein zulässiges Ergebnis. Der Generator erkennt eine falsch abgelegte Karte nicht per Heuristik und verzweigt nicht nach der Fall-Id. Ein Brief, der die Schule als Arbeitgeber nennt, ist ein fehlgeschlagener Test und kein xfail.
 
-`tests/test_anschreiben_gold.py` prüft nur diese Dateien (Schlüssel, Vokabular, Platzhalter, mindestens zwei `must_mention` bei `interview`). Kein Modell, keine Oberfläche. Den Generator-Vergleich gegen das Gold legt der Anschreiben-PR an.
+`tests/test_anschreiben_gold.py` prüft nur diese Dateien: erlaubte Schlüssel (ein `must_contain` scheitert), Vokabular, die gemeinsame Sperrliste in jedem Fall, mindestens zwei `must_mention` bei `interview`, und dass kein `must_mention` per `casefold` einen eigenen `must_not_contain`-Eintrag enthält. Kein Modell, keine Oberfläche. Den Generator-Vergleich gegen das Gold legt der Anschreiben-PR an.
 
 ## 6. Fälle
 
@@ -113,13 +130,13 @@ Minimales Profil, das der Anschreiben-Pfad liest. Suche, Filter, Settings und `s
 | `cl-05-source-fixture` | `interview` | Tragfähiger Disponenten-Treffer, `source` ist `fixture`, Brief erlaubt. |
 | `cl-06-education-as-experience` | `papierkorb` | Die einzige Station ist eine Ausbildung und liegt unter Berufserfahrung. |
 | `cl-07-adr-schein-trap` | `interview` | ADR-Schein und Gefahrgut stehen in der Anzeige, nicht im Profil, und dürfen nicht behauptet werden. |
-| `cl-08-company-missing` | `papierkorb` | Firmenfeld leer, im Text nur der Platzhalter Firma 0. |
+| `cl-08-company-missing` | `company_missing` | Firmenfeld leer, nur der Platzhalter Firma 0; Sperre vor dem Generator, der Grund nennt die fehlende Firma. |
 | `cl-09-named-contact` | `interview` | Die Anzeige nennt Frau Lotte Quendel; der Brief muss sie ansprechen. |
 | `cl-10-english-ad` | `interview` | Englische Anzeige; dispatcher, route planning und SAP TM sind über das Profil belegt. |
 | `cl-11-long-ad-requirements-end` | `interview` | Lange Anzeige; Disponent, Tourenplanung und SAP TM stehen erst am Ende. |
 | `cl-12-html-remnants` | `interview` | Eingefügte Beschreibung mit HTML; nach der Bereinigung ein Treffer, ohne Markup im Brief. |
 
-Zählung: `interview` 7, `papierkorb` 2, `job_incomplete` 1, `no_evidence` 1, `blocked_demo` 1. Zusammen 12 Fälle.
+Zählung: `interview` 7, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 1, `blocked_demo` 1, `company_missing` 1. Zusammen 12 Fälle.
 
 ## 7. Nicht Gegenstand dieses Stands
 

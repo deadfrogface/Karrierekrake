@@ -28,6 +28,7 @@ ALLOWED_OUTCOMES = frozenset(
         "job_incomplete",
         "no_evidence",
         "blocked_demo",
+        "company_missing",
     }
 )
 
@@ -40,6 +41,17 @@ PHRASE_SKILLS = (
     "meine bisherigen beruflichen Erfahrungen."
 )
 PLACEHOLDERS = (PHRASE_EXPERIENCE, PHRASE_SKILLS)
+
+# Gemeinsame Sperrliste in jedem Fall. Vergleich gegen Brieftext: casefold, Teilstring.
+COMMON_FORBIDDEN = (
+    *PLACEHOLDERS,
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+)
 
 REQUIRED_KEYS = frozenset(
     {
@@ -133,16 +145,21 @@ def cases() -> list[dict]:
 
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
 def test_gold_case_schema(case: dict) -> None:
-    missing = REQUIRED_KEYS - set(case)
+    raw_keys = set(case) - {"_path"}
+    missing = REQUIRED_KEYS - raw_keys
+    unknown = raw_keys - REQUIRED_KEYS
     assert not missing, f"{case.get('id')}: missing {sorted(missing)}"
+    # must_contain is not a gold key; any unknown top-level key fails.
+    assert not unknown, f"{case.get('id')}: unknown keys {sorted(unknown)}"
+    assert "must_contain" not in raw_keys
     assert case["schema_version"] == "1.0"
     assert case["id"] == case["_path"].stem
     assert case["expected_outcome"] in ALLOWED_OUTCOMES
     assert isinstance(case["rationale"], str) and len(case["rationale"].strip()) >= 40
     assert case["tags"] and set(case["tags"]) <= REQUIRED_TAGS
 
-    for phrase in PLACEHOLDERS:
-        assert phrase in case["must_not_contain"], case["id"]
+    for phrase in COMMON_FORBIDDEN:
+        assert phrase in case["must_not_contain"], f"{case['id']}: missing {phrase!r}"
 
     assert isinstance(case["must_mention"], list)
     assert isinstance(case["must_not_contain"], list)
@@ -176,6 +193,11 @@ def test_gold_case_schema(case: dict) -> None:
 
     for fact in case["must_mention"]:
         assert fact in blob, f"{case['id']}: must_mention {fact!r} not in profile or job"
+        folded = fact.casefold()
+        for banned in case["must_not_contain"]:
+            assert banned.casefold() not in folded, (
+                f"{case['id']}: must_mention {fact!r} contains forbidden {banned!r}"
+            )
 
     outcome = case["expected_outcome"]
     if outcome == "interview":
@@ -241,7 +263,7 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     assert "ADR-Schein" not in _texts(trap["profile"])
 
     company = by_tag["company_invalid"]
-    assert company["expected_outcome"] == "papierkorb"
+    assert company["expected_outcome"] == "company_missing"
     assert company["job"]["company"].strip() == ""
     assert company["job"]["description"].strip()
     assert "Firma 0" in company["job"]["description"]

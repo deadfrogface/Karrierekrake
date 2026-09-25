@@ -127,7 +127,10 @@
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
     "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
     "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
     "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
     "[Ihr Name]"
   ],
   "rationale": "Dieselbe tragfähige Anzeige wie im Logistik-Treffer, aber source ist demo. Demo-Stellen bekommen nie einen Brief. Soll ist blocked_demo, auch wenn Station und Skills passen würden."

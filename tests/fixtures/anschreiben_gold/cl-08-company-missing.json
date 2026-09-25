@@ -121,15 +121,18 @@
     "url": "https://jobs.example.com/cl-08-company-missing",
     "status": "new"
   },
-  "expected_outcome": "papierkorb",
+  "expected_outcome": "company_missing",
   "must_mention": [],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
     "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
     "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
     "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
     "[Ihr Name]",
     "Firma 0"
   ],
-  "rationale": "Das Firmenfeld ist leer. Im Text steht nur der Platzhalter Firma 0, kein ladungsfähiger Name. Ihr Unternehmen oder Firma 0 als Empfänger ist eine falsche Firma bzw. eine leere Schablone. Die Beschreibung ist nicht leer, deshalb ist das kein job_incomplete. Urteil papierkorb."
+  "rationale": "Das Firmenfeld ist leer. Im Text steht nur der Platzhalter Firma 0. Soll ist company_missing und kein Brief: die Sperre liegt vor dem Generator, der Grund nennt die fehlende Firma. Die Beschreibung ist vorhanden, der Ausgang ist company_missing und nicht job_incomplete."
 }
