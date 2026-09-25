@@ -64,7 +64,7 @@ Leer genau dann, wenn nach dem bestehenden Filter (`filter_parsed_for_import`) g
 
 Nur `uncertain_items` oder Confidence-Zeilen „nicht gefunden“ zählen nicht als Inhalt. Teilweise Erkennung (mindestens ein Personenfeld oder ein Qualifikationspunkt) bleibt **Success**; leere Abschnitte dort weiter als bisherige „(nichts erkannt)“-Zeilen. Die eigene Leerfläche ersetzt nur den Fall, in dem die ganze Vorschau inhaltlich leer wäre.
 
-Copy (DE, späterer i18n-Overlay, hier noch nicht in `desktop/i18n.py`):
+Copy (DE): Die Extrakt-UX-i18n-Keys führt PR #70 ein (noch nicht auf `main`, bis #70 gemergt ist):
 
 - Titel: „Nichts erkannt“
 - Text: „In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. Wähle eine andere Datei oder schließe den Dialog.“
