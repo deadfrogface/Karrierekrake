@@ -132,18 +132,20 @@ def test_child_refuses_llm_cmd_without_starting_it(tmp_path: Path, monkeypatch):
     assert payload["parsed"] is None
 
 
-def test_child_det_import_still_runs_when_llm_is_off(tmp_path: Path, monkeypatch):
+def test_child_docpick_path_without_llm_has_no_phi_fallback(tmp_path: Path, monkeypatch):
+    """LLM off: Docpick path runs; plain text is not a DET/Phi fallback."""
     monkeypatch.delenv("KARRIEREKRAKE_LOCAL_LLM_CV_PARSING", raising=False)
     cv = tmp_path / "cv.txt"
     cv.write_text("Ada Lovelace\nSprachen\nDeutsch C2\n", encoding="utf-8")
     out = tmp_path / "out.json"
     code = run_child(["--cv", str(cv), "--out", str(out)])
-    assert code == 0
+    assert code != 0
     payload = __import__("json").loads(out.read_text(encoding="utf-8"))
-    assert payload["ok"] is True
-    assert payload["parsed"]["phi_invoked"] is False
+    assert payload["ok"] is False
+    assert payload["parsed"] is None
     assert payload["local_llm_cv"]["allowed"] is False
     assert payload["local_llm_cv"]["fallback_model"] is None
+    assert "phi" not in (payload.get("message") or "").lower()
 
 
 def test_benchmark_refuses_llm_cmd_when_switch_is_off(monkeypatch, capsys):
@@ -171,12 +173,13 @@ def test_child_invalid_env_writes_result(tmp_path: Path, monkeypatch):
     cv.write_text("Ada Lovelace\nBerlin\n", encoding="utf-8")
     out = tmp_path / "out.json"
     code = run_child(["--cv", str(cv), "--out", str(out)])
-    assert code == 0
+    assert code != 0
     assert out.is_file()
     payload = json.loads(out.read_text(encoding="utf-8"))
-    assert payload["kind"] == "ok"
+    assert payload["ok"] is False
     assert payload["local_llm_cv"]["allowed"] is False
-    assert payload["parsed"]["phi_invoked"] is False
+    assert payload["local_llm_cv"]["fallback_model"] is None
+    assert payload["parsed"] is None
 
 
 def test_child_writes_error_result_when_decision_raises(tmp_path: Path, monkeypatch):

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from core.config import (
     AppConfig,
     EducationEntry,
@@ -16,7 +18,7 @@ from core.config import (
     SourcedText,
 )
 from core.cover_guard import find_unsubstantiated_personal_claims
-from core.cover_letter import render_cover_letter
+from core.cover_letter import CoverLetterRefused, render_cover_letter
 from core.geo_normalize import normalize_place_fields
 from core.geo_resolve import resolve_place
 from core.hard_filter import distance_exclude
@@ -355,7 +357,8 @@ def test_unconfirmed_extract_blocks_auto_match_without_a_fake_score():
     allowed, why = auto_match_allowed(cfg, _job(), distance_used=False)
     assert not allowed
     assert why.startswith("needs_confirmation")
-    assert render_cover_letter(_job(), cfg) == ""
+    with pytest.raises(CoverLetterRefused):
+        render_cover_letter(_job(), cfg)
 
     cfg.profile.extract_review.confirmed = True
     allowed_after, _ = auto_match_allowed(cfg, _job(), distance_used=False)

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from core.hardware_peak_gate import RETIRED_SOFT_12GB_DECIMAL_BYTES
 from core.cv_docpick_import import (
     _enrich_address_from_text,
     _fix_employment_pipe,
@@ -15,7 +16,7 @@ from core.cv_docpick_import import (
 
 
 def test_peak_rss_hard_gate_is_3_3gb_bytes_not_12_gb() -> None:
-    """Merge gate is ≤ 3_300_000_000 bytes — soft ≤12 GB must not be the default."""
+    """Merge gate is ≤ 3_300_000_000 bytes — RETIRED_NOT_A_PASS soft 12 GB must not be the default."""
     from core.cv_docpick_import import (
         CV_IMPORT_PEAK_RSS_BYTES_MAX,
         CV_IMPORT_PEAK_RSS_GB_MAX,
@@ -25,7 +26,7 @@ def test_peak_rss_hard_gate_is_3_3gb_bytes_not_12_gb() -> None:
     assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
     assert abs(CV_IMPORT_PEAK_RSS_MB_MAX - (3_300_000_000 / (1024.0 * 1024.0))) < 1e-9
     assert abs(CV_IMPORT_PEAK_RSS_GB_MAX - (3_300_000_000 / (1024.0 ** 3))) < 1e-9
-    assert CV_IMPORT_PEAK_RSS_BYTES_MAX < 12_000_000_000
+    assert CV_IMPORT_PEAK_RSS_BYTES_MAX < RETIRED_SOFT_12GB_DECIMAL_BYTES  # RETIRED_NOT_A_PASS
 
 
 def test_norm_period_end_maps_present_spellings_to_heute() -> None:

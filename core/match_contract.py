@@ -53,11 +53,19 @@ def section_confirmed(review: ExtractReview | None, name: str) -> bool:
 
     Manual profiles (no CV extract attached) count as the user's own data.
     A CV extract counts only after the user confirms the profile or the field.
+
+    Duck-typed review objects keep their attributes — coercing unknown types
+    to an empty ``ExtractReview`` would treat a CV extract as manual data.
     """
-    rev = _review(review)
-    if rev.confirmed or name in (rev.confirmed_fields or []):
+    if review is None:
         return True
-    if (rev.source or "") != "cv" and name not in (rev.uncertain_fields or []):
+    confirmed = bool(getattr(review, "confirmed", False))
+    confirmed_fields = getattr(review, "confirmed_fields", None) or []
+    if confirmed or name in confirmed_fields:
+        return True
+    source = str(getattr(review, "source", "") or "")
+    uncertain = getattr(review, "uncertain_fields", None) or []
+    if source != "cv" and name not in uncertain:
         return True
     return False
 

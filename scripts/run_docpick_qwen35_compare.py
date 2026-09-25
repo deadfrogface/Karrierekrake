@@ -533,7 +533,7 @@ def main() -> int:
         "max_avg_s_note": "Assumption — no product CV-import latency SLA",
         "peak_rss_note": (
             "Hard Peak ≤ 3_300_000_000 bytes (Windows Job Object process group). "
-            "Soft ≤12 GB is not a pass. Agent-VM numbers are not ship evidence."
+            "RETIRED_NOT_A_PASS: former soft 12 GB ceiling is not a pass. Agent-VM numbers are not ship evidence."
         ),
     }
     m = cand_score["metrics_all"]
