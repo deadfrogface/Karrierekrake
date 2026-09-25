@@ -165,7 +165,7 @@ Im Diff von `origin/main...origin/cursor/ui-qa-fixes-4ee6` gibt es keine Treffer
 
 ### Überlappung Data Engine / Standort
 
-Kanonisch auf `main`: `docs/architecture/local_first_google_calendar_and_geo.md` und `docs/architecture/canonical-product-decisions.md` — lokale DACH-Auflösung, Reihenfolge Koordinaten → Land+PLZ → eindeutiges Land+Ort → UNKNOWN, nie raten. #64 ändert genau die Stadtauflösung (Berlin-PLZ versus Fuzzy-Top-100, 35-km-Streuung); im gemergten #64 nicht enthalten. Das ist Standortlogik, die der Data-Engine-Arbeit gehört. Vor dem Merge von #64 braucht dieser Hunk eine Sicht des Standort-Owners. Halle/Frankfurt sollen laut den neuen Tests in `tests/test_local_first_geo.py` `AMBIGUOUS` bleiben; das ersetzt die Owner-Sicht nicht.
+Kanonisch auf `main`: `docs/architecture/local_first_google_calendar_and_geo.md` und `docs/architecture/canonical-product-decisions.md` — lokale DACH-Auflösung, Reihenfolge Koordinaten → Land+PLZ → eindeutiges Land+Ort → UNKNOWN, nie raten. #64 ändert genau die Stadtauflösung (Berlin-PLZ versus Fuzzy-Top-100, 35-km-Streuung); im gemergten #64 nicht enthalten. Das ist Standortlogik, die der Data-Engine-Arbeit gehört. Vor dem Merge von #64 braucht dieser Hunk eine Sicht des Standort-Owners. (im gemergten #64 nicht enthalten) Halle/Frankfurt sollen laut den neuen Tests in `tests/test_local_first_geo.py` `AMBIGUOUS` bleiben; das ersetzt die Owner-Sicht nicht. (im gemergten #64 nicht enthalten)
 
 ### CI beim Lesen (2026-09-24)
 
@@ -198,8 +198,8 @@ Branch unter Test: `cursor/ui-qa-fixes-4ee6`. Diese Review-Branch enthält die C
 
 1. **Beschriftungen.** Sprache DE, dann EN. Auslösen: Export, Löschen (Mail/Kalender/Logs), Verbindung trennen, Profil zurücksetzen. Jeder Button zeigt ein Wort (Exportieren, Löschen, Trennen, Abbrechen, …). Kein leeres Icon auf heller Fläche. Bei destruktiven Dialogen ist der Default Abbrechen; Enter löscht nicht. Tab erreicht die Buttons; der zugängliche Name entspricht der Beschriftung.
 2. **Dark oder nur Hell.** Wenn Dark im Build an ist: Übersicht, Jobs, Profil, Suche, Einstellungen (Scroll-Inhalt), Hilfe, ein Bestätigungsdialog. Text, Buttons und GroupBox-Titel müssen lesbar sein. Eine unlesbare Fläche: Dark gilt als nicht bestanden, Auslieferung nur Hell. Ein einzelner Einstellungs-Screenshot reicht nicht.
-3. **Explizit außerhalb eines #64-PASS.** Lebenslauf-Import auf Fortschritt, Abbruch während des Parsens, leere Extraktion mit CTA, Fehler mit CTA. Diese vier Punkte nicht als bestanden werten, auch wenn der Dialog sich öffnet. Der Parse auf `main` und in der #64-Button-Änderung läuft weiter synchron in `CvImportDialog.__init__`.
-4. **Getrennte Verhaltenschecks, kein UI-QA-Haken.** Wohnort „Berlin, Deutschland“: Auflösung oder Klartext-Hinweis mit PLZ-Bitte. „Halle“ und „Frankfurt“ bleiben mehrdeutig. Suche starten und abbrechen: Zähler „Prüfung nötig“ steigt dadurch nicht, nur weil ein Job `applying` war.
+3. **Explizit außerhalb eines #64-PASS.** Lebenslauf-Import auf Fortschritt, Abbruch während des Parsens, leere Extraktion mit CTA, Fehler mit CTA. Diese vier Punkte nicht als bestanden werten, auch wenn der Dialog sich öffnet. Der Parse auf `main` und in der #64-Button-Änderung läuft weiter synchron in `CvImportDialog.__init__`. (auf `main` durch #69 ersetzt, Import im Kindprozess)
+4. **Getrennte Verhaltenschecks, kein UI-QA-Haken.** Wohnort „Berlin, Deutschland“: Auflösung oder Klartext-Hinweis mit PLZ-Bitte. „Halle“ und „Frankfurt“ bleiben mehrdeutig. (im gemergten #64 nicht enthalten, gehört zu #67) Suche starten und abbrechen: Zähler „Prüfung nötig“ steigt dadurch nicht, nur weil ein Job `applying` war.
 
 ---
 
