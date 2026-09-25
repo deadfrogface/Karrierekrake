@@ -186,8 +186,14 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     assert dlg.llm_notice.isVisible()
     assert dlg.llm_notice.text() == i18n.t("settings.local_llm_cv_disabled_hint")
     dlg.start_parse()
-    assert _pump(qapp, lambda: dlg.progress.isVisible() and dlg._running)
-    assert seen and seen[0] != gui
+    # Progress is painted on the GUI thread before the worker reaches spawn.
+    # Wait for that call, then prove it did not run on the GUI thread.
+    assert _pump(
+        qapp,
+        lambda: dlg.progress.isVisible() and dlg._running and bool(seen),
+        timeout=3,
+    )
+    assert seen[0] != gui
     assert dlg._ok_btn.isEnabled() is False
     assert dlg._ok_btn.isVisible() is False
     assert dlg.mode_box.isVisible() is False
