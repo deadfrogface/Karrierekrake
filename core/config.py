@@ -456,6 +456,10 @@ class SettingsConfig:
     guenther_model: str = "phi4-mini"
     # Heuristic assist is NOT a production LLM substitute (default off).
     guenther_heuristic_fallback: bool = False
+    # Local LLM CV parsing (Docling/Qwen/llama.cpp class). Default off: production
+    # import stays deterministic. Off does not remove manual profile import and
+    # does not install a Phi fallback. See core/local_llm_cv_gate.py.
+    local_llm_cv_parsing_enabled: bool = False
     # --- Recruiting contact discovery (PR25; off by default) ---
     # Provenance-backed person contacts only; NOT_FOUND is a success path.
     contact_discovery_enabled: bool = False
