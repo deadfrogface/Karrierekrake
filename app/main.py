@@ -200,7 +200,16 @@ def run_pipeline(
     mode: str | None = None,
     progress_callback=None,
     should_stop=None,
+    recover_interrupted: bool = True,
 ) -> dict:
+    """Run search (+ optional apply) once.
+
+    ``recover_interrupted`` heals crash leftovers (``applying`` → ``needs_review``)
+    before the run. Headless/scheduler runs need it; the desktop app already heals
+    once at startup, and re-healing per search would bump review counters from a
+    search the user merely started (or cancelled).
+    """
+
     def progress(message: str) -> None:
         if progress_callback:
             try:
@@ -241,7 +250,7 @@ def run_pipeline(
     run_id = uuid.uuid4().hex
     run.info(f"Run started id={run_id}")
     progress("Suche gestartet…")
-    db = Database(config.db_path, recover=True)
+    db = Database(config.db_path, recover=recover_interrupted)
     db.start_search_run(run_id)
     location = LocationService(db, config)
     home = location.resolve_home()

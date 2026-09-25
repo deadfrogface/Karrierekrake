@@ -18,6 +18,76 @@ QWidget#KkPrimitive {{
     font-family: {ty.font_family};
     font-size: {ty.size_md}px;
 }}
+/* Unnamed buttons (QMessageBox / QDialogButtonBox / wizard): the global text
+   color would otherwise sit on the native light button face in dark mode. */
+QPushButton {{
+    background: {c.surface};
+    color: {c.text};
+    border: 1px solid {c.border};
+    border-radius: {r.md}px;
+    padding: {ctrl.input_pad_v}px {ctrl.button_pad_h - 2}px;
+    min-height: {ctrl.min_touch - 4}px;
+}}
+QPushButton:hover {{
+    border-color: {c.primary};
+}}
+QPushButton:default {{
+    border: {ctrl.focus_width}px solid {c.primary};
+    font-weight: {ty.weight_semibold};
+}}
+QPushButton:disabled {{
+    color: {c.muted};
+}}
+QToolButton#SecondaryButton {{
+    background: {c.surface};
+    color: {c.text};
+    border: 1px solid {c.border};
+    border-radius: {r.md}px;
+    padding: {ctrl.button_pad_v - 1}px {ctrl.button_pad_h - 2}px;
+    min-height: {ctrl.min_touch}px;
+}}
+QToolButton#SecondaryButton:hover, QToolButton#SecondaryButton:checked {{
+    border-color: {c.primary};
+}}
+QToolButton#GhostButton {{
+    background: transparent;
+    border: none;
+}}
+QToolButton#GhostButton:hover {{
+    background: {c.bg};
+    border-radius: {r.sm}px;
+}}
+QPushButton#AccentButton {{
+    background: {c.surface};
+    color: {c.primary};
+    border: 1px solid {c.primary};
+    border-radius: {r.md}px;
+    padding: {ctrl.button_pad_v - 1}px {ctrl.button_pad_h}px;
+    min-height: {ctrl.min_touch}px;
+    font-weight: {ty.weight_semibold};
+}}
+QPushButton#AccentButton:hover {{
+    background: {c.success_bg};
+}}
+QPushButton#AccentButton:disabled {{
+    color: {c.muted};
+    border-color: {c.border};
+}}
+QScrollArea > QWidget > QWidget {{
+    background: transparent;
+}}
+QLabel#KkNotice {{
+    background: {c.info_bg};
+    color: {c.info_fg};
+    border-radius: {r.md}px;
+    padding: {tokens.spacing.sm}px {tokens.spacing.md}px;
+}}
+QFrame#Card[kkClickable="true"]:hover {{
+    border-color: {c.primary};
+}}
+QFrame#Card[kkClickable="true"]:focus {{
+    border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
 QPushButton#KkPrimary, QPushButton#PrimaryButton {{
     background: {c.primary};
     color: #ffffff;
@@ -71,6 +141,7 @@ QPushButton#KkGhost, QPushButton#GhostButton {{
 }}
 QPushButton#KkGhost:hover, QPushButton#GhostButton:hover {{
     background: rgba(47, 122, 104, 0.08);
+    border-color: transparent;
     border-radius: {r.sm}px;
 }}
 QLineEdit#KkInput, QTextEdit#KkInput, QPlainTextEdit#KkInput,

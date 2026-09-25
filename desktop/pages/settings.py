@@ -33,11 +33,12 @@ from desktop.design_system.polish import (
     polish_interactive,
 )
 from desktop.design_system.v2_chrome import PageHeader
-from desktop.i18n import tr
+from desktop.i18n import escape_mnemonic, tr
 from desktop.services import ConfigService
 from desktop.services.browser_install import playwright_available
 from desktop.services.schedule_service import ScheduleService
 from desktop.widgets.about_dialog import AboutDialog
+from desktop.widgets.confirm_dialog import build_confirm_box, confirm_action
 from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox, apply_wheel_guard_to_spinboxes
 from desktop.workers import (
@@ -573,7 +574,7 @@ class SettingsPage(QWidget):
         self.danger_toggle.setText(tr("settings.danger_zone"))
         self.oauth_box.setTitle(tr("settings.nav.integrations"))
         self.danger_box.setTitle(tr("settings.danger_zone"))
-        self.privacy_box.setTitle(tr("privacy.title"))
+        self.privacy_box.setTitle(escape_mnemonic(tr("privacy.title")))
         self.privacy_intro.setText(tr("privacy.intro"))
         if hasattr(self, "lbl_mail_provider"):
             self.lbl_mail_provider.setText(tr("integrations.mail.label"))
@@ -752,7 +753,7 @@ class SettingsPage(QWidget):
             parent.clear_job_data()  # type: ignore[attr-defined]
 
     def open_about(self) -> None:
-        AboutDialog(self).exec()
+        AboutDialog(self, data_dir=self.config_service.dirs["root"]).exec()
 
     def load_from_config(self) -> None:
         cfg = self.config_service.load()
@@ -976,11 +977,27 @@ class SettingsPage(QWidget):
             if ok:
                 QMessageBox.information(self, tr("settings.browser"), msg)
             else:
-                QMessageBox.warning(self, tr("settings.browser"), msg)
+                self._offer_browser_install()
 
         connect_queued(worker.finished, done)
         self._browser_worker = worker
         self._browser_thread = thread
+
+    def _offer_browser_install(self) -> None:
+        """Missing browser is optional — explain and offer (never auto-start) install."""
+        from desktop.services.browser_install import preferred_browsers_dir
+
+        box, install_btn, _later = build_confirm_box(
+            self,
+            tr("settings.browser"),
+            tr("settings.browser_missing_body", path=str(preferred_browsers_dir())),
+            confirm_text=tr("settings.browser_install_now"),
+            cancel_text=tr("settings.browser_later"),
+        )
+        box.setIcon(QMessageBox.Icon.Information)
+        box.exec()
+        if box.clickedButton() is install_btn:
+            self.repair_browser_component()
 
     def repair_browser_component(self) -> None:
         if self._browser_busy:
@@ -1016,8 +1033,12 @@ class SettingsPage(QWidget):
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.action_failed"))
 
     def _privacy_export(self) -> None:
-        confirm = QMessageBox.question(self, tr("privacy.tab"), tr("privacy.export_confirm"))
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("privacy.export_confirm"),
+            confirm_text=tr("privacy.export_confirm_btn"),
+        ):
             return
         from PySide6.QtWidgets import QFileDialog
 
@@ -1042,10 +1063,12 @@ class SettingsPage(QWidget):
                 self, tr("privacy.tab"), tr("integrations.wrong_mail_provider")
             )
             return
-        confirm = QMessageBox.question(
-            self, tr("privacy.tab"), tr("privacy.connect_gmail_confirm")
-        )
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("privacy.connect_gmail_confirm"),
+            confirm_text=tr("privacy.connect_confirm_btn"),
+        ):
             return
         from integrations.gmail_auth import authorize_gmail
 
@@ -1093,8 +1116,12 @@ class SettingsPage(QWidget):
             if mode == "B"
             else "integrations.calendar.mode_a_confirm"
         )
-        confirm = QMessageBox.question(self, tr("privacy.tab"), tr(rights_key))
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr(rights_key),
+            confirm_text=tr("privacy.connect_confirm_btn"),
+        ):
             return
         from integrations.gmail_auth import authorize_calendar_mode
 
@@ -1248,6 +1275,14 @@ class SettingsPage(QWidget):
         """Disconnect only the currently selected provider — no cross-provider wipe."""
         mail = str(self.mail_provider.currentData() or "none")
         cal = str(self.calendar_provider.currentData() or "none")
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("integrations.disconnect_confirm"),
+            confirm_text=tr("integrations.disconnect_confirm_btn"),
+            destructive=True,
+        ):
+            return
         token_dir = self.config_service.dirs["config"]
         errors: list[str] = []
         try:
@@ -1311,20 +1346,35 @@ class SettingsPage(QWidget):
             self.calendar_status.setText(tr("integrations.status.unknown"))
         _ = ConnectionState  # reserved for richer status labels
 
+    def _confirm_delete(self, body_key: str) -> bool:
+        return confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr(body_key),
+            confirm_text=tr("privacy.delete_confirm_btn"),
+            destructive=True,
+        )
+
     def _privacy_delete_mail(self) -> None:
-        self._privacy_report(self._privacy_life().delete_mail_cache())
+        if self._confirm_delete("privacy.delete_mail_confirm"):
+            self._privacy_report(self._privacy_life().delete_mail_cache())
 
     def _privacy_delete_calendar(self) -> None:
-        self._privacy_report(self._privacy_life().delete_calendar_cache())
+        if self._confirm_delete("privacy.delete_calendar_confirm"):
+            self._privacy_report(self._privacy_life().delete_calendar_cache())
 
     def _privacy_delete_logs(self) -> None:
-        self._privacy_report(self._privacy_life().delete_logs())
+        if self._confirm_delete("privacy.delete_logs_confirm"):
+            self._privacy_report(self._privacy_life().delete_logs())
 
     def _privacy_delete_all(self) -> None:
-        confirm = QMessageBox.question(
-            self, tr("privacy.tab"), tr("profile.reset_confirm_wipe_all")
-        )
-        if confirm != QMessageBox.StandardButton.Yes:
+        if not confirm_action(
+            self,
+            tr("privacy.tab"),
+            tr("profile.reset_confirm_wipe_all"),
+            confirm_text=tr("privacy.delete_all_confirm_btn"),
+            destructive=True,
+        ):
             return
         result = self.config_service.delete_all_local_data()
         if result.get("ok") and result.get("verified"):

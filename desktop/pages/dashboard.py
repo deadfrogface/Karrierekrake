@@ -22,9 +22,10 @@ from desktop.design_system.polish import (
     polish_interactive,
 )
 from desktop.design_system.v2_chrome import ContentCard, KpiCard, PageHeader
-from desktop.i18n import i18n, tr
+from desktop.i18n import i18n, tr, tr_n
 from desktop.services import ConfigService
 from desktop.util.human_time import format_human_datetime
+from desktop.widgets.scroll_page import wrap_scrollable
 
 
 class DashboardPage(QWidget):
@@ -73,19 +74,23 @@ class DashboardPage(QWidget):
         # Compat: cancel button aliases the same CTA when running
         self.btn_cancel = self.btn_search
 
-        # Constrained content column (demo max-w-6xl feel)
+        # Constrained content column (demo max-w-6xl feel). Scrolls on short
+        # screens instead of squeezing cards; the search CTA footer stays pinned.
         content = QWidget()
         content.setMaximumWidth(1100)
         content.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         root = QVBoxLayout(content)
-        root.setContentsMargins(24, 20, 24, 20)
+        root.setContentsMargins(24, 20, 24, 8)
         root.setSpacing(20)
 
-        content_host = QHBoxLayout()
+        scroll_body = QWidget()
+        content_host = QHBoxLayout(scroll_body)
+        content_host.setContentsMargins(0, 0, 0, 0)
         content_host.addStretch(1)
         content_host.addWidget(content, stretch=6)
         content_host.addStretch(1)
-        outer.addLayout(content_host, stretch=1)
+        self.body_scroll = wrap_scrollable(scroll_body, min_content_width=560)
+        outer.addWidget(self.body_scroll, stretch=1)
 
         self.queue_section = QLabel()
         self.queue_section.setObjectName("KkHint")
@@ -93,6 +98,8 @@ class DashboardPage(QWidget):
 
         self.hero = ContentCard()
         self.hero.setObjectName("HeroCard")
+        # Never squeeze the queue card below its content (clipped CTA on short windows).
+        self.hero.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         hero_body = self.hero.body()
         self.next_title = QLabel()
         self.next_title.setObjectName("NextActionTitle")
@@ -100,7 +107,8 @@ class DashboardPage(QWidget):
         self.next_body.setWordWrap(True)
         self.next_body.setObjectName("PageSubtitle")
         self.btn_primary = QPushButton()
-        self.btn_primary.setObjectName("SecondaryButton")
+        self.btn_primary.setObjectName("AccentButton")
+        self.btn_primary.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_primary.clicked.connect(self._on_primary)
         hero_btns = QHBoxLayout()
         hero_btns.addStretch()
@@ -122,8 +130,9 @@ class DashboardPage(QWidget):
         }
         kpi_grid = QGridLayout()
         kpi_grid.setSpacing(12)
-        for i, card in enumerate(self.kpi_cards.values()):
+        for i, (key, card) in enumerate(self.kpi_cards.items()):
             kpi_grid.addWidget(card, 0, i)
+            card.activated.connect(lambda k=key: self._on_kpi_activated(k))
         root.addLayout(kpi_grid)
 
         meta_row = QHBoxLayout()
@@ -153,7 +162,7 @@ class DashboardPage(QWidget):
 
         self.home_warning_label = QLabel()
         self.home_warning_label.setWordWrap(True)
-        self.home_warning_label.setObjectName("WarningLabel")
+        self.home_warning_label.setObjectName("KkNotice")
         root.addWidget(self.home_warning_label)
 
         # Hidden compat widgets (signals / older tests) — never shown in production UI
@@ -189,7 +198,16 @@ class DashboardPage(QWidget):
 
         # Primary search CTA — bottom-right of the content column (not header)
         self._cta_footer = footer_actions_layout(self.btn_search)
-        root.addLayout(self._cta_footer)
+        footer_column = QWidget()
+        footer_column.setMaximumWidth(1100)
+        footer_column.setLayout(self._cta_footer)
+        self._cta_footer.setContentsMargins(24, 8, 24, 20)
+        footer_host = QHBoxLayout()
+        footer_host.setContentsMargins(0, 0, 0, 0)
+        footer_host.addStretch(1)
+        footer_host.addWidget(footer_column, stretch=6)
+        footer_host.addStretch(1)
+        outer.addLayout(footer_host)
 
         polish_card(self.hero)
         for card in self.kpi_cards.values():
@@ -251,6 +269,25 @@ class DashboardPage(QWidget):
             style.unpolish(self.btn_search)
             style.polish(self.btn_search)
 
+    def _navigate(self, nav_key: str) -> bool:
+        parent = self.window()
+        if parent is not None and parent is not self and hasattr(parent, "navigate_to"):
+            parent.navigate_to(nav_key)  # type: ignore[attr-defined]
+            return True
+        return False
+
+    def _on_kpi_activated(self, key: str) -> None:
+        if key == "needs_review":
+            self.review_requested.emit()
+            return
+        nav_key = {
+            "matches": "nav.jobs",
+            "applications": "nav.applications",
+            "replies": "nav.inbox",
+        }.get(key)
+        if nav_key:
+            self._navigate(nav_key)
+
     def _on_primary(self) -> None:
         if self._next_action == "review":
             self.review_requested.emit()
@@ -285,6 +322,8 @@ class DashboardPage(QWidget):
         self.btn_test.setText(tr("btn.apply_test"))
         self.btn_review.setText(tr("btn.review_queue"))
         self.btn_clear_jobs.setText(tr("btn.clear_jobs"))
+        for card in self.kpi_cards.values():
+            card.set_clickable(True, tooltip=tr("dash.kpi_open_hint"))
         self._sync_search_cta()
         self.status_label.setText(tr("status.ready"))
         self.refresh()
@@ -322,7 +361,7 @@ class DashboardPage(QWidget):
         replies = int(stats.get("replies_attention") or 0)
         if replies > 0:
             self._next_action = "inbox"
-            self.next_title.setText(tr("dash.next_inbox_title").format(n=replies))
+            self.next_title.setText(tr_n("dash.next_inbox_title", replies))
             self.next_body.setText(tr("dash.next_inbox_body"))
             self.btn_primary.setText(tr("dash.next_inbox_cta"))
             self.hero.setVisible(True)
@@ -386,7 +425,9 @@ class DashboardPage(QWidget):
         )
 
         loc = cfg.profile.location
-        if not (loc.home_address or "").strip() and loc.home_latitude is None:
+        home_text = (loc.home_address or "").strip()
+        home_known = loc.home_latitude is not None and loc.home_longitude is not None
+        if not home_text and not home_known:
             self.home_warning_label.setText(tr("dash.home_missing"))
             self.home_warning_label.setVisible(True)
         else:
@@ -421,8 +462,11 @@ class DashboardPage(QWidget):
                     st = json.loads(row["stats_json"] or "{}")
                 except Exception:
                     st = {}
-                if st.get("home_warning"):
-                    self.home_warning_label.setText(str(st["home_warning"]))
+                # A warning from an older run is stale once the home resolved since.
+                if st.get("home_warning") and home_text and not home_known:
+                    self.home_warning_label.setText(
+                        tr("dash.home_unresolved", place=home_text)
+                    )
                     self.home_warning_label.setVisible(True)
                 detail = (
                     f"raw={st.get('raw_results', st.get('total', '—'))} | "
@@ -432,11 +476,14 @@ class DashboardPage(QWidget):
 
     def set_status(self, text: str) -> None:
         self.status_label.setText(text)
-        # Map pipeline status strings into CTA states
+        # Map pipeline status strings into CTA states. "Cancelled"/"Abgebrochen"
+        # arrive after the run ended — they must not lock an idle CTA.
         low = (text or "").lower()
-        if "cancel" in low or "abbruch" in low or "beendet" in low:
+        active = self._search_state in {self._SEARCH_RUNNING, self._SEARCH_STARTING}
+        if active and any(k in low for k in ("cancel", "abbruch", "abbrechen", "beendet")):
             self._search_state = self._SEARCH_CANCELLING
-        elif any(k in low for k in ("running", "läuft", "start", "suche")):
-            if self._search_state == self._SEARCH_IDLE:
-                self._search_state = self._SEARCH_STARTING
+        elif self._search_state == self._SEARCH_IDLE and any(
+            k in low for k in ("running", "läuft", "start", "suche")
+        ) and not any(k in low for k in ("cancel", "abbruch", "abbrechen", "abgebrochen")):
+            self._search_state = self._SEARCH_STARTING
         self._sync_search_cta()

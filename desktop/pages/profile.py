@@ -52,6 +52,7 @@ from desktop.services.profile_merge import (
     keep_manual_qualifications,
     sync_application_summaries,
 )
+from desktop.widgets.confirm_dialog import confirm_action
 from desktop.widgets.cv_import_dialog import CvImportDialog
 from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import apply_wheel_guard_to_spinboxes
@@ -706,18 +707,21 @@ class ProfilePage(QWidget):
         wipe_btn = msg.addButton(
             tr("profile.reset_wipe_all_local"), QMessageBox.ButtonRole.DestructiveRole
         )
-        msg.addButton(QMessageBox.StandardButton.Cancel)
+        cancel_btn = msg.addButton(tr("btn.cancel"), QMessageBox.ButtonRole.RejectRole)
+        msg.setDefaultButton(cancel_btn)
+        msg.setEscapeButton(cancel_btn)
         msg.exec()
         clicked = msg.clickedButton()
-        if clicked is None or clicked == msg.button(QMessageBox.StandardButton.Cancel):
+        if clicked is None or clicked is cancel_btn:
             return
         if clicked is wipe_btn:
-            confirm = QMessageBox.question(
+            if not confirm_action(
                 self,
                 tr("profile.reset_title"),
                 tr("profile.reset_confirm_wipe_all"),
-            )
-            if confirm != QMessageBox.StandardButton.Yes:
+                confirm_text=tr("privacy.delete_all_confirm_btn"),
+                destructive=True,
+            ):
                 return
             result = self.config_service.delete_all_local_data()
             if not result.get("ok") or not result.get("verified"):
@@ -730,22 +734,24 @@ class ProfilePage(QWidget):
                 return
             done_msg = tr("profile.reset_wipe_done")
         elif clicked is profile_btn:
-            confirm = QMessageBox.question(
+            if not confirm_action(
                 self,
                 tr("profile.reset_title"),
                 tr("profile.reset_confirm_all"),
-            )
-            if confirm != QMessageBox.StandardButton.Yes:
+                confirm_text=tr("profile.reset_all"),
+                destructive=True,
+            ):
                 return
             self.config_service.reset_profile_and_documents(clear_search_prefs=False)
             done_msg = tr("profile.reset_done")
         elif clicked is cv_btn:
-            confirm = QMessageBox.question(
+            if not confirm_action(
                 self,
                 tr("profile.reset_title"),
                 tr("profile.reset_confirm_cv"),
-            )
-            if confirm != QMessageBox.StandardButton.Yes:
+                confirm_text=tr("profile.reset_cv_only"),
+                destructive=True,
+            ):
                 return
             self.config_service.clear_cv_storage()
             cfg = self.config_service.load()

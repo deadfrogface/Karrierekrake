@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -104,6 +104,8 @@ class StatusChip(QLabel):
 class KpiCard(QFrame):
     """Compact KPI tile — large number is the visual focus (demo hierarchy)."""
 
+    activated = Signal()
+
     def __init__(
         self,
         label: str = "",
@@ -129,6 +131,46 @@ class KpiCard(QFrame):
         layout.addWidget(self.value_label)
         layout.addWidget(self.hint_label)
         set_accessible_name(self, f"{label}: {value}")
+        self._clickable = False
+
+    def set_clickable(self, clickable: bool, *, tooltip: str = "") -> None:
+        """Only cards that actually navigate get the pointer/hover/focus affordance."""
+        self._clickable = bool(clickable)
+        self.setProperty("kkClickable", "true" if clickable else "false")
+        self.setCursor(
+            Qt.CursorShape.PointingHandCursor if clickable else Qt.CursorShape.ArrowCursor
+        )
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus if clickable else Qt.FocusPolicy.NoFocus)
+        self.setToolTip(tooltip if clickable else "")
+        style = self.style()
+        if style is not None:
+            style.unpolish(self)
+            style.polish(self)
+
+    def is_clickable(self) -> bool:
+        return self._clickable
+
+    def mouseReleaseEvent(self, event) -> None:  # noqa: N802
+        if (
+            self._clickable
+            and event.button() == Qt.MouseButton.LeftButton
+            and self.rect().contains(event.position().toPoint())
+        ):
+            self.activated.emit()
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
+
+    def keyPressEvent(self, event) -> None:  # noqa: N802
+        if self._clickable and event.key() in (
+            Qt.Key.Key_Return,
+            Qt.Key.Key_Enter,
+            Qt.Key.Key_Space,
+        ):
+            self.activated.emit()
+            event.accept()
+            return
+        super().keyPressEvent(event)
 
     def set_value(
         self,

@@ -139,9 +139,6 @@ QFrame#Card, QFrame#HeroCard, QFrame#DetailPanel {{
     border: 1px solid {COLOR_LIGHT_BORDER};
     border-radius: 10px;
 }}
-QFrame#HeroCard {{
-    padding: 4px;
-}}
 QLabel#CardValue {{
     font-size: 22px;
     font-weight: 700;
@@ -552,3 +549,59 @@ def legacy_stylesheet_for(preference: str) -> str:
     """Pre-design-system QSS path (rollback)."""
     theme = resolve_theme(preference)
     return DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
+
+
+def dark_palette():
+    """QPalette matching the dark tokens.
+
+    QSS alone cannot recolor surfaces that paint from the palette (scroll-area
+    bodies with autoFillBackground, native dialog buttons, item views), so the
+    dark theme must ship a matching palette or those stay light.
+    """
+    from PySide6.QtGui import QColor, QPalette
+
+    role = QPalette.ColorRole
+    group = QPalette.ColorGroup
+    pal = QPalette()
+    colors = {
+        role.Window: COLOR_DARK_BG,
+        role.WindowText: COLOR_DARK_TEXT,
+        # Lighter than Window so unstyled check/radio indicators stay visible.
+        role.Base: "#243343",
+        role.AlternateBase: "#15202B",
+        role.Text: COLOR_DARK_TEXT,
+        role.Button: COLOR_DARK_SURFACE,
+        role.ButtonText: COLOR_DARK_TEXT,
+        role.BrightText: "#FFFFFF",
+        role.Highlight: COLOR_TEAL,
+        role.HighlightedText: "#FFFFFF",
+        role.ToolTipBase: COLOR_DARK_TEXT,
+        role.ToolTipText: "#121820",
+        role.PlaceholderText: COLOR_DARK_MUTED,
+        role.Link: "#9FD5C4",
+        role.LinkVisited: "#9FD5C4",
+        role.Light: "#2A3B4D",
+        role.Midlight: "#223142",
+        role.Mid: "#1B2632",
+        role.Dark: "#0B1117",
+        role.Shadow: "#000000",
+    }
+    for r, value in colors.items():
+        pal.setColor(r, QColor(value))
+    disabled_fg = QColor("#6B7C8C")
+    for r in (role.WindowText, role.Text, role.ButtonText):
+        pal.setColor(group.Disabled, r, disabled_fg)
+    pal.setColor(group.Disabled, role.Button, QColor("#16202A"))
+    return pal
+
+
+def apply_theme(app, preference: str, *, high_contrast: bool | None = None) -> str:
+    """Apply palette + stylesheet for *preference*; returns the resolved theme."""
+    theme = resolve_theme(preference)
+    style = app.style()
+    if theme == "dark":
+        app.setPalette(dark_palette())
+    elif style is not None:
+        app.setPalette(style.standardPalette())
+    app.setStyleSheet(stylesheet_for(preference, high_contrast=high_contrast))
+    return theme
