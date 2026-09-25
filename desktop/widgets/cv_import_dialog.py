@@ -15,15 +15,16 @@ checked. It is not a production delay.
 
 from __future__ import annotations
 
+import os
 import time
 from pathlib import Path
 
 from PySide6.QtCore import QObject, Qt, QTimer, Signal
+from PySide6.QtGui import QCursor
 from PySide6.QtWidgets import (
     QButtonGroup,
     QComboBox,
     QDialog,
-    QDialogButtonBox,
     QFileDialog,
     QFormLayout,
     QGroupBox,
@@ -43,6 +44,13 @@ from desktop.cv_import_supervisor import (
     CvImportSupervisor,
     ImportAttemptResult,
 )
+from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.polish import (
+    apply_button_icon,
+    footer_actions_layout,
+    polish_interactive,
+    soft_shadow,
+)
 from desktop.i18n import tr
 from desktop.services.profile_merge import (
     ImportMode,
@@ -57,12 +65,37 @@ from desktop.services.profile_merge import (
     summarize_incoming,
     sync_application_summaries,
 )
-from desktop.widgets.confirm_dialog import label_button_box
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen
 from desktop.workers import start_worker
 
 # A second click in the same double-click must not dismiss the cancelled state.
 _CANCEL_CLOSE_GRACE_S = 0.8
+
+_REDUCED_MOTION_VALUES = {"1", "true", "yes", "on", "reduce", "reduced"}
+
+
+def _prefers_reduced_motion() -> bool:
+    """Honor KK_REDUCED_MOTION and prefers-reduced-motion. Shadows stay allowed."""
+    for key in ("KK_REDUCED_MOTION", "PREFERS_REDUCED_MOTION", "prefers_reduced_motion"):
+        if os.environ.get(key, "").strip().lower() in _REDUCED_MOTION_VALUES:
+            return True
+    return False
+
+
+def _polish_primary(button: QPushButton) -> None:
+    """Same hover polish as profile Save. Reduced motion keeps a static shadow."""
+    if _prefers_reduced_motion():
+        soft_shadow(button, blur=16.0, y_offset=4.0, alpha=38)
+        button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        return
+    polish_interactive(button)
+
+
+def _bind_button_qss(button: QPushButton) -> None:
+    """Make objectName QSS win over the platform button chrome."""
+    style = button.style()
+    style.unpolish(button)
+    style.polish(button)
 
 
 class _CvImportWorker(QObject):
@@ -213,35 +246,47 @@ class CvImportDialog(QDialog):
         self.conflict_form = QFormLayout(self.conflict_box)
         self.conflict_box.setVisible(False)
 
-        buttons = label_button_box(
-            QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-        )
-        self._buttons = buttons
-        self._ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
-        self._ok_btn.setText(tr("cv_import.apply"))
-        self._ok_btn.setAutoDefault(False)
-        self._ok_btn.setDefault(False)
+        # Plain QPushButtons, not QDialogButtonBox: the box keeps Fusion/Windows
+        # bevels and stock icons even when Primary/Secondary QSS is active.
+        self._ok_btn = QPushButton(tr("cv_import.apply"), self)
+        self._ok_btn.setObjectName("PrimaryButton")
+        self._ok_btn.setAutoDefault(True)
+        self._ok_btn.setDefault(True)
         self._ok_btn.setEnabled(False)
-        self._cancel_btn = buttons.button(QDialogButtonBox.StandardButton.Cancel)
-        self._cancel_btn.setObjectName("CvImportCancel")
-        self._cancel_btn.setText(tr("cv_import.cancel_btn"))
-        buttons.accepted.connect(self._accept)
-        buttons.rejected.connect(self.reject)
-        self._retry_btn = QPushButton(tr("cv_import.retry"))
-        self._retry_btn.setObjectName("CvImportRetry")
+        self._ok_btn.clicked.connect(self._accept)
+        set_accessible_name(self._ok_btn, tr("cv_import.apply"))
+        apply_button_icon(self._ok_btn, "check", color="#ffffff")
+        _polish_primary(self._ok_btn)
+        _bind_button_qss(self._ok_btn)
+
+        self._cancel_btn = QPushButton(tr("cv_import.cancel_btn"), self)
+        self._cancel_btn.setObjectName("SecondaryButton")
+        self._cancel_btn.setAutoDefault(False)
+        self._cancel_btn.setDefault(False)
+        self._cancel_btn.clicked.connect(self.reject)
+        set_accessible_name(self._cancel_btn, tr("cv_import.cancel_btn"))
+        _bind_button_qss(self._cancel_btn)
+
+        self._retry_btn = QPushButton(tr("cv_import.retry"), self)
+        self._retry_btn.setObjectName("SecondaryButton")
         self._retry_btn.setVisible(False)
         self._retry_btn.clicked.connect(self._manual_retry)
-        buttons.addButton(self._retry_btn, QDialogButtonBox.ButtonRole.ActionRole)
-        self._read_again_btn = QPushButton(tr("cv_import.read_again"))
-        self._read_again_btn.setObjectName("CvImportReadAgain")
+        set_accessible_name(self._retry_btn, tr("cv_import.retry"))
+        _bind_button_qss(self._retry_btn)
+
+        self._read_again_btn = QPushButton(tr("cv_import.read_again"), self)
+        self._read_again_btn.setObjectName("SecondaryButton")
         self._read_again_btn.setVisible(False)
         self._read_again_btn.clicked.connect(self._read_again)
-        buttons.addButton(self._read_again_btn, QDialogButtonBox.ButtonRole.ActionRole)
-        self._choose_btn = QPushButton(tr("cv_import.choose_other"))
-        self._choose_btn.setObjectName("CvImportChooseOther")
+        set_accessible_name(self._read_again_btn, tr("cv_import.read_again"))
+        _bind_button_qss(self._read_again_btn)
+
+        self._choose_btn = QPushButton(tr("cv_import.choose_other"), self)
+        self._choose_btn.setObjectName("SecondaryButton")
         self._choose_btn.setVisible(False)
         self._choose_btn.clicked.connect(self._choose_other_file)
-        buttons.addButton(self._choose_btn, QDialogButtonBox.ButtonRole.ActionRole)
+        set_accessible_name(self._choose_btn, tr("cv_import.choose_other"))
+        _bind_button_qss(self._choose_btn)
 
         layout = QVBoxLayout(self)
         self._intro = QLabel(tr("cv_import.intro"))
@@ -259,7 +304,15 @@ class CvImportDialog(QDialog):
         layout.addWidget(self._detected_label)
         layout.addWidget(self.preview, 1)
         layout.addWidget(self.conflict_box)
-        layout.addWidget(buttons)
+        layout.addLayout(
+            footer_actions_layout(
+                self._ok_btn,
+                self._cancel_btn,
+                self._retry_btn,
+                self._read_again_btn,
+                self._choose_btn,
+            )
+        )
         self._refresh_path_label()
         self._apply_phase("idle")
         fit_dialog_to_screen(self, preferred_width=760, preferred_height=640)

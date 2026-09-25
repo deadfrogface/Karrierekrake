@@ -15,7 +15,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 pytest.importorskip("PySide6.QtWidgets")
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QDialogButtonBox
+from PySide6.QtWidgets import QApplication
 
 from core.config import ApplicationProfile, QualificationsConfig
 from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
@@ -194,7 +194,7 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     assert dlg.mode_box.isVisible() is False
     assert dlg.status_label.text() == tr("cv_import.progress")
     assert cv.name in dlg.path_label.text()
-    cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    cancel = dlg._cancel_btn
     assert cancel is not None
     assert cancel.text() == "__cv_cancel__"
     assert _pump(qapp, lambda: dlg.incoming is not None)
@@ -325,7 +325,7 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     qapp.processEvents()
     dlg.start_parse()
     assert _pump(qapp, lambda: bool(calls) and dlg._running and dlg.progress.isVisible())
-    cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    cancel = dlg._cancel_btn
     cancel.click()
     assert dlg.isVisible()
     assert dlg._phase == "cancelled"
@@ -439,7 +439,7 @@ def test_empty_detection_is_its_own_surface_and_close_applies_nothing(qapp, tmp_
     assert dlg.result_quals is None
     assert app.city == "Hamburg"
     assert app.first_name == "Manuell"
-    close = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    close = dlg._cancel_btn
     assert close is not None
     assert close.text() == tr("cv_import.close")
     close.click()
@@ -563,7 +563,7 @@ def test_cancel_read_again_starts_one_manual_run(qapp, tmp_path: Path):
     qapp.processEvents()
     dlg.start_parse()
     assert _pump(qapp, lambda: dlg._running and bool(calls))
-    cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    cancel = dlg._cancel_btn
     assert cancel is not None
     cancel.click()
     assert _pump(qapp, lambda: dlg._phase == "cancelled" and not dlg._running, timeout=3)
