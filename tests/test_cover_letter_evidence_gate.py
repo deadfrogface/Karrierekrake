@@ -577,6 +577,7 @@ def test_queue_skips_fixture_demo_and_unknown_sources():
 
 
 def test_linkedin_cannot_auto_apply(tmp_path: Path):
+    """Abruf über JobSpy, ungetestet. Deshalb nicht in der Bewerbungsschlange."""
     job = Job(
         id="li-1",
         source="linkedin",
@@ -597,6 +598,103 @@ def test_linkedin_cannot_auto_apply(tmp_path: Path):
     ok, reason = ApplicationManager(cfg, Database(tmp_path / "jobs.db")).can_auto_apply(job)
     assert ok is False
     assert reason.startswith("source not allowlisted")
+
+
+def test_n_jobs_do_not_compile_evidence_patterns(monkeypatch):
+    """N jobs against one warmed profile must not compile another pattern."""
+    import inspect
+    import re
+
+    from core.cover_letter import cached_profile_evidence
+
+    cfg = _cfg(
+        "Tourenplanung",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Tourenplanung für Stückgut"],
+                source="manual",
+            )
+        ],
+    )
+    cached_profile_evidence(cfg)
+
+    compiled: list[str] = []
+    real_compile = re.compile
+    real_search = re.search
+    real_fullmatch = re.fullmatch
+    real_split = re.split
+    real_findall = re.findall
+
+    def _called_from_cover(pattern: object) -> bool:
+        if not isinstance(pattern, str):
+            return False
+        frame = inspect.currentframe()
+        caller = frame.f_back if frame is not None else None
+        name = caller.f_code.co_filename if caller is not None else ""
+        return name.endswith("cover_letter.py")
+
+    def counting_compile(pattern, flags=0):
+        compiled.append(str(pattern))
+        return real_compile(pattern, flags)
+
+    def counting_search(pattern, *args, **kwargs):
+        if _called_from_cover(pattern):
+            compiled.append("search:" + str(pattern))
+        return real_search(pattern, *args, **kwargs)
+
+    def counting_fullmatch(pattern, *args, **kwargs):
+        if _called_from_cover(pattern):
+            compiled.append("fullmatch:" + str(pattern))
+        return real_fullmatch(pattern, *args, **kwargs)
+
+    def counting_split(pattern, *args, **kwargs):
+        if _called_from_cover(pattern):
+            compiled.append("split:" + str(pattern))
+        return real_split(pattern, *args, **kwargs)
+
+    def counting_findall(pattern, *args, **kwargs):
+        if _called_from_cover(pattern):
+            compiled.append("findall:" + str(pattern))
+        return real_findall(pattern, *args, **kwargs)
+
+    monkeypatch.setattr(re, "compile", counting_compile)
+    monkeypatch.setattr(re, "search", counting_search)
+    monkeypatch.setattr(re, "fullmatch", counting_fullmatch)
+    monkeypatch.setattr(re, "split", counting_split)
+    monkeypatch.setattr(re, "findall", counting_findall)
+
+    jobs = [
+        Job(
+            id="demo-n",
+            source="demo",
+            title="Disponent",
+            company="Nordmole GmbH",
+            description="Tourenplanung im Leitstand.",
+        )
+    ]
+    for index in range(24):
+        if index % 7 == 0:
+            description = ""
+        elif index % 2 == 0:
+            description = f"Anforderungen: Tourenplanung und SAP. Schicht {index}."
+        else:
+            description = f"Backstube, Torten und Dekoration. Fall {index}."
+        company = "Ihr Unternehmen" if index % 5 == 0 else f"Nordmole {index} GmbH"
+        title = "Disponent" if index % 2 == 0 else "Konditor"
+        jobs.append(
+            Job(
+                id=f"n-{index}",
+                source="indeed",
+                title=title,
+                company=company,
+                description=description,
+            )
+        )
+    for job in jobs:
+        compose_cover_letter(job, cfg)
+    assert compiled == []
 
 
 def test_fixture_cover_letter_allowed_demo_refused():

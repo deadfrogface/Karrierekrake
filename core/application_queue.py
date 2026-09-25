@@ -1,10 +1,11 @@
 """Jobs eligible for an application run.
 
-Only portal scrapers that fetch and parse listings may enter the queue or
-auto-apply: ``search/indeed.py``, ``search/stepstone.py``, ``search/xing.py``,
-``search/bundesagentur.py``. ``search/linkedin.py`` only forwards to the
-Indeed adapter and is not included. ``company_sites`` is a v1 placeholder.
-``demo``, ``fixture``, empty, and any other source stay out.
+Only portal scrapers whose listing fetch is covered by a test may enter the
+queue or auto-apply: ``search/indeed.py``, ``search/stepstone.py``,
+``search/xing.py``, ``search/bundesagentur.py``. LinkedIn
+(``search/linkedin.py``): Abruf über JobSpy, ungetestet. ``company_sites``
+is a v1 placeholder. ``demo``, ``fixture``, empty, and any other source stay
+out.
 """
 
 from __future__ import annotations

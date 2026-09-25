@@ -11,6 +11,7 @@ unverified contacts never inject a person name.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -126,9 +127,31 @@ _COMPANY_PLACEHOLDER_BASES = (
 )
 
 
+# Compiled once. collapse_phrase, company placeholders, and the numbered
+# "Firma N" stand-in must not compile again per call or per job.
+_WS = re.compile(r"\s+")
+_NEVER = re.compile(r"(?!)")
+_FIRMA_PLACEHOLDER = re.compile(r"firma(?:\s*\d+)?")
+_SKILL_SPLIT = re.compile(r"[,/|]")
+
+
 def collapse_phrase(text: str) -> str:
     """Casefold and collapse whitespace. The shared first step of phrase match."""
-    return re.sub(r"\s+", " ", (text or "").casefold()).strip()
+    return _WS.sub(" ", (text or "").casefold()).strip()
+
+
+def _compile_phrase(phrase: str) -> re.Pattern[str]:
+    """Build one inflection pattern. Callers cache the result."""
+    words = [word for word in collapse_phrase(phrase).split(" ") if word]
+    if not words:
+        return _NEVER
+    body = r"\s+".join(re.escape(word) + _INFLECTION_ENDING for word in words)
+    return re.compile(rf"(?<!\w){body}(?!\w)")
+
+
+# Phrase text -> compiled pattern. Static bans are filled at import.
+# Profile tokens go through ``cached_profile_evidence`` instead of this dict.
+_PHRASE_CACHE: dict[str, re.Pattern[str]] = {}
 
 
 def phrase_pattern(phrase: str) -> re.Pattern[str]:
@@ -138,12 +161,19 @@ def phrase_pattern(phrase: str) -> re.Pattern[str]:
     German ending ``-e``, ``-em``, ``-en``, ``-er``, ``-es``, or ``-s``.
     The match is bounded by non-word characters, so ``Unternehmen`` does not
     hit ``Unternehmensberatung`` or ``Unternehmung``.
+
+    The compiled pattern is reused. A repeated phrase does not compile again.
     """
-    words = [word for word in collapse_phrase(phrase).split(" ") if word]
-    if not words:
-        return re.compile(r"(?!)")
-    body = r"\s+".join(re.escape(word) + _INFLECTION_ENDING for word in words)
-    return re.compile(rf"(?<!\w){body}(?!\w)")
+    key = collapse_phrase(phrase)
+    cached = _PHRASE_CACHE.get(key)
+    if cached is not None:
+        return cached
+    compiled = _compile_phrase(phrase) if key else _NEVER
+    _PHRASE_CACHE[key] = compiled
+    return compiled
+
+
+_COMPANY_PATTERNS = tuple(phrase_pattern(base) for base in _COMPANY_PLACEHOLDER_BASES)
 
 
 def phrase_in_text(text: str, phrase: str) -> bool:
@@ -174,9 +204,11 @@ def _company_missing(job: Job) -> bool:
     company = _normalized_company(job)
     if not company:
         return True
-    if any(phrase_equals(company, base) for base in _COMPANY_PLACEHOLDER_BASES):
+    folded = collapse_phrase(company)
+    # Patterns were compiled at import. The loop only runs fullmatch.
+    if any(pattern.fullmatch(folded) for pattern in _COMPANY_PATTERNS):
         return True
-    return re.fullmatch(r"firma(?:\s*\d+)?", collapse_phrase(company)) is not None
+    return _FIRMA_PLACEHOLDER.fullmatch(folded) is not None
 
 
 def _ad_contact(description: str) -> tuple[str, str]:
@@ -193,22 +225,9 @@ def _job_blob(job: Job) -> str:
 
 
 def _experience_relevance(exp: ExperienceEntry, job_blob: str) -> int:
-    score = 0
-    title = clean_text(exp.title)
-    if title and not _is_glue_token(title):
-        if _ad_mentions(title, job_blob) or _norm(title) in job_blob:
-            score += 12
-        for word in _meaningful_words(title, min_len=4):
-            if _ad_mentions(word, job_blob):
-                score += 3
-    for resp in exp.responsibilities or []:
-        for word in _meaningful_words(resp, min_len=5):
-            if _ad_mentions(word, job_blob):
-                score += 2
-    company = clean_text(exp.company)
-    if company and _ad_mentions(company, job_blob):
-        score += 1
-    return score
+    """Score one station. Patterns come from the station cache, not this call."""
+    folded = collapse_phrase(job_blob)
+    return _score_station(_compiled_station(exp), job_blob, folded)
 
 
 def pick_relevant_experience(
@@ -463,9 +482,206 @@ def _is_training_row(exp: ExperienceEntry) -> bool:
 
 def _ad_mentions(token: str, blob: str) -> bool:
     """Alias match plus the inflection normalizer, against the ad text."""
-    if _mentioned(token, blob):
-        return True
-    return phrase_in_text(blob, token)
+    if not token or not blob:
+        return False
+    return _mention_for(token).hits(blob, collapse_phrase(blob))
+
+
+@dataclass(frozen=True)
+class _Mention:
+    """Precompiled alias, word-boundary, and inflection checks for one token."""
+
+    boundaries: tuple[re.Pattern[str], ...]
+    substrings: tuple[str, ...]
+    phrase: re.Pattern[str] | None
+
+    def hits(self, blob: str, folded: str) -> bool:
+        for pattern in self.boundaries:
+            if pattern.search(blob):
+                return True
+        for form in self.substrings:
+            if form in blob:
+                return True
+        if self.phrase is not None and folded and self.phrase.search(folded):
+            return True
+        return False
+
+
+@dataclass(frozen=True)
+class _StationCompiled:
+    title_active: bool
+    title_norm: str
+    title_mention: _Mention | None
+    title_words: tuple[_Mention, ...]
+    resp_words: tuple[_Mention, ...]
+    company_mention: _Mention | None
+
+
+@dataclass(frozen=True)
+class _SkillCompiled:
+    label: str
+    glue: bool
+    mentions: tuple[_Mention, ...]
+
+
+class _ProfileEvidence:
+    """Patterns for one profile. Built once, then reused for every job."""
+
+    __slots__ = ("skills", "software", "stations")
+
+    def __init__(
+        self,
+        skills: tuple[_SkillCompiled, ...],
+        software: tuple[_SkillCompiled, ...],
+        stations: dict[tuple, _StationCompiled],
+    ) -> None:
+        self.skills = skills
+        self.software = software
+        self.stations = stations
+
+
+_MENTION_CACHE: dict[str, _Mention] = {}
+_STATION_CACHE: dict[tuple, _StationCompiled] = {}
+_SKILL_CACHE: dict[str, _SkillCompiled] = {}
+_PROFILE_CACHE: dict[str, _ProfileEvidence] = {}
+
+
+def _boundary_pattern(token: str) -> re.Pattern[str] | None:
+    """Word-boundary pattern for ``_token_in_text``. None when that helper is false."""
+    normalized = _norm(token)
+    if _is_glue_token(normalized) or len(normalized) < 3:
+        return None
+    return re.compile(rf"(?<!\w){re.escape(normalized)}(?!\w)")
+
+
+def _mention_for(token: str) -> _Mention:
+    """Compile one profile token. Later calls with the same text reuse it."""
+    cached = _MENTION_CACHE.get(token)
+    if cached is not None:
+        return cached
+    boundaries: list[re.Pattern[str]] = []
+    own = _boundary_pattern(token)
+    if own is not None:
+        boundaries.append(own)
+    key = _norm(token)
+    substrings: list[str] = []
+    for form in _alias_forms(token):
+        if form == key:
+            continue
+        alias = _boundary_pattern(form)
+        if alias is not None:
+            boundaries.append(alias)
+        if len(form) >= 3:
+            substrings.append(form)
+    phrase = phrase_pattern(token) if collapse_phrase(token) else None
+    compiled = _Mention(tuple(boundaries), tuple(substrings), phrase)
+    _MENTION_CACHE[token] = compiled
+    return compiled
+
+
+def _station_key(exp: ExperienceEntry) -> tuple:
+    return (
+        clean_text(exp.title),
+        clean_text(exp.company),
+        tuple(clean_text(item) for item in (exp.responsibilities or [])),
+    )
+
+
+def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
+    key = _station_key(exp)
+    cached = _STATION_CACHE.get(key)
+    if cached is not None:
+        return cached
+    title = key[0]
+    active = bool(title) and not _is_glue_token(title)
+    title_words: tuple[_Mention, ...] = ()
+    title_mention = None
+    if active:
+        title_mention = _mention_for(title)
+        title_words = tuple(_mention_for(word) for word in _meaningful_words(title, min_len=4))
+    resp_words = tuple(
+        _mention_for(word)
+        for resp in key[2]
+        for word in _meaningful_words(resp, min_len=5)
+    )
+    company = key[1]
+    compiled = _StationCompiled(
+        title_active=active,
+        title_norm=_norm(title),
+        title_mention=title_mention,
+        title_words=title_words,
+        resp_words=resp_words,
+        company_mention=_mention_for(company) if company else None,
+    )
+    _STATION_CACHE[key] = compiled
+    return compiled
+
+
+def _score_station(station: _StationCompiled, blob: str, folded: str) -> int:
+    score = 0
+    if station.title_active:
+        title_hit = station.title_mention is not None and station.title_mention.hits(blob, folded)
+        if title_hit or (station.title_norm and station.title_norm in blob):
+            score += 12
+        for mention in station.title_words:
+            if mention.hits(blob, folded):
+                score += 3
+    for mention in station.resp_words:
+        if mention.hits(blob, folded):
+            score += 2
+    if station.company_mention is not None and station.company_mention.hits(blob, folded):
+        score += 1
+    return score
+
+
+def _compiled_skill(label: str) -> _SkillCompiled:
+    cached = _SKILL_CACHE.get(label)
+    if cached is not None:
+        return cached
+    mentions = [_mention_for(label)] if label else []
+    for part in _SKILL_SPLIT.split(label):
+        part = part.strip()
+        if len(part) >= 3 and not _is_glue_token(part):
+            mentions.append(_mention_for(part))
+    compiled = _SkillCompiled(label, _is_glue_token(label) if label else True, tuple(mentions))
+    _SKILL_CACHE[label] = compiled
+    return compiled
+
+
+def _profile_material(config: AppConfig) -> str:
+    quals = config.profile.qualifications
+    payload = {
+        "skills": [clean_text(item) for item in quals.skill_values()],
+        "software": [clean_text(item) for item in quals.software_values()],
+        "stations": [
+            [
+                clean_text(exp.title),
+                clean_text(exp.company),
+                [clean_text(item) for item in (exp.responsibilities or [])],
+            ]
+            for exp in (quals.work_experience or [])
+        ],
+    }
+    return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+
+
+def cached_profile_evidence(config: AppConfig) -> _ProfileEvidence:
+    """Compile mention patterns once per profile hash, then reuse them per job."""
+    key = hashlib.sha256(_profile_material(config).encode()).hexdigest()
+    cached = _PROFILE_CACHE.get(key)
+    if cached is not None:
+        return cached
+    quals = config.profile.qualifications
+    evidence = _ProfileEvidence(
+        skills=tuple(_compiled_skill(clean_text(item)) for item in quals.skill_values()),
+        software=tuple(_compiled_skill(clean_text(item)) for item in quals.software_values()),
+        stations={
+            _station_key(exp): _compiled_station(exp)
+            for exp in (quals.work_experience or [])
+        },
+    )
+    _PROFILE_CACHE[key] = evidence
+    return evidence
 
 
 def evidenced_stations(config: AppConfig) -> list[ExperienceEntry]:
@@ -481,16 +697,6 @@ def evidenced_stations(config: AppConfig) -> list[ExperienceEntry]:
     return stations
 
 
-def _skill_in_blob(skill: str, blob: str) -> bool:
-    if _ad_mentions(skill, blob):
-        return True
-    return any(
-        _ad_mentions(part, blob)
-        for part in re.split(r"[,/|]", skill)
-        if len(part.strip()) >= 3 and not _is_glue_token(part)
-    )
-
-
 def evidenced_skills_matching_description(config: AppConfig, description: str) -> list[str]:
     """Confirmed, non-debt skills/software that occur in the job description."""
     if _debt_blocks(config):
@@ -498,20 +704,21 @@ def evidenced_skills_matching_description(config: AppConfig, description: str) -
     blob = _norm(description)
     if not blob:
         return []
-    quals = config.profile.qualifications
-    pool: list[str] = []
+    evidence = cached_profile_evidence(config)
+    pool: list[_SkillCompiled] = []
     if _section_confirmed(config, "skills"):
-        pool.extend(clean_text(s) for s in quals.skill_values())
+        pool.extend(evidence.skills)
     if _section_confirmed(config, "software"):
-        pool.extend(clean_text(s) for s in quals.software_values())
+        pool.extend(evidence.software)
+    folded = collapse_phrase(blob)
     hits: list[str] = []
     seen: set[str] = set()
     for skill in pool:
-        if not skill or _is_glue_token(skill) or skill in seen:
+        if not skill.label or skill.glue or skill.label in seen:
             continue
-        if _skill_in_blob(skill, blob):
-            seen.add(skill)
-            hits.append(skill)
+        if any(mention.hits(blob, folded) for mention in skill.mentions):
+            seen.add(skill.label)
+            hits.append(skill.label)
     return hits
 
 
@@ -519,10 +726,16 @@ def _matching_station(config: AppConfig, job: Job) -> ExperienceEntry | None:
     stations = evidenced_stations(config)
     if not stations:
         return None
+    evidence = cached_profile_evidence(config)
     blob = _job_blob(job)
-    ranked = sorted(stations, key=lambda exp: _experience_relevance(exp, blob), reverse=True)
+    folded = collapse_phrase(blob)
+
+    def score(exp: ExperienceEntry) -> int:
+        return _score_station(evidence.stations[_station_key(exp)], blob, folded)
+
+    ranked = sorted(stations, key=score, reverse=True)
     best = ranked[0]
-    if _experience_relevance(best, blob) > 0:
+    if score(best) > 0:
         return best
     return None
 
