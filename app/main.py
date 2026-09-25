@@ -632,6 +632,8 @@ def main(argv: list[str] | None = None) -> int:
             from desktop.services import ConfigService
 
             config = ConfigService().load()
+        except RecursionError:
+            raise
         except Exception as exc:
             if args.once:
                 logger.exception("AppData-Konfiguration fehlgeschlagen — Abbruch (--once)")
