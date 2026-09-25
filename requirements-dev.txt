@@ -2,6 +2,8 @@
 
 -r requirements-runtime.txt
 pytest>=8.0
+# CI splits the Windows unit-tests job into equal-time shards (not a runtime dep).
+pytest-split>=0.11.0,<1
 pyinstaller>=6.3
 ruff>=0.6
 radon>=6.0
