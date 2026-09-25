@@ -18,4 +18,7 @@ jsonschema>=4.22
 # Supply-chain / SAST (PR41) — orthogonal to gitleaks/OSV binaries in CI.
 pip-audit>=2.7.0
 bandit>=1.7.9
+# Windows unit test of the manual benchmark kills a real Job Object tree
+# (tests/test_perf_benchmark_rss.py). Not a desktop runtime dependency.
+psutil>=5.9
 # Streamlit UI removed (ui/app.py deleted) — do not re-add for desktop builds
