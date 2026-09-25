@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "created_at": "2026-09-25T03:23:04.239786+00:00",
+  "created_at": "2026-09-25T04:03:15.404174+00:00",
   "test_type": "DOCPICK_BLIND_DE_EN_V3_PARSER_FREEZE",
-  "commit": "e79d69a40b1b2be5d76df410bc1a5911d87aae61",
+  "commit": "74e163b85a67b78c19f117d38cc6af95de825bc9",
   "model": {
     "id": "Qwen/Qwen3.5-4B",
     "artifact": "Qwen3.5-4B-Q4_K_M.gguf",
@@ -20,8 +20,12 @@
     "core/cv_docpick_import.py": "06908554b0cf3986acd057fdc6ca98b607696dd2fcd350c35983ad78d0d7422c",
     "core/cv_extract_confirmation.py": "8df4a5d5b0de91dbf751b98320549f68d2bd127d90ff093df605d81534af6dc2",
     "core/cv_parser.py": "bebcc69fe969bdaaab866201e49bff4aa5d58541f6c174779fc0fa3b52849c21",
-    "core/cover_letter.py": "6a28b464fbb3089abeaed5442f53b439ac75f1edae95750588d78c359a1de65a",
-    "desktop/services/profile_merge.py": "23253a365f70ea0ed3da8b29fa6a3996f17005f60cd4f4bb5cac533b8c9362de"
+    "core/cover_letter.py": "8b37bb15f5e77e9a58cff869c8d1c49fe419eda43fea178b76759de45a9300f0",
+    "core/config.py": "556cd781bfcf8b1c15826bf762590aceeb648d7890581d864fb5326844fe031c",
+    "desktop/services/profile_merge.py": "23253a365f70ea0ed3da8b29fa6a3996f17005f60cd4f4bb5cac533b8c9362de",
+    "desktop/widgets/cv_import_dialog.py": "d8dca81cf4e1f1b935cfa7256f5fac62ad0efabe7c88b8ad202afcaf4d90ea68",
+    "apply/preview.py": "fa71b5c71ac65cc72f51812de8364fe1c2c2d9616769cbe814e244a84d963826",
+    "apply/manager.py": "398f6c8023af73678bd53436d259940133c28a185c9879b5a79aefd949556570"
   },
   "peak_rss_gate_bytes": 3300000000,
   "laptop_ram_gate": "OFFEN \u2013 Messung ausgesetzt",
