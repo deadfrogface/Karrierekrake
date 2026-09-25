@@ -287,33 +287,6 @@ def resolve_postal_pgeocode(
     )
 
 
-# A single city's postal centroids stay within this radius of their mean
-# (Berlin ≈ 25 km, Hamburg/München less); homonyms in other regions exceed it.
-CITY_SPREAD_MAX_KM = 35.0
-
-
-def _exact_city_rows(nom: Any, needle: str) -> Any | None:
-    """Exact place-name rows from the full local table.
-
-    ``query_location`` only returns the top fuzzy hits, which for large cities
-    are dominated by bulk-recipient PLZ ("Agentur für Arbeit Berlin Mitte") and
-    can miss the plain city name entirely.
-    """
-    data = getattr(nom, "_data", None)
-    columns = getattr(data, "columns", ())
-    if data is None or "place_name" not in columns:
-        return None
-    try:
-        folded = getattr(nom, "_kk_place_casefold", None)
-        if folded is None or len(folded) != len(data):
-            folded = data["place_name"].astype(str).str.casefold()
-            nom._kk_place_casefold = folded
-        return data[folded == needle]
-    except Exception as exc:
-        logger.debug("exact city lookup failed: %s", type(exc).__name__)
-        return None
-
-
 def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
     """Resolve unique city within one country. Ambiguous → AMBIGUOUS, never guess."""
     cc = normalize_country_code(country_code)
@@ -335,48 +308,46 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
-    needle = name.casefold()
-    exact = _exact_city_rows(nom, needle)
-    if exact is None or exact.empty:
-        try:
-            frame = nom.query_location(name)
-        except Exception as exc:
-            logger.debug("city query failed %s %s: %s", cc, name, type(exc).__name__)
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="city_query_error",
-                country_code=cc,
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        if frame is None or getattr(frame, "empty", True):
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="city_not_found",
-                country_code=cc,
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        try:
-            import pandas as pd
+    try:
+        frame = nom.query_location(name)
+    except Exception as exc:
+        logger.debug("city query failed %s %s: %s", cc, name, type(exc).__name__)
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_query_error",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    if frame is None or getattr(frame, "empty", True):
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_not_found",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    try:
+        import pandas as pd
 
-            df = frame if isinstance(frame, pd.DataFrame) else pd.DataFrame(frame)
-        except Exception:
-            return PlaceResolution(
-                status="UNKNOWN",
-                reason="city_frame_error",
-                country_code=cc,
-                data_source=GEO_DATA_SOURCE_UNRESOLVED,
-                data_version=GEO_DATA_VERSION_UNRESOLVED,
-            )
-        if "place_name" in df.columns:
-            exact = df[df["place_name"].astype(str).str.casefold() == needle]
-            if exact.empty:
-                exact = df[
-                    df["place_name"].astype(str).str.casefold().str.contains(needle, na=False)
-                ]
-        else:
-            exact = df
+        df = frame if isinstance(frame, pd.DataFrame) else pd.DataFrame(frame)
+    except Exception:
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="city_frame_error",
+            country_code=cc,
+            data_source=GEO_DATA_SOURCE_UNRESOLVED,
+            data_version=GEO_DATA_VERSION_UNRESOLVED,
+        )
+    needle = name.casefold()
+    if "place_name" in df.columns:
+        exact = df[df["place_name"].astype(str).str.casefold() == needle]
+        if exact.empty:
+            exact = df[
+                df["place_name"].astype(str).str.casefold().str.contains(needle, na=False)
+            ]
+    else:
+        exact = df
     if exact.empty:
         return PlaceResolution(
             status="UNKNOWN",
@@ -413,9 +384,7 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
     # Spread check: same name in distant places → AMBIGUOUS
     lat_vals = [p[0] for p in pairs]
     lon_vals = [p[1] for p in pairs]
-    lat = sum(lat_vals) / len(lat_vals)
-    lon = sum(lon_vals) / len(lon_vals)
-    if max(haversine_km(lat, lon, a, b) for a, b in pairs) > CITY_SPREAD_MAX_KM:
+    if max(lat_vals) - min(lat_vals) > 0.5 or max(lon_vals) - min(lon_vals) > 0.5:
         return PlaceResolution(
             status="AMBIGUOUS",
             reason="city_spread",
@@ -424,6 +393,8 @@ def resolve_city_pgeocode(city: str, country_code: str) -> PlaceResolution:
             data_source=GEO_DATA_SOURCE_UNRESOLVED,
             data_version=GEO_DATA_VERSION_UNRESOLVED,
         )
+    lat = sum(lat_vals) / len(lat_vals)
+    lon = sum(lon_vals) / len(lon_vals)
     display = f"{name}, {cc}"
     return PlaceResolution(
         status="RESOLVED",
