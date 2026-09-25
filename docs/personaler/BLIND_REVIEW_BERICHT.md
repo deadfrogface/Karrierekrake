@@ -33,7 +33,7 @@ Quelle ohne gepaarten Extrakt, deshalb ebenfalls nicht gewertet: `tests/fixtures
 
 ### 1.2 `MINI_HOLDOUT_30` — Papierkorb (versiegelter Stand)
 
-Vorhanden: `MH_001`–`MH_030` als PDFs in `tests/KarriereKrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip`, Soll in `tests/KarriereKrake_MINI_HOLDOUT_30_PHASE_B_SOLUTIONS.zip`, Scorer-Diffs unter `artifacts/mini_holdout_30/`.
+Vorhanden: `MH_001`–`MH_030` als PDFs in `tests/Karrierekrake_MINI_HOLDOUT_30_PHASE_A_BLIND.zip`, Soll in `tests/Karrierekrake_MINI_HOLDOUT_30_PHASE_B_SOLUTIONS.zip`, Scorer-Diffs unter `artifacts/mini_holdout_30/`.
 
 Versiegelter Diff `artifacts/mini_holdout_30/per_document_results.json`:
 
