@@ -528,7 +528,12 @@ def stylesheet_for(
         "true",
         "yes",
     }:
-        return legacy_stylesheet_for(preference)
+        sheet = legacy_stylesheet_for(preference)
+        if resolve_theme(preference) == "dark":
+            from desktop.design_system.stylesheet import dark_chip_hover_qss
+
+            sheet += "\n" + dark_chip_hover_qss()
+        return sheet
     if dpi_scale is None:
         dpi_scale = detect_dpi_scale()
     if high_contrast is None:
@@ -548,7 +553,9 @@ def stylesheet_for(
 def legacy_stylesheet_for(preference: str) -> str:
     """Pre-design-system QSS path (rollback)."""
     theme = resolve_theme(preference)
-    return DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
+    sheet = DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
+    # Marker so chip polish can drop shadows when the app sheet is dark.
+    return f"/* kk-theme: {theme} */\n{sheet}"
 
 
 def dark_palette():

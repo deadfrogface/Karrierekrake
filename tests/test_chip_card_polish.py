@@ -24,11 +24,44 @@ from desktop.design_system.v2_chrome import (
     StatusChip,
     TagChip,
 )
+from desktop.theme import stylesheet_for
 
 
 @pytest.fixture(scope="module")
 def qapp():
     return QApplication.instance() or QApplication([])
+
+
+@pytest.fixture(autouse=True)
+def _restore_stylesheet(qapp):
+    previous = qapp.styleSheet()
+    yield
+    if qapp.styleSheet() != previous:
+        qapp.setStyleSheet(previous)
+        qapp.processEvents()
+
+
+def _declaration_block(css: str, selector: str) -> str:
+    start = 0
+    while True:
+        idx = css.find(selector, start)
+        assert idx >= 0, selector
+        after = idx + len(selector)
+        if after < len(css) and css[after] == ":":
+            start = after
+            continue
+        brace = css.find("{", idx)
+        end = css.find("}", brace)
+        assert brace >= 0 and end > brace
+        return css[brace + 1 : end]
+
+
+def _decl(block: str, name: str) -> str:
+    for part in block.split(";"):
+        piece = part.strip()
+        if piece.startswith(name) and ":" in piece:
+            return piece.split(":", 1)[1].strip().lower()
+    return ""
 
 
 def _effect(widget) -> QGraphicsDropShadowEffect:
@@ -115,6 +148,81 @@ def test_chip_inside_card_hovers_without_animating(qapp, monkeypatch):
     QApplication.sendEvent(chip, QEvent(QEvent.Type.Enter))
     assert effect.yOffset() > base_y
     assert effect.color().alpha() > base_alpha
+    polish = chip.property("_kk_polish")
+    assert polish.motions_enabled() is False
+    assert polish._blur_anim is None
+
+
+def test_dark_stylesheet_chip_hover_differs_from_rest():
+    dark = stylesheet_for("dark")
+    light = stylesheet_for("light")
+    assert "kk-theme: dark" in dark
+    assert "QLabel#BadgeMuted:hover" not in light
+    hover = _declaration_block(dark, "QLabel#BadgeMuted:hover")
+    assert _decl(hover, "background") not in {"", "#243343"}
+    assert _decl(hover, "border") not in {"", "1px solid transparent"}
+    assert _decl(hover, "color")
+    resting = _declaration_block(dark, "QLabel#BadgeMuted")
+    assert "#243343" in resting
+    assert _decl(hover, "background") != _decl(resting, "background")
+    for selector in (
+        "QLabel#BadgeOk:hover",
+        "QLabel#BadgeWarn:hover",
+        "QLabel#BadgeDanger:hover",
+        "QLabel#BadgeInfo:hover",
+    ):
+        block = _declaration_block(dark, selector)
+        assert _decl(block, "border")
+        assert _decl(block, "background")
+
+
+def test_dark_theme_chip_has_no_graphics_effect(qapp):
+    qapp.setStyleSheet(stylesheet_for("dark"))
+    chip = TagChip("Nur Suche – nie bewerben", kind="neutral")
+    badge = KkStatusBadge("Bereit", kind="success")
+    status = StatusChip("Offen", kind="info")
+    for widget in (chip, badge, status):
+        assert widget.graphicsEffect() is None
+        assert widget.testAttribute(Qt.WidgetAttribute.WA_Hover)
+    card = ContentCard()
+    assert isinstance(card.graphicsEffect(), QGraphicsDropShadowEffect)
+
+
+def test_theme_switch_restores_one_chip_shadow(qapp, monkeypatch):
+    monkeypatch.setenv("KK_REDUCED_MOTION", "0")
+    qapp.setStyleSheet(stylesheet_for("light"))
+    qapp.processEvents()
+    chip = TagChip("Python", kind="wanted")
+    polish = chip.property("_kk_polish")
+    light_effect = _effect(chip)
+    assert light_effect.blurRadius() <= 12.0
+    qapp.setStyleSheet(stylesheet_for("dark"))
+    qapp.processEvents()
+    assert chip.graphicsEffect() is None
+    assert chip.property("_kk_polish") is polish
+    qapp.setStyleSheet(stylesheet_for("light"))
+    qapp.processEvents()
+    restored = _effect(chip)
+    assert restored is not light_effect
+    assert chip.property("_kk_polish") is polish
+    assert restored.blurRadius() <= 12.0
+    base_y = restored.yOffset()
+    base_alpha = restored.color().alpha()
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.Enter))
+    assert polish.motions_enabled() is True
+    assert polish._blur_anim is not None
+    assert polish._blur_anim.state() == QAbstractAnimation.State.Running
+    QTest.qWait(280)
+    assert restored.yOffset() > base_y + 0.4
+    assert restored.color().alpha() > base_alpha
+
+
+def test_reduced_motion_dark_hover_does_not_animate(qapp, monkeypatch):
+    monkeypatch.setenv("KK_REDUCED_MOTION", "1")
+    qapp.setStyleSheet(stylesheet_for("dark"))
+    chip = StatusChip("Offen", kind="info")
+    assert chip.graphicsEffect() is None
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.Enter))
     polish = chip.property("_kk_polish")
     assert polish.motions_enabled() is False
     assert polish._blur_anim is None

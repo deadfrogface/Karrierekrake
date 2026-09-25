@@ -219,6 +219,23 @@ def prefers_reduced_motion() -> bool:
     return _SYSTEM_REDUCED_MOTION
 
 
+_THEME_DARK_MARKER = "kk-theme: dark"
+_CHIP_BLUR = 8.0
+_CHIP_Y = 2.0
+_CHIP_ALPHA = 34
+_CHIP_HOVER_BLUR = 4.0
+_CHIP_HOVER_Y = 1.5
+_CHIP_HOVER_ALPHA = 26
+
+
+def app_theme_is_dark() -> bool:
+    """True when the live application stylesheet was built for the dark theme."""
+    app = QApplication.instance()
+    if app is None:
+        return False
+    return _THEME_DARK_MARKER in (app.styleSheet() or "")
+
+
 def _polished_effect(widget: QWidget) -> QGraphicsDropShadowEffect | None:
     if widget.property("_kk_polish") is None:
         return None
@@ -255,20 +272,28 @@ class _InteractivePolish(QObject):
     def __init__(
         self,
         target: QWidget,
-        shadow: QGraphicsDropShadowEffect,
+        shadow: QGraphicsDropShadowEffect | None,
         *,
         animate: bool,
         press: bool,
         hover_blur: float,
         hover_y: float,
         hover_alpha: int,
+        chip: bool = False,
     ) -> None:
         super().__init__(target)
         self._target = target
         self._shadow = shadow
-        self._base_blur = float(shadow.blurRadius())
-        self._base_y = float(shadow.yOffset())
-        self._base_alpha = int(shadow.color().alpha())
+        self._chip = chip
+        self._syncing = False
+        if shadow is not None:
+            self._base_blur = float(shadow.blurRadius())
+            self._base_y = float(shadow.yOffset())
+            self._base_alpha = int(shadow.color().alpha())
+        else:
+            self._base_blur = _CHIP_BLUR
+            self._base_y = _CHIP_Y
+            self._base_alpha = _CHIP_ALPHA
         self._allow_animation = bool(animate)
         self._press = press
         self._hover_blur = hover_blur
@@ -281,12 +306,16 @@ class _InteractivePolish(QObject):
         self._color_anim: QPropertyAnimation | None = None
         target.installEventFilter(self)
 
+    @property
+    def is_chip(self) -> bool:
+        return self._chip
+
     def motions_enabled(self) -> bool:
         """True when this control may run a short shadow animation."""
         return self._should_animate()
 
     def _should_animate(self) -> bool:
-        if not self._allow_animation:
+        if self._shadow is None or not self._allow_animation:
             return False
         parent = self._target.parentWidget()
         while parent is not None:
@@ -358,7 +387,59 @@ class _InteractivePolish(QObject):
         self._y_anim.start()
         self._color_anim.start()
 
+    def _discard_anims(self) -> None:
+        self._stop_anims()
+        for anim in (self._blur_anim, self._y_anim, self._color_anim):
+            if anim is not None:
+                anim.deleteLater()
+        self._blur_anim = None
+        self._y_anim = None
+        self._color_anim = None
+
+    def _drop_shadow(self) -> None:
+        """Remove the single drop shadow. Does not install a replacement effect."""
+        self._discard_anims()
+        self._shadow = None
+        if self._target.graphicsEffect() is not None:
+            self._target.setGraphicsEffect(None)
+
+    def sync_chip_shadow(self) -> None:
+        """Light theme keeps one soft shadow. Dark theme drops it (stylesheet hover)."""
+        if not self._chip or self._syncing:
+            return
+        self._syncing = True
+        try:
+            has_shadow = isinstance(self._target.graphicsEffect(), QGraphicsDropShadowEffect)
+            if app_theme_is_dark():
+                if has_shadow or self._shadow is not None:
+                    self._drop_shadow()
+                return
+            if has_shadow and self._shadow is not None:
+                return
+            if has_shadow and self._shadow is None:
+                effect = self._target.graphicsEffect()
+                if isinstance(effect, QGraphicsDropShadowEffect):
+                    self._shadow = effect
+                return
+            shadow = soft_shadow(
+                self._target,
+                blur=_CHIP_BLUR,
+                y_offset=_CHIP_Y,
+                alpha=_CHIP_ALPHA,
+            )
+            self._shadow = shadow
+            self._base_blur = float(shadow.blurRadius())
+            self._base_y = float(shadow.yOffset())
+            self._base_alpha = int(shadow.color().alpha())
+            self._blur_anim = None
+            self._y_anim = None
+            self._color_anim = None
+        finally:
+            self._syncing = False
+
     def _apply_state(self) -> None:
+        if self._shadow is None:
+            return
         blur, y, alpha = self._targets()
         self._animate_shadow(blur, y, alpha)
 
@@ -380,6 +461,9 @@ class _InteractivePolish(QObject):
         if watched is not self._target:
             return False
         et = event.type()
+        if et == QEvent.Type.StyleChange and self._chip:
+            self.sync_chip_shadow()
+            return False
         if et == QEvent.Type.Enter:
             self._hover = True
             self._apply_state()
@@ -437,22 +521,33 @@ def polish_interactive(
     return shadow
 
 
-def polish_chip(widget: QWidget) -> QGraphicsDropShadowEffect:
-    """Light shadow + hover darken/lift for pills and badges.
+def polish_chip(widget: QWidget) -> QGraphicsDropShadowEffect | None:
+    """Light-theme shadow + hover lift. Dark theme uses stylesheet :hover only.
 
     No pointing-hand cursor — most chips are not buttons. Blur stays small so
-    a row of chips does not dominate the raster cost.
+    a row of chips does not dominate the raster cost. Dark theme attaches no
+    graphics effect; one filter reapplies or removes the shadow when the app
+    stylesheet changes.
     """
-    return polish_interactive(
-        widget,
-        blur=8.0,
-        y_offset=2.0,
-        alpha=34,
-        cursor=False,
-        hover_blur=4.0,
-        hover_y=1.5,
-        hover_alpha=26,
-    )
+    widget.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
+    existing = widget.property("_kk_polish")
+    if not isinstance(existing, _InteractivePolish) or not existing.is_chip:
+        existing = _InteractivePolish(
+            widget,
+            None,
+            animate=not prefers_reduced_motion(),
+            press=True,
+            hover_blur=_CHIP_HOVER_BLUR,
+            hover_y=_CHIP_HOVER_Y,
+            hover_alpha=_CHIP_HOVER_ALPHA,
+            chip=True,
+        )
+        widget.setProperty("_kk_polish", existing)
+    existing.sync_chip_shadow()
+    effect = widget.graphicsEffect()
+    if isinstance(effect, QGraphicsDropShadowEffect):
+        return effect
+    return None
 
 
 def polish_card(widget: QWidget) -> QGraphicsDropShadowEffect:
