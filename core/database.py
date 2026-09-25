@@ -8,7 +8,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Iterable, Iterator
+from typing import Any, Iterator
 
 from core.models import ApplicationRecord, Job, JobStatus, utc_now_iso
 from core.deduplicator import company_key as _company_key, title_key as _title_key
@@ -274,40 +274,14 @@ CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_status ON recruiting_contacts
 """
 
 
-# Search persist commits this many upserts per transaction. A crash or a
-# should_stop between chunks drops at most one open chunk. Each job inside
-# the chunk has its own SAVEPOINT, so one failed upsert does not discard
-# the jobs already written in that chunk (same loss as a per-call commit).
-# VM, nicht i3, 5 runs, WAL: chunk 500 holds the write lock for at most
-# 98.6 ms (p95 98.0 ms) across 5000 jobs, and 82.4 ms at 500 jobs.
-# busy_timeout is 5000 ms, so 500 stays well under that ceiling.
-DEFAULT_UPSERT_CHUNK_SIZE = 500
-
-# sqlite3's default. A writer (UI status mark) waits this long on the chunk's
-# write lock before OperationalError('database is locked'). Chunk holds must
-# stay well under this; see the batch-upsert PR for the measured max.
-BUSY_TIMEOUT_S = 5.0
-
-# Rollback-journal mode fsyncs on every RELEASE SAVEPOINT (about 2 ms/job
-# here). WAL with synchronous=NORMAL keeps the per-job savepoint and still
-# commits a chunk of 500 far under BUSY_TIMEOUT_S. NORMAL survives an
-# application crash; the open chunk is the crash window, same as before.
-
-
 class Database:
     def __init__(self, path: Path, *, recover: bool = False) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        # Must exist before _init_schema(), which uses connection().
-        self._txn_conn: sqlite3.Connection | None = None
-        self._batch_scope = False
-        self._batch_halted = False
-        self._batch_skipped = False
-        self._batch_watch: Callable[[], Any] | None = None
-        self._batch_chunk_size = DEFAULT_UPSERT_CHUNK_SIZE
-        self._batch_count = 0
-        self._batch_written = 0
-        self._batch_force_rollback = False
+        # (data_version, block keys). Watcher stays open so a cache hit does not
+        # connect again. None until the first has_applied.
+        self._applied_cache = None
+        self._applied_watch: sqlite3.Connection | None = None
         self._init_schema()
         # Default off: GUI page opens construct Database() frequently and must not
         # mark a live search/apply as interrupted. Call with recover=True once at
@@ -316,25 +290,13 @@ class Database:
             self.recover_interrupted_state()
 
     def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.path, timeout=BUSY_TIMEOUT_S)
+        conn = sqlite3.connect(self.path)
         conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode = WAL")
-        conn.execute("PRAGMA synchronous = NORMAL")
         conn.execute("PRAGMA foreign_keys = ON")
-        conn.execute(f"PRAGMA busy_timeout = {int(BUSY_TIMEOUT_S * 1000)}")
         return conn
 
     @contextmanager
     def connection(self) -> Iterator[sqlite3.Connection]:
-        """Yield a connection. Commit on the way out, unless a transaction() is open.
-
-        Inside transaction() or an open batch() this joins that connection and
-        does not commit or close it. Callers on the same Database then see
-        uncommitted rows. A second Database() on the same file does not.
-        """
-        if self._txn_conn is not None:
-            yield self._txn_conn
-            return
         conn = self._connect()
         try:
             yield conn
@@ -344,113 +306,6 @@ class Database:
             raise
         finally:
             conn.close()
-
-    @contextmanager
-    def transaction(self) -> Iterator[sqlite3.Connection]:
-        """Run the block on one connection. Commit on success, roll back on any exception.
-
-        Nested transaction() calls join the outermost transaction.
-        The exception is not swallowed. The connection is closed afterwards.
-        """
-        if self._txn_conn is not None:
-            yield self._txn_conn
-            return
-        conn = self._connect()
-        self._txn_conn = conn
-        try:
-            yield conn
-            conn.commit()
-        except BaseException:
-            try:
-                conn.rollback()
-            except Exception:
-                pass
-            raise
-        finally:
-            self._txn_conn = None
-            conn.close()
-
-    @contextmanager
-    def batch(
-        self,
-        should_stop: Callable[[], Any] | None = None,
-        chunk_size: int | None = None,
-    ) -> Iterator["Database"]:
-        """Commit upsert_job calls from this block in chunks.
-
-        The block keeps calling upsert_job. Every chunk_size writes (default
-        500) are committed. Each upsert runs in its own SAVEPOINT: a failure
-        rolls back only that job and is re-raised, and jobs already written
-        in the chunk are committed so they are not lost on the way out.
-        If should_stop is already true when the block starts, every upsert in
-        the block is still written. If it becomes true between chunks, later
-        upsert_job calls in this Database are skipped and
-        batch_skipped_writes becomes true.
-        """
-        size = DEFAULT_UPSERT_CHUNK_SIZE if chunk_size is None else chunk_size
-        if size < 1:
-            raise ValueError("chunk_size must be >= 1")
-        if self._batch_scope or self._txn_conn is not None:
-            raise RuntimeError("batch() cannot nest inside transaction() or batch()")
-        self._batch_chunk_size = size
-        self._batch_count = 0
-        self._batch_written = 0
-        self._batch_force_rollback = False
-        self._batch_scope = True
-        conn: sqlite3.Connection | None = None
-        try:
-            if self._batch_halted:
-                yield self
-                return
-            already = bool(should_stop()) if should_stop is not None else False
-            self._batch_watch = None if already else should_stop
-            conn = self._connect()
-            self._txn_conn = conn
-            yield self
-            if self._batch_force_rollback:
-                conn.rollback()
-            elif (
-                self._batch_count
-                and self._batch_watch is not None
-                and self._batch_watch()
-            ):
-                conn.rollback()
-                self._batch_written -= self._batch_count
-                self._batch_count = 0
-                self._batch_halted = True
-                self._batch_skipped = True
-            else:
-                conn.commit()
-        except BaseException:
-            if conn is not None:
-                try:
-                    # Jobs that already succeeded in this chunk were committed
-                    # one by one on main. Keep that prefix; drop only an
-                    # unfinished statement that has no savepoint.
-                    if self._batch_count > 0 and not self._batch_force_rollback:
-                        conn.commit()
-                    else:
-                        conn.rollback()
-                except Exception:
-                    try:
-                        conn.rollback()
-                    except Exception:
-                        pass
-            raise
-        finally:
-            self._txn_conn = None
-            self._batch_scope = False
-            self._batch_watch = None
-            if conn is not None:
-                try:
-                    conn.close()
-                except Exception:
-                    pass
-
-    @property
-    def batch_skipped_writes(self) -> bool:
-        """True when a batch() refused an upsert after a committed chunk."""
-        return self._batch_skipped
 
     def _init_schema(self) -> None:
         with self.connection() as conn:
@@ -808,49 +663,6 @@ class Database:
 
 
     def upsert_job(self, job: Job) -> None:
-        if not self._batch_scope:
-            self._write_job(job)
-            return
-        if self._batch_halted:
-            self._batch_skipped = True
-            return
-        if (
-            self._batch_count == 0
-            and self._batch_watch is not None
-            and self._batch_watch()
-        ):
-            self._batch_halted = True
-            self._batch_skipped = True
-            return
-        conn = self._txn_conn
-        if conn is None:
-            raise RuntimeError("batch connection is closed")
-        conn.execute("SAVEPOINT kk_job")
-        try:
-            self._write_job(job)
-            conn.execute("RELEASE SAVEPOINT kk_job")
-        except BaseException:
-            try:
-                conn.execute("ROLLBACK TO SAVEPOINT kk_job")
-                conn.execute("RELEASE SAVEPOINT kk_job")
-            except Exception:
-                self._batch_force_rollback = True
-            else:
-                # Durable, like the per-call commit on main, before the
-                # error leaves this function.
-                if self._batch_count > 0:
-                    conn.commit()
-                    self._batch_count = 0
-            raise
-        self._batch_written += 1
-        self._batch_count += 1
-        if self._batch_count >= self._batch_chunk_size:
-            conn.commit()
-            self._batch_count = 0
-            if self._batch_watch is not None and self._batch_watch():
-                self._batch_halted = True
-
-    def _write_job(self, job: Job) -> None:
         data = job.to_dict()
         data["match_reasons"] = json.dumps(job.match_reasons, ensure_ascii=False)
         data["rejection_reasons"] = json.dumps(job.rejection_reasons, ensure_ascii=False)
@@ -897,26 +709,6 @@ class Database:
         )
         with self.connection() as conn:
             conn.execute(sql, [data[c] for c in cols])
-
-    def upsert_jobs(
-        self,
-        jobs: Iterable[Job],
-        *,
-        chunk_size: int | None = None,
-        should_stop: Callable[[], Any] | None = None,
-    ) -> int:
-        """Upsert jobs in committed chunks. Returns how many upserts ran.
-
-        Same rules as upsert_job. A failed upsert rolls back only that job
-        (its SAVEPOINT). Upserts that already succeeded are committed and
-        the exception propagates, so a caller that continues keeps every
-        other row. ``should_stop`` is checked between chunks. When it
-        becomes true, already committed chunks stay and the rest is not written.
-        """
-        with self.batch(should_stop=should_stop, chunk_size=chunk_size):
-            for job in jobs:
-                self.upsert_job(job)
-        return self._batch_written
 
     def get_job(self, job_id: str) -> Job | None:
         with self.connection() as conn:
@@ -1014,12 +806,40 @@ class Database:
                 (incoming, utc_now_iso(), job_id),
             )
 
-    def has_applied(self, job: Job) -> bool:
-        """Hard safety: never apply twice (id, normalized URL, or company+title).
+    def _applied_watcher(self) -> sqlite3.Connection:
+        watch = self._applied_watch
+        if watch is None:
+            watch = self._connect()
+            watch.rollback()
+            self._applied_watch = watch
+        return watch
 
-        Twin URL / company+title matching scans prior attempt statuses, not only
-        APPLIED — FAILED/NEEDS_REVIEW/CAPTCHA/APPLYING must also block re-apply.
+    def _applied_block_keys(
+        self,
+    ) -> tuple[set[str], set[str], set[str], set[tuple[str, str]]]:
+        """Normalized block keys. Rebuilt when another connection commits.
+
+        ``PRAGMA data_version`` on the long-lived watcher changes for every
+        commit except one made on the watcher itself. Hits do not open a
+        connection. The watcher is rolled back so it does not keep a lock.
         """
+        watch = self._applied_watcher()
+        version = int(watch.execute("PRAGMA data_version").fetchone()[0])
+        cached = self._applied_cache
+        if cached is not None and cached[0] == version:
+            watch.rollback()
+            return cached[1]
+        try:
+            keys = self._load_applied_block_keys(watch)
+        finally:
+            watch.rollback()
+        self._applied_cache = (version, keys)
+        return keys
+
+    @staticmethod
+    def _load_applied_block_keys(
+        conn: sqlite3.Connection,
+    ) -> tuple[set[str], set[str], set[str], set[tuple[str, str]]]:
         prior_statuses = (
             JobStatus.APPLIED.value,
             JobStatus.FAILED.value,
@@ -1027,49 +847,65 @@ class Database:
             JobStatus.CAPTCHA.value,
             JobStatus.APPLYING.value,
         )
+        placeholders = ",".join("?" for _ in prior_statuses)
+        rows = conn.execute(
+            f"""
+            SELECT id, status, url, application_url, company, title FROM jobs
+            WHERE status IN ({placeholders})
+            """,
+            prior_statuses,
+        ).fetchall()
+        applied_ids: set[str] = set()
+        blocked_urls: set[str] = set()
+        blocked_pairs: set[tuple[str, str]] = set()
+        applied = JobStatus.APPLIED.value
+        for record in rows:
+            if record["status"] == applied and record["id"] is not None:
+                applied_ids.add(record["id"])
+            for candidate in (record["url"], record["application_url"]):
+                key = _url_identity(candidate or "")
+                if key:
+                    blocked_urls.add(key)
+            company_key = _company_key(record["company"] or "")
+            title_key = _title_key(record["title"] or "")
+            if company_key and title_key:
+                blocked_pairs.add((company_key, title_key))
+        application_job_ids = {
+            record["job_id"]
+            for record in conn.execute("SELECT job_id FROM applications").fetchall()
+            if record["job_id"] is not None
+        }
+        return applied_ids, application_job_ids, blocked_urls, blocked_pairs
+
+    def has_applied(self, job: Job) -> bool:
+        """Hard safety: never apply twice (id, normalized URL, or company+title).
+
+        Twin URL / company+title matching scans prior attempt statuses, not only
+        APPLIED — FAILED/NEEDS_REVIEW/CAPTCHA/APPLYING must also block re-apply.
+
+        The old body loaded every prior-status row and normalized URL, company
+        and title in Python on every call, so n calls over n rows were
+        superlinear. Block keys are built once per database generation.
+        """
         url_keys = {_url_identity(u) for u in (job.url, job.application_url) if u}
         url_keys.discard("")
         company_key = _company_key(job.company)
         title_key = _title_key(job.title)
-        placeholders = ",".join("?" for _ in prior_statuses)
-        with self.connection() as conn:
-            row = conn.execute(
-                "SELECT id FROM jobs WHERE id = ? AND status = ?",
-                (job.id, JobStatus.APPLIED.value),
-            ).fetchone()
-            if row:
+        applied_ids, application_job_ids, blocked_urls, blocked_pairs = (
+            self._applied_block_keys()
+        )
+        if job.id in applied_ids:
+            return True
+        # Any applications row for this job_id counts as already handled,
+        # including status APPLIED.
+        if job.id in application_job_ids:
+            return True
+        for key in url_keys:
+            if key in blocked_urls:
                 return True
-            row = conn.execute(
-                "SELECT id FROM applications WHERE job_id = ? AND status = ?",
-                (job.id, JobStatus.APPLIED.value),
-            ).fetchone()
-            if row:
-                return True
-            # Any applications row for this job_id counts as already handled.
-            row = conn.execute(
-                "SELECT id FROM applications WHERE job_id = ? LIMIT 1",
-                (job.id,),
-            ).fetchone()
-            if row:
-                return True
-            rows = conn.execute(
-                f"""
-                SELECT id, url, application_url, company, title FROM jobs
-                WHERE status IN ({placeholders})
-                """,
-                prior_statuses,
-            ).fetchall()
-            for r in rows:
-                for candidate in (r["url"], r["application_url"]):
-                    key = _url_identity(candidate or "")
-                    if key and key in url_keys:
-                        return True
-                if company_key and title_key:
-                    if _company_key(r["company"] or "") == company_key and _title_key(
-                        r["title"] or ""
-                    ) == title_key:
-                        return True
-            return False
+        if company_key and title_key and (company_key, title_key) in blocked_pairs:
+            return True
+        return False
 
     def count_applications_today(self) -> int:
         """Count only real applied submissions toward the daily cap."""
