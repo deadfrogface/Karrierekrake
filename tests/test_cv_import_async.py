@@ -194,7 +194,7 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     assert cv.name in dlg.path_label.text()
     cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
     assert cancel is not None
-    assert cancel.text() == tr("btn.cancel")
+    assert cancel.text() == tr("cv_import.cancel_btn")
     assert _pump(qapp, lambda: dlg.incoming is not None)
     assert dlg._phase == "success"
     assert dlg._ok_btn.isVisible()
