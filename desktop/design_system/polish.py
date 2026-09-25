@@ -178,9 +178,10 @@ def _detect_system_reduced_motion() -> bool:
     if sys.platform == "win32":
         try:
             import ctypes
+            import ctypes.wintypes
 
-            # SPI_GETCLIENTAREAANIMATION — 0 when the user turns animations off.
-            enabled = ctypes.c_bool()
+            # SPI_GETCLIENTAREAANIMATION writes a 4-byte BOOL, not a C bool.
+            enabled = ctypes.wintypes.BOOL()
             ok = ctypes.windll.user32.SystemParametersInfoW(0x1042, 0, ctypes.byref(enabled), 0)
             if ok:
                 return not bool(enabled.value)

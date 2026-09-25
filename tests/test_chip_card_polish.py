@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import time
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -287,13 +286,13 @@ def test_reduced_motion_dark_hover_does_not_animate(qapp, monkeypatch):
     assert polish._blur_anim is None
 
 
-def test_many_chips_stay_responsive(qapp, monkeypatch):
+def test_many_chips_do_not_animate_inside_card(qapp, monkeypatch):
+    """Chips inside a shadowed card must not start a per-frame blur animation."""
     monkeypatch.setenv("KK_REDUCED_MOTION", "0")
     card = ContentCard()
     row = QHBoxLayout()
     card.body().addLayout(row)
     chips = []
-    started = time.perf_counter()
     for i in range(48):
         kind = "wanted" if i % 2 == 0 else "neutral"
         chip = TagChip(f"Skill {i}", kind=kind)
@@ -304,11 +303,28 @@ def test_many_chips_stay_responsive(qapp, monkeypatch):
     app = QApplication.instance()
     assert app is not None
     app.processEvents()
-    for _ in range(30):
+    effects_before = [chip.graphicsEffect() for chip in chips]
+    assert all(isinstance(effect, QGraphicsDropShadowEffect) for effect in effects_before)
+    assert len({id(effect) for effect in effects_before}) == len(chips)
+    for _ in range(8):
         QApplication.sendEvent(chips[3], QEvent(QEvent.Type.Enter))
         QApplication.sendEvent(chips[3], QEvent(QEvent.Type.Leave))
         app.processEvents()
-    elapsed = time.perf_counter() - started
-    assert elapsed < 2.0
-    assert isinstance(chips[0].graphicsEffect(), QGraphicsDropShadowEffect)
+    effects_after = [chip.graphicsEffect() for chip in chips]
+    assert effects_after == effects_before
+    polish = chips[3].property("_kk_polish")
+    assert polish.motions_enabled() is False
+    assert polish._blur_anim is None
+    assert polish._y_anim is None
+    assert polish._color_anim is None
+    assert card.property("_kk_polish") == "card"
+    assert isinstance(card.graphicsEffect(), QGraphicsDropShadowEffect)
     card.hide()
+
+
+def test_high_contrast_dark_chip_has_no_shadow(qapp):
+    css = stylesheet_for("dark", high_contrast=True)
+    assert "kk-theme: dark" in css
+    qapp.setStyleSheet(css)
+    chip = TagChip("Nur Suche – nie bewerben", kind="neutral")
+    assert chip.graphicsEffect() is None
