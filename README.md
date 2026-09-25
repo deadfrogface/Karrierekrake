@@ -1,136 +1,88 @@
 # Karrierekrake
 
-<p align="center">
-  <img src="assets/brand/logo.png" alt="Karrierekrake — FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK." width="520" />
-</p>
+Karrierekrake ist eine lokale Desktop-App (PySide6) für die Jobsuche und die Vorbereitung von Bewerbungen. Profil, Einstellungen und die Job-Datenbank liegen auf deinem PC unter `%LOCALAPPDATA%\Karrierekrake`. Ein Crash- oder Telemetrie-Uploader ist nicht enthalten; Protokolle bleiben lokal.
 
-<p align="center"><strong>FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK.</strong><br/>
-Kein Cloud-Konto · kein Pflicht-KI-Abo · Daten bleiben auf Ihrem PC</p>
+Die App bewirbt sich nicht von allein. Im Auslieferungszustand ist nur die Suche aktiv, Dry-Run ist an und automatisches Absenden ist aus. Ein finaler Klick auf Absenden im Browser bleibt dann aus. Arbeitgeber-Mails bleiben Entwürfe, bis du den Versand freigibst.
 
-<p align="center">
-  <img src="docs/assets/screenshots/01-dashboard.png" alt="Dashboard" width="720" />
-</p>
+Screenshots und Demo-Video folgen (werden auf dem aktuellen Stand neu aufgenommen).
 
-Lokale Windows-Desktop-App. Ausführdatei: `Karrierekrake.exe`.  
-Datenverzeichnis: `%LOCALAPPDATA%\Karrierekrake`
+## Was es heute kann
 
----
+Die Seitenleiste führt zu Übersicht, Jobs, Bewerbungen, Postfach, Profil und Einstellungen. Dazu gibt es Hilfe. Beim ersten Start öffnet sich ein Assistent mit drei Seiten: Lebenslauf (optional), Sucheinstellungen, Arbeitsmodus. Dry-Run bleibt dabei an.
 
-## Windows — schnell starten
+Sprache ist Deutsch oder Englisch. Das Thema folgt dem System oder ist hell oder dunkel.
 
-### Variante A: Fertige EXE
+**Suche.** Eingeschaltet sind voreingestellt die Bundesagentur für Arbeit und Indeed. StepStone und XING lassen sich in den Einstellungen dazuschalten. Jede Quelle hat einen eigenen Adapter und Tests:
 
-1. Neueste **Release**-Datei `Karrierekrake.exe` herunterladen  
-2. Starten (bei SmartScreen: „Weitere Informationen“ → trotzdem ausführen)  
-3. Kurzer 3-Schritt-Assistent: Lebenslauf → Sucheinstellungen → Bereit  
-4. **Jobs finden**
+- Bundesagentur für Arbeit: `BundesagenturSource` in `search/bundesagentur.py`. Tests prüfen die Remote-Erkennung und den Health-Check.
+- Indeed: `IndeedSource` in `search/indeed.py` mappt Zeilen von JobSpy. Tests prüfen diese Zuordnung.
+- StepStone: `StepstoneSource` in `search/stepstone.py`. Ein Test lässt die Suche gegen festes HTML laufen und erwartet einen Treffer.
+- XING: `XingSource` in `search/xing.py`. Ein Test lässt die Suche gegen festes JSON-LD laufen und erwartet einen Treffer.
 
-Profil & Daten: `%LOCALAPPDATA%\Karrierekrake`
+Eine laufende Suche kannst du abbrechen. In der Jobliste siehst du eine Einschätzung (sehr passend, passend, teilweise passend, nicht passend).
 
-### Variante B: Aus dem Quellcode
+**Stellenanzeige.** Kommt die Beschreibung als HTML in einem JSON-LD-Feld, wird sie in Klartext gewandelt. Dabei fallen Skripte, Styles, JSON-LD-Blöcke und Tracking-Pixel aus dem Text. Was danach noch sichtbar ist, steht unter „Bekannte Grenzen“. Eine Aufteilung in Aufgaben und Anforderungen gibt es in diesem Stand nicht.
 
-1. Doppelklick auf **`setup.bat`** (Python 3.11+, `.venv`, Playwright Chromium, Basistests)  
-2. Start: **`start.bat`**  
-3. Optional EXE bauen: **`build.bat`** → `dist\Karrierekrake.exe`
+**Lebenslauf.** Unter Profil liest du einen Lebenslauf ein. Das Einlesen läuft in einem eigenen Kindprozess, die Oberfläche bleibt bedienbar, und Abbrechen ist möglich. Bricht du ab, wird nichts übernommen. Der Parser ist deterministisch; lokales LLM-Parsing für Lebensläufe ist aus und der Schalter in den Einstellungen bleibt deaktiviert, bis ein Speichertest auf dem Zielgerät vorliegt. Die Speichersperre für diesen Pfad ist aktiv. Der Speicher-Peak auf der Zielhardware ist ungeprüft.
 
----
+**Bewerbung vorbereiten.** Du kannst eine Bewerbung vorbereiten und vor dem Absenden prüfen. Unbekannte oder nur teilweise unterstützte Formulare werden nicht final abgeschickt. Ein endgültiger Submit-Klick ist nur vorgesehen, wenn du zugleich Vollautomatik wählst, Dry-Run ausschaltest und „Automatisch absenden“ einschaltest, und nur für ein vollständig unterstütztes Portal.
 
-## Was die App tut
+**Postfach.** Antwort- und Nachfass-Entwürfe bleiben Entwürfe. Der Versand ist standardmäßig aus. Ohne deine Freigabe pro Mail geht keine Arbeitgeber-Mail raus. Terminvorschläge werden nicht still in den Kalender geschrieben.
 
-| Schritt | Ergebnis |
-|--------|----------|
-| Suchen | Bundesagentur / Indeed (weitere Quellen optional) |
-| Filtern | Distanz, Duplikate, Ausschlüsse |
-| Bewerten | Lokales Match 0–100 mit Begründung |
-| Bewerben | Formulare vorbereiten — Absenden nur wenn Sie es erlauben |
+**Anschreiben-Entwurf (in Arbeit).** Günther, lokal und standardmäßig aus, darf nur vorschlagen, was in deinem Profil belegt ist. Eine behauptete Qualifikation ohne Beleg im Profil wird abgelehnt. Nichts davon geht ohne deine Freigabe raus.
 
-**Sicherheitsstandard:** Dry-Run an, CAPTCHA/2FA/Review stoppen vor dem Absenden, unbekannte ATS werden nicht blind abgeschickt.
+Läuft die App schon, weist ein zweiter Start darauf hin. Ist kein System-Tray verfügbar, erscheint ein englischer Hinweis; die App bleibt nutzbar.
 
----
+## In Arbeit
 
-## Oberfläche
+Offene Änderungen, nicht Teil dieses Stands und ohne Zusage, wann sie landen:
 
-| Bereich | Nutzen |
-|--------|--------|
-| Übersicht | Nächster Schritt + klare Aktionen |
-| Jobs | Liste, Detail, **Bewerbung vorbereiten** |
-| Bewerbungen | Status in Alltagssprache (DB-Enums unverändert) |
-| Profil | Bewerberdaten & CV-Import |
-| Einstellungen | Allgemein / Suche / Bewerbung / Erweitert · **Über Karrierekrake** |
-| Protokolle | Ereignisse verständlich, Technik darunter |
+- Standort und Umkreis: Auflösen einer Postleitzahl (zum Beispiel Berlin-Mitte über 10115), Hinweis bei mehrdeutigen Orten wie Halle oder Frankfurt, und der Distanzfilter (#67).
+- Aufteilung einer Stellenanzeige in Aufgaben und Anforderungen (#74).
+- Zustände beim Lebenslauf-Einlesen und der Fußbereich (#70, #72).
+- Schatten und Hover für Chips und Karten (#71).
+- Absturz auf der Profilseite nach erneutem Aktualisieren (#73).
+- Anschreiben: Gold-Set und zusätzliche Sperren (#75, #77).
+- Migrationslauf beim Beenden (#78).
 
-**Günther die Krake (optional):** Lokale Mithilfe beim Verstehen von Lebenslauf, Stelle und Bewerbungsmails. Ausgeschaltet standardmäßig. Keine Cloud-KI nötig — Modelle nur nach Ihrer Freigabe auf diesem PC. Günther denkt mit; Absenden, Mail-Versand und Termine entscheiden weiterhin Sie / Karrierekrake.
+## Bekannte Grenzen
 
-Themes: System / Hell / Dunkel · Fenster mindestens ca. 900×650
+- In einem gemeinsamen Abschnitt „Ausbildung und Berufserfahrung“ landen Zeilen ohne Ausbildungs-Stichwort bei der Berufserfahrung. Der Import übernimmt das so. Die Extraktion ist damit nicht zuverlässig.
+- Nach der Textwandlung einer Anzeige bleiben Cookie-Hinweise, der Text „Jetzt bewerben“, Teilen-Elemente, „Ähnliche Jobs“ und das geschützte Leerzeichen aus `&nbsp;` stehen.
+- LinkedIn steht in den Quell-Einstellungen. Der vorhandene Test prüft nur die Zeilenzuordnung, keinen Abruf. Firmenkarriereseiten sind ein Platzhalter und liefern keine Treffer.
+- Wenn Qt kein System-Tray meldet, lautet der Dialog auf Englisch: „System tray is not available. The app can still be used.“ Das wurde unter Linux beobachtet.
 
-<p align="center">
-  <img src="docs/assets/screenshots/02-jobs.png" alt="Jobs" width="360" />
-  <img src="docs/assets/screenshots/06-profile.png" alt="Profil" width="360" />
-</p>
+## Installation und Start
 
-Demo-Video: [`docs/assets/demo/karrierekrake-demo.mp4`](docs/assets/demo/karrierekrake-demo.mp4)
+Die Skripte sind für Windows. `setup.bat` verlangt Python 3.11 oder neuer, legt `.venv` an, installiert `requirements-runtime.txt` und Playwright Chromium.
 
-<p align="center">
-  <img src="docs/assets/screenshots/07-about.png" alt="Über Karrierekrake" width="360" />
-</p>
+Start aus dem Quellbaum, nachdem `setup.bat` gelaufen ist:
 
----
+```bat
+start.bat
+```
 
-## Marke & Icons
+Dasselbe macht `python -m desktop.app`. Gleichwertig ist `python -m desktop`.
 
-| Asset | Verwendung |
-|-------|------------|
-| `assets/brand/karrierekrake-logo-master.png` | MASTER A — README, Onboarding, About, Social |
-| `assets/brand/karrierekrake-app-icon-master.png` | MASTER B — EXE / Taskbar / Tray / kleine UI-Icons |
-| `assets/brand/icons/icon-*.png` + `app.ico` | Deterministisch aus MASTER B (1024→16) |
+Eine EXE baust du mit `build.bat`. Das Skript führt die Tests aus und schreibt `dist\Karrierekrake.exe`. Chromium steckt nicht in der EXE. Der Browser wird bei Bedarf nach `%LOCALAPPDATA%\Karrierekrake\browsers` gelegt.
 
-Palette: Navy `#132238` · Teal `#18A999` · Orange `#E86A45` (nur Marken-Artwork).
+## Datenschutz und Datenablage
 
----
+Unter `%LOCALAPPDATA%\Karrierekrake` liegen unter anderem `config`, `data` (SQLite), `logs`, `cvs`, `cover_letters`, `browser_profile`, `browsers` und `models`. Suche und ein geöffneter Browser sprechen die Portale an, die du einschaltest. Die Datenbank und dein Profil bleiben auf diesem PC.
 
-## Einstellungen (kurz)
+Im Dateninventar ist kein Sentry-, Telemetrie- oder Crash-Uploader eingetragen. Lokale Protokolle gibt es. Im Repository sind `.env`, Browser-Profile und abgelegte Lebensläufe unter `private/cvs/` von Git ausgeschlossen.
 
-| Einstellung | Bedeutung |
-|-------------|-----------|
-| `mode: search_only` | Nur suchen & anzeigen |
-| `mode: review_before_submit` | Ausfüllen, **nicht** absenden |
-| `mode: fully_automatic` | Absenden nur wenn sicher |
-| `dry_run: true` | Stoppt immer vor dem Absenden |
-
----
-
-## Privatsphäre
-
-- Alles lokal (SQLite + YAML unter AppData)
-- Keine Telemetrie
-- `.env`, CV, Cookies, Browser-Profil und DB sind in `.gitignore`
-- Niemals echte Lebensläufe oder Passwörter committen
-
----
-
-## Empfohlene GitHub Topics
-
-`job-search` `germany` `desktop` `pyside6` `windows` `local-first` `privacy` `bewerbung` `jobboard` `automation`
-
-Social Preview: `assets/brand/social-preview.png` (unter Repo → Settings → Social preview hochladen)
-
----
-
-## Lizenzen
-
-GPL-3.0. Herkunftshinweise: `NOTICE`, `docs/source-analysis.md`.
-
-## Entwickler
+## Entwicklung und Tests
 
 ```bat
 call .venv\Scripts\activate.bat
 pip install -r requirements-dev.txt
-set PYTHONPATH=%cd%
-pytest -q
+python -m pytest -q
 python -m desktop.app
 ```
 
-Marken-Assets (aus Masters): `python scripts/generate_brand_assets.py`  
-Screenshots: `python scripts/capture_ui_screenshots.py`  
-Demo-Video: `xvfb-run -a python scripts/record_demo_video.py`  
-Name-Research: `docs/name-research.md` · Release-Vorlage: `docs/release-notes-template.md`
+`setup.bat` installiert pytest zusätzlich und führt `python -m pytest tests -q` aus. `build.bat` bricht ab, wenn `python -m pytest -q` fehlschlägt.
+
+## Lizenz
+
+GPL-3.0. Der Text steht in `LICENSE`. Herkunft und Copyright stehen in `NOTICE`.
