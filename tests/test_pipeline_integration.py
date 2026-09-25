@@ -177,7 +177,7 @@ def test_pipeline_integration_counts(pipeline_cfg: AppConfig, monkeypatch, tmp_p
     assert any("timeout" in e.lower() for e in stats["source_errors"])
     assert stats["source_results"]["timeout"]["status"] == SourceHealthStatus.TIMEOUT.value
     assert stats["source_results"]["empty"]["status"] == SourceHealthStatus.OK_EMPTY.value
-    assert stats["source_results"]["company_sites"]["status"] == SourceHealthStatus.PLACEHOLDER.value
+    assert stats["source_results"]["company_sites"]["status"] == SourceHealthStatus.OK_EMPTY.value
     # New jobs upserted (primary non-dup)
     assert stats["new"] >= 2
     assert stats["matches"] >= 1
