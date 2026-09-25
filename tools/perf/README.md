@@ -20,9 +20,16 @@ LLM-Parsing bleibt aus: das Skript setzt `KARRIEREKRAKE_LOCAL_LLM_CV_PARSING=0` 
 
 Zeiten und RSS stammen von der Maschine, auf der das Skript läuft. In `docs/PERFORMANCE_AUDIT.md` sind sie als **VM, nicht i3** gekennzeichnet. Sie ordnen Engpässe. Sie sind keine Schwellen und kein Ersatz für das Prozessgruppen-Limit von 3_300_000_000 Bytes auf dem i3.
 
-Das Skript bricht einen Worker ab, wenn die Prozessgruppe 3_200_000_000 Bytes RSS überschreitet, damit der Lauf unter dem bestehenden Gate bleibt. Unter Linux liest es `/proc` (VmRSS der Prozessgruppe, VmHWM als Peak). Ohne `/proc` (Windows) braucht es **psutil**, optional, nicht in den Produkt-Abhängigkeiten: Prozess plus Kinder, rekursiv; Peak über `memory_info().peak_wset`, ersatzweise `peak_pagefile`, wenn das Feld existiert. Fehlen beide Quellen, endet das Skript mit einer Fehlermeldung und Exit-Code 2. Ein nicht gelesener Wert steht im JSON als `null` und auf der Konsole als `n/a`, nie als 0. Der Abbruch gilt für beide Lesewege.
+Das Skript bricht einen Worker ab, wenn die Prozessgruppe 3_200_000_000 Bytes überschreitet, damit der Lauf unter dem bestehenden Gate bleibt. Der Peak im Report ist eine Stichprobe. Das Intervall steht in `memory_accounting.sample_interval_ms` (Worker 50 ms, importtime 20 ms).
 
-`tests/test_perf_benchmark_rss.py` prüft nur diesen Leser (monkeypatch, kein Benchmark-Lauf). Der Benchmark selbst bleibt manuell.
+Gegen die Grenze läuft:
+
+- Linux: die Summe der **VmRSS** der Prozessgruppe. **VmHWM** ist der High-Water-Mark des Einzelprozesses und läuft nicht gegen die Grenze.
+- Windows: **PeakJobMemoryUsed** des Job Objects (`JOBOBJECT_EXTENDED_LIMIT_INFORMATION`), dieselbe Kennzahl wie das Peak-Gate aus #69 (Commit-High-Water der Prozessgruppe). Nicht Working Set und nicht `PeakProcessMemoryUsed`.
+
+Der Abbruch beendet den ganzen Baum. Unter Linux startet das Kind mit `start_new_session=True`, der Abbruch sendet `SIGKILL` an die Prozessgruppe (`os.killpg`). Unter Windows hängt der Prozess in einem Job Object mit `KILL_ON_JOB_CLOSE` (dieselben Flags wie das Gate); der Abbruch ruft `TerminateJobObject`. Ohne Job-Handle killt psutil die Kinder rekursiv und danach die Wurzel. psutil ist optional und keine Produkt-Abhängigkeit. Fehlen `/proc` und psutil, endet das Skript mit Exit-Code 2. Ein einzelner ungelesener Wert ist JSON `null` (`n/a`), nie 0. Endet ein Lauf, ohne dass irgendein Messwert gelesen wurde, ist der Exit-Code 3 und die Meldung nennt den fehlenden Messwert.
+
+`tests/test_perf_benchmark_rss.py` prüft den Leser, den Baum-Abbruch und den Fehler ohne Stichprobe. Der Benchmark selbst bleibt manuell.
 
 ## Abschnitte
 

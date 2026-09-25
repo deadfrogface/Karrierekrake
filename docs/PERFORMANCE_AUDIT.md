@@ -4,7 +4,7 @@ Stand: 2026-09-25. Skript: `tools/perf/benchmark.py`, fünf Läufe, Median und M
 
 **VM, nicht i3.** Maschine dieser Läufe: Intel Xeon, 4 logische CPUs, 16_791_945_216 Bytes RAM, Python 3.12.3, Linux, Qt offscreen. Die Zahlen ordnen Engpässe. Sie sind keine Schwellen, keine i3-Grenzen und kein Nachweis, dass das Prozessgruppen-Limit von 3_300_000_000 Bytes auf einem i3 mit 8 GB eingehalten wird. Das Gate in CI bleibt unverändert. Der höchste hier gesampelte Prozessgruppen-RSS lag bei 291_860_480 Bytes (Startup-Worker).
 
-Das Skript ist manuell. Es hängt nicht an `unit-tests` und an keinem Workflow.
+Das Skript ist manuell. Es hängt nicht an `unit-tests` und an keinem Workflow. Der im Report geführte Peak ist eine Stichprobe (Worker 50 ms, importtime 20 ms). Unter Linux läuft die Summe der VmRSS gegen die Abbruchgrenze; VmHWM ist der Einzelprozess-Peak und läuft nicht dagegen. Unter Windows ist die Kennzahl `PeakJobMemoryUsed`, dieselbe wie das Job-Object-Gate.
 
 ## Kalter Start
 

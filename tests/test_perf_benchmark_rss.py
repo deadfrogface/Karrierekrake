@@ -8,6 +8,11 @@ and that the peak abort still trips.
 from __future__ import annotations
 
 import importlib.util
+import os
+import signal
+import subprocess
+import sys
+import time
 from pathlib import Path
 
 import pytest
@@ -155,28 +160,160 @@ def test_unread_sample_stays_none_and_does_not_abort():
 
 
 def test_watch_aborts_when_psutil_sample_crosses_limit(monkeypatch):
+    killed: list[tuple[int, int | None]] = []
     monkeypatch.setattr(bench, "_process_group_id", lambda _pid: None)
     monkeypatch.setattr(
         bench,
         "_group_rss",
         lambda _pid, pgid=None: bench.PEAK_ABORT_BYTES,
     )
+    monkeypatch.setattr(
+        bench,
+        "_kill_process_tree",
+        lambda proc, pgid: killed.append((proc.pid, pgid)),
+    )
     proc = _ExitingProc()
     peak, aborted = bench._watch_process_rss(proc, 0.0)
     assert aborted is True
-    assert proc.killed is True
+    assert killed == [(proc.pid, None)]
     assert peak == bench.PEAK_ABORT_BYTES
 
 
-def test_watch_with_only_unread_samples_reports_none(monkeypatch):
+def test_watch_without_any_sample_raises(monkeypatch):
     monkeypatch.setattr(bench, "_process_group_id", lambda _pid: None)
     monkeypatch.setattr(bench, "_group_rss", lambda _pid, pgid=None: None)
     proc = _ExitingProc()
-    peak, aborted = bench._watch_process_rss(proc, 0.0)
-    assert peak is None
-    assert aborted is False
-    assert proc.killed is False
-    assert bench._fmt_bytes(peak) == "n/a"
+    with pytest.raises(bench.NoRssSampleError, match="Kein RSS-Messwert"):
+        bench._watch_process_rss(proc, 0.0)
+
+
+def test_main_exits_nonzero_when_no_rss_sample(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(bench, "_ensure_memory_reader", lambda: None)
+
+    def _no_sample(*_args, **_kwargs):
+        raise bench.NoRssSampleError(
+            "Kein RSS-Messwert gelesen: alle Stichproben waren leer"
+        )
+
+    monkeypatch.setattr(bench, "_run_worker", _no_sample)
+    code = bench.main(
+        ["--runs", "5", "--out", str(tmp_path / "out"), "--sections", "ui", "--skip-trace"]
+    )
+    assert code != 0
+    assert code == bench.NO_SAMPLE_EXIT
+    assert "Kein RSS-Messwert" in capsys.readouterr().err
+
+
+def test_linux_accounting_names_vmrss_and_vmhwm():
+    fields = bench._limit_metric_fields()
+    assert fields["limit_metric"] == "VmRSS"
+    assert fields["process_high_water_metric"] == "VmHWM"
+    accounting = bench._memory_accounting(0.05)
+    assert accounting["peak_is_sampled"] is True
+    assert accounting["sample_interval_ms"] == 50
+    assert "VmRSS" in accounting["limit_metric_note"]
+    assert "VmHWM" in accounting["limit_metric_note"]
+
+
+def test_windows_accounting_uses_peak_job_memory(monkeypatch):
+    monkeypatch.setattr(bench.sys, "platform", "win32")
+    fields = bench._limit_metric_fields()
+    assert fields["limit_metric"] == "PeakJobMemoryUsed"
+    assert "PeakProcessMemoryUsed" in fields["limit_metric_note"]
+    assert "Working Set" in fields["limit_metric_note"]
+    assert "Peak-Gate" in fields["limit_metric_note"]
+
+
+def test_job_object_kill_does_not_stop_at_the_root(monkeypatch):
+    calls: list[object] = []
+    monkeypatch.setattr(bench, "_terminate_windows_job", lambda job: calls.append(job))
+
+    def _no_killpg(_pgid: int | None) -> bool:
+        raise AssertionError("killpg must not run when a job handle is set")
+
+    monkeypatch.setattr(bench, "_posix_killpg", _no_killpg)
+    proc = type("P", (), {"job": "JOB", "pid": 5})()
+    bench._kill_process_tree(proc, 5)
+    assert calls == ["JOB"]
+
+
+def test_windows_kill_hits_children_then_root(monkeypatch):
+    killed: list[int] = []
+
+    class _Node:
+        def __init__(self, pid, kids):
+            self.pid = pid
+            self._kids = kids
+
+        def children(self, recursive=False):
+            assert recursive is True
+            return list(self._kids)
+
+        def kill(self):
+            killed.append(self.pid)
+
+    grand = _Node(3, [])
+    child = _Node(2, [grand])
+    root = _Node(1, [child, grand])
+
+    class _Ps:
+        def Process(self, pid):
+            assert pid == 1
+            return root
+
+    monkeypatch.setattr(bench, "_load_psutil", lambda: _Ps())
+    bench._kill_psutil_tree(1)
+    assert killed == [2, 3, 1]
+
+
+def test_abort_kills_child_and_grandchild(tmp_path, monkeypatch):
+    pidfile = tmp_path / "pids.txt"
+    script = tmp_path / "child.py"
+    script.write_text(
+        "import os, subprocess, sys, time\n"
+        "from pathlib import Path\n"
+        "grand = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(120)'])\n"
+        "Path(sys.argv[1]).write_text(f'{os.getpid()}\\n{grand.pid}\\n')\n"
+        "time.sleep(120)\n",
+        encoding="utf-8",
+    )
+    proc = subprocess.Popen(
+        [sys.executable, str(script), str(pidfile)],
+        start_new_session=True,
+    )
+    try:
+        deadline = time.time() + 5
+        while time.time() < deadline and not pidfile.exists():
+            assert proc.poll() is None
+            time.sleep(0.02)
+        child_pid_s, grand_pid_s = pidfile.read_text(encoding="utf-8").split()
+        child_pid = int(child_pid_s)
+        grand_pid = int(grand_pid_s)
+        assert child_pid == proc.pid
+        assert os.getpgid(child_pid) == proc.pid
+        assert os.getpgid(grand_pid) == proc.pid
+        monkeypatch.setattr(bench, "_group_rss", lambda *_a, **_k: bench.PEAK_ABORT_BYTES)
+        _peak, aborted = bench._watch_process_rss(proc, 0.0)
+        assert aborted is True
+        proc.wait(timeout=3)
+        deadline = time.time() + 2
+        while time.time() < deadline and (_running(child_pid) or _running(grand_pid)):
+            time.sleep(0.05)
+        assert _running(child_pid) is False
+        assert _running(grand_pid) is False
+    finally:
+        if proc.poll() is None:
+            os.killpg(proc.pid, signal.SIGKILL)
+            proc.wait(timeout=3)
+
+
+def _running(pid: int) -> bool:
+    try:
+        stat = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+    except OSError:
+        return False
+    state = stat[stat.rfind(")") + 2 :].split()[0]
+    return state not in {"Z", "X"}
 
 
 def test_proc_read_failure_is_none_not_zero(monkeypatch):
