@@ -718,6 +718,7 @@ class ProfilePage(QWidget):
             cfg.profile.qualifications = keep_manual_qualifications(cfg.profile.qualifications)
             cfg.application = clear_cv_personal(cfg.application)
             cfg.application.cv_path = ""
+            cfg.application.cv_source_text = ""
             self.config_service.save(cfg)
             done_msg = tr("profile.reset_done")
         else:

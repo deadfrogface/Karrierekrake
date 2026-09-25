@@ -253,7 +253,11 @@ class ApplicationManager:
         if self.db.has_applied(job):
             return ApplyResult(success=False, error_message="already applied (safety)")
 
-        cover = render_cover_letter(job, self.config)
+        cover = render_cover_letter(
+            job,
+            self.config,
+            source_text=str(getattr(self.config.application, "cv_source_text", "") or ""),
+        )
         cover_path = self.config.root / "cover_letters" / f"{job.id}.txt"
         save_cover_letter(cover, cover_path)
         cv_path = self._resolve_cv_path()

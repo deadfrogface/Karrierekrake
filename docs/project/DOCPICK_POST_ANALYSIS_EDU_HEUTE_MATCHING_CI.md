@@ -51,7 +51,7 @@ Neu: `core/cv_extract_confirmation.py`
 | Fehler | Fix-Klasse |
 |--------|------------|
 | Windows `import resource` in Holdout-Script | CI / Plattform |
-| `KarriereKrake` Kapitalisierung | Format / Branding |
+| Karrierekrake-Kapitalisierung (falsche Schreibweise) | Format / Branding |
 | Street ohne Hausnummer im Profil | Offline-DET / Profile-Merge |
 | Soft-Skills bleiben in EDV stecken | Offline-DET |
 | `import_cv` ohne Docling in Filename-Test | CI-Test-Anpassung |

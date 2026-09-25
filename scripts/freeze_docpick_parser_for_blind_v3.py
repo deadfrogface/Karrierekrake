@@ -21,7 +21,11 @@ FILES = [
     "core/cv_extract_confirmation.py",
     "core/cv_parser.py",
     "core/cover_letter.py",
+    "core/config.py",
     "desktop/services/profile_merge.py",
+    "desktop/widgets/cv_import_dialog.py",
+    "apply/preview.py",
+    "apply/manager.py",
 ]
 
 

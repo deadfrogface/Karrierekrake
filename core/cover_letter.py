@@ -165,6 +165,18 @@ def _resolve_writer_claims(
     return WriterContactClaims.empty(writer_binding_enabled=binding)
 
 
+def resolve_cover_letter_source_text(
+    config: AppConfig,
+    source_text: str = "",
+) -> str:
+    """Prefer explicit ``source_text``; else use last desktop CV import text."""
+    if source_text and str(source_text).strip():
+        return str(source_text)
+    app = getattr(config, "application", None)
+    stored = str(getattr(app, "cv_source_text", "") or "").strip()
+    return stored
+
+
 def render_cover_letter(
     job: Job,
     config: AppConfig,
@@ -177,6 +189,10 @@ def render_cover_letter(
         template = template_path.read_text(encoding="utf-8")
     else:
         template = DEFAULT_TEMPLATE
+
+    # Desktop import persists CV text on ApplicationProfile.cv_source_text;
+    # apply/preview may omit the kwarg — still ground claims when available.
+    source_text = resolve_cover_letter_source_text(config, source_text)
 
     company = clean_company(job.company)
     if not company:

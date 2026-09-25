@@ -277,6 +277,9 @@ class ApplicationProfile:
     linkedin_url: str = ""
     portfolio_url: str = ""
     cv_path: str = ""
+    # Raw CV text from the last Docpick import — grounds Anschreiben claims.
+    # Not shown in UI; cleared with profile reset / CV wipe.
+    cv_source_text: str = ""
     answers: dict[str, str] = field(default_factory=dict)
     # Track origin of personal fields: manual | cv | default
     field_origins: dict[str, str] = field(default_factory=dict)
@@ -799,6 +802,7 @@ def strip_example_application(application: ApplicationProfile) -> ApplicationPro
         "linkedin_url",
         "portfolio_url",
         "cv_path",
+        "cv_source_text",
     ):
         setattr(application, name, "")
     application.country = "DE"

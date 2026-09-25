@@ -204,7 +204,11 @@ def build_application_preview(
 
     cover = ""
     try:
-        cover = render_cover_letter(job, config)
+        cover = render_cover_letter(
+            job,
+            config,
+            source_text=str(getattr(config.application, "cv_source_text", "") or ""),
+        )
     except Exception as exc:  # noqa: BLE001
         cover = f"(Anschreiben konnte nicht gerendert werden: {exc})"
 

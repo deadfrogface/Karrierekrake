@@ -20,6 +20,12 @@ Stand 2026-09-25.
 | PHASE_B_SOLUTIONS.zip | **FEHLT** (erst nach Phase-A-Seal) |
 | 99%-Claim | **nicht zulässig** bis Gate auf versiegeltem Blind v3 |
 
+### Freeze vs. PR-Head (Klarstellung)
+
+- `PARSER_FREEZE.json` → Feld `commit` = **getesteter Code-Stand** (Parser/Modell/Config/Scorer-Hashes).
+- Der PR-Head darf ein reiner Freeze-/Docs-Commit **darüber** sein; der Freeze zeigt dann auf den Parent mit dem geprüften Code.
+- Historisch: `e79d69a` = Docs/Blind-Blocker; `0694feb` = Freeze-Pointer auf `e79d69a` ohne neuen Parser-Code. Nach Evidence-Verdrahtung (`source_text`→Anschreiben) wird neu eingefroren.
+
 ## Benötigt
 
 Siehe `tests/docpick_blind_de_en_v3/README.md`.
