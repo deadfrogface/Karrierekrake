@@ -129,10 +129,8 @@ def test_settings_checkbox_shows_kill_wording_and_persists(qapp, tmp_path, monke
     assert page.local_llm_cv_parsing.isEnabled() is False
     assert page.local_llm_cv_parsing.isChecked() is False
     assert page.local_llm_cv_parsing.toolTip() == i18n.t("settings.local_llm_cv_unavailable")
-    assert page.local_llm_cv_hint.text() == (
-        "Das lokale LLM-CV-Parsing ist derzeit deaktiviert. "
-        "Lebensläufe werden mit dem Standard-Parser gelesen."
-    )
+    assert page.local_llm_cv_hint.text() == i18n.t("settings.local_llm_cv_disabled_hint")
+    assert "Docpick" in page.local_llm_cv_hint.text() or "Qwen" in page.local_llm_cv_hint.text()
     page.save()
     loaded = ConfigService().load()
     assert loaded.settings.local_llm_cv_parsing_enabled is False

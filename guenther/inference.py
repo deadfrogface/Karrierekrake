@@ -37,11 +37,20 @@ class InferenceController:
         self._jobs: list[InferenceJob] = []
         self._last_used = time.monotonic()
         self.idle_unload_s = 60.0 if ram_tight else idle_unload_s
-        self._watch = threading.Thread(target=self._idle_watch, daemon=True)
+        self._watch: threading.Thread | None = None
         self._watch_stop = threading.Event()
+        # Start idle watcher lazily on first submit — avoids native crashes when
+        # GuentherService is constructed in short-lived pytest processes.
+
+    def _ensure_watch(self) -> None:
+        if self._watch is not None and self._watch.is_alive():
+            return
+        self._watch_stop.clear()
+        self._watch = threading.Thread(target=self._idle_watch, daemon=True, name="guenther-idle")
         self._watch.start()
 
     def submit(self, request: GenerationRequest, *, capability: str = "") -> InferenceJob:
+        self._ensure_watch()
         cancel_event = threading.Event()
         orig = request.cancel_check
 
@@ -68,6 +77,10 @@ class InferenceController:
 
     def shutdown(self) -> None:
         self._watch_stop.set()
+        watch = self._watch
+        if watch is not None and watch.is_alive() and watch is not threading.current_thread():
+            watch.join(timeout=2.0)
+        self._watch = None
         self.provider.unload_model()
         self._pool.shutdown(wait=False, cancel_futures=True)
 

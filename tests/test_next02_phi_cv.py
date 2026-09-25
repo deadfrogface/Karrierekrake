@@ -269,7 +269,7 @@ def test_settings_defaults_phi_only():
     s = SettingsConfig()
     assert s.guenther_model == "phi4-mini"
     assert s.guenther_heuristic_fallback is False
-    assert s.guenther_enabled is False
+    assert s.guenther_enabled is True
 
 
 def test_private_cvs_gitignore():

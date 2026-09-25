@@ -83,29 +83,29 @@ def process_parsed_email(
         from guenther.service import get_guenther_service
 
         cfg = load_config()
-        if getattr(cfg.settings, "guenther_enabled", False):
-            g = get_guenther_service(
-                enabled=True,
-                model="phi4-mini",
-            )
-            env = g.suggest_email_class(
-                payload.get("subject") or "",
-                payload.get("body_text") or "",
-                deterministic_category=classification.category,
-                deterministic_false_rejection_blocked=classification.false_rejection_blocked,
-            )
-            if env.ok and env.validated:
-                guenther_meta = {
-                    "category": env.suggestion.get("category"),
-                    "confidence": env.suggestion.get("confidence"),
-                    "safety_notes": env.safety_notes,
-                    "model_id": env.model_id,
-                }
-                if (
-                    classification.false_rejection_blocked
-                    or env.suggestion.get("false_rejection_risk")
-                ):
-                    guenther_meta["status_write_blocked"] = True
+        # Günther writing assist is always on; get_guenther_service still no-ops if model missing.
+        g = get_guenther_service(
+            enabled=True,
+            model="phi4-mini",
+        )
+        env = g.suggest_email_class(
+            payload.get("subject") or "",
+            payload.get("body_text") or "",
+            deterministic_category=classification.category,
+            deterministic_false_rejection_blocked=classification.false_rejection_blocked,
+        )
+        if env.ok and env.validated:
+            guenther_meta = {
+                "category": env.suggestion.get("category"),
+                "confidence": env.suggestion.get("confidence"),
+                "safety_notes": env.safety_notes,
+                "model_id": env.model_id,
+            }
+            if (
+                classification.false_rejection_blocked
+                or env.suggestion.get("false_rejection_risk")
+            ):
+                guenther_meta["status_write_blocked"] = True
     except Exception:
         logger.debug("guenther email assist skipped", exc_info=False)
 

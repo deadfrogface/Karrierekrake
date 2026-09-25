@@ -94,11 +94,23 @@ class IndeedSource(JobSource):
                     is_remote=query.location.lower() == "remote",
                     distance=int(query.radius_km) if query.radius_km else None,
                 )
+                extra = dict(query.extra or {})
+                hours_old = extra.get("hours_old")
+                if hours_old is None and getattr(query, "published_within_days", 0):
+                    hours_old = max(24, int(query.published_within_days) * 24)
+                if hours_old:
+                    kwargs["hours_old"] = int(hours_old)
+                if "linkedin_fetch_description" in extra:
+                    kwargs["linkedin_fetch_description"] = bool(
+                        extra["linkedin_fetch_description"]
+                    )
                 try:
                     df = scrape_jobs(**kwargs)
                 except TypeError:
                     # Older/newer jobspy builds differ slightly in kwargs
                     kwargs.pop("distance", None)
+                    kwargs.pop("hours_old", None)
+                    kwargs.pop("linkedin_fetch_description", None)
                     df = scrape_jobs(**kwargs)
             except Exception as exc:
                 logger.error("Indeed JobSpy error for '%s': %s", query.keyword, exc)

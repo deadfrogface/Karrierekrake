@@ -469,7 +469,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.disconnect_selected": "Gewählte Verbindung trennen",
         "integrations.wrong_mail_provider": "Bitte zuerst den passenden E-Mail-Anbieter wählen.",
         "integrations.wrong_calendar_provider": "Bitte zuerst den passenden Kalender-Anbieter wählen.",
-        "integrations.microsoft_client_missing": "Microsoft-Client-ID fehlt in den Einstellungen.",
+        "integrations.microsoft_client_missing": (
+            "Microsoft-Client-ID fehlt. Setze microsoft_client_id in den Einstellungen "
+            "oder die Umgebungsvariable KARRIEREKRAKE_MS_CLIENT_ID "
+            "(Azure-App-Registrierung, öffentlicher Client / PKCE)."
+        ),
         "integrations.microsoft_browser_opened": "Systembrowser geöffnet — Anmeldung dort abschließen.",
         "integrations.probe_failed": "Anmeldung speicherte ein Token, aber die API-Probe schlug fehl. Nicht als verbunden markiert.",
         "privacy.connect_gmail": "Gmail verbinden (nur Lesen)",
@@ -483,10 +487,77 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "(nur Verfügbarkeit bzw. Verfügbarkeit + Termine) ab."
         ),
         "privacy.connect_ok": "Google-Verbindung hergestellt.",
-        "privacy.connect_failed": "Google-Verbindung fehlgeschlagen oder abgebrochen.",
+        "privacy.connect_failed": (
+            "Google-Verbindung fehlgeschlagen. Prüfe Clientdatei, Netzwerk und "
+            "versuche es erneut — oder brich bewusst ab und überspringe."
+        ),
+        "privacy.connect_cancelled": (
+            "Anmeldung abgebrochen. Es wurde nichts verbunden — "
+            "du kannst es jederzeit erneut versuchen."
+        ),
+        "privacy.connect_missing_client": (
+            "Google-Clientdatei fehlt. Lege die Desktop-OAuth-Datei unter "
+            "private/gmail_credentials.json ab (Google Cloud Console → "
+            "OAuth-Client Typ Desktop). Dann erneut verbinden."
+        ),
+        "privacy.connect_libs_missing": (
+            "Google-Bibliotheken fehlen in dieser Installation."
+        ),
+        "privacy.connect_production_not_ready": (
+            "Google-OAuth ist für Produktion noch nicht freigegeben "
+            "(Datenschutz-/Homepage-URL oder Verifizierung). "
+            "Einrichtungsschritt: OAuth-Consent in der Google Cloud Console vervollständigen."
+        ),
+        "privacy.connect_client_config": (
+            "Google-Clientkonfiguration ungültig (Redirect/Port). "
+            "Prüfe den Desktop-OAuth-Client und GMAIL_OAUTH_PORT."
+        ),
+        "privacy.connect_keyring": (
+            "Tokens konnten nicht sicher gespeichert werden (System-Schlüsselbund). "
+            "Schlüsselbund freigeben und erneut verbinden."
+        ),
+        "privacy.connect_revoked": (
+            "Die gespeicherte Google-Anmeldung wurde widerrufen oder ist abgelaufen. "
+            "Bitte erneut verbinden."
+        ),
+        "privacy.connect_probe_failed": (
+            "Anmeldung möglich, aber die Google-API antwortete nicht. "
+            "Netzwerk prüfen und erneut versuchen."
+        ),
         "privacy.connect_partial": (
             "Teilweise Zustimmung: nicht alle angeforderten Rechte wurden gewährt. "
             "Betroffene Funktionen bleiben deaktiviert."
+        ),
+        "privacy.connect_ms_cancelled": (
+            "Microsoft-Anmeldung abgebrochen. Es wurde nichts verbunden."
+        ),
+        "privacy.connect_ms_failed": "Microsoft-Verbindung fehlgeschlagen ({detail}).",
+        "wizard.step_integrations_title": "3 · Mail & Kalender (optional)",
+        "wizard.step_integrations_body": (
+            "Optional: Postfach und Kalender verbinden. Du kannst diesen Schritt "
+            "überspringen und später unter Einstellungen → Integrationen nachholen."
+        ),
+        "wizard.integrations_skip": "Ohne Verbindung weiter",
+        "wizard.integrations_google": "Google",
+        "wizard.integrations_gmail": "Gmail (nur Lesen)",
+        "wizard.integrations_gcal": "Google-Kalender",
+        "wizard.integrations_both": "Gmail und Kalender",
+        "wizard.integrations_microsoft_mail": "Microsoft-Mail",
+        "wizard.integrations_microsoft_cal": "Microsoft-Kalender",
+        "wizard.integrations_connect": "Gewähltes verbinden…",
+        "wizard.integrations_status_idle": "Noch nicht verbunden — überspringen ist in Ordnung.",
+        "wizard.integrations_status_ok": "Verbunden.",
+        "wizard.integrations_status_failed": (
+            "Verbindung nicht hergestellt (kein erfolgreicher Login gespeichert)."
+        ),
+        "wizard.reopen": "Einrichtungsassistent erneut öffnen",
+        "settings.source_company_sites_hint": (
+            "Unternehmensseiten: kuratierte öffentliche Karriereportale "
+            "(Greenhouse-/Lever-Boards). Keine erfundenen Treffer."
+        ),
+        "settings.source_linkedin_hint": (
+            "LinkedIn: begrenzte Gäste-Suche. Timeouts werden angezeigt — "
+            "keine Zugangsumgehung."
         ),
         "privacy.delete_mail": "Mail-Cache löschen",
         "privacy.delete_calendar": "Kalender-Cache löschen",
@@ -582,7 +653,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.email_draft_only": "Arbeitgeber-Mails nur als Entwurf (Standard)",
         "settings.allow_employer_email_send": "Echten Versand freigeben (nur mit Freigabe pro Mail)",
         "settings.guenther": "Günther die Krake",
-        "settings.guenther_enabled": "Günther einschalten (nur lokal auf diesem PC)",
+        "settings.guenther_enabled": "Günther (immer aktiv, nur lokal)",
         "settings.guenther_model": "Modell",
         "settings.guenther_model.phi_only": "Phi-4-mini (einziges Produktionsmodell)",
         "settings.guenther_model.auto": "Automatisch (Phi empfohlen)",
@@ -592,13 +663,27 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther_model.standard": "Entfernt — kein Legacy-Qwen",
         "settings.guenther_model.alt": "Empfohlen — Phi-4-mini",
         "settings.guenther_hint": (
-            "Günther nutzt lokales Phi-4-mini nur für Schreibhilfe "
+            "Günther ist immer aktiv und nutzt lokales Phi-4-mini nur für Schreibhilfe "
             "(Anschreiben, E-Mails, Motivationstexte). "
-            "CV-Import ist rein deterministisch und lädt kein Modell. "
-            "Fehlt das Writer-Modell: GUENTHER_UNAVAILABLE — kein Heuristik-Ersatz. "
-            "Günther schlägt vor — Karrierekrake entscheidet."
+            "Fehlt das Writer-Modell: Schreibhilfe nicht verfügbar "
+            "(kein Heuristik-Ersatz). Günther schlägt vor — Karrierekrake entscheidet."
         ),
-        "settings.local_llm_cv_parsing": "Lokales LLM-CV-Parsing auf diesem PC erlauben",
+        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
+        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
+        "settings.guenther_writer_unavailable": (
+            "Schreibhilfe: Modell fehlt — Günther nicht nutzbar (kein stiller Ersatz)."
+        ),
+        "settings.cv_import_path_title": "CV-Import (Produktion)",
+        "settings.cv_import_path_body": (
+            "Lebensläufe werden mit Docpick + lokalem Qwen3.5-4B gelesen. "
+            "Kein stiller Wechsel auf den alten DET-Parser."
+        ),
+        "settings.cv_import_status_ready": "CV-Import: bereit (Docpick + Qwen3.5-4B)",
+        "settings.cv_import_status_unavailable": (
+            "CV-Import: Qwen-Modell oder lokaler LLM-Dienst nicht erreichbar — "
+            "Import schlägt klar fehl (kein DET-Fallback)."
+        ),
+        "settings.local_llm_cv_parsing": "Lokales LLM-CV-Parsing (Diagnose-Schalter)",
         "settings.local_llm_cv_kill": (
             "wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; "
             "der manuelle Profilimport bleibt möglich."
@@ -609,11 +694,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Phi-Fallback und kein neues Modell in diesem Schritt."
         ),
         "settings.local_llm_cv_disabled_hint": (
-            "Das lokale LLM-CV-Parsing ist derzeit deaktiviert. "
-            "Lebensläufe werden mit dem Standard-Parser gelesen."
+            "Der Produktions-CV-Import nutzt Docpick + Qwen3.5-4B. "
+            "Dieser Schalter steuert nur einen separaten Diagnose-/Benchmark-Pfad "
+            "und ist hier deaktiviert."
         ),
         "settings.local_llm_cv_unavailable": (
-            "Erst verfügbar, wenn der Speichertest auf dem Zielgerät bestanden ist."
+            "Diagnose-Schalter nur über Umgebungsvariable "
+            "KARRIEREKRAKE_LOCAL_LLM_CV_PARSING — nicht über die Oberfläche."
         ),
         "guenther.validator.unsupported_credential": (
             "Eine behauptete Qualifikation ist im Profil nicht belegt."
@@ -684,7 +771,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.source_parser": "Parser-Fehler",
         "settings.source_network": "Netzwerkfehler",
         "settings.source_rate": "Rate-Limit",
-        "settings.source_placeholder": "Placeholder (absichtlich leer)",
+        "settings.source_placeholder": "Nicht verfügbar (kein Abruf)",
         "settings.source_cancelled": "Abgebrochen",
         "settings.source_error": "Fehler",
         "settings.source_login": "Login erforderlich",
@@ -858,7 +945,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "wizard.step_cv_skip": "Ohne Lebenslauf weiter — Angaben können Sie später im Profil ergänzen.",
         "wizard.step_prefs_title": "2 · Sucheinstellungen",
         "wizard.step_prefs_body": "Wunschberufe und Standort festlegen. Remote-Jobs in Deutschland können erlaubt werden.",
-        "wizard.step_ready_title": "Wie soll Karrierekrake arbeiten?",
+        "wizard.step_ready_title": "4 · Wie soll Karrierekrake arbeiten?",
         "wizard.step_ready_body": (
             "Wähle deinen Modus für den ersten Start. Du kannst dies später jederzeit "
             "in den Einstellungen ändern. Dry Run bleibt an — kein stiller Versand."
@@ -1432,7 +1519,11 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "integrations.disconnect_selected": "Disconnect selected",
         "integrations.wrong_mail_provider": "Select the matching email provider first.",
         "integrations.wrong_calendar_provider": "Select the matching calendar provider first.",
-        "integrations.microsoft_client_missing": "Microsoft client ID is missing in settings.",
+        "integrations.microsoft_client_missing": (
+            "Microsoft client ID is missing. Set microsoft_client_id in settings "
+            "or env KARRIEREKRAKE_MS_CLIENT_ID "
+            "(Azure app registration, public client / PKCE)."
+        ),
         "integrations.microsoft_browser_opened": "System browser opened — finish sign-in there.",
         "integrations.probe_failed": "Sign-in stored a token but the API probe failed. Not marked connected.",
         "privacy.connect_gmail": "Connect Gmail (read-only)",
@@ -1446,10 +1537,71 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "(availability only, or availability + write events)."
         ),
         "privacy.connect_ok": "Google account connected.",
-        "privacy.connect_failed": "Google connect failed or was cancelled.",
+        "privacy.connect_failed": (
+            "Google connection failed. Check the client file and network, then retry — "
+            "or cancel and skip."
+        ),
+        "privacy.connect_cancelled": (
+            "Sign-in cancelled. Nothing was connected — you can try again anytime."
+        ),
+        "privacy.connect_missing_client": (
+            "Google client file missing. Place the Desktop OAuth file at "
+            "private/gmail_credentials.json (Google Cloud Console → Desktop client), "
+            "then connect again."
+        ),
+        "privacy.connect_libs_missing": "Google libraries are missing in this install.",
+        "privacy.connect_production_not_ready": (
+            "Google OAuth is not production-ready yet (privacy/homepage URL or verification). "
+            "Complete the OAuth consent screen in Google Cloud Console."
+        ),
+        "privacy.connect_client_config": (
+            "Invalid Google client configuration (redirect/port). "
+            "Check the Desktop OAuth client and GMAIL_OAUTH_PORT."
+        ),
+        "privacy.connect_keyring": (
+            "Tokens could not be stored securely (OS keyring). "
+            "Unlock the keyring and connect again."
+        ),
+        "privacy.connect_revoked": (
+            "The saved Google sign-in was revoked or expired. Please connect again."
+        ),
+        "privacy.connect_probe_failed": (
+            "Sign-in possible, but the Google API did not respond. "
+            "Check the network and try again."
+        ),
         "privacy.connect_partial": (
             "Partial consent: not all requested permissions were granted. "
             "Related features stay disabled."
+        ),
+        "privacy.connect_ms_cancelled": (
+            "Microsoft sign-in cancelled. Nothing was connected."
+        ),
+        "privacy.connect_ms_failed": "Microsoft connection failed ({detail}).",
+        "wizard.step_integrations_title": "3 · Mail & calendar (optional)",
+        "wizard.step_integrations_body": (
+            "Optional: connect mailbox and calendar. You can skip and finish later "
+            "under Settings → Integrations."
+        ),
+        "wizard.integrations_skip": "Continue without connecting",
+        "wizard.integrations_google": "Google",
+        "wizard.integrations_gmail": "Gmail (read-only)",
+        "wizard.integrations_gcal": "Google Calendar",
+        "wizard.integrations_both": "Gmail and Calendar",
+        "wizard.integrations_microsoft_mail": "Microsoft Mail",
+        "wizard.integrations_microsoft_cal": "Microsoft Calendar",
+        "wizard.integrations_connect": "Connect selected…",
+        "wizard.integrations_status_idle": "Not connected yet — skipping is fine.",
+        "wizard.integrations_status_ok": "Connected.",
+        "wizard.integrations_status_failed": (
+            "Connection not established (no successful login stored)."
+        ),
+        "wizard.reopen": "Open setup wizard again",
+        "settings.source_company_sites_hint": (
+            "Company sites: curated public career boards (Greenhouse/Lever). "
+            "No invented hits."
+        ),
+        "settings.source_linkedin_hint": (
+            "LinkedIn: limited guest search. Timeouts are shown — no access bypass."
         ),
         "privacy.delete_mail": "Delete mail cache",
         "privacy.delete_calendar": "Delete calendar cache",
@@ -1545,7 +1697,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.email_draft_only": "Employer email draft-only (default)",
         "settings.allow_employer_email_send": "Allow real send (still requires per-mail approval)",
         "settings.guenther": "Günther die Krake",
-        "settings.guenther_enabled": "Enable Günther (local on this PC only)",
+        "settings.guenther_enabled": "Günther (always on, local only)",
         "settings.guenther_model": "Model",
         "settings.guenther_model.phi_only": "Phi-4-mini (sole production model)",
         "settings.guenther_model.auto": "Automatic (Phi recommended)",
@@ -1555,13 +1707,27 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther_model.standard": "Removed — no legacy Qwen",
         "settings.guenther_model.alt": "Recommended — Phi-4-mini",
         "settings.guenther_hint": (
-            "Günther uses local Phi-4-mini only for writing assistance "
+            "Günther is always on and uses local Phi-4-mini only for writing assistance "
             "(cover letters, emails, motivation texts). "
-            "CV import is fully deterministic and does not load a model. "
-            "If the writer model is missing: GUENTHER_UNAVAILABLE — no heuristic substitute. "
-            "Günther suggests — Karrierekrake decides."
+            "If the writer model is missing: writing help unavailable "
+            "(no heuristic substitute). Günther suggests — Karrierekrake decides."
         ),
-        "settings.local_llm_cv_parsing": "Allow local LLM CV parsing on this PC",
+        "settings.guenther_writer_status_on": "Writing help: active (Phi-4-mini local)",
+        "settings.guenther_writer_status_off": "Writing help: active (Phi-4-mini local)",
+        "settings.guenther_writer_unavailable": (
+            "Writing help: model missing — Günther unavailable (no silent substitute)."
+        ),
+        "settings.cv_import_path_title": "CV import (production)",
+        "settings.cv_import_path_body": (
+            "CVs are read with Docpick + local Qwen3.5-4B. "
+            "No silent fallback to the old DET parser."
+        ),
+        "settings.cv_import_status_ready": "CV import: ready (Docpick + Qwen3.5-4B)",
+        "settings.cv_import_status_unavailable": (
+            "CV import: Qwen model or local LLM service unreachable — "
+            "import fails clearly (no DET fallback)."
+        ),
+        "settings.local_llm_cv_parsing": "Local LLM CV parsing (diagnostic switch)",
         "settings.local_llm_cv_kill": (
             "Local LLM CV parsing is removed on this hardware; "
             "manual profile import remains available."
@@ -1572,11 +1738,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "no new model in this step."
         ),
         "settings.local_llm_cv_disabled_hint": (
-            "Local LLM CV parsing is currently disabled. "
-            "CVs are read with the standard parser."
+            "Production CV import uses Docpick + Qwen3.5-4B. "
+            "This switch only controls a separate diagnostic/benchmark path "
+            "and is disabled here."
         ),
         "settings.local_llm_cv_unavailable": (
-            "Available only after the memory test on the target device has passed."
+            "Diagnostic switch only via env "
+            "KARRIEREKRAKE_LOCAL_LLM_CV_PARSING — not via the UI."
         ),
         "guenther.validator.unsupported_credential": (
             "A claimed qualification is not supported by the profile."
@@ -1647,7 +1815,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.source_parser": "Parser error",
         "settings.source_network": "Network error",
         "settings.source_rate": "Rate limited",
-        "settings.source_placeholder": "Placeholder (intentionally empty)",
+        "settings.source_placeholder": "Unavailable (no fetch)",
         "settings.source_cancelled": "Cancelled",
         "settings.source_error": "Error",
         "settings.source_login": "Login required",
@@ -1821,7 +1989,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "wizard.step_cv_skip": "Continue without a CV — add details later under Profile.",
         "wizard.step_prefs_title": "2 · Search preferences",
         "wizard.step_prefs_body": "Set desired roles and location. Fully remote jobs in Germany can be allowed.",
-        "wizard.step_ready_title": "How should Karrierekrake work?",
+        "wizard.step_ready_title": "4 · How should Karrierekrake work?",
         "wizard.step_ready_body": (
             "Choose your first-run mode. You can change this anytime in Settings. "
             "Dry-run stays on — nothing is sent silently."

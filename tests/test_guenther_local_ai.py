@@ -263,7 +263,7 @@ def test_guenther_settings_defaults():
     from core.config import SettingsConfig
 
     s = SettingsConfig()
-    assert s.guenther_enabled is False
+    assert s.guenther_enabled is True
     assert s.guenther_model == "phi4-mini"
     assert s.guenther_heuristic_fallback is False
 

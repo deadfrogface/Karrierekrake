@@ -57,6 +57,4 @@ class SourceHealthStatus(str, Enum):
         if jobs_found > 0:
             return cls.OK_WITH_RESULTS
         # Empty is not the same as healthy-with-results — report explicitly.
-        if source_id in {"company_sites"}:
-            return cls.PLACEHOLDER
         return cls.OK_EMPTY

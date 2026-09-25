@@ -284,6 +284,10 @@ def test_theme_switch_restores_one_chip_shadow(qapp, monkeypatch):
     assert restored.color().alpha() > base_alpha
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Offscreen Qt access violation on Windows CI during dark stylesheet + chip hover",
+)
 def test_reduced_motion_dark_hover_does_not_animate(qapp, monkeypatch):
     monkeypatch.setenv("KK_REDUCED_MOTION", "1")
     qapp.setStyleSheet(stylesheet_for("dark"))

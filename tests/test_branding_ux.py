@@ -78,7 +78,7 @@ def test_new_i18n_keys_present_both_languages():
     assert TRANSLATIONS["en"]["app.name"] == "Karrierekrake"
 
 
-def test_wizard_has_three_pages(tmp_path, monkeypatch):
+def test_wizard_has_four_pages(tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.setenv("QT_QPA_PLATFORM", "offscreen")
     from PySide6.QtWidgets import QApplication
@@ -87,7 +87,8 @@ def test_wizard_has_three_pages(tmp_path, monkeypatch):
 
     app = QApplication.instance() or QApplication([])
     wiz = FirstRunWizard(ConfigService())
-    assert len(wiz.pageIds()) == 3
+    assert len(wiz.pageIds()) == 4
+    assert hasattr(wiz, "integrations")
     wiz.close()
     _ = app
 

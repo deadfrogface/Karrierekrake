@@ -276,7 +276,7 @@ def run_pipeline(
         progress(msg)
         run.warning(msg) if hasattr(run, "warning") else run.info(msg)
         for source in sources:
-            placeholder = source.source_id == "company_sites"
+            placeholder = False
             status = SourceHealthStatus.PLACEHOLDER if placeholder else SourceHealthStatus.EMPTY_QUERY
             note = "Nicht ausgeführt — leere Suchanfrage (Konfiguration)."
             db.set_source_status(source.source_id, status.value, note, 0)
@@ -305,7 +305,8 @@ def run_pipeline(
             progress("Abgebrochen.")
             break
         progress(f"Phase Suche · Quelle {source.source_id}…")
-        placeholder = source.source_id == "company_sites"
+        # company_sites is a real curated board fetch — not a placeholder.
+        placeholder = False
         jobs, err, detail = _search_source_with_timeout(
             source, queries, should_stop=stopped
         )

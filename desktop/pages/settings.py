@@ -368,23 +368,42 @@ class SettingsPage(QWidget):
         guenther_box = QGroupBox()
         self.guenther_box = guenther_box
         gform = QFormLayout(guenther_box)
-        self.guenther_enabled = QCheckBox()
         self.guenther_model_fixed = QLabel("Phi-4-mini (einziges Produktionsmodell)")
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
+        self.guenther_hint.setObjectName("KkHint")
         self.lbl_guenther_model = QLabel()
+        self.guenther_writer_status = QLabel()
+        self.guenther_writer_status.setWordWrap(True)
+        self.guenther_writer_status.setObjectName("PageSubtitle")
+        self.cv_import_title = QLabel()
+        self.cv_import_title.setObjectName("NextActionTitle")
+        self.cv_import_body = QLabel()
+        self.cv_import_body.setWordWrap(True)
+        self.cv_import_body.setObjectName("KkHint")
+        self.cv_import_status = QLabel()
+        self.cv_import_status.setWordWrap(True)
+        self.cv_import_status.setObjectName("PageSubtitle")
         self.local_llm_cv_parsing = QCheckBox()
         self.local_llm_cv_parsing.setEnabled(False)
         self.local_llm_cv_parsing.setChecked(False)
         self.local_llm_cv_parsing.setAttribute(Qt.WidgetAttribute.WA_AlwaysShowToolTips, True)
         self.local_llm_cv_hint = QLabel()
         self.local_llm_cv_hint.setWordWrap(True)
+        self.local_llm_cv_hint.setObjectName("KkHint")
         self.local_llm_cv_parsing.toggled.connect(self._sync_local_llm_cv_hint)
-        gform.addRow(self.guenther_enabled)
+        self.wizard_reopen_btn = QPushButton()
+        self.wizard_reopen_btn.setObjectName("SecondaryButton")
+        self.wizard_reopen_btn.clicked.connect(self._reopen_setup_wizard)
         gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
+        gform.addRow(self.guenther_writer_status)
         gform.addRow(self.guenther_hint)
+        gform.addRow(self.cv_import_title)
+        gform.addRow(self.cv_import_body)
+        gform.addRow(self.cv_import_status)
         gform.addRow(self.local_llm_cv_parsing)
         gform.addRow(self.local_llm_cv_hint)
+        gform.addRow(self.wizard_reopen_btn)
         integ_layout.addWidget(guenther_box)
         integ_layout.addStretch(1)
         self.stack.addWidget(integ_page)
@@ -712,14 +731,19 @@ class SettingsPage(QWidget):
             self.allow_employer_email_send.setText(tr("settings.allow_employer_email_send"))
         if hasattr(self, "guenther_box"):
             self.guenther_box.setTitle(tr("settings.guenther"))
-            self.guenther_enabled.setText(tr("settings.guenther_enabled"))
             self.lbl_guenther_model.setText(tr("settings.guenther_model"))
             self.guenther_hint.setText(tr("settings.guenther_hint"))
             if hasattr(self, "guenther_model_fixed"):
                 self.guenther_model_fixed.setText(tr("settings.guenther_model.phi_only"))
+            if hasattr(self, "cv_import_title"):
+                self.cv_import_title.setText(tr("settings.cv_import_path_title"))
+                self.cv_import_body.setText(tr("settings.cv_import_path_body"))
+            if hasattr(self, "wizard_reopen_btn"):
+                self.wizard_reopen_btn.setText(tr("wizard.reopen"))
             if hasattr(self, "local_llm_cv_parsing"):
                 self.local_llm_cv_parsing.setText(tr("settings.local_llm_cv_parsing"))
                 self._sync_local_llm_cv_hint()
+            self._refresh_guenther_status_labels()
         self.run_auto.setText(tr("settings.run_auto"))
         self.lbl_schedule.setText(tr("settings.schedule"))
         self.lbl_interval.setText(tr("settings.interval"))
@@ -761,6 +785,45 @@ class SettingsPage(QWidget):
         self.local_llm_cv_parsing.setChecked(False)
         self.local_llm_cv_parsing.setToolTip(tr("settings.local_llm_cv_unavailable"))
         self.local_llm_cv_hint.setText(tr("settings.local_llm_cv_disabled_hint"))
+
+    def _refresh_guenther_status_labels(self) -> None:
+        if not hasattr(self, "guenther_writer_status"):
+            return
+        # Günther is always on — no user toggle. Status only reflects model readiness.
+        writer_ok = False
+        try:
+            from guenther.model_manager import PRODUCTION_MODEL_ID, ModelManager
+
+            writer_ok = ModelManager().is_installed(PRODUCTION_MODEL_ID)
+        except Exception:
+            writer_ok = False
+        if writer_ok:
+            self.guenther_writer_status.setText(tr("settings.guenther_writer_status_on"))
+        else:
+            self.guenther_writer_status.setText(tr("settings.guenther_writer_unavailable"))
+        cv_ok = False
+        try:
+            from core.cv_docpick_import import DEFAULT_MODEL
+
+            cv_ok = Path(DEFAULT_MODEL).is_file()
+        except Exception:
+            cv_ok = False
+        if hasattr(self, "cv_import_status"):
+            self.cv_import_status.setText(
+                tr("settings.cv_import_status_ready")
+                if cv_ok
+                else tr("settings.cv_import_status_unavailable")
+            )
+
+    def _reopen_setup_wizard(self) -> None:
+        from desktop.wizard import FirstRunWizard
+
+        wizard = FirstRunWizard(self.config_service, self, force=True)
+        if wizard.exec():
+            self.load_from_config()
+            parent = self.window()
+            if parent is not None and hasattr(parent, "refresh_all"):
+                parent.refresh_all()  # type: ignore[attr-defined]
 
     def _open_diagnose_logs(self) -> None:
         parent = self.window()
@@ -843,8 +906,8 @@ class SettingsPage(QWidget):
             self.allow_employer_email_send.setChecked(
                 bool(getattr(s, "allow_employer_email_send", False))
             )
-        if hasattr(self, "guenther_enabled"):
-            self.guenther_enabled.setChecked(bool(getattr(s, "guenther_enabled", False)))
+        if hasattr(self, "guenther_box"):
+            self._refresh_guenther_status_labels()
         if hasattr(self, "local_llm_cv_parsing"):
             self.local_llm_cv_parsing.setEnabled(False)
             self.local_llm_cv_parsing.setChecked(False)
@@ -952,10 +1015,10 @@ class SettingsPage(QWidget):
             cfg.settings.followup_reminders_enabled = self.followup_reminders_enabled.isChecked()
             cfg.settings.email_draft_only = self.email_draft_only.isChecked()
             cfg.settings.allow_employer_email_send = self.allow_employer_email_send.isChecked()
-        if hasattr(self, "guenther_enabled"):
-            cfg.settings.guenther_enabled = self.guenther_enabled.isChecked()
-            cfg.settings.guenther_model = "phi4-mini"
-            cfg.settings.guenther_heuristic_fallback = False
+        # Günther is always enabled — no UI toggle; persist True for callers/tests.
+        cfg.settings.guenther_enabled = True
+        cfg.settings.guenther_model = "phi4-mini"
+        cfg.settings.guenther_heuristic_fallback = False
         if hasattr(self, "mail_provider"):
             cfg.settings.mail_provider = str(self.mail_provider.currentData() or "none")
             cfg.settings.calendar_provider = str(
@@ -1123,6 +1186,8 @@ class SettingsPage(QWidget):
             homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
             oauth_env=getattr(settings, "oauth_environment", None),
         )
+        from desktop.oauth_messages import message_for_google_outcome
+
         if outcome.service is not None and not outcome.denied_features:
             app_cfg.settings.mail_provider = "google_gmail"
             self.config_service.save(app_cfg)
@@ -1130,7 +1195,8 @@ class SettingsPage(QWidget):
         elif outcome.credentials is not None and outcome.denied_features:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
         else:
-            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_failed"))
+            QMessageBox.warning(self, tr("privacy.tab"), message_for_google_outcome(outcome))
+        self._refresh_provider_status(self.config_service.load().settings)
 
     def _update_calendar_mode_rights(self) -> None:
         mode = str(self.calendar_google_mode.currentData() or "A").upper()
@@ -1187,7 +1253,10 @@ class SettingsPage(QWidget):
         elif outcome.credentials is not None and outcome.denied_features:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
         else:
-            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_failed"))
+            from desktop.oauth_messages import message_for_google_outcome
+
+            QMessageBox.warning(self, tr("privacy.tab"), message_for_google_outcome(outcome))
+        self._refresh_provider_status(self.config_service.load().settings)
 
     def _connect_microsoft_mail(self) -> None:
         if str(self.mail_provider.currentData() or "") != "microsoft_graph":
@@ -1241,10 +1310,12 @@ class SettingsPage(QWidget):
             self.config_service.save(app_cfg)
             QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
         except Exception as exc:  # noqa: BLE001
+            from desktop.oauth_messages import message_for_microsoft_error
+
             QMessageBox.warning(
                 self,
                 tr("privacy.tab"),
-                f"{tr('privacy.connect_failed')}\n{type(exc).__name__}",
+                message_for_microsoft_error(exc),
             )
 
     def _connect_microsoft_calendar(self) -> None:
@@ -1302,10 +1373,12 @@ class SettingsPage(QWidget):
             self.config_service.save(app_cfg)
             QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
         except Exception as exc:  # noqa: BLE001
+            from desktop.oauth_messages import message_for_microsoft_error
+
             QMessageBox.warning(
                 self,
                 tr("privacy.tab"),
-                f"{tr('privacy.connect_failed')}\n{type(exc).__name__}",
+                message_for_microsoft_error(exc),
             )
 
     def _privacy_disconnect_selected(self) -> None:

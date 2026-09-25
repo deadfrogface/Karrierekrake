@@ -28,10 +28,11 @@ def test_default_health_check_ok():
     assert msg == "ok"
 
 
-def test_company_sites_health_check_placeholder():
+def test_company_sites_health_check_curated():
     ok, msg = CompanySitesSource().health_check()
     assert ok is True
-    assert "placeholder" in msg
+    assert "placeholder" not in msg.lower()
+    assert "greenhouse" in msg.lower() or "lever" in msg.lower() or "kuratierte" in msg.lower()
 
 
 def test_indeed_normalize_maps_row():
