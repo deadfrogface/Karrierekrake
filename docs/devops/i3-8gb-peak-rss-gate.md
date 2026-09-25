@@ -45,7 +45,7 @@ Es gibt keinen automatischen Phi-Fallback.
 
 Die Einstellung `local_llm_cv_parsing_enabled` schaltet lokales LLM-CV-Parsing nicht ein, auch nicht wenn eine ältere Datei `true` enthält. In den Einstellungen bleibt die Checkbox sichtbar, nicht anklickbar und nicht angehakt. Hinweis dazu: „Erst verfügbar, wenn der Speichertest auf dem Zielgerät bestanden ist.“ Der sichtbare Satz daneben und im Importdialog lautet: „Das lokale LLM-CV-Parsing ist derzeit deaktiviert. Lebensläufe werden mit dem Standard-Parser gelesen.“ Speichern schreibt den Checkbox-Zustand nicht.
 
-Nur `KARRIEREKRAKE_LOCAL_LLM_CV_PARSING=0|1` ist der Messpfad.
+Nur `KARRIEREKRAKE_LOCAL_LLM_CV_PARSING=0|1` ist der Messpfad. Ein unbekannter Wert, zum Beispiel `ja`, gilt als aus und wird geloggt. Der Import schreibt trotzdem eine Ergebnisdatei.
 
 - Aus bzw. nicht gesetzt: kein lokales LLM-CV-Parsing. Der manuelle Profilimport und der deterministische CV-Import bleiben.
 - `=1`: erlaubt ein explizites Modellkommando im Harness bzw. den Engpass `invoke_local_llm_cv_extract`. Es wird kein Modell geladen, nur weil die Variable gesetzt ist, und es wird nicht auf Phi gewechselt.

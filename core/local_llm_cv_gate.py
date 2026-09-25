@@ -11,9 +11,12 @@ only KARRIEREKRAKE_LOCAL_LLM_CV_PARSING can.
 
 from __future__ import annotations
 
+import logging
 import os
 from dataclasses import dataclass
 from typing import Any
+
+_LOG = logging.getLogger(__name__)
 
 # Exact product sentence. Do not paraphrase in docs.
 LOCAL_LLM_CV_KILL_WORDING = (
@@ -39,7 +42,7 @@ def local_llm_cv_parsing_allowed(settings: Any | None = None) -> bool:
 
     Only ``KARRIEREKRAKE_LOCAL_LLM_CV_PARSING`` can turn this on. A persisted
     ``local_llm_cv_parsing_enabled`` value, including ``True`` from an older
-    save, is ignored.
+    save, is ignored. Unknown values fail closed (off) and are logged.
     """
     del settings
     raw = os.environ.get(_ENV_NAME)
@@ -49,9 +52,12 @@ def local_llm_cv_parsing_allowed(settings: Any | None = None) -> bool:
             return True
         if token in _OFF:
             return False
-        raise ValueError(
-            f"{_ENV_NAME} must be one of {sorted(_ON | _OFF)}, got {raw!r}"
+        _LOG.warning(
+            "%s=%r is not a known switch value; local LLM CV parsing stays off",
+            _ENV_NAME,
+            raw,
         )
+        return False
     return False
 
 

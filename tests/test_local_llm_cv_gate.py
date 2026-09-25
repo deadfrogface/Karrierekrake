@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
+import json
 
 from core.config import empty_app_config, load_config, save_config
 from core.local_llm_cv_gate import (
@@ -155,7 +155,44 @@ def test_benchmark_refuses_llm_cmd_when_switch_is_off(monkeypatch, capsys):
     assert "phi4" not in captured.lower()
 
 
-def test_unknown_env_value_is_rejected(monkeypatch):
-    monkeypatch.setenv("KARRIEREKRAKE_LOCAL_LLM_CV_PARSING", "maybe")
-    with pytest.raises(ValueError):
-        local_llm_cv_parsing_allowed(None)
+def test_unknown_env_value_fails_closed(monkeypatch, caplog):
+    monkeypatch.setenv("KARRIEREKRAKE_LOCAL_LLM_CV_PARSING", "ja")
+    with caplog.at_level("WARNING", logger="core.local_llm_cv_gate"):
+        assert local_llm_cv_parsing_allowed(None) is False
+        decision = local_llm_cv_decision(None)
+    assert decision.allowed is False
+    assert decision.fallback_model is None
+    assert "ja" in caplog.text
+
+
+def test_child_invalid_env_writes_result(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("KARRIEREKRAKE_LOCAL_LLM_CV_PARSING", "ja")
+    cv = tmp_path / "cv.txt"
+    cv.write_text("Ada Lovelace\nBerlin\n", encoding="utf-8")
+    out = tmp_path / "out.json"
+    code = run_child(["--cv", str(cv), "--out", str(out)])
+    assert code == 0
+    assert out.is_file()
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["kind"] == "ok"
+    assert payload["local_llm_cv"]["allowed"] is False
+    assert payload["parsed"]["phi_invoked"] is False
+
+
+def test_child_writes_error_result_when_decision_raises(tmp_path: Path, monkeypatch):
+    def _boom():
+        raise RuntimeError("should not leak")
+
+    monkeypatch.setattr("desktop.cv_import_child.local_llm_cv_decision", _boom)
+    cv = tmp_path / "cv.txt"
+    cv.write_text("Ada\n", encoding="utf-8")
+    out = tmp_path / "out.json"
+    code = run_child(["--cv", str(cv), "--out", str(out)])
+    assert code == 1
+    assert out.is_file()
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["ok"] is False
+    assert payload["kind"] == "error"
+    assert payload["message"] == "Der Lebenslauf konnte nicht gelesen werden."
+    assert "should not leak" not in payload["message"]
+    assert "parsed" in payload and payload["parsed"] is None

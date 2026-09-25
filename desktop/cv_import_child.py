@@ -21,10 +21,18 @@ from pathlib import Path
 
 from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING, local_llm_cv_decision
 
+_READ_FAILED = "Der Lebenslauf konnte nicht gelesen werden."
+
 
 def _write(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, default=str), encoding="utf-8")
+
+
+def _with_decision(payload: dict, decision) -> dict:
+    if decision is not None:
+        payload["local_llm_cv"] = decision.as_dict()
+    return payload
 
 
 def _split_cmd(cmd: str) -> list[str]:
@@ -42,20 +50,23 @@ def run(argv: list[str] | None = None) -> int:
 
     cv_path = Path(args.cv)
     out_path = Path(args.out)
-    decision = local_llm_cv_decision()
+    decision = None
     llm_proc: subprocess.Popen | None = None
     try:
+        decision = local_llm_cv_decision()
         if args.llm_cmd.strip():
             if not decision.allowed:
                 _write(
                     out_path,
-                    {
-                        "ok": False,
-                        "kind": "llm_disabled",
-                        "message": LOCAL_LLM_CV_KILL_WORDING,
-                        "parsed": None,
-                        "local_llm_cv": decision.as_dict(),
-                    },
+                    _with_decision(
+                        {
+                            "ok": False,
+                            "kind": "llm_disabled",
+                            "message": LOCAL_LLM_CV_KILL_WORDING,
+                            "parsed": None,
+                        },
+                        decision,
+                    ),
                 )
                 return 4
             llm_argv = _split_cmd(args.llm_cmd)
@@ -65,17 +76,19 @@ def run(argv: list[str] | None = None) -> int:
                 if llm_proc.poll() is not None:
                     _write(
                         out_path,
-                        {
-                            "ok": False,
-                            "kind": "llm_command_exited",
-                            "message": (
-                                "Das angegebene lokale Modellkommando ist vor dem Import "
-                                "beendet. Kein Phi-Fallback und kein erneuter automatischer Lauf."
-                            ),
-                            "parsed": None,
-                            "local_llm_cv": decision.as_dict(),
-                            "llm_exit": llm_proc.returncode,
-                        },
+                        _with_decision(
+                            {
+                                "ok": False,
+                                "kind": "llm_command_exited",
+                                "message": (
+                                    "Das angegebene lokale Modellkommando ist vor dem Import "
+                                    "beendet. Kein Phi-Fallback und kein erneuter automatischer Lauf."
+                                ),
+                                "parsed": None,
+                                "llm_exit": llm_proc.returncode,
+                            },
+                            decision,
+                        ),
                     )
                     return 6
                 time.sleep(0.1)
@@ -88,61 +101,71 @@ def run(argv: list[str] | None = None) -> int:
         parsed = import_cv(cv_path, guenther_enabled=False, manual_profile={})
         _write(
             out_path,
-            {
-                "ok": True,
-                "kind": "ok",
-                "message": "",
-                "parsed": parsed,
-                "local_llm_cv": decision.as_dict(),
-            },
+            _with_decision(
+                {
+                    "ok": True,
+                    "kind": "ok",
+                    "message": "",
+                    "parsed": parsed,
+                },
+                decision,
+            ),
         )
         return 0
     except MemoryError as exc:
         _write(
             out_path,
-            {
-                "ok": False,
-                "kind": "oom",
-                "message": f"MemoryError: {exc}",
-                "parsed": None,
-                "local_llm_cv": decision.as_dict(),
-            },
+            _with_decision(
+                {
+                    "ok": False,
+                    "kind": "oom",
+                    "message": f"MemoryError: {exc}",
+                    "parsed": None,
+                },
+                decision,
+            ),
         )
         return 3
     except OSError as exc:
         if getattr(exc, "errno", None) == 12:  # ENOMEM
             _write(
                 out_path,
-                {
-                    "ok": False,
-                    "kind": "oom",
-                    "message": f"ENOMEM: {exc}",
-                    "parsed": None,
-                    "local_llm_cv": decision.as_dict(),
-                },
+                _with_decision(
+                    {
+                        "ok": False,
+                        "kind": "oom",
+                        "message": f"ENOMEM: {exc}",
+                        "parsed": None,
+                    },
+                    decision,
+                ),
             )
             return 3
         _write(
             out_path,
-            {
-                "ok": False,
-                "kind": "error",
-                "message": f"{type(exc).__name__}: {exc}",
-                "parsed": None,
-                "local_llm_cv": decision.as_dict(),
-            },
+            _with_decision(
+                {
+                    "ok": False,
+                    "kind": "error",
+                    "message": _READ_FAILED,
+                    "parsed": None,
+                },
+                decision,
+            ),
         )
         return 1
-    except Exception as exc:  # noqa: BLE001 — child must report, not crash the UI
+    except Exception:  # noqa: BLE001 — child must report, not crash the UI
         _write(
             out_path,
-            {
-                "ok": False,
-                "kind": "error",
-                "message": f"{type(exc).__name__}: {exc}",
-                "parsed": None,
-                "local_llm_cv": decision.as_dict(),
-            },
+            _with_decision(
+                {
+                    "ok": False,
+                    "kind": "error",
+                    "message": _READ_FAILED,
+                    "parsed": None,
+                },
+                decision,
+            ),
         )
         return 1
     finally:
