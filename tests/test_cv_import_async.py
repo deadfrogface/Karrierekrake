@@ -14,11 +14,12 @@ import pytest
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 pytest.importorskip("PySide6.QtWidgets")
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QDialogButtonBox
 
 from core.config import ApplicationProfile, QualificationsConfig
 from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
-from desktop.i18n import i18n
+from desktop.i18n import TRANSLATIONS, i18n, tr
 from desktop.widgets.cv_import_dialog import CvImportDialog
 
 
@@ -163,8 +164,9 @@ def test_init_returns_before_spawn_starts(qapp, tmp_path: Path):
     dlg.close()
 
 
-def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_path: Path):
+def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_path: Path, monkeypatch):
     i18n.set_language("de")
+    monkeypatch.setitem(TRANSLATIONS[i18n.language], "cv_import.cancel_btn", "__cv_cancel__")
     gui = threading.get_ident()
     seen: list[int] = []
     cv = tmp_path / "cv.txt"
@@ -188,9 +190,25 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     assert _pump(qapp, lambda: bool(seen))
     assert seen[0] != gui
     assert dlg._ok_btn.isEnabled() is False
+    assert dlg._ok_btn.isVisible() is False
+    assert dlg.mode_box.isVisible() is False
+    assert dlg.status_label.text() == tr("cv_import.progress")
+    assert cv.name in dlg.path_label.text()
+    cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    assert cancel is not None
+    assert cancel.text() == "__cv_cancel__"
     assert _pump(qapp, lambda: dlg.incoming is not None)
+    assert dlg._phase == "success"
+    assert dlg._ok_btn.isVisible()
     assert dlg._ok_btn.isEnabled()
-    assert "Ada" in dlg.preview.toPlainText()
+    assert dlg._ok_btn.text() == tr("cv_import.apply")
+    assert dlg.mode_replace.text() == tr("cv_import.mode_replace")
+    assert dlg.mode_box.isVisible()
+    assert dlg.empty_box.isVisible() is False
+    assert dlg.preview.isVisible()
+    text = dlg.preview.toPlainText()
+    assert "Ada" in text
+    assert f"({tr('cv_import.none')})" in text
     assert app.city == "Hamburg"
     assert app.first_name == "Manuell"
     assert dlg.result_quals is None
@@ -199,6 +217,7 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
 
 
 def test_oom_preserves_inputs_and_does_not_auto_retry(qapp, tmp_path: Path):
+    i18n.set_language("de")
     calls: list[int] = []
     cv = tmp_path / "cv.txt"
 
@@ -223,23 +242,33 @@ def test_oom_preserves_inputs_and_does_not_auto_retry(qapp, tmp_path: Path):
     assert calls == [1]
     assert dlg.attempt_count == 1
     assert dlg._last_kind == "oom"
+    assert dlg._phase == "error"
+    assert dlg.error_text.text() == tr("cv_import.error_oom")
+    assert "MemoryError" in dlg.error_detail.text()
+    assert cv.name in dlg.path_label.text()
+    assert dlg.preview.isVisible() is False
+    assert dlg.mode_box.isVisible() is False
     assert dlg.result_quals is None
     assert dlg.result_application is None
     assert app.city == "Hamburg"
     assert dlg.mode_merge.isChecked()
     assert dlg._ok_btn.isEnabled() is False
-    assert dlg._manual_btn.isVisible()
+    assert dlg._ok_btn.isVisible() is False
+    assert dlg._choose_btn.isVisible() is False
     time.sleep(0.2)
     qapp.processEvents()
     assert calls == [1]
     dlg._retry_btn.click()
     assert _pump(qapp, lambda: dlg.attempt_count == 2 and not dlg._running)
     assert calls == [1, 1]
+    assert dlg.cv_path == cv
+    assert cv.name in dlg.path_label.text()
     dlg.close()
     qapp.processEvents()
 
 
 def test_timeout_is_manual_retry_only(qapp, tmp_path: Path):
+    i18n.set_language("de")
     calls: list[int] = []
 
     def spawn(path: Path, out: Path):
@@ -259,7 +288,12 @@ def test_timeout_is_manual_retry_only(qapp, tmp_path: Path):
     dlg.start_parse()
     assert _pump(qapp, lambda: dlg._last_kind == "timeout", timeout=3)
     assert calls == [1]
+    assert dlg._phase == "error"
+    assert dlg.error_text.text() == tr("cv_import.error_timeout")
     assert dlg._retry_btn.isVisible()
+    assert dlg._retry_btn.text() == tr("cv_import.retry")
+    assert dlg._ok_btn.isVisible() is False
+    assert "cv.txt" in dlg.path_label.text()
     assert dlg.result_application is None
     time.sleep(0.15)
     qapp.processEvents()
@@ -294,11 +328,16 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
     cancel.click()
     assert dlg.isVisible()
+    assert dlg._phase == "cancelled"
     assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
     assert dlg._cancelled_banner.isVisible()
     assert dlg._cancelled_banner.text() == "Einlesen abgebrochen. Es wurde nichts übernommen."
+    assert dlg.cancel_text.text() == tr("cv_import.cancelled")
     assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
+    assert "cv.txt" in dlg.path_label.text()
     assert dlg._ok_btn.isEnabled() is False
+    assert dlg._ok_btn.isVisible() is False
+    assert dlg._retry_btn.isVisible() is False
     assert dlg._cancel_btn.text() == i18n.t("cv_import.close")
     # A second signal in the same click must not dismiss the dialog.
     cancel.click()
@@ -313,6 +352,8 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     assert dlg.progress.isVisible() is False
     assert dlg.result_quals is None
     assert dlg.result_application is None
+    assert dlg._read_again_btn.isVisible()
+    assert dlg._read_again_btn.text() == tr("cv_import.read_again")
     assert _pump(qapp, lambda: not dlg._should_keep_open(), timeout=3)
     cancel.click()
     qapp.processEvents()
@@ -320,6 +361,7 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
 
 
 def test_read_error_has_manual_retry_cta_and_does_not_auto_start(qapp, tmp_path: Path):
+    i18n.set_language("de")
     calls: list[int] = []
 
     def spawn(path: Path, out: Path):
@@ -328,30 +370,53 @@ def test_read_error_has_manual_retry_cta_and_does_not_auto_start(qapp, tmp_path:
         return _Proc(1)
 
     app = ApplicationProfile(city="Hamburg")
-    dlg = CvImportDialog(tmp_path / "cv.txt", QualificationsConfig(), app, spawn=spawn, autostart=False)
+    cv = tmp_path / "cv.txt"
+    dlg = CvImportDialog(cv, QualificationsConfig(), app, spawn=spawn, autostart=False)
     dlg.show()
     qapp.processEvents()
     dlg.start_parse()
-    assert _pump(qapp, lambda: dlg._retry_btn.isVisible() and dlg._manual_btn.isVisible())
+    assert _pump(qapp, lambda: dlg._retry_btn.isVisible() and dlg.error_box.isVisible())
     assert calls == [1]
+    assert dlg._phase == "error"
+    assert dlg.error_text.text() == tr("cv_import.error_generic")
+    assert dlg.error_detail.text() == "broken"
+    assert dlg.error_detail.textInteractionFlags() & Qt.TextInteractionFlag.TextSelectableByMouse
+    assert dlg.preview.isVisible() is False
+    assert dlg.mode_box.isVisible() is False
+    assert cv.name in dlg.path_label.text()
     assert dlg._ok_btn.isEnabled() is False
+    assert dlg._ok_btn.isVisible() is False
     assert app.city == "Hamburg"
     time.sleep(0.15)
     qapp.processEvents()
     assert calls == [1]
+    dlg._retry_btn.click()
+    assert _pump(qapp, lambda: dlg.attempt_count == 2 and not dlg._running)
+    assert calls == [1, 1]
+    assert dlg.cv_path == cv
+    time.sleep(0.15)
+    qapp.processEvents()
+    assert calls == [1, 1]
     dlg.close()
     qapp.processEvents()
 
 
-def test_empty_detection_offers_manual_entry_without_applying(qapp, tmp_path: Path):
-    cv = tmp_path / "cv.txt"
+def _empty_parsed(path: Path) -> dict:
+    parsed = _parsed(path)
+    parsed["personal"] = {}
+    parsed["emails"] = []
+    parsed["phones"] = []
+    parsed["confidence"] = {}
+    parsed["uncertain_items"] = ["unklar, zählt nicht als Inhalt"]
+    return parsed
+
+
+def test_empty_detection_is_its_own_surface_and_close_applies_nothing(qapp, tmp_path: Path):
+    i18n.set_language("de")
+    cv = tmp_path / "leer.pdf"
 
     def spawn(path: Path, out: Path):
-        parsed = _parsed(path)
-        parsed["personal"] = {}
-        parsed["emails"] = []
-        parsed["confidence"] = {}
-        _write(out, {"ok": True, "kind": "ok", "parsed": parsed, "message": ""})
+        _write(out, {"ok": True, "kind": "ok", "parsed": _empty_parsed(path), "message": ""})
         return _Proc(0)
 
     app = ApplicationProfile(city="Hamburg", first_name="Manuell")
@@ -360,16 +425,156 @@ def test_empty_detection_offers_manual_entry_without_applying(qapp, tmp_path: Pa
     qapp.processEvents()
     dlg.start_parse()
     assert _pump(qapp, lambda: dlg._last_kind == "empty")
-    assert dlg._manual_btn.isVisible()
-    assert dlg._retry_btn.isVisible()
-    assert dlg._ok_btn.isEnabled() is False
+    assert dlg._phase == "empty"
+    assert dlg.empty_box.isVisible()
+    assert dlg.empty_title.text() == tr("cv_import.empty_title")
+    assert dlg.empty_body.text() == tr("cv_import.empty_body")
+    assert dlg._choose_btn.isVisible()
+    assert dlg._choose_btn.text() == tr("cv_import.choose_other")
+    assert dlg._retry_btn.isVisible() is False
+    assert dlg._ok_btn.isVisible() is False
+    assert dlg.preview.isVisible() is False
+    assert dlg.mode_box.isVisible() is False
+    assert cv.name in dlg.path_label.text()
     assert dlg.result_quals is None
     assert app.city == "Hamburg"
     assert app.first_name == "Manuell"
-    dlg._manual_btn.click()
+    close = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    assert close is not None
+    assert close.text() == tr("cv_import.close")
+    close.click()
     qapp.processEvents()
     assert dlg.result() == dlg.DialogCode.Rejected
+    assert dlg.isVisible() is False
     assert app.city == "Hamburg"
+    assert app.first_name == "Manuell"
+
+
+def test_empty_file_picker_cancel_keeps_the_path(qapp, tmp_path: Path):
+    cv = tmp_path / "leer.pdf"
+
+    def spawn(path: Path, out: Path):
+        _write(out, {"ok": True, "kind": "ok", "parsed": _empty_parsed(path), "message": ""})
+        return _Proc(0)
+
+    dlg = CvImportDialog(cv, QualificationsConfig(), ApplicationProfile(), spawn=spawn, autostart=False)
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._phase == "empty")
+    dlg._pick_other_file = lambda: ""  # type: ignore[method-assign]
+    dlg._choose_btn.click()
+    qapp.processEvents()
+    assert dlg._phase == "empty"
+    assert dlg.attempt_count == 1
+    assert dlg.cv_path == cv
+    assert cv.name in dlg.path_label.text()
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_empty_choose_other_file_parses_that_path_once(qapp, tmp_path: Path):
+    seen: list[str] = []
+    other = tmp_path / "andere.pdf"
+    other.write_text("x", encoding="utf-8")
+
+    def spawn(path: Path, out: Path):
+        seen.append(path.name)
+        if path.name == other.name:
+            _write(out, {"ok": True, "kind": "ok", "parsed": _parsed(path), "message": ""})
+        else:
+            _write(out, {"ok": True, "kind": "ok", "parsed": _empty_parsed(path), "message": ""})
+        return _Proc(0)
+
+    dlg = CvImportDialog(
+        tmp_path / "leer.pdf",
+        QualificationsConfig(),
+        ApplicationProfile(),
+        spawn=spawn,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._phase == "empty")
+    assert seen == ["leer.pdf"]
+    dlg._pick_other_file = lambda: str(other)  # type: ignore[method-assign]
+    dlg._choose_btn.click()
+    assert _pump(qapp, lambda: dlg._phase == "success" and dlg.attempt_count == 2)
+    assert seen == ["leer.pdf", "andere.pdf"]
+    assert dlg.cv_path == other
+    assert other.name in dlg.path_label.text()
+    time.sleep(0.15)
+    qapp.processEvents()
+    assert seen == ["leer.pdf", "andere.pdf"]
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_partial_detection_stays_in_the_preview(qapp, tmp_path: Path):
+    i18n.set_language("de")
+
+    def spawn(path: Path, out: Path):
+        parsed = _empty_parsed(path)
+        parsed["skills"] = ["Python"]
+        _write(out, {"ok": True, "kind": "ok", "parsed": parsed, "message": ""})
+        return _Proc(0)
+
+    dlg = CvImportDialog(
+        tmp_path / "teil.pdf",
+        QualificationsConfig(),
+        ApplicationProfile(),
+        spawn=spawn,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._phase == "success")
+    assert dlg.empty_box.isVisible() is False
+    assert dlg.preview.isVisible()
+    text = dlg.preview.toPlainText()
+    assert "Python" in text
+    assert f"({tr('cv_import.none')})" in text
+    assert dlg._ok_btn.isVisible()
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_cancel_read_again_starts_one_manual_run(qapp, tmp_path: Path):
+    calls: list[int] = []
+
+    def spawn(path: Path, out: Path):
+        calls.append(1)
+        if len(calls) == 1:
+            return _Proc(None)
+        _write(out, {"ok": True, "kind": "ok", "parsed": _parsed(path), "message": ""})
+        return _Proc(0)
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(),
+        spawn=spawn,
+        timeout_s=30,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._running and bool(calls))
+    cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    assert cancel is not None
+    cancel.click()
+    assert _pump(qapp, lambda: dlg._phase == "cancelled" and not dlg._running, timeout=3)
+    assert calls == [1]
+    dlg._read_again_btn.click()
+    assert _pump(qapp, lambda: dlg.attempt_count == 2 and dlg._phase == "success")
+    assert calls == [1, 1]
+    time.sleep(0.15)
+    qapp.processEvents()
+    assert calls == [1, 1]
+    dlg.close()
     qapp.processEvents()
 
 
@@ -446,7 +651,7 @@ def test_qa_observe_shows_progress_then_cancel_before_result(qapp, tmp_path: Pat
     dlg.start_parse()
     assert _pump(
         qapp,
-        lambda: dlg.progress.isVisible() and dlg._running and dlg.status_label.text() == i18n.t("cv_import.parsing"),
+        lambda: dlg.progress.isVisible() and dlg._running and dlg.status_label.text() == i18n.t("cv_import.progress"),
         timeout=2,
     )
     assert calls == []

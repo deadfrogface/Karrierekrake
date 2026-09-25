@@ -715,10 +715,18 @@ class ProfilePage(QWidget):
         )
         if dlg.exec() != dlg.DialogCode.Accepted or dlg.result_quals is None:
             return
+        # Empty/Error/Cancel never accept. A newly chosen file is copied only
+        # after Übernehmen; the previous stored CV is left in place.
+        chosen = Path(dlg.cv_path)
+        if chosen.resolve() != Path(cv_path).resolve():
+            chosen = self.config_service.copy_cv_into_storage(chosen, role="cv")
+            info = self.config_service.get_active_cv_info()
+            self.cv.cv_label.setText(info.get("label") or str(chosen))
+            cfg = self.config_service.load()
         cfg.profile.qualifications = dlg.result_quals
         if dlg.result_application is not None:
             cfg.application = dlg.result_application
-        cfg.application.cv_path = str(cv_path)
+        cfg.application.cv_path = str(chosen)
         self.config_service.save(cfg)
         self.load_from_config()
         QMessageBox.information(self, tr("profile.cv"), tr("profile.cv_updated"))
