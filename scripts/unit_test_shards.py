@@ -40,6 +40,7 @@ DEFAULT_SPLITS = 6
 DEFAULT_DURATIONS = ROOT / ".test_durations"
 PYTEST_FILTERS = [
     "--ignore=tests/test_cv_corpus.py",
+    "--ignore=tests/test_cv_sollwerte_corpus.py",
     "-m",
     "not network",
 ]
