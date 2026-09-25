@@ -14,6 +14,7 @@ import os
 import shutil
 import tempfile
 import urllib.request
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -209,9 +210,34 @@ def validate_dataset(path: Path) -> tuple[bool, str]:
     return True, "ok"
 
 
+def _validate_dataset_shape(path: Path) -> tuple[bool, str]:
+    """Structural check only. Checksums stay in seeding and updates."""
+    mf = _read_manifest(path)
+    if not mf:
+        return False, "missing manifest"
+    if not str(mf.get("version") or "").strip():
+        return False, "missing version"
+    geo = path / "geonames"
+    if not geo.is_dir():
+        return False, "missing geonames/"
+    for cc in DACH_COUNTRIES:
+        ok, msg = validate_country_file(geo / f"{cc}.txt", cc)
+        if not ok:
+            return False, msg
+    return True, "ok"
+
+
 def info_from_path(path: Path) -> GeoDatasetInfo:
+    """Full validation, including SHA-256. Used when seeding or updating."""
     mf = _read_manifest(path) or {}
     ok, msg = validate_dataset(path)
+    return _dataset_info(path, ok, msg, mf)
+
+
+def _dataset_info(
+    path: Path, ok: bool, msg: str, mf: dict[str, Any] | None = None
+) -> GeoDatasetInfo:
+    mf = mf if mf is not None else (_read_manifest(path) or {})
     return GeoDatasetInfo(
         dataset_id=str(mf.get("dataset_id") or "unknown"),
         version=str(mf.get("version") or "unknown"),
@@ -228,6 +254,68 @@ def info_from_path(path: Path) -> GeoDatasetInfo:
     )
 
 
+# One validation result per process and dataset. Key: path, manifest version,
+# mtime_ns, size. Country-file checksums are not part of a resolution.
+_validation_cache: dict[tuple[str, str, int, int], GeoDatasetInfo] = {}
+_dataset_change_hooks: list[Callable[[], None]] = []
+
+
+def register_dataset_change_hook(hook: Callable[[], None]) -> None:
+    if hook not in _dataset_change_hooks:
+        _dataset_change_hooks.append(hook)
+
+
+def invalidate_dataset_caches() -> None:
+    """Drop cached validation and notify resolvers (Nominatim index)."""
+    _validation_cache.clear()
+    for hook in _dataset_change_hooks:
+        hook()
+
+
+def _manifest_stat(path: Path) -> tuple[str, int, int] | None:
+    mf = path / "manifest.json"
+    try:
+        st = mf.stat()
+        identity = str(path.resolve())
+    except OSError:
+        return None
+    return identity, int(st.st_mtime_ns), int(st.st_size)
+
+
+def _lookup_validation_cache(path: Path) -> GeoDatasetInfo | None:
+    stat = _manifest_stat(path)
+    if stat is None:
+        return None
+    identity, mtime_ns, size = stat
+    for (path_id, _version, key_mtime, key_size), info in _validation_cache.items():
+        if (
+            path_id == identity
+            and key_mtime == mtime_ns
+            and key_size == size
+            and info.valid
+        ):
+            return info
+    return None
+
+
+def _remember_validation(info: GeoDatasetInfo) -> None:
+    if not info.valid:
+        return
+    stat = _manifest_stat(info.path)
+    if stat is None:
+        return
+    identity, mtime_ns, size = stat
+    mf = _read_manifest(info.path) or {}
+    version = str(mf.get("version") or "")
+    _validation_cache[(identity, version, mtime_ns, size)] = info
+
+
+def _info_without_checksum(path: Path) -> GeoDatasetInfo:
+    mf = _read_manifest(path) or {}
+    ok, msg = _validate_dataset_shape(path)
+    return _dataset_info(path, ok, msg, mf)
+
+
 class GeoDatasetManager:
     """Ensure a valid local DACH snapshot; optional controlled update + rollback."""
 
@@ -236,14 +324,25 @@ class GeoDatasetManager:
         self.active_root = user_geo_dir(config_root)
 
     def ensure_active(self) -> GeoDatasetInfo:
-        """Return active dataset, seeding from bundle if needed."""
+        """Return active dataset, seeding from bundle if needed.
+
+        A dataset that is already active is not checksummed again. The
+        manifest version, mtime and size identify the cached result.
+        """
+        cached = _lookup_validation_cache(self.active_root)
+        if cached is not None:
+            self._export_pgeocode_env(cached.path)
+            return cached
         active = self.active_root
         if (active / "manifest.json").is_file():
-            info = info_from_path(active)
+            info = _info_without_checksum(active)
             if info.valid:
+                _remember_validation(info)
                 self._export_pgeocode_env(active)
                 return info
-            logger.warning("active geo dataset invalid (%s) — reseeding from bundle", info.message)
+            logger.warning(
+                "active geo dataset invalid (%s) — reseeding from bundle", info.message
+            )
         return self._seed_from_bundle()
 
     def _seed_from_bundle(self) -> GeoDatasetInfo:
@@ -279,17 +378,33 @@ class GeoDatasetManager:
         if info.valid:
             self._export_pgeocode_env(self.active_root)
             shutil.rmtree(backup, ignore_errors=True)
+            invalidate_dataset_caches()
+            _remember_validation(info)
         elif backup.exists():
             shutil.rmtree(self.active_root, ignore_errors=True)
             backup.rename(self.active_root)
             info = info_from_path(self.active_root)
             self._export_pgeocode_env(self.active_root)
+            invalidate_dataset_caches()
+            _remember_validation(info)
         return info
 
     def current_info(self) -> GeoDatasetInfo:
         if (self.active_root / "manifest.json").is_file():
-            return info_from_path(self.active_root)
-        return info_from_path(self.bundled)
+            cached = _lookup_validation_cache(self.active_root)
+            if cached is not None:
+                return cached
+            info = _info_without_checksum(self.active_root)
+            if info.valid:
+                _remember_validation(info)
+            return info
+        cached = _lookup_validation_cache(self.bundled)
+        if cached is not None:
+            return cached
+        info = _info_without_checksum(self.bundled)
+        if info.valid:
+            _remember_validation(info)
+        return info
 
     @staticmethod
     def _export_pgeocode_env(dataset_path: Path) -> None:
@@ -301,6 +416,7 @@ class GeoDatasetManager:
         """Download DACH files to temp, validate, atomic activate; else keep old."""
         previous = self.ensure_active()
         tmp_root = Path(tempfile.mkdtemp(prefix="kk-geo-"))
+        swapped = False
         try:
             geo_dir = tmp_root / "geonames"
             geo_dir.mkdir(parents=True)
@@ -343,18 +459,27 @@ class GeoDatasetManager:
             self.active_root.parent.mkdir(parents=True, exist_ok=True)
             if self.active_root.exists():
                 self.active_root.rename(backup)
+                swapped = True
             shutil.copytree(tmp_root, self.active_root)
             info = info_from_path(self.active_root)
             if not info.valid:
                 shutil.rmtree(self.active_root, ignore_errors=True)
                 if backup.exists():
                     backup.rename(self.active_root)
+                swapped = False
+                invalidate_dataset_caches()
                 raise RuntimeError(info.message)
             shutil.rmtree(backup, ignore_errors=True)
+            invalidate_dataset_caches()
+            _remember_validation(info)
             self._export_pgeocode_env(self.active_root)
             return info
         except Exception as exc:
-            logger.warning("geo update failed — keeping previous: %s", type(exc).__name__)
+            logger.warning(
+                "geo update failed — keeping previous: %s", type(exc).__name__
+            )
+            if swapped:
+                invalidate_dataset_caches()
             self._export_pgeocode_env(previous.path if previous.valid else self.bundled)
             return previous
         finally:
@@ -368,7 +493,9 @@ class GeoDatasetManager:
                 # No user PII in URL — country code only.
                 req = urllib.request.Request(
                     url,
-                    headers={"User-Agent": "Karrierekrake-GeoDataset/1.0 (local desktop)"},
+                    headers={
+                        "User-Agent": "Karrierekrake-GeoDataset/1.0 (local desktop)"
+                    },
                 )
                 with urllib.request.urlopen(req, timeout=timeout_s) as resp:
                     data = resp.read()
@@ -441,3 +568,4 @@ def get_geo_dataset_manager(config_root: Path | None = None) -> GeoDatasetManage
 def reset_geo_dataset_manager_for_tests() -> None:
     global _manager
     _manager = None
+    _validation_cache.clear()

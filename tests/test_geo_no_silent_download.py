@@ -192,6 +192,10 @@ def test_invalid_dataset_does_not_stick_when_bundle_appears(
     bad = resolve_postal_pgeocode("10115", "DE")
     _assert_unresolved(bad)
     assert calls == []
+    from core import geo_resolve
+
+    assert "DE" not in geo_resolve._pgeocode_index
+    assert all(value is not None for value in geo_resolve._pgeocode_index.values())
 
     monkeypatch.setattr(geo_dataset, "bundled_geo_dir", lambda: real_bundle)
     reset_geo_dataset_manager_for_tests()
@@ -199,3 +203,142 @@ def test_invalid_dataset_does_not_stick_when_bundle_appears(
     assert good.ok
     assert good.latitude is not None and good.longitude is not None
     assert calls == []
+
+
+_LINE_A = 'DE,10115,Berlin,Berlin,BE,,0.0,"Berlin, Stadt",11000.0,52.5323,13.3846,6.0'
+_LINE_B = 'DE,10115,Berlin,Berlin,BE,,0.0,"Berlin, Stadt",11000.0,48.1111,13.3846,6.0'
+
+
+def _ready_dataset(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    active = tmp_path / "active"
+    monkeypatch.setenv("KARRIEREKRAKE_GEO_DATA_DIR", str(active))
+    reset_geo_dataset_manager_for_tests()
+    reset_pgeocode_index_for_tests()
+    info = get_geo_dataset_manager().ensure_active()
+    assert info.valid, info.message
+    return info
+
+
+def _count_nominatim(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    import pgeocode
+
+    constructed: list[str] = []
+    original = pgeocode.Nominatim
+
+    class _Counting(original):
+        def __init__(self, country: str = "fr", unique: bool = True) -> None:
+            constructed.append(str(country).upper())
+            super().__init__(country, unique=unique)
+
+    monkeypatch.setattr(pgeocode, "Nominatim", _Counting)
+    return constructed
+
+
+def _write_country_from_active(
+    active: Path, country: str, dest: Path, *, variant_b: bool
+) -> None:
+    text = (active / "geonames" / f"{country}.txt").read_text(encoding="utf-8")
+    if variant_b and country == "DE":
+        assert _LINE_A in text
+        text = text.replace(_LINE_A, _LINE_B, 1)
+    dest.write_text(text, encoding="utf-8")
+
+
+def test_two_resolutions_construct_nominatim_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _block_downloads(monkeypatch)
+    constructed = _count_nominatim(monkeypatch)
+    _ready_dataset(tmp_path, monkeypatch)
+    first = resolve_postal_pgeocode("10115", "DE")
+    second = resolve_postal_pgeocode("01067", "DE")
+    assert first.ok and second.ok
+    assert constructed == ["DE"]
+
+
+def test_resolution_does_not_hash_active_dataset(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _block_downloads(monkeypatch)
+    _ready_dataset(tmp_path, monkeypatch)
+    hashes = {"n": 0}
+    real = geo_dataset._sha256
+
+    def _counting(path: Path) -> str:
+        hashes["n"] += 1
+        return real(path)
+
+    monkeypatch.setattr(geo_dataset, "_sha256", _counting)
+    for _ in range(5):
+        res = resolve_postal_pgeocode("10115", "DE")
+        assert res.ok
+    assert hashes["n"] == 0
+
+
+def test_dataset_b_is_used_and_nominatim_is_built_once_more(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _block_downloads(monkeypatch)
+    constructed = _count_nominatim(monkeypatch)
+    info = _ready_dataset(tmp_path, monkeypatch)
+    first = resolve_postal_pgeocode("10115", "DE")
+    second = resolve_postal_pgeocode("10115", "DE")
+    assert first.ok and second.ok
+    assert constructed == ["DE"]
+    assert first.latitude == pytest.approx(52.5323, abs=1e-4)
+
+    def _download(self, country: str, dest: Path, timeout_s: float = 60.0) -> None:
+        del self, timeout_s
+        _write_country_from_active(info.path, country, dest, variant_b=True)
+
+    monkeypatch.setattr(geo_dataset.GeoDatasetManager, "_download_country", _download)
+    updated = get_geo_dataset_manager().update_from_upstream()
+    assert updated.valid
+    assert updated.version != info.version
+
+    third = resolve_postal_pgeocode("10115", "DE")
+    assert third.ok
+    assert third.latitude == pytest.approx(48.1111, abs=1e-4)
+    assert third.data_version == updated.version
+    assert constructed == ["DE", "DE"]
+
+    fourth = resolve_postal_pgeocode("10115", "DE")
+    assert fourth.latitude == pytest.approx(third.latitude)
+    assert constructed == ["DE", "DE"]
+
+
+def test_rollback_drops_nominatim_and_keeps_dataset_a(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _block_downloads(monkeypatch)
+    constructed = _count_nominatim(monkeypatch)
+    info = _ready_dataset(tmp_path, monkeypatch)
+    first = resolve_postal_pgeocode("10115", "DE")
+    assert first.ok
+    assert constructed == ["DE"]
+    active = info.path
+
+    def _download(self, country: str, dest: Path, timeout_s: float = 60.0) -> None:
+        del self, timeout_s
+        _write_country_from_active(active, country, dest, variant_b=False)
+
+    real_info = geo_dataset.info_from_path
+
+    def _force_invalid(path: Path):
+        loaded = real_info(path)
+        if path == active:
+            from dataclasses import replace
+
+            return replace(loaded, valid=False, message="forced rollback")
+        return loaded
+
+    monkeypatch.setattr(geo_dataset.GeoDatasetManager, "_download_country", _download)
+    monkeypatch.setattr(geo_dataset, "info_from_path", _force_invalid)
+    after = get_geo_dataset_manager().update_from_upstream()
+    assert after.valid
+    assert after.version == info.version
+
+    again = resolve_postal_pgeocode("10115", "DE")
+    assert again.ok
+    assert again.latitude == pytest.approx(first.latitude)
+    assert constructed == ["DE", "DE"]

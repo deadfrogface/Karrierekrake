@@ -23,6 +23,7 @@ from core.geo_dataset import (
     EARTH_RADIUS_KM,
     HAVERSINE_ALGORITHM,
     get_geo_dataset_manager,
+    register_dataset_change_hook,
 )
 from core.geo_normalize import (
     DACH_COUNTRY_CODES,
@@ -181,10 +182,21 @@ _pgeocode_index: dict[str, Any] = {}
 _pgeocode_warned: set[str] = set()
 
 
+def _invalidate_pgeocode_index() -> None:
+    _pgeocode_index.clear()
+
+
+register_dataset_change_hook(_invalidate_pgeocode_index)
+
+
 def _ensure_geo_data() -> str:
-    """Ensure local dataset and return its version string."""
-    mgr = get_geo_dataset_manager()
-    info = mgr.ensure_active()
+    """Return the active dataset version.
+
+    The manager caches validation for this process and dataset, keyed by
+    manifest version, mtime_ns and size. Resolution does not hash the
+    country files.
+    """
+    info = get_geo_dataset_manager().ensure_active()
     return info.version if info.valid else GEO_DATA_VERSION_PGEOCODE
 
 
