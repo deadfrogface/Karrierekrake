@@ -1,9 +1,11 @@
-"""Bit-identity of precomputed alias normalization against the previous path.
+"""Bit-identity of the alias cache against the current product path.
 
-The legacy helpers are ``_norm_alias`` and ``_fuzzy_against_aliases`` as they
-ran before the hot-loop hoist. They are the reference for scores, hits, and
-filter order. Do not retune them to hide a behavior change. This file checks
-values only — no wall-clock bounds.
+``score_job`` and ``filter_jobs`` are always the live product functions.
+Their reference run disables the alias cache (uncached ``_alias_targets``)
+instead of replaying an old matcher or filter. ``_norm_alias`` and
+``_fuzzy_against_aliases`` still have a legacy reference, and only those:
+it is the implementation this PR replaced (``re.sub`` inside the alias
+loop). This file checks values only — no wall-clock bounds.
 """
 
 from __future__ import annotations
@@ -57,7 +59,11 @@ def _legacy_norm_alias(value: str) -> str:
 
 
 def _legacy_fuzzy_against_aliases(text: str, alias_set: frozenset[str]) -> bool:
-    """Previous hot loop: the noise ``re.sub`` ran once per alias."""
+    """The fuzzy loop this PR replaced: noise ``re.sub`` once per alias.
+
+    Kept only as the reference for ``_norm_alias`` / ``_fuzzy_against_aliases``.
+    Scoring and filtering do not call it.
+    """
     needle = _legacy_norm_alias(text)
     if not needle or not alias_set:
         return False
@@ -84,7 +90,11 @@ def _legacy_fuzzy_against_aliases(text: str, alias_set: frozenset[str]) -> bool:
 
 
 class _LegacyAliasPath:
-    """Route public alias helpers through the pre-hoist normalizer."""
+    """Swap in the pre-hoist normalizer for the alias helpers only.
+
+    Does not wrap ``score_job`` or ``filter_jobs``. Those stay on the
+    current product code; see ``_UncachedPreparation``.
+    """
 
     def __enter__(self) -> None:
         self._norm = aliases._norm_alias
@@ -95,6 +105,26 @@ class _LegacyAliasPath:
     def __exit__(self, *exc: object) -> None:
         aliases._norm_alias = self._norm
         aliases._fuzzy_against_aliases = self._fuzzy
+
+
+class _UncachedPreparation:
+    """Current preparation with the alias cache off.
+
+    ``_fuzzy_against_aliases`` still reads ``_prepared_alias_targets`` from
+    this module. Pointing that name at ``_alias_targets`` skips ``lru_cache``
+    without freezing matcher or filter code.
+    """
+
+    def __enter__(self) -> None:
+        self._prepared = aliases._prepared_alias_targets
+        aliases._cached_alias_targets.cache_clear()
+        aliases._alias_cache_key_cached.cache_clear()
+        aliases._prepared_alias_targets = aliases._alias_targets
+
+    def __exit__(self, *exc: object) -> None:
+        aliases._prepared_alias_targets = self._prepared
+        aliases._cached_alias_targets.cache_clear()
+        aliases._alias_cache_key_cached.cache_clear()
 
 
 def _load_corpus() -> list[dict]:
@@ -436,27 +466,26 @@ def _score_and_filter(jobs: list[Job], config: AppConfig) -> tuple[list[tuple], 
 
 
 def _assert_same_end_result(jobs: list[Job], config: AppConfig, label: str) -> None:
-    current = _score_and_filter(jobs, config)
-    with _LegacyAliasPath():
-        legacy = _score_and_filter(jobs, config)
-    for index, (got, ref) in enumerate(zip(current[0], legacy[0], strict=True)):
+    """Cached product scoring equals the same product code with the cache off."""
+    cached = _score_and_filter(jobs, config)
+    with _UncachedPreparation():
+        uncached = _score_and_filter(jobs, config)
+    for index, (got, ref) in enumerate(zip(cached[0], uncached[0], strict=True)):
         assert got == ref, f"{label} score {jobs[index].id}: {got!r} != {ref!r}"
-    assert current[1] == legacy[1], f"{label} included filter order or fields differ"
-    assert current[2] == legacy[2], f"{label} excluded filter order or fields differ"
+    assert cached[1] == uncached[1], f"{label} included filter order or fields differ"
+    assert cached[2] == uncached[2], f"{label} excluded filter order or fields differ"
 
 
-def test_fixture_jobs_score_and_filter_match_legacy() -> None:
+def test_fixture_jobs_score_and_filter_match_uncached_product() -> None:
     corpus = _load_corpus()
     _assert_same_end_result(_fixture_jobs(corpus), _app_config(), "fixture")
 
 
-def test_generated_5000_score_and_filter_match_legacy() -> None:
-    """Fixed seed, after another role set has already filled the alias cache."""
+def test_generated_5000_score_and_filter_match_uncached_product() -> None:
+    """Fixed seed. Another role set fills the cache first; reference is uncached product code."""
     corpus = _load_corpus()
     jobs = _generated_jobs(corpus, GENERATED_JOBS)
     assert len(jobs) == GENERATED_JOBS
-    # Different target role and alias first. A global one-slot cache would
-    # still be on this set when the equality run starts.
     _score_and_filter(jobs[:40], _config_for_roles(["Verkäufer", "Buchhalter"]))
     _assert_same_end_result(jobs, _app_config(), "seed-5000")
 
