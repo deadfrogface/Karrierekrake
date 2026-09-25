@@ -1,13 +1,16 @@
-"""Batched job upserts: same rows as per-call commits, chunk rollback, cancel."""
+"""Batched job upserts: same rows as per-call commits, savepoints, cancel."""
 
 from __future__ import annotations
 
 import copy
+import sqlite3
+import threading
+import time
 from pathlib import Path
 
 import pytest
 
-from core.database import DEFAULT_UPSERT_CHUNK_SIZE, Database
+from core.database import BUSY_TIMEOUT_S, DEFAULT_UPSERT_CHUNK_SIZE, Database
 from core.known_jobs import should_suppress_as_new
 from core.models import Job, JobStatus
 
@@ -106,7 +109,8 @@ def test_upsert_jobs_matches_single_upserts_row_for_row(tmp_path: Path, monkeypa
         assert db.get_job("cross").status == JobStatus.APPLYING.value
 
 
-def test_exception_mid_chunk_rolls_back_only_open_chunk(tmp_path: Path, monkeypatch):
+def test_exception_mid_chunk_keeps_successful_jobs(tmp_path: Path, monkeypatch):
+    """A raise leaves the block: jobs already upserted stay, like per-call commits."""
     db = Database(tmp_path / "t.db")
     first = [_job(i, id=f"keep-{i}") for i in range(4)]
     db.upsert_jobs(first, chunk_size=10)
@@ -127,11 +131,160 @@ def test_exception_mid_chunk_rolls_back_only_open_chunk(tmp_path: Path, monkeypa
         db.upsert_jobs(second, chunk_size=10)
 
     ids = {row[0] for row in _rows(db)}
-    assert ids == {f"keep-{i}" for i in range(4)}
-    # The connection is usable again; the failed chunk did not stick.
+    assert {f"keep-{i}" for i in range(4)} <= ids
+    assert "drop-0" in ids
+    assert "drop-1" in ids
+    assert "drop-2" not in ids
+    assert "drop-3" not in ids
+    assert "drop-4" not in ids
     db.upsert_job(_job(99, id="after"))
     assert db.get_job("after") is not None
-    assert db.get_job("drop-0") is None
+
+
+def _poison_write(self, job: Job) -> None:
+    if job.id == "poison":
+        with self.connection() as conn:
+            conn.execute(
+                "INSERT INTO jobs (id, title, status) VALUES (?, ?, ?)",
+                ("poison-scratch", "scratch", "new"),
+            )
+            raise RuntimeError("poison")
+    _WRITE_JOB(self, job)
+
+
+_WRITE_JOB = Database._write_job
+
+
+def _write_continuing(db: Database, jobs: list[Job]) -> list[str]:
+    errors: list[str] = []
+    for job in jobs:
+        try:
+            db.upsert_job(job)
+        except RuntimeError as exc:
+            errors.append(str(exc))
+    return errors
+
+
+def test_poisoned_job_in_block_matches_single_upsert(tmp_path: Path, monkeypatch):
+    """One poisoned job mid-block: every other row matches the single-upsert path."""
+    monkeypatch.setattr(
+        "core.database.utc_now_iso", lambda: "2026-01-15T00:00:00+00:00"
+    )
+    monkeypatch.setattr(Database, "_write_job", _poison_write)
+    jobs = [_job(i) for i in range(30)]
+    jobs[14] = _job(14, id="poison", source_job_id="poison")
+    single = Database(tmp_path / "single.db")
+    batched = Database(tmp_path / "batch.db")
+    single_errors = _write_continuing(single, copy.deepcopy(jobs))
+    with batched.batch(chunk_size=10):
+        batch_errors = _write_continuing(batched, copy.deepcopy(jobs))
+    assert single_errors == ["poison"]
+    assert batch_errors == ["poison"]
+    assert _rows(single) == _rows(batched)
+    assert single.get_job("poison") is None
+    assert single.get_job("poison-scratch") is None
+    assert batched.get_job("poison") is None
+    assert batched.get_job("poison-scratch") is None
+    for i in range(30):
+        if i == 14:
+            continue
+        assert single.get_job(f"job-{i:04d}") is not None
+    assert _count(single) == 29
+
+
+def test_batch_does_not_demote_applied(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(
+        "core.database.utc_now_iso", lambda: "2026-01-15T00:00:00+00:00"
+    )
+    db = Database(tmp_path / "t.db")
+    db.upsert_job(_job(1, id="keep-applied", status=JobStatus.APPLIED.value))
+    incoming = _job(
+        1,
+        id="keep-applied",
+        status=JobStatus.NEW.value,
+        title="Andere Stelle",
+        source_job_id="demote",
+    )
+    with db.batch(chunk_size=10):
+        db.upsert_job(_job(2, id="sibling"))
+        db.upsert_job(incoming)
+        db.upsert_job(_job(3, id="after-applied"))
+    stored = db.get_job("keep-applied")
+    assert stored is not None
+    assert stored.status == JobStatus.APPLIED.value
+    assert incoming.status == JobStatus.APPLIED.value
+    assert db.get_job("sibling") is not None
+    assert db.get_job("after-applied") is not None
+
+
+def test_second_connection_writes_during_batch_without_lock_error(tmp_path: Path):
+    """A UI-style status mark waits out the chunk lock and does not see 'database is locked'."""
+    assert BUSY_TIMEOUT_S >= 1.0
+    path = tmp_path / "t.db"
+    setup = Database(path)
+    setup.upsert_job(_job(0, id="ui-mark", status=JobStatus.NEW.value))
+    marker_db = Database(path)
+    started = threading.Event()
+    finished = threading.Event()
+    errors: list[BaseException] = []
+    marked: dict[str, object] = {}
+
+    def writer() -> None:
+        db = Database(path)
+        jobs = [_job(i) for i in range(1, 21)]
+        try:
+            with db.batch(chunk_size=1000):
+                db.upsert_job(jobs[0])
+                started.set()
+                time.sleep(0.3)
+                for job in jobs[1:]:
+                    db.upsert_job(job)
+        except BaseException as exc:
+            errors.append(exc)
+        finally:
+            finished.set()
+
+    def marker() -> None:
+        if not started.wait(5):
+            errors.append(TimeoutError("batch did not start"))
+            return
+        marked["during"] = not finished.is_set()
+        try:
+            marker_db.update_job_status("ui-mark", JobStatus.APPLIED.value)
+        except BaseException as exc:
+            errors.append(exc)
+
+    threads = [
+        threading.Thread(target=writer),
+        threading.Thread(target=marker),
+    ]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(10)
+        assert not thread.is_alive()
+    assert errors == []
+    assert marked["during"] is True
+    assert marker_db.get_job("ui-mark").status == JobStatus.APPLIED.value
+    assert _count(Database(path)) == 21
+
+
+def test_update_job_status_lock_raises_and_keeps_status(
+    tmp_path: Path, monkeypatch
+):
+    path = tmp_path / "t.db"
+    db = Database(path)
+    db.upsert_job(_job(1, id="mark", status=JobStatus.NEW.value))
+    monkeypatch.setattr("core.database.BUSY_TIMEOUT_S", 0.2)
+    holder = sqlite3.connect(path)
+    try:
+        holder.execute("BEGIN IMMEDIATE")
+        with pytest.raises(sqlite3.OperationalError, match="locked"):
+            db.update_job_status("mark", JobStatus.APPLIED.value)
+    finally:
+        holder.rollback()
+        holder.close()
+    assert db.get_job("mark").status == JobStatus.NEW.value
 
 
 def test_stop_after_chunk_keeps_committed_jobs(tmp_path: Path):
@@ -149,6 +302,17 @@ def test_stop_after_chunk_keeps_committed_jobs(tmp_path: Path):
     assert _count(Database(path)) == 10
     kept = {row[0] for row in _rows(db)}
     assert kept == {f"job-{i:04d}" for i in range(10)}
+
+
+def test_connections_use_wal_and_busy_timeout(tmp_path: Path):
+    db = Database(tmp_path / "t.db")
+    with db.connection() as conn:
+        mode = conn.execute("PRAGMA journal_mode").fetchone()[0]
+        sync = conn.execute("PRAGMA synchronous").fetchone()[0]
+        timeout_ms = conn.execute("PRAGMA busy_timeout").fetchone()[0]
+    assert mode == "wal"
+    assert sync == 1  # NORMAL
+    assert timeout_ms == int(BUSY_TIMEOUT_S * 1000)
 
 
 def test_single_upsert_still_commits_immediately(tmp_path: Path):

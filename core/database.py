@@ -274,12 +274,24 @@ CREATE INDEX IF NOT EXISTS idx_recruiting_contacts_status ON recruiting_contacts
 """
 
 
-# Search persist commits this many upserts per transaction. A crash rolls back
-# only the open chunk. VM, nicht i3 — 5000 jobs, median of 5 runs:
-# chunk 100 = 0.672s, chunk 500 = 0.292s, one transaction = 0.188s.
-# 500 stays close to a single transaction. That one's VmHWM grew by
-# 2_412_544 bytes; chunk 500 grew by 737_280. A crash drops at most one chunk.
+# Search persist commits this many upserts per transaction. A crash or a
+# should_stop between chunks drops at most one open chunk. Each job inside
+# the chunk has its own SAVEPOINT, so one failed upsert does not discard
+# the jobs already written in that chunk (same loss as a per-call commit).
+# VM, nicht i3, 5 runs, WAL: chunk 500 holds the write lock for at most
+# 98.6 ms (p95 98.0 ms) across 5000 jobs, and 82.4 ms at 500 jobs.
+# busy_timeout is 5000 ms, so 500 stays well under that ceiling.
 DEFAULT_UPSERT_CHUNK_SIZE = 500
+
+# sqlite3's default. A writer (UI status mark) waits this long on the chunk's
+# write lock before OperationalError('database is locked'). Chunk holds must
+# stay well under this; see the batch-upsert PR for the measured max.
+BUSY_TIMEOUT_S = 5.0
+
+# Rollback-journal mode fsyncs on every RELEASE SAVEPOINT (about 2 ms/job
+# here). WAL with synchronous=NORMAL keeps the per-job savepoint and still
+# commits a chunk of 500 far under BUSY_TIMEOUT_S. NORMAL survives an
+# application crash; the open chunk is the crash window, same as before.
 
 
 class Database:
@@ -295,6 +307,7 @@ class Database:
         self._batch_chunk_size = DEFAULT_UPSERT_CHUNK_SIZE
         self._batch_count = 0
         self._batch_written = 0
+        self._batch_force_rollback = False
         self._init_schema()
         # Default off: GUI page opens construct Database() frequently and must not
         # mark a live search/apply as interrupted. Call with recover=True once at
@@ -303,9 +316,12 @@ class Database:
             self.recover_interrupted_state()
 
     def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.path)
+        conn = sqlite3.connect(self.path, timeout=BUSY_TIMEOUT_S)
         conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA journal_mode = WAL")
+        conn.execute("PRAGMA synchronous = NORMAL")
         conn.execute("PRAGMA foreign_keys = ON")
+        conn.execute(f"PRAGMA busy_timeout = {int(BUSY_TIMEOUT_S * 1000)}")
         return conn
 
     @contextmanager
@@ -363,7 +379,9 @@ class Database:
         """Commit upsert_job calls from this block in chunks.
 
         The block keeps calling upsert_job. Every chunk_size writes (default
-        500) are committed. An exception rolls back only the open chunk.
+        500) are committed. Each upsert runs in its own SAVEPOINT: a failure
+        rolls back only that job and is re-raised, and jobs already written
+        in the chunk are committed so they are not lost on the way out.
         If should_stop is already true when the block starts, every upsert in
         the block is still written. If it becomes true between chunks, later
         upsert_job calls in this Database are skipped and
@@ -377,6 +395,7 @@ class Database:
         self._batch_chunk_size = size
         self._batch_count = 0
         self._batch_written = 0
+        self._batch_force_rollback = False
         self._batch_scope = True
         conn: sqlite3.Connection | None = None
         try:
@@ -388,7 +407,9 @@ class Database:
             conn = self._connect()
             self._txn_conn = conn
             yield self
-            if (
+            if self._batch_force_rollback:
+                conn.rollback()
+            elif (
                 self._batch_count
                 and self._batch_watch is not None
                 and self._batch_watch()
@@ -403,9 +424,18 @@ class Database:
         except BaseException:
             if conn is not None:
                 try:
-                    conn.rollback()
+                    # Jobs that already succeeded in this chunk were committed
+                    # one by one on main. Keep that prefix; drop only an
+                    # unfinished statement that has no savepoint.
+                    if self._batch_count > 0 and not self._batch_force_rollback:
+                        conn.commit()
+                    else:
+                        conn.rollback()
                 except Exception:
-                    pass
+                    try:
+                        conn.rollback()
+                    except Exception:
+                        pass
             raise
         finally:
             self._txn_conn = None
@@ -792,13 +822,30 @@ class Database:
             self._batch_halted = True
             self._batch_skipped = True
             return
-        self._write_job(job)
+        conn = self._txn_conn
+        if conn is None:
+            raise RuntimeError("batch connection is closed")
+        conn.execute("SAVEPOINT kk_job")
+        try:
+            self._write_job(job)
+            conn.execute("RELEASE SAVEPOINT kk_job")
+        except BaseException:
+            try:
+                conn.execute("ROLLBACK TO SAVEPOINT kk_job")
+                conn.execute("RELEASE SAVEPOINT kk_job")
+            except Exception:
+                self._batch_force_rollback = True
+            else:
+                # Durable, like the per-call commit on main, before the
+                # error leaves this function.
+                if self._batch_count > 0:
+                    conn.commit()
+                    self._batch_count = 0
+            raise
         self._batch_written += 1
         self._batch_count += 1
         if self._batch_count >= self._batch_chunk_size:
-            if self._txn_conn is None:
-                raise RuntimeError("batch connection is closed")
-            self._txn_conn.commit()
+            conn.commit()
             self._batch_count = 0
             if self._batch_watch is not None and self._batch_watch():
                 self._batch_halted = True
@@ -860,10 +907,11 @@ class Database:
     ) -> int:
         """Upsert jobs in committed chunks. Returns how many upserts ran.
 
-        Same rules as upsert_job. An exception inside a chunk rolls that
-        chunk back and propagates; earlier chunks stay committed.
-        ``should_stop`` is checked between chunks. When it becomes true,
-        already committed chunks stay and the rest is not written.
+        Same rules as upsert_job. A failed upsert rolls back only that job
+        (its SAVEPOINT). Upserts that already succeeded are committed and
+        the exception propagates, so a caller that continues keeps every
+        other row. ``should_stop`` is checked between chunks. When it
+        becomes true, already committed chunks stay and the rest is not written.
         """
         with self.batch(should_stop=should_stop, chunk_size=chunk_size):
             for job in jobs:
