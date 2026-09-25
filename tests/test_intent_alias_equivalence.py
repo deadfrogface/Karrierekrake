@@ -1,11 +1,11 @@
-"""Bit-identity of the alias cache against the current product path.
+"""Equivalence of hoisted title normalization against the loop it replaced.
 
-``score_job`` and ``filter_jobs`` are always the live product functions.
-Their reference run disables the alias cache (uncached ``_alias_targets``)
-instead of replaying an old matcher or filter. ``_norm_alias`` and
-``_fuzzy_against_aliases`` still have a legacy reference, and only those:
-it is the implementation this PR replaced (``re.sub`` inside the alias
-loop). This file checks values only — no wall-clock bounds.
+The frozen helpers below are the implementation of ``_norm_alias`` and
+``_fuzzy_against_aliases`` from before this change: ``re.sub`` on the job
+text inside the alias loop, membership and ratios unchanged. A frozen
+score/filter reference is intentionally absent — PR #67 changes those
+modules on purpose. ``score_job`` / ``filter_jobs`` stay covered by
+``test_intent_filter.py``, ``test_intent_corpus.py`` and ``test_matcher.py``.
 """
 
 from __future__ import annotations
@@ -15,65 +15,43 @@ import random
 import re
 from pathlib import Path
 
-from core.config import (
-    AppConfig,
-    EmploymentConfig,
-    ExperienceEntry,
-    FiltersConfig,
-    JobsConfig,
-    LanguageEntry,
-    LocationConfig,
-    ProfileConfig,
-    QualificationsConfig,
-    SettingsConfig,
-    SourcedText,
-)
+import pytest
+
 from core.intent_aliases import (
     ROLE_FAMILIES,
-    expand_role_aliases,
-    role_family_id_for_label,
-    title_matches_role_label,
+    _ALIAS_FUZZY_THRESHOLD,
+    _fuzzy_against_aliases,
+    _norm_alias,
 )
-from core.intent_filter import IntentFilterResult, filter_jobs
-from core.matcher import score_job
-from core.models import Job, MatchResult, RemoteType
-from core.search_intent import SearchIntent, Strictness
 
-import core.intent_aliases as aliases
+_CORPUS = Path(__file__).resolve().parent / "fixtures" / "intent_jobs_corpus.json"
+_SEED = 20260925
+_N_TITLES = 5000
 
-CORPUS = Path(__file__).parent / "fixtures" / "intent_jobs_corpus.json"
-SEED = 20260925
-GENERATED_JOBS = 5000
-
-# Same bar the production fuzzy path reads, so the reference cannot drift
-# from the constant while the regex shape stays the old one.
-_THRESHOLD = aliases._ALIAS_FUZZY_THRESHOLD
+_LEGACY_HYPHEN = re.compile(r"[-_/]+")
+_LEGACY_WS = re.compile(r"\s+")
+_LEGACY_NOISE = re.compile(r"\b(senior|junior|m\s*w\s*d|w\s*m\s*d|all genders)\b")
 
 
-def _legacy_norm_alias(value: str) -> str:
-    text = (value or "").casefold().strip()
-    text = text.replace("ß", "ss")
-    text = re.sub(r"[-_/]+", " ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
+def _legacy_norm_alias(s: str) -> str:
+    t = (s or "").casefold().strip()
+    t = t.replace("ß", "ss")
+    t = re.sub(r"[-_/]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
 
 
-def _legacy_fuzzy_against_aliases(text: str, alias_set: frozenset[str]) -> bool:
-    """The fuzzy loop this PR replaced: noise ``re.sub`` once per alias.
-
-    Kept only as the reference for ``_norm_alias`` / ``_fuzzy_against_aliases``.
-    Scoring and filtering do not call it.
-    """
+def _legacy_fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
     needle = _legacy_norm_alias(text)
-    if not needle or not alias_set:
+    if not needle or not aliases:
         return False
-    if needle in alias_set:
+    if needle in aliases:
         return True
     try:
         from rapidfuzz import fuzz
     except ImportError:
         return False
-    for alias in alias_set:
+    for alias in aliases:
         if not alias:
             continue
         compact = re.sub(
@@ -82,499 +60,86 @@ def _legacy_fuzzy_against_aliases(text: str, alias_set: frozenset[str]) -> bool:
             needle,
         )
         compact = re.sub(r"\s+", " ", compact).strip(" ()[]")
-        if compact in alias_set or fuzz.ratio(compact, alias) >= _THRESHOLD:
+        if compact in aliases or fuzz.ratio(compact, alias) >= _ALIAS_FUZZY_THRESHOLD:
             return True
-        if fuzz.ratio(needle, alias) >= _THRESHOLD:
+        if fuzz.ratio(needle, alias) >= _ALIAS_FUZZY_THRESHOLD:
             return True
     return False
 
 
-class _LegacyAliasPath:
-    """Swap in the pre-hoist normalizer for the alias helpers only.
-
-    Does not wrap ``score_job`` or ``filter_jobs``. Those stay on the
-    current product code; see ``_UncachedPreparation``.
-    """
-
-    def __enter__(self) -> None:
-        self._norm = aliases._norm_alias
-        self._fuzzy = aliases._fuzzy_against_aliases
-        aliases._norm_alias = _legacy_norm_alias
-        aliases._fuzzy_against_aliases = _legacy_fuzzy_against_aliases
-
-    def __exit__(self, *exc: object) -> None:
-        aliases._norm_alias = self._norm
-        aliases._fuzzy_against_aliases = self._fuzzy
-
-
-class _UncachedPreparation:
-    """Current preparation with the alias cache off.
-
-    ``_fuzzy_against_aliases`` still reads ``_prepared_alias_targets`` from
-    this module. Pointing that name at ``_alias_targets`` skips ``lru_cache``
-    without freezing matcher or filter code.
-    """
-
-    def __enter__(self) -> None:
-        self._prepared = aliases._prepared_alias_targets
-        aliases._cached_alias_targets.cache_clear()
-        aliases._alias_cache_key_cached.cache_clear()
-        aliases._prepared_alias_targets = aliases._alias_targets
-
-    def __exit__(self, *exc: object) -> None:
-        aliases._prepared_alias_targets = self._prepared
-        aliases._cached_alias_targets.cache_clear()
-        aliases._alias_cache_key_cached.cache_clear()
-
-
-def _load_corpus() -> list[dict]:
-    data = json.loads(CORPUS.read_text(encoding="utf-8"))
-    jobs = data["jobs"]
-    assert len(jobs) >= 300
-    return jobs
-
-
-def _probe_texts(corpus: list[dict]) -> list[str]:
-    rng = random.Random(SEED)
-    texts: list[str] = [
-        "",
-        " ",
-        "ß",
-        "SS",
-        "Senior",
-        "(m/w/d)",
-        "m/w/d",
-        "m / w / d",
-        "w/m/d",
-        "all genders",
-        "All Genders",
-        "Buchhalter",
-        "Senior Lohnbuchhalter (m/w/d)",
-        "Junior Payroll Specialist",
-        "Lohn- und Gehaltsbuchhalter",
-        "Lohn_und_Gehaltsbuchhalter",
-        "lohn/buchhalter",
-        "FACHKRAFT ENTGELTABRECHNUNG",
-        "payroll specialistt",
-        "lohnbuchhalterr",
-        "Straße",
-    ]
-    for fam in ROLE_FAMILIES:
-        for alias in sorted(fam.aliases):
-            texts.append(alias)
-            texts.append(alias.upper())
-            texts.append(f"Senior {alias} (m/w/d)")
-            texts.append(alias.replace(" ", "-"))
-            texts.append(alias.replace(" ", "_"))
-            texts.append(alias.replace(" ", "/"))
-            if len(alias) > 4:
-                texts.append(alias[:-1] + "x")
-    for raw in corpus:
-        texts.append(str(raw.get("title") or ""))
-        texts.append(str(raw.get("description") or "")[:180])
-    alphabet = "abcdefghijklmnopqrstuvwxyzäß -_/"
-    for _ in range(200):
-        length = rng.randint(0, 40)
-        texts.append("".join(rng.choice(alphabet) for _ in range(length)))
-    seen: set[str] = set()
-    unique: list[str] = []
-    for text in texts:
-        if text in seen:
-            continue
-        seen.add(text)
-        unique.append(text)
-    return unique
-
-
-def _probe_labels(corpus: list[dict]) -> list[str]:
-    labels = [
-        "",
-        "Lohnbuchhalter",
-        "Buchhalter",
-        "Sachbearbeiter",
-        "Disponentin",
-        "Payroll Specialist",
-        "SAP",
-        "Senior Payroll Specialist",
-        "Geschäftsführer",
-    ]
-    for fam in ROLE_FAMILIES:
-        labels.extend(sorted(fam.aliases))
-    for raw in corpus[:40]:
-        title = str(raw.get("title") or "").strip()
-        if title:
-            labels.append(title)
-    seen: set[str] = set()
-    unique: list[str] = []
-    for label in labels:
-        if label in seen:
-            continue
-        seen.add(label)
-        unique.append(label)
-    return unique
-
-
-def _alias_tables(texts: list[str]) -> list[frozenset[str]]:
-    tables: list[frozenset[str]] = [
-        frozenset(),
-        frozenset({""}),
-        frozenset({"lohnbuchhalter", ""}),
-    ]
-    for fam in ROLE_FAMILIES:
-        tables.append(fam.aliases)
-    for text in texts[:80]:
-        tables.append(frozenset({_legacy_norm_alias(text)}))
-    return tables
-
-
-def _public_snapshot(texts: list[str], labels: list[str]) -> list[object]:
-    snapshot: list[object] = []
-    for text in texts:
-        snapshot.append(role_family_id_for_label(text))
-        snapshot.append(tuple(sorted(expand_role_aliases(text))))
-        for label in labels:
-            snapshot.append(title_matches_role_label(text, label))
-    return snapshot
-
-
-def test_prepared_alias_cache_is_keyed_and_bounded() -> None:
-    """Cache key is the regex sources plus every alias, not one global slot."""
-    assert aliases._cached_alias_targets.cache_info().maxsize == aliases._PREPARED_ALIAS_CACHE_MAXSIZE
-    assert aliases._alias_cache_key_cached.cache_info().maxsize == aliases._PREPARED_ALIAS_CACHE_MAXSIZE
-    assert aliases._PREPARED_ALIAS_CACHE_MAXSIZE == 32
-    for fam in ROLE_FAMILIES:
-        key = aliases._alias_cache_key(fam.aliases)
-        assert key is aliases._alias_cache_key(fam.aliases)
-        patterns, tokens = key
-        assert patterns == (
-            aliases._HYPHEN_RE.pattern,
-            aliases._WS_RE.pattern,
-            aliases._TITLE_NOISE_RE.pattern,
-        )
-        assert tokens == tuple(sorted(alias for alias in fam.aliases if alias))
-        cached = aliases._cached_alias_targets(key)
-        assert set(cached) == set(aliases._alias_targets(fam.aliases))
-        assert set(cached) == set(tokens)
-        assert all(aliases._norm_alias(alias) == alias for alias in cached)
-    info = aliases._cached_alias_targets.cache_info()
-    assert info.currsize <= info.maxsize
-
-
-def test_normalized_role_aliases_match_authored_strings() -> None:
-    """Curated tables are already normalized, so preparation must not rewrite them."""
-    for fam in ROLE_FAMILIES:
-        targets = aliases._prepared_alias_targets(fam.aliases)
-        authored = {alias for alias in fam.aliases if alias}
-        assert set(targets) == authored
-        assert all(aliases._norm_alias(alias) == alias for alias in targets)
-
-
-def test_norm_and_fuzzy_match_legacy_reference() -> None:
-    corpus = _load_corpus()
-    texts = _probe_texts(corpus)
-    for text in texts:
-        assert aliases._norm_alias(text) == _legacy_norm_alias(text)
-    for table in _alias_tables(texts):
-        for text in texts:
-            got = aliases._fuzzy_against_aliases(text, table)
-            ref = _legacy_fuzzy_against_aliases(text, table)
-            assert got == ref
-
-
-def test_public_alias_functions_match_legacy_reference() -> None:
-    corpus = _load_corpus()
-    texts = _probe_texts(corpus)
-    labels = _probe_labels(corpus)
-    current = _public_snapshot(texts, labels)
-    with _LegacyAliasPath():
-        legacy = _public_snapshot(texts, labels)
-    assert current == legacy
-
-
-def _app_config() -> AppConfig:
-    intent = SearchIntent(
-        target_roles=[
-            "Lohnbuchhalter",
-            "Sachbearbeiter",
-            "Disponentin",
-            "Payroll Specialist",
-        ],
-        mandatory_skills=["Excel"],
-        preferred_skills=["SAP", "DATEV"],
-        excluded_roles=["Praktikant"],
-        excluded_keywords=["unbezahlt"],
-        strictness=Strictness.BALANCED,
-        countries=["DE"],
-        radius_km=50,
-        salary_min=36000,
-        employment_types=["full_time"],
+def _alias_sets() -> list[frozenset[str]]:
+    sets = [fam.aliases for fam in ROLE_FAMILIES]
+    sets.extend(
+        [
+            frozenset({"buchhalter"}),
+            frozenset({"controller"}),
+            frozenset({"lohnbuchhalter", ""}),
+            frozenset({""}),
+            frozenset({"payroll specialist"}),
+            frozenset({"senior lohnbuchhalter"}),
+        ]
     )
-    return AppConfig(
-        profile=ProfileConfig(
-            location=LocationConfig(
-                max_distance_km=50,
-                country="DE",
-                allow_remote_germany=True,
-                allow_hybrid=True,
-            ),
-            jobs=JobsConfig(
-                desired_titles=["Lohnbuchhalter", "Sachbearbeiter", "Disponent"]
-            ),
-            employment=EmploymentConfig(
-                full_time=True,
-                remote=True,
-                hybrid=True,
-                onsite=True,
-                minimum_salary=36000,
-            ),
-            qualifications=QualificationsConfig(
-                work_experience=[
-                    ExperienceEntry(
-                        title="Lohnbuchhalter",
-                        company="Nordlicht GmbH",
-                        responsibilities=["Entgeltabrechnung", "DATEV"],
-                    )
-                ],
-                skills=[SourcedText("Excel"), SourcedText("SAP")],
-                software=[SourcedText("DATEV")],
-                languages=[LanguageEntry(language="Deutsch", level="C1")],
-            ),
-            filters=FiltersConfig(desired_keywords=["Excel", "SAP", "Verwaltung"]),
-            search_intent=intent,
-        ),
-        settings=SettingsConfig(exclude_on_missing_mandatory=False),
-    )
+    return sets
 
 
-def _fixture_jobs(corpus: list[dict]) -> list[Job]:
-    jobs: list[Job] = []
-    for raw in corpus:
-        jobs.append(
-            Job(
-                id=f"fixture-{raw.get('id')}",
-                source="corpus",
-                title=str(raw.get("title") or ""),
-                company=str(raw.get("company") or ""),
-                description=str(raw.get("description") or ""),
-                city=str(raw.get("city") or ""),
-                remote_type=str(raw.get("remote_type") or RemoteType.UNKNOWN.value),
-                employment_type=str(raw.get("employment_type") or ""),
-                distance_km=raw.get("distance_km"),
-                salary_min=raw.get("salary_min"),
-                salary_max=raw.get("salary_max"),
-                url=f"https://example.test/fixture/{raw.get('id')}",
-                discovered_at="2026-09-01T12:00:00+00:00",
-            )
-        )
-    return jobs
+def _fixture_rows() -> list[dict]:
+    data = json.loads(_CORPUS.read_text(encoding="utf-8"))
+    return list(data["jobs"])
 
 
-def _generated_jobs(corpus: list[dict], n: int = GENERATED_JOBS) -> list[Job]:
-    """5000 jobs from the fixture corpus, varied with a fixed seed."""
-    rng = random.Random(SEED)
+def _fixture_texts() -> list[str]:
+    texts = ["", "   ", "ß", "()", "Senior", "m/w/d", "All Genders"]
+    for row in _fixture_rows():
+        texts.append(str(row.get("title") or ""))
+        texts.append(str(row.get("description") or "")[:240])
+    return texts
+
+
+def _generated_titles(n: int = _N_TITLES) -> list[str]:
+    rng = random.Random(_SEED)
+    bases = [t for t in _fixture_texts() if t.strip()] or ["Sachbearbeiter"]
     prefixes = ("", "Senior ", "Junior ", "(m/w/d) ", "All Genders ")
-    separators = (" ", "-", "_", "/")
-    employment = ("Vollzeit", "Teilzeit", "Befristet", "")
-    remote = (
-        RemoteType.ONSITE.value,
-        RemoteType.HYBRID.value,
-        RemoteType.REMOTE.value,
-        RemoteType.UNKNOWN.value,
-    )
-    hot_titles = (
-        "Senior Lohnbuchhalter (m/w/d)",
-        "Junior Payroll Specialist",
-        "Lohn- und Gehaltsbuchhalter",
-        "Fachkraft Entgeltabrechnung all genders",
-        "w/m/d Gehaltsbuchhalter",
-    )
-    jobs: list[Job] = []
+    suffixes = ("", " (m/w/d)", " m/w/d", " - Homeoffice", " / Teilzeit")
+    titles: list[str] = []
     for i in range(n):
-        src = corpus[i % len(corpus)]
-        if i < len(hot_titles):
-            title = hot_titles[i]
-        else:
-            title = str(src.get("title") or "Sachbearbeiter")
-            if rng.randrange(3) == 0:
-                title = rng.choice(prefixes) + title
-            if rng.randrange(4) == 0:
-                title = title.replace(" ", rng.choice(separators))
-            if rng.randrange(7) == 0:
-                title = title.replace("ss", "ß")
-        description = str(src.get("description") or "Sachbearbeitung und Verwaltung")
-        if rng.randrange(2) == 0:
-            description += " Excel SAP Deutsch fließend DATEV"
-        if rng.randrange(11) == 0:
-            description += " unbezahlt"
-        salary_pick = rng.choice((None, 30000.0, 42000.0, 55000.0))
-        jobs.append(
-            Job(
-                id=f"seed-{SEED}-{i}",
-                source="fixture",
-                source_job_id=str(i),
-                title=title,
-                company=f"{src.get('company') or 'Nordlicht GmbH'} {i % 17}",
-                description=description,
-                city=str(src.get("city") or "Hamburg"),
-                postal_code="20095",
-                country_code=rng.choice(("DE", "AT", "")),
-                remote_type=rng.choice(remote),
-                employment_type=rng.choice(employment),
-                distance_km=float(src.get("distance_km") or 8) + float(i % 40),
-                salary_min=salary_pick,
-                salary_max=None if salary_pick is None else salary_pick + 6000.0,
-                salary_text="42.000 - 48.000 EUR",
-                url=f"https://example.test/jobs/{SEED}/{i}",
-                discovered_at="2026-09-01T12:00:00+00:00",
+        title = bases[i % len(bases)]
+        title = prefixes[rng.randrange(len(prefixes))] + title + suffixes[rng.randrange(len(suffixes))]
+        if rng.random() < 0.2:
+            title = title.replace(" ", "-")
+        if rng.random() < 0.1:
+            title = title.replace("ss", "ß")
+        titles.append(title)
+    return titles
+
+
+def test_compiled_patterns_match_the_old_sources() -> None:
+    from core import intent_aliases as aliases
+
+    assert aliases._HYPHEN_RE.pattern == _LEGACY_HYPHEN.pattern
+    assert aliases._WS_RE.pattern == _LEGACY_WS.pattern
+    assert aliases._TITLE_NOISE_RE.pattern == _LEGACY_NOISE.pattern
+
+
+@pytest.mark.parametrize("text", _fixture_texts())
+def test_norm_alias_matches_legacy_on_fixtures(text: str) -> None:
+    assert _norm_alias(text) == _legacy_norm_alias(text)
+
+
+def test_norm_and_fuzzy_match_legacy_on_generated_titles() -> None:
+    titles = _generated_titles()
+    assert len(titles) == _N_TITLES
+    sets = _alias_sets()
+    for title in titles:
+        assert _norm_alias(title) == _legacy_norm_alias(title)
+        for aliases in sets:
+            assert _fuzzy_against_aliases(title, aliases) == _legacy_fuzzy_against_aliases(
+                title, aliases
             )
-        )
-    return jobs
 
 
-def _score_tuple(result: MatchResult) -> tuple[object, ...]:
-    return (
-        result.score,
-        tuple(result.match_reasons),
-        tuple(result.rejection_reasons),
-        result.excluded,
-        result.exclude_reason,
-    )
-
-
-def _filter_tuple(
-    pairs: list[tuple[Job, IntentFilterResult]],
-) -> tuple[tuple[object, ...], ...]:
-    return tuple(
-        (
-            job.id,
-            result.included,
-            result.excluded,
-            result.rank_score,
-            result.exclude_reason,
-            tuple(result.why_shown),
-            tuple(result.why_excluded),
-        )
-        for job, result in pairs
-    )
-
-
-def _score_and_filter(jobs: list[Job], config: AppConfig) -> tuple[list[tuple], tuple, tuple]:
-    intent = config.profile.search_intent
-    scores = [_score_tuple(score_job(job, config)) for job in jobs]
-    included, excluded = filter_jobs(jobs, intent)
-    return scores, _filter_tuple(included), _filter_tuple(excluded)
-
-
-def _assert_same_end_result(jobs: list[Job], config: AppConfig, label: str) -> None:
-    """Cached product scoring equals the same product code with the cache off."""
-    cached = _score_and_filter(jobs, config)
-    with _UncachedPreparation():
-        uncached = _score_and_filter(jobs, config)
-    for index, (got, ref) in enumerate(zip(cached[0], uncached[0], strict=True)):
-        assert got == ref, f"{label} score {jobs[index].id}: {got!r} != {ref!r}"
-    assert cached[1] == uncached[1], f"{label} included filter order or fields differ"
-    assert cached[2] == uncached[2], f"{label} excluded filter order or fields differ"
-
-
-def test_fixture_jobs_score_and_filter_match_uncached_product() -> None:
-    corpus = _load_corpus()
-    _assert_same_end_result(_fixture_jobs(corpus), _app_config(), "fixture")
-
-
-def test_generated_5000_score_and_filter_match_uncached_product() -> None:
-    """Fixed seed. Another role set fills the cache first; reference is uncached product code."""
-    corpus = _load_corpus()
-    jobs = _generated_jobs(corpus, GENERATED_JOBS)
-    assert len(jobs) == GENERATED_JOBS
-    _score_and_filter(jobs[:40], _config_for_roles(["Verkäufer", "Buchhalter"]))
-    _assert_same_end_result(jobs, _app_config(), "seed-5000")
-
-
-def _config_for_roles(roles: list[str]) -> AppConfig:
-    """Same profile shape as ``_app_config``, with a replaced target role."""
-    config = _app_config()
-    config.profile.jobs.desired_titles = list(roles)
-    config.profile.search_intent = SearchIntent(
-        target_roles=list(roles),
-        mandatory_skills=["Excel"],
-        preferred_skills=["SAP", "DATEV"],
-        excluded_roles=["Praktikant"],
-        excluded_keywords=["unbezahlt"],
-        strictness=Strictness.STRICT,
-        countries=["DE"],
-        radius_km=50,
-        salary_min=36000,
-        employment_types=["full_time"],
-    )
-    return config
-
-
-def _probe_pair() -> list[Job]:
-    common = dict(
-        source="cache-probe",
-        company="Nordlicht GmbH",
-        city="Hamburg",
-        postal_code="20095",
-        country_code="DE",
-        remote_type=RemoteType.ONSITE.value,
-        employment_type="Vollzeit",
-        distance_km=8.0,
-        salary_min=48000.0,
-        salary_max=54000.0,
-        discovered_at="2026-09-01T12:00:00+00:00",
-    )
-    return [
-        Job(
-            id="probe-payroll",
-            title="Senior Lohnbuchhalter (m/w/d)",
-            description="Excel Entgeltabrechnung DATEV",
-            url="https://example.test/cache/payroll",
-            **common,
-        ),
-        Job(
-            id="probe-sales",
-            title="Verkäufer (m/w/d)",
-            description="Excel Verkauf im Einzelhandel",
-            url="https://example.test/cache/sales",
-            **common,
-        ),
-    ]
-
-
-def _included_ids(filter_rows: tuple) -> set[str]:
-    return {row[0] for row in filter_rows if row[1] and not row[2]}
-
-
-def test_intent_change_same_process_matches_uncached_path() -> None:
-    """A new target role or alias must not reuse the previous preparation."""
-    corpus = _load_corpus()
-    seeded = _generated_jobs(corpus, 400)
-    jobs = _probe_pair() + seeded
-    payroll_roles = ["Lohnbuchhalter"]
-    sales_roles = ["Verkäufer"]
-    alias_roles = ["Fachkraft Entgeltabrechnung"]
-    other_alias_roles = ["Krankenpfleger"]
-
-    first = _score_and_filter(jobs, _config_for_roles(payroll_roles))
-    assert "probe-payroll" in _included_ids(first[1])
-    assert "probe-sales" not in _included_ids(first[1])
-
-    second = _score_and_filter(jobs, _config_for_roles(sales_roles))
-    aliases._cached_alias_targets.cache_clear()
-    second_uncached = _score_and_filter(jobs, _config_for_roles(sales_roles))
-    assert second == second_uncached
-    assert "probe-sales" in _included_ids(second[1])
-    assert "probe-payroll" not in _included_ids(second[1])
-
-    third = _score_and_filter(jobs, _config_for_roles(alias_roles))
-    aliases._cached_alias_targets.cache_clear()
-    assert third == _score_and_filter(jobs, _config_for_roles(alias_roles))
-    assert "probe-payroll" in _included_ids(third[1])
-
-    fourth = _score_and_filter(jobs, _config_for_roles(other_alias_roles))
-    aliases._cached_alias_targets.cache_clear()
-    assert fourth == _score_and_filter(jobs, _config_for_roles(other_alias_roles))
-    assert "probe-payroll" not in _included_ids(fourth[1])
-
-    info = aliases._cached_alias_targets.cache_info()
-    assert info.currsize <= aliases._PREPARED_ALIAS_CACHE_MAXSIZE
+def test_fuzzy_matches_legacy_on_fixture_texts() -> None:
+    for text in _fixture_texts():
+        for aliases in _alias_sets():
+            assert _fuzzy_against_aliases(text, aliases) == _legacy_fuzzy_against_aliases(
+                text, aliases
+            )

@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from functools import lru_cache
 
 # Bump when alias tables change (invalidates persisted ranking caches).
 INTENT_ALIAS_TABLE_VERSION = 1
@@ -67,68 +66,16 @@ def _norm_alias(s: str) -> str:
     return t
 
 
-def _alias_targets(aliases: frozenset[str]) -> tuple[str, ...]:
-    """Non-empty alias strings in normalized form. Uncached.
-
-    Curated tables are authored already normalized, so each target is the
-    same string the fuzzy loop used to compare. An alias that normalization
-    would change keeps its original spelling — ratios must not move.
-    """
-    targets: list[str] = []
-    for alias in aliases:
-        if not alias:
-            continue
-        normalized = _norm_alias(alias)
-        targets.append(normalized if normalized == alias else alias)
-    return tuple(targets)
-
-
-# One entry per distinct alias set (a curated family, or one role label).
-# Not a single process-global slot: a new role/alias tuple misses.
-# 32 covers a session of intents without retaining every job title.
-_PREPARED_ALIAS_CACHE_MAXSIZE = 32
-
-
-def _alias_cache_key(aliases: frozenset[str]) -> tuple[tuple[str, str, str], tuple[str, ...]]:
-    """Regex sources plus every alias. Built once per distinct alias set.
-
-    Callers pass the set they already hold (family table or one role label).
-    Repeat jobs reuse that reference; the sorted tuple is not rebuilt per job.
-    A different intent expands to a different set and therefore a different key.
-    """
-    return _alias_cache_key_cached(aliases)
-
-
-@lru_cache(maxsize=_PREPARED_ALIAS_CACHE_MAXSIZE)
-def _alias_cache_key_cached(
-    aliases: frozenset[str],
-) -> tuple[tuple[str, str, str], tuple[str, ...]]:
-    patterns = (_HYPHEN_RE.pattern, _WS_RE.pattern, _TITLE_NOISE_RE.pattern)
-    tokens = tuple(sorted(alias for alias in aliases if alias))
-    return patterns, tokens
-
-
-@lru_cache(maxsize=_PREPARED_ALIAS_CACHE_MAXSIZE)
-def _cached_alias_targets(
-    key: tuple[tuple[str, str, str], tuple[str, ...]],
-) -> tuple[str, ...]:
-    """Prepared targets for one alias-set key. See ``_alias_cache_key``."""
-    tokens = key[1]
-    return _alias_targets(frozenset(tokens))
-
-
-def _prepared_alias_targets(aliases: frozenset[str]) -> tuple[str, ...]:
-    return _cached_alias_targets(_alias_cache_key(aliases))
-
-
 def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
     """True if normalized ``text`` fuzzily matches a curated alias (≥ threshold).
 
     Uses full-string ratio only — never partial/substring fuzzy that would
     expand ``Buchhalter`` into the payroll family.
 
-    The job text is normalized once, including title-noise stripping.
-    Alias strings come from the precomputed table.
+    Title-noise stripping depends only on the job text, so it runs once.
+    ``compact in aliases`` is likewise independent of the loop variable.
+    An empty-only alias set still returns false, matching the old
+    ``if not alias: continue`` before that membership test.
     """
     needle = _norm_alias(text)
     if not needle or not aliases:
@@ -141,8 +88,12 @@ def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
         return False
     compact = _TITLE_NOISE_RE.sub(" ", needle)
     compact = _WS_RE.sub(" ", compact).strip(" ()[]")
-    for alias in _prepared_alias_targets(aliases):
-        if compact in aliases or fuzz.ratio(compact, alias) >= _ALIAS_FUZZY_THRESHOLD:
+    if compact in aliases and any(aliases):
+        return True
+    for alias in aliases:
+        if not alias:
+            continue
+        if fuzz.ratio(compact, alias) >= _ALIAS_FUZZY_THRESHOLD:
             return True
         if fuzz.ratio(needle, alias) >= _ALIAS_FUZZY_THRESHOLD:
             return True
@@ -181,10 +132,6 @@ _PAYROLL_ALIASES = frozenset(
 ROLE_FAMILIES: tuple[RoleFamily, ...] = (
     RoleFamily(family_id="payroll", aliases=_PAYROLL_ALIASES),
 )
-
-# Prime the bounded cache. The key is still the alias tuple, not a singleton.
-for _family in ROLE_FAMILIES:
-    _prepared_alias_targets(_family.aliases)
 
 # Title patterns that belong to payroll family even with extra tokens
 # (e.g. "Lohnbuchhalter (m/w/d)", "Senior Payroll Specialist").
