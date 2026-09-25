@@ -14,17 +14,15 @@ from search.stepstone import StepstoneSource
 from search.xing import XingSource
 
 
-def test_company_sites_is_placeholder_empty():
+def test_company_sites_is_curated_not_placeholder():
     src = CompanySitesSource()
     jobs = src.search([])
     assert jobs == []
     ok, msg = src.health_check()
     assert ok is True
-    assert "placeholder" in msg.lower()
-    status = SourceHealthStatus.from_outcome(
-        jobs_found=0, source_id=src.source_id, placeholder=True
-    )
-    assert status == SourceHealthStatus.PLACEHOLDER
+    assert "placeholder" not in msg.lower()
+    status = SourceHealthStatus.from_outcome(jobs_found=0, source_id=src.source_id)
+    assert status == SourceHealthStatus.OK_EMPTY
 
 
 @pytest.mark.network

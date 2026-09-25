@@ -30,6 +30,17 @@ if str(_ROOT) not in sys.path:
 os.environ.setdefault("QT_ENABLE_HIGHDPI_SCALING", "1")
 os.environ.setdefault("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
 
+# Windows AppUserModelID — stable taskbar/pin identity matching branded EXE icon.
+if sys.platform == "win32":
+    try:
+        import ctypes
+
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(  # type: ignore[attr-defined]
+            "Karrierekrake.Desktop.1"
+        )
+    except Exception:
+        pass
+
 # Packaged Chromium path before any Playwright import (configure only — no playwright import)
 try:
     from desktop.services.browser_install import configure_playwright_browsers_path
@@ -107,6 +118,14 @@ def run() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName(DISPLAY_NAME)
     app.setOrganizationName(DATA_DIR_NAME)
+    try:
+        from desktop.tray import app_icon
+
+        icon = app_icon()
+        if icon is not None and not icon.isNull():
+            app.setWindowIcon(icon)
+    except Exception:
+        pass
     # Quit when the last window closes unless the user opted into tray-minimize.
     # Tray exit / red-X exit always call ApplicationShutdownManager → app.quit().
     app.setQuitOnLastWindowClosed(True)

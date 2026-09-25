@@ -49,9 +49,25 @@ class GoogleGmailAdapter:
     def _service_or_raise(self) -> Any:
         if self._service is not None:
             return self._service
+        from pathlib import Path
+
         from integrations.gmail_auth import get_gmail_service
 
-        svc = get_gmail_service(token_dir=self.token_dir)
+        creds_path = Path("private/gmail_credentials.json")
+        settings = self.settings
+        if settings is not None:
+            raw = str(getattr(settings, "gmail_credentials_path", "") or "").strip()
+            if raw:
+                candidate = Path(raw)
+                if candidate.is_file():
+                    creds_path = candidate
+                else:
+                    # Relative to process CWD / packaged root — caller may also pass absolute.
+                    if (Path.cwd() / candidate).is_file():
+                        creds_path = Path.cwd() / candidate
+                    else:
+                        creds_path = candidate
+        svc = get_gmail_service(credentials_path=creds_path, token_dir=self.token_dir)
         if svc is None:
             raise ProviderError(
                 self.provider.value,

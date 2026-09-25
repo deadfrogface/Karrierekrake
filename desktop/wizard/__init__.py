@@ -204,25 +204,155 @@ class ReadyStepPage(QWizardPage):
         self.dry.setText(tr("settings.dry_run"))
 
 
+class IntegrationsStepPage(QWizardPage):
+    """Optional mail/calendar connect — skippable; failed login is not saved as success."""
+
+    def __init__(self, config_service: ConfigService) -> None:
+        super().__init__()
+        self.config_service = config_service
+        self._connected_ok = False
+        self.body = QLabel()
+        self.body.setWordWrap(True)
+        self.body.setObjectName("PageSubtitle")
+        self.opt_gmail = QRadioButton()
+        self.opt_gcal = QRadioButton()
+        self.opt_both = QRadioButton()
+        self.opt_gmail.setChecked(True)
+        self.connect_btn = QPushButton()
+        self.connect_btn.setObjectName("PrimaryButton")
+        self.connect_btn.clicked.connect(self._connect_selected)
+        self.status = QLabel()
+        self.status.setWordWrap(True)
+        self.status.setObjectName("KkHint")
+        self.skip_hint = QLabel()
+        self.skip_hint.setWordWrap(True)
+        self.skip_hint.setObjectName("KkHint")
+        card = QWidget()
+        card.setObjectName("Card")
+        cl = QVBoxLayout(card)
+        cl.setContentsMargins(14, 12, 14, 12)
+        cl.addWidget(self.opt_gmail)
+        cl.addWidget(self.opt_gcal)
+        cl.addWidget(self.opt_both)
+        cl.addWidget(self.connect_btn)
+        cl.addWidget(self.status)
+        inner = QWidget()
+        layout = QVBoxLayout(inner)
+        layout.setSpacing(12)
+        layout.addWidget(self.body)
+        layout.addWidget(card)
+        layout.addWidget(self.skip_hint)
+        layout.addStretch()
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.addWidget(_scroll_page_body(inner))
+        self.retranslate_ui()
+
+    def retranslate_ui(self) -> None:
+        self.setTitle(tr("wizard.step_integrations_title"))
+        self.body.setText(tr("wizard.step_integrations_body"))
+        self.opt_gmail.setText(tr("wizard.integrations_gmail"))
+        self.opt_gcal.setText(tr("wizard.integrations_gcal"))
+        self.opt_both.setText(tr("wizard.integrations_both"))
+        self.connect_btn.setText(tr("wizard.integrations_connect"))
+        self.skip_hint.setText(tr("wizard.integrations_skip"))
+        if not self._connected_ok:
+            self.status.setText(tr("wizard.integrations_status_idle"))
+
+    def _connect_selected(self) -> None:
+        from desktop.oauth_messages import message_for_google_outcome
+        from integrations.gmail_auth import authorize_calendar_mode, authorize_gmail
+        from PySide6.QtWidgets import QMessageBox
+
+        app_cfg = self.config_service.load()
+        settings = app_cfg.settings
+        creds = Path(settings.gmail_credentials_path)
+        if not creds.is_file():
+            creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
+        want_mail = self.opt_gmail.isChecked() or self.opt_both.isChecked()
+        want_cal = self.opt_gcal.isChecked() or self.opt_both.isChecked()
+        ok_any = False
+        last_msg = ""
+        if want_mail:
+            outcome = authorize_gmail(
+                credentials_path=creds,
+                token_dir=self.config_service.dirs["config"],
+                interactive=True,
+                open_browser=True,
+                privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
+                homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
+                oauth_env=getattr(settings, "oauth_environment", None),
+            )
+            if outcome.service is not None and not outcome.denied_features:
+                app_cfg.settings.mail_provider = "google_gmail"
+                self.config_service.save(app_cfg)
+                ok_any = True
+            else:
+                last_msg = message_for_google_outcome(outcome)
+        if want_cal:
+            mode = str(getattr(settings, "calendar_google_mode", "A") or "A").upper()
+            if mode not in {"A", "B"}:
+                mode = "A"
+            outcome = authorize_calendar_mode(
+                mode,
+                credentials_path=creds,
+                token_dir=self.config_service.dirs["config"],
+                interactive=True,
+                open_browser=True,
+                privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
+                homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
+                oauth_env=getattr(settings, "oauth_environment", None),
+            )
+            if outcome.service is not None and not outcome.denied_features:
+                app_cfg = self.config_service.load()
+                app_cfg.settings.calendar_provider = "google_calendar"
+                app_cfg.settings.calendar_google_mode = mode
+                app_cfg.settings.calendar_freebusy_enabled = True
+                self.config_service.save(app_cfg)
+                ok_any = True
+            else:
+                last_msg = message_for_google_outcome(outcome)
+        self._connected_ok = ok_any
+        if ok_any:
+            self.status.setText(tr("wizard.integrations_status_ok"))
+            QMessageBox.information(self, tr("wizard.window_title"), tr("privacy.connect_ok"))
+        else:
+            self.status.setText(tr("wizard.integrations_status_failed"))
+            QMessageBox.warning(
+                self,
+                tr("wizard.window_title"),
+                last_msg or tr("wizard.integrations_status_failed"),
+            )
+
+
 class FirstRunWizard(QWizard):
-    def __init__(self, config_service: ConfigService, parent=None) -> None:
+    def __init__(
+        self,
+        config_service: ConfigService,
+        parent=None,
+        *,
+        force: bool = False,
+    ) -> None:
         super().__init__(parent)
         self.config_service = config_service
-        self.setMinimumSize(640, 520)
+        self._force = force
+        self.setMinimumSize(640, 560)
         self.setSizeGripEnabled(True)
         self.setWindowIcon(app_icon())
         self.cv = CvStepPage()
         self.prefs = PrefsStepPage()
+        self.integrations = IntegrationsStepPage(config_service)
         self.ready = ReadyStepPage()
         self.addPage(self.cv)
         self.addPage(self.prefs)
+        self.addPage(self.integrations)
         self.addPage(self.ready)
         self.retranslate_ui()
 
     def retranslate_ui(self) -> None:
         self.setWindowTitle(tr("wizard.window_title"))
         self.setButtonText(QWizard.WizardButton.FinishButton, tr("wizard.cta_find_jobs"))
-        for page in (self.cv, self.prefs, self.ready):
+        for page in (self.cv, self.prefs, self.integrations, self.ready):
             if hasattr(page, "retranslate_ui"):
                 page.retranslate_ui()
 
@@ -244,5 +374,7 @@ class FirstRunWizard(QWizard):
         self.config_service.save(cfg)
         if self.cv.cv_path:
             self.config_service.copy_cv_into_storage(Path(self.cv.cv_path))
+        # Only mark first-run done on Finish — cancel leaves the wizard for next launch.
+        # OAuth success is saved only inside IntegrationsStepPage on real AuthOutcome.ok.
         self.config_service.mark_first_run_done()
         super().accept()

@@ -15,7 +15,7 @@ def test_source_health_empty_vs_results():
     )
     assert (
         SourceHealthStatus.from_outcome(jobs_found=0, source_id="company_sites")
-        == SourceHealthStatus.PLACEHOLDER
+        == SourceHealthStatus.OK_EMPTY
     )
 
 

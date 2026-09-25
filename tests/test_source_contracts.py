@@ -9,15 +9,26 @@ from search.stepstone import StepstoneSource
 from search.xing import XingSource
 
 
-def test_company_sites_empty_placeholder():
+def test_company_sites_empty_query_is_ok_empty_not_placeholder():
     src = CompanySitesSource()
-    assert src.search([SearchQuery(keyword="test")]) == []
-    status = SourceHealthStatus.from_outcome(
-        jobs_found=0, source_id="company_sites", placeholder=True
+    assert src.search([]) == []
+    status = SourceHealthStatus.from_outcome(jobs_found=0, source_id="company_sites")
+    assert status == SourceHealthStatus.OK_EMPTY
+    assert status != SourceHealthStatus.PLACEHOLDER
+    # Explicit placeholder flag still works for legacy callers.
+    assert (
+        SourceHealthStatus.from_outcome(
+            jobs_found=0, source_id="company_sites", placeholder=True
+        )
+        == SourceHealthStatus.PLACEHOLDER
     )
-    assert status == SourceHealthStatus.PLACEHOLDER
-    assert status != SourceHealthStatus.OK_EMPTY
-    assert status != SourceHealthStatus.OK_WITH_RESULTS
+
+
+def test_company_sites_health_is_curated_not_placeholder():
+    ok, msg = CompanySitesSource().health_check()
+    assert ok is True
+    assert "placeholder" not in msg.lower()
+    assert "greenhouse" in msg.lower() or "kuratierte" in msg.lower() or "boards" in msg.lower()
 
 
 def test_stepstone_garbage_http_does_not_crash(monkeypatch):
@@ -79,7 +90,7 @@ def test_source_health_status_distinctions():
     assert SourceHealthStatus.from_outcome(jobs_found=0, source_id="indeed") == SourceHealthStatus.OK_EMPTY
     assert (
         SourceHealthStatus.from_outcome(jobs_found=0, source_id="company_sites")
-        == SourceHealthStatus.PLACEHOLDER
+        == SourceHealthStatus.OK_EMPTY
     )
     assert (
         SourceHealthStatus.from_outcome(jobs_found=0, error="Timeout after 120s")

@@ -1004,6 +1004,12 @@ def load_config(
     if os.getenv("CV_PATH"):
         application.cv_path = os.environ["CV_PATH"]
 
+    # Microsoft public-client ID from env when settings field is empty.
+    if not str(getattr(settings, "microsoft_client_id", "") or "").strip():
+        env_ms = (os.environ.get("KARRIEREKRAKE_MS_CLIENT_ID") or "").strip()
+        if env_ms:
+            settings.microsoft_client_id = env_ms
+
     # NEXT-03: coerce legacy Google flags → explicit providers (no token wipe).
     try:
         from integrations.providers.migration import migrate_provider_settings
