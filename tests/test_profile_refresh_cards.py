@@ -136,3 +136,38 @@ def test_refresh_cards_keeps_experience_more_button_after_deferred_delete(
     assert not page._exp_more.isHidden()
     assert _more_button_in_body(page)
     assert _experience_titles(page) == ["Buchhalter", "Teamleitung"]
+
+
+def test_more_button_not_visible_when_positions_drop_to_two(qapp, config_service):
+    """Dropping to two jobs must hide the more-button, not leave it on the card.
+
+    The page is shown so a button removed with takeAt() but not hide() stays
+    visible (top-left leftover). Unpatched main fails that visibility check.
+    """
+    i18n.set_language("de")
+    cfg = config_service.load()
+    cfg.profile.qualifications.work_experience = [
+        ExperienceEntry(title="Buchhalter", company="Nordlicht GmbH"),
+        ExperienceEntry(title="Teamleitung", company="Contoso Süd"),
+        ExperienceEntry(title="Sachbearbeitung", company="Fabrikam"),
+    ]
+    config_service.save(cfg)
+
+    page = ProfilePage(config_service)
+    page.show()
+    page.refresh_cards()
+    # Realize the shown card. The first refresh does not deleteLater the button.
+    qapp.processEvents()
+    _flush_deferred_deletes()
+    assert page._exp_more.isVisible()
+    assert _more_button_in_body(page)
+
+    cfg = config_service.load()
+    cfg.profile.qualifications.work_experience = cfg.profile.qualifications.work_experience[:2]
+    config_service.save(cfg)
+    page.refresh_cards()
+
+    assert _experience_titles(page) == ["Buchhalter", "Teamleitung"]
+    assert not _more_button_in_body(page)
+    assert not page._exp_more.isVisible()
+    assert page._exp_more.isHidden()
