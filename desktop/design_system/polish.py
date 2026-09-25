@@ -33,6 +33,7 @@ from PySide6.QtWidgets import (
     QToolButton,
     QWidget,
 )
+from shiboken6 import delete as shiboken_delete
 
 from desktop.design_system.icons import try_qtawesome_icon
 
@@ -366,39 +367,83 @@ class _InteractivePolish(QObject):
         return (self._base_blur, self._base_y, self._base_alpha)
 
     def _animate_shadow(self, blur: float, y: float, alpha: int) -> None:
+        if not self._shadow_alive():
+            return
         if not self._should_animate():
             self._stop_anims()
-            self._apply_immediate(blur, y, alpha)
+            try:
+                self._apply_immediate(blur, y, alpha)
+            except RuntimeError:
+                self._shadow = None
+                self._destroy_anims()
             return
         self._ensure_anims()
         assert self._blur_anim is not None
         assert self._y_anim is not None
         assert self._color_anim is not None
+        assert self._shadow is not None
         self._stop_anims()
-        self._blur_anim.setStartValue(self._shadow.blurRadius())
-        self._blur_anim.setEndValue(blur)
-        self._y_anim.setStartValue(self._shadow.yOffset())
-        self._y_anim.setEndValue(y)
-        end_color = QColor(self._shadow.color())
-        end_color.setAlpha(int(alpha))
-        self._color_anim.setStartValue(QColor(self._shadow.color()))
-        self._color_anim.setEndValue(end_color)
-        self._blur_anim.start()
-        self._y_anim.start()
-        self._color_anim.start()
+        try:
+            self._blur_anim.setStartValue(self._shadow.blurRadius())
+            self._blur_anim.setEndValue(blur)
+            self._y_anim.setStartValue(self._shadow.yOffset())
+            self._y_anim.setEndValue(y)
+            end_color = QColor(self._shadow.color())
+            end_color.setAlpha(int(alpha))
+            self._color_anim.setStartValue(QColor(self._shadow.color()))
+            self._color_anim.setEndValue(end_color)
+            self._blur_anim.start()
+            self._y_anim.start()
+            self._color_anim.start()
+        except RuntimeError:
+            self._shadow = None
+            self._destroy_anims()
 
-    def _discard_anims(self) -> None:
-        self._stop_anims()
-        for anim in (self._blur_anim, self._y_anim, self._color_anim):
-            if anim is not None:
-                anim.deleteLater()
+    def _shadow_alive(self) -> bool:
+        shadow = self._shadow
+        if shadow is None:
+            return False
+        try:
+            shadow.blurRadius()
+        except RuntimeError:
+            # setGraphicsEffect(None) already destroyed the C++ effect.
+            self._shadow = None
+            self._destroy_anims()
+            return False
+        return True
+
+    def _destroy_anims(self) -> None:
+        """Stop and delete hover animations while their target effect still exists.
+
+        ``setGraphicsEffect(None)`` deletes the effect immediately. A
+        ``QPropertyAnimation`` that still points at it will touch a dead C++
+        object on the next tick or on ``DeferredDelete`` (same class of crash
+        as a wrapper kept past ``deleteLater``).
+        """
+        anims = (self._blur_anim, self._y_anim, self._color_anim)
         self._blur_anim = None
         self._y_anim = None
         self._color_anim = None
+        for anim in anims:
+            if anim is None:
+                continue
+            try:
+                anim.stop()
+            except RuntimeError:
+                continue
+            try:
+                anim.setTargetObject(None)
+            except RuntimeError:
+                pass
+            try:
+                shiboken_delete(anim)
+            except RuntimeError:
+                pass
 
     def _drop_shadow(self) -> None:
-        """Remove the single drop shadow. Does not install a replacement effect."""
-        self._discard_anims()
+        """Remove the shadow and the animations that target it, together."""
+        # Animations first, while the C++ effect is still alive.
+        self._destroy_anims()
         self._shadow = None
         if self._target.graphicsEffect() is not None:
             self._target.setGraphicsEffect(None)

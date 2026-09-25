@@ -11,7 +11,7 @@ import pytest
 
 pytest.importorskip("PySide6.QtWidgets")
 
-from PySide6.QtCore import QAbstractAnimation, QEvent, Qt
+from PySide6.QtCore import QAbstractAnimation, QCoreApplication, QEvent, Qt
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QGraphicsDropShadowEffect, QHBoxLayout
 
@@ -186,6 +186,65 @@ def test_dark_theme_chip_has_no_graphics_effect(qapp):
         assert widget.testAttribute(Qt.WidgetAttribute.WA_Hover)
     card = ContentCard()
     assert isinstance(card.graphicsEffect(), QGraphicsDropShadowEffect)
+
+
+def _flush_deferred_deletes() -> None:
+    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+
+
+def _hover_cycle(chip) -> None:
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.Enter))
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.Leave))
+
+
+def test_theme_switch_deletes_hover_animation_with_effect(qapp, monkeypatch):
+    """Light → dark → light without restart, hover between switches.
+
+    A naive ``setGraphicsEffect(None)`` deletes the shadow immediately and
+    leaves ``QPropertyAnimation`` aimed at that C++ object. The next hover or
+    ``DeferredDelete`` then raises ``RuntimeError: already deleted``.
+    """
+    monkeypatch.setenv("KK_REDUCED_MOTION", "0")
+    qapp.setStyleSheet(stylesheet_for("light"))
+    qapp.processEvents()
+    _flush_deferred_deletes()
+    chip = TagChip("Nur Suche – nie bewerben", kind="neutral")
+    polish = chip.property("_kk_polish")
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.Enter))
+    assert polish._blur_anim is not None
+    assert polish._blur_anim.state() == QAbstractAnimation.State.Running
+    _hover_cycle(chip)
+
+    qapp.setStyleSheet(stylesheet_for("dark"))
+    qapp.processEvents()
+    _flush_deferred_deletes()
+    _hover_cycle(chip)
+    _flush_deferred_deletes()
+    assert chip.graphicsEffect() is None
+    assert polish._blur_anim is None
+    assert polish._y_anim is None
+    assert polish._color_anim is None
+    assert polish._shadow is None
+    dark_css = qapp.styleSheet()
+    hover = _declaration_block(dark_css, "QLabel#BadgeMuted:hover")
+    resting = _declaration_block(dark_css, "QLabel#BadgeMuted")
+    assert _decl(hover, "background") not in {"", "#243343"}
+    assert _decl(hover, "border") not in {"", "1px solid transparent"}
+    assert _decl(hover, "background") != _decl(resting, "background")
+
+    qapp.setStyleSheet(stylesheet_for("light"))
+    qapp.processEvents()
+    _flush_deferred_deletes()
+    effect = _effect(chip)
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.Enter))
+    for anim in (polish._blur_anim, polish._y_anim, polish._color_anim):
+        assert anim is not None
+        assert anim.targetObject() is effect
+        anim.setStartValue(anim.currentValue())
+    assert effect.blurRadius() <= 12.0
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.Leave))
+    _flush_deferred_deletes()
+    assert chip.graphicsEffect() is effect
 
 
 def test_theme_switch_restores_one_chip_shadow(qapp, monkeypatch):
