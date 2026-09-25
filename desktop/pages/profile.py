@@ -35,7 +35,7 @@ from desktop.design_system.v2_chrome import (
     SectionEditDrawer,
     TagChip,
 )
-from desktop.i18n import TRANSLATIONS, tr
+from desktop.i18n import TRANSLATIONS, tr, tr_show_more_entries
 from desktop.pages.profile_sections import (
     ApplicantSection,
     CareerSection,
@@ -520,7 +520,7 @@ class ProfilePage(QWidget):
                 vl.addWidget(desc)
             self._exp_body.addWidget(wrap)
         if len(experiences) > self._exp_limit:
-            self._exp_more.setText(tr("profile.show_more_entries", n=len(experiences) - self._exp_limit))
+            self._exp_more.setText(tr_show_more_entries(len(experiences) - self._exp_limit))
             self._exp_more.show()
             self._exp_body.addWidget(self._exp_more)
         if not experiences:

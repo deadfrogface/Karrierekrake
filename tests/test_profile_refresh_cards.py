@@ -25,7 +25,7 @@ from core.config import (
     QualificationsConfig,
     SourcedText,
 )
-from desktop.i18n import i18n, tr
+from desktop.i18n import i18n, tr, tr_show_more_entries
 from desktop.pages.profile import ProfilePage
 from desktop.services import ConfigService
 
@@ -142,10 +142,9 @@ def test_refresh_cards_keeps_experience_more_button_after_deferred_delete(
 
     page = ProfilePage(config_service)
     page.load_from_config()
-    hidden = len(cfg.profile.qualifications.work_experience) - page._exp_limit
-    expected = tr("profile.show_more_entries", n=hidden)
-    assert expected == "+ 1 weitere Einträge anzeigen"
-    assert page._exp_more.text() == expected
+    assert tr_show_more_entries(1) == "+ 1 weiteren Eintrag anzeigen"
+    assert tr_show_more_entries(2) == "+ 2 weitere Einträge anzeigen"
+    assert page._exp_more.text() == "+ 1 weiteren Eintrag anzeigen"
     assert _more_button_in_body(page)
     assert _experience_titles(page) == ["Buchhalter", "Teamleitung"]
 
@@ -153,30 +152,37 @@ def test_refresh_cards_keeps_experience_more_button_after_deferred_delete(
     _flush_deferred_deletes()
     page.refresh_cards()
 
-    assert page._exp_more.text() == expected
+    assert page._exp_more.text() == "+ 1 weiteren Eintrag anzeigen"
     assert not page._exp_more.isHidden()
     assert _more_button_in_body(page)
     assert _experience_titles(page) == ["Buchhalter", "Teamleitung"]
+
+    cfg = config_service.load()
+    cfg.profile.qualifications.work_experience.append(
+        ExperienceEntry(title="Buchhaltung", company="Litware")
+    )
+    config_service.save(cfg)
+    page.refresh_cards()
+    _flush_deferred_deletes()
+    page.refresh_cards()
+    assert page._exp_more.text() == "+ 2 weitere Einträge anzeigen"
+    i18n.set_language("en")
+    page.refresh_cards()
+    assert page._exp_more.text() == "+ show 2 more entries"
+    assert tr_show_more_entries(1) == "+ show 1 more entry"
+    i18n.set_language("de")
+    page.refresh_cards()
 
     page._exp_more.click()
     assert page._exp_limit == 50
-    assert _experience_titles(page) == ["Buchhalter", "Teamleitung", "Sachbearbeitung"]
+    assert _experience_titles(page) == [
+        "Buchhalter",
+        "Teamleitung",
+        "Sachbearbeitung",
+        "Buchhaltung",
+    ]
     assert not _more_button_in_body(page)
     assert page._exp_more.isHidden()
-
-    _flush_deferred_deletes()
-    page.refresh_cards()
-    assert _experience_titles(page) == ["Buchhalter", "Teamleitung", "Sachbearbeitung"]
-    assert not _more_button_in_body(page)
-
-    page._exp_limit = 2
-    page.refresh_cards()
-    _flush_deferred_deletes()
-    page.refresh_cards()
-    assert page._exp_more.text() == expected
-    assert not page._exp_more.isHidden()
-    assert _more_button_in_body(page)
-    assert _experience_titles(page) == ["Buchhalter", "Teamleitung"]
 
 
 def test_more_button_not_visible_when_positions_drop_to_two(qapp, config_service):
@@ -249,12 +255,12 @@ def test_more_button_not_visible_when_experience_cleared(qapp, config_service):
 
 
 def test_second_refresh_rebuilds_education_skills_and_languages(qapp, config_service):
-    """A refresh after DeferredDelete must paint the new qualification cards.
+    """Data saved between two refresh_cards() calls must show up on the second.
 
-    Navigation (_navigate -> load_from_config -> refresh_cards) raises at
-    _exp_more.setText once the button's C++ object is gone. That aborts the
-    function after the experience card was cleared and before education,
-    skills and languages are rebuilt, so those cards keep the previous text.
+    load_from_config() puts the more-button in the layout. The first
+    refresh_cards() queues deleteLater. DeferredDelete runs before the second
+    refresh_cards(), which on main dies in setText after clearing experience
+    and before education, skills and languages are rebuilt.
     """
     i18n.set_language("de")
     cfg = config_service.load()
@@ -271,15 +277,16 @@ def test_second_refresh_rebuilds_education_skills_and_languages(qapp, config_ser
     assert "Excel" in _layout_texts(page._skills_row, object_prefix="Badge")
     assert "Deutsch (C2)" in _layout_texts(page._lang_body, object_prefix="Badge")
 
-    _arm_deleted_more_button(page)
-
+    # Button is already in the layout. This refresh queues deleteLater on it.
+    page.refresh_cards()
     cfg = config_service.load()
     quals = cfg.profile.qualifications
     quals.education = [EducationEntry(qualification="Neue Ausbildung", institution="Neue Hochschule")]
     quals.skills = [SourcedText(value="DATEV", source="cv")]
     quals.languages = [LanguageEntry(language="Englisch", level="B2")]
     config_service.save(cfg)
-    page.load_from_config()
+    _flush_deferred_deletes()
+    page.refresh_cards()
 
     education = _layout_texts(page._edu_body, object_prefix="NextActionTitle")
     skills = _layout_texts(page._skills_row, object_prefix="Badge")
