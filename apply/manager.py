@@ -20,7 +20,7 @@ from apply.stepstone import StepstoneApplier
 from apply.successfactors import SuccessFactorsApplier
 from apply.workday import WorkdayApplier
 from core.config import AppConfig
-from core.application_queue import is_demo_job
+from core.application_queue import is_application_source
 from core.cover_letter import compose_cover_letter, save_cover_letter
 from core.parser_debt import auto_actions_blocked
 from core.database import Database
@@ -108,8 +108,8 @@ class ApplicationManager:
         debt = auto_actions_blocked(self.config)
         if debt.blocked:
             return False, debt.reason
-        if is_demo_job(job):
-            return False, "demo source excluded"
+        if not is_application_source(job):
+            return False, "source not allowlisted"
         if job.match_score < settings.minimum_match_for_auto_apply:
             return False, f"score {job.match_score} < {settings.minimum_match_for_auto_apply}"
         # Defense in depth: ApplicationCase known statuses even if search dedup failed.
@@ -173,6 +173,7 @@ class ApplicationManager:
                 or reason.startswith("CV file missing")
                 or reason.startswith("max applications")
                 or reason.startswith("max failed")
+                or reason.startswith("source not allowlisted")
                 or reason.startswith("demo source")
                 or reason.startswith("needs_confirmation")
             )

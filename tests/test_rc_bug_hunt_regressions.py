@@ -426,6 +426,7 @@ def test_stored_unknown_ats_type_is_re_detected_from_url(tmp_path: Path):
     mgr = ApplicationManager(cfg, db)
     job = Job(
         id="1",
+        source="indeed",
         title="Dev",
         company="Acme",
         url="https://boards.greenhouse.io/acme/jobs/1",

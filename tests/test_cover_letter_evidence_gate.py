@@ -7,7 +7,11 @@ from pathlib import Path
 
 from apply.manager import ApplicationManager
 from apply.preview import build_application_preview
-from core.application_queue import filter_application_queue
+from core.application_queue import (
+    APPLICATION_SOURCE_ALLOWLIST,
+    filter_application_queue,
+    is_application_source,
+)
 from core.config import (
     AppConfig,
     ExperienceEntry,
@@ -265,7 +269,7 @@ def test_demo_source_excluded_from_queue_and_letter(tmp_path: Path):
     cfg_apply.application.cv_path = "cv.pdf"
     ok, reason = ApplicationManager(cfg_apply, Database(tmp_path / "jobs.db")).can_auto_apply(demo)
     assert ok is False
-    assert reason.startswith("demo source")
+    assert reason.startswith("source not allowlisted")
 
 
 def test_pasted_description_uses_clean_text_and_same_gate(tmp_path: Path):
@@ -363,6 +367,8 @@ def test_disposition_fixture_is_synthetic_and_idempotent(tmp_path: Path):
     rows = db.list_jobs(source=FIXTURE_SOURCE, hide_duplicates=False)
     assert len(rows) == 1
     assert rows[0].id == FIXTURE_JOB_ID
+    assert rows[0].status == JobStatus.NEW.value
+    assert rows[0].status != JobStatus.QUEUED.value
     assert rows[0].description == FIXTURE_DESCRIPTION.strip() or "Anforderungen" in rows[0].description
 
     cfg = _cfg("Tourenplanung")
@@ -371,6 +377,70 @@ def test_disposition_fixture_is_synthetic_and_idempotent(tmp_path: Path):
     _assert_clean(letter.text)
     assert "Tourenplanung" in letter.text
 
+def test_allowlist_is_the_portal_scraper_ids():
+    from search.bundesagentur import BundesagenturSource
+    from search.company_sites import CompanySitesSource
+    from search.indeed import IndeedSource
+    from search.linkedin import LinkedInSearchSource
+    from search.stepstone import StepstoneSource
+    from search.xing import XingSource
+
+    assert APPLICATION_SOURCE_ALLOWLIST == {
+        BundesagenturSource.source_id,
+        IndeedSource.source_id,
+        LinkedInSearchSource.source_id,
+        StepstoneSource.source_id,
+        XingSource.source_id,
+    }
+    assert CompanySitesSource.source_id not in APPLICATION_SOURCE_ALLOWLIST
+
+
+def test_queue_skips_fixture_demo_and_unknown_sources():
+    rows = [
+        Job(id="demo", source="demo", title="Dispatcher", company="HafenLogistik", match_score=99, status=JobStatus.QUEUED.value),
+        Job(id="fixture", source="fixture", title="Disponent", company="Nordmole", match_score=99, status=JobStatus.NEW.value),
+        Job(id="empty", source="", title="Disponent", company="Nordmole", match_score=99, status=JobStatus.NEW.value),
+        Job(id="unknown", source="unknown", title="Disponent", company="Nordmole", match_score=99, status=JobStatus.NEW.value),
+        Job(id="indeed", source="indeed", title="Disponent", company="Nordmole", match_score=90, status=JobStatus.NEW.value),
+        Job(id="stepstone", source="stepstone", title="Disponent", company="Nordmole", match_score=80, status=JobStatus.NEW.value),
+    ]
+    queued = filter_application_queue(rows)
+    assert [job.id for job in queued] == ["indeed", "stepstone"]
+    assert is_application_source(rows[1]) is False
+    assert is_application_source(rows[3]) is False
+    assert is_application_source(rows[4]) is True
+
+
+def test_fixture_cover_letter_allowed_demo_refused():
+    cfg = _cfg("Tourenplanung")
+    description = "Anforderungen: Tourenplanung und SAP in der Disposition."
+    fixture = build_fixture_job()
+    fixture.description = description
+    allowed = compose_cover_letter(fixture, cfg)
+    assert fixture.source == "fixture"
+    assert fixture.status == JobStatus.NEW.value
+    assert allowed.ok is True
+    assert "Tourenplanung" in allowed.text
+    _assert_clean(allowed.text)
+
+    demo = Job(
+        id="demo-cover",
+        source="demo",
+        title="Dispatcher",
+        company="HafenLogistik",
+        description=description,
+        status=JobStatus.QUEUED.value,
+    )
+    refused = compose_cover_letter(demo, cfg)
+    assert refused.ok is False
+    assert refused.reason_code == "demo_excluded"
+    assert refused.text == ""
+    _assert_clean(refused.message("de"))
+
+
+def test_disposition_fixture_remove(tmp_path: Path):
+    db_path = tmp_path / "jobs.db"
+    insert_fixture(db_path)
     assert remove_fixture(db_path) == 1
     assert remove_fixture(db_path) == 0
     assert Database(db_path).get_job(FIXTURE_JOB_ID) is None

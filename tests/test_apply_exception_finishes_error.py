@@ -41,7 +41,7 @@ def test_browser_exception_finishes_run_as_error(tmp_path: Path, monkeypatch) ->
 
     job = Job(
         id="test-1",
-        source="test",
+        source="indeed",
         source_job_id="1",
         title="Buchhalter",
         company="ACME",

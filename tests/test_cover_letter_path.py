@@ -30,7 +30,7 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     db = Database(tmp_path / "data" / "jobs.db")
     job = Job(
         id="job-cl-1",
-        source="test",
+        source="indeed",
         title="Buchhalter",
         company="ACME",
         url="https://boards.greenhouse.io/acme/jobs/1",
