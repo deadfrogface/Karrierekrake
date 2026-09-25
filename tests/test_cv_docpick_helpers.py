@@ -81,7 +81,7 @@ def test_enrich_address_uk_ch_city() -> None:
     empty = {k: "" for k in ("street", "house_number", "postal_code", "city", "country")}
     uk = _enrich_address_from_text(
         dict(empty),
-        "## Daniel Brooks\n\n42 Kingfisher Road · Manchester M1 2AB a@b.com\n",
+        "## Daniel Brooks\n\n42 Kingfisher Road · Manchester M1 2AB a@example.com\n",
     )
     assert uk["street"] == "Kingfisher Road"
     assert uk["house_number"] == "42"
