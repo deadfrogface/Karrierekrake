@@ -207,11 +207,31 @@ def _public_snapshot(texts: list[str], labels: list[str]) -> list[object]:
     return snapshot
 
 
-def test_normalized_role_aliases_match_authored_strings() -> None:
-    """Curated tables are already normalized, so precomputation must not rewrite them."""
-    assert aliases._NORMALIZED_ROLE_ALIASES
+def test_prepared_alias_cache_is_keyed_and_bounded() -> None:
+    """Cache key is the regex sources plus every alias, not one global slot."""
+    assert aliases._cached_alias_targets.cache_info().maxsize == aliases._PREPARED_ALIAS_CACHE_MAXSIZE
+    assert aliases._PREPARED_ALIAS_CACHE_MAXSIZE == 32
     for fam in ROLE_FAMILIES:
-        targets = aliases._NORMALIZED_ROLE_ALIASES[fam.aliases]
+        key = aliases._alias_cache_key(fam.aliases)
+        patterns, tokens = key
+        assert patterns == (
+            aliases._HYPHEN_RE.pattern,
+            aliases._WS_RE.pattern,
+            aliases._TITLE_NOISE_RE.pattern,
+        )
+        assert tokens == tuple(sorted(alias for alias in fam.aliases if alias))
+        cached = aliases._cached_alias_targets(key)
+        assert set(cached) == set(aliases._alias_targets(fam.aliases))
+        assert set(cached) == set(tokens)
+        assert all(aliases._norm_alias(alias) == alias for alias in cached)
+    info = aliases._cached_alias_targets.cache_info()
+    assert info.currsize <= info.maxsize
+
+
+def test_normalized_role_aliases_match_authored_strings() -> None:
+    """Curated tables are already normalized, so preparation must not rewrite them."""
+    for fam in ROLE_FAMILIES:
+        targets = aliases._prepared_alias_targets(fam.aliases)
         authored = {alias for alias in fam.aliases if alias}
         assert set(targets) == authored
         assert all(aliases._norm_alias(alias) == alias for alias in targets)
@@ -429,7 +449,101 @@ def test_fixture_jobs_score_and_filter_match_legacy() -> None:
 
 
 def test_generated_5000_score_and_filter_match_legacy() -> None:
+    """Fixed seed, after another role set has already filled the alias cache."""
     corpus = _load_corpus()
     jobs = _generated_jobs(corpus, GENERATED_JOBS)
     assert len(jobs) == GENERATED_JOBS
+    # Different target role and alias first. A global one-slot cache would
+    # still be on this set when the equality run starts.
+    _score_and_filter(jobs[:40], _config_for_roles(["Verkäufer", "Buchhalter"]))
     _assert_same_end_result(jobs, _app_config(), "seed-5000")
+
+
+def _config_for_roles(roles: list[str]) -> AppConfig:
+    """Same profile shape as ``_app_config``, with a replaced target role."""
+    config = _app_config()
+    config.profile.jobs.desired_titles = list(roles)
+    config.profile.search_intent = SearchIntent(
+        target_roles=list(roles),
+        mandatory_skills=["Excel"],
+        preferred_skills=["SAP", "DATEV"],
+        excluded_roles=["Praktikant"],
+        excluded_keywords=["unbezahlt"],
+        strictness=Strictness.STRICT,
+        countries=["DE"],
+        radius_km=50,
+        salary_min=36000,
+        employment_types=["full_time"],
+    )
+    return config
+
+
+def _probe_pair() -> list[Job]:
+    common = dict(
+        source="cache-probe",
+        company="Nordlicht GmbH",
+        city="Hamburg",
+        postal_code="20095",
+        country_code="DE",
+        remote_type=RemoteType.ONSITE.value,
+        employment_type="Vollzeit",
+        distance_km=8.0,
+        salary_min=48000.0,
+        salary_max=54000.0,
+        discovered_at="2026-09-01T12:00:00+00:00",
+    )
+    return [
+        Job(
+            id="probe-payroll",
+            title="Senior Lohnbuchhalter (m/w/d)",
+            description="Excel Entgeltabrechnung DATEV",
+            url="https://example.test/cache/payroll",
+            **common,
+        ),
+        Job(
+            id="probe-sales",
+            title="Verkäufer (m/w/d)",
+            description="Excel Verkauf im Einzelhandel",
+            url="https://example.test/cache/sales",
+            **common,
+        ),
+    ]
+
+
+def _included_ids(filter_rows: tuple) -> set[str]:
+    return {row[0] for row in filter_rows if row[1] and not row[2]}
+
+
+def test_intent_change_same_process_matches_uncached_path() -> None:
+    """A new target role or alias must not reuse the previous preparation."""
+    corpus = _load_corpus()
+    seeded = _generated_jobs(corpus, 400)
+    jobs = _probe_pair() + seeded
+    payroll_roles = ["Lohnbuchhalter"]
+    sales_roles = ["Verkäufer"]
+    alias_roles = ["Fachkraft Entgeltabrechnung"]
+    other_alias_roles = ["Krankenpfleger"]
+
+    first = _score_and_filter(jobs, _config_for_roles(payroll_roles))
+    assert "probe-payroll" in _included_ids(first[1])
+    assert "probe-sales" not in _included_ids(first[1])
+
+    second = _score_and_filter(jobs, _config_for_roles(sales_roles))
+    aliases._cached_alias_targets.cache_clear()
+    second_uncached = _score_and_filter(jobs, _config_for_roles(sales_roles))
+    assert second == second_uncached
+    assert "probe-sales" in _included_ids(second[1])
+    assert "probe-payroll" not in _included_ids(second[1])
+
+    third = _score_and_filter(jobs, _config_for_roles(alias_roles))
+    aliases._cached_alias_targets.cache_clear()
+    assert third == _score_and_filter(jobs, _config_for_roles(alias_roles))
+    assert "probe-payroll" in _included_ids(third[1])
+
+    fourth = _score_and_filter(jobs, _config_for_roles(other_alias_roles))
+    aliases._cached_alias_targets.cache_clear()
+    assert fourth == _score_and_filter(jobs, _config_for_roles(other_alias_roles))
+    assert "probe-payroll" not in _included_ids(fourth[1])
+
+    info = aliases._cached_alias_targets.cache_info()
+    assert info.currsize <= aliases._PREPARED_ALIAS_CACHE_MAXSIZE

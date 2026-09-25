@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 
 # Bump when alias tables change (invalidates persisted ranking caches).
 INTENT_ALIAS_TABLE_VERSION = 1
@@ -67,7 +68,7 @@ def _norm_alias(s: str) -> str:
 
 
 def _alias_targets(aliases: frozenset[str]) -> tuple[str, ...]:
-    """Non-empty alias strings in normalized form.
+    """Non-empty alias strings in normalized form. Uncached.
 
     Curated tables are authored already normalized, so each target is the
     same string the fuzzy loop used to compare. An alias that normalization
@@ -82,17 +83,35 @@ def _alias_targets(aliases: frozenset[str]) -> tuple[str, ...]:
     return tuple(targets)
 
 
-# family aliases → targets, filled once when ``ROLE_FAMILIES`` is defined.
-# One-off labels (a single unknown role) are not stored: a cache keyed by
-# job text would grow with the corpus, and those tables have one entry.
-_NORMALIZED_ROLE_ALIASES: dict[frozenset[str], tuple[str, ...]] = {}
+# One entry per distinct alias set (a curated family, or one role label).
+# Not a single process-global slot: a new role/alias tuple misses.
+# 32 covers a session of intents without retaining every job title.
+_PREPARED_ALIAS_CACHE_MAXSIZE = 32
+
+
+def _alias_cache_key(aliases: frozenset[str]) -> tuple[tuple[str, str, str], tuple[str, ...]]:
+    """Everything that changes prepared aliases or the normalizer patterns.
+
+    The first element is the regex source. The second is every non-empty
+    alias, sorted — role labels arrive here as that alias set. Normalized
+    spelling is the cached value, computed on a miss, not a global fill.
+    """
+    patterns = (_HYPHEN_RE.pattern, _WS_RE.pattern, _TITLE_NOISE_RE.pattern)
+    tokens = tuple(sorted(alias for alias in aliases if alias))
+    return patterns, tokens
+
+
+@lru_cache(maxsize=_PREPARED_ALIAS_CACHE_MAXSIZE)
+def _cached_alias_targets(
+    key: tuple[tuple[str, str, str], tuple[str, ...]],
+) -> tuple[str, ...]:
+    """Prepared targets for one alias-set key. See ``_alias_cache_key``."""
+    tokens = key[1]
+    return _alias_targets(frozenset(tokens))
 
 
 def _prepared_alias_targets(aliases: frozenset[str]) -> tuple[str, ...]:
-    cached = _NORMALIZED_ROLE_ALIASES.get(aliases)
-    if cached is not None:
-        return cached
-    return _alias_targets(aliases)
+    return _cached_alias_targets(_alias_cache_key(aliases))
 
 
 def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
@@ -156,8 +175,9 @@ ROLE_FAMILIES: tuple[RoleFamily, ...] = (
     RoleFamily(family_id="payroll", aliases=_PAYROLL_ALIASES),
 )
 
+# Prime the bounded cache. The key is still the alias tuple, not a singleton.
 for _family in ROLE_FAMILIES:
-    _NORMALIZED_ROLE_ALIASES[_family.aliases] = _alias_targets(_family.aliases)
+    _prepared_alias_targets(_family.aliases)
 
 # Title patterns that belong to payroll family even with extra tokens
 # (e.g. "Lohnbuchhalter (m/w/d)", "Senior Payroll Specialist").
