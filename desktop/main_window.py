@@ -359,12 +359,19 @@ class MainWindow(QMainWindow):
         if not hasattr(self, "dashboard"):
             QTimer.singleShot(0, self._refresh_home_notices_after_geo)
             return
+        from core.location import commit_loaded_home
+
+        cfg = self.config_service.load()
+        # Same in-flight index, UI thread, no second Nominatim. A save that
+        # happened while the loader was still running lands here once.
+        if commit_loaded_home(cfg.profile.location) == "resolved":
+            self.config_service.save(cfg)
         try:
-            self.dashboard.refresh()
             self.profile.refresh_home_status()
             self.profile.location_work.refresh_home_notice(
                 self.config_service.load().profile.location
             )
+            self.dashboard.refresh()
             self.settings._refresh_home_notice()
             self.jobs.refresh()
         except Exception:

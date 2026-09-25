@@ -286,7 +286,8 @@ def _preload_worker(gen: int) -> None:
     _preload_worker_recorded.set()
     hold = _test_hold
     if hold is not None:
-        hold.wait(timeout=10)
+        # The test owns the release. A timeout here would let a second builder race the save.
+        hold.wait()
     for cc in _DACH_PRELOAD:
         if gen != _generation:
             return

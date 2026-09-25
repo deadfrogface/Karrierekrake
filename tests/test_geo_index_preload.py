@@ -316,3 +316,171 @@ def test_profile_save_resolves_geo_once(qapp, config_service, geo_ready, monkeyp
     assert calls["postal"] + calls["city"] <= 1
     assert "aufgelöst" in page.home_status.text()
     assert not page.home_status.isHidden()
+
+
+def _persisted_place_text(cfg) -> str:
+    loc = cfg.profile.location
+    app = cfg.application
+    return " ".join(
+        str(part or "")
+        for part in (
+            loc.home_address,
+            loc.city,
+            loc.postal_code,
+            loc.home_geocoded_address,
+            app.street,
+            app.postal_code,
+            app.city,
+            app.country,
+        )
+    )
+
+
+def _pump_until_label(qapp: QApplication, label, predicate, timeout_s: float = 15.0) -> str:
+    """Deliver queued UI slots until ``predicate(text)``. No sleep-then-assert."""
+    deadline = time.monotonic() + timeout_s
+    while not predicate(label.text()):
+        if time.monotonic() >= deadline:
+            pytest.fail(f"label stayed {label.text()!r}")
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+    return label.text()
+
+
+def test_save_during_preload_resolves_10115_from_the_same_load(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """10115 saved while the index is held must become Berlin from that one load."""
+    monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
+    from desktop.main_window import MainWindow
+
+    i18n.set_language("de")
+    builds: list[tuple[str, int | None]] = []
+    original_build = geo_resolve._build_nominatim
+
+    def _counted(country_code: str):
+        builds.append((country_code, threading.get_ident()))
+        return original_build(country_code)
+
+    monkeypatch.setattr(geo_resolve, "_build_nominatim", _counted)
+    dialogs: list[str] = []
+
+    def _information(*args, **kwargs):
+        dialogs.append(str(args[2] if len(args) > 2 else ""))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr("desktop.pages.profile.QMessageBox.information", _information)
+
+    def _warning(*args, **kwargs):
+        raise AssertionError(args)
+
+    monkeypatch.setattr("desktop.pages.profile.QMessageBox.warning", _warning)
+
+    hold = threading.Event()
+    hold_geo_preload_for_tests(hold)
+    win = MainWindow(config_service)
+    try:
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        win.show()
+        worker_ident = _pump_until_worker_recorded(qapp)
+        loader = geo_resolve._preload_thread
+        assert loader is not None and loader.is_alive()
+        assert builds == []
+        gui_ident = threading.get_ident()
+        assert worker_ident != gui_ident
+
+        page = win.profile
+        page.applicant.street.setText("")
+        page.applicant.postal_code.setText("10115")
+        page.applicant.city.setText("")
+        page.applicant.app_country.setText("DE")
+        page.save_btn.click()
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+
+        assert dialogs == ["Gespeichert."]
+        assert builds == []
+        assert geo_resolve._preload_thread is loader
+        saved = config_service.load()
+        assert saved.application.postal_code == "10115"
+        assert saved.profile.location.postal_code == "10115"
+        assert "nicht auflösbar" not in _persisted_place_text(saved)
+        assert "nicht prüfbar" not in _persisted_place_text(saved)
+
+        hold.set()
+        assert geo_resolve._preload_done.wait(timeout=30)
+        text = _pump_until_label(
+            qapp,
+            page.home_status,
+            lambda value: "Berlin" in value and "aufgelöst" in value,
+        )
+        assert "nicht auflösbar" not in text
+        assert "nicht prüfbar" not in text
+        finished = config_service.load()
+        loc = finished.profile.location
+        assert loc.postal_code == "10115"
+        assert loc.city == "Berlin"
+        assert loc.home_latitude == pytest.approx(52.5323)
+        assert loc.home_longitude == pytest.approx(13.3846)
+        assert "nicht auflösbar" not in _persisted_place_text(finished)
+        assert "nicht prüfbar" not in _persisted_place_text(finished)
+        assert [code for code, _ident in builds] == ["DE", "AT", "CH"]
+        assert {ident for _code, ident in builds} == {worker_ident}
+        assert dialogs == ["Gespeichert."]
+    finally:
+        hold.set()
+        win._shutting_down = True
+        win.close()
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        worker = geo_resolve._preload_thread
+        if worker is not None:
+            worker.join(timeout=30)
+
+
+def test_unresolvable_plz_still_shows_the_hint_after_preload(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
+    from desktop.i18n import tr
+    from desktop.main_window import MainWindow
+
+    i18n.set_language("de")
+    dialogs: list[str] = []
+
+    def _information(*args, **kwargs):
+        dialogs.append(str(args[2] if len(args) > 2 else ""))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr("desktop.pages.profile.QMessageBox.information", _information)
+    hold = threading.Event()
+    hold_geo_preload_for_tests(hold)
+    win = MainWindow(config_service)
+    try:
+        win.show()
+        _pump_until_worker_recorded(qapp)
+        page = win.profile
+        page.applicant.street.setText("")
+        page.applicant.postal_code.setText("00000")
+        page.applicant.city.setText("")
+        page.applicant.app_country.setText("DE")
+        page.save_btn.click()
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        assert dialogs == ["Gespeichert."]
+        hold.set()
+        assert geo_resolve._preload_done.wait(timeout=30)
+        text = _pump_until_label(
+            qapp,
+            page.home_status,
+            lambda value: "aufgelöst" not in value and "nicht prüfbar" in value,
+        )
+        assert text == tr("dash.home_plz_hint")
+        loc = config_service.load().profile.location
+        assert loc.postal_code == "00000"
+        assert loc.home_latitude is None and loc.home_longitude is None
+        assert "nicht auflösbar" not in _persisted_place_text(config_service.load())
+    finally:
+        hold.set()
+        win._shutting_down = True
+        win.close()
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        worker = geo_resolve._preload_thread
+        if worker is not None:
+            worker.join(timeout=30)
