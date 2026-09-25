@@ -15,6 +15,7 @@ import json
 import re
 import sys
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any
 
@@ -109,24 +110,73 @@ def _mentioned(token: str, blob: str) -> bool:
     return False
 
 
+# Longer endings before shorter ones so "em" is not eaten by "e".
+_INFLECTION_ENDING = r"(?:em|en|er|es|e|s)?"
+
+# Whole company field. Matched with the same inflection normalizer as bans.
+_COMPANY_PLACEHOLDER_BASES = (
+    "Ihr Unternehmen",
+    "Firma 0",
+    "Firma",
+    "Unternehmen",
+    "Company",
+    "the company",
+    "Musterfirma",
+    "Platzhalter",
+)
+
+
+def collapse_phrase(text: str) -> str:
+    """Casefold and collapse whitespace. The shared first step of phrase match."""
+    return re.sub(r"\s+", " ", (text or "").casefold()).strip()
+
+
+def phrase_pattern(phrase: str) -> re.Pattern[str]:
+    """Word-sequence pattern for one banned or placeholder phrase.
+
+    Rules: casefold, collapse whitespace, then each word may take one optional
+    German ending ``-e``, ``-em``, ``-en``, ``-er``, ``-es``, or ``-s``.
+    The match is bounded by non-word characters, so ``Unternehmen`` does not
+    hit ``Unternehmensberatung`` or ``Unternehmung``.
+    """
+    words = [word for word in collapse_phrase(phrase).split(" ") if word]
+    if not words:
+        return re.compile(r"(?!)")
+    body = r"\s+".join(re.escape(word) + _INFLECTION_ENDING for word in words)
+    return re.compile(rf"(?<!\w){body}(?!\w)")
+
+
+def phrase_in_text(text: str, phrase: str) -> bool:
+    """True when ``phrase`` occurs in ``text``, including inflected forms."""
+    if not collapse_phrase(phrase) or not collapse_phrase(text):
+        return False
+    return phrase_pattern(phrase).search(collapse_phrase(text)) is not None
+
+
+def phrase_equals(text: str, phrase: str) -> bool:
+    """True when the whole of ``text`` is ``phrase`` or an inflected form."""
+    if not collapse_phrase(phrase) or not collapse_phrase(text):
+        return False
+    return phrase_pattern(phrase).fullmatch(collapse_phrase(text)) is not None
+
+
 def _normalized_company(job: Job) -> str:
-    return clean_company(getattr(job, "company", "")).casefold().strip(" .,-")
+    return clean_company(getattr(job, "company", "")).strip(" .,-")
 
 
 def _company_missing(job: Job) -> bool:
     """True when the ad has no real employer name.
 
-    Runs before the template. Empty text and generic stand-ins (``Firma 0``,
-    ``Ihr Unternehmen`` and the same kind of placeholder) are missing.
+    Runs before the template. Empty text is missing. A placeholder base such
+    as ``Ihr Unternehmen`` or ``Firma 0`` also matches inflected forms
+    (``Ihrem Unternehmen``, ``Ihres Unternehmens``) via ``phrase_equals``.
     """
     company = _normalized_company(job)
-    if not company or company in _COMPANY_PLACEHOLDERS:
+    if not company:
         return True
-    if re.fullmatch(r"firma(?:\s*\d+)?", company):
+    if any(phrase_equals(company, base) for base in _COMPANY_PLACEHOLDER_BASES):
         return True
-    if re.fullmatch(r"(?:ihr(?:e|em|es)?\s+)?unternehmen", company):
-        return True
-    return company in {"company", "the company", "musterfirma", "platzhalter"}
+    return re.fullmatch(r"firma(?:\s*\d+)?", collapse_phrase(company)) is not None
 
 
 def _ad_contact(description: str) -> tuple[str, str]:
@@ -223,17 +273,45 @@ def _resolve_writer_claims(
     return WriterContactClaims.empty(writer_binding_enabled=binding)
 
 
-REASON_JOB_INCOMPLETE = "job_incomplete"
-REASON_NO_EVIDENCE = "no_evidence"
-# Gold vocabulary (docs in PR #75). The i18n key stays cover.demo_excluded.
-REASON_BLOCKED_DEMO = "blocked_demo"
-REASON_COMPANY_MISSING = "company_missing"
+class CoverReason(str, Enum):
+    """Every refusal code ``compose_cover_letter`` can return.
 
-_MESSAGE_KEYS = {
-    REASON_JOB_INCOMPLETE: "cover.job_incomplete",
-    REASON_NO_EVIDENCE: "cover.no_evidence",
-    REASON_BLOCKED_DEMO: "cover.demo_excluded",
-    REASON_COMPANY_MISSING: "cover.company_missing",
+    A new member without a ``REFUSAL_REGISTRY`` entry fails the registry test.
+    ``blocked_demo`` keeps the i18n key ``cover.demo_excluded``.
+    ``hide_demo`` is a stand-in action until the Designer names the final one.
+    """
+
+    JOB_INCOMPLETE = "job_incomplete"
+    NO_EVIDENCE = "no_evidence"
+    COMPANY_MISSING = "company_missing"
+    BLOCKED_DEMO = "blocked_demo"
+
+
+@dataclass(frozen=True)
+class RefusalSpec:
+    """i18n key and UI action ids. No widgets are built from this."""
+
+    message_key: str
+    actions: tuple[str, ...]
+
+
+REFUSAL_REGISTRY: dict[CoverReason, RefusalSpec] = {
+    CoverReason.JOB_INCOMPLETE: RefusalSpec(
+        "cover.job_incomplete",
+        ("open_job", "paste_description"),
+    ),
+    CoverReason.NO_EVIDENCE: RefusalSpec(
+        "cover.no_evidence",
+        ("complete_profile",),
+    ),
+    CoverReason.COMPANY_MISSING: RefusalSpec(
+        "cover.company_missing",
+        ("enter_company", "open_job"),
+    ),
+    CoverReason.BLOCKED_DEMO: RefusalSpec(
+        "cover.demo_excluded",
+        ("hide_demo",),
+    ),
 }
 
 # Exact pairs the Personaler gold names. No open synonym list.
@@ -241,13 +319,6 @@ _COVER_ALIAS_GROUPS = (
     frozenset({"disponent", "dispatcher"}),
     frozenset({"tourenplanung", "route planning"}),
 )
-
-_COMPANY_PLACEHOLDERS = frozenset({
-    "firma 0",
-    "ihr unternehmen",
-    "ihrem unternehmen",
-    "ihres unternehmens",
-})
 
 _HTML_TAG = re.compile(r"<[^>]+>")
 _AD_CONTACT_RE = re.compile(
@@ -309,11 +380,12 @@ class CoverLetterResult:
         return self.refusal.text(language) if self.refusal else ""
 
 
-def _refusal(reason_code: str) -> CoverLetterResult:
+def _refusal(reason: CoverReason) -> CoverLetterResult:
+    spec = REFUSAL_REGISTRY[reason]
     return CoverLetterResult(
         ok=False,
         text="",
-        refusal=CoverLetterRefusal(reason_code, _MESSAGE_KEYS[reason_code]),
+        refusal=CoverLetterRefusal(reason.value, spec.message_key),
     )
 
 
@@ -489,17 +561,17 @@ def compose_cover_letter(
     The same function is the only generation path (headless, preview, apply).
     """
     if is_demo_job(job):
-        return _refusal(REASON_BLOCKED_DEMO)
+        return _refusal(CoverReason.BLOCKED_DEMO)
     description = _clean_job_description(getattr(job, "description", ""))
     if not description:
-        return _refusal(REASON_JOB_INCOMPLETE)
+        return _refusal(CoverReason.JOB_INCOMPLETE)
     # Before the template. A present description stays company_missing, not job_incomplete.
     if _company_missing(job):
-        return _refusal(REASON_COMPANY_MISSING)
+        return _refusal(CoverReason.COMPANY_MISSING)
     skills_list = evidenced_skills_matching_description(config, description)
     stations = evidenced_stations(config)
     if not stations and not skills_list:
-        return _refusal(REASON_NO_EVIDENCE)
+        return _refusal(CoverReason.NO_EVIDENCE)
 
     exp = _matching_station(config, job)
     if exp is not None:
@@ -558,8 +630,9 @@ def render_cover_letter(
     """Return letter text. Refusals raise; they are not returned as a letter."""
     result = compose_cover_letter(job, config, contact_claims=contact_claims)
     if not result.ok or result.refusal is not None:
+        spec = REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE]
         refusal = result.refusal or CoverLetterRefusal(
-            REASON_NO_EVIDENCE, _MESSAGE_KEYS[REASON_NO_EVIDENCE]
+            CoverReason.NO_EVIDENCE.value, spec.message_key
         )
         raise CoverLetterRefused(refusal)
     return result.text
@@ -590,14 +663,18 @@ def approve_cover_letter(job: Job, config: AppConfig, text: str | None = None) -
     """
     result = compose_cover_letter(job, config)
     if not result.ok or result.refusal is not None:
+        spec = REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE]
         refusal = result.refusal or CoverLetterRefusal(
-            REASON_NO_EVIDENCE, _MESSAGE_KEYS[REASON_NO_EVIDENCE]
+            CoverReason.NO_EVIDENCE.value, spec.message_key
         )
         raise CoverLetterRefused(refusal)
     # A preview that still contains the removed placeholder is not saved.
     if text and _FORBIDDEN_LINE.search(text):
         raise CoverLetterRefused(
-            CoverLetterRefusal(REASON_NO_EVIDENCE, _MESSAGE_KEYS[REASON_NO_EVIDENCE])
+            CoverLetterRefusal(
+                CoverReason.NO_EVIDENCE.value,
+                REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE].message_key,
+            )
         )
     body = result.text
     path = Path(config.root) / "cover_letters" / f"{job.id}.txt"

@@ -3,20 +3,16 @@
 Die Fälle liegen in ``tests/fixtures/anschreiben_gold/`` (PR #75). Fehlt das
 Verzeichnis, schlägt der Test fehl. Er skippt nicht.
 
-``papierkorb`` folgt Abschnitt 5 Punkt 6 von ``ANSCHREIBEN_GOLD.md``: das
-Ergebnis ist nie ``interview``, jeder erzeugte Text hält ``must_not_contain``
-ein, und kein Brief ist zulässig. Ein Brief, der die Schule als Arbeitgeber
-nennt, ist ein Fehlschlag und kein xfail. Der Generator verzweigt dafür nicht
-nach der Fall-Id.
+Die Zuordnung hängt nur an ``expected_outcome``, nie an der Fall-Id:
 
-Personaler, im Raum (die Doku in #75 folgt nach dem Merge): ``cl-08`` ist
-``company_missing`` und kein Brief, nicht ``job_incomplete``. ``cl-06`` ist
-nie ``interview``; ``must_not_contain`` darf in keinem erzeugten Text stehen;
-kein Brief ist in Ordnung. Ein Brief, der die Schule als Arbeitgeber nennt,
-ist rot und kein xfail. Der Generator rät die falsch abgelegte Ausbildung nicht.
+- ``job_incomplete``, ``no_evidence``, ``blocked_demo``, ``company_missing``:
+  genau dieser Grund, kein Brief.
+- ``interview``: Brief, ``must_mention`` und ``must_not_contain``.
+- ``papierkorb``: nie ``interview``; ``must_not_contain`` in keinem Text;
+  kein Brief ist in Ordnung.
 
-``cl-03`` bleibt ebenfalls rot, ohne xfail: eine bestätigte Station, die die
-Anzeige nicht trifft, ergibt weiter einen Brief.
+Felder werden direkt gelesen (``case["must_mention"]`` und so). Ein fehlender
+Schlüssel ist ein KeyError.
 """
 
 from __future__ import annotations
@@ -37,7 +33,7 @@ from core.config import (
     SourcedText,
     empty_app_config,
 )
-from core.cover_letter import compose_cover_letter
+from core.cover_letter import compose_cover_letter, phrase_in_text
 from core.models import Job
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -122,8 +118,7 @@ def _qual_blob(case: dict) -> str:
 
 
 def _forbidden_hits(text: str, banned: list[str]) -> list[str]:
-    folded = text.casefold()
-    return [item for item in banned if item.casefold() in folded]
+    return [item for item in banned if phrase_in_text(text, item)]
 
 
 def _linking_sentences(letter: str, case: dict) -> int:
@@ -155,16 +150,6 @@ def _unsupported_years(letter: str, case: dict) -> list[str]:
         for year in re.findall(r"\b(?:19|20)\d{2}\b", letter)
         if year not in covered
     ]
-
-
-def _school_as_employer(letter: str, case: dict) -> str:
-    folded = letter.casefold()
-    for exp in case["profile"]["qualifications"]["work_experience"]:
-        title = str(exp.get("title") or "")
-        company = str(exp.get("company") or "")
-        if title.casefold().startswith("ausbildung") and company and company.casefold() in folded:
-            return company
-    return ""
 
 
 def actual_outcome(result) -> str:
@@ -214,18 +199,13 @@ else:
             assert result.reason_code == expected
             return
         if expected == "papierkorb":
-            # cl-06, Personaler im Raum: nie interview. must_not_contain darf in
-            # keinem erzeugten Text stehen. Kein Brief ist in Ordnung. Die Schule
-            # als Arbeitgeber ist rot, kein xfail. Keine Heuristik, keine Fall-Id.
-            assert result.reason_code != "interview"
-            if not result.text.strip():
-                return
             hits = _forbidden_hits(result.text, case["must_not_contain"])
             assert not hits, f"must_not_contain hit {hits}"
-            school = _school_as_employer(result.text, case)
-            assert not school, f"Brief nennt die Schule als Arbeitgeber: {school}"
-            with pytest.raises(AssertionError):
-                _assert_interview(result, case)
+            if result.text.strip():
+                with pytest.raises(AssertionError):
+                    _assert_interview(result, case)
+            else:
+                assert result.reason_code != "interview"
             return
         if expected == "interview":
             _assert_interview(result, case)

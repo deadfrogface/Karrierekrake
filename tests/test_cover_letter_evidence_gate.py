@@ -21,9 +21,13 @@ from core.config import (
     empty_app_config,
 )
 from core.cover_letter import (
+    REFUSAL_REGISTRY,
     CoverLetterRefused,
+    CoverReason,
     approve_cover_letter,
     compose_cover_letter,
+    phrase_equals,
+    phrase_in_text,
     render_cover_letter,
     set_pasted_job_description,
 )
@@ -61,6 +65,58 @@ def _cfg(*skills: str, stations: list[ExperienceEntry] | None = None) -> AppConf
 def _assert_clean(blob: str) -> None:
     for phrase in FORBIDDEN:
         assert phrase not in blob
+
+
+@pytest.mark.parametrize(
+    ("text", "phrase", "hit"),
+    [
+        ("Bewerbung bei Ihrem Unternehmen", "Ihr Unternehmen", True),
+        ("Ihres Unternehmens", "Ihr Unternehmen", True),
+        ("Ihren Unternehmen", "Ihr Unternehmen", True),
+        ("IHREM   UNTERNEHMEN", "Ihr Unternehmen", True),
+        ("Ihre Unternehmung", "Ihr Unternehmen", False),
+        ("die Unternehmensberatung Müller", "Ihr Unternehmen", False),
+        ("bei der Nordkai Spedition GmbH", "Ihr Unternehmen", False),
+        ("Teamwork im Lager", "Team", False),
+    ],
+)
+def test_phrase_normalizer_inflection(text: str, phrase: str, hit: bool):
+    assert phrase_in_text(text, phrase) is hit
+
+
+def test_company_placeholder_uses_the_same_normalizer():
+    assert phrase_equals("Ihrem Unternehmen", "Ihr Unternehmen")
+    assert phrase_equals("Ihres Unternehmens", "Ihr Unternehmen")
+    assert not phrase_equals("Nordkai Spedition GmbH", "Ihr Unternehmen")
+    cfg = _cfg("Tourenplanung", stations=[
+        ExperienceEntry(title="Disponent", company="Nordkai Spedition GmbH", source="manual"),
+    ])
+    description = "Anforderungen: Tourenplanung und SAP TM. Die Beschreibung ist vorhanden."
+    for company in ("Ihrem Unternehmen", "Ihres Unternehmens", "Ihren Unternehmen", "Firma 0"):
+        job = Job(
+            id="j-placeholder-company",
+            source="indeed",
+            title="Dispatcher",
+            company=company,
+            description=description,
+        )
+        result = compose_cover_letter(job, cfg)
+        assert result.text == ""
+        assert result.reason_code == "company_missing"
+        assert result.reason_code != "job_incomplete"
+        assert company.casefold() not in result.text.casefold()
+
+
+def test_refusal_registry_covers_every_gate_code():
+    """Enumerate codes from CoverReason. A new member without an entry fails."""
+    assert set(REFUSAL_REGISTRY) == set(CoverReason)
+    for reason in CoverReason:
+        spec = REFUSAL_REGISTRY[reason]
+        assert spec.actions
+        assert spec.message_key in TRANSLATIONS["de"]
+        assert spec.message_key in TRANSLATIONS["en"]
+        assert TRANSLATIONS["de"][spec.message_key].strip()
+        assert TRANSLATIONS["en"][spec.message_key].strip()
 
 
 def test_i18n_keys_de_and_en():
