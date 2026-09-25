@@ -160,19 +160,53 @@ def test_unread_sample_stays_none_and_does_not_abort():
 
 
 def test_watch_aborts_when_psutil_sample_crosses_limit(monkeypatch):
+    """Abort when the platform limit metric crosses the gate.
+
+    Linux feeds that metric through ``_group_rss``. Windows reads
+    ``PeakJobMemoryUsed`` from the job handle, so patching ``_group_rss``
+    alone leaves every Windows sample empty.
+    """
     killed: list[tuple[int, int | None]] = []
     monkeypatch.setattr(bench, "_process_group_id", lambda _pid: None)
-    monkeypatch.setattr(
-        bench,
-        "_group_rss",
-        lambda _pid, pgid=None: bench.PEAK_ABORT_BYTES,
-    )
     monkeypatch.setattr(
         bench,
         "_kill_process_tree",
         lambda proc, pgid: killed.append((proc.pid, pgid)) or {"tree_dead": True, "method": "test"},
     )
     proc = _ExitingProc()
+    if sys.platform == "win32":
+        proc.job = object()
+        monkeypatch.setattr(bench, "_query_peak_job_memory", lambda _job: bench.PEAK_ABORT_BYTES)
+    else:
+        monkeypatch.setattr(
+            bench,
+            "_group_rss",
+            lambda _pid, pgid=None: bench.PEAK_ABORT_BYTES,
+        )
+    peak, aborted = bench._watch_process_rss(proc, 0.0)
+    assert aborted is True
+    assert killed == [(proc.pid, None)]
+    assert peak == bench.PEAK_ABORT_BYTES
+
+
+def test_windows_watch_aborts_on_peak_job_memory_not_group_rss(monkeypatch):
+    """Win32 sampling ignores ``_group_rss`` and reads the job high-water mark."""
+    killed: list[tuple[int, int | None]] = []
+    monkeypatch.setattr(bench.sys, "platform", "win32")
+    monkeypatch.setattr(bench, "_process_group_id", lambda _pid: None)
+
+    def _group_rss_must_not_run(*_args, **_kwargs):
+        raise AssertionError("VmRSS is not the Windows limit")
+
+    monkeypatch.setattr(bench, "_group_rss", _group_rss_must_not_run)
+    monkeypatch.setattr(bench, "_query_peak_job_memory", lambda _job: bench.PEAK_ABORT_BYTES)
+    monkeypatch.setattr(
+        bench,
+        "_kill_process_tree",
+        lambda proc, pgid: killed.append((proc.pid, pgid)) or {"tree_dead": True, "method": "test"},
+    )
+    proc = _ExitingProc()
+    proc.job = "JOB"
     peak, aborted = bench._watch_process_rss(proc, 0.0)
     assert aborted is True
     assert killed == [(proc.pid, None)]
