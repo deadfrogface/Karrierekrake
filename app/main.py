@@ -453,27 +453,33 @@ def run_pipeline(
         )
         if stopped():
             cancelled = True
-        for job in fachlich_candidates:
-            prev_status = job.status
-            apply_distance_scoring(job, config)
-            if job.status == JobStatus.IGNORED.value and prev_status != JobStatus.IGNORED.value:
-                if any("km" in (r or "") for r in (job.rejection_reasons or [])):
-                    outside += 1
-            db.upsert_job(job)
+        with db.batch(should_stop=stopped):
+            for job in fachlich_candidates:
+                prev_status = job.status
+                apply_distance_scoring(job, config)
+                if job.status == JobStatus.IGNORED.value and prev_status != JobStatus.IGNORED.value:
+                    if any("km" in (r or "") for r in (job.rejection_reasons or [])):
+                        outside += 1
+                db.upsert_job(job)
     else:
         cancelled = cancelled or stopped()
-        for job in scored:
-            db.upsert_job(job)
+        with db.batch(should_stop=stopped):
+            for job in scored:
+                db.upsert_job(job)
 
     # Persist fachlich-excluded scored jobs that were not candidates
-    for job in scored:
-        if job not in fachlich_candidates:
-            db.upsert_job(job)
+    with db.batch(should_stop=stopped):
+        for job in scored:
+            if job not in fachlich_candidates:
+                db.upsert_job(job)
 
-    for job in all_jobs:
-        if job.duplicate_of:
-            job.run_id = run_id
-            db.upsert_job(job)
+    with db.batch(should_stop=stopped):
+        for job in all_jobs:
+            if job.duplicate_of:
+                job.run_id = run_id
+                db.upsert_job(job)
+    if db.batch_skipped_writes:
+        cancelled = True
 
     run.info(f"{outside} outside {config.profile.location.max_distance_km} km Luftlinie removed/ignored")
     run.info(f"{known} already known/applied skipped")
