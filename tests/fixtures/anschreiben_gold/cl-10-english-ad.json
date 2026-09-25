@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-10-english-ad",
+  "tags": [
+    "english_ad"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-10-english-ad",
+    "source": "indeed",
+    "source_job_id": "src-cl-10-english-ad",
+    "title": "Dispatcher",
+    "company": "Northquay Freight GmbH",
+    "description": "Northquay Freight GmbH is a fictional groupage forwarder at Musterhafen. We move consignments for small shippers who do not use the large forwarding houses. The shed and the yard sit on the quay. People in the office know the dock by name.\n\nWe employ about thirty people. The owners are on site. New joiners spend their first week on the yard before they sit at a desk. We care that promised days are kept and that questions get a named reply.\n\nWhat we offer comes before the professional points.\n\nThe role is permanent and full time. Leave is thirty days. We provide a bicycle lease, a harbour-bus pass and a canteen on weekdays. Induction lasts six weeks with a fixed buddy. A training budget opens after probation. Pension contributions and a studio subsidy are included. Remote days are rare because the yard needs people on site.\n\nThe site is Quay Lane 3, Musterhafen. Harbour bus line 4 stops at Shed East. Parking on the yard is free. Staff rooms were rebuilt in 2022.\n\nRequirements:\n- experience as a dispatcher for groupage freight\n- route planning and daily coordination with the fleet\n- hands-on use of SAP TM\n- shift coordination between the shed and the office\n- German in writing and speech; English is helpful\n\nPlease tie each point to a real station in your application. Do not send a generic letter.\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-10-english-ad",
+    "status": "new"
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Northquay Freight",
+    "Dispatcher",
+    "Nordkai Spedition",
+    "Tourenplanung",
+    "SAP TM"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "die ausgeschriebene Position",
+    "[Ihr Name]",
+    "15 Jahre",
+    "seit 2010",
+    "ADR-Schein"
+  ],
+  "rationale": "Englische Anzeige. Requirements stehen nach dem Angebot. dispatcher trifft die Station Disponent bei der Nordkai Spedition, route planning den Skill Tourenplanung, SAP TM die Software SAP TM. Der Brief bleibt an diese Belege gebunden. Firma Northquay Freight GmbH."
+}

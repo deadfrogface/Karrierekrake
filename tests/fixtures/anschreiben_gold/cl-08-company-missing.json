@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-08-company-missing",
+  "tags": [
+    "company_invalid"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-08-company-missing",
+    "source": "indeed",
+    "source_job_id": "src-cl-08-company-missing",
+    "title": "Dispatcher (m/w/d)",
+    "company": "",
+    "description": "Unternehmen: Firma 0\n\nDieser Eintrag ist ein fiktives Formular ohne belastbaren Firmennamen. Der Text beschreibt einen Stückgutbetrieb an einem Kai. Halle und Büro liegen beieinander, die Geschäftsführung ist nicht namentlich genannt. Firma 0 ist ein leerer Platzhalter aus dem Formular, keine Firma, an die man schreiben kann.\n\nWir beschäftigen rund dreißig Menschen in Umschlag und Büro. Neue Leute lernen zuerst die Tore kennen. Zusagen gegenüber Verladern sollen halten.\n\nWas wir bieten: unbefristete Vollzeit, dreißig Tage Urlaub, Jobticket, Kantine, Parkplatz. Einarbeitung sechs Wochen. Ein ladungsfähiger Firmenname steht in dieser Anzeige nicht.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent\n- Tourenplanung\n- praktischen Umgang mit SAP TM\n- Schichtkoordination\n- Deutsch in Wort und Schrift\n\nEin Anschreiben braucht den richtigen Empfänger. Firma 0 ist keiner.\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-08-company-missing",
+    "status": "new"
+  },
+  "expected_outcome": "papierkorb",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "die ausgeschriebene Position",
+    "[Ihr Name]",
+    "Firma 0"
+  ],
+  "rationale": "Das Firmenfeld ist leer. Im Text steht nur der Platzhalter Firma 0, kein ladungsfähiger Name. Ihr Unternehmen oder Firma 0 als Empfänger ist eine falsche Firma bzw. eine leere Schablone. Die Beschreibung ist nicht leer, deshalb ist das kein job_incomplete. Urteil papierkorb."
+}

@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-11-long-ad-requirements-end",
+  "tags": [
+    "long_ad"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-11-long-ad-requirements-end",
+    "source": "bundesagentur",
+    "source_job_id": "src-cl-11-long-ad-requirements-end",
+    "title": "Disponent Stückgut (m/w/d)",
+    "company": "Kaiwerk Logistik GmbH",
+    "description": "Die Kaiwerk Logistik GmbH ist ein fiktives Umschlagunternehmen am Musterhafen. Wir bewegen Sendungen für regionale Verlader und kleine Reedereien, die ihre Fracht nicht über die großen Kontore geben. Der Betrieb sitzt direkt am Kai, mit einer Halle für Colli und einem Hof für Wechselbrücken.\n\nWir sind kein Konzern. In der Halle arbeiten etwa vierzig Menschen, die sich mit Vornamen kennen. Die Geschäftsführung ist vor Ort. Entscheidungen über neue Zustellgebiete fallen im wöchentlichen Betriebsrundgang, nicht in einer entfernten Zentrale. Wer bei uns anfängt, lernt zuerst den Hof, die Tore und die Menschen an der Rampe kennen.\n\nUnser Selbstverständnis ist einfach. Sendungen erreichen den avisierten Termin, Rückfragen bleiben beantwortet, und niemand gibt eine Störung unbearbeitet weiter. Dafür brauchen wir ruhige Abläufe und Menschen, die den Hof aus eigener Anschauung kennen.\n\nWas wir bieten, steht bewusst vor den fachlichen Punkten. Der Rahmen ist uns genauso wichtig wie die Aufgabe selbst.\n\nSie arbeiten in einem unbefristeten Vollzeitverhältnis. Die Arbeitszeiten liegen in einem frühen und einem späten Fenster, abgestimmt mit dem Hof. Es gibt dreißig Tage Urlaub, ein Jobrad, ein vergünstigtes Ticket für den Hafenbus und eine Kantine, die werktags warme Mahlzeiten ausgibt.\n\nWeiterbildung bezahlen wir über ein festes Jahresbudget, sobald die Probezeit vorbei ist. Dazu gehören externe Seminare zu Führung und zu Arbeitssicherheit. Die Einarbeitung dauert sechs Wochen und läuft über eine feste Patin oder einen festen Paten aus dem bestehenden Team. In diesen Wochen geht es um Wege, Namen und den Tagesrhythmus, nicht um eine Werkzeugliste.\n\nWir bieten eine betriebliche Altersvorsorge, vermögenswirksame Leistungen und einen Zuschuss zum Studio am Hafenbecken. Wer Kinder hat, kann die Betreuung im Hafen-Hort mitnutzen, den ein Nachbarbetrieb trägt. Arbeit von zu Hause ist in dieser Rolle die Ausnahme, weil die Abstimmung mit dem Hof vor Ort geschieht. An einzelnen Tagen ist mobiles Arbeiten nach Absprache möglich.\n\nDer Standort ist der Kaiweg 12 in Musterhafen. Sie erreichen uns mit dem Hafenbus Linie 4, Haltestelle Speicher Ost. Parkplätze auf dem Hof sind vorhanden und kostenfrei.\n\nUnsere Halle wurde 2022 erweitert. Es gibt neue Sozialräume, getrennte Umkleiden und einen Pausenraum mit Blick auf das Becken. Lärm und Wetter bleiben Teil der Arbeit. Schutzkleidung stellen wir. In der Ecke neben dem Büro gibt es einen beheizten Platz.\n\nWenn Sie den Betrieb kennenlernen wollen, führen wir Sie vor einer Einladung durch die Halle. Das ersetzt kein Auswahlgespräch. Es zeigt, ob der Ort zu Ihnen passt. Bitte bringen Sie festes Schuhwerk mit. Die Führung dauert etwa vierzig Minuten und endet im Pausenraum, nicht im Büro.\n\nZusätzlich zum genannten Rahmen gibt es einen jährlichen Betriebsausflug, ein kleines Budget für Teamessen nach abgeschlossenen Großaufträgen und die Möglichkeit, an zwei Tagen im Jahr bei der Hafenreinigung mitzumachen. Das ist freiwillig und kein Auswahlkriterium.\n\nBetriebsrat und Geschäftsführung treffen sich monatlich. Themen sind Urlaubsplanung, die Kantinenkarte und die Belegung der Sozialräume. Fachliche Eignung wird dort nicht verhandelt. Wer sich bewirbt, muss diesen Kreis nicht kennen.\n\nDie Einarbeitungszeit ist bezahlt. In den ersten zwei Wochen gibt es eine feste Ansprechperson für Wege und Namen auf dem Hof. Danach läuft die Patenschaft weiter, bis die sechs Wochen um sind.\n\nDer Hof öffnet früh. Wechselbrücken werden angenommen, Sendungen auf die Verkehre verteilt, Rückfragen von Verladern an das Büro gegeben. Am späten Nachmittag beginnt die zweite Besetzung. Wer diesen Rhythmus nicht mag, wird an der Stelle nicht glücklich. Feste Schuhe und Wetterfestigkeit gehören zum Alltag auf dem Kai.\n\nDie Kantine schließt um 14 Uhr. Wer in der späten Besetzung ist, bekommt ein warmes Gericht zur Mitnahme. Getränke stehen im Pausenraum. Umkleiden sind nach dem Umbau getrennt, Spinde sind persönlich und bleiben über das Wochenende belegt.\n\nDas bringen Sie mit:\n- eine abgeschlossene Ausbildung in der Lagerlogistik oder eine vergleichbare Station in der Spedition\n- eine Tätigkeit als Disponent mit Verantwortung für Stückgut\n- sichere Tourenplanung, einschließlich der Abstimmung mit dem Fuhrpark\n- praktischen Umgang mit SAP TM im Tagesgeschäft\n- Erfahrung in der Schichtkoordination im Lager\n- Deutsch in Wort und Schrift; Englisch ist hilfreich, aber nicht vorausgesetzt\n\nWir lesen Bewerbungen fortlaufend. Ein Anschreiben, das diese Punkte mit eigenen Stationen belegt, ist uns lieber als eine allgemeine Interessenbekundung.\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-11-long-ad-requirements-end",
+    "status": "new"
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Kaiwerk Logistik",
+    "Disponent",
+    "Nordkai Spedition",
+    "Tourenplanung",
+    "SAP TM"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "die ausgeschriebene Position",
+    "[Ihr Name]",
+    "15 Jahre",
+    "seit 2010"
+  ],
+  "rationale": "Sehr lange Anzeige. Betrieb, Angebot und Alltag füllen den Vorspann. Disponent, Tourenplanung, SAP TM und Schichtkoordination stehen erst nach der Zeile Das bringen Sie mit. Der Brief muss diese späten Punkte mit Nordkai Spedition, Tourenplanung und SAP TM belegen. Firma Kaiwerk Logistik GmbH."
+}

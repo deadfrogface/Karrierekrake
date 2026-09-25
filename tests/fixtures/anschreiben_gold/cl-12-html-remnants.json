@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-12-html-remnants",
+  "tags": [
+    "html_remnants"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-12-html-remnants",
+    "source": "indeed",
+    "source_job_id": "src-cl-12-html-remnants",
+    "title": "Dispatcher (m/w/d)",
+    "company": "HafenLogistik GmbH",
+    "description": "<div class=\"job-posting\">\n<p>Die HafenLogistik GmbH ist ein fiktiver Stückgutbetrieb am Musterhafen.&nbsp;Wir übernehmen Sendungen regionaler Verlader.</p>\n<p>Halle und Hof liegen direkt am Kai. Etwa fünfunddreißig Beschäftigte arbeiten in Umschlag und Büro. Die Geschäftsführung ist vor Ort.</p>\n<p><strong>Was wir bieten</strong></p>\n<ul>\n<li>unbefristete Vollzeit</li>\n<li>dreißig Tage Urlaub und ein Jobrad</li>\n<li>Ticket für den Hafenbus und eine Kantine</li>\n<li>Einarbeitung über sechs Wochen</li>\n</ul>\n<br/>\n<p>Der Standort ist der Kaiweg 8 in Musterhafen. Parkplätze gibt es auf dem Hof. Diese Anzeige wurde als HTML eingefügt und enthält Markup, das nicht in einen Brief gehört.</p>\n<p><strong>Das bringen Sie mit:</strong></p>\n<ul>\n<li>Erfahrung als Disponent für Stückgut</li>\n<li>sichere Tourenplanung</li>\n<li>praktischen Umgang mit SAP TM</li>\n<li>Schichtkoordination zwischen Halle und Büro</li>\n</ul>\n</div>\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-12-html-remnants",
+    "status": "new"
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "HafenLogistik",
+    "Dispatcher",
+    "Nordkai Spedition",
+    "Tourenplanung",
+    "SAP TM"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "die ausgeschriebene Position",
+    "[Ihr Name]",
+    "<p>",
+    "<br",
+    "<li>",
+    "<strong>",
+    "&nbsp;",
+    "<div",
+    "</"
+  ],
+  "rationale": "Eingefügte Beschreibung mit HTML-Resten. Dieselbe Bereinigung und dasselbe Gate wie bei einer abgegriffenen Anzeige. Nach dem Entfernen der Tags bleiben Disponent, Tourenplanung und SAP TM, belegt durch Nordkai Spedition, Tourenplanung und SAP TM. Der Brief darf kein Markup enthalten. Firma HafenLogistik GmbH."
+}

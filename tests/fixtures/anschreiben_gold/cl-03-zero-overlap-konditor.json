@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-03-zero-overlap-konditor",
+  "tags": [
+    "zero_overlap"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-03-zero-overlap-konditor",
+    "source": "bundesagentur",
+    "source_job_id": "src-cl-03-zero-overlap-konditor",
+    "title": "Konditor (m/w/d)",
+    "company": "Zuckerkai Konditorei GmbH",
+    "description": "Die Zuckerkai Konditorei GmbH ist eine fiktive Backstube an der Straße Zuckerkai. Wir stellen Torten, Kleingebäck und saisonale Stücke für Cafés in der Nachbarschaft her. Der Laden ist familiär, die Theke entscheidet den Vormittag.\n\nWir sind zwölf Leute in Backstube und Verkauf. Die Inhaberin arbeitet mit. Rezepturen bleiben im Haus. Wer hier anfängt, steht zuerst an der Theke und sieht, welche Stücke weggehen.\n\nWir bieten eine unbefristete Vollzeitstelle, achtundzwanzig Tage Urlaub, Personalrabatt auf Gebäck und eine warme Mahlzeit in der Frühstückspause. Die Backstube ist ab vier Uhr besetzt. Späte Dienste gibt es nur vor Feiertagen. Einarbeitung übernimmt die Backstubenleitung. Fortbildungen zu Dekoration und Schokolade zahlen wir nach der Probezeit. Der Arbeitsplatz ist der Laden.\n\nDas bringen Sie mit:\n- einen Gesellenbrief als Konditorin oder Konditor\n- sichere Tortenansprache und saubere Marzipanfiguren\n- Erfahrung an der Ladenkasse im Verkauf\n- ruhigen Umgang mit Gästen am frühen Vormittag\n\nWir lesen Anschreiben, die diese handwerklichen Punkte mit eigenen Stationen belegen.\n",
+    "city": "Zuckerkai",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-03-zero-overlap-konditor",
+    "status": "new"
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "die ausgeschriebene Position",
+    "[Ihr Name]",
+    "Gesellenbrief",
+    "Marzipan",
+    "Tortenansprache"
+  ],
+  "rationale": "Die Beschreibung ist vorhanden, trifft aber keine Station und keinen Skill aus dem Profil. Gesellenbrief, Torten und Marzipan sind nicht belegt. Soll ist no_evidence und kein Brief."
+}
