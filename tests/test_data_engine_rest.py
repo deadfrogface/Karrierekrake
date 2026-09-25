@@ -167,8 +167,8 @@ def test_parser_debt_blocks_auto_match_and_cover_letter_until_confirmed():
     assert result.exclude_reason is not None
     assert result.exclude_reason.startswith("needs_confirmation")
 
-    letter = render_cover_letter(_job(description="Kubernetes Zertifikat und SAP"), cfg)
-    assert letter == ""
+    with pytest.raises(CoverLetterRefused):
+        render_cover_letter(_job(description="Kubernetes Zertifikat und SAP"), cfg)
 
     review.confirmed = True
     opened = assess_parser_debt(cfg)
