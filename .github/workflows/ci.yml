@@ -38,8 +38,9 @@ jobs:
 
   # The required check stays `unit-tests` (aggregator below). Shards are not
   # required checks; the aggregator is green only when every shard passed and
-  # the junit union equals the full collection. Keep matrix, --splits, and
-  # --expect-shards on the same count (scripts/unit_test_shards.py DEFAULT_SPLITS).
+  # the JUnit node-id union equals the collected set (no missing, no duplicate
+  # id). Keep matrix, --splits, and --expect-shards on the same count
+  # (scripts/unit_test_shards.py DEFAULT_SPLITS).
   unit-tests-shard:
     name: unit-tests-shard
     runs-on: windows-latest
@@ -121,7 +122,7 @@ jobs:
         with:
           pattern: unit-tests-*
           path: unit-test-artifacts
-      - name: Require every shard and the full collection
+      - name: Compare collected node ids with shard JUnit
         env:
           SHARD_RESULT: ${{ needs.unit-tests-shard.result }}
           COLLECT_RESULT: ${{ needs.unit-tests-collect.result }}

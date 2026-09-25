@@ -5,12 +5,14 @@ The CI job ``unit-tests`` stays the single required check. It runs only after
 every Windows shard and is green only when:
 
 - every shard job succeeded
-- the full collection (same filters as before) succeeded
-- the junit files together contain each collected test exactly once
+- ``pytest --collect-only -q`` with the same filters succeeded
+- each collected node id appears in exactly one shard JUnit file
+- skipped tests count as executed and must appear exactly once
 - no shard reported a failure or error
 
-Historical durations live in ``.test_durations`` so pytest-split's
-``least_duration`` algorithm keeps the shards balanced.
+A matching count is not accepted: one id run twice and another missing fails
+the check and lists both ids. Historical durations live in ``.test_durations``
+so pytest-split's ``least_duration`` algorithm keeps the shards balanced.
 """
 
 from __future__ import annotations
@@ -54,10 +56,14 @@ class ShardReport:
     errors: int = 0
     shard_times: list[tuple[str, float, int]] = field(default_factory=list)
     problems: list[str] = field(default_factory=list)
+    missing_nodeids: list[str] = field(default_factory=list)
+    duplicate_nodeids: list[str] = field(default_factory=list)
+    duplicate_where: dict[str, list[str]] = field(default_factory=dict)
+    extra_nodeids: list[str] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
-        return not self.problems
+        return not self.problems and not self.missing_nodeids and not self.duplicate_nodeids and not self.extra_nodeids
 
 
 def parse_collected(text: str) -> list[str]:
@@ -99,13 +105,38 @@ def junit_nodeid(classname: str, name: str, known: set[str] | None = None) -> st
     return None
 
 
+def junit_property_nodeid(testcase: ET.Element) -> str | None:
+    """Read the pytest node id recorded by ``tests/conftest.py``."""
+    values = [
+        (prop.get("value") or "")
+        for prop in testcase.findall("./properties/property")
+        if prop.get("name") == "nodeid"
+    ]
+    values = [value for value in values if value]
+    if not values:
+        return None
+    # Teardown is the report pytest finalizes; identical repeats are one id.
+    unique = set(values)
+    if len(unique) != 1:
+        return None
+    return values[0]
+
+
 def load_junit_cases(path: Path, known: set[str] | None = None) -> list[JunitCase]:
+    """Load JUnit cases.
+
+    The shard gate passes ``known=None`` and then replaces these ids with the
+    ``nodeid`` property. ``build-durations`` still passes the collected set so
+    historical JUnit files (no property) can be mapped.
+    """
     root = ET.parse(path).getroot()
     cases: list[JunitCase] = []
     for tc in root.findall(".//testcase"):
         classname = tc.get("classname") or ""
         name = tc.get("name") or ""
-        nodeid = junit_nodeid(classname, name, known)
+        nodeid = junit_property_nodeid(tc)
+        if nodeid is None and known is not None:
+            nodeid = junit_nodeid(classname, name, known)
         if nodeid is None:
             nodeid = f"<unmapped> {classname}::{name}"
         cases.append(
@@ -157,7 +188,8 @@ def evaluate(
     if len(collected_set) != len(collected_nodeids):
         report.problems.append("collection list contains duplicate node ids")
 
-    seen: dict[str, str] = {}
+    # node id -> shards that executed it, in order. Skips count as executed.
+    occurrences: dict[str, list[str]] = {}
     labels = shard_labels or [f"shard-{i + 1}" for i in range(len(shard_cases))]
     for index, cases in enumerate(shard_cases):
         label = labels[index] if index < len(labels) else f"shard-{index + 1}"
@@ -176,27 +208,22 @@ def evaluate(
             else:
                 report.passed += 1
             if case.nodeid.startswith("<unmapped>"):
-                report.problems.append(f"could not map junit case in {label}: {case.nodeid}")
-                continue
-            previous = seen.get(case.nodeid)
-            if previous is not None:
                 report.problems.append(
-                    f"duplicate test {case.nodeid} in {previous} and {label}"
+                    f"junit case in {label} has no nodeid property: {case.nodeid}"
                 )
-            else:
-                seen[case.nodeid] = label
+                continue
+            occurrences.setdefault(case.nodeid, []).append(label)
         report.shard_times.append((label, shard_time, len(cases)))
 
-    missing = sorted(collected_set - set(seen))
-    extra = sorted(set(seen) - collected_set)
-    if missing:
-        preview = ", ".join(missing[:8])
-        suffix = "" if len(missing) <= 8 else f" … (+{len(missing) - 8})"
-        report.problems.append(f"{len(missing)} collected tests missing from shards: {preview}{suffix}")
-    if extra:
-        preview = ", ".join(extra[:8])
-        suffix = "" if len(extra) <= 8 else f" … (+{len(extra) - 8})"
-        report.problems.append(f"{len(extra)} shard tests were not in the collection: {preview}{suffix}")
+    executed = set(occurrences)
+    report.missing_nodeids = sorted(collected_set - executed)
+    report.extra_nodeids = sorted(executed - collected_set)
+    report.duplicate_nodeids = sorted(
+        nodeid for nodeid, where in occurrences.items() if len(where) > 1
+    )
+    report.duplicate_where = {
+        nodeid: occurrences[nodeid] for nodeid in report.duplicate_nodeids
+    }
     return report
 
 
@@ -213,6 +240,18 @@ def format_report(report: ShardReport) -> str:
     ]
     for label, seconds, count in report.shard_times:
         lines.append(f"shard {label}: tests={count} junit_time_s={seconds:.1f}")
+    where = report.duplicate_where
+    if report.missing_nodeids:
+        lines.append(f"missing node ids ({len(report.missing_nodeids)}):")
+        lines.extend(f"- {nodeid}" for nodeid in report.missing_nodeids)
+    if report.duplicate_nodeids:
+        lines.append(f"duplicate node ids ({len(report.duplicate_nodeids)}):")
+        for nodeid in report.duplicate_nodeids:
+            shards = ", ".join(where.get(nodeid, []))
+            lines.append(f"- {nodeid} in {shards}")
+    if report.extra_nodeids:
+        lines.append(f"extra node ids ({len(report.extra_nodeids)}):")
+        lines.extend(f"- {nodeid}" for nodeid in report.extra_nodeids)
     if report.problems:
         lines.append(f"problems: {len(report.problems)}")
         shown = report.problems[:30]
@@ -296,11 +335,12 @@ def cmd_run(args: argparse.Namespace) -> int:
 def cmd_check(args: argparse.Namespace) -> int:
     collected_path, junit_paths = discover_artifacts(Path(args.artifacts))
     collected = parse_collected(collected_path.read_text(encoding="utf-8"))
-    known = set(collected)
     shard_cases: list[list[JunitCase]] = []
     labels: list[str] = []
     for path in junit_paths:
-        shard_cases.append(load_junit_cases(path, known))
+        # Exact node ids from the JUnit property. Do not snap onto the
+        # collected set: a reconstructed name can hide a missing test.
+        shard_cases.append(load_junit_cases(path, known=None))
         labels.append(path.parent.name or path.stem)
     report = evaluate(
         collected,
@@ -381,8 +421,9 @@ def cmd_self_check(_args: argparse.Namespace) -> int:
         collect_result="success",
         expect_shards=1,
     )
-    if missing.ok or not any("missing" in p for p in missing.problems):
+    if missing.ok or "tests/test_b.py::test_other" not in missing.missing_nodeids:
         print("expected missing-test failure", file=sys.stderr)
+        print(format_report(missing), file=sys.stderr)
         return 1
 
     duplicated = evaluate(
@@ -396,8 +437,40 @@ def cmd_self_check(_args: argparse.Namespace) -> int:
         collect_result="success",
         expect_shards=2,
     )
-    if duplicated.ok or not any("duplicate" in p for p in duplicated.problems):
+    if duplicated.ok or "tests/test_a.py::test_ok" not in duplicated.duplicate_nodeids:
         print("expected duplicate failure", file=sys.stderr)
+        print(format_report(duplicated), file=sys.stderr)
+        return 1
+
+    # Same executed count as collected, but one id twice and another absent.
+    swapped = evaluate(
+        [
+            "tests/test_a.py::test_ok",
+            "tests/test_a.py::test_missing",
+            "tests/test_b.py::test_other",
+        ],
+        [
+            [
+                JunitCase("tests/test_a.py::test_ok", 1.0, False, False, False, "s1"),
+                JunitCase("tests/test_a.py::test_ok", 1.0, False, False, False, "s1"),
+            ],
+            [JunitCase("tests/test_b.py::test_other", 1.0, False, False, False, "s2")],
+        ],
+        shard_result="success",
+        collect_result="success",
+        expect_shards=2,
+    )
+    swapped_text = format_report(swapped)
+    if (
+        swapped.ok
+        or swapped.junit_cases != swapped.collected
+        or "tests/test_a.py::test_missing" not in swapped.missing_nodeids
+        or "tests/test_a.py::test_ok" not in swapped.duplicate_nodeids
+        or "tests/test_a.py::test_missing" not in swapped_text
+        or "tests/test_a.py::test_ok" not in swapped_text
+    ):
+        print("expected count-collision to fail with both ids listed", file=sys.stderr)
+        print(swapped_text, file=sys.stderr)
         return 1
 
     failed = evaluate(
