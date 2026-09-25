@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+import os
+import socket
 import urllib.request
 from pathlib import Path
 
@@ -114,8 +116,8 @@ def test_missing_country_file_does_not_download(
     country = Path(info.path) / "geonames" / "DE.txt"
     assert country.is_file()
     country.unlink()
-    # Keep the valid info so the country-file gate is what rejects Nominatim.
-    # A real ensure_active() would reseed and restore DE.txt.
+    # Manifest cache stays valid after the delete. Pin ensure_active so a
+    # reseed cannot restore DE.txt before the country-file stat runs.
     monkeypatch.setattr(mgr, "ensure_active", lambda: info)
 
     import pgeocode
@@ -342,3 +344,95 @@ def test_rollback_drops_nominatim_and_keeps_dataset_a(
     assert again.ok
     assert again.latitude == pytest.approx(first.latitude)
     assert constructed == ["DE", "DE"]
+
+
+_COUNTRY_FILES = {"DE.txt", "AT.txt", "CH.txt"}
+
+
+def _track_country_stats(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    seen: list[str] = []
+    real_stat = os.stat
+
+    def _counting(path, *args, **kwargs):
+        base = os.path.basename(os.fspath(path))
+        if base in _COUNTRY_FILES:
+            seen.append(base)
+        return real_stat(path, *args, **kwargs)
+
+    monkeypatch.setattr(os, "stat", _counting)
+    return seen
+
+
+def test_country_file_is_stat_once_per_dataset_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """One fresh stat per index build. A cleared index stats once more."""
+    _block_downloads(monkeypatch)
+    _ready_dataset(tmp_path, monkeypatch)
+    stats = _track_country_stats(monkeypatch)
+    from core import geo_resolve
+
+    geo_dataset.invalidate_dataset_caches()
+    first = resolve_postal_pgeocode("10115", "DE")
+    second = resolve_postal_pgeocode("01067", "DE")
+    assert first.ok and second.ok
+    assert stats == ["DE.txt"]
+    assert "DE" in geo_resolve._pgeocode_index
+
+    geo_dataset.invalidate_dataset_caches()
+    third = resolve_postal_pgeocode("10115", "DE")
+    fourth = resolve_postal_pgeocode("10115", "DE")
+    assert third.ok and fourth.ok
+    assert stats == ["DE.txt", "DE.txt"]
+
+
+def test_deleted_country_file_does_not_connect(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Warm validation cache, missing DE.txt, no socket and no cached None."""
+    _ready_dataset(tmp_path, monkeypatch)
+    info = get_geo_dataset_manager().ensure_active()
+    assert info.valid
+    country = Path(info.path) / "geonames" / "DE.txt"
+    original = country.read_bytes()
+    country.unlink()
+    assert get_geo_dataset_manager().ensure_active().valid
+
+    attempts = {"connect": 0, "dns": 0}
+    stats = _track_country_stats(monkeypatch)
+
+    def _blocked_connect(self, address):
+        del address
+        if self.family in (socket.AF_INET, socket.AF_INET6):
+            attempts["connect"] += 1
+        raise OSError("network blocked")
+
+    def _blocked_dns(*args, **kwargs):
+        del args, kwargs
+        attempts["dns"] += 1
+        raise OSError("dns blocked")
+
+    monkeypatch.setattr(socket.socket, "connect", _blocked_connect)
+    monkeypatch.setattr(socket, "getaddrinfo", _blocked_dns)
+
+    from core import geo_resolve
+
+    first = resolve_postal_pgeocode("10115", "DE")
+    second = resolve_postal_pgeocode("80331", "DE")
+    _assert_unresolved(first)
+    _assert_unresolved(second)
+    assert first.reason == "pgeocode_unavailable"
+    assert attempts == {"connect": 0, "dns": 0}
+    assert stats == ["DE.txt", "DE.txt"]
+    assert "DE" not in geo_resolve._pgeocode_index
+    assert all(value is not None for value in geo_resolve._pgeocode_index.values())
+
+    country.write_bytes(original)
+    repaired = resolve_postal_pgeocode("10115", "DE")
+    assert repaired.ok
+    assert repaired.latitude == pytest.approx(52.5323, abs=1e-4)
+    assert stats == ["DE.txt", "DE.txt", "DE.txt"]
+    assert attempts == {"connect": 0, "dns": 0}
+    again = resolve_postal_pgeocode("10115", "DE")
+    assert again.ok
+    assert stats == ["DE.txt", "DE.txt", "DE.txt"]

@@ -16,6 +16,8 @@ from __future__ import annotations
 import logging
 import math
 import os
+import stat
+import threading
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable, Literal
 
@@ -193,8 +195,9 @@ def _ensure_geo_data() -> str:
     """Return the active dataset version.
 
     The manager caches validation for this process and dataset, keyed by
-    manifest version, mtime_ns and size. Resolution does not hash the
-    country files.
+    manifest version, mtime_ns and size. Resolution does not hash country
+    files, and does not stat them. The country file is stat'd only when a
+    Nominatim index is built.
     """
     info = get_geo_dataset_manager().ensure_active()
     return info.version if info.valid else GEO_DATA_VERSION_PGEOCODE
@@ -233,22 +236,55 @@ def _offline_pgeocode_dir(info: Any) -> str | None:
     return os.path.realpath(expected)
 
 
+# Serialises the brief os.path.exists stand-in around Nominatim().
+_nominatim_build_lock = threading.Lock()
+
+
+def _construct_offline_nominatim(
+    pgeocode: Any, country_code: str, country_file: str
+) -> Any:
+    """Build Nominatim after ``country_file`` was just stat'd.
+
+    pgeocode 0.5 ``_get_data`` calls ``os.path.exists`` before ``read_csv``.
+    That helper is another ``os.stat``. The file was confirmed immediately
+    above, so this path returns True without statting again and the download
+    branch does not run. Other paths, including ``CC-index.txt``, still use
+    the real check.
+    """
+    real_exists = os.path.exists
+    confirmed = os.path.normcase(country_file)
+
+    def _exists(path: object) -> bool:
+        try:
+            if os.path.normcase(os.fspath(path)) == confirmed:
+                return True
+        except (TypeError, ValueError):
+            return real_exists(path)
+        return real_exists(path)
+
+    with _nominatim_build_lock:
+        os.path.exists = _exists  # type: ignore[method-assign, assignment]
+        try:
+            return pgeocode.Nominatim(country_code.lower())
+        finally:
+            os.path.exists = real_exists
+
+
 def _pgeocode_nominatim(country_code: str) -> Any | None:
     """Offline GeoNames index — never calls the public Nominatim HTTP API.
 
     ``pgeocode.Nominatim`` downloads a country file when it is missing.
     Build it only for a valid active dataset whose ``CC.txt`` is already
-    on disk. A missing dataset returns None without caching that miss.
+    on disk. A missing file returns None and is not cached, so the next
+    resolution stats the file again. Once the index is in memory, further
+    postcode lookups do not stat the country file.
     """
     cc = normalize_country_code(country_code)
     if cc not in DACH_COUNTRY_CODES:
         return None
     cached = _pgeocode_index.get(cc)
     if cached is not None:
-        loaded = str(getattr(cached, "_data_path", "") or "")
-        if loaded and os.path.isfile(loaded):
-            return cached
-        _pgeocode_index.pop(cc, None)
+        return cached
 
     info = get_geo_dataset_manager().ensure_active()
     data_dir = _offline_pgeocode_dir(info)
@@ -261,7 +297,17 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
         _warn_pgeocode_once(f"dir:{reason}", cc, reason)
         return None
     country_file = os.path.join(data_dir, f"{cc}.txt")
-    if not os.path.isfile(country_file):
+    # Fresh stat, never the manifest validation cache. Only on this rebuild.
+    try:
+        file_stat = os.stat(country_file)
+    except OSError:
+        _warn_pgeocode_once(
+            f"file:{cc}",
+            cc,
+            f"country file {cc}.txt missing in active dataset",
+        )
+        return None
+    if not stat.S_ISREG(file_stat.st_mode):
         _warn_pgeocode_once(
             f"file:{cc}",
             cc,
@@ -277,7 +323,7 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
     # dataset even when this module was imported earlier in the process.
     pgeocode.STORAGE_DIR = data_dir
     try:
-        nom = pgeocode.Nominatim(cc.lower())
+        nom = _construct_offline_nominatim(pgeocode, cc, country_file)
     except Exception as exc:
         logger.warning("pgeocode init failed for %s: %s", cc, type(exc).__name__)
         return None

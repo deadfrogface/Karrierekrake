@@ -211,7 +211,12 @@ def validate_dataset(path: Path) -> tuple[bool, str]:
 
 
 def _validate_dataset_shape(path: Path) -> tuple[bool, str]:
-    """Structural check only. Checksums stay in seeding and updates."""
+    """Manifest identity only. Checksums stay in seeding and updates.
+
+    Country files are not stat'd here. The manifest cache cannot see a
+    deleted ``CC.txt``, so the resolver stats that file when it builds the
+    in-memory index.
+    """
     mf = _read_manifest(path)
     if not mf:
         return False, "missing manifest"
@@ -220,10 +225,6 @@ def _validate_dataset_shape(path: Path) -> tuple[bool, str]:
     geo = path / "geonames"
     if not geo.is_dir():
         return False, "missing geonames/"
-    for cc in DACH_COUNTRIES:
-        ok, msg = validate_country_file(geo / f"{cc}.txt", cc)
-        if not ok:
-            return False, msg
     return True, "ok"
 
 
