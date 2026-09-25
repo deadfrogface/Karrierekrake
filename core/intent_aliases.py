@@ -48,13 +48,51 @@ def _cf(s: str) -> str:
     return (s or "").casefold().strip()
 
 
+# Compiled once. The alias loop used to substitute these on the job text for
+# every alias; the patterns do not depend on the alias.
+_HYPHEN_RE = re.compile(r"[-_/]+")
+_WS_RE = re.compile(r"\s+")
+_TITLE_NOISE_RE = re.compile(
+    r"\b(senior|junior|m\s*w\s*d|w\s*m\s*d|all genders)\b"
+)
+
+
 def _norm_alias(s: str) -> str:
     """Normalize for alias lookup: casefold, unify hyphens/spaces."""
     t = _cf(s)
     t = t.replace("ß", "ss")
-    t = re.sub(r"[-_/]+", " ", t)
-    t = re.sub(r"\s+", " ", t).strip()
+    t = _HYPHEN_RE.sub(" ", t)
+    t = _WS_RE.sub(" ", t).strip()
     return t
+
+
+def _alias_targets(aliases: frozenset[str]) -> tuple[str, ...]:
+    """Non-empty alias strings in normalized form.
+
+    Curated tables are authored already normalized, so each target is the
+    same string the fuzzy loop used to compare. An alias that normalization
+    would change keeps its original spelling — ratios must not move.
+    """
+    targets: list[str] = []
+    for alias in aliases:
+        if not alias:
+            continue
+        normalized = _norm_alias(alias)
+        targets.append(normalized if normalized == alias else alias)
+    return tuple(targets)
+
+
+# family aliases → targets, filled once when ``ROLE_FAMILIES`` is defined.
+# One-off labels (a single unknown role) are not stored: a cache keyed by
+# job text would grow with the corpus, and those tables have one entry.
+_NORMALIZED_ROLE_ALIASES: dict[frozenset[str], tuple[str, ...]] = {}
+
+
+def _prepared_alias_targets(aliases: frozenset[str]) -> tuple[str, ...]:
+    cached = _NORMALIZED_ROLE_ALIASES.get(aliases)
+    if cached is not None:
+        return cached
+    return _alias_targets(aliases)
 
 
 def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
@@ -62,6 +100,9 @@ def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
 
     Uses full-string ratio only — never partial/substring fuzzy that would
     expand ``Buchhalter`` into the payroll family.
+
+    The job text is normalized once, including title-noise stripping.
+    Alias strings come from the precomputed table.
     """
     needle = _norm_alias(text)
     if not needle or not aliases:
@@ -72,16 +113,9 @@ def _fuzzy_against_aliases(text: str, aliases: frozenset[str]) -> bool:
         from rapidfuzz import fuzz
     except ImportError:
         return False
-    for alias in aliases:
-        if not alias:
-            continue
-        # Strip common title noise for comparison (senior, m/w/d, …)
-        compact = re.sub(
-            r"\b(senior|junior|m\s*w\s*d|w\s*m\s*d|all genders)\b",
-            " ",
-            needle,
-        )
-        compact = re.sub(r"\s+", " ", compact).strip(" ()[]")
+    compact = _TITLE_NOISE_RE.sub(" ", needle)
+    compact = _WS_RE.sub(" ", compact).strip(" ()[]")
+    for alias in _prepared_alias_targets(aliases):
         if compact in aliases or fuzz.ratio(compact, alias) >= _ALIAS_FUZZY_THRESHOLD:
             return True
         if fuzz.ratio(needle, alias) >= _ALIAS_FUZZY_THRESHOLD:
@@ -121,6 +155,9 @@ _PAYROLL_ALIASES = frozenset(
 ROLE_FAMILIES: tuple[RoleFamily, ...] = (
     RoleFamily(family_id="payroll", aliases=_PAYROLL_ALIASES),
 )
+
+for _family in ROLE_FAMILIES:
+    _NORMALIZED_ROLE_ALIASES[_family.aliases] = _alias_targets(_family.aliases)
 
 # Title patterns that belong to payroll family even with extra tokens
 # (e.g. "Lohnbuchhalter (m/w/d)", "Senior Payroll Specialist").
