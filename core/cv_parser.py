@@ -1560,6 +1560,7 @@ _KNOWN_SOFTWARE_TOKENS = (
     "figma", "docker", "blender", "qgis", "protool", "davinci resolve", "davinci",
     "unreal engine", "unreal engine 5", "siemens tia portal",
     "tia portal", "s/4hana", "sap s/4hana",
+    "minitab", "qlik", "qlik sense", "qlikview",
 )
 
 

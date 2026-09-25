@@ -313,3 +313,102 @@ def test_suggestion_maps_current_job_end_date() -> None:
     assert parsed["work_experience"][0]["end_date"] == "heute"
     assert parsed["education"][0]["end_date"] == "ohne Abschluss"
     assert parsed["education"][0]["qualification"] == "Studium abgebrochen"
+
+
+def test_table_end_date_self_employed_software_duty_apostrophe() -> None:
+    from core.cv_docpick_import import (
+        _enrich_software_from_text,
+        _fix_employment_pipe,
+        _normalize_person_apostrophes,
+        _preserve_education_source_phrasing,
+        _repair_duty_as_title,
+        _repair_invented_heute,
+        _reroute_certs_software_skills,
+    )
+
+    table = (
+        "## Berufserfahrung\n\n"
+        "| 02/2019   | Uhrentechnikerin                   |\n"
+        "|-----------|------------------------------------|\n"
+        "| 08/2021   | Mosaik Dienste AG                  |\n"
+    )
+    fixed = _repair_invented_heute(
+        [
+            {
+                "title": "Uhrentechnikerin",
+                "company": "Mosaik Dienste AG",
+                "start_date": "02/2019",
+                "end_date": "heute",
+                "responsibilities": [],
+            }
+        ],
+        table,
+    )
+    assert fixed[0]["end_date"] == "08/2021"
+
+    self_emp = _fix_employment_pipe(
+        [
+            {
+                "title": "Freelance Translator | Self-employed",
+                "company": "",
+                "start_date": "03/2018",
+                "end_date": "heute",
+                "responsibilities": [],
+            }
+        ]
+    )
+    assert self_emp[0]["title"] == "Freelance Translator"
+    assert self_emp[0]["company"].lower().startswith("self")
+
+    apos = _normalize_person_apostrophes(
+        {"first_name": "Finn", "last_name": "O\u2019Connor"}
+    )
+    assert apos["last_name"] == "O'Connor"
+
+    edu = _preserve_education_source_phrasing(
+        [
+            {
+                "institution": "",
+                "qualification": "Schule ohne Abschluss",
+                "start_date": "",
+                "end_date": "ohne Abschluss",
+            }
+        ],
+        "Left school at 16 without qualifications\n",
+    )
+    assert "Left school" in edu[0]["qualification"]
+
+    certs, soft, skills = _reroute_certs_software_skills(
+        [
+            {"name": "TIA Portal"},
+            {"name": "Basic Life Support"},
+            {"name": "Communication aids"},
+        ],
+        [],
+        ["Session notes"],
+    )
+    assert any(c["name"] == "Basic Life Support" for c in certs)
+    assert "TIA Portal" in soft
+    assert "Communication aids" in skills
+
+    soft2 = _enrich_software_from_text(
+        [],
+        "## Applications\n\nMinitab - Grundlagen Qlik Sense - gute Kenntnisse\n",
+    )
+    assert "Minitab" in soft2
+    assert any("Qlik" in s for s in soft2)
+
+    duty = _repair_duty_as_title(
+        [
+            {
+                "title": "Sprechstundenkoordination",
+                "company": "Gemeinschaftspraxis Förde",
+                "start_date": "02/2018",
+                "end_date": "heute",
+                "responsibilities": [],
+            }
+        ],
+        "Medizinische Fachangestellte\nGemeinschaftspraxis Förde\nSprechstundenkoordination\n",
+    )
+    assert duty[0]["title"] == "Medizinische Fachangestellte"
+    assert "Sprechstundenkoordination" in duty[0]["responsibilities"]

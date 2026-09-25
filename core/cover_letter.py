@@ -101,6 +101,26 @@ def pick_relevant_experience(
     return experiences[0]
 
 
+def _experience_claim_allowed(
+    exp: ExperienceEntry,
+    *,
+    source_text: str = "",
+) -> bool:
+    """Refuse cover-letter job-title claims that are not evidenced in source."""
+    title = clean_text(exp.title)
+    if not title:
+        return False
+    if not source_text:
+        # Without source we only allow generic wording (caller decides).
+        return False
+    from core.cv_evidence import evidence_in_source
+
+    company = clean_text(exp.company)
+    title_ok = evidence_in_source(title, source_text)
+    company_ok = (not company) or evidence_in_source(company, source_text)
+    return bool(title_ok and company_ok)
+
+
 def pick_relevant_skills(config: AppConfig, job: Job, *, limit: int = 6) -> list[str]:
     """Skills/software that appear in the JD first; never invent new ones."""
     blob = _job_blob(job)
@@ -150,6 +170,7 @@ def render_cover_letter(
     config: AppConfig,
     *,
     contact_claims: Any | None = None,
+    source_text: str = "",
 ) -> str:
     template_path = resolve_cover_letter_template(config)
     if template_path is not None:
@@ -162,13 +183,25 @@ def render_cover_letter(
         company = "Ihr Unternehmen"
 
     skills_list = pick_relevant_skills(config, job)
+    # Drop skills that are not evidenced when a source CV text is provided.
+    if source_text:
+        from core.cv_evidence import evidence_in_source
+
+        skills_list = [s for s in skills_list if evidence_in_source(s, source_text)]
     skills = ", ".join(skills_list) or "meine bisherigen beruflichen Erfahrungen"
 
     exp = pick_relevant_experience(list(config.profile.qualifications.work_experience), job)
     if exp is not None:
-        label = exp.label() if hasattr(exp, "label") else str(exp)
         blob = _job_blob(job)
-        if _experience_relevance(exp, blob) > 0:
+        # Never invent a job-title claim in the letter when source grounding fails.
+        if source_text and not _experience_claim_allowed(exp, source_text=source_text):
+            experience_sentence = (
+                "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein."
+            )
+        elif _experience_relevance(exp, blob) > 0 and (
+            not source_text or _experience_claim_allowed(exp, source_text=source_text)
+        ):
+            label = exp.label() if hasattr(exp, "label") else str(exp)
             experience_sentence = (
                 f"In meiner Tätigkeit als {clean_text(exp.title) or label} "
                 f"habe ich für diese Stelle relevante Erfahrungen gesammelt."

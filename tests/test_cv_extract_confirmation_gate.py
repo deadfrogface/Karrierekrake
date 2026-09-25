@@ -118,15 +118,55 @@ def test_filter_parsed_for_import_strips_invented() -> None:
         )
 
 
-def test_cv_job_cover_letter_flow_rejects_invented_quals() -> None:
-    """Real CV↔Stelle↔Anschreiben path: invented employment must not render."""
-    with pytest.raises(ExtractConfirmationError):
-        confirm_extract_for_downstream(
-            INVENTED_PARSED, source_text=SOURCE_CV, fail_on_invented=True
-        )
+def test_cover_letter_refuses_unevidenced_job_title_claim() -> None:
+    """Unconfirmed employment title must not appear as a concrete claim."""
+    from core.config import ExperienceEntry, QualificationsConfig, SourcedText, empty_app_config
+    from core.cover_letter import render_cover_letter
+    from core.models import Job
 
-    # After confirmation, only grounded facts may seed the profile used by
-    # Matching + Cover letter.
+    source = (
+        "Max Beispiel\nAnalyst | Green Data GmbH | 03/2021 - 08/2024\n"
+        "Skills: Python\n"
+    )
+    config = empty_app_config()
+    config.profile.first_name = "Max"
+    config.profile.last_name = "Beispiel"
+    config.application.first_name = "Max"
+    config.application.last_name = "Beispiel"
+    config.profile.qualifications = QualificationsConfig(
+        work_experience=[
+            ExperienceEntry(
+                title="Chief Invented Officer",
+                company="FakeCorp International",
+                start_date="01/2015",
+                end_date="heute",
+            ),
+            ExperienceEntry(
+                title="Analyst",
+                company="Green Data GmbH",
+                start_date="03/2021",
+                end_date="08/2024",
+            ),
+        ],
+        skills=[SourcedText(value="Python", source="cv")],
+    )
+    job = Job(
+        id="j1",
+        title="Analyst",
+        company="Green Data GmbH",
+        description="Analyst Python Green Data",
+        source="fixture",
+    )
+    # Without source_text, prefer safe generic sentence when picking invented first
+    # by relevance — with source_text, invented title must not appear.
+    letter = render_cover_letter(job, config, source_text=source)
+    assert "Chief Invented Officer" not in letter
+    assert "FakeCorp" not in letter
+    assert "Analyst" in letter or "Erfahrungen" in letter
+
+
+def test_cv_job_cover_letter_grounded_flow() -> None:
+    """Matching + Anschreiben with confirmed extract only (source_text required)."""
     grounded = {
         "education": [
             {
@@ -151,10 +191,11 @@ def test_cv_job_cover_letter_flow_rejects_invented_quals() -> None:
     confirmed = confirm_extract_for_downstream(
         grounded, source_text=SOURCE_CV, fail_on_invented=True
     ).parsed
-
     config = empty_app_config()
     config.profile.first_name = "Max"
     config.profile.last_name = "Beispiel"
+    config.application.first_name = "Max"
+    config.application.last_name = "Beispiel"
     config.profile.qualifications = QualificationsConfig(
         work_experience=[
             ExperienceEntry(
@@ -166,7 +207,6 @@ def test_cv_job_cover_letter_flow_rejects_invented_quals() -> None:
             for w in confirmed["work_experience"]
         ],
         skills=[SourcedText(value=s, source="cv") for s in confirmed.get("skills") or []],
-        education=[],
     )
     job = Job(
         id="job-demo",
@@ -175,14 +215,13 @@ def test_cv_job_cover_letter_flow_rejects_invented_quals() -> None:
         description="Python Umweltanalyse Analyst Erfahrung erforderlich",
         city="Freiburg",
         source="fixture",
-        url="https://example.com/job",
     )
     match = score_job(job, config)
-    assert not match.excluded or match.score >= 0
-    letter = render_cover_letter(job, config)
+    assert match.score >= 0
+    letter = render_cover_letter(job, config, source_text=SOURCE_CV)
     assert "FakeCorp" not in letter
     assert "PhD Quantencomputing" not in letter
-    assert "Green Data" in letter or "Analyst" in letter or "Erfahrungen" in letter
+    assert "Analyst" in letter or "Erfahrungen" in letter
 
 
 def test_enrich_education_and_heute_repair_general_rules() -> None:

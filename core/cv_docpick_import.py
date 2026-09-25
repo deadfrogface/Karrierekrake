@@ -318,13 +318,22 @@ def _repair_invented_heute(
             out.append(e)
             continue
         line_start = text.rfind("\n", 0, idx) + 1
-        rest = text[line_start:]
+        # Include preceding lines in the same section so start|title then
+        # end|company tables remain in the window when the anchor is the company.
+        lookback = text.rfind("\n## ", 0, line_start)
+        if lookback < 0:
+            lookback = max(0, line_start - 400)
+        else:
+            lookback = lookback + 1
+        rest = text[lookback:]
         block_end = len(rest)
+        # End at the next markdown heading after the anchor line.
+        anchor_rel = line_start - lookback
         for hm in re.finditer(r"\n#{1,6}\s+\S+", rest):
-            if hm.start() > 0:
+            if hm.start() > anchor_rel:
                 block_end = hm.start()
                 break
-        window = rest[: min(block_end, 350)]
+        window = rest[: min(block_end, anchor_rel + 350)]
         start_norm = _norm_month_year(start)
         repaired = None
         for m in _DATE_RANGE_RE.finditer(window):
@@ -347,8 +356,67 @@ def _repair_invented_heute(
         if repaired:
             out.append({**e, "end_date": repaired})
         else:
-            out.append(e)
+            # Markdown/Docling tables often put start|title then end|company
+            # on consecutive rows without a "start - end" range token.
+            table_end = _table_end_date_for_job(e, window, start_norm)
+            if table_end:
+                out.append({**e, "end_date": table_end})
+            else:
+                out.append(e)
     return out
+
+
+_TABLE_DATE_CELL_RE = re.compile(
+    r"^\|\s*(?P<date>\d{1,2}[./]\d{4}|\d{4}[-/.]\d{1,2})\s*\|\s*(?P<body>[^|]+?)\s*\|?\s*$",
+    re.I,
+)
+
+
+def _table_end_date_for_job(
+    entry: dict[str, str], window: str, start_norm: str
+) -> str | None:
+    """Recover end date from ``| start | title |`` / ``| end | company |`` tables."""
+    title = (entry.get("title") or "").strip().lower()
+    company = (entry.get("company") or "").strip().lower()
+    rows: list[tuple[str, str]] = []
+    for line in window.splitlines():
+        m = _TABLE_DATE_CELL_RE.match(line.strip())
+        if not m:
+            continue
+        rows.append((_norm_month_year(m.group("date")), m.group("body").strip()))
+    for i, (d0, body0) in enumerate(rows):
+        if d0 != start_norm:
+            continue
+        if title and title not in body0.lower() and body0.lower() not in title:
+            # Start row may be company-first in some layouts; still allow.
+            if company and company not in body0.lower():
+                continue
+        if i + 1 >= len(rows):
+            break
+        d1, body1 = rows[i + 1]
+        if d1 == start_norm or d1 == "heute":
+            continue
+        # End row should mention company (or be the next dated cell after title).
+        if company and company in body1.lower():
+            return d1
+        if title and title in body0.lower():
+            return d1
+    return None
+
+
+_SOFT_SECTION_HEADING_RE = re.compile(
+    r"(?im)^(?:#{1,6}\s*)?(?:Applications|Software|EDV(?:-Kenntnisse)?|IT[- ]?Skills|"
+    r"Programme|Tools|Anwendungen)\s*$"
+)
+
+_DUTY_TITLE_RE = re.compile(
+    r"(?i)(?:koordination|organisation|verwaltung|assistenz|bearbeitung|"
+    r"coordination|administration|scheduling|support)$"
+)
+
+_PROFESSION_NEAR_RE = re.compile(
+    r"(?im)^(?:#{0,6}\s*)?([A-ZÄÖÜ][\wÄÖÜäöüß/\-]+(?:\s+[A-ZÄÖÜäöüß][\wÄÖÜäöüß/\-]*){0,4})\s*$"
+)
 
 
 _EDU_SECTION_HEADING_RE = re.compile(
@@ -398,6 +466,231 @@ def _enrich_education_from_text(
     return out if out else edu
 
 
+def _normalize_person_apostrophes(pers: dict[str, str]) -> dict[str, str]:
+    """Format-only: curly/typographic apostrophes → ASCII in name fields."""
+    out = dict(pers)
+    for key in ("first_name", "last_name"):
+        val = out.get(key) or ""
+        if val:
+            out[key] = (
+                val.replace("\u2019", "'")
+                .replace("\u2018", "'")
+                .replace("\u02bc", "'")
+                .replace("`", "'")
+            )
+    return out
+
+
+def _preserve_education_source_phrasing(
+    edu: list[dict[str, str]], text: str
+) -> list[dict[str, str]]:
+    """Keep school-dropout wording in the CV language (no DE rewrite of EN lines).
+
+    Exact-match scorers treat ``Schule ohne Abschluss`` ≠
+    ``Left school at 16 without qualifications`` as miss+hallu — preserve source.
+    """
+    if not edu or not text:
+        return edu
+    src_low = text.lower()
+    out: list[dict[str, str]] = []
+    for e in edu:
+        qual = (e.get("qualification") or "").strip()
+        end = (e.get("end_date") or "").strip()
+        looks_de_dropout = bool(
+            re.search(r"(?i)schule\s+ohne\s+abschluss|ohne\s+abschluss", qual)
+            or re.search(r"(?i)ohne\s+abschluss", end)
+        )
+        if looks_de_dropout:
+            m = re.search(
+                r"(?im)(left\s+school[^\n.]{0,80}without\s+qualifications?|"
+                r"left\s+school\s+at\s+\d{1,2}[^\n.]{0,40})",
+                text,
+            )
+            if m and "left school" in src_low:
+                out.append(
+                    {
+                        **e,
+                        "qualification": m.group(1).strip(),
+                        "end_date": "",
+                    }
+                )
+                continue
+        out.append(e)
+    return out
+
+
+def _repair_duty_as_title(
+    entries: list[dict[str, str]], text: str
+) -> list[dict[str, str]]:
+    """When title looks like a duty and a profession line sits near the company."""
+    if not text or not entries:
+        return entries
+    out: list[dict[str, str]] = []
+    lines = text.splitlines()
+    for e in entries:
+        title = (e.get("title") or "").strip()
+        company = (e.get("company") or "").strip()
+        if not title or not company or not _DUTY_TITLE_RE.search(title):
+            out.append(e)
+            continue
+        # Find company line index
+        idx = next(
+            (
+                i
+                for i, ln in enumerate(lines)
+                if company.lower() in ln.lower()
+            ),
+            -1,
+        )
+        if idx < 0:
+            out.append(e)
+            continue
+        window = lines[max(0, idx - 4) : idx + 5]
+        profession = None
+        for ln in window:
+            stripped = ln.strip().strip("|").strip()
+            if not stripped or company.lower() in stripped.lower():
+                continue
+            if title.lower() in stripped.lower():
+                continue
+            if _DUTY_TITLE_RE.search(stripped):
+                continue
+            if re.search(r"\d{4}", stripped):
+                continue
+            # Prefer multi-word profession / Ausbildungsberuf style titles
+            if re.match(
+                r"(?i)^(medizinische[r]?\s+fachangestellte[r]?|"
+                r"kaufmann|kauffrau|ingenieur(?:in)?|entwickler(?:in)?|"
+                r"fachangestellte[r]?|nurse|teacher|engineer|"
+                r"assistant|clerk|technician)\b",
+                stripped,
+            ) or (
+                len(stripped.split()) >= 2
+                and len(stripped) <= 60
+                and not stripped.startswith("#")
+            ):
+                # Avoid duty phrases and soft skills
+                if _DUTY_TITLE_RE.search(stripped):
+                    continue
+                profession = stripped.split("|")[0].strip()
+                break
+        if profession and profession.lower() != title.lower():
+            out.append(
+                {
+                    **e,
+                    "title": profession,
+                    "responsibilities": list(
+                        dict.fromkeys([*(e.get("responsibilities") or []), title])
+                    ),
+                }
+            )
+        else:
+            out.append(e)
+    return out
+
+
+def _enrich_software_from_text(
+    software: list[str], text: str
+) -> list[str]:
+    """When software is empty, harvest tool lines under Applications/Software/EDV."""
+    if software or not text:
+        return software
+    from core.cv_parser import _known_software_token_match, _looks_like_soft_skill
+
+    lines = text.splitlines()
+    found: list[str] = []
+    i = 0
+    while i < len(lines):
+        if not _SOFT_SECTION_HEADING_RE.match(lines[i].strip()):
+            i += 1
+            continue
+        i += 1
+        while i < len(lines):
+            stripped = lines[i].strip()
+            if not stripped:
+                i += 1
+                continue
+            if _SOFT_SECTION_HEADING_RE.match(stripped) or re.match(
+                r"^#{1,6}\s+\S+", stripped
+            ):
+                break
+            # Split glued "Minitab - Grundlagen Qlik Sense - gute Kenntnisse"
+            parts: list[str] = []
+            for m in re.finditer(
+                r"([A-Za-z][\w+]*(?:\s+[A-Za-z][\w+]*){0,2})\s*[-–—]\s*"
+                r"(Grundlagen|gute\s+Kenntnisse|sehr\s+gut|Kenntnisse|"
+                r"Basics?|Beginner|Intermediate|Advanced|Expert|"
+                r"basic\s+knowledge|good\s+knowledge|proficient|fluent)",
+                stripped,
+                flags=re.I,
+            ):
+                parts.append(m.group(0))
+            if not parts:
+                parts = re.split(r"\s{2,}|[,;|/]", stripped)
+            for part in parts:
+                raw_part = part.strip(" .")
+                part = _strip_skill_level(raw_part)
+                if not part or len(part) > 60:
+                    continue
+                low = part.lower()
+                if _looks_like_soft_skill(part):
+                    continue
+                if _known_software_token_match(low) or re.search(
+                    r"(?i)\b(minitab|qlik(?:\s+sense)?|tableau|power\s*bi|"
+                    r"excel|word|sap|jira|confluence|figma|docker)\b",
+                    part,
+                ):
+                    if low == "qlik" and re.search(r"(?i)qlik\s+sense", raw_part):
+                        part = "Qlik Sense"
+                    found.append(part)
+            i += 1
+        break
+    return list(dict.fromkeys(found)) if found else software
+
+
+def _reroute_certs_software_skills(
+    certs: list[dict[str, Any]],
+    software: list[str],
+    skills: list[str],
+) -> tuple[list[dict[str, Any]], list[str], list[str]]:
+    """Move misplaced tool names / soft skills out of certificates."""
+    from core.cv_parser import _known_software_token_match, _looks_like_soft_skill
+
+    kept: list[dict[str, Any]] = []
+    soft = list(software)
+    sk = list(skills)
+    soft_l = {s.lower() for s in soft}
+    sk_l = {s.lower() for s in sk}
+    for c in certs:
+        name = str(c.get("name") or "").strip()
+        if not name:
+            continue
+        low = name.lower()
+        if _known_software_token_match(low) or re.search(
+            r"(?i)\b(tia\s*portal|minitab|qlik|excel|sap|jira|figma|docker)\b",
+            name,
+        ):
+            if low not in soft_l:
+                soft.append(name)
+                soft_l.add(low)
+            continue
+        if _looks_like_soft_skill(name) or re.search(
+            r"(?i)\b(communication|aids|session\s+notes|family\s+communication)\b",
+            name,
+        ):
+            # Competency phrases are skills, not certificates.
+            if low not in sk_l and not re.search(
+                r"(?i)\b(certificate|zertifikat|diploma|course|kurs|bls|"
+                r"life\s+support|erste\s+hilfe)\b",
+                name,
+            ):
+                sk.append(name)
+                sk_l.add(low)
+                continue
+        kept.append(c)
+    return kept, soft, sk
+
+
 def _split_street_house(street: str, house: str) -> tuple[str, str]:
     """If house is empty and street ends with a house number, split them."""
     s = (street or "").strip()
@@ -419,17 +712,30 @@ def _strip_skill_level(label: str) -> str:
 
 
 def _fix_employment_pipe(entries: list[dict[str, str]]) -> list[dict[str, str]]:
-    """Recover ``Position | Company`` when the model jammed both into company."""
+    """Recover ``Position | Company`` when the model jammed both into company/title."""
     out: list[dict[str, str]] = []
+    self_emp = re.compile(
+        r"(?i)^(self[-\s]?employed|selbstst[aä]ndig(?:\s+tätig)?|freelance)$"
+    )
     for e in entries:
         title = (e.get("title") or "").strip()
         company = (e.get("company") or "").strip()
+        # Title pipe: "Freelance Translator | Self-employed"
+        if ("|" in title or "｜" in title) and not company:
+            parts = _PIPE_SPLIT_RE.split(title, maxsplit=1)
+            if len(parts) == 2 and parts[0] and parts[1]:
+                left, right = parts[0].strip(), parts[1].strip()
+                if self_emp.match(right) or self_emp.match(left):
+                    if self_emp.match(right):
+                        title, company = left, right
+                    else:
+                        title, company = right, left
+                else:
+                    title, company = left, right
         if "|" in company or "｜" in company:
             parts = _PIPE_SPLIT_RE.split(company, maxsplit=1)
             if len(parts) == 2 and parts[0] and parts[1]:
                 left, right = parts[0].strip(), parts[1].strip()
-                # Prefer left as job title when title empty or looks like a duty keyword
-                # already listed as a skill-like single token without spaces of company form.
                 if not title or (
                     title
                     and " " not in title
@@ -439,6 +745,14 @@ def _fix_employment_pipe(entries: list[dict[str, str]]) -> list[dict[str, str]]:
                     title, company = left, right
                 else:
                     company = right
+        # Bare self-employed left in title with empty company
+        if not company and self_emp.search(title):
+            m = re.search(
+                r"(?i)^(.*?)\s*[|·,]\s*(self[-\s]?employed|selbstst[aä]ndig(?:\s+tätig)?|freelance)\s*$",
+                title,
+            )
+            if m and m.group(1).strip():
+                title, company = m.group(1).strip(), m.group(2).strip()
         out.append({**e, "title": title, "company": company})
     return out
 
@@ -885,6 +1199,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
     # the job block (avoids Round5 neighbour-job over-correction).
     if source_text:
         work = _repair_invented_heute(work, source_text)
+        work = _repair_duty_as_title(work, source_text)
     edu = []
     for e in data.get("education") or []:
         if not isinstance(e, dict):
@@ -917,6 +1232,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         )
     if source_text:
         edu = _enrich_education_from_text(edu, source_text)
+        edu = _preserve_education_source_phrasing(edu, source_text)
     # Licences: reuse DET helper only for class-code normalization (no DET import path).
     from core.cv_parser import normalize_driving_license
 
@@ -974,6 +1290,18 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
             personal.get("street") or "", personal.get("house_number") or ""
         )
         personal = _enrich_dob_from_text(personal, source_text)
+    personal = _normalize_person_apostrophes(personal)
+    skills = [
+        s for s in (_strip_skill_level(str(x)) for x in (data.get("skills") or [])) if s
+    ]
+    software = [
+        s
+        for s in (_strip_skill_level(str(x)) for x in (data.get("software") or []))
+        if s
+    ]
+    certs, software, skills = _reroute_certs_software_skills(certs, software, skills)
+    if source_text:
+        software = _enrich_software_from_text(software, source_text)
     return {
         "personal": personal,
         "emails": [email] if email else [],
@@ -982,14 +1310,8 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         "driving_license": " ".join(lic_codes),
         "education": edu,
         "work_experience": work,
-        "skills": [
-            s for s in (_strip_skill_level(str(x)) for x in (data.get("skills") or [])) if s
-        ],
-        "software": [
-            s
-            for s in (_strip_skill_level(str(x)) for x in (data.get("software") or []))
-            if s
-        ],
+        "skills": skills,
+        "software": software,
         "certificates": certs,
     }
 
