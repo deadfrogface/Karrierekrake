@@ -4,8 +4,9 @@ Default is off, matching today's production import (deterministic only).
 Turning the switch on does not load a model and does not substitute Phi or any
 other model. There is no automatic retry after OOM.
 
-Exact kill wording (docs and German UI):
-wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.
+The kill sentence below is the escalation-step-2 record (docs and this constant).
+It is not the default UI hint. A persisted settings flag cannot turn parsing on;
+only KARRIEREKRAKE_LOCAL_LLM_CV_PARSING can.
 """
 
 from __future__ import annotations
@@ -36,9 +37,11 @@ _OFF = {"0", "false", "no", "off"}
 def local_llm_cv_parsing_allowed(settings: Any | None = None) -> bool:
     """Return whether an explicit local LLM CV parse may run.
 
-    ``KARRIEREKRAKE_LOCAL_LLM_CV_PARSING`` overrides the settings flag.
-    Missing settings mean off (fail closed).
+    Only ``KARRIEREKRAKE_LOCAL_LLM_CV_PARSING`` can turn this on. A persisted
+    ``local_llm_cv_parsing_enabled`` value, including ``True`` from an older
+    save, is ignored.
     """
+    del settings
     raw = os.environ.get(_ENV_NAME)
     if raw is not None and raw.strip() != "":
         token = raw.strip().lower()
@@ -49,9 +52,7 @@ def local_llm_cv_parsing_allowed(settings: Any | None = None) -> bool:
         raise ValueError(
             f"{_ENV_NAME} must be one of {sorted(_ON | _OFF)}, got {raw!r}"
         )
-    if settings is None:
-        return False
-    return bool(getattr(settings, "local_llm_cv_parsing_enabled", False))
+    return False
 
 
 @dataclass(frozen=True)

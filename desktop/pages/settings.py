@@ -374,6 +374,9 @@ class SettingsPage(QWidget):
         self.guenther_hint.setWordWrap(True)
         self.lbl_guenther_model = QLabel()
         self.local_llm_cv_parsing = QCheckBox()
+        self.local_llm_cv_parsing.setEnabled(False)
+        self.local_llm_cv_parsing.setChecked(False)
+        self.local_llm_cv_parsing.setAttribute(Qt.WidgetAttribute.WA_AlwaysShowToolTips, True)
         self.local_llm_cv_hint = QLabel()
         self.local_llm_cv_hint.setWordWrap(True)
         self.local_llm_cv_parsing.toggled.connect(self._sync_local_llm_cv_hint)
@@ -749,10 +752,10 @@ class SettingsPage(QWidget):
     def _sync_local_llm_cv_hint(self) -> None:
         if not hasattr(self, "local_llm_cv_hint"):
             return
-        if self.local_llm_cv_parsing.isChecked():
-            self.local_llm_cv_hint.setText(tr("settings.local_llm_cv_escalation"))
-        else:
-            self.local_llm_cv_hint.setText(tr("settings.local_llm_cv_kill"))
+        self.local_llm_cv_parsing.setEnabled(False)
+        self.local_llm_cv_parsing.setChecked(False)
+        self.local_llm_cv_parsing.setToolTip(tr("settings.local_llm_cv_unavailable"))
+        self.local_llm_cv_hint.setText(tr("settings.local_llm_cv_disabled_hint"))
 
     def _open_diagnose_logs(self) -> None:
         parent = self.window()
@@ -829,9 +832,8 @@ class SettingsPage(QWidget):
         if hasattr(self, "guenther_enabled"):
             self.guenther_enabled.setChecked(bool(getattr(s, "guenther_enabled", False)))
         if hasattr(self, "local_llm_cv_parsing"):
-            self.local_llm_cv_parsing.setChecked(
-                bool(getattr(s, "local_llm_cv_parsing_enabled", False))
-            )
+            self.local_llm_cv_parsing.setEnabled(False)
+            self.local_llm_cv_parsing.setChecked(False)
         if hasattr(self, "mail_provider"):
             mp = self.mail_provider.findData(getattr(s, "mail_provider", "none") or "none")
             self.mail_provider.setCurrentIndex(mp if mp >= 0 else 0)
@@ -940,8 +942,6 @@ class SettingsPage(QWidget):
             cfg.settings.guenther_enabled = self.guenther_enabled.isChecked()
             cfg.settings.guenther_model = "phi4-mini"
             cfg.settings.guenther_heuristic_fallback = False
-        if hasattr(self, "local_llm_cv_parsing"):
-            cfg.settings.local_llm_cv_parsing_enabled = self.local_llm_cv_parsing.isChecked()
         if hasattr(self, "mail_provider"):
             cfg.settings.mail_provider = str(self.mail_provider.currentData() or "none")
             cfg.settings.calendar_provider = str(

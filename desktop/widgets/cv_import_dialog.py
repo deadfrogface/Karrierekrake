@@ -146,7 +146,7 @@ class CvImportDialog(QDialog):
         llm_allowed = local_llm_cv_parsing_allowed(settings)
         self.llm_notice.setVisible(not llm_allowed)
         if not llm_allowed:
-            self.llm_notice.setText(tr("settings.local_llm_cv_kill"))
+            self.llm_notice.setText(tr("settings.local_llm_cv_disabled_hint"))
 
         self.status_label = QLabel(tr("cv_import.parsing"))
         self.status_label.setWordWrap(True)

@@ -29,13 +29,13 @@ python scripts\run_i3_peak_job_benchmark.py --cv C:\Pfad\lebenslauf.pdf --attest
 
 Exit-Code 0: Peak ≤ 3_300_000_000. Exit-Code 2: harter Fehlschlag. `ship_evidence` wird nur wahr, wenn alle drei gelten: Windows-Job-Object-Messung, `--attest-physical-i3`, und `KARRIEREKRAKE_PHYSICAL_I3_8GB=1`.
 
-Optional Docling und ein **explizites** lokales Modellkommando (kein Phi, kein automatischer Modellwechsel). Dafür muss lokales LLM-CV-Parsing an sein (`local_llm_cv_parsing_enabled: true` oder `KARRIEREKRAKE_LOCAL_LLM_CV_PARSING=1`):
+Optional Docling und ein **explizites** lokales Modellkommando (kein Phi, kein automatischer Modellwechsel). Dafür muss die Messumgebung gesetzt sein (`KARRIEREKRAKE_LOCAL_LLM_CV_PARSING=1`). Ein gespeichertes `local_llm_cv_parsing_enabled: true` schaltet das nicht ein:
 
 ```bat
 python scripts\run_i3_peak_job_benchmark.py --cv C:\Pfad\lebenslauf.pdf --backend docling --llm-cmd "C:\llama\llama-server.exe -m C:\models\kleines-modell.gguf -c 2048" --attest-physical-i3 --enforce-limit
 ```
 
-Ist der Schalter aus, startet `--llm-cmd` nicht. Der Prozess endet mit Code 4 und dem Satz:
+Ist die Messumgebung nicht gesetzt, startet `--llm-cmd` nicht. Der Prozess endet mit Code 4 und dem Satz aus Eskalationsschritt 2 (nur dieser Konstanten- und Doku-Satz, nicht der Hinweis in der Oberfläche):
 
 wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.
 
@@ -43,10 +43,12 @@ Es gibt keinen automatischen Phi-Fallback.
 
 ## Kill-Switch
 
-Einstellung `local_llm_cv_parsing_enabled` (Standard **aus**, wie der heutige deterministische Import). Umgebung `KARRIEREKRAKE_LOCAL_LLM_CV_PARSING=0|1` überschreibt die Einstellung.
+Die Einstellung `local_llm_cv_parsing_enabled` schaltet lokales LLM-CV-Parsing nicht ein, auch nicht wenn eine ältere Datei `true` enthält. In den Einstellungen bleibt die Checkbox sichtbar, nicht anklickbar und nicht angehakt. Hinweis dazu: „Erst verfügbar, wenn der Speichertest auf dem Zielgerät bestanden ist.“ Der sichtbare Satz daneben und im Importdialog lautet: „Das lokale LLM-CV-Parsing ist derzeit deaktiviert. Lebensläufe werden mit dem Standard-Parser gelesen.“ Speichern schreibt den Checkbox-Zustand nicht.
 
-- Aus: kein lokales LLM-CV-Parsing. Der manuelle Profilimport und der deterministische CV-Import bleiben. Der Dialog zeigt den Kill-Satz.
-- An: erlaubt ein explizites Modellkommando im Harness bzw. den Engpass `invoke_local_llm_cv_extract`. Es wird kein Modell geladen, nur weil der Schalter an ist, und es wird nicht auf Phi gewechselt.
+Nur `KARRIEREKRAKE_LOCAL_LLM_CV_PARSING=0|1` ist der Messpfad.
+
+- Aus bzw. nicht gesetzt: kein lokales LLM-CV-Parsing. Der manuelle Profilimport und der deterministische CV-Import bleiben.
+- `=1`: erlaubt ein explizites Modellkommando im Harness bzw. den Engpass `invoke_local_llm_cv_extract`. Es wird kein Modell geladen, nur weil die Variable gesetzt ist, und es wird nicht auf Phi gewechselt.
 
 Erster Eskalationsschritt, bevor der Schalter dauerhaft aus bleibt: ein kleineres lokales Modell unter **denselben** Qualitäts-, RAM- und Laufzeit-Gates messen. Dieses Slice liefert kein neues Modell, keine neuen Gewichte und keine Prompt-Änderung.
 

@@ -62,7 +62,7 @@ allow_calendar_write: false
 guenther_enabled: false
 guenther_model: auto              # auto | qwen3-1.7b | qwen3-4b | phi4-mini
 guenther_heuristic_fallback: true
-# Local LLM CV parsing. false = kill path (manual profile import remains).
+# Ignored for enabling local LLM CV parsing. Only KARRIEREKRAKE_LOCAL_LLM_CV_PARSING can.
 # No automatic Phi fallback. See docs/devops/i3-8gb-peak-rss-gate.md.
 local_llm_cv_parsing_enabled: false
 # Recruiting contact discovery (PR25) — off by default; provenance required

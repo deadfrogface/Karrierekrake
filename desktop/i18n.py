@@ -550,6 +550,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
             "Phi-Fallback und kein neues Modell in diesem Schritt."
         ),
+        "settings.local_llm_cv_disabled_hint": (
+            "Das lokale LLM-CV-Parsing ist derzeit deaktiviert. "
+            "Lebensläufe werden mit dem Standard-Parser gelesen."
+        ),
+        "settings.local_llm_cv_unavailable": (
+            "Erst verfügbar, wenn der Speichertest auf dem Zielgerät bestanden ist."
+        ),
         "guenther.validator.unsupported_credential": (
             "Eine behauptete Qualifikation ist im Profil nicht belegt."
         ),
@@ -1440,6 +1447,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "First escalation: measure a smaller local model under the same "
             "quality, RAM, and runtime gates. No automatic Phi fallback and "
             "no new model in this step."
+        ),
+        "settings.local_llm_cv_disabled_hint": (
+            "Local LLM CV parsing is currently disabled. "
+            "CVs are read with the standard parser."
+        ),
+        "settings.local_llm_cv_unavailable": (
+            "Available only after the memory test on the target device has passed."
         ),
         "guenther.validator.unsupported_credential": (
             "A claimed qualification is not supported by the profile."

@@ -42,11 +42,11 @@ def test_default_is_off_and_env_overrides(monkeypatch):
     class _On:
         local_llm_cv_parsing_enabled = True
 
-    assert local_llm_cv_parsing_allowed(_On()) is True
-    allowed = local_llm_cv_decision(_On())
-    assert allowed.allowed is True
-    assert allowed.fallback_model is None
-    assert allowed.message == LOCAL_LLM_CV_ESCALATION
+    assert local_llm_cv_parsing_allowed(_On()) is False
+    blocked = local_llm_cv_decision(_On())
+    assert blocked.allowed is False
+    assert blocked.fallback_model is None
+    assert blocked.message == LOCAL_LLM_CV_KILL_WORDING
 
     monkeypatch.setenv("KARRIEREKRAKE_LOCAL_LLM_CV_PARSING", "0")
     assert local_llm_cv_parsing_allowed(_On()) is False
@@ -56,6 +56,10 @@ def test_default_is_off_and_env_overrides(monkeypatch):
         local_llm_cv_parsing_enabled = False
 
     assert local_llm_cv_parsing_allowed(_Off()) is True
+    allowed = local_llm_cv_decision(_Off())
+    assert allowed.allowed is True
+    assert allowed.fallback_model is None
+    assert allowed.message == LOCAL_LLM_CV_ESCALATION
 
 
 def test_invoke_does_not_call_service_when_disabled(monkeypatch):
@@ -97,7 +101,7 @@ def test_invoke_calls_once_and_does_not_retry_oom(monkeypatch):
     assert result.decision.fallback_model is None
 
 
-def test_settings_flag_roundtrip(tmp_path: Path):
+def test_settings_flag_roundtrip(tmp_path: Path, monkeypatch):
     cfg = empty_app_config(root=tmp_path)
     assert cfg.settings.local_llm_cv_parsing_enabled is False
     cfg.settings.local_llm_cv_parsing_enabled = True
@@ -109,6 +113,9 @@ def test_settings_flag_roundtrip(tmp_path: Path):
     save_config(cfg, **paths)
     loaded = load_config(**paths, root=tmp_path, strip_placeholders=False)
     assert loaded.settings.local_llm_cv_parsing_enabled is True
+    monkeypatch.delenv("KARRIEREKRAKE_LOCAL_LLM_CV_PARSING", raising=False)
+    decision = local_llm_cv_decision(loaded.settings)
+    assert decision.allowed is False
 
 
 def test_child_refuses_llm_cmd_without_starting_it(tmp_path: Path, monkeypatch):

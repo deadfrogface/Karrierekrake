@@ -17,7 +17,6 @@ pytest.importorskip("PySide6.QtWidgets")
 from PySide6.QtWidgets import QApplication, QDialogButtonBox
 
 from core.config import ApplicationProfile, QualificationsConfig
-from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING
 from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
 from desktop.i18n import i18n
 from desktop.widgets.cv_import_dialog import CvImportDialog
@@ -126,13 +125,16 @@ def test_settings_checkbox_shows_kill_wording_and_persists(qapp, tmp_path, monke
     page.load_from_config()
     page.show()
     qapp.processEvents()
+    assert page.local_llm_cv_parsing.isEnabled() is False
     assert page.local_llm_cv_parsing.isChecked() is False
-    assert page.local_llm_cv_hint.text() == LOCAL_LLM_CV_KILL_WORDING
-    page.local_llm_cv_parsing.setChecked(True)
-    assert "Phi-Fallback" in page.local_llm_cv_hint.text()
+    assert page.local_llm_cv_parsing.toolTip() == i18n.t("settings.local_llm_cv_unavailable")
+    assert page.local_llm_cv_hint.text() == (
+        "Das lokale LLM-CV-Parsing ist derzeit deaktiviert. "
+        "Lebensläufe werden mit dem Standard-Parser gelesen."
+    )
     page.save()
     loaded = ConfigService().load()
-    assert loaded.settings.local_llm_cv_parsing_enabled is True
+    assert loaded.settings.local_llm_cv_parsing_enabled is False
 
 
 def test_dialog_init_does_not_call_import_cv():
@@ -180,7 +182,7 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     dlg.show()
     qapp.processEvents()
     assert dlg.llm_notice.isVisible()
-    assert dlg.llm_notice.text() == LOCAL_LLM_CV_KILL_WORDING
+    assert dlg.llm_notice.text() == i18n.t("settings.local_llm_cv_disabled_hint")
     dlg.start_parse()
     assert _pump(qapp, lambda: dlg.progress.isVisible() and dlg._running)
     assert seen and seen[0] != gui
