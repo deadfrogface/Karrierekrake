@@ -22,6 +22,12 @@ Sprache ist Deutsch oder Englisch. Das Thema folgt dem System oder ist hell oder
 - XING lässt sich einschalten: `XingSource` in `search/xing.py`. Ein Test lässt die Suche gegen festes JSON-LD laufen und erwartet einen Treffer.
 - LinkedIn lässt sich einschalten. Der Abruf läuft über JobSpy und ist ungetestet.
 
+**Standort.** Eine Postleitzahl mit Land und ein eindeutiger Ort werden lokal aufgelöst. Ein Ortsname ohne Land und eine Postleitzahl, die in mehreren Ländern vorkommt, bleiben unaufgelöst. Fehlt der Wohnort, sagt die Übersicht das. Liegt nur ein Text vor und der letzte Suchlauf hat den Wohnort nicht aufgelöst, bittet die Übersicht um eine Postleitzahl; die Jobs bleiben dann unabhängig von der Entfernung sichtbar.
+
+Die Fahrtstrecke stellst du im Assistenten unter „Max. Pendelweg“ und unter Einstellungen → Erweitert → Suche als „Max. Fahrtstrecke (km)“ ein. In der Jobliste filterst du mit „Max. km“. Nach der fachlichen Einschätzung fallen Stellen außerhalb dieses Umkreises weg. Voll-Remote bleibt drin, wenn Remote erlaubt ist. Eine unbekannte Entfernung gilt nicht als 0 km. Die Jobkarte zeigt die Luftlinie, „Standort nicht prüfbar“ oder „Remote (kein Radius)“.
+
+Der Knopf „Geodaten aktualisieren“ sitzt im Abschnitt Wohnort und lädt den lokalen Geodatensatz neu. Schlägt das fehl, bleibt der bisherige Datensatz. Keine Profilkarte öffnet diesen Abschnitt.
+
 Eine laufende Suche kannst du abbrechen. In der Jobliste siehst du eine Einschätzung (sehr passend, passend, teilweise passend, nicht passend).
 
 **Stellenanzeige.** Anzeigentexte werden mit BeautifulSoup in Klartext gewandelt, Inhalte von Skript- und Style-Tags fallen dabei weg. Eine Aufteilung in Aufgaben und Anforderungen gibt es in diesem Stand nicht.
@@ -40,7 +46,7 @@ Läuft die App schon, weist ein zweiter Start darauf hin. Ist kein System-Tray v
 
 Offene Änderungen, nicht Teil dieses Stands und ohne Zusage, wann sie landen:
 
-- Standort und Umkreis: Auflösen einer Postleitzahl (zum Beispiel Berlin-Mitte über 10115), Hinweis bei mehrdeutigen Orten wie Halle oder Frankfurt, und der Distanzfilter (#67).
+- Schärfere Ortsauflösung: exakter Ortsname statt Teilstring, Streuung in Kilometern, gleichnamige Orte wie Halle oder Frankfurt, frischer Hinweis am Wohnort in Übersicht, Einstellungen und Profil, und Kilometer in der Jobliste nur bei aufgelöstem Wohnort (#67).
 - Aufteilung einer Stellenanzeige in Aufgaben und Anforderungen (#74).
 - Zustände beim Lebenslauf-Einlesen und der Fußbereich (#70, #72).
 - Schatten und Hover für Chips und Karten (#71).
@@ -87,4 +93,4 @@ python -m desktop.app
 
 ## Lizenz
 
-GPL-3.0. Der Text steht in `LICENSE`. Herkunft und Copyright stehen in `NOTICE`.
+GPL-3.0. Der Text steht in `LICENSE`. Herkunft und Copyright stehen in `NOTICE`. Die lokalen Geodaten (GeoNames, CC BY 4.0) sind in `NOTICE` ab Zeile 123 genannt.
