@@ -27,7 +27,7 @@ if not exist ".venv" (
 call .venv\Scripts\activate.bat
 python -m pip install --upgrade pip
 REM End-user runtime only (pytest/ruff/pyinstaller live in requirements-dev.txt).
-pip install -r requirements-runtime.txt
+pip install -c constraints-runtime.txt -r requirements-runtime.txt
 if errorlevel 1 (
   echo ERROR: Abhaengigkeiten konnten nicht installiert werden.
   exit /b 1
@@ -55,7 +55,7 @@ if errorlevel 1 (
 )
 
 echo Fuehre Basistests aus...
-pip install -q pytest
+pip install -q -c constraints-runtime.txt pytest
 python -m pytest tests -q
 if errorlevel 1 (
   echo WARNUNG: Einige Tests sind fehlgeschlagen. Installation trotzdem fortgesetzt.
@@ -72,7 +72,7 @@ echo 2. Profil/Einstellungen in der App bearbeiten
 echo    (Daten: %%LOCALAPPDATA%%\Karrierekrake)
 echo 3. Optional CLI-Suche:  run_search.bat
 echo 4. EXE bauen:           build.bat
-echo 5. Dev-Tools:           pip install -r requirements-dev.txt
+echo 5. Dev-Tools:           pip install -c constraints-runtime.txt -r requirements-dev.txt
 echo.
 echo Hinweis: Repo-config\*.yaml ist nur Legacy/CLI-Fallback.
 echo.

@@ -19,8 +19,8 @@ call ".venv\Scripts\activate.bat"
 
 echo [2/5] Installing dependencies...
 python -m pip install --upgrade pip
-python -m pip install -r requirements-runtime.txt
-python -m pip install -r requirements-dev.txt
+python -m pip install -c constraints-runtime.txt -r requirements-runtime.txt
+python -m pip install -c constraints-runtime.txt -r requirements-dev.txt
 if errorlevel 1 (
   echo Dependency install failed.
   exit /b 1

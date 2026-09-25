@@ -18,9 +18,11 @@ High or Critical findings from pip-audit / OSV must not be silenced without revi
 ## OSV scan input
 
 CI runs OSV against `artifacts/runtime-freeze.txt` (exact installed versions after
-`pip install -r requirements-runtime.txt`), not against loose lower-bound
-resolution of the requirements file. Floor pins in `requirements-runtime.txt`
-still raise known High/Critical packages (`pypdf`, `anyio`, `idna`, `protobuf`).
+`pip install -c constraints-runtime.txt -r requirements-runtime.txt`), not against
+loose lower-bound resolution of the requirements file. Floor pins in
+`requirements-runtime.txt` still raise known High/Critical packages (`pypdf`,
+`anyio`, `idna`, `protobuf`). `constraints-runtime.txt` pins the measured tree,
+including `pgeocode==0.5.0`.
 
 ## Gitleaks path allowlist (non-secrets)
 
