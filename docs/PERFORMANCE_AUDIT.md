@@ -97,17 +97,19 @@ SQLite, jeweils neue Datei:
 | 500 | 1.861 s (2.088 s) | 0.012 s, 500 Zeilen | 0.0001 s | 0.0012 s, 10–12 Zeilen |
 | 5000 | 19.633 s (22.330 s) | 0.130 s (0.137 s), 5000 Zeilen | 0.0011 s | 0.008 s, 88–92 Zeilen |
 
-Filtern und Sortieren der Jobliste ist nicht der Engpass. Der Upsert pro Verbindung ist es.
+Filtern und Sortieren der Jobliste bleibt klein. Die teuren SQL-Stufen sind der Upsert pro Verbindung und `has_applied`.
 
-`has_applied` gegen n bereits als applied markierte Zeilen, n Abfragen:
+`has_applied` gegen n bereits als applied markierte Zeilen, n Abfragen. Fünf Läufe, **VM, nicht i3**, Abschnitt `has_applied` (dieselbe Funktion wie im Match-Lauf). Die Zeilen werden in einer Transaktion angelegt; die Uhr läuft nur über `has_applied`, und der Produktpfad öffnet dabei weiter eine Verbindung pro Aufruf. Jeder Probe-Treffer ging über Firma plus Titel, also über den vollen Scan. Diese Reihe ersetzt die frühere Messung bis n=800.
 
-| n | Median (max) | pro Aufruf | Set-Lookup Median | RSS-Delta des Sets |
+| n | Median (max) | pro Aufruf | Set-Lookup Median (max) | RSS-Delta des Sets |
 | ---: | --- | ---: | ---: | ---: |
-| 50 | 0.020 s (0.021 s) | 0.40 ms | 0.00020 s | 0 Bytes |
-| 200 | 0.185 s (0.198 s) | 0.93 ms | 0.00083 s | 0 Bytes |
-| 800 | 1.289 s (1.359 s) | 1.61 ms | 0.0034 s | 0 Bytes |
+| 50 | 0.019 s (0.020 s) | 0.39 ms | 0.00019 s | 0 Bytes |
+| 200 | 0.177 s (0.182 s) | 0.88 ms | 0.00076 s | 0 Bytes |
+| 800 | 1.151 s (1.180 s) | 1.44 ms | 0.0030 s | 0 Bytes |
+| 2000 | 4.946 s (5.015 s) | 2.47 ms | 0.0074 s | 0 Bytes |
+| 5000 | 26.121 s (26.321 s) | 5.22 ms | 0.0182 s (0.0185 s) | 0 Bytes |
 
-Von 200 auf 800 vervierfacht sich n, die Zeit wird etwa 7-fach. Das ist superlinear, aber in diesem Bereich nicht rein quadratisch (dann wäre es 16-fach). n=5000 wurde nicht gemessen. Hochrechnung mit Exponent log(7)/log(4) ≈ 1.4 aus dem Schritt 200→800: grob 17 s. **Schätzung, kein Messwert.**
+Von n=800 auf n=5000 wächst die Zeilenzahl um den Faktor 6,25 und die Zeit um den Faktor 22,7 (1.151 s → 26.121 s). Die Zeit pro Aufruf steigt in der Reihe 0,39 / 0,88 / 1,44 / 2,47 / 5,22 ms. VmHWM dieses Workers Median 43_372_544 Bytes, Prozessgruppen-RSS Median 43_556_864 Bytes (Maximum 43_618_304).
 
 PLZ, `resolve_postal_pgeocode`, Status jedes Erstlaufs `RESOLVED`:
 
@@ -166,9 +168,19 @@ Musterprobe, 30 Labels, Elternwidget sichtbar, fünf Läufe identisch: ohne `hid
 
 ## Top 10 nach CPU- und Wandzeit
 
-Rang nach gemessener Wandzeit der größten hier gefahrenen Stufe. Kleine absolute UI-Zeiten stehen unten, auch wenn das Verhältnis groß ist.
+Rang nach der größten gemessenen Wandzeit der Stufe. **VM, nicht i3.** Kleine absolute UI-Zeiten stehen unten, auch wenn das Verhältnis groß ist.
 
-### 1. Upsert öffnet jedes Mal eine SQLite-Verbindung
+### 1. `has_applied` liest bei jedem Job alle bisherigen Versuche
+
+`core/database.py:805` `has_applied` selektiert alle Zeilen in den Vor-Status und vergleicht in Python. Die Pipeline ruft das pro Job (`app/main.py` um den `score_job`-Aufruf).
+
+Gemessen, n=5000: Median 26.121 s (max 26.321 s), 5.22 ms pro Aufruf. Set-Lookup derselben Schlüssel: Median 0.0182 s (max 0.0185 s). Zeit: 26.121 s → 0.018 s. RSS-Delta des Sets: 0 Bytes bei n=50, 200, 800, 2000 und 5000. Ein Set der Schlüssel ist ein Cache. **Kostet RAM, Peak-Prüfung nötig**, auch bei gemessenem Delta 0 (unter einer Seite auf dieser VM; VM-RSS ist kein i3-Beweis).
+
+Risiko: URL-Identität und Firmen/Titel-Schlüssel müssen exakt die von `has_applied` bleiben, inklusive der Vor-Status, nicht nur APPLIED.
+
+Konflikt: `#67` ändert `app/main.py`, nicht `database.py`.
+
+### 2. Upsert öffnet jedes Mal eine SQLite-Verbindung
 
 `core/database.py:288` `_connect`, `:295` `connection` (commit und close), `:661` `upsert_job`. Pro Job eine neue Verbindung, ein Commit, ein Close. Die Pipeline in `app/main.py` ruft das in einer Schleife.
 
@@ -180,7 +192,7 @@ Risiko: ein Abbruch schreibt den Schwung nicht zeilenweise; die Status-Regeln in
 
 Konflikt: `#67` ändert `app/main.py`, nicht `database.py`. Ein Batch nur in `Database` trifft den Diff von #67 nicht. `#77` ändert `app/main.py` ebenfalls.
 
-### 2. `re.sub` in der Alias-Schleife
+### 3. `re.sub` in der Alias-Schleife
 
 `core/intent_aliases.py:60` `_fuzzy_against_aliases`, der `re.sub` ab `:79` hängt im `for alias`-Loop und hängt nicht von `alias` ab. `_norm_alias` (`:51`) baut bei jedem Aufruf neue Muster. `title_matches_role_label` (`:179`) und `role_family_id_for_label` (`:145`) rufen das sehr oft. `apply_search_intent` (`core/intent_filter.py:367`) sitzt in `score_job` (`core/matcher.py:344`) und noch einmal in `filter_jobs` (`:823`).
 
@@ -190,7 +202,17 @@ Risiko: die Fuzzy-Schwelle und die Treffer-Menge müssen gleich bleiben. Nur die
 
 Konflikt: `#67` ändert `intent_filter.py`, `matcher.py`, `job_fit.py`. `intent_aliases.py` ist nicht in dem Diff. Signatur beibehalten, dann kollidiert der eine Funktionsrumpf nicht mit #67; die Aufrufer schon, falls der Fix dort landet.
 
-### 3. Erster Start: `save` ruft `load`, bevor das Migrationsflag liegt
+### 4. Intent-Filter läuft zweimal
+
+Dieselbe Funktion wie in Rang 3, zweiter Aufruf. `score_job` und danach `filter_jobs`: je 5000 Jobs Median 7.105 s und 6.397 s. Die UI ruft `build_job_fit_viewmodel` (`desktop/viewmodels/job_fit.py:142`) pro Zeile noch einmal: 501 Aufrufe bei 500 Karten.
+
+Fix, der nichts speichert: das `IntentFilterResult` aus dem ersten Aufruf weiterreichen statt neu zu rechnen. Zeitgewinn des reinen Weglassens ist der zweite Pass, Median 6.397 s bei 5000, gemessen als eigene Stufe, nicht als gepatchter Lauf. Wenn das Ergebnis behalten wird, ist das ein Cache. Größe eines Results mal 5000 ist **nicht gemessen**. **Kostet RAM, Peak-Prüfung nötig**, sobald die Objekte liegen bleiben. Die Regex-Hebung aus Rang 3 und dieser zweite Pass addieren sich nicht voll: die Hebung verbilligt beide Pässe, das Weglassen entfernt den zweiten.
+
+Risiko: `filter_jobs` sortiert nach `rank_score`. Wer den zweiten Pass streicht, muss diese Sortierung behalten.
+
+Konflikt: `#67` (`intent_filter.py`, `matcher.py`, `job_fit.py`, `jobs.py`).
+
+### 5. Erster Start: `save` ruft `load`, bevor das Migrationsflag liegt
 
 `desktop/services/__init__.py:110` `_apply_shutdown_fix_migration` ruft `:118` `save`, und `save` (`:133`) ruft `:151` wieder `load`, bevor `:119` `save_meta` das Flag `shutdown_fix_v1` schreibt. `load` (`:61`) läuft also wieder in die Migration. Dazu `core/config.py:831` `os.fsync` pro YAML-Datei.
 
@@ -199,26 +221,6 @@ Gemessen: kaltes Fenster Median 4.818 s (max 5.328 s) gegen warmes Fenster Media
 Risiko: das Flag muss genau einmal gelten, `minimize_to_tray` bleibt falsch, und ein echter Speicherfehler darf nicht als Erfolg durchgehen. Heute schluckt `except Exception` auch die Rekursion.
 
 Konflikt: der genannte ConfigService-Rekursionsfix. Unter den offenen PRs war keiner mit diesem Titel; die Datei ist `desktop/services/__init__.py`. Nicht mit einem zweiten Patch daneben arbeiten.
-
-### 4. Intent-Filter läuft zweimal
-
-Dieselbe Funktion wie in Rang 2, zweiter Aufruf. `score_job` und danach `filter_jobs` : je 5000 Jobs Median 7.105 s und 6.397 s. Die UI ruft `build_job_fit_viewmodel` (`desktop/viewmodels/job_fit.py:142`) pro Zeile noch einmal: 501 Aufrufe bei 500 Karten.
-
-Fix, der nichts speichert: das `IntentFilterResult` aus dem ersten Aufruf weiterreichen statt neu zu rechnen. Zeitgewinn des reinen Weglassens ist der zweite Pass, Median 6.397 s bei 5000, gemessen als eigene Stufe, nicht als gepatchter Lauf. Wenn das Ergebnis behalten wird, ist das ein Cache. Größe eines Results mal 5000 ist **nicht gemessen**. **Kostet RAM, Peak-Prüfung nötig**, sobald die Objekte liegen bleiben. Die Regex-Hebung aus Rang 2 und dieser zweite Pass addieren sich nicht voll: die Hebung verbilligt beide Pässe, das Weglassen entfernt den zweiten.
-
-Risiko: `filter_jobs` sortiert nach `rank_score`. Wer den zweiten Pass streicht, muss diese Sortierung behalten.
-
-Konflikt: `#67` (`intent_filter.py`, `matcher.py`, `job_fit.py`, `jobs.py`).
-
-### 5. `has_applied` liest bei jedem Job alle bisherigen Versuche
-
-`core/database.py:805` `has_applied` selektiert alle Zeilen in den Vor-Status und vergleicht in Python. Die Pipeline ruft das pro Job (`app/main.py` um den `score_job`-Aufruf).
-
-Gemessen bis n=800: Median 1.289 s (max 1.359 s) gegen Set-Lookup 0.0034 s, RSS-Delta 0 Bytes. Superlinear, siehe Tabelle. 5000 ist Schätzung ~17 s, kein Messwert. Ein Set der Schlüssel ist ein Cache. Bei n=800 war der RSS-Delta 0 (unter einer Seite). **Kostet RAM, Peak-Prüfung nötig** trotz der kleinen Messung; für 5000 Schlüssel rechne mit einigen zehn KB, **Schätzung**.
-
-Risiko: URL-Identität und Firmen/Titel-Schlüssel müssen exakt die von `has_applied` bleiben, inklusive der Vor-Status, nicht nur APPLIED.
-
-Konflikt: `#67` ändert `app/main.py`, nicht `database.py`.
 
 ### 6. PLZ-Validierung hasht bei jedem Resolve die Geo-Dateien
 
@@ -247,7 +249,7 @@ Konflikt: `#67` und `#77` berühren `jobs.py`. `#73` nicht.
 
 ### 8. `QGraphicsDropShadowEffect` auf Karten
 
-`desktop/design_system/polish.py:156` `soft_shadow`, `:246` `polish_card`. 29 Effekte am Fenster. 20 Repaints: Median 0.014 s an, 0.006 s aus. 40 Chips mit Schatten: 0.031 s gegen 0.008 s, RSS +368_640 Bytes. Offscreen-Software-Raster dieser VM, kein iGPU-Messwert. Das Verhältnis ist der Rang, nicht eine i3-Zeit.
+`desktop/design_system/polish.py:156` `soft_shadow`, `:246` `polish_card`. 29 Effekte am Fenster. 20 Repaints: Median 0.014 s an, 0.006 s aus. 40 Chips mit Schatten: 0.031 s gegen 0.008 s, RSS +368_640 Bytes. Offscreen-Software-Raster dieser VM, kein iGPU-Messwert. Der Rang folgt der absoluten Zeit; das Verhältnis (etwa 2,2× am Fenster, etwa 4× an 40 Chips) beschreibt die CPU-Last.
 
 Fix: statische Karten ohne Live-Effekt (Stylesheet oder gar kein Schatten). Zeit und RSS sinken beide; das ist kein RAM-Tausch. Ein vorberechnetes Blur-Pixmap wäre das Gegenteil und ist nicht vorgeschlagen.
 
@@ -263,7 +265,7 @@ Fix: beim Aufbau der Seiten den schon geladenen Stand nutzen, nicht 19 Disk-Load
 
 Risiko: ein Load, der absichtlich die Disk neu liest (nach Speichern), darf nicht am Cache vorbeilaufen. Heute ruft `save` am Ende selbst `load`.
 
-Konflikt: derselbe ConfigService-Fix wie Rang 3. `#67` ändert Seiten, die `load` rufen (`dashboard.py`, `profile.py`, `jobs.py`).
+Konflikt: derselbe ConfigService-Fix wie Rang 5. `#67` ändert Seiten, die `load` rufen (`dashboard.py`, `profile.py`, `jobs.py`).
 
 ### 10. `refresh_cards` entfernt Widgets nur mit `deleteLater`
 
@@ -284,6 +286,6 @@ Risiko: `#73` repariert genau diese Methode (`_exp_more` nach erneutem `refresh_
 
 ## Zuerst diese drei
 
-1. Upserts in einer Transaktion (`database.py:295` / `:661`). Gemessen 19.633 s → 0.188 s bei 5000 Jobs, etwa 19.4 s. RSS +1.7 MB, kostet RAM, Peak-Prüfung nötig.
-2. `re.sub` in `_fuzzy_against_aliases` aus der Schleife heben (`intent_aliases.py:79`). Gemessen bei 500 Jobs 1.346 s → 0.697 s, RSS-Delta 0. Auf 5000 Jobs schätzungsweise rund 6.5 s von den gemessenen 13.5 s für Score plus Filter.
-3. Die `save`/`load`-Rekursion beim ersten Start beenden (`services/__init__.py:118` vor `:119`, und `:151`). Gemessen 4.818 s → 0.535 s Fenster, 582 fsyncs → 0. Mit dem schon laufenden Rekursionsfix abstimmen, nicht daneben patchen. Kein gemessener RAM-Tausch.
+1. `has_applied` über ein Set der bisherigen Schlüssel (`database.py:805`). Gemessen bei 5000 Jobs 26.121 s → 0.018 s. RSS-Delta 0 Bytes. Trotzdem ein Cache: kostet RAM, Peak-Prüfung nötig.
+2. Upserts in einer Transaktion (`database.py:295` / `:661`). Gemessen 19.633 s → 0.188 s bei 5000 Jobs. RSS +1.7 MB, kostet RAM, Peak-Prüfung nötig.
+3. `re.sub` in `_fuzzy_against_aliases` aus der Schleife heben (`intent_aliases.py:79`). Gemessen bei 500 Jobs 1.346 s → 0.697 s, RSS-Delta 0. Auf 5000 Jobs **Schätzung** rund 6.5 s von den gemessenen 13.5 s für Score plus Filter.

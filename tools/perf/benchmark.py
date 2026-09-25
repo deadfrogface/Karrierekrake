@@ -13,6 +13,11 @@ The process-group RSS sampler aborts a worker if the group exceeds
 3_200_000_000 bytes so the run stays under the 3_300_000_000-byte gate.
 That abort is a safety rail for the benchmark process, not a product limit
 derived from these VM numbers.
+
+RSS comes from ``/proc`` on Linux. Anywhere else it comes from ``psutil``
+(process plus children, recursive). If neither source can be read, the
+script exits with an error. A sample that was not read is ``None`` in the
+JSON report (shown as ``n/a``), never ``0``.
 """
 
 from __future__ import annotations
@@ -49,14 +54,64 @@ def _ensure_root() -> None:
         sys.path.insert(0, root)
 
 
-def _rss_pair(pid: int | None = None) -> tuple[int, int]:
-    """Return (VmRSS, VmHWM) in bytes for ``pid`` (default: self)."""
-    target = pid or os.getpid()
-    rss = hwm = 0
+class MemoryReadError(RuntimeError):
+    """Neither ``/proc`` nor psutil can provide a process RSS."""
+
+
+def _proc_available() -> bool:
+    return Path("/proc/self/status").is_file()
+
+
+def _load_psutil():
+    """Return the psutil module, or None when it is not installed."""
     try:
-        text = Path(f"/proc/{target}/status").read_text(encoding="utf-8")
+        import psutil
+    except ImportError:
+        return None
+    return psutil
+
+
+def _memory_backend() -> str:
+    """``proc`` on Linux with /proc, otherwise ``psutil``.
+
+    Raises MemoryReadError when both are missing. Callers must not substitute 0.
+    """
+    if _proc_available():
+        return "proc"
+    if _load_psutil() is not None:
+        return "psutil"
+    raise MemoryReadError(
+        "RSS nicht lesbar: weder /proc noch psutil. "
+        "Unter Windows psutil installieren (optionale Abhängigkeit, siehe tools/perf/README.md)."
+    )
+
+
+def _ensure_memory_reader() -> None:
+    try:
+        _memory_backend()
+    except MemoryReadError as exc:
+        print(str(exc), file=sys.stderr)
+        raise SystemExit(2) from exc
+
+
+def _fmt_bytes(value: int | None) -> str:
+    return "n/a" if value is None else str(value)
+
+
+def _rss_delta(after: int | None, before: int | None) -> int | None:
+    if after is None or before is None:
+        return None
+    return after - before
+
+
+def _rss_pair_proc(pid: int) -> tuple[int | None, int | None]:
+    """(VmRSS, VmHWM) in bytes. None for a field or a process that was not read."""
+    try:
+        text = Path(f"/proc/{pid}/status").read_text(encoding="utf-8")
     except OSError:
-        return 0, 0
+        return None, None
+    rss: int | None = None
+    hwm: int | None = None
     for line in text.splitlines():
         if line.startswith("VmRSS:"):
             rss = int(line.split()[1]) * 1024
@@ -65,10 +120,50 @@ def _rss_pair(pid: int | None = None) -> tuple[int, int]:
     return rss, hwm
 
 
-def _group_rss(pgid: int) -> int:
-    """Sum VmRSS of every live process in ``pgid``."""
-    total = 0
+def _peak_from_memory_info(info: Any) -> int | None:
+    """Windows high-water mark: peak_wset, else peak_pagefile. Absent → None."""
+    for name in ("peak_wset", "peak_pagefile"):
+        value = getattr(info, name, None)
+        if isinstance(value, int) and value > 0:
+            return value
+    return None
+
+
+def _rss_pair_psutil(pid: int) -> tuple[int | None, int | None]:
+    psutil = _load_psutil()
+    if psutil is None:
+        raise MemoryReadError(
+            "RSS nicht lesbar: psutil fehlt und /proc ist nicht verfügbar."
+        )
+    try:
+        info = psutil.Process(pid).memory_info()
+    except Exception:
+        return None, None
+    rss = getattr(info, "rss", None)
+    if not isinstance(rss, int):
+        rss = None
+    return rss, _peak_from_memory_info(info)
+
+
+def _rss_pair(pid: int | None = None) -> tuple[int | None, int | None]:
+    """Return (current RSS, peak) in bytes for ``pid`` (default: self).
+
+    Peak is VmHWM on Linux. On Windows it is ``peak_wset`` or, if that field
+    is missing, ``peak_pagefile``. Unread values are None, never 0.
+    """
+    target = pid or os.getpid()
+    if _memory_backend() == "proc":
+        return _rss_pair_proc(target)
+    return _rss_pair_psutil(target)
+
+
+def _group_rss_proc(pgid: int) -> int | None:
+    """Sum VmRSS of every live process in ``pgid``. None if none were read."""
     proc = Path("/proc")
+    if not proc.is_dir():
+        return None
+    total = 0
+    saw = False
     for entry in proc.iterdir():
         if not entry.name.isdigit():
             continue
@@ -79,25 +174,114 @@ def _group_rss(pgid: int) -> int:
             # state, ppid, pgrp — pgrp is index 2
             if int(fields[2]) != pgid:
                 continue
-            rss, _hwm = _rss_pair(int(entry.name))
-            total += rss
+            rss, _hwm = _rss_pair_proc(int(entry.name))
         except (OSError, IndexError, ValueError):
             continue
-    return total
+        if rss is None:
+            continue
+        saw = True
+        total += rss
+    return total if saw else None
+
+
+def _group_rss_psutil(root_pid: int) -> int | None:
+    """Sum RSS of ``root_pid`` and its children (recursive). None if unread."""
+    psutil = _load_psutil()
+    if psutil is None:
+        raise MemoryReadError(
+            "RSS nicht lesbar: psutil fehlt und /proc ist nicht verfügbar."
+        )
+    try:
+        root = psutil.Process(root_pid)
+    except Exception:
+        return None
+    procs = [root]
+    try:
+        procs.extend(root.children(recursive=True))
+    except Exception:
+        pass
+    total = 0
+    saw = False
+    for proc in procs:
+        try:
+            info = proc.memory_info()
+        except Exception:
+            continue
+        rss = getattr(info, "rss", None)
+        if not isinstance(rss, int):
+            continue
+        saw = True
+        total += rss
+    return total if saw else None
+
+
+def _group_rss(root_pid: int, pgid: int | None = None) -> int | None:
+    """Process-group RSS in bytes.
+
+    Linux uses ``/proc`` and ``pgid``. Every other platform sums the psutil
+    process tree. None means the sample was not read — callers must not treat
+    that as 0, and must not skip the peak abort because of it.
+    """
+    if _memory_backend() == "proc" and pgid is not None:
+        return _group_rss_proc(pgid)
+    return _group_rss_psutil(root_pid)
+
+
+def _note_rss_sample(peak: int | None, sample: int | None) -> tuple[int | None, bool]:
+    """Fold one group sample into the running peak.
+
+    An unread sample (None) leaves the peak unchanged and does not abort.
+    It is never stored as 0. A successful read at or above the abort line trips.
+    """
+    if sample is None:
+        return peak, False
+    new_peak = sample if peak is None else max(peak, sample)
+    return new_peak, new_peak >= PEAK_ABORT_BYTES
+
+
+def _process_group_id(pid: int) -> int | None:
+    getpgid = getattr(os, "getpgid", None)
+    if getpgid is None:
+        return None
+    try:
+        return int(getpgid(pid))
+    except OSError:
+        return None
+
+
+def _watch_process_rss(proc: subprocess.Popen, interval: float) -> tuple[int | None, bool]:
+    """Sample group RSS until ``proc`` exits. Kill it at the abort line."""
+    peak: int | None = None
+    aborted = False
+    pgid = _process_group_id(proc.pid)
+    while True:
+        sample = _group_rss(proc.pid, pgid)
+        peak, trip = _note_rss_sample(peak, sample)
+        if trip:
+            aborted = True
+            proc.kill()
+            break
+        if proc.poll() is not None:
+            break
+        time.sleep(interval)
+    return peak, aborted
 
 
 def _machine() -> dict[str, Any]:
     model = ""
-    cpus = 0
+    cpus: int | None = None
+    mem_total: int | None = None
     try:
+        counted = 0
         for line in Path("/proc/cpuinfo").read_text(encoding="utf-8").splitlines():
             if line.startswith("model name") and not model:
                 model = line.split(":", 1)[1].strip()
             if line.startswith("processor"):
-                cpus += 1
+                counted += 1
+        if counted:
+            cpus = counted
     except OSError:
         pass
-    mem_total = 0
     try:
         for line in Path("/proc/meminfo").read_text(encoding="utf-8").splitlines():
             if line.startswith("MemTotal:"):
@@ -105,6 +289,16 @@ def _machine() -> dict[str, Any]:
                 break
     except OSError:
         pass
+    if cpus is None:
+        counted = os.cpu_count()
+        cpus = counted if counted else None
+    if mem_total is None:
+        psutil = _load_psutil()
+        if psutil is not None:
+            try:
+                mem_total = int(psutil.virtual_memory().total)
+            except Exception:
+                mem_total = None
     return {
         "label": "VM, nicht i3",
         "cpu_model": model,
@@ -593,6 +787,105 @@ def _scaling_row(n: int, seconds: float) -> dict[str, Any]:
     }
 
 
+def measure_has_applied(appdata: Path) -> list[dict[str, Any]]:
+    """Time ``has_applied`` at 50, 200, 800, 2000 and 5000 rows.
+
+    Setup inserts share one transaction. The clock covers only the product
+    ``has_applied`` path, which opens a connection per call.
+    """
+    from contextlib import contextmanager
+
+    from core.database import Database
+    from core.deduplicator import company_key, title_key
+    from core.models import Job, JobStatus
+
+    applied_rows: list[dict[str, Any]] = []
+    for n in (50, 200, 800, 2000, 5000):
+        db_path = appdata / f"applied-{n}.db"
+        if db_path.exists():
+            db_path.unlink()
+        db = Database(db_path)
+        shared = db._connect()
+
+        @contextmanager
+        def _one_txn(conn=shared):
+            try:
+                yield conn
+            except Exception:
+                conn.rollback()
+                raise
+
+        db.connection = _one_txn  # type: ignore[method-assign]
+        for i in range(n):
+            db.upsert_job(
+                Job(
+                    id=f"ap-{n}-{i}",
+                    source="fixture",
+                    title=f"Sachbearbeiter {i % 40}",
+                    company=f"Firma {i % 25} GmbH",
+                    url=f"https://example.test/applied/{n}/{i}",
+                    status=JobStatus.APPLIED.value,
+                    description="Excel",
+                )
+            )
+        shared.commit()
+        shared.close()
+        del db.connection
+        probes = [
+            Job(
+                id=f"q-{n}-{i}",
+                source="fixture",
+                title=f"Sachbearbeiter {i % 40}",
+                company=f"Firma {i % 25} GmbH",
+                url=f"https://example.test/query/{n}/{i}",
+                description="Excel",
+            )
+            for i in range(n)
+        ]
+        t0 = time.perf_counter()
+        hits = sum(1 for job in probes if db.has_applied(job))
+        dt = time.perf_counter() - t0
+        keys = {
+            (company_key(f"Firma {i % 25} GmbH"), title_key(f"Sachbearbeiter {i % 40}"))
+            for i in range(n)
+        }
+        rss_set_before, _peak_before = _rss_pair()
+        t1 = time.perf_counter()
+        hits_set = 0
+        for job in probes:
+            if (company_key(job.company), title_key(job.title)) in keys:
+                hits_set += 1
+        set_s = time.perf_counter() - t1
+        rss_set_after, _peak_after = _rss_pair()
+        print(f"has_applied n={n} {dt:.3f}s hits={hits}", file=sys.stderr)
+        applied_rows.append(
+            {
+                **_scaling_row(n, dt),
+                "hits": hits,
+                "set_lookup_s": set_s,
+                "set_hits": hits_set,
+                "set_rss_delta_bytes": _rss_delta(rss_set_after, rss_set_before),
+            }
+        )
+    return applied_rows
+
+
+def worker_has_applied(appdata: Path) -> dict[str, Any]:
+    """Only the has_applied probe, so n=2000 and n=5000 can be re-run alone."""
+    _apply_base_env(appdata)
+    appdata.mkdir(parents=True, exist_ok=True)
+    rss_before, _ = _rss_pair()
+    rows = measure_has_applied(appdata)
+    rss_after, hwm = _rss_pair()
+    return {
+        "llm_used": False,
+        "rss_before_bytes": rss_before,
+        "rss_after_bytes": rss_after,
+        "vmhwm_bytes": hwm,
+        "has_applied": rows,
+    }
+
+
 def worker_match(appdata: Path) -> dict[str, Any]:
     _apply_base_env(appdata)
     appdata.mkdir(parents=True, exist_ok=True)
@@ -729,70 +1022,11 @@ def worker_match(appdata: Path) -> dict[str, Any]:
                 "n": n,
                 "one_transaction_upsert_s": batch_s,
                 "per_call_upsert_s": next(row["insert_s"] for row in sql_rows if row["n"] == n),
-                "rss_delta_bytes": rss_b1 - rss_b0,
+                "rss_delta_bytes": _rss_delta(rss_b1, rss_b0),
             }
         )
 
-    # has_applied scaling. 5000x5000 is too easy to blow the time budget;
-    # 50/200/800 are measured, 5000 is not run here.
-    applied_rows = []
-    from core.models import Job, JobStatus
-
-    for n in (50, 200, 800):
-        db_path = appdata / f"applied-{n}.db"
-        if db_path.exists():
-            db_path.unlink()
-        db = Database(db_path)
-        for i in range(n):
-            db.upsert_job(
-                Job(
-                    id=f"ap-{n}-{i}",
-                    source="fixture",
-                    title=f"Sachbearbeiter {i % 40}",
-                    company=f"Firma {i % 25} GmbH",
-                    url=f"https://example.test/applied/{n}/{i}",
-                    status=JobStatus.APPLIED.value,
-                    description="Excel",
-                )
-            )
-        probes = [
-            Job(
-                id=f"q-{n}-{i}",
-                source="fixture",
-                title=f"Sachbearbeiter {i % 40}",
-                company=f"Firma {i % 25} GmbH",
-                url=f"https://example.test/query/{n}/{i}",
-                description="Excel",
-            )
-            for i in range(n)
-        ]
-        t0 = time.perf_counter()
-        hits = sum(1 for job in probes if db.has_applied(job))
-        dt = time.perf_counter() - t0
-        # In-process set lookup, same keys the scan recomputes. Benchmark-only.
-        from core.deduplicator import company_key, title_key
-
-        keys = {
-            (company_key(f"Firma {i % 25} GmbH"), title_key(f"Sachbearbeiter {i % 40}"))
-            for i in range(n)
-        }
-        rss_set_before, _ = _rss_pair()
-        t1 = time.perf_counter()
-        hits_set = 0
-        for job in probes:
-            if (company_key(job.company), title_key(job.title)) in keys:
-                hits_set += 1
-        set_s = time.perf_counter() - t1
-        rss_set_after, _ = _rss_pair()
-        applied_rows.append(
-            {
-                **_scaling_row(n, dt),
-                "hits": hits,
-                "set_lookup_s": set_s,
-                "set_hits": hits_set,
-                "set_rss_delta_bytes": rss_set_after - rss_set_before,
-            }
-        )
+    applied_rows = measure_has_applied(appdata)
 
     # Alias-loop probe on 500 jobs: production vs hoisted regex (benchmark only).
     import core.intent_aliases as aliases
@@ -1315,7 +1549,7 @@ def worker_ui(appdata: Path) -> dict[str, Any]:
             "shadow_paints": shadow_paints,
             "rss_plain_bytes": rss_plain,
             "rss_shadow_bytes": rss_shadow,
-            "rss_delta_bytes": rss_shadow - rss_plain,
+            "rss_delta_bytes": _rss_delta(rss_shadow, rss_plain),
         },
         "refresh_cards": {
             "calls_including_load_from_config": calls["n"],
@@ -1344,6 +1578,7 @@ WORKERS = {
     "cv": worker_cv,
     "match": worker_match,
     "ui": worker_ui,
+    "has_applied": worker_has_applied,
 }
 
 
@@ -1442,18 +1677,7 @@ def _run_worker(section: str, appdata: Path, trace: bool = False) -> dict[str, A
         start_new_session=True,
     )
     assert proc.pid
-    pgid = os.getpgid(proc.pid)
-    peak = 0
-    aborted = False
-    while True:
-        peak = max(peak, _group_rss(pgid))
-        if peak >= PEAK_ABORT_BYTES:
-            aborted = True
-            proc.kill()
-            break
-        if proc.poll() is not None:
-            break
-        time.sleep(0.05)
+    peak, aborted = _watch_process_rss(proc, 0.05)
     out, err = proc.communicate()
     payload: dict[str, Any]
     try:
@@ -1526,6 +1750,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     _ensure_root()
+    _ensure_memory_reader()
     args = _parse_args(argv if argv is not None else sys.argv[1:])
     if args.worker:
         if args.appdata is None:
@@ -1561,7 +1786,7 @@ def main(argv: list[str] | None = None) -> int:
                 runs.append(_run_worker(section, appdata))
             print(
                 f"  run {i} ok={runs[-1].get('ok', True)} "
-                f"group_rss={runs[-1].get('sampled_group_rss_max_bytes')}",
+                f"group_rss={_fmt_bytes(runs[-1].get('sampled_group_rss_max_bytes'))}",
                 file=sys.stderr,
             )
         trace = None
@@ -1596,21 +1821,15 @@ def _run_importtime_sampled(appdata: Path) -> dict[str, Any]:
         text=True,
         start_new_session=True,
     )
-    pgid = os.getpgid(proc.pid)
-    peak = 0
     t0 = time.perf_counter()
-    while proc.poll() is None:
-        peak = max(peak, _group_rss(pgid))
-        if peak >= PEAK_ABORT_BYTES:
-            proc.kill()
-            break
-        time.sleep(0.02)
+    peak, aborted = _watch_process_rss(proc, 0.02)
     wall = time.perf_counter() - t0
     _out, err = proc.communicate()
     parsed = _parse_importtime(err or "")
     parsed["process_wall_s"] = wall
     parsed["returncode"] = proc.returncode
     parsed["sampled_group_rss_max_bytes"] = peak
+    parsed["aborted_for_peak"] = aborted
     parsed["ok"] = proc.returncode == 0 and parsed["total_import_us"] > 0
     return parsed
 
