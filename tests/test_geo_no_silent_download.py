@@ -529,14 +529,18 @@ def test_pgeocode_contract_attributes_exist():
     assert callable(cycle_url)
 
 
+@pytest.mark.parametrize(
+    "attr",
+    ("STORAGE_DIR", "DOWNLOAD_URL", "_open_extract_url", "_open_extract_cycle_url"),
+)
 def test_removed_pgeocode_attribute_fails_closed(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
+    attr: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
 ):
     """A missing internal must return None and must not build Nominatim."""
     caplog.set_level(logging.WARNING, logger="karrierekrake")
     import pgeocode
 
-    monkeypatch.delattr(pgeocode, "DOWNLOAD_URL")
+    monkeypatch.delattr(pgeocode, attr)
     constructed = _count_nominatim(monkeypatch)
     _ready_dataset(tmp_path, monkeypatch)
     res = resolve_postal_pgeocode("10115", "DE")
@@ -553,14 +557,23 @@ def test_removed_pgeocode_attribute_fails_closed(
     assert len(refused) == 1
 
 
+@pytest.mark.parametrize(
+    "attr,bad",
+    (
+        ("STORAGE_DIR", 12),
+        ("DOWNLOAD_URL", ("https://example.invalid/DE.zip",)),
+        ("_open_extract_url", "not-callable"),
+        ("_open_extract_cycle_url", object()),
+    ),
+)
 def test_wrong_type_pgeocode_attribute_fails_closed(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
+    attr: str, bad: object, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog
 ):
     """A retyped internal must return None and must not build Nominatim."""
     caplog.set_level(logging.WARNING, logger="karrierekrake")
     import pgeocode
 
-    monkeypatch.setattr(pgeocode, "DOWNLOAD_URL", ("https://example.invalid/DE.zip",))
+    monkeypatch.setattr(pgeocode, attr, bad)
     constructed = _count_nominatim(monkeypatch)
     _ready_dataset(tmp_path, monkeypatch)
     res = resolve_postal_pgeocode("10115", "DE")
