@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from core.config import empty_app_config
+from core.config import SourcedText, empty_app_config
 from core.cover_letter import render_cover_letter, resolve_cover_letter_template
 from core.models import Job
 
@@ -26,13 +26,20 @@ def test_resolve_template_uses_meipass_when_frozen(tmp_path: Path, monkeypatch) 
     cfg.settings.cover_letter_template = "templates/cover_letter.txt"
     cfg.application.first_name = "Alex"
     cfg.application.last_name = "Beispiel"
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Sachbearbeitung", source="manual")
+    )
 
     resolved = resolve_cover_letter_template(cfg)
     assert resolved is not None
     assert resolved == bundled / "cover_letter.txt"
 
     text = render_cover_letter(
-        Job(title="Sachbearbeiter", company="Nordlicht GmbH"),
+        Job(
+            title="Sachbearbeiter",
+            company="Nordlicht GmbH",
+            description="Sachbearbeitung im Büroalltag und Terminabstimmung.",
+        ),
         cfg,
     )
     assert "FROZEN_TEMPLATE" in text

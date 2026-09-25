@@ -438,4 +438,4 @@ class ApplicationsPage(QWidget):
         from desktop.widgets.apply_preview_dialog import ApplyPreviewDialog
 
         preview = build_application_preview(job, cfg)
-        ApplyPreviewDialog(preview, self).exec()
+        ApplyPreviewDialog(preview, self, config=cfg, job=job).exec()

@@ -623,7 +623,7 @@ class JobsPage(QWidget):
 
         meta = self.config_service.load_meta()
         preview = build_application_preview(job, cfg, meta=meta)
-        ApplyPreviewDialog(preview, self).exec()
+        ApplyPreviewDialog(preview, self, config=cfg, job=job).exec()
 
     def open_search_intent(self) -> None:
         parent = self.window()

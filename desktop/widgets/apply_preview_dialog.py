@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
     QLabel,
+    QMessageBox,
     QPlainTextEdit,
     QPushButton,
     QVBoxLayout,
@@ -21,9 +22,11 @@ from desktop.i18n import tr
 class ApplyPreviewDialog(QDialog):
     """Show intended form values / documents before any real submit."""
 
-    def __init__(self, preview: ApplicationPreview, parent=None) -> None:
+    def __init__(self, preview: ApplicationPreview, parent=None, *, config=None, job=None) -> None:
         super().__init__(parent)
         self.preview = preview
+        self._config = config
+        self._job = job
         self.setWindowTitle(tr("apps.preview_title"))
         self.resize(720, 560)
 
@@ -44,6 +47,18 @@ class ApplyPreviewDialog(QDialog):
         close_btn = buttons.button(QDialogButtonBox.StandardButton.Close)
         if close_btn:
             close_btn.setText(tr("btn.close") if tr("btn.close") != "btn.close" else "Schließen")
+        self.approve_btn = QPushButton(tr("approval.approve"))
+        self.approve_btn.setObjectName("PrimaryButton")
+        can_approve = (
+            config is not None
+            and job is not None
+            and bool((preview.cover_letter_preview or "").strip())
+            and not preview.cover_refusal_code
+        )
+        self.approve_btn.setEnabled(can_approve)
+        self.approve_btn.setVisible(can_approve)
+        self.approve_btn.clicked.connect(self._approve)
+        buttons.addButton(self.approve_btn, QDialogButtonBox.ButtonRole.ActionRole)
 
         top = QHBoxLayout()
         top.addWidget(self.summary, 1)
@@ -94,7 +109,32 @@ class ApplyPreviewDialog(QDialog):
                 "BLOCKED": "Qualität: BLOCKED — CV/Profil blockiert",
             }.get(gate, gate)
         color = {"READY": "#1b7f3a", "WARNING": "#9a6b00", "BLOCKED": "#a11"}.get(gate, "#333")
-        self.gate.setText(f"<span style='color:{color}; font-weight:600'>{gate_key}</span>")
+        refusal = ""
+        if preview.cover_refusal_code:
+            refusal_text = tr(preview.cover_refusal_key) if preview.cover_refusal_key else ""
+            if refusal_text == preview.cover_refusal_key:
+                refusal_text = preview.cover_refusal_code
+            refusal = (
+                f"<br/><span style='color:#a11; font-weight:600'>"
+                f"{preview.cover_refusal_code}: {refusal_text}</span>"
+            )
+        self.gate.setText(
+            f"<span style='color:{color}; font-weight:600'>{gate_key}</span>{refusal}"
+        )
+
+    def _approve(self) -> None:
+        from core.cover_letter import CoverLetterRefused, approve_cover_letter
+
+        if self._config is None or self._job is None:
+            return
+        try:
+            path = approve_cover_letter(self._job, self._config, self.preview.cover_letter_preview)
+        except CoverLetterRefused as exc:
+            lang = getattr(self._config.settings, "language", "de")
+            QMessageBox.warning(self, tr("apps.preview_title"), exc.refusal.text(lang))
+            return
+        QMessageBox.information(self, tr("apps.preview_title"), tr("cover.saved") + f"\n{path}")
+        self.accept()
 
     def _open_url(self) -> None:
         url = self.preview.application_url

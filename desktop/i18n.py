@@ -926,6 +926,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.explain_job": 'Erklärt die Passung anhand SearchIntent und Match-Gründen.',
         "guenther.hint.prep_interview": 'Interview-Prep aus Fall- und Job-Kontext.',
         "brand.tagline": "FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK.",
+        "cover.job_incomplete": "Die Anzeige hat keinen Beschreibungstext.",
+        "cover.no_evidence": "Im Profil fehlt eine bestätigte berufliche Station und eine Kenntnis, die zur Anzeige passt.",
+        "cover.demo_excluded": "Demo-Anzeigen sind von Bewerbungen und Anschreiben ausgeschlossen.",
+        "cover.saved": "Anschreiben gespeichert.",
     },
     "en": {
         "app.name": "Karrierekrake",
@@ -1845,6 +1849,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.explain_job": 'Explains fit from SearchIntent and match reasons.',
         "guenther.hint.prep_interview": 'Interview prep from case and job context.',
         "brand.tagline": "FIND. APPLY. KEEP THE OVERVIEW.",
+        "cover.job_incomplete": "The job ad has no description.",
+        "cover.no_evidence": "The profile has no confirmed work experience and no skill that matches this job ad.",
+        "cover.demo_excluded": "Demo listings are excluded from applications and cover letters.",
+        "cover.saved": "Cover letter saved.",
     },
 }
 
