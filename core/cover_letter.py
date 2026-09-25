@@ -65,15 +65,73 @@ def resolve_cover_letter_template(config: AppConfig) -> Path | None:
     return None
 
 
+def _clean_job_description(raw: str) -> str:
+    """Same blank cleanup as scraped ads, plus pasted HTML remnants."""
+    text = "" if raw is None else str(raw)
+    text = (
+        text.replace("\xa0", " ")
+        .replace("&nbsp;", " ")
+        .replace("&amp;", "&")
+        .replace("&quot;", '"')
+        .replace("&#39;", "'")
+    )
+    text = _HTML_TAG.sub(" ", text)
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"[ \t]{2,}", " ", text)
+    return clean_text(text)
+
+
+def _alias_forms(token: str) -> set[str]:
+    key = _norm(token)
+    if not key:
+        return set()
+    forms = {key}
+    for group in _COVER_ALIAS_GROUPS:
+        if key in group:
+            forms.update(group)
+    return forms
+
+
+def _mentioned(token: str, blob: str) -> bool:
+    """True when ``token`` or one gold alias of it occurs in ``blob``."""
+    if not token or not blob:
+        return False
+    if _token_in_text(token, blob):
+        return True
+    key = _norm(token)
+    for form in _alias_forms(token):
+        if form == key:
+            continue
+        if _token_in_text(form, blob) or (len(form) >= 3 and form in blob):
+            return True
+    return False
+
+
+def _company_missing(job: Job) -> bool:
+    company = clean_company(getattr(job, "company", "")).casefold()
+    return (not company) or company in _COMPANY_PLACEHOLDERS
+
+
+def _ad_contact(description: str) -> tuple[str, str]:
+    """Name and role word from an Ansprechpartner line in the ad."""
+    match = _AD_CONTACT_RE.search(description or "")
+    if not match:
+        return "", ""
+    return match.group(2).strip(), match.group(1)
+
+
 def _job_blob(job: Job) -> str:
-    return _norm(f"{clean_text(job.title)} {clean_text(job.description)}")
+    description = _clean_job_description(getattr(job, "description", ""))
+    return _norm(f"{clean_text(job.title)} {description}")
 
 
 def _experience_relevance(exp: ExperienceEntry, job_blob: str) -> int:
     score = 0
     title = clean_text(exp.title)
     if title and not _is_glue_token(title):
-        if _token_in_text(title, job_blob) or _norm(title) in job_blob:
+        if _mentioned(title, job_blob) or _norm(title) in job_blob:
             score += 12
         for word in _meaningful_words(title, min_len=4):
             if _token_in_text(word, job_blob):
@@ -152,13 +210,36 @@ def _resolve_writer_claims(
 
 REASON_JOB_INCOMPLETE = "job_incomplete"
 REASON_NO_EVIDENCE = "no_evidence"
-REASON_DEMO_EXCLUDED = "demo_excluded"
+# Gold vocabulary (docs in PR #75). The i18n key stays cover.demo_excluded.
+REASON_BLOCKED_DEMO = "blocked_demo"
+REASON_COMPANY_MISSING = "company_missing"
 
 _MESSAGE_KEYS = {
     REASON_JOB_INCOMPLETE: "cover.job_incomplete",
     REASON_NO_EVIDENCE: "cover.no_evidence",
-    REASON_DEMO_EXCLUDED: "cover.demo_excluded",
+    REASON_BLOCKED_DEMO: "cover.demo_excluded",
+    REASON_COMPANY_MISSING: "cover.company_missing",
 }
+
+# Exact pairs the Personaler gold names. No open synonym list.
+_COVER_ALIAS_GROUPS = (
+    frozenset({"disponent", "dispatcher"}),
+    frozenset({"tourenplanung", "route planning"}),
+)
+
+_COMPANY_PLACEHOLDERS = frozenset({
+    "firma 0",
+    "ihr unternehmen",
+    "ihrem unternehmen",
+    "ihres unternehmens",
+})
+
+_HTML_TAG = re.compile(r"<[^>]+>")
+_AD_CONTACT_RE = re.compile(
+    r"\b(Ansprechpartnerin|Ansprechpartner)\b.{0,220}?\b(?:Frau|Herrn|Herr)\s+"
+    r"([A-ZÄÖÜ][A-Za-zÄÖÜäöüß\-]+(?:\s+[A-ZÄÖÜ][A-Za-zÄÖÜäöüß\-]+)+)",
+    re.DOTALL,
+)
 
 # Lines that only exist to host an empty {skills} placeholder.
 _EMPTY_SKILLS_LINE = re.compile(
@@ -278,10 +359,10 @@ def evidenced_stations(config: AppConfig) -> list[ExperienceEntry]:
 
 
 def _skill_in_blob(skill: str, blob: str) -> bool:
-    if _token_in_text(skill, blob):
+    if _mentioned(skill, blob):
         return True
     return any(
-        _token_in_text(part, blob)
+        _mentioned(part, blob)
         for part in re.split(r"[,/|]", skill)
         if len(part.strip()) >= 3 and not _is_glue_token(part)
     )
@@ -346,8 +427,8 @@ def _render_template(
         template = DEFAULT_TEMPLATE
 
     company = clean_company(job.company)
-    if not company:
-        company = "Ihr Unternehmen"
+    if company.casefold() in _COMPANY_PLACEHOLDERS:
+        company = ""
 
     claims = _resolve_writer_claims(config, contact_claims)
     from core.contacts.writer_contract import (
@@ -395,10 +476,12 @@ def compose_cover_letter(
     The same function is the only generation path (headless, preview, apply).
     """
     if is_demo_job(job):
-        return _refusal(REASON_DEMO_EXCLUDED)
-    description = clean_text(getattr(job, "description", ""))
+        return _refusal(REASON_BLOCKED_DEMO)
+    description = _clean_job_description(getattr(job, "description", ""))
     if not description:
         return _refusal(REASON_JOB_INCOMPLETE)
+    if _company_missing(job):
+        return _refusal(REASON_COMPANY_MISSING)
     skills_list = evidenced_skills_matching_description(config, description)
     stations = evidenced_stations(config)
     if not stations and not skills_list:
@@ -407,10 +490,18 @@ def compose_cover_letter(
     exp = _matching_station(config, job)
     if exp is not None:
         label = exp.label() if hasattr(exp, "label") else str(exp)
-        experience_sentence = (
-            f"In meiner Tätigkeit als {clean_text(exp.title) or label} "
-            f"habe ich für diese Stelle relevante Erfahrungen gesammelt."
-        )
+        title = clean_text(exp.title) or label
+        employer = clean_text(exp.company)
+        if employer:
+            experience_sentence = (
+                f"In meiner Tätigkeit als {title} bei {employer} "
+                f"habe ich für diese Stelle relevante Erfahrungen gesammelt."
+            )
+        else:
+            experience_sentence = (
+                f"In meiner Tätigkeit als {title} "
+                f"habe ich für diese Stelle relevante Erfahrungen gesammelt."
+            )
     else:
         experience_sentence = ""
 
@@ -421,7 +512,27 @@ def compose_cover_letter(
         skills_list=skills_list,
         experience_sentence=experience_sentence,
     )
+    text = _insert_contact_sentence(text, description)
     return CoverLetterResult(ok=True, text=text, description_used=description)
+
+
+def _insert_contact_sentence(text: str, description: str) -> str:
+    """Name the ad's contact without a personal salutation.
+
+    Verified-contact rules still strip ``Sehr geehrte Frau …``. The bare name
+    from the Ansprechpartner line stays, which is what the gold requires.
+    """
+    name, role = _ad_contact(description)
+    if not name or name.casefold() in text.casefold():
+        return text
+    sentence = f"Ihre Ausschreibung nennt {name} als {role}."
+    for marker in (
+        "Zu meinen relevanten Kenntnissen",
+        "Über die Möglichkeit eines persönlichen Gesprächs",
+    ):
+        if marker in text:
+            return text.replace(marker, f"{sentence}\n\n{marker}", 1)
+    return text.rstrip() + "\n\n" + sentence + "\n"
 
 
 def render_cover_letter(
@@ -452,7 +563,7 @@ def set_pasted_job_description(
     There is no second generator. Callers receive the ``compose_cover_letter``
     result for the cleaned text.
     """
-    job.description = clean_text(raw)
+    job.description = _clean_job_description(raw)
     if db is not None:
         db.upsert_job(job)
     return compose_cover_letter(job, config)

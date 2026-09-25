@@ -62,11 +62,18 @@ def _assert_clean(blob: str) -> None:
 
 
 def test_i18n_keys_de_and_en():
-    for key in ("cover.job_incomplete", "cover.no_evidence", "cover.demo_excluded"):
+    for key in (
+        "cover.job_incomplete",
+        "cover.no_evidence",
+        "cover.demo_excluded",
+        "cover.company_missing",
+    ):
         assert key in TRANSLATIONS["de"]
         assert key in TRANSLATIONS["en"]
     assert TRANSLATIONS["de"]["cover.job_incomplete"] == "Die Anzeige hat keinen Beschreibungstext."
     assert TRANSLATIONS["en"]["cover.job_incomplete"] == "The job ad has no description."
+    assert TRANSLATIONS["de"]["cover.company_missing"] == "Die Anzeige nennt keine Firma."
+    assert TRANSLATIONS["en"]["cover.company_missing"] == "The job ad names no company."
 
 
 def test_empty_and_whitespace_description_refuse_without_placeholder():
@@ -227,6 +234,25 @@ def test_parser_debt_blocks_evidence(monkeypatch):
     _assert_clean(result.message("de"))
 
 
+def test_empty_company_is_company_missing_not_a_placeholder_letter():
+    cfg = _cfg("Tourenplanung", stations=[
+        ExperienceEntry(title="Disponent", company="Nordkai Spedition GmbH", source="manual"),
+    ])
+    job = Job(
+        id="j-nocompany",
+        source="indeed",
+        title="Dispatcher",
+        company="",
+        description="Anforderungen: Tourenplanung und SAP TM. Firma 0 steht nur im Text.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is False
+    assert result.text == ""
+    assert result.reason_code == "company_missing"
+    assert result.message("de") == "Die Anzeige nennt keine Firma."
+    _assert_clean(result.message("de") + result.message("en"))
+
+
 def test_demo_source_excluded_from_queue_and_letter(tmp_path: Path):
     demo = Job(
         id="demo-1",
@@ -254,7 +280,7 @@ def test_demo_source_excluded_from_queue_and_letter(tmp_path: Path):
         ExperienceEntry(title="Disponent", company="Altspedition", source="manual"),
     ])
     result = compose_cover_letter(demo, cfg)
-    assert result.reason_code == "demo_excluded"
+    assert result.reason_code == "blocked_demo"
     assert result.text == ""
     _assert_clean(result.message("de") + result.message("en"))
     preview = build_application_preview(demo, cfg)
@@ -342,7 +368,7 @@ def test_hafenlogistik_empty_demo_shape_cannot_render():
     cfg = empty_app_config()
     result = compose_cover_letter(job, cfg)
     assert result.ok is False
-    assert result.reason_code == "demo_excluded"
+    assert result.reason_code == "blocked_demo"
     _assert_clean(result.message("de"))
     preview = build_application_preview(job, cfg)
     _assert_clean(preview.text_report())
@@ -433,7 +459,7 @@ def test_fixture_cover_letter_allowed_demo_refused():
     )
     refused = compose_cover_letter(demo, cfg)
     assert refused.ok is False
-    assert refused.reason_code == "demo_excluded"
+    assert refused.reason_code == "blocked_demo"
     assert refused.text == ""
     _assert_clean(refused.message("de"))
 

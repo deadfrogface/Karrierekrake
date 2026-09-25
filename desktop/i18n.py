@@ -929,6 +929,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.job_incomplete": "Die Anzeige hat keinen Beschreibungstext.",
         "cover.no_evidence": "Im Profil fehlt eine bestätigte berufliche Station und eine Kenntnis, die zur Anzeige passt.",
         "cover.demo_excluded": "Demo-Anzeigen sind von Bewerbungen und Anschreiben ausgeschlossen.",
+        "cover.company_missing": "Die Anzeige nennt keine Firma.",
         "cover.saved": "Anschreiben gespeichert.",
     },
     "en": {
@@ -1852,6 +1853,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.job_incomplete": "The job ad has no description.",
         "cover.no_evidence": "The profile has no confirmed work experience and no skill that matches this job ad.",
         "cover.demo_excluded": "Demo listings are excluded from applications and cover letters.",
+        "cover.company_missing": "The job ad names no company.",
         "cover.saved": "Cover letter saved.",
     },
 }
