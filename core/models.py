@@ -143,3 +143,8 @@ class MatchResult:
     # PR23 SearchIntent ranking/alias version + explainability payload.
     ranking_version: str = ""
     intent_explanation: dict[str, Any] = field(default_factory=dict)
+    # ready | blocked | needs_confirmation — a score alone is not a match decision.
+    decision_status: str = "ready"
+    decision_blockers: list[str] = field(default_factory=list)
+    # CV field name → present | absent | unknown. Missing values stay unknown.
+    field_status: dict[str, str] = field(default_factory=dict)

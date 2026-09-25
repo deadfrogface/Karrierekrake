@@ -224,7 +224,12 @@ def test_about_dialog_shows_resolved_data_dir(qapp, tmp_path):
     assert not any("%LOCALAPPDATA%" in t for t in texts)
 
 
-def test_dashboard_home_notice_is_plain_language(qapp, config_service):
+def test_dashboard_home_notice_follows_live_resolver(qapp, config_service):
+    """Stale run text must not override the live home resolver.
+
+    Frankfurt without a postal code stays on the PLZ hint (no centroid).
+    Coordinates stored for that same address show the resolved OK line.
+    """
     from core.database import Database
     from desktop.pages.dashboard import DashboardPage
 
@@ -238,17 +243,25 @@ def test_dashboard_home_notice_is_plain_language(qapp, config_service):
     page = DashboardPage(config_service)
     page.refresh()
     text = page.home_warning_label.text()
-    assert text == tr("dash.home_unresolved", place="Frankfurt, Deutschland")
+    assert text == tr("dash.home_plz_hint")
+    assert "technical text" not in text
     assert "Postleitzahl" in text
+    assert "geschätzt" in text
+    assert "10115" not in text
     assert "Distanzfilter übersprungen" not in text
-    assert page.home_warning_label.objectName() == "KkNotice"
+    assert page.home_warning_label.objectName() == "WarningLabel"
+    assert not page.home_warning_label.isHidden()
 
     cfg = config_service.load()
     cfg.profile.location.home_latitude = 50.11
     cfg.profile.location.home_longitude = 8.68
     config_service.save(cfg)
     page.refresh()
-    assert page.home_warning_label.isHidden()
+    resolved = page.home_warning_label.text()
+    assert resolved == tr("dash.home_resolved", place="Frankfurt")
+    assert "technical text" not in resolved
+    assert page.home_warning_label.objectName() == "HomeStatusOk"
+    assert not page.home_warning_label.isHidden()
 
 
 # --- Status after cancel ---

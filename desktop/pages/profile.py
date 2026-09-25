@@ -175,10 +175,13 @@ class ProfilePage(QWidget):
         self.page_subtitle = QLabel()
         self.page_subtitle.setObjectName("PageSubtitle")
         self.page_subtitle.setWordWrap(True)
+        self.home_status = QLabel()
+        self.home_status.setWordWrap(True)
         title_col = QVBoxLayout()
         title_col.setSpacing(2)
         title_col.addWidget(self.page_title)
         title_col.addWidget(self.page_subtitle)
+        title_col.addWidget(self.home_status)
         header.addLayout(title_col, stretch=1)
         # Top-right reserved for secondary icon-actions only (no primary CTAs)
         shell_layout.addLayout(header)
@@ -430,8 +433,19 @@ class ProfilePage(QWidget):
         )
         self.refresh_cards()
 
+    def refresh_home_status(self) -> None:
+        """Update only the home-notice line. Does not rebuild the cards."""
+        self._bind_home_status(self.config_service.load())
+
+    def _bind_home_status(self, cfg) -> None:
+        from core.location import home_location_notice
+        from desktop.pages.dashboard import bind_home_notice_label
+
+        bind_home_notice_label(self.home_status, home_location_notice(cfg.profile.location))
+
     def refresh_cards(self) -> None:
         cfg = self.config_service.load()
+        self._bind_home_status(cfg)
         a = cfg.application
         pairs = [
             (tr("field.first_name"), a.first_name),
@@ -844,24 +858,19 @@ class ProfilePage(QWidget):
         a = cfg.application
         sync_addr = self.applicant.save_into(a)
         self.config_service.set_sync_address_to_search(sync_addr)
-        if sync_addr:
-            parts = [
-                part
-                for part in (
-                    a.street.strip(),
-                    f"{a.postal_code} {a.city}".strip(),
-                    (a.country or "").strip(),
-                )
-                if part
-            ]
-            if parts:
-                new_home = ", ".join(parts)
-                if new_home != (p.location.home_address or "").strip():
-                    p.location.home_latitude = None
-                    p.location.home_longitude = None
-                    p.location.home_geocoded_address = ""
-                p.location.home_address = new_home
-                self.location_work.home_address.setText(p.location.home_address)
+        from core.location import apply_visible_home
+
+        apply_visible_home(
+            p.location,
+            street=a.street,
+            postal_code=a.postal_code,
+            city=a.city,
+            country=a.country,
+        )
+        self.location_work.home_address.setText(p.location.home_address or "")
+        self.location_work.postal_code.setText(p.location.postal_code or "")
+        self.location_work.country.setText(p.location.country or "")
+        self.location_work.refresh_home_notice(p.location)
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)
 
@@ -877,5 +886,11 @@ class ProfilePage(QWidget):
             return
         self.config_service.save(cfg)
         self._career_persist = False
-        self.refresh_cards()
+        parent = self.window()
+        # refresh_all loads this page and builds the cards once. A direct
+        # refresh_cards() here would build them a second time in the same click.
+        if parent is not None and hasattr(parent, "refresh_all"):
+            parent.refresh_all()
+        else:
+            self.refresh_cards()
         QMessageBox.information(self, tr("nav.profile"), tr("profile.saved"))

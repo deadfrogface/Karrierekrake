@@ -221,6 +221,23 @@ class FiltersConfig:
 
 
 @dataclass
+class ExtractReview:
+    """Confirmation state for a CV extract used by matching and cover letters.
+
+    ``source`` empty means a manual profile: missing sections are reported as
+    ``unknown`` but do not trip the parser-debt gate. ``confirmed`` or a field
+    name in ``confirmed_fields`` means the user accepted that extract.
+    ``field_status`` may explicitly say ``present``, ``absent``, or ``unknown``.
+    """
+
+    source: str = ""  # "" | cv | manual
+    confirmed: bool = False
+    confirmed_fields: list[str] = field(default_factory=list)
+    uncertain_fields: list[str] = field(default_factory=list)
+    field_status: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
 class SearchPreferences:
     """Where/what to search + qualifications used for matching.
 
@@ -238,6 +255,7 @@ class SearchPreferences:
     qualifications: QualificationsConfig = field(default_factory=QualificationsConfig)
     filters: FiltersConfig = field(default_factory=FiltersConfig)
     search_intent: Any = field(default=None)
+    extract_review: ExtractReview = field(default_factory=ExtractReview)
 
 
 # Backward-compatible name used in older imports / YAML mental model.
@@ -893,6 +911,9 @@ def save_config(
         "qualifications": _dataclass_to_dict(config.profile.qualifications),
         "filters": _dataclass_to_dict(config.profile.filters),
         "search_intent": intent_payload,
+        "extract_review": _dataclass_to_dict(
+            getattr(config.profile, "extract_review", None) or ExtractReview()
+        ),
     }
     application_data = _dataclass_to_dict(config.application)
     settings_data = _dataclass_to_dict(config.settings)
@@ -946,6 +967,9 @@ def load_config(
 
     intent_raw = profile_raw.get("search_intent")
     search_intent = parse_search_intent(intent_raw if isinstance(intent_raw, dict) else None)
+    extract_review = _merge_dataclass(
+        ExtractReview, profile_raw.get("extract_review") or {}
+    )
     profile = SearchPreferences(
         location=location,
         jobs=jobs,
@@ -953,6 +977,7 @@ def load_config(
         qualifications=qualifications,
         filters=filters,
         search_intent=search_intent,
+        extract_review=extract_review,
     )
     profile = ensure_search_intent(profile)
     if strip_placeholders:

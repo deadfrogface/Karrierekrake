@@ -482,6 +482,10 @@ class SettingsPage(QWidget):
         sform.addRow(self.lbl_published, self.published_days)
         sform.addRow(self.lbl_min_match_dash, self.min_match_dash)
         sform.addRow(self.lbl_max_distance, self.max_distance)
+        self.home_notice = QLabel()
+        self.home_notice.setWordWrap(True)
+        self.home_notice.setObjectName("WarningLabel")
+        sform.addRow(self.home_notice)
         adv_layout.addWidget(search_box)
 
         br_box = QGroupBox()
@@ -673,6 +677,7 @@ class SettingsPage(QWidget):
         self.lbl_published.setText(tr("settings.published_days"))
         self.lbl_min_match_dash.setText(tr("settings.min_match_dash"))
         self.lbl_max_distance.setText(tr("settings.max_distance"))
+        self._refresh_home_notice()
         self.lbl_search_mode.setText(tr("settings.search_mode"))
         self.lbl_jobs_per_search.setText(tr("settings.jobs_per_search"))
         cur_mode = self.search_mode.currentData()
@@ -775,6 +780,14 @@ class SettingsPage(QWidget):
     def open_about(self) -> None:
         AboutDialog(self, data_dir=self.config_service.dirs["root"]).exec()
 
+    def _refresh_home_notice(self) -> None:
+        """Re-read home resolution. No PLZ is guessed."""
+        from core.location import home_location_notice
+        from desktop.pages.dashboard import bind_home_notice_label
+
+        cfg = self.config_service.load()
+        bind_home_notice_label(self.home_notice, home_location_notice(cfg.profile.location))
+
     def load_from_config(self) -> None:
         cfg = self.config_service.load()
         s = cfg.settings
@@ -808,6 +821,7 @@ class SettingsPage(QWidget):
             jps_idx = self.jobs_per_search.findData(normalize_jobs_per_search(jps))
         self.jobs_per_search.setCurrentIndex(jps_idx if jps_idx >= 0 else 3)
         self.max_distance.setValue(int(cfg.profile.location.max_distance_km))
+        self._refresh_home_notice()
         self.min_match_apply.setValue(int(s.minimum_match_for_auto_apply))
         self.max_per_run.setValue(int(s.max_applications_per_run))
         self.max_per_day.setValue(int(s.max_applications_per_day))
