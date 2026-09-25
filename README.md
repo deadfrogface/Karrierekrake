@@ -26,8 +26,6 @@ Sprache ist Deutsch oder Englisch. Das Thema folgt dem System oder ist hell oder
 
 Die Fahrtstrecke stellst du im Assistenten unter „Max. Pendelweg“ und unter Einstellungen → Erweitert → Suche als „Max. Fahrtstrecke (km)“ ein. In der Jobliste filterst du mit „Max. km“. Nach der fachlichen Einschätzung fallen Stellen außerhalb dieses Umkreises weg. Voll-Remote bleibt drin, wenn Remote erlaubt ist. Eine unbekannte Entfernung gilt nicht als 0 km. Die Jobkarte zeigt die Luftlinie, „Standort nicht prüfbar“ oder „Remote (kein Radius)“.
 
-Der Knopf „Geodaten aktualisieren“ sitzt im Abschnitt Wohnort und lädt den lokalen Geodatensatz neu. Schlägt das fehl, bleibt der bisherige Datensatz. Keine Profilkarte öffnet diesen Abschnitt.
-
 Eine laufende Suche kannst du abbrechen. In der Jobliste siehst du eine Einschätzung (sehr passend, passend, teilweise passend, nicht passend).
 
 **Stellenanzeige.** Anzeigentexte werden mit BeautifulSoup in Klartext gewandelt, Inhalte von Skript- und Style-Tags fallen dabei weg. Eine Aufteilung in Aufgaben und Anforderungen gibt es in diesem Stand nicht.
@@ -59,6 +57,7 @@ Offene Änderungen, nicht Teil dieses Stands und ohne Zusage, wann sie landen:
 - Es gibt keinen gezielten Filter für Cookie-Banner, „Jetzt bewerben“, Share-Widgets oder „Ähnliche Jobs“. Deren Text kann im Anzeigentext bleiben.
 - Firmenkarriereseiten sind ein Platzhalter und liefern keine Treffer.
 - Wenn Qt kein System-Tray meldet, lautet der Dialog auf Englisch: „System tray is not available. The app can still be used.“ Das wurde unter Linux beobachtet.
+- Der Knopf ‚Geodaten aktualisieren‘ ist im Code vorhanden, in der Oberfläche derzeit aber nicht erreichbar.
 
 ## Installation und Start
 
