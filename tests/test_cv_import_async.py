@@ -185,7 +185,8 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     assert dlg.llm_notice.text() == i18n.t("settings.local_llm_cv_disabled_hint")
     dlg.start_parse()
     assert _pump(qapp, lambda: dlg.progress.isVisible() and dlg._running)
-    assert seen and seen[0] != gui
+    assert _pump(qapp, lambda: bool(seen))
+    assert seen[0] != gui
     assert dlg._ok_btn.isEnabled() is False
     assert _pump(qapp, lambda: dlg.incoming is not None)
     assert dlg._ok_btn.isEnabled()
