@@ -192,7 +192,7 @@ def test_no_evidence_refuses_instead_of_dropping_a_sentence():
     _assert_clean(result.message("de") + result.message("en"))
 
 
-def test_unmatched_station_omits_placeholder_but_still_writes_a_letter():
+def test_unmatched_station_is_no_evidence():
     cfg = _cfg(stations=[
         ExperienceEntry(title="Barkeeper", company="Bar Beispiel", source="manual"),
     ])
@@ -204,11 +204,55 @@ def test_unmatched_station_omits_placeholder_but_still_writes_a_letter():
         description="Tourenplanung, SAP und Schicht im Leitstand der Disposition.",
     )
     result = compose_cover_letter(job, cfg)
-    assert result.ok is True
+    assert result.ok is False
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
     assert "Barkeeper" not in result.text
     assert "In meiner Tätigkeit als" not in result.text
-    _assert_clean(result.text)
-    assert "Disponent" in result.text
+
+
+def test_training_row_is_not_written_as_a_job():
+    cfg = _cfg(stations=[
+        ExperienceEntry(
+            title="Ausbildung zur Fachkraft für Lagerlogistik",
+            company="Berufskolleg Beispiel",
+            source="cv",
+        ),
+    ])
+    job = Job(
+        id="j-training",
+        source="indeed",
+        title="Fachkraft für Lagerlogistik",
+        company="Kistenpfad Logistik GmbH",
+        description=(
+            "Das bringen Sie mit: eine abgeschlossene Ausbildung zur Fachkraft "
+            "für Lagerlogistik. Praktische Stationen nach dieser Ausbildung."
+        ),
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is False
+    assert result.text == ""
+    assert result.reason_code == "no_evidence"
+    assert "Berufskolleg" not in result.text
+    assert "Tätigkeit als" not in result.text
+
+
+def test_school_staff_station_can_still_match_the_ad():
+    """A job at a school stays employment. Only the course of study is training."""
+    cfg = _cfg(stations=[
+        ExperienceEntry(title="Lehrer", company="Berufskolleg Beispiel", source="manual"),
+    ])
+    job = Job(
+        id="j-staff",
+        source="indeed",
+        title="Lehrer",
+        company="Stadt Musterhafen",
+        description="Wir suchen eine Lehrkraft. Aufgaben: Unterricht als Lehrer.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "Tätigkeit als Lehrer" in result.text
+    assert "Berufskolleg Beispiel" in result.text
 
 
 def test_matching_skill_without_station_is_enough():
@@ -505,10 +549,10 @@ def test_allowlist_is_the_portal_scraper_ids():
     assert APPLICATION_SOURCE_ALLOWLIST == {
         BundesagenturSource.source_id,
         IndeedSource.source_id,
-        LinkedInSearchSource.source_id,
         StepstoneSource.source_id,
         XingSource.source_id,
     }
+    assert LinkedInSearchSource.source_id not in APPLICATION_SOURCE_ALLOWLIST
     assert CompanySitesSource.source_id not in APPLICATION_SOURCE_ALLOWLIST
 
 
@@ -520,12 +564,39 @@ def test_queue_skips_fixture_demo_and_unknown_sources():
         Job(id="unknown", source="unknown", title="Disponent", company="Nordmole", match_score=99, status=JobStatus.NEW.value),
         Job(id="indeed", source="indeed", title="Disponent", company="Nordmole", match_score=90, status=JobStatus.NEW.value),
         Job(id="stepstone", source="stepstone", title="Disponent", company="Nordmole", match_score=80, status=JobStatus.NEW.value),
+        Job(id="linkedin", source="linkedin", title="Disponent", company="Nordmole", match_score=99, status=JobStatus.NEW.value),
     ]
     queued = filter_application_queue(rows)
     assert [job.id for job in queued] == ["indeed", "stepstone"]
     assert is_application_source(rows[1]) is False
     assert is_application_source(rows[3]) is False
     assert is_application_source(rows[4]) is True
+    linkedin = rows[-1]
+    assert linkedin.source == "linkedin"
+    assert is_application_source(linkedin) is False
+
+
+def test_linkedin_cannot_auto_apply(tmp_path: Path):
+    job = Job(
+        id="li-1",
+        source="linkedin",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        status=JobStatus.NEW.value,
+        match_score=90,
+        description="Tourenplanung.",
+    )
+    assert filter_application_queue([job]) == []
+    cfg = empty_app_config()
+    cfg.settings.minimum_match_for_auto_apply = 0
+    cfg.application.first_name = "Erika"
+    cfg.application.last_name = "Beispiel"
+    cfg.application.email = "erika@example.com"
+    cfg.application.phone = "+491700000"
+    cfg.application.cv_path = "cv.pdf"
+    ok, reason = ApplicationManager(cfg, Database(tmp_path / "jobs.db")).can_auto_apply(job)
+    assert ok is False
+    assert reason.startswith("source not allowlisted")
 
 
 def test_fixture_cover_letter_allowed_demo_refused():

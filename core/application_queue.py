@@ -1,10 +1,10 @@
 """Jobs eligible for an application run.
 
-Only real portal scrapers may enter the queue or auto-apply. The names are
-the ``source_id`` values on the search adapters (``search/indeed.py``,
-``search/stepstone.py``, ``search/linkedin.py``, ``search/xing.py``,
-``search/bundesagentur.py``). ``company_sites`` is a v1 placeholder and is
-not included. ``demo``, ``fixture``, empty, and any other source stay out.
+Only portal scrapers that fetch and parse listings may enter the queue or
+auto-apply: ``search/indeed.py``, ``search/stepstone.py``, ``search/xing.py``,
+``search/bundesagentur.py``. ``search/linkedin.py`` only forwards to the
+Indeed adapter and is not included. ``company_sites`` is a v1 placeholder.
+``demo``, ``fixture``, empty, and any other source stay out.
 """
 
 from __future__ import annotations
@@ -19,7 +19,6 @@ APPLICATION_SOURCE_ALLOWLIST = frozenset(
     {
         "bundesagentur",
         "indeed",
-        "linkedin",
         "stepstone",
         "xing",
     }

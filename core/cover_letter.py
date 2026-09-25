@@ -196,17 +196,17 @@ def _experience_relevance(exp: ExperienceEntry, job_blob: str) -> int:
     score = 0
     title = clean_text(exp.title)
     if title and not _is_glue_token(title):
-        if _mentioned(title, job_blob) or _norm(title) in job_blob:
+        if _ad_mentions(title, job_blob) or _norm(title) in job_blob:
             score += 12
         for word in _meaningful_words(title, min_len=4):
-            if _token_in_text(word, job_blob):
+            if _ad_mentions(word, job_blob):
                 score += 3
     for resp in exp.responsibilities or []:
         for word in _meaningful_words(resp, min_len=5):
-            if _token_in_text(word, job_blob):
+            if _ad_mentions(word, job_blob):
                 score += 2
     company = clean_text(exp.company)
-    if company and _token_in_text(company, job_blob):
+    if company and _ad_mentions(company, job_blob):
         score += 1
     return score
 
@@ -434,22 +434,58 @@ def _debt_blocks(config: AppConfig) -> bool:
     return bool(getattr(gate, "blocked", False))
 
 
+# Same split the CV parser uses when Ausbildung and Berufserfahrung share a
+# section: a course of study or school attendance is not a job. Staff titles
+# at a school stay employment.
+_TRAINING_ROLE = re.compile(
+    r"(?i)\b(?:ausbildung|berufsausbildung|studium|bachelor|master|diplom|"
+    r"abitur|matura|promotion|referendariat|lehre)\b"
+)
+_SCHOOL_EMPLOYER = re.compile(
+    r"(?i)\b(?:schule|berufskolleg|berufsschule|universit\w*|hochschule|"
+    r"fachhochschule|gymnasium|college)\b"
+)
+_SCHOOL_STAFF = re.compile(
+    r"(?i)\b(?:lehrer\w*|dozent\w*|professor\w*|rektor\w*|hausmeister\w*|sekret\w*)\b"
+)
+
+
+def _is_training_row(exp: ExperienceEntry) -> bool:
+    """True when a stored work row is schooling, not a professional station."""
+    title = clean_text(exp.title)
+    company = clean_text(exp.company)
+    if title and _TRAINING_ROLE.search(title):
+        return True
+    if company and _SCHOOL_EMPLOYER.search(company) and not _SCHOOL_STAFF.search(title):
+        return True
+    return False
+
+
+def _ad_mentions(token: str, blob: str) -> bool:
+    """Alias match plus the inflection normalizer, against the ad text."""
+    if _mentioned(token, blob):
+        return True
+    return phrase_in_text(blob, token)
+
+
 def evidenced_stations(config: AppConfig) -> list[ExperienceEntry]:
-    """Confirmed, non-debt work-experience entries. Matching the ad is separate."""
+    """Confirmed, non-debt professional stations. Training rows are excluded."""
     if _debt_blocks(config) or not _section_confirmed(config, "work_experience"):
         return []
     stations: list[ExperienceEntry] = []
     for exp in list(config.profile.qualifications.work_experience or []):
+        if _is_training_row(exp):
+            continue
         if clean_text(exp.title) or clean_text(exp.company):
             stations.append(exp)
     return stations
 
 
 def _skill_in_blob(skill: str, blob: str) -> bool:
-    if _mentioned(skill, blob):
+    if _ad_mentions(skill, blob):
         return True
     return any(
-        _mentioned(part, blob)
+        _ad_mentions(part, blob)
         for part in re.split(r"[,/|]", skill)
         if len(part.strip()) >= 3 and not _is_glue_token(part)
     )
@@ -569,11 +605,9 @@ def compose_cover_letter(
     if _company_missing(job):
         return _refusal(CoverReason.COMPANY_MISSING)
     skills_list = evidenced_skills_matching_description(config, description)
-    stations = evidenced_stations(config)
-    if not stations and not skills_list:
-        return _refusal(CoverReason.NO_EVIDENCE)
-
     exp = _matching_station(config, job)
+    if exp is None and not skills_list:
+        return _refusal(CoverReason.NO_EVIDENCE)
     if exp is not None:
         label = exp.label() if hasattr(exp, "label") else str(exp)
         title = clean_text(exp.title) or label
