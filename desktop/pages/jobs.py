@@ -46,17 +46,23 @@ from desktop.widgets.product_panels import JobFitPanel
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
-def format_commute_label(job, *, with_duration: bool = True) -> str:
-    """UI distance text — always Luftlinie when haversine_v1; never „km Fahrt“."""
+def format_commute_label(job, *, with_duration: bool = True, home_status: str = "resolved") -> str:
+    """UI distance text. Luftlinie only when the current home is resolved.
+
+    A stored kilometre value is shown for a resolved home even if
+    ``distance_source`` was never persisted. An unresolved home never claims
+    a radius and does not keep a stale „Standort nicht prüfbar“ from an older run.
+    """
     del with_duration  # no drive-time in v1
-    src = getattr(job, "distance_source", "") or ""
-    dist = getattr(job, "distance_km", None)
     remote = (getattr(job, "remote_type", "") or "").lower()
     if remote == "remote":
         return tr("jobs.commute_remote")
-    if dist is None or src not in {"haversine_v1", "local_geo", "geonames", "pgeocode"}:
+    if home_status in {"ambiguous", "unknown", "missing"}:
+        return tr("jobs.distance_skipped")
+    dist = getattr(job, "distance_km", None)
+    if dist is None:
         return tr("jobs.commute_unknown")
-    km = f"{dist:.0f}" if float(dist) == int(dist) else f"{float(dist):.1f}"
+    km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
     return tr("jobs.commute_airline", km=km)
 
 
@@ -470,7 +476,7 @@ class JobsPage(QWidget):
             self._clear_detail()
             return
         self.detail_title.setText(display_or_dash(job.title))
-        dist = format_commute_label(job, with_duration=True)
+        dist = format_commute_label(job, with_duration=True, home_status=self._home_status())
         self.detail_meta.setText(
             f"{display_or_dash(job.company)} · {display_or_dash(job.city)} · "
             f"{display_or_dash(job.remote_type)} · {dist} · "
@@ -478,7 +484,7 @@ class JobsPage(QWidget):
         )
         self.detail_status.setText(f"{tr('jobs.status')}: {status_label(job.status)}")
         cfg = self.config_service.load()
-        fit = build_job_fit_viewmodel(job, cfg)
+        fit = build_job_fit_viewmodel(job, cfg, home_notice=self._home_notice())
         self.fit_panel.bind(fit)
         body = clean_text(job.description)
         chunks: list[str] = []
@@ -502,11 +508,13 @@ class JobsPage(QWidget):
             "nicht_passend": tr("fit.nicht_passend"),
             "unbekannt": tr("fit.unbekannt"),
         }
+        home_status = self._home_status()
+        home_notice = self._home_notice()
         for job in jobs:
             row = self.table.rowCount()
             self.table.insertRow(row)
-            dist = format_commute_label(job, with_duration=False)
-            fit = build_job_fit_viewmodel(job, cfg)
+            dist = format_commute_label(job, with_duration=False, home_status=home_status)
+            fit = build_job_fit_viewmodel(job, cfg, home_notice=home_notice)
             fit_label = _fit_i18n.get(fit.headline_key, tr("fit.unbekannt"))
             reason = " · ".join(fit.primary_lines(limit=2)) or display_or_dash(job.match_explanation())
             values = [
@@ -530,7 +538,7 @@ class JobsPage(QWidget):
                     item.setData(Qt.ItemDataRole.UserRole + 1, int(job.match_score or 0))
                 self.table.setItem(row, col, item)
             # Demo card row (compact)
-            dist_txt = format_commute_label(job, with_duration=True)
+            dist_txt = format_commute_label(job, with_duration=True, home_status=home_status)
             card = (
                 f"{display_or_dash(job.title)}\n"
                 f"{display_or_dash(job.company)} · {display_or_dash(job.city)} ({dist_txt}) · "
@@ -550,6 +558,15 @@ class JobsPage(QWidget):
         elif self.job_list.count():
             self.job_list.setCurrentRow(0)
 
+    def _home_notice(self):
+        from core.location import home_location_notice
+
+        cfg = self.config_service.load()
+        return home_location_notice(cfg.profile.location)
+
+    def _home_status(self) -> str:
+        return self._home_notice().status
+
     def refresh(self) -> None:
         cfg = self.config_service.load()
         self.min_match.setValue(self.min_match.value() or int(cfg.settings.minimum_match_for_dashboard))
@@ -557,6 +574,9 @@ class JobsPage(QWidget):
             self.max_dist.setValue(int(cfg.profile.location.max_distance_km))
             self._dist_init = True
         db = Database(cfg.db_path)
+        notice = self._home_notice()
+        # Unresolved home: do not drop jobs for a missing/stale radius.
+        distance_cap = None if notice.status != "resolved" else float(self.max_dist.value())
         remote_types = []
         if self.chk_remote.isChecked():
             remote_types.append("remote")
@@ -567,7 +587,7 @@ class JobsPage(QWidget):
         status_val = self.status.currentData()
         jobs = db.list_jobs(
             min_match=self.min_match.value(),
-            max_distance=float(self.max_dist.value()),
+            max_distance=distance_cap,
             statuses=[status_val] if status_val else None,
             hide_applied=cfg.settings.hide_already_applied,
             hide_duplicates=cfg.settings.hide_duplicates,
@@ -603,7 +623,7 @@ class JobsPage(QWidget):
 
         meta = self.config_service.load_meta()
         preview = build_application_preview(job, cfg, meta=meta)
-        ApplyPreviewDialog(preview, self).exec()
+        ApplyPreviewDialog(preview, self, config=cfg, job=job).exec()
 
     def open_search_intent(self) -> None:
         parent = self.window()

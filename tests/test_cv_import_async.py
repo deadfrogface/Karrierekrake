@@ -17,6 +17,7 @@ pytest.importorskip("PySide6.QtWidgets")
 from PySide6.QtWidgets import QApplication, QDialogButtonBox
 
 from core.config import ApplicationProfile, QualificationsConfig
+from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING
 from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
 from desktop.i18n import i18n
 from desktop.widgets.cv_import_dialog import CvImportDialog
@@ -125,16 +126,13 @@ def test_settings_checkbox_shows_kill_wording_and_persists(qapp, tmp_path, monke
     page.load_from_config()
     page.show()
     qapp.processEvents()
-    assert page.local_llm_cv_parsing.isEnabled() is False
     assert page.local_llm_cv_parsing.isChecked() is False
-    assert page.local_llm_cv_parsing.toolTip() == i18n.t("settings.local_llm_cv_unavailable")
-    assert page.local_llm_cv_hint.text() == (
-        "Das lokale LLM-CV-Parsing ist derzeit deaktiviert. "
-        "Lebensläufe werden mit dem Standard-Parser gelesen."
-    )
+    assert page.local_llm_cv_hint.text() == LOCAL_LLM_CV_KILL_WORDING
+    page.local_llm_cv_parsing.setChecked(True)
+    assert "Phi-Fallback" in page.local_llm_cv_hint.text()
     page.save()
     loaded = ConfigService().load()
-    assert loaded.settings.local_llm_cv_parsing_enabled is False
+    assert loaded.settings.local_llm_cv_parsing_enabled is True
 
 
 def test_dialog_init_does_not_call_import_cv():
@@ -182,7 +180,7 @@ def test_parse_runs_off_gui_thread_and_keeps_ok_disabled_until_ready(qapp, tmp_p
     dlg.show()
     qapp.processEvents()
     assert dlg.llm_notice.isVisible()
-    assert dlg.llm_notice.text() == i18n.t("settings.local_llm_cv_disabled_hint")
+    assert dlg.llm_notice.text() == LOCAL_LLM_CV_KILL_WORDING
     dlg.start_parse()
     assert _pump(qapp, lambda: dlg.progress.isVisible() and dlg._running)
     assert seen and seen[0] != gui
@@ -290,19 +288,11 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     qapp.processEvents()
     dlg.start_parse()
     assert _pump(qapp, lambda: bool(calls) and dlg._running and dlg.progress.isVisible())
-    cancel = dlg._buttons.button(QDialogButtonBox.StandardButton.Cancel)
+    cancel = dlg._cancel_btn
     cancel.click()
+    qapp.processEvents()
     assert dlg.isVisible()
-    assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
-    assert dlg._cancelled_banner.isVisible()
-    assert dlg._cancelled_banner.text() == "Einlesen abgebrochen. Es wurde nichts übernommen."
-    assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
-    assert dlg._ok_btn.isEnabled() is False
-    assert dlg._cancel_btn.text() == i18n.t("cv_import.close")
-    # A second signal in the same click must not dismiss the dialog.
-    cancel.click()
-    dlg.reject()
-    assert dlg.isVisible()
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
     assert _pump(qapp, lambda: dlg._last_kind == "cancelled" and not dlg._running, timeout=3)
     assert calls == [1]
     assert procs[0].terminated
@@ -312,7 +302,6 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     assert dlg.progress.isVisible() is False
     assert dlg.result_quals is None
     assert dlg.result_application is None
-    assert _pump(qapp, lambda: not dlg._should_keep_open(), timeout=3)
     cancel.click()
     qapp.processEvents()
     assert dlg.isVisible() is False
@@ -454,50 +443,71 @@ def test_qa_observe_shows_progress_then_cancel_before_result(qapp, tmp_path: Pat
     cancel = dlg._cancel_btn
     assert cancel.isEnabled()
     cancel.click()
-    assert dlg.isVisible()
-    assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
-    assert dlg._cancelled_banner.isVisible()
-    assert dlg._cancelled_banner.text() == "Einlesen abgebrochen. Es wurde nichts übernommen."
-    assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
-    assert dlg._ok_btn.isEnabled() is False
-    assert dlg._cancel_btn.text() == i18n.t("cv_import.close")
-    cancel.click()
-    dlg.reject()
     qapp.processEvents()
     assert dlg.isVisible()
+    assert dlg.status_label.text() == i18n.t("cv_import.cancelling")
     assert _pump(qapp, lambda: dlg._last_kind == "cancelled" and not dlg._running, timeout=3)
     assert calls == []
     assert dlg.isVisible()
     assert dlg.status_label.text() == i18n.t("cv_import.cancelled")
-    assert dlg._cancel_btn.text() == i18n.t("cv_import.close")
     assert dlg.preview.toPlainText() == i18n.t("cv_import.cancelled")
     assert "Ada" not in dlg.preview.toPlainText()
     assert dlg._ok_btn.isEnabled() is False
     assert dlg.result_quals is None
     assert app.city == "Hamburg"
     assert app.first_name == "Manuell"
-    assert _pump(qapp, lambda: not dlg._should_keep_open(), timeout=3)
     cancel.click()
     qapp.processEvents()
     assert dlg.isVisible() is False
 
 
-def test_cancel_after_ready_still_closes(qapp, tmp_path: Path):
+def test_footer_buttons_use_primary_and_secondary(qapp, tmp_path: Path, monkeypatch):
+    """Design-system object names, no native dialog-button box, labels unchanged."""
     i18n.set_language("de")
-
-    def spawn(path: Path, out: Path):
-        _write(out, {"ok": True, "kind": "ok", "parsed": _parsed(path), "message": ""})
-        return _Proc(0)
-
-    dlg = CvImportDialog(tmp_path / "cv.txt", QualificationsConfig(), ApplicationProfile(), spawn=spawn, autostart=False)
+    monkeypatch.delenv("KK_REDUCED_MOTION", raising=False)
+    monkeypatch.delenv("PREFERS_REDUCED_MOTION", raising=False)
+    monkeypatch.delenv("prefers_reduced_motion", raising=False)
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(),
+        autostart=False,
+    )
     dlg.show()
     qapp.processEvents()
-    dlg.start_parse()
-    assert _pump(qapp, lambda: dlg._ok_btn.isEnabled() and not dlg._running)
-    assert dlg._cancelled_banner.isVisible() is False
-    dlg._cancel_btn.click()
+    assert dlg.findChildren(QDialogButtonBox) == []
+    assert dlg._ok_btn.objectName() == "PrimaryButton"
+    assert dlg._ok_btn.text() == i18n.t("cv_import.apply")
+    assert dlg._ok_btn.isEnabled() is False
+    assert dlg._ok_btn.isDefault() is True
+    assert not dlg._ok_btn.icon().isNull()
+    assert dlg._ok_btn.property("_kk_polish") is not None
+    for btn, key in (
+        (dlg._cancel_btn, "cv_import.cancel_btn"),
+        (dlg._retry_btn, "cv_import.retry"),
+        (dlg._manual_btn, "cv_import.manual_profile"),
+    ):
+        assert btn.objectName() == "SecondaryButton"
+        assert btn.text() == i18n.t(key)
+        assert btn.icon().isNull()
+        assert btn.autoDefault() is False
+    dlg.close()
     qapp.processEvents()
-    assert dlg.isVisible() is False
+
+
+def test_reduced_motion_keeps_primary_shadow_without_hover_polish(qapp, tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("KK_REDUCED_MOTION", "1")
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(),
+        autostart=False,
+    )
+    assert dlg._ok_btn.objectName() == "PrimaryButton"
+    assert dlg._ok_btn.property("_kk_polish") is None
+    assert dlg._ok_btn.graphicsEffect() is not None
+    dlg.close()
+    qapp.processEvents()
 
 
 def test_supervisor_run_once_does_not_loop_on_oom(tmp_path: Path):

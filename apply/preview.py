@@ -14,7 +14,7 @@ from typing import Any, Literal
 
 from apply.detector import ATSDetector, classify_ats_support
 from core.config import AppConfig
-from core.cover_letter import render_cover_letter
+from core.cover_letter import compose_cover_letter
 from core.documents import (
     active_cv_variant,
     normalize_role,
@@ -42,6 +42,9 @@ class ApplicationPreview:
     form_values: dict[str, str] = field(default_factory=dict)
     documents: dict[str, str] = field(default_factory=dict)
     cover_letter_preview: str = ""
+    cover_refusal_code: str = ""
+    cover_refusal_key: str = ""
+    description_used: str = ""
     screening_questions: dict[str, str] = field(default_factory=dict)
     intended_answers: dict[str, str] = field(default_factory=dict)
     unknown_fields: list[str] = field(default_factory=list)
@@ -95,6 +98,9 @@ class ApplicationPreview:
             lines.append("=== Unbekannte Felder ===")
             for u in self.unknown_fields:
                 lines.append(f"• {u}")
+        if self.cover_refusal_code:
+            lines.append("")
+            lines.append(f"Anschreiben abgelehnt: {self.cover_refusal_code}")
         if self.cover_letter_preview:
             lines.append("")
             lines.append("=== Anschreiben (Vorschau) ===")
@@ -202,13 +208,21 @@ def build_application_preview(
 
     cv_path, role, filename, doc_label = _resolve_preview_cv(config, meta)
 
-    cover = ""
-    try:
-        cover = render_cover_letter(job, config)
-    except Exception as exc:  # noqa: BLE001
-        cover = f"(Anschreiben konnte nicht gerendert werden: {exc})"
+    outcome = compose_cover_letter(job, config)
+    cover = outcome.text if outcome.ok else ""
+    language = getattr(config.settings, "language", "de") or "de"
 
     warnings: list[str] = []
+    if outcome.refusal is not None:
+        warnings.append(outcome.message(language))
+    elif not cover:
+        from core.parser_debt import auto_actions_blocked
+
+        debt = auto_actions_blocked(config)
+        if debt.blocked:
+            warnings.append(
+                "Anschreiben blockiert bis zur Bestätigung: " + ", ".join(debt.patterns)
+            )
     if support == "partially_supported":
         warnings.append(
             "Teilweise Automatisierung — Felder werden vorausgefüllt; Abschluss prüfen."
@@ -273,6 +287,9 @@ def build_application_preview(
             "Anschreiben": "(generiert, siehe unten)",
         },
         cover_letter_preview=cover,
+        cover_refusal_code=outcome.reason_code,
+        cover_refusal_key=outcome.message_key,
+        description_used=outcome.description_used,
         screening_questions={k: "" for k in answers},
         intended_answers=answers,
         unknown_fields=[],

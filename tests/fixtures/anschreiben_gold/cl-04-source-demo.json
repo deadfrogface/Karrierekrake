@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-04-source-demo",
+  "tags": [
+    "demo_source"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550101",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [
+        {
+          "qualification": "Ausbildung Fachlagerist",
+          "institution": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "completion_date": "2016-06",
+          "source": "cv"
+        }
+      ],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "cv"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [
+            "Kommissionierung",
+            "Bestandskontrolle"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Schichtplanung",
+          "source": "cv"
+        },
+        {
+          "value": "Kundenabstimmung",
+          "source": "cv"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "cv"
+        },
+        {
+          "value": "Excel",
+          "source": "cv"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "cv"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        },
+        {
+          "language": "Englisch",
+          "level": "B2",
+          "source": "cv"
+        }
+      ],
+      "certificates": [
+        {
+          "name": "Staplerschein",
+          "issuer": "Prüfstelle Quendel",
+          "date": "2017-04",
+          "source": "cv"
+        }
+      ]
+    }
+  },
+  "job": {
+    "id": "job-cl-04-source-demo",
+    "source": "demo",
+    "source_job_id": "src-cl-04-source-demo",
+    "title": "Dispatcher (m/w/d)",
+    "company": "HafenLogistik GmbH",
+    "description": "Die HafenLogistik GmbH ist ein fiktiver Stückgutbetrieb am Musterhafen. Wir übernehmen Sendungen regionaler Verlader, die nicht über große Kontore laufen. Halle und Hof liegen direkt am Kai. In der Disposition sitzen Menschen, die den Hof persönlich kennen.\n\nWir sind kein Konzern. Etwa fünfunddreißig Beschäftigte arbeiten in Umschlag und Büro. Die Geschäftsführung ist vor Ort. Neue Zustellgebiete werden im wöchentlichen Rundgang besprochen, nicht in einer entfernten Zentrale. Wer bei uns anfängt, lernt zuerst Tore, Rampen und die Leute an der Halle kennen.\n\nUnser Anspruch ist schlicht: Sendungen kommen an, Rückfragen bleiben beantwortet, Störungen werden benannt statt weitergereicht. Dafür braucht der Betrieb einen ruhigen Tagesablauf.\n\nWas wir bieten, steht vor den fachlichen Punkten.\n\nSie arbeiten unbefristet in Vollzeit. Die Fenster liegen früh und spät, abgestimmt mit dem Hof. Es gibt dreißig Tage Urlaub, ein Jobrad, ein Ticket für den Hafenbus und eine Kantine mit warmer Mahlzeit an Werktagen. Weiterbildung läuft über ein Jahresbudget nach der Probezeit, Einarbeitung über sechs Wochen mit einer festen Patin oder einem festen Paten.\n\nDazu kommen betriebliche Altersvorsorge, vermögenswirksame Leistungen und ein Zuschuss für das Studio am Becken. Kinder können den Hafen-Hort eines Nachbarbetriebs mitnutzen. Mobiles Arbeiten ist die Ausnahme, weil die Abstimmung mit dem Hof vor Ort geschieht.\n\nDer Standort ist der Kaiweg 8 in Musterhafen, Hafenbus Linie 4, Haltestelle Speicher Ost. Parkplätze auf dem Hof sind vorhanden. Sozialräume und Umkleiden sind seit dem Umbau 2022 neu.\n\nDas bringen Sie mit:\n- eine abgeschlossene Ausbildung in der Lagerlogistik oder eine vergleichbare Station in der Spedition\n- Erfahrung als Disponent für Stückgut\n- sichere Tourenplanung einschließlich der Abstimmung mit dem Fuhrpark\n- praktischen Umgang mit SAP TM im Tagesgeschäft\n- Erfahrung in der Schichtkoordination\n- Deutsch in Wort und Schrift\n\nEin Anschreiben, das diese Punkte mit eigenen Stationen belegt, ist uns lieber als eine allgemeine Interessenbekundung.\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-04-source-demo",
+    "status": "new"
+  },
+  "expected_outcome": "blocked_demo",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]"
+  ],
+  "rationale": "Dieselbe tragfähige Anzeige wie im Logistik-Treffer, aber source ist demo. Demo-Stellen bekommen nie einen Brief. Soll ist blocked_demo, auch wenn Station und Skills passen würden."
+}

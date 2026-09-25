@@ -278,6 +278,10 @@ class Database:
     def __init__(self, path: Path, *, recover: bool = False) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        # (data_version, block keys). Watcher stays open so a cache hit does not
+        # connect again. None until the first has_applied.
+        self._applied_cache = None
+        self._applied_watch: sqlite3.Connection | None = None
         self._init_schema()
         # Default off: GUI page opens construct Database() frequently and must not
         # mark a live search/apply as interrupted. Call with recover=True once at
@@ -802,12 +806,40 @@ class Database:
                 (incoming, utc_now_iso(), job_id),
             )
 
-    def has_applied(self, job: Job) -> bool:
-        """Hard safety: never apply twice (id, normalized URL, or company+title).
+    def _applied_watcher(self) -> sqlite3.Connection:
+        watch = self._applied_watch
+        if watch is None:
+            watch = self._connect()
+            watch.rollback()
+            self._applied_watch = watch
+        return watch
 
-        Twin URL / company+title matching scans prior attempt statuses, not only
-        APPLIED — FAILED/NEEDS_REVIEW/CAPTCHA/APPLYING must also block re-apply.
+    def _applied_block_keys(
+        self,
+    ) -> tuple[set[str], set[str], set[str], set[tuple[str, str]]]:
+        """Normalized block keys. Rebuilt when another connection commits.
+
+        ``PRAGMA data_version`` on the long-lived watcher changes for every
+        commit except one made on the watcher itself. Hits do not open a
+        connection. The watcher is rolled back so it does not keep a lock.
         """
+        watch = self._applied_watcher()
+        version = int(watch.execute("PRAGMA data_version").fetchone()[0])
+        cached = self._applied_cache
+        if cached is not None and cached[0] == version:
+            watch.rollback()
+            return cached[1]
+        try:
+            keys = self._load_applied_block_keys(watch)
+        finally:
+            watch.rollback()
+        self._applied_cache = (version, keys)
+        return keys
+
+    @staticmethod
+    def _load_applied_block_keys(
+        conn: sqlite3.Connection,
+    ) -> tuple[set[str], set[str], set[str], set[tuple[str, str]]]:
         prior_statuses = (
             JobStatus.APPLIED.value,
             JobStatus.FAILED.value,
@@ -815,49 +847,65 @@ class Database:
             JobStatus.CAPTCHA.value,
             JobStatus.APPLYING.value,
         )
+        placeholders = ",".join("?" for _ in prior_statuses)
+        rows = conn.execute(
+            f"""
+            SELECT id, status, url, application_url, company, title FROM jobs
+            WHERE status IN ({placeholders})
+            """,
+            prior_statuses,
+        ).fetchall()
+        applied_ids: set[str] = set()
+        blocked_urls: set[str] = set()
+        blocked_pairs: set[tuple[str, str]] = set()
+        applied = JobStatus.APPLIED.value
+        for record in rows:
+            if record["status"] == applied and record["id"] is not None:
+                applied_ids.add(record["id"])
+            for candidate in (record["url"], record["application_url"]):
+                key = _url_identity(candidate or "")
+                if key:
+                    blocked_urls.add(key)
+            company_key = _company_key(record["company"] or "")
+            title_key = _title_key(record["title"] or "")
+            if company_key and title_key:
+                blocked_pairs.add((company_key, title_key))
+        application_job_ids = {
+            record["job_id"]
+            for record in conn.execute("SELECT job_id FROM applications").fetchall()
+            if record["job_id"] is not None
+        }
+        return applied_ids, application_job_ids, blocked_urls, blocked_pairs
+
+    def has_applied(self, job: Job) -> bool:
+        """Hard safety: never apply twice (id, normalized URL, or company+title).
+
+        Twin URL / company+title matching scans prior attempt statuses, not only
+        APPLIED — FAILED/NEEDS_REVIEW/CAPTCHA/APPLYING must also block re-apply.
+
+        The old body loaded every prior-status row and normalized URL, company
+        and title in Python on every call, so n calls over n rows were
+        superlinear. Block keys are built once per database generation.
+        """
         url_keys = {_url_identity(u) for u in (job.url, job.application_url) if u}
         url_keys.discard("")
         company_key = _company_key(job.company)
         title_key = _title_key(job.title)
-        placeholders = ",".join("?" for _ in prior_statuses)
-        with self.connection() as conn:
-            row = conn.execute(
-                "SELECT id FROM jobs WHERE id = ? AND status = ?",
-                (job.id, JobStatus.APPLIED.value),
-            ).fetchone()
-            if row:
+        applied_ids, application_job_ids, blocked_urls, blocked_pairs = (
+            self._applied_block_keys()
+        )
+        if job.id in applied_ids:
+            return True
+        # Any applications row for this job_id counts as already handled,
+        # including status APPLIED.
+        if job.id in application_job_ids:
+            return True
+        for key in url_keys:
+            if key in blocked_urls:
                 return True
-            row = conn.execute(
-                "SELECT id FROM applications WHERE job_id = ? AND status = ?",
-                (job.id, JobStatus.APPLIED.value),
-            ).fetchone()
-            if row:
-                return True
-            # Any applications row for this job_id counts as already handled.
-            row = conn.execute(
-                "SELECT id FROM applications WHERE job_id = ? LIMIT 1",
-                (job.id,),
-            ).fetchone()
-            if row:
-                return True
-            rows = conn.execute(
-                f"""
-                SELECT id, url, application_url, company, title FROM jobs
-                WHERE status IN ({placeholders})
-                """,
-                prior_statuses,
-            ).fetchall()
-            for r in rows:
-                for candidate in (r["url"], r["application_url"]):
-                    key = _url_identity(candidate or "")
-                    if key and key in url_keys:
-                        return True
-                if company_key and title_key:
-                    if _company_key(r["company"] or "") == company_key and _title_key(
-                        r["title"] or ""
-                    ) == title_key:
-                        return True
-            return False
+        if company_key and title_key and (company_key, title_key) in blocked_pairs:
+            return True
+        return False
 
     def count_applications_today(self) -> int:
         """Count only real applied submissions toward the daily cap."""

@@ -16,6 +16,8 @@ from __future__ import annotations
 import logging
 import math
 import os
+import stat
+import threading
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable, Literal
 
@@ -23,6 +25,7 @@ from core.geo_dataset import (
     EARTH_RADIUS_KM,
     HAVERSINE_ALGORITHM,
     get_geo_dataset_manager,
+    register_dataset_change_hook,
 )
 from core.geo_normalize import (
     DACH_COUNTRY_CODES,
@@ -176,41 +179,202 @@ def cache_query_key(place: NormalizedPlace) -> str:
 
 
 _pgeocode_index: dict[str, Any] = {}
+# Failure keys already logged. None is not stored in _pgeocode_index, so a
+# later valid dataset can still resolve; repeating the same failure stays quiet.
+_pgeocode_warned: set[str] = set()
+
+
+def _invalidate_pgeocode_index() -> None:
+    _pgeocode_index.clear()
+
+
+register_dataset_change_hook(_invalidate_pgeocode_index)
 
 
 def _ensure_geo_data() -> str:
-    """Ensure local dataset and return its version string."""
-    mgr = get_geo_dataset_manager()
-    info = mgr.ensure_active()
+    """Return the active dataset version.
+
+    The manager caches validation for this process and dataset, keyed by
+    manifest version, mtime_ns and size. Resolution does not hash country
+    files, and does not stat them. The country file is stat'd only when a
+    Nominatim index is built.
+    """
+    info = get_geo_dataset_manager().ensure_active()
     return info.version if info.valid else GEO_DATA_VERSION_PGEOCODE
 
 
-def _pgeocode_nominatim(country_code: str) -> Any | None:
-    """Offline GeoNames index — never calls the public Nominatim HTTP API."""
-    cc = normalize_country_code(country_code)
-    if cc not in DACH_COUNTRY_CODES:
+def _same_path(left: str, right: str) -> bool:
+    try:
+        return os.path.normcase(os.path.realpath(left)) == os.path.normcase(
+            os.path.realpath(right)
+        )
+    except OSError:
+        return False
+
+
+def _warn_pgeocode_once(key: str, country_code: str, reason: str) -> None:
+    if key in _pgeocode_warned:
+        return
+    _pgeocode_warned.add(key)
+    logger.warning(
+        "refusing silent pgeocode download for %s: %s",
+        country_code,
+        reason,
+    )
+
+
+def _offline_pgeocode_dir(info: Any) -> str | None:
+    """Active geonames directory, or None when pgeocode must not run."""
+    if not getattr(info, "valid", False):
         return None
-    if cc in _pgeocode_index:
-        return _pgeocode_index[cc]
-    _ensure_geo_data()
+    configured = os.environ.get("PGEOCODE_DATA_DIR", "").strip()
+    if not configured:
+        return None
+    expected = os.path.join(str(info.path), "geonames")
+    if not _same_path(configured, expected):
+        return None
+    return os.path.realpath(expected)
+
+
+# Serialises the brief os.path.exists stand-in around Nominatim().
+_nominatim_build_lock = threading.Lock()
+
+
+def _refuse_pgeocode_download(*_args: object, **_kwargs: object) -> Any:
+    """Stand-in for pgeocode's urlopen helpers. Never touches the network."""
+    raise RuntimeError("refusing pgeocode download")
+
+
+def _lock_pgeocode_downloads(module: Any) -> None:
+    """Make pgeocode's download branch unreachable in this process.
+
+    ``_get_data`` calls ``urllib.request.urlopen`` with no timeout. Clearing
+    ``DOWNLOAD_URL`` and replacing both helpers means a missing country file
+    raises here instead of blocking on DNS or a captive portal.
+    """
+    module.DOWNLOAD_URL = []
+    module._open_extract_url = _refuse_pgeocode_download
+    module._open_extract_cycle_url = _refuse_pgeocode_download
+
+
+def _import_pgeocode_offline() -> Any | None:
+    """Import pgeocode and disable its downloader.
+
+    pgeocode 0.5 binds ``STORAGE_DIR`` at import from ``PGEOCODE_DATA_DIR``
+    (default ``~/.cache/pgeocode``). This module cannot guarantee it is the
+    first importer, and a later ``os.environ`` write does not move that
+    global. Callers assign ``STORAGE_DIR`` explicitly before ``Nominatim``.
+    """
     try:
         import pgeocode
     except ImportError:
         logger.debug("pgeocode not installed — offline PLZ resolution unavailable")
         return None
-    # Block accidental online geopy/Nominatim defaults if imported elsewhere.
-    os.environ.setdefault("PGEOCODE_DATA_DIR", os.environ.get("PGEOCODE_DATA_DIR", ""))
+    _lock_pgeocode_downloads(pgeocode)
+    return pgeocode
+
+
+def _construct_offline_nominatim(
+    pgeocode: Any, country_code: str, country_file: str
+) -> Any:
+    """Build Nominatim after ``country_file`` was just stat'd.
+
+    pgeocode 0.5 ``_get_data`` calls ``os.path.exists`` before ``read_csv``.
+    That helper is another ``os.stat``. The file was confirmed immediately
+    above, so this path returns True without statting again and the download
+    branch does not run. Other paths, including ``CC-index.txt``, still use
+    the real check.
+    """
+    real_exists = os.path.exists
+    confirmed = os.path.normcase(country_file)
+
+    def _exists(path: object) -> bool:
+        try:
+            if os.path.normcase(os.fspath(path)) == confirmed:
+                return True
+        except (TypeError, ValueError):
+            return real_exists(path)
+        return real_exists(path)
+
+    with _nominatim_build_lock:
+        os.path.exists = _exists  # type: ignore[method-assign, assignment]
+        try:
+            return pgeocode.Nominatim(country_code.lower())
+        finally:
+            os.path.exists = real_exists
+
+
+def _pgeocode_nominatim(country_code: str) -> Any | None:
+    """Offline GeoNames index — never calls the public Nominatim HTTP API.
+
+    ``pgeocode.Nominatim`` downloads a country file when it is missing.
+    Build it only for a valid active dataset whose ``CC.txt`` is already
+    on disk. A missing file returns None and is not cached, so the next
+    resolution stats the file again. Once the index is in memory, further
+    postcode lookups do not stat the country file.
+    """
+    cc = normalize_country_code(country_code)
+    if cc not in DACH_COUNTRY_CODES:
+        return None
+    cached = _pgeocode_index.get(cc)
+    if cached is not None:
+        return cached
+
+    pgeocode = _import_pgeocode_offline()
+    if pgeocode is None:
+        return None
+
+    info = get_geo_dataset_manager().ensure_active()
+    data_dir = _offline_pgeocode_dir(info)
+    if data_dir is None:
+        reason = (
+            "active dataset invalid"
+            if not getattr(info, "valid", False)
+            else "PGEOCODE_DATA_DIR does not point at the active dataset"
+        )
+        _warn_pgeocode_once(f"dir:{reason}", cc, reason)
+        return None
+    country_file = os.path.join(data_dir, f"{cc}.txt")
+    # Fresh stat, never the manifest validation cache. Only on this rebuild.
     try:
-        nom = pgeocode.Nominatim(cc.lower())
-        _pgeocode_index[cc] = nom
-        return nom
+        file_stat = os.stat(country_file)
+    except OSError:
+        _warn_pgeocode_once(
+            f"file:{cc}",
+            cc,
+            f"country file {cc}.txt missing in active dataset",
+        )
+        return None
+    if not stat.S_ISREG(file_stat.st_mode):
+        _warn_pgeocode_once(
+            f"file:{cc}",
+            cc,
+            f"country file {cc}.txt missing in active dataset",
+        )
+        return None
+    # Import-time STORAGE_DIR stays at ~/.cache/pgeocode when pgeocode was
+    # imported before PGEOCODE_DATA_DIR existed. Assign the active dir here.
+    pgeocode.STORAGE_DIR = data_dir
+    try:
+        nom = _construct_offline_nominatim(pgeocode, cc, country_file)
     except Exception as exc:
         logger.warning("pgeocode init failed for %s: %s", cc, type(exc).__name__)
         return None
+    loaded = str(getattr(nom, "_data_path", "") or "")
+    if not loaded or not _same_path(loaded, country_file):
+        _warn_pgeocode_once(
+            f"path:{cc}",
+            cc,
+            "Nominatim did not load the active country file",
+        )
+        return None
+    _pgeocode_index[cc] = nom
+    return nom
 
 
 def reset_pgeocode_index_for_tests() -> None:
     _pgeocode_index.clear()
+    _pgeocode_warned.clear()
 
 
 def _finite(value: Any) -> float | None:

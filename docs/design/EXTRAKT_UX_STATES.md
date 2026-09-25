@@ -1,6 +1,8 @@
 # Extrakt-UX — Upload → Extract (Zustände)
 
-Status: **Spezifikation und Abnahmeskript**. Dieser Stand enthält keinen Dialog-Code, keinen Worker und keine Parser-Änderung.
+> **Umsetzung (Designer, auf Worker-PR #69):** Die Zustände sind im `CvImportDialog` auf dem DevOps-Worker verdrahtet (Progress, Cancel, Empty, Error/OOM/Timeout). Kein zweiter Worker und kein synchrones `import_cv` in `__init__`. Parser, Qwen, F1 (#62/#63) und das Peak-Gate bleiben unangetastet. Der Text darunter bleibt der Copy- und Zustandsvertrag.
+
+Status: **Spezifikation, Abnahmeskript und dünner UX-Overlay auf dem Worker.** Der ursprüngliche Vertrag entstand docs-only; die Dialog-Zustände sitzen jetzt auf den Worker-Signalen (`ok`, `empty`, `cancelled`, `oom`, `timeout`, `error`).
 
 Stand der Beschreibung: `main` @ `cca25fc` (`CvImportDialog` liest den Lebenslauf noch synchron in `__init__`, vor `exec()`).
 

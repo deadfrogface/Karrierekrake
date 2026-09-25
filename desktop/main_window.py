@@ -5,8 +5,8 @@ from __future__ import annotations
 from copy import deepcopy
 from datetime import datetime, timezone
 
-from PySide6.QtCore import QRect, Qt, QTimer
-from PySide6.QtGui import QCloseEvent, QGuiApplication, QPixmap
+from PySide6.QtCore import QObject, QRect, Qt, QTimer, Signal
+from PySide6.QtGui import QCloseEvent, QGuiApplication, QPixmap, QShowEvent
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -45,12 +45,32 @@ from desktop.widgets.about_dialog import AboutDialog
 from desktop.widgets.confirm_dialog import confirm_action
 
 
+class _GeoIndexBridge(QObject):
+    """Hop from the geo-loader thread back onto the UI thread."""
+
+    ready = Signal()
+
+
 class MainWindow(QMainWindow):
     def __init__(self, config_service: ConfigService) -> None:
         super().__init__()
         self.config_service = config_service
         self._force_quit = False
         self._shutting_down = False
+        self._geo_preload_armed = False
+        self._geo_bridge = _GeoIndexBridge(self)
+        self._geo_bridge.ready.connect(self._refresh_home_notices_after_geo)
+        from core.geo_resolve import (
+            bind_ui_thread,
+            when_geo_index_ready,
+        )
+
+        bind_ui_thread()
+
+        def _emit_geo_ready() -> None:
+            self._geo_bridge.ready.emit()
+
+        when_geo_index_ready(_emit_geo_ready)
         self._worker = None
         self._thread = None
         self.setMinimumSize(900, 650)
@@ -220,6 +240,22 @@ class MainWindow(QMainWindow):
         self._navigate(0)
         self.refresh_all()
 
+    def showEvent(self, event: QShowEvent) -> None:
+        super().showEvent(event)
+        if self._geo_preload_armed or self._shutting_down:
+            return
+        self._geo_preload_armed = True
+        # Queued so show() returns before the loader thread is started.
+        QTimer.singleShot(0, self._start_geo_preload)
+
+    def _start_geo_preload(self) -> None:
+        if self._shutting_down:
+            return
+        from core.geo_resolve import arm_geo_index_from_ui
+
+        # GUI slot: publish the worker and return. No lock, no join, no wait.
+        arm_geo_index_from_ui()
+
     def _restore_geometry(self) -> None:
         state = self.config_service.get_window_state()
         width = int(state.get("width") or 1180)
@@ -317,6 +353,31 @@ class MainWindow(QMainWindow):
             install_qt_translator(app, lang)
         i18n.set_language(lang)
 
+    def _refresh_home_notices_after_geo(self) -> None:
+        """Notice labels only. Does not rebuild profile cards."""
+        if self._shutting_down:
+            return
+        if not hasattr(self, "dashboard"):
+            QTimer.singleShot(0, self._refresh_home_notices_after_geo)
+            return
+        from core.location import commit_loaded_home
+
+        cfg = self.config_service.load()
+        # Same in-flight index, UI thread, no second Nominatim. A save that
+        # happened while the loader was still running lands here once.
+        if commit_loaded_home(cfg.profile.location) == "resolved":
+            self.config_service.save(cfg)
+        try:
+            self.profile.refresh_home_status()
+            self.profile.location_work.refresh_home_notice(
+                self.config_service.load().profile.location
+            )
+            self.dashboard.refresh()
+            self.settings._refresh_home_notice()
+            self.jobs.refresh()
+        except Exception:
+            return
+
     def refresh_all(self) -> None:
         self.dashboard.refresh()
         self.jobs.refresh()
@@ -410,8 +471,11 @@ class MainWindow(QMainWindow):
                 extra = "\n" + tr("msg.empty_queries")
             if stats.get("source_errors"):
                 extra = (extra + "\n" if extra else "\n") + "\n".join(stats.get("source_errors") or [])
-            if stats.get("home_warning"):
-                extra += "\n\n" + str(stats.get("home_warning"))
+            from core.location import home_location_notice
+
+            notice = home_location_notice(self.config_service.load().profile.location)
+            if notice.ask_postal and notice.notice_key:
+                extra += "\n\n" + tr(notice.notice_key)
             if stats.get("ats_unknown") is not None:
                 extra += (
                     f"\nATS: supported={stats.get('ats_supported', 0)} "

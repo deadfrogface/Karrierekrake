@@ -167,3 +167,53 @@ def test_legacy_then_double_open(tmp_path: Path):
     job = Database(db_path).get_job("legacy-job-1")
     assert job is not None
     assert job.title == "Sachbearbeiter"
+
+
+def test_legacy_applied_row_survives_open_without_new_tables(tmp_path: Path):
+    """Bestandsdatenbank: has_applied sieht alte applied-Zeilen, kein Zusatzschema."""
+    db_path = tmp_path / "legacy_applied.db"
+    _make_legacy_db(db_path)
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.execute(
+            "UPDATE jobs SET status = ?, url = ?, title = ?, company = ? WHERE id = ?",
+            (
+                "applied",
+                "https://de.indeed.com/viewjob?jk=LegacyJK&from=serp",
+                "Sachbearbeiter (m/w/d)",
+                "Alt GmbH",
+                "legacy-job-1",
+            ),
+        )
+        conn.commit()
+        tables_before = {
+            r[0]
+            for r in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'table'"
+            ).fetchall()
+        }
+    finally:
+        conn.close()
+
+    db = Database(db_path)
+    twin = Job(
+        id="other",
+        title="sachbearbeiter",
+        company="Alt",
+        url="https://de.indeed.com/viewjob?jk=legacyjk&utm_source=share",
+    )
+    assert db.has_applied(twin) is True
+    Database(db_path)
+    assert Database(db_path).has_applied(twin) is True
+    conn = sqlite3.connect(db_path)
+    try:
+        tables_after = {
+            r[0]
+            for r in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'table'"
+            ).fetchall()
+        }
+    finally:
+        conn.close()
+    assert "applied_gen" not in tables_after
+    assert tables_before <= tables_after

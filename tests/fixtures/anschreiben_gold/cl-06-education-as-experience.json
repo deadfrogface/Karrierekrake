@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-06-education-as-experience",
+  "tags": [
+    "education_misfiled"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Mara",
+      "last_name": "Holtstein",
+      "email": "mara.holtstein@example.com",
+      "phone": "+49 000 5550199",
+      "street": "Holtsteinweg 2",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Ausbildung zur Fachkraft für Lagerlogistik",
+          "company": "Berufskolleg Quendel",
+          "location": "Musterhafen",
+          "start_date": "2013-08",
+          "end_date": "2016-06",
+          "responsibilities": [
+            "Berufsschulunterricht",
+            "Zwischenprüfung Lagerlogistik"
+          ],
+          "source": "cv"
+        }
+      ],
+      "skills": [],
+      "software": [],
+      "driving_license": [],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "cv"
+        }
+      ],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-06-education-as-experience",
+    "source": "indeed",
+    "source_job_id": "src-cl-06-education-as-experience",
+    "title": "Fachkraft für Lagerlogistik (m/w/d)",
+    "company": "Kistenpfad Logistik GmbH",
+    "description": "Die Kistenpfad Logistik GmbH ist ein fiktiver Umschlag am Kistenpfad in Musterhafen. Wir nehmen Sendungen regionaler Betriebe an und geben sie auf feste Verkehre. Die Halle ist klein, die Inhaber sind auf dem Hof.\n\nEtwa zwanzig Menschen arbeiten im Umschlag. Neue Beschäftigte lernen die Tore in der ersten Woche kennen. Uns ist wichtig, dass Zusagen halten und dass Rückfragen einen Namen haben.\n\nWas wir bieten: unbefristete Vollzeit, dreißig Tage Urlaub, Jobticket, Kantine, Parkplatz auf dem Hof. Einarbeitung vier Wochen. Der Ort ist der Kistenpfad 5, Musterhafen.\n\nDas bringen Sie mit:\n- eine abgeschlossene Ausbildung zur Fachkraft für Lagerlogistik\n- praktische Stationen nach dieser Ausbildung, nicht nur den Schulbesuch\n- sicheren Umgang mit Beständen und mit der Rampe\n- Deutsch in Wort und Schrift\n\nNach dem Abschluss erwarten wir eine eigene Station im Umschlag.\n",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-06-education-as-experience",
+    "status": "new"
+  },
+  "expected_outcome": "papierkorb",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "bei Berufskolleg Quendel",
+    "Tätigkeit als Ausbildung zur Fachkraft für Lagerlogistik",
+    "mehrjährige Berufserfahrung",
+    "Nordkai",
+    "Tourenplanung",
+    "SAP TM",
+    "Bestandskontrolle"
+  ],
+  "rationale": "Die einzige Station liegt unter work_experience, education ist leer. Es ist der Schulbesuch am Berufskolleg Quendel, keine Beschäftigung. Kriterium 5 scheitert: Ausbildung ist als Berufserfahrung abgelegt. Urteil papierkorb. Ein Brief, der die Schule als Arbeitgeber nennt oder Stationen aus einem anderen Profil erfindet, bleibt Papierkorb."
+}

@@ -21,11 +21,26 @@ from desktop.design_system.polish import (
     polish_card,
     polish_interactive,
 )
-from desktop.design_system.v2_chrome import ContentCard, KpiCard, PageHeader
+from desktop.design_system.v2_chrome import ContentCard, KpiCard, PageHeader, TagChip
 from desktop.i18n import i18n, tr, tr_n
 from desktop.services import ConfigService
 from desktop.util.human_time import format_human_datetime
 from desktop.widgets.scroll_page import wrap_scrollable
+
+
+def bind_home_notice_label(label, notice) -> None:
+    """Show the fresh home status. Resolved is an OK line; unclear asks for a PLZ."""
+    if not getattr(notice, "notice_key", ""):
+        label.clear()
+        label.setVisible(False)
+        return
+    label.setText(tr(notice.notice_key, place=getattr(notice, "place_label", "") or ""))
+    label.setObjectName("WarningLabel" if notice.ask_postal else "HomeStatusOk")
+    label.setVisible(True)
+    style = label.style()
+    if style is not None:
+        style.unpolish(label)
+        style.polish(label)
 
 
 class DashboardPage(QWidget):
@@ -151,8 +166,7 @@ class DashboardPage(QWidget):
         self.next_run_caption.setObjectName("KkHint")
         self.next_run_label = QLabel("—")
         self.next_run_label.setObjectName("NextActionTitle")
-        self.mode_chip = QLabel()
-        self.mode_chip.setObjectName("BadgeMuted")
+        self.mode_chip = TagChip("", kind="neutral")
         next_body.addWidget(self.next_run_caption)
         next_body.addWidget(self.next_run_label)
         next_body.addWidget(self.mode_chip, alignment=Qt.AlignmentFlag.AlignLeft)
@@ -425,14 +439,9 @@ class DashboardPage(QWidget):
         )
 
         loc = cfg.profile.location
-        home_text = (loc.home_address or "").strip()
-        home_known = loc.home_latitude is not None and loc.home_longitude is not None
-        if not home_text and not home_known:
-            self.home_warning_label.setText(tr("dash.home_missing"))
-            self.home_warning_label.setVisible(True)
-        else:
-            self.home_warning_label.clear()
-            self.home_warning_label.setVisible(False)
+        from core.location import home_location_notice
+
+        bind_home_notice_label(self.home_warning_label, home_location_notice(loc))
 
         # Keep diagnostics populated for tests / developer tooling — never shown.
         self.advanced_stats.setText(
@@ -462,12 +471,6 @@ class DashboardPage(QWidget):
                     st = json.loads(row["stats_json"] or "{}")
                 except Exception:
                     st = {}
-                # A warning from an older run is stale once the home resolved since.
-                if st.get("home_warning") and home_text and not home_known:
-                    self.home_warning_label.setText(
-                        tr("dash.home_unresolved", place=home_text)
-                    )
-                    self.home_warning_label.setVisible(True)
                 detail = (
                     f"raw={st.get('raw_results', st.get('total', '—'))} | "
                     f"dup={st.get('duplicates', '—')} | dist={st.get('distance_removed', st.get('outside', '—'))}"

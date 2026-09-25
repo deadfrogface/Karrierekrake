@@ -53,7 +53,7 @@ source .venv/bin/activate
 
 python -m pip install --upgrade pip
 echo "[install] Installing Python dependencies (runtime + dev)..."
-pip install -r requirements.txt
+pip install -c constraints-runtime.txt -r requirements.txt
 
 # --- Playwright browser -----------------------------------------------------------
 echo "[install] Installing Playwright Chromium..."

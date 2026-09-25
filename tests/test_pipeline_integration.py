@@ -104,7 +104,8 @@ def pipeline_cfg(tmp_path: Path) -> AppConfig:
 
 
 def test_pipeline_integration_counts(pipeline_cfg: AppConfig, monkeypatch, tmp_path: Path):
-    good = _job(sid="1", source="good", title="Sachbearbeiter", company="Acme GmbH")
+    # Job.source is the portal id on the allowlist. Adapter source_id stays "good".
+    good = _job(sid="1", source="indeed", title="Sachbearbeiter", company="Acme GmbH")
     # Same vacancy via another board → duplicate
     dup = _job(
         sid="1b",
@@ -135,7 +136,7 @@ def test_pipeline_integration_counts(pipeline_cfg: AppConfig, monkeypatch, tmp_p
     )
     remote_ok = _job(
         sid="4",
-        source="good",
+        source="indeed",
         title="Sachbearbeiter Remote",
         company="RemoteCo",
         remote=RemoteType.REMOTE.value,

@@ -205,12 +205,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Noch kein Wohnort hinterlegt. Trage im Profil Ort oder Postleitzahl ein, "
             "damit Jobs nach Entfernung gefiltert werden können."
         ),
-        "dash.home_unresolved": (
-            "Dein Wohnort „{place}“ ließ sich nicht eindeutig zuordnen. Trage im Profil "
-            "bitte eine Postleitzahl ein (z. B. 10115), damit Jobs nach Entfernung "
-            "gefiltert werden. Bis dahin zeigen wir Jobs unabhängig von der Entfernung."
-        ),
         "dash.kpi_open_hint": "Zum Öffnen klicken",
+        "dash.home_plz_hint": (
+            "Standort nicht prüfbar. Bitte Postleitzahl angeben — "
+            "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
+        ),
+        "dash.home_resolved": "Wohnort aufgelöst: {place}. Distanzfilter aktiv.",
+        "jobs.distance_skipped": "Umkreis übersprungen — bitte PLZ angeben",
         "dash.run_stats": "Lauf-Statistik",
         "apps.preview_title": "Bewerbungsvorschau (vor Absenden)",
         "apps.preview_will_submit": "Finales Absenden wäre erlaubt.",
@@ -254,6 +255,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.empty_section": "Noch keine Einträge.",
         "profile.empty_tags": "Keine Angaben",
         "profile.more_tags": "+ {n} weitere",
+        "profile.show_more_entry": "+ 1 weiteren Eintrag anzeigen",
         "profile.show_more_entries": "+ {n} weitere Einträge anzeigen",
         "profile.cv_meta": "Lebenslauf für Bewerbungen",
         "profile.no_linkedin": "Kein LinkedIn-Link hinterlegt",
@@ -500,6 +502,25 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
         "cv_import.cancel_btn": "Abbrechen",
         "cv_import.close": "Schließen",
+        "cv_import.progress": "Lebenslauf wird eingelesen…",
+        "cv_import.read_again": "Erneut einlesen",
+        "cv_import.choose_other": "Andere Datei wählen",
+        "cv_import.empty_title": "Nichts erkannt",
+        "cv_import.empty_body": (
+            "In dieser Datei wurden keine Profildaten erkannt. Es wurde nichts übernommen. "
+            "Wähle eine andere Datei oder schließe den Dialog."
+        ),
+        "cv_import.error_oom": (
+            "Nicht genug Arbeitsspeicher, um diese Datei einzulesen. Es wurde nichts übernommen. "
+            "Karrierekrake startet den Vorgang nicht automatisch neu."
+        ),
+        "cv_import.error_timeout": (
+            "Das Einlesen hat zu lange gedauert und wurde abgebrochen. Es wurde nichts übernommen. "
+            "Es wird nicht automatisch erneut versucht."
+        ),
+        "cv_import.error_generic": (
+            "Die Datei konnte nicht gelesen werden. Pfad und Eingaben bleiben erhalten."
+        ),
         "cv_import.empty": (
             "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
             "oder lies die Datei erneut ein."
@@ -905,6 +926,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.explain_job": 'Erklärt die Passung anhand SearchIntent und Match-Gründen.',
         "guenther.hint.prep_interview": 'Interview-Prep aus Fall- und Job-Kontext.',
         "brand.tagline": "FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK.",
+        "cover.job_incomplete": "Die Anzeige hat keinen Beschreibungstext.",
+        "cover.no_evidence": "Im Profil fehlt eine bestätigte berufliche Station und eine Kenntnis, die zur Anzeige passt.",
+        "cover.demo_excluded": "Demo-Anzeigen sind von Bewerbungen und Anschreiben ausgeschlossen.",
+        "cover.action.hide_demo": "Beispiele ausblenden",
+        "cover.company_missing": "In der Anzeige fehlt der Firmenname.",
+        "cover.saved": "Anschreiben gespeichert.",
     },
     "en": {
         "app.name": "Karrierekrake",
@@ -1105,12 +1132,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "No home location yet. Add a city or postal code in your profile so jobs "
             "can be filtered by distance."
         ),
-        "dash.home_unresolved": (
-            "We couldn't pin down your home location “{place}”. Please add a postal "
-            "code in your profile (e.g. 10115) so jobs can be filtered by distance. "
-            "Until then, jobs are shown regardless of distance."
-        ),
         "dash.kpi_open_hint": "Click to open",
+        "dash.home_plz_hint": (
+            "Location cannot be checked. Please enter a postal code — "
+            "without a postal code no place is guessed and the radius filter is skipped."
+        ),
+        "dash.home_resolved": "Home location resolved: {place}. Distance filter active.",
+        "jobs.distance_skipped": "Radius skipped — please enter a postal code",
         "dash.run_stats": "Run stats",
         "apps.preview_title": "Application preview (pre-submit)",
         "apps.preview_will_submit": "Final submit would be allowed.",
@@ -1154,6 +1182,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.empty_section": "No entries yet.",
         "profile.empty_tags": "None listed",
         "profile.more_tags": "+ {n} more",
+        "profile.show_more_entry": "+ show 1 more entry",
         "profile.show_more_entries": "+ show {n} more entries",
         "profile.cv_meta": "CV used for applications",
         "profile.no_linkedin": "No LinkedIn link saved",
@@ -1398,6 +1427,25 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.cancelled": "Reading cancelled. Nothing was applied.",
         "cv_import.cancel_btn": "Cancel",
         "cv_import.close": "Close",
+        "cv_import.progress": "Reading the CV…",
+        "cv_import.read_again": "Read again",
+        "cv_import.choose_other": "Choose another file",
+        "cv_import.empty_title": "Nothing detected",
+        "cv_import.empty_body": (
+            "No profile data was detected in this file. Nothing was applied. "
+            "Choose another file or close the dialog."
+        ),
+        "cv_import.error_oom": (
+            "Not enough memory to read this file. Nothing was applied. "
+            "Karrierekrake will not restart this on its own."
+        ),
+        "cv_import.error_timeout": (
+            "Reading took too long and was stopped. Nothing was applied. "
+            "It will not be tried again automatically."
+        ),
+        "cv_import.error_generic": (
+            "The file could not be read. The path and your entries stay as they are."
+        ),
         "cv_import.empty": (
             "Nothing was found in the document. Enter the profile manually "
             "or read the file again."
@@ -1803,6 +1851,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "guenther.hint.explain_job": 'Explains fit from SearchIntent and match reasons.',
         "guenther.hint.prep_interview": 'Interview prep from case and job context.',
         "brand.tagline": "FIND. APPLY. KEEP THE OVERVIEW.",
+        "cover.job_incomplete": "The job ad has no description.",
+        "cover.no_evidence": "The profile has no confirmed work experience and no skill that matches this job ad.",
+        "cover.demo_excluded": "Demo listings are excluded from applications and cover letters.",
+        "cover.action.hide_demo": "Hide examples",
+        "cover.company_missing": "The company name is missing from the job ad.",
+        "cover.saved": "Cover letter saved.",
     },
 }
 
@@ -1882,3 +1936,10 @@ def install_qt_translator(app, lang: str) -> None:
     if translator.load(f"qtbase_{lang}", path):
         app.installTranslator(translator)
         app._karrierekrake_qt_translator = translator
+
+
+def tr_show_more_entries(n: int) -> str:
+    """Hidden-experience label. One row uses the singular key."""
+    if int(n) == 1:
+        return tr("profile.show_more_entry")
+    return tr("profile.show_more_entries", n=int(n))

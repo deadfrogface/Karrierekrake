@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 
 from desktop.design_system.a11y import bind_label, set_accessible_name
 from desktop.design_system.icons import status_glyph, try_qtawesome_icon
+from desktop.design_system.polish import polish_chip
 
 
 class ButtonVariant(str, Enum):
@@ -125,6 +126,7 @@ class KkStatusBadge(QLabel):
     ) -> None:
         super().__init__(parent)
         self.set_kind(kind, text)
+        polish_chip(self)
 
     def set_kind(
         self,

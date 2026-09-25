@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from core.geo_dataset import get_geo_dataset_manager
 from core.geo_normalize import (
@@ -53,6 +53,10 @@ __all__ = [
     "location_cache_key",
     "enrich_job_locations",
     "cross_border_dach_enabled",
+    "HOME_PLZ_HINT",
+    "HomeNotice",
+    "home_location_notice",
+    "apply_visible_home",
 ]
 
 DEFAULT_GEOCODE_TIMEOUT_S = 12.0
@@ -81,6 +85,12 @@ STALE_GEO_SOURCES = frozenset(
 
 GEO_DATA_SOURCE_LOCAL = "local_geo"
 
+# Shown when the home place is AMBIGUOUS or UNKNOWN. Never a guessed centroid.
+HOME_PLZ_HINT = (
+    "Standort nicht prüfbar. Bitte Postleitzahl angeben — "
+    "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
+)
+
 
 def cross_border_dach_enabled(config: "AppConfig") -> bool:
     """Feature toggle: DACH commute across DE/AT/CH (default on)."""
@@ -91,6 +101,179 @@ def cross_border_dach_enabled(config: "AppConfig") -> bool:
     if loc is not None and hasattr(loc, "cross_border_dach"):
         return bool(loc.cross_border_dach)
     return True
+
+
+@dataclass(frozen=True)
+class HomeNotice:
+    """Fresh home-resolution status for settings, overview, and job labels.
+
+    ``resolved`` is an explicit OK. ``ambiguous`` / ``unknown`` ask for a
+    postal code and do not invent coordinates.
+    """
+
+    status: str
+    ask_postal: bool
+    notice_key: str
+    place_label: str = ""
+
+
+def home_location_notice(location: Any) -> HomeNotice:
+    """Re-read the current home place. Does not persist coordinates or guess a PLZ."""
+    address = (getattr(location, "home_address", "") or "").strip()
+    postal = (getattr(location, "postal_code", "") or "").strip()
+    city = (getattr(location, "city", "") or "").strip()
+    country = (getattr(location, "country", "") or "").strip() or "DE"
+    lat = getattr(location, "home_latitude", None)
+    lon = getattr(location, "home_longitude", None)
+    stored = _address_fingerprint(getattr(location, "home_geocoded_address", "") or "")
+    current = _address_fingerprint(address or (f"{postal}|{city}" if (postal or city) else ""))
+    coords_match = False
+    try:
+        if lat is not None and lon is not None and current:
+            lat_f, lon_f = float(lat), float(lon)
+            coords_match = (
+                -90.0 <= lat_f <= 90.0
+                and -180.0 <= lon_f <= 180.0
+                and (not stored or stored == current)
+            )
+    except (TypeError, ValueError):
+        coords_match = False
+    label = city or _city_from_address(address) or address
+    if coords_match:
+        return HomeNotice(
+            status="resolved",
+            ask_postal=False,
+            notice_key="dash.home_resolved",
+            place_label=label,
+        )
+    if not postal and not city and not address:
+        return HomeNotice(status="missing", ask_postal=True, notice_key="dash.home_missing")
+    place = normalize_place_fields(
+        address=address,
+        city=city or _city_from_address(address),
+        postal_code=postal or _plz_from_address(address),
+        country_code=normalize_country_code(country) or "DE",
+    )
+    resolution = resolve_place(place, allow_network=False)
+    if resolution.ok:
+        return HomeNotice(
+            status="resolved",
+            ask_postal=False,
+            notice_key="dash.home_resolved",
+            place_label=resolution.display_name or label,
+        )
+    if resolution.status == "AMBIGUOUS":
+        return HomeNotice(status="ambiguous", ask_postal=True, notice_key="dash.home_plz_hint")
+    return HomeNotice(status="unknown", ask_postal=True, notice_key="dash.home_plz_hint")
+
+
+def apply_visible_home(
+    location: Any,
+    *,
+    street: str = "",
+    postal_code: str = "",
+    city: str = "",
+    country: str = "",
+) -> bool:
+    """Copy the address the profile UI actually edits into the search home.
+
+    Returns True when persisted coordinates were cleared. Does not invent a PLZ.
+    Empty street/PLZ/city leaves an existing search home unchanged.
+    """
+    postal = (postal_code or "").strip()
+    city_n = (city or "").strip()
+    street_n = (street or "").strip()
+    country_n = (country or "").strip()
+    if not postal and not city_n and not street_n:
+        return False
+    parts = [part for part in (street_n, f"{postal} {city_n}".strip(), country_n) if part]
+    new_home = ", ".join(parts)
+    changed = (
+        new_home != (getattr(location, "home_address", "") or "").strip()
+        or postal != (getattr(location, "postal_code", "") or "").strip()
+        or city_n != (getattr(location, "city", "") or "").strip()
+    )
+    if changed:
+        location.home_latitude = None
+        location.home_longitude = None
+        location.home_geocoded_address = ""
+    location.home_address = new_home
+    location.postal_code = postal
+    location.city = city_n
+    if country_n:
+        location.country = country_n
+    return changed
+
+
+def _coords_match_address(location: Any) -> bool:
+    address = (getattr(location, "home_address", "") or "").strip()
+    postal = (getattr(location, "postal_code", "") or "").strip()
+    city = (getattr(location, "city", "") or "").strip()
+    lat = getattr(location, "home_latitude", None)
+    lon = getattr(location, "home_longitude", None)
+    stored = _address_fingerprint(getattr(location, "home_geocoded_address", "") or "")
+    current = _address_fingerprint(address or (f"{postal}|{city}" if (postal or city) else ""))
+    try:
+        if lat is None or lon is None or not current:
+            return False
+        lat_f, lon_f = float(lat), float(lon)
+    except (TypeError, ValueError):
+        return False
+    return (
+        -90.0 <= lat_f <= 90.0
+        and -180.0 <= lon_f <= 180.0
+        and (not stored or stored == current)
+    )
+
+
+def _locality_from_display(display_name: str, postal_code: str) -> str:
+    """Middle token of a postal display (``10115, Berlin, DE`` → ``Berlin``)."""
+    postal = (postal_code or "").strip()
+    for part in (display_name or "").split(","):
+        token = part.strip()
+        if not token or token == postal:
+            continue
+        if len(token) == 2 and token.isalpha():
+            continue
+        return token
+    return ""
+
+
+def commit_loaded_home(location: Any) -> str:
+    """Write a finished local resolution onto ``location``.
+
+    Returns ``resolved``, ``unchanged``, ``pending``, or ``unresolved``.
+    A still-loading index is ``pending`` and stores neither coordinates nor an
+    error string. A genuine miss stays without coordinates so the notice can
+    keep asking for a real PLZ. Does not start a second geo stack.
+    """
+    if _coords_match_address(location):
+        return "unchanged"
+    address = (getattr(location, "home_address", "") or "").strip()
+    postal = (getattr(location, "postal_code", "") or "").strip()
+    city = (getattr(location, "city", "") or "").strip()
+    country = (getattr(location, "country", "") or "").strip() or "DE"
+    if not postal and not city and not address:
+        return "unresolved"
+    place = normalize_place_fields(
+        address=address,
+        city=city or _city_from_address(address),
+        postal_code=postal or _plz_from_address(address),
+        country_code=normalize_country_code(country) or "DE",
+    )
+    resolution = resolve_place(place, allow_network=False)
+    if resolution.reason == "geo_index_loading":
+        return "pending"
+    if not resolution.ok or resolution.latitude is None or resolution.longitude is None:
+        return "unresolved"
+    location.home_latitude = float(resolution.latitude)
+    location.home_longitude = float(resolution.longitude)
+    location.home_geocoded_address = address or (resolution.display_name or "")
+    if not city:
+        locality = _locality_from_display(resolution.display_name or "", postal)
+        if locality:
+            location.city = locality
+    return "resolved"
 
 
 @dataclass
@@ -277,11 +460,7 @@ class LocationService:
             allow_network=False,
         )
         if not resolution.ok:
-            warning = (
-                f"Heimatstandort konnte lokal nicht aufgelöst werden "
-                f"(PLZ/Ort): {address or place.city or place.postal_code!r}. "
-                "Distanzfilter übersprungen — bitte PLZ und Land prüfen."
-            )
+            warning = HOME_PLZ_HINT
             logger.warning(warning)
             self._home = None
             self._home_resolution = HomeResolution(
@@ -615,8 +794,25 @@ def enrich_job_locations(
         location.stats.home_resolved = False
         location.stats.home_warning = home.warning
         location.stats.skipped_distance_no_home = True
-    else:
-        location.stats.home_resolved = True
+        # Distance is already unknown. Skip workplace geocoding so the radius
+        # skip returns immediately and cannot stall on ambiguous place scans.
+        for job in jobs:
+            if getattr(job, "remote_type", "") == "remote":
+                job.distance_km = None
+                if hasattr(job, "commute_duration_minutes"):
+                    job.commute_duration_minutes = None
+                if hasattr(job, "distance_source"):
+                    job.distance_source = ""
+                location.stats.remote_skipped += 1
+                continue
+            job.distance_km = None
+            if hasattr(job, "distance_source"):
+                job.distance_source = ""
+            if hasattr(job, "commute_duration_minutes"):
+                job.commute_duration_minutes = None
+            location.stats.unknown_locations += 1
+        return jobs
+    location.stats.home_resolved = True
 
     groups: dict[str, list] = {}
     order: list[str] = []

@@ -265,6 +265,7 @@ QMenu {{
 }}
 QMenu::item:selected {{ background: {COLOR_PRIMARY}; color: #ffffff; }}
 QLabel#WarningLabel {{ color: {COLOR_WARN}; font-weight: 600; }}
+QLabel#HomeStatusOk {{ color: {COLOR_SUCCESS}; font-weight: 600; }}
 QPlainTextEdit#LogPlain {{
     font-family: "Cascadia Mono", "Consolas", monospace;
     font-size: 12px;
@@ -492,6 +493,7 @@ QMenu::item:selected {{ background: {COLOR_TEAL}; color: #ffffff; }}
 QMessageBox {{ background: {COLOR_DARK_SURFACE}; }}
 QMessageBox QLabel {{ color: {COLOR_DARK_TEXT}; }}
 QLabel#WarningLabel {{ color: #f0c090; font-weight: 600; }}
+QLabel#HomeStatusOk {{ color: #8fd0b0; font-weight: 600; }}
 QPlainTextEdit#LogPlain {{
     font-family: "Cascadia Mono", "Consolas", monospace;
     font-size: 12px;
@@ -528,7 +530,12 @@ def stylesheet_for(
         "true",
         "yes",
     }:
-        return legacy_stylesheet_for(preference)
+        sheet = legacy_stylesheet_for(preference)
+        if resolve_theme(preference) == "dark":
+            from desktop.design_system.stylesheet import dark_chip_hover_qss
+
+            sheet += "\n" + dark_chip_hover_qss()
+        return sheet
     if dpi_scale is None:
         dpi_scale = detect_dpi_scale()
     if high_contrast is None:
@@ -548,7 +555,9 @@ def stylesheet_for(
 def legacy_stylesheet_for(preference: str) -> str:
     """Pre-design-system QSS path (rollback)."""
     theme = resolve_theme(preference)
-    return DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
+    sheet = DARK_STYLESHEET if theme == "dark" else LIGHT_STYLESHEET
+    # Marker so chip polish can drop shadows when the app sheet is dark.
+    return f"/* kk-theme: {theme} */\n{sheet}"
 
 
 def dark_palette():

@@ -39,7 +39,7 @@ def test_force_submit_true_with_dry_run_stays_dry(tmp_path: Path, monkeypatch):
     monkeypatch.setattr("apply.manager.ATSDetector.detect", staticmethod(lambda url: "greenhouse"))
     job = Job(
         id="jf1",
-        source="test",
+        source="indeed",
         title="Role",
         company="Co",
         url="https://boards.greenhouse.io/x/jobs/1",
