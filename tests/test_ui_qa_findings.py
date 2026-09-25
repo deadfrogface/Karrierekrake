@@ -247,6 +247,7 @@ def test_dashboard_home_notice_follows_live_resolver(qapp, config_service):
     assert "technical text" not in text
     assert "Postleitzahl" in text
     assert "geschätzt" in text
+    assert "10115" not in text
     assert "Distanzfilter übersprungen" not in text
     assert page.home_warning_label.objectName() == "WarningLabel"
     assert not page.home_warning_label.isHidden()
