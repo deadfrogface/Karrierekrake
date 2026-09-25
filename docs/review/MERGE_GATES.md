@@ -157,15 +157,15 @@ Im Diff von `origin/main...origin/cursor/ui-qa-fixes-4ee6` gibt es keine Treffer
 
 | Datei | Klasse | Was sich ändert |
 |---|---|---|
-| `core/geo_resolve.py` | **Verhalten / Scope** | `resolve_city_pgeocode`: zuerst exakter Ortsname auf der vollen lokalen Tabelle (`_exact_city_rows`), Fuzzy nur als Fallback. Streuung nicht mehr 0,5°, sondern `CITY_SPREAD_MAX_KM = 35` über Haversine um den Mittelpunkt. Berlin kann dadurch `RESOLVED` werden. |
-| `core/location.py` | **Verhalten, Nutzertext** | Warnung bei ungelöstem Wohnort in Alltagssprache, mit Bitte um PLZ. Die Auflösung selbst bleibt in `geo_resolve`. |
+| `core/geo_resolve.py` | **Verhalten / Scope** | `resolve_city_pgeocode`: zuerst exakter Ortsname auf der vollen lokalen Tabelle (`_exact_city_rows`), Fuzzy nur als Fallback. Streuung nicht mehr 0,5°, sondern `CITY_SPREAD_MAX_KM = 35` über Haversine um den Mittelpunkt. Berlin kann dadurch `RESOLVED` werden. (im gemergten #64 nicht enthalten) |
+| `core/location.py` | **Verhalten, Nutzertext** | Warnung bei ungelöstem Wohnort in Alltagssprache, mit Bitte um PLZ. Die Auflösung selbst bleibt in `geo_resolve`. (im gemergten #64 nicht enthalten) |
 | `app/main.py` | **Verhalten / Scope** | `run_pipeline(..., recover_interrupted: bool = True)`. Die DB-Recovery (`applying` → `needs_review`) ist steuerbar. Default bleibt `True` für Headless/Scheduler. |
 | `desktop/workers.py` | **Verhalten, eine Zeile** | `PipelineWorker` übergibt `recover_interrupted=False`. GUI-Suche heilt nicht bei jedem Start erneut. |
-| `desktop/widgets/cv_import_dialog.py` | **UI-QA** | Nur beschriftete Standardbuttons. Parse-Pfad unverändert synchron. |
+| `desktop/widgets/cv_import_dialog.py` | **UI-QA** | Nur beschriftete Standardbuttons. Parse-Pfad unverändert synchron. (durch #69 ersetzt, Import im Kindprozess) |
 
 ### Überlappung Data Engine / Standort
 
-Kanonisch auf `main`: `docs/architecture/local_first_google_calendar_and_geo.md` und `docs/architecture/canonical-product-decisions.md` — lokale DACH-Auflösung, Reihenfolge Koordinaten → Land+PLZ → eindeutiges Land+Ort → UNKNOWN, nie raten. #64 ändert genau die Stadtauflösung (Berlin-PLZ versus Fuzzy-Top-100, 35-km-Streuung). Das ist Standortlogik, die der Data-Engine-Arbeit gehört. Vor dem Merge von #64 braucht dieser Hunk eine Sicht des Standort-Owners. Halle/Frankfurt sollen laut den neuen Tests in `tests/test_local_first_geo.py` `AMBIGUOUS` bleiben; das ersetzt die Owner-Sicht nicht.
+Kanonisch auf `main`: `docs/architecture/local_first_google_calendar_and_geo.md` und `docs/architecture/canonical-product-decisions.md` — lokale DACH-Auflösung, Reihenfolge Koordinaten → Land+PLZ → eindeutiges Land+Ort → UNKNOWN, nie raten. #64 ändert genau die Stadtauflösung (Berlin-PLZ versus Fuzzy-Top-100, 35-km-Streuung); im gemergten #64 nicht enthalten. Das ist Standortlogik, die der Data-Engine-Arbeit gehört. Vor dem Merge von #64 braucht dieser Hunk eine Sicht des Standort-Owners. Halle/Frankfurt sollen laut den neuen Tests in `tests/test_local_first_geo.py` `AMBIGUOUS` bleiben; das ersetzt die Owner-Sicht nicht.
 
 ### CI beim Lesen (2026-09-24)
 
