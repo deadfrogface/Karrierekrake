@@ -16,9 +16,15 @@ import pytest
 pytest.importorskip("PySide6.QtWidgets")
 
 from PySide6.QtCore import QCoreApplication, QEvent
-from PySide6.QtWidgets import QApplication, QLabel
+from PySide6.QtWidgets import QApplication, QDialog, QLabel, QMessageBox
 
-from core.config import ExperienceEntry
+from core.config import (
+    EducationEntry,
+    ExperienceEntry,
+    LanguageEntry,
+    QualificationsConfig,
+    SourcedText,
+)
 from desktop.i18n import i18n, tr
 from desktop.pages.profile import ProfilePage
 from desktop.services import ConfigService
@@ -78,6 +84,41 @@ def _more_button_in_body(page: ProfilePage) -> bool:
     return any(
         body.itemAt(index).widget() is page._exp_more for index in range(body.count())
     )
+
+
+def _layout_texts(layout, *, object_prefix: str) -> list[str]:
+    texts: list[str] = []
+    for index in range(layout.count()):
+        widget = layout.itemAt(index).widget()
+        if not isinstance(widget, QLabel):
+            if widget is None:
+                continue
+            for label in widget.findChildren(QLabel):
+                if label.objectName().startswith(object_prefix):
+                    texts.append(label.text())
+            continue
+        if widget.objectName().startswith(object_prefix):
+            texts.append(widget.text())
+    return texts
+
+
+def _three_jobs() -> list[ExperienceEntry]:
+    return [
+        ExperienceEntry(title="Buchhalter", company="Nordlicht GmbH"),
+        ExperienceEntry(title="Teamleitung", company="Contoso Süd"),
+        ExperienceEntry(title="Sachbearbeitung", company="Fabrikam"),
+    ]
+
+
+def _arm_deleted_more_button(page: ProfilePage) -> None:
+    """Place _exp_more, queue deleteLater, then run DeferredDelete.
+
+    The following refresh_cards() is the one that used to call setText on the
+    dead button and return before education, skills and languages were rebuilt.
+    """
+    page.refresh_cards()
+    page.refresh_cards()
+    _flush_deferred_deletes()
 
 
 def test_refresh_cards_keeps_experience_more_button_after_deferred_delete(
@@ -205,3 +246,109 @@ def test_more_button_not_visible_when_experience_cleared(qapp, config_service):
     assert not _more_button_in_body(page)
     assert not page._exp_more.isVisible()
     assert page._exp_more.isHidden()
+
+
+def test_second_refresh_rebuilds_education_skills_and_languages(qapp, config_service):
+    """A refresh after DeferredDelete must paint the new qualification cards.
+
+    Navigation (_navigate -> load_from_config -> refresh_cards) raises at
+    _exp_more.setText once the button's C++ object is gone. That aborts the
+    function after the experience card was cleared and before education,
+    skills and languages are rebuilt, so those cards keep the previous text.
+    """
+    i18n.set_language("de")
+    cfg = config_service.load()
+    quals = cfg.profile.qualifications
+    quals.work_experience = _three_jobs()
+    quals.education = [EducationEntry(qualification="Alte Ausbildung", institution="Alte Schule")]
+    quals.skills = [SourcedText(value="Excel", source="manual")]
+    quals.languages = [LanguageEntry(language="Deutsch", level="C2")]
+    config_service.save(cfg)
+
+    page = ProfilePage(config_service)
+    page.load_from_config()
+    assert _layout_texts(page._edu_body, object_prefix="NextActionTitle") == ["Alte Ausbildung"]
+    assert "Excel" in _layout_texts(page._skills_row, object_prefix="Badge")
+    assert "Deutsch (C2)" in _layout_texts(page._lang_body, object_prefix="Badge")
+
+    _arm_deleted_more_button(page)
+
+    cfg = config_service.load()
+    quals = cfg.profile.qualifications
+    quals.education = [EducationEntry(qualification="Neue Ausbildung", institution="Neue Hochschule")]
+    quals.skills = [SourcedText(value="DATEV", source="cv")]
+    quals.languages = [LanguageEntry(language="Englisch", level="B2")]
+    config_service.save(cfg)
+    page.load_from_config()
+
+    education = _layout_texts(page._edu_body, object_prefix="NextActionTitle")
+    skills = _layout_texts(page._skills_row, object_prefix="Badge")
+    languages = _layout_texts(page._lang_body, object_prefix="Badge")
+    assert education == ["Neue Ausbildung"]
+    assert "Alte Ausbildung" not in education
+    assert "DATEV" in skills
+    assert "Excel" not in skills
+    assert "Englisch (B2)" in languages
+    assert "Deutsch (C2)" not in languages
+
+
+def test_import_from_cv_shows_updated_message_after_reload(qapp, config_service, tmp_path, monkeypatch):
+    """Übernehmen must reach the success dialog after load_from_config().
+
+    The dialog is replaced so the test does not parse a CV. The saved profile
+    already has 3 positions, so the reload hits the deleted more-button on
+    unpatched main and never calls QMessageBox.information.
+    """
+    i18n.set_language("de")
+    cv_file = tmp_path / "lebenslauf.pdf"
+    cv_file.write_bytes(b"%PDF-1.4\n")
+    cfg = config_service.load()
+    cfg.application.cv_path = str(cv_file)
+    quals = cfg.profile.qualifications
+    quals.work_experience = _three_jobs()
+    quals.education = [EducationEntry(qualification="Alte Ausbildung", institution="Alte Schule")]
+    quals.skills = [SourcedText(value="Excel", source="manual")]
+    quals.languages = [LanguageEntry(language="Deutsch", level="C2")]
+    config_service.save(cfg)
+
+    imported = QualificationsConfig(
+        work_experience=_three_jobs(),
+        education=[EducationEntry(qualification="Importierte Ausbildung", institution="IHK")],
+        skills=[SourcedText(value="SAP", source="cv")],
+        languages=[LanguageEntry(language="Französisch", level="A2")],
+    )
+
+    class _AcceptedImport:
+        DialogCode = QDialog.DialogCode
+
+        def __init__(self, *_args, **_kwargs) -> None:
+            self.result_quals = imported
+            self.result_application = None
+
+        def exec(self) -> QDialog.DialogCode:
+            return QDialog.DialogCode.Accepted
+
+    monkeypatch.setattr("desktop.pages.profile.CvImportDialog", _AcceptedImport)
+    shown: list[tuple[str, str]] = []
+
+    def _information(_parent, title, text, *_args, **_kwargs):
+        shown.append((str(title), str(text)))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "information", _information)
+
+    page = ProfilePage(config_service)
+    page.load_from_config()
+    _arm_deleted_more_button(page)
+    page.import_from_cv()
+
+    assert shown == [(tr("profile.cv"), tr("profile.cv_updated"))]
+    assert tr("profile.cv_updated") == "Profil aktualisiert."
+    education = _layout_texts(page._edu_body, object_prefix="NextActionTitle")
+    skills = _layout_texts(page._skills_row, object_prefix="Badge")
+    languages = _layout_texts(page._lang_body, object_prefix="Badge")
+    assert education == ["Importierte Ausbildung"]
+    assert "SAP" in skills
+    assert "Excel" not in skills
+    assert "Französisch (A2)" in languages
+    assert "Deutsch (C2)" not in languages
