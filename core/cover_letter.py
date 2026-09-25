@@ -684,7 +684,9 @@ def cached_profile_evidence(config: AppConfig) -> _ProfileEvidence:
     return evidence
 
 
-def evidenced_stations(config: AppConfig) -> list[ExperienceEntry]:
+def evidenced_stations(
+    config: AppConfig, *, source_text: str = ""
+) -> list[ExperienceEntry]:
     """Confirmed, non-debt professional stations. Training rows are excluded.
 
     When ``ApplicationProfile.cv_source_text`` (or an explicit source) is set,
@@ -693,7 +695,7 @@ def evidenced_stations(config: AppConfig) -> list[ExperienceEntry]:
     """
     if _debt_blocks(config) or not _section_confirmed(config, "work_experience"):
         return []
-    source = resolve_cover_letter_source_text(config)
+    source = resolve_cover_letter_source_text(config, source_text=source_text)
     stations: list[ExperienceEntry] = []
     for exp in list(config.profile.qualifications.work_experience or []):
         if _is_training_row(exp):
@@ -738,8 +740,10 @@ def evidenced_skills_matching_description(config: AppConfig, description: str) -
     return hits
 
 
-def _matching_station(config: AppConfig, job: Job) -> ExperienceEntry | None:
-    stations = evidenced_stations(config)
+def _matching_station(
+    config: AppConfig, job: Job, *, source_text: str = ""
+) -> ExperienceEntry | None:
+    stations = evidenced_stations(config, source_text=source_text)
     if not stations:
         return None
     evidence = cached_profile_evidence(config)
@@ -820,6 +824,7 @@ def compose_cover_letter(
     config: AppConfig,
     *,
     contact_claims: Any | None = None,
+    source_text: str = "",
 ) -> CoverLetterResult:
     """Render a letter or a structured refusal. Never a placeholder letter.
 
@@ -834,7 +839,7 @@ def compose_cover_letter(
     if _company_missing(job):
         return _refusal(CoverReason.COMPANY_MISSING)
     skills_list = evidenced_skills_matching_description(config, description)
-    exp = _matching_station(config, job)
+    exp = _matching_station(config, job, source_text=source_text)
     if exp is None and not skills_list:
         return _refusal(CoverReason.NO_EVIDENCE)
     if exp is not None:
@@ -901,9 +906,12 @@ def render_cover_letter(
     config: AppConfig,
     *,
     contact_claims: Any | None = None,
+    source_text: str = "",
 ) -> str:
     """Return letter text. Refusals raise; they are not returned as a letter."""
-    result = compose_cover_letter(job, config, contact_claims=contact_claims)
+    result = compose_cover_letter(
+        job, config, contact_claims=contact_claims, source_text=source_text
+    )
     if not result.ok or result.refusal is not None:
         spec = REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE]
         refusal = result.refusal or CoverLetterRefusal(

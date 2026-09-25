@@ -327,6 +327,10 @@ def filter_parsed_for_import(parsed: dict[str, Any]) -> dict[str, Any]:
 
     Non-section uncertain markers (e.g. ``languages_reclassified``) must not
     wipe correctly classified data — reclassified tokens are already routed.
+
+    When ``source_text`` is present, education/employment rows that are not
+    grounded in that text are stripped (import stays open; Matching still
+    fails closed via ``confirm_extract_for_downstream``).
     """
     out = dict(parsed)
     conf = dict(parsed.get("confidence") or {})
@@ -350,6 +354,24 @@ def filter_parsed_for_import(parsed: dict[str, Any]) -> dict[str, Any]:
     unclear = list(parsed.get("uncertain_items") or [])
     if unclear:
         out["uncertain_items"] = unclear
+
+    src = str(out.get("source_text") or out.get("raw_text") or "").strip()
+    if src:
+        from core.cv_extract_confirmation import confirm_extract_for_downstream
+
+        before_edu = list(out.get("education") or [])
+        before_work = list(out.get("work_experience") or [])
+        grounded = confirm_extract_for_downstream(
+            out, source_text=src, fail_on_invented=False
+        ).parsed
+        out["education"] = list(grounded.get("education") or [])
+        out["work_experience"] = list(grounded.get("work_experience") or [])
+        if grounded.get("extract_confirmation") is not None:
+            out["extract_confirmation"] = grounded["extract_confirmation"]
+        if len(out["education"]) < len(before_edu) or len(out["work_experience"]) < len(
+            before_work
+        ):
+            out["needs_manual_review"] = True
     return out
 
 

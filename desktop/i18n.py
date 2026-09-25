@@ -536,7 +536,6 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.progress_preflight": "Lokales CV-Modell wird geprüft…",
         "cv_import.progress_pdf": "PDF wird gelesen…",
         "cv_import.progress_model": "Lokales CV-Modell arbeitet…",
-        "cv_import.cancelled": "Abgebrochen.",
         "btn.reset_profile": "Profil zurücksetzen",
         "settings.general": "Allgemein",
         "settings.appearance": "Darstellung",

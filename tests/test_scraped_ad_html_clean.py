@@ -31,12 +31,6 @@ _XFAIL_CHROME = (
     "patch it. Planned integration: drop that chrome inside strip_markup / "
     "job_from_job_posting after #67 lands."
 )
-_XFAIL_NBSP = (
-    "BeautifulSoup.get_text decodes &nbsp; to U+00A0 and does not turn it "
-    "into a normal space. Cleaner lives in search/jsonld.py, which open PR "
-    "#67 already changes (search.job_schema.strip_markup). Not patched here. "
-    "Planned integration: normalize U+00A0 in strip_markup after #67 lands."
-)
 
 
 @dataclass(frozen=True)
@@ -337,7 +331,6 @@ def test_synthetic_html_cleaner_keeps_lines_and_drops_tags(case: HtmlCase):
     _assert_case(case)
 
 
-@pytest.mark.xfail(reason=_XFAIL_NBSP, strict=True)
 def test_nbsp_is_a_normal_space():
     """&nbsp; between words should not survive as U+00A0."""
     _assert_case(regression_case("nbsp"))

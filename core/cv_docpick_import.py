@@ -922,7 +922,7 @@ _LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "2048"))
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
 # Hard Peak-RSS gate for target hardware: Intel Core i3 (11th gen), exactly 8 GB RAM.
-# Soft ≤12 GB / ≤12000 MB is NOT success and must not appear as a pass condition.
+# RETIRED_NOT_A_PASS: former soft 12 GB/12000 MB ceiling is not a pass condition.
 # Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
 # (process group: App + Docling + Qwen/llama.cpp + ALL import children).
 # Agent-VM numbers are NOT ship evidence. No automatic Phi fallback.

@@ -5,7 +5,7 @@ NOT ship evidence. Ship requires Windows Job Object PeakJobMemoryUsed on the
 real Intel Core i3 / 8 GB Windows laptop:
   scripts/run_docpick_job_object_peak_windows.ps1
 
-Hard gate: ≤ 3_300_000_000 bytes (process group). Soft ≤12 GB obsolete.
+Hard gate: ≤ 3_300_000_000 bytes (process group). RETIRED_NOT_A_PASS soft 12 GB obsolete.
 NO automatic Phi fallback.
 """
 
@@ -195,7 +195,7 @@ def main() -> int:
         "gate_peak_rss_mb": gate_mb,
         "gate_peak_rss_gb": round(gate_bytes / 1e9, 3),
         "obsolete_soft_gate_mb": 12000,
-        "obsolete_soft_gate_note": "Soft ≤12 GB / ≤12000 MB is NOT success.",
+        "obsolete_soft_gate_note": "RETIRED_NOT_A_PASS: former soft 12 GB/12000 MB is NOT success.",
         "no_phi_fallback": True,
         "measured": {
             "import_process_peak_rss_mb": round(self_peak, 1),
@@ -232,7 +232,7 @@ def main() -> int:
                 "# Peak-RSS (informational Agent-VM — NOT ship evidence)",
                 "",
                 f"- **Target (ship):** Intel Core i3 (11th gen), 8 GB RAM Windows + Job Object",
-                f"- **Gate:** ≤ **3_300_000_000 bytes** (hard fail above) — soft ≤12 GB is obsolete",
+                f"- **Gate:** ≤ **3_300_000_000 bytes** (hard fail above) — RETIRED_NOT_A_PASS soft 12 GB obsolete",
                 f"- **PDF:** `{pdf.relative_to(ROOT)}`",
                 f"- **Import process Peak RSS:** {self_peak:.1f} MiB",
                 f"- **llama.cpp server Peak RSS:** {llama_peak:.1f} MiB",

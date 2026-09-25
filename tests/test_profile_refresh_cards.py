@@ -8,6 +8,7 @@ on the next event-loop pass; the following refresh then calls setText on it.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -328,7 +329,8 @@ def test_import_from_cv_shows_updated_message_after_reload(qapp, config_service,
     class _AcceptedImport:
         DialogCode = QDialog.DialogCode
 
-        def __init__(self, *_args, **_kwargs) -> None:
+        def __init__(self, cv_path, *_args, **_kwargs) -> None:
+            self.cv_path = Path(cv_path)
             self.result_quals = imported
             self.result_application = None
 
