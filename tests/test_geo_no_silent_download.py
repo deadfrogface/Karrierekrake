@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import socket
@@ -436,3 +437,104 @@ def test_deleted_country_file_does_not_connect(
     again = resolve_postal_pgeocode("10115", "DE")
     assert again.ok
     assert stats == ["DE.txt", "DE.txt", "DE.txt"]
+
+
+_POISON_DE = (
+    "country_code,postal_code,place_name,state_name,state_code,county_name,"
+    "county_code,community_name,community_code,latitude,longitude,accuracy\n"
+    "DE,10115,Poison,Poison,BE,,,,,,1.1111,2.2222,1\n"
+)
+
+
+def _block_sockets(monkeypatch: pytest.MonkeyPatch) -> dict[str, int]:
+    attempts = {"connect": 0, "dns": 0}
+
+    def _blocked_connect(self, address):
+        del address
+        if self.family in (socket.AF_INET, socket.AF_INET6):
+            attempts["connect"] += 1
+        raise OSError("network blocked")
+
+    def _blocked_dns(*args, **kwargs):
+        del args, kwargs
+        attempts["dns"] += 1
+        raise OSError("dns blocked")
+
+    monkeypatch.setattr(socket.socket, "connect", _blocked_connect)
+    monkeypatch.setattr(socket, "getaddrinfo", _blocked_dns)
+    return attempts
+
+
+def test_pgeocode_imported_first_reads_manifest_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Import-time STORAGE_DIR must not win over the active dataset file."""
+    assert os.environ.get("PGEOCODE_DATA_DIR", "") == ""
+    import importlib
+
+    import pgeocode
+
+    # Re-run the import-time binding (pgeocode.py lines 18-21) while the
+    # env var is still empty, as on the first postcode resolution.
+    importlib.reload(pgeocode)
+    cache = Path.home() / ".cache" / "pgeocode"
+    assert Path(pgeocode.STORAGE_DIR).resolve() == cache.resolve()
+    cache.mkdir(parents=True, exist_ok=True)
+    poison = cache / "DE.txt"
+    previous = poison.read_bytes() if poison.is_file() else None
+    poison.write_text(_POISON_DE, encoding="utf-8")
+    attempts = _block_sockets(monkeypatch)
+    try:
+        info = _ready_dataset(tmp_path, monkeypatch)
+        res = resolve_postal_pgeocode("10115", "DE")
+        assert res.ok
+        assert res.latitude == pytest.approx(52.5323, abs=1e-4)
+        from core import geo_resolve
+
+        loaded = Path(geo_resolve._pgeocode_index["DE"]._data_path).resolve()
+        expected = (Path(info.path) / "geonames" / "DE.txt").resolve()
+        assert loaded == expected
+        assert cache.resolve() not in loaded.parents
+        manifest = json.loads(
+            (Path(info.path) / "manifest.json").read_text(encoding="utf-8")
+        )
+        assert geo_dataset._sha256(loaded) == manifest["files"]["DE"]["sha256"]
+        assert attempts == {"connect": 0, "dns": 0}
+        assert Path(pgeocode.STORAGE_DIR).resolve() == expected.parent
+    finally:
+        if previous is None:
+            poison.unlink(missing_ok=True)
+        else:
+            poison.write_bytes(previous)
+
+
+def test_missing_file_wrapper_blocks_download_without_sockets(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Nominatim must not urlopen when the country file is gone."""
+    info = _ready_dataset(tmp_path, monkeypatch)
+    country = Path(info.path) / "geonames" / "DE.txt"
+    original = country.read_bytes()
+    country.unlink()
+    assert get_geo_dataset_manager().ensure_active().valid
+    attempts = _block_sockets(monkeypatch)
+    from core import geo_resolve
+
+    try:
+        wrapped = geo_resolve._pgeocode_nominatim("DE")
+        assert wrapped is None
+        res = resolve_postal_pgeocode("10115", "DE")
+        _assert_unresolved(res)
+        assert attempts == {"connect": 0, "dns": 0}
+        assert "DE" not in geo_resolve._pgeocode_index
+
+        import pgeocode
+
+        assert pgeocode.DOWNLOAD_URL == []
+        pgeocode.STORAGE_DIR = str(country.parent)
+        with pytest.raises(RuntimeError, match="refusing pgeocode download"):
+            pgeocode.Nominatim("de")
+        assert attempts == {"connect": 0, "dns": 0}
+    finally:
+        if not country.exists():
+            country.write_bytes(original)

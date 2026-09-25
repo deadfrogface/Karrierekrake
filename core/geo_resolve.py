@@ -240,6 +240,40 @@ def _offline_pgeocode_dir(info: Any) -> str | None:
 _nominatim_build_lock = threading.Lock()
 
 
+def _refuse_pgeocode_download(*_args: object, **_kwargs: object) -> Any:
+    """Stand-in for pgeocode's urlopen helpers. Never touches the network."""
+    raise RuntimeError("refusing pgeocode download")
+
+
+def _lock_pgeocode_downloads(module: Any) -> None:
+    """Make pgeocode's download branch unreachable in this process.
+
+    ``_get_data`` calls ``urllib.request.urlopen`` with no timeout. Clearing
+    ``DOWNLOAD_URL`` and replacing both helpers means a missing country file
+    raises here instead of blocking on DNS or a captive portal.
+    """
+    module.DOWNLOAD_URL = []
+    module._open_extract_url = _refuse_pgeocode_download
+    module._open_extract_cycle_url = _refuse_pgeocode_download
+
+
+def _import_pgeocode_offline() -> Any | None:
+    """Import pgeocode and disable its downloader.
+
+    pgeocode 0.5 binds ``STORAGE_DIR`` at import from ``PGEOCODE_DATA_DIR``
+    (default ``~/.cache/pgeocode``). This module cannot guarantee it is the
+    first importer, and a later ``os.environ`` write does not move that
+    global. Callers assign ``STORAGE_DIR`` explicitly before ``Nominatim``.
+    """
+    try:
+        import pgeocode
+    except ImportError:
+        logger.debug("pgeocode not installed — offline PLZ resolution unavailable")
+        return None
+    _lock_pgeocode_downloads(pgeocode)
+    return pgeocode
+
+
 def _construct_offline_nominatim(
     pgeocode: Any, country_code: str, country_file: str
 ) -> Any:
@@ -286,6 +320,10 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
     if cached is not None:
         return cached
 
+    pgeocode = _import_pgeocode_offline()
+    if pgeocode is None:
+        return None
+
     info = get_geo_dataset_manager().ensure_active()
     data_dir = _offline_pgeocode_dir(info)
     if data_dir is None:
@@ -314,13 +352,8 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
             f"country file {cc}.txt missing in active dataset",
         )
         return None
-    try:
-        import pgeocode
-    except ImportError:
-        logger.debug("pgeocode not installed — offline PLZ resolution unavailable")
-        return None
-    # pgeocode 0.5 fixes STORAGE_DIR at import. Point it at the active
-    # dataset even when this module was imported earlier in the process.
+    # Import-time STORAGE_DIR stays at ~/.cache/pgeocode when pgeocode was
+    # imported before PGEOCODE_DATA_DIR existed. Assign the active dir here.
     pgeocode.STORAGE_DIR = data_dir
     try:
         nom = _construct_offline_nominatim(pgeocode, cc, country_file)
