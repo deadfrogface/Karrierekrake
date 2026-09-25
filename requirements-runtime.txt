@@ -15,7 +15,9 @@ lxml>=5.0
 python-jobspy>=1.1.0
 PySide6>=6.6
 # Optional: local DACH geo (GeoNames via pgeocode — offline production path).
-pgeocode>=0.4.0
+# Exact pin: version the Windows EXE job installed on main dcae58b (0.5.0).
+# The rest of the runtime tree is pinned in constraints-runtime.txt.
+pgeocode==0.5.0
 # geopy intentionally NOT a production geocoder (Nominatim policy / no silent online).
 # Floor pins for transitive deps with known High/Critical advisories when
 # resolved from loose lower bounds (OSV / pip-audit defense in depth).
