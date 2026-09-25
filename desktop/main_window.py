@@ -6,7 +6,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 
 from PySide6.QtCore import QObject, QRect, Qt, QTimer, Signal
-from PySide6.QtGui import QCloseEvent, QGuiApplication, QPixmap
+from PySide6.QtGui import QCloseEvent, QGuiApplication, QPixmap, QShowEvent
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -56,11 +56,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.config_service = config_service
         self._force_quit = False
+        self._shutting_down = False
+        self._geo_preload_armed = False
         self._geo_bridge = _GeoIndexBridge(self)
         self._geo_bridge.ready.connect(self._refresh_home_notices_after_geo)
         from core.geo_resolve import (
             bind_ui_thread,
-            preload_geo_index_async,
             when_geo_index_ready,
         )
 
@@ -70,8 +71,6 @@ class MainWindow(QMainWindow):
             self._geo_bridge.ready.emit()
 
         when_geo_index_ready(_emit_geo_ready)
-        preload_geo_index_async()
-        self._shutting_down = False
         self._worker = None
         self._thread = None
         self.setMinimumSize(900, 650)
@@ -240,6 +239,21 @@ class MainWindow(QMainWindow):
         self._restore_geometry()
         self._navigate(0)
         self.refresh_all()
+
+    def showEvent(self, event: QShowEvent) -> None:
+        super().showEvent(event)
+        if self._geo_preload_armed or self._shutting_down:
+            return
+        self._geo_preload_armed = True
+        # Queued so show() returns before the loader thread is started.
+        QTimer.singleShot(0, self._start_geo_preload)
+
+    def _start_geo_preload(self) -> None:
+        if self._shutting_down:
+            return
+        from core.geo_resolve import preload_geo_index_async
+
+        preload_geo_index_async()
 
     def _restore_geometry(self) -> None:
         state = self.config_service.get_window_state()

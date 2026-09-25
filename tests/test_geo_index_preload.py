@@ -12,6 +12,7 @@ import pytest
 
 pytest.importorskip("PySide6.QtWidgets")
 
+from PySide6.QtCore import QEventLoop
 from PySide6.QtWidgets import QApplication, QLabel, QMessageBox, QVBoxLayout, QWidget
 
 from core.config import LocationConfig
@@ -21,6 +22,7 @@ from core.geo_resolve import (
     bind_ui_thread,
     hold_geo_preload_for_tests,
     preload_geo_index_async,
+    preload_worker_ident,
     reset_pgeocode_index_for_tests,
     resolve_city_pgeocode,
     resolve_place,
@@ -78,10 +80,64 @@ def config_service(tmp_path, monkeypatch):
     return ConfigService()
 
 
+def _pump_until_worker_recorded(qapp: QApplication, timeout_s: float = 10.0) -> int:
+    """Pump the GUI loop until the loader body has stored its thread ident.
+
+    ``Event.wait`` returns as soon as the worker records itself. The timeout
+    only bounds a hang. There is no sleep-then-assert.
+    """
+    deadline = time.monotonic() + timeout_s
+    while preload_worker_ident() is None:
+        if time.monotonic() >= deadline:
+            pytest.fail("preload worker did not record its thread")
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        geo_resolve._preload_worker_recorded.wait(timeout=min(0.05, remaining))
+    ident = preload_worker_ident()
+    if ident is None:
+        pytest.fail("preload worker did not record its thread")
+    return ident
+
+
 def _wait_thread(thread: threading.Thread | None) -> None:
     assert thread is not None
     thread.join(timeout=30)
     assert not thread.is_alive()
+
+
+def test_main_window_preloads_off_gui_thread_only_after_show(qapp, config_service, geo_ready, monkeypatch):
+    monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
+    from desktop.main_window import MainWindow
+
+    hold = threading.Event()
+    hold_geo_preload_for_tests(hold)
+    win = MainWindow(config_service)
+    try:
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        assert not win.isVisible()
+        assert preload_worker_ident() is None
+        assert geo_resolve._preload_thread is None
+        gui_ident = threading.get_ident()
+        win.show()
+        ident = _pump_until_worker_recorded(qapp)
+        assert win.isVisible()
+        assert ident != gui_ident
+        assert ident != threading.main_thread().ident
+        worker = geo_resolve._preload_thread
+        assert worker is not None
+        assert worker.ident == ident
+        assert worker is not threading.current_thread()
+        assert worker.is_alive()
+    finally:
+        hold.set()
+        worker = geo_resolve._preload_thread
+        win._shutting_down = True
+        win.close()
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        if worker is not None:
+            worker.join(timeout=30)
 
 
 def test_preload_runs_in_the_background(geo_ready):

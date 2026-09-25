@@ -181,6 +181,8 @@ _resolution_cache: dict[tuple, Any] = {}
 _load_lock = threading.Lock()
 _preload_thread: threading.Thread | None = None
 _preload_done = threading.Event()
+_preload_worker_ident: int | None = None
+_preload_worker_recorded = threading.Event()
 _ui_thread_id: int | None = None
 _ready_callbacks: list[Callable[[], None]] = []
 _test_hold: threading.Event | None = None
@@ -207,13 +209,13 @@ def hold_geo_preload_for_tests(event: threading.Event | None) -> None:
     _test_hold = event
 
 
-def _ui_must_not_block() -> bool:
-    if _ui_thread_id is None or threading.get_ident() != _ui_thread_id:
-        return False
-    worker = _preload_thread
-    if worker is None or not worker.is_alive() or _preload_done.is_set():
-        return False
-    return True
+def preload_worker_ident() -> int | None:
+    """Ident recorded by the loader body once it is running, else None."""
+    return _preload_worker_ident
+
+
+def _caller_is_ui_thread() -> bool:
+    return _ui_thread_id is not None and threading.get_ident() == _ui_thread_id
 
 
 def _all_countries_loaded() -> bool:
@@ -275,6 +277,13 @@ def preload_geo_index_async() -> threading.Thread | None:
 
 
 def _preload_worker(gen: int) -> None:
+    global _preload_worker_ident
+    if gen != _generation:
+        return
+    # Record the worker thread before any wait or file read so tests can
+    # observe it without racing the load itself.
+    _preload_worker_ident = threading.get_ident()
+    _preload_worker_recorded.set()
     hold = _test_hold
     if hold is not None:
         hold.wait(timeout=10)
@@ -298,9 +307,9 @@ def _ensure_geo_data() -> str:
 def _pgeocode_nominatim(country_code: str) -> Any | None:
     """Offline GeoNames index — never calls the public Nominatim HTTP API.
 
-    The constructed ``Nominatim`` is process-wide. The UI thread does not build
-    it while ``preload_geo_index_async`` is still running; callers then see
-    ``_INDEX_LOADING`` and must not invent coordinates.
+    The constructed ``Nominatim`` is process-wide. The UI thread never builds
+    it and never waits for it. Until the background loader publishes the index,
+    UI callers see ``_INDEX_LOADING`` and must not invent coordinates.
     """
     cc = normalize_country_code(country_code)
     if cc not in DACH_COUNTRY_CODES:
@@ -308,7 +317,9 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
     hit = _pgeocode_index.get(cc)
     if hit is not None:
         return hit
-    if _ui_must_not_block():
+    # The Qt UI thread never builds or joins the index. Before the background
+    # loader has published it, callers get _INDEX_LOADING and no coordinates.
+    if _caller_is_ui_thread():
         return _INDEX_LOADING
     worker = _preload_thread
     if (
@@ -321,7 +332,7 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
         hit = _pgeocode_index.get(cc)
         if hit is not None:
             return hit
-        if _ui_must_not_block():
+        if _caller_is_ui_thread():
             return _INDEX_LOADING
     with _load_lock:
         hit = _pgeocode_index.get(cc)
@@ -362,7 +373,7 @@ def _loading_resolution(country_code: str) -> PlaceResolution:
 
 
 def reset_pgeocode_index_for_tests() -> None:
-    global _generation, _preload_thread, _ui_thread_id, _test_hold
+    global _generation, _preload_thread, _ui_thread_id, _test_hold, _preload_worker_ident
     with _load_lock:
         _generation += 1
         _pgeocode_index.clear()
@@ -371,6 +382,8 @@ def reset_pgeocode_index_for_tests() -> None:
         _preload_thread = None
         _ui_thread_id = None
         _test_hold = None
+        _preload_worker_ident = None
+        _preload_worker_recorded.clear()
         _preload_done.clear()
 
 
