@@ -18,11 +18,11 @@ Sprache ist Deutsch oder Englisch. Das Thema folgt dem System oder ist hell oder
 
 - Bundesagentur für Arbeit: `BundesagenturSource` in `search/bundesagentur.py`. Tests prüfen die Remote-Erkennung und den Health-Check.
 - Indeed: `IndeedSource` in `search/indeed.py` mappt Zeilen von JobSpy. Tests prüfen diese Zuordnung.
-- StepStone lässt sich einschalten: `StepstoneSource` in `search/stepstone.py`. Ein Test lässt die Suche gegen festes HTML laufen und erwartet einen Treffer.
-- XING lässt sich einschalten: `XingSource` in `search/xing.py`. Ein Test lässt die Suche gegen festes JSON-LD laufen und erwartet einen Treffer.
+- StepStone lässt sich einschalten: `StepstoneSource` in `search/stepstone.py`. Ein Test lässt die Suche gegen festes HTML laufen und erwartet mindestens einen Treffer.
+- XING lässt sich einschalten: `XingSource` in `search/xing.py`. Ein Test lässt die Suche gegen festes JSON-LD laufen und erwartet mindestens einen Treffer.
 - LinkedIn lässt sich einschalten. Der Abruf läuft über JobSpy und ist ungetestet.
 
-**Standort.** Eine Postleitzahl mit Land und ein eindeutiger Ort werden lokal aufgelöst. Ein Ortsname ohne Land und eine Postleitzahl, die in mehreren Ländern vorkommt, bleiben unaufgelöst. Fehlt der Wohnort, sagt die Übersicht das. Liegt nur ein Text vor und der letzte Suchlauf hat den Wohnort nicht aufgelöst, bittet die Übersicht um eine Postleitzahl; die Jobs bleiben dann unabhängig von der Entfernung sichtbar.
+**Standort.** Eine Postleitzahl wird lokal aufgelöst, wenn sie eindeutig ist oder der Ort sie eindeutig macht; ein Ortsname braucht ein Land. Fehlt der Wohnort, sagt die Übersicht das. Liegt nur ein Text vor und der letzte Suchlauf hat den Wohnort nicht aufgelöst, bittet die Übersicht um eine Postleitzahl; die Jobs bleiben dann unabhängig von der Entfernung sichtbar.
 
 Die Fahrtstrecke stellst du im Assistenten unter „Max. Pendelweg“ und unter Einstellungen → Erweitert → Suche als „Max. Fahrtstrecke (km)“ ein. In der Jobliste filterst du mit „Max. km“. Nach der fachlichen Einschätzung fallen Stellen außerhalb dieses Umkreises weg. Voll-Remote bleibt drin, wenn Remote erlaubt ist. Eine unbekannte Entfernung gilt nicht als 0 km. Die Jobkarte zeigt die Luftlinie, „Standort nicht prüfbar“ oder „Remote (kein Radius)“.
 
@@ -58,6 +58,7 @@ Offene Änderungen, nicht Teil dieses Stands und ohne Zusage, wann sie landen:
 - Firmenkarriereseiten sind ein Platzhalter und liefern keine Treffer.
 - Wenn Qt kein System-Tray meldet, lautet der Dialog auf Englisch: „System tray is not available. The app can still be used.“ Das wurde unter Linux beobachtet.
 - Der Knopf ‚Geodaten aktualisieren‘ ist im Code vorhanden, in der Oberfläche derzeit aber nicht erreichbar.
+- Fehlt die lokale Länderdatei für Postleitzahlen, kann die Bibliothek pgeocode sie derzeit ohne Hinweis aus dem Internet (download.geonames.org) nachladen. Ein Schutz dagegen ist in Arbeit.
 
 ## Installation und Start
 
