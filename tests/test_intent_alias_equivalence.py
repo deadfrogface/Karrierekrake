@@ -210,9 +210,11 @@ def _public_snapshot(texts: list[str], labels: list[str]) -> list[object]:
 def test_prepared_alias_cache_is_keyed_and_bounded() -> None:
     """Cache key is the regex sources plus every alias, not one global slot."""
     assert aliases._cached_alias_targets.cache_info().maxsize == aliases._PREPARED_ALIAS_CACHE_MAXSIZE
+    assert aliases._alias_cache_key_cached.cache_info().maxsize == aliases._PREPARED_ALIAS_CACHE_MAXSIZE
     assert aliases._PREPARED_ALIAS_CACHE_MAXSIZE == 32
     for fam in ROLE_FAMILIES:
         key = aliases._alias_cache_key(fam.aliases)
+        assert key is aliases._alias_cache_key(fam.aliases)
         patterns, tokens = key
         assert patterns == (
             aliases._HYPHEN_RE.pattern,

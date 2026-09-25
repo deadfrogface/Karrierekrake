@@ -90,12 +90,19 @@ _PREPARED_ALIAS_CACHE_MAXSIZE = 32
 
 
 def _alias_cache_key(aliases: frozenset[str]) -> tuple[tuple[str, str, str], tuple[str, ...]]:
-    """Everything that changes prepared aliases or the normalizer patterns.
+    """Regex sources plus every alias. Built once per distinct alias set.
 
-    The first element is the regex source. The second is every non-empty
-    alias, sorted — role labels arrive here as that alias set. Normalized
-    spelling is the cached value, computed on a miss, not a global fill.
+    Callers pass the set they already hold (family table or one role label).
+    Repeat jobs reuse that reference; the sorted tuple is not rebuilt per job.
+    A different intent expands to a different set and therefore a different key.
     """
+    return _alias_cache_key_cached(aliases)
+
+
+@lru_cache(maxsize=_PREPARED_ALIAS_CACHE_MAXSIZE)
+def _alias_cache_key_cached(
+    aliases: frozenset[str],
+) -> tuple[tuple[str, str, str], tuple[str, ...]]:
     patterns = (_HYPHEN_RE.pattern, _WS_RE.pattern, _TITLE_NOISE_RE.pattern)
     tokens = tuple(sorted(alias for alias in aliases if alias))
     return patterns, tokens
