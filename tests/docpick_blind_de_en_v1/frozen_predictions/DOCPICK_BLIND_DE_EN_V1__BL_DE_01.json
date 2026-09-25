@@ -1,0 +1,85 @@
+{
+  "personal": {
+    "first_name": "Jonas",
+    "last_name": "Feldmann",
+    "street": "Kastanienallee 14",
+    "house_number": "",
+    "postal_code": "10435",
+    "city": "Berlin",
+    "country": "",
+    "date_of_birth": "03.04.1988"
+  },
+  "emails": [
+    "jonas.feldmann@example.com"
+  ],
+  "phones": [
+    "+49 176 5550123"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    },
+    {
+      "language": "Polnisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "OSZ Handel 1 / Spree Fracht GmbH",
+      "qualification": "Kaufmann fuer Spedition und Logistikdienstleistung (IHK)",
+      "start_date": "2011-08",
+      "end_date": "2014-07"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Logistikkoordinator",
+      "company": "Nordhafen Logistik AG",
+      "start_date": "2018-03",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Disponent",
+      "company": "Spree Fracht GmbH",
+      "start_date": "2014-08",
+      "end_date": "2018-02",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Disposition",
+    "Kundenkommunikation"
+  ],
+  "software": [
+    "SAP TM",
+    "Microsoft Excel",
+    "Transporeon"
+  ],
+  "certificates": [
+    {
+      "name": "ADR-Basiskurs 2019",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_DE_01.pdf",
+  "raw_text_chars": 615,
+  "raw_text_preview": "Jonas Feldmann Kastanienallee 14, 10435 Berlin jonas.feldmann@example.com +49 176 5550123 Geburtsdatum: 03.04.1988\n\nBerufserfahrung 03/2018 - heute Logistikkoordinator Nordhafen Logistik AG, Berlin\n\n- Tourenplanung und Speditionsabstimmung\n\n08/2014 - 02/2018 Disponent Spree Fracht GmbH, Potsdam\n\nAusbildung 08/2011 - 07/2014 Kaufmann fuer Spedition und Logistikdienstleistung (IHK) OSZ Handel 1 / Spree Fracht GmbH\n\nSprachen Deutsch - Muttersprache Englisch - B2 Polnisch - A2\n\nFuehrerschein: B, BE\n",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_doc_id": "BL_DE_01",
+  "blind_lang": "de"
+}

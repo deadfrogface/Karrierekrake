@@ -1,0 +1,76 @@
+{
+  "personal": {
+    "first_name": "Amelia",
+    "last_name": "Porter",
+    "street": "River Road",
+    "house_number": "30",
+    "postal_code": "BS1 4ST",
+    "city": "Bristol",
+    "country": "United Kingdom",
+    "date_of_birth": "23.11.1978"
+  },
+  "emails": [
+    "amelia.porter.26@example.org"
+  ],
+  "phones": [
+    "+44 7700 900026"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "University of Bristol",
+      "qualification": "BA Museum Studies",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Museum Registrar",
+      "company": "Harbour Museum",
+      "start_date": "03/2022",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Object handling",
+    "Condition reporting",
+    "Loan records"
+  ],
+  "software": [
+    "CollectionSpace",
+    "Excel"
+  ],
+  "certificates": [
+    {
+      "name": "Collections care workshop",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_026.pdf",
+  "raw_text_chars": 603,
+  "raw_text_preview": "## Amelia Porter\n\n## Museum Registrar\n\n## Contact\n\namelia.porter.26@example.org | +44 7700 900026 River Road 30, BS1 4ST Bristol, United Kingdom Born: 1978-11-23\n\n## Profile\n\nExperience in Museum Registrar. Cataloguing travelling collections.\n\n## Work Experience\n\n## Museum Registrar | Harbour Museum\n\n03/2022 - Present Cataloguing travelling collections\n\n## Education\n\nBA Museum Studies, University of Bristol\n\n## Core Skills\n\nObject handling · Condition reporting · Loan records\n\n## Tools\n\nCollecti",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_026",
+  "blind_lang": "unknown",
+  "pdf_sha256": "c61525883b5e6fd09e0283df217eec049e1ce0a4b3eec90e8aff33798ede9399"
+}

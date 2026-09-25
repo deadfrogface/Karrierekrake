@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Leonie",
+    "last_name": "Schramm",
+    "street": "Kirchplatz",
+    "house_number": "25",
+    "postal_code": "89073",
+    "city": "Ulm",
+    "country": "Deutschland",
+    "date_of_birth": "08.10.1998"
+  },
+  "emails": [
+    "leonie.schramm.21@example.org"
+  ],
+  "phones": [
+    "+49 151 4702877"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufsfachschule Ulm",
+      "qualification": "Ausbildung Physiotherapie",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Physiotherapeutin",
+      "company": "Rehazentrum Donau",
+      "start_date": "10/2017",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Manuelle Therapie",
+    "Gangschule",
+    "Patientenaufklärung"
+  ],
+  "software": [
+    "Theorg"
+  ],
+  "certificates": [
+    {
+      "name": "Manuelle Lymphdrainage",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_021.pdf",
+  "raw_text_chars": 602,
+  "raw_text_preview": "## Leonie Schramm\n\n## Physiotherapeutin\n\n## Kontakt\n\nleonie.schramm.21@example.org | +49 151 4702877 Kirchplatz 25, 89073 Ulm, Deutschland Geboren: 08.10.1998\n\n## Kurzprofil\n\nBerufspraxis in Physiotherapeutin. Therapieplanung und Befundung.\n\n## Berufserfahrung\n\n## Physiotherapeutin | Rehazentrum Donau\n\n2017-10 - 2025-08 Therapieplanung und Befundung\n\n## Ausbildung\n\nAusbildung Physiotherapie, Berufsfachschule Ulm\n\n## Kenntnisse\n\nManuelle Therapie · Gangschule · Patientenaufklärung\n\n## Programme\n\n",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_021",
+  "blind_lang": "unknown",
+  "pdf_sha256": "2a1629aaa81d45b807107f7e221f75cb4952044720f8ea560c96e19696ff02f6"
+}

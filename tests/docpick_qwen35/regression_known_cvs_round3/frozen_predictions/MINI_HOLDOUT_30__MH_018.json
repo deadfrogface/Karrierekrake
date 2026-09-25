@@ -1,0 +1,85 @@
+{
+  "personal": {
+    "first_name": "Tarik",
+    "last_name": "Giese",
+    "street": "",
+    "house_number": "",
+    "postal_code": "",
+    "city": "Zittau",
+    "country": "Deutschland",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "tarik.giese@example.de"
+  ],
+  "phones": [
+    "+49 157 4253017"
+  ],
+  "languages": [
+    {
+      "language": "Ungarisch",
+      "level": "A2"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Fachschule Zittau",
+      "qualification": "Meisterprüfung",
+      "start_date": "2009",
+      "end_date": "2012"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Textillaborant",
+      "company": "Kronenwerk Technik KG",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Mosaik Dienste AG",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Nordlicht Manufaktur",
+      "start_date": "04/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Bestandsprüfung",
+    "Schadensanalyse",
+    "Gefahrstoffmanagement",
+    "Kalibrierung"
+  ],
+  "software": [
+    "EPLAN Electric P8 - Grundlagen",
+    "PostgreSQL - gute Kenntnisse",
+    "Inkscape - sehr gut"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_018.pdf",
+  "raw_text_chars": 732,
+  "raw_text_preview": "## Tarik Giese\n\nZittau | Deutschland · tarik.giese@example.de · +49 157 4253017\n\n## Sprachkenntnisse &amp; Führerschein\n\nUngarisch: A2\n\nEnglisch: B1\n\n## Programme und Werkzeuge\n\nEPLAN Electric P8 - Grundlagen\n\nPostgreSQL - gute Kenntnisse\n\nInkscape - sehr gut\n\n## Fachkompetenzen\n\nBestandsprüfung\n\nSchadensanalyse\n\nGefahrstoffmanagement\n\nKalibrierung\n\n## Berufserfahrung\n\n02/2019 - 08/2021\n\nTextillaborant | Kronenwerk Technik KG Bestandsprüfung · Schadensanalyse\n\n03/2020 - 09/2022 Projektassistenz ",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_018",
+  "regression_lang": "de"
+}

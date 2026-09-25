@@ -1,0 +1,60 @@
+{
+  "personal": {
+    "first_name": "Rosa",
+    "last_name": "Franke",
+    "street": "Brückenstraße",
+    "house_number": "23",
+    "postal_code": "34117",
+    "city": "Kassel",
+    "country": "Deutschland",
+    "date_of_birth": "02.12.1996"
+  },
+  "emails": [
+    "rosa.franke.19@example.org"
+  ],
+  "phones": [
+    "+49 151 4702603"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [],
+  "work_experience": [
+    {
+      "title": "Floristin",
+      "company": "Blumenatelier Wilhelmshöhe",
+      "start_date": "08/2022",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Straußbindung",
+    "Dekoration",
+    "Kundenberatung"
+  ],
+  "software": [],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_019.pdf",
+  "raw_text_chars": 483,
+  "raw_text_preview": "## Rosa Franke\n\n## Floristin\n\n## Kontakt\n\nrosa.franke.19@example.org | +49 151 4702603 Brückenstraße 23, 34117 Kassel, Deutschland Geboren: 02.12.1996\n\n## Kurzprofil\n\nBerufspraxis in Floristin. Hochzeitsfloristik und Verkauf.\n\n## Berufserfahrung\n\n## Floristin | Blumenatelier Wilhelmshöhe\n\n2022-08 - heute Hochzeitsfloristik und Verkauf\n\n## Kenntnisse\n\nStraußbindung · Dekoration Kundenberatung\n\n## Ausbildung\n\nAusbildung Floristin\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: A2",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_019",
+  "blind_lang": "unknown",
+  "pdf_sha256": "ef6d46888aa27c1b47dbab3ff2aaf1685ad868b2a6e9d51481dc09a586ec7ae0"
+}

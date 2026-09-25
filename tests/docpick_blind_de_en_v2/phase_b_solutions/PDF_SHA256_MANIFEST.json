@@ -1,0 +1,205 @@
+{
+  "corpus": "NV3_50",
+  "documents": [
+    {
+      "document_id": "NV3_001",
+      "sha256": "795db7e26b7d73846abe4efd20c4a35dd56e114a82029b9b6b9e4835ab427bb3"
+    },
+    {
+      "document_id": "NV3_002",
+      "sha256": "21e72aca4756146ff06cbce2f2de681e2fc5bc4de5249f2e6ece069aa1053978"
+    },
+    {
+      "document_id": "NV3_003",
+      "sha256": "cf056a8058b4724a01f9a82e0ca0bdea7589bfb638872efc6e446ed4e8d79e49"
+    },
+    {
+      "document_id": "NV3_004",
+      "sha256": "e64088c717febe8d0d06d8666f66deab1368a29b8beb2bf3e23fd6d7aa93a676"
+    },
+    {
+      "document_id": "NV3_005",
+      "sha256": "bf0de5f964315c1f68fecb5aa1baa2a9dfc5de7c91496b2c8b79ca4e0fde7796"
+    },
+    {
+      "document_id": "NV3_006",
+      "sha256": "b62771ecdb742d56dc1db3b1decc6a00eba398f8ff6d425f21cd14498fb40271"
+    },
+    {
+      "document_id": "NV3_007",
+      "sha256": "21faa7debabd7ab0ddc38deac42e06ff4f20f412c9a64b09ceb55c8f6cee6e60"
+    },
+    {
+      "document_id": "NV3_008",
+      "sha256": "543a196d973f48249d830d9da4e96bb085cc8b7af78351a643abaa9a72a9ac2d"
+    },
+    {
+      "document_id": "NV3_009",
+      "sha256": "34c0b0d27324936987321c6a0ce4e78b37848a96163562f051679de761a6c53b"
+    },
+    {
+      "document_id": "NV3_010",
+      "sha256": "ce1ce60c35893a0a3ab8cbb1e3bd80768c8b0826de1090324db8bce7274d3a2f"
+    },
+    {
+      "document_id": "NV3_011",
+      "sha256": "848e72d17339693cd9d19e3d0614de18e58af8407d161faf9180f8cf116963db"
+    },
+    {
+      "document_id": "NV3_012",
+      "sha256": "9303d5d650f89cd97039cf02a67e3f4e95d493072e957280923b9ecf6a070641"
+    },
+    {
+      "document_id": "NV3_013",
+      "sha256": "0e5df73fd710217034ed4c22b5c50c8b702e19474c914c6681b14cff75078be6"
+    },
+    {
+      "document_id": "NV3_014",
+      "sha256": "1c701a46c38a5af6c7adb29bcdae010ce47c7f91aca8bcd81aaef18f6f1e6a3c"
+    },
+    {
+      "document_id": "NV3_015",
+      "sha256": "d4e8e87503c5f9e6d66d37b8f876a92ee3d29367524a180a855d8143f99c0cb8"
+    },
+    {
+      "document_id": "NV3_016",
+      "sha256": "6fc7dc194274e515e0601ea154641a72fe427254a51e04d70f792bfb020c27ed"
+    },
+    {
+      "document_id": "NV3_017",
+      "sha256": "ad41e99020d5c7e91f1592045f119b4250f1a2b91f6bcf2726af5bbd6e775311"
+    },
+    {
+      "document_id": "NV3_018",
+      "sha256": "9e358a758b9238d9cd43181ace1487f543a006eef58285c4d9e5bf9412bd2cc8"
+    },
+    {
+      "document_id": "NV3_019",
+      "sha256": "ef6d46888aa27c1b47dbab3ff2aaf1685ad868b2a6e9d51481dc09a586ec7ae0"
+    },
+    {
+      "document_id": "NV3_020",
+      "sha256": "54f85ea50322f4de40d1b0764e1f323ebede9b59f58e76db61c8d899862a0d1a"
+    },
+    {
+      "document_id": "NV3_021",
+      "sha256": "2a1629aaa81d45b807107f7e221f75cb4952044720f8ea560c96e19696ff02f6"
+    },
+    {
+      "document_id": "NV3_022",
+      "sha256": "635ec604bdda1a550de105e248df6d515efe246670cc6ddd13638f85b2dfc104"
+    },
+    {
+      "document_id": "NV3_023",
+      "sha256": "57620a153fb54facca6130bc1b9dddec6fd9390d7bc54adce5978bbab876d8be"
+    },
+    {
+      "document_id": "NV3_024",
+      "sha256": "61fada90ef816c664ba2013b2fa29aa8a6b46621e343df53ebef59baf29ca993"
+    },
+    {
+      "document_id": "NV3_025",
+      "sha256": "b7b0100bba15a18d9869f5d82023d84f60e743711ed6e553142f70028afd7185"
+    },
+    {
+      "document_id": "NV3_026",
+      "sha256": "c61525883b5e6fd09e0283df217eec049e1ce0a4b3eec90e8aff33798ede9399"
+    },
+    {
+      "document_id": "NV3_027",
+      "sha256": "c3528e5749538acdb90a7c1ac39effcff7cd07edea91157534a33e2d9e24f606"
+    },
+    {
+      "document_id": "NV3_028",
+      "sha256": "3c71d642a2199c7be38e101578e81499f3b72d1256039c5c1f2d1938c00013ba"
+    },
+    {
+      "document_id": "NV3_029",
+      "sha256": "a61063d5bf7cfc2771e9bf07da5dce262b25b9ab47089c192a9fc3264d1f918e"
+    },
+    {
+      "document_id": "NV3_030",
+      "sha256": "2575e6230f3c3aaeb7a6714b6def14b2999564fc6f267eb98dafa1fc7de9f761"
+    },
+    {
+      "document_id": "NV3_031",
+      "sha256": "616a5ff15142e90b608fdc13bfe1147437c96b751b893f4f5b08d8579caa99ba"
+    },
+    {
+      "document_id": "NV3_032",
+      "sha256": "5e6863cc938a72a2614ea5b44e5ee724a34bfe74eecfd896530dfdb0748694cf"
+    },
+    {
+      "document_id": "NV3_033",
+      "sha256": "4a2b81f0271edccc201b63ded6231b575e7b13b3fcd4a78d9170f1d3f7c6c162"
+    },
+    {
+      "document_id": "NV3_034",
+      "sha256": "09ca79298ea1ef66f303cd841d280f28bd7d3329fff411865091a51f75cf6ec6"
+    },
+    {
+      "document_id": "NV3_035",
+      "sha256": "3988bc5697ad1b4ba761551cb452071c3d76d47db184c4ba5a3ca012ee64db5d"
+    },
+    {
+      "document_id": "NV3_036",
+      "sha256": "80f8b305f4c39e18f7a23b1f8ccaae8babb2735e33db0bc8a4976c1b51cfffe7"
+    },
+    {
+      "document_id": "NV3_037",
+      "sha256": "97d0682f428c52b1b50b6c3bfaf1fea262488964d786618ceec54838ac0739f2"
+    },
+    {
+      "document_id": "NV3_038",
+      "sha256": "a71e3a864765f648b3193abb9858826a943d05a43d7a5b5938ab6800882e79d3"
+    },
+    {
+      "document_id": "NV3_039",
+      "sha256": "c6017b8daf1aaa8899046512c4ebbe377c6c3777f941101f73c68efce95258e3"
+    },
+    {
+      "document_id": "NV3_040",
+      "sha256": "b457c51d4a7c501e4ffb4d50b0643779147a0b45b638f684fff4472b6827a6bc"
+    },
+    {
+      "document_id": "NV3_041",
+      "sha256": "da5f517272c809f2d02a87c03063ed6201b35dba88c646b88ec2ef0c3d347985"
+    },
+    {
+      "document_id": "NV3_042",
+      "sha256": "c92d156a9fb481ec2eca528c66262717449548f8d65f79cac4c258cea429a17b"
+    },
+    {
+      "document_id": "NV3_043",
+      "sha256": "1c76ea47fe367ce37124af45dc2ff146f494fa6d1ec5e12f304ff6f76cba8ba6"
+    },
+    {
+      "document_id": "NV3_044",
+      "sha256": "c480192ea2b7b2148ec6b96630b6df7bd306e7bf09ae9883685581789b6c60ac"
+    },
+    {
+      "document_id": "NV3_045",
+      "sha256": "be1efcbec749528a61b33eb28f4ce1b54e3d2637f7cb1f14420bf27fe864087f"
+    },
+    {
+      "document_id": "NV3_046",
+      "sha256": "456db498498b3783e1a25f52ea0b29cc9a70ff32c5f4da0b17df38c0dd4d5a85"
+    },
+    {
+      "document_id": "NV3_047",
+      "sha256": "24103e637d01db7528c8cbcb935a5e0af0ef626f5174f37f99ff9859547cf891"
+    },
+    {
+      "document_id": "NV3_048",
+      "sha256": "9d98dd038a118fbefab5cee1dcfcf2bacc19196abb990752c074316513e6a0f5"
+    },
+    {
+      "document_id": "NV3_049",
+      "sha256": "fff66b8c1ab32e716aee5efeb3b174635422df706bb9b7c81edf937f361d05c3"
+    },
+    {
+      "document_id": "NV3_050",
+      "sha256": "1f74536c68b805fa44b71ce70b154f2bd3f2592a00239e83d3564fe1190a6591"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "personal": {
+    "first_name": "Theo",
+    "last_name": "Clark",
+    "street": "Market Place",
+    "house_number": "47",
+    "postal_code": "BA1 2NT",
+    "city": "Bath",
+    "country": "United Kingdom",
+    "date_of_birth": "18.12.1995"
+  },
+  "emails": [
+    "theo.clark.43@example.org"
+  ],
+  "phones": [
+    "+44 7700 900043"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [],
+  "work_experience": [
+    {
+      "title": "Architectural Technician",
+      "company": "Limestone Works",
+      "start_date": "08/2018",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Technical drawings",
+    "Site surveys",
+    "BIM coordination"
+  ],
+  "software": [
+    "Revit",
+    "AutoCAD"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_043.pdf",
+  "raw_text_chars": 586,
+  "raw_text_preview": "## Theo Clark\n\n## Architectural Technician\n\n## Contact\n\ntheo.clark.43@example.org | +44 7700 900043 Market Place 47, BA1 2NT Bath, United Kingdom Born: 1995-12-18\n\n## Profile\n\nExperience in Architectural Technician. Documenting building retrofits.\n\n## Education\n\nHNC Construction and the Built Environment\n\n## Work Experience\n\n## Architectural Technician | Limestone Works\n\n2018-08 - Present Documenting building retrofits\n\n## Languages\n\nEnglish: Native | German: B1\n\n## Core Skills\n\nTechnical drawin",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_043",
+  "blind_lang": "unknown",
+  "pdf_sha256": "1c76ea47fe367ce37124af45dc2ff146f494fa6d1ec5e12f304ff6f76cba8ba6"
+}

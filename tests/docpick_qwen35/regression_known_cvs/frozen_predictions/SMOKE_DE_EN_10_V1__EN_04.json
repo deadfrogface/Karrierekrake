@@ -1,0 +1,86 @@
+{
+  "personal": {
+    "first_name": "Lucas",
+    "last_name": "Meyer",
+    "street": "Seestraße 31",
+    "house_number": "",
+    "postal_code": "78462",
+    "city": "Konstanz",
+    "country": "Germany",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "lucas.meyer@example.com"
+  ],
+  "phones": [
+    "+49 172 4000500"
+  ],
+  "languages": [
+    {
+      "language": "German",
+      "level": "C2"
+    },
+    {
+      "language": "English",
+      "level": "C1"
+    },
+    {
+      "language": "Italian",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "B BE",
+  "education": [
+    {
+      "institution": "HTWG Konstanz",
+      "qualification": "B.Sc. Business Information Systems",
+      "start_date": "",
+      "end_date": "2018"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Service Delivery Manager",
+      "company": "Alpine Cloud Services GmbH",
+      "start_date": "2022-04",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Support Operations Specialist",
+      "company": "LakeTech Solutions AG",
+      "start_date": "2019-01",
+      "end_date": "2022-03",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Service delivery",
+    "SLA reporting",
+    "escalation management",
+    "stakeholder communication",
+    "process improvement"
+  ],
+  "software": [
+    "ServiceNow",
+    "Salesforce",
+    "Microsoft 365",
+    "Jira",
+    "Confluence",
+    "Power BI"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/EN_04_German_Address_English_CV.pdf",
+  "raw_text_chars": 2042,
+  "raw_text_preview": "## PROFILE\n\n## Lucas Meyer\n\nSeestraße 31, 78462 Konstanz, Germany lucas.meyer@example.com | +49 172 4000500\n\n| Career History                                                                                                                                                      |              |\n|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|\n| 04/2022 - current - Ser",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "EN_04",
+  "regression_lang": "en"
+}

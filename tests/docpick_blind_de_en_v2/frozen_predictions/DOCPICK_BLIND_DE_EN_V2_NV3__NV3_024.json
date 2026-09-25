@@ -1,0 +1,86 @@
+{
+  "personal": {
+    "first_name": "Nele",
+    "last_name": "Kurz",
+    "street": "Wiesenweg",
+    "house_number": "28",
+    "postal_code": "02763",
+    "city": "Zittau",
+    "country": "Deutschland",
+    "date_of_birth": "17.01.2001"
+  },
+  "emails": [
+    "nele.kurz.24@example.org"
+  ],
+  "phones": [
+    "+49 151 4703288"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    },
+    {
+      "language": "Tschechisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Industriemechanikerin",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Grenzpendlerin - Qualitätsprüferin",
+      "company": "Montagewerk Liberec",
+      "start_date": "01/2020",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Warenlager Süd",
+      "start_date": "03/2015",
+      "end_date": "11/2019",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Sichtprüfung",
+    "Messprotokolle",
+    "Reklamationen"
+  ],
+  "software": [
+    "SAP"
+  ],
+  "certificates": [
+    {
+      "name": "Messmittelkunde",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_024.pdf",
+  "raw_text_chars": 821,
+  "raw_text_preview": "## Nele Kurz\n\n## Grenzpendlerin - Qualitätsprüferin\n\n## Kontakt\n\nnele.kurz.24@example.org | +49 151 4703288 Wiesenweg 28, 02763 Zittau, Deutschland Geboren: 17.01.2001\n\n## Kurzprofil\n\nBerufspraxis in Grenzpendlerin - Qualitätsprüferin. Wareneingangsprüfung in Tschechien.\n\n## Berufserfahrung\n\n## Grenzpendlerin - Qualitätsprüferin | Montagewerk Liberec\n\n2020-01 - heute Wareneingangsprüfung in Tschechien\n\n## Aushilfe | Warenlager Süd\n\n2015-03 - 2019-11 Kundenkontakt und Dokumentation\n\n## Kenntnisse",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_024",
+  "blind_lang": "unknown",
+  "pdf_sha256": "61fada90ef816c664ba2013b2fa29aa8a6b46621e343df53ebef59baf29ca993"
+}

@@ -1,0 +1,80 @@
+{
+  "personal": {
+    "first_name": "Chloe",
+    "last_name": "Reed",
+    "street": "Oak Street",
+    "house_number": "32",
+    "postal_code": "D02 PN40",
+    "city": "Dublin",
+    "country": "Ireland",
+    "date_of_birth": "01.09.1980"
+  },
+  "emails": [
+    "chloe.reed.28@example.org"
+  ],
+  "phones": [
+    "+44 7700 900028"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Dublin College",
+      "qualification": "Culinary Arts Diploma",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Pastry Chef",
+      "company": "Liffey Bakehouse",
+      "start_date": "05/2017",
+      "end_date": "08/2024",
+      "responsibilities": []
+    },
+    {
+      "title": "Operations Assistant",
+      "company": "Fieldwork Agency",
+      "start_date": "03/2014",
+      "end_date": "11/2016",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Lamination",
+    "Production scheduling",
+    "Food safety"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Food Safety Level 2",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_028.pdf",
+  "raw_text_chars": 637,
+  "raw_text_preview": "## Chloe Reed\n\n## Pastry Chef\n\n## Contact\n\nchloe.reed.28@example.org | +44 7700 900028 Oak Street 32, D02 PN40 Dublin, Ireland Born: 1980-09-01\n\n## Profile\n\nExperience in Pastry Chef. Recipe development and morning production.\n\n## Education\n\nCulinary Arts Diploma, Dublin College\n\n## Work Experience\n\n## Pastry Chef | Liffey Bakehouse\n\n2017-05 - 2024-08 Recipe development and morning production\n\n## Operations Assistant | Fieldwork Agency\n\n2014-03 - 2016-11 Customer enquiries and records\n\n## Langua",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_028",
+  "blind_lang": "unknown",
+  "pdf_sha256": "3c71d642a2199c7be38e101578e81499f3b72d1256039c5c1f2d1938c00013ba"
+}

@@ -1,0 +1,70 @@
+{
+  "personal": {
+    "first_name": "Cedar",
+    "last_name": "Jones",
+    "street": "Market Place",
+    "house_number": "54",
+    "postal_code": "NR1 3BJ",
+    "city": "Norwich",
+    "country": "United Kingdom",
+    "date_of_birth": "11.11.1977"
+  },
+  "emails": [
+    "cedar.jones.50@example.org"
+  ],
+  "phones": [
+    "+44 7700 900050"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "University of East Anglia",
+      "qualification": "BA Translation Studies",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Freelance Translator | Self-employed",
+      "company": "",
+      "start_date": "03/2018",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Terminology management",
+    "Proofreading",
+    "Client communication"
+  ],
+  "software": [
+    "memoQ",
+    "Word"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_050.pdf",
+  "raw_text_chars": 580,
+  "raw_text_preview": "## Cedar Jones\n\n## Freelance Translator\n\n## Contact\n\ncedar.jones.50@example.org | +44 7700 900050 Market Place 54, NR1 3BJ Norwich, United Kingdom Born: 1977-11-11\n\n## Profile\n\nExperience in Freelance Translator. Translating manuals and client emails.\n\n## Work Experience\n\n## Freelance Translator | Self-employed\n\n03/2018 - Present Translating manuals and client emails\n\n## Education\n\nBA Translation Studies, University of East Anglia\n\n## Languages\n\nEnglish: Native | German: C1\n\n## Core Skills\n\nTerm",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_050",
+  "blind_lang": "unknown",
+  "pdf_sha256": "1f74536c68b805fa44b71ce70b154f2bd3f2592a00239e83d3564fe1190a6591"
+}

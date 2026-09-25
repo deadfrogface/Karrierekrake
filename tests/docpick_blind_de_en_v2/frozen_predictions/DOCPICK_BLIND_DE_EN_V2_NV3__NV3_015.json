@@ -1,0 +1,63 @@
+{
+  "personal": {
+    "first_name": "Clara",
+    "last_name": "Witt",
+    "street": "Marktstraße",
+    "house_number": "19",
+    "postal_code": "14467",
+    "city": "Potsdam",
+    "country": "Deutschland",
+    "date_of_birth": "18.04.1992"
+  },
+  "emails": [
+    "clara.witt.15@example.org"
+  ],
+  "phones": [
+    "+49 151 4702055"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "",
+  "education": [],
+  "work_experience": [
+    {
+      "title": "UX-Designerin",
+      "company": "Studio Havelland",
+      "start_date": "04/2018",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Usability-Tests",
+    "Wireframing",
+    "Barrierefreiheit"
+  ],
+  "software": [
+    "Figma",
+    "Miro"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_015.pdf",
+  "raw_text_chars": 526,
+  "raw_text_preview": "## Clara Witt\n\n## UX-Designerin\n\n## Kontakt\n\nclara.witt.15@example.org | +49 151 4702055 Marktstraße 19, 14467 Potsdam, Deutschland Geboren: 18.04.1992\n\n## Kurzprofil\n\nBerufspraxis in UX-Designerin. Prototypen und Nutzertests.\n\n## Berufserfahrung\n\n## UX-Designerin | Studio Havelland\n\n2018-04 - heute Prototypen und Nutzertests\n\n## Ausbildung\n\nB.A. Kommunikationsdesign, FH Potsdam\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: C1\n\n## Kenntnisse\n\nUsability-Tests · Wireframing · Barrierefreiheit\n\n",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_015",
+  "blind_lang": "unknown",
+  "pdf_sha256": "d4e8e87503c5f9e6d66d37b8f876a92ee3d29367524a180a855d8143f99c0cb8"
+}

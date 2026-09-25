@@ -1,0 +1,11 @@
+{
+  "after_cold_s": 43.62,
+  "after_warm_s": 45.35,
+  "peak_rss_mb": 1478.0,
+  "before_cold_s": 101.5,
+  "before_warm_s": 106.5,
+  "budget_warm": 60,
+  "budget_cold": 90,
+  "dialog_ctor_s": 0.027,
+  "fail_fast_dead_llm_s": 0.212
+}

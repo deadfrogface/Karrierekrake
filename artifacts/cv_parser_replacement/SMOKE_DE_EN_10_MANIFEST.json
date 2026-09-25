@@ -1,0 +1,26 @@
+{
+  "manifest_id": "SMOKE_DE_EN_10_V1",
+  "locked": true,
+  "created_for": "cv-parser-smartresume-de-en smoke gate",
+  "note": "Selection fixed before any candidate run. Do not swap after seeing scores.",
+  "documents": [
+    {"id": "DE_01", "path": "tests/fixtures/cv_corpus/DE_01_Klassisch.pdf", "lang": "de", "traits": ["single_column", "classic"]},
+    {"id": "DE_02", "path": "tests/fixtures/cv_corpus/DE_02_Zweispaltig_Trap.pdf", "lang": "de", "traits": ["two_column", "sidebar"]},
+    {"id": "DE_03", "path": "tests/fixtures/cv_corpus/DE_03_C1_Kontextfalle.pdf", "lang": "de", "traits": ["c1_language_vs_licence"]},
+    {"id": "DE_04", "path": "tests/fixtures/cv_corpus/DE_04_Unvollstaendige_Kontaktdaten.pdf", "lang": "de", "traits": ["incomplete_contact"]},
+    {"id": "DE_05", "path": "tests/fixtures/cv_corpus/DE_05_Zweiseitig.pdf", "lang": "de", "traits": ["multi_page", "multi_employment_education"]},
+    {"id": "EN_01", "path": "tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf", "lang": "en", "traits": ["single_column", "classic"]},
+    {"id": "EN_02", "path": "tests/fixtures/cv_corpus/EN_02_Two_Column_Trap.pdf", "lang": "en", "traits": ["two_column"]},
+    {"id": "EN_03", "path": "tests/fixtures/cv_corpus/EN_03_Missing_Address_Fields.pdf", "lang": "en", "traits": ["missing_address"]},
+    {"id": "EN_04", "path": "tests/fixtures/cv_corpus/EN_04_German_Address_English_CV.pdf", "lang": "en", "traits": ["de_address_en_body", "unicode"]},
+    {"id": "EN_05", "path": "tests/fixtures/cv_corpus/EN_05_Skills_Heavy.pdf", "lang": "en", "traits": ["skills_software_heavy"]}
+  ],
+  "ground_truth": "tests/fixtures/cv_corpus/expected_results.json",
+  "gate": {
+    "min_f1": 0.90,
+    "max_hallucination_rate": 0.03,
+    "max_invented_employment_education": 0,
+    "schema_validity": 1.0,
+    "min_processing_success": 10
+  }
+}

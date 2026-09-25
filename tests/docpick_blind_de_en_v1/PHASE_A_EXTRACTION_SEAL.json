@@ -1,0 +1,86 @@
+{
+  "seal_type": "PHASE_A_BLIND_DE_EN_V1",
+  "test_type": "INDEPENDENT_BLIND_DE_EN",
+  "created_at": "2026-09-24T02:43:20.187715+00:00",
+  "parser_freeze": {
+    "seal_type": "PARSER_FREEZE_BLIND_DE_EN_V1",
+    "test_type": "INDEPENDENT_BLIND_DE_EN",
+    "created_at": "2026-09-24T02:39:01.701213+00:00",
+    "git_commit": "49b16d5066e8d0a3cb95fff792d3bc23c6669609",
+    "det_fallback": false,
+    "llm": {
+      "base_url": "http://127.0.0.1:8765/v1",
+      "model_path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+      "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+      "temperature": 0.0,
+      "max_tokens_env_default": "1024"
+    },
+    "runtime_budget_s": {
+      "warm": 60.0,
+      "cold": 90.0
+    },
+    "file_sha256": {
+      "core/cv_docpick_import.py": "b5c4d283918c76f035cc9371f069b47739239f3741434be70c0686c42f61670a",
+      "core/cv_intelligence.py": "aacc77e556eb24bba87c4c9ccd9a5dbbbd360cfc8d22c773e3bd300eed0447f4"
+    },
+    "manifest_sha256": "d78106b5dee92848df31ccff0777c9dcb9edf512676f704c9d99bf15bd7cb8a5",
+    "gt_not_loaded": true
+  },
+  "gt_not_loaded": true,
+  "n_documents": 4,
+  "n_ok": 4,
+  "predictions": [
+    {
+      "id": "BL_DE_01",
+      "lang": "de",
+      "pdf": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_DE_01.pdf",
+      "prediction_file": "tests/docpick_blind_de_en_v1/frozen_predictions/DOCPICK_BLIND_DE_EN_V1__BL_DE_01.json",
+      "sha256": "799fd6fe0a40b7b58952dc91a5d21b39a26c52034485f8f55129ded6862cfc59",
+      "elapsed_s": 75.94585088908207,
+      "ok": true
+    },
+    {
+      "id": "BL_DE_02",
+      "lang": "de",
+      "pdf": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_DE_02.pdf",
+      "prediction_file": "tests/docpick_blind_de_en_v1/frozen_predictions/DOCPICK_BLIND_DE_EN_V1__BL_DE_02.json",
+      "sha256": "a4ca0eef978ea418c798a1e0a50650a0ebf0a047241989ebb53a2768eade99c2",
+      "elapsed_s": 55.361566368024796,
+      "ok": true
+    },
+    {
+      "id": "BL_EN_01",
+      "lang": "en",
+      "pdf": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_EN_01.pdf",
+      "prediction_file": "tests/docpick_blind_de_en_v1/frozen_predictions/DOCPICK_BLIND_DE_EN_V1__BL_EN_01.json",
+      "sha256": "e9f69ecf925006596c5adb13d3371364e83e4f74d9c984e80c228a9df21b4ceb",
+      "elapsed_s": 66.09329826396424,
+      "ok": true
+    },
+    {
+      "id": "BL_EN_02",
+      "lang": "en",
+      "pdf": "tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_EN_02.pdf",
+      "prediction_file": "tests/docpick_blind_de_en_v1/frozen_predictions/DOCPICK_BLIND_DE_EN_V1__BL_EN_02.json",
+      "sha256": "b07a3d8f8bb4365a873f7f6df0bdea165d02ca53bfa386466269d6dc1b8d1efa",
+      "elapsed_s": 57.00214178301394,
+      "ok": true
+    }
+  ],
+  "performance": {
+    "wall_s": 254.40810970007442,
+    "avg_s_per_cv": 63.602027425018605,
+    "peak_rss_mb": 2643.05078125,
+    "cold_s": 75.94585088908207,
+    "warm_avg_s": 59.48566880500099,
+    "per_doc_s": {
+      "BL_DE_01": 75.94585088908207,
+      "BL_DE_02": 55.361566368024796,
+      "BL_EN_01": 66.09329826396424,
+      "BL_EN_02": 57.00214178301394
+    },
+    "budget_warm_s": 60.0,
+    "budget_cold_s": 90.0,
+    "warm_within_budget": true
+  }
+}

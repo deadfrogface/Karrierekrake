@@ -1,0 +1,108 @@
+{
+  "personal": {
+    "first_name": "Sophia",
+    "last_name": "Bennett",
+    "street": "Orchard Lane",
+    "house_number": "7",
+    "postal_code": "D02 XY76",
+    "city": "Dublin",
+    "country": "Ireland",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "sophia.bennett@example.com"
+  ],
+  "phones": [
+    "+353 85 123 4567"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Dublin City University",
+      "qualification": "BCom",
+      "start_date": "2012-01-01",
+      "end_date": "2016-12-31"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Purchasing Specialist",
+      "company": "Greenline Medical Supplies Ltd",
+      "start_date": "2022-01-01",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Supply Chain Administrator",
+      "company": "Meridian Homeware Ltd",
+      "start_date": "2019-01-01",
+      "end_date": "2022-12-31",
+      "responsibilities": []
+    },
+    {
+      "title": "Order Processing Assistant",
+      "company": "Cobalt Distribution Ltd",
+      "start_date": "2016-01-01",
+      "end_date": "2019-12-31",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Vendor management",
+    "inventory control",
+    "purchasing",
+    "order processing",
+    "KPI reporting",
+    "master data maintenance",
+    "contract administration",
+    "customer communication"
+  ],
+  "software": [
+    "Microsoft 365",
+    "Oracle NetSuite",
+    "Power BI",
+    "Power Query",
+    "DocuWare",
+    "Monday.com"
+  ],
+  "certificates": [
+    {
+      "name": "CIPS Procurement Essentials",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Advanced Excel & Power Query",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "GDPR Awareness for Operations",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/EN_05_Skills_Heavy.pdf",
+  "raw_text_chars": 815,
+  "raw_text_preview": "## Sophia Bennett\n\n7 Orchard Lane, Dublin D02 XY76, Ireland sophia.bennett@example.com | +353 85 123 4567\n\n## Key Skills\n\nVendor management · inventory control · purchasing · order processing · KPI reporting · master data maintenance · contract administration · customer communication\n\n## Employment\n\n2022 - Present | Purchasing Specialist | Greenline Medical Supplies Ltd 2019 - 2022 | Supply Chain Administrator | Meridian Homeware Ltd 2016 - 2019 | Order Processing Assistant | Cobalt Distribution",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "EN_05",
+  "regression_lang": "en"
+}

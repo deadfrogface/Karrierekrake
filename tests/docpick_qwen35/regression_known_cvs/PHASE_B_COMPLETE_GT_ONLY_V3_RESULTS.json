@@ -1,0 +1,3840 @@
+{
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "metric_name": "COMPLETE_GT_ONLY_V3",
+  "disclaimer": "Regression on known CVs. Extraction was GT-blind and sealed, but documents/solutions were previously known to the project. NOT an independent blind test. NOT a 99% claim on unknown CVs.",
+  "created_at": "2026-09-23T21:58:34.361411+00:00",
+  "prediction_seal_path": "tests/docpick_qwen35/regression_known_cvs/PHASE_A_EXTRACTION_SEAL.json",
+  "prediction_hashes_verified": true,
+  "parser_freeze_commit": "967497351783b3b9e097251a89890b91ef114866",
+  "det_fallback": false,
+  "det_blocked_at_freeze": true,
+  "performance_from_seal": {
+    "wall_s": 4309.953177106043,
+    "avg_s_per_cv": 107.74882942765107,
+    "peak_rss_mb": 8493.3203125,
+    "per_doc_s": {
+      "DE_01": 133.61210040404694,
+      "DE_02": 193.88017454202054,
+      "DE_03": 130.7316836809623,
+      "DE_04": 123.29118483600905,
+      "DE_05": 151.31818675604882,
+      "EN_01": 91.66041407804005,
+      "EN_02": 160.9808639290277,
+      "EN_03": 89.44933993002633,
+      "EN_04": 138.17567033600062,
+      "EN_05": 131.77314404799836,
+      "MH_001": 106.01246908103349,
+      "MH_002": 117.3187867020024,
+      "MH_003": 111.58180542598711,
+      "MH_004": 95.27114915702259,
+      "MH_005": 89.44544182601385,
+      "MH_006": 101.87872346001677,
+      "MH_007": 94.55794487003004,
+      "MH_008": 140.77501522901002,
+      "MH_009": 106.7818696660106,
+      "MH_010": 85.3745604060241,
+      "MH_011": 103.14263349195244,
+      "MH_012": 112.39477501902729,
+      "MH_013": 73.45993296598317,
+      "MH_014": 93.74703272798797,
+      "MH_015": 113.10180000803666,
+      "MH_016": 90.96577962004812,
+      "MH_017": 91.63832985697081,
+      "MH_018": 94.75325706700096,
+      "MH_019": 91.90287663898198,
+      "MH_020": 98.06839536805637,
+      "MH_021": 100.37017636501696,
+      "MH_022": 95.11313977802638,
+      "MH_023": 96.52380980498856,
+      "MH_024": 101.20050161203835,
+      "MH_025": 81.01957829098683,
+      "MH_026": 89.83895126101561,
+      "MH_027": 101.60334231896559,
+      "MH_028": 88.74386946199229,
+      "MH_029": 99.53160528204171,
+      "MH_030": 98.87078564998228
+    }
+  },
+  "coverage": {
+    "n_documents_extracted": 40,
+    "n_documents_extract_ok": 40,
+    "n_documents_with_scored_fields": 40,
+    "n_scored_fields_total": 1223,
+    "n_nicht_bewertbar_fields": 68,
+    "perfect_core_on_scored_fields": "8/40",
+    "overall_f1_including_all_emp_edu_possible": false,
+    "overall_f1_possible_reason": "SMOKE_DE_EN_10 lacks full employment/education lists (count-only) → no full overall F1"
+  },
+  "metrics_complete_gt_only": {
+    "field_total": 1223,
+    "counts": {
+      "correct": 1071,
+      "missing": 37,
+      "hallucinated": 2,
+      "wrong": 113,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.8757154538021259,
+    "precision": 0.903035413153457,
+    "recall": 0.9666064981949458,
+    "f1": 0.933740191804708,
+    "hallucination_rate": 0.001635322976287817,
+    "missing_field_rate": 0.03025347506132461,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.09403107113654947,
+    "by_group": {
+      "personal": {
+        "correct": 98,
+        "wrong": 3,
+        "missing": 9
+      },
+      "contact": {
+        "correct": 64
+      },
+      "address": {
+        "correct": 178,
+        "missing": 4,
+        "hallucinated": 1,
+        "wrong": 2
+      },
+      "languages": {
+        "correct": 90
+      },
+      "licenses": {
+        "correct": 46
+      },
+      "skills": {
+        "correct": 138
+      },
+      "software": {
+        "correct": 113,
+        "missing": 2
+      },
+      "certificates": {
+        "correct": 11
+      },
+      "education": {
+        "correct": 162,
+        "missing": 9
+      },
+      "employment": {
+        "missing": 13,
+        "correct": 171,
+        "wrong": 108,
+        "hallucinated": 1
+      }
+    },
+    "n_missing": 37,
+    "n_hallucinated": 2,
+    "n_wrong": 113,
+    "missing_fields": [
+      {
+        "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+        "field": "address.city",
+        "expected": "Leipzig"
+      },
+      {
+        "document": "EN_03_Missing_Address_Fields.pdf",
+        "field": "address.country",
+        "expected": "Germany"
+      },
+      {
+        "document": "MH_001.pdf",
+        "field": "education:0.start_date",
+        "expected": "2008"
+      },
+      {
+        "document": "MH_001.pdf",
+        "field": "employment_entry:0",
+        "expected": {
+          "company": "Seestern Produktion GmbH",
+          "position": "Aquakulturwirtin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Protokollführung",
+            "Schadensanalyse"
+          ]
+        }
+      },
+      {
+        "document": "MH_005.pdf",
+        "field": "name.first_name",
+        "expected": "Esra"
+      },
+      {
+        "document": "MH_005.pdf",
+        "field": "name.last_name",
+        "expected": "Lavigne"
+      },
+      {
+        "document": "MH_005.pdf",
+        "field": "employment:0.start_date",
+        "expected": "02/2019"
+      },
+      {
+        "document": "MH_005.pdf",
+        "field": "employment:0.end_date",
+        "expected": "heute"
+      },
+      {
+        "document": "MH_007.pdf",
+        "field": "education:0.start_date",
+        "expected": "2014"
+      },
+      {
+        "document": "MH_007.pdf",
+        "field": "education:0.end_date",
+        "expected": "2017"
+      },
+      {
+        "document": "MH_007.pdf",
+        "field": "employment:0.position",
+        "expected": "Glasveredlerin"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "name.first_name",
+        "expected": "Imani"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "name.last_name",
+        "expected": "Schulte"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "employment:0.start_date",
+        "expected": "02/2019"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "employment:0.end_date",
+        "expected": "heute"
+      },
+      {
+        "document": "MH_010.pdf",
+        "field": "education:0.end_date",
+        "expected": "ohne Abschluss"
+      },
+      {
+        "document": "MH_013.pdf",
+        "field": "education_entry:0",
+        "expected": {
+          "institution": "Berufsschule Arnhem",
+          "qualification": "Fachhochschulreife",
+          "start_date": "2012",
+          "end_date": "2015"
+        }
+      },
+      {
+        "document": "MH_013.pdf",
+        "field": "employment_entry:0",
+        "expected": {
+          "company": "Brückenbau West GmbH",
+          "position": "Naturwerksteinmechanikerin",
+          "start_date": "02/2019",
+          "end_date": "heute",
+          "description": [
+            "Schichtübergabe",
+            "Kundenkommunikation"
+          ]
+        }
+      },
+      {
+        "document": "MH_017.pdf",
+        "field": "employment:0.end_date",
+        "expected": "heute"
+      },
+      {
+        "document": "MH_019.pdf",
+        "field": "name.first_name",
+        "expected": "Una"
+      },
+      {
+        "document": "MH_019.pdf",
+        "field": "employment:0.company",
+        "expected": "Mosaik Dienste AG"
+      },
+      {
+        "document": "MH_019.pdf",
+        "field": "employment:0.end_date",
+        "expected": "08/2021"
+      },
+      {
+        "document": "MH_020.pdf",
+        "field": "education:0.end_date",
+        "expected": "ohne Abschluss"
+      },
+      {
+        "document": "MH_021.pdf",
+        "field": "employment:0.end_date",
+        "expected": "heute"
+      },
+      {
+        "document": "MH_023.pdf",
+        "field": "name.first_name",
+        "expected": "Zita"
+      },
+      {
+        "document": "MH_023.pdf",
+        "field": "name.last_name",
+        "expected": "Novak"
+      },
+      {
+        "document": "MH_025.pdf",
+        "field": "employment:0.end_date",
+        "expected": "heute"
+      },
+      {
+        "document": "MH_025.pdf",
+        "field": "software:0",
+        "expected": "Minitab"
+      },
+      {
+        "document": "MH_025.pdf",
+        "field": "software:1",
+        "expected": "Qlik Sense"
+      },
+      {
+        "document": "MH_026.pdf",
+        "field": "address.country",
+        "expected": "Schweiz"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "name.first_name",
+        "expected": "Daisy"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "name.last_name",
+        "expected": "Turner"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "address.postal_code",
+        "expected": "4000"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "education:0.start_date",
+        "expected": "2010"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "education:0.end_date",
+        "expected": "2013"
+      },
+      {
+        "document": "MH_029.pdf",
+        "field": "employment:0.end_date",
+        "expected": "heute"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "education:0.end_date",
+        "expected": "ohne Abschluss"
+      }
+    ],
+    "hallucinated_fields": [
+      {
+        "document": "EN_03_Missing_Address_Fields.pdf",
+        "field": "address.street",
+        "expected": null,
+        "actual": "Berlin"
+      },
+      {
+        "document": "MH_019.pdf",
+        "field": "employment_extra:1",
+        "expected": null,
+        "actual": {
+          "title": "",
+          "company": "Mosaik Dienste AG",
+          "start_date": "2021-08",
+          "end_date": "",
+          "responsibilities": []
+        }
+      }
+    ],
+    "wrong_fields": [
+      {
+        "document": "EN_03_Missing_Address_Fields.pdf",
+        "field": "address.city",
+        "status": "wrong",
+        "expected": "Berlin",
+        "actual": "Germany"
+      },
+      {
+        "document": "MH_002.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_002.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_002.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_002.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_003.pdf",
+        "field": "name.first_name",
+        "status": "wrong",
+        "expected": "Célina",
+        "actual": "Celina"
+      },
+      {
+        "document": "MH_003.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_003.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_003.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_003.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_003.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_003.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_004.pdf",
+        "field": "employment:0.position",
+        "status": "wrong",
+        "expected": "Deichbauer",
+        "actual": "Materialdisposition · Bestandsprüfung"
+      },
+      {
+        "document": "MH_004.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_004.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_005.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_005.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_006.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_006.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_006.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_006.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_006.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_006.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_007.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_007.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_008.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_008.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_008.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_008.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_009.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_010.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_010.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_011.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_011.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_011.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_011.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_012.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_012.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_012.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_012.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_012.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_012.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_014.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_014.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_014.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_014.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_015.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_015.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_015.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_015.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_015.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_015.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_016.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_016.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_017.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_017.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_017.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_018.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_018.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_018.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_018.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_018.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_018.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_019.pdf",
+        "field": "name.last_name",
+        "status": "wrong",
+        "expected": "Heinrich",
+        "actual": "Schäfer"
+      },
+      {
+        "document": "MH_019.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_020.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_020.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_020.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_020.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_021.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_021.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_021.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_021.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_021.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_022.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_022.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_023.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_023.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_023.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_023.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_024.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_024.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_024.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_024.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_024.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_024.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_025.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_026.pdf",
+        "field": "address.city",
+        "status": "wrong",
+        "expected": "Genève",
+        "actual": "Schweiz"
+      },
+      {
+        "document": "MH_026.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_026.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_026.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_026.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_027.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      },
+      {
+        "document": "MH_028.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_028.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_029.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_029.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_029.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "name.first_name",
+        "status": "wrong",
+        "expected": "Mikołaj",
+        "actual": "Mikolaj"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "employment:0.start_date",
+        "status": "wrong",
+        "expected": "02/2019",
+        "actual": "2019-02"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "08/2021",
+        "actual": "2021-08"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "employment:1.start_date",
+        "status": "wrong",
+        "expected": "03/2020",
+        "actual": "2020-03"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "employment:1.end_date",
+        "status": "wrong",
+        "expected": "09/2022",
+        "actual": "2022-09"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "employment:2.start_date",
+        "status": "wrong",
+        "expected": "04/2021",
+        "actual": "2021-04"
+      },
+      {
+        "document": "MH_030.pdf",
+        "field": "employment:2.end_date",
+        "status": "wrong",
+        "expected": "10/2023",
+        "actual": "2023-10"
+      }
+    ]
+  },
+  "nicht_bewertbar": {
+    "n_fields": 68,
+    "by_group": {
+      "employment": 10,
+      "education": 10,
+      "skills": 9,
+      "software": 8,
+      "certificates": 31
+    },
+    "by_reason": {
+      "only work_count=3; no full employment list": 4,
+      "only education_count=1; no full education list": 5,
+      "only work_count=4; no full employment list": 2,
+      "only education_count=2; no full education list": 5,
+      "only skills_count=12; no full skills list": 1,
+      "only software_count=12; no full software list": 1,
+      "only certificates_count=5; no full certificates list": 1,
+      "only work_count=2; no full employment list": 4,
+      "no skills list and no count": 1,
+      "no certificates list and no count": 25,
+      "only skills_count=4; no full skills list": 1,
+      "only software_count=5; no full software list": 2,
+      "only certificates_count=3; no full certificates list": 4,
+      "only skills_count=7; no full skills list": 1,
+      "only software_count=6; no full software list": 4,
+      "only certificates_count=4; no full certificates list": 1,
+      "only skills_count=5; no full skills list": 3,
+      "only skills_count=6; no full skills list": 1,
+      "only software_count=7; no full software list": 1,
+      "only skills_count=8; no full skills list": 1
+    }
+  },
+  "by_language": {
+    "de": {
+      "field_total": 1020,
+      "counts": {
+        "correct": 898,
+        "missing": 27,
+        "wrong": 94,
+        "hallucinated": 1,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.8803921568627451,
+      "precision": 0.904330312185297,
+      "recall": 0.9708108108108108,
+      "f1": 0.9363920750782065,
+      "hallucination_rate": 0.000980392156862745,
+      "missing_field_rate": 0.026470588235294117,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.09313725490196079,
+      "by_group": {
+        "personal": {
+          "correct": 78,
+          "wrong": 3,
+          "missing": 7
+        },
+        "contact": {
+          "correct": 54
+        },
+        "address": {
+          "correct": 143,
+          "missing": 1
+        },
+        "languages": {
+          "correct": 68
+        },
+        "licenses": {
+          "correct": 36
+        },
+        "skills": {
+          "correct": 120
+        },
+        "software": {
+          "correct": 101
+        },
+        "certificates": {
+          "correct": 10
+        },
+        "education": {
+          "correct": 144,
+          "missing": 7
+        },
+        "employment": {
+          "missing": 12,
+          "correct": 144,
+          "wrong": 91,
+          "hallucinated": 1
+        }
+      },
+      "n_scored_fields": 1020,
+      "n_nicht_bewertbar_fields": 40,
+      "n_documents": 31,
+      "perfect_core_documents": null
+    },
+    "en": {
+      "field_total": 203,
+      "counts": {
+        "correct": 173,
+        "hallucinated": 1,
+        "wrong": 19,
+        "missing": 10,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.8522167487684729,
+      "precision": 0.8963730569948186,
+      "recall": 0.9453551912568307,
+      "f1": 0.9202127659574468,
+      "hallucination_rate": 0.0049261083743842365,
+      "missing_field_rate": 0.04926108374384237,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.09852216748768473,
+      "by_group": {
+        "personal": {
+          "correct": 20,
+          "missing": 2
+        },
+        "address": {
+          "correct": 35,
+          "hallucinated": 1,
+          "wrong": 2,
+          "missing": 3
+        },
+        "languages": {
+          "correct": 22
+        },
+        "licenses": {
+          "correct": 10
+        },
+        "contact": {
+          "correct": 10
+        },
+        "education": {
+          "correct": 18,
+          "missing": 2
+        },
+        "employment": {
+          "correct": 27,
+          "wrong": 17,
+          "missing": 1
+        },
+        "skills": {
+          "correct": 18
+        },
+        "software": {
+          "correct": 12,
+          "missing": 2
+        },
+        "certificates": {
+          "correct": 1
+        }
+      },
+      "n_scored_fields": 203,
+      "n_nicht_bewertbar_fields": 28,
+      "n_documents": 9,
+      "perfect_core_documents": null
+    }
+  },
+  "by_corpus": {
+    "MINI_HOLDOUT_30": {
+      "field_total": 1083,
+      "counts": {
+        "correct": 935,
+        "missing": 35,
+        "wrong": 112,
+        "hallucinated": 1,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.863342566943675,
+      "precision": 0.892175572519084,
+      "recall": 0.9639175257731959,
+      "f1": 0.9266600594648167,
+      "hallucination_rate": 0.0009233610341643582,
+      "missing_field_rate": 0.032317636195752536,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.10433979686057249,
+      "by_group": {
+        "personal": {
+          "correct": 74,
+          "wrong": 3,
+          "missing": 9
+        },
+        "contact": {
+          "correct": 56
+        },
+        "address": {
+          "correct": 138,
+          "wrong": 1,
+          "missing": 2
+        },
+        "languages": {
+          "correct": 60
+        },
+        "licenses": {
+          "correct": 32
+        },
+        "education": {
+          "correct": 162,
+          "missing": 9
+        },
+        "employment": {
+          "missing": 13,
+          "correct": 171,
+          "wrong": 108,
+          "hallucinated": 1
+        },
+        "skills": {
+          "correct": 133
+        },
+        "software": {
+          "correct": 101,
+          "missing": 2
+        },
+        "certificates": {
+          "correct": 8
+        }
+      },
+      "n_scored_fields": 1083,
+      "n_nicht_bewertbar_fields": 22,
+      "n_documents": 30,
+      "perfect_core_documents": null
+    },
+    "SMOKE_DE_EN_10_V1": {
+      "field_total": 140,
+      "counts": {
+        "correct": 136,
+        "missing": 2,
+        "hallucinated": 1,
+        "wrong": 1,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9714285714285714,
+      "precision": 0.9855072463768116,
+      "recall": 0.9855072463768116,
+      "f1": 0.9855072463768116,
+      "hallucination_rate": 0.007142857142857143,
+      "missing_field_rate": 0.014285714285714285,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.014285714285714285,
+      "by_group": {
+        "personal": {
+          "correct": 24
+        },
+        "contact": {
+          "correct": 8
+        },
+        "address": {
+          "correct": 40,
+          "missing": 2,
+          "hallucinated": 1,
+          "wrong": 1
+        },
+        "languages": {
+          "correct": 30
+        },
+        "licenses": {
+          "correct": 14
+        },
+        "skills": {
+          "correct": 5
+        },
+        "software": {
+          "correct": 12
+        },
+        "certificates": {
+          "correct": 3
+        }
+      },
+      "n_scored_fields": 140,
+      "n_nicht_bewertbar_fields": 46,
+      "n_documents": 10,
+      "perfect_core_documents": null
+    }
+  },
+  "by_corpus_language": {
+    "MINI_HOLDOUT_30/de": {
+      "field_total": 937,
+      "counts": {
+        "correct": 816,
+        "missing": 26,
+        "wrong": 94,
+        "hallucinated": 1,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.8708644610458911,
+      "precision": 0.8957189901207464,
+      "recall": 0.9691211401425178,
+      "f1": 0.9309754706217912,
+      "hallucination_rate": 0.0010672358591248667,
+      "missing_field_rate": 0.02774813233724653,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.10138740661686232,
+      "by_group": {
+        "personal": {
+          "correct": 65,
+          "wrong": 3,
+          "missing": 7
+        },
+        "contact": {
+          "correct": 48
+        },
+        "address": {
+          "correct": 124
+        },
+        "languages": {
+          "correct": 52
+        },
+        "licenses": {
+          "correct": 28
+        },
+        "education": {
+          "correct": 144,
+          "missing": 7
+        },
+        "employment": {
+          "missing": 12,
+          "correct": 144,
+          "wrong": 91,
+          "hallucinated": 1
+        },
+        "skills": {
+          "correct": 115
+        },
+        "software": {
+          "correct": 89
+        },
+        "certificates": {
+          "correct": 7
+        }
+      },
+      "n_scored_fields": 937,
+      "n_nicht_bewertbar_fields": 19,
+      "n_documents": 26,
+      "perfect_core_documents": null
+    },
+    "MINI_HOLDOUT_30/en": {
+      "field_total": 146,
+      "counts": {
+        "correct": 119,
+        "wrong": 18,
+        "missing": 9,
+        "hallucinated": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.815068493150685,
+      "precision": 0.8686131386861314,
+      "recall": 0.9296875,
+      "f1": 0.89811320754717,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.06164383561643835,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.1232876712328767,
+      "by_group": {
+        "personal": {
+          "correct": 9,
+          "missing": 2
+        },
+        "contact": {
+          "correct": 8
+        },
+        "address": {
+          "correct": 14,
+          "wrong": 1,
+          "missing": 2
+        },
+        "languages": {
+          "correct": 8
+        },
+        "licenses": {
+          "correct": 4
+        },
+        "education": {
+          "correct": 18,
+          "missing": 2
+        },
+        "employment": {
+          "correct": 27,
+          "wrong": 17,
+          "missing": 1
+        },
+        "skills": {
+          "correct": 18
+        },
+        "software": {
+          "correct": 12,
+          "missing": 2
+        },
+        "certificates": {
+          "correct": 1
+        }
+      },
+      "n_scored_fields": 146,
+      "n_nicht_bewertbar_fields": 3,
+      "n_documents": 4,
+      "perfect_core_documents": null
+    },
+    "SMOKE_DE_EN_10_V1/de": {
+      "field_total": 83,
+      "counts": {
+        "correct": 82,
+        "missing": 1,
+        "hallucinated": 0,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9879518072289156,
+      "precision": 1.0,
+      "recall": 0.9879518072289156,
+      "f1": 0.993939393939394,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.012048192771084338,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "by_group": {
+        "personal": {
+          "correct": 13
+        },
+        "contact": {
+          "correct": 6
+        },
+        "address": {
+          "correct": 19,
+          "missing": 1
+        },
+        "languages": {
+          "correct": 16
+        },
+        "licenses": {
+          "correct": 8
+        },
+        "skills": {
+          "correct": 5
+        },
+        "software": {
+          "correct": 12
+        },
+        "certificates": {
+          "correct": 3
+        }
+      },
+      "n_scored_fields": 83,
+      "n_nicht_bewertbar_fields": 21,
+      "n_documents": 5,
+      "perfect_core_documents": null
+    },
+    "SMOKE_DE_EN_10_V1/en": {
+      "field_total": 57,
+      "counts": {
+        "correct": 54,
+        "hallucinated": 1,
+        "wrong": 1,
+        "missing": 1,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9473684210526315,
+      "precision": 0.9642857142857143,
+      "recall": 0.9818181818181818,
+      "f1": 0.972972972972973,
+      "hallucination_rate": 0.017543859649122806,
+      "missing_field_rate": 0.017543859649122806,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.03508771929824561,
+      "by_group": {
+        "personal": {
+          "correct": 11
+        },
+        "address": {
+          "correct": 21,
+          "hallucinated": 1,
+          "wrong": 1,
+          "missing": 1
+        },
+        "languages": {
+          "correct": 14
+        },
+        "licenses": {
+          "correct": 6
+        },
+        "contact": {
+          "correct": 2
+        }
+      },
+      "n_scored_fields": 57,
+      "n_nicht_bewertbar_fields": 25,
+      "n_documents": 5,
+      "perfect_core_documents": null
+    }
+  },
+  "per_document": [
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "DE_01_Klassisch.pdf",
+      "lang": "de",
+      "n_scored": 27,
+      "n_nicht_bewertbar": 2,
+      "statuses": {
+        "correct": 27
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "lang": "de",
+      "n_scored": 15,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 15
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "DE_03_C1_Kontextfalle.pdf",
+      "lang": "de",
+      "n_scored": 17,
+      "n_nicht_bewertbar": 4,
+      "statuses": {
+        "correct": 17
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "lang": "de",
+      "n_scored": 13,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 12,
+        "missing": 1
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "DE_05_Zweiseitig.pdf",
+      "lang": "de",
+      "n_scored": 11,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 11
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_01_Classic_Resume.pdf",
+      "lang": "en",
+      "n_scored": 11,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 11
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "lang": "en",
+      "n_scored": 10,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 10
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "lang": "en",
+      "n_scored": 14,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 11,
+        "hallucinated": 1,
+        "wrong": 1,
+        "missing": 1
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "lang": "en",
+      "n_scored": 12,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 12
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_05_Skills_Heavy.pdf",
+      "lang": "en",
+      "n_scored": 10,
+      "n_nicht_bewertbar": 5,
+      "statuses": {
+        "correct": 10
+      },
+      "perfect_core_on_scored_fields": true
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_001.pdf",
+      "lang": "de",
+      "n_scored": 30,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "correct": 28,
+        "missing": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_002.pdf",
+      "lang": "de",
+      "n_scored": 35,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 31,
+        "wrong": 4
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "n_scored": 41,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "wrong": 7,
+        "correct": 34
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_004.pdf",
+      "lang": "de",
+      "n_scored": 34,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 31,
+        "wrong": 3
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_005.pdf",
+      "lang": "de",
+      "n_scored": 33,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "missing": 4,
+        "correct": 27,
+        "wrong": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_006.pdf",
+      "lang": "de",
+      "n_scored": 40,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 34,
+        "wrong": 6
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_007.pdf",
+      "lang": "de",
+      "n_scored": 28,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 23,
+        "missing": 3,
+        "wrong": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_008.pdf",
+      "lang": "de",
+      "n_scored": 45,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 41,
+        "wrong": 4
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "n_scored": 39,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "missing": 4,
+        "correct": 31,
+        "wrong": 4
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_010.pdf",
+      "lang": "de",
+      "n_scored": 29,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 26,
+        "missing": 1,
+        "wrong": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_011.pdf",
+      "lang": "de",
+      "n_scored": 37,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 33,
+        "wrong": 4
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_012.pdf",
+      "lang": "de",
+      "n_scored": 44,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 38,
+        "wrong": 6
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_013.pdf",
+      "lang": "de",
+      "n_scored": 21,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "correct": 19,
+        "missing": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_014.pdf",
+      "lang": "de",
+      "n_scored": 35,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 31,
+        "wrong": 4
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_015.pdf",
+      "lang": "de",
+      "n_scored": 47,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 41,
+        "wrong": 6
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_016.pdf",
+      "lang": "de",
+      "n_scored": 34,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 32,
+        "wrong": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_017.pdf",
+      "lang": "de",
+      "n_scored": 34,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "correct": 30,
+        "wrong": 3,
+        "missing": 1
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_018.pdf",
+      "lang": "de",
+      "n_scored": 36,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 30,
+        "wrong": 6
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_019.pdf",
+      "lang": "de",
+      "n_scored": 32,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "missing": 3,
+        "wrong": 2,
+        "correct": 26,
+        "hallucinated": 1
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_020.pdf",
+      "lang": "de",
+      "n_scored": 40,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 35,
+        "missing": 1,
+        "wrong": 4
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_021.pdf",
+      "lang": "de",
+      "n_scored": 39,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "correct": 33,
+        "wrong": 5,
+        "missing": 1
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_022.pdf",
+      "lang": "de",
+      "n_scored": 34,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 32,
+        "wrong": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_023.pdf",
+      "lang": "de",
+      "n_scored": 37,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "missing": 2,
+        "correct": 31,
+        "wrong": 4
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_024.pdf",
+      "lang": "en",
+      "n_scored": 44,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 38,
+        "wrong": 6
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_025.pdf",
+      "lang": "en",
+      "n_scored": 29,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "correct": 25,
+        "wrong": 1,
+        "missing": 3
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_026.pdf",
+      "lang": "en",
+      "n_scored": 31,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 25,
+        "wrong": 5,
+        "missing": 1
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "n_scored": 42,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "missing": 5,
+        "correct": 31,
+        "wrong": 6
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_028.pdf",
+      "lang": "de",
+      "n_scored": 34,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "correct": 32,
+        "wrong": 2
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_029.pdf",
+      "lang": "de",
+      "n_scored": 39,
+      "n_nicht_bewertbar": 0,
+      "statuses": {
+        "correct": 35,
+        "wrong": 3,
+        "missing": 1
+      },
+      "perfect_core_on_scored_fields": false
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "n_scored": 40,
+      "n_nicht_bewertbar": 1,
+      "statuses": {
+        "wrong": 7,
+        "correct": 32,
+        "missing": 1
+      },
+      "perfect_core_on_scored_fields": false
+    }
+  ],
+  "real_errors_on_complete_gt": [
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "lang": "de",
+      "field": "address.city",
+      "group": "address",
+      "status": "missing",
+      "expected": "Leipzig",
+      "actual": "",
+      "cv_text_snippet": "Nina Sommer Leipzig | nina.sommer@example.org AUSBILDUNG 10/2018 - 09/2021 B.A. Betriebswirtschaftslehre, Hochschule Leipzig 08/2010"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "lang": "en",
+      "field": "address.street",
+      "group": "address",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": "Berlin",
+      "cv_text_snippet": "Aisha Rahman Berlin, Germany | aisha.rahman@example.net Summary Operations professional with experience in procurement, supplier communication and service deliv"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "lang": "en",
+      "field": "address.city",
+      "group": "address",
+      "status": "wrong",
+      "expected": "Berlin",
+      "actual": "Germany",
+      "cv_text_snippet": "Aisha Rahman Berlin, Germany | aisha.rahman@example.net Summary Operations professional with experience in procurement, supplier comm"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "lang": "en",
+      "field": "address.country",
+      "group": "address",
+      "status": "missing",
+      "expected": "Germany",
+      "actual": "",
+      "cv_text_snippet": "Aisha Rahman Berlin, Germany | aisha.rahman@example.net Summary Operations professional with experience in procurement, supplier communicatio"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_001.pdf",
+      "lang": "de",
+      "field": "education:0.start_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "2008",
+      "actual": "",
+      "cv_text_snippet": "· Schadensanalyse Schule und Ausbildung 2008 - 2011 Berufsreife | Berufsschule Emmerich am Rhein 2017 - 2020 Ausbildung Aquakulturwirtin | Bildungswerk Emmerich"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_001.pdf",
+      "lang": "de",
+      "field": "employment_entry:0",
+      "group": "employment",
+      "status": "missing",
+      "expected": {
+        "company": "Seestern Produktion GmbH",
+        "position": "Aquakulturwirtin",
+        "start_date": "02/2019",
+        "end_date": "heute",
+        "description": [
+          "Protokollführung",
+          "Schadensanalyse"
+        ]
+      },
+      "actual": null,
+      "cv_text_snippet": "LEBENSLAUF Ada Rademacher Rheinpromenade 5c | 46446 Emmerich am Rhein | Deutschland · ada.rademacher@example.de · +49 152 4100000 · Geburtsdatum: 02.01.1970 Ber"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_002.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "waltung Schadensanalyse Berufserfahrung 02/2019 - 08/2021 Betriebstechniker | Kronenwerk Technik KG Arbeitsvorbereitung · Lieferantenkoordination 03/2020 - 09/2"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_002.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "hadensanalyse Berufserfahrung 02/2019 - 08/2021 Betriebstechniker | Kronenwerk Technik KG Arbeitsvorbereitung · Lieferantenkoordination 03/2020 - 09/2022 Projek"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_002.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "svorbereitung · Lieferantenkoordination 03/2020 - 09/2022 Projektassistenz | Mosaik Dienste AG Messmittelverwaltung · Schadensanalyse Schule und Ausbildung 2009"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_002.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "ung · Lieferantenkoordination 03/2020 - 09/2022 Projektassistenz | Mosaik Dienste AG Messmittelverwaltung · Schadensanalyse Schule und Ausbildung 2009 - 2012 Mi"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "field": "name.first_name",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "Célina",
+      "actual": "Celina",
+      "cv_text_snippet": "LEBENSLAUF Célina Wouters Bautzner Straße 39 | 02763 Zittau | Deutschland · celina.wouters@example.de · +49 154 4118002 Berufserfah"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "le.de · +49 154 4118002 Berufserfahrung 02/2019 08/2021 Chirurgiemechanikerin Mosaik Dienste AG Protokollführung · Technische Recherche 03/2020 09/2022 Projekta"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "+49 154 4118002 Berufserfahrung 02/2019 08/2021 Chirurgiemechanikerin Mosaik Dienste AG Protokollführung · Technische Recherche 03/2020 09/2022 Projektassistenz"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "Protokollführung · Technische Recherche 03/2020 09/2022 Projektassistenz Nordlicht Manufaktur Prozessüberwachung · Gefahrstoffmanagement 04/2021 10/2023 Aushilf"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "lführung · Technische Recherche 03/2020 09/2022 Projektassistenz Nordlicht Manufaktur Prozessüberwachung · Gefahrstoffmanagement 04/2021 10/2023 Aushilfe Brücke"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": "zessüberwachung · Gefahrstoffmanagement 04/2021 10/2023 Aushilfe Brückenbau West GmbH Probenahme · Protokollführung Schule und Ausbildung 2010 - 2013 Fachhochsc"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_003.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "wachung · Gefahrstoffmanagement 04/2021 10/2023 Aushilfe Brückenbau West GmbH Probenahme · Protokollführung Schule und Ausbildung 2010 - 2013 Fachhochschulreife"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_004.pdf",
+      "lang": "de",
+      "field": "employment:0.position",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "Deichbauer",
+      "actual": "Materialdisposition · Bestandsprüfung",
+      "cv_text_snippet": ".2003 Berufserfahrung 02/2019 - 08/2021 Deichbauer | Nordlicht Manufaktur Materialdisposition · Bestandsprüfung Schule und Ausbildung 2011 - 2014 Allgemeine Hoc"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_004.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 05.10.2003 Berufserfahrung 02/2019 - 08/2021 Deichbauer | Nordlicht Manufaktur Materialdisposition · Bestandsprüfung Schule und Ausbildung 2011 - 2"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_004.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "m: 05.10.2003 Berufserfahrung 02/2019 - 08/2021 Deichbauer | Nordlicht Manufaktur Materialdisposition · Bestandsprüfung Schule und Ausbildung 2011 - 2014 Allgem"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_005.pdf",
+      "lang": "de",
+      "field": "name.first_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Esra",
+      "actual": "",
+      "cv_text_snippet": "LEBENSLAUF Esra Lavigne Münchener Straße 73 | 83395 Freilassing | Deutschland · esra.lavigne@example.de · Geburtsdatum: 06.05.1980 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_005.pdf",
+      "lang": "de",
+      "field": "name.last_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Lavigne",
+      "actual": "",
+      "cv_text_snippet": "LEBENSLAUF Esra Lavigne Münchener Straße 73 | 83395 Freilassing | Deutschland · esra.lavigne@example.de · Geburtsdatum: 06.05.1980 Beruf"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_005.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "02/2019",
+      "actual": "",
+      "cv_text_snippet": "eburtsdatum: 06.05.1980 Berufserfahrung 02/2019 - heute Edelsteinschleiferin | Brückenbau West GmbH Schadensanalyse · Dokumentenlenkung 03/2020 - 09/2022 Projek"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_005.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "heute",
+      "actual": "",
+      "cv_text_snippet": "m: 06.05.1980 Berufserfahrung 02/2019 - heute Edelsteinschleiferin | Brückenbau West GmbH Schadensanalyse · Dokumentenlenkung 03/2020 - 09/2022 Projektassistenz"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_005.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "mbH Schadensanalyse · Dokumentenlenkung 03/2020 - 09/2022 Projektassistenz | TerraNova Labor e.V. Materialdisposition · Schadensanalyse Schule und Ausbildung 20"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_005.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "nsanalyse · Dokumentenlenkung 03/2020 - 09/2022 Projektassistenz | TerraNova Labor e.V. Materialdisposition · Schadensanalyse Schule und Ausbildung 2012 - 2015 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_006.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "nagement Montageplanung Berufserfahrung 02/2019 - 08/2021 Fahrzeuglackierer | TerraNova Labor e.V. Probenahme · Arbeitsvorbereitung 03/2020 - 09/2022 Projektass"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_006.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "ontageplanung Berufserfahrung 02/2019 - 08/2021 Fahrzeuglackierer | TerraNova Labor e.V. Probenahme · Arbeitsvorbereitung 03/2020 - 09/2022 Projektassistenz | H"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_006.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "r e.V. Probenahme · Arbeitsvorbereitung 03/2020 - 09/2022 Projektassistenz | Hafenring Logistik OHG Gefahrstoffmanagement · Montageplanung 04/2021 - 10/2023 Aus"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_006.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "benahme · Arbeitsvorbereitung 03/2020 - 09/2022 Projektassistenz | Hafenring Logistik OHG Gefahrstoffmanagement · Montageplanung 04/2021 - 10/2023 Aushilfe | Al"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_006.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": " Gefahrstoffmanagement · Montageplanung 04/2021 - 10/2023 Aushilfe | Albatros Systeme GmbH Probenahme · Arbeitsvorbereitung Schule und Ausbildung 2013 - 2016 Te"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_006.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "ffmanagement · Montageplanung 04/2021 - 10/2023 Aushilfe | Albatros Systeme GmbH Probenahme · Arbeitsvorbereitung Schule und Ausbildung 2013 - 2016 Technikerabs"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_007.pdf",
+      "lang": "de",
+      "field": "education:0.start_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "2014",
+      "actual": "",
+      "cv_text_snippet": "Dokumentenlenkung Schule und Ausbildung 2014 - 2017 Bachelor of Engineering | Hochschule Cottbus Sprachkenntnisse & Führerschein Griechisch: C1 Englisch: B2 Füh"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_007.pdf",
+      "lang": "de",
+      "field": "education:0.end_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "2017",
+      "actual": "",
+      "cv_text_snippet": "tenlenkung Schule und Ausbildung 2014 - 2017 Bachelor of Engineering | Hochschule Cottbus Sprachkenntnisse & Führerschein Griechisch: C1 Englisch: B2 Führersche"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_007.pdf",
+      "lang": "de",
+      "field": "employment:0.position",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Glasveredlerin",
+      "actual": null,
+      "cv_text_snippet": "4154006 Berufserfahrung 02/2019 08/2021 Glasveredlerin Hafenring Logistik OHG Kundenkommunikation · Dokumentenlenkung Schule und Ausbildung 2014 - 2017 Bachelor"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_007.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "le.de · +49 152 4154006 Berufserfahrung 02/2019 08/2021 Glasveredlerin Hafenring Logistik OHG Kundenkommunikation · Dokumentenlenkung Schule und Ausbildung 2014"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_007.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "+49 152 4154006 Berufserfahrung 02/2019 08/2021 Glasveredlerin Hafenring Logistik OHG Kundenkommunikation · Dokumentenlenkung Schule und Ausbildung 2014 - 2017 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_008.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 09.02.1979 Berufserfahrung 02/2019 - 08/2021 Hafenschiffer | Albatros Systeme GmbH Instandhaltung · Kalibrierung 03/2020 - 09/2022 Projektassistenz"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_008.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "m: 09.02.1979 Berufserfahrung 02/2019 - 08/2021 Hafenschiffer | Albatros Systeme GmbH Instandhaltung · Kalibrierung 03/2020 - 09/2022 Projektassistenz | Seester"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_008.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "teme GmbH Instandhaltung · Kalibrierung 03/2020 - 09/2022 Projektassistenz | Seestern Produktion GmbH Arbeitsvorbereitung · Schichtübergabe Schule und Ausbildun"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_008.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "Instandhaltung · Kalibrierung 03/2020 - 09/2022 Projektassistenz | Seestern Produktion GmbH Arbeitsvorbereitung · Schichtübergabe Schule und Ausbildung 2015 - 2"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "name.first_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Imani",
+      "actual": "",
+      "cv_text_snippet": "LEBENSLAUF Imani Schulte Oxfordstraße 20 | 53111 Bonn | Deutschland · imani.schulte@example.de · +49 154 4172008 · Geburtsdatum: 10"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "name.last_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Schulte",
+      "actual": "",
+      "cv_text_snippet": "LEBENSLAUF Imani Schulte Oxfordstraße 20 | 53111 Bonn | Deutschland · imani.schulte@example.de · +49 154 4172008 · Geburtsdatum: 10.09.19"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "02/2019",
+      "actual": "",
+      "cv_text_snippet": "eburtsdatum: 10.09.1990 Berufserfahrung 02/2019 - heute Imkerin | Seestern Produktion GmbH Kundenkommunikation · Schichtübergabe 03/2020 - 09/2022 Projektassist"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "heute",
+      "actual": "",
+      "cv_text_snippet": "m: 10.09.1990 Berufserfahrung 02/2019 - heute Imkerin | Seestern Produktion GmbH Kundenkommunikation · Schichtübergabe 03/2020 - 09/2022 Projektassistenz | Kron"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "H Kundenkommunikation · Schichtübergabe 03/2020 - 09/2022 Projektassistenz | Kronenwerk Technik KG Probenahme · Kundenkommunikation 04/2021 - 10/2023 Aushilfe |"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "mmunikation · Schichtübergabe 03/2020 - 09/2022 Projektassistenz | Kronenwerk Technik KG Probenahme · Kundenkommunikation 04/2021 - 10/2023 Aushilfe | Mosaik Di"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": "nik KG Probenahme · Kundenkommunikation 04/2021 - 10/2023 Aushilfe | Mosaik Dienste AG Schichtübergabe · Probenahme Schule und Ausbildung 2008 - 2011 Studium ab"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_009.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "benahme · Kundenkommunikation 04/2021 - 10/2023 Aushilfe | Mosaik Dienste AG Schichtübergabe · Probenahme Schule und Ausbildung 2008 - 2011 Studium abgebrochen "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_010.pdf",
+      "lang": "de",
+      "field": "education:0.end_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "ohne Abschluss",
+      "actual": "",
+      "cv_text_snippet": "librierung Schule und Ausbildung 2009 - ohne Abschluss Schule ohne Abschluss | Fachschule Erfurt Weitere Angaben "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_010.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "sition Qualitätsprüfung Berufserfahrung 02/2019 - 08/2021 Kanalbauer | Kronenwerk Technik KG Arbeitsvorbereitung · Kalibrierung Schule und Ausbildung 2009 - ohn"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_010.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "litätsprüfung Berufserfahrung 02/2019 - 08/2021 Kanalbauer | Kronenwerk Technik KG Arbeitsvorbereitung · Kalibrierung Schule und Ausbildung 2009 - ohne Abschlus"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_011.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 12.11.1978 Berufserfahrung 02/2019 08/2021 Lebensmittelkontrolleurin Mosaik Dienste AG Qualitätsprüfung · Kundenkommunikation 03/2020 09/2022 Proje"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_011.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "tum: 12.11.1978 Berufserfahrung 02/2019 08/2021 Lebensmittelkontrolleurin Mosaik Dienste AG Qualitätsprüfung · Kundenkommunikation 03/2020 09/2022 Projektassist"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_011.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": " Qualitätsprüfung · Kundenkommunikation 03/2020 09/2022 Projektassistenz Nordlicht Manufaktur Gefahrstoffmanagement · Technische Recherche Schule und Ausbildung"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_011.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "tsprüfung · Kundenkommunikation 03/2020 09/2022 Projektassistenz Nordlicht Manufaktur Gefahrstoffmanagement · Technische Recherche Schule und Ausbildung 2010 - "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_012.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 13.06.1989 Berufserfahrung 02/2019 - 08/2021 Medientechnologe Druck | Nordlicht Manufaktur Bestandsprüfung · Schadensanalyse 03/2020 - 09/2022 Proj"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_012.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "m: 13.06.1989 Berufserfahrung 02/2019 - 08/2021 Medientechnologe Druck | Nordlicht Manufaktur Bestandsprüfung · Schadensanalyse 03/2020 - 09/2022 Projektassiste"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_012.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "aktur Bestandsprüfung · Schadensanalyse 03/2020 - 09/2022 Projektassistenz | Brückenbau West GmbH Qualitätsprüfung · Dokumentenlenkung 04/2021 - 10/2023 Aushilf"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_012.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "andsprüfung · Schadensanalyse 03/2020 - 09/2022 Projektassistenz | Brückenbau West GmbH Qualitätsprüfung · Dokumentenlenkung 04/2021 - 10/2023 Aushilfe | TerraN"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_012.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": "bH Qualitätsprüfung · Dokumentenlenkung 04/2021 - 10/2023 Aushilfe | TerraNova Labor e.V. Arbeitsvorbereitung · Gefahrstoffmanagement Schule und Ausbildung 2011"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_012.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "tsprüfung · Dokumentenlenkung 04/2021 - 10/2023 Aushilfe | TerraNova Labor e.V. Arbeitsvorbereitung · Gefahrstoffmanagement Schule und Ausbildung 2011 - 2014 Mi"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_013.pdf",
+      "lang": "de",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "institution": "Berufsschule Arnhem",
+        "qualification": "Fachhochschulreife",
+        "start_date": "2012",
+        "end_date": "2015"
+      },
+      "actual": null,
+      "cv_text_snippet": "LEBENSLAUF Malika Bork Utrechtseweg 88 | 6811 Arnhem | Niederlande · malika.bork@example.de · +49 152 4208012 · Geburtsdatum: 14.01.2000 Berufserfahrung 02/2019"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_013.pdf",
+      "lang": "de",
+      "field": "employment_entry:0",
+      "group": "employment",
+      "status": "missing",
+      "expected": {
+        "company": "Brückenbau West GmbH",
+        "position": "Naturwerksteinmechanikerin",
+        "start_date": "02/2019",
+        "end_date": "heute",
+        "description": [
+          "Schichtübergabe",
+          "Kundenkommunikation"
+        ]
+      },
+      "actual": null,
+      "cv_text_snippet": "LEBENSLAUF Malika Bork Utrechtseweg 88 | 6811 Arnhem | Niederlande · malika.bork@example.de · +49 152 4208012 · Geburtsdatum: 14.01.2000 Berufserfahrung 02/2019"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_014.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "n Gefahrstoffmanagement Berufserfahrung 02/2019 - 08/2021 Ofenbauer | TerraNova Labor e.V. Messmittelverwaltung · Lieferantenkoordination 03/2020 - 09/2022 Proj"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_014.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "offmanagement Berufserfahrung 02/2019 - 08/2021 Ofenbauer | TerraNova Labor e.V. Messmittelverwaltung · Lieferantenkoordination 03/2020 - 09/2022 Projektassiste"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_014.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "telverwaltung · Lieferantenkoordination 03/2020 - 09/2022 Projektassistenz | Hafenring Logistik OHG Materialdisposition · Gefahrstoffmanagement Schule und Ausbi"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_014.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "ung · Lieferantenkoordination 03/2020 - 09/2022 Projektassistenz | Hafenring Logistik OHG Materialdisposition · Gefahrstoffmanagement Schule und Ausbildung 2013"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_015.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 16.03.1988 Berufserfahrung 02/2019 08/2021 Pferdewirtin Hafenring Logistik OHG Qualitätsprüfung · Gefahrstoffmanagement 03/2020 09/2022 Projektassi"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_015.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "tum: 16.03.1988 Berufserfahrung 02/2019 08/2021 Pferdewirtin Hafenring Logistik OHG Qualitätsprüfung · Gefahrstoffmanagement 03/2020 09/2022 Projektassistenz Al"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_015.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "ualitätsprüfung · Gefahrstoffmanagement 03/2020 09/2022 Projektassistenz Albatros Systeme GmbH Montageplanung · Bestandsprüfung 04/2021 10/2023 Aushilfe Seester"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_015.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "prüfung · Gefahrstoffmanagement 03/2020 09/2022 Projektassistenz Albatros Systeme GmbH Montageplanung · Bestandsprüfung 04/2021 10/2023 Aushilfe Seestern Produk"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_015.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": "e GmbH Montageplanung · Bestandsprüfung 04/2021 10/2023 Aushilfe Seestern Produktion GmbH Technische Recherche · Qualitätsprüfung Schule und Ausbildung 2014 - 2"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_015.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "ontageplanung · Bestandsprüfung 04/2021 10/2023 Aushilfe Seestern Produktion GmbH Technische Recherche · Qualitätsprüfung Schule und Ausbildung 2014 - 2017 Gese"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_016.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 17.10.1999 Berufserfahrung 02/2019 - 08/2021 Requisiteur | Albatros Systeme GmbH Bestandsprüfung · Schadensanalyse Schule und Ausbildung 2015 - 201"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_016.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "m: 17.10.1999 Berufserfahrung 02/2019 - 08/2021 Requisiteur | Albatros Systeme GmbH Bestandsprüfung · Schadensanalyse Schule und Ausbildung 2015 - 2018 Technike"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_017.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 18.05.1976 Berufserfahrung 02/2019 - heute Straßenwärterin | Seestern Produktion GmbH Bestandsprüfung · Probenahme 03/2020 - 09/2022 Projektassiste"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_017.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "heute",
+      "actual": "",
+      "cv_text_snippet": "m: 18.05.1976 Berufserfahrung 02/2019 - heute Straßenwärterin | Seestern Produktion GmbH Bestandsprüfung · Probenahme 03/2020 - 09/2022 Projektassistenz | Krone"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_017.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "ktion GmbH Bestandsprüfung · Probenahme 03/2020 - 09/2022 Projektassistenz | Kronenwerk Technik KG Prozessüberwachung · Bestandsprüfung Schule und Ausbildung 20"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_017.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": " Bestandsprüfung · Probenahme 03/2020 - 09/2022 Projektassistenz | Kronenwerk Technik KG Prozessüberwachung · Bestandsprüfung Schule und Ausbildung 2008 - 2011 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_018.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "management Kalibrierung Berufserfahrung 02/2019 - 08/2021 Textillaborant | Kronenwerk Technik KG Bestandsprüfung · Schadensanalyse 03/2020 - 09/2022 Projektassi"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_018.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": " Kalibrierung Berufserfahrung 02/2019 - 08/2021 Textillaborant | Kronenwerk Technik KG Bestandsprüfung · Schadensanalyse 03/2020 - 09/2022 Projektassistenz | Mo"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_018.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "ik KG Bestandsprüfung · Schadensanalyse 03/2020 - 09/2022 Projektassistenz | Mosaik Dienste AG Gefahrstoffmanagement · Kalibrierung 04/2021 - 10/2023 Aushilfe |"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_018.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "andsprüfung · Schadensanalyse 03/2020 - 09/2022 Projektassistenz | Mosaik Dienste AG Gefahrstoffmanagement · Kalibrierung 04/2021 - 10/2023 Aushilfe | Nordlicht"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_018.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": "AG Gefahrstoffmanagement · Kalibrierung 04/2021 - 10/2023 Aushilfe | Nordlicht Manufaktur Bestandsprüfung · Schadensanalyse Schule und Ausbildung 2009 - 2012 Me"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_018.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "toffmanagement · Kalibrierung 04/2021 - 10/2023 Aushilfe | Nordlicht Manufaktur Bestandsprüfung · Schadensanalyse Schule und Ausbildung 2009 - 2012 Meisterprüfu"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_019.pdf",
+      "lang": "de",
+      "field": "name.first_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Una",
+      "actual": "",
+      "cv_text_snippet": "LEBENSLAUF Una Heinrich Schäferstraße 69c | 66953 Pirmasens | Deutschland · una.heinrich@example.de · Geburtsdatum: 20.07.1998 Beru"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_019.pdf",
+      "lang": "de",
+      "field": "name.last_name",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "Heinrich",
+      "actual": "Schäfer",
+      "cv_text_snippet": "LEBENSLAUF Una Heinrich Schäferstraße 69c | 66953 Pirmasens | Deutschland · una.heinrich@example.de · Geburtsdatum: 20.07.1998 Berufser"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_019.pdf",
+      "lang": "de",
+      "field": "employment:0.company",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Mosaik Dienste AG",
+      "actual": "",
+      "cv_text_snippet": "ahrung 02/2019 08/2021 Uhrentechnikerin Mosaik Dienste AG Schichtübergabe · Qualitätsprüfung Schule und Ausbildung 2010 - 2013 Studium abgebrochen | Hochschule "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_019.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 20.07.1998 Berufserfahrung 02/2019 08/2021 Uhrentechnikerin Mosaik Dienste AG Schichtübergabe · Qualitätsprüfung Schule und Ausbildung 2010 - 2013 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_019.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "08/2021",
+      "actual": "",
+      "cv_text_snippet": "tum: 20.07.1998 Berufserfahrung 02/2019 08/2021 Uhrentechnikerin Mosaik Dienste AG Schichtübergabe · Qualitätsprüfung Schule und Ausbildung 2010 - 2013 Studium "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_019.pdf",
+      "lang": "de",
+      "field": "employment_extra:1",
+      "group": "employment",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": {
+        "title": "",
+        "company": "Mosaik Dienste AG",
+        "start_date": "2021-08",
+        "end_date": "",
+        "responsibilities": []
+      },
+      "cv_text_snippet": "LEBENSLAUF Una Heinrich Schäferstraße 69c | 66953 Pirmasens | Deutschland · una.heinrich@example.de · Geburtsdatum: 20.07.1998 Berufserfahrung 02/2019 08/2021 U"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_020.pdf",
+      "lang": "de",
+      "field": "education:0.end_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "ohne Abschluss",
+      "actual": "",
+      "cv_text_snippet": "ollführung Schule und Ausbildung 2011 - ohne Abschluss Schule ohne Abschluss | Gesamtschule Freilassing Sprachkenntnisse & Führerschein Deutsch: C2 Ungarisch: C"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_020.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 21.02.1975 Berufserfahrung 02/2019 - 08/2021 Vulkaniseur | Nordlicht Manufaktur Kundenkommunikation · Dokumentenlenkung 03/2020 - 09/2022 Projektas"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_020.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "m: 21.02.1975 Berufserfahrung 02/2019 - 08/2021 Vulkaniseur | Nordlicht Manufaktur Kundenkommunikation · Dokumentenlenkung 03/2020 - 09/2022 Projektassistenz | "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_020.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "Kundenkommunikation · Dokumentenlenkung 03/2020 - 09/2022 Projektassistenz | Brückenbau West GmbH Lieferantenkoordination · Protokollführung Schule und Ausbildu"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_020.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "unikation · Dokumentenlenkung 03/2020 - 09/2022 Projektassistenz | Brückenbau West GmbH Lieferantenkoordination · Protokollführung Schule und Ausbildung 2011 - "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_021.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 22.09.1986 Berufserfahrung 02/2019 - heute Werkfeuerwehrfrau | Brückenbau West GmbH Kundenkommunikation · Messmittelverwaltung 03/2020 - 09/2022 Pr"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_021.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "heute",
+      "actual": "",
+      "cv_text_snippet": "m: 22.09.1986 Berufserfahrung 02/2019 - heute Werkfeuerwehrfrau | Brückenbau West GmbH Kundenkommunikation · Messmittelverwaltung 03/2020 - 09/2022 Projektassis"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_021.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "denkommunikation · Messmittelverwaltung 03/2020 - 09/2022 Projektassistenz | TerraNova Labor e.V. Schichtübergabe · Kundenkommunikation 04/2021 - 10/2023 Aushil"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_021.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "kation · Messmittelverwaltung 03/2020 - 09/2022 Projektassistenz | TerraNova Labor e.V. Schichtübergabe · Kundenkommunikation 04/2021 - 10/2023 Aushilfe | Hafen"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_021.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": ". Schichtübergabe · Kundenkommunikation 04/2021 - 10/2023 Aushilfe | Hafenring Logistik OHG Messmittelverwaltung · Schichtübergabe Schule und Ausbildung 2012 - "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_021.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "bergabe · Kundenkommunikation 04/2021 - 10/2023 Aushilfe | Hafenring Logistik OHG Messmittelverwaltung · Schichtübergabe Schule und Ausbildung 2012 - 2015 Beruf"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_022.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "obenahme Instandhaltung Berufserfahrung 02/2019 - 08/2021 Zahnradvorrichter | TerraNova Labor e.V. Prozessüberwachung · Schadensanalyse Schule und Ausbildung 20"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_022.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "nstandhaltung Berufserfahrung 02/2019 - 08/2021 Zahnradvorrichter | TerraNova Labor e.V. Prozessüberwachung · Schadensanalyse Schule und Ausbildung 2013 - 2016 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_023.pdf",
+      "lang": "de",
+      "field": "name.first_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Zita",
+      "actual": "",
+      "cv_text_snippet": "LEBENSLAUF Zita Novak Hafenstraße 16 | 25813 Husum | Deutschland · zita.novak@example.de · +49 156 4298022 · Geburtsdatum: 24.11.19"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_023.pdf",
+      "lang": "de",
+      "field": "name.last_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Novak",
+      "actual": "",
+      "cv_text_snippet": "LEBENSLAUF Zita Novak Hafenstraße 16 | 25813 Husum | Deutschland · zita.novak@example.de · +49 156 4298022 · Geburtsdatum: 24.11.1974 Be"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_023.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 24.11.1974 Berufserfahrung 02/2019 08/2021 Änderungsschneiderin Hafenring Logistik OHG Technische Recherche · Gefahrstoffmanagement 03/2020 09/2022"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_023.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "tum: 24.11.1974 Berufserfahrung 02/2019 08/2021 Änderungsschneiderin Hafenring Logistik OHG Technische Recherche · Gefahrstoffmanagement 03/2020 09/2022 Projekt"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_023.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "ische Recherche · Gefahrstoffmanagement 03/2020 09/2022 Projektassistenz Albatros Systeme GmbH Instandhaltung · Qualitätsprüfung Schule und Ausbildung 2014 - 20"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_023.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "cherche · Gefahrstoffmanagement 03/2020 09/2022 Projektassistenz Albatros Systeme GmbH Instandhaltung · Qualitätsprüfung Schule und Ausbildung 2014 - 2017 Fachh"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_024.pdf",
+      "lang": "en",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "orn: 25.06.1985 Professional Experience 02/2019 - 08/2021 Conservation Assistant | Albatros Systeme GmbH Montageplanung · Probenahme 03/2020 - 09/2022 Projektas"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_024.pdf",
+      "lang": "en",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": ".1985 Professional Experience 02/2019 - 08/2021 Conservation Assistant | Albatros Systeme GmbH Montageplanung · Probenahme 03/2020 - 09/2022 Projektassistenz | "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_024.pdf",
+      "lang": "en",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "ysteme GmbH Montageplanung · Probenahme 03/2020 - 09/2022 Projektassistenz | Seestern Produktion GmbH Schadensanalyse · Schichtübergabe 04/2021 - 10/2023 Aushil"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_024.pdf",
+      "lang": "en",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "H Montageplanung · Probenahme 03/2020 - 09/2022 Projektassistenz | Seestern Produktion GmbH Schadensanalyse · Schichtübergabe 04/2021 - 10/2023 Aushilfe | Krone"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_024.pdf",
+      "lang": "en",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": " GmbH Schadensanalyse · Schichtübergabe 04/2021 - 10/2023 Aushilfe | Kronenwerk Technik KG Qualitätsprüfung · Dokumentenlenkung Education 2015 - 2018 Allgemeine"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_024.pdf",
+      "lang": "en",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "densanalyse · Schichtübergabe 04/2021 - 10/2023 Aushilfe | Kronenwerk Technik KG Qualitätsprüfung · Dokumentenlenkung Education 2015 - 2018 Allgemeine Hochschul"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_025.pdf",
+      "lang": "en",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "orn: 26.01.1996 Professional Experience 02/2019 - heute Broadcast Engineer | Seestern Produktion GmbH Messmittelverwaltung · Gefahrstoffmanagement Education 200"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_025.pdf",
+      "lang": "en",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "heute",
+      "actual": "",
+      "cv_text_snippet": ".1996 Professional Experience 02/2019 - heute Broadcast Engineer | Seestern Produktion GmbH Messmittelverwaltung · Gefahrstoffmanagement Education 2008 - 2011 G"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_025.pdf",
+      "lang": "en",
+      "field": "software:0",
+      "group": "software",
+      "status": "missing",
+      "expected": "Minitab",
+      "actual": [],
+      "cv_text_snippet": "man: A2 Driving licence: B Applications Minitab - Grundlagen Qlik Sense - gute Kenntnisse Core Skills Messmittelverwaltung Gefahrstoffmanagement Technische Rech"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_025.pdf",
+      "lang": "en",
+      "field": "software:1",
+      "group": "software",
+      "status": "missing",
+      "expected": "Qlik Sense",
+      "actual": [],
+      "cv_text_snippet": "ce: B Applications Minitab - Grundlagen Qlik Sense - gute Kenntnisse Core Skills Messmittelverwaltung Gefahrstoffmanagement Technische Recherche Additional Info"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_026.pdf",
+      "lang": "en",
+      "field": "address.city",
+      "group": "address",
+      "status": "wrong",
+      "expected": "Genève",
+      "actual": "Schweiz",
+      "cv_text_snippet": "CURRICULUM VITAE Connor Smith Genève | Schweiz · connor.smith@example.co.uk · +49 153 4325025 Languages & Driving Licence English: native German: B1 A"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_026.pdf",
+      "lang": "en",
+      "field": "address.country",
+      "group": "address",
+      "status": "missing",
+      "expected": "Schweiz",
+      "actual": "",
+      "cv_text_snippet": "CURRICULUM VITAE Connor Smith Genève | Schweiz · connor.smith@example.co.uk · +49 153 4325025 Languages & Driving Licence English: native German: B1 Applicatio"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_026.pdf",
+      "lang": "en",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": " Montageplanung Professional Experience 02/2019 - 08/2021 Compliance Coordinator | Kronenwerk Technik KG Qualitätsprüfung · Bestandsprüfung 03/2020 - 09/2022 Pr"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_026.pdf",
+      "lang": "en",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "anung Professional Experience 02/2019 - 08/2021 Compliance Coordinator | Kronenwerk Technik KG Qualitätsprüfung · Bestandsprüfung 03/2020 - 09/2022 Projektassis"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_026.pdf",
+      "lang": "en",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "k KG Qualitätsprüfung · Bestandsprüfung 03/2020 - 09/2022 Projektassistenz | Mosaik Dienste AG Technische Recherche · Montageplanung Education 2009 - 2012 Techn"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_026.pdf",
+      "lang": "en",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "tätsprüfung · Bestandsprüfung 03/2020 - 09/2022 Projektassistenz | Mosaik Dienste AG Technische Recherche · Montageplanung Education 2009 - 2012 Technikerabschl"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "name.first_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Daisy",
+      "actual": "",
+      "cv_text_snippet": "CURRICULUM VITAE Daisy Turner Quai de la Goffe 84 | 4000 Liège | Belgien · daisy.turner@example.co.uk · +49 154 4334026 · Born: 03.03.198"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "name.last_name",
+      "group": "personal",
+      "status": "missing",
+      "expected": "Turner",
+      "actual": "",
+      "cv_text_snippet": "CURRICULUM VITAE Daisy Turner Quai de la Goffe 84 | 4000 Liège | Belgien · daisy.turner@example.co.uk · +49 154 4334026 · Born: 03.03.1984 Prof"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "address.postal_code",
+      "group": "address",
+      "status": "missing",
+      "expected": "4000",
+      "actual": "",
+      "cv_text_snippet": "ITAE Daisy Turner Quai de la Goffe 84 | 4000 Liège | Belgien · daisy.turner@example.co.uk · +49 154 4334026 · Born: 03.03.1984 Professional Experience 02/2019 0"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "education:0.start_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "2010",
+      "actual": "",
+      "cv_text_snippet": "ikation · Arbeitsvorbereitung Education 2010 - 2013 Bachelor of Engineering | Bristol Technical College Languages & Driving Licence English: native German: B2 A"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "education:0.end_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "2013",
+      "actual": "",
+      "cv_text_snippet": " · Arbeitsvorbereitung Education 2010 - 2013 Bachelor of Engineering | Bristol Technical College Languages & Driving Licence English: native German: B2 Applicat"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "orn: 03.03.1984 Professional Experience 02/2019 08/2021 Digital Archivist Mosaik Dienste AG Arbeitsvorbereitung · Montageplanung 03/2020 09/2022 Projektassisten"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "03.1984 Professional Experience 02/2019 08/2021 Digital Archivist Mosaik Dienste AG Arbeitsvorbereitung · Montageplanung 03/2020 09/2022 Projektassistenz Nordli"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "AG Arbeitsvorbereitung · Montageplanung 03/2020 09/2022 Projektassistenz Nordlicht Manufaktur Materialdisposition · Kalibrierung 04/2021 10/2023 Aushilfe Brücke"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "tsvorbereitung · Montageplanung 03/2020 09/2022 Projektassistenz Nordlicht Manufaktur Materialdisposition · Kalibrierung 04/2021 10/2023 Aushilfe Brückenbau Wes"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": "ktur Materialdisposition · Kalibrierung 04/2021 10/2023 Aushilfe Brückenbau West GmbH Kundenkommunikation · Arbeitsvorbereitung Education 2010 - 2013 Bachelor o"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_027.pdf",
+      "lang": "en",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "erialdisposition · Kalibrierung 04/2021 10/2023 Aushilfe Brückenbau West GmbH Kundenkommunikation · Arbeitsvorbereitung Education 2010 - 2013 Bachelor of Engine"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_028.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 04.10.1995 Berufserfahrung 02/2019 - 08/2021 Ergotherapeut | Nordlicht Manufaktur Montageplanung · Messmittelverwaltung Schule und Ausbildung 2011 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_028.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "m: 04.10.1995 Berufserfahrung 02/2019 - 08/2021 Ergotherapeut | Nordlicht Manufaktur Montageplanung · Messmittelverwaltung Schule und Ausbildung 2011 - 2014 Mei"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_029.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "eburtsdatum: 05.05.1972 Berufserfahrung 02/2019 - heute Fluggerätmechanikerin | Brückenbau West GmbH Bestandsprüfung · Lieferantenkoordination 03/2020 - 09/2022"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_029.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "heute",
+      "actual": "",
+      "cv_text_snippet": "m: 05.05.1972 Berufserfahrung 02/2019 - heute Fluggerätmechanikerin | Brückenbau West GmbH Bestandsprüfung · Lieferantenkoordination 03/2020 - 09/2022 Projektas"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_029.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": "standsprüfung · Lieferantenkoordination 03/2020 - 09/2022 Projektassistenz | TerraNova Labor e.V. Materialdisposition · Bestandsprüfung Schule und Ausbildung 20"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_029.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "ung · Lieferantenkoordination 03/2020 - 09/2022 Projektassistenz | TerraNova Labor e.V. Materialdisposition · Bestandsprüfung Schule und Ausbildung 2012 - 2015 "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "name.first_name",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "Mikołaj",
+      "actual": "Mikolaj",
+      "cv_text_snippet": "LEBENSLAUF Mikołaj Czarnecki Museumstraße 14 | 6020 Innsbruck | Österreich · mikolaj.czarnecki@example.de · +49 157 4361029 · Gebur"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "education:0.end_date",
+      "group": "education",
+      "status": "missing",
+      "expected": "ohne Abschluss",
+      "actual": "",
+      "cv_text_snippet": "Probenahme Schule und Ausbildung 2013 - ohne Abschluss Schule ohne Abschluss | Fachschule Innsbruck Weitere Angaben "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "employment:0.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "02/2019",
+      "actual": "2019-02",
+      "cv_text_snippet": "on Messmittelverwaltung Berufserfahrung 02/2019 - 08/2021 Küstengeologe | TerraNova Labor e.V. Technische Recherche · Probenahme 03/2020 - 09/2022 Projektassist"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "08/2021",
+      "actual": "2021-08",
+      "cv_text_snippet": "telverwaltung Berufserfahrung 02/2019 - 08/2021 Küstengeologe | TerraNova Labor e.V. Technische Recherche · Probenahme 03/2020 - 09/2022 Projektassistenz | Hafe"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "employment:1.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "03/2020",
+      "actual": "2020-03",
+      "cv_text_snippet": " e.V. Technische Recherche · Probenahme 03/2020 - 09/2022 Projektassistenz | Hafenring Logistik OHG Kundenkommunikation · Messmittelverwaltung 04/2021 - 10/2023"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "employment:1.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "09/2022",
+      "actual": "2022-09",
+      "cv_text_snippet": "nische Recherche · Probenahme 03/2020 - 09/2022 Projektassistenz | Hafenring Logistik OHG Kundenkommunikation · Messmittelverwaltung 04/2021 - 10/2023 Aushilfe "
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "employment:2.start_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "04/2021",
+      "actual": "2021-04",
+      "cv_text_snippet": "denkommunikation · Messmittelverwaltung 04/2021 - 10/2023 Aushilfe | Albatros Systeme GmbH Technische Recherche · Probenahme Schule und Ausbildung 2013 - ohne A"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "document": "MH_030.pdf",
+      "lang": "de",
+      "field": "employment:2.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "10/2023",
+      "actual": "2023-10",
+      "cv_text_snippet": "kation · Messmittelverwaltung 04/2021 - 10/2023 Aushilfe | Albatros Systeme GmbH Technische Recherche · Probenahme Schule und Ausbildung 2013 - ohne Abschluss S"
+    }
+  ],
+  "quality_claim": [
+    "COMPLETE_GT_ONLY_V3 F1 applies only to fields with full GT values.",
+    "Employment/education quality cannot be claimed when GT is count-only.",
+    "Not a blind-test result and not a 99% claim."
+  ]
+}

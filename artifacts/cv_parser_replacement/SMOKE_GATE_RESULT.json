@@ -1,0 +1,39 @@
+{
+  "result": "SMARTRESUME REPLACEMENT SMOKE GATE FAILED – LEGACY PRODUCTION PATH PRESERVED",
+  "branch": "cursor/cv-parser-smartresume-de-en",
+  "det_archive_tag": "archive/det-cv-parser-f3a17c0",
+  "det_freeze_commit": "f3a17c09fe8a2d4d196aabb58e49c8d97ecfcfc8",
+  "smoke_manifest": "artifacts/cv_parser_replacement/SMOKE_DE_EN_10_MANIFEST.json",
+  "variants": {
+    "A_smartresume_qwen_local": {
+      "tested": true,
+      "gate_passed": false,
+      "approx_section_accuracy": 0.7284,
+      "processing_success": "9/10",
+      "docs_pass_all_sections": "2/10",
+      "mean_s": 86.6,
+      "p95_s": 107.5,
+      "peak_rss_mb": 3938.1,
+      "model_size_mb": 1192.1,
+      "notes": "Chinese-centric SmartResume prompts adapted to DE/EN; truncated JSON repaired; evidence filter applied; still far below gate and DET baseline"
+    },
+    "B_docling_plus_smartresume": {
+      "tested": true,
+      "gate_passed": false,
+      "blocked": "Docling Layout Heron failed: Could not import module AutoImageProcessor (environment/transformers compatibility). No full B smoke completed."
+    },
+    "C_hybrid_oksomu_ner": {
+      "tested": true,
+      "gate_passed": false,
+      "blocked": "oksomu/resume-ner pipeline TypeError: unexpected keyword argument token_type_ids on DistilBertForTokenClassification (transformers version mismatch). EN-only model; not viable as DE primary."
+    }
+  },
+  "det_baseline_same_10": {
+    "approx_section_accuracy": 0.9889,
+    "docs_pass_all_sections": "9/10",
+    "known_fail": "EN_02 skills count (pre-existing)"
+  },
+  "legacy_det_removed": false,
+  "production_path_preserved": true,
+  "independent_099_claim": false
+}

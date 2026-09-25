@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Grace",
+    "last_name": "Miller",
+    "street": "Bridge Avenue",
+    "house_number": "34",
+    "postal_code": "EH1 3AA",
+    "city": "Edinburgh",
+    "country": "United Kingdom",
+    "date_of_birth": "07.07.1982"
+  },
+  "emails": [
+    "grace.miller.30@example.org"
+  ],
+  "phones": [
+    "+44 7700 900030"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "University of Strathclyde",
+      "qualification": "MLIS",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Community Librarian",
+      "company": "North Quarter Library",
+      "start_date": "07/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Literacy sessions",
+    "Volunteer training",
+    "Cataloguing"
+  ],
+  "software": [
+    "Koha"
+  ],
+  "certificates": [
+    {
+      "name": "Safeguarding Training",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_030.pdf",
+  "raw_text_chars": 676,
+  "raw_text_preview": "## Grace Miller\n\n## Community Librarian\n\n## Contact\n\ngrace.miller.30@example.org | +44 7700 900030 Bridge Avenue 34, EH1 3AA Edinburgh, United Kingdom Born: 1982-07-07\n\n## Profile\n\nExperience in Community Librarian. Reading outreach and volunteer management.\n\n## Work Experience\n\n## Community Librarian | North Quarter Library\n\n2019-07 - Present Reading outreach and volunteer management\n\n## Education\n\nMLIS, University of Strathclyde\n\n## Certificates\n\nSafeguarding Training\n\n## Languages\n\nEnglish: N",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_030",
+  "blind_lang": "unknown",
+  "pdf_sha256": "2575e6230f3c3aaeb7a6714b6def14b2999564fc6f267eb98dafa1fc7de9f761"
+}

@@ -1,0 +1,72 @@
+{
+  "personal": {
+    "first_name": "Alina",
+    "last_name": "Hoffmann",
+    "street": "Marktstraße",
+    "house_number": "11",
+    "postal_code": "94032",
+    "city": "Passau",
+    "country": "Deutschland",
+    "date_of_birth": "22.12.1984"
+  },
+  "emails": [
+    "alina.hoffmann.07@example.org"
+  ],
+  "phones": [
+    "+49 151 4700959"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Berufsschule Passau",
+      "qualification": "Ausbildung Hotelfachfrau",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Hotelfachfrau",
+      "company": "Dreiflüssestadt Hotel",
+      "start_date": "08/2017",
+      "end_date": "08/2025",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Check-in",
+    "Beschwerdemanagement",
+    "Reservierungen"
+  ],
+  "software": [
+    "Opera PMS",
+    "Excel"
+  ],
+  "certificates": [
+    {
+      "name": "Brandschutzhelferin",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_007.pdf",
+  "raw_text_chars": 618,
+  "raw_text_preview": "## Alina Hoffmann\n\n## Hotelfachfrau\n\n## Kontakt\n\nalina.hoffmann.07@example.org | +49 151 4700959 Marktstraße 11, 94032 Passau, Deutschland Geboren: 22.12.1984\n\n## Kurzprofil\n\nBerufspraxis in Hotelfachfrau. Rezeption und Gästebetreuung.\n\n## Kenntnisse\n\nCheck-in · Beschwerdemanagement · Reservierungen\n\n## Programme\n\nOpera PMS / Excel\n\n## Berufserfahrung\n\n## Hotelfachfrau | Dreiflüssestadt Hotel\n\n2017-08 - 2025-08 Rezeption und Gästebetreuung\n\n## Ausbildung\n\nAusbildung Hotelfachfrau, Berufsschule P",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false
+}

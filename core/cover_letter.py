@@ -685,15 +685,31 @@ def cached_profile_evidence(config: AppConfig) -> _ProfileEvidence:
 
 
 def evidenced_stations(config: AppConfig) -> list[ExperienceEntry]:
-    """Confirmed, non-debt professional stations. Training rows are excluded."""
+    """Confirmed, non-debt professional stations. Training rows are excluded.
+
+    When ``ApplicationProfile.cv_source_text`` (or an explicit source) is set,
+    titles/companies must also appear in that CV text — closes the desktop
+    import → Anschreiben evidence gap without inventing stations.
+    """
     if _debt_blocks(config) or not _section_confirmed(config, "work_experience"):
         return []
+    source = resolve_cover_letter_source_text(config)
     stations: list[ExperienceEntry] = []
     for exp in list(config.profile.qualifications.work_experience or []):
         if _is_training_row(exp):
             continue
-        if clean_text(exp.title) or clean_text(exp.company):
-            stations.append(exp)
+        title = clean_text(exp.title)
+        company = clean_text(exp.company)
+        if not (title or company):
+            continue
+        if source:
+            from core.cv_evidence import evidence_in_source
+
+            if title and not evidence_in_source(title, source):
+                continue
+            if company and not evidence_in_source(company, source):
+                continue
+        stations.append(exp)
     return stations
 
 
@@ -866,6 +882,18 @@ def _insert_contact_sentence(text: str, description: str) -> str:
         if marker in text:
             return text.replace(marker, f"{sentence}\n\n{marker}", 1)
     return text.rstrip() + "\n\n" + sentence + "\n"
+
+
+def resolve_cover_letter_source_text(
+    config: AppConfig,
+    source_text: str = "",
+) -> str:
+    """Prefer explicit ``source_text``; else use last desktop CV import text."""
+    if source_text and str(source_text).strip():
+        return str(source_text)
+    app = getattr(config, "application", None)
+    stored = str(getattr(app, "cv_source_text", "") or "").strip()
+    return stored
 
 
 def render_cover_letter(

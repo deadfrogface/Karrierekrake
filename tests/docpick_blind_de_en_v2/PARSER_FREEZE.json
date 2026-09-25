@@ -1,0 +1,33 @@
+{
+  "seal_type": "PARSER_CONFIG_SCORER_FREEZE_BLIND_DE_EN_V2_NV3",
+  "test_type": "INDEPENDENT_BLIND_DE_EN_NV3_50",
+  "disclaimer": "Independent synthetic NV3 Phase A. No GT loaded. Not a 99% claim until Phase B seal+score.",
+  "created_at": "2026-09-24T18:11:46.633699+00:00",
+  "git_commit": "801a92475c0f128634a940312e07f266f51539d6",
+  "round7_baseline_commit": "bb560e4f3cab6cfbfd24aba91c4df855d72a9ee2",
+  "det_fallback": false,
+  "productive_import": "core.cv_docpick_import.import_cv_docpick",
+  "llm": {
+    "base_url": "http://127.0.0.1:8765/v1",
+    "model_path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+    "temperature": 0.0,
+    "max_tokens": 2048,
+    "schema_strip_default": "0",
+    "n_ctx_server_expected": 4096
+  },
+  "runtime_budget_s": {
+    "warm": 60.0,
+    "cold": 90.0
+  },
+  "file_sha256": {
+    "core/cv_docpick_import.py": "9bc335e23a4ba8e8a489636263f263277d5dc2bd581f796161f6f202ed195b1d",
+    "core/cv_intelligence.py": "aacc77e556eb24bba87c4c9ccd9a5dbbbd360cfc8d22c773e3bd300eed0447f4",
+    "scripts/holdout_scorer_v3_1_date_norm.py": "33ccd073b5f9d470cc1c76808e326fdc67cbfb328f613d3a1bb690ddd6e86e4f",
+    "scripts/holdout_scorer_v3_complete_gt.py": "c8e92da973c277b06ed2f965748cdb18b2840a8187069d4fe25c68bb0a893bda",
+    "scripts/holdout_scorer_v2.py": "0d80bdd6c6b3f4d5a73563bb94163697faae4b878f73616668d6f6e626744f7e"
+  },
+  "manifest_sha256": "aae1dca51caa1fcc39ed17a536b5847ffac3fa840a4cf48a328fe6d5586add30",
+  "supplier_pdf_manifest_sha256": "e9bb0c3508ce025d691ba2a7cd57a97fdc3f4a503c796bf68e583f9b4d27dbc2",
+  "gt_not_loaded": true
+}

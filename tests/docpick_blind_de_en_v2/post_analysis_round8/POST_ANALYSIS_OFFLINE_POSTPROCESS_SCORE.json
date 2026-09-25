@@ -1,0 +1,616 @@
+{
+  "test_type": "POST_ANALYSIS_OFFLINE_POSTPROCESS_NOT_BLIND",
+  "disclaimer": "Frozen preds + Docling text + enrich/repair only. Not blind. Frozen F1 0.980 unchanged.",
+  "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "n_scored": 50,
+  "perfect_core": "22/50",
+  "edu_filled_from_empty": 10,
+  "heute_repaired": 5,
+  "wall_s": 45.4,
+  "peak_rss_mb": 1726.7,
+  "metrics_complete_gt_only_v3_1": {
+    "field_total": 1309,
+    "counts": {
+      "correct": 1274,
+      "wrong": 27,
+      "missing": 5,
+      "hallucinated": 3,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.9732620320855615,
+    "precision": 0.9769938650306749,
+    "recall": 0.9960906958561376,
+    "f1": 0.986449864498645,
+    "hallucination_rate": 0.002291825821237586,
+    "missing_field_rate": 0.0038197097020626434,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.02291825821237586,
+    "by_group": {
+      "personal": {
+        "correct": 124,
+        "wrong": 26
+      },
+      "contact": {
+        "correct": 100
+      },
+      "address": {
+        "correct": 250
+      },
+      "languages": {
+        "correct": 103
+      },
+      "licenses": {
+        "correct": 50
+      },
+      "education": {
+        "correct": 98,
+        "missing": 1,
+        "hallucinated": 1
+      },
+      "employment": {
+        "correct": 308,
+        "wrong": 1,
+        "missing": 1
+      },
+      "skills": {
+        "correct": 148,
+        "missing": 2
+      },
+      "software": {
+        "correct": 54,
+        "missing": 1
+      },
+      "certificates": {
+        "correct": 39,
+        "hallucinated": 2
+      }
+    },
+    "n_missing": 5,
+    "n_hallucinated": 3,
+    "n_wrong": 27,
+    "missing_fields": [
+      {
+        "document": "NV3_008",
+        "field": "software:0",
+        "expected": "TIA Portal"
+      },
+      {
+        "document": "NV3_009",
+        "field": "skill:2",
+        "expected": "Elternarbeit"
+      },
+      {
+        "document": "NV3_033",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Left school at 16 without qualifications"
+        }
+      },
+      {
+        "document": "NV3_034",
+        "field": "skill:2",
+        "expected": "Communication aids"
+      },
+      {
+        "document": "NV3_050",
+        "field": "employment:0.company",
+        "expected": "Self-employed"
+      }
+    ],
+    "hallucinated_fields": [
+      {
+        "document": "NV3_008",
+        "field": "certificate_extra:1",
+        "expected": null,
+        "actual": "TIA Portal"
+      },
+      {
+        "document": "NV3_033",
+        "field": "education_extra:0",
+        "expected": null,
+        "actual": {
+          "institution": "",
+          "qualification": "Schule ohne Abschluss",
+          "start_date": "",
+          "end_date": "ohne Abschluss"
+        }
+      },
+      {
+        "document": "NV3_034",
+        "field": "certificate_extra:1",
+        "expected": null,
+        "actual": "Communication aids"
+      }
+    ],
+    "wrong_fields": [
+      {
+        "document": "NV3_001",
+        "field": "employment:0.position",
+        "status": "wrong",
+        "expected": "Medizinische Fachangestellte",
+        "actual": "Sprechstundenkoordination"
+      },
+      {
+        "document": "NV3_026",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1978-11-23",
+        "actual": "23.11.1978"
+      },
+      {
+        "document": "NV3_027",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1979-04-26",
+        "actual": "26.04.1979"
+      },
+      {
+        "document": "NV3_028",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1980-09-01",
+        "actual": "01.09.1980"
+      },
+      {
+        "document": "NV3_029",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1981-02-04",
+        "actual": "04.02.1981"
+      },
+      {
+        "document": "NV3_030",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1982-07-07",
+        "actual": "07.07.1982"
+      },
+      {
+        "document": "NV3_031",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1983-12-10",
+        "actual": "10.12.1983"
+      },
+      {
+        "document": "NV3_032",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1984-05-13",
+        "actual": "13.05.1984"
+      },
+      {
+        "document": "NV3_033",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1985-10-16",
+        "actual": "16.10.1985"
+      },
+      {
+        "document": "NV3_034",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1986-03-19",
+        "actual": "19.03.1986"
+      },
+      {
+        "document": "NV3_035",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1987-08-22",
+        "actual": "22.08.1987"
+      },
+      {
+        "document": "NV3_036",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1988-01-25",
+        "actual": "25.01.1988"
+      },
+      {
+        "document": "NV3_037",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1989-06-28",
+        "actual": "28.06.1989"
+      },
+      {
+        "document": "NV3_038",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1990-11-03",
+        "actual": "03.11.1990"
+      },
+      {
+        "document": "NV3_039",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1991-04-06",
+        "actual": "06.04.1991"
+      },
+      {
+        "document": "NV3_040",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1992-09-09",
+        "actual": "09.09.1992"
+      },
+      {
+        "document": "NV3_041",
+        "field": "name.last_name",
+        "status": "wrong",
+        "expected": "O’Connor",
+        "actual": "O'Connor"
+      },
+      {
+        "document": "NV3_041",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1993-02-12",
+        "actual": "12.02.1993"
+      },
+      {
+        "document": "NV3_042",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1994-07-15",
+        "actual": "15.07.1994"
+      },
+      {
+        "document": "NV3_043",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1995-12-18",
+        "actual": "18.12.1995"
+      },
+      {
+        "document": "NV3_044",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1996-05-21",
+        "actual": "21.05.1996"
+      },
+      {
+        "document": "NV3_045",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1997-10-24",
+        "actual": "24.10.1997"
+      },
+      {
+        "document": "NV3_046",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1998-03-27",
+        "actual": "27.03.1998"
+      },
+      {
+        "document": "NV3_047",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1999-08-02",
+        "actual": "02.08.1999"
+      },
+      {
+        "document": "NV3_048",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "2000-01-05",
+        "actual": "05.01.2000"
+      },
+      {
+        "document": "NV3_049",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "2001-06-08",
+        "actual": "08.06.2001"
+      },
+      {
+        "document": "NV3_050",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1977-11-11",
+        "actual": "11.11.1977"
+      }
+    ]
+  },
+  "by_lang": {
+    "de": 0.9969278033794163,
+    "en": 0.9758001561280251
+  },
+  "real_errors_on_complete_gt": [
+    {
+      "document": "NV3_001",
+      "lang": "de",
+      "field": "employment:0.position",
+      "status": "wrong",
+      "expected": "Medizinische Fachangestellte",
+      "actual": "Sprechstundenkoordination"
+    },
+    {
+      "document": "NV3_008",
+      "lang": "de",
+      "field": "software:0",
+      "status": "missing",
+      "expected": "TIA Portal",
+      "actual": []
+    },
+    {
+      "document": "NV3_008",
+      "lang": "de",
+      "field": "certificate_extra:1",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": "TIA Portal"
+    },
+    {
+      "document": "NV3_009",
+      "lang": "de",
+      "field": "skill:2",
+      "status": "missing",
+      "expected": "Elternarbeit",
+      "actual": [
+        "Krisengespräche",
+        "Projektplanung"
+      ]
+    },
+    {
+      "document": "NV3_026",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1978-11-23",
+      "actual": "23.11.1978"
+    },
+    {
+      "document": "NV3_027",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1979-04-26",
+      "actual": "26.04.1979"
+    },
+    {
+      "document": "NV3_028",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1980-09-01",
+      "actual": "01.09.1980"
+    },
+    {
+      "document": "NV3_029",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1981-02-04",
+      "actual": "04.02.1981"
+    },
+    {
+      "document": "NV3_030",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1982-07-07",
+      "actual": "07.07.1982"
+    },
+    {
+      "document": "NV3_031",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1983-12-10",
+      "actual": "10.12.1983"
+    },
+    {
+      "document": "NV3_032",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1984-05-13",
+      "actual": "13.05.1984"
+    },
+    {
+      "document": "NV3_033",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1985-10-16",
+      "actual": "16.10.1985"
+    },
+    {
+      "document": "NV3_033",
+      "lang": "en",
+      "field": "education_entry:0",
+      "status": "missing",
+      "expected": {
+        "qualification": "Left school at 16 without qualifications"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_033",
+      "lang": "en",
+      "field": "education_extra:0",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": {
+        "institution": "",
+        "qualification": "Schule ohne Abschluss",
+        "start_date": "",
+        "end_date": "ohne Abschluss"
+      }
+    },
+    {
+      "document": "NV3_034",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1986-03-19",
+      "actual": "19.03.1986"
+    },
+    {
+      "document": "NV3_034",
+      "lang": "en",
+      "field": "skill:2",
+      "status": "missing",
+      "expected": "Communication aids",
+      "actual": [
+        "Session notes",
+        "Family communication"
+      ]
+    },
+    {
+      "document": "NV3_034",
+      "lang": "en",
+      "field": "certificate_extra:1",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": "Communication aids"
+    },
+    {
+      "document": "NV3_035",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1987-08-22",
+      "actual": "22.08.1987"
+    },
+    {
+      "document": "NV3_036",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1988-01-25",
+      "actual": "25.01.1988"
+    },
+    {
+      "document": "NV3_037",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1989-06-28",
+      "actual": "28.06.1989"
+    },
+    {
+      "document": "NV3_038",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1990-11-03",
+      "actual": "03.11.1990"
+    },
+    {
+      "document": "NV3_039",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1991-04-06",
+      "actual": "06.04.1991"
+    },
+    {
+      "document": "NV3_040",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1992-09-09",
+      "actual": "09.09.1992"
+    },
+    {
+      "document": "NV3_041",
+      "lang": "en",
+      "field": "name.last_name",
+      "status": "wrong",
+      "expected": "O’Connor",
+      "actual": "O'Connor"
+    },
+    {
+      "document": "NV3_041",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1993-02-12",
+      "actual": "12.02.1993"
+    },
+    {
+      "document": "NV3_042",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1994-07-15",
+      "actual": "15.07.1994"
+    },
+    {
+      "document": "NV3_043",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1995-12-18",
+      "actual": "18.12.1995"
+    },
+    {
+      "document": "NV3_044",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1996-05-21",
+      "actual": "21.05.1996"
+    },
+    {
+      "document": "NV3_045",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1997-10-24",
+      "actual": "24.10.1997"
+    },
+    {
+      "document": "NV3_046",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1998-03-27",
+      "actual": "27.03.1998"
+    },
+    {
+      "document": "NV3_047",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1999-08-02",
+      "actual": "02.08.1999"
+    },
+    {
+      "document": "NV3_048",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "2000-01-05",
+      "actual": "05.01.2000"
+    },
+    {
+      "document": "NV3_049",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "2001-06-08",
+      "actual": "08.06.2001"
+    },
+    {
+      "document": "NV3_050",
+      "lang": "en",
+      "field": "dob",
+      "status": "wrong",
+      "expected": "1977-11-11",
+      "actual": "11.11.1977"
+    },
+    {
+      "document": "NV3_050",
+      "lang": "en",
+      "field": "employment:0.company",
+      "status": "missing",
+      "expected": "Self-employed",
+      "actual": ""
+    }
+  ]
+}

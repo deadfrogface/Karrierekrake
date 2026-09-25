@@ -1,0 +1,82 @@
+{
+  "personal": {
+    "first_name": "Vincent",
+    "last_name": "Kelm",
+    "street": "Münchener Straße",
+    "house_number": "86",
+    "postal_code": "83395",
+    "city": "Freilassing",
+    "country": "Deutschland",
+    "date_of_birth": "21.02.1975"
+  },
+  "emails": [
+    "vincent.kelm@example.de"
+  ],
+  "phones": [
+    "+49 153 4271019"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "C2"
+    },
+    {
+      "language": "Ungarisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "B C1",
+  "education": [
+    {
+      "institution": "Gesamtschule Freilassing",
+      "qualification": "Schule ohne Abschluss",
+      "start_date": "2011",
+      "end_date": "ohne Abschluss"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Vulkaniseur",
+      "company": "Nordlicht Manufaktur",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Brückenbau West GmbH",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Kundenkommunikation",
+    "Dokumentenlenkung",
+    "Lieferantenkoordination",
+    "Protokollführung",
+    "Gefahrstoffmanagement",
+    "Schichtübergabe"
+  ],
+  "software": [
+    "Bentley MicroStation",
+    "RStudio",
+    "Fusion 360",
+    "Oracle NetSuite",
+    "Minitab"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_020.pdf",
+  "raw_text_chars": 870,
+  "raw_text_preview": "<!-- image -->\n\nMünchener Straße 86 | 83395 Freilassing | Deutschland · vincent.kelm@example.de · +49 153 4271019 · Geburtsdatum: 21.02.1975\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Vulkaniseur | Nordlicht Manufaktur Kundenkommunikation · Dokumentenlenkung\n\n03/2020 - 09/2022\n\nProjektassistenz | Brückenbau West GmbH\n\nLieferantenkoordination · Protokollführung\n\n## Schule und Ausbildung\n\n2011 - ohne Abschluss\n\nSchule ohne Abschluss | Gesamtschule Freilassing\n\n## Sprachkenntnisse &amp; Führerschein\n\nD",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_020",
+  "regression_lang": "de"
+}

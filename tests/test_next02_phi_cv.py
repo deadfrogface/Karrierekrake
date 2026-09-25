@@ -152,7 +152,7 @@ def test_reconcile_phi_fills_gaps_only_when_grounded():
     assert out.get("phi_model_id") == "phi4-mini"
 
 
-def test_import_cv_canonical_never_calls_phi_extract(tmp_path):
+def test_import_cv_canonical_never_calls_phi_extract(tmp_path, monkeypatch):
     """Production CV import must ignore guenther_enabled and never call PHI_EXTRACT."""
     cv_path = tmp_path / "cv.txt"
     cv_path.write_text(
@@ -160,6 +160,20 @@ def test_import_cv_canonical_never_calls_phi_extract(tmp_path):
         "Ausbildung\nIndustriekauffrau IHK\n",
         encoding="utf-8",
     )
+
+    def _fake_docpick(path):
+        return {
+            "source_path": str(path),
+            "pipeline": "docpick_qwen35_4b",
+            "intelligence_status": "docpick_qwen35",
+            "phi_invoked": False,
+            "phi_extract_call_count": 0,
+            "work_experience": [{"title": "Buchhalterin", "company": "Demo GmbH"}],
+            "education": [{"qualification": "Industriekauffrau IHK"}],
+            "skills": [],
+        }
+
+    monkeypatch.setattr("core.cv_docpick_import.import_cv_docpick", _fake_docpick)
     mock = MagicMock()
     mock.suggest_cv_extract.return_value = MagicMock(
         ok=True,
@@ -181,20 +195,34 @@ def test_import_cv_canonical_never_calls_phi_extract(tmp_path):
         parsed = import_cv_canonical(
             cv_path, guenther_enabled=True, guenther_service=mock
         )
-    assert parsed["intelligence_status"] == "deterministic_only"
+    assert parsed["intelligence_status"] == "docpick_qwen35"
     assert parsed.get("phi_invoked") is False
     assert parsed.get("phi_extract_call_count") == 0
     mock.suggest_cv_extract.assert_not_called()
     assert any(issubclass(w.category, DeprecationWarning) for w in caught)
 
 
-def test_import_cv_canonical_missing_model_still_parses(tmp_path):
-    """Missing Phi model must not block DET import; extract must not be called."""
+def test_import_cv_canonical_missing_model_still_parses(tmp_path, monkeypatch):
+    """Missing Phi model must not block Docpick import; extract must not be called."""
     cv_path = tmp_path / "cv.txt"
     cv_path.write_text(
         "Berufserfahrung\nVerkäufer bei Shop GmbH\nAusbildung\nVerkäufer\n",
         encoding="utf-8",
     )
+
+    def _fake_docpick(path):
+        return {
+            "source_path": str(path),
+            "pipeline": "docpick_qwen35_4b",
+            "intelligence_status": "docpick_qwen35",
+            "phi_invoked": False,
+            "phi_extract_call_count": 0,
+            "work_experience": [{"title": "Verkäufer", "company": "Shop GmbH"}],
+            "education": [{"qualification": "Verkäufer"}],
+            "skills": [],
+        }
+
+    monkeypatch.setattr("core.cv_docpick_import.import_cv_docpick", _fake_docpick)
     mock = MagicMock()
     mock.suggest_cv_extract.return_value = MagicMock(
         ok=False,
@@ -210,7 +238,7 @@ def test_import_cv_canonical_missing_model_still_parses(tmp_path):
         parsed = import_cv_canonical(
             cv_path, guenther_enabled=True, guenther_service=mock
         )
-    assert parsed["intelligence_status"] == "deterministic_only"
+    assert parsed["intelligence_status"] == "docpick_qwen35"
     assert parsed.get("phi_extract_call_count") == 0
     mock.suggest_cv_extract.assert_not_called()
     assert "work_experience" in parsed

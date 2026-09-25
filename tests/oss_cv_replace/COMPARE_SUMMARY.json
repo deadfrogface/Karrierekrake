@@ -1,0 +1,28 @@
+{
+  "status": "DET-Ersatz noch nicht erreicht; DET läuft vorübergehend weiter.",
+  "gate_passed": false,
+  "architecture": "Docling (layout text) + SmartResume Qwen3-0.6B local + evidence adapter",
+  "manifest_id": "SMOKE_DE_EN_10_V1",
+  "commit": "c483925b44ae76ee7cd3e04d19461c450a65a50b",
+  "oss_f1": 0.8051118210862621,
+  "oss_de_f1": 0.7692307692307692,
+  "oss_en_f1": 0.8472222222222222,
+  "det_f1": 0.8666666666666666,
+  "oss_hallu": 0.18181818181818182,
+  "oss_invented": 26,
+  "oss_perfect_core": 0,
+  "performance": {
+    "det": {
+      "wall_s": 0.1391299770330079,
+      "avg_s_per_cv": 0.01363126581418328,
+      "peak_rss_mb": 3369.18359375
+    },
+    "oss": {
+      "wall_s": 263.92000205698423,
+      "avg_s_per_cv": 26.391241400595753,
+      "peak_rss_mb": 5592.125
+    }
+  },
+  "productive_det_unchanged": true,
+  "disclaimer": "Known fixture corpus — not an independent blind test. Section-accuracy is not F1. IH2 frozen DET F1 0.7246 is separate context."
+}

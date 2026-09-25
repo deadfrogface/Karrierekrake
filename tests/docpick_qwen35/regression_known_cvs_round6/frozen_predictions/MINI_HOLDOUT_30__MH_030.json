@@ -1,0 +1,85 @@
+{
+  "personal": {
+    "first_name": "Mikołaj",
+    "last_name": "Czarnecki",
+    "street": "Museumstraße",
+    "house_number": "14",
+    "postal_code": "6020",
+    "city": "Innsbruck",
+    "country": "Österreich",
+    "date_of_birth": "06.12.1983"
+  },
+  "emails": [
+    "mikolaj.czarnecki@example.de"
+  ],
+  "phones": [
+    "+49 157 4361029"
+  ],
+  "languages": [
+    {
+      "language": "Italienisch",
+      "level": "B1"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Fachschule Innsbruck",
+      "qualification": "Schule ohne Abschluss",
+      "start_date": "",
+      "end_date": "ohne Abschluss"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Küstengeologe",
+      "company": "TerraNova Labor e.V.",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Hafenring Logistik OHG",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Albatros Systeme GmbH",
+      "start_date": "04/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Technische Recherche",
+    "Probenahme",
+    "Kundenkommunikation",
+    "Messmittelverwaltung"
+  ],
+  "software": [
+    "PostgreSQL",
+    "Ansys",
+    "Oracle NetSuite"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_030.pdf",
+  "raw_text_chars": 828,
+  "raw_text_preview": "<!-- image -->\n\nMuseumstraße 14 | 6020 Innsbruck | Österreich · mikolaj.czarnecki@example.de · +49 157 4361029 · Geburtsdatum: 06.12.1983\n\n## Sprachkenntnisse &amp; Führerschein\n\nItalienisch: B1\n\nEnglisch: B1\n\n## Programme und Werkzeuge\n\nPostgreSQL - Grundlagen\n\nAnsys - gute Kenntnisse\n\nOracle NetSuite - sehr gut\n\n## Fachkompetenzen\n\nTechnische Recherche\n\nProbenahme\n\nKundenkommunikation\n\nMessmittelverwaltung\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Küstengeologe | TerraNova Labor e.V. Technische R",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_030",
+  "regression_lang": "de"
+}

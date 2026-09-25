@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "James",
+    "last_name": "Nolan",
+    "street": "Church Street",
+    "house_number": "43",
+    "postal_code": "T12 CP40",
+    "city": "Cork",
+    "country": "Ireland",
+    "date_of_birth": "06.04.1991"
+  },
+  "emails": [
+    "james.nolan.39@example.org"
+  ],
+  "phones": [
+    "+44 7700 900039"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Cork Training Centre",
+      "qualification": "Electrical Apprenticeship",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Electrician",
+      "company": "South Dock Services",
+      "start_date": "04/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Cable installation",
+    "Testing",
+    "Site safety"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Safe Electric Registration",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_039.pdf",
+  "raw_text_chars": 572,
+  "raw_text_preview": "## James Nolan\n\n## Electrician\n\n## Contact\n\njames.nolan.39@example.org | +44 7700 900039 Church Street 43, T12 CP40 Cork, Ireland Born: 1991-04-06\n\n## Profile\n\nExperience in Electrician. Residential rewiring and fault repair.\n\n## Work Experience\n\n## Electrician | South Dock Services\n\n2021-04 - Present Residential rewiring and fault repair\n\n## Core Skills\n\nCable installation · Testing Site safety\n\n## Education\n\nElectrical Apprenticeship, Cork Training Centre\n\n## Languages\n\nEnglish: Native | Germa",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_039",
+  "blind_lang": "unknown",
+  "pdf_sha256": "c6017b8daf1aaa8899046512c4ebbe377c6c3777f941101f73c68efce95258e3"
+}

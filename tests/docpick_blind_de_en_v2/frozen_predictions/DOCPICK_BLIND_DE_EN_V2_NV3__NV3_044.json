@@ -1,0 +1,80 @@
+{
+  "personal": {
+    "first_name": "Isla",
+    "last_name": "Cooper",
+    "street": "Bridge Avenue",
+    "house_number": "48",
+    "postal_code": "LE1 6AB",
+    "city": "Leicester",
+    "country": "United Kingdom",
+    "date_of_birth": "21.05.1996"
+  },
+  "emails": [
+    "isla.cooper.44@example.org"
+  ],
+  "phones": [
+    "+44 7700 900044"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Level 2 Horticulture Diploma",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Horticulture Assistant",
+      "company": "Orchard City Gardens",
+      "start_date": "09/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Operations Assistant",
+      "company": "Fieldwork Agency",
+      "start_date": "03/2015",
+      "end_date": "11/2018",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Pruning",
+    "Composting",
+    "Volunteer support"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Pesticide Handling Certificate",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_044.pdf",
+  "raw_text_chars": 674,
+  "raw_text_preview": "## Isla Cooper\n\n## Horticulture Assistant\n\n## Contact\n\nisla.cooper.44@example.org | +44 7700 900044 Bridge Avenue 48, LE1 6AB Leicester, United Kingdom Born: 1996-05-21\n\n## Profile\n\nExperience in Horticulture Assistant. Maintaining community plots.\n\n## Work Experience\n\n## Horticulture Assistant | Orchard City Gardens\n\n09/2019 - Present Maintaining community plots\n\n## Operations Assistant | Fieldwork Agency\n\n03/2015 - 11/2018 Customer enquiries and records\n\n## Core Skills\n\nPruning · Composting Vo",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_044",
+  "blind_lang": "unknown",
+  "pdf_sha256": "c480192ea2b7b2148ec6b96630b6df7bd306e7bf09ae9883685581789b6c60ac"
+}

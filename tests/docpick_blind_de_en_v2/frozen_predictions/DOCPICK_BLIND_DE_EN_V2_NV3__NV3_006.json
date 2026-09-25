@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "Jona",
+    "last_name": "Krüger",
+    "street": "Am Park",
+    "house_number": "10",
+    "postal_code": "47051",
+    "city": "Duisburg",
+    "country": "Deutschland",
+    "date_of_birth": "19.07.1983"
+  },
+  "emails": [
+    "jona.krger.06@example.org"
+  ],
+  "phones": [
+    "+49 151 4700822"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "A1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Schulbesuch bis Klasse 8; kein Schulabschluss",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Lagerhelfer",
+      "company": "Rheinlogistik GmbH",
+      "start_date": "07/2023",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Kommissionierung",
+    "Verpackung",
+    "Inventur"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Staplerschein",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_006.pdf",
+  "raw_text_chars": 627,
+  "raw_text_preview": "## Jona Krüger\n\n## Lagerhelfer\n\n## Kontakt\n\njona.krger.06@example.org | +49 151 4700822 Am Park 10, 47051 Duisburg, Deutschland Geboren: 19.07.1983\n\n## Kurzprofil\n\nBerufspraxis in Lagerhelfer. Wareneingang und Retouren.\n\n## Berufserfahrung\n\n## Lagerhelfer | Rheinlogistik GmbH\n\n2023-07 - heute Wareneingang und Retouren\n\n## Ausbildung\n\nSchulbesuch bis Klasse 8; kein Schulabschluss\n\n## Kenntnisse\n\nKommissionierung · Verpackung · Inventur\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: A1\n\n## Weite",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_006",
+  "blind_lang": "unknown",
+  "pdf_sha256": "b62771ecdb742d56dc1db3b1decc6a00eba398f8ff6d425f21cd14498fb40271"
+}

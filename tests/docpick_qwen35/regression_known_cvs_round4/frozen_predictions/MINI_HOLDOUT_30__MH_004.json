@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Dragomir",
+    "last_name": "Becker",
+    "street": "Schäferstraße",
+    "house_number": "56",
+    "postal_code": "66953",
+    "city": "Pirmasens",
+    "country": "Deutschland",
+    "date_of_birth": "05/2003"
+  },
+  "emails": [
+    "dragomir.becker@example.de"
+  ],
+  "phones": [
+    "+49 155 4127003"
+  ],
+  "languages": [
+    {
+      "language": "Polnisch",
+      "level": "B1"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Gesamtschule Pirmasens",
+      "qualification": "Allgemeine Hochschulreife",
+      "start_date": "2011",
+      "end_date": "2014"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Deichbauer",
+      "company": "Nordlicht Manufaktur",
+      "start_date": "02/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Materialdisposition",
+    "Bestandsprüfung",
+    "Technische Recherche",
+    "Prozessüberwachung",
+    "Kundenkommunikation",
+    "Probenahme"
+  ],
+  "software": [
+    "Microsoft Project",
+    "EPLAN Electric P8",
+    "GIMP",
+    "Inkscape",
+    "Ansys"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_004.pdf",
+  "raw_text_chars": 757,
+  "raw_text_preview": "## Dragomir Becker\n\nSchäferstraße 56 | 66953 Pirmasens | Deutschland · dragomir.becker@example.de · +49 155 4127003 · Geburtsdatum: 05.10.2003\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Deichbauer | Nordlicht Manufaktur Materialdisposition · Bestandsprüfung\n\n## Schule und Ausbildung\n\n2011 - 2014\n\nAllgemeine Hochschulreife | Gesamtschule Pirmasens\n\n## Sprachkenntnisse &amp; Führerschein\n\nPolnisch: B1 Englisch: C1 Führerschein: B\n\n## Programme und Werkzeuge\n\nMicrosoft Project - Grundlagen EPLAN Electr",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_004",
+  "regression_lang": "de"
+}

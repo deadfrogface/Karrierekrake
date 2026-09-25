@@ -1,0 +1,82 @@
+{
+  "personal": {
+    "first_name": "Niklas",
+    "last_name": "Berg",
+    "street": "Rosenallee",
+    "house_number": "8",
+    "postal_code": "18055",
+    "city": "Rostock",
+    "country": "Deutschland",
+    "date_of_birth": "13.09.1981"
+  },
+  "emails": [
+    "niklas.berg.04@example.org"
+  ],
+  "phones": [
+    "+49 151 4700548"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Elektroniker für Betriebstechnik",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Schiffselektriker",
+      "company": "Ostsee Werft",
+      "start_date": "05/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Familienbetrieb",
+      "start_date": "03/2015",
+      "end_date": "11/2020",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Schaltplanlesen",
+    "Fehlersuche",
+    "Sicherheitsprüfungen"
+  ],
+  "software": [
+    "EPLAN"
+  ],
+  "certificates": [
+    {
+      "name": "Arbeiten in engen Räumen",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_004.pdf",
+  "raw_text_chars": 679,
+  "raw_text_preview": "## Niklas Berg\n\n## Schiffselektriker\n\n## Kontakt\n\nniklas.berg.04@example.org | +49 151 4700548 Rosenallee 8, 18055 Rostock, Deutschland Geboren: 13.09.1981\n\n## Kurzprofil\n\nBerufspraxis in Schiffselektriker. Wartung von Bordelektrik.\n\n## Berufserfahrung\n\n## Schiffselektriker | Ostsee Werft\n\n2021-05 - heute Wartung von Bordelektrik\n\n## Aushilfe | Familienbetrieb\n\n2015-03 - 2020-11 Kundenkontakt und Dokumentation\n\n## Kenntnisse\n\nSchaltplanlesen · Fehlersuche Sicherheitsprüfungen\n\n## Ausbildung\n\nAus",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_004",
+  "blind_lang": "unknown",
+  "pdf_sha256": "e64088c717febe8d0d06d8666f66deab1368a29b8beb2bf3e23fd6d7aa93a676"
+}

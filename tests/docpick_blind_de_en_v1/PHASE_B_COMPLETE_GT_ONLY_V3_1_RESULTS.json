@@ -1,0 +1,114 @@
+{
+  "test_type": "INDEPENDENT_BLIND_DE_EN",
+  "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "disclaimer": "Independent synthetic Blind DE/EN v1 (n=4). NOT Round2/Round3. Small-n — not a large-scale 99% claim by itself; report F1 honestly and do not upgrade to production solely on n=4.",
+  "created_at": "2026-09-24T02:43:30.239533+00:00",
+  "prediction_hashes_verified": true,
+  "n_documents": 4,
+  "parser_freeze_commit": "49b16d5066e8d0a3cb95fff792d3bc23c6669609",
+  "performance_from_seal": {
+    "wall_s": 254.40810970007442,
+    "avg_s_per_cv": 63.602027425018605,
+    "peak_rss_mb": 2643.05078125,
+    "cold_s": 75.94585088908207,
+    "warm_avg_s": 59.48566880500099,
+    "per_doc_s": {
+      "BL_DE_01": 75.94585088908207,
+      "BL_DE_02": 55.361566368024796,
+      "BL_EN_01": 66.09329826396424,
+      "BL_EN_02": 57.00214178301394
+    },
+    "budget_warm_s": 60.0,
+    "budget_cold_s": 90.0,
+    "warm_within_budget": true
+  },
+  "coverage": {
+    "perfect_core_on_scored_fields": "3/4",
+    "n_scored_fields_total": 120
+  },
+  "metrics_complete_gt_only_v3_1": {
+    "field_total": 120,
+    "counts": {
+      "correct": 119,
+      "missing": 1,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.9916666666666667,
+    "precision": 1.0,
+    "recall": 0.9916666666666667,
+    "f1": 0.99581589958159,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.008333333333333333,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0,
+    "by_group": {
+      "personal": {
+        "correct": 12
+      },
+      "contact": {
+        "correct": 8
+      },
+      "address": {
+        "correct": 18
+      },
+      "languages": {
+        "correct": 9
+      },
+      "licenses": {
+        "correct": 2,
+        "missing": 1
+      },
+      "education": {
+        "correct": 20
+      },
+      "employment": {
+        "correct": 30
+      },
+      "skills": {
+        "correct": 8
+      },
+      "software": {
+        "correct": 10
+      },
+      "certificates": {
+        "correct": 2
+      }
+    },
+    "n_missing": 1,
+    "n_hallucinated": 0,
+    "n_wrong": 0,
+    "missing_fields": [
+      {
+        "document": "BL_DE_01",
+        "field": "license:1",
+        "expected": "BE"
+      }
+    ],
+    "hallucinated_fields": [],
+    "wrong_fields": [],
+    "perfect_core": "3/4"
+  },
+  "by_lang": {
+    "de_f1": 0.9915966386554621,
+    "en_f1": 1.0
+  },
+  "real_errors": [
+    {
+      "document": "BL_DE_01",
+      "lang": "de",
+      "field": "license:1",
+      "status": "missing",
+      "expected": "BE",
+      "actual": [
+        "B"
+      ]
+    }
+  ],
+  "error_status_counts": {
+    "missing": 1
+  },
+  "claim_99_percent": false,
+  "claim_99_reason": "Requires Blind F1>=0.99 on full predeclared field schema; n=4 is informative only."
+}

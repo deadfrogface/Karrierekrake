@@ -1,0 +1,908 @@
+{
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "partial": true,
+  "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "disclaimer": "Partial or full Round3 score on known development CVs. NOT an independent blind test. NOT a 99% claim. Scored 38/40 documents so far.",
+  "created_at": "2026-09-24T02:06:49.396224+00:00",
+  "n_scored": 38,
+  "n_manifest": 40,
+  "predictions": [
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_001",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_001.json",
+      "sha256": "684aceed9f3f7b252f02fe9609639a74501fbd39c40a4284db346f432fa5c821"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_002",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_002.json",
+      "sha256": "20835295a5bfb638d9259b1d3334176a7fcad828441136715ec4623c39ebd954"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_003",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_003.json",
+      "sha256": "44b4a9ff908af4ab2189bd19371a799478775c236c380d12ff86a92bbf77210f"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_004",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_004.json",
+      "sha256": "5d09bbd7e336eefae581ac588257a7379927abfb68783268cbc0b7dc0f112bed"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_005",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_005.json",
+      "sha256": "76c9c76c32f6f49d8ac5263a30b95f2e50763348e21e154196c6b395e12cef5a"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_006",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_006.json",
+      "sha256": "d25d8d5a4afc8efc579760ae0d6311e530e1a39ec820b1f057ea20dd4ade3d73"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_007",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_007.json",
+      "sha256": "b0b5a3c7eb9e504c3711cdabefc00d7e6d149ead9ce4c9931cc397c9d197af59"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_008",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_008.json",
+      "sha256": "e87ed97409653f7bceaba5d2c4df152dc5d2d955e4ffda0902234b54b6456e47"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_009",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_009.json",
+      "sha256": "1e5d03b618c942ad199d9bb4f084eb1d0bd5aaf8d02e992ae54cdae7429d9eb0"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_010",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_010.json",
+      "sha256": "e5a379894575c1871843ad88f457934703e991206759f1cca3a69f38e1e130a5"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_011",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_011.json",
+      "sha256": "00a208e94ebaa4edd6a52109cf3825e795a6fdcf900998fe05af7da448fd28ec"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_012",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_012.json",
+      "sha256": "7a5995f948ebfdb61e36739bcb0190a2a8366b9e8b673f1e4a431769272397a8"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_013",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_013.json",
+      "sha256": "d7b0155817c64ee653cb5eb57505d4561f27d6284fd70bb6232b1696ad36d18e"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_014",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_014.json",
+      "sha256": "d5c7cfa08c00f22db3bffdf7022455d50001a1f01d1d5c8a0b5e6fdd301af67e"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_015",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_015.json",
+      "sha256": "7c36e89e73b0c4779332aebc14a17c77b2c2a27da4cfd8fbe6a8fd12e4dc64c5"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_016",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_016.json",
+      "sha256": "33d2e804ef4dbc7e954649a725073b47ed6f92f74d3f5692e59c161a9f23f3b4"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_017",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_017.json",
+      "sha256": "e193bf488cbaf12a9bf1a2ec71125a0a4b6f332736a7f92e59061fefe8b37592"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_018",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_018.json",
+      "sha256": "c0548ef54c6a144e7ce8d987cc2321682efa4d871f197de9e4ee4cd7d9d8f2dd"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_019",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_019.json",
+      "sha256": "09295a69e46c070c977f224aa7a0a49e60ab49e2a3ca8881351863c9e25c3b6f"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_020",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_020.json",
+      "sha256": "f3314bb979c6eeaa982aeed263a1c04defae815d5625f96184482157b14a6081"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_021",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_021.json",
+      "sha256": "3c2e72357136101006f8987797a4a3a4ca7ecc7443fa1b0c06a190adb1b51830"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_022",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_022.json",
+      "sha256": "07fc075f38853e8ba4309724543d5bf8e3038a74bd8134fa53ff5ecd95d8840d"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_023",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_023.json",
+      "sha256": "03cf3dfb6f1f00f88c6f3d79df224bb2e3c632f58da5f4d3417a1f9373100ec9"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_024",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_024.json",
+      "sha256": "d6cdc593629b4f94bb4a96aa358d3355b89ed9dd0821982ec03d31f17afa00bd"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_025",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_025.json",
+      "sha256": "d335387eee5e169c0daa93a1060dc674210faed3c66b17030f7260c0bdd5621f"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_026",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_026.json",
+      "sha256": "ddaa1bb08aba80e64e44d4dc12cd1ff2853bfa9b1f6d7342be9ea7b0d381c804"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_027",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_027.json",
+      "sha256": "ca3561b3e97fb02388aec9f40fbded75293309fff38053bb6f5113e54bc4975a"
+    },
+    {
+      "corpus_id": "MINI_HOLDOUT_30",
+      "id": "MH_028",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/MINI_HOLDOUT_30__MH_028.json",
+      "sha256": "6c2fc068f6366ea7298361bf3c7ce02ee934a8bcc71768079fcee968f81e36e0"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_01",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_01.json",
+      "sha256": "4d8c8897c2f9ab9f986320fff9c8e736c93643759670665e5bb162778c73da89"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_02",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_02.json",
+      "sha256": "e54f87b81b8ffaa6e9ab37e5e8fa6dfea4b51c7a0115b7fdac27c3c05741629e"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_03",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_03.json",
+      "sha256": "f4ecb54af555947b788d191628b21fb319eb65fabe8eee67a528f38a918f8ecf"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_04",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_04.json",
+      "sha256": "02c482b7d41131582795c151d298d978584adaf1a647e1eb8a06d238f2d86d80"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "DE_05",
+      "lang": "de",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__DE_05.json",
+      "sha256": "9b27a8e7a4e18a34f71669bae44bd8805a1952135af6e706653abbd8276f0149"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_01",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_01.json",
+      "sha256": "4869164b96050ab78c30d6c5dd5b7234e62ce0f6d1bcd6ea37d92fcec43c6abe"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_02",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_02.json",
+      "sha256": "81acae475279d804889cb5343a5c7ee363914cb4297fb561754bfaff2ac85ec3"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_03",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_03.json",
+      "sha256": "1d4923980642d375c8cd7a10d974e4db2e0b296ccba67e25f983535375e64fc8"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_04",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_04.json",
+      "sha256": "f1235d8828d9d4196bf37a67295990cc54ce03816c9983fc77d0f24abdb8f086"
+    },
+    {
+      "corpus_id": "SMOKE_DE_EN_10_V1",
+      "id": "EN_05",
+      "lang": "en",
+      "prediction_file": "tests/docpick_qwen35/regression_known_cvs_round3/frozen_predictions/SMOKE_DE_EN_10_V1__EN_05.json",
+      "sha256": "a78494c47cb8e2b1912eeaaefff34b4d873bb53b00ec13ec918be5207ac9fe78"
+    }
+  ],
+  "coverage": {
+    "n_documents_scored": 38,
+    "n_scored_fields_total": 1156,
+    "perfect_core_on_scored_fields": "31/38"
+  },
+  "metrics_complete_gt_only_v3_1": {
+    "field_total": 1156,
+    "counts": {
+      "correct": 1135,
+      "wrong": 1,
+      "missing": 19,
+      "hallucinated": 1,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.9818339100346021,
+    "precision": 0.9982409850483729,
+    "recall": 0.9835355285961872,
+    "f1": 0.9908336970755128,
+    "hallucination_rate": 0.0008650519031141869,
+    "missing_field_rate": 0.01643598615916955,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.0017301038062283738,
+    "by_group": {
+      "personal": {
+        "correct": 104
+      },
+      "contact": {
+        "correct": 60
+      },
+      "address": {
+        "correct": 168,
+        "missing": 7
+      },
+      "languages": {
+        "correct": 86
+      },
+      "licenses": {
+        "correct": 44
+      },
+      "education": {
+        "correct": 160
+      },
+      "employment": {
+        "correct": 269,
+        "wrong": 1,
+        "missing": 5,
+        "hallucinated": 1
+      },
+      "skills": {
+        "correct": 126,
+        "missing": 5
+      },
+      "software": {
+        "correct": 108,
+        "missing": 2
+      },
+      "certificates": {
+        "correct": 10
+      }
+    },
+    "n_missing": 19,
+    "n_hallucinated": 1,
+    "n_wrong": 1,
+    "missing_fields": [
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "employment:0.company",
+        "expected": "Mosaik Dienste AG"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "employment:0.end_date",
+        "expected": "08/2021"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:0",
+        "expected": "Schichtübergabe"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:1",
+        "expected": "Qualitätsprüfung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:2",
+        "expected": "Instandhaltung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:3",
+        "expected": "Bestandsprüfung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "skill:4",
+        "expected": "Montageplanung"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_024",
+        "field": "employment:0.position",
+        "expected": "Conservation Assistant"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_024",
+        "field": "employment:1.position",
+        "expected": "Projektassistenz"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_024",
+        "field": "employment:2.position",
+        "expected": "Aushilfe"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_025",
+        "field": "software:0",
+        "expected": "Minitab"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_025",
+        "field": "software:1",
+        "expected": "Qlik Sense"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_026",
+        "field": "address.city",
+        "expected": "Genève"
+      },
+      {
+        "document": "MINI_HOLDOUT_30__MH_026",
+        "field": "address.country",
+        "expected": "Schweiz"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__DE_04",
+        "field": "address.city",
+        "expected": "Leipzig"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.street",
+        "expected": "Kingfisher Road"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.house_number",
+        "expected": "42"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.postal_code",
+        "expected": "M1 2AB"
+      },
+      {
+        "document": "SMOKE_DE_EN_10_V1__EN_02",
+        "field": "address.city",
+        "expected": "Manchester"
+      }
+    ],
+    "hallucinated_fields": [
+      {
+        "document": "MINI_HOLDOUT_30__MH_019",
+        "field": "employment_extra:1",
+        "expected": null,
+        "actual": {
+          "title": "",
+          "company": "Mosaik Dienste AG",
+          "start_date": "08/2021",
+          "end_date": "",
+          "responsibilities": []
+        }
+      }
+    ],
+    "wrong_fields": [
+      {
+        "document": "MINI_HOLDOUT_30__MH_004",
+        "field": "employment:0.position",
+        "status": "wrong",
+        "expected": "Deichbauer",
+        "actual": "Materialdisposition"
+      }
+    ],
+    "perfect_core": "31/38"
+  },
+  "by_lang": {
+    "de": {
+      "field_total": 953,
+      "counts": {
+        "correct": 943,
+        "wrong": 1,
+        "missing": 8,
+        "hallucinated": 1,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9895068205666316,
+      "precision": 0.9978835978835979,
+      "recall": 0.9915878023133544,
+      "f1": 0.9947257383966245,
+      "hallucination_rate": 0.001049317943336831,
+      "missing_field_rate": 0.008394543546694649,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.002098635886673662,
+      "by_group": {
+        "personal": {
+          "correct": 82
+        },
+        "contact": {
+          "correct": 50
+        },
+        "address": {
+          "correct": 133,
+          "missing": 1
+        },
+        "languages": {
+          "correct": 64
+        },
+        "licenses": {
+          "correct": 34
+        },
+        "education": {
+          "correct": 140
+        },
+        "employment": {
+          "correct": 227,
+          "wrong": 1,
+          "missing": 2,
+          "hallucinated": 1
+        },
+        "skills": {
+          "correct": 108,
+          "missing": 5
+        },
+        "software": {
+          "correct": 96
+        },
+        "certificates": {
+          "correct": 9
+        }
+      },
+      "n_missing": 8,
+      "n_hallucinated": 1,
+      "n_wrong": 1,
+      "missing_fields": [
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "employment:0.company",
+          "expected": "Mosaik Dienste AG"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "employment:0.end_date",
+          "expected": "08/2021"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:0",
+          "expected": "Schichtübergabe"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:1",
+          "expected": "Qualitätsprüfung"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:2",
+          "expected": "Instandhaltung"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:3",
+          "expected": "Bestandsprüfung"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "skill:4",
+          "expected": "Montageplanung"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__DE_04",
+          "field": "address.city",
+          "expected": "Leipzig"
+        }
+      ],
+      "hallucinated_fields": [
+        {
+          "document": "MINI_HOLDOUT_30__MH_019",
+          "field": "employment_extra:1",
+          "expected": null,
+          "actual": {
+            "title": "",
+            "company": "Mosaik Dienste AG",
+            "start_date": "08/2021",
+            "end_date": "",
+            "responsibilities": []
+          }
+        }
+      ],
+      "wrong_fields": [
+        {
+          "document": "MINI_HOLDOUT_30__MH_004",
+          "field": "employment:0.position",
+          "status": "wrong",
+          "expected": "Deichbauer",
+          "actual": "Materialdisposition"
+        }
+      ],
+      "perfect_core": "26/29",
+      "n_documents": 29
+    },
+    "en": {
+      "field_total": 203,
+      "counts": {
+        "correct": 192,
+        "missing": 11,
+        "hallucinated": 0,
+        "wrong": 0,
+        "wrong_category": 0
+      },
+      "field_accuracy": 0.9458128078817734,
+      "precision": 1.0,
+      "recall": 0.9458128078817734,
+      "f1": 0.9721518987341772,
+      "hallucination_rate": 0.0,
+      "missing_field_rate": 0.054187192118226604,
+      "wrong_category_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "by_group": {
+        "personal": {
+          "correct": 22
+        },
+        "contact": {
+          "correct": 10
+        },
+        "address": {
+          "correct": 35,
+          "missing": 6
+        },
+        "languages": {
+          "correct": 22
+        },
+        "licenses": {
+          "correct": 10
+        },
+        "education": {
+          "correct": 20
+        },
+        "employment": {
+          "correct": 42,
+          "missing": 3
+        },
+        "skills": {
+          "correct": 18
+        },
+        "software": {
+          "correct": 12,
+          "missing": 2
+        },
+        "certificates": {
+          "correct": 1
+        }
+      },
+      "n_missing": 11,
+      "n_hallucinated": 0,
+      "n_wrong": 0,
+      "missing_fields": [
+        {
+          "document": "MINI_HOLDOUT_30__MH_024",
+          "field": "employment:0.position",
+          "expected": "Conservation Assistant"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_024",
+          "field": "employment:1.position",
+          "expected": "Projektassistenz"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_024",
+          "field": "employment:2.position",
+          "expected": "Aushilfe"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_025",
+          "field": "software:0",
+          "expected": "Minitab"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_025",
+          "field": "software:1",
+          "expected": "Qlik Sense"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_026",
+          "field": "address.city",
+          "expected": "Genève"
+        },
+        {
+          "document": "MINI_HOLDOUT_30__MH_026",
+          "field": "address.country",
+          "expected": "Schweiz"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.street",
+          "expected": "Kingfisher Road"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.house_number",
+          "expected": "42"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.postal_code",
+          "expected": "M1 2AB"
+        },
+        {
+          "document": "SMOKE_DE_EN_10_V1__EN_02",
+          "field": "address.city",
+          "expected": "Manchester"
+        }
+      ],
+      "hallucinated_fields": [],
+      "wrong_fields": [],
+      "perfect_core": "5/9",
+      "n_documents": 9
+    }
+  },
+  "real_errors_on_complete_gt": [
+    {
+      "document": "MINI_HOLDOUT_30__MH_004",
+      "lang": "de",
+      "field": "employment:0.position",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "Deichbauer",
+      "actual": "Materialdisposition"
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "employment:0.company",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Mosaik Dienste AG",
+      "actual": ""
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "missing",
+      "expected": "08/2021",
+      "actual": ""
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "employment_extra:1",
+      "group": "employment",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": {
+        "title": "",
+        "company": "Mosaik Dienste AG",
+        "start_date": "08/2021",
+        "end_date": "",
+        "responsibilities": []
+      }
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:0",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Schichtübergabe",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:1",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Qualitätsprüfung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:2",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Instandhaltung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:3",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Bestandsprüfung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_019",
+      "lang": "de",
+      "field": "skill:4",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Montageplanung",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_024",
+      "lang": "en",
+      "field": "employment:0.position",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Conservation Assistant",
+      "actual": null
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_024",
+      "lang": "en",
+      "field": "employment:1.position",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Projektassistenz",
+      "actual": null
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_024",
+      "lang": "en",
+      "field": "employment:2.position",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Aushilfe",
+      "actual": null
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_025",
+      "lang": "en",
+      "field": "software:0",
+      "group": "software",
+      "status": "missing",
+      "expected": "Minitab",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_025",
+      "lang": "en",
+      "field": "software:1",
+      "group": "software",
+      "status": "missing",
+      "expected": "Qlik Sense",
+      "actual": []
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_026",
+      "lang": "en",
+      "field": "address.city",
+      "group": "address",
+      "status": "missing",
+      "expected": "Genève",
+      "actual": ""
+    },
+    {
+      "document": "MINI_HOLDOUT_30__MH_026",
+      "lang": "en",
+      "field": "address.country",
+      "group": "address",
+      "status": "missing",
+      "expected": "Schweiz",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__DE_04",
+      "lang": "de",
+      "field": "address.city",
+      "group": "address",
+      "status": "missing",
+      "expected": "Leipzig",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.street",
+      "group": "address",
+      "status": "missing",
+      "expected": "Kingfisher Road",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.house_number",
+      "group": "address",
+      "status": "missing",
+      "expected": "42",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.postal_code",
+      "group": "address",
+      "status": "missing",
+      "expected": "M1 2AB",
+      "actual": ""
+    },
+    {
+      "document": "SMOKE_DE_EN_10_V1__EN_02",
+      "lang": "en",
+      "field": "address.city",
+      "group": "address",
+      "status": "missing",
+      "expected": "Manchester",
+      "actual": ""
+    }
+  ],
+  "error_status_counts": {
+    "wrong": 1,
+    "missing": 19,
+    "hallucinated": 1
+  }
+}

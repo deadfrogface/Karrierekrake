@@ -1,0 +1,93 @@
+{
+  "personal": {
+    "first_name": "Orla",
+    "last_name": "Demir",
+    "street": "Museumstraße",
+    "house_number": "122",
+    "postal_code": "6020",
+    "city": "Innsbruck",
+    "country": "Österreich",
+    "date_of_birth": "16.03.1988"
+  },
+  "emails": [
+    "orla.demir@example.de"
+  ],
+  "phones": [
+    "+49 154 4226014"
+  ],
+  "languages": [
+    {
+      "language": "Arabisch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Hochschule Innsbruck",
+      "qualification": "Gesellenbrief",
+      "start_date": "2014",
+      "end_date": "2017"
+    },
+    {
+      "institution": "Bildungswerk Innsbruck",
+      "qualification": "Ausbildung Pferdewirtin",
+      "start_date": "2017",
+      "end_date": "2020"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Qualitätsprüfung · Gefahrstoffmanagement",
+      "company": "Pferdewirtin Hafenring Logistik OHG",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Montageplanung · Bestandsprüfung",
+      "company": "Projektassistenz Albatros Systeme GmbH",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Technische Recherche · Qualitätsprüfung",
+      "company": "Aushilfe Seestern Produktion GmbH",
+      "start_date": "04/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Qualitätsprüfung",
+    "Gefahrstoffmanagement",
+    "Montageplanung",
+    "Bestandsprüfung",
+    "Technische Recherche"
+  ],
+  "software": [
+    "SAP MM - Grundlagen",
+    "Adobe Acrobat Pro",
+    "Grafana",
+    "ZBrush"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_015.pdf",
+  "raw_text_chars": 1084,
+  "raw_text_preview": "<!-- image -->\n\nMuseumstraße 122 | 6020 Innsbruck | Österreich · orla.demir@example.de · +49 154 4226014 · Geburtsdatum: 16.03.1988\n\n## Orla Demir\n\n## Berufserfahrung\n\n| 02/2019 08/2021   | Pferdewirtin Hafenring Logistik OHG Qualitätsprüfung · Gefahrstoffmanagement   |\n|-------------------|--------------------------------------------------------------------------------|\n| 03/2020 09/2022   | Projektassistenz Albatros Systeme GmbH Montageplanung · Bestandsprüfung        |\n| 04/2021 10/2023   | A",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_015",
+  "regression_lang": "de"
+}

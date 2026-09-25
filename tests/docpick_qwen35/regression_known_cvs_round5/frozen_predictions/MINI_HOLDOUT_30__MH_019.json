@@ -1,0 +1,65 @@
+{
+  "personal": {
+    "first_name": "Una",
+    "last_name": "Heinrich",
+    "street": "Schäferstraße",
+    "house_number": "69c",
+    "postal_code": "66953",
+    "city": "Pirmasens",
+    "country": "Deutschland",
+    "date_of_birth": "20.07.1998"
+  },
+  "emails": [
+    "una.heinrich@example.de"
+  ],
+  "phones": [],
+  "languages": [
+    {
+      "language": "Ukrainisch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Hochschule Pirmasens",
+      "qualification": "Studium abgebrochen",
+      "start_date": "2010",
+      "end_date": "2013"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Uhrentechnikerin",
+      "company": "Mosaik Dienste AG",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    }
+  ],
+  "skills": [],
+  "software": [
+    "Tableau",
+    "PostgreSQL",
+    "Ansys",
+    "Microsoft Project"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_019.pdf",
+  "raw_text_chars": 774,
+  "raw_text_preview": "<!-- image -->\n\nSchäferstraße 69c | 66953 Pirmasens | Deutschland · una.heinrich@example.de · Geburtsdatum: 20.07.1998\n\n## Berufserfahrung\n\n| 02/2019   | Uhrentechnikerin                   |\n|-----------|------------------------------------|\n| 08/2021   | Mosaik Dienste AG                  |\n|           | Schichtübergabe · Qualitätsprüfung |\n\n## Schule und Ausbildung\n\n2010 - 2013\n\nStudium abgebrochen | Hochschule Pirmasens\n\n## Sprachkenntnisse &amp; Führerschein\n\nUkrainisch: Muttersprache\n\nEngli",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_019",
+  "regression_lang": "de"
+}

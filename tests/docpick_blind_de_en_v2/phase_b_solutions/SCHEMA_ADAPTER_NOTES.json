@@ -1,0 +1,73 @@
+{
+  "adapter": "NV3_SOLUTION_SHEET_TO_V3",
+  "scorer": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "unambiguous_transforms": [
+    "document_id → documents[<id>.pdf] key",
+    "document_language DE|EN → language de|en",
+    "name 'First Last' (exactly 2 tokens) → name.{first_name,last_name}",
+    "date_of_birth → dob (alias already supported by scorer)",
+    "address.street 'Name N' → street + house_number (trailing house token)",
+    "employment.title → position (scorer schema key)",
+    "employment.end_date null + metadata date_semantics → 'heute'",
+    "employment.start/end YYYY-MM left as-is (V3.1 date_norm equates MM/YYYY)",
+    "licences → licenses",
+    "languages[{name,level}] → [[name, level]]",
+    "certificates string list unchanged",
+    "career_note ignored (not a V3 scorer field; not mapped to target_role)",
+    "education: only qualification present — institution/dates not invented"
+  ],
+  "per_document_ambiguities": [
+    {
+      "document_id": "NV3_006",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    },
+    {
+      "document_id": "NV3_012",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    },
+    {
+      "document_id": "NV3_018",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    },
+    {
+      "document_id": "NV3_024",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    },
+    {
+      "document_id": "NV3_030",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    },
+    {
+      "document_id": "NV3_036",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    },
+    {
+      "document_id": "NV3_042",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    },
+    {
+      "document_id": "NV3_048",
+      "notes": [
+        "career_note present but not mapped to any scorer field"
+      ]
+    }
+  ],
+  "rejected_silent_mappings": [
+    "Do not invent education.institution by splitting qualification commas",
+    "Do not map career_note → target_role without explicit role label contract"
+  ]
+}

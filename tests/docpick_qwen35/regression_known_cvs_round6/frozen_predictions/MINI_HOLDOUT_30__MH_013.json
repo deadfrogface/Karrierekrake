@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Malika",
+    "last_name": "Bork",
+    "street": "Utrechtseweg",
+    "house_number": "88",
+    "postal_code": "6811",
+    "city": "Arnhem",
+    "country": "Niederlande",
+    "date_of_birth": "14.01.2000"
+  },
+  "emails": [
+    "malika.bork@example.de"
+  ],
+  "phones": [
+    "+49 152 4208012"
+  ],
+  "languages": [
+    {
+      "language": "Niederländisch",
+      "level": "C1"
+    },
+    {
+      "language": "Englisch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B C1 A2",
+  "education": [
+    {
+      "institution": "Berufsschule Arnhem",
+      "qualification": "Fachhochschulreife",
+      "start_date": "2012",
+      "end_date": "2015"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Naturwerksteinmechanikerin",
+      "company": "Brückenbau West GmbH",
+      "start_date": "02/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Schichtübergabe",
+    "Kundenkommunikation",
+    "Schadensanalyse"
+  ],
+  "software": [
+    "SAP MM",
+    "LibreOffice Calc"
+  ],
+  "certificates": [
+    {
+      "name": "Arbeitssicherheit 2023",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_013.pdf",
+  "raw_text_chars": 640,
+  "raw_text_preview": "<!-- image -->\n\nUtrechtseweg 88 | 6811 Arnhem | Niederlande · malika.bork@example.de · +49 152 4208012 · Geburtsdatum: 14.01.2000\n\n## Berufserfahrung\n\n02/2019 - heute Naturwerksteinmechanikerin | Brückenbau West GmbH Schichtübergabe · Kundenkommunikation\n\n## Schule und Ausbildung\n\n2012 - 2015\n\nFachhochschulreife | Berufsschule Arnhem\n\n## Sprachkenntnisse &amp; Führerschein\n\nNiederländisch: C1 Englisch: A2 Führerschein: B\n\n## Programme und Werkzeuge\n\nSAP MM - Grundlagen\n\nLibreOffice Calc - gute K",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_013",
+  "regression_lang": "de"
+}

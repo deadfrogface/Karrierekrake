@@ -1,0 +1,76 @@
+{
+  "personal": {
+    "first_name": "Poppy",
+    "last_name": "Hayes",
+    "street": "Station Lane",
+    "house_number": "42",
+    "postal_code": "YO1 7LA",
+    "city": "York",
+    "country": "United Kingdom",
+    "date_of_birth": "03.11.1990"
+  },
+  "emails": [
+    "poppy.hayes.38@example.org"
+  ],
+  "phones": [
+    "+44 7700 900038"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "AAT Level 3 Accounting",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Payroll Officer",
+      "company": "Northern Ledger",
+      "start_date": "03/2020",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Payroll reconciliation",
+    "Employee queries",
+    "Audit trails"
+  ],
+  "software": [
+    "Sage Payroll",
+    "Excel"
+  ],
+  "certificates": [
+    {
+      "name": "Payroll Compliance Course",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_038.pdf",
+  "raw_text_chars": 563,
+  "raw_text_preview": "## Poppy Hayes\n\n## Payroll Officer\n\n## Contact\n\npoppy.hayes.38@example.org | +44 7700 900038 Station Lane 42, YO1 7LA York, United Kingdom Born: 1990-11-03\n\n## Profile\n\nExperience in Payroll Officer. Monthly payroll processing.\n\n## Education\n\nAAT Level 3 Accounting\n\n## Work Experience\n\n## Payroll Officer | Northern Ledger\n\n03/2020 - Present Monthly payroll processing\n\n## Languages\n\nEnglish: Native | German: A2\n\n## Core Skills\n\nPayroll reconciliation · Employee queries · Audit trails\n\n## Certific",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_038",
+  "blind_lang": "unknown",
+  "pdf_sha256": "a71e3a864765f648b3193abb9858826a943d05a43d7a5b5938ab6800882e79d3"
+}

@@ -1,0 +1,72 @@
+{
+  "personal": {
+    "first_name": "Yasmin",
+    "last_name": "Özdemir",
+    "street": "Seestraße",
+    "house_number": "13",
+    "postal_code": "24103",
+    "city": "Kiel",
+    "country": "Deutschland",
+    "date_of_birth": "28.10.1986"
+  },
+  "emails": [
+    "yasmin.zdemir.09@example.org"
+  ],
+  "phones": [
+    "+49 151 4701233"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "FH Kiel",
+      "qualification": "B.A. Soziale Arbeit",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Sozialarbeiterin",
+      "company": "Jugendzentrum Nord",
+      "start_date": "10/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Krisengespräche",
+    "Projektplanung"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Deeskalationstraining Elternarbeit",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_009.pdf",
+  "raw_text_chars": 529,
+  "raw_text_preview": "## Yasmin Özdemir\n\n## Sozialarbeiterin\n\n## Kontakt\n\nyasmin.zdemir.09@example.org | +49 151 4701233 Seestraße 13, 24103 Kiel, Deutschland Geboren: 28.10.1986\n\n## Kurzprofil\n\nBerufspraxis in Sozialarbeiterin. Offene Jugendarbeit.\n\n## Berufserfahrung\n\n## Sozialarbeiterin | Jugendzentrum Nord\n\n2019-10 - heute\n\nOffene Jugendarbeit\n\n## Kenntnisse\n\nKrisengespräche · Projektplanung\n\n## Ausbildung\n\nB.A. Soziale Arbeit, FH Kiel\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: B2\n\n## Weiterbildungen\n\nDeesk",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_009",
+  "blind_lang": "unknown",
+  "pdf_sha256": "34c0b0d27324936987321c6a0ce4e78b37848a96163562f051679de761a6c53b"
+}

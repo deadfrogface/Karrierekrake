@@ -167,8 +167,7 @@ Section-Shuffle, Leerzeilen/Bullets, Heading-Case, FR/NL Muttersprachen-Äquival
 | Branch | `cursor/ih2-det-kenntnisse-fix-d85b` |
 | Ausgangscommit | `3c9f5bd7cfdac328221c0a3bfae614501f82032c` |
 | Finaler Parser-Commit | `f3a17c09fe8a2d4d196aabb58e49c8d97ecfcfc8` |
-| Parser-Quellcode-Hash (SHA-256 über Parser-Quellen) | `8e53ee6f35d33929c9ee7f80eb740d9387def883f021f3aca0f1f5083bebd211` |
-| Phi-Aufrufe | 0 |
+| Parser-Quellcode-Hash (SHA-256 über Parser-Quellen) | `8e53ee6f35d33929c9ee7f80eb740d9387def883f021f3aca0f1f5083bebd211` || Phi-Aufrufe | 0 |
 | C1-Aufrufe | 0 |
 | Neuer unabhängiger 0.99-Nachweis | **nein** |
 

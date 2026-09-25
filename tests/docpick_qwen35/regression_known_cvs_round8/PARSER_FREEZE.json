@@ -1,0 +1,30 @@
+{
+  "seal_type": "PARSER_CONFIG_SCORER_FREEZE_ROUND8",
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "disclaimer": "Known CVs only. Not independent blind. Not a 99% claim.",
+  "created_at": "2026-09-24T22:46:58.475083+00:00",
+  "git_commit": "448db6b8a09e5254c0867776d9f8e7924eb3c9d9",
+  "det_fallback_in_productive_import": false,
+  "productive_import": "core.cv_docpick_import.import_cv_docpick",
+  "changes": [
+    "education_after_employment_keep_order",
+    "education_schema_ausbildung_btec_wording_no_sysprompt_line",
+    "present_end_re_no_empty_alt",
+    "enrich_education_from_section_when_empty",
+    "heute_repair_same_block_start_match_only",
+    "license_merge_fs_tail_only_no_cefr_bleed",
+    "max_tokens_2048",
+    "round8a_reverted_education_before_employment_truncation"
+  ],
+  "llm": {
+    "base_url": "http://127.0.0.1:8765/v1",
+    "model_path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+    "temperature": 0.0
+  },
+  "file_sha256": {
+    "core/cv_docpick_import.py": "2b3e877a93c79155c90a49632e8c74a7fbdbd19a0a646515001f2ce1f520e3da",
+    "core/cv_intelligence.py": "aacc77e556eb24bba87c4c9ccd9a5dbbbd360cfc8d22c773e3bd300eed0447f4"
+  },
+  "manifest_sha256": "248daf5844f5898099d64f13017d4a95c532d00f66bfc01c44256bb2826bd3ed"
+}

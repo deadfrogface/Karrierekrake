@@ -101,6 +101,65 @@ class BrowserRepairWorker(QObject):
         self.finished.emit(ok, msg)
 
 
+class CvImportWorker(QObject):
+    """Run Docpick CV import off the GUI thread (no DET fallback)."""
+
+    progress = Signal(str)
+    finished = Signal(object)  # parsed dict
+    failed = Signal(str)
+
+    def __init__(self, cv_path: object) -> None:
+        super().__init__()
+        self.cv_path = cv_path
+        self._cancel = threading.Event()
+
+    def request_cancel(self) -> None:
+        self._cancel.set()
+
+    def run(self) -> None:
+        from desktop.i18n import tr
+
+        if self._cancel.is_set():
+            self.failed.emit(tr("cv_import.cancelled"))
+            return
+        try:
+            from core.cv_docpick_import import CvImportError, import_cv_docpick
+
+            stage_labels = {
+                "llm_preflight": tr("cv_import.progress_preflight"),
+                "pdf": tr("cv_import.progress_pdf"),
+                "model": tr("cv_import.progress_model"),
+            }
+
+            def on_progress(stage: str) -> None:
+                self.progress.emit(stage_labels.get(stage, stage))
+
+            # Productive path: Docpick + Qwen only. No DET fallback.
+            parsed = import_cv_docpick(
+                self.cv_path,
+                progress=on_progress,
+                should_cancel=self._cancel.is_set,
+            )
+            if self._cancel.is_set():
+                self.failed.emit(tr("cv_import.cancelled"))
+                return
+            self.finished.emit(parsed)
+        except Exception as exc:  # noqa: BLE001
+            if self._cancel.is_set():
+                self.failed.emit(tr("cv_import.cancelled"))
+                return
+            # Prefer human message from CvImportError
+            try:
+                from core.cv_docpick_import import CvImportError
+
+                if isinstance(exc, CvImportError):
+                    self.failed.emit(str(exc))
+                    return
+            except Exception:  # noqa: BLE001
+                pass
+            self.failed.emit(str(exc))
+
+
 # Backwards-compatible alias
 BrowserInstallWorker = BrowserRepairWorker
 

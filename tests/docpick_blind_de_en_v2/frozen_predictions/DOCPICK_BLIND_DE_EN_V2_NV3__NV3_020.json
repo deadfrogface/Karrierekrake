@@ -1,0 +1,83 @@
+{
+  "personal": {
+    "first_name": "Malik",
+    "last_name": "Winter",
+    "street": "Rosenallee",
+    "house_number": "24",
+    "postal_code": "23552",
+    "city": "Lübeck",
+    "country": "Deutschland",
+    "date_of_birth": "05.05.1997"
+  },
+  "emails": [
+    "malik.winter.20@example.org"
+  ],
+  "phones": [
+    "+49 151 4702740"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "IHK Lübeck",
+      "qualification": "Fachinformatiker Systemintegration",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "IT-Systemadministrator",
+      "company": "Hanse Cloud eG",
+      "start_date": "09/2023",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Familienbetrieb",
+      "start_date": "03/2011",
+      "end_date": "11/2022",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Linux-Administration",
+    "Netzwerkdiagnose",
+    "Backup"
+  ],
+  "software": [
+    "Proxmox",
+    "Ansible"
+  ],
+  "certificates": [
+    {
+      "name": "Linux Essentials",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_020.pdf",
+  "raw_text_chars": 719,
+  "raw_text_preview": "## Malik Winter\n\n## IT-Systemadministrator\n\n## Kontakt\n\nmalik.winter.20@example.org | +49 151 4702740 Rosenallee 24, 23552 Lübeck, Deutschland Geboren: 05.05.1997\n\n## Kurzprofil\n\nBerufspraxis in IT-Systemadministrator. Clientbetrieb und Nutzer-Support.\n\n## Berufserfahrung\n\n## IT-Systemadministrator | Hanse Cloud eG\n\n09/2023 - heute Clientbetrieb und Nutzer-Support\n\n## Aushilfe | Familienbetrieb\n\n03/2011 - 11/2022 Kundenkontakt und Dokumentation\n\n## Ausbildung\n\nFachinformatiker Systemintegration,",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_020",
+  "blind_lang": "unknown",
+  "pdf_sha256": "54f85ea50322f4de40d1b0764e1f323ebede9b59f58e76db61c8d899862a0d1a"
+}

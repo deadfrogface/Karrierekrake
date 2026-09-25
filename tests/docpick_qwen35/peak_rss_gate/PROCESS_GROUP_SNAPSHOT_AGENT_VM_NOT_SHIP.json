@@ -1,0 +1,32 @@
+{
+  "host": "Agent-VM (NOT target laptop \u2014 NOT ship evidence)",
+  "memtotal_gb": 15.639,
+  "memavailable_gb": 10.478,
+  "memfree_gb": 6.223,
+  "processes": [
+    {
+      "pid": 1271103,
+      "label": "llama_cpp",
+      "rss_mb": 6.9,
+      "cmd": "/bin/bash -O extglob -c snap=$(command cat <&3) && builtin shopt -s extglob && builtin eval -- \"$snap\" && { builtin set "
+    },
+    {
+      "pid": 1271105,
+      "label": "llama_cpp",
+      "rss_mb": 5527.6,
+      "cmd": ".venv/bin/python -m llama_cpp.server --model /tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf --host 127.0.0."
+    },
+    {
+      "pid": 1279132,
+      "label": "llama_cpp",
+      "rss_mb": 8.6,
+      "cmd": "/bin/bash -O extglob -c snap=$(command cat <&3) && builtin shopt -s extglob && builtin eval -- \"$snap\" && { builtin set "
+    }
+  ],
+  "process_group_rss_mb": 5543.1,
+  "process_group_rss_gb": 5.413,
+  "gate_gb": 3.3,
+  "ship_evidence": false,
+  "kill_or_ship": "#62 only ships on real i3/8GB Win laptop process-group Peak. Agent-VM is not ship evidence.",
+  "verdict_informational": "NO-GO_SIGNAL_BUT_NOT_SHIP_PROOF"
+}

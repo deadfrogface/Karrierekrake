@@ -1,0 +1,1367 @@
+{
+  "test_type": "INDEPENDENT_BLIND_DE_EN_NV3_50",
+  "metric_name": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "disclaimer": "Independent synthetic Blind NV3 (n=50). Phase A sealed predictions only. Not Round regression. Schema adapter documented in SCHEMA_ADAPTER_NOTES.json. This block is the Blindresultat; any later parser work is Post-Analysis only.",
+  "created_at": "2026-09-24T19:30:25.004257+00:00",
+  "integrity": {
+    "seal_sha256_verified": "169624a339d4984e099c5633cdf7b579a654a9695f118a447f37a54bedf89a98",
+    "prediction_hashes_verified": true,
+    "pdf_hashes_verified": true,
+    "parser_freeze_commit": "801a92475c0f128634a940312e07f266f51539d6",
+    "parser_scorer_files_match_freeze": true,
+    "re_extraction": false,
+    "parser_changed": false,
+    "scorer_changed": false,
+    "gt_changed": false
+  },
+  "schema_adapter_notes_file": "tests/docpick_blind_de_en_v2/phase_b_solutions/SCHEMA_ADAPTER_NOTES.json",
+  "n_documents": 50,
+  "performance_from_seal": {
+    "wall_s": 3676.1062982009025,
+    "avg_s_per_cv": 73.52026728559984,
+    "p95_s": 90.40693028399255,
+    "peak_rss_mb": 2641.9453125,
+    "cold_s": 94.88429536600597,
+    "warm_avg_s": 73.08426671253032,
+    "per_doc_s": {
+      "NV3_001": 94.88429536600597,
+      "NV3_002": 71.64946274401154,
+      "NV3_003": 86.71483233105391,
+      "NV3_004": 90.40693028399255,
+      "NV3_005": 77.19422861607745,
+      "NV3_006": 82.94354198197834,
+      "NV3_007": 87.93441024597269,
+      "NV3_008": 93.14053209905978,
+      "NV3_009": 79.64494458201807,
+      "NV3_010": 82.83159290999174,
+      "NV3_011": 79.36956597492099,
+      "NV3_012": 99.46421765908599,
+      "NV3_013": 83.54054498695768,
+      "NV3_014": 75.23388032405637,
+      "NV3_015": 73.37222384405322,
+      "NV3_016": 79.74295938992873,
+      "NV3_017": 84.14233840699308,
+      "NV3_018": 75.53602890798356,
+      "NV3_019": 69.71655628096778,
+      "NV3_020": 87.27336191304494,
+      "NV3_021": 76.17057322699111,
+      "NV3_022": 70.34800930100027,
+      "NV3_023": 66.59494542295579,
+      "NV3_024": 79.95634997996967,
+      "NV3_025": 71.40798546001315,
+      "NV3_026": 80.03063633700367,
+      "NV3_027": 76.05156540696044,
+      "NV3_028": 81.50638695398811,
+      "NV3_029": 67.05064008303452,
+      "NV3_030": 64.87870604207274,
+      "NV3_031": 58.17829264199827,
+      "NV3_032": 69.96958164696116,
+      "NV3_033": 62.840208626003005,
+      "NV3_034": 56.894498548004776,
+      "NV3_035": 63.695157896960154,
+      "NV3_036": 68.18434518296272,
+      "NV3_037": 65.01751073810738,
+      "NV3_038": 64.78619606199209,
+      "NV3_039": 62.82753097102977,
+      "NV3_040": 70.65822647698224,
+      "NV3_041": 65.1865601389436,
+      "NV3_042": 62.43950557196513,
+      "NV3_043": 58.10304662201088,
+      "NV3_044": 71.66039367497433,
+      "NV3_045": 64.51778366405051,
+      "NV3_046": 64.3646928309463,
+      "NV3_047": 61.71019689401146,
+      "NV3_048": 74.86742644698825,
+      "NV3_049": 58.4918903229991,
+      "NV3_050": 62.88807225995697
+    },
+    "budget_warm_s": 60.0,
+    "budget_cold_s": 90.0,
+    "warm_within_budget": false,
+    "hardware_note": "Agent-VM Xeon 4CPU ~15GB — not i3/8GB target device"
+  },
+  "coverage": {
+    "perfect_core_on_scored_fields": "14/50",
+    "n_scored_fields_total": 1299
+  },
+  "metrics_complete_gt_only_v3_1": {
+    "field_total": 1299,
+    "counts": {
+      "correct": 1249,
+      "wrong": 32,
+      "missing": 15,
+      "hallucinated": 3,
+      "wrong_category": 0
+    },
+    "field_accuracy": 0.9615088529638183,
+    "precision": 0.9727414330218068,
+    "recall": 0.9881329113924051,
+    "f1": 0.980376766091052,
+    "hallucination_rate": 0.0023094688221709007,
+    "missing_field_rate": 0.011547344110854504,
+    "wrong_category_rate": 0.0,
+    "false_positive_rate": 0.026943802925327175,
+    "by_group": {
+      "personal": {
+        "correct": 124,
+        "wrong": 26
+      },
+      "contact": {
+        "correct": 100
+      },
+      "address": {
+        "correct": 250
+      },
+      "languages": {
+        "correct": 103
+      },
+      "licenses": {
+        "correct": 50
+      },
+      "education": {
+        "correct": 78,
+        "missing": 11,
+        "hallucinated": 1
+      },
+      "employment": {
+        "correct": 303,
+        "wrong": 6,
+        "missing": 1
+      },
+      "skills": {
+        "correct": 148,
+        "missing": 2
+      },
+      "software": {
+        "correct": 54,
+        "missing": 1
+      },
+      "certificates": {
+        "correct": 39,
+        "hallucinated": 2
+      }
+    },
+    "n_missing": 15,
+    "n_hallucinated": 3,
+    "n_wrong": 32,
+    "missing_fields": [
+      {
+        "document": "NV3_005",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "M.Sc. Umweltwissenschaften, Universität Freiburg"
+        }
+      },
+      {
+        "document": "NV3_008",
+        "field": "software:0",
+        "expected": "TIA Portal"
+      },
+      {
+        "document": "NV3_009",
+        "field": "skill:2",
+        "expected": "Elternarbeit"
+      },
+      {
+        "document": "NV3_011",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Ausbildung Biologielaborantin"
+        }
+      },
+      {
+        "document": "NV3_014",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Ausbildung Koch, BBS Trier"
+        }
+      },
+      {
+        "document": "NV3_015",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "B.A. Kommunikationsdesign, FH Potsdam"
+        }
+      },
+      {
+        "document": "NV3_018",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Ausbildung Bauzeichner, Schwerpunkt Architektur"
+        }
+      },
+      {
+        "document": "NV3_019",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Ausbildung Floristin"
+        }
+      },
+      {
+        "document": "NV3_031",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "BTEC Level 3 Music Technology"
+        }
+      },
+      {
+        "document": "NV3_033",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Left school at 16 without qualifications"
+        }
+      },
+      {
+        "document": "NV3_034",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Health and Social Care Level 3"
+        }
+      },
+      {
+        "document": "NV3_034",
+        "field": "skill:2",
+        "expected": "Communication aids"
+      },
+      {
+        "document": "NV3_043",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "HNC Construction and the Built Environment"
+        }
+      },
+      {
+        "document": "NV3_049",
+        "field": "education_entry:0",
+        "expected": {
+          "qualification": "Level 3 Diploma in Furniture Making"
+        }
+      },
+      {
+        "document": "NV3_050",
+        "field": "employment:0.company",
+        "expected": "Self-employed"
+      }
+    ],
+    "hallucinated_fields": [
+      {
+        "document": "NV3_008",
+        "field": "certificate_extra:1",
+        "expected": null,
+        "actual": "TIA Portal"
+      },
+      {
+        "document": "NV3_033",
+        "field": "education_extra:0",
+        "expected": null,
+        "actual": {
+          "institution": "",
+          "qualification": "Schule ohne Abschluss",
+          "start_date": "",
+          "end_date": "ohne Abschluss"
+        }
+      },
+      {
+        "document": "NV3_034",
+        "field": "certificate_extra:1",
+        "expected": null,
+        "actual": "Communication aids"
+      }
+    ],
+    "wrong_fields": [
+      {
+        "document": "NV3_001",
+        "field": "employment:0.position",
+        "status": "wrong",
+        "expected": "Medizinische Fachangestellte",
+        "actual": "Sprechstundenkoordination"
+      },
+      {
+        "document": "NV3_007",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "2025-08",
+        "actual": "heute"
+      },
+      {
+        "document": "NV3_014",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "2024-08",
+        "actual": "heute"
+      },
+      {
+        "document": "NV3_021",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "2025-08",
+        "actual": "heute"
+      },
+      {
+        "document": "NV3_026",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1978-11-23",
+        "actual": "23.11.1978"
+      },
+      {
+        "document": "NV3_027",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1979-04-26",
+        "actual": "26.04.1979"
+      },
+      {
+        "document": "NV3_028",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1980-09-01",
+        "actual": "01.09.1980"
+      },
+      {
+        "document": "NV3_029",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1981-02-04",
+        "actual": "04.02.1981"
+      },
+      {
+        "document": "NV3_030",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1982-07-07",
+        "actual": "07.07.1982"
+      },
+      {
+        "document": "NV3_031",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1983-12-10",
+        "actual": "10.12.1983"
+      },
+      {
+        "document": "NV3_032",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1984-05-13",
+        "actual": "13.05.1984"
+      },
+      {
+        "document": "NV3_033",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1985-10-16",
+        "actual": "16.10.1985"
+      },
+      {
+        "document": "NV3_034",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1986-03-19",
+        "actual": "19.03.1986"
+      },
+      {
+        "document": "NV3_035",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1987-08-22",
+        "actual": "22.08.1987"
+      },
+      {
+        "document": "NV3_035",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "2025-08",
+        "actual": "heute"
+      },
+      {
+        "document": "NV3_036",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1988-01-25",
+        "actual": "25.01.1988"
+      },
+      {
+        "document": "NV3_037",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1989-06-28",
+        "actual": "28.06.1989"
+      },
+      {
+        "document": "NV3_038",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1990-11-03",
+        "actual": "03.11.1990"
+      },
+      {
+        "document": "NV3_039",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1991-04-06",
+        "actual": "06.04.1991"
+      },
+      {
+        "document": "NV3_040",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1992-09-09",
+        "actual": "09.09.1992"
+      },
+      {
+        "document": "NV3_041",
+        "field": "name.last_name",
+        "status": "wrong",
+        "expected": "O’Connor",
+        "actual": "O'Connor"
+      },
+      {
+        "document": "NV3_041",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1993-02-12",
+        "actual": "12.02.1993"
+      },
+      {
+        "document": "NV3_042",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1994-07-15",
+        "actual": "15.07.1994"
+      },
+      {
+        "document": "NV3_043",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1995-12-18",
+        "actual": "18.12.1995"
+      },
+      {
+        "document": "NV3_044",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1996-05-21",
+        "actual": "21.05.1996"
+      },
+      {
+        "document": "NV3_045",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1997-10-24",
+        "actual": "24.10.1997"
+      },
+      {
+        "document": "NV3_046",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1998-03-27",
+        "actual": "27.03.1998"
+      },
+      {
+        "document": "NV3_047",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1999-08-02",
+        "actual": "02.08.1999"
+      },
+      {
+        "document": "NV3_048",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "2000-01-05",
+        "actual": "05.01.2000"
+      },
+      {
+        "document": "NV3_049",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "2001-06-08",
+        "actual": "08.06.2001"
+      },
+      {
+        "document": "NV3_049",
+        "field": "employment:0.end_date",
+        "status": "wrong",
+        "expected": "2025-08",
+        "actual": "heute"
+      },
+      {
+        "document": "NV3_050",
+        "field": "dob",
+        "status": "wrong",
+        "expected": "1977-11-11",
+        "actual": "11.11.1977"
+      }
+    ],
+    "perfect_core": "14/50"
+  },
+  "nicht_bewertbar": {
+    "n_fields": 28,
+    "by_group": {
+      "software": 17,
+      "certificates": 11
+    },
+    "by_reason": {
+      "no software list and no count": 17,
+      "no certificates list and no count": 11
+    },
+    "cases": [
+      {
+        "document": "NV3_002",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_006",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_009",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_010",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_013",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_014",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_015",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_016",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_017",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_018",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_019",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_019",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_023",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_025",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_028",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_031",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_032",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_033",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_034",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_036",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_036",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_039",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_042",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_043",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_044",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_047",
+        "field": "software",
+        "group": "software",
+        "reason": "no software list and no count",
+        "gt_keys_present": [
+          "software"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_048",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      },
+      {
+        "document": "NV3_050",
+        "field": "certificates",
+        "group": "certificates",
+        "reason": "no certificates list and no count",
+        "gt_keys_present": [
+          "certificates"
+        ],
+        "pred_summary": [],
+        "text_grounded": null
+      }
+    ]
+  },
+  "by_lang": {
+    "de": {
+      "n_documents": 25,
+      "f1": 0.9898516783762684,
+      "precision": 0.9921752738654147,
+      "recall": 0.9875389408099688,
+      "field_total": 647,
+      "counts": {
+        "correct": 634,
+        "wrong": 4,
+        "missing": 8,
+        "hallucinated": 1,
+        "wrong_category": 0
+      },
+      "nicht_bewertbar_n": 14
+    },
+    "en": {
+      "n_documents": 25,
+      "f1": 0.9707971586424626,
+      "precision": 0.9534883720930233,
+      "recall": 0.9887459807073955,
+      "field_total": 652,
+      "counts": {
+        "correct": 615,
+        "wrong": 28,
+        "missing": 7,
+        "hallucinated": 2,
+        "wrong_category": 0
+      },
+      "nicht_bewertbar_n": 14
+    }
+  },
+  "errors_by_field_group": {
+    "certificates": {
+      "hallucinated": 2
+    },
+    "education": {
+      "missing": 11,
+      "hallucinated": 1
+    },
+    "employment": {
+      "wrong": 6,
+      "missing": 1
+    },
+    "personal": {
+      "wrong": 26
+    },
+    "skills": {
+      "missing": 2
+    },
+    "software": {
+      "missing": 1
+    }
+  },
+  "real_errors": [
+    {
+      "document": "NV3_001",
+      "lang": "de",
+      "field": "employment:0.position",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "Medizinische Fachangestellte",
+      "actual": "Sprechstundenkoordination"
+    },
+    {
+      "document": "NV3_005",
+      "lang": "de",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "M.Sc. Umweltwissenschaften, Universität Freiburg"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_007",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "2025-08",
+      "actual": "heute"
+    },
+    {
+      "document": "NV3_008",
+      "lang": "de",
+      "field": "software:0",
+      "group": "software",
+      "status": "missing",
+      "expected": "TIA Portal",
+      "actual": []
+    },
+    {
+      "document": "NV3_008",
+      "lang": "de",
+      "field": "certificate_extra:1",
+      "group": "certificates",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": "TIA Portal"
+    },
+    {
+      "document": "NV3_009",
+      "lang": "de",
+      "field": "skill:2",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Elternarbeit",
+      "actual": [
+        "Krisengespräche",
+        "Projektplanung"
+      ]
+    },
+    {
+      "document": "NV3_011",
+      "lang": "de",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "Ausbildung Biologielaborantin"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_014",
+      "lang": "de",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "Ausbildung Koch, BBS Trier"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_014",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "2024-08",
+      "actual": "heute"
+    },
+    {
+      "document": "NV3_015",
+      "lang": "de",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "B.A. Kommunikationsdesign, FH Potsdam"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_018",
+      "lang": "de",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "Ausbildung Bauzeichner, Schwerpunkt Architektur"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_019",
+      "lang": "de",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "Ausbildung Floristin"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_021",
+      "lang": "de",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "2025-08",
+      "actual": "heute"
+    },
+    {
+      "document": "NV3_026",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1978-11-23",
+      "actual": "23.11.1978"
+    },
+    {
+      "document": "NV3_027",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1979-04-26",
+      "actual": "26.04.1979"
+    },
+    {
+      "document": "NV3_028",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1980-09-01",
+      "actual": "01.09.1980"
+    },
+    {
+      "document": "NV3_029",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1981-02-04",
+      "actual": "04.02.1981"
+    },
+    {
+      "document": "NV3_030",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1982-07-07",
+      "actual": "07.07.1982"
+    },
+    {
+      "document": "NV3_031",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1983-12-10",
+      "actual": "10.12.1983"
+    },
+    {
+      "document": "NV3_031",
+      "lang": "en",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "BTEC Level 3 Music Technology"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_032",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1984-05-13",
+      "actual": "13.05.1984"
+    },
+    {
+      "document": "NV3_033",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1985-10-16",
+      "actual": "16.10.1985"
+    },
+    {
+      "document": "NV3_033",
+      "lang": "en",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "Left school at 16 without qualifications"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_033",
+      "lang": "en",
+      "field": "education_extra:0",
+      "group": "education",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": {
+        "institution": "",
+        "qualification": "Schule ohne Abschluss",
+        "start_date": "",
+        "end_date": "ohne Abschluss"
+      }
+    },
+    {
+      "document": "NV3_034",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1986-03-19",
+      "actual": "19.03.1986"
+    },
+    {
+      "document": "NV3_034",
+      "lang": "en",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "Health and Social Care Level 3"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_034",
+      "lang": "en",
+      "field": "skill:2",
+      "group": "skills",
+      "status": "missing",
+      "expected": "Communication aids",
+      "actual": [
+        "Session notes",
+        "Family communication"
+      ]
+    },
+    {
+      "document": "NV3_034",
+      "lang": "en",
+      "field": "certificate_extra:1",
+      "group": "certificates",
+      "status": "hallucinated",
+      "expected": null,
+      "actual": "Communication aids"
+    },
+    {
+      "document": "NV3_035",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1987-08-22",
+      "actual": "22.08.1987"
+    },
+    {
+      "document": "NV3_035",
+      "lang": "en",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "2025-08",
+      "actual": "heute"
+    },
+    {
+      "document": "NV3_036",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1988-01-25",
+      "actual": "25.01.1988"
+    },
+    {
+      "document": "NV3_037",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1989-06-28",
+      "actual": "28.06.1989"
+    },
+    {
+      "document": "NV3_038",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1990-11-03",
+      "actual": "03.11.1990"
+    },
+    {
+      "document": "NV3_039",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1991-04-06",
+      "actual": "06.04.1991"
+    },
+    {
+      "document": "NV3_040",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1992-09-09",
+      "actual": "09.09.1992"
+    },
+    {
+      "document": "NV3_041",
+      "lang": "en",
+      "field": "name.last_name",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "O’Connor",
+      "actual": "O'Connor"
+    },
+    {
+      "document": "NV3_041",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1993-02-12",
+      "actual": "12.02.1993"
+    },
+    {
+      "document": "NV3_042",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1994-07-15",
+      "actual": "15.07.1994"
+    },
+    {
+      "document": "NV3_043",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1995-12-18",
+      "actual": "18.12.1995"
+    },
+    {
+      "document": "NV3_043",
+      "lang": "en",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "HNC Construction and the Built Environment"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_044",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1996-05-21",
+      "actual": "21.05.1996"
+    },
+    {
+      "document": "NV3_045",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1997-10-24",
+      "actual": "24.10.1997"
+    },
+    {
+      "document": "NV3_046",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1998-03-27",
+      "actual": "27.03.1998"
+    },
+    {
+      "document": "NV3_047",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1999-08-02",
+      "actual": "02.08.1999"
+    },
+    {
+      "document": "NV3_048",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "2000-01-05",
+      "actual": "05.01.2000"
+    },
+    {
+      "document": "NV3_049",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "2001-06-08",
+      "actual": "08.06.2001"
+    },
+    {
+      "document": "NV3_049",
+      "lang": "en",
+      "field": "education_entry:0",
+      "group": "education",
+      "status": "missing",
+      "expected": {
+        "qualification": "Level 3 Diploma in Furniture Making"
+      },
+      "actual": null
+    },
+    {
+      "document": "NV3_049",
+      "lang": "en",
+      "field": "employment:0.end_date",
+      "group": "employment",
+      "status": "wrong",
+      "expected": "2025-08",
+      "actual": "heute"
+    },
+    {
+      "document": "NV3_050",
+      "lang": "en",
+      "field": "dob",
+      "group": "personal",
+      "status": "wrong",
+      "expected": "1977-11-11",
+      "actual": "11.11.1977"
+    },
+    {
+      "document": "NV3_050",
+      "lang": "en",
+      "field": "employment:0.company",
+      "group": "employment",
+      "status": "missing",
+      "expected": "Self-employed",
+      "actual": ""
+    }
+  ],
+  "error_status_counts": {
+    "wrong": 32,
+    "missing": 15,
+    "hallucinated": 3
+  },
+  "claim_99_percent": false,
+  "claim_99_reason": "Threshold not met and/or incomplete evaluable coverage — see metrics.",
+  "post_analysis_forbidden_until_new_corpus": true
+}

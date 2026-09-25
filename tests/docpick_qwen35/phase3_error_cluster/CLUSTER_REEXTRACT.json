@@ -1,0 +1,175 @@
+{
+  "test_type": "PHASE3_ERROR_CLUSTER_KNOWN_CVS_NOT_BLIND",
+  "disclaimer": "Known Round2 error-cluster only. Not F1. Not independent 99%.",
+  "n": 7,
+  "wall_s": 581.653,
+  "peak_rss_mb": 1655.0,
+  "rows": [
+    {
+      "doc": "MH_005",
+      "ok": true,
+      "s": 94.715,
+      "pipeline": "docpick_qwen35_4b",
+      "work0_end": "heute",
+      "work0_title": "Edelsteinschleiferin",
+      "edu0_qual": "Gesellenbrief",
+      "edu0_end": "2015",
+      "software": [
+        "Minitab",
+        "Grafana"
+      ],
+      "name": {
+        "first_name": "Esra",
+        "last_name": "Lavigne",
+        "street": "Münchener Straße",
+        "house_number": "73",
+        "postal_code": "83395",
+        "city": "Freilassing",
+        "country": "Deutschland",
+        "date_of_birth": "06.05.1980"
+      }
+    },
+    {
+      "doc": "MH_009",
+      "ok": true,
+      "s": 91.452,
+      "pipeline": "docpick_qwen35_4b",
+      "work0_end": "heute",
+      "work0_title": "Imkerin",
+      "edu0_qual": "Studium abgebrochen",
+      "edu0_end": "2011",
+      "software": [
+        "Minitab - Grundlagen",
+        "LibreOffice Calc - gute Kenntnisse"
+      ],
+      "name": {
+        "first_name": "Imani",
+        "last_name": "Schulte",
+        "street": "Oxfordstraße 20",
+        "house_number": "",
+        "postal_code": "53111",
+        "city": "Bonn",
+        "country": "Deutschland",
+        "date_of_birth": "10.09.1990"
+      }
+    },
+    {
+      "doc": "MH_013",
+      "ok": true,
+      "s": 74.152,
+      "pipeline": "docpick_qwen35_4b",
+      "work0_end": "heute",
+      "work0_title": "Naturwerksteinmechanikerin",
+      "edu0_qual": "Fachhochschulreife",
+      "edu0_end": "2015",
+      "software": [
+        "SAP MM - Grundlagen",
+        "LibreOffice Calc - gute Kenntnisse"
+      ],
+      "name": {
+        "first_name": "Malika",
+        "last_name": "Bork",
+        "street": "Utrechtseweg 88",
+        "house_number": "",
+        "postal_code": "6811",
+        "city": "Arnhem",
+        "country": "Niederlande",
+        "date_of_birth": "14.01.2000"
+      }
+    },
+    {
+      "doc": "MH_017",
+      "ok": true,
+      "s": 79.327,
+      "pipeline": "docpick_qwen35_4b",
+      "work0_end": "heute",
+      "work0_title": "Straßenwärterin",
+      "edu0_qual": "Bachelor of Engineering",
+      "edu0_end": "2011",
+      "software": [
+        "Bentley MicroStation",
+        "Tableau"
+      ],
+      "name": {
+        "first_name": "Saskia",
+        "last_name": "Fadel",
+        "street": "Tumringer Straße",
+        "house_number": "35",
+        "postal_code": "79539",
+        "city": "Lörrach",
+        "country": "Deutschland",
+        "date_of_birth": "18.05.1976"
+      }
+    },
+    {
+      "doc": "MH_021",
+      "ok": true,
+      "s": 88.221,
+      "pipeline": "docpick_qwen35_4b",
+      "work0_end": "heute",
+      "work0_title": "Werkfeuerwehrfrau",
+      "edu0_qual": "Berufsreife",
+      "edu0_end": "2015",
+      "software": [
+        "Qlik Sense",
+        "Bentley MicroStation"
+      ],
+      "name": {
+        "first_name": "Wanda",
+        "last_name": "Lopez",
+        "street": "Wallstraße",
+        "house_number": "103",
+        "postal_code": "48683",
+        "city": "Ahaus",
+        "country": "Deutschland",
+        "date_of_birth": "22.09.1986"
+      }
+    },
+    {
+      "doc": "MH_025",
+      "ok": true,
+      "s": 67.515,
+      "pipeline": "docpick_qwen35_4b",
+      "work0_end": "heute",
+      "work0_title": "Broadcast Engineer",
+      "edu0_qual": "Gesellenbrief",
+      "edu0_end": "2011",
+      "software": [],
+      "name": {
+        "first_name": "Brooke",
+        "last_name": "Reed",
+        "street": "Anger",
+        "house_number": "50",
+        "postal_code": "99084",
+        "city": "Erfurt",
+        "country": "Deutschland",
+        "date_of_birth": "26.01.1996"
+      }
+    },
+    {
+      "doc": "MH_029",
+      "ok": true,
+      "s": 86.27,
+      "pipeline": "docpick_qwen35_4b",
+      "work0_end": "heute",
+      "work0_title": "Fluggerätmechanikerin",
+      "edu0_qual": "Studium abgebrochen",
+      "edu0_end": "2015",
+      "software": [
+        "Adobe Acrobat Pro",
+        "ZBrush"
+      ],
+      "name": {
+        "first_name": "Hala",
+        "last_name": "Bensaïd",
+        "street": "Rue Serpenoise",
+        "house_number": "118",
+        "postal_code": "57000",
+        "city": "Metz",
+        "country": "Frankreich",
+        "date_of_birth": "05.05.1972"
+      }
+    }
+  ],
+  "heute_hits": 7
+}

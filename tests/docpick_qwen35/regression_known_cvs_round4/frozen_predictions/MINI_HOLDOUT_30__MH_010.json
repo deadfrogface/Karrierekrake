@@ -1,0 +1,69 @@
+{
+  "personal": {
+    "first_name": "Joris",
+    "last_name": "Timmermans",
+    "street": "Anger",
+    "house_number": "37c",
+    "postal_code": "99084",
+    "city": "Erfurt",
+    "country": "Deutschland",
+    "date_of_birth": "11.04.2001"
+  },
+  "emails": [],
+  "phones": [
+    "+49 155 4181009"
+  ],
+  "languages": [
+    {
+      "language": "Italienisch",
+      "level": "B1"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Fachschule Erfurt",
+      "qualification": "Schule ohne Abschluss",
+      "start_date": "2009",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Kanalbauer",
+      "company": "Kronenwerk Technik KG",
+      "start_date": "02/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Arbeitsvorbereitung",
+    "Kalibrierung",
+    "Materialdisposition",
+    "Qualitätsprüfung"
+  ],
+  "software": [
+    "Tableau",
+    "Grafana",
+    "Qlik Sense"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_010.pdf",
+  "raw_text_chars": 602,
+  "raw_text_preview": "## Joris Timmermans\n\nAnger 37c | 99084 Erfurt | Deutschland · +49 155 4181009 · Geburtsdatum: 11.04.2001\n\n## Sprachkenntnisse &amp; Führerschein\n\nItalienisch: B1\n\nEnglisch: B1\n\nFührerschein: B\n\n## Programme und Werkzeuge\n\nTableau - Grundlagen Grafana - gute Kenntnisse\n\nQlik Sense - sehr gut\n\n## Fachkompetenzen\n\nArbeitsvorbereitung\n\nKalibrierung\n\nMaterialdisposition\n\nQualitätsprüfung\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Kanalbauer | Kronenwerk Technik KG Arbeitsvorbereitung · Kalibrierung\n\n## S",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_010",
+  "regression_lang": "de"
+}

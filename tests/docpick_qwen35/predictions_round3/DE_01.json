@@ -1,0 +1,178 @@
+{
+  "personal": {
+    "first_name": "Mara",
+    "last_name": "König",
+    "street": "Buchenweg",
+    "house_number": "14",
+    "postal_code": "48143",
+    "city": "Münster",
+    "country": "",
+    "date_of_birth": "07.11.1994"
+  },
+  "emails": [
+    "mara.koenig@example.com"
+  ],
+  "phones": [
+    "+49 151 20003000"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache (C2)"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    },
+    {
+      "language": "Französisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+      "qualification": "Kauffrau für Büromanagement (IHK)",
+      "start_date": "2013-08",
+      "end_date": "2016-06"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Teamkoordinatorin Kundenservice",
+      "company": "Westfalen Service GmbH",
+      "start_date": "2022-05",
+      "end_date": "",
+      "responsibilities": []
+    },
+    {
+      "title": "Sachbearbeiterin Auftragsmanagement",
+      "company": "HanseKontor Handel KG",
+      "start_date": "2019-01",
+      "end_date": "2022-04",
+      "responsibilities": []
+    },
+    {
+      "title": "Kaufmännische Mitarbeiterin",
+      "company": "Rheinblick Versand GmbH",
+      "start_date": "2016-08",
+      "end_date": "2018-12",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Kundenservice",
+    "Auftragsmanagement",
+    "KPI-Reporting",
+    "Prozessoptimierung",
+    "Reklamationsmanagement"
+  ],
+  "software": [
+    "Microsoft 365",
+    "SAP Business One",
+    "Salesforce",
+    "Jira",
+    "Confluence",
+    "DocuWare"
+  ],
+  "certificates": [
+    {
+      "name": "IHK Beschwerdemanagement, 2024",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Power BI Grundlagen, 2023",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Ersthelferin, 2025",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "_raw": {
+    "name": {
+      "first_name": "Mara",
+      "last_name": "König"
+    },
+    "email": "mara.koenig@example.com",
+    "phone": "+49 151 20003000",
+    "date_of_birth": "1994-11-07",
+    "address": {
+      "street": "Buchenweg",
+      "house_number": "14",
+      "postal_code": "48143",
+      "city": "Münster",
+      "country": null
+    },
+    "languages": [
+      {
+        "language": "Deutsch",
+        "level": "Muttersprache (C2)"
+      },
+      {
+        "language": "Englisch",
+        "level": "C1"
+      },
+      {
+        "language": "Französisch",
+        "level": "B1"
+      }
+    ],
+    "licenses": [
+      "Klasse B"
+    ],
+    "skills": [
+      "Kundenservice",
+      "Auftragsmanagement",
+      "KPI-Reporting",
+      "Prozessoptimierung",
+      "Reklamationsmanagement"
+    ],
+    "software": [
+      "Microsoft 365",
+      "SAP Business One",
+      "Salesforce",
+      "Jira",
+      "Confluence",
+      "DocuWare"
+    ],
+    "certificates": [
+      "IHK Beschwerdemanagement, 2024",
+      "Power BI Grundlagen, 2023",
+      "Ersthelferin, 2025"
+    ],
+    "employment": [
+      {
+        "company": "Westfalen Service GmbH",
+        "position": "Teamkoordinatorin Kundenservice",
+        "start_date": "2022-05",
+        "end_date": null
+      },
+      {
+        "company": "HanseKontor Handel KG",
+        "position": "Sachbearbeiterin Auftragsmanagement",
+        "start_date": "2019-01",
+        "end_date": "2022-04"
+      },
+      {
+        "company": "Rheinblick Versand GmbH",
+        "position": "Kaufmännische Mitarbeiterin",
+        "start_date": "2016-08",
+        "end_date": "2018-12"
+      }
+    ],
+    "education": [
+      {
+        "institution": "Berufskolleg Münster / BüroPartner West GmbH",
+        "qualification": "Kauffrau für Büromanagement (IHK)",
+        "start_date": "2013-08",
+        "end_date": "2016-06"
+      }
+    ]
+  },
+  "pipeline": "DOCPICK_QWEN35_4B_SCHEMA_FIX"
+}

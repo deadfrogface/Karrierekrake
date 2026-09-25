@@ -1,0 +1,73 @@
+{
+  "personal": {
+    "first_name": "Luca",
+    "last_name": "Evans",
+    "street": "River Road",
+    "house_number": "37",
+    "postal_code": "2000",
+    "city": "Antwerp",
+    "country": "Belgium",
+    "date_of_birth": "16.10.1985"
+  },
+  "emails": [
+    "luca.evans.33@example.org"
+  ],
+  "phones": [
+    "+44 7700 900033"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "Dutch",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Schule ohne Abschluss",
+      "start_date": "",
+      "end_date": "ohne Abschluss"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Warehouse Operative",
+      "company": "Portland Cargo",
+      "start_date": "10/2022",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Stock counting",
+    "Packing",
+    "Pallet handling"
+  ],
+  "software": [],
+  "certificates": [
+    {
+      "name": "Forklift Operator Certificate",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_033.pdf",
+  "raw_text_chars": 557,
+  "raw_text_preview": "## Luca Evans\n\n## Warehouse Operative\n\n## Contact\n\nluca.evans.33@example.org | +44 7700 900033 River Road 37, 2000 Antwerp, Belgium Born: 1985-10-16\n\n## Profile\n\nExperience in Warehouse Operative. Picking and cycle counts.\n\n## Education\n\nLeft school at 16 without qualifications\n\n## Work Experience\n\n## Warehouse Operative | Portland Cargo\n\n2022-10 - Present Picking and cycle counts\n\n## Languages\n\nEnglish: Native | Dutch: A2\n\n## Core Skills\n\nStock counting · Packing · Pallet handling\n\n## Certifica",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_033",
+  "blind_lang": "unknown",
+  "pdf_sha256": "4a2b81f0271edccc201b63ded6231b575e7b13b3fcd4a78d9170f1d3f7c6c162"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-25T04:03:15.404174+00:00",
+  "test_type": "DOCPICK_BLIND_DE_EN_V3_PARSER_FREEZE",
+  "commit": "74e163b85a67b78c19f117d38cc6af95de825bc9",
+  "model": {
+    "id": "Qwen/Qwen3.5-4B",
+    "artifact": "Qwen3.5-4B-Q4_K_M.gguf",
+    "serving": "llama.cpp OpenAI-compatible server"
+  },
+  "scorer": {
+    "metric": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+    "note": "Scorer must not change to raise F1; hashes recorded for integrity.",
+    "file_sha256": {
+      "scripts/run_docpick_round8_sealed_score_v3_1.py": "ce94e00dafd94938fae81d04da8c4b915f4e373a9c39fc3065272865b0bd1c0e",
+      "core/cv_metrics.py": "980e6b04008907603b04bc3219e6c5b6fc1e2d0facd0bd310e4695758fba451c"
+    }
+  },
+  "parser_file_sha256": {
+    "core/cv_docpick_import.py": "06908554b0cf3986acd057fdc6ca98b607696dd2fcd350c35983ad78d0d7422c",
+    "core/cv_extract_confirmation.py": "8df4a5d5b0de91dbf751b98320549f68d2bd127d90ff093df605d81534af6dc2",
+    "core/cv_parser.py": "bebcc69fe969bdaaab866201e49bff4aa5d58541f6c174779fc0fa3b52849c21",
+    "core/cover_letter.py": "8b37bb15f5e77e9a58cff869c8d1c49fe419eda43fea178b76759de45a9300f0",
+    "core/config.py": "556cd781bfcf8b1c15826bf762590aceeb648d7890581d864fb5326844fe031c",
+    "desktop/services/profile_merge.py": "23253a365f70ea0ed3da8b29fa6a3996f17005f60cd4f4bb5cac533b8c9362de",
+    "desktop/widgets/cv_import_dialog.py": "d8dca81cf4e1f1b935cfa7256f5fac62ad0efabe7c88b8ad202afcaf4d90ea68",
+    "apply/preview.py": "fa71b5c71ac65cc72f51812de8364fe1c2c2d9616769cbe814e244a84d963826",
+    "apply/manager.py": "398f6c8023af73678bd53436d259940133c28a185c9879b5a79aefd949556570"
+  },
+  "peak_rss_gate_bytes": 3300000000,
+  "laptop_ram_gate": "OFFEN \u2013 Messung ausgesetzt",
+  "det_fallback": false,
+  "disclaimer": "Freeze for upcoming unseen \u226550 DE/EN blind. Round8 F1 0.999 is post-analysis on known CVs only. NV3 frozen blind F1 0.980 remains binding until v3 Phase B.",
+  "blind_corpus_ready": false,
+  "blocker": "Need PHASE_A_PDFS.zip (\u226550 unseen DE/EN) + later PHASE_B_SOLUTIONS.zip"
+}

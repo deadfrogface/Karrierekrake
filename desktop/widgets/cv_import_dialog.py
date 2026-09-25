@@ -734,5 +734,13 @@ class CvImportDialog(QDialog):
             conflicts=self.plan.conflicts,
         )
         sync_application_summaries(app, self.result_quals, fill_empty=True)
+        # Persist Docpick/CV source text so Anschreiben evidence can refuse
+        # unevidenced job-title claims on the real apply path.
+        raw_src = ""
+        if isinstance(self.parsed, dict):
+            raw_src = str(
+                self.parsed.get("source_text") or self.parsed.get("raw_text") or ""
+            ).strip()
+        app.cv_source_text = raw_src
         self.result_application = app
         self.accept()

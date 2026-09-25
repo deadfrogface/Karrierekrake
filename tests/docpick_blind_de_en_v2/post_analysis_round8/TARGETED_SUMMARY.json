@@ -1,0 +1,157 @@
+{
+  "test_type": "POST_ANALYSIS_TARGETED_NOT_BLIND",
+  "disclaimer": "Post-Analysis only. Frozen NV3 F1 0.980 unchanged. No 99% claim.",
+  "TOTAL_S": 913.7,
+  "PEAK_RSS_MB": 1684.5,
+  "n": 13,
+  "edu_filled": 10,
+  "edu_ok": 10,
+  "edu_n": 10,
+  "heute_ok": 5,
+  "heute_n": 5,
+  "rows": [
+    {
+      "id": "NV3_005",
+      "sec": 72.0,
+      "edu_n": 1,
+      "got_qual": "M.Sc. Umweltwissenschaften",
+      "exp_qual": "M.Sc. Umweltwissenschaften, Universität Freiburg",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_007",
+      "sec": 69.2,
+      "edu_n": 1,
+      "got_qual": "Ausbildung Hotelfachfrau",
+      "exp_qual": "Ausbildung Hotelfachfrau, Berufsschule Passau",
+      "edu_ok": true,
+      "emp_end": "08/2025",
+      "exp_end": "08/2025",
+      "heute_ok": true
+    },
+    {
+      "id": "NV3_011",
+      "sec": 58.9,
+      "edu_n": 1,
+      "got_qual": "Ausbildung Biologielaborantin",
+      "exp_qual": "Ausbildung Biologielaborantin",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_014",
+      "sec": 75.5,
+      "edu_n": 1,
+      "got_qual": "Ausbildung Koch",
+      "exp_qual": "Ausbildung Koch, BBS Trier",
+      "edu_ok": true,
+      "emp_end": "08/2024",
+      "exp_end": "08/2024",
+      "heute_ok": true
+    },
+    {
+      "id": "NV3_015",
+      "sec": 81.6,
+      "edu_n": 1,
+      "got_qual": "B.A. Kommunikationsdesign",
+      "exp_qual": "B.A. Kommunikationsdesign, FH Potsdam",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_018",
+      "sec": 84.3,
+      "edu_n": 1,
+      "got_qual": "Ausbildung Bauzeichner, Schwerpunkt Architektur",
+      "exp_qual": "Ausbildung Bauzeichner, Schwerpunkt Architektur",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_019",
+      "sec": 76.8,
+      "edu_n": 1,
+      "got_qual": "Ausbildung Floristin",
+      "exp_qual": "Ausbildung Floristin",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_021",
+      "sec": 71.7,
+      "edu_n": 1,
+      "got_qual": "Ausbildung Physiotherapie",
+      "exp_qual": "Ausbildung Physiotherapie, Berufsfachschule Ulm",
+      "edu_ok": true,
+      "emp_end": "08/2025",
+      "exp_end": "08/2025",
+      "heute_ok": true
+    },
+    {
+      "id": "NV3_031",
+      "sec": 67.7,
+      "edu_n": 1,
+      "got_qual": "BTEC Level 3 Music Technology",
+      "exp_qual": "BTEC Level 3 Music Technology",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_034",
+      "sec": 58.7,
+      "edu_n": 1,
+      "got_qual": "Health and Social Care Level 3",
+      "exp_qual": "Health and Social Care Level 3",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_035",
+      "sec": 65.6,
+      "edu_n": 1,
+      "got_qual": "GCSEs",
+      "exp_qual": "GCSEs, East London School",
+      "edu_ok": true,
+      "emp_end": "08/2025",
+      "exp_end": "08/2025",
+      "heute_ok": true
+    },
+    {
+      "id": "NV3_043",
+      "sec": 65.2,
+      "edu_n": 1,
+      "got_qual": "HNC Construction and the Built Environment",
+      "exp_qual": "HNC Construction and the Built Environment",
+      "edu_ok": true,
+      "emp_end": "heute",
+      "exp_end": null,
+      "heute_ok": null
+    },
+    {
+      "id": "NV3_049",
+      "sec": 66.6,
+      "edu_n": 1,
+      "got_qual": "Level 3 Diploma in Furniture Making",
+      "exp_qual": "Level 3 Diploma in Furniture Making",
+      "edu_ok": true,
+      "emp_end": "08/2025",
+      "exp_end": "08/2025",
+      "heute_ok": true
+    }
+  ]
+}

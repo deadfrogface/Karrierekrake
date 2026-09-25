@@ -1,0 +1,5 @@
+{
+  "scored_at": "2026-09-23T21:58:34.365063+00:00",
+  "seal_sha256": "519be0e09fb5351e6750fb43d603e0ea32dfc320a87c0edc0ab1f171a3a1c0dc",
+  "result_path": "tests/docpick_qwen35/regression_known_cvs/PHASE_B_COMPLETE_GT_ONLY_V3_RESULTS.json"
+}

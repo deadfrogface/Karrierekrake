@@ -1,0 +1,76 @@
+{
+  "personal": {
+    "first_name": "Isaac",
+    "last_name": "Chen",
+    "street": "Market Place",
+    "house_number": "33",
+    "postal_code": "3011 AA",
+    "city": "Rotterdam",
+    "country": "Netherlands",
+    "date_of_birth": "04.02.1981"
+  },
+  "emails": [
+    "isaac.chen.29@example.org"
+  ],
+  "phones": [
+    "+44 7700 900029"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "C2"
+    },
+    {
+      "language": "Dutch",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Rotterdam University",
+      "qualification": "BSc Logistics",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Supply Chain Planner",
+      "company": "Delta Freight BV",
+      "start_date": "06/2018",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Demand planning",
+    "Inventory analysis",
+    "Vendor coordination"
+  ],
+  "software": [
+    "Power BI",
+    "SAP"
+  ],
+  "certificates": [
+    {
+      "name": "Lean Yellow Belt",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_029.pdf",
+  "raw_text_chars": 598,
+  "raw_text_preview": "## Isaac Chen\n\n## Supply Chain Planner\n\n## Contact\n\nisaac.chen.29@example.org | +44 7700 900029 Market Place 33, 3011 AA Rotterdam, Netherlands Born: 1981-02-04\n\n## Profile\n\nExperience in Supply Chain Planner. Forecasting freight capacity.\n\n## Work Experience\n\n## Supply Chain Planner | Delta Freight BV\n\n06/2018 - Present Forecasting freight capacity\n\n## Core Skills\n\nDemand planning · Inventory analysis Vendor coordination\n\n## Education\n\nBSc Logistics, Rotterdam University\n\n## Tools\n\nPower BI / S",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_029",
+  "blind_lang": "unknown",
+  "pdf_sha256": "a61063d5bf7cfc2771e9bf07da5dce262b25b9ab47089c192a9fc3264d1f918e"
+}

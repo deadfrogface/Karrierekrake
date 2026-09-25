@@ -1,0 +1,70 @@
+{
+  "personal": {
+    "first_name": "Nora",
+    "last_name": "Petzold",
+    "street": "Kirchplatz",
+    "house_number": "17",
+    "postal_code": "48143",
+    "city": "Erfurt",
+    "country": "United Kingdom",
+    "date_of_birth": "12.06.1990"
+  },
+  "emails": [
+    "nora.petzold.13@example.org"
+  ],
+  "phones": [
+    "+49 151 4701781"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "",
+      "qualification": "Ausbildung Buchhändlerin",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Buchhändlerin",
+      "company": "Kapitel & Kaffeebar",
+      "start_date": "02/2023",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Kundenberatung",
+    "Lesungsplanung",
+    "Warenwirtschaft"
+  ],
+  "software": [
+    "Libri",
+    "Excel"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_013.pdf",
+  "raw_text_chars": 547,
+  "raw_text_preview": "## Nora Petzold\n\n## Buchhändlerin\n\n## Kontakt\n\nnora.petzold.13@example.org | +49 151 4701781 Kirchplatz 17, 48143 Erfurt, United Kingdom Geboren: 12.06.1990\n\n## Kurzprofil\n\nBerufspraxis in Buchhändlerin. Sortimentspflege und Veranstaltungen.\n\n## Ausbildung\n\nAusbildung Buchhändlerin\n\n## Berufserfahrung\n\n## Buchhändlerin | Kapitel &amp; Kaffeebar\n\n2023-02 - heute Sortimentspflege und Veranstaltungen\n\n## Sprachen\n\nDeutsch: Muttersprache | Englisch: C1\n\n## Kenntnisse\n\nKundenberatung · Lesungsplanung",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_013",
+  "blind_lang": "unknown",
+  "pdf_sha256": "0e5df73fd710217034ed4c22b5c50c8b702e19474c914c6681b14cff75078be6"
+}

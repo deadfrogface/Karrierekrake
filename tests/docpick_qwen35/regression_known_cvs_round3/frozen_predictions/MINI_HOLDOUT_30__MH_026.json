@@ -1,0 +1,78 @@
+{
+  "personal": {
+    "first_name": "Connor",
+    "last_name": "Smith",
+    "street": "",
+    "house_number": "",
+    "postal_code": "",
+    "city": "",
+    "country": "",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "connor.smith@example.co.uk"
+  ],
+  "phones": [
+    "+49 153 4325025"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Bristol Technical College",
+      "qualification": "Technikerabschluss",
+      "start_date": "2009",
+      "end_date": "2012"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Compliance Coordinator",
+      "company": "Kronenwerk Technik KG",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Mosaik Dienste AG",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Qualitätsprüfung",
+    "Bestandsprüfung",
+    "Technische Recherche",
+    "Montageplanung"
+  ],
+  "software": [
+    "SAP MM - Grundlagen",
+    "RStudio",
+    "ZBrush"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_026.pdf",
+  "raw_text_chars": 643,
+  "raw_text_preview": "<!-- image -->\n\nGenève | Schweiz · connor.smith@example.co.uk · +49 153 4325025\n\n## Languages &amp; Driving Licence\n\nEnglish: native\n\nGerman: B1\n\n## Applications\n\nSAP MM - Grundlagen\n\nRStudio - gute Kenntnisse\n\nZBrush - sehr gut\n\n## Core Skills\n\nQualitätsprüfung\n\nBestandsprüfung\n\nTechnische Recherche\n\nMontageplanung\n\n## Professional Experience\n\n02/2019 - 08/2021\n\nCompliance Coordinator | Kronenwerk Technik KG Qualitätsprüfung · Bestandsprüfung\n\n03/2020 - 09/2022\n\nProjektassistenz | Mosaik Dienst",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_026",
+  "regression_lang": "en"
+}

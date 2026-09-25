@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Felix",
+    "last_name": "Adler",
+    "street": "Utrechtseweg",
+    "house_number": "101c",
+    "postal_code": "6811",
+    "city": "Arnhem",
+    "country": "Niederlande",
+    "date_of_birth": "04.10.1995"
+  },
+  "emails": [
+    "felix.adler@example.de"
+  ],
+  "phones": [
+    "+49 155 4343027"
+  ],
+  "languages": [
+    {
+      "language": "Ungarisch",
+      "level": "A2"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Gesamtschule Arnhem",
+      "qualification": "Meisterprüfung",
+      "start_date": "2011",
+      "end_date": "2014"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Ergotherapeut",
+      "company": "Nordlicht Manufaktur",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Montageplanung",
+    "Messmittelverwaltung",
+    "Schadensanalyse",
+    "Instandhaltung",
+    "Kalibrierung",
+    "Protokollführung"
+  ],
+  "software": [
+    "Oracle NetSuite",
+    "Tableau",
+    "LibreOffice Calc",
+    "RStudio",
+    "Adobe Acrobat Pro"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_028.pdf",
+  "raw_text_chars": 715,
+  "raw_text_preview": "<!-- image -->\n\nUtrechtseweg 101c | 6811 Arnhem | Niederlande · felix.adler@example.de · +49 155 4343027 · Geburtsdatum: 04.10.1995\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Ergotherapeut | Nordlicht Manufaktur Montageplanung · Messmittelverwaltung\n\n## Schule und Ausbildung\n\n2011 - 2014\n\nMeisterprüfung | Gesamtschule Arnhem\n\n## Sprachkenntnisse &amp; Führerschein\n\nUngarisch: A2\n\nEnglisch: C1\n\nFührerschein: B\n\n## Programme und Werkzeuge\n\nOracle NetSuite - Grundlagen Tableau - gute Kenntnisse LibreOf",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_028",
+  "regression_lang": "de"
+}

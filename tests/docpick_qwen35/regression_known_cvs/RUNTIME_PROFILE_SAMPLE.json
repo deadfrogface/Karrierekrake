@@ -1,0 +1,26 @@
+[
+  {
+    "pdf": "DE_01_Klassisch.pdf",
+    "pass": "cold",
+    "docling_s": 7.372778479009867,
+    "docling_rss_delta_mb": 1833.19140625,
+    "text_chars": 1178,
+    "llm_s": 127.03909317101352,
+    "llm_rss_delta_mb": 0.0,
+    "mapping_s": 0.0005694039864465594,
+    "total_s": 134.41254514700267,
+    "peak_rss_mb": 1858.20703125
+  },
+  {
+    "pdf": "EN_01_Classic_Resume.pdf",
+    "pass": "warm_followup",
+    "docling_s": 2.9910397609928623,
+    "docling_rss_delta_mb": 617.4453125,
+    "text_chars": 1448,
+    "llm_s": 105.61428698297823,
+    "llm_rss_delta_mb": 0.0,
+    "mapping_s": 0.00011651101522147655,
+    "total_s": 108.60551972797839,
+    "peak_rss_mb": 2475.65234375
+  }
+]

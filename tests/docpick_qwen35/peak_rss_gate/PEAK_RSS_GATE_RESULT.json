@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "test_type": "PEAK_RSS_HARD_GATE_3_3GB",
+  "created_at": "2026-09-24T23:03:44.840301+00:00",
+  "target_hardware": "Intel Core i3 (11th gen), exactly 8 GB RAM",
+  "measurement_host_note": "May run on Agent-VM (~15 GB); absolute RSS still applies for the gate.",
+  "pdf": "tests/fixtures/cv_corpus/DE_01_Klassisch.pdf",
+  "gate_peak_rss_mb": 3300.0,
+  "gate_peak_rss_gb": 3.223,
+  "obsolete_soft_gate_mb": 12000,
+  "obsolete_soft_gate_note": "Soft \u226412 GB / \u226412000 MB is NOT success.",
+  "measured": {
+    "import_process_peak_rss_mb": 1812.9,
+    "llama_server_peak_rss_mb": 6894.8,
+    "llama_server_rss_mb_before_import": 6894.8,
+    "llama_server_vmpeak_mb_before_import": 11633.3,
+    "combined_cv_path_peak_rss_mb": 8707.7,
+    "combined_cv_path_peak_rss_gb": 8.504,
+    "wall_s": 110.6,
+    "n_samples": 441,
+    "llama_pids": [
+      1214117
+    ]
+  },
+  "ui_froze": null,
+  "ui_note": "CLI measurement only \u2014 desktop UI not exercised in this gate run.",
+  "import_ok": true,
+  "error": null,
+  "gate_passed": false,
+  "verdict": "NO-GO",
+  "disclaimer": "Hard Peak RSS \u22643.3 GB for Docling+Qwen CV path. Not a quality/blind claim."
+}

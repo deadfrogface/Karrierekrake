@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "first_name": "Ruben",
+    "last_name": "Engelhardt",
+    "street": "Rheinpromenade",
+    "house_number": "18",
+    "postal_code": "46446",
+    "city": "Emmerich am Rhein",
+    "country": "Deutschland",
+    "date_of_birth": "17.10.1999"
+  },
+  "emails": [
+    "ruben.engelhardt@example.de"
+  ],
+  "phones": [
+    "+49 155 4235015"
+  ],
+  "languages": [
+    {
+      "language": "Spanisch",
+      "level": "B2"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Gesamtschule Emmerich am Rhein",
+      "qualification": "Technikerabschluss",
+      "start_date": "2015",
+      "end_date": "2018"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Requisiteur",
+      "company": "Albatros Systeme GmbH",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Bestandsprüfung",
+    "Schadensanalyse",
+    "Technische Recherche",
+    "Arbeitsvorbereitung",
+    "Instandhaltung",
+    "Protokollführung"
+  ],
+  "software": [
+    "Fusion 360",
+    "ZBrush",
+    "Qlik Sense",
+    "Tableau",
+    "RStudio"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_016.pdf",
+  "raw_text_chars": 731,
+  "raw_text_preview": "## Ruben Engelhardt\n\nRheinpromenade 18 | 46446 Emmerich am Rhein | Deutschland · ruben.engelhardt@example.de · +49 155 4235015 · Geburtsdatum: 17.10.1999\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Requisiteur | Albatros Systeme GmbH Bestandsprüfung · Schadensanalyse\n\n## Schule und Ausbildung\n\n2015 - 2018\n\nTechnikerabschluss | Gesamtschule Emmerich am Rhein\n\n## Sprachkenntnisse &amp; Führerschein\n\nSpanisch: B2 Englisch: C1\n\nFührerschein: B\n\n## Programme und Werkzeuge\n\nFusion 360 - Grundlagen ZBrush -",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_016",
+  "regression_lang": "de"
+}

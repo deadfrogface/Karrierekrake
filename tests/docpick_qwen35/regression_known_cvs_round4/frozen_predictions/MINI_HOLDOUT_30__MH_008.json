@@ -1,0 +1,88 @@
+{
+  "personal": {
+    "first_name": "Hannes",
+    "last_name": "Rácz",
+    "street": "Hafenstraße",
+    "house_number": "124",
+    "postal_code": "25813",
+    "city": "Husum",
+    "country": "Deutschland",
+    "date_of_birth": "09.02.1979"
+  },
+  "emails": [
+    "hannes.rcz@example.de"
+  ],
+  "phones": [
+    "+49 153 4163007"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "C2"
+    },
+    {
+      "language": "Ungarisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "Gesamtschule Husum",
+      "qualification": "Meisterprüfung",
+      "start_date": "2015",
+      "end_date": "2018"
+    },
+    {
+      "institution": "Bildungswerk Husum",
+      "qualification": "Ausbildung Hafenschiffer",
+      "start_date": "2017",
+      "end_date": "2020"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Hafenschiffer",
+      "company": "Albatros Systeme GmbH",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Seestern Produktion GmbH",
+      "start_date": "03/2020",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Instandhaltung",
+    "Kalibrierung",
+    "Arbeitsvorbereitung",
+    "Schichtübergabe",
+    "Bestandsprüfung",
+    "Messmittelverwaltung"
+  ],
+  "software": [
+    "Fusion 360",
+    "SAP MM",
+    "Adobe Acrobat Pro",
+    "EPLAN Electric P8",
+    "Minitab"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_008.pdf",
+  "raw_text_chars": 865,
+  "raw_text_preview": "## Hannes Rácz\n\nHafenstraße 124 | 25813 Husum | Deutschland · hannes.rcz@example.de · +49 153 4163007 · Geburtsdatum: 09.02.1979\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Hafenschiffer | Albatros Systeme GmbH Instandhaltung · Kalibrierung\n\n03/2020 - 09/2022\n\nProjektassistenz | Seestern Produktion GmbH\n\nArbeitsvorbereitung · Schichtübergabe\n\n## Schule und Ausbildung\n\n2015 - 2018 Meisterprüfung | Gesamtschule Husum 2017 - 2020\n\nAusbildung Hafenschiffer | Bildungswerk Husum\n\n## Sprachkenntnisse &amp; ",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_008",
+  "regression_lang": "de"
+}

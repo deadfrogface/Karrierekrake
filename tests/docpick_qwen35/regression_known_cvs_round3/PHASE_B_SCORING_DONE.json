@@ -1,0 +1,8 @@
+{
+  "scored_at": "2026-09-24T02:09:40.203734+00:00",
+  "metric": "COMPLETE_GT_ONLY_V3_1_DATE_NORM",
+  "f1": 0.9914250714577377,
+  "perfect_core": "33/40",
+  "result_path": "tests/docpick_qwen35/regression_known_cvs_round3/PHASE_B_COMPLETE_GT_ONLY_V3_1_RESULTS.json",
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND"
+}

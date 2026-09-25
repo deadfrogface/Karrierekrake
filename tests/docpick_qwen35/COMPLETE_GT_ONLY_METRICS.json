@@ -1,0 +1,613 @@
+{
+  "metric_name": "COMPLETE_GT_ONLY_V1",
+  "disclaimer": "NOT overall F1. Only fields with full list/scalar GT. Excludes count-only emp/edu/skills/software/certs. Does not replace Scorer V2 historical results.",
+  "legacy_scorer_v2_unchanged": {
+    "f1": 0.8693009118541034,
+    "hallucination_rate": 0.22580645161290322,
+    "counts": {
+      "correct": 143,
+      "hallucinated": 42,
+      "missing": 1,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "note": "includes expect_absent false positives on count-only GT"
+  },
+  "complete_gt_only": {
+    "f1": 0.996415770609319,
+    "precision": 1.0,
+    "recall": 0.9928571428571429,
+    "hallucination_rate": 0.0,
+    "missing_field_rate": 0.007142857142857143,
+    "field_total": 140,
+    "counts": {
+      "correct": 139,
+      "missing": 1,
+      "hallucinated": 0,
+      "wrong": 0,
+      "wrong_category": 0
+    },
+    "by_group": {
+      "address": {
+        "field_total": 44,
+        "counts": {
+          "correct": 43,
+          "missing": 1,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0
+        },
+        "field_accuracy": 0.9772727272727273,
+        "precision": 1.0,
+        "recall": 0.9772727272727273,
+        "f1": 0.9885057471264368,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.022727272727272728,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "address": {
+            "correct": 43,
+            "missing": 1
+          }
+        }
+      },
+      "certificates": {
+        "field_total": 3,
+        "counts": {
+          "correct": 3,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "field_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.0,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "certificates": {
+            "correct": 3
+          }
+        }
+      },
+      "contact": {
+        "field_total": 8,
+        "counts": {
+          "correct": 8,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "field_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.0,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "contact": {
+            "correct": 8
+          }
+        }
+      },
+      "languages": {
+        "field_total": 30,
+        "counts": {
+          "correct": 30,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "field_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.0,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "languages": {
+            "correct": 30
+          }
+        }
+      },
+      "licenses": {
+        "field_total": 14,
+        "counts": {
+          "correct": 14,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "field_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.0,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "licenses": {
+            "correct": 14
+          }
+        }
+      },
+      "personal": {
+        "field_total": 24,
+        "counts": {
+          "correct": 24,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "field_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.0,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "personal": {
+            "correct": 24
+          }
+        }
+      },
+      "skills": {
+        "field_total": 5,
+        "counts": {
+          "correct": 5,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "field_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.0,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "skills": {
+            "correct": 5
+          }
+        }
+      },
+      "software": {
+        "field_total": 12,
+        "counts": {
+          "correct": 12,
+          "hallucinated": 0,
+          "wrong": 0,
+          "wrong_category": 0,
+          "missing": 0
+        },
+        "field_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "hallucination_rate": 0.0,
+        "missing_field_rate": 0.0,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "by_group": {
+          "software": {
+            "correct": 12
+          }
+        }
+      }
+    }
+  },
+  "classification_of_prior_invented_critical_28": {
+    "echte_halluzinationen": 0,
+    "nicht_bewertbar": 28,
+    "detail": {
+      "NICHT_BEWERTBAR_GT_COUNT_ONLY_TEXT_GROUNDED": 28
+    }
+  },
+  "echte_missing_on_complete_gt": [
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "field": "address.city",
+      "group": "address",
+      "expected": "Leipzig"
+    }
+  ],
+  "echte_hallu_or_wrong_on_complete_gt": [],
+  "nicht_bewertbar_fact_rows_excluded": 46,
+  "count_only_informal_hints": [
+    {
+      "document": "DE_01_Klassisch.pdf",
+      "field": "employment",
+      "gt_count": 3,
+      "pred_count": 3,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_01_Klassisch.pdf",
+      "field": "education",
+      "gt_count": 1,
+      "pred_count": 1,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "field": "employment",
+      "gt_count": 4,
+      "pred_count": 4,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "field": "education",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "field": "software",
+      "gt_count": 12,
+      "pred_count": 12,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "field": "skills",
+      "gt_count": 12,
+      "pred_count": 12,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "field": "certificates",
+      "gt_count": 5,
+      "pred_count": 3,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_03_C1_Kontextfalle.pdf",
+      "field": "employment",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_03_C1_Kontextfalle.pdf",
+      "field": "education",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "field": "employment",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "field": "education",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "field": "software",
+      "gt_count": 5,
+      "pred_count": 5,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "field": "skills",
+      "gt_count": 4,
+      "pred_count": 4,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_04_Unvollstaendige_Kontaktdaten.pdf",
+      "field": "certificates",
+      "gt_count": 3,
+      "pred_count": 3,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "field": "employment",
+      "gt_count": 4,
+      "pred_count": 4,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "field": "education",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "field": "software",
+      "gt_count": 6,
+      "pred_count": 6,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "field": "skills",
+      "gt_count": 7,
+      "pred_count": 7,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "DE_05_Zweiseitig.pdf",
+      "field": "certificates",
+      "gt_count": 4,
+      "pred_count": 4,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "field": "employment",
+      "gt_count": 3,
+      "pred_count": 3,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "field": "education",
+      "gt_count": 1,
+      "pred_count": 1,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "field": "software",
+      "gt_count": 6,
+      "pred_count": 6,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "field": "skills",
+      "gt_count": 5,
+      "pred_count": 5,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_01_Classic_Resume.pdf",
+      "field": "certificates",
+      "gt_count": 3,
+      "pred_count": 3,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "employment",
+      "gt_count": 3,
+      "pred_count": 4,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "education",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "software",
+      "gt_count": 7,
+      "pred_count": 7,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "skills",
+      "gt_count": 6,
+      "pred_count": 5,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "certificates",
+      "gt_count": 3,
+      "pred_count": 0,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "field": "employment",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "field": "education",
+      "gt_count": 1,
+      "pred_count": 1,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "field": "software",
+      "gt_count": 5,
+      "pred_count": 5,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_03_Missing_Address_Fields.pdf",
+      "field": "skills",
+      "gt_count": 5,
+      "pred_count": 5,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "field": "employment",
+      "gt_count": 2,
+      "pred_count": 2,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "field": "education",
+      "gt_count": 1,
+      "pred_count": 1,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "field": "software",
+      "gt_count": 6,
+      "pred_count": 6,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_04_German_Address_English_CV.pdf",
+      "field": "skills",
+      "gt_count": 5,
+      "pred_count": 5,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "field": "employment",
+      "gt_count": 3,
+      "pred_count": 3,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "field": "education",
+      "gt_count": 1,
+      "pred_count": 1,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "field": "software",
+      "gt_count": 6,
+      "pred_count": 6,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "field": "skills",
+      "gt_count": 8,
+      "pred_count": 8,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_05_Skills_Heavy.pdf",
+      "field": "certificates",
+      "gt_count": 3,
+      "pred_count": 3,
+      "count_match": true,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    }
+  ],
+  "count_mismatch_hints": [
+    {
+      "document": "DE_02_Zweispaltig_Trap.pdf",
+      "field": "certificates",
+      "gt_count": 5,
+      "pred_count": 3,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "employment",
+      "gt_count": 3,
+      "pred_count": 4,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "skills",
+      "gt_count": 6,
+      "pred_count": 5,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    },
+    {
+      "document": "EN_02_Two_Column_Trap.pdf",
+      "field": "certificates",
+      "gt_count": 3,
+      "pred_count": 0,
+      "count_match": false,
+      "note": "NOT SCORED — count-only GT; count comparison is informal hint only"
+    }
+  ],
+  "what_quality_claim_is_possible": [
+    "COMPLETE_GT_ONLY_V1 speaks only to fields with full GT lists/scalars on these 10 known CVs.",
+    "Legacy F1/hallu/invented_critical from Scorer V2 are NOT reliable for emp/edu/software quality on this fixture set.",
+    "All 28 invented_critical flags are NICHT BEWERTBAR (count-only GT + text-grounded extracts).",
+    "No 99% claim. Known fixtures only."
+  ]
+}

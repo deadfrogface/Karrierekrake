@@ -1,0 +1,27 @@
+{
+  "seal_type": "PARSER_CONFIG_SCORER_FREEZE_ROUND6",
+  "test_type": "REGRESSION_KNOWN_CVS_NOT_BLIND",
+  "disclaimer": "Known CVs only. Not independent blind. Not a 99% claim.",
+  "created_at": "2026-09-24T13:47:13.155445+00:00",
+  "git_commit": "f485585a32ac4235d200cfd8152917cf80b13ea0",
+  "det_fallback_in_productive_import": false,
+  "productive_import": "core.cv_docpick_import.import_cv_docpick",
+  "changes": [
+    "license_merge_partial_from_fuehrerschein_text",
+    "heute_repair_disabled_default",
+    "minified_json_system_prompt",
+    "keep_round5_prompt_and_postprocess",
+    "max_tokens_2048"
+  ],
+  "llm": {
+    "base_url": "http://127.0.0.1:8765/v1",
+    "model_path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+    "temperature": 0.0
+  },
+  "file_sha256": {
+    "core/cv_docpick_import.py": "6c912c0f20592f21bbf0501bff4744b5acfd3ee84bd9bfe8c1ae2a2bdbf0e9e0",
+    "core/cv_intelligence.py": "aacc77e556eb24bba87c4c9ccd9a5dbbbd360cfc8d22c773e3bd300eed0447f4"
+  },
+  "manifest_sha256": "248daf5844f5898099d64f13017d4a95c532d00f66bfc01c44256bb2826bd3ed"
+}

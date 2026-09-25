@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "test_type": "INFORMATIONAL_AGENT_VM_PEAK_BYTES_NOT_SHIP",
+  "ship_evidence": false,
+  "measurement_method": "Agent-VM /proc VmRSS sum (import + llama) — NOT Windows Job Object",
+  "ship_measurement_required": "scripts/run_docpick_job_object_peak_windows.ps1 on real i3/8GB Win laptop",
+  "gate_peak_rss_bytes": 3300000000,
+  "measured_combined_peak_rss_bytes": 9130123674,
+  "measured_combined_peak_rss_mib": 8707.7,
+  "measured_note": "From prior PEAK_RSS_GATE_RESULT.json combined_cv_path_peak_rss_mb=8707.7 MiB → bytes = MiB * 1024^2",
+  "llm_only_snapshot_bytes_approx": 5675000000,
+  "verdict_informational": "NO-GO_SIGNAL_BUT_NOT_SHIP_PROOF",
+  "kill_path_step": 1,
+  "kill_path_step_note": "Step 1 pending (smaller local model, no Phi). Not Step 2 yet.",
+  "step_2_exact_wording": "wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; der manuelle Profilimport bleibt möglich.",
+  "no_phi_fallback": true
+}

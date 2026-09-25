@@ -1,0 +1,72 @@
+{
+  "personal": {
+    "first_name": "Sofia",
+    "last_name": "Neumann",
+    "street": "Kirchplatz",
+    "house_number": "9",
+    "postal_code": "79098",
+    "city": "Freiburg im Breisgau",
+    "country": "Deutschland",
+    "date_of_birth": "16.02.1982"
+  },
+  "emails": [
+    "sofia.neumann.05@example.org"
+  ],
+  "phones": [
+    "+49 151 4700685"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "Muttersprache"
+    },
+    {
+      "language": "Englisch",
+      "level": "C1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Universität Freiburg",
+      "qualification": "M.Sc. Umweltwissenschaften",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Umweltwissenschaftlerin",
+      "company": "Institut für Gewässeranalyse",
+      "start_date": "06/2022",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Wasserprobenahme",
+    "Datenanalyse",
+    "GIS"
+  ],
+  "software": [
+    "QGIS",
+    "R"
+  ],
+  "certificates": [
+    {
+      "name": "Sachkundenachweis Probenahme",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_005.pdf",
+  "raw_text_chars": 641,
+  "raw_text_preview": "## Sofia Neumann\n\n## Umweltwissenschaftlerin\n\n## Kontakt\n\nsofia.neumann.05@example.org | +49 151 4700685 Kirchplatz 9, 79098 Freiburg im Breisgau, Deutschland Geboren: 16.02.1982\n\n## Kurzprofil\n\nBerufspraxis in Umweltwissenschaftlerin. Probenplanung und Laborberichte.\n\n## Berufserfahrung\n\n## Umweltwissenschaftlerin | Institut für Gewässeranalyse\n\n06/2022 - heute Probenplanung und Laborberichte\n\n## Ausbildung\n\nM.Sc. Umweltwissenschaften, Universität Freiburg\n\n## Weiterbildungen\n\nSachkundenachweis",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false
+}

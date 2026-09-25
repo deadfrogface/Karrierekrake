@@ -237,3 +237,14 @@ artifacts/det_candidate_regression/**
 !artifacts/final_external_style_holdout/
 artifacts/final_external_style_holdout/**
 !artifacts/final_external_style_holdout/RUNNER_READY.json
+
+.cache/
+
+# CV parser replacement smoke artifacts
+!artifacts/cv_parser_replacement/
+artifacts/cv_parser_replacement/**
+!artifacts/cv_parser_replacement/SMOKE_DE_EN_10_MANIFEST.json
+!artifacts/cv_parser_replacement/smoke/
+artifacts/cv_parser_replacement/smoke/**
+!artifacts/cv_parser_replacement/smoke/VARIANT_A_SUMMARY.json
+!artifacts/cv_parser_replacement/SMOKE_GATE_RESULT.json

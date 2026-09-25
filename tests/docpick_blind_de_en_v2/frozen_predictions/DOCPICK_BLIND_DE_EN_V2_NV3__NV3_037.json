@@ -1,0 +1,76 @@
+{
+  "personal": {
+    "first_name": "Ethan",
+    "last_name": "Brooks",
+    "street": "Bridge Avenue",
+    "house_number": "41",
+    "postal_code": "BN1 1EF",
+    "city": "Brighton",
+    "country": "United Kingdom",
+    "date_of_birth": "28.06.1989"
+  },
+  "emails": [
+    "ethan.brooks.37@example.org"
+  ],
+  "phones": [
+    "+44 7700 900037"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "B",
+  "education": [
+    {
+      "institution": "University of Sussex",
+      "qualification": "MSc Marine Biology",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Marine Biologist",
+      "company": "CoastWatch Research",
+      "start_date": "02/2019",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Species identification",
+    "Field sampling",
+    "Report writing"
+  ],
+  "software": [
+    "R",
+    "QGIS"
+  ],
+  "certificates": [
+    {
+      "name": "Small Boat Safety",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_037.pdf",
+  "raw_text_chars": 615,
+  "raw_text_preview": "## Ethan Brooks\n\n## Marine Biologist\n\n## Contact\n\nethan.brooks.37@example.org | +44 7700 900037 Bridge Avenue 41, BN1 1EF Brighton, United Kingdom Born: 1989-06-28\n\n## Profile\n\nExperience in Marine Biologist. Intertidal surveys and data capture.\n\n## Core Skills\n\nSpecies identification · Field sampling · Report writing\n\n## Tools\n\nR / QGIS\n\n## Work Experience\n\n## Marine Biologist | CoastWatch Research\n\n2019-02 - Present Intertidal surveys and data capture\n\n## Education\n\nMSc Marine Biology, Univers",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_037",
+  "blind_lang": "unknown",
+  "pdf_sha256": "97d0682f428c52b1b50b6c3bfaf1fea262488964d786618ceec54838ac0739f2"
+}

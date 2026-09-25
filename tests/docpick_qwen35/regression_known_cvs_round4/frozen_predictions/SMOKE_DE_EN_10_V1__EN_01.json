@@ -1,0 +1,109 @@
+{
+  "personal": {
+    "first_name": "Emily",
+    "last_name": "Carter",
+    "street": "Willow Street",
+    "house_number": "18",
+    "postal_code": "BS1 4QF",
+    "city": "Bristol",
+    "country": "United Kingdom",
+    "date_of_birth": ""
+  },
+  "emails": [
+    "emily.carter@example.com"
+  ],
+  "phones": [
+    "+44 7700 900123"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B2"
+    },
+    {
+      "language": "French",
+      "level": "A2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "University of the West of England",
+      "qualification": "BA Business Management",
+      "start_date": "2013",
+      "end_date": "2016"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Customer Operations Lead",
+      "company": "Harbour & Co Services Ltd",
+      "start_date": "03/2022",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Order Management Specialist",
+      "company": "Cedar Trading Group",
+      "start_date": "07/2019",
+      "end_date": "02/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Customer Service Coordinator",
+      "company": "Northbridge Office Supplies",
+      "start_date": "09/2016",
+      "end_date": "06/2019",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Customer operations",
+    "order management",
+    "KPI reporting",
+    "complaint handling",
+    "process improvement"
+  ],
+  "software": [
+    "Microsoft 365",
+    "Salesforce",
+    "HubSpot",
+    "Jira",
+    "Confluence",
+    "Power BI"
+  ],
+  "certificates": [
+    {
+      "name": "PRINCE2 Foundation",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "Advanced Excel",
+      "issuer": "",
+      "year": ""
+    },
+    {
+      "name": "First Aid at Work",
+      "issuer": "",
+      "year": ""
+    }
+  ],
+  "source_path": "/workspace/tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf",
+  "raw_text_chars": 1448,
+  "raw_text_preview": "## Resume\n\n## Emily Carter\n\n18 Willow Street, Bristol BS1 4QF, United Kingdom emily.carter@example.com | +44 7700 900123\n\n| Professional Experience                                                             |\n|-------------------------------------------------------------------------------------|\n| Mar 2022 - Present &#124; Customer Operations Lead Harbour & Co Services Ltd        |\n| Jul 2019 - Feb 2022 &#124; Order Management Specialist Cedar Trading Group          |\n| Sep 2016 - Jun 2019 &#12",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "SMOKE_DE_EN_10_V1",
+  "regression_doc_id": "EN_01",
+  "regression_lang": "en"
+}

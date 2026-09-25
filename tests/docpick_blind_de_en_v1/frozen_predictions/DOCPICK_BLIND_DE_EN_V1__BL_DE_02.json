@@ -1,0 +1,67 @@
+{
+  "personal": {
+    "first_name": "Nora",
+    "last_name": "Weiss",
+    "street": "Am Sportpark 7",
+    "house_number": "",
+    "postal_code": "80339",
+    "city": "Muenchen",
+    "country": "",
+    "date_of_birth": "19.11.1995"
+  },
+  "emails": [
+    "nora.weiss@example.org"
+  ],
+  "phones": [
+    "+49 89 4442211"
+  ],
+  "languages": [
+    {
+      "language": "Deutsch",
+      "level": "C2"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Berufsfachschule Muenchen",
+      "qualification": "Biologisch-technische Assistentin",
+      "start_date": "09/2017",
+      "end_date": "08/2020"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Laborantin",
+      "company": "Isar Diagnostik GmbH",
+      "start_date": "01/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Probenvorbereitung",
+    "Qualitaetskontrolle"
+  ],
+  "software": [
+    "LIMS",
+    "GraphPad Prism"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v1/phase_a_pdfs/BL_DE_02.pdf",
+  "raw_text_chars": 383,
+  "raw_text_preview": "Nora Weiss Am Sportpark 7, 80339 Muenchen nora.weiss@example.org +49 89 4442211 Geburtsdatum: 19.11.1995\n\nBerufserfahrung 01/2021 - heute Laborantin Isar Diagnostik GmbH, Muenchen\n\nAusbildung 09/2017 - 08/2020 Biologisch-technische Assistentin Berufsfachschule Muenchen\n\nSprachen Deutsch C2 Englisch B1\n\nSoftware LIMS GraphPad Prism\n\nKenntnisse Probenvorbereitung Qualitaetskontrolle",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_doc_id": "BL_DE_02",
+  "blind_lang": "de"
+}

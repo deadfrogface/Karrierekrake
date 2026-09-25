@@ -1,0 +1,78 @@
+{
+  "personal": {
+    "first_name": "Harper",
+    "last_name": "Scott",
+    "street": "Church Street",
+    "house_number": "36",
+    "postal_code": "10115",
+    "city": "Berlin",
+    "country": "Germany",
+    "date_of_birth": "13.05.1984"
+  },
+  "emails": [
+    "harper.scott.32@example.org"
+  ],
+  "phones": [
+    "+44 7700 900032"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B2"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "University of Leeds",
+      "qualification": "BSc Mathematics",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Junior Data Analyst",
+      "company": "Spree Metrics",
+      "start_date": "09/2021",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Operations Assistant",
+      "company": "Local Services Ltd",
+      "start_date": "03/2013",
+      "end_date": "11/2020",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "SQL querying",
+    "Data cleaning",
+    "Stakeholder interviews"
+  ],
+  "software": [
+    "SQL",
+    "Tableau",
+    "Python"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_032.pdf",
+  "raw_text_chars": 638,
+  "raw_text_preview": "## Harper Scott\n\n## Junior Data Analyst\n\n## Contact\n\nharper.scott.32@example.org | +44 7700 900032 Church Street 36, 10115 Berlin, Germany Born: 1984-05-13\n\n## Profile\n\nExperience in Junior Data Analyst. Dashboard maintenance and QA.\n\n## Core Skills\n\nSQL querying · Data cleaning · Stakeholder interviews\n\n## Tools\n\nSQL / Tableau / Python\n\n## Work Experience\n\n## Junior Data Analyst | Spree Metrics\n\n09/2021 - Present Dashboard maintenance and QA\n\n## Operations Assistant | Local Services Ltd\n\n03/201",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_032",
+  "blind_lang": "unknown",
+  "pdf_sha256": "5e6863cc938a72a2614ea5b44e5ee724a34bfe74eecfd896530dfdb0748694cf"
+}

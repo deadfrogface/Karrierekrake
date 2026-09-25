@@ -611,49 +611,38 @@ class ProfilePage(QWidget):
         self.refresh_cards()
 
     def suggest_titles_from_cv(self) -> None:
-        """Propose job titles from stored CV / qualifications — never overwrite manuals."""
-        from core.cv_parser import parse_cv_text
+        """Propose job titles from stored qualifications — never overwrite manuals."""
         from core.job_title_suggestions import suggest_job_titles
 
         cfg = self.config_service.load()
-        parsed: dict = {}
-        cv_path = (cfg.application.cv_path or "").strip()
-        if cv_path:
-            try:
-                from core.cv_extract import extract_text
-
-                text = extract_text(Path(cv_path))
-                parsed = parse_cv_text(text or "")
-            except Exception:
-                parsed = {}
-        if not parsed:
-            quals = cfg.profile.qualifications
-            parsed = {
-                "work_experience": [
-                    {
-                        "title": getattr(e, "title", "") or getattr(e, "value", ""),
-                        "description": getattr(e, "description", ""),
-                    }
-                    for e in (getattr(quals, "work_experience", None) or [])
-                ],
-                "education": [
-                    {
-                        "degree": getattr(e, "degree", "") or getattr(e, "value", ""),
-                        "field": getattr(e, "field", ""),
-                    }
-                    for e in (getattr(quals, "education", None) or [])
-                ],
-                "skills": [
-                    getattr(s, "value", s) for s in (getattr(quals, "skills", None) or [])
-                ],
-                "software": [
-                    getattr(s, "value", s) for s in (getattr(quals, "software", None) or [])
-                ],
-                "certificates": [
-                    getattr(s, "name", getattr(s, "value", s))
-                    for s in (getattr(quals, "certificates", None) or [])
-                ],
-            }
+        # Do not re-parse CV with DET. Use persisted qualifications only.
+        quals = cfg.profile.qualifications
+        parsed = {
+            "work_experience": [
+                {
+                    "title": getattr(e, "title", "") or getattr(e, "value", ""),
+                    "description": getattr(e, "description", ""),
+                }
+                for e in (getattr(quals, "work_experience", None) or [])
+            ],
+            "education": [
+                {
+                    "degree": getattr(e, "degree", "") or getattr(e, "value", ""),
+                    "field": getattr(e, "field", ""),
+                }
+                for e in (getattr(quals, "education", None) or [])
+            ],
+            "skills": [
+                getattr(s, "value", s) for s in (getattr(quals, "skills", None) or [])
+            ],
+            "software": [
+                getattr(s, "value", s) for s in (getattr(quals, "software", None) or [])
+            ],
+            "certificates": [
+                getattr(s, "name", getattr(s, "value", s))
+                for s in (getattr(quals, "certificates", None) or [])
+            ],
+        }
         desired = list(self.career.desired_titles.get_items())
         suggestions = suggest_job_titles(
             parsed, existing_desired=desired, existing_alternative=[]
@@ -793,6 +782,7 @@ class ProfilePage(QWidget):
             cfg.profile.qualifications = keep_manual_qualifications(cfg.profile.qualifications)
             cfg.application = clear_cv_personal(cfg.application)
             cfg.application.cv_path = ""
+            cfg.application.cv_source_text = ""
             self.config_service.save(cfg)
             done_msg = tr("profile.reset_done")
         else:

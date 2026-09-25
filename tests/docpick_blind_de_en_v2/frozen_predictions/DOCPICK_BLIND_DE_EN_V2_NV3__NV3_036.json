@@ -1,0 +1,74 @@
+{
+  "personal": {
+    "first_name": "Zara",
+    "last_name": "Ali",
+    "street": "Market Place",
+    "house_number": "40",
+    "postal_code": "G12 8QQ",
+    "city": "Glasgow",
+    "country": "United Kingdom",
+    "date_of_birth": "25.01.1988"
+  },
+  "emails": [
+    "zara.ali.36@example.org"
+  ],
+  "phones": [
+    "+44 7700 900036"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "German",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "University of Glasgow",
+      "qualification": "MA Textile Conservation",
+      "start_date": "",
+      "end_date": "heute"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Textile Conservator",
+      "company": "Kelvin Collections",
+      "start_date": "01/2018",
+      "end_date": "heute",
+      "responsibilities": []
+    },
+    {
+      "title": "Operations Assistant",
+      "company": "Riverside Workshop",
+      "start_date": "03/2012",
+      "end_date": "11/2017",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Stitch conservation",
+    "Condition reports",
+    "Storage design"
+  ],
+  "software": [],
+  "certificates": [],
+  "source_path": "/workspace/tests/docpick_blind_de_en_v2/phase_a_pdfs/NV3_036.pdf",
+  "raw_text_chars": 697,
+  "raw_text_preview": "## Zara Ali\n\n## Textile Conservator\n\n## Contact\n\nzara.ali.36@example.org | +44 7700 900036 Market Place 40, G12 8QQ Glasgow, United Kingdom Born: 1988-01-25\n\n## Profile\n\nExperience in Textile Conservator. Stabilising archival garments.\n\n## Work Experience\n\n## Textile Conservator | Kelvin Collections\n\n2018-01 - Present Stabilising archival garments\n\n## Operations Assistant | Riverside Workshop\n\n2012-03 - 2017-11 Customer enquiries and records\n\n## Education\n\nMA Textile Conservation, University of ",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "blind_corpus_id": "DOCPICK_BLIND_DE_EN_V2_NV3",
+  "blind_doc_id": "NV3_036",
+  "blind_lang": "unknown",
+  "pdf_sha256": "80f8b305f4c39e18f7a23b1f8ccaae8babb2735e33db0bc8a4976c1b51cfffe7"
+}

@@ -1,0 +1,85 @@
+{
+  "personal": {
+    "first_name": "Florian",
+    "last_name": "Mazurek",
+    "street": "Wallstraße",
+    "house_number": "90",
+    "postal_code": "48683",
+    "city": "Ahaus",
+    "country": "Deutschland",
+    "date_of_birth": "12/1991"
+  },
+  "emails": [
+    "florian.mazurek@example.de"
+  ],
+  "phones": [
+    "+49 157 4145005"
+  ],
+  "languages": [
+    {
+      "language": "Spanisch",
+      "level": "B2"
+    },
+    {
+      "language": "Englisch",
+      "level": "B1"
+    }
+  ],
+  "driving_license": "",
+  "education": [
+    {
+      "institution": "Fachschule Ahaus",
+      "qualification": "Technikerabschluss",
+      "start_date": "2013",
+      "end_date": "2016"
+    }
+  ],
+  "work_experience": [
+    {
+      "title": "Fahrzeuglackierer",
+      "company": "TerraNova Labor e.V.",
+      "start_date": "02/2019",
+      "end_date": "08/2021",
+      "responsibilities": []
+    },
+    {
+      "title": "Projektassistenz",
+      "company": "Hafenring Logistik OHG",
+      "start_date": "03/2020",
+      "end_date": "09/2022",
+      "responsibilities": []
+    },
+    {
+      "title": "Aushilfe",
+      "company": "Albatros Systeme GmbH",
+      "start_date": "04/2021",
+      "end_date": "10/2023",
+      "responsibilities": []
+    }
+  ],
+  "skills": [
+    "Probenahme",
+    "Arbeitsvorbereitung",
+    "Gefahrstoffmanagement",
+    "Montageplanung"
+  ],
+  "software": [
+    "Fusion 360",
+    "Qlik Sense",
+    "GIMP"
+  ],
+  "certificates": [],
+  "source_path": "/workspace/tests/mini_holdout_30/phase_a_pdfs/MH_006.pdf",
+  "raw_text_chars": 787,
+  "raw_text_preview": "## Florian Mazurek\n\nWallstraße 90 | 48683 Ahaus | Deutschland · florian.mazurek@example.de · +49 157 4145005 · Geburtsdatum: 07.12.1991\n\n## Sprachkenntnisse &amp; Führerschein\n\nSpanisch: B2\n\nEnglisch: B1\n\n## Programme und Werkzeuge\n\nFusion 360 - Grundlagen Qlik Sense - gute Kenntnisse\n\nGIMP - sehr gut\n\n## Fachkompetenzen\n\nProbenahme\n\nArbeitsvorbereitung\n\nGefahrstoffmanagement\n\nMontageplanung\n\n## Berufserfahrung\n\n02/2019 - 08/2021 Fahrzeuglackierer | TerraNova Labor e.V. Probenahme · Arbeitsvorbe",
+  "document_backend": "docling",
+  "pipeline": "docpick_qwen35_4b",
+  "intelligence_status": "docpick_qwen35",
+  "intelligence_notes": [],
+  "phi_invoked": false,
+  "phi_extract_call_count": 0,
+  "needs_manual_review": false,
+  "regression_corpus_id": "MINI_HOLDOUT_30",
+  "regression_doc_id": "MH_006",
+  "regression_lang": "de"
+}

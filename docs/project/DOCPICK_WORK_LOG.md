@@ -1,0 +1,70 @@
+# Arbeitsprotokoll Docpick #62 (autonome Schleife)
+
+Hardware: Agent-VM Intel Xeon, **4 CPU**, ~15 GB RAM — **nicht** Zielgerät.  
+**Zielgerät / Merge-Gate Peak RSS:** Intel Core i3 (11th gen), **8 GB RAM**, Peak CV-Pfad **≤ 3,3 GB hard** (soft ≤12 GB obsolete).
+
+## Diagnose R3→R5
+
+- PC 33→28: 5× `heute`→`09/2022` (Repair) + 3× fehlendes Lizenz-C1 + MH_028 company.
+- EN-F1 0,988: MH_024 Positions / MH_025 Software — schon in R3.
+- Stage-Timing: Docling kalt 11–22 s (Warm ~0), **LLM ~65–85 s**, Postprocess <0,05 s.
+
+## Iterationen
+
+| # | Hypothese | Änderung | Messung | KEEP/REVERT |
+|---|-----------|----------|---------|-------------|
+| 0 | Repair überschreibt echte heute | Repair default off | Targeted MH_005/009/017 → heute | **KEEP** disable |
+| 1a | C1 fehlt bei partieller LLM-Liste | Merge aus FS-Zeilen | Spot C1 OK; Round6 CEFR-Hallu | siehe 3 |
+| 2a | Schema-Strip spart Prefill | Env STRIP=1 | DOB-Verlust | **REVERT** |
+| 2b | Tabellen-Pipeline ab | `do_table_structure=False` | EN_02 Textverlust | **REVERT** |
+| 2c | pypdf-first | Heuristik | EN Zwei-Spalten Ratio ~0,3 | **REVERT** |
+| 2d | Compact JSON | Minified-Prompt | Round6 F1 0,987 EN 0,948 | **REVERT** |
+| 3 | CEFR-Bleed in 1a | Nur Tail nach `Führerschein:` / Klassen unter Heading | Round7: F1 0,997 PC 37/40 EN 0,995 Hallu 0 | **KEEP** |
+| 4a | Education vor Employment | Schema-Reorder | Round8a F1 0,987 PC 31/40 (Employment-Truncation) | **REVERT** Reorder |
+| 4b | Education leer + erfundenes heute | PRESENT_END_RE fix; Section-Enrich; enger heute-Repair; Wording; order wie R7 | Offline NV3 Postprocess F1 0,986 (edu+10, heute+5); Round8b läuft | **pending Round8b** |
+
+Runtime-Stopp: drei aufeinanderfolgende Laufzeitversuche ohne messbaren Gewinn bei akzeptabler Qualität (2a–2d). Weitere LLM-Beschleunigung braucht anderes Modell/GPU oder Zielgerät.
+
+## Round7 (bekannte Regression, nicht Blind)
+
+- Gesamt-F1 **0,997**; DE **0,997**; EN **0,995**; Perfect Core **37/40**; Halluzinationen **0**
+- Verbleibend: MH_007 position; MH_019 skills×5; MH_025 software×2
+- Agent-VM Laufzeit (Log n=40): avg **88 s**, P95 **111 s**, Peak-RSS ~2,6–2,7 GB
+- Spot cold/warm: ~91–95 s / ~65–89 s — Budget warm ≤60 s **nicht** erreicht auf dieser VM
+
+## Blind NV3 (verbindlich)
+
+- Phase B Frozen F1 **0,980** — unverändert; Predictions/Scorer unangetastet
+- DOB-Audit 0,990 = Format only, **kein** Blind-/99-%-Claim
+
+## Round8 / Post-Analysis (in Arbeit)
+
+- Offline Postprocess auf Frozen Preds: edu 10/10, heute 5/5 → Post-Analysis F1 **0,986** / PC 22/50 (Frozen Blind 0,980 unverändert)
+- Round8a REVERT (education-before-employment Truncation)
+- Round8b (ohne Reorder) läuft; Full live NV3 Post-Analysis danach
+
+## Blind / Freeze
+
+- Freeze für Blind **nicht** ausgerufen: Zielgeräte-Laufzeit OFFEN; Blind-Korpus ≥50 DE/EN+GT fehlt.
+- Blind-v1 n=4 informativ, kein 99-%-Anspruch.
+
+## Round8 KEEP (Education-Enrich + enger heute-Repair)
+
+**KEEP.** Scorer und Frozen NV3 Blind (F1 0,980) unverändert. Kein 99-%-Blindclaim.
+
+| Korpus | Vorher (R7 / Frozen) | Nachher (Post-Analysis) |
+|--------|----------------------|-------------------------|
+| Known DE/EN Round7→8 | F1 0,997 PC 37/40 Hallu 0 | F1 **0,999** PC **38/40** Hallu 0 |
+| NV3 Blind Frozen | F1 0,980 | unverändert (nicht neu gescored als Blind) |
+| NV3 Offline Postprocess | — | F1 **0,986** PC 22/50; edu+10; heute+5 |
+| NV3 Targeted Live (13) | edu leer×10; heute falsch×5 | edu **10/10**; heute **5/5** |
+
+Laufzeit/RAM Agent-VM: Round8 avg ~87 s/CV, Peak-RSS ~2,6–3,3 GB (wie R7). NV3 targeted ~70 s/CV, ~1,7 GB.
+
+### Reverts innerhalb von Round8
+- education-before-employment → Truncation (R8a F1 0,987) **REVERT**
+- System-Prompt-Zeile „Put Ausbildung…“ → leere Employment **REVERT**
+
+### Echte Restfehler (Post-Analysis / Known)
+- Known: MH_019 `heute` statt Tabellen-Ende 08/2021; MH_025 Software Minitab/Qlik (schon R7)
+- NV3 Offline: Position↔Duty NV3_001; Software↔Cert; Skill↔Cert; NV3_033 EN-Dropout vs „Schule ohne Abschluss“; Apostroph; Self-employed company — **keine** leeren Ausbildungen, **kein** erfundenes datiertes `heute` mehr
