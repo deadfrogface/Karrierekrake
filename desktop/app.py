@@ -126,6 +126,8 @@ def run() -> int:
 
         _dirs = ensure_app_dirs()
         setup_logging(_dirs["logs"])
+    except RecursionError:
+        raise
     except Exception:
         _dirs = {}
         setup_logging()
@@ -159,6 +161,8 @@ def run() -> int:
         from core.database import Database
 
         Database(config_service.load().db_path, recover=True)
+    except RecursionError:
+        raise
     except Exception:
         pass
 
@@ -321,11 +325,15 @@ def _smoke_test() -> int:
             if hasattr(page, "refresh"):
                 try:
                     page.refresh()
+                except RecursionError:
+                    raise
                 except Exception:
                     pass
             if hasattr(page, "load_from_config"):
                 try:
                     page.load_from_config()
+                except RecursionError:
+                    raise
                 except Exception:
                     pass
         # Theme / language smoke

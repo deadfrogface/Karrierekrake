@@ -980,7 +980,11 @@ def load_config(
         from integrations.providers.migration import migrate_provider_settings
 
         migrate_provider_settings(settings)
+    except RecursionError:
+        raise
     except Exception:
+        # Import or provider-coercion failures must not block loading a profile.
+        # RecursionError is not a corrupt file and must surface.
         pass
 
     return AppConfig(

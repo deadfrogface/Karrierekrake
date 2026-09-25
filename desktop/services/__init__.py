@@ -59,6 +59,18 @@ class ConfigService:
                 shutil.copy2(example, dest)
 
     def load(self) -> AppConfig:
+        config = self._read_runtime_config()
+        self._config = config
+        self._apply_shutdown_fix_migration(config)
+        self._persist_stripped_placeholders(config)
+        return config
+
+    def _read_runtime_config(self) -> AppConfig:
+        """Read YAML and apply in-memory runtime paths.
+
+        Does not run ConfigService migrations. ``load_config`` still coerces
+        provider fields on every read, same as before.
+        """
         config = load_config(
             profile_path=self.profile_path,
             application_path=self.application_path,
@@ -66,7 +78,11 @@ class ConfigService:
             root=self.dirs["root"],
             strip_placeholders=True,
         )
-        # Force absolute runtime paths under AppData
+        self._apply_runtime_paths(config)
+        return config
+
+    def _apply_runtime_paths(self, config: AppConfig) -> None:
+        """Force absolute runtime paths under AppData (memory only)."""
         config.settings.database_path = str(self.dirs["data"] / "jobs.db")
         config.settings.logs_dir = str(self.dirs["logs"])
         config.settings.browser_profile_dir = str(self.dirs["browser_profile"])
@@ -83,12 +99,14 @@ class ConfigService:
                 if bundled.exists():
                     config.settings.cover_letter_template = str(bundled)
                     break
-        self._config = config
-        self._apply_shutdown_fix_migration(config)
-        # Persist cleaned profile if demo placeholders were stripped
+
+    def _persist_stripped_placeholders(self, config: AppConfig) -> None:
+        """Write back demo-placeholder cleanup without hiding RecursionError."""
         try:
-            from core.config import strip_example_application, strip_example_placeholders
-            from copy import deepcopy
+            from core.config import (
+                strip_example_application,
+                strip_example_placeholders,
+            )
 
             before = deepcopy(config.profile.qualifications)
             strip_example_placeholders(config.profile)
@@ -103,22 +121,30 @@ class ConfigService:
                 or before_app != after_app
             ):
                 self.save(config)
+        except RecursionError:
+            raise
         except Exception:
+            # Best-effort persist. Corrupt or unreadable YAML still fails in load_config.
             pass
-        return config
 
     def _apply_shutdown_fix_migration(self, config: AppConfig) -> None:
         """One-time: red X must quit by default (disable accidental tray-keep-alive)."""
         meta = self.load_meta()
         if meta.get("shutdown_fix_v1"):
             return
+        self._commit_shutdown_fix(config, meta)
+
+    def _commit_shutdown_fix(self, config: AppConfig, meta: dict[str, Any]) -> None:
+        """Persist the tray fix and its flag in one commit. Does not call load().
+
+        The flag is written only after the YAML replace succeeds. If this raises,
+        ``meta.json`` has no flag and the next ``load()`` retries the migration.
+        """
         config.settings.minimize_to_tray = False
-        meta["shutdown_fix_v1"] = True
-        try:
-            self.save(config)
-            self.save_meta(meta)
-        except Exception:
-            pass
+        committed = dict(meta)
+        committed["shutdown_fix_v1"] = True
+        self._write_config_files(config)
+        self.save_meta(committed)
 
     @property
     def config(self) -> AppConfig:
@@ -132,6 +158,13 @@ class ConfigService:
 
     def save(self, config: AppConfig | None = None) -> AppConfig:
         config = config or self.config
+        self._write_config_files(config)
+        # Refresh the cache from disk without ConfigService.load(), which re-runs migrations.
+        self._config = self._read_runtime_config()
+        return self._config
+
+    def _write_config_files(self, config: AppConfig) -> None:
+        """Persist YAML only. Does not read the files back and does not touch meta."""
         config.application.sync_address()
         # Keep runtime paths absolute in memory; persist portable relative names
         to_save = deepcopy(config)
@@ -148,8 +181,6 @@ class ConfigService:
             application_path=self.application_path,
             settings_path=self.settings_path,
         )
-        self._config = self.load()
-        return self._config
 
     def save_home_coords_from(self, run_config: AppConfig) -> AppConfig:
         """Persist home lat/lon + geocode fingerprint from a pipeline run.
