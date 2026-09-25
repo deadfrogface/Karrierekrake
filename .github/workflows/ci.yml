@@ -36,9 +36,19 @@ jobs:
         run: |
           Add-Content $env:GITHUB_STEP_SUMMARY "## privacy`nPASS (+ production content gate + privacy_scan unit)"
 
-  unit-tests:
-    name: unit-tests
+  # The required check stays `unit-tests` (aggregator below). Shards are not
+  # required checks; the aggregator is green only when every shard passed and
+  # the JUnit node-id union equals the collected set (no missing, no duplicate
+  # id). Keep matrix, --splits, and --expect-shards on the same count
+  # (scripts/unit_test_shards.py DEFAULT_SPLITS).
+  unit-tests-shard:
+    name: unit-tests-shard
     runs-on: windows-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [1, 2, 3, 4, 5, 6]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -50,6 +60,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: i3 8GB hard peak RSS gate
+        if: matrix.group == 1
         env:
           QT_QPA_PLATFORM: offscreen
         run: >
@@ -57,26 +68,80 @@ jobs:
           tests/test_i3_peak_gate.py
           tests/test_local_llm_cv_gate.py
           tests/test_cv_import_async.py
-      - name: Pytest (exclude network + cv corpus dedicated job)
+      - name: Pytest shard (exclude network + cv corpus dedicated job)
         env:
           QT_QPA_PLATFORM: offscreen
+          PYTHONUTF8: "1"
+          PYTHONUNBUFFERED: "1"
         run: >
-          python -m pytest -q
-          --ignore=tests/test_cv_corpus.py
-          -m "not network"
-          --junitxml=junit-unit.xml
+          python scripts/unit_test_shards.py run
+          --splits 6
+          --group ${{ matrix.group }}
+          --junitxml junit-unit-${{ matrix.group }}.xml
+      - name: Upload junit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests-junit-${{ matrix.group }}
+          path: junit-unit-${{ matrix.group }}.xml
+          if-no-files-found: error
+
+  unit-tests-collect:
+    name: unit-tests-collect
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Collect the same suite the shards run
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONUTF8: "1"
+        run: python scripts/unit_test_shards.py collect --output collected-unit-tests.txt
+      - name: Upload collection
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests-collected
+          path: collected-unit-tests.txt
+          if-no-files-found: error
+
+  unit-tests:
+    name: unit-tests
+    needs: [unit-tests-shard, unit-tests-collect]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Self-check node-id gate
+        run: python3 scripts/unit_test_shards.py self-check
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: unit-tests-*
+          path: unit-test-artifacts
+      - name: Compare collected node ids with shard JUnit
+        env:
+          SHARD_RESULT: ${{ needs.unit-tests-shard.result }}
+          COLLECT_RESULT: ${{ needs.unit-tests-collect.result }}
+        run: >
+          python3 scripts/unit_test_shards.py check
+          --artifacts unit-test-artifacts
+          --expect-shards 6
+          --shard-result "$SHARD_RESULT"
+          --collect-result "$COLLECT_RESULT"
       - name: Upload junit
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: junit-unit
-          path: junit-unit.xml
+          path: unit-test-artifacts/**/*.xml
           if-no-files-found: ignore
-      - name: Summary
-        if: always()
-        shell: pwsh
-        run: |
-          Add-Content $env:GITHUB_STEP_SUMMARY "## unit-tests`nSee job log / junit-unit artifact"
 
   cv-regression:
     name: cv-regression
