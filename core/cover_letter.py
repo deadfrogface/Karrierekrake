@@ -109,9 +109,24 @@ def _mentioned(token: str, blob: str) -> bool:
     return False
 
 
+def _normalized_company(job: Job) -> str:
+    return clean_company(getattr(job, "company", "")).casefold().strip(" .,-")
+
+
 def _company_missing(job: Job) -> bool:
-    company = clean_company(getattr(job, "company", "")).casefold()
-    return (not company) or company in _COMPANY_PLACEHOLDERS
+    """True when the ad has no real employer name.
+
+    Runs before the template. Empty text and generic stand-ins (``Firma 0``,
+    ``Ihr Unternehmen`` and the same kind of placeholder) are missing.
+    """
+    company = _normalized_company(job)
+    if not company or company in _COMPANY_PLACEHOLDERS:
+        return True
+    if re.fullmatch(r"firma(?:\s*\d+)?", company):
+        return True
+    if re.fullmatch(r"(?:ihr(?:e|em|es)?\s+)?unternehmen", company):
+        return True
+    return company in {"company", "the company", "musterfirma", "platzhalter"}
 
 
 def _ad_contact(description: str) -> tuple[str, str]:
@@ -426,9 +441,7 @@ def _render_template(
     else:
         template = DEFAULT_TEMPLATE
 
-    company = clean_company(job.company)
-    if company.casefold() in _COMPANY_PLACEHOLDERS:
-        company = ""
+    company = "" if _company_missing(job) else clean_company(job.company)
 
     claims = _resolve_writer_claims(config, contact_claims)
     from core.contacts.writer_contract import (
@@ -480,6 +493,7 @@ def compose_cover_letter(
     description = _clean_job_description(getattr(job, "description", ""))
     if not description:
         return _refusal(REASON_JOB_INCOMPLETE)
+    # Before the template. A present description stays company_missing, not job_incomplete.
     if _company_missing(job):
         return _refusal(REASON_COMPANY_MISSING)
     skills_list = evidenced_skills_matching_description(config, description)

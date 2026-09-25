@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from apply.manager import ApplicationManager
 from apply.preview import build_application_preview
 from core.application_queue import (
@@ -72,8 +74,8 @@ def test_i18n_keys_de_and_en():
         assert key in TRANSLATIONS["en"]
     assert TRANSLATIONS["de"]["cover.job_incomplete"] == "Die Anzeige hat keinen Beschreibungstext."
     assert TRANSLATIONS["en"]["cover.job_incomplete"] == "The job ad has no description."
-    assert TRANSLATIONS["de"]["cover.company_missing"] == "Die Anzeige nennt keine Firma."
-    assert TRANSLATIONS["en"]["cover.company_missing"] == "The job ad names no company."
+    assert TRANSLATIONS["de"]["cover.company_missing"] == "In der Anzeige fehlt der Firmenname."
+    assert TRANSLATIONS["en"]["cover.company_missing"] == "The company name is missing from the job ad."
 
 
 def test_empty_and_whitespace_description_refuse_without_placeholder():
@@ -234,23 +236,49 @@ def test_parser_debt_blocks_evidence(monkeypatch):
     _assert_clean(result.message("de"))
 
 
-def test_empty_company_is_company_missing_not_a_placeholder_letter():
+@pytest.mark.parametrize("company", [
+    "",
+    "   ",
+    "Firma 0",
+    "firma 0",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "Unternehmen",
+    "Company",
+    "Musterfirma",
+    "Platzhalter",
+])
+def test_missing_company_refuses_before_a_letter(company: str):
+    """Gate before the template. A real description is not job_incomplete."""
     cfg = _cfg("Tourenplanung", stations=[
         ExperienceEntry(title="Disponent", company="Nordkai Spedition GmbH", source="manual"),
     ])
+    description = (
+        "Die Beschreibung ist vorhanden. Anforderungen: Tourenplanung und SAP TM. "
+        "Im Formular steht nur Firma 0."
+    )
     job = Job(
         id="j-nocompany",
         source="indeed",
         title="Dispatcher",
-        company="",
-        description="Anforderungen: Tourenplanung und SAP TM. Firma 0 steht nur im Text.",
+        company=company,
+        description=description,
     )
     result = compose_cover_letter(job, cfg)
     assert result.ok is False
     assert result.text == ""
     assert result.reason_code == "company_missing"
-    assert result.message("de") == "Die Anzeige nennt keine Firma."
-    _assert_clean(result.message("de") + result.message("en"))
+    assert result.reason_code != "job_incomplete"
+    assert result.message("de") == "In der Anzeige fehlt der Firmenname."
+    blob = result.message("de") + result.message("en") + result.text
+    assert "Ihr Unternehmen" not in blob
+    assert "Firma 0" not in result.text
+    _assert_clean(blob)
+    with pytest.raises(CoverLetterRefused) as caught:
+        render_cover_letter(job, cfg)
+    assert caught.value.refusal.reason_code == "company_missing"
+    assert "Ihr Unternehmen" not in str(caught.value)
 
 
 def test_demo_source_excluded_from_queue_and_letter(tmp_path: Path):

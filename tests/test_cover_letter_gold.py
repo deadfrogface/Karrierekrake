@@ -9,9 +9,14 @@ ein, und kein Brief ist zulässig. Ein Brief, der die Schule als Arbeitgeber
 nennt, ist ein Fehlschlag und kein xfail. Der Generator verzweigt dafür nicht
 nach der Fall-Id.
 
-Zwei Fälle bleiben rot, ohne xfail: ``cl-03`` schreibt weiterhin einen Brief,
-wenn eine bestätigte Station die Anzeige nicht trifft (früher festgelegtes
-Gate). ``cl-06`` nennt die als Station abgelegte Ausbildung und deren Schule.
+Personaler, im Raum (die Doku in #75 folgt nach dem Merge): ``cl-08`` ist
+``company_missing`` und kein Brief, nicht ``job_incomplete``. ``cl-06`` ist
+nie ``interview``; ``must_not_contain`` darf in keinem erzeugten Text stehen;
+kein Brief ist in Ordnung. Ein Brief, der die Schule als Arbeitgeber nennt,
+ist rot und kein xfail. Der Generator rät die falsch abgelegte Ausbildung nicht.
+
+``cl-03`` bleibt ebenfalls rot, ohne xfail: eine bestätigte Station, die die
+Anzeige nicht trifft, ergibt weiter einen Brief.
 """
 
 from __future__ import annotations
@@ -209,15 +214,18 @@ else:
             assert result.reason_code == expected
             return
         if expected == "papierkorb":
-            # Nie interview. Kein Brief ist zulässig. Die Schule als Arbeitgeber
-            # ist ein Fehlschlag, kein xfail. Keine Fall-Id-Verzweigung im Generator.
+            # cl-06, Personaler im Raum: nie interview. must_not_contain darf in
+            # keinem erzeugten Text stehen. Kein Brief ist in Ordnung. Die Schule
+            # als Arbeitgeber ist rot, kein xfail. Keine Heuristik, keine Fall-Id.
+            assert result.reason_code != "interview"
+            if not result.text.strip():
+                return
+            hits = _forbidden_hits(result.text, case["must_not_contain"])
+            assert not hits, f"must_not_contain hit {hits}"
+            school = _school_as_employer(result.text, case)
+            assert not school, f"Brief nennt die Schule als Arbeitgeber: {school}"
             with pytest.raises(AssertionError):
                 _assert_interview(result, case)
-            if result.text:
-                hits = _forbidden_hits(result.text, case["must_not_contain"])
-                assert not hits, f"must_not_contain hit {hits}"
-                school = _school_as_employer(result.text, case)
-                assert not school, f"Brief nennt die Schule als Arbeitgeber: {school}"
             return
         if expected == "interview":
             _assert_interview(result, case)
