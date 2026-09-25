@@ -228,8 +228,8 @@ class LifecyclePage(QWidget):
         self._bind_guenther(case_id=case_id, job_id=case.job_id or "")
 
     def _bind_guenther(self, *, case_id: str = "", job_id: str = "") -> None:
-        cfg = self.config_service.load()
-        enabled = bool(getattr(cfg.settings, "guenther_enabled", False))
+        # Günther is always enabled for writing assist (model presence still gates runtime).
+        enabled = True
         status = ""
         if case_id:
             case = self._db().get_case(case_id)

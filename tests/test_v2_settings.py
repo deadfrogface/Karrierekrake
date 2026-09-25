@@ -90,7 +90,8 @@ def test_settings_controls_still_present(qapp, config_service):
     assert page.search_mode.count() == 2
     assert page.mode_review is not None
     assert page.privacy_export_btn is not None
-    assert page.guenther_enabled is not None
+    assert page.guenther_box is not None
+    assert not hasattr(page, "guenther_enabled")
     assert page.safety_toggle is not None
     assert page.danger_toggle is not None
     # Progressive disclosure starts collapsed

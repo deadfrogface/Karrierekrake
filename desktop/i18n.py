@@ -624,7 +624,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.email_draft_only": "Arbeitgeber-Mails nur als Entwurf (Standard)",
         "settings.allow_employer_email_send": "Echten Versand freigeben (nur mit Freigabe pro Mail)",
         "settings.guenther": "Günther die Krake",
-        "settings.guenther_enabled": "Günther einschalten (nur lokal auf diesem PC)",
+        "settings.guenther_enabled": "Günther (immer aktiv, nur lokal)",
         "settings.guenther_model": "Modell",
         "settings.guenther_model.phi_only": "Phi-4-mini (einziges Produktionsmodell)",
         "settings.guenther_model.auto": "Automatisch (Phi empfohlen)",
@@ -634,13 +634,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther_model.standard": "Entfernt — kein Legacy-Qwen",
         "settings.guenther_model.alt": "Empfohlen — Phi-4-mini",
         "settings.guenther_hint": (
-            "Günther nutzt lokales Phi-4-mini nur für Schreibhilfe "
+            "Günther ist immer aktiv und nutzt lokales Phi-4-mini nur für Schreibhilfe "
             "(Anschreiben, E-Mails, Motivationstexte). "
             "Fehlt das Writer-Modell: Schreibhilfe nicht verfügbar "
             "(kein Heuristik-Ersatz). Günther schlägt vor — Karrierekrake entscheidet."
         ),
-        "settings.guenther_writer_status_on": "Schreibhilfe: aktiviert (Phi-4-mini lokal)",
-        "settings.guenther_writer_status_off": "Schreibhilfe: ausgeschaltet",
+        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
+        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
         "settings.guenther_writer_unavailable": (
             "Schreibhilfe: Modell fehlt — Günther nicht nutzbar (kein stiller Ersatz)."
         ),
@@ -1639,7 +1639,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.email_draft_only": "Employer email draft-only (default)",
         "settings.allow_employer_email_send": "Allow real send (still requires per-mail approval)",
         "settings.guenther": "Günther die Krake",
-        "settings.guenther_enabled": "Enable Günther (local on this PC only)",
+        "settings.guenther_enabled": "Günther (always on, local only)",
         "settings.guenther_model": "Model",
         "settings.guenther_model.phi_only": "Phi-4-mini (sole production model)",
         "settings.guenther_model.auto": "Automatic (Phi recommended)",
@@ -1649,13 +1649,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther_model.standard": "Removed — no legacy Qwen",
         "settings.guenther_model.alt": "Recommended — Phi-4-mini",
         "settings.guenther_hint": (
-            "Günther uses local Phi-4-mini only for writing assistance "
+            "Günther is always on and uses local Phi-4-mini only for writing assistance "
             "(cover letters, emails, motivation texts). "
             "If the writer model is missing: writing help unavailable "
             "(no heuristic substitute). Günther suggests — Karrierekrake decides."
         ),
-        "settings.guenther_writer_status_on": "Writing help: enabled (Phi-4-mini local)",
-        "settings.guenther_writer_status_off": "Writing help: off",
+        "settings.guenther_writer_status_on": "Writing help: active (Phi-4-mini local)",
+        "settings.guenther_writer_status_off": "Writing help: active (Phi-4-mini local)",
         "settings.guenther_writer_unavailable": (
             "Writing help: model missing — Günther unavailable (no silent substitute)."
         ),

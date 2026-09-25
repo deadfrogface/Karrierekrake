@@ -455,7 +455,7 @@ class SettingsConfig:
     # --- Günther die Krake (optional local AI; off by default) ---
     # Never enables cloud AI. LLM output is untrusted and validated.
     # NEXT-02: sole production model is phi4-mini — no Qwen / auto picker.
-    guenther_enabled: bool = False
+    guenther_enabled: bool = True
     guenther_model: str = "phi4-mini"
     # Heuristic assist is NOT a production LLM substitute (default off).
     guenther_heuristic_fallback: bool = False
@@ -1009,6 +1009,12 @@ def load_config(
         env_ms = (os.environ.get("KARRIEREKRAKE_MS_CLIENT_ID") or "").strip()
         if env_ms:
             settings.microsoft_client_id = env_ms
+
+    # Günther writing help is always on (no user disable switch).
+    settings.guenther_enabled = True
+    if not str(getattr(settings, "guenther_model", "") or "").strip():
+        settings.guenther_model = "phi4-mini"
+    settings.guenther_heuristic_fallback = False
 
     # NEXT-03: coerce legacy Google flags → explicit providers (no token wipe).
     try:

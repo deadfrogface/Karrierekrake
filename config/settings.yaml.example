@@ -59,7 +59,7 @@ schedule_slot_step_minutes: 30
 schedule_max_ranked_slots: 5
 allow_calendar_write: false
 # Günther die Krake — optionale lokale Hilfe (kein Cloud-KI-Zwang)
-guenther_enabled: false
+guenther_enabled: true
 guenther_model: auto              # auto | qwen3-1.7b | qwen3-4b | phi4-mini
 guenther_heuristic_fallback: true
 # Ignored for enabling local LLM CV parsing. Only KARRIEREKRAKE_LOCAL_LLM_CV_PARSING can.

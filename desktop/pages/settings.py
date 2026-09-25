@@ -368,7 +368,6 @@ class SettingsPage(QWidget):
         guenther_box = QGroupBox()
         self.guenther_box = guenther_box
         gform = QFormLayout(guenther_box)
-        self.guenther_enabled = QCheckBox()
         self.guenther_model_fixed = QLabel("Phi-4-mini (einziges Produktionsmodell)")
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
@@ -396,7 +395,6 @@ class SettingsPage(QWidget):
         self.wizard_reopen_btn = QPushButton()
         self.wizard_reopen_btn.setObjectName("SecondaryButton")
         self.wizard_reopen_btn.clicked.connect(self._reopen_setup_wizard)
-        gform.addRow(self.guenther_enabled)
         gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
         gform.addRow(self.guenther_writer_status)
         gform.addRow(self.guenther_hint)
@@ -406,7 +404,6 @@ class SettingsPage(QWidget):
         gform.addRow(self.local_llm_cv_parsing)
         gform.addRow(self.local_llm_cv_hint)
         gform.addRow(self.wizard_reopen_btn)
-        self.guenther_enabled.toggled.connect(lambda _checked=False: self._refresh_guenther_status_labels())
         integ_layout.addWidget(guenther_box)
         integ_layout.addStretch(1)
         self.stack.addWidget(integ_page)
@@ -734,7 +731,6 @@ class SettingsPage(QWidget):
             self.allow_employer_email_send.setText(tr("settings.allow_employer_email_send"))
         if hasattr(self, "guenther_box"):
             self.guenther_box.setTitle(tr("settings.guenther"))
-            self.guenther_enabled.setText(tr("settings.guenther_enabled"))
             self.lbl_guenther_model.setText(tr("settings.guenther_model"))
             self.guenther_hint.setText(tr("settings.guenther_hint"))
             if hasattr(self, "guenther_model_fixed"):
@@ -793,7 +789,7 @@ class SettingsPage(QWidget):
     def _refresh_guenther_status_labels(self) -> None:
         if not hasattr(self, "guenther_writer_status"):
             return
-        enabled = bool(self.guenther_enabled.isChecked()) if hasattr(self, "guenther_enabled") else False
+        # Günther is always on — no user toggle. Status only reflects model readiness.
         writer_ok = False
         try:
             from guenther.model_manager import PRODUCTION_MODEL_ID, ModelManager
@@ -801,9 +797,7 @@ class SettingsPage(QWidget):
             writer_ok = ModelManager().is_installed(PRODUCTION_MODEL_ID)
         except Exception:
             writer_ok = False
-        if not enabled:
-            self.guenther_writer_status.setText(tr("settings.guenther_writer_status_off"))
-        elif writer_ok:
+        if writer_ok:
             self.guenther_writer_status.setText(tr("settings.guenther_writer_status_on"))
         else:
             self.guenther_writer_status.setText(tr("settings.guenther_writer_unavailable"))
@@ -912,8 +906,7 @@ class SettingsPage(QWidget):
             self.allow_employer_email_send.setChecked(
                 bool(getattr(s, "allow_employer_email_send", False))
             )
-        if hasattr(self, "guenther_enabled"):
-            self.guenther_enabled.setChecked(bool(getattr(s, "guenther_enabled", False)))
+        if hasattr(self, "guenther_box"):
             self._refresh_guenther_status_labels()
         if hasattr(self, "local_llm_cv_parsing"):
             self.local_llm_cv_parsing.setEnabled(False)
@@ -1022,10 +1015,10 @@ class SettingsPage(QWidget):
             cfg.settings.followup_reminders_enabled = self.followup_reminders_enabled.isChecked()
             cfg.settings.email_draft_only = self.email_draft_only.isChecked()
             cfg.settings.allow_employer_email_send = self.allow_employer_email_send.isChecked()
-        if hasattr(self, "guenther_enabled"):
-            cfg.settings.guenther_enabled = self.guenther_enabled.isChecked()
-            cfg.settings.guenther_model = "phi4-mini"
-            cfg.settings.guenther_heuristic_fallback = False
+        # Günther is always enabled — no UI toggle; persist True for callers/tests.
+        cfg.settings.guenther_enabled = True
+        cfg.settings.guenther_model = "phi4-mini"
+        cfg.settings.guenther_heuristic_fallback = False
         if hasattr(self, "mail_provider"):
             cfg.settings.mail_provider = str(self.mail_provider.currentData() or "none")
             cfg.settings.calendar_provider = str(
