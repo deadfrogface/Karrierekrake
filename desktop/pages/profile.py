@@ -692,7 +692,13 @@ class ProfilePage(QWidget):
             self.cv.cv_label.setText(info.get("label") or str(cv_path))
             cfg = self.config_service.load()
 
-        dlg = CvImportDialog(cv_path, cfg.profile.qualifications, cfg.application, self)
+        dlg = CvImportDialog(
+            cv_path,
+            cfg.profile.qualifications,
+            cfg.application,
+            self,
+            settings=cfg.settings,
+        )
         if dlg.exec() != dlg.DialogCode.Accepted or dlg.result_quals is None:
             return
         cfg.profile.qualifications = dlg.result_quals

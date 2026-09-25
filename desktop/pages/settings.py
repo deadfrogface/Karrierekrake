@@ -373,9 +373,18 @@ class SettingsPage(QWidget):
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
         self.lbl_guenther_model = QLabel()
+        self.local_llm_cv_parsing = QCheckBox()
+        self.local_llm_cv_parsing.setEnabled(False)
+        self.local_llm_cv_parsing.setChecked(False)
+        self.local_llm_cv_parsing.setAttribute(Qt.WidgetAttribute.WA_AlwaysShowToolTips, True)
+        self.local_llm_cv_hint = QLabel()
+        self.local_llm_cv_hint.setWordWrap(True)
+        self.local_llm_cv_parsing.toggled.connect(self._sync_local_llm_cv_hint)
         gform.addRow(self.guenther_enabled)
         gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
         gform.addRow(self.guenther_hint)
+        gform.addRow(self.local_llm_cv_parsing)
+        gform.addRow(self.local_llm_cv_hint)
         integ_layout.addWidget(guenther_box)
         integ_layout.addStretch(1)
         self.stack.addWidget(integ_page)
@@ -703,6 +712,9 @@ class SettingsPage(QWidget):
             self.guenther_hint.setText(tr("settings.guenther_hint"))
             if hasattr(self, "guenther_model_fixed"):
                 self.guenther_model_fixed.setText(tr("settings.guenther_model.phi_only"))
+            if hasattr(self, "local_llm_cv_parsing"):
+                self.local_llm_cv_parsing.setText(tr("settings.local_llm_cv_parsing"))
+                self._sync_local_llm_cv_hint()
         self.run_auto.setText(tr("settings.run_auto"))
         self.lbl_schedule.setText(tr("settings.schedule"))
         self.lbl_interval.setText(tr("settings.interval"))
@@ -736,6 +748,14 @@ class SettingsPage(QWidget):
         self.save_btn.setText(tr("btn.save_settings"))
         apply_button_icon(self.save_btn, "save", color="#ffffff")
         self._annotate_a11y_controls()
+
+    def _sync_local_llm_cv_hint(self) -> None:
+        if not hasattr(self, "local_llm_cv_hint"):
+            return
+        self.local_llm_cv_parsing.setEnabled(False)
+        self.local_llm_cv_parsing.setChecked(False)
+        self.local_llm_cv_parsing.setToolTip(tr("settings.local_llm_cv_unavailable"))
+        self.local_llm_cv_hint.setText(tr("settings.local_llm_cv_disabled_hint"))
 
     def _open_diagnose_logs(self) -> None:
         parent = self.window()
@@ -811,6 +831,9 @@ class SettingsPage(QWidget):
             )
         if hasattr(self, "guenther_enabled"):
             self.guenther_enabled.setChecked(bool(getattr(s, "guenther_enabled", False)))
+        if hasattr(self, "local_llm_cv_parsing"):
+            self.local_llm_cv_parsing.setEnabled(False)
+            self.local_llm_cv_parsing.setChecked(False)
         if hasattr(self, "mail_provider"):
             mp = self.mail_provider.findData(getattr(s, "mail_provider", "none") or "none")
             self.mail_provider.setCurrentIndex(mp if mp >= 0 else 0)
