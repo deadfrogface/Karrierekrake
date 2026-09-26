@@ -21,6 +21,10 @@ import tempfile
 import time
 from pathlib import Path
 
+_ROOT = Path(__file__).resolve().parents[1]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
 
 def _hold_instance_lock():
     """Acquire the same single-instance lock the GUI uses."""
