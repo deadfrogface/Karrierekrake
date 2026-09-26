@@ -47,6 +47,8 @@ IconKind = Literal[
     "close",
     "rocket",
     "check",
+    "chevron_down",
+    "chevron_up",
 ]
 
 _SVG: dict[str, str] = {
@@ -100,6 +102,16 @@ _SVG: dict[str, str] = {
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
         'stroke="{color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
         '<polyline points="20 6 9 17 4 12"/></svg>'
+    ),
+    "chevron_down": (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        'stroke="{color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'
+        '<polyline points="6 9 12 15 18 9"/></svg>'
+    ),
+    "chevron_up": (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        'stroke="{color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'
+        '<polyline points="18 15 12 9 6 15"/></svg>'
     ),
 }
 
@@ -491,20 +503,26 @@ class _InteractivePolish(QObject):
 
     def _pointer_inside_descendant(self) -> bool:
         """Leave fired because the pointer moved onto a child, not off the control."""
+        target = getattr(self, "_target", None)
+        if target is None:
+            return False
         app = QApplication.instance()
         if app is None:
             return False
         widget = app.widgetAt(QCursor.pos())
-        if widget is None or widget is self._target:
+        if widget is None or widget is target:
             return False
         while widget is not None:
-            if widget is self._target:
+            if widget is target:
                 return True
             widget = widget.parentWidget()
         return False
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
-        if watched is not self._target:
+        # During QObject teardown Python attrs may already be gone while the
+        # filter is still briefly invoked — fail closed.
+        target = getattr(self, "_target", None)
+        if target is None or watched is not target:
             return False
         et = event.type()
         if et == QEvent.Type.StyleChange and self._chip:

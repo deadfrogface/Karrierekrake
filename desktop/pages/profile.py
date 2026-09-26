@@ -17,16 +17,17 @@ from PySide6.QtWidgets import (
     QLabel,
     QMessageBox,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
 from core.salary import normalize_to_annual_gross_eur
 from desktop.design_system.a11y import set_accessible_name
+from desktop.design_system.flow_layout import FlowHost, FlowLayout
 from desktop.design_system.polish import (
     apply_button_icon,
     footer_actions_layout,
-    polish_card,
     polish_interactive,
 )
 from desktop.design_system.v2_chrome import (
@@ -208,18 +209,18 @@ class ProfilePage(QWidget):
 
         self.card_career = ProfileSectionCard()
         self.card_career.action_btn.clicked.connect(lambda: self._edit_section("career"))
-        self._wanted_row = QHBoxLayout()
-        self._wanted_row.setSpacing(8)
-        self._unwanted_row = QHBoxLayout()
-        self._unwanted_row.setSpacing(8)
+        self._wanted_host, self._wanted_row = self._make_flow()
+        self._unwanted_host, self._unwanted_row = self._make_flow()
         self._wanted_label = QLabel()
         self._wanted_label.setObjectName("KkHint")
+        self._wanted_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self._unwanted_label = QLabel()
         self._unwanted_label.setObjectName("KkHint")
+        self._unwanted_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.card_career.body().addWidget(self._wanted_label)
-        self.card_career.body().addLayout(self._wanted_row)
+        self.card_career.body().addWidget(self._wanted_host)
         self.card_career.body().addWidget(self._unwanted_label)
-        self.card_career.body().addLayout(self._unwanted_row)
+        self.card_career.body().addWidget(self._unwanted_host)
 
         self.card_application = ProfileSectionCard()
         self.card_application.action_btn.clicked.connect(lambda: self._edit_section("application"))
@@ -249,6 +250,8 @@ class ProfilePage(QWidget):
         self._linkedin.setObjectName("PageSubtitle")
         self._linkedin.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
         self._linkedin.setOpenExternalLinks(True)
+        self._linkedin.setProperty("kkKeepInteractive", True)
+        self._linkedin.setWordWrap(True)
         self.card_docs.body().addWidget(self._linkedin)
         self.reset_btn = QPushButton()
         self.reset_btn.setObjectName("SecondaryButton")
@@ -269,13 +272,14 @@ class ProfilePage(QWidget):
 
         self.card_skills = ProfileSectionCard()
         self.card_skills.action_btn.clicked.connect(lambda: self._edit_section("skills"))
-        self._skills_row = QHBoxLayout()
-        self._skills_row.setSpacing(8)
-        self.card_skills.body().addLayout(self._skills_row)
+        self._skills_host, self._skills_row = self._make_flow()
+        self.card_skills.body().addWidget(self._skills_host)
 
         self.card_languages = ProfileSectionCard()
         self.card_languages.action_btn.clicked.connect(lambda: self._edit_section("languages"))
         self._lang_body = self.card_languages.body()
+        self._lang_host, self._lang_row = self._make_flow()
+        self._lang_body.addWidget(self._lang_host)
 
         left = QVBoxLayout()
         left.setSpacing(16)
@@ -314,7 +318,8 @@ class ProfilePage(QWidget):
             self.card_skills,
             self.card_languages,
         ):
-            polish_card(card)
+            # Hover/focus/expand polish lives on ProfileSectionCard itself.
+            card.expandedChanged.connect(lambda _expanded: self.refresh_cards())
 
         outer.addWidget(wrap_scrollable(shell))
 
@@ -376,7 +381,29 @@ class ProfilePage(QWidget):
             item = layout.takeAt(0)
             w = item.widget()
             if w is not None:
+                w.hide()
+                w.setParent(None)
                 w.deleteLater()
+
+    def _preview_limit(self, card: ProfileSectionCard, collapsed: int, *, expanded: int = 10_000) -> int:
+        return expanded if card.is_expanded() else collapsed
+
+    def _mark_decorative(self, widget: QWidget) -> None:
+        widget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+
+    def _make_flow(self) -> tuple[QWidget, FlowLayout]:
+        """Host widget so QVBoxLayout respects FlowLayout height-for-width."""
+        host = FlowHost(h_spacing=8, v_spacing=8)
+        self._mark_decorative(host)
+        return host, host.flow()
+
+    def _add_tag_chip(self, layout, text: str, *, kind: str = "neutral") -> TagChip:
+        chip = TagChip(str(text), kind=kind)
+        chip.setToolTip(str(text))
+        # Clicks pass through to the expandable card surface.
+        self._mark_decorative(chip)
+        layout.addWidget(chip)
+        return chip
 
     def _edit_section(self, key: str) -> None:
         mapping = {
@@ -459,22 +486,32 @@ class ProfilePage(QWidget):
         ]
         for item, (label, value) in zip(self._personal_items, pairs):
             item.set_pair(label, _dash(value))
+            self._mark_decorative(item)
 
         self._clear_layout(self._wanted_row)
         wanted = list(cfg.profile.jobs.desired_titles or [])
-        for title in wanted[:6]:
-            self._wanted_row.addWidget(TagChip(str(title), kind="wanted"))
+        want_limit = self._preview_limit(self.card_career, 6)
+        for title in wanted[:want_limit]:
+            self._add_tag_chip(self._wanted_row, title, kind="wanted")
+        remaining_wanted = len(wanted) - want_limit
+        if remaining_wanted > 0 and not self.card_career.is_expanded():
+            self._add_tag_chip(
+                self._wanted_row, tr("profile.more_tags", n=remaining_wanted), kind="more"
+            )
         if not wanted:
-            self._wanted_row.addWidget(TagChip(tr("profile.empty_tags"), kind="more"))
-        self._wanted_row.addStretch()
+            self._add_tag_chip(self._wanted_row, tr("profile.empty_tags"), kind="more")
 
         self._clear_layout(self._unwanted_row)
         unwanted = list(cfg.profile.jobs.unwanted_titles or [])
-        for title in unwanted[:6]:
-            self._unwanted_row.addWidget(TagChip(str(title), kind="unwanted"))
+        for title in unwanted[:want_limit]:
+            self._add_tag_chip(self._unwanted_row, title, kind="unwanted")
+        remaining_unwanted = len(unwanted) - want_limit
+        if remaining_unwanted > 0 and not self.card_career.is_expanded():
+            self._add_tag_chip(
+                self._unwanted_row, tr("profile.more_tags", n=remaining_unwanted), kind="more"
+            )
         if not unwanted:
-            self._unwanted_row.addWidget(TagChip(tr("profile.empty_tags"), kind="more"))
-        self._unwanted_row.addStretch()
+            self._add_tag_chip(self._unwanted_row, tr("profile.empty_tags"), kind="more")
 
         app_pairs = [
             (tr("field.notice"), a.notice_period),
@@ -486,10 +523,15 @@ class ProfilePage(QWidget):
         ]
         for item, (label, value) in zip(self._app_items, app_pairs):
             item.set_pair(label, _dash(value))
+            self._mark_decorative(item)
 
         info = self.config_service.get_active_cv_info()
         self._cv_name.setText(info.get("label") or a.cv_path or tr("profile.no_cv"))
+        self._cv_name.setWordWrap(True)
+        self._mark_decorative(self._cv_name)
         self._cv_meta.setText(tr("profile.cv_meta"))
+        self._cv_meta.setWordWrap(True)
+        self._mark_decorative(self._cv_meta)
         linkedin = (getattr(a, "linkedin_url", None) or "").strip()
         if linkedin:
             self._linkedin.setText(f'<a href="{linkedin}">LinkedIn</a>')
@@ -507,9 +549,16 @@ class ProfilePage(QWidget):
             if w is self._exp_more:
                 w.hide()
                 continue
+            w.hide()
+            w.setParent(None)
             w.deleteLater()
         experiences = list(cfg.profile.qualifications.work_experience or [])
-        for entry in experiences[: self._exp_limit]:
+        exp_limit = (
+            len(experiences)
+            if self.card_experience.is_expanded()
+            else self._exp_limit
+        )
+        for entry in experiences[:exp_limit]:
             block = QVBoxLayout()
             title = QLabel(_entry_title(entry))
             title.setObjectName("NextActionTitle")
@@ -525,6 +574,7 @@ class ProfilePage(QWidget):
             if body:
                 desc.setToolTip(body)
             wrap = QWidget()
+            self._mark_decorative(wrap)
             vl = QVBoxLayout(wrap)
             vl.setContentsMargins(0, 0, 0, 8)
             vl.setSpacing(2)
@@ -533,35 +583,43 @@ class ProfilePage(QWidget):
             if body:
                 vl.addWidget(desc)
             self._exp_body.addWidget(wrap)
-        if len(experiences) > self._exp_limit:
-            self._exp_more.setText(tr_show_more_entries(len(experiences) - self._exp_limit))
+        if len(experiences) > exp_limit and not self.card_experience.is_expanded():
+            self._exp_more.setText(tr_show_more_entries(len(experiences) - exp_limit))
             self._exp_more.show()
             self._exp_body.addWidget(self._exp_more)
         if not experiences:
             empty = QLabel(tr("profile.empty_section"))
             empty.setObjectName("KkHint")
+            self._mark_decorative(empty)
             self._exp_body.addWidget(empty)
 
         while self._edu_body.count():
             item = self._edu_body.takeAt(0)
             w = item.widget()
             if w is not None:
+                w.hide()
+                w.setParent(None)
                 w.deleteLater()
         education = list(cfg.profile.qualifications.education or [])
-        for entry in education[:8]:
+        edu_limit = self._preview_limit(self.card_education, 8)
+        for entry in education[:edu_limit]:
             wrap = QWidget()
+            self._mark_decorative(wrap)
             vl = QVBoxLayout(wrap)
             vl.setContentsMargins(0, 0, 0, 8)
             title = QLabel(_entry_title(entry))
             title.setObjectName("NextActionTitle")
+            title.setWordWrap(True)
             sub = QLabel(_entry_subtitle(entry))
             sub.setObjectName("KkHint")
+            sub.setWordWrap(True)
             vl.addWidget(title)
             vl.addWidget(sub)
             self._edu_body.addWidget(wrap)
         if not education:
             empty = QLabel(tr("profile.empty_section"))
             empty.setObjectName("KkHint")
+            self._mark_decorative(empty)
             self._edu_body.addWidget(empty)
 
         self._clear_layout(self._skills_row)
@@ -579,36 +637,33 @@ class ProfilePage(QWidget):
             title = _entry_title(cert)
             if title and title != "—":
                 chips.append((title, "more"))
-        for chip, kind in chips[: self._skill_limit]:
-            self._skills_row.addWidget(TagChip(chip, kind=kind))
-        remaining = len(chips) - self._skill_limit
-        if remaining > 0:
-            self._skills_row.addWidget(TagChip(tr("profile.more_tags", n=remaining), kind="more"))
+        skill_limit = self._preview_limit(self.card_skills, self._skill_limit)
+        for chip, kind in chips[:skill_limit]:
+            self._add_tag_chip(self._skills_row, chip, kind=kind)
+        remaining = len(chips) - skill_limit
+        if remaining > 0 and not self.card_skills.is_expanded():
+            self._add_tag_chip(
+                self._skills_row, tr("profile.more_tags", n=remaining), kind="more"
+            )
         if not chips:
-            self._skills_row.addWidget(TagChip(tr("profile.empty_tags"), kind="more"))
-        self._skills_row.addStretch()
+            self._add_tag_chip(self._skills_row, tr("profile.empty_tags"), kind="more")
 
-        while self._lang_body.count():
-            item = self._lang_body.takeAt(0)
-            w = item.widget()
-            if w is not None:
-                w.deleteLater()
+        self._clear_layout(self._lang_row)
         langs = list(cfg.profile.qualifications.languages or [])
-        for lang in langs[:8]:
+        lang_limit = self._preview_limit(self.card_languages, 8)
+        for lang in langs[:lang_limit]:
             name = getattr(lang, "language", None) or getattr(lang, "name", None) or getattr(lang, "value", "")
             level = getattr(lang, "level", None) or getattr(lang, "proficiency", "") or ""
             text = f"{name}" + (f" ({level})" if level else "")
-            chip = TagChip(str(text), kind="neutral")
-            chip.setToolTip(str(text))
-            self._lang_body.addWidget(chip)
+            self._add_tag_chip(self._lang_row, text, kind="neutral")
         if not langs:
             empty = QLabel(tr("profile.empty_section"))
             empty.setObjectName("KkHint")
-            self._lang_body.addWidget(empty)
+            self._mark_decorative(empty)
+            self._lang_row.addWidget(empty)
 
     def _show_more_experience(self) -> None:
-        self._exp_limit = 50
-        self.refresh_cards()
+        self.card_experience.set_expanded(True)
 
     def suggest_titles_from_cv(self) -> None:
         """Propose job titles from stored qualifications — never overwrite manuals."""

@@ -175,7 +175,7 @@ def test_refresh_cards_keeps_experience_more_button_after_deferred_delete(
     page.refresh_cards()
 
     page._exp_more.click()
-    assert page._exp_limit == 50
+    assert page.card_experience.is_expanded() is True
     assert _experience_titles(page) == [
         "Buchhalter",
         "Teamleitung",
@@ -276,7 +276,7 @@ def test_second_refresh_rebuilds_education_skills_and_languages(qapp, config_ser
     page.load_from_config()
     assert _layout_texts(page._edu_body, object_prefix="NextActionTitle") == ["Alte Ausbildung"]
     assert "Excel" in _layout_texts(page._skills_row, object_prefix="Badge")
-    assert "Deutsch (C2)" in _layout_texts(page._lang_body, object_prefix="Badge")
+    assert "Deutsch (C2)" in _layout_texts(page._lang_row, object_prefix="Badge")
 
     # Button is already in the layout. This refresh queues deleteLater on it.
     page.refresh_cards()
@@ -291,7 +291,7 @@ def test_second_refresh_rebuilds_education_skills_and_languages(qapp, config_ser
 
     education = _layout_texts(page._edu_body, object_prefix="NextActionTitle")
     skills = _layout_texts(page._skills_row, object_prefix="Badge")
-    languages = _layout_texts(page._lang_body, object_prefix="Badge")
+    languages = _layout_texts(page._lang_row, object_prefix="Badge")
     assert education == ["Neue Ausbildung"]
     assert "Alte Ausbildung" not in education
     assert "DATEV" in skills
@@ -355,7 +355,7 @@ def test_import_from_cv_shows_updated_message_after_reload(qapp, config_service,
     assert tr("profile.cv_updated") == "Profil aktualisiert."
     education = _layout_texts(page._edu_body, object_prefix="NextActionTitle")
     skills = _layout_texts(page._skills_row, object_prefix="Badge")
-    languages = _layout_texts(page._lang_body, object_prefix="Badge")
+    languages = _layout_texts(page._lang_row, object_prefix="Badge")
     assert education == ["Importierte Ausbildung"]
     assert "SAP" in skills
     assert "Excel" not in skills

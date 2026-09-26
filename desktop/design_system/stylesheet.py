@@ -140,9 +140,19 @@ QLabel#KkNotice {{
 }}
 QFrame#Card[kkClickable="true"]:hover {{
     border-color: {c.primary};
+    background: {c.bg};
 }}
 QFrame#Card[kkClickable="true"]:focus {{
     border: {ctrl.focus_width}px solid {c.focus_ring};
+}}
+QFrame#Card[kkExpanded="true"] {{
+    border-color: {c.primary};
+}}
+QLabel#BadgeOk, QLabel#BadgeWarn, QLabel#BadgeDanger, QLabel#BadgeMuted, QLabel#BadgeInfo {{
+    padding: 4px 10px;
+    border-radius: {r.sm}px;
+    font-size: {ty.size_xs}px;
+    font-weight: {ty.weight_semibold};
 }}
 QPushButton#KkPrimary, QPushButton#PrimaryButton {{
     background: {c.primary};

@@ -86,13 +86,23 @@ def test_chips_and_badges_get_light_shadow(qapp):
 def test_cards_get_static_shadow_once(qapp):
     content = ContentCard()
     kpi = KpiCard("Jobs", "3")
-    section = ProfileSectionCard("Skills")
-    for card in (content, kpi, section):
+    for card in (content, kpi):
         effect = _effect(card)
         assert effect.blurRadius() >= 18.0
         assert card.property("_kk_polish") == "card"
         again = polish_card(card)
         assert again is effect
+
+
+def test_profile_section_card_has_interactive_hover_shadow(qapp):
+    section = ProfileSectionCard("Skills")
+    effect = _effect(section)
+    assert effect.blurRadius() >= 18.0
+    polish = section.property("_kk_polish")
+    assert polish is not None and polish != "card"
+    assert section.property("kkClickable") == "true"
+    assert section.focusPolicy() == Qt.FocusPolicy.StrongFocus
+    assert section.expand_indicator.isVisibleTo(section) or not section.expand_indicator.isHidden()
 
 
 def test_set_status_keeps_chip_shadow(qapp):

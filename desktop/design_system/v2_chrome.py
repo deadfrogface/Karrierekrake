@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import (
+    QAbstractButton,
     QDialog,
     QFrame,
     QHBoxLayout,
     QLabel,
     QPushButton,
     QSizePolicy,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -261,7 +264,12 @@ class IconActionButton(QPushButton):
 
 
 class TagChip(QLabel):
-    """Compact tag / chip for skills and career goals."""
+    """Compact tag / chip for skills and career goals.
+
+    Horizontal size never shrinks below the text need — a wrapping ``FlowLayout``
+    moves chips to the next line instead of eliding. Very long tokens wrap
+    inside the chip when the parent line is narrower than the text.
+    """
 
     def __init__(
         self,
@@ -278,8 +286,29 @@ class TagChip(QLabel):
             "more": "BadgeMuted",
         }
         self.setObjectName(mapping.get(kind, "BadgeMuted"))
+        self.setWordWrap(True)
+        self.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
+        # Minimum: layout must not squash pills; Preferred height allows wrap.
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
         set_accessible_name(self, text)
         polish_chip(self)
+
+    def hasHeightForWidth(self) -> bool:  # noqa: N802
+        return True
+
+    def heightForWidth(self, width: int) -> int:  # noqa: N802
+        if width <= 0:
+            return int(self.sizeHint().height())
+        metrics = self.fontMetrics()
+        rect = metrics.boundingRect(
+            0,
+            0,
+            max(24, int(width)),
+            4000,
+            int(Qt.TextFlag.TextWordWrap),
+            self.text(),
+        )
+        return int(rect.height() + 8)
 
 
 class DataItem(QWidget):
@@ -306,7 +335,14 @@ class DataItem(QWidget):
 
 
 class ProfileSectionCard(QFrame):
-    """Demo-aligned profile section card with header action."""
+    """Demo-aligned profile section card with header action + expand/collapse.
+
+    Clicking free card surface (not Bearbeiten/Hinzufügen or other buttons)
+    toggles ``expanded``. Keyboard: Space / Enter. Hover uses soft shadow +
+    border lift without changing geometry.
+    """
+
+    expandedChanged = Signal(bool)
 
     def __init__(
         self,
@@ -318,17 +354,36 @@ class ProfileSectionCard(QFrame):
         super().__init__(parent)
         self.setObjectName("Card")
         self.setFrameShape(QFrame.Shape.StyledPanel)
+        self.setProperty("kkClickable", "true")
+        self.setProperty("kkExpanded", "false")
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._expanded = False
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
         header = QHBoxLayout()
         header.setContentsMargins(16, 14, 16, 14)
+        header.setSpacing(8)
+        self.expand_indicator = QToolButton()
+        self.expand_indicator.setObjectName("GhostButton")
+        self.expand_indicator.setAutoRaise(True)
+        self.expand_indicator.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.expand_indicator.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.expand_indicator.setFixedSize(28, 28)
+        self.expand_indicator.clicked.connect(self.toggle_expanded)
+        apply_button_icon(self.expand_indicator, "chevron_down", color="#5a6b7a", size=14)
+        header.addWidget(self.expand_indicator)
         self.title_label = QLabel(title)
         self.title_label.setObjectName("NextActionTitle")
-        header.addWidget(self.title_label)
-        header.addStretch()
+        self.title_label.setWordWrap(True)
+        self.title_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self.title_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        header.addWidget(self.title_label, stretch=1)
         self.action_btn = IconActionButton(action_text)
         self.action_btn.setVisible(bool(action_text))
+        # Action keeps its own hit target — must not bubble into expand toggle.
+        self.action_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         header.addWidget(self.action_btn)
         root.addLayout(header)
         self._body = QVBoxLayout()
@@ -336,19 +391,101 @@ class ProfileSectionCard(QFrame):
         self._body.setSpacing(12)
         root.addLayout(self._body)
         set_accessible_name(self, title)
-        polish_card(self)
+        # Interactive hover shadow (same resting metrics as polish_card) —
+        # geometry stays fixed; only blur/alpha/border change on hover.
+        polish_interactive(
+            self,
+            blur=22.0,
+            y_offset=6.0,
+            alpha=28,
+            cursor=True,
+            hover_blur=14.0,
+            hover_y=4.0,
+            hover_alpha=40,
+            press=False,
+        )
+        self._sync_expand_chrome()
 
     def body(self) -> QVBoxLayout:
         return self._body
 
+    def is_expanded(self) -> bool:
+        return self._expanded
+
+    def set_expanded(self, expanded: bool) -> None:
+        want = bool(expanded)
+        if want == self._expanded:
+            self._sync_expand_chrome()
+            return
+        self._expanded = want
+        self.setProperty("kkExpanded", "true" if want else "false")
+        self._sync_expand_chrome()
+        style = self.style()
+        if style is not None:
+            style.unpolish(self)
+            style.polish(self)
+        self.expandedChanged.emit(want)
+
+    def toggle_expanded(self) -> None:
+        self.set_expanded(not self._expanded)
+
+    def _sync_expand_chrome(self) -> None:
+        from desktop.i18n import tr
+
+        icon = "chevron_up" if self._expanded else "chevron_down"
+        apply_button_icon(self.expand_indicator, icon, color="#5a6b7a", size=14)
+        tip = tr("profile.collapse") if self._expanded else tr("profile.expand")
+        self.expand_indicator.setToolTip(tip)
+        set_accessible_name(self.expand_indicator, tip)
+        title = self.title_label.text()
+        set_accessible_name(self, f"{title} — {tip}")
+
     def set_title(self, title: str) -> None:
         self.title_label.setText(title)
-        set_accessible_name(self, title)
+        self._sync_expand_chrome()
 
     def set_action_text(self, text: str) -> None:
         self.action_btn.setText(text)
         set_accessible_name(self.action_btn, text)
         self.action_btn.setVisible(bool(text))
+
+    def _is_interactive_target(self, widget: QWidget | None) -> bool:
+        cur: QWidget | None = widget
+        while cur is not None and cur is not self:
+            if cur is self.expand_indicator or cur is self.action_btn:
+                return True
+            if isinstance(cur, QAbstractButton):
+                return True
+            if cur.property("kkKeepInteractive"):
+                return True
+            flags = getattr(cur, "textInteractionFlags", None)
+            if callable(flags):
+                try:
+                    interaction = flags()
+                    if interaction & Qt.TextInteractionFlag.LinksAccessibleByMouse:
+                        return True
+                except Exception:
+                    pass
+            cur = cur.parentWidget()
+        return False
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # noqa: N802
+        if event.button() == Qt.MouseButton.LeftButton and self.rect().contains(
+            event.position().toPoint()
+        ):
+            child = self.childAt(event.position().toPoint())
+            if not self._is_interactive_target(child):
+                self.toggle_expanded()
+                event.accept()
+                return
+        super().mouseReleaseEvent(event)
+
+    def keyPressEvent(self, event) -> None:  # noqa: N802
+        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter, Qt.Key.Key_Space):
+            self.toggle_expanded()
+            event.accept()
+            return
+        super().keyPressEvent(event)
 
 
 class SectionEditDrawer(QDialog):
