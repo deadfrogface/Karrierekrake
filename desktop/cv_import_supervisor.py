@@ -63,17 +63,37 @@ def qa_observe_seconds() -> float:
     return min(value, _OBSERVE_CAP_S)
 
 
-def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
-    argv = [
+def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
+    """Build argv for the contained CV-import worker.
+
+    Dev (unfrozen): ``python -m desktop.cv_import_child …``.
+    Packaged Windows EXE: ``Karrierekrake.exe --cv-import-child …`` — the EXE
+    entrypoint must recognize that flag before the GUI / instance lock.
+    """
+    cv = str(cv_path)
+    out = str(out_path)
+    if getattr(sys, "frozen", False):
+        return [
+            str(Path(sys.executable).resolve()),
+            "--cv-import-child",
+            "--cv",
+            cv,
+            "--out",
+            out,
+        ]
+    return [
         sys.executable,
         "-m",
         "desktop.cv_import_child",
         "--cv",
-        str(cv_path),
+        cv,
         "--out",
-        str(out_path),
+        out,
     ]
-    return launch_contained(argv, console=False)
+
+
+def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
+    return launch_contained(cv_import_child_argv(cv_path, out_path), console=False)
 
 
 class CvImportSupervisor:
