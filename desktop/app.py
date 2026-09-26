@@ -218,6 +218,12 @@ def run() -> int:
 
 
 def main() -> int:
+    # Packaged worker mode: must run before GUI / single-instance lock.
+    # Supervisor spawns ``Karrierekrake.exe --cv-import-child …`` when frozen;
+    # without this branch the child opens the normal app, hits the lock, and
+    # exits 1 with „Karrierekrake läuft bereits“.
+    if "--cv-import-child" in sys.argv:
+        return _run_cv_import_child()
     if os.environ.get("KARRIEREKRAKE_SMOKE_TEST", "").strip().lower() in {"1", "true", "yes"}:
         return _smoke_test()
     if "--smoke-test" in sys.argv:
@@ -229,6 +235,14 @@ def main() -> int:
     if "--once" in sys.argv:
         return _run_once_headless()
     return run()
+
+
+def _run_cv_import_child() -> int:
+    """Frozen EXE CV-import worker: no Qt UI, no single-instance lock."""
+    from desktop.cv_import_child import run as run_cv_import_child
+
+    child_argv = [a for a in sys.argv[1:] if a != "--cv-import-child"]
+    return int(run_cv_import_child(child_argv))
 
 
 def _run_once_headless() -> int:
