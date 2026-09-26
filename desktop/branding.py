@@ -125,6 +125,15 @@ def icon_path(size: int | None = None) -> Path | None:
     return None
 
 
+def app_ico_path() -> Path | None:
+    """Multi-size Windows ``.ico`` used for EXE / taskbar / window chrome."""
+    for root in _asset_roots():
+        path = root / ASSET_REL / "app.ico"
+        if path.is_file():
+            return path
+    return None
+
+
 def logo_path(*, master: bool = False) -> Path | None:
     """Large brand artwork (MASTER A) for README / onboarding / About."""
     name = LOGO_MASTER_NAME if master else "logo.png"
