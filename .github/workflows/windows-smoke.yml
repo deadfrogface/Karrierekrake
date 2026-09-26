@@ -96,6 +96,15 @@ jobs:
           $env:QT_QPA_PLATFORM = "offscreen"
           # Windowed onefile: poll tokenized marker (do not trust process exit alone).
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake.exe") -LocalAppData $tmp.FullName
+      - name: Packaged CV-import child while instance lock held
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:QT_QPA_PLATFORM = "offscreen"
+          # Simulates: App already open → supervisor spawns second EXE as worker.
+          # Without --cv-import-child routing the child hits the lock and never writes --out.
+          python scripts/ci_cv_import_child_exe_check.py --exe dist/Karrierekrake.exe
+          if ($LASTEXITCODE -ne 0) { Write-Error "CV-import child EXE check FAILED"; exit 1 }
       - name: Packaged legacy DB migration (library + EXE smoke)
         shell: pwsh
         run: |
