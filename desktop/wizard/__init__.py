@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
 from desktop.branding import logo_path
 from desktop.i18n import tr
 from desktop.services import ConfigService
-from desktop.tray import app_icon
+from desktop.tray import apply_window_icon
 from desktop.widgets import ListEditor
 from desktop.widgets.scroll_page import wrap_scrollable
 
@@ -338,7 +338,7 @@ class FirstRunWizard(QWizard):
         self._force = force
         self.setMinimumSize(640, 560)
         self.setSizeGripEnabled(True)
-        self.setWindowIcon(app_icon())
+        apply_window_icon(self)
         self.cv = CvStepPage()
         self.prefs = PrefsStepPage()
         self.integrations = IntegrationsStepPage(config_service)

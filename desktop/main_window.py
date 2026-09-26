@@ -37,7 +37,7 @@ from desktop.services import ConfigService
 from desktop.services.schedule_service import ScheduleService
 from desktop.services.shutdown import get_shutdown_manager
 from desktop.theme import apply_theme
-from desktop.tray import AppTray, app_icon
+from desktop.tray import AppTray, apply_window_icon
 from desktop.workers import PipelineWorker, connect_queued, start_worker, thread_is_running
 from desktop.wizard import FirstRunWizard
 from desktop.design_system.a11y import annotate_nav_button, set_accessible_name, set_accessible_description, set_automation_id
@@ -76,7 +76,7 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(900, 650)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle(tr("app.name"))
-        self.setWindowIcon(app_icon())
+        apply_window_icon(self)
         set_automation_id(self, "kk.main_window")
 
         central = QWidget()
@@ -242,6 +242,8 @@ class MainWindow(QMainWindow):
 
     def showEvent(self, event: QShowEvent) -> None:
         super().showEvent(event)
+        # Re-apply after the HWND exists — Windows taskbar reads WM_SETICON here.
+        apply_window_icon(self)
         if self._geo_preload_armed or self._shutting_down:
             return
         self._geo_preload_armed = True

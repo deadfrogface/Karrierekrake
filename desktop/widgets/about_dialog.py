@@ -28,7 +28,7 @@ from desktop.branding import (
     logo_path,
 )
 from desktop.i18n import i18n, tr
-from desktop.tray import app_icon
+from desktop.tray import apply_window_icon
 from desktop.widgets.confirm_dialog import label_button_box
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen, wrap_dialog_body
 
@@ -50,7 +50,7 @@ class AboutDialog(QDialog):
         super().__init__(parent)
         self.data_dir = Path(data_dir) if data_dir else _default_data_dir()
         self.setWindowTitle(tr("about.title"))
-        self.setWindowIcon(app_icon())
+        apply_window_icon(self)
         self.setMinimumWidth(480)
         outer = QVBoxLayout(self)
         body = QWidget()
