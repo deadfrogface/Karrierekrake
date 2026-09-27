@@ -2,3 +2,4 @@
 # docs/security/dependency-exceptions.md (reviewed non-applicable / deferred).
 # Do not add High/Critical runtime findings here without that review.
 PYSEC-2026-1604
+PYSEC-2026-2447
