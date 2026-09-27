@@ -10,9 +10,10 @@ import pytest
 from core.config import AppConfig, LocationConfig, SearchPreferences, SettingsConfig
 from core.database import Database
 from core.geo_dataset import GeoDatasetManager, reset_geo_dataset_manager_for_tests
-from core.geo_resolve import HAVERSINE_ALGORITHM, reset_pgeocode_index_for_tests
+from core.geo_resolve import haversine_km, reset_pgeocode_index_for_tests
 from core.location import LocationService, enrich_job_locations, location_cache_key
 from core.models import RemoteType
+from core.road_route_brouter import BROUTER_ENGINE_ID, RoadRouteResult
 
 
 @pytest.fixture(autouse=True)
@@ -21,6 +22,14 @@ def _geo(tmp_path, monkeypatch):
     reset_pgeocode_index_for_tests()
     monkeypatch.setenv("KARRIEREKRAKE_GEO_DATA_DIR", str(tmp_path / "geo_active"))
     GeoDatasetManager(config_root=tmp_path).ensure_active()
+    # Static-smoke / unit CI have no BRouter — keep road routing deterministic.
+    import core.location as loc_mod
+
+    def _echo_airline(lat1, lon1, lat2, lon2):
+        km = round(haversine_km(lat1, lon1, lat2, lon2), 3)
+        return RoadRouteResult(ok=True, distance_km=km, engine=BROUTER_ENGINE_ID)
+
+    monkeypatch.setattr(loc_mod, "_route_road_km", _echo_airline)
     yield
     reset_geo_dataset_manager_for_tests()
     reset_pgeocode_index_for_tests()
@@ -33,9 +42,11 @@ class _FakeJob:
     postal_code: str = ""
     latitude: float | None = None
     longitude: float | None = None
+    airline_km: float | None = None
     distance_km: float | None = None
     commute_duration_minutes: float | None = None
     distance_source: str = ""
+    distance_error: str = ""
     remote_type: str = RemoteType.ONSITE.value
     country_code: str = ""
 
@@ -74,6 +85,7 @@ def test_enrich_remote_skips_distance(tmp_path):
 
 
 def test_enrich_plz_airline(tmp_path):
+    """Airline is invisible prefilter; distance_km is BRouter road km only."""
     svc = _svc(tmp_path)
     jobs = [
         _FakeJob(
@@ -84,8 +96,9 @@ def test_enrich_plz_airline(tmp_path):
         )
     ]
     enrich_job_locations(jobs, svc)
+    assert jobs[0].airline_km is not None
     assert jobs[0].distance_km is not None
-    assert jobs[0].distance_source == HAVERSINE_ALGORITHM
+    assert jobs[0].distance_source == BROUTER_ENGINE_ID
     assert jobs[0].commute_duration_minutes is None
 
 
