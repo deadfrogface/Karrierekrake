@@ -19,8 +19,16 @@ Quelle: `artifacts/one_model_dual_use/frontend_ablation/TEXT_ABLATION.json`
 
 ## LLM-Impact (Phi + Qwen, gleiches Docpick-Schema)
 
-Lauf: `scripts/run_frontend_docling_vs_cv_extract.py --run-llm`  
-Ergebnisdatei: `artifacts/one_model_dual_use/frontend_ablation/LLM_IMPACT.json` (nach Abschluss).
+Fokussierter Lauf auf DE_01/02 + EN mit größtem Char-Diff; Cache unter `frontend_ablation/llm_cache/`.
+
+### Partial (Qwen, DE_01 + DE_02, beide Frontends)
+
+| Doc | cv_extract F1 | Docling F1 |
+|-----|---------------|------------|
+| DE_01 | 0,882 | **0,882** (identisch) |
+| DE_02 | 0,983 | **0,983** (identisch) |
+
+Bei gleicher GT-Coverage ändert das Frontend die Qwen-Scores auf diesen Docs nicht. Volle EN-Diff-Messung + Phi: `LLM_IMPACT.json` nach Laufende.
 
 Messung: Agent-VM — **nicht** i3/8‑GB Job-Object.
 
