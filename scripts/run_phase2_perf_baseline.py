@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+os.environ.setdefault("KARRIEREKRAKE_CV_USE_DOCLING", "1")
 import resource
 import sys
 import time

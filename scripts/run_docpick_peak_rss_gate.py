@@ -103,6 +103,7 @@ def _pick_pdf() -> Path:
 
 
 def main() -> int:
+    os.environ.setdefault("KARRIEREKRAKE_CV_USE_DOCLING", "1")
     os.environ.setdefault("KARRIEREKRAKE_CV_LLM_BASE", "http://127.0.0.1:8765/v1")
     from core.cv_docpick_import import (
         CV_IMPORT_PEAK_RSS_BYTES_MAX,

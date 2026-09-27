@@ -211,8 +211,8 @@ class CvImportSupervisor:
             return ImportAttemptResult(True, "ok", "", payload["parsed"], attempts=1)
         kind = str(payload.get("kind") or "")
         message = str(payload.get("message") or "")
-        if kind == "oom" or code == 3 or is_oom_exit(code):
-            return ImportAttemptResult(False, "oom", message or "oom", None, attempts=1)
+        if kind == "oom" or kind == "peak_rss_exceeded" or code == 3 or is_oom_exit(code):
+            return ImportAttemptResult(False, "oom" if kind != "peak_rss_exceeded" else "peak_rss_exceeded", message or "oom", None, attempts=1)
         if kind == "timeout":
             return ImportAttemptResult(False, "timeout", message or "timeout", None, attempts=1)
         if kind == "cancelled":

@@ -63,6 +63,7 @@ def _verify_pdf_hashes(manifest: dict) -> None:
 
 
 def main() -> int:
+    os.environ.setdefault("KARRIEREKRAKE_CV_USE_DOCLING", "1")
     os.environ.setdefault("KARRIEREKRAKE_CV_LLM_BASE", "http://127.0.0.1:8765/v1")
     if PHASE_B_DIR.exists() and any(PHASE_B_DIR.iterdir()):
         print(

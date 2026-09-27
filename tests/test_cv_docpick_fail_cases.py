@@ -47,7 +47,7 @@ def test_timeout_hard_fails_without_hang(monkeypatch: pytest.MonkeyPatch) -> Non
 def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "core.cv_docpick_import.cv_path_peak_rss_bytes",
-        lambda: 9_000_000_000,
+        lambda **_kwargs: 9_000_000_000,
     )
     with pytest.raises(CvImportError) as ei:
         _enforce_peak_rss(stage="unit")

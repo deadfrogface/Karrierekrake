@@ -34,6 +34,7 @@ def _peak_rss_mb() -> float:
 
 
 def main() -> int:
+    os.environ.setdefault("KARRIEREKRAKE_CV_USE_DOCLING", "1")
     os.environ.setdefault("KARRIEREKRAKE_CV_LLM_BASE", "http://127.0.0.1:8765/v1")
     if not MANIFEST.is_file():
         print(f"missing {MANIFEST}", file=sys.stderr)

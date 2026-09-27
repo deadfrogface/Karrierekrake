@@ -110,8 +110,24 @@ def main(argv: list[str] | None = None) -> int:
             if not isinstance(payload, dict):
                 print(f"FAIL: --out not a JSON object: {raw[:200]!r}", flush=True)
                 return 1
-            # Success or parser error both prove we reached cv_import_child.
             kind = str(payload.get("kind") or "")
+            message = str(payload.get("message") or "")
+            # Child must have reached cv_import_child (not the instance-lock GUI).
+            if not kind:
+                print("FAIL: --out missing kind", flush=True)
+                return 1
+            # Generic swallow without a stage code is a regression.
+            if kind == "error" and message == "Der Lebenslauf konnte nicht gelesen werden.":
+                print(
+                    "FAIL: child still swallows the real error into the generic read-failed copy",
+                    flush=True,
+                )
+                return 1
+            # Instance-lock regression must never appear in worker output.
+            if "läuft bereits" in message.lower():
+                print("FAIL: instance-lock copy leaked into child --out", flush=True)
+                return 1
+            # Success or stage-specific failure (e.g. model_missing on CI) both OK.
             print(
                 f"OK: child wrote --out ok={payload.get('ok')!r} kind={kind!r} "
                 f"exit={proc.returncode}",
