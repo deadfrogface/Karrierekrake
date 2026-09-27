@@ -1,0 +1,25 @@
+{
+  "downloaded_at_utc": "2026-09-27T21:28:56Z",
+  "segments": [
+    {
+      "file": "E0_N45.rd5",
+      "bytes": 127379765,
+      "last_modified_http": "Sun, 27 Sep 2026 01:03:01 GMT"
+    },
+    {
+      "file": "E0_N50.rd5",
+      "bytes": 79594579,
+      "last_modified_http": "Sun, 27 Sep 2026 01:03:01 GMT"
+    },
+    {
+      "file": "E5_N45.rd5",
+      "bytes": 252598502,
+      "last_modified_http": "Sun, 27 Sep 2026 01:03:01 GMT"
+    },
+    {
+      "file": "E5_N50.rd5",
+      "bytes": 182569206,
+      "last_modified_http": "Sun, 27 Sep 2026 01:03:01 GMT"
+    }
+  ]
+}

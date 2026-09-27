@@ -1,0 +1,40 @@
+{
+  "comparison_type": "AGENT_VM_LOCAL_ROAD_BAKEOFF_NOT_LAPTOP",
+  "hardware_note": "Agent-VM (Linux, ~15 GiB RAM, 4 vCPU) — not i3 Job-Object evidence",
+  "pairs": [
+    {"id": "C01", "cat": "city", "from": "Köln Dom", "to": "Köln Deutz", "from_ll": [50.9413, 6.9583], "to_ll": [50.9406, 6.9747]},
+    {"id": "C02", "cat": "city", "from": "Düsseldorf Hbf", "to": "Düsseldorf Flughafen", "from_ll": [51.2200, 6.7930], "to_ll": [51.2895, 6.7668]},
+    {"id": "C03", "cat": "city", "from": "Münster Prinzipalmarkt", "to": "Münster Hiltrup", "from_ll": [51.9625, 7.6256], "to_ll": [51.9040, 7.6470]},
+    {"id": "C04", "cat": "city", "from": "Amsterdam Centraal", "to": "Amsterdam Zuid", "from_ll": [52.3791, 4.9003], "to_ll": [52.3390, 4.8720]},
+    {"id": "C05", "cat": "city", "from": "Brussels Central", "to": "Brussels Airport", "from_ll": [50.8455, 4.3571], "to_ll": [50.9014, 4.4844]},
+    {"id": "C06", "cat": "city", "from": "Aachen Dom", "to": "Aachen Rothe Erde", "from_ll": [50.7747, 6.0839], "to_ll": [50.7701, 6.1165]},
+
+    {"id": "R01", "cat": "rural", "from": "Monschau", "to": "Schleiden", "from_ll": [50.5560, 6.2410], "to_ll": [50.5280, 6.4760]},
+    {"id": "R02", "cat": "rural", "from": "Winterberg", "to": "Medebach", "from_ll": [51.1950, 8.5330], "to_ll": [51.1990, 8.7060]},
+    {"id": "R03", "cat": "rural", "from": "Cloppenburg", "to": "Vechta", "from_ll": [52.8470, 8.0450], "to_ll": [52.7260, 8.2860]},
+    {"id": "R04", "cat": "rural", "from": "Coevorden (NL)", "to": "Emmen (NL)", "from_ll": [52.6610, 6.7410], "to_ll": [52.7790, 6.9070]},
+    {"id": "R05", "cat": "rural", "from": "Bastogne (BE)", "to": "Houffalize (BE)", "from_ll": [50.0040, 5.7190], "to_ll": [50.1320, 5.7900]},
+    {"id": "R06", "cat": "rural", "from": "Bitburg", "to": "Prüm", "from_ll": [49.9670, 6.5240], "to_ll": [50.2080, 6.4220]},
+
+    {"id": "H01", "cat": "highway", "from": "Köln", "to": "Frankfurt a.M.", "from_ll": [50.9375, 6.9603], "to_ll": [50.1109, 8.6821]},
+    {"id": "H02", "cat": "highway", "from": "Dortmund", "to": "Hannover", "from_ll": [51.5136, 7.4653], "to_ll": [52.3759, 9.7320]},
+    {"id": "H03", "cat": "highway", "from": "Amsterdam", "to": "Rotterdam", "from_ll": [52.3676, 4.9041], "to_ll": [51.9244, 4.4777]},
+    {"id": "H04", "cat": "highway", "from": "Antwerpen", "to": "Gent", "from_ll": [51.2194, 4.4025], "to_ll": [51.0543, 3.7174]},
+    {"id": "H05", "cat": "highway", "from": "Düsseldorf", "to": "Essen", "from_ll": [51.2277, 6.7735], "to_ll": [51.4556, 7.0116]},
+    {"id": "H06", "cat": "highway", "from": "Utrecht", "to": "Eindhoven", "from_ll": [52.0907, 5.1214], "to_ll": [51.4416, 5.4697]},
+
+    {"id": "L01", "cat": "long_commute", "from": "Köln", "to": "Münster", "from_ll": [50.9375, 6.9603], "to_ll": [51.9607, 7.6261]},
+    {"id": "L02", "cat": "long_commute", "from": "Aachen", "to": "Dortmund", "from_ll": [50.7753, 6.0839], "to_ll": [51.5136, 7.4653]},
+    {"id": "L03", "cat": "long_commute", "from": "Bonn", "to": "Frankfurt a.M.", "from_ll": [50.7374, 7.0982], "to_ll": [50.1109, 8.6821]},
+    {"id": "L04", "cat": "long_commute", "from": "Haarlem (NL)", "to": "Eindhoven (NL)", "from_ll": [52.3874, 4.6462], "to_ll": [51.4416, 5.4697]},
+    {"id": "L05", "cat": "long_commute", "from": "Liège (BE)", "to": "Brugge (BE)", "from_ll": [50.6326, 5.5797], "to_ll": [51.2093, 3.2247]},
+    {"id": "L06", "cat": "long_commute", "from": "Bielefeld", "to": "Köln", "from_ll": [52.0302, 8.5325], "to_ll": [50.9375, 6.9603]},
+
+    {"id": "X01", "cat": "cross_border", "from": "Aachen (DE)", "to": "Maastricht (NL)", "from_ll": [50.7753, 6.0839], "to_ll": [50.8514, 5.6910]},
+    {"id": "X02", "cat": "cross_border", "from": "Kleve (DE)", "to": "Nijmegen (NL)", "from_ll": [51.7886, 6.1385], "to_ll": [51.8126, 5.8372]},
+    {"id": "X03", "cat": "cross_border", "from": "Emmerich (DE)", "to": "Arnhem (NL)", "from_ll": [51.8340, 6.2480], "to_ll": [51.9851, 5.8987]},
+    {"id": "X04", "cat": "cross_border", "from": "Aachen (DE)", "to": "Liège (BE)", "from_ll": [50.7753, 6.0839], "to_ll": [50.6326, 5.5797]},
+    {"id": "X05", "cat": "cross_border", "from": "Monschau (DE)", "to": "Eupen (BE)", "from_ll": [50.5560, 6.2410], "to_ll": [50.6270, 6.0370]},
+    {"id": "X06", "cat": "cross_border", "from": "Venlo (NL)", "to": "Mönchengladbach (DE)", "from_ll": [51.3704, 6.1724], "to_ll": [51.1805, 6.4428]}
+  ]
+}

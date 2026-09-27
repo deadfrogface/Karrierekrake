@@ -1,0 +1,22 @@
+{
+  "comparison_type": "AGENT_VM_ROAD_DISTANCE_BAKEOFF_NOT_LAPTOP",
+  "decision": {
+    "brouter": "KEEP",
+    "graphhopper": "REJECT",
+    "wire_into_production_distance_filter": false
+  },
+  "rationale": [
+    "BRouter peak RSS ~385 MB vs GraphHopper ~5976 MB on Agent-VM",
+    "BRouter segments ~0.60 GiB vs GraphHopper OSM+cache ~8.8 GiB",
+    "BRouter+Qwen concurrent fits Agent-VM 16 GiB; GH+Qwen does not leave safe headroom",
+    "No account/API key/cloud required for either; BRouter auto-start as child process is simpler than OSM import",
+    "Production airline filter unchanged until explicit product switch after laptop gates"
+  ],
+  "open_gates": [
+    "i3 laptop Job-Object peak with BRouter+Qwen",
+    "Windows auto-start + segment update UX",
+    "BRouter island/snap misses (C05, X01) need better approach-point selection",
+    "NL PLZ collision / BE coverage gaps in local geocoder"
+  ],
+  "hardware_note": "All numeric measurements in this bakeoff are Agent-VM — not i3 Job-Object ship evidence"
+}

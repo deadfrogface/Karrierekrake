@@ -139,6 +139,19 @@ artifacts/one_model_dual_use/frontend_ablation/**
 artifacts/one_model_dual_use/writing_purge_samples/**
 !artifacts/one_model_dual_use/writing_purge_samples/SAMPLES.json
 
+# Road-distance bakeoff summaries (raw caches stay ignored under artifacts/*)
+!artifacts/road_distance_bakeoff/
+artifacts/road_distance_bakeoff/**
+!artifacts/road_distance_bakeoff/PAIRS_30.json
+!artifacts/road_distance_bakeoff/BROUTER_RESULTS.json
+!artifacts/road_distance_bakeoff/GRAPHHOPPER_RESULTS.json
+!artifacts/road_distance_bakeoff/OSM_DATA_META.json
+!artifacts/road_distance_bakeoff/STORAGE_FOOTPRINT.json
+!artifacts/road_distance_bakeoff/BROUTER_SEGMENTS_META.json
+!artifacts/road_distance_bakeoff/CONCURRENT_BROUTER_QWEN.json
+!artifacts/road_distance_bakeoff/GEO_RESOLVE_SPOTCHECK.json
+!artifacts/road_distance_bakeoff/DECISION.json
+
 # Mini holdout 30 Phase A: zip tracked; PDFs ignored via *.pdf; seal hashes tracked
 tests/mini_holdout_30/phase_a_pdfs/*
 !tests/mini_holdout_30/phase_a_pdfs/PDF_MANIFEST.json

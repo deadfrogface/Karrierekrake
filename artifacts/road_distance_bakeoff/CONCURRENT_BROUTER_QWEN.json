@@ -1,0 +1,11 @@
+{
+  "comparison_type": "AGENT_VM_CONCURRENT_BROUTER_QWEN_NOT_LAPTOP",
+  "brouter_peak_rss_mb_observed": 323.9,
+  "qwen_process_maxrss_mb": 5581.9,
+  "note": "Separate processes; Agent-VM 15GiB. Not i3/8GB Job-Object evidence.",
+  "brouter_rss_mb_during_qwen": 323.9,
+  "mem_available_kb_during": 6095884,
+  "mem_total_kb": 16398384,
+  "graphhopper_alone_peak_rss_mb": 5976.2,
+  "implication": "On Agent-VM 16GiB: BRouter+Qwen fits; GraphHopper(~6GiB)+Qwen(~5.6GiB) leaves little headroom. i3/8GB: GH+Qwen not viable; BRouter+Qwen still needs laptop measurement."
+}

@@ -1,0 +1,91 @@
+{
+  "downloaded_at_utc": "2026-09-27T21:31:00Z",
+  "total_bytes": 4134170517,
+  "files": [
+    {
+      "name": "nordrhein-westfalen",
+      "bytes": 913472561,
+      "last_modified_http": "Sun, 27 Sep 2026 02:53:02 GMT",
+      "content_length_header": "",
+      "path": "/tmp/road_bakeoff/osm/nordrhein-westfalen-latest.osm.pbf",
+      "osmium_timestamp_lines": [
+        "osmosis_replication_timestamp=2026-09-26T20:22:51Z",
+        "timestamp=2026-09-26T20:22:51Z",
+        "Timestamps:",
+        "All objects have following metadata attributes: version+timestamp",
+        "Some objects have following metadata attributes: version+timestamp"
+      ]
+    },
+    {
+      "name": "niedersachsen",
+      "bytes": 506173595,
+      "last_modified_http": "Sun, 27 Sep 2026 02:53:02 GMT",
+      "content_length_header": "",
+      "path": "/tmp/road_bakeoff/osm/niedersachsen-latest.osm.pbf",
+      "osmium_timestamp_lines": [
+        "osmosis_replication_timestamp=2026-09-26T20:22:51Z",
+        "timestamp=2026-09-26T20:22:51Z",
+        "Timestamps:",
+        "All objects have following metadata attributes: version+timestamp",
+        "Some objects have following metadata attributes: version+timestamp"
+      ]
+    },
+    {
+      "name": "hessen",
+      "bytes": 345691371,
+      "last_modified_http": "Sun, 27 Sep 2026 02:51:58 GMT",
+      "content_length_header": "",
+      "path": "/tmp/road_bakeoff/osm/hessen-latest.osm.pbf",
+      "osmium_timestamp_lines": [
+        "osmosis_replication_timestamp=2026-09-26T20:22:51Z",
+        "timestamp=2026-09-26T20:22:51Z",
+        "Timestamps:",
+        "All objects have following metadata attributes: version+timestamp",
+        "Some objects have following metadata attributes: version+timestamp"
+      ]
+    },
+    {
+      "name": "rheinland-pfalz",
+      "bytes": 270329417,
+      "last_modified_http": "Sun, 27 Sep 2026 02:50:44 GMT",
+      "content_length_header": "",
+      "path": "/tmp/road_bakeoff/osm/rheinland-pfalz-latest.osm.pbf",
+      "osmium_timestamp_lines": [
+        "osmosis_replication_timestamp=2026-09-26T20:22:51Z",
+        "timestamp=2026-09-26T20:22:51Z",
+        "Timestamps:",
+        "All objects have following metadata attributes: version+timestamp",
+        "Some objects have following metadata attributes: version+timestamp"
+      ]
+    },
+    {
+      "name": "netherlands",
+      "bytes": 1403352014,
+      "last_modified_http": "Sun, 27 Sep 2026 01:25:34 GMT",
+      "content_length_header": "",
+      "path": "/tmp/road_bakeoff/osm/netherlands-latest.osm.pbf",
+      "osmium_timestamp_lines": [
+        "osmosis_replication_timestamp=2026-09-26T20:22:51Z",
+        "timestamp=2026-09-26T20:22:51Z",
+        "Timestamps:",
+        "All objects have following metadata attributes: version+timestamp",
+        "Some objects have following metadata attributes: version+timestamp"
+      ]
+    },
+    {
+      "name": "belgium",
+      "bytes": 695151559,
+      "last_modified_http": "Sun, 27 Sep 2026 01:05:39 GMT",
+      "content_length_header": "",
+      "path": "/tmp/road_bakeoff/osm/belgium-latest.osm.pbf",
+      "osmium_timestamp_lines": [
+        "osmosis_replication_timestamp=2026-09-26T20:22:51Z",
+        "timestamp=2026-09-26T20:22:51Z",
+        "Timestamps:",
+        "All objects have following metadata attributes: version+timestamp",
+        "Some objects have following metadata attributes: version+timestamp"
+      ]
+    }
+  ],
+  "note": "Geofabrik regional extracts for GraphHopper import \u2014 Agent-VM"
+}

@@ -1,0 +1,190 @@
+{
+  "comparison_type": "AGENT_VM_GEO_RESOLVE_SPOTCHECK_NOT_LAPTOP",
+  "dataset_scope_note": "Bundled geo is DACH-oriented (DE/AT/CH + limited NL via pgeocode); BE PLZ may be UNKNOWN offline",
+  "cases": [
+    {
+      "name": "ambiguous_neustadt_de",
+      "input": {
+        "city": "Neustadt",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 51.4672,
+      "lon": 10.4673,
+      "precision": "city_centroid",
+      "reason": "",
+      "display": "Neustadt, DE",
+      "source": "geonames"
+    },
+    {
+      "name": "ambiguous_neustadt_an_der_weinstrasse",
+      "input": {
+        "city": "Neustadt an der Weinstraße",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 49.35123333333333,
+      "lon": 8.141066666666667,
+      "precision": "city_centroid",
+      "reason": "",
+      "display": "Neustadt an der Weinstraße, DE",
+      "source": "geonames"
+    },
+    {
+      "name": "ambiguous_frankfurt",
+      "input": {
+        "city": "Frankfurt",
+        "country_code": "DE"
+      },
+      "status": "AMBIGUOUS",
+      "ok": false,
+      "lat": null,
+      "lon": null,
+      "precision": "unknown",
+      "reason": "city_multi_place",
+      "display": "Frankfurt",
+      "source": "unresolved"
+    },
+    {
+      "name": "plz_koeln",
+      "input": {
+        "postal_code": "50667",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.9387,
+      "lon": 6.9547,
+      "precision": "postal_centroid",
+      "reason": "",
+      "display": "50667, Köln, DE",
+      "source": "geonames"
+    },
+    {
+      "name": "plz_maastricht",
+      "input": {
+        "city": "Maastricht",
+        "postal_code": "6211",
+        "country_code": "NL"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 47.2017,
+      "lon": 8.0386,
+      "precision": "postal_centroid",
+      "reason": "",
+      "display": "6211, Buchs LU, CH",
+      "source": "geonames"
+    },
+    {
+      "name": "plz_eupen_be",
+      "input": {
+        "city": "Eupen",
+        "postal_code": "4700",
+        "country_code": "BE"
+      },
+      "status": "UNKNOWN",
+      "ok": false,
+      "lat": null,
+      "lon": null,
+      "precision": "unknown",
+      "reason": "plz_unresolved_offline",
+      "display": "",
+      "source": "unresolved"
+    },
+    {
+      "name": "city_eupen_be_no_plz",
+      "input": {
+        "city": "Eupen",
+        "country_code": "BE"
+      },
+      "status": "AMBIGUOUS",
+      "ok": false,
+      "lat": null,
+      "lon": null,
+      "precision": "unknown",
+      "reason": "city_without_country",
+      "display": "Eupen",
+      "source": "unresolved"
+    },
+    {
+      "name": "city_aachen_no_plz",
+      "input": {
+        "city": "Aachen",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.76775,
+      "lon": 6.1029,
+      "precision": "city_centroid",
+      "reason": "",
+      "display": "Aachen, DE",
+      "source": "geonames"
+    },
+    {
+      "name": "empty",
+      "input": {},
+      "status": "UNKNOWN",
+      "ok": false,
+      "lat": null,
+      "lon": null,
+      "precision": "unknown",
+      "reason": "no_plz_or_city",
+      "display": "",
+      "source": "unresolved"
+    },
+    {
+      "name": "de_plz_labelled_nl",
+      "input": {
+        "postal_code": "50667",
+        "country_code": "NL"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.9387,
+      "lon": 6.9547,
+      "precision": "postal_centroid",
+      "reason": "",
+      "display": "50667, Köln, DE",
+      "source": "geonames"
+    },
+    {
+      "name": "border_kleve_plz",
+      "input": {
+        "postal_code": "47533",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 51.7883,
+      "lon": 6.1386,
+      "precision": "postal_centroid",
+      "reason": "",
+      "display": "47533, Kleve, DE",
+      "source": "geonames"
+    },
+    {
+      "name": "missing_address_only_company_city_string",
+      "input": {
+        "city": "Büropark Nord",
+        "country_code": "DE"
+      },
+      "status": "UNKNOWN",
+      "ok": false,
+      "lat": null,
+      "lon": null,
+      "precision": "unknown",
+      "reason": "city_not_found",
+      "display": "",
+      "source": "unresolved"
+    }
+  ],
+  "rules": [
+    "Unresolved/AMBIGUOUS ⇒ DISTANCE_UNKNOWN (None) — do not emit as exact road distance",
+    "Airline only via haversine_v1 with explicit Luftlinie UI label",
+    "No Google Maps / public Nominatim production calls"
+  ]
+}
