@@ -1,4 +1,4 @@
-"""DACH country / place field normalization (DE, AT, CH).
+"""Local place-field normalization (DE, AT, CH, NL, BE).
 
 No tax, visa, or legal advice. Normalization is string/ISO only.
 Ambiguous places must stay UNKNOWN — never invent coordinates or distances.
@@ -12,6 +12,8 @@ from typing import Any, Literal
 
 # ISO 3166-1 alpha-2 used by Karrierekrake for commute math.
 DACH_COUNTRY_CODES = frozenset({"DE", "AT", "CH"})
+# Extended offline geo set (DACH + Benelux for cross-border jobs).
+LOCAL_GEO_COUNTRY_CODES = frozenset({"DE", "AT", "CH", "NL", "BE"})
 
 ResolutionStatus = Literal["RESOLVED", "UNKNOWN", "AMBIGUOUS"]
 
@@ -39,13 +41,27 @@ _COUNTRY_ALIASES: dict[str, str] = {
     "svizzera": "CH",
     "swiss confederation": "CH",
     "schweizerische eidgenossenschaft": "CH",
+    "nl": "NL",
+    "nld": "NL",
+    "netherlands": "NL",
+    "nederland": "NL",
+    "holland": "NL",
+    "the netherlands": "NL",
+    "be": "BE",
+    "bel": "BE",
+    "belgium": "BE",
+    "belgien": "BE",
+    "belgique": "BE",
+    "belgië": "BE",
+    "belgie": "BE",
 }
 
 _COUNTRY_TOKEN_RE = re.compile(
     r"(?i)(?:"
     r"\b(?:deutschland|germany|österreich|oesterreich|osterreich|austria|"
-    r"schweiz|switzerland|suisse|svizzera)\b|"
-    r"\((?:de|at|ch)\)"
+    r"schweiz|switzerland|suisse|svizzera|nederland|netherlands|holland|"
+    r"belgien|belgium|belgique|belgië|belgie)\b|"
+    r"\((?:de|at|ch|nl|be)\)"
     r")"
 )
 
@@ -55,7 +71,7 @@ _PLZ_AT_CH_RE = re.compile(r"^\d{4}$")
 
 
 def normalize_country_code(value: Any, *, default: str = "") -> str:
-    """Map free-text / ISO / source labels to DE|AT|CH or empty.
+    """Map free-text / ISO / source labels to DE|AT|CH|NL|BE or empty.
 
     Empty means unknown — callers must not invent a country.
     """
@@ -69,8 +85,8 @@ def normalize_country_code(value: Any, *, default: str = "") -> str:
     cleaned = " ".join(cleaned.split())
     if cleaned in _COUNTRY_ALIASES:
         return _COUNTRY_ALIASES[cleaned]
-    # Two-letter ISO already
-    if len(cleaned) == 2 and cleaned.upper() in DACH_COUNTRY_CODES:
+    # Two-letter ISO already (local geo set, not DACH-only)
+    if len(cleaned) == 2 and cleaned.upper() in LOCAL_GEO_COUNTRY_CODES:
         return cleaned.upper()
     # Trailing ", Germany" style
     for alias, iso in _COUNTRY_ALIASES.items():
@@ -107,9 +123,29 @@ def extract_country_hint(*texts: str) -> str:
                 "svizzera",
             } or tok == "(ch)":
                 found.add("CH")
-        # ISO suffix after comma: "Konstanz, DE"
+            elif tok in {
+                "nederland",
+                "netherlands",
+                "holland",
+            } or tok == "(nl)":
+                found.add("NL")
+            elif tok in {
+                "belgien",
+                "belgium",
+                "belgique",
+                "belgië",
+                "belgie",
+            } or tok == "(be)":
+                found.add("BE")
+        # ISO suffix after comma / space: "Konstanz, DE", "6211 NL"
         for part in re.split(r"[,;/|]", blob):
             code = normalize_country_code(part.strip())
+            if code:
+                found.add(code)
+        # Trailing ISO token: "6211 Maastricht NL"
+        tokens = re.split(r"[\s,/|-]+", blob.strip())
+        if tokens:
+            code = normalize_country_code(tokens[-1])
             if code:
                 found.add(code)
     if len(found) == 1:
@@ -118,7 +154,7 @@ def extract_country_hint(*texts: str) -> str:
 
 
 def normalize_postal_code(value: Any, *, country_code: str = "") -> str:
-    """Strip and keep digits for DACH PLZ; empty if blank/unusable."""
+    """Strip and keep digits for local PLZ; empty if blank/unusable."""
     if value is None:
         return ""
     text = str(value).strip()
@@ -128,7 +164,7 @@ def normalize_postal_code(value: Any, *, country_code: str = "") -> str:
     cc = normalize_country_code(country_code)
     if cc == "DE":
         return digits if _PLZ_DE_RE.match(digits) else digits
-    if cc in {"AT", "CH"}:
+    if cc in {"AT", "CH", "NL", "BE"}:
         return digits if _PLZ_AT_CH_RE.match(digits) else digits
     # Unknown country: accept 4 or 5 digit forms only
     if _PLZ_DE_RE.match(digits) or _PLZ_AT_CH_RE.match(digits):
@@ -139,14 +175,14 @@ def normalize_postal_code(value: Any, *, country_code: str = "") -> str:
 def plz_candidate_countries(postal_code: str) -> list[str]:
     """Countries where this PLZ shape is structurally valid.
 
-    Same numeric PLZ can exist in AT and CH (e.g. 6900) — callers must
-    disambiguate; this only lists structural candidates.
+    Same numeric PLZ can exist in AT/CH/NL/BE (e.g. 6211) — callers must
+    disambiguate with an explicit country; this only lists structural candidates.
     """
     digits = re.sub(r"\D", "", str(postal_code or ""))
     if _PLZ_DE_RE.match(digits):
         return ["DE"]
     if _PLZ_AT_CH_RE.match(digits):
-        return ["AT", "CH"]
+        return ["AT", "CH", "NL", "BE"]
     return []
 
 
@@ -176,7 +212,7 @@ class NormalizedPlace:
     city: str = ""
     postal_code: str = ""
     address: str = ""
-    country_code: str = ""  # DE|AT|CH|""
+    country_code: str = ""  # DE|AT|CH|NL|BE|""
     latitude: float | None = None
     longitude: float | None = None
     remote_type: str = ""
@@ -217,7 +253,7 @@ def normalize_place_fields(
             plz = m5.group(1)
             if not cc:
                 cc = "DE"
-        elif m4 and (not cc or cc in {"AT", "CH"}):
+        elif m4 and (not cc or cc in {"AT", "CH", "NL", "BE"}):
             plz = m4.group(1)
     if not city_n and addr:
         # First segment often city for "Kreuzlingen, Switzerland"

@@ -1,8 +1,8 @@
-"""Versioned local DACH geo dataset (GeoNames postal codes via pgeocode layout).
+"""Versioned local geo dataset (GeoNames postal codes via pgeocode layout).
 
-No Karrierekrake server. Downloads (optional updates) go directly to the
-documented GeoNames / postal-codes-data mirrors. Never send user addresses
-or coordinates as query parameters.
+Countries: DE, AT, CH, NL, BE. No Karrierekrake server. Downloads (optional
+updates) go directly to the documented GeoNames / postal-codes-data mirrors.
+Never send user addresses or coordinates as query parameters.
 """
 
 from __future__ import annotations
@@ -22,6 +22,7 @@ from typing import Any
 logger = logging.getLogger("karrierekrake.geo")
 
 DACH_COUNTRIES = ("DE", "AT", "CH")
+LOCAL_GEO_COUNTRIES = ("DE", "AT", "CH", "NL", "BE")
 HAVERSINE_ALGORITHM = "haversine_v1"
 EARTH_RADIUS_KM = 6371.0088
 
@@ -129,7 +130,7 @@ def _normalize_geonames_files(dataset_root: Path) -> None:
     geo = dataset_root / "geonames"
     if not geo.is_dir():
         return
-    for cc in DACH_COUNTRIES:
+    for cc in LOCAL_GEO_COUNTRIES:
         path = geo / f"{cc}.txt"
         if not path.is_file():
             continue
@@ -191,6 +192,18 @@ def validate_country_file(path: Path, country: str) -> tuple[bool, str]:
     return True, "ok"
 
 
+def _countries_from_manifest(mf: dict[str, Any] | None) -> tuple[str, ...]:
+    if not mf:
+        return LOCAL_GEO_COUNTRIES
+    listed = tuple(
+        str(c).upper()
+        for c in (mf.get("countries") or LOCAL_GEO_COUNTRIES)
+        if str(c).strip()
+    )
+    # Always require at least DACH; include NL/BE when listed or when files exist.
+    return listed or LOCAL_GEO_COUNTRIES
+
+
 def validate_dataset(path: Path) -> tuple[bool, str]:
     mf = _read_manifest(path)
     if not mf:
@@ -198,7 +211,12 @@ def validate_dataset(path: Path) -> tuple[bool, str]:
     geo = path / "geonames"
     if not geo.is_dir():
         return False, "missing geonames/"
-    for cc in DACH_COUNTRIES:
+    # DACH always required. NL/BE required when listed in the manifest (v2+).
+    countries = _countries_from_manifest(mf)
+    required = set(DACH_COUNTRIES) | {
+        c for c in countries if c in LOCAL_GEO_COUNTRIES
+    }
+    for cc in sorted(required):
         ok, msg = validate_country_file(geo / f"{cc}.txt", cc)
         if not ok:
             return False, msg
@@ -356,7 +374,7 @@ class GeoDatasetManager:
                 source_url="",
                 license="",
                 attribution="",
-                countries=DACH_COUNTRIES,
+                countries=LOCAL_GEO_COUNTRIES,
                 algorithm=HAVERSINE_ALGORITHM,
                 earth_radius_km=EARTH_RADIUS_KM,
                 path=src,
@@ -422,7 +440,7 @@ class GeoDatasetManager:
             geo_dir = tmp_root / "geonames"
             geo_dir.mkdir(parents=True)
             files_meta: dict[str, Any] = {}
-            for cc in DACH_COUNTRIES:
+            for cc in LOCAL_GEO_COUNTRIES:
                 dest = geo_dir / f"{cc}.txt"
                 self._download_country(cc, dest, timeout_s=timeout_s)
                 ok, msg = validate_country_file(dest, cc)
@@ -436,13 +454,13 @@ class GeoDatasetManager:
             from datetime import date
 
             manifest = {
-                "dataset_id": "dach-geonames-postal-v1",
+                "dataset_id": "local-geo-geonames-postal-v2",
                 "version": f"{date.today().isoformat()}-geonames",
                 "source": "geonames",
                 "source_url": "https://download.geonames.org/export/zip/",
                 "license": "Creative Commons Attribution 4.0 (GeoNames)",
                 "attribution": "GeoNames.org — https://www.geonames.org/",
-                "countries": list(DACH_COUNTRIES),
+                "countries": list(LOCAL_GEO_COUNTRIES),
                 "algorithm": HAVERSINE_ALGORITHM,
                 "earth_radius_km": EARTH_RADIUS_KM,
                 "files": files_meta,
@@ -505,10 +523,24 @@ class GeoDatasetManager:
                     from io import BytesIO
 
                     with zipfile.ZipFile(BytesIO(data)) as zf:
-                        names = [n for n in zf.namelist() if n.upper().endswith(".TXT")]
+                        # Prefer ``{CC}.txt``; never treat GeoNames readme as data.
+                        preferred = [
+                            n
+                            for n in zf.namelist()
+                            if n.replace("\\", "/").rsplit("/", 1)[-1].upper()
+                            == f"{country.upper()}.TXT"
+                        ]
+                        names = preferred or [
+                            n
+                            for n in zf.namelist()
+                            if n.upper().endswith(".TXT")
+                            and "README" not in n.upper()
+                        ]
                         if not names:
-                            raise RuntimeError("zip has no txt")
+                            raise RuntimeError("zip has no country txt")
                         raw = zf.read(names[0])
+                        if b"Readme for GeoNames" in raw[:240]:
+                            raise RuntimeError("zip member is readme, not postal data")
                     # Convert GeoNames TSV to pgeocode CSV header format
                     dest.write_text(self._tsv_to_pgeocode_csv(raw), encoding="utf-8")
                 else:

@@ -68,8 +68,10 @@ CREATE TABLE IF NOT EXISTS jobs (
     latitude REAL,
     longitude REAL,
     distance_km REAL,
+    airline_km REAL,
     commute_duration_minutes REAL,
     distance_source TEXT DEFAULT '',
+    distance_error TEXT DEFAULT '',
     remote_type TEXT,
     employment_type TEXT,
     salary_min REAL,
@@ -479,6 +481,12 @@ class Database:
             if "distance_source" not in cols:
                 conn.execute(
                     "ALTER TABLE jobs ADD COLUMN distance_source TEXT DEFAULT ''"
+                )
+            if "airline_km" not in cols:
+                conn.execute("ALTER TABLE jobs ADD COLUMN airline_km REAL")
+            if "distance_error" not in cols:
+                conn.execute(
+                    "ALTER TABLE jobs ADD COLUMN distance_error TEXT DEFAULT ''"
                 )
 
             # Geocode cache provenance (data_source / version) for DACH invalidation.

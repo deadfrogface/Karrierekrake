@@ -257,6 +257,31 @@ class MainWindow(QMainWindow):
 
         # GUI slot: publish the worker and return. No lock, no join, no wait.
         arm_geo_index_from_ui()
+        # BRouter install + RouteServer in background — no manual Java start.
+        QTimer.singleShot(0, self._start_brouter_runtime)
+
+    def _start_brouter_runtime(self) -> None:
+        if self._shutting_down:
+            return
+
+        def _boot() -> None:
+            try:
+                from core.road_route_brouter import get_brouter_runtime
+
+                runtime = get_brouter_runtime()
+                runtime.ensure_install()
+                runtime.ensure_ready(allow_install=True, wait_s=60.0)
+                get_shutdown_manager().register_callback(runtime.stop)
+            except Exception:
+                logging.getLogger("karrierekrake").warning(
+                    "BRouter auto-start failed — Fahrstrecke stays unknown until fixed",
+                    exc_info=True,
+                )
+
+        import logging
+        import threading
+
+        threading.Thread(target=_boot, name="kk-brouter-boot", daemon=True).start()
 
     def _restore_geometry(self) -> None:
         state = self.config_service.get_window_state()

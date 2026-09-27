@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 
 from core.config import AppConfig
 from core.models import Job, JobStatus, RemoteType
+from core.road_route_brouter import BROUTER_ENGINE_ID
 
 
 def _parse_date(value: str) -> datetime | None:
@@ -66,7 +67,7 @@ def hard_exclude(job: Job, config: AppConfig, already_applied: bool = False) -> 
     if is_hybrid and not loc.allow_hybrid:
         return "hybrid not allowed"
     # Distance / radius is intentionally NOT applied here (local-first pipeline:
-    # fachliches Matching first, then local geo + Luftlinie + radius).
+    # fachliches Matching first, then local geo + Luftlinie-Vorfilter + Fahrstrecke).
 
     published = _parse_date(job.published_at)
     if published:
@@ -79,23 +80,72 @@ def hard_exclude(job: Job, config: AppConfig, already_applied: bool = False) -> 
     return None
 
 
-def distance_exclude(job: Job, config: AppConfig) -> str | None:
-    """Hard radius filter — call only AFTER local geo enrichment.
+def _airline_km(job: Job) -> float | None:
+    airline = getattr(job, "airline_km", None)
+    if airline is not None:
+        try:
+            return float(airline)
+        except (TypeError, ValueError):
+            return None
+    # Legacy rows: distance_km was airline when source is haversine_v1.
+    src = (getattr(job, "distance_source", "") or "").strip()
+    dist = getattr(job, "distance_km", None)
+    if dist is not None and src in {"", "haversine_v1"}:
+        try:
+            return float(dist)
+        except (TypeError, ValueError):
+            return None
+    return None
 
-    Fully remote: no radius. Hybrid/onsite with UNKNOWN: not within radius
-    (never treat as 0 km). Over-radius jobs are excluded.
+
+def _road_km(job: Job) -> float | None:
+    src = (getattr(job, "distance_source", "") or "").strip()
+    dist = getattr(job, "distance_km", None)
+    if dist is None:
+        return None
+    if src == BROUTER_ENGINE_ID or src.startswith("brouter"):
+        try:
+            return float(dist)
+        except (TypeError, ValueError):
+            return None
+    return None
+
+
+def distance_exclude(job: Job, config: AppConfig) -> str | None:
+    """Radius filter AFTER geo enrichment + optional BRouter road distance.
+
+    Policy:
+      1. Fully remote: no radius.
+      2. Airline (Luftlinie) is a fast prefilter only — over-radius airline → exclude.
+      3. Remaining jobs: Fahrstrecke (BRouter) decides the radius.
+      4. UNKNOWN / missing segment / routing error → do NOT silently discard;
+         do NOT treat airline as Fahrkilometer. Keep the job (return None);
+         UI shows „Fahrstrecke nicht bestimmbar“ + reason via distance_error.
     """
     loc = config.profile.location
     is_remote = job.remote_type == RemoteType.REMOTE.value
     is_hybrid = job.remote_type == RemoteType.HYBRID.value
     if is_remote and loc.allow_remote_germany:
         return None
-    if job.distance_km is None and not is_remote:
-        return "Standort nicht prüfbar (Luftlinie unbekannt)"
-    if job.distance_km is not None and job.distance_km > loc.max_distance_km:
-        km = job.distance_km
-        limit = loc.max_distance_km
+
+    limit = float(loc.max_distance_km)
+    airline = _airline_km(job)
+    road = _road_km(job)
+
+    if airline is not None and airline > limit:
+        km = airline
         if is_hybrid:
-            return f"hybrid over {limit} km Luftlinie ({km:.1f} km)"
-        return f"over {limit} km Luftlinie ({km:.1f} km)"
+            return f"hybrid over {limit} km Luftlinie-Vorfilter ({km:.1f} km)"
+        return f"over {limit} km Luftlinie-Vorfilter ({km:.1f} km)"
+
+    if road is not None:
+        if road > limit:
+            km = road
+            if is_hybrid:
+                return f"hybrid over {limit} km Fahrstrecke ({km:.1f} km)"
+            return f"over {limit} km Fahrstrecke ({km:.1f} km)"
+        return None
+
+    # Road unknown / not determined — keep job; never invent km; never use airline
+    # as Fahrstrecke. Callers surface job.distance_error in the UI.
     return None

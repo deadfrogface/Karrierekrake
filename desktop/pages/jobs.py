@@ -47,21 +47,30 @@ from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
 def format_commute_label(job, *, with_duration: bool = True, home_status: str = "resolved") -> str:
-    """UI distance text. Luftlinie only when the current home is resolved.
+    """UI distance text. Fahrstrecke when BRouter ok; otherwise honest unknown.
 
-    A stored kilometre value is shown for a resolved home even if
-    ``distance_source`` was never persisted. An unresolved home never claims
-    a radius and does not keep a stale „Standort nicht prüfbar“ from an older run.
+    Never presents Luftlinie as Fahrkilometer. Unresolved home skips claims.
     """
-    del with_duration  # no drive-time in v1
+    del with_duration  # no drive-time claim without a duration source
     remote = (getattr(job, "remote_type", "") or "").lower()
     if remote == "remote":
         return tr("jobs.commute_remote")
     if home_status in {"ambiguous", "unknown", "missing"}:
         return tr("jobs.distance_skipped")
+    err = (getattr(job, "distance_error", "") or "").strip()
+    src = (getattr(job, "distance_source", "") or "").strip()
     dist = getattr(job, "distance_km", None)
+    if dist is not None and (src.startswith("brouter") or src == "brouter_v1"):
+        km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
+        return tr("jobs.commute_road", km=km)
+    if err:
+        return tr("jobs.commute_road_unknown", reason=err)
     if dist is None:
-        return tr("jobs.commute_unknown")
+        return tr(
+            "jobs.commute_road_unknown",
+            reason=tr("jobs.commute_road_unknown_generic"),
+        )
+    # Legacy haversine-only rows: label explicitly as Luftlinie, never Fahrstrecke.
     km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
     return tr("jobs.commute_airline", km=km)
 

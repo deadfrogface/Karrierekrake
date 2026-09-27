@@ -845,7 +845,7 @@ def test_indeed_home_office_spellings_and_remote_desktop():
 
 
 def test_hard_exclude_unknown_distance_onsite():
-    """Unknown onsite distance is excluded after matching (distance_exclude), not in hard_exclude."""
+    """Unknown onsite road distance is kept (not silently discarded)."""
     from core.config import empty_app_config
     from core.hard_filter import distance_exclude, hard_exclude
     from core.models import Job
@@ -860,12 +860,14 @@ def test_hard_exclude_unknown_distance_onsite():
         company="C",
         city="München",
         remote_type="onsite",
+        airline_km=None,
         distance_km=None,
+        distance_error="Standort nicht auflösbar",
     )
     # Fachliches hard_exclude must not apply radius yet (local-first pipeline order).
     assert hard_exclude(onsite, cfg) is None
-    reason = distance_exclude(onsite, cfg)
-    assert reason and ("distance" in reason.lower() or "luftlinie" in reason.lower() or "standort" in reason.lower())
+    # Routing/place UNKNOWN → keep job; UI shows distance_error.
+    assert distance_exclude(onsite, cfg) is None
     assert (
         distance_exclude(
             Job(id="r", source="t", title="T", company="C", remote_type="remote", distance_km=None),
