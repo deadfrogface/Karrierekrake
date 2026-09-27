@@ -1,0 +1,36 @@
+{
+  "comparison_type": "AGENT_VM_FILTER_BOUNDARY_NOT_LAPTOP",
+  "cases": [
+    {
+      "name": "airline_prefilter_over",
+      "exclude": true
+    },
+    {
+      "name": "road_over",
+      "exclude": true
+    },
+    {
+      "name": "road_ok",
+      "exclude": false
+    },
+    {
+      "name": "unknown_road_kept",
+      "exclude": false
+    },
+    {
+      "name": "road_eq_limit_kept",
+      "exclude": false
+    },
+    {
+      "name": "offline_route_unknown",
+      "ok": false,
+      "invents_km": false
+    },
+    {
+      "name": "autostart_no_manual_java",
+      "ok": true,
+      "km": 39.679
+    }
+  ],
+  "windows_exe": "NOT_RUN_ON_AGENT_VM"
+}
