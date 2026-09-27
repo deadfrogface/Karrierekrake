@@ -34,8 +34,10 @@ tenacity>=8.2.0
 dateparser>=1.2.0
 icalendar>=5.0.0
 holidays>=0.40
-# Optional: Günther embedded local LLM (EXE may ship without it; heuristic/fail-closed otherwise)
-# llama-cpp-python>=0.3.0
+# Optional: Günther embedded local LLM + productive CV import (Qwen in-process).
+llama-cpp-python>=0.3.0
+# Productive CV structured extract (Docpick schema + prompt; Apache-2.0).
+docpick>=0.1.3
 # Optional: richer JSON-LD / HTML extraction for contact discovery (PR25); bs4/lxml fallback always works
 # extruct>=0.16.0
 # selectolax>=0.3.0

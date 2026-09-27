@@ -21,7 +21,78 @@ from pathlib import Path
 
 from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING, local_llm_cv_decision
 
+# Generic last resort only — real CvImportError codes must reach the UI.
 _READ_FAILED = "Der Lebenslauf konnte nicht gelesen werden."
+
+# Stage-specific user copy. No absolute paths, CV body, or tokens.
+_KIND_MESSAGES: dict[str, str] = {
+    "file_missing": "Die ausgewählte Datei wurde nicht gefunden.",
+    "empty_cv": "Die Datei ist leer oder enthält keinen lesbaren Text.",
+    "unreadable_cv": (
+        "Die Datei konnte nicht als PDF oder DOCX gelesen werden. "
+        "Pfad und Eingaben bleiben erhalten."
+    ),
+    "docpick_missing": (
+        "Die CV-Import-Komponente fehlt in dieser Installation. "
+        "Kein Wechsel auf den alten DET-Parser."
+    ),
+    "docling_missing": (
+        "Docling ist für diesen Lauf vorgeschrieben, aber nicht installiert."
+    ),
+    "extract_missing": "Die CV-Textextraktion fehlt in dieser Installation.",
+    "model_missing": (
+        "Das lokale CV-Modell (Qwen3.5-4B) fehlt. "
+        "Ohne dieses Modell kann der Import nicht laufen. Kein DET-Fallback."
+    ),
+    "llama_missing": (
+        "Die lokale LLM-Laufzeit fehlt in dieser Installation. "
+        "CV-Import kann das Modell nicht starten. Kein DET-Fallback."
+    ),
+    "llm_unavailable": (
+        "Das lokale CV-Modell ist nicht erreichbar. "
+        "Karrierekrake startet es automatisch, wenn Modell und Laufzeit vorhanden sind."
+    ),
+    "llm_extract_failed": (
+        "Die strukturierte Extraktion ist fehlgeschlagen. Bitte Felder manuell nachtragen."
+    ),
+    "llm_empty": "Das Modell lieferte keine verwertbaren Felder. Bitte manuell korrigieren.",
+    "unreliable_extract": (
+        "Extraktion ohne Namen und Kontakt — Ergebnis nicht verlässlich. "
+        "Bitte Profil manuell ausfüllen."
+    ),
+    "peak_rss_exceeded": (
+        "Nicht genug Arbeitsspeicher für den CV-Import auf diesem Gerät. "
+        "Es wurde nichts übernommen."
+    ),
+    "timeout": (
+        "Das Einlesen hat zu lange gedauert und wurde abgebrochen. "
+        "Es wurde nichts übernommen."
+    ),
+    "cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
+    "oom": "Nicht genug Arbeitsspeicher, um diese Datei einzulesen.",
+}
+
+
+def user_message_for_kind(kind: str, fallback: str = "") -> str:
+    """Map an error kind to a safe, stage-specific user string."""
+    if kind in _KIND_MESSAGES:
+        return _KIND_MESSAGES[kind]
+    text = (fallback or "").strip()
+    if text and not _looks_sensitive(text):
+        return text
+    return _READ_FAILED
+
+
+def _looks_sensitive(text: str) -> bool:
+    """Drop details that may contain absolute paths, tokens, or CV snippets."""
+    lower = text.lower()
+    if "://" in text or "bearer " in lower or "api_key" in lower:
+        return True
+    if "/users/" in lower or "\\users\\" in lower or "appdata" in lower:
+        return True
+    if text.count("\n") > 2 or len(text) > 280:
+        return True
+    return False
 
 
 def _write(path: Path, payload: dict) -> None:
@@ -37,6 +108,27 @@ def _with_decision(payload: dict, decision) -> dict:
 
 def _split_cmd(cmd: str) -> list[str]:
     return shlex.split(cmd, posix=(os.name != "nt"))
+
+
+def _fail(
+    out_path: Path,
+    *,
+    kind: str,
+    message: str,
+    decision,
+    code: int = 1,
+    stage: str = "",
+) -> int:
+    payload: dict = {
+        "ok": False,
+        "kind": kind,
+        "message": user_message_for_kind(kind, message),
+        "parsed": None,
+    }
+    if stage:
+        payload["stage"] = stage
+    _write(out_path, _with_decision(payload, decision))
+    return code
 
 
 def run(argv: list[str] | None = None) -> int:
@@ -56,41 +148,29 @@ def run(argv: list[str] | None = None) -> int:
         decision = local_llm_cv_decision()
         if args.llm_cmd.strip():
             if not decision.allowed:
-                _write(
+                return _fail(
                     out_path,
-                    _with_decision(
-                        {
-                            "ok": False,
-                            "kind": "llm_disabled",
-                            "message": LOCAL_LLM_CV_KILL_WORDING,
-                            "parsed": None,
-                        },
-                        decision,
-                    ),
+                    kind="llm_disabled",
+                    message=LOCAL_LLM_CV_KILL_WORDING,
+                    decision=decision,
+                    code=4,
                 )
-                return 4
             llm_argv = _split_cmd(args.llm_cmd)
             llm_proc = subprocess.Popen(llm_argv, stdin=subprocess.DEVNULL)
             deadline = time.monotonic() + max(0.0, args.llm_warmup)
             while time.monotonic() < deadline:
                 if llm_proc.poll() is not None:
-                    _write(
+                    return _fail(
                         out_path,
-                        _with_decision(
-                            {
-                                "ok": False,
-                                "kind": "llm_command_exited",
-                                "message": (
-                                    "Das angegebene lokale Modellkommando ist vor dem Import "
-                                    "beendet. Kein Phi-Fallback und kein erneuter automatischer Lauf."
-                                ),
-                                "parsed": None,
-                                "llm_exit": llm_proc.returncode,
-                            },
-                            decision,
+                        kind="llm_command_exited",
+                        message=(
+                            "Das angegebene lokale Modellkommando ist vor dem Import "
+                            "beendet. Kein DET-/Altmodell-Fallback und kein erneuter "
+                            "automatischer Lauf."
                         ),
+                        decision=decision,
+                        code=6,
                     )
-                    return 6
                 time.sleep(0.1)
         if args.backend == "docling":
             from core.cv_document_backends import extract_with_backend
@@ -113,61 +193,55 @@ def run(argv: list[str] | None = None) -> int:
         )
         return 0
     except MemoryError as exc:
-        _write(
+        return _fail(
             out_path,
-            _with_decision(
-                {
-                    "ok": False,
-                    "kind": "oom",
-                    "message": f"MemoryError: {exc}",
-                    "parsed": None,
-                },
-                decision,
-            ),
+            kind="oom",
+            message=f"MemoryError: {type(exc).__name__}",
+            decision=decision,
+            code=3,
         )
-        return 3
     except OSError as exc:
         if getattr(exc, "errno", None) == 12:  # ENOMEM
-            _write(
+            return _fail(
                 out_path,
-                _with_decision(
-                    {
-                        "ok": False,
-                        "kind": "oom",
-                        "message": f"ENOMEM: {exc}",
-                        "parsed": None,
-                    },
-                    decision,
-                ),
+                kind="oom",
+                message=f"ENOMEM: {type(exc).__name__}",
+                decision=decision,
+                code=3,
             )
-            return 3
-        _write(
+        return _fail(
             out_path,
-            _with_decision(
-                {
-                    "ok": False,
-                    "kind": "error",
-                    "message": _READ_FAILED,
-                    "parsed": None,
-                },
-                decision,
-            ),
+            kind="error",
+            message=_READ_FAILED,
+            decision=decision,
+            code=1,
         )
-        return 1
-    except Exception:  # noqa: BLE001 — child must report, not crash the UI
-        _write(
+    except Exception as exc:  # noqa: BLE001 — child must report, not crash the UI
+        try:
+            from core.cv_docpick_import import CvImportError
+
+            if isinstance(exc, CvImportError):
+                code = 1
+                if exc.code in {"oom", "peak_rss_exceeded"}:
+                    code = 3
+                elif exc.code == "timeout":
+                    code = 1
+                return _fail(
+                    out_path,
+                    kind=exc.code,
+                    message=str(exc),
+                    decision=decision,
+                    code=code,
+                )
+        except Exception:  # noqa: BLE001
+            pass
+        return _fail(
             out_path,
-            _with_decision(
-                {
-                    "ok": False,
-                    "kind": "error",
-                    "message": _READ_FAILED,
-                    "parsed": None,
-                },
-                decision,
-            ),
+            kind="error",
+            message=_READ_FAILED,
+            decision=decision,
+            code=1,
         )
-        return 1
     finally:
         if llm_proc is not None and llm_proc.poll() is None:
             llm_proc.terminate()

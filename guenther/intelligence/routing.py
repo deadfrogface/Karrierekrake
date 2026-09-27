@@ -1,6 +1,7 @@
-"""Architecture routing — sole production model is Phi-4-mini (NEXT-02).
+"""Architecture routing — sole production model is Qwen3.5-4B.
 
-Qwen / two-tier / light-fallback modes are historical only and resolve to Phi.
+Historical mode names (PHI_ALL, TWO_TIER, …) are aliases and all resolve to
+the same production weight. No Phi runtime path.
 """
 
 from __future__ import annotations
@@ -12,9 +13,9 @@ from guenther.model_manager import PRODUCTION_MODEL_ID
 
 
 class ArchitectureMode(str, Enum):
-    # Historical aliases retained for config/test compatibility — all map to Phi.
+    # Historical aliases retained for config/test compatibility — all map to Qwen.
     QWEN_ONLY = "qwen_only"
-    PHI_ALL = "phi_all"
+    PHI_ALL = "phi_all"  # legacy name; routes to PRODUCTION_MODEL_ID
     TWO_TIER = "two_tier"
     AUTO = "auto"
 
@@ -57,26 +58,25 @@ def resolve_model_for_capability(
     capability: str,
     model_pref: str = "auto",
 ) -> RoutingDecision:
-    """Always route to Phi. Explicit Qwen prefs are ignored (no production path)."""
+    """Always route to the sole production Qwen weight. Legacy prefs coerced."""
     mode = (
         architecture
         if isinstance(architecture, ArchitectureMode)
         else ArchitectureMode(str(architecture))
     )
     pref = (model_pref or "auto").strip().lower()
-    if pref in {"qwen3-1.7b", "qwen3-4b", "qwen_only"}:
+    if pref in {"phi4-mini", "phi-4-mini", "qwen3-1.7b", "qwen3-4b", "qwen_only"}:
         return RoutingDecision(
-            mode, PRIMARY_MODEL, capability, "qwen_pref_coerced_to_phi"
+            mode, PRIMARY_MODEL, capability, "legacy_pref_coerced_to_qwen"
         )
     if pref not in {"", "auto", PRIMARY_MODEL}:
-        # Unknown prefs also coerce to Phi — never load a non-production id.
         return RoutingDecision(
-            mode, PRIMARY_MODEL, capability, "non_phi_pref_coerced_to_phi"
+            mode, PRIMARY_MODEL, capability, "non_production_pref_coerced_to_qwen"
         )
     if mode == ArchitectureMode.PHI_ALL:
-        return RoutingDecision(mode, PRIMARY_MODEL, capability, "arch_phi_all")
+        return RoutingDecision(mode, PRIMARY_MODEL, capability, "arch_legacy_phi_all_to_qwen")
     if mode in {ArchitectureMode.TWO_TIER, ArchitectureMode.QWEN_ONLY, ArchitectureMode.AUTO}:
         return RoutingDecision(
-            mode, PRIMARY_MODEL, capability, "production_phi_only"
+            mode, PRIMARY_MODEL, capability, "production_qwen_only"
         )
-    return RoutingDecision(mode, PRIMARY_MODEL, capability, "production_phi_only")
+    return RoutingDecision(mode, PRIMARY_MODEL, capability, "production_qwen_only")

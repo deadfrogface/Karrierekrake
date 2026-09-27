@@ -16,7 +16,7 @@ from guenther.intelligence.routing import ArchitectureMode, resolve_model_for_ca
 from guenther.intelligence.writing_validate import validate_writing_grounded
 from guenther.model_manager import PRODUCTION_MODEL_ID, ModelManager, default_models_dir
 from guenther.privacy import log_event
-from guenther.prompts import SCHEMA_HINTS, SYSTEM_PHI_EXTRACT, SYSTEM_PHI_WRITE, build_layers
+from guenther.prompts import SCHEMA_HINTS, SYSTEM_EXTRACT, SYSTEM_WRITE, build_layers
 from guenther.provider import GenerationRequest, LocalAIProvider, ProviderStatus
 from guenther.runtime.heuristic_provider import HeuristicProvider
 from guenther.runtime.llama_cpp_provider import LlamaCppProvider
@@ -48,7 +48,7 @@ class GuentherService:
         quality_loop_mode: str = "plan_draft",
     ) -> None:
         self.enabled = enabled
-        # NEXT-02: coerce any legacy Qwen/auto pref to sole Phi production model.
+        # Coerce any legacy Phi/auto pref to sole Qwen production model.
         self.model_pref = resolve_production_model(model)
         self.architecture = (
             architecture
@@ -187,12 +187,14 @@ class GuentherService:
             "cv_extract": 512,
             "job_analysis": 512,
             "evidence_assist": 512,
-            "writing": 768,
+            # Tuned on Agent-VM DE/EN samples (temp 0.2, ~250–1000 chars body):
+            # DE ~181s/964 chars ok; EN ~121s/573 chars ok — not laptop Job-Object evidence.
+            "writing": 900,
             "interview_prep": 512,
             "writing_plan": 768,
             "writing_critique": 512,
         }.get(schema_name, 512)
-        # PHI_EXTRACT: deterministic; PHI_WRITE may keep slight creativity.
+        # EXTRACT: deterministic; WRITE may keep slight creativity.
         if temperature is None:
             temperature = 0.0 if capability in {"cv_extract", "job_analysis"} else 0.1
         req = GenerationRequest(
@@ -260,7 +262,7 @@ class GuentherService:
             ),
             trusted=json.dumps({"manual": manual_profile or {}}, ensure_ascii=False),
             untrusted=cv_text[:20000],
-            system_core=SYSTEM_PHI_EXTRACT,
+            system_core=SYSTEM_EXTRACT,
             temperature=0.0,
         )
         if model is None:
@@ -308,7 +310,7 @@ class GuentherService:
             task=lang_task,
             trusted=json.dumps({"manual": manual_profile or {}, "pass": "languages"}, ensure_ascii=False),
             untrusted=cv_text[:20000],
-            system_core=SYSTEM_PHI_EXTRACT,
+            system_core=SYSTEM_EXTRACT,
             temperature=0.0,
         )
         if model is not None and env.ok:
@@ -636,7 +638,7 @@ class GuentherService:
                 trusted=trusted,
                 untrusted=untrusted,
                 model_id=routed,
-                system_core=SYSTEM_PHI_WRITE,
+                system_core=SYSTEM_WRITE,
                 temperature=0.2,
             )
             if model is None:
@@ -692,7 +694,7 @@ class GuentherService:
         repair_meta.update(result.to_meta())
         grounding = dict(result.grounding_report or {})
         grounding["quality_loop"] = result.to_meta()
-        return envelope_from_model(
+        env = envelope_from_model(
             capability="writing",
             model=result.suggestion,
             ok=bool(result.ok),
@@ -705,6 +707,12 @@ class GuentherService:
             repair_history=repair_meta,
             grounding_report=grounding,
         )
+        # Free the sole GGUF so a subsequent CV-import child can load it.
+        try:
+            self.provider.unload_model()
+        except Exception:  # noqa: BLE001
+            pass
+        return env
 
     def suggest_interview_prep(
         self,

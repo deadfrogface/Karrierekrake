@@ -1,6 +1,7 @@
 """Canonical CV import pipeline — Docpick + local Qwen3.5-4B (no DET).
 
-FILE → Docling text → Docpick schema LLM → preview/approval/persist.
+FILE → cv_extract text (shipped) → Docpick schema LLM → preview/approval/persist.
+Docling is eval-only via ``KARRIEREKRAKE_CV_USE_DOCLING=1`` (not in Windows EXE).
 
 Legacy DET ``parse_cv_text`` is not used by production import. Historical
 helpers such as ``reconcile_phi_into_parsed`` remain only for offline
@@ -186,7 +187,8 @@ def import_cv_canonical(
     """Canonical CV import — Docpick + Qwen3.5-4B only (no DET, no PHI_EXTRACT).
 
     ``guenther_*`` / ``split_phi_passes`` accepted for old callers but ignored.
-    ``document_backend`` other than docling is ignored (Docling is fixed frontend).
+    ``document_backend`` is ignored: production uses ``cv_extract``; Docling only
+    when ``KARRIEREKRAKE_CV_USE_DOCLING=1`` inside Docpick import.
     Never calls ``parse_cv_text`` / DET and never falls back to it.
     """
     del manual_profile

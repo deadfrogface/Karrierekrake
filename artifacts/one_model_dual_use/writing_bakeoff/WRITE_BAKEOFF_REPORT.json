@@ -1,0 +1,132 @@
+{
+  "created_at": "2026-09-27T03:10:50.220017+00:00",
+  "comparison_type": "KNOWN_WRITING_BAKEOFF_NOT_BLIND",
+  "scaffolding": "SYSTEM_PHI_WRITE + validate_writing (same for both)",
+  "n_cases": 4,
+  "phi": {
+    "model": "phi",
+    "path": "/tmp/karrierekrake-models/phi4-mini/microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
+    "size_mb": 2376.4368896484375,
+    "wall_s": 221.0682267009979,
+    "peak_rss_mb": 5471.65234375,
+    "hardware_note": "Agent-VM measurement — not i3/8GB Job Object ship evidence",
+    "documents": [
+      {
+        "id": "DE_CS_01",
+        "lang": "de",
+        "elapsed_s": 109.13227430102415,
+        "error": null,
+        "chars": 2951,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [],
+        "letter_anonymized": "BEGIN_UNTRUSTED\n{\n  \"title\": \"Teamleitung Kundenservice\",\n  \"company\": \"[COMPANY]\",\n  \"description\": \"Leitung eines Kundenservice-Teams, Reklamationsmanagement, Reporting an die Geschäftsleitung, Deutsch und Englisch.\"\n}\nEND_UNTRUSTED\n\nBEGIN_UNTRUSTED\n{\n  \"full_name\": \"[NAME]\",\n  \"skills\": [\n    \"Kundenservice\",\n    \"KPI-Reporting\",\n    \"Prozessoptimierung\"\n  ],\n  \"experience_titles\": [\n    \"Teamkoordinatorin Kundenservice\",\n    \"Sachbearbeiterin Auftragsmanagement\"\n  ],\n  \"education\": [\n    \"Kauffrau für Büromanagement (IHK)\"\n  ],\n  \"languages\": [\n    \"Deutsch C2\",\n    \"Englisch C1\"\n  ],\n  \"notes\": \"Wohnort Münster. Keine Führungsspanne außer 8-köpfiges Team Kundenservice.\"\n}\nEND_UNTRUSTED\n\nBEGIN_UNTRUSTED\n{\n  \"cover_letter\": \"Sehr geehrte Damen und Herren, \\n\\nIch schreibe Ihnen, um mich für die Position der Teamleitung Kundenservice bei [COMPANY] zu bewerben. Mit meiner fundierten Erfahrung im Kundenservice und meinem starken Fokus auf KPI-Reporting und Prozessoptimierung bin ich überzeugt, dass ich die Herausforderungen und Anforderungen Ihrer Firma übernehmen kann. Mein Hintergrund als Teamkoordinatorin und meine Ausbildung als Kauffrau für Büromanagement (IHK) haben mich gut vorbereitet, um in einer Führungsrolle zu glänzen. Ich bin in Münster ansässig und kann ohne Führungsspanne für ein Team von bis zu 8 Personen arbeiten. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen.\\n\\nMit freundlichen Grüßen,\\n[NAME]\",\n  \"notes\": \"Wohnort Münster. Keine Führungsspanne außer 8-köpfiges Team Kundenservice.\"\n}\nEND_UNTRUSTED\n\nBEGIN_UNTRUSTED\n{\n  \"json_response\": {\n    \"cover_letter\": \"Sehr geehrte Damen und Herren,\\n\\nIch schreibe Ihnen, um mich für die Position der Teamleitung Kundenservice bei [COMPANY] zu bewerben. Mit meiner fundierten Erfahrung im Kundenservice und meinem starken Fokus auf KPI-Reporting und Prozessoptimierung bin ich überzeugt, dass ich die Herausforderungen und Anforderungen Ihrer Firma übernehmen kann. Mein Hintergrund als Teamkoordinatorin und meine Ausbildung als Kauffrau für Büromanagement (IHK) haben mich gut vorbereitet, um in einer Führungsrolle zu glänzen. Ich bin in Münster ansässig und kann ohne Führungsspanne für ein Team von bis zu 8 Personen arbeiten. Ich freue mich auf die Möglichkeit, meine Fähigkeiten in Ihrem Unternehmen einzubringen.\\n\\nMit freundlichen Grüßen,\\n[NAME]\",\n    \"notes\": \"Wohnort Münster. Keine Führungsspanne außer 8-köpfiges Team Kundenservice.\"\n  }\n}\nEND_UNTRUSTED\n\nBEGIN_UNTRUSTED\n{\n  \"json_response\": {\n    \"cover_letter\": \"Sehr geehrte Damen und Herren,\\n\\nIch schreibe Ihnen, um mich für die Position der Teamleitung Kundenservice bei [COMPANY] zu bewerben. Mit meiner fundierten Erfahrung im Kundenservice und meinem starken Fokus auf KPI-Reporting und Prozessoptimierung bin ich überzeugt, dass ich die Herausforderungen und Anforderungen Ihrer Firma übernehmen kann"
+      },
+      {
+        "id": "DE_IT_02",
+        "lang": "de",
+        "elapsed_s": 45.4090316289803,
+        "error": null,
+        "chars": 1407,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [
+          "possible_invented:license"
+        ],
+        "letter_anonymized": "BEGIN_UNTRUSTED\n{\n  \"job_title\": \"Junior Business Analyst\",\n  \"company\": \"[COMPANY]\",\n  \"description\": \"Anforderungsanalyse, SQL-Auswertungen, Abstimmung mit Fachbereichen.\"\n}\nEND_UNTRUSTED\n\n{\n  \"full_name\": \"[NAME]\",\n  \"skills\": [\n    \"Python\",\n    \"SQL\",\n    \"Prozessanalyse\"\n  ],\n  \"experience_titles\": [\n    \"Business Analyst\",\n    \"Werkstudent Controlling\"\n  ],\n  \"education\": [\n    \"B.Sc. Wirtschaftsinformatik\"\n  ],\n  \"languages\": [\n    \"Deutsch Muttersprache\",\n    \"Englisch B2\"\n  ],\n  \"notes\": \"Keine SAP-Kenntnisse im Profil. Kein Führerschein erwähnt.\"\n}\n\n{\n  \"cover_letter\": \"Sehr geehrte Damen und Herren, \\n\\nich schreibe Ihnen als motivierter und erfahrener Business Analyst, der nach einer spannenden Herausforderung sucht. Mit meinem B.Sc. in Wirtschaftsinformatik und meiner praktischen Erfahrung als Business Analyst und Werkstudent Controlling bin ich bestens gerüstet, um die Anforderungen Ihres Teams zu erfüllen. Mein starkes Wissen in Python und SQL wird dabei besonders nützlich sein. Ich bin begeistert von der Möglichkeit, in einer dynamischen Umgebung wie [COMPANY] zu arbeiten und zu einem Team beizutragen, das sich durch innovative Lösungen und effektive Kommunikation auszeichnet. Ich freue mich darauf, meine Fähigkeiten und meine Begeisterung für die Branche Ihrem Team zu präsentieren. \\n\\nMit freundlichen Grüßen, \\n[NAME]\"\n}"
+      },
+      {
+        "id": "EN_CS_01",
+        "lang": "en",
+        "elapsed_s": 42.0593304700451,
+        "error": null,
+        "chars": 1634,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [
+          "possible_invented:aws"
+        ],
+        "letter_anonymized": "BEGIN_UNTRUSTED\n{\n  \"title\": \"Customer Success Associate\",\n  \"company\": \"[COMPANY]\",\n  \"description\": \"Own customer onboarding, handle escalations, work with CRM tools, English required.\"\n}\nEND_UNTRUSTED\nBEGIN_UNTRUSTED\n{\n  \"full_name\": \"[NAME]\",\n  \"skills\": [\n    \"Customer Support\",\n    \"CRM\",\n    \"Escalation Handling\"\n  ],\n  \"experience_titles\": [\n    \"Customer Support Specialist\",\n    \"Retail Associate\"\n  ],\n  \"education\": [\n    \"BA Communications\"\n  ],\n  \"languages\": [\n    \"English native\",\n    \"German A2\"\n  ],\n  \"notes\": \"No people-management role. No AWS certification.\"\n}\nEND_UNTRUSTED\n{\n  \"cover_letter\": \"Dear Hiring Manager at [COMPANY],\\n\\nI am writing to express my interest in the Customer Success Associate position advertised on your company’s career page. With a background in Customer Support and a BA in Communications, I have honed my skills in customer onboarding, escalation handling, and proficient use of CRM tools. My experience as a Customer Support Specialist and Retail Associate has equipped me with the ability to effectively engage with customers and resolve their issues promptly.\\n\\nI am confident in my ability to contribute positively to your team and help [COMPANY] achieve its customer success goals. I am particularly drawn to this role because of the opportunity to work with CRM tools and handle customer escalations, which aligns with my skill set and experience.\\n\\nThank you for considering my application. I look forward to the possibility of discussing this exciting opportunity with you.\\n\\nSincerely,\\n[NAME]\"\n}\nEND_UNTRUSTED"
+      },
+      {
+        "id": "EN_ENG_02",
+        "lang": "en",
+        "elapsed_s": 24.459982675965875,
+        "error": null,
+        "chars": 951,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [],
+        "letter_anonymized": "Dear Hiring Manager,\n\nI am excited to apply for the Backend Engineer position at [COMPANY]. With my MSc in Computer Science and proficiency in Java, Spring, and REST APIs, I am confident in my ability to contribute effectively to your team.\n\nThroughout my career, I have honed my skills in software engineering and intern development. My strong command of English C2 and German B1 enables me to communicate effectively in both languages, which I believe will be an asset to your diverse team.\n\nI am eager to collaborate with the product team, leveraging my technical expertise to design robust and efficient REST services in Java/Spring. I am committed to continuous learning and am open to expanding my skill set to better serve your organization.\n\nThank you for considering my application. I look forward to the opportunity to discuss how my skills and experiences align with the needs of [COMPANY].\n\nBest regards,\n[NAME]"
+      }
+    ],
+    "n_heuristic_invented": 2,
+    "n_errors": 0,
+    "avg_s": 55.26515476900386
+  },
+  "qwen": {
+    "model": "qwen",
+    "path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "size_mb": 2613.9620666503906,
+    "wall_s": 113.98810075898655,
+    "peak_rss_mb": 5695.94140625,
+    "hardware_note": "Agent-VM measurement — not i3/8GB Job Object ship evidence",
+    "documents": [
+      {
+        "id": "DE_CS_01",
+        "lang": "de",
+        "elapsed_s": 32.21909406594932,
+        "error": null,
+        "chars": 946,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [],
+        "letter_anonymized": "Sehr geehrte Damen und Herren,\n\nmit Interesse habe ich Ihre Stellenausschreibung für die Position Teamleitung Kundenservice bei der [COMPANY] gelesen. Als erfahrene Teamkoordinatorin im Kundenservice mit einer IHK-Ausbildung zur Kauffrau für Büromanagement bringe ich fundierte Kenntnisse in Prozessoptimierung und KPI-Reporting mit.\n\nIn meiner bisherigen Tätigkeit habe ich mich erfolgreich um die Koordination eines 8-köpfigen Kundenservice-Teams verdient gemacht. Ich verfüge über Deutsch auf C2-Niveau und Englisch auf C1-Niveau, was mir ermöglicht,跨部门沟通 und internationale Kundenanfragen effizient zu bearbeiten. Meine Expertise im Auftragsmanagement und meine Fähigkeit, Prozesse zu optimieren, sind ideal für die Herausforderungen Ihres Teams geeignet.\n\nGerne stelle ich mich Ihnen in einem persönlichen Gespräch vor und freue mich auf die Möglichkeit, meine Qualifikationen näher zu erläutern.\n\nMit freundlichen Grüßen\n[NAME]"
+      },
+      {
+        "id": "DE_IT_02",
+        "lang": "de",
+        "elapsed_s": 24.443323504994623,
+        "error": null,
+        "chars": 688,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [],
+        "letter_anonymized": "Sehr geehrte Damen und Herren,\n\nmit großem Interesse habe ich die Stelle als Junior Business Analyst bei der [COMPANY] wahrgenommen. Als B.Sc. Absolvent der Wirtschaftsinformatik bringe ich fundierte Kenntnisse in Python und SQL mit, die ich bereits in meiner Tätigkeit als Business Analyst und als Werkstudent im Controlling erfolgreich einsetzte.\n\nMeine Expertise in der Prozessanalyse ermöglicht es mir, komplexe Anforderungen präzise zu analysieren und mit Fachbereichen effizient abzustimmen. Ich verfüge über Deutsch als Muttersprache und Englisch auf B2-Niveau.\n\nGerne stelle ich mich Ihnen in einem persönlichen Gespräch vor.\n\nMit freundlichen Grüßen\n[NAME]"
+      },
+      {
+        "id": "EN_CS_01",
+        "lang": "en",
+        "elapsed_s": 31.9890109639382,
+        "error": null,
+        "chars": 1208,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [],
+        "letter_anonymized": "Subject: Application for Customer Success Associate\n\nDear Hiring Team at [COMPANY],\n\nI am writing to express my interest in the Customer Success Associate position. With a background in Customer Support and Escalation Handling, I am eager to contribute to your team.\n\nMy BA in Communications has equipped me with strong written and verbal communication skills, essential for managing customer interactions. As a former Customer Support Specialist, I have honed my ability to resolve complex issues and support clients effectively. My experience includes working in a retail environment, which provided me with a deep understanding of customer service fundamentals.\n\nI am a native English speaker and possess proficiency in German (A2). I am fully comfortable utilizing CRM tools to manage customer data and track progress. I am particularly drawn to this role because it allows me to own the customer onboarding process and handle escalations directly. I am excited about the opportunity to bring my dedication to customer success to [COMPANY].\n\nThank you for considering my application. I look forward to discussing how my skills align with your needs.\n\nSincerely,\n[NAME]"
+      },
+      {
+        "id": "EN_ENG_02",
+        "lang": "en",
+        "elapsed_s": 25.331353319925256,
+        "error": null,
+        "chars": 750,
+        "safety_notes": [
+          "validator_error:TypeError"
+        ],
+        "heuristic_invented": [],
+        "letter_anonymized": "[NAME]\n[Your Address]\n[City, Postal Code]\n[Email]\n[Phone]\n\n[Date]\n\nHiring Team\n[COMPANY]\n\nDear Hiring Team,\n\nI am writing to express my interest in the Backend Engineer position at [COMPANY]. With a Master's degree in Computer Science and a proven track record as a Software Engineer and Intern Developer, I am well-positioned to contribute to your team.\n\nMy expertise lies in designing robust Java and Spring-based REST APIs. I speak English at a C2 level, which aligns perfectly with the requirement for collaboration with product teams. I am eager to apply my technical skills to help build efficient backend services.\n\nPlease find my resume attached for further details on my qualifications.\n\nSincerely,\n[NAME]"
+      }
+    ],
+    "n_heuristic_invented": 0,
+    "n_errors": 0,
+    "avg_s": 28.49569546370185
+  }
+}

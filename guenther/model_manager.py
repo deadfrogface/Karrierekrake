@@ -1,7 +1,7 @@
 """Model catalog + download manager (checksum, resumable, atomic, disk check).
 
-NEXT-02: Production catalog is Phi-only. Historical Qwen metadata is retained for
-benchmarks and must not be used as a production runtime path.
+ONE-MODEL dual-use (2026-09): sole production weight is Qwen3.5-4B for CV extract
+AND Anschreiben/PHI_WRITE-path. Phi-4-mini retained as historical benchmark only.
 """
 
 from __future__ import annotations
@@ -24,32 +24,30 @@ from core.security.model_integrity import (
 )
 from guenther.privacy import log_event
 
-# Sole production LLM (tournament/shootout pin — do not substitute another Phi artifact).
-PRODUCTION_MODEL_ID = "phi4-mini"
+# Sole production LLM for CV import + writing (one GGUF on disk).
+PRODUCTION_MODEL_ID = "qwen3.5-4b"
 
 # No weights in git — catalog metadata only.
-# SHA256 values are Hugging Face LFS content OIDs (x-linked-etag), verified 2026-09-15.
 MODEL_CATALOG: dict[str, dict] = {
     PRODUCTION_MODEL_ID: {
-        "display_name": "Günther (Phi-4-mini)",
-        "license": "MIT",
-        "approx_bytes": 2_491_874_688,
+        "display_name": "Karrierekrake lokal (Qwen3.5-4B)",
+        "license": "Apache-2.0",
+        "approx_bytes": 2_741_000_000,
         "ram_gb_min": 5.0,
         "tier": "standard",
-        # Exact tournament provenance (PR #19 megapass D) — bartowski GGUF of Microsoft MIT upstream.
-        "filename": "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
+        "filename": "Qwen3.5-4B-Q4_K_M.gguf",
         "url": (
-            "https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF/resolve/main/"
-            "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"
+            "https://huggingface.co/Qwen/Qwen3.5-4B-GGUF/resolve/main/"
+            "Qwen3.5-4B-Q4_K_M.gguf"
         ),
-        "sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
-        "source_repo": "bartowski/microsoft_Phi-4-mini-instruct-GGUF",
-        "base_model": "microsoft/Phi-4-mini-instruct",
-        "upstream_license": "MIT",
+        "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+        "source_repo": "Qwen/Qwen3.5-4B-GGUF",
+        "base_model": "Qwen/Qwen3.5-4B",
+        "upstream_license": "Apache-2.0",
         "quant": "Q4_K_M",
         "notes": (
-            "SOLE production Günther model (NEXT-02). MIT upstream microsoft/Phi-4-mini-instruct. "
-            "No Qwen production fallback."
+            "SOLE production model for CV extract + Anschreiben (one-model dual-use). "
+            "No second local weight. No DET. No cloud."
         ),
         "role": "primary",
         "deferred": False,
@@ -59,6 +57,24 @@ MODEL_CATALOG: dict[str, dict] = {
 
 # Historical / benchmark-only — NOT production runtime. Not installable via ModelManager.
 HISTORICAL_MODEL_CATALOG: dict[str, dict] = {
+    "phi4-mini": {
+        "display_name": "Phi-4-mini (historical — not production)",
+        "license": "MIT",
+        "approx_bytes": 2_491_874_688,
+        "ram_gb_min": 5.0,
+        "tier": "standard",
+        "filename": "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
+        "url": (
+            "https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF/resolve/main/"
+            "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"
+        ),
+        "sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
+        "source_repo": "bartowski/microsoft_Phi-4-mini-instruct-GGUF",
+        "base_model": "microsoft/Phi-4-mini-instruct",
+        "notes": "HISTORICAL writing/extract bakeoff only — superseded by qwen3.5-4b dual-use",
+        "role": "historical",
+        "production": False,
+    },
     "qwen3-1.7b": {
         "display_name": "Qwen3 1.7B (historical — not production)",
         "license": "Apache-2.0",
@@ -74,7 +90,7 @@ HISTORICAL_MODEL_CATALOG: dict[str, dict] = {
         "source_repo": "bartowski/Qwen_Qwen3-1.7B-GGUF",
         "base_model": "Qwen/Qwen3-1.7B",
         "hf_commit": "dcb19155b962dbb6389f4691a982043a8e651022",
-        "notes": "HISTORICAL only — removed from production runtime (NEXT-02)",
+        "notes": "HISTORICAL only",
         "role": "historical",
         "production": False,
     },
@@ -92,7 +108,7 @@ HISTORICAL_MODEL_CATALOG: dict[str, dict] = {
         "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
         "source_repo": "Qwen/Qwen3-4B-GGUF",
         "base_model": "Qwen/Qwen3-4B",
-        "notes": "HISTORICAL only — removed from production runtime (NEXT-02)",
+        "notes": "HISTORICAL only — different from Qwen3.5-4B production",
         "role": "historical",
         "production": False,
     },

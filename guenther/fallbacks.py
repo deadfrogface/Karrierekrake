@@ -1,11 +1,11 @@
-"""Honest fallbacks when Günther / Phi is unavailable — never alternate LLM."""
+"""Honest fallbacks when Günther / the sole local model is unavailable — never alternate LLM."""
 
 from __future__ import annotations
 
 from guenther.contracts import GuentherEnvelope
 from guenther.provider import ProviderStatus
 
-# Canonical unavailable surface (NEXT-02): GUENTHER_UNAVAILABLE + concrete cause.
+# Canonical unavailable surface: GUENTHER_UNAVAILABLE + concrete cause.
 FALLBACK_MESSAGES = {
     ProviderStatus.NOT_INSTALLED.value: "guenther_unavailable_runtime_missing",
     ProviderStatus.MODEL_MISSING.value: "guenther_unavailable_model_missing",
@@ -24,11 +24,11 @@ FALLBACK_MESSAGES = {
 
 # Human-readable German causes for UI (no PII).
 UNAVAILABLE_CAUSE_DE = {
-    "guenther_unavailable_model_missing": "Modell fehlt — Phi-4-mini ist nicht installiert.",
+    "guenther_unavailable_model_missing": "Modell fehlt — Qwen3.5-4B ist nicht installiert.",
     "guenther_unavailable_download_failed": "Download fehlgeschlagen.",
     "guenther_unavailable_model_corrupted": "Modell beschädigt (Prüfsumme ungültig).",
-    "guenther_unavailable_insufficient_ram": "RAM nicht ausreichend für Phi-4-mini.",
-    "guenther_unavailable_runtime_error": "Runtimefehler beim Laden von Phi.",
+    "guenther_unavailable_insufficient_ram": "RAM nicht ausreichend für Qwen3.5-4B.",
+    "guenther_unavailable_runtime_error": "Runtimefehler beim Laden von Qwen3.5-4B.",
     "guenther_unavailable_runtime_missing": "Lokale AI-Runtime nicht verfügbar.",
     "guenther_unavailable_timeout": "Zeitüberschreitung bei der AI-Verarbeitung.",
     "guenther_unavailable": "Günther ist derzeit nicht verfügbar.",

@@ -1,9 +1,11 @@
 """Local Docpick + Qwen3.5-4B CV extraction (productive path).
 
 Uses:
-- Docling for PDF→text (MIT)
+- ``core.cv_extract`` (pypdf / python-docx) for PDF/DOCX→text in packaged builds
+- Optional Docling when ``KARRIEREKRAKE_CV_USE_DOCLING=1`` (eval harnesses only)
 - Docpick schema prompt + JSON parse (Apache-2.0)
-- Local llama.cpp OpenAI-compatible server with Qwen3.5-4B-Q4_K_M (Apache-2.0)
+- Local Qwen3.5-4B-Q4_K_M via existing OpenAI-compatible server **or** in-process
+  llama-cpp (same model — end users must not start a developer server by hand)
 
 No DET. No silent fallback to the legacy rule parser.
 On failure: raises ``CvImportError`` so the UI can show an error / manual path.
@@ -27,19 +29,19 @@ DEFAULT_LLM_BASE = os.environ.get("KARRIEREKRAKE_CV_LLM_BASE", "http://127.0.0.1
 
 
 def _default_model_path() -> str:
-    env = os.environ.get("KARRIEREKRAKE_CV_LLM_MODEL")
-    if env:
-        return env
-    # Offline local cache used by Docpick eval harnesses (not a world-writable temp file).
-    candidates = [
-        Path.home() / ".cache" / "karrierekrake-models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf",
-        Path("/var/tmp") / "karrierekrake-models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf",
-        Path(os.sep) / "tmp" / "karrierekrake-models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf",  # noqa: S108
-    ]
-    for c in candidates:
-        if c.is_file():
-            return str(c)
-    return str(candidates[0])
+    from core.cv_llm_runtime import CV_MODEL_FILENAME, CV_MODEL_DIRNAME, resolve_cv_model_path
+
+    found = resolve_cv_model_path()
+    if found is not None:
+        return str(found)
+    # Stable placeholder path for settings/status when weights are not installed yet.
+    return str(
+        Path.home()
+        / ".cache"
+        / "karrierekrake-models"
+        / CV_MODEL_DIRNAME
+        / CV_MODEL_FILENAME
+    )
 
 
 DEFAULT_MODEL = _default_model_path()
@@ -1023,14 +1025,15 @@ def _docling_version() -> str:
         return "unknown"
 
 
-def extract_cv_text(path: Path) -> str:
-    """Prefer Docling; on Docling failure raise (no DET text heuristics).
+def _want_docling() -> bool:
+    """Eval harnesses opt into Docling explicitly; packaged EXE never does."""
+    raw = (os.environ.get("KARRIEREKRAKE_CV_USE_DOCLING") or "").strip().lower()
+    return raw in {"1", "true", "yes"}
 
-    Reuses DocumentConverter across calls. Caches extracted text only when the
-    SHA-256 of the PDF bytes and the Docling version both match (no stale reuse).
-    """
+
+def _extract_via_docling(path: Path) -> str:
+    """Docling PDF/DOCX→text (optional; not shipped in the Windows onefile)."""
     global _docling_converter
-    path = Path(path)
     cache_key = (_file_content_key(path), _docling_version())
     cached = _docling_text_cache.get(cache_key)
     if cached is not None:
@@ -1041,22 +1044,78 @@ def extract_cv_text(path: Path) -> str:
         if _docling_converter is None:
             _docling_converter = DocumentConverter()
         text = _docling_converter.convert(str(path)).document.export_to_markdown() or ""
+    except ImportError as exc:
+        raise CvImportError(
+            "docling_missing",
+            "Docling ist nicht installiert. Für Eval: Abhängigkeit installieren "
+            "oder ohne KARRIEREKRAKE_CV_USE_DOCLING den Produktions-Extrakt nutzen.",
+        ) from exc
     except Exception as exc:  # noqa: BLE001
         raise CvImportError(
             "unreadable_cv",
-            f"CV unlesbar / beschädigt ({type(exc).__name__}: {exc}). "
-            "Bitte anderes PDF versuchen oder Felder manuell eintragen.",
+            f"CV unlesbar / beschädigt ({type(exc).__name__}). "
+            "Bitte anderes PDF/DOCX versuchen oder Felder manuell eintragen.",
         ) from exc
     if not text.strip():
         raise CvImportError(
             "empty_cv",
             "Leerer CV: kein Text extrahiert (leere Datei, Scan ohne Text, oder leeres Dokument).",
         )
-    # Bound cache size (process-local); drop oldest-ish by clearing when large.
     if len(_docling_text_cache) >= 32:
         _docling_text_cache.clear()
     _docling_text_cache[cache_key] = text
     return text
+
+
+def _extract_via_cv_extract(path: Path) -> str:
+    """Shipped production frontend: pypdf / python-docx (no Docling/torch)."""
+    try:
+        from core.cv_extract import extract_text
+        from core.security.parser_limits import ParserLimitError
+    except ImportError as exc:
+        raise CvImportError(
+            "extract_missing",
+            "CV-Textextraktion fehlt in dieser Installation.",
+        ) from exc
+    try:
+        text = extract_text(path) or ""
+    except FileNotFoundError as exc:
+        raise CvImportError("file_missing", "Datei nicht gefunden.") from exc
+    except ParserLimitError as exc:
+        raise CvImportError(
+            "unreadable_cv",
+            f"CV unlesbar / Ressourcenlimit ({type(exc).__name__}).",
+        ) from exc
+    except ValueError as exc:
+        raise CvImportError(
+            "unreadable_cv",
+            "CV unlesbar / kein unterstütztes PDF- oder DOCX-Dokument.",
+        ) from exc
+    except Exception as exc:  # noqa: BLE001
+        raise CvImportError(
+            "unreadable_cv",
+            f"CV unlesbar / beschädigt ({type(exc).__name__}). "
+            "Bitte anderes PDF/DOCX versuchen oder Felder manuell eintragen.",
+        ) from exc
+    if not text.strip():
+        raise CvImportError(
+            "empty_cv",
+            "Leerer CV: kein Text extrahiert (leere Datei, Scan ohne Text, oder leeres Dokument).",
+        )
+    return text
+
+
+def extract_cv_text(path: Path) -> str:
+    """Extract CV text for Docpick schema fill.
+
+    Production / packaged EXE uses ``core.cv_extract`` (pypdf, python-docx).
+    Docling remains available only when ``KARRIEREKRAKE_CV_USE_DOCLING=1``
+    (eval harnesses). No silent switch mid-failure.
+    """
+    path = Path(path)
+    if _want_docling():
+        return _extract_via_docling(path)
+    return _extract_via_cv_extract(path)
 
 
 _GENERIC_EMAIL_LOCALS = frozenset(
@@ -1093,71 +1152,96 @@ def _name_from_email_local(email: str) -> tuple[str, str] | None:
     return parts[0].capitalize(), parts[1].capitalize()
 
 
-def _llm_extract(text: str) -> dict[str, Any]:
-    """Docpick schema extract via local OpenAI-compatible server.
+def _extraction_messages(text: str) -> list[dict[str, str]]:
+    schema_json = _schema_json_for_prompt()
+    # Round3 system prompt (quality reference). Round4 compact/"Dates MM/YYYY"
+    # and aggressive heute instructions caused DOB + end_date regressions.
+    return [
+        {
+            "role": "system",
+            "content": (
+                "You are a document data extraction assistant. "
+                "Output ONLY valid JSON. No markdown. "
+                "If a field is not found, use null. "
+                "For arrays, include all matching items found. "
+                "Do not invent values. "
+                "Preserve diacritics and special letters in names exactly as written "
+                "(e.g. Célina, Mikołaj). "
+                "employment.position is the job title only — never duty bullets. "
+                "When a job has no end date / is current, set end_date to 'heute'. "
+                "Keep incomplete education outcomes in qualification "
+                "(Studium abgebrochen, Schule ohne Abschluss). "
+                "/no_think"
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"## JSON Schema\n{schema_json}\n\n"
+                f"## Document Text\n{text}\n\n"
+                "Extract the data and output valid JSON:"
+            ),
+        },
+    ]
 
-    Prompt uses a description-stripped compact schema + short system text to
-    cut prefill tokens (measured main latency on CPU).
+
+def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
+    """Docpick schema extract via local Qwen (HTTP server or in-process).
+
+    ``transport`` is ``http`` or ``inprocess`` from ``ensure_cv_llm_ready``.
+    Same model and prompts either way — not a different-model fallback.
     """
     try:
-        from docpick.llm.vllm_provider import VLLMProvider
         from docpick.llm.prompt import parse_llm_json
     except ImportError as exc:
         raise CvImportError(
             "docpick_missing",
-            "Docpick ist nicht installiert. Bitte Abhängigkeit 'docpick' installieren.",
+            "Docpick fehlt in dieser Installation. "
+            "CV-Import kann nicht strukturieren. Kein DET-Fallback.",
         ) from exc
 
-    provider = VLLMProvider(
-        base_url=DEFAULT_LLM_BASE,
-        model=DEFAULT_MODEL,
-        temperature=0.0,
-        max_tokens=_LLM_MAX_TOKENS,
-        timeout=max(5.0, min(300.0, CV_IMPORT_TIMEOUT_S)),
-    )
-    if not provider.is_available():
-        raise CvImportError(
-            "llm_unavailable",
-            f"Lokales CV-Modell nicht erreichbar unter {DEFAULT_LLM_BASE}. "
-            "Bitte llama.cpp-Server mit Qwen3.5-4B starten oder Einstellungen prüfen. "
-            "Kein automatischer Wechsel auf den alten DET-Parser.",
-        )
+    messages = _extraction_messages(text)
     try:
-        schema_json = _schema_json_for_prompt()
-        # Round3 system prompt (quality reference). Round4 compact/"Dates MM/YYYY"
-        # and aggressive heute instructions caused DOB + end_date regressions.
-        messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You are a document data extraction assistant. "
-                    "Output ONLY valid JSON. No markdown. "
-                    "If a field is not found, use null. "
-                    "For arrays, include all matching items found. "
-                    "Do not invent values. "
-                    "Preserve diacritics and special letters in names exactly as written "
-                    "(e.g. Célina, Mikołaj). "
-                    "employment.position is the job title only — never duty bullets. "
-                    "When a job has no end date / is current, set end_date to 'heute'. "
-                    "Keep incomplete education outcomes in qualification "
-                    "(Studium abgebrochen, Schule ohne Abschluss)."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"## JSON Schema\n{schema_json}\n\n"
-                    f"## Document Text\n{text}\n\n"
-                    "Extract the data and output valid JSON:"
-                ),
-            },
-        ]
-        raw_text = provider._call_chat(messages)
+        if transport == "http":
+            from docpick.llm.vllm_provider import VLLMProvider
+
+            provider = VLLMProvider(
+                base_url=DEFAULT_LLM_BASE,
+                model=DEFAULT_MODEL,
+                temperature=0.0,
+                max_tokens=_LLM_MAX_TOKENS,
+                timeout=max(5.0, min(300.0, CV_IMPORT_TIMEOUT_S)),
+            )
+            if not provider.is_available():
+                raise CvImportError(
+                    "llm_unavailable",
+                    "Lokales CV-Modell nicht erreichbar. "
+                    "Karrierekrake startet es automatisch, wenn Gewichte und "
+                    "llama-cpp vorhanden sind. Kein DET-Fallback.",
+                )
+            raw_text = provider._call_chat(messages)
+        else:
+            from core.cv_llm_runtime import chat_completion_inprocess, resolve_cv_model_path
+
+            model_path = resolve_cv_model_path()
+            if model_path is None:
+                raise CvImportError(
+                    "model_missing",
+                    "Das lokale CV-Modell (Qwen3.5-4B) fehlt. Kein DET-Fallback.",
+                )
+            raw_text = chat_completion_inprocess(
+                messages,
+                model_path=model_path,
+                max_tokens=_LLM_MAX_TOKENS,
+                temperature=0.0,
+            )
         data = parse_llm_json(raw_text)
+    except CvImportError:
+        raise
     except Exception as exc:  # noqa: BLE001
         raise CvImportError(
             "llm_extract_failed",
-            f"Strukturierte Extraktion fehlgeschlagen ({type(exc).__name__}: {exc}). "
+            f"Strukturierte Extraktion fehlgeschlagen ({type(exc).__name__}). "
             "Bitte Felder manuell nachtragen.",
         ) from exc
     if not isinstance(data, dict) or not data:
@@ -1368,23 +1452,31 @@ def _llama_server_rss_mb() -> float:
     return _llama_server_rss_bytes() / (1024.0 * 1024.0)
 
 
-def cv_path_peak_rss_bytes() -> int:
-    """Honest CV-path footprint (bytes): this process + local LLM server.
+def cv_path_peak_rss_bytes(*, include_llama_server: bool = True) -> int:
+    """Honest CV-path footprint (bytes): this process + optional local LLM server.
 
     Agent-VM /proc sum is informational only. Ship evidence requires a Windows
     Job Object PeakJobMemoryUsed on the real i3 / 8 GB laptop.
+
+    When the import loads Qwen in-process, external llama.cpp servers are not
+    part of this path and must not trip the preflight gate.
     """
-    return _self_rss_bytes() + _llama_server_rss_bytes()
+    total = _self_rss_bytes()
+    if include_llama_server:
+        total += _llama_server_rss_bytes()
+    return total
 
 
-def cv_path_peak_rss_mb() -> float:
+def cv_path_peak_rss_mb(*, include_llama_server: bool = True) -> float:
     """Honest CV-path footprint in MiB (derived from bytes)."""
-    return cv_path_peak_rss_bytes() / (1024.0 * 1024.0)
+    return cv_path_peak_rss_bytes(include_llama_server=include_llama_server) / (
+        1024.0 * 1024.0
+    )
 
 
-def _enforce_peak_rss(*, stage: str) -> None:
+def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
     """Hard fail when CV-path Peak RSS exceeds 3_300_000_000 bytes."""
-    rss = cv_path_peak_rss_bytes()
+    rss = cv_path_peak_rss_bytes(include_llama_server=include_llama_server)
     if rss > CV_IMPORT_PEAK_RSS_BYTES_MAX:
         raise CvImportError(
             "peak_rss_exceeded",
@@ -1410,7 +1502,7 @@ def import_cv_docpick(
     progress: Any | None = None,
     should_cancel: Any | None = None,
 ) -> dict[str, Any]:
-    """Productive CV import via Docling + Docpick + local Qwen3.5-4B.
+    """Productive CV import via shipped cv_extract + Docpick + local Qwen3.5-4B.
 
     Raises ``CvImportError`` on failure. Never calls DET ``parse_cv_text``.
 
@@ -1419,9 +1511,10 @@ def import_cv_docpick(
       - ``unreadable_cv`` — corrupt / unreadable document
       - ``timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
       - ``peak_rss_exceeded`` — CV-path Peak RSS over 3_300_000_000 bytes
+      - ``model_missing`` / ``llama_missing`` — sole GGUF or runtime absent
 
     Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI
-    honest about stages and allow cancel between Docling and the LLM call.
+    honest about stages and allow cancel between text extract and the LLM call.
     """
     path = Path(path)
     t0 = time.monotonic()
@@ -1462,33 +1555,24 @@ def import_cv_docpick(
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
 
-    # Fail-fast: do not spend Docling time when the local model is down —
-    # except empty/corrupt already rejected above.
+    # Fail-fast: ensure local Qwen is reachable (existing HTTP server) or
+    # loadable in-process — never ask end users to start a developer server.
     try:
-        from docpick.llm.vllm_provider import VLLMProvider
+        import docpick  # noqa: F401
     except ImportError as exc:
         raise CvImportError(
             "docpick_missing",
-            "Docpick ist nicht installiert. Bitte Abhängigkeit 'docpick' installieren.",
+            "Docpick fehlt in dieser Installation. "
+            "CV-Import kann nicht strukturieren. Kein DET-Fallback.",
         ) from exc
     _progress("llm_preflight")
     _enforce_timeout(t0, stage="llm_preflight")
-    preflight = VLLMProvider(
-        base_url=DEFAULT_LLM_BASE,
-        model=DEFAULT_MODEL,
-        temperature=0.0,
-        max_tokens=8,
-        timeout=min(30.0, CV_IMPORT_TIMEOUT_S),
-    )
-    if not preflight.is_available():
-        raise CvImportError(
-            "llm_unavailable",
-            f"Lokales CV-Modell nicht erreichbar unter {DEFAULT_LLM_BASE}. "
-            "Bitte llama.cpp-Server mit Qwen3.5-4B starten oder Einstellungen prüfen. "
-            "Kein automatischer Wechsel auf den alten DET-Parser.",
-        )
+    from core.cv_llm_runtime import ensure_cv_llm_ready
+
+    transport = ensure_cv_llm_ready()
+    include_llama = transport == "http"
     # Peak gate before expensive work — hard fail if already over 3_300_000_000 bytes.
-    _enforce_peak_rss(stage="preflight")
+    _enforce_peak_rss(stage="preflight", include_llama_server=include_llama)
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
 
@@ -1497,15 +1581,15 @@ def import_cv_docpick(
     text = extract_cv_text(path)
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
-    _enforce_peak_rss(stage="after_pdf")
+    _enforce_peak_rss(stage="after_pdf", include_llama_server=include_llama)
     _enforce_timeout(t0, stage="before_model")
 
     _progress("model")
-    raw = _llm_extract(text)
+    raw = _llm_extract(text, transport=transport)
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
     _enforce_timeout(t0, stage="after_model")
-    _enforce_peak_rss(stage="after_model")
+    _enforce_peak_rss(stage="after_model", include_llama_server=include_llama)
 
     parsed = suggestion_to_parsed(raw, source_text=text)
     # Contract guard — top-level keys must remain stable for matching/profile.
@@ -1526,7 +1610,8 @@ def import_cv_docpick(
     parsed["source_text"] = text
     parsed["raw_text_chars"] = len(text)
     parsed["raw_text_preview"] = text[:500]
-    parsed["document_backend"] = "docling"
+    parsed["document_backend"] = "docling" if _want_docling() else "cv_extract"
+    parsed["llm_transport"] = transport
     parsed["pipeline"] = "docpick_qwen35_4b"
     parsed["intelligence_status"] = "docpick_qwen35"
     parsed["intelligence_notes"] = []

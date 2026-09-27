@@ -368,7 +368,7 @@ class SettingsPage(QWidget):
         guenther_box = QGroupBox()
         self.guenther_box = guenther_box
         gform = QFormLayout(guenther_box)
-        self.guenther_model_fixed = QLabel("Phi-4-mini (einziges Produktionsmodell)")
+        self.guenther_model_fixed = QLabel("Qwen3.5-4B (einziges lokales Modell)")
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
         self.guenther_hint.setObjectName("KkHint")
@@ -734,7 +734,7 @@ class SettingsPage(QWidget):
             self.lbl_guenther_model.setText(tr("settings.guenther_model"))
             self.guenther_hint.setText(tr("settings.guenther_hint"))
             if hasattr(self, "guenther_model_fixed"):
-                self.guenther_model_fixed.setText(tr("settings.guenther_model.phi_only"))
+                self.guenther_model_fixed.setText(tr("settings.guenther_model.sole"))
             if hasattr(self, "cv_import_title"):
                 self.cv_import_title.setText(tr("settings.cv_import_path_title"))
                 self.cv_import_body.setText(tr("settings.cv_import_path_body"))
@@ -803,9 +803,16 @@ class SettingsPage(QWidget):
             self.guenther_writer_status.setText(tr("settings.guenther_writer_unavailable"))
         cv_ok = False
         try:
-            from core.cv_docpick_import import DEFAULT_MODEL
+            from core.cv_llm_runtime import llama_cpp_importable, resolve_cv_model_path
 
-            cv_ok = Path(DEFAULT_MODEL).is_file()
+            model_ok = resolve_cv_model_path() is not None
+            try:
+                import docpick  # noqa: F401
+
+                docpick_ok = True
+            except Exception:
+                docpick_ok = False
+            cv_ok = bool(model_ok and docpick_ok and llama_cpp_importable())
         except Exception:
             cv_ok = False
         if hasattr(self, "cv_import_status"):
@@ -1017,7 +1024,7 @@ class SettingsPage(QWidget):
             cfg.settings.allow_employer_email_send = self.allow_employer_email_send.isChecked()
         # Günther is always enabled — no UI toggle; persist True for callers/tests.
         cfg.settings.guenther_enabled = True
-        cfg.settings.guenther_model = "phi4-mini"
+        cfg.settings.guenther_model = "qwen3.5-4b"
         cfg.settings.guenther_heuristic_fallback = False
         if hasattr(self, "mail_provider"):
             cfg.settings.mail_provider = str(self.mail_provider.currentData() or "none")

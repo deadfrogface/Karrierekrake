@@ -443,15 +443,31 @@ class CvImportDialog(QDialog):
     def _show_failure(self, kind: str, message: str) -> None:
         self._clear_unapplied()
         self.preview.clear()
-        if kind == "oom":
-            text = tr("cv_import.error_oom")
-        elif kind == "timeout":
-            text = tr("cv_import.error_timeout")
+        kind_key = {
+            "oom": "cv_import.error_oom",
+            "peak_rss_exceeded": "cv_import.error_oom",
+            "timeout": "cv_import.error_timeout",
+            "model_missing": "cv_import.error_model_missing",
+            "llama_missing": "cv_import.error_llama_missing",
+            "llm_unavailable": "cv_import.error_llm_unavailable",
+            "docpick_missing": "cv_import.error_docpick_missing",
+            "empty_cv": "cv_import.error_empty_file",
+            "unreadable_cv": "cv_import.error_unreadable",
+            "llm_extract_failed": "cv_import.error_extract_failed",
+            "llm_empty": "cv_import.error_extract_failed",
+            "unreliable_extract": "cv_import.error_unreliable",
+        }.get(kind)
+        if kind_key:
+            text = tr(kind_key)
         else:
             text = tr("cv_import.error_generic")
         self.error_text.setText(text)
         detail = (message or "").strip()
-        if detail.lower() in {"", "oom", "timeout", "error", "cancelled"}:
+        # Prefer stage-specific detail when it adds information beyond the title.
+        if detail.lower() in {"", "oom", "timeout", "error", "cancelled", kind.lower()}:
+            self.error_detail.clear()
+            self.error_detail.setVisible(False)
+        elif detail == text:
             self.error_detail.clear()
             self.error_detail.setVisible(False)
         else:

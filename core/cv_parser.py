@@ -2611,7 +2611,7 @@ def import_cv(
     guenther_enabled: bool = False,
     manual_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Import CV via deterministic DET pipeline (PHI_EXTRACT removed).
+    """Import CV via Docpick + sole production Qwen (no DET, no PHI_EXTRACT).
 
     ``guenther_enabled`` is accepted for old callers/configs but ignored.
     """

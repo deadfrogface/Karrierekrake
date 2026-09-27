@@ -127,6 +127,16 @@ class CvImportSupervisor:
     def run_once(self, progress: Callable[[str], None] | None = None) -> ImportAttemptResult:
         """Parse once. Does not retry OOM, timeout, or model failures."""
         self.ran_on_thread = threading.get_ident()
+        # Release Günther's in-process weight before the import child loads the
+        # same sole GGUF (parser and writing stay separate processes/roles).
+        try:
+            from guenther.service import get_guenther_service
+
+            g = get_guenther_service(enabled=True)
+            if g is not None and hasattr(g, "provider"):
+                g.provider.unload_model()
+        except Exception:  # noqa: BLE001
+            pass
         if self._cancel.is_set():
             return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
         if progress:
@@ -211,8 +221,8 @@ class CvImportSupervisor:
             return ImportAttemptResult(True, "ok", "", payload["parsed"], attempts=1)
         kind = str(payload.get("kind") or "")
         message = str(payload.get("message") or "")
-        if kind == "oom" or code == 3 or is_oom_exit(code):
-            return ImportAttemptResult(False, "oom", message or "oom", None, attempts=1)
+        if kind == "oom" or kind == "peak_rss_exceeded" or code == 3 or is_oom_exit(code):
+            return ImportAttemptResult(False, "oom" if kind != "peak_rss_exceeded" else "peak_rss_exceeded", message or "oom", None, attempts=1)
         if kind == "timeout":
             return ImportAttemptResult(False, "timeout", message or "timeout", None, attempts=1)
         if kind == "cancelled":

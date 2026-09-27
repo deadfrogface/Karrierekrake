@@ -189,7 +189,7 @@ def test_disabled_fallback():
 
 def test_model_manager_no_silent_download(tmp_path):
     mm = ModelManager(tmp_path / "models")
-    prog = mm.install("phi4-mini", allow_download=False)
+    prog = mm.install("qwen3.5-4b", allow_download=False)
     assert prog.status == "error"
     assert prog.message == "download_not_confirmed"
 
@@ -198,38 +198,38 @@ def test_model_catalog_licenses_safe():
     for mid, meta in MODEL_CATALOG.items():
         assert meta["license"] in {"Apache-2.0", "MIT"}
         assert "gemma" not in mid
-        assert "qwen" not in mid
 
 
-def test_phi_sole_production_pin():
+def test_sole_production_pin():
     from guenther.model_manager import HISTORICAL_MODEL_CATALOG
 
     assert "qwen3-1.7b" not in MODEL_CATALOG
     assert "qwen3-4b" not in MODEL_CATALOG
-    assert "qwen3-1.7b" in HISTORICAL_MODEL_CATALOG
-    phi = MODEL_CATALOG["phi4-mini"]
-    assert phi.get("url", "").startswith("https://huggingface.co/bartowski/")
-    assert phi["filename"] == "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"
-    assert len(phi["sha256"]) == 64
-    assert phi["sha256"].startswith("01999f17")
-    assert phi.get("deferred") is False
-    assert phi["license"] == "MIT"
-    assert phi.get("role") == "primary"
+    assert "phi4-mini" not in MODEL_CATALOG
+    assert "phi4-mini" in HISTORICAL_MODEL_CATALOG
+    prod = MODEL_CATALOG["qwen3.5-4b"]
+    assert prod.get("url", "").startswith("https://huggingface.co/Qwen/")
+    assert prod["filename"] == "Qwen3.5-4B-Q4_K_M.gguf"
+    assert len(prod["sha256"]) == 64
+    assert prod["sha256"].startswith("00fe7986")
+    assert prod.get("deferred") is False
+    assert prod["license"] == "Apache-2.0"
+    assert prod.get("role") == "primary"
 
 
 def test_model_manager_requires_confirm_even_when_url_pinned(tmp_path):
     mm = ModelManager(tmp_path / "models")
-    prog = mm.install("phi4-mini", allow_download=False)
+    prog = mm.install("qwen3.5-4b", allow_download=False)
     assert prog.status == "error"
     assert prog.message == "download_not_confirmed"
 
 
 def test_hardware_no_qwen_fallback(monkeypatch):
     monkeypatch.setenv("KARRIEREKRAKE_RAM_GB", "4")
-    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "phi4-mini"
-    assert graceful_model_fallback(HardwareTier.STANDARD, "auto") == "phi4-mini"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "phi4-mini"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "phi4-mini"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "qwen3.5-4b"
+    assert graceful_model_fallback(HardwareTier.STANDARD, "auto") == "qwen3.5-4b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3.5-4b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "qwen3.5-4b"
 
 
 def test_extract_json_strips_think_blocks():
@@ -264,7 +264,7 @@ def test_guenther_settings_defaults():
 
     s = SettingsConfig()
     assert s.guenther_enabled is True
-    assert s.guenther_model == "phi4-mini"
+    assert s.guenther_model == "qwen3.5-4b"
     assert s.guenther_heuristic_fallback is False
 
 

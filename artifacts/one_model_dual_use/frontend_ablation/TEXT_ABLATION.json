@@ -1,0 +1,245 @@
+{
+  "created_at": "2026-09-27T03:48:35.478880+00:00",
+  "comparison_type": "KNOWN_FRONTEND_TEXT_ABLATION_NOT_BLIND",
+  "note": "Docling is eval-only (KARRIEREKRAKE_CV_USE_DOCLING). Product EXE ships cv_extract only.",
+  "n_docs": 5,
+  "summary": {
+    "mean_jaccard": 0.9794,
+    "mean_char_ratio_cv_over_docling": 0.6059,
+    "gt_coverage_mean": {
+      "cv_extract": 0.9622,
+      "docling": 0.9622
+    }
+  },
+  "documents": {
+    "DE_01_Klassisch.pdf": {
+      "file": "DE_01_Klassisch.pdf",
+      "lang": "de",
+      "token_jaccard": 1.0,
+      "char_ratio_cv_over_docling": 0.9406,
+      "tokens_only_in_cv_extract_sample": [],
+      "tokens_only_in_docling_sample": [],
+      "gt_coverage": {
+        "cv_extract": {
+          "gt_tokens": 67,
+          "present": 66,
+          "missing_count": 1,
+          "missing_sample": [
+            "sprache"
+          ],
+          "coverage": 0.9851
+        },
+        "docling": {
+          "gt_tokens": 67,
+          "present": 66,
+          "missing_count": 1,
+          "missing_sample": [
+            "sprache"
+          ],
+          "coverage": 0.9851
+        }
+      },
+      "cv_extract": {
+        "chars": 1108,
+        "sha256": "d6ec39d095bc74cbfec1a1b170c709681c11d18a9190853bfac015d999814536",
+        "elapsed_s": 0.075,
+        "error": null
+      },
+      "docling": {
+        "chars": 1178,
+        "sha256": "a97f24c3c074211cf95114543da894c883af43441eecf1becdbf1a1446303e07",
+        "elapsed_s": 9.205,
+        "error": null
+      }
+    },
+    "DE_02_Zweispaltig_Trap.pdf": {
+      "file": "DE_02_Zweispaltig_Trap.pdf",
+      "lang": "de",
+      "token_jaccard": 0.9917,
+      "char_ratio_cv_over_docling": 0.9378,
+      "tokens_only_in_cv_extract_sample": [],
+      "tokens_only_in_docling_sample": [
+        "amp"
+      ],
+      "gt_coverage": {
+        "cv_extract": {
+          "gt_tokens": 99,
+          "present": 98,
+          "missing_count": 1,
+          "missing_sample": [
+            "sprache"
+          ],
+          "coverage": 0.9899
+        },
+        "docling": {
+          "gt_tokens": 99,
+          "present": 98,
+          "missing_count": 1,
+          "missing_sample": [
+            "sprache"
+          ],
+          "coverage": 0.9899
+        }
+      },
+      "cv_extract": {
+        "chars": 1311,
+        "sha256": "2ec23d1d63db12e85e128f2ae1b1174678b43ef0f539bcb28ee4b7c3f585d342",
+        "elapsed_s": 0.01,
+        "error": null
+      },
+      "docling": {
+        "chars": 1398,
+        "sha256": "081f137762c0da926930b5f54e72228110d1642e2e0e87302031cab36695881f",
+        "elapsed_s": 3.296,
+        "error": null
+      }
+    },
+    "EN_01_Classic_Resume.pdf": {
+      "file": "EN_01_Classic_Resume.pdf",
+      "lang": "en",
+      "token_jaccard": 0.9773,
+      "char_ratio_cv_over_docling": 0.5104,
+      "tokens_only_in_cv_extract_sample": [],
+      "tokens_only_in_docling_sample": [
+        "-------------------------------------------------------------------------------------",
+        "124"
+      ],
+      "gt_coverage": {
+        "cv_extract": {
+          "gt_tokens": 69,
+          "present": 68,
+          "missing_count": 1,
+          "missing_sample": [
+            "sprache"
+          ],
+          "coverage": 0.9855
+        },
+        "docling": {
+          "gt_tokens": 69,
+          "present": 68,
+          "missing_count": 1,
+          "missing_sample": [
+            "sprache"
+          ],
+          "coverage": 0.9855
+        }
+      },
+      "cv_extract": {
+        "chars": 739,
+        "sha256": "32dbc9a571a965fafa40fe1404225d2b5201caf27020002b9dd8b60fc97f348f",
+        "elapsed_s": 0.005,
+        "error": null
+      },
+      "docling": {
+        "chars": 1448,
+        "sha256": "6ad1aa6a1b4c82960f3b5832099772ff7ebc786454ed3ea6b2c780c6fc908e3a",
+        "elapsed_s": 2.768,
+        "error": null
+      }
+    },
+    "EN_02_Two_Column_Trap.pdf": {
+      "file": "EN_02_Two_Column_Trap.pdf",
+      "lang": "en",
+      "token_jaccard": 0.9681,
+      "char_ratio_cv_over_docling": 0.3325,
+      "tokens_only_in_cv_extract_sample": [],
+      "tokens_only_in_docling_sample": [
+        "-----------------------------",
+        "--------------------------------------------------------------------------------------------------------------",
+        "124"
+      ],
+      "gt_coverage": {
+        "cv_extract": {
+          "gt_tokens": 70,
+          "present": 65,
+          "missing_count": 5,
+          "missing_sample": [
+            "anzahl",
+            "fuehrerschein",
+            "fuehrerscheine",
+            "software",
+            "sprache"
+          ],
+          "coverage": 0.9286
+        },
+        "docling": {
+          "gt_tokens": 70,
+          "present": 65,
+          "missing_count": 5,
+          "missing_sample": [
+            "anzahl",
+            "fuehrerschein",
+            "fuehrerscheine",
+            "software",
+            "sprache"
+          ],
+          "coverage": 0.9286
+        }
+      },
+      "cv_extract": {
+        "chars": 809,
+        "sha256": "228a574d69b1153c23bb8b40cff4a6e9b2f4182bc13e430b787fdad53bd4df90",
+        "elapsed_s": 0.007,
+        "error": null
+      },
+      "docling": {
+        "chars": 2433,
+        "sha256": "89036315e5481fd117cafb6307b104dd270a8c1d41c052bc6d9b0ec89486c06e",
+        "elapsed_s": 25.231,
+        "error": null
+      }
+    },
+    "EN_04_German_Address_English_CV.pdf": {
+      "file": "EN_04_German_Address_English_CV.pdf",
+      "lang": "en",
+      "token_jaccard": 0.96,
+      "char_ratio_cv_over_docling": 0.308,
+      "tokens_only_in_cv_extract_sample": [],
+      "tokens_only_in_docling_sample": [
+        "--------------",
+        "---------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+        "124"
+      ],
+      "gt_coverage": {
+        "cv_extract": {
+          "gt_tokens": 64,
+          "present": 59,
+          "missing_count": 5,
+          "missing_sample": [
+            "anzahl",
+            "fuehrerschein",
+            "fuehrerscheine",
+            "software",
+            "sprache"
+          ],
+          "coverage": 0.9219
+        },
+        "docling": {
+          "gt_tokens": 64,
+          "present": 59,
+          "missing_count": 5,
+          "missing_sample": [
+            "anzahl",
+            "fuehrerschein",
+            "fuehrerscheine",
+            "software",
+            "sprache"
+          ],
+          "coverage": 0.9219
+        }
+      },
+      "cv_extract": {
+        "chars": 629,
+        "sha256": "2a0b9a1d614dba4eabbec9ebd506f493f24c3ddb0d22c7f43b19b3e46d39f2f2",
+        "elapsed_s": 0.004,
+        "error": null
+      },
+      "docling": {
+        "chars": 2042,
+        "sha256": "b85526a5b97429335594748d382e1827de70d41b43ffe60422eb758854cdb6f2",
+        "elapsed_s": 25.378,
+        "error": null
+      }
+    }
+  }
+}

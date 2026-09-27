@@ -74,6 +74,16 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "pandas",
     "lxml",
     "bs4",
+    # Productive CV import (Docpick + in-process llama.cpp; Docling not shipped).
+    "docpick",
+    "docpick.llm",
+    "docpick.llm.vllm_provider",
+    "docpick.llm.prompt",
+    "docpick.llm.base",
+    "llama_cpp",
+    "llama_cpp.llama",
+    "llama_cpp.server",
+    "llama_cpp.server.app",
 )
 
 # Always excluded from Analysis (dev / unused UI stacks).

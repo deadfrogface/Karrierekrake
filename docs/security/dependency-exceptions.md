@@ -8,12 +8,13 @@ High or Critical findings from pip-audit / OSV must not be silenced without revi
 | Advisory ID | Package | Severity | Why non-applicable / deferred | Reviewer | Date |
 |-------------|---------|----------|-------------------------------|----------|------|
 | PYSEC-2026-1604 (CVE-2025-46656, GHSA-7mpr-5m44-h73r) | markdownify 0.13.x (via python-jobspy) | Low (CVSS 2.9, local DoS via huge `<hN>` tags) | Not High/Critical. Fix is 0.14.1 but `python-jobspy` pins `markdownify>=0.13.1,<0.14.0`, so a direct upgrade breaks resolution. Job HTML is already size-limited by parser limits; monitor jobspy for a pin bump. | PR41 security | 2026-09-20 |
+| PYSEC-2026-2447 (CVE-2025-69872) | diskcache ≤5.6.3 (via `llama-cpp-python`) | Critical (pickle RCE **if attacker can write the cache directory**) | **Now a runtime dependency** because productive CV import ships `llama-cpp-python` (in-process GGUF; no manual server). No fixed release above 5.6.3 exists on PyPI as of 2026-09-27. Exploit requires write access to the local diskcache directory — same privilege as the desktop user already has over AppData/cache. Cache path stays under the app/user profile (not a shared network share). Accepted residual risk for local-first desktop until upstream ships a fix; revisit on each `llama-cpp-python` bump. | one-model dual-use | 2026-09-27 |
 
 ## Explicitly out of shipped runtime scope
 
 | Advisory ID | Package | Severity | Rationale |
 |-------------|---------|----------|-----------|
-| PYSEC-2026-2447 (CVE-2025-69872) | diskcache ≤5.6.3 | Critical (pickle RCE if attacker can write the cache dir) | **Not installed** from `requirements-runtime.txt`. Pulled only by optional `llama-cpp-python` (commented out of runtime) and by `dspy` (dev/cover-opt only). Security CI audits the runtime environment. Re-open if llama.cpp is promoted to a default shipped dependency. |
+| _(none currently)_ | | | Previously PYSEC-2026-2447 lived here while llama.cpp was optional; it is now an **Active exception** above. |
 
 ## OSV scan input
 

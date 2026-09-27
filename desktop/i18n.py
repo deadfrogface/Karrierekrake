@@ -623,6 +623,38 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.error_generic": (
             "Die Datei konnte nicht gelesen werden. Pfad und Eingaben bleiben erhalten."
         ),
+        "cv_import.error_model_missing": (
+            "Das lokale CV-Modell fehlt. Ohne Qwen3.5-4B kann der Import nicht laufen. "
+            "Es wurde nichts übernommen."
+        ),
+        "cv_import.error_llama_missing": (
+            "Die lokale LLM-Laufzeit fehlt in dieser Installation. "
+            "CV-Import kann das Modell nicht starten. Es wurde nichts übernommen."
+        ),
+        "cv_import.error_llm_unavailable": (
+            "Das lokale CV-Modell ist nicht erreichbar. "
+            "Pfad und Eingaben bleiben erhalten."
+        ),
+        "cv_import.error_docpick_missing": (
+            "Die CV-Import-Komponente fehlt in dieser Installation. "
+            "Kein Wechsel auf den alten DET-Parser."
+        ),
+        "cv_import.error_empty_file": (
+            "Die Datei ist leer oder enthält keinen lesbaren Text. "
+            "Pfad und Eingaben bleiben erhalten."
+        ),
+        "cv_import.error_unreadable": (
+            "Die Datei konnte nicht als PDF oder DOCX gelesen werden. "
+            "Pfad und Eingaben bleiben erhalten."
+        ),
+        "cv_import.error_extract_failed": (
+            "Die strukturierte Extraktion ist fehlgeschlagen. "
+            "Bitte Felder manuell nachtragen. Es wurde nichts übernommen."
+        ),
+        "cv_import.error_unreliable": (
+            "Extraktion ohne Namen und Kontakt — bitte Profil manuell ausfüllen. "
+            "Es wurde nichts übernommen."
+        ),
         "cv_import.empty": (
             "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
             "oder lies die Datei erneut ein."
@@ -657,21 +689,22 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther (immer aktiv, nur lokal)",
         "settings.guenther_model": "Modell",
-        "settings.guenther_model.phi_only": "Phi-4-mini (einziges Produktionsmodell)",
-        "settings.guenther_model.auto": "Automatisch (Phi empfohlen)",
-        "settings.guenther_model.primary": "Empfohlen — Phi-4-mini",
-        "settings.guenther_model.light": "Entfernt — kein Qwen-Fallback",
+        "settings.guenther_model.sole": "Qwen3.5-4B (einziges lokales Modell)",
+        "settings.guenther_model.phi_only": "Qwen3.5-4B (einziges lokales Modell)",
+        "settings.guenther_model.auto": "Automatisch (Qwen3.5-4B)",
+        "settings.guenther_model.primary": "Empfohlen — Qwen3.5-4B",
+        "settings.guenther_model.light": "Entfernt — kein zweites Modell",
         "settings.guenther_model.legacy4b": "Entfernt — kein Legacy-Qwen",
         "settings.guenther_model.standard": "Entfernt — kein Legacy-Qwen",
-        "settings.guenther_model.alt": "Empfohlen — Phi-4-mini",
+        "settings.guenther_model.alt": "Empfohlen — Qwen3.5-4B",
         "settings.guenther_hint": (
-            "Günther ist immer aktiv und nutzt lokales Phi-4-mini nur für Schreibhilfe "
+            "Günther ist immer aktiv und nutzt lokales Qwen3.5-4B nur für Schreibhilfe "
             "(Anschreiben, E-Mails, Motivationstexte). "
             "Fehlt das Writer-Modell: Schreibhilfe nicht verfügbar "
             "(kein Heuristik-Ersatz). Günther schlägt vor — Karrierekrake entscheidet."
         ),
-        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
-        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
+        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (Qwen3.5-4B lokal)",
+        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (Qwen3.5-4B lokal)",
         "settings.guenther_writer_unavailable": (
             "Schreibhilfe: Modell fehlt — Günther nicht nutzbar (kein stiller Ersatz)."
         ),
@@ -693,7 +726,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.local_llm_cv_escalation": (
             "Erster Eskalationsschritt: kleineres lokales Modell unter denselben "
             "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
-            "Phi-Fallback und kein neues Modell in diesem Schritt."
+            "Modell-Fallback und kein zweites Gewicht in diesem Schritt."
         ),
         "settings.local_llm_cv_disabled_hint": (
             "Der Produktions-CV-Import nutzt Docpick + Qwen3.5-4B. "
@@ -1668,6 +1701,35 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.error_generic": (
             "The file could not be read. The path and your entries stay as they are."
         ),
+        "cv_import.error_model_missing": (
+            "The local CV model is missing. Without Qwen3.5-4B import cannot run. "
+            "Nothing was applied."
+        ),
+        "cv_import.error_llama_missing": (
+            "The local LLM runtime is missing from this install. "
+            "CV import cannot start the model. Nothing was applied."
+        ),
+        "cv_import.error_llm_unavailable": (
+            "The local CV model is not reachable. Path and inputs are kept."
+        ),
+        "cv_import.error_docpick_missing": (
+            "The CV import component is missing from this install. "
+            "No switch to the legacy DET parser."
+        ),
+        "cv_import.error_empty_file": (
+            "The file is empty or has no readable text. Path and inputs are kept."
+        ),
+        "cv_import.error_unreadable": (
+            "The file could not be read as PDF or DOCX. Path and inputs are kept."
+        ),
+        "cv_import.error_extract_failed": (
+            "Structured extraction failed. Please complete fields manually. "
+            "Nothing was applied."
+        ),
+        "cv_import.error_unreliable": (
+            "Extraction has no name or contact — please fill the profile manually. "
+            "Nothing was applied."
+        ),
         "cv_import.empty": (
             "Nothing was found in the document. Enter the profile manually "
             "or read the file again."
@@ -1703,21 +1765,22 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther (always on, local only)",
         "settings.guenther_model": "Model",
-        "settings.guenther_model.phi_only": "Phi-4-mini (sole production model)",
-        "settings.guenther_model.auto": "Automatic (Phi recommended)",
-        "settings.guenther_model.primary": "Recommended — Phi-4-mini",
-        "settings.guenther_model.light": "Removed — no Qwen fallback",
+        "settings.guenther_model.sole": "Qwen3.5-4B (sole local model)",
+        "settings.guenther_model.phi_only": "Qwen3.5-4B (sole local model)",
+        "settings.guenther_model.auto": "Automatic (Qwen3.5-4B)",
+        "settings.guenther_model.primary": "Recommended — Qwen3.5-4B",
+        "settings.guenther_model.light": "Removed — no second model",
         "settings.guenther_model.legacy4b": "Removed — no legacy Qwen",
         "settings.guenther_model.standard": "Removed — no legacy Qwen",
-        "settings.guenther_model.alt": "Recommended — Phi-4-mini",
+        "settings.guenther_model.alt": "Recommended — Qwen3.5-4B",
         "settings.guenther_hint": (
-            "Günther is always on and uses local Phi-4-mini only for writing assistance "
+            "Günther is always on and uses local Qwen3.5-4B only for writing assistance "
             "(cover letters, emails, motivation texts). "
             "If the writer model is missing: writing help unavailable "
             "(no heuristic substitute). Günther suggests — Karrierekrake decides."
         ),
-        "settings.guenther_writer_status_on": "Writing help: active (Phi-4-mini local)",
-        "settings.guenther_writer_status_off": "Writing help: active (Phi-4-mini local)",
+        "settings.guenther_writer_status_on": "Writing help: active (Qwen3.5-4B local)",
+        "settings.guenther_writer_status_off": "Writing help: active (Qwen3.5-4B local)",
         "settings.guenther_writer_unavailable": (
             "Writing help: model missing — Günther unavailable (no silent substitute)."
         ),
@@ -1738,7 +1801,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "settings.local_llm_cv_escalation": (
             "First escalation: measure a smaller local model under the same "
-            "quality, RAM, and runtime gates. No automatic Phi fallback and "
+            "quality, RAM, and runtime gates. No automatic model fallback and "
             "no new model in this step."
         ),
         "settings.local_llm_cv_disabled_hint": (
