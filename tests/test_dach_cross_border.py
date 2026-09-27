@@ -48,8 +48,10 @@ def _geo_setup(tmp_path, monkeypatch):
     from core.road_route_brouter import RoadRouteResult
 
     def _echo_airline(lat1, lon1, lat2, lon2):
+        from core.road_route_brouter import BROUTER_ENGINE_ID
+
         km = round(haversine_km(lat1, lon1, lat2, lon2), 3)
-        return RoadRouteResult(ok=True, distance_km=km, engine=HAVERSINE_ALGORITHM)
+        return RoadRouteResult(ok=True, distance_km=km, engine=BROUTER_ENGINE_ID)
 
     monkeypatch.setattr(loc_mod, "_route_road_km", _echo_airline)
     yield
@@ -252,11 +254,10 @@ def test_enrich_konstanz_example_e2e(tmp_path, monkeypatch):
     assert jobs[2].airline_km is not None and jobs[2].airline_km > 25
     assert jobs[0].distance_km is not None and jobs[0].distance_km <= 25
     assert jobs[1].distance_km is not None and jobs[1].distance_km <= 25
-    assert jobs[2].distance_km is None  # cleared: airline prefilter over radius
-    assert all(
-        j.distance_source in {HAVERSINE_ALGORITHM, "brouter_v1", ""}
-        for j in jobs
-    )
+    assert jobs[2].distance_km is None  # Stage A prefilter skipped BRouter
+    assert jobs[0].distance_source == "brouter_v1"
+    assert jobs[1].distance_source == "brouter_v1"
+    assert jobs[2].distance_source == ""
 
 
 def test_cross_border_toggle_off_skips_foreign_plz(tmp_path, monkeypatch):
@@ -497,7 +498,7 @@ def test_plz_resolves_locally_without_google(tmp_path):
     assert jobs[1].airline_km is not None
     assert jobs[0].distance_km is not None
     assert jobs[1].distance_km is not None
-    assert jobs[0].distance_source in {HAVERSINE_ALGORITHM, "brouter_v1"}
+    assert jobs[0].distance_source == "brouter_v1"
 
 
 def test_unknown_city_no_coords_stays_unknown(tmp_path):

@@ -112,15 +112,16 @@ def _road_km(job: Job) -> float | None:
 
 
 def distance_exclude(job: Job, config: AppConfig) -> str | None:
-    """Radius filter AFTER geo enrichment + optional BRouter road distance.
+    """Radius filter AFTER geo enrichment + BRouter road distance.
 
-    Policy:
+    Policy (search pipeline):
       1. Fully remote: no radius.
-      2. Airline (Luftlinie) is a fast prefilter only — over-radius airline → exclude.
-      3. Remaining jobs: Fahrstrecke (BRouter) decides the radius.
-      4. UNKNOWN / missing segment / routing error → do NOT silently discard;
-         do NOT treat airline as Fahrkilometer. Keep the job (return None);
-         UI shows „Fahrstrecke nicht bestimmbar“ + reason via distance_error.
+      2. Invisible airline prefilter: exclude only when airline_km **strictly
+         greater** than max Fahrstrecken-Radius (airline == radius → keep for
+         road routing). Airline kilometres are never the final UI value.
+      3. Remaining jobs: only BRouter Fahrstrecke decides the radius.
+      4. UNKNOWN / missing segment / routing error → keep the job (return None);
+         UI shows „Fahrstrecke nicht bestimmbar“ via distance_error.
     """
     loc = config.profile.location
     is_remote = job.remote_type == RemoteType.REMOTE.value
@@ -132,20 +133,19 @@ def distance_exclude(job: Job, config: AppConfig) -> str | None:
     airline = _airline_km(job)
     road = _road_km(job)
 
+    # Stage A — invisible Luftlinie prefilter (strict > only).
     if airline is not None and airline > limit:
-        km = airline
         if is_hybrid:
-            return f"hybrid over {limit} km Luftlinie-Vorfilter ({km:.1f} km)"
-        return f"over {limit} km Luftlinie-Vorfilter ({km:.1f} km)"
+            return f"hybrid over {limit} km Luftlinie-Vorfilter ({airline:.1f} km)"
+        return f"over {limit} km Luftlinie-Vorfilter ({airline:.1f} km)"
 
+    # Stage B — authoritative Fahrstrecke only.
     if road is not None:
         if road > limit:
-            km = road
             if is_hybrid:
-                return f"hybrid over {limit} km Fahrstrecke ({km:.1f} km)"
-            return f"over {limit} km Fahrstrecke ({km:.1f} km)"
+                return f"hybrid over {limit} km Fahrstrecke ({road:.1f} km)"
+            return f"over {limit} km Fahrstrecke ({road:.1f} km)"
         return None
 
-    # Road unknown / not determined — keep job; never invent km; never use airline
-    # as Fahrstrecke. Callers surface job.distance_error in the UI.
+    # Stage C — no road km: keep; never use airline as final decision.
     return None

@@ -47,9 +47,10 @@ from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
 def format_commute_label(job, *, with_duration: bool = True, home_status: str = "resolved") -> str:
-    """UI distance text. Fahrstrecke when BRouter ok; otherwise honest unknown.
+    """UI distance text: only BRouter Fahrstrecke, never Luftlinie kilometres.
 
-    Never presents Luftlinie as Fahrkilometer. Unresolved home skips claims.
+    Airline remains an invisible search prefilter (job.airline_km) and must not
+    appear here. Unresolved home skips radius claims.
     """
     del with_duration  # no drive-time claim without a duration source
     remote = (getattr(job, "remote_type", "") or "").lower()
@@ -63,16 +64,10 @@ def format_commute_label(job, *, with_duration: bool = True, home_status: str = 
     if dist is not None and (src.startswith("brouter") or src == "brouter_v1"):
         km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
         return tr("jobs.commute_road", km=km)
-    if err:
-        return tr("jobs.commute_road_unknown", reason=err)
-    if dist is None:
-        return tr(
-            "jobs.commute_road_unknown",
-            reason=tr("jobs.commute_road_unknown_generic"),
-        )
-    # Legacy haversine-only rows: label explicitly as Luftlinie, never Fahrstrecke.
-    km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
-    return tr("jobs.commute_airline", km=km)
+    # No BRouter km → honest unknown. Never fall back to airline_km / haversine.
+    if not err:
+        err = tr("jobs.commute_road_unknown_generic")
+    return tr("jobs.commute_road_unknown", reason=err)
 
 
 def _parse_discovered(value: str | None) -> datetime:

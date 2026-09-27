@@ -305,6 +305,7 @@ class EnrichStats:
     cross_border_enabled: bool = True
     airline_ok: int = 0
     airline_unknown: int = 0
+    airline_prefilter_excluded: int = 0
     road_ok: int = 0
     road_unknown: int = 0
     # Back-compat aliases used by older stats consumers
@@ -876,29 +877,24 @@ def enrich_job_locations(
             if lat is not None:
                 job.latitude = lat
                 job.longitude = lon
-            # Airline is always the prefilter value — never labelled as Fahrstrecke.
+            # Airline is invisible prefilter only — never written to distance_km.
             if hasattr(job, "airline_km"):
                 job.airline_km = dist
-            if dist is not None:
-                # Default: keep airline on distance_km only until road routing runs.
-                job.distance_km = dist
-                if hasattr(job, "distance_source"):
-                    job.distance_source = HAVERSINE_ALGORITHM
-                if hasattr(job, "distance_error"):
-                    job.distance_error = ""
-            else:
-                job.distance_km = None
-                if hasattr(job, "distance_source"):
-                    job.distance_source = ""
-                if hasattr(job, "distance_error"):
-                    job.distance_error = "Standort nicht auflösbar"
+            job.distance_km = None
+            if hasattr(job, "distance_source"):
+                job.distance_source = ""
+            if hasattr(job, "distance_error"):
+                job.distance_error = (
+                    "" if dist is not None else "Standort nicht auflösbar"
+                )
             if hasattr(job, "commute_duration_minutes"):
                 job.commute_duration_minutes = None
             cc = getattr(job, "country_code", "") or sample_place.country_code
             if cc and hasattr(job, "country_code"):
                 job.country_code = cc
 
-        # Road distance for jobs that survive the airline prefilter.
+        # Road distance only for jobs that survive the airline prefilter
+        # (airline > radius → skip BRouter; airline == radius still routes).
         max_km = float(
             getattr(getattr(location.config.profile, "location", None), "max_distance_km", 0)
             or 0
@@ -921,7 +917,6 @@ def enrich_job_locations(
                         job.distance_error = ""
                     location.stats.road_ok += 1
                 else:
-                    # Do not leave airline on distance_km as if it were Fahrstrecke.
                     job.distance_km = None
                     if hasattr(job, "distance_source"):
                         job.distance_source = ""
@@ -929,8 +924,8 @@ def enrich_job_locations(
                         job.distance_error = _road_error_label(road.error)
                     location.stats.road_unknown += 1
         elif dist is not None and max_km > 0 and float(dist) > max_km:
-            # Over airline prefilter — keep airline_km for the exclude reason;
-            # clear distance_km so UI does not show airline as Fahrstrecke.
+            # Airline prefilter hit: keep airline_km for distance_exclude only.
+            # distance_km stays None — never surface airline as Fahrstrecke.
             for job in group:
                 if hasattr(job, "airline_km"):
                     job.airline_km = dist
@@ -939,6 +934,9 @@ def enrich_job_locations(
                     job.distance_source = ""
                 if hasattr(job, "distance_error"):
                     job.distance_error = ""
+                location.stats.airline_prefilter_excluded = (
+                    getattr(location.stats, "airline_prefilter_excluded", 0) + 1
+                )
 
     location.stats.google_route_ok = location.stats.road_ok or location.stats.airline_ok
     location.stats.google_route_unknown = (

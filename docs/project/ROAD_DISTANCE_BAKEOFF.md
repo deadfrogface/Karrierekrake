@@ -2,7 +2,15 @@
 
 **Branch:** `cursor/local-road-distance-bakeoff-d85b`  
 **Vergleichstyp:** Agent-VM Messungen — **kein** i3-Laptop- / Windows-EXE-Nachweis  
-**Produktiver Distanzfilter:** Luftlinie nur Vorfilter → danach **BRouter-Fahrstrecke**
+**Produktiver Distanzfilter:** unsichtbare Luftlinie nur als Vorfilter → **BRouter-Fahrstrecke** entscheidet und wird angezeigt
+
+## Suchablauf
+
+1. **Unsichtbarer Vorfilter:** Luftlinie (`airline_km`) berechnen. Nur wenn Luftlinie **sicher größer** als der max. Fahrstrecken-Radius (`>`), Job sofort ausschließen. Bei Gleichheit weiter mit BRouter.
+2. **Fahrstrecke:** Für übrige Jobs BRouter. Nur `distance_km` mit `distance_source=brouter_v1` entscheidet den Radius und erscheint in der UI.
+3. **Unklar / BRouter down:** Job behalten, UI „Fahrstrecke nicht bestimmbar (…)“. Niemals Luftlinie als Fahrstrecke anzeigen oder als Endentscheidung nutzen.
+
+Nachweis: `tests/test_airline_prefilter_road_final.py`.
 
 ## Entscheidung
 
@@ -16,36 +24,24 @@
 | Metrik | Wert |
 |--------|------|
 | OK / n | **30 / 30** |
-| Island-Fixes (allgemeiner Offset-Spiral, keine Orts-Sonderregeln) | C05 snap ≈ 111 m, X01 snap ≈ 132 m |
-| Warme Wall 30 Routen | siehe `BROUTER_REMEASURE_30.json` |
+| Island-Fixes (allgemeiner Offset-Spiral) | C05 ≈111 m, X01 ≈132 m |
+| **Echter Kaltstart** | **0,434 s** |
 | Peak RSS Prozessgruppe | **428 MB** |
-| **Echter Kaltstart** (Java-Kill → Spawn → Port → erste Route) | **0,434 s** (Java→Port 0,201 s + erste Route 0,233 s) |
-| Platte jar+Segmente+Profiles | ≈ **0,72 GiB** (Segmente dominant) |
-
-Rohdaten: `artifacts/road_distance_bakeoff/BROUTER_REMEASURE_30.json`, `BROUTER_RESULTS.json`.
+| Platte | **≈0,72 GiB** |
 
 ## Geo DE/NL/BE
 
 | Fall | Ergebnis |
 |------|----------|
-| PLZ `6211` + `NL` | **RESOLVED** Maastricht, NL (nicht CH) |
-| PLZ `6211` ohne Land | **AMBIGUOUS** (`plz_needs_country`) |
-| Eupen BE `4700` | **RESOLVED** (BE bundliert) |
-| Frankfurt ohne Zusatz | **AMBIGUOUS** |
-
-Dataset: `data/geo` v2 (DE/AT/CH/NL/BE GeoNames).
-
-## Distanzfilter (produktiv im Code)
-
-1. Luftlinie > Radius → Exclude (Vorfilter)  
-2. Sonst Fahrstrecke (BRouter) entscheidet  
-3. UNKNOWN / fehlendes Segment / Routingfehler → Job **behalten**, UI: **„Fahrstrecke nicht bestimmbar (Grund)“** — keine Luftlinie als Fahrkilometer  
+| PLZ `6211` + `NL` | Maastricht, NL |
+| PLZ `6211` ohne Land | AMBIGUOUS |
+| Eupen BE `4700` | RESOLVED |
 
 ## Windows-EXE
 
-Code: Auto-Install (jar/Segmente unter `%LOCALAPPDATA%\Karrierekrake\brouter`), Auto-Start/Stop am App-Lifecycle, OSM-Attribution, Segment-Updates mit If-Modified-Since.
+Code: Auto-Install unter `%LOCALAPPDATA%\Karrierekrake\brouter`, Auto-Start/Stop, OSM-Attribution. Smoke: `Karrierekrake.exe --smoke-brouter` bzw. `scripts/smoke_brouter_windows.py`.
 
-**Auf Agent-VM nicht als Windows-EXE ausgeführt.** PR bleibt Draft bis EXE-Durchlauf auf Zielgerät belegt ist.
+**Auf Agent-VM nicht als Windows-EXE ausgeführt** (kein Windows-Worker verbunden). Proxy-Lauf: `WINDOWS_EXE_SMOKE.json` mit `comparison_type=NOT_WINDOWS_AGENT_VM_PROXY`. **PR bleibt Draft**, bis Zielgerät belegt ist.
 
 ## Qwen / Parser / Anschreiben
 
