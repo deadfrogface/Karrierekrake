@@ -167,13 +167,92 @@ def confirm_extract_for_downstream(
         else:
             invented.append(finding)
 
+    # Skills / software / certificates: drop values without source evidence.
+    # General grounding only — no CV-ID rules, no growing DET catalog.
+    # Soft strip only (never trip fail_on_invented — that stays edu/employment).
+    soft_rejected: list[dict[str, Any]] = []
+
+    def _ground_str_list(values: list[Any], *, category: str) -> list[str]:
+        kept: list[str] = []
+        for raw in values or []:
+            val = str(raw or "").strip()
+            if not val:
+                continue
+            ok = evidence_in_source(val, src)
+            findings.append(
+                {
+                    "category": category,
+                    "value": val,
+                    "status": (
+                        FactStatus.CONFIRMED.value if ok else FactStatus.REJECTED.value
+                    ),
+                }
+            )
+            if ok:
+                kept.append(val)
+            else:
+                soft_rejected.append({"category": category, "value": val})
+        return kept
+
+    def _ground_cert_list(values: list[Any]) -> list[Any]:
+        kept: list[Any] = []
+        for raw in values or []:
+            if isinstance(raw, dict):
+                name = str(raw.get("name") or "").strip()
+                if not name:
+                    continue
+                ok = evidence_in_source(name, src)
+                findings.append(
+                    {
+                        "category": "certificates",
+                        "value": name,
+                        "status": (
+                            FactStatus.CONFIRMED.value
+                            if ok
+                            else FactStatus.REJECTED.value
+                        ),
+                    }
+                )
+                if ok:
+                    kept.append(dict(raw))
+                else:
+                    soft_rejected.append({"category": "certificates", "value": name})
+            else:
+                name = str(raw or "").strip()
+                if not name:
+                    continue
+                ok = evidence_in_source(name, src)
+                findings.append(
+                    {
+                        "category": "certificates",
+                        "value": name,
+                        "status": (
+                            FactStatus.CONFIRMED.value
+                            if ok
+                            else FactStatus.REJECTED.value
+                        ),
+                    }
+                )
+                if ok:
+                    kept.append(name)
+                else:
+                    soft_rejected.append({"category": "certificates", "value": name})
+        return kept
+
+    out["skills"] = _ground_str_list(list(parsed.get("skills") or []), category="skills")
+    out["software"] = _ground_str_list(
+        list(parsed.get("software") or []), category="software"
+    )
+    out["certificates"] = _ground_cert_list(list(parsed.get("certificates") or []))
+
     out["education"] = confirmed_edu
     out["work_experience"] = confirmed_work
     out["extract_confirmation"] = {
-        "version": 1,
+        "version": 2,
         "source_grounded": True,
         "findings": findings,
         "invented_count": len(invented),
+        "soft_rejected_count": len(soft_rejected),
     }
 
     if fail_on_invented and invented:

@@ -1502,7 +1502,7 @@ def import_cv_docpick(
     progress: Any | None = None,
     should_cancel: Any | None = None,
 ) -> dict[str, Any]:
-    """Productive CV import via Docling + Docpick + local Qwen3.5-4B.
+    """Productive CV import via shipped cv_extract + Docpick + local Qwen3.5-4B.
 
     Raises ``CvImportError`` on failure. Never calls DET ``parse_cv_text``.
 
@@ -1511,9 +1511,10 @@ def import_cv_docpick(
       - ``unreadable_cv`` — corrupt / unreadable document
       - ``timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
       - ``peak_rss_exceeded`` — CV-path Peak RSS over 3_300_000_000 bytes
+      - ``model_missing`` / ``llama_missing`` — sole GGUF or runtime absent
 
     Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI
-    honest about stages and allow cancel between Docling and the LLM call.
+    honest about stages and allow cancel between text extract and the LLM call.
     """
     path = Path(path)
     t0 = time.monotonic()

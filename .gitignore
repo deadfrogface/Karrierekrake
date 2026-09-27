@@ -130,6 +130,10 @@ artifacts/one_model_dual_use/**
 !artifacts/one_model_dual_use/writing_bakeoff/
 artifacts/one_model_dual_use/writing_bakeoff/**
 !artifacts/one_model_dual_use/writing_bakeoff/WRITE_BAKEOFF_REPORT.json
+!artifacts/one_model_dual_use/frontend_ablation/
+artifacts/one_model_dual_use/frontend_ablation/**
+!artifacts/one_model_dual_use/frontend_ablation/TEXT_ABLATION.json
+!artifacts/one_model_dual_use/frontend_ablation/LLM_IMPACT.json
 
 # Mini holdout 30 Phase A: zip tracked; PDFs ignored via *.pdf; seal hashes tracked
 tests/mini_holdout_30/phase_a_pdfs/*
