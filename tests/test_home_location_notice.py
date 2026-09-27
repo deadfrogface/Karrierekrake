@@ -277,6 +277,7 @@ def test_known_km_is_shown_when_home_resolved_and_hidden_when_ambiguous():
     from desktop.pages.jobs import format_commute_label
     from desktop.viewmodels.job_fit import build_job_fit_viewmodel
     from core.config import AppConfig, SearchPreferences
+    from core.road_route_brouter import BROUTER_ENGINE_ID
     from core.search_intent import SearchIntent
 
     i18n.set_language("de")
@@ -287,14 +288,32 @@ def test_known_km_is_shown_when_home_resolved_and_hidden_when_ambiguous():
         city="Berlin",
         remote_type=RemoteType.HYBRID.value,
         distance_km=14,
-        distance_source="",
+        distance_source=BROUTER_ENGINE_ID,
         match_score=80,
         status="new",
     )
     label = format_commute_label(job, home_status="resolved")
     assert "14" in label
-    assert "Luftlinie" in label
-    assert "nicht prüfbar" not in label
+    assert "Fahrstrecke" in label
+    assert "Luftlinie" not in label
+    assert "nicht bestimmbar" not in label
+    # Without BRouter provenance, never show bare km as Fahrstrecke.
+    legacy = Job(
+        id="legacy",
+        title="DevOps",
+        company="Alpen IT",
+        city="Berlin",
+        remote_type=RemoteType.HYBRID.value,
+        distance_km=14,
+        distance_source="",
+        match_score=80,
+        status="new",
+    )
+    legacy_label = format_commute_label(legacy, home_status="resolved")
+    assert "Fahrstrecke nicht bestimmbar" in legacy_label
+    assert "14" not in legacy_label
+    assert "Luftlinie" not in legacy_label
+
     skipped = format_commute_label(job, home_status="ambiguous")
     assert "PLZ" in skipped
     assert "14" not in skipped
