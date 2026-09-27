@@ -137,6 +137,7 @@ def run_quality_loop(
     store = build_evidence_store(
         profile_text=profile_text, existing_evidence=existing_evidence or []
     )
+    letter_lang = infer_letter_language(profile_text=profile_text, job_text=job_text)
 
     def _validate_draft(model: WritingSuggestion):
         return validate_writing_grounded(
@@ -192,7 +193,7 @@ def run_quality_loop(
         t0 = time.perf_counter()
         model, errors, _snap = _call(
             "writing",
-            _draft_task_legacy(),
+            _draft_task_legacy(letter_lang),
             _legacy_trusted(profile_text, seed_body, target_company, contact_claims),
             f"JOB:\n{job_text[:8000]}",
         )
@@ -206,7 +207,7 @@ def run_quality_loop(
             t1 = time.perf_counter()
             model2, errors2, _ = _call(
                 "writing",
-                _draft_task_legacy(),
+                _draft_task_legacy(letter_lang),
                 _legacy_trusted(profile_text, seed_body, target_company, contact_claims)
                 + "\n"
                 + build_repair_feedback(list(report.errors)),
@@ -325,7 +326,7 @@ def run_quality_loop(
     t0 = time.perf_counter()
     draft, d_errs, _ = _call(
         "writing",
-        _draft_from_plan_task(),
+        _draft_from_plan_task(letter_lang),
         json.dumps({"verified_plan": verified, "seed": seed_body[:2000], "contact_claims": (contact_claims.to_dict() if contact_claims is not None and hasattr(contact_claims, "to_dict") else None)}, ensure_ascii=False),
         f"JOB:\n{job_text[:4000]}",
     )
@@ -342,7 +343,7 @@ def run_quality_loop(
         t1 = time.perf_counter()
         draft2, _, _ = _call(
             "writing",
-            _draft_from_plan_task(),
+            _draft_from_plan_task(letter_lang),
             json.dumps({"verified_plan": verified, "seed": seed_body[:2000], "contact_claims": (contact_claims.to_dict() if contact_claims is not None and hasattr(contact_claims, "to_dict") else None)}, ensure_ascii=False)
             + "\n"
             + build_repair_feedback(list(report.errors)),
@@ -382,7 +383,7 @@ def run_quality_loop(
             t0 = time.perf_counter()
             draft_r, _, _ = _call(
                 "writing",
-                _targeted_rewrite_task(issues),
+                _targeted_rewrite_task(issues, letter_lang),
                 json.dumps(
                     {
                         "verified_plan": verified,
@@ -505,7 +506,7 @@ def run_quality_loop(
                 safety_repair_count += 1
                 draft2, _, _ = _call(
                     "writing",
-                    _draft_from_plan_task(),
+                    _draft_from_plan_task(letter_lang),
                     json.dumps({"verified_plan": verified}, ensure_ascii=False)
                     + "\n"
                     + build_repair_feedback(list(report.errors)),
@@ -620,6 +621,64 @@ def _finalize_from_report(
     )
 
 
+def infer_letter_language(*, profile_text: str, job_text: str) -> str:
+    """Infer cover-letter language from job (preferred) + profile markers.
+
+    Returns ``de`` or ``en``. Job text dominates so an English posting stays EN
+    even if the profile is bilingual.
+    """
+    de_markers = (
+        "stelle",
+        "bewerbung",
+        "aufgaben",
+        "anforderungen",
+        "arbeitgeber",
+        "kenntnisse",
+        "ausbildung",
+        "berufserfahrung",
+        "wohnort",
+        "gmbh",
+        "m/w/d",
+    )
+    en_markers = (
+        "job title",
+        "employer",
+        "requirements",
+        "responsibilities",
+        "experience",
+        "education",
+        "skills",
+        "location",
+        "full name",
+        "united kingdom",
+        " ltd",
+        "inc.",
+    )
+    job = (job_text or "").lower()
+    prof = (profile_text or "").lower()
+    job_de = sum(1 for m in de_markers if m in job)
+    job_en = sum(1 for m in en_markers if m in job)
+    if job_en > job_de:
+        return "en"
+    if job_de > job_en:
+        return "de"
+    prof_de = sum(1 for m in de_markers if m in prof)
+    prof_en = sum(1 for m in en_markers if m in prof)
+    return "en" if prof_en > prof_de else "de"
+
+
+def _lang_instruction(lang: str) -> str:
+    if lang == "en":
+        return (
+            "LANGUAGE: Write subject and body in natural modern English. "
+            "Do not write German."
+        )
+    return (
+        "LANGUAGE: Write subject and body in natural modern German. "
+        "Do not write English unless quoting a proper noun."
+    )
+
+
 def _plan_task() -> str:
     return (
         "Erzeuge einen strukturierten BEWERBUNGSPLAN als JSON. "
@@ -630,15 +689,15 @@ def _plan_task() -> str:
     )
 
 
-def _draft_from_plan_task() -> str:
+def _draft_from_plan_task(lang: str = "de") -> str:
     return (
         "Schreibe das Anschreiben NUR aus dem VERIFIED PLAN + allowed evidence. "
-        "Deutsch: natürlich, modern, konkret, glaubwürdig. "
-        "Länge: 250–900 Zeichen Fließtext (2–4 Absätze), nicht telegrammartig. "
+        f"{_lang_instruction(lang)} "
+        "Länge: 250–1000 Zeichen Fließtext (2–4 Absätze), nicht telegrammartig. "
         "RELATED nur als Transfer. Keine neuen Fakten. Keine Clichés. "
         "Vermeide 'Mit großem Interesse', 'Hiermit bewerbe ich mich', "
-        "'renommiertes Unternehmen', Fake-Enthusiasmus und Buzzword-Ketten. "
-        "Keine Platzhalter ([...], nan, null, None). "
+        "'I am writing to apply', 'renommiertes Unternehmen', Fake-Enthusiasmus und Buzzword-Ketten. "
+        "Keine Platzhalter ([COMPANY], [NAME], [...], nan, null, None). "
         "Nenne target_company und target_role wörtlich aus dem Plan "
         "(auch wenn target_company 'Unknown' ist — dann das Wort Unknown verwenden). "
         "Nutze 2–4 stärkste Evidenzpunkte (Relevance > Recency), kein CV-Dump. "
@@ -647,17 +706,20 @@ def _draft_from_plan_task() -> str:
         "Fehlende wünschenswerte Skills ehrlich als Lernbereitschaft ohne Besitzanspruch. "
         "Arbeitgeber nur aus Evidenztext, nie erfinden. "
         "do_not_claim strikt beachten — keine erfundenen Zertifikate. "
-        "Vermeide das Wort 'finanziell' (nutze Controlling/Reporting/Kostenstellen). CONTACT_VERIFIED: wenn false, KEINE Personennamen/Anreden (Frau/Herr X) einfügen — nur NEUTRAL_SALUTATION. Kein Gender-Guessing."
+        "Vermeide das Wort 'finanziell' (nutze Controlling/Reporting/Kostenstellen). "
+        "CONTACT_VERIFIED: wenn false, KEINE Personennamen/Anreden (Frau/Herr X) einfügen — "
+        "nur NEUTRAL_SALUTATION. Kein Gender-Guessing."
     )
 
 
-def _targeted_rewrite_task(issues: list[str]) -> str:
+def _targeted_rewrite_task(issues: list[str], lang: str = "de") -> str:
     return (
         "Überarbeite das Anschreiben EINMAL gezielt. "
         f"Probleme: {', '.join(issues)}. "
+        f"{_lang_instruction(lang)} "
         "Ändere NUR das Nötige. Erhalte korrekte Fakten, Firma, Rolle. "
         "Keine neuen Credentials/Erfahrung. RELATED nicht zu DIRECT. "
-        "Länge 250–900 Zeichen. target_company wörtlich (auch Unknown). "
+        "Länge 250–1000 Zeichen. target_company wörtlich (auch Unknown). "
         "Vermeide 'finanziell', Platzhalter, Clichés."
     )
 
@@ -733,10 +795,11 @@ def _heuristic_plan_from_store(
     )
 
 
-def _draft_task_legacy() -> str:
+def _draft_task_legacy(lang: str = "de") -> str:
     return (
-        "Erzeuge cover_letter als Bewerber/in in natürlichem, modernem Deutsch. "
-        "Nur Fakten aus PROFIL/SEED. Keine erfundenen Qualifikationen."
+        f"Erzeuge cover_letter als Bewerber/in. {_lang_instruction(lang)} "
+        "Nur Fakten aus PROFIL/SEED. Keine erfundenen Qualifikationen. "
+        "Keine Platzhalter ([COMPANY], [NAME], nan, null)."
     )
 
 

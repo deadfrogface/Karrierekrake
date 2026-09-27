@@ -1,0 +1,45 @@
+{
+  "comparison_type": "KNOWN_WRITE_SAMPLES_NOT_BLIND",
+  "note": "Confirmed profile text + job only; no CV file re-parse; EN regenerated after language fix",
+  "samples": [
+    {
+      "lang": "de",
+      "ok": true,
+      "model_id": "qwen3.5-4b",
+      "elapsed_s": 180.97,
+      "peak_rss_mb": 5703.0,
+      "hardware_note": "Agent-VM — not i3 Job Object",
+      "safety_notes": [
+        "final_state=READY_AUTOMATIC",
+        "model_calls=3",
+        "progress=Anschreiben fertig."
+      ],
+      "subject_anonymized": "Antrag auf die Position Teamleitung Kundenservice bei [COMPANY]",
+      "letter_anonymized": "Als Teamkoordinatorin im Kundenservice bei [EMPLOYER] seit 05/2022 verfüge ich über die direkte Erfahrung, die Sie für die Führungskompetenz benötigen. Meine kaufmännische Fundierung durch die Ausbildung als Kauffrau für Büromanagement (IHK) kombiniert mit den Kompetenzen in KPI-Reporting und Prozessoptimierung ermöglicht mir, die operative Steuerung sowie die Analyse von Reklamationsdaten strukturiert zu begleiten. Die Sprachkompetenz Deutsch C2 und Englisch C1 unterstützt zudem eine effektive Kommunikation mit internationalen Stakeholdern. Über meine bisherigen Erfahrungen im Auftragsmanagement bei [EMPLOYER] habe ich zudem fundierte Kenntnisse in Kundeninteraktion und Prozessabläufen erworben, die als Transfer auf die spezifischen Aufgaben der Reklamationsbearbeitung dienen. Ich bin überzeugt, dass ich die Anforderungen an die Teamleitung Kundenservice bei [COMPANY] sofort erfüllen und weiterentwickeln kann.",
+      "no_cv_reparse": true,
+      "provider_status_after": "model_missing"
+    },
+    {
+      "lang": "en",
+      "ok": true,
+      "model_id": "qwen3.5-4b",
+      "elapsed_s": 102.13,
+      "peak_rss_mb": 5675.5,
+      "hardware_note": "Agent-VM — not i3 Job Object",
+      "safety_notes": [
+        "final_state=READY_AUTOMATIC",
+        "model_calls=2",
+        "progress=Anschreiben fertig."
+      ],
+      "subject_anonymized": "Application for Customer Success Manager at [COMPANY]",
+      "letter_anonymized": "As Customer Success Lead at [EMPLOYER], I drive stakeholder management and SLA reporting to ensure client retention. My explicit skills in CRM and stakeholder coordination directly address [COMPANY]'s core requirements. My foundational experience as a Support Specialist at [EMPLOYER] further strengthened my ability to deliver operational support and manage client interactions. Backed by a BA in Business Administration from the [SCHOOL], I am ready to apply my current leadership experience to [COMPANY]'s growth strategy.",
+      "no_cv_reparse": true,
+      "provider_status_after": "model_missing",
+      "lang_check": {
+        "de_hits": 0,
+        "en_hits": 16,
+        "looks_english": true
+      }
+    }
+  ]
+}

@@ -9,7 +9,7 @@
 | PR | Inhalt | CI | Rolle |
 |----|--------|-----|-------|
 | **#96** | EXE-Packaging, `cv_extract`, Auto-LLM, stufenspezifische Fehler | smoke grün; **security** fail (diskcache) | Packaging-Quelle; auf #99 übernommen |
-| **#99** | One-Model Dual-Use Qwen | **CI grün** inkl. security + Windows EXE-Smoke | **Arbeitsbasis** |
+| **#99** | One-Model Dual-Use Qwen | CI grün inkl. security; Windows EXE-Smoke läuft/folgt | **Arbeitsbasis** |
 | main | Phi noch `PRODUCTION_MODEL_ID=phi4-mini` | — | nicht produktiv für diesen Auftrag |
 
 ## Verbindliche Entscheidung
@@ -34,17 +34,31 @@ Alte `guenther_model`-Werte (`phi4-mini`, `auto`, Legacy-Qwen) → `qwen3.5-4b` 
 ## Nachweis „Phi-Aufrufe 0 / ein Qwen-Gewicht“
 
 - `MODEL_CATALOG` = nur `qwen3.5-4b`
-- Unit: `tests/test_one_model_qwen_only.py`
+- Unit: `tests/test_one_model_qwen_only.py` (inkl. Sprachwahl DE/EN für Schreiben)
 - UI/Fallbacks nennen Qwen, nicht Phi
 - Historische Offline-Artefakte bleiben lesbar (Archiv)
+
+## Schreiben — Parameter (nach Sample, nicht ungeprüft 0,7/400)
+
+| Parameter | Wert | Begründung |
+|-----------|------|------------|
+| temperature | **0,2** | Samples DE/EN mit Evidence-Guards `ok=True` |
+| max_tokens (writing) | **900** | DE-Body ~964 Zeichen; JSON-Kopf braucht Luft |
+| Ziellänge Body | 250–1000 Zeichen | Prompt; kein festes 400 |
+| Sprache | Job-dominant DE/EN | Fix: Tasks nicht mehr hardcodiert „nur Deutsch“ |
+
+Samples: `artifacts/one_model_dual_use/writing_purge_samples/SAMPLES.json`  
+Korpusbericht: `docs/project/ONE_MODEL_CORPUS_REGRESSION.md`
 
 ## Gates (ehrlich)
 
 | Gate | Status |
 |------|--------|
 | Linux Child DE/EN/DOCX Import | zuvor auf Agent-VM `ok=True` |
+| Unit „kein Phi / ein Qwen“ | **PASS** |
+| Known Parser-Rescore + Frontend KEEP | dokumentiert |
+| Anschreiben ohne CV-Reparse (Code + Samples) | belegt; EXE manuell **OFFEN** |
 | Windows-EXE E2E öffnen→import→übernehmen→restart | **OFFEN** (CI build-and-exe-smoke ≠ voller E2E) |
-| Anschreiben ohne erneute CV-Extraktion | Code-Pfad belegt; manuelle EXE-Prüfung **OFFEN** |
 | i3/8 GB Job-Object ≤ 3,3 GB | **OFFEN / UNGEPRÜFT** |
 | 16 GB Limit | nicht neu gesetzt; 3,3 GB-Gate unverändert |
 | 99 % unabhängig | **nicht nachgewiesen** (NV3 F1 0,980 Frozen unverändert) |
@@ -53,3 +67,4 @@ Alte `guenther_model`-Werte (`phi4-mini`, `auto`, Legacy-Qwen) → `qwen3.5-4b` 
 
 - keine fertige Windows-App allein durch Unit-Tests
 - kein neuer Blind-99-%-Claim
+- Agent-VM-RAM/Zeiten ≠ Laptop-Nachweis

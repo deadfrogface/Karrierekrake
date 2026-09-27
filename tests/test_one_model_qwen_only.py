@@ -86,3 +86,30 @@ def test_ui_settings_label_not_phi():
         assert "Phi" not in de[key]
         assert "Qwen" in de[key] or "qwen" in de[key].lower() or key.endswith("sole")
         assert "Phi" not in en[key]
+
+
+def test_letter_language_follows_job_not_hardcoded_german():
+    from guenther.intelligence.quality_loop.state_machine import (
+        _draft_from_plan_task,
+        infer_letter_language,
+    )
+
+    assert (
+        infer_letter_language(
+            profile_text="Full name: Alex Rivera\nLocation: Bristol",
+            job_text="Job title: Customer Success Manager\nEmployer: Harbour Cloud Ltd\nRequirements: CRM",
+        )
+        == "en"
+    )
+    assert (
+        infer_letter_language(
+            profile_text="Vollständiger Name: Nora\nWohnort: Münster",
+            job_text="Stellenbezeichnung: Teamleitung\nArbeitgeber: Nordlicht\nAnforderungen: Kundenservice",
+        )
+        == "de"
+    )
+    en_task = _draft_from_plan_task("en")
+    de_task = _draft_from_plan_task("de")
+    assert "English" in en_task
+    assert "German" in de_task or "Deutsch" in de_task
+    assert "Do not write German" in en_task

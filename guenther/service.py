@@ -187,7 +187,9 @@ class GuentherService:
             "cv_extract": 512,
             "job_analysis": 512,
             "evidence_assist": 512,
-            "writing": 768,
+            # Tuned on Agent-VM DE/EN samples (temp 0.2, ~250–1000 chars body):
+            # DE ~181s/964 chars ok; EN ~121s/573 chars ok — not laptop Job-Object evidence.
+            "writing": 900,
             "interview_prep": 512,
             "writing_plan": 768,
             "writing_critique": 512,
