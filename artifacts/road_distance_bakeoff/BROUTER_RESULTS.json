@@ -1,13 +1,23 @@
 {
   "engine": "brouter",
   "n": 30,
-  "ok": 28,
-  "missing": 2,
-  "wall_s": 28.838,
-  "mean_route_s": 0.957,
-  "peak_rss_mb_process_group": 385.2,
-  "server_pid": 1539543,
-  "hardware_note": "Agent-VM — not i3 Job Object",
+  "ok": 30,
+  "missing": 0,
+  "wall_s": 28.162,
+  "mean_route_s": 0.935,
+  "peak_rss_mb_process_group": 428.0,
+  "server_pid": 1544926,
+  "hardware_note": "Agent-VM — not i3 Job Object / not Windows EXE laptop proof",
+  "cold_start_s": 0.434,
+  "cold_start_detail": {
+    "install_or_ensure_s": 0.001,
+    "java_spawn_to_port_open_s": 0.201,
+    "first_route_s": 0.233,
+    "cold_total_java_plus_first_route_s": 0.434,
+    "first_route_ok": true,
+    "first_route_km": 2.973,
+    "note": "True cold: RouteServer process killed before measurement"
+  },
   "results": [
     {
       "id": "C01",
@@ -17,11 +27,10 @@
       "airline_km": 1.152,
       "road_km": 2.973,
       "detour_ratio": 2.581,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.148,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.072,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "C02",
@@ -31,11 +40,10 @@
       "airline_km": 7.94,
       "road_km": 12.122,
       "detour_ratio": 1.527,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.582,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.317,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "C03",
@@ -45,11 +53,10 @@
       "airline_km": 6.668,
       "road_km": 7.634,
       "detour_ratio": 1.145,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.236,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.106,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "C04",
@@ -59,11 +66,10 @@
       "airline_km": 4.855,
       "road_km": 14.785,
       "detour_ratio": 3.045,
-      "obvious_detour_flag": true,
       "ok": true,
-      "elapsed_s": 0.266,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.184,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "C05",
@@ -71,13 +77,12 @@
       "from": "Brussels Central",
       "to": "Brussels Airport",
       "airline_km": 10.882,
-      "road_km": null,
-      "detour_ratio": null,
-      "obvious_detour_flag": false,
-      "ok": false,
-      "elapsed_s": 0.208,
-      "http": 400,
-      "error": "target island detected for section 0\n"
+      "road_km": 14.494,
+      "detour_ratio": 1.332,
+      "ok": true,
+      "elapsed_s": 1.006,
+      "error": "",
+      "snap_offset_m": 111.3
     },
     {
       "id": "C06",
@@ -87,11 +92,10 @@
       "airline_km": 2.349,
       "road_km": 3.903,
       "detour_ratio": 1.662,
-      "obvious_detour_flag": false,
       "ok": true,
       "elapsed_s": 0.085,
-      "http": 200,
-      "error": null
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "R01",
@@ -101,11 +105,10 @@
       "airline_km": 16.896,
       "road_km": 24.526,
       "detour_ratio": 1.452,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.089,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.065,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "R02",
@@ -115,11 +118,10 @@
       "airline_km": 12.063,
       "road_km": 16.45,
       "detour_ratio": 1.364,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.055,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.038,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "R03",
@@ -129,11 +131,10 @@
       "airline_km": 21.064,
       "road_km": 33.379,
       "detour_ratio": 1.585,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.224,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.147,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "R04",
@@ -143,11 +144,10 @@
       "airline_km": 17.238,
       "road_km": 24.747,
       "detour_ratio": 1.436,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.137,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.107,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "R05",
@@ -157,11 +157,10 @@
       "airline_km": 15.108,
       "road_km": 16.896,
       "detour_ratio": 1.118,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.045,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.03,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "R06",
@@ -171,11 +170,10 @@
       "airline_km": 27.769,
       "road_km": 35.698,
       "detour_ratio": 1.286,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.099,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.076,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "H01",
@@ -185,11 +183,10 @@
       "airline_km": 152.517,
       "road_km": 190.236,
       "detour_ratio": 1.247,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 3.256,
-      "http": 200,
-      "error": null
+      "elapsed_s": 2.764,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "H02",
@@ -199,11 +196,10 @@
       "airline_km": 182.559,
       "road_km": 212.022,
       "detour_ratio": 1.161,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 2.517,
-      "http": 200,
-      "error": null
+      "elapsed_s": 2.139,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "H03",
@@ -213,11 +209,10 @@
       "airline_km": 57.229,
       "road_km": 74.307,
       "detour_ratio": 1.298,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 1.578,
-      "http": 200,
-      "error": null
+      "elapsed_s": 1.408,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "H04",
@@ -227,11 +222,10 @@
       "airline_km": 51.204,
       "road_km": 67.314,
       "detour_ratio": 1.315,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.785,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.665,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "H05",
@@ -241,11 +235,10 @@
       "airline_km": 30.261,
       "road_km": 37.623,
       "detour_ratio": 1.243,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.637,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.608,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "H06",
@@ -255,11 +248,10 @@
       "airline_km": 76.052,
       "road_km": 91.95,
       "detour_ratio": 1.209,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 1.09,
-      "http": 200,
-      "error": null
+      "elapsed_s": 1.011,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "L01",
@@ -269,11 +261,10 @@
       "airline_km": 122.773,
       "road_km": 148.483,
       "detour_ratio": 1.209,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 2.635,
-      "http": 200,
-      "error": null
+      "elapsed_s": 2.625,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "L02",
@@ -283,11 +274,10 @@
       "airline_km": 126.59,
       "road_km": 156.148,
       "detour_ratio": 1.233,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 3.634,
-      "http": 200,
-      "error": null
+      "elapsed_s": 3.64,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "L03",
@@ -297,11 +287,10 @@
       "airline_km": 132.069,
       "road_km": 173.644,
       "detour_ratio": 1.315,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 1.884,
-      "http": 200,
-      "error": null
+      "elapsed_s": 1.912,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "L04",
@@ -311,11 +300,10 @@
       "airline_km": 119.374,
       "road_km": 138.454,
       "detour_ratio": 1.16,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 2.298,
-      "http": 200,
-      "error": null
+      "elapsed_s": 2.148,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "L05",
@@ -325,11 +313,10 @@
       "airline_km": 177.085,
       "road_km": 194.441,
       "detour_ratio": 1.098,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 2.126,
-      "http": 200,
-      "error": null
+      "elapsed_s": 1.734,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "L06",
@@ -339,11 +326,10 @@
       "airline_km": 163.133,
       "road_km": 194.18,
       "detour_ratio": 1.19,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 2.583,
-      "http": 200,
-      "error": null
+      "elapsed_s": 2.755,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "X01",
@@ -351,13 +337,12 @@
       "from": "Aachen (DE)",
       "to": "Maastricht (NL)",
       "airline_km": 28.872,
-      "road_km": null,
-      "detour_ratio": null,
-      "obvious_detour_flag": false,
-      "ok": false,
-      "elapsed_s": 0.052,
-      "http": 400,
-      "error": "target island detected for section 0\n"
+      "road_km": 39.679,
+      "detour_ratio": 1.374,
+      "ok": true,
+      "elapsed_s": 0.863,
+      "error": "",
+      "snap_offset_m": 131.6
     },
     {
       "id": "X02",
@@ -367,11 +352,10 @@
       "airline_km": 20.889,
       "road_km": 27.539,
       "detour_ratio": 1.318,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.187,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.19,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "X03",
@@ -381,11 +365,10 @@
       "airline_km": 29.265,
       "road_km": 37.485,
       "detour_ratio": 1.281,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.304,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.33,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "X04",
@@ -395,11 +378,10 @@
       "airline_km": 38.891,
       "road_km": 54.835,
       "detour_ratio": 1.41,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.652,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.682,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "X05",
@@ -409,11 +391,10 @@
       "airline_km": 16.423,
       "road_km": 19.849,
       "detour_ratio": 1.209,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.042,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.041,
+      "error": "",
+      "snap_offset_m": 0.0
     },
     {
       "id": "X06",
@@ -423,12 +404,10 @@
       "airline_km": 28.278,
       "road_km": 35.677,
       "detour_ratio": 1.262,
-      "obvious_detour_flag": false,
       "ok": true,
-      "elapsed_s": 0.29,
-      "http": 200,
-      "error": null
+      "elapsed_s": 0.315,
+      "error": "",
+      "snap_offset_m": 0.0
     }
-  ],
-  "cold_start_s": 0.286
+  ]
 }
