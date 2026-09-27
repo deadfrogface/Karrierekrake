@@ -623,6 +623,38 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.error_generic": (
             "Die Datei konnte nicht gelesen werden. Pfad und Eingaben bleiben erhalten."
         ),
+        "cv_import.error_model_missing": (
+            "Das lokale CV-Modell fehlt. Ohne Qwen3.5-4B kann der Import nicht laufen. "
+            "Es wurde nichts übernommen."
+        ),
+        "cv_import.error_llama_missing": (
+            "Die lokale LLM-Laufzeit fehlt in dieser Installation. "
+            "CV-Import kann das Modell nicht starten. Es wurde nichts übernommen."
+        ),
+        "cv_import.error_llm_unavailable": (
+            "Das lokale CV-Modell ist nicht erreichbar. "
+            "Pfad und Eingaben bleiben erhalten."
+        ),
+        "cv_import.error_docpick_missing": (
+            "Die CV-Import-Komponente fehlt in dieser Installation. "
+            "Kein Wechsel auf den alten DET-Parser."
+        ),
+        "cv_import.error_empty_file": (
+            "Die Datei ist leer oder enthält keinen lesbaren Text. "
+            "Pfad und Eingaben bleiben erhalten."
+        ),
+        "cv_import.error_unreadable": (
+            "Die Datei konnte nicht als PDF oder DOCX gelesen werden. "
+            "Pfad und Eingaben bleiben erhalten."
+        ),
+        "cv_import.error_extract_failed": (
+            "Die strukturierte Extraktion ist fehlgeschlagen. "
+            "Bitte Felder manuell nachtragen. Es wurde nichts übernommen."
+        ),
+        "cv_import.error_unreliable": (
+            "Extraktion ohne Namen und Kontakt — bitte Profil manuell ausfüllen. "
+            "Es wurde nichts übernommen."
+        ),
         "cv_import.empty": (
             "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
             "oder lies die Datei erneut ein."
@@ -1667,6 +1699,35 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "cv_import.error_generic": (
             "The file could not be read. The path and your entries stay as they are."
+        ),
+        "cv_import.error_model_missing": (
+            "The local CV model is missing. Without Qwen3.5-4B import cannot run. "
+            "Nothing was applied."
+        ),
+        "cv_import.error_llama_missing": (
+            "The local LLM runtime is missing from this install. "
+            "CV import cannot start the model. Nothing was applied."
+        ),
+        "cv_import.error_llm_unavailable": (
+            "The local CV model is not reachable. Path and inputs are kept."
+        ),
+        "cv_import.error_docpick_missing": (
+            "The CV import component is missing from this install. "
+            "No switch to the legacy DET parser."
+        ),
+        "cv_import.error_empty_file": (
+            "The file is empty or has no readable text. Path and inputs are kept."
+        ),
+        "cv_import.error_unreadable": (
+            "The file could not be read as PDF or DOCX. Path and inputs are kept."
+        ),
+        "cv_import.error_extract_failed": (
+            "Structured extraction failed. Please complete fields manually. "
+            "Nothing was applied."
+        ),
+        "cv_import.error_unreliable": (
+            "Extraction has no name or contact — please fill the profile manually. "
+            "Nothing was applied."
         ),
         "cv_import.empty": (
             "Nothing was found in the document. Enter the profile manually "

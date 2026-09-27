@@ -803,9 +803,16 @@ class SettingsPage(QWidget):
             self.guenther_writer_status.setText(tr("settings.guenther_writer_unavailable"))
         cv_ok = False
         try:
-            from core.cv_docpick_import import DEFAULT_MODEL
+            from core.cv_llm_runtime import llama_cpp_importable, resolve_cv_model_path
 
-            cv_ok = Path(DEFAULT_MODEL).is_file()
+            model_ok = resolve_cv_model_path() is not None
+            try:
+                import docpick  # noqa: F401
+
+                docpick_ok = True
+            except Exception:
+                docpick_ok = False
+            cv_ok = bool(model_ok and docpick_ok and llama_cpp_importable())
         except Exception:
             cv_ok = False
         if hasattr(self, "cv_import_status"):
