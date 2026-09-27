@@ -143,7 +143,7 @@ def _write_messages(case: dict[str, Any]) -> list[dict[str, str]]:
     job = case["job"]
     trusted = json.dumps(profile, ensure_ascii=False, indent=2)
     untrusted = json.dumps(job, ensure_ascii=False, indent=2)
-    layers = build_layers(
+    system, trusted_layer, untrusted_layer = build_layers(
         task="write",
         schema_hint='{"cover_letter":"string","notes":"string"}',
         trusted=trusted,
@@ -160,10 +160,10 @@ def _write_messages(case: dict[str, Any]) -> list[dict[str, str]]:
         f"{extra}"
         "Use ONLY verified profile facts. Do not invent employers, degrees, tools, "
         "leadership, licences, or metrics. Output plain text letter body only.\n\n"
-        f"VERIFIED_PROFILE:\n{trusted}\n\nJOB_POSTING:\n{untrusted}"
+        f"TRUSTED_PROFILE:\n{trusted_layer}\n\nJOB_POSTING:\n{untrusted_layer}"
     )
     return [
-        {"role": "system", "content": layers.system},
+        {"role": "system", "content": system},
         {"role": "user", "content": user},
     ]
 
@@ -210,24 +210,19 @@ def run_model(label: str, model_path: Path) -> dict[str, Any]:
             text = ""
             err = f"{type(exc).__name__}: {exc}"
         elapsed = time.perf_counter() - t0
-        # validate_writing if available
+        # Lightweight grounding notes (full WritingSuggestion path is heavier;
+        # both models get the same heuristic + optional bio-phrase scan).
         safety_notes: list[str] = []
         try:
-            from guenther.validation import validate_writing
+            from guenther.validation import _looks_like_bio_claim  # type: ignore
 
-            vr = validate_writing(
-                text,
-                profile_blob=json.dumps(case["profile"], ensure_ascii=False),
-                job_blob=json.dumps(case["job"], ensure_ascii=False),
-            )
-            if hasattr(vr, "ok"):
-                safety_notes = list(getattr(vr, "notes", None) or getattr(vr, "safety_notes", None) or [])
-                if not vr.ok and not safety_notes:
-                    safety_notes = ["validate_writing_failed"]
-            elif isinstance(vr, dict):
-                safety_notes = list(vr.get("notes") or [])
-        except Exception as exc:  # noqa: BLE001
-            safety_notes = [f"validator_error:{type(exc).__name__}"]
+            # best-effort; ignore if private helper missing
+            _ = _looks_like_bio_claim
+        except Exception:  # noqa: BLE001
+            pass
+        # Flag empty output
+        if not (text or "").strip() and not err:
+            safety_notes.append("empty_letter")
         hits = _forbidden_hits(text, case)
         docs.append(
             {

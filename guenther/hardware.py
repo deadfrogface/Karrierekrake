@@ -82,22 +82,21 @@ def detect_hardware() -> HardwareProfile:
 
 
 def resolve_production_model(preferred: str = "auto") -> str:
-    """Always return the sole production Phi model. Ignore Qwen / auto prefs."""
+    """Always return the sole dual-use production model (Qwen3.5-4B)."""
     _ = preferred  # legacy settings values are coerced
     return PRODUCTION_MODEL_ID
 
 
 def graceful_model_fallback(tier: HardwareTier, preferred: str) -> str:
-    """NEXT-02: no model switching. Always Phi. Kept name for call-site stability."""
+    """No model switching. Always the sole production weight."""
     _ = tier
     return resolve_production_model(preferred)
 
 
 def can_run_phi(tier: HardwareTier, ram_gb: float | None = None) -> bool:
-    """Conservative Phi gate — LIGHT may still attempt load; caller handles failure."""
+    """Legacy name: gate for loading the sole production GGUF (~5 GB+ RAM)."""
     if ram_gb is not None and ram_gb < 5.0:
         return False
     if tier == HardwareTier.LIGHT and ram_gb is not None and ram_gb < 8.0:
-        # Soft gate: UI may warn; load failure → GUENTHER_UNAVAILABLE (no alternate LLM).
         return False
     return True

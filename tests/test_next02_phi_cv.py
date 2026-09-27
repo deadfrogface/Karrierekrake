@@ -28,25 +28,31 @@ from guenther.validation import validate_cv_extract
 
 PHI_SHA = "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2"
 PHI_FILE = "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"
+QWEN_SHA = "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+QWEN_FILE = "Qwen3.5-4B-Q4_K_M.gguf"
 
 
 def test_exactly_one_production_llm():
     assert list(MODEL_CATALOG.keys()) == [PRODUCTION_MODEL_ID]
-    assert PRODUCTION_MODEL_ID == "phi4-mini"
+    assert PRODUCTION_MODEL_ID == "qwen3.5-4b"
     meta = MODEL_CATALOG[PRODUCTION_MODEL_ID]
-    assert meta["filename"] == PHI_FILE
-    assert meta["sha256"] == PHI_SHA
+    assert meta["filename"] == QWEN_FILE
+    assert meta["sha256"] == QWEN_SHA
     assert meta["quant"] == "Q4_K_M"
-    assert meta["base_model"] == "microsoft/Phi-4-mini-instruct"
+    assert meta["base_model"] == "Qwen/Qwen3.5-4B"
     assert meta.get("production") is True
 
 
 def test_qwen_absent_from_production_catalog():
+    # Older Qwen3-* ids stay historical; sole production is Qwen3.5-4B.
     assert "qwen3-1.7b" not in MODEL_CATALOG
     assert "qwen3-4b" not in MODEL_CATALOG
+    assert "phi4-mini" not in MODEL_CATALOG
+    assert "phi4-mini" in HISTORICAL_MODEL_CATALOG
     assert "qwen3-1.7b" in HISTORICAL_MODEL_CATALOG
     assert HISTORICAL_MODEL_CATALOG["qwen3-1.7b"].get("production") is False
     assert not is_production_model("qwen3-1.7b")
+    assert not is_production_model("phi4-mini")
 
 
 def test_model_manager_rejects_historical_install(tmp_path):
@@ -61,13 +67,12 @@ def test_model_manager_rejects_historical_install(tmp_path):
 
 def test_no_model_fallback_on_light_hardware(monkeypatch):
     monkeypatch.setenv("KARRIEREKRAKE_RAM_GB", "4")
-    assert resolve_production_model("qwen3-1.7b") == "phi4-mini"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "phi4-mini"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "phi4-mini"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "phi4-mini"
+    assert resolve_production_model("qwen3-1.7b") == "qwen3.5-4b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3.5-4b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "qwen3.5-4b"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "qwen3.5-4b"
     hw = detect_hardware()
-    assert hw.recommended_model_id == "phi4-mini" or True
-    assert "qwen" not in hw.recommended_model_id
+    assert hw.recommended_model_id == "qwen3.5-4b"
 
 
 def test_routing_always_phi():
@@ -76,11 +81,11 @@ def test_routing_always_phi():
             d = resolve_model_for_capability(
                 architecture=mode, capability=cap, model_pref="qwen3-1.7b"
             )
-            assert d.model_id == "phi4-mini"
+            assert d.model_id == "qwen3.5-4b"
             d2 = resolve_model_for_capability(
                 architecture=mode, capability=cap, model_pref="auto"
             )
-            assert d2.model_id == "phi4-mini"
+            assert d2.model_id == "qwen3.5-4b"
 
 
 def test_guenther_unavailable_no_heuristic_substitute(tmp_path, monkeypatch):
@@ -142,14 +147,14 @@ def test_reconcile_phi_fills_gaps_only_when_grounded():
         "education": ["Ausbildung Industriekaufmann"],
         "certificates": [],
         "languages": [],
-        "_model_id": "phi4-mini",
+        "_model_id": "qwen3.5-4b",
     }
     out = reconcile_phi_into_parsed(parsed, suggestion, cv_text=cv)
     titles = [w["title"] for w in out["work_experience"]]
     assert "Sachbearbeiter" in titles
     assert "NotInText" not in titles
     assert out["education"]
-    assert out.get("phi_model_id") == "phi4-mini"
+    assert out.get("phi_model_id") == "qwen3.5-4b"
 
 
 def test_import_cv_canonical_never_calls_phi_extract(tmp_path, monkeypatch):
@@ -180,7 +185,7 @@ def test_import_cv_canonical_never_calls_phi_extract(tmp_path, monkeypatch):
         validated=True,
         provider_status="ready",
         fallback_reason="",
-        model_id="phi4-mini",
+        model_id="qwen3.5-4b",
         safety_notes=[],
         suggestion={
             "skills": [],
@@ -229,7 +234,7 @@ def test_import_cv_canonical_missing_model_still_parses(tmp_path, monkeypatch):
         validated=False,
         provider_status="model_missing",
         fallback_reason="guenther_unavailable_model_missing",
-        model_id="phi4-mini",
+        model_id="qwen3.5-4b",
         safety_notes=["GUENTHER_UNAVAILABLE", "no_model_fallback"],
         suggestion={},
     )
@@ -267,7 +272,7 @@ def test_settings_defaults_phi_only():
     from core.config import SettingsConfig
 
     s = SettingsConfig()
-    assert s.guenther_model == "phi4-mini"
+    assert s.guenther_model == "qwen3.5-4b"
     assert s.guenther_heuristic_fallback is False
     assert s.guenther_enabled is True
 

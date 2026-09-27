@@ -454,9 +454,9 @@ class SettingsConfig:
     caldav_preset: str = ""  # e.g. icloud
     # --- Günther die Krake (optional local AI; off by default) ---
     # Never enables cloud AI. LLM output is untrusted and validated.
-    # NEXT-02: sole production model is phi4-mini — no Qwen / auto picker.
+    # Sole production model is qwen3.5-4b (CV extract + Anschreiben, one GGUF).
     guenther_enabled: bool = True
-    guenther_model: str = "phi4-mini"
+    guenther_model: str = "qwen3.5-4b"
     # Heuristic assist is NOT a production LLM substitute (default off).
     guenther_heuristic_fallback: bool = False
     # Local LLM CV parsing (Docling/Qwen/llama.cpp class). Default off: production
@@ -1013,7 +1013,7 @@ def load_config(
     # Günther writing help is always on (no user disable switch).
     settings.guenther_enabled = True
     if not str(getattr(settings, "guenther_model", "") or "").strip():
-        settings.guenther_model = "phi4-mini"
+        settings.guenther_model = "qwen3.5-4b"
     settings.guenther_heuristic_fallback = False
 
     # NEXT-03: coerce legacy Google flags → explicit providers (no token wipe).

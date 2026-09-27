@@ -262,11 +262,15 @@ def score_side(label: str, pred_dir: Path, gt: dict[str, dict[str, Any]]) -> dic
             per[fname] = {"error": f"missing pred {short}"}
             continue
         raw = json.loads(path.read_text(encoding="utf-8"))
-        # strip meta wrappers
-        if "suggestion" in raw and isinstance(raw["suggestion"], dict):
-            raw = raw["suggestion"]
-        pred = _pred_to_parsed(raw)
-        g = prepare_gt_for_scorer(g_raw)
+        # #97 freeze wraps schema in {parsed, raw, ...}
+        if isinstance(raw.get("parsed"), dict):
+            pred = raw["parsed"]
+        elif "suggestion" in raw and isinstance(raw["suggestion"], dict):
+            pred = _pred_to_parsed(raw["suggestion"])
+        else:
+            pred = _pred_to_parsed(raw)
+        # prepare_gt expects holdout-ish shape; use flat scorer fields
+        g = prepare_gt_for_scorer(g_raw.get("_scorer_flat") or g_raw)
         # evidence text from PDF extract if available
         text_path = PRED_ROOT / f"text_{fname}.sha256"
         pdf = CV_DIR / fname
