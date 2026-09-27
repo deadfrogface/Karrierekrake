@@ -1,0 +1,51 @@
+{
+  "metric": [
+    "schema_complete_docs",
+    "import_ok_docs",
+    "tech_errors",
+    "invented_critical",
+    "f1_all",
+    "f1_de",
+    "f1_en",
+    "perfect_core",
+    "hallucination_rate",
+    "missing_count",
+    "wrong_count",
+    "avg_s_per_cv",
+    "peak_rss_mb_max"
+  ],
+  "phi": [
+    8,
+    10,
+    0,
+    29,
+    0.8349,
+    0.8462,
+    0.8201,
+    0,
+    0.2353,
+    7,
+    2,
+    68.7,
+    5577.9
+  ],
+  "qwen": [
+    3,
+    10,
+    0,
+    29,
+    0.8606,
+    0.8602,
+    0.8611,
+    0,
+    0.2128,
+    6,
+    0,
+    97.8,
+    6746.6
+  ],
+  "decision": "kein Sieger",
+  "rationale": [
+    "Beide verfehlen Schema/Import/kritische Halluzinations-Gates."
+  ]
+}

@@ -248,3 +248,13 @@ artifacts/cv_parser_replacement/**
 artifacts/cv_parser_replacement/smoke/**
 !artifacts/cv_parser_replacement/smoke/VARIANT_A_SUMMARY.json
 !artifacts/cv_parser_replacement/SMOKE_GATE_RESULT.json
+
+# Phi vs Qwen CV extract compare (known-CV, not blind)
+!artifacts/phi_vs_qwen_cv_extract/
+artifacts/phi_vs_qwen_cv_extract/**
+!artifacts/phi_vs_qwen_cv_extract/PHASE_A_SEAL.json
+!artifacts/phi_vs_qwen_cv_extract/PREDICTION_FREEZE.json
+!artifacts/phi_vs_qwen_cv_extract/COMPARE_TABLE.json
+!artifacts/phi_vs_qwen_cv_extract/COMPARE_REPORT.json
+!artifacts/phi_vs_qwen_cv_extract/run.log
+!artifacts/phi_vs_qwen_cv_extract/text_*.sha256

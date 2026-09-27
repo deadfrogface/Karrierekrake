@@ -1,0 +1,92 @@
+[qwen35-4b] DE_01 transport=http
+[qwen35-4b] DE_01 done s=112.0 schema_ok=True tech=False
+[qwen35-4b] DE_02 transport=http
+[qwen35-4b] DE_02 done s=144.6 schema_ok=True tech=False
+[qwen35-4b] DE_03 transport=http
+[qwen35-4b] DE_03 done s=90.7 schema_ok=False tech=False
+[qwen35-4b] DE_04 transport=http
+[qwen35-4b] DE_04 done s=84.1 schema_ok=False tech=False
+[qwen35-4b] DE_05 transport=http
+[qwen35-4b] DE_05 done s=98.8 schema_ok=False tech=False
+[qwen35-4b] EN_01 transport=http
+[qwen35-4b] EN_01 done s=84.4 schema_ok=False tech=False
+[qwen35-4b] EN_02 transport=http
+[qwen35-4b] EN_02 done s=99.6 schema_ok=False tech=False
+[qwen35-4b] EN_03 transport=http
+[qwen35-4b] EN_03 done s=77.7 schema_ok=True tech=False
+[qwen35-4b] EN_04 transport=http
+[qwen35-4b] EN_04 done s=78.3 schema_ok=False tech=False
+[qwen35-4b] EN_05 transport=http
+[qwen35-4b] EN_05 done s=107.8 schema_ok=False tech=False
+[phi4-mini] DE_01 transport=inprocess
+[phi4-mini] DE_01 done s=71.5 schema_ok=True tech=False
+[phi4-mini] DE_02 transport=inprocess
+[phi4-mini] DE_02 done s=99.9 schema_ok=True tech=False
+[phi4-mini] DE_03 transport=inprocess
+[phi4-mini] DE_03 done s=69.2 schema_ok=True tech=False
+[phi4-mini] DE_04 transport=inprocess
+[phi4-mini] DE_04 done s=61.6 schema_ok=True tech=False
+[phi4-mini] DE_05 transport=inprocess
+[phi4-mini] DE_05 done s=78.0 schema_ok=False tech=False
+[phi4-mini] EN_01 transport=inprocess
+[phi4-mini] EN_01 done s=63.3 schema_ok=True tech=False
+[phi4-mini] EN_02 transport=inprocess
+[phi4-mini] EN_02 done s=66.2 schema_ok=True tech=False
+[phi4-mini] EN_03 transport=inprocess
+[phi4-mini] EN_03 done s=51.9 schema_ok=True tech=False
+[phi4-mini] EN_04 transport=inprocess
+[phi4-mini] EN_04 done s=57.3 schema_ok=True tech=False
+[phi4-mini] EN_05 transport=inprocess
+[phi4-mini] EN_05 done s=68.1 schema_ok=False tech=False
+{
+  "metric": [
+    "schema_complete_docs",
+    "import_ok_docs",
+    "tech_errors",
+    "invented_critical",
+    "f1_all",
+    "f1_de",
+    "f1_en",
+    "perfect_core",
+    "hallucination_rate",
+    "missing_count",
+    "wrong_count",
+    "avg_s_per_cv",
+    "peak_rss_mb_max"
+  ],
+  "phi": [
+    8,
+    10,
+    0,
+    29,
+    0.8349,
+    0.8462,
+    0.8201,
+    0,
+    0.2353,
+    7,
+    2,
+    68.7,
+    5577.9
+  ],
+  "qwen": [
+    3,
+    10,
+    0,
+    29,
+    0.8606,
+    0.8602,
+    0.8611,
+    0,
+    0.2128,
+    6,
+    0,
+    97.8,
+    6746.6
+  ],
+  "decision": "kein Sieger",
+  "rationale": [
+    "Beide verfehlen Schema/Import/kritische Halluzinations-Gates."
+  ]
+}
+decision=kein Sieger

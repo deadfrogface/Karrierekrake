@@ -1,0 +1,32 @@
+{
+  "created_at": "2026-09-27T00:56:24.764671+00:00",
+  "comparison_type": "KNOWN_CV_TEST_NOT_BLIND",
+  "manifest_id": "SMOKE_DE_EN_10_V1",
+  "manifest_sha256": "e54a140ed7a494ae649e85769dab0bfa968098226011eaef1d665867dd1ced17",
+  "ground_truth_sha256": "f9bd8e9743519f5be5363e3bccc2087df9f723932c5678e93370b34aaa6580df",
+  "scorer_sha256": "0d80bdd6c6b3f4d5a73563bb94163697faae4b878f73616668d6f6e626744f7e",
+  "schema_sha256": "dcffe256297570499b3e016b5f9501b34f60cf35e897c41130429d860f6470e4",
+  "shared_text_sha256": {
+    "DE_01_Klassisch.pdf": "d6ec39d095bc74cbfec1a1b170c709681c11d18a9190853bfac015d999814536",
+    "DE_02_Zweispaltig_Trap.pdf": "2ec23d1d63db12e85e128f2ae1b1174678b43ef0f539bcb28ee4b7c3f585d342",
+    "DE_03_C1_Kontextfalle.pdf": "36ed6f4303fc152ad9a5441645e23b42341240a2fe5d06295e75ca4cbd860929",
+    "DE_04_Unvollstaendige_Kontaktdaten.pdf": "e0bbcc0b4e9aab5859decd69f014a199f2534ce6bfcc9a6cd91dc5650c25c536",
+    "DE_05_Zweiseitig.pdf": "5bf04e50cab62afafde389a5023b3b9a31167817019b4c2e5c6ef4ee0caab7db",
+    "EN_01_Classic_Resume.pdf": "32dbc9a571a965fafa40fe1404225d2b5201caf27020002b9dd8b60fc97f348f",
+    "EN_02_Two_Column_Trap.pdf": "228a574d69b1153c23bb8b40cff4a6e9b2f4182bc13e430b787fdad53bd4df90",
+    "EN_03_Missing_Address_Fields.pdf": "ad25b6529ed7f06f1f236d5e79f3e9b5852701b4d85655ffa78b4ee32e5aaf22",
+    "EN_04_German_Address_English_CV.pdf": "2a0b9a1d614dba4eabbec9ebd506f493f24c3ddb0d22c7f43b19b3e46d39f2f2",
+    "EN_05_Skills_Heavy.pdf": "9c7defe0780ff74c5a56f5f179a8f2052b88964e16a65339969ca083250bd9a1"
+  },
+  "models": {
+    "phi": {
+      "path": "/tmp/karrierekrake-models/phi4-mini/microsoft_Phi-4-mini-instruct-Q4_K_M.gguf",
+      "sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2"
+    },
+    "qwen": {
+      "path": "/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+      "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+    }
+  },
+  "note": "SMOKE_DE_EN_10_V1 was used in prior Docpick/OSS development. This is a head-to-head known-CV test, not an independent blind holdout."
+}
