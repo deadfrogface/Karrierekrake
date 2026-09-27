@@ -70,4 +70,4 @@ Korpusbericht: `docs/project/ONE_MODEL_CORPUS_REGRESSION.md`
 - Agent-VM-RAM/Zeiten ≠ Laptop-Nachweis
 ## PR-Tool-Hinweis
 
-`ManagePullRequest` schlägt fehl mit *PR URL must belong to the current repository* (Agent-Kontext Jobhuntsaver vs. Repo Karrierekrake). Branch ist gepusht: `cursor/one-model-cv-write-d85b` @ HEAD; PR https://github.com/deadfrogface/Karrierekrake/pull/99 — Body ggf. manuell aktualisieren.
+`ManagePullRequest` schlägt fehl mit *PR URL must belong to the current repository* (Agent-Kontext verweist auf ein anderes Repo als Karrierekrake). Branch ist gepusht: `cursor/one-model-cv-write-d85b` @ HEAD; PR https://github.com/deadfrogface/Karrierekrake/pull/99 — Body ggf. manuell aktualisieren.
