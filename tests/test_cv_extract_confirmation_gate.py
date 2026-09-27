@@ -191,20 +191,6 @@ def test_cv_job_cover_letter_grounded_flow() -> None:
     confirmed = confirm_extract_for_downstream(
         grounded, source_text=SOURCE_CV, fail_on_invented=True
     ).parsed
-    # Soft grounding: skills/software not in source are stripped, not hard-fail.
-    soft = confirm_extract_for_downstream(
-        {
-            **grounded,
-            "skills": ["Python", "InventedSkillXYZ"],
-            "software": ["InventedSoftABC"],
-            "certificates": [{"name": "InventedCert999", "issuer": "", "year": ""}],
-        },
-        source_text=SOURCE_CV,
-        fail_on_invented=True,
-    )
-    assert "InventedSkillXYZ" not in (soft.parsed.get("skills") or [])
-    assert "InventedSoftABC" not in (soft.parsed.get("software") or [])
-    assert soft.parsed.get("extract_confirmation", {}).get("soft_rejected_count", 0) >= 2
     config = empty_app_config()
     config.profile.first_name = "Max"
     config.profile.last_name = "Beispiel"

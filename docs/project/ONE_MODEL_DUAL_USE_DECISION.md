@@ -30,15 +30,20 @@ Count-only-GT in `expected_results.json` → Scorer-V2 `expect_absent`. Sollwert
 
 | Gate | Status |
 |------|--------|
-| Ein GGUF in EXE + Auto-Load (kein manueller Server) | Packaging aus #96 übernommen — E2E **noch zu beweisen** |
+| Ein GGUF in EXE + Auto-Load (kein manueller Server) | Packaging aus #96; Linux Child DE_01 `ok=True` (Agent-VM) — **Windows-EXE E2E offen** |
 | Vorschau + Übernehmen in Windows-EXE | **UNGEPRÜFT** |
 | Job-Object Peak ≤ 3,3 GB auf i3/8 GB | **OFFEN / UNGEPRÜFT** |
 | Unabhängiger 99 %-Blind nach Freeze | **fehlt** (neuer Korpus nötig) |
-| Anschreiben: nur n=4 Known | Erweiterung auf vorhandene Cover-Fixtures als Dev-Regression geplant |
+| Anschreiben: nur n=4 Known | klein; kein Blind |
+| Frontend Docling vs cv_extract | Text: Jaccard 0,986; GT-Coverage identisch → **cv_extract KEEP** |
+
+## KEEP/REVERT (Kurz)
+
+Siehe `ONE_MODEL_KEEP_REVERT.md`. Soft-Grounding Skills/Software **REVERT** (F1 −0,005).
 
 ## Nächste Schritte auf diesem Branch
 
-1. Produktpfad: CV-Import **und** Günther-Schreiben → dasselbe Qwen3.5-4B-Gewicht.
-2. Stützräder (Docpick/Schema/Evidence) ohne DET; Regression auf vorhandenem bewertbaren Bestand.
-3. Windows-EXE E2E + Security (diskcache-Exception bereits dokumentiert).
+1. LLM-Frontend-Impact (fokussiert) abschließen und dokumentieren.
+2. Windows-EXE E2E + Security-Gates ehrlich offen halten bis gemessen.
+3. Weitere allgemeine Stützräder nur bei Regression-Gewinn (KEEP).
 4. Ehrliche Metriken: Known Dev vs Frozen Blind getrennt halten.

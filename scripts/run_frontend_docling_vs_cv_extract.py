@@ -330,11 +330,20 @@ def main() -> int:
         help="Comma list: qwen,phi",
     )
     ap.add_argument("--text-only", action="store_true")
+    ap.add_argument(
+        "--only-files",
+        default="",
+        help="Comma-separated PDF basenames to limit LLM impact (e.g. EN_01_Classic_Resume.pdf)",
+    )
     args = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
 
     print("Extracting texts (cv_extract + docling)…", flush=True)
     rows = extract_texts()
+    if args.only_files.strip():
+        allow = {x.strip() for x in args.only_files.split(",") if x.strip()}
+        rows = {k: v for k, v in rows.items() if k in allow}
+        print(f"Limited to {len(rows)} docs: {sorted(rows)}", flush=True)
     soll = _parse_sollwerte(SOLL.read_text(encoding="utf-8"))
     attach_gt_coverage(rows, soll)
 
