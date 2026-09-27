@@ -368,7 +368,7 @@ class SettingsPage(QWidget):
         guenther_box = QGroupBox()
         self.guenther_box = guenther_box
         gform = QFormLayout(guenther_box)
-        self.guenther_model_fixed = QLabel("Phi-4-mini (einziges Produktionsmodell)")
+        self.guenther_model_fixed = QLabel("Qwen3.5-4B (einziges lokales Modell)")
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
         self.guenther_hint.setObjectName("KkHint")
@@ -734,7 +734,7 @@ class SettingsPage(QWidget):
             self.lbl_guenther_model.setText(tr("settings.guenther_model"))
             self.guenther_hint.setText(tr("settings.guenther_hint"))
             if hasattr(self, "guenther_model_fixed"):
-                self.guenther_model_fixed.setText(tr("settings.guenther_model.phi_only"))
+                self.guenther_model_fixed.setText(tr("settings.guenther_model.sole"))
             if hasattr(self, "cv_import_title"):
                 self.cv_import_title.setText(tr("settings.cv_import_path_title"))
                 self.cv_import_body.setText(tr("settings.cv_import_path_body"))

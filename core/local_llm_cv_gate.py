@@ -29,7 +29,7 @@ LOCAL_LLM_CV_KILL_WORDING = (
 LOCAL_LLM_CV_ESCALATION = (
     "Erster Eskalationsschritt: kleineres lokales Modell unter denselben "
     "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
-    "Phi-Fallback und kein neues Modell in diesem Schritt."
+    "Modell-Fallback und kein zweites Gewicht in diesem Schritt."
 )
 
 _ENV_NAME = "KARRIEREKRAKE_LOCAL_LLM_CV_PARSING"

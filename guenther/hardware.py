@@ -1,7 +1,7 @@
 """Hardware tier detection — LIGHT / STANDARD / POWER.
 
-NEXT-02: Production recommends Phi-4-mini only. No Qwen hardware fallback.
-Insufficient RAM → Phi may be unavailable (GUENTHER_UNAVAILABLE), not another LLM.
+Sole production model is Qwen3.5-4B. Insufficient RAM → GUENTHER_UNAVAILABLE,
+not another LLM weight.
 """
 
 from __future__ import annotations
@@ -29,55 +29,55 @@ class HardwareProfile:
 
 
 def _ram_gb() -> float:
-    # Linux
-    try:
-        with open("/proc/meminfo", encoding="utf-8") as fh:
-            for line in fh:
-                if line.startswith("MemTotal:"):
-                    kb = float(line.split()[1])
-                    return kb / (1024 * 1024)
-    except OSError:
-        pass
-    # Windows / fallback via env override for tests
     override = os.environ.get("KARRIEREKRAKE_RAM_GB")
     if override:
         try:
             return float(override)
         except ValueError:
             pass
-    return 8.0
+    try:
+        import psutil
+
+        return float(psutil.virtual_memory().total) / (1024**3)
+    except Exception:
+        return 8.0
 
 
 def detect_hardware() -> HardwareProfile:
     ram = _ram_gb()
-    cpus = os.cpu_count() or 2
-    # Phi peak ~5.6GB observed; require comfortable headroom for STANDARD.
-    if ram < 8.0 or cpus <= 2:
+    try:
+        cpu = int(os.cpu_count() or 2)
+    except Exception:
+        cpu = 2
+    # Qwen3.5-4B Q4_K_M ~2.6GB disk; peak RSS Agent-VM ~5–6GB observed.
+    if ram < 5.0:
         return HardwareProfile(
             tier=HardwareTier.LIGHT,
             ram_gb=ram,
-            cpu_count=cpus,
+            cpu_count=cpu,
             recommended_model_id=PRODUCTION_MODEL_ID,
-            notes=(
-                "low_ram_or_cpu",
-                "phi_only_may_be_unavailable",
-                "no_qwen_fallback",
-            ),
+            notes=("ram_below_min_for_qwen",),
         )
-    if ram >= 24.0:
+    if ram < 8.0:
+        return HardwareProfile(
+            tier=HardwareTier.LIGHT,
+            ram_gb=ram,
+            cpu_count=cpu,
+            recommended_model_id=PRODUCTION_MODEL_ID,
+            notes=("ram_tight_for_qwen",),
+        )
+    if ram >= 16.0:
         return HardwareProfile(
             tier=HardwareTier.POWER,
             ram_gb=ram,
-            cpu_count=cpus,
+            cpu_count=cpu,
             recommended_model_id=PRODUCTION_MODEL_ID,
-            notes=("high_ram", "phi_sole_production"),
         )
     return HardwareProfile(
         tier=HardwareTier.STANDARD,
         ram_gb=ram,
-        cpu_count=cpus,
+        cpu_count=cpu,
         recommended_model_id=PRODUCTION_MODEL_ID,
-        notes=("phi_sole_production",),
     )
 
 
@@ -100,3 +100,7 @@ def can_run_phi(tier: HardwareTier, ram_gb: float | None = None) -> bool:
     if tier == HardwareTier.LIGHT and ram_gb is not None and ram_gb < 8.0:
         return False
     return True
+
+
+# Preferred alias for new call sites.
+can_run_production_model = can_run_phi

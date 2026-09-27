@@ -127,6 +127,16 @@ class CvImportSupervisor:
     def run_once(self, progress: Callable[[str], None] | None = None) -> ImportAttemptResult:
         """Parse once. Does not retry OOM, timeout, or model failures."""
         self.ran_on_thread = threading.get_ident()
+        # Release Günther's in-process weight before the import child loads the
+        # same sole GGUF (parser and writing stay separate processes/roles).
+        try:
+            from guenther.service import get_guenther_service
+
+            g = get_guenther_service(enabled=True)
+            if g is not None and hasattr(g, "provider"):
+                g.provider.unload_model()
+        except Exception:  # noqa: BLE001
+            pass
         if self._cancel.is_set():
             return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
         if progress:

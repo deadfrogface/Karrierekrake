@@ -165,7 +165,8 @@ def run(argv: list[str] | None = None) -> int:
                         kind="llm_command_exited",
                         message=(
                             "Das angegebene lokale Modellkommando ist vor dem Import "
-                            "beendet. Kein Phi-Fallback und kein erneuter automatischer Lauf."
+                            "beendet. Kein DET-/Altmodell-Fallback und kein erneuter "
+                            "automatischer Lauf."
                         ),
                         decision=decision,
                         code=6,

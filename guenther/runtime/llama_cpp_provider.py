@@ -59,9 +59,14 @@ class LlamaCppProvider(LocalAIProvider):
             self._status = ProviderStatus.MODEL_MISSING
             return self._status
         try:
+            from core.local_model_lock import hold_production_model
             from llama_cpp import Llama
 
             self._status = ProviderStatus.LOADING
+            # Hold exclusive lock for the lifetime of the loaded weight so a
+            # concurrent CV-import child cannot also map the same GGUF.
+            self._model_lock_cm = hold_production_model(role="writing", timeout_s=60.0)
+            self._model_lock_cm.__enter__()
             self._llm = Llama(
                 model_path=str(path),
                 n_ctx=4096,
@@ -73,21 +78,38 @@ class LlamaCppProvider(LocalAIProvider):
             self._status = ProviderStatus.READY
             log_event("model_loaded", model_id=model_id, provider=self.provider_id)
             return self._status
+        except TimeoutError:
+            self._llm = None
+            self._status = ProviderStatus.UNAVAILABLE
+            log_event("model_lock_busy", model_id=model_id, role="writing")
+            return self._status
         except MemoryError:
+            self._release_lock()
             self._llm = None
             self._status = ProviderStatus.OOM
             log_event("model_oom", model_id=model_id)
             return self._status
         except Exception:
+            self._release_lock()
             self._llm = None
             self._status = ProviderStatus.ERROR
             log_event("model_load_error", model_id=model_id)
             return self._status
 
+    def _release_lock(self) -> None:
+        cm = getattr(self, "_model_lock_cm", None)
+        if cm is not None:
+            try:
+                cm.__exit__(None, None, None)
+            except Exception:  # noqa: BLE001
+                pass
+            self._model_lock_cm = None
+
     def unload_model(self) -> None:
         self._llm = None
+        self._release_lock()
         if self._status not in {ProviderStatus.NOT_INSTALLED, ProviderStatus.OOM}:
-            self._status = ProviderStatus.MODEL_MISSING if not self.list_models() else ProviderStatus.MODEL_MISSING
+            self._status = ProviderStatus.MODEL_MISSING
         log_event("model_unloaded", model_id=self._model_id)
         self._model_id = ""
 

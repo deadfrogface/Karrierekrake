@@ -689,21 +689,22 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther (immer aktiv, nur lokal)",
         "settings.guenther_model": "Modell",
+        "settings.guenther_model.sole": "Qwen3.5-4B (einziges lokales Modell)",
         "settings.guenther_model.phi_only": "Qwen3.5-4B (einziges lokales Modell)",
         "settings.guenther_model.auto": "Automatisch (Qwen3.5-4B)",
         "settings.guenther_model.primary": "Empfohlen — Qwen3.5-4B",
         "settings.guenther_model.light": "Entfernt — kein zweites Modell",
         "settings.guenther_model.legacy4b": "Entfernt — kein Legacy-Qwen",
         "settings.guenther_model.standard": "Entfernt — kein Legacy-Qwen",
-        "settings.guenther_model.alt": "Empfohlen — Phi-4-mini",
+        "settings.guenther_model.alt": "Empfohlen — Qwen3.5-4B",
         "settings.guenther_hint": (
-            "Günther ist immer aktiv und nutzt lokales Phi-4-mini nur für Schreibhilfe "
+            "Günther ist immer aktiv und nutzt lokales Qwen3.5-4B nur für Schreibhilfe "
             "(Anschreiben, E-Mails, Motivationstexte). "
             "Fehlt das Writer-Modell: Schreibhilfe nicht verfügbar "
             "(kein Heuristik-Ersatz). Günther schlägt vor — Karrierekrake entscheidet."
         ),
-        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
-        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (Phi-4-mini lokal)",
+        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (Qwen3.5-4B lokal)",
+        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (Qwen3.5-4B lokal)",
         "settings.guenther_writer_unavailable": (
             "Schreibhilfe: Modell fehlt — Günther nicht nutzbar (kein stiller Ersatz)."
         ),
@@ -725,7 +726,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.local_llm_cv_escalation": (
             "Erster Eskalationsschritt: kleineres lokales Modell unter denselben "
             "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
-            "Phi-Fallback und kein neues Modell in diesem Schritt."
+            "Modell-Fallback und kein zweites Gewicht in diesem Schritt."
         ),
         "settings.local_llm_cv_disabled_hint": (
             "Der Produktions-CV-Import nutzt Docpick + Qwen3.5-4B. "
@@ -1764,21 +1765,22 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther (always on, local only)",
         "settings.guenther_model": "Model",
+        "settings.guenther_model.sole": "Qwen3.5-4B (sole local model)",
         "settings.guenther_model.phi_only": "Qwen3.5-4B (sole local model)",
         "settings.guenther_model.auto": "Automatic (Qwen3.5-4B)",
         "settings.guenther_model.primary": "Recommended — Qwen3.5-4B",
         "settings.guenther_model.light": "Removed — no second model",
         "settings.guenther_model.legacy4b": "Removed — no legacy Qwen",
         "settings.guenther_model.standard": "Removed — no legacy Qwen",
-        "settings.guenther_model.alt": "Recommended — Phi-4-mini",
+        "settings.guenther_model.alt": "Recommended — Qwen3.5-4B",
         "settings.guenther_hint": (
-            "Günther is always on and uses local Phi-4-mini only for writing assistance "
+            "Günther is always on and uses local Qwen3.5-4B only for writing assistance "
             "(cover letters, emails, motivation texts). "
             "If the writer model is missing: writing help unavailable "
             "(no heuristic substitute). Günther suggests — Karrierekrake decides."
         ),
-        "settings.guenther_writer_status_on": "Writing help: active (Phi-4-mini local)",
-        "settings.guenther_writer_status_off": "Writing help: active (Phi-4-mini local)",
+        "settings.guenther_writer_status_on": "Writing help: active (Qwen3.5-4B local)",
+        "settings.guenther_writer_status_off": "Writing help: active (Qwen3.5-4B local)",
         "settings.guenther_writer_unavailable": (
             "Writing help: model missing — Günther unavailable (no silent substitute)."
         ),
@@ -1799,7 +1801,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "settings.local_llm_cv_escalation": (
             "First escalation: measure a smaller local model under the same "
-            "quality, RAM, and runtime gates. No automatic Phi fallback and "
+            "quality, RAM, and runtime gates. No automatic model fallback and "
             "no new model in this step."
         ),
         "settings.local_llm_cv_disabled_hint": (

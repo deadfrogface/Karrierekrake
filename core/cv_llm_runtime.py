@@ -115,27 +115,29 @@ def chat_completion_inprocess(
     temperature: float = 0.0,
 ) -> str:
     """Run one chat completion with in-process llama.cpp (no external server)."""
+    from core.local_model_lock import hold_production_model
     from llama_cpp import Llama
 
     n_threads = max(2, (os.cpu_count() or 2))
-    llm = Llama(
-        model_path=str(model_path),
-        n_ctx=int(os.environ.get("KARRIEREKRAKE_CV_LLM_N_CTX", "2048")),
-        n_threads=n_threads,
-        n_batch=512,
-        verbose=False,
-    )
-    try:
-        out = llm.create_chat_completion(
-            messages=messages,
-            temperature=float(temperature),
-            max_tokens=int(max_tokens),
+    with hold_production_model(role="cv_import", timeout_s=90.0):
+        llm = Llama(
+            model_path=str(model_path),
+            n_ctx=int(os.environ.get("KARRIEREKRAKE_CV_LLM_N_CTX", "2048")),
+            n_threads=n_threads,
+            n_batch=512,
+            verbose=False,
         )
-        content = out["choices"][0]["message"]["content"]
-        return str(content or "")
-    finally:
-        # Drop weights promptly so cancel/retry can reclaim RAM.
-        del llm
+        try:
+            out = llm.create_chat_completion(
+                messages=messages,
+                temperature=float(temperature),
+                max_tokens=int(max_tokens),
+            )
+            content = out["choices"][0]["message"]["content"]
+            return str(content or "")
+        finally:
+            # Drop weights promptly so writing / cancel can reclaim RAM.
+            del llm
 
 
 def is_frozen() -> bool:
