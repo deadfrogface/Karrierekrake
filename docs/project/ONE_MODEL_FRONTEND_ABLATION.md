@@ -1,10 +1,10 @@
 # Frontend-Ablation: Docling vs `cv_extract` (Known Dev)
 
-**Korpus:** SMOKE DE/EN 10 (Sollwerte-Voll-GT)  
+**Korpus:** SMOKE DE/EN (fokussiert: DE_01/02 + EN_01/02/04)  
 **Vergleichstyp:** Known development — **kein** Blind  
 **Produktpfad:** `cv_extract` (pypdf / python-docx). Docling nur mit `KARRIEREKRAKE_CV_USE_DOCLING=1` (Eval), **nicht** in der Windows-EXE.
 
-## Textmetriken
+## Textmetriken (SMOKE 10)
 
 Quelle: `artifacts/one_model_dual_use/frontend_ablation/TEXT_ABLATION.json`
 
@@ -15,20 +15,29 @@ Quelle: `artifacts/one_model_dual_use/frontend_ablation/TEXT_ABLATION.json`
 | Mean GT-Token-Coverage cv_extract | **0,945** |
 | Mean GT-Token-Coverage Docling | **0,945** (identisch) |
 
-**Fazit Text:** Auf dem SMOKE-Korpus verliert `cv_extract` praktisch keine GT-Tokens gegenüber Docling. Die kürzere Zeichenlänge kommt von weniger Markdown/Whitespace, nicht von fehlenden Fakten. Eine gute Docling-Metrik bleibt **kein** Produktnachweis, weil Docling+Torch auf dem Zielgerät nicht auslieferbar ist.
+## LLM-Impact (gleiches Docpick-Schema, Agent-VM)
 
-## LLM-Impact (Phi + Qwen, gleiches Docpick-Schema)
+Quelle: `artifacts/one_model_dual_use/frontend_ablation/LLM_IMPACT.json`  
+n=5 fokussierte Docs (BEIDE Modelle, BEIDE Frontends).
 
-Fokussierter Lauf auf DE_01/02 + EN mit größtem Char-Diff; Cache unter `frontend_ablation/llm_cache/`.
+| Modell | Frontend | F1 | Precision | Recall |
+|--------|----------|----|-----------|--------|
+| **Qwen3.5-4B** | **cv_extract** | **0,960** | 0,932 | 0,990 |
+| Qwen3.5-4B | Docling | 0,944 | 0,930 | 0,959 |
+| Phi-4-mini | cv_extract | 0,912 | 0,966 | 0,864 |
+| Phi-4-mini | Docling | 0,868 | 0,932 | 0,812 |
 
-### Partial (Qwen, DE_01 + DE_02, beide Frontends)
+Pro Doc (Δ = Docling − cv_extract):
 
-| Doc | cv_extract F1 | Docling F1 |
-|-----|---------------|------------|
-| DE_01 | 0,882 | **0,882** (identisch) |
-| DE_02 | 0,983 | **0,983** (identisch) |
+| Doc | Qwen Δ | Phi Δ |
+|-----|--------|-------|
+| DE_01 | 0 | 0 |
+| DE_02 | 0 | +0,012 |
+| EN_01 | **−0,082** | 0 |
+| EN_02 | −0,013 | **−0,222** |
+| EN_04 | 0 | 0 |
 
-Bei gleicher GT-Coverage ändert das Frontend die Qwen-Scores auf diesen Docs nicht. Volle EN-Diff-Messung + Phi: `LLM_IMPACT.json` nach Laufende.
+**Fazit:** Das auslieferbare `cv_extract` ist für **beide** Modelle besser oder gleich. Docling-Markdown schadet auf EN-Zweispaltig. Docling-Metrik ≠ Produktlösung.
 
 Messung: Agent-VM — **nicht** i3/8‑GB Job-Object.
 

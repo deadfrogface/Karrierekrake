@@ -6,7 +6,7 @@ Alle Metriken: **Known Dev/Regression**, kein unabhängiger Blind.
 | ID | Änderung | Korpus | Ergebnis | Entscheidung |
 |----|----------|--------|----------|--------------|
 | SG-1 | Soft-Grounding Skills/Software/Zertifikate via `evidence_in_source` | SMOKE Sollwerte | Qwen F1 −0,005; Phi F1 −0,005; invented 7→8 | **REVERT** |
-| FE-1 | Produktions-Frontend = `cv_extract` (Docling Eval-only) | SMOKE Text | Jaccard 0,986; GT-Coverage identisch 0,945 | **KEEP** |
+| FE-1 | Produktions-Frontend = `cv_extract` (Docling Eval-only) | SMOKE Text + LLM n=5 | Jaccard 0,986; Qwen F1 0,960 vs Docling 0,944; Phi 0,912 vs 0,868 | **KEEP** |
 | MM-1 | Sole production id `qwen3.5-4b` (Catalog/Settings/Routing) | Unit-Tests | 64 focused tests grün | **KEEP** |
 | PKG-1 | #96 Packaging/Auto-LLM/Child-Fehlercodes (übernommen) | Unit + Linux Child DE_01 | Child `ok=True` Agent-VM; Windows-EXE E2E offen | **KEEP** (mit offenen Gates) |
 | WR-1 | Write-Bakeoff → Qwen statt Phi als Schreibmodell | n=4 Known | Qwen 0 invented, lesbar; Phi JSON-Leak | **KEEP** (provisorisch) |

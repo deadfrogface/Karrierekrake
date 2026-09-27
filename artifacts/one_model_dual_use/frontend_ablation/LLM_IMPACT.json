@@ -1,0 +1,4052 @@
+{
+  "qwen": {
+    "model_id": "qwen3.5-4b",
+    "by_frontend": {
+      "cv_extract": {
+        "field_total": 208,
+        "counts": {
+          "correct": 192,
+          "wrong": 11,
+          "missing": 2,
+          "hallucinated": 3,
+          "wrong_category": 0
+        },
+        "field_accuracy": 0.9230769230769231,
+        "precision": 0.9320388349514563,
+        "recall": 0.9896907216494846,
+        "f1": 0.9600000000000001,
+        "hallucination_rate": 0.014423076923076924,
+        "missing_field_rate": 0.009615384615384616,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0673076923076923,
+        "by_group": {
+          "contact": {
+            "correct": 10
+          },
+          "personal": {
+            "wrong": 1,
+            "correct": 1
+          },
+          "licenses": {
+            "correct": 7,
+            "missing": 2
+          },
+          "education": {
+            "correct": 33,
+            "wrong": 2
+          },
+          "employment": {
+            "correct": 67,
+            "wrong": 8
+          },
+          "skills": {
+            "correct": 33
+          },
+          "software": {
+            "correct": 37
+          },
+          "certificates": {
+            "correct": 4,
+            "hallucinated": 3
+          }
+        },
+        "perfect_core_docs": 0,
+        "n_docs": 5
+      },
+      "docling": {
+        "field_total": 208,
+        "counts": {
+          "correct": 186,
+          "wrong": 11,
+          "missing": 8,
+          "hallucinated": 3,
+          "wrong_category": 0
+        },
+        "field_accuracy": 0.8942307692307693,
+        "precision": 0.93,
+        "recall": 0.9587628865979382,
+        "f1": 0.9441624365482233,
+        "hallucination_rate": 0.014423076923076924,
+        "missing_field_rate": 0.038461538461538464,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.0673076923076923,
+        "by_group": {
+          "contact": {
+            "correct": 10
+          },
+          "personal": {
+            "wrong": 1,
+            "correct": 1
+          },
+          "licenses": {
+            "correct": 7,
+            "missing": 2
+          },
+          "education": {
+            "correct": 33,
+            "wrong": 2
+          },
+          "employment": {
+            "correct": 67,
+            "wrong": 8
+          },
+          "skills": {
+            "correct": 27,
+            "missing": 6
+          },
+          "software": {
+            "correct": 37
+          },
+          "certificates": {
+            "correct": 4,
+            "hallucinated": 3
+          }
+        },
+        "perfect_core_docs": 0,
+        "n_docs": 5
+      }
+    },
+    "documents": [
+      {
+        "file": "DE_01_Klassisch.pdf",
+        "lang": "de",
+        "cv_extract": {
+          "file": "DE_01_Klassisch.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": true,
+          "elapsed_s": 181.66,
+          "peak_rss_mb": 9840.6,
+          "f1": 0.8823529411764706,
+          "precision": 0.7894736842105263,
+          "recall": 1.0,
+          "perfect_core": false,
+          "n_critical": 8,
+          "critical_kinds": [
+            "wrong_or_invented_personal",
+            "wrong_education",
+            "wrong_education",
+            "wrong_employment",
+            "wrong_employment",
+            "wrong_employment",
+            "wrong_employment",
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 3,
+              "counts": {
+                "correct": 3,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 3
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 3,
+                "wrong": 2,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.6,
+              "precision": 0.6,
+              "recall": 1.0,
+              "f1": 0.7499999999999999,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.4,
+              "by_group": {
+                "education": {
+                  "correct": 3,
+                  "wrong": 2
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 10,
+                "wrong": 5,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 0.6666666666666666,
+              "recall": 1.0,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.3333333333333333,
+              "by_group": {
+                "employment": {
+                  "correct": 10,
+                  "wrong": 5
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "wrong": 1,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "personal": {
+                  "wrong": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "DE_01_Klassisch.pdf",
+          "frontend": "docling",
+          "reused_cache": true,
+          "elapsed_s": 213.515,
+          "peak_rss_mb": 9840.6,
+          "f1": 0.8823529411764706,
+          "precision": 0.7894736842105263,
+          "recall": 1.0,
+          "perfect_core": false,
+          "n_critical": 8,
+          "critical_kinds": [
+            "wrong_or_invented_personal",
+            "wrong_education",
+            "wrong_education",
+            "wrong_employment",
+            "wrong_employment",
+            "wrong_employment",
+            "wrong_employment",
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 3,
+              "counts": {
+                "correct": 3,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 3
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 3,
+                "wrong": 2,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.6,
+              "precision": 0.6,
+              "recall": 1.0,
+              "f1": 0.7499999999999999,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.4,
+              "by_group": {
+                "education": {
+                  "correct": 3,
+                  "wrong": 2
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 10,
+                "wrong": 5,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 0.6666666666666666,
+              "recall": 1.0,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.3333333333333333,
+              "by_group": {
+                "employment": {
+                  "correct": 10,
+                  "wrong": 5
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "wrong": 1,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "personal": {
+                  "wrong": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "DE_02_Zweispaltig_Trap.pdf",
+        "lang": "de",
+        "cv_extract": {
+          "file": "DE_02_Zweispaltig_Trap.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": true,
+          "elapsed_s": 235.995,
+          "peak_rss_mb": 9840.6,
+          "f1": 0.9833333333333333,
+          "precision": 0.9833333333333333,
+          "recall": 0.9833333333333333,
+          "perfect_core": false,
+          "n_critical": 0,
+          "critical_kinds": [],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 10,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 10
+                }
+              }
+            },
+            "employment": {
+              "field_total": 20,
+              "counts": {
+                "correct": 20,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 20
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "personal": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 12,
+              "counts": {
+                "correct": 12,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 12
+                }
+              }
+            },
+            "software": {
+              "field_total": 12,
+              "counts": {
+                "correct": 12,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 12
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "DE_02_Zweispaltig_Trap.pdf",
+          "frontend": "docling",
+          "reused_cache": true,
+          "elapsed_s": 221.913,
+          "peak_rss_mb": 9840.6,
+          "f1": 0.9833333333333333,
+          "precision": 0.9833333333333333,
+          "recall": 0.9833333333333333,
+          "perfect_core": false,
+          "n_critical": 0,
+          "critical_kinds": [],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 10,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 10
+                }
+              }
+            },
+            "employment": {
+              "field_total": 20,
+              "counts": {
+                "correct": 20,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 20
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "personal": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 12,
+              "counts": {
+                "correct": 12,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 12
+                }
+              }
+            },
+            "software": {
+              "field_total": 12,
+              "counts": {
+                "correct": 12,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 12
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "EN_01_Classic_Resume.pdf",
+        "lang": "en",
+        "cv_extract": {
+          "file": "EN_01_Classic_Resume.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 146.135,
+          "peak_rss_mb": 9747.7,
+          "f1": 0.9705882352941176,
+          "precision": 0.9428571428571428,
+          "recall": 1.0,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 14,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9333333333333333,
+              "precision": 0.9333333333333333,
+              "recall": 1.0,
+              "f1": 0.9655172413793104,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.06666666666666667,
+              "by_group": {
+                "employment": {
+                  "correct": 14,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "EN_01_Classic_Resume.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 130.683,
+          "peak_rss_mb": 9747.7,
+          "f1": 0.888888888888889,
+          "precision": 0.9333333333333333,
+          "recall": 0.8484848484848485,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 14,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9333333333333333,
+              "precision": 0.9333333333333333,
+              "recall": 1.0,
+              "f1": 0.9655172413793104,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.06666666666666667,
+              "by_group": {
+                "employment": {
+                  "correct": 14,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "missing": 5,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "missing": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "EN_02_Two_Column_Trap.pdf",
+        "lang": "en",
+        "cv_extract": {
+          "file": "EN_02_Two_Column_Trap.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 153.069,
+          "peak_rss_mb": 9747.7,
+          "f1": 0.975609756097561,
+          "precision": 0.9523809523809523,
+          "recall": 1.0,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 10,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 10
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 14,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9333333333333333,
+              "precision": 0.9333333333333333,
+              "recall": 1.0,
+              "f1": 0.9655172413793104,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.06666666666666667,
+              "by_group": {
+                "employment": {
+                  "correct": 14,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 6
+                }
+              }
+            },
+            "software": {
+              "field_total": 7,
+              "counts": {
+                "correct": 7,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 7
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "EN_02_Two_Column_Trap.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 140.116,
+          "peak_rss_mb": 9747.7,
+          "f1": 0.9629629629629629,
+          "precision": 0.9512195121951219,
+          "recall": 0.975,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 10,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 10
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 14,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9333333333333333,
+              "precision": 0.9333333333333333,
+              "recall": 1.0,
+              "f1": 0.9655172413793104,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.06666666666666667,
+              "by_group": {
+                "employment": {
+                  "correct": 14,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 6,
+              "counts": {
+                "correct": 5,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.8333333333333334,
+              "precision": 1.0,
+              "recall": 0.8333333333333334,
+              "f1": 0.9090909090909091,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.16666666666666666,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5,
+                  "missing": 1
+                }
+              }
+            },
+            "software": {
+              "field_total": 7,
+              "counts": {
+                "correct": 7,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 7
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "EN_04_German_Address_English_CV.pdf",
+        "lang": "en",
+        "cv_extract": {
+          "file": "EN_04_German_Address_English_CV.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 125.321,
+          "peak_rss_mb": 9747.7,
+          "f1": 0.967741935483871,
+          "precision": 0.967741935483871,
+          "recall": 0.967741935483871,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 10,
+              "counts": {
+                "correct": 9,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9,
+              "precision": 0.9,
+              "recall": 1.0,
+              "f1": 0.9473684210526316,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.1,
+              "by_group": {
+                "employment": {
+                  "correct": 9,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "EN_04_German_Address_English_CV.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 124.916,
+          "peak_rss_mb": 9747.7,
+          "f1": 0.967741935483871,
+          "precision": 0.967741935483871,
+          "recall": 0.967741935483871,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 10,
+              "counts": {
+                "correct": 9,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9,
+              "precision": 0.9,
+              "recall": 1.0,
+              "f1": 0.9473684210526316,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.1,
+              "by_group": {
+                "employment": {
+                  "correct": 9,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "comparison_type": "KNOWN_FRONTEND_ABLATION_NOT_BLIND",
+    "hardware_note": "Agent-VM — not i3/8GB Job Object ship evidence"
+  },
+  "phi": {
+    "model_id": "phi4-mini",
+    "by_frontend": {
+      "cv_extract": {
+        "field_total": 204,
+        "counts": {
+          "correct": 171,
+          "missing": 27,
+          "wrong": 3,
+          "hallucinated": 3,
+          "wrong_category": 0
+        },
+        "field_accuracy": 0.8382352941176471,
+        "precision": 0.9661016949152542,
+        "recall": 0.8636363636363636,
+        "f1": 0.912,
+        "hallucination_rate": 0.014705882352941176,
+        "missing_field_rate": 0.1323529411764706,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.029411764705882353,
+        "by_group": {
+          "contact": {
+            "correct": 10
+          },
+          "personal": {
+            "correct": 1,
+            "wrong": 1
+          },
+          "licenses": {
+            "missing": 3,
+            "correct": 6
+          },
+          "education": {
+            "correct": 35
+          },
+          "employment": {
+            "correct": 68,
+            "missing": 1,
+            "wrong": 2
+          },
+          "skills": {
+            "missing": 10,
+            "correct": 23
+          },
+          "software": {
+            "correct": 25,
+            "missing": 12
+          },
+          "certificates": {
+            "correct": 3,
+            "missing": 1,
+            "hallucinated": 3
+          }
+        },
+        "perfect_core_docs": 0,
+        "n_docs": 5
+      },
+      "docling": {
+        "field_total": 214,
+        "counts": {
+          "correct": 164,
+          "missing": 38,
+          "wrong": 4,
+          "hallucinated": 8,
+          "wrong_category": 0
+        },
+        "field_accuracy": 0.7663551401869159,
+        "precision": 0.9318181818181818,
+        "recall": 0.8118811881188119,
+        "f1": 0.8677248677248677,
+        "hallucination_rate": 0.037383177570093455,
+        "missing_field_rate": 0.17757009345794392,
+        "wrong_category_rate": 0.0,
+        "false_positive_rate": 0.056074766355140186,
+        "by_group": {
+          "contact": {
+            "correct": 10
+          },
+          "personal": {
+            "correct": 1,
+            "wrong": 1
+          },
+          "licenses": {
+            "missing": 5,
+            "correct": 4
+          },
+          "education": {
+            "correct": 33,
+            "wrong": 2
+          },
+          "employment": {
+            "correct": 71,
+            "missing": 3,
+            "wrong": 1
+          },
+          "skills": {
+            "missing": 15,
+            "correct": 18,
+            "hallucinated": 5
+          },
+          "software": {
+            "correct": 23,
+            "missing": 14,
+            "hallucinated": 1
+          },
+          "certificates": {
+            "correct": 4,
+            "missing": 1,
+            "hallucinated": 2
+          }
+        },
+        "perfect_core_docs": 0,
+        "n_docs": 5
+      }
+    },
+    "documents": [
+      {
+        "file": "DE_01_Klassisch.pdf",
+        "lang": "de",
+        "cv_extract": {
+          "file": "DE_01_Klassisch.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 109.621,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.898550724637681,
+          "precision": 1.0,
+          "recall": 0.8157894736842105,
+          "perfect_core": false,
+          "n_critical": 0,
+          "critical_kinds": [],
+          "field_groups": {
+            "certificates": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 15,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 15
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "missing": 1,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "missing": 1
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "personal": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "missing": 5,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "missing": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "DE_01_Klassisch.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 95.848,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.898550724637681,
+          "precision": 1.0,
+          "recall": 0.8157894736842105,
+          "perfect_core": false,
+          "n_critical": 0,
+          "critical_kinds": [],
+          "field_groups": {
+            "certificates": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 15,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 15
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "missing": 1,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "missing": 1
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "personal": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "missing": 5,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "missing": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "DE_02_Zweispaltig_Trap.pdf",
+        "lang": "de",
+        "cv_extract": {
+          "file": "DE_02_Zweispaltig_Trap.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 131.695,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.8367346938775511,
+          "precision": 0.9534883720930233,
+          "recall": 0.7454545454545455,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_or_invented_personal"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 10,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 10
+                }
+              }
+            },
+            "employment": {
+              "field_total": 16,
+              "counts": {
+                "correct": 15,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.9375,
+              "precision": 1.0,
+              "recall": 0.9375,
+              "f1": 0.967741935483871,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0625,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 15,
+                  "missing": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "wrong": 1,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "personal": {
+                  "wrong": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 12,
+              "counts": {
+                "correct": 12,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 12
+                }
+              }
+            },
+            "software": {
+              "field_total": 12,
+              "counts": {
+                "missing": 12,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "missing": 12
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "DE_02_Zweispaltig_Trap.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 166.356,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.849056603773585,
+          "precision": 0.9782608695652174,
+          "recall": 0.75,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_or_invented_personal"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 10,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 10
+                }
+              }
+            },
+            "employment": {
+              "field_total": 20,
+              "counts": {
+                "correct": 20,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 20
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "missing": 3,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "missing": 3
+                }
+              }
+            },
+            "personal": {
+              "field_total": 1,
+              "counts": {
+                "wrong": 1,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "personal": {
+                  "wrong": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 12,
+              "counts": {
+                "correct": 12,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 12
+                }
+              }
+            },
+            "software": {
+              "field_total": 12,
+              "counts": {
+                "missing": 12,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "missing": 12
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "EN_01_Classic_Resume.pdf",
+        "lang": "en",
+        "cv_extract": {
+          "file": "EN_01_Classic_Resume.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 77.317,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.90625,
+          "precision": 0.9666666666666667,
+          "recall": 0.8529411764705882,
+          "perfect_core": false,
+          "n_critical": 0,
+          "critical_kinds": [],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 15,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 15
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "missing": 5,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "missing": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "EN_01_Classic_Resume.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 89.207,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.90625,
+          "precision": 0.9666666666666667,
+          "recall": 0.8529411764705882,
+          "perfect_core": false,
+          "n_critical": 0,
+          "critical_kinds": [],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 15,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 15
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "missing": 5,
+                "correct": 0,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 1.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "missing": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "EN_02_Two_Column_Trap.pdf",
+        "lang": "en",
+        "cv_extract": {
+          "file": "EN_02_Two_Column_Trap.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 102.502,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.975609756097561,
+          "precision": 0.9523809523809523,
+          "recall": 1.0,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 10,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 10
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 14,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9333333333333333,
+              "precision": 0.9333333333333333,
+              "recall": 1.0,
+              "f1": 0.9655172413793104,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.06666666666666667,
+              "by_group": {
+                "employment": {
+                  "correct": 14,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 6
+                }
+              }
+            },
+            "software": {
+              "field_total": 7,
+              "counts": {
+                "correct": 7,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 7
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "EN_02_Two_Column_Trap.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 102.086,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.7532467532467534,
+          "precision": 0.7631578947368421,
+          "recall": 0.7435897435897436,
+          "perfect_core": false,
+          "n_critical": 3,
+          "critical_kinds": [
+            "wrong_education",
+            "wrong_education",
+            "invented_software"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "hallucinated": 1,
+                "correct": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "hallucination_rate": 1.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 1.0,
+              "by_group": {
+                "certificates": {
+                  "hallucinated": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 10,
+              "counts": {
+                "correct": 8,
+                "wrong": 2,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.8,
+              "precision": 0.8,
+              "recall": 1.0,
+              "f1": 0.888888888888889,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.2,
+              "by_group": {
+                "education": {
+                  "correct": 8,
+                  "wrong": 2
+                }
+              }
+            },
+            "employment": {
+              "field_total": 15,
+              "counts": {
+                "correct": 12,
+                "missing": 3,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.8,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1": 0.888888888888889,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.2,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "employment": {
+                  "correct": 12,
+                  "missing": 3
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 11,
+              "counts": {
+                "correct": 1,
+                "missing": 5,
+                "hallucinated": 5,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.09090909090909091,
+              "precision": 0.16666666666666666,
+              "recall": 0.16666666666666666,
+              "f1": 0.16666666666666666,
+              "hallucination_rate": 0.45454545454545453,
+              "missing_field_rate": 0.45454545454545453,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.45454545454545453,
+              "by_group": {
+                "skills": {
+                  "correct": 1,
+                  "missing": 5,
+                  "hallucinated": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 8,
+              "counts": {
+                "correct": 5,
+                "missing": 2,
+                "hallucinated": 1,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.625,
+              "precision": 0.8333333333333334,
+              "recall": 0.7142857142857143,
+              "f1": 0.7692307692307692,
+              "hallucination_rate": 0.125,
+              "missing_field_rate": 0.25,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.125,
+              "by_group": {
+                "software": {
+                  "correct": 5,
+                  "missing": 2,
+                  "hallucinated": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "file": "EN_04_German_Address_English_CV.pdf",
+        "lang": "en",
+        "cv_extract": {
+          "file": "EN_04_German_Address_English_CV.pdf",
+          "frontend": "cv_extract",
+          "reused_cache": false,
+          "elapsed_s": 79.606,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.967741935483871,
+          "precision": 0.967741935483871,
+          "recall": 0.967741935483871,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 10,
+              "counts": {
+                "correct": 9,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9,
+              "precision": 0.9,
+              "recall": 1.0,
+              "f1": 0.9473684210526316,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.1,
+              "by_group": {
+                "employment": {
+                  "correct": 9,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        },
+        "docling": {
+          "file": "EN_04_German_Address_English_CV.pdf",
+          "frontend": "docling",
+          "reused_cache": false,
+          "elapsed_s": 85.401,
+          "peak_rss_mb": 14023.8,
+          "f1": 0.967741935483871,
+          "precision": 0.967741935483871,
+          "recall": 0.967741935483871,
+          "perfect_core": false,
+          "n_critical": 1,
+          "critical_kinds": [
+            "wrong_employment"
+          ],
+          "field_groups": {
+            "certificates": {
+              "field_total": 1,
+              "counts": {
+                "correct": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "certificates": {
+                  "correct": 1
+                }
+              }
+            },
+            "contact": {
+              "field_total": 2,
+              "counts": {
+                "correct": 2,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "contact": {
+                  "correct": 2
+                }
+              }
+            },
+            "education": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "education": {
+                  "correct": 5
+                }
+              }
+            },
+            "employment": {
+              "field_total": 10,
+              "counts": {
+                "correct": 9,
+                "wrong": 1,
+                "hallucinated": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 0.9,
+              "precision": 0.9,
+              "recall": 1.0,
+              "f1": 0.9473684210526316,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.1,
+              "by_group": {
+                "employment": {
+                  "correct": 9,
+                  "wrong": 1
+                }
+              }
+            },
+            "licenses": {
+              "field_total": 3,
+              "counts": {
+                "correct": 2,
+                "missing": 1,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0
+              },
+              "field_accuracy": 0.6666666666666666,
+              "precision": 1.0,
+              "recall": 0.6666666666666666,
+              "f1": 0.8,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.3333333333333333,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "licenses": {
+                  "correct": 2,
+                  "missing": 1
+                }
+              }
+            },
+            "skills": {
+              "field_total": 5,
+              "counts": {
+                "correct": 5,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "skills": {
+                  "correct": 5
+                }
+              }
+            },
+            "software": {
+              "field_total": 6,
+              "counts": {
+                "correct": 6,
+                "hallucinated": 0,
+                "wrong": 0,
+                "wrong_category": 0,
+                "missing": 0
+              },
+              "field_accuracy": 1.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "hallucination_rate": 0.0,
+              "missing_field_rate": 0.0,
+              "wrong_category_rate": 0.0,
+              "false_positive_rate": 0.0,
+              "by_group": {
+                "software": {
+                  "correct": 6
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "comparison_type": "KNOWN_FRONTEND_ABLATION_NOT_BLIND",
+    "hardware_note": "Agent-VM — not i3/8GB Job Object ship evidence"
+  }
+}
