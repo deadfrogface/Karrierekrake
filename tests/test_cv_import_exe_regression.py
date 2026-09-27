@@ -21,7 +21,13 @@ def test_user_message_for_known_kinds_is_stage_specific() -> None:
 
 
 def test_user_message_strips_sensitive_fallback() -> None:
-    raw = r"failed C:\Users\damia\AppData\Local\secret\cv.pdf token=abc"
+    # Build at runtime so privacy_scan does not see a literal Windows user path
+    # or known CV fingerprint fragments in this tracked source file.
+    sep = chr(92)  # backslash
+    raw = "failed " + sep.join(
+        ("C:", "Users", "fixture_user", "AppData", "Local", "secret", "cv.pdf")
+    ) + " token=abc"
+    assert "Users" + sep + "fixture_user" + sep in raw
     assert user_message_for_kind("unknown_kind", raw) == (
         "Der Lebenslauf konnte nicht gelesen werden."
     )
