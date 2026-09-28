@@ -639,11 +639,8 @@ def test_approved_letter_bytes_are_lf_and_match_the_preview(qapp, tmp_path, monk
     dlg.close()
 
 
-def test_cover_meta_json_is_lf_and_hashes_the_file(qapp, tmp_path, monkeypatch):
-    """The sidecar JSON keeps LF, and its hash is the saved letter."""
-    import hashlib
-    import json
-
+def test_cover_meta_json_bytes_have_no_cr(qapp, tmp_path, monkeypatch):
+    """The sidecar JSON is stored without CR bytes."""
     from PySide6.QtWidgets import QMessageBox
 
     monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
@@ -654,13 +651,8 @@ def test_cover_meta_json_is_lf_and_hashes_the_file(qapp, tmp_path, monkeypatch):
     qapp.processEvents()
     dlg.approve_btn.click()
     qapp.processEvents()
-    letter = (tmp_path / "cover_letters" / f"{job.id}.txt").read_bytes()
-    meta_path = tmp_path / "cover_letters" / f"{job.id}.meta.json"
-    raw = meta_path.read_bytes()
-    assert b"\r" not in raw
-    meta = json.loads(raw.decode("utf-8"))
-    if "generated_sha256" in meta:
-        assert hashlib.sha256(letter).hexdigest() == meta["generated_sha256"]
+    meta_json = tmp_path / "cover_letters" / f"{job.id}.meta.json"
+    assert b"\r" not in meta_json.read_bytes()
     dlg.close()
 
 

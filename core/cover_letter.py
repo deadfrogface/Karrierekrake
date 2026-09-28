@@ -973,7 +973,6 @@ def approve_cover_letter(job: Job, config: AppConfig, text: str | None = None) -
         {
             "job_id": job.id,
             "description_used": result.description_used,
-            "generated_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
         },
         ensure_ascii=False,
         indent=2,
