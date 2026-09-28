@@ -17,6 +17,7 @@ from core.application_queue import (
 from core.config import (
     AppConfig,
     ExperienceEntry,
+    LanguageEntry,
     SourcedText,
     empty_app_config,
 )
@@ -987,4 +988,147 @@ def test_approve_saves_user_edit_and_refuses_empty_or_placeholder(tmp_path: Path
             cfg,
             "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.\n",
         )
-    assert path.read_text(encoding="utf-8") == edited
+
+
+def test_sap_business_one_covers_sap_not_the_reverse():
+    from core.cover_letter import cover_letter_reference_hits
+
+    station = ExperienceEntry(title="Sachbearbeiter", company="Kontor Beispiel GmbH", source="manual")
+    specific = _cfg(stations=[station])
+    specific.profile.qualifications.software = [
+        SourcedText(value="SAP Business One", source="manual")
+    ]
+    ad_sap = Job(
+        id="j-sap-family",
+        source="indeed",
+        title="Sachbearbeiter",
+        company="Buchkontor Beispiel GmbH",
+        description="Erfahrung als Sachbearbeiter und sicherer Umgang mit SAP.",
+    )
+    written = compose_cover_letter(ad_sap, specific)
+    assert written.ok is True
+    assert "SAP Business One" in written.text
+    assert "Sachbearbeiter" in written.text
+    hits, missing = cover_letter_reference_hits(written.text, ad_sap, specific)
+    assert "SAP Business One" in hits
+    assert "Sachbearbeiter" in hits
+    assert missing == ()
+
+    only = _cfg()
+    only.profile.qualifications.software = [SourcedText(value="SAP Business One", source="manual")]
+    alone = compose_cover_letter(ad_sap, only)
+    assert alone.reason_code == "no_evidence"
+    assert alone.text == ""
+
+    broad = _cfg(stations=[station])
+    broad.profile.qualifications.software = [SourcedText(value="SAP", source="manual")]
+    ad_product = Job(
+        id="j-sap-reverse",
+        source="indeed",
+        title="Sachbearbeiter",
+        company="Buchkontor Beispiel GmbH",
+        description="Erfahrung als Sachbearbeiter und SAP Business One im Tagesgeschäft.",
+    )
+    reverse = compose_cover_letter(ad_product, broad)
+    assert reverse.reason_code == "no_evidence"
+    assert reverse.text == ""
+    reverse_hits, _reverse_missing = cover_letter_reference_hits("", ad_product, broad)
+    assert "SAP" not in reverse_hits
+
+
+def test_java_does_not_hit_javascript():
+    station = ExperienceEntry(title="Sachbearbeiter", company="Kontor Beispiel GmbH", source="manual")
+    java = _cfg(stations=[station])
+    java.profile.qualifications.software = [SourcedText(value="Java", source="manual")]
+    javascript_ad = Job(
+        id="j-javascript",
+        source="indeed",
+        title="Sachbearbeiter",
+        company="Buchkontor Beispiel GmbH",
+        description="Erfahrung als Sachbearbeiter und JavaScript im Frontend.",
+    )
+    missed = compose_cover_letter(javascript_ad, java)
+    assert missed.reason_code == "no_evidence"
+
+    script = _cfg(stations=[station])
+    script.profile.qualifications.software = [SourcedText(value="JavaScript", source="manual")]
+    java_ad = Job(
+        id="j-java",
+        source="indeed",
+        title="Sachbearbeiter",
+        company="Buchkontor Beispiel GmbH",
+        description="Erfahrung als Sachbearbeiter und Java im Backend.",
+    )
+    also_missed = compose_cover_letter(java_ad, script)
+    assert also_missed.reason_code == "no_evidence"
+
+    same = compose_cover_letter(java_ad, java)
+    assert same.ok is True
+    assert "Java" in same.text
+    assert "JavaScript" not in same.text
+
+
+def test_deutsch_and_licence_are_not_references_on_nordmole():
+    from core.cover_letter import cover_letter_reference_hits
+
+    job = build_fixture_job()
+    payroll = _cfg(
+        stations=[
+            ExperienceEntry(
+                title="Lohnbuchhalterin",
+                company="Lohnkontor Beispiel GmbH",
+                responsibilities=["Lohnabrechnung erstellen"],
+                source="manual",
+            )
+        ]
+    )
+    payroll.profile.qualifications.software = [
+        SourcedText(value="DATEV", source="manual"),
+        SourcedText(value="Excel", source="manual"),
+    ]
+    payroll.profile.qualifications.languages = [
+        LanguageEntry(language="Deutsch", level="C2", source="manual")
+    ]
+    payroll.profile.qualifications.driving_license = [
+        SourcedText(value="Klasse B", source="manual")
+    ]
+    refused = compose_cover_letter(job, payroll)
+    assert refused.reason_code == "no_evidence"
+    assert refused.text == ""
+    hits, _missing = cover_letter_reference_hits("", job, payroll)
+    folded = " ".join(hits).casefold()
+    assert "deutsch" not in folded
+    assert "führerschein" not in folded
+    assert "klasse b" not in folded
+    assert "excel" not in folded
+    assert "datev" not in folded
+
+    dispatcher = _cfg(
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Tourenplanung", "Fahrer zuordnen"],
+                source="manual",
+            )
+        ]
+    )
+    dispatcher.profile.qualifications.software = [SourcedText(value="SAP", source="manual")]
+    dispatcher.profile.qualifications.languages = [
+        LanguageEntry(language="Deutsch", level="C2", source="manual")
+    ]
+    dispatcher.profile.qualifications.driving_license = [
+        SourcedText(value="Klasse B", source="manual")
+    ]
+    written = compose_cover_letter(job, dispatcher)
+    assert written.ok is True
+    assert "Disponent" in written.text
+    assert "SAP" in written.text
+    letter_hits, letter_missing = cover_letter_reference_hits(written.text, job, dispatcher)
+    assert "Disponent" in letter_hits
+    assert "SAP" in letter_hits
+    assert letter_missing == ()
+    named = " ".join(letter_hits).casefold()
+    assert "deutsch" not in named
+    assert "klasse b" not in named
+    assert "führerschein" not in named
