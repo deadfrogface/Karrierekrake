@@ -86,6 +86,10 @@ REQUIRED_TAGS = frozenset(
         "station_plus_skill",
         "employer_name_only",
         "same_requirement",
+        "product_family",
+        "product_only",
+        "nordmole_dispatcher",
+        "nordmole_payroll",
     }
 )
 
@@ -300,6 +304,36 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     assert "<p>" in body and "&nbsp;" in body
     assert "<p>" in html["must_not_contain"]
     assert "&nbsp;" in html["must_not_contain"]
+
+    family = by_tag["product_family"]
+    assert family["expected_outcome"] == "interview"
+    assert "SAP Business One" in _texts(family["profile"])
+    assert "SAP Business One" in family["must_mention"]
+    assert "Sachbearbeiter" in family["must_mention"]
+    assert "mit SAP" in family["job"]["description"]
+
+    product_only = by_tag["product_only"]
+    assert product_only["expected_outcome"] == "no_evidence"
+    assert product_only["profile"]["qualifications"]["work_experience"] == []
+    assert product_only["profile"]["qualifications"]["software"][0]["value"] == "SAP Business One"
+
+    dispatcher = by_tag["nordmole_dispatcher"]
+    assert dispatcher["expected_outcome"] == "interview"
+    assert dispatcher["job"]["source"] == "fixture"
+    assert dispatcher["job"]["company"] == "Nordmole Musterlogistik GmbH"
+    assert "Disponent" in dispatcher["must_mention"]
+    assert "SAP" in dispatcher["must_mention"]
+    tasks = dispatcher["profile"]["qualifications"]["work_experience"][0]["responsibilities"]
+    assert tasks == ["Tourenplanung", "Fahrer zuordnen"]
+
+    payroll = by_tag["nordmole_payroll"]
+    assert payroll["expected_outcome"] == "no_evidence"
+    assert payroll["job"]["description"] == dispatcher["job"]["description"]
+    software = [item["value"] for item in payroll["profile"]["qualifications"]["software"]]
+    assert software == ["DATEV", "Excel"]
+    assert "SAP Business One" not in _texts(payroll["profile"])
+    assert payroll["profile"]["qualifications"]["languages"][0]["language"] == "Deutsch"
+    assert payroll["profile"]["qualifications"]["driving_license"][0]["value"] == "Klasse B"
 
 
 def test_doc_names_every_case(cases: list[dict]) -> None:

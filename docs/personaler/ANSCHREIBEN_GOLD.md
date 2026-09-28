@@ -140,9 +140,15 @@ Minimales Profil, das der Anschreiben-Pfad liest. Suche, Filter, Settings und `s
 | `cl-15-station-and-skill` | `interview` | Die Station Disponent und der Skill Tourenplanung sind zwei verschiedene Bezüge. |
 | `cl-16-employer-name-only` | `no_evidence` | Die Anzeige nennt den früheren Arbeitgeber Nordkai Spedition GmbH und sonst keinen Profilbezug. |
 | `cl-17-excel-one-requirement` | `no_evidence` | Excel und MS Excel treffen dieselbe Anforderung MS Excel und zählen als ein Bezug. |
+| `cl-18-sap-business-one-covers-sap` | `interview` | SAP Business One im Profil trifft die Anforderung SAP. Die Station Sachbearbeiter ist der zweite Bezug. |
+| `cl-19-sap-business-one-only` | `no_evidence` | Nur SAP Business One, kein zweiter Bezug. Die Produktfamilie zählt als eine Anforderung. |
+| `cl-20-nordmole-dispatcher` | `interview` | Nordmole-Anzeige aus der Quell-Fixture. Station Disponent und Software SAP stehen im Brief. |
+| `cl-21-nordmole-payroll` | `no_evidence` | Dieselbe Anzeige, Profil Lohnbuchhalterin mit DATEV und Excel. Deutsch und Klasse B zählen nicht. |
 
-Zählung: `interview` 9, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 4, `blocked_demo` 1, `company_missing` 1. Zusammen 17 Fälle.
+Zählung: `interview` 11, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 6, `blocked_demo` 1, `company_missing` 1. Zusammen 21 Fälle.
+
+Die erzeugten Briefe der `interview`-Fälle stehen in `docs/qa/anschreiben_gold_briefe.md`.
 
 ## 7. Nicht Gegenstand dieses Stands
 
-Keine Änderung an Parser, Scrapern, Qt-Oberfläche, `i18n.py`, CI oder `core/`. Kein Aufruf von `render_cover_letter()` und kein gespeicherter Musterbrief. `save_cover_letter()` bleibt unberührt.
+Der Gold-Stand selbst ändert Parser, Scraper, Qt-Oberfläche, `i18n.py` und CI nicht. Die erzeugten Interview-Briefe liegen in `docs/qa/anschreiben_gold_briefe.md` und werden mit `scripts/dump_cover_gold_letters.py` neu geschrieben.

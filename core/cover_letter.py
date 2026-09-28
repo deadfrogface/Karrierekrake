@@ -87,6 +87,118 @@ def _clean_job_description(raw: str) -> str:
     return clean_text(text)
 
 
+def _alias_id(token: str) -> str:
+    """One id for a token and its gold aliases. Inflected text is stemmed first."""
+    for group in _COVER_ALIAS_GROUPS:
+        if token in group:
+            return "alias:" + "|".join(sorted(group))
+    return token
+
+
+def _token_ids(token: str) -> set[str]:
+    forms = {token}
+    for ending in ("em", "en", "er", "es", "e", "s"):
+        if len(token) - len(ending) >= 3 and token.endswith(ending):
+            forms.add(token[: -len(ending)])
+            break
+    return {_alias_id(form) for form in forms}
+
+
+def _claim_keys(text: str) -> frozenset[str]:
+    """Requirement ids one profile phrase can cover.
+
+    A longer profile phrase covers a shorter ad phrase when that ad phrase is
+    a leading token sequence (``SAP Business One`` covers ``SAP``). The keys
+    are those leading sequences. Built once per profile token, not per job.
+    """
+    tokens = [
+        part
+        for part in _CONTENT_TOKEN.findall(collapse_phrase(text))
+        if not _is_glue_token(part)
+    ]
+    if not tokens:
+        return frozenset()
+    keys: set[str] = set()
+    for length in range(1, len(tokens) + 1):
+        if length == 1:
+            keys |= _token_ids(tokens[0])
+        else:
+            keys.add(" ".join(tokens[:length]))
+    return frozenset(keys)
+
+
+def _sequence_in(haystack: list[str], needle: list[str]) -> bool:
+    width = len(needle)
+    if not width or width > len(haystack):
+        return False
+    for index in range(len(haystack) - width + 1):
+        if haystack[index : index + width] == needle:
+            return True
+    return False
+
+
+def _ad_requirement_keys(surface: str) -> frozenset[str]:
+    """Requirement ids of one ad. One pass, then set intersection with the profile.
+
+    An all-caps token plus the following title-case words is one phrase
+    (``SAP Business One``). A shorter profile token does not hit that phrase.
+    Every other word stays its own requirement, including one German ending.
+    Ordinary capitalized German nouns stay separate words.
+    """
+    keys: set[str] = set()
+    sequence: list[str] = []
+    pending_acronym: str | None = None
+    tail: list[str] = []
+
+    def letters(raw: str) -> str:
+        return "".join(char for char in raw if char.isalpha())
+
+    def is_acronym(raw: str) -> bool:
+        word = letters(raw)
+        return len(word) >= 3 and word.isupper()
+
+    def is_title_word(raw: str) -> bool:
+        word = letters(raw)
+        return len(word) >= 3 and word[:1].isupper() and not word.isupper()
+
+    def emit_token(token: str) -> None:
+        keys.update(_token_ids(token))
+
+    def flush_product() -> None:
+        nonlocal pending_acronym
+        if pending_acronym is None:
+            return
+        if tail:
+            keys.add(" ".join([pending_acronym, *tail]))
+        else:
+            emit_token(pending_acronym)
+        pending_acronym = None
+        tail.clear()
+
+    for raw in _SURFACE_WORD.findall(surface or ""):
+        folded = raw.casefold()
+        if _is_glue_token(folded):
+            flush_product()
+            continue
+        sequence.append(folded)
+        if pending_acronym is not None and is_title_word(raw):
+            tail.append(folded)
+            continue
+        flush_product()
+        if is_acronym(raw):
+            pending_acronym = folded
+            continue
+        emit_token(folded)
+    flush_product()
+    for group in _COVER_ALIAS_GROUPS:
+        alias = "alias:" + "|".join(sorted(group))
+        for form in group:
+            parts = [part for part in form.split(" ") if part and not _is_glue_token(part)]
+            if _sequence_in(sequence, parts):
+                keys.add(alias)
+    return frozenset(keys)
+
+
 def _alias_forms(token: str) -> set[str]:
     key = _norm(token)
     if not key:
@@ -137,6 +249,7 @@ _FIRMA_PLACEHOLDER = re.compile(r"firma(?:\s*\d+)?")
 _SKILL_SPLIT = re.compile(r"[,/|]")
 _TITLE_PART = re.compile(r"[A-Za-zÄÖÜäöüß0-9]{3,}")
 _CONTENT_TOKEN = re.compile(r"[a-z0-9äöüß]{3,}")
+_SURFACE_WORD = re.compile(r"[A-Za-zÄÖÜäöüß0-9]+")
 
 # Hard minimum: two distinct ad requirements, each backed by a distinct profile fact.
 MIN_DISTINCT_COVER_HITS = 2
@@ -237,10 +350,9 @@ def _job_blob(job: Job) -> str:
     return _norm(f"{clean_text(job.title)} {description}")
 
 
-def _experience_relevance(exp: ExperienceEntry, job_blob: str) -> int:
-    """Score one station. Patterns come from the station cache, not this call."""
-    folded = collapse_phrase(job_blob)
-    return _score_station(_compiled_station(exp), job_blob, folded, _ad_forms(folded))
+def _experience_relevance(exp: ExperienceEntry, job_blob: str, ad_keys: frozenset[str]) -> int:
+    """Score one station. Token sets come from the station cache, not this call."""
+    return _score_station(_compiled_station(exp), job_blob, ad_keys)
 
 
 def pick_relevant_experience(
@@ -250,13 +362,15 @@ def pick_relevant_experience(
     if not experiences:
         return None
     blob = _job_blob(job)
+    surface = f"{clean_text(job.title)} {_clean_job_description(getattr(job, 'description', ''))}"
+    ad_keys = _ad_requirement_keys(surface)
     ranked = sorted(
         experiences,
-        key=lambda e: (_experience_relevance(e, blob),),
+        key=lambda e: (_experience_relevance(e, blob, ad_keys),),
         reverse=True,
     )
     best = ranked[0]
-    if _experience_relevance(best, blob) > 0:
+    if _experience_relevance(best, blob, ad_keys) > 0:
         return best
     return experiences[0]
 
@@ -551,6 +665,11 @@ class _StationCompiled:
     ready_title_words: tuple[_ReadyToken, ...] = ()
     ready_resps: tuple[_ReadyToken, ...] = ()
     ready_company: _ReadyToken | None = None
+    title_keys: frozenset[str] = frozenset()
+    task_keysets: tuple[frozenset[str], ...] = ()
+    title_word_keysets: tuple[frozenset[str], ...] = ()
+    resp_keysets: tuple[frozenset[str], ...] = ()
+    company_keys: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True)
@@ -559,6 +678,7 @@ class _SkillCompiled:
     glue: bool
     mentions: tuple[_Mention, ...]
     ready: tuple[_ReadyToken, ...] = ()
+    keys: frozenset[str] = frozenset()
 
 
 class _ProfileEvidence:
@@ -701,49 +821,43 @@ def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
         return cached
     title = key[0]
     active = bool(title) and not _is_glue_token(title)
-    title_words: tuple[_Mention, ...] = ()
-    title_mention = None
     part_tokens = _title_part_tokens(title)
-    ready_parts = tuple(_make_ready_token(token) for token in part_tokens)
-    ready_title = None
-    ready_title_words: tuple[_ReadyToken, ...] = ()
+    title_keys: set[str] = set()
     if active:
-        ready_title = _make_ready_token(title, allow_substring=True)
-        title_mention = ready_title.mention
-        ready_title_words = tuple(
-            _make_ready_token(word) for word in _meaningful_words(title, min_len=4)
-        )
-        title_words = tuple(ready.mention for ready in ready_title_words)
+        title_keys |= _claim_keys(title)
+    for part in part_tokens:
+        title_keys |= _claim_keys(part)
+    title_word_keysets = tuple(
+        _claim_keys(word) for word in _meaningful_words(title, min_len=4)
+    ) if active else ()
     resp_tokens = [
         word
         for resp in key[2]
         for word in _meaningful_words(resp, min_len=5)
     ]
-    ready_resps = tuple(_make_ready_token(word) for word in resp_tokens)
-    resp_words = tuple(ready.mention for ready in ready_resps)
+    resp_keysets = tuple(_claim_keys(word) for word in resp_tokens)
     seen_tasks: set[str] = set()
-    ready_tasks_list: list[_ReadyToken] = []
-    for ready in ready_resps:
-        if not ready.norm or ready.norm in seen_tasks:
+    task_keysets: list[frozenset[str]] = []
+    for word, keys in zip(resp_tokens, resp_keysets):
+        norm = _norm(word)
+        if not norm or norm in seen_tasks or not keys:
             continue
-        seen_tasks.add(ready.norm)
-        ready_tasks_list.append(ready)
+        seen_tasks.add(norm)
+        task_keysets.append(keys)
     company = key[1]
-    ready_company = _make_ready_token(company) if company else None
     compiled = _StationCompiled(
         title_active=active,
         title_norm=_norm(title),
-        title_mention=title_mention,
-        title_words=title_words,
+        title_mention=None,
+        title_words=(),
         title_part_tokens=part_tokens,
-        resp_words=resp_words,
-        company_mention=ready_company.mention if ready_company is not None else None,
-        ready_title=ready_title,
-        ready_parts=ready_parts,
-        ready_tasks=tuple(ready_tasks_list),
-        ready_title_words=ready_title_words,
-        ready_resps=ready_resps,
-        ready_company=ready_company,
+        resp_words=(),
+        company_mention=None,
+        title_keys=frozenset(title_keys),
+        task_keysets=tuple(task_keysets),
+        title_word_keysets=title_word_keysets,
+        resp_keysets=resp_keysets,
+        company_keys=_claim_keys(company) if company else frozenset(),
     )
     _STATION_CACHE[key] = compiled
     return compiled
@@ -764,22 +878,19 @@ def _mention_hits(
 
 
 def _score_station(
-    station: _StationCompiled, blob: str, folded: str, ad_forms: frozenset[str]
+    station: _StationCompiled, blob: str, ad_keys: frozenset[str]
 ) -> int:
     score = 0
     if station.title_active:
-        title_hit = _mention_hits(
-            station.ready_title, station.title_mention, blob, folded, ad_forms
-        )
-        if title_hit or (station.title_norm and station.title_norm in blob):
+        if station.title_keys & ad_keys or (station.title_norm and station.title_norm in blob):
             score += 12
-        for ready, mention in zip(station.ready_title_words, station.title_words):
-            if _mention_hits(ready, mention, blob, folded, ad_forms):
+        for keys in station.title_word_keysets:
+            if keys & ad_keys:
                 score += 3
-    for ready, mention in zip(station.ready_resps, station.resp_words):
-        if _mention_hits(ready, mention, blob, folded, ad_forms):
+    for keys in station.resp_keysets:
+        if keys & ad_keys:
             score += 2
-    if _mention_hits(station.ready_company, station.company_mention, blob, folded, ad_forms):
+    if station.company_keys & ad_keys:
         score += 1
     return score
 
@@ -917,48 +1028,20 @@ class _CoverFact:
 
 def _station_keys(
     station: _StationCompiled,
-    blob: str,
-    folded: str,
-    ad_forms: frozenset[str],
+    ad_keys: frozenset[str],
 ) -> tuple[bool, frozenset[str]]:
     """A station qualifies on a title hit or two distinct task words.
 
     A company-name hit does not qualify. One task word does not qualify.
+    Hits are the intersection of precomputed profile keys and the ad's keys.
     """
     keys: set[str] = set()
-    title_hit = False
-    if station.ready_title is not None:
-        found = _keys_for_token(
-            station.ready_title.token,
-            blob,
-            folded,
-            allow_substring=True,
-            ad_forms=ad_forms,
-            ready=station.ready_title,
-        )
-        if found:
-            title_hit = True
-            keys |= found
-    for ready in station.ready_parts:
-        found = _keys_for_token(
-            ready.token,
-            blob,
-            folded,
-            ad_forms=ad_forms,
-            ready=ready,
-        )
-        if found:
-            title_hit = True
-            keys |= found
+    title_hit = bool(station.title_keys & ad_keys)
+    if title_hit:
+        keys |= station.title_keys & ad_keys
     task_hits = 0
-    for ready in station.ready_tasks:
-        found = _keys_for_token(
-            ready.token,
-            blob,
-            folded,
-            ad_forms=ad_forms,
-            ready=ready,
-        )
+    for task_keys in station.task_keysets:
+        found = task_keys & ad_keys
         if not found:
             continue
         task_hits += 1
@@ -968,22 +1051,8 @@ def _station_keys(
     return True, frozenset(keys)
 
 
-def _skill_keys(
-    skill: _SkillCompiled,
-    blob: str,
-    folded: str,
-    ad_forms: frozenset[str],
-) -> frozenset[str]:
-    keys: set[str] = set()
-    for ready in skill.ready:
-        keys |= _keys_for_token(
-            ready.token,
-            blob,
-            folded,
-            ad_forms=ad_forms,
-            ready=ready,
-        )
-    return frozenset(keys)
+def _skill_keys(skill: _SkillCompiled, ad_keys: frozenset[str]) -> frozenset[str]:
+    return skill.keys & ad_keys
 
 
 def _unify_requirements(facts: list[_CoverFact]) -> list[_CoverFact]:
@@ -1035,13 +1104,11 @@ def _profile_gate(config: AppConfig) -> tuple[bool, bool, bool, bool]:
     )
 
 
-def _job_match_text(job: Job, description: str | None = None) -> tuple[str, str, frozenset[str]]:
-    """Normalize and tokenize one ad. Callers do this once per job."""
+def _job_surface(job: Job, description: str | None = None) -> str:
+    """Title plus cleaned description, case kept for phrase grouping."""
     if description is None:
         description = _clean_job_description(getattr(job, "description", ""))
-    blob = _norm(f"{clean_text(job.title)} {description}")
-    folded = collapse_phrase(blob)
-    return blob, folded, _ad_forms(folded)
+    return f"{clean_text(job.title)} {description}".strip()
 
 
 def _cover_facts(
@@ -1071,7 +1138,9 @@ def _cover_facts(
     )
     if _FACTS_SLOT is not None and _FACTS_SLOT[0] == slot_key:
         return _FACTS_SLOT[1]
-    blob, folded, ad_forms = _job_match_text(job, description)
+    surface = _job_surface(job, description)
+    ad_keys = _ad_requirement_keys(surface)
+    blob = _norm(surface)
     if not blob:
         _FACTS_SLOT = (slot_key, [])
         return []
@@ -1082,12 +1151,12 @@ def _cover_facts(
         compiled = evidence.stations.get(_station_key(exp))
         if compiled is None:
             continue
-        qualifies, keys = _station_keys(compiled, blob, folded, ad_forms)
+        qualifies, keys = _station_keys(compiled, ad_keys)
         if not qualifies or not keys:
             continue
         title = clean_text(exp.title)
         company = clean_text(exp.company)
-        score = _score_station(compiled, blob, folded, ad_forms)
+        score = _score_station(compiled, blob, ad_keys)
         facts.append(
             _CoverFact(
                 fact_id=f"station:{index}:{title}|{company}",
@@ -1109,7 +1178,7 @@ def _cover_facts(
         for offset, skill in enumerate(pool):
             if not skill.label or skill.glue or skill.label in seen:
                 continue
-            keys = _skill_keys(skill, blob, folded, ad_forms)
+            keys = _skill_keys(skill, ad_keys)
             if not keys:
                 continue
             seen.add(skill.label)
@@ -1336,18 +1405,19 @@ def _compiled_skill(label: str) -> _SkillCompiled:
     cached = _SKILL_CACHE.get(label)
     if cached is not None:
         return cached
-    ready: list[_ReadyToken] = []
+    keys: set[str] = set()
     if label:
-        ready.append(_make_ready_token(label))
+        keys |= _claim_keys(label)
     for part in _SKILL_SPLIT.split(label):
         part = part.strip()
         if len(part) >= 3 and not _is_glue_token(part):
-            ready.append(_make_ready_token(part))
+            keys |= _claim_keys(part)
     compiled = _SkillCompiled(
         label,
         _is_glue_token(label) if label else True,
-        tuple(item.mention for item in ready),
-        tuple(ready),
+        (),
+        (),
+        frozenset(keys),
     )
     _SKILL_CACHE[label] = compiled
     return compiled
@@ -1446,8 +1516,7 @@ def evidenced_skills_matching_description(config: AppConfig, description: str) -
     """
     if _debt_blocks(config):
         return []
-    blob = _norm(description)
-    if not blob:
+    if not description or not str(description).strip():
         return []
     evidence = cached_profile_evidence(config)
     pool: list[_SkillCompiled] = []
@@ -1455,14 +1524,13 @@ def evidenced_skills_matching_description(config: AppConfig, description: str) -
         pool.extend(evidence.skills)
     if _section_confirmed(config, "software"):
         pool.extend(evidence.software)
-    folded = collapse_phrase(blob)
-    ad_forms = _ad_forms(folded)
+    ad_keys = _ad_requirement_keys(description)
     facts: list[_CoverFact] = []
     seen: set[str] = set()
     for offset, skill in enumerate(pool):
         if not skill.label or skill.glue or skill.label in seen:
             continue
-        keys = _skill_keys(skill, blob, folded, ad_forms)
+        keys = _skill_keys(skill, ad_keys)
         if not keys:
             continue
         seen.add(skill.label)
@@ -1493,16 +1561,18 @@ def _matching_stations(
     if not stations:
         return []
     evidence = cached_profile_evidence(config)
-    blob, folded, ad_forms = _job_match_text(job)
+    surface = _job_surface(job)
+    ad_keys = _ad_requirement_keys(surface)
+    blob = _norm(surface)
     ranked: list[tuple[int, int, ExperienceEntry]] = []
     for index, exp in enumerate(stations):
         compiled = evidence.stations.get(_station_key(exp))
         if compiled is None:
             continue
-        qualifies, _keys = _station_keys(compiled, blob, folded, ad_forms)
+        qualifies, _keys = _station_keys(compiled, ad_keys)
         if not qualifies:
             continue
-        score = _score_station(compiled, blob, folded, ad_forms)
+        score = _score_station(compiled, blob, ad_keys)
         ranked.append((score, -index, exp))
     ranked.sort(key=lambda item: (item[0], item[1]), reverse=True)
     return [exp for _score, _index, exp in ranked[:2]]
