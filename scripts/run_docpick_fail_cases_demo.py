@@ -75,8 +75,8 @@ def main() -> int:
         # Force immediate timeout without hanging (elapsed already over limit).
         _enforce_timeout(time.monotonic() - 999.0, stage="demo")
 
-    results.append(_run_case("timeout", _timeout))
-    if results[-1]["code"] == "timeout":
+    results.append(_run_case("llm_timeout", _timeout))
+    if results[-1]["code"] == "llm_timeout":
         results[-1]["pass"] = True
 
     def _peak() -> None:

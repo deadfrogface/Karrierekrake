@@ -284,10 +284,10 @@ def test_timeout_is_manual_retry_only(qapp, tmp_path: Path):
     dlg.show()
     qapp.processEvents()
     dlg.start_parse()
-    assert _pump(qapp, lambda: dlg._last_kind == "timeout", timeout=3)
+    assert _pump(qapp, lambda: dlg._last_kind == "llm_timeout", timeout=3)
     assert calls == [1]
     assert dlg._phase == "error"
-    assert dlg.error_text.text() == tr("cv_import.error_timeout")
+    assert dlg.error_text.text() == tr("cv_import.error_generic")
     assert dlg._retry_btn.isVisible()
     assert dlg._retry_btn.text() == tr("cv_import.retry")
     assert dlg._ok_btn.isVisible() is False

@@ -12,12 +12,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import shlex
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING, local_llm_cv_decision
 
@@ -54,18 +57,6 @@ _KIND_MESSAGES: dict[str, str] = {
     ),
     "llm_extract_failed": (
         "Die strukturierte Extraktion ist fehlgeschlagen. Bitte Felder manuell nachtragen."
-    ),
-    "llm_context_exceeded": (
-        "Der Lebenslauf passt nicht ins Kontextfenster. "
-        "Es wurde nichts berechnet. Bitte eine kürzere Datei verwenden."
-    ),
-    "llm_output_truncated": (
-        "Die Antwort wurde abgeschnitten, bevor sie vollständig war. "
-        "Es wurde nichts übernommen."
-    ),
-    "llm_bad_config": (
-        "Die lokale Auswertung ist falsch konfiguriert. "
-        "Es wurde nichts übernommen."
     ),
     "llm_empty": "Das Modell lieferte keine verwertbaren Felder. Bitte manuell korrigieren.",
     "unreliable_extract": (
@@ -131,10 +122,18 @@ def _fail(
     code: int = 1,
     stage: str = "",
 ) -> int:
+    from core.cv_llm_runtime import DETERMINISTIC_LLM_ERROR_CODES
+
+    if kind in DETERMINISTIC_LLM_ERROR_CODES:
+        # Code and log only. User copy is added by the UI PR.
+        logger.warning("cv_import deterministic kind=%s detail=%s", kind, message)
+        shown = kind
+    else:
+        shown = user_message_for_kind(kind, message)
     payload: dict = {
         "ok": False,
         "kind": kind,
-        "message": user_message_for_kind(kind, message),
+        "message": shown,
         "parsed": None,
     }
     if stage:
@@ -236,7 +235,7 @@ def run(argv: list[str] | None = None) -> int:
                 code = 1
                 if exc.code in {"oom", "peak_rss_exceeded"}:
                     code = 3
-                elif exc.code == "timeout":
+                elif exc.code == "llm_timeout":
                     code = 1
                 return _fail(
                     out_path,

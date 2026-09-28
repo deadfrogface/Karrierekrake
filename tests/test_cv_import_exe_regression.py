@@ -18,8 +18,6 @@ def test_user_message_for_known_kinds_is_stage_specific() -> None:
     assert "Qwen" in msg or "Modell" in msg
     assert "Users\\" not in msg
     assert user_message_for_kind("unreadable_cv").startswith("Die Datei")
-    assert "Kontextfenster" in user_message_for_kind("llm_context_exceeded", "raw")
-    assert "abgeschnitten" in user_message_for_kind("llm_output_truncated", "raw")
 
 
 def test_user_message_strips_sensitive_fallback() -> None:

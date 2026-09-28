@@ -149,14 +149,25 @@ def _linux_physical_cpu_count(root: Path | None = None) -> int | None:
 
 
 def physical_cpu_count() -> int:
-    """Physical cores. psutil, then Linux sysfs, then ``os.cpu_count``. Minimum 1."""
+    """Physical cores for ``n_threads``.
+
+    ``psutil.cpu_count(logical=False)`` when it returns a positive count.
+    When that is ``None`` (psutil missing or topology unknown), fall back to
+    ``max(1, os.cpu_count() // 2)`` and log it. This VM has no SMT, so the
+    fallback is not an i3 measurement.
+    """
     n = _psutil_cpu_count(logical=False)
     if n:
         return n
-    n_linux = _linux_physical_cpu_count()
-    if n_linux:
-        return n_linux
-    return max(1, os.cpu_count() or 1)
+    logical = os.cpu_count() or 1
+    fallback = max(1, int(logical) // 2)
+    logger.warning(
+        "cv_llm n_threads: psutil.cpu_count(logical=False) is None; "
+        "fallback max(1, os.cpu_count()//2)=%s logical=%s",
+        fallback,
+        logical,
+    )
+    return fallback
 
 
 def logical_cpu_count() -> int:
@@ -203,6 +214,46 @@ def resolve_cv_llm_threads() -> tuple[int, int]:
     return n_threads, n_batch
 
 
+# Slack so an off-by-one between our token count and llama's internal prompt
+# does not clamp the completion. On DE_01 the counter matched usage.prompt_tokens.
+CV_LLM_CTX_SLACK_TOKENS = 8
+# Complete answers already observed: 655 tokens (DE_01) and 804 (tester CV).
+# 832 is above both, so a generation that starts can hold an answer of that
+# size. A smaller remainder is llm_prompt_too_long and does not run the model.
+CV_LLM_MIN_COMPLETION_TOKENS = 832
+
+DETERMINISTIC_LLM_ERROR_CODES = frozenset(
+    {
+        "llm_prompt_too_long",
+        "llm_output_truncated",
+        "llm_timeout",
+    }
+)
+
+
+def completion_token_budget(n_ctx: int, n_prompt: int) -> int:
+    """``max_tokens = n_ctx - prompt tokens - slack``.
+
+    Raises ``llm_prompt_too_long`` when the remainder is below
+    ``CV_LLM_MIN_COMPLETION_TOKENS``. The exception text is the code; the
+    numbers go to the log.
+    """
+    from core.cv_docpick_import import CvImportError
+
+    room = int(n_ctx) - int(n_prompt) - CV_LLM_CTX_SLACK_TOKENS
+    if room < CV_LLM_MIN_COMPLETION_TOKENS:
+        logger.error(
+            "llm_prompt_too_long n_ctx=%s n_prompt=%s slack=%s room=%s minimum=%s",
+            n_ctx,
+            n_prompt,
+            CV_LLM_CTX_SLACK_TOKENS,
+            room,
+            CV_LLM_MIN_COMPLETION_TOKENS,
+        )
+        raise CvImportError("llm_prompt_too_long", "llm_prompt_too_long")
+    return room
+
+
 def prompt_token_count(llm: Any, messages: list[dict[str, Any]]) -> int:
     """Token count of the chat prompt, before any forward pass.
 
@@ -225,11 +276,10 @@ def _gguf_chat_prompt_token_count(llm: Any, messages: list[dict[str, Any]]) -> i
     if not isinstance(template, str) or not template:
         from core.cv_docpick_import import CvImportError
 
-        raise CvImportError(
-            "llm_context_exceeded",
-            "Prompt-Tokens konnten nicht gezählt werden (kein tokenizer.chat_template). "
-            "Keine Generierung gestartet.",
+        logger.error(
+            "llm_prompt_too_long reason=missing_chat_template n_ctx_unknown=1"
         )
+        raise CvImportError("llm_prompt_too_long", "llm_prompt_too_long")
     eos_id = int(llm.token_eos())
     bos_id = int(llm.token_bos())
     model = llm._model
@@ -280,20 +330,31 @@ def ensure_cv_llm_ready() -> str:
     return "inprocess"
 
 
+def _sample_private_commit(stage: str) -> None:
+    """One private-commit read while weights are still resident. No poll loop."""
+    from core.cv_docpick_import import _enforce_peak_rss
+
+    _enforce_peak_rss(stage=stage, include_llama_server=False)
+
+
+def _iter_chat_completion(llm: Any, **kwargs: Any):
+    """Stream so the first chunk is the moment prompt evaluation has finished."""
+    kwargs["stream"] = True
+    return llm.create_chat_completion(**kwargs)
+
+
 def chat_completion_inprocess(
     messages: list[dict[str, Any]],
     *,
     model_path: Path,
-    max_tokens: int,
     temperature: float = 0.0,
 ) -> str:
     """Run one chat completion with in-process llama.cpp (no external server).
 
-    ``max_tokens`` is passed through explicitly. Before ``create_chat_completion``
-    the prompt is tokenized. If ``prompt_tokens + max_tokens`` does not fit in
-    ``n_ctx``, this raises ``llm_context_exceeded`` and does not generate.
-    ``finish_reason=length`` raises ``llm_output_truncated`` instead of letting
-    a clipped string fail JSON parsing later.
+    ``max_tokens`` is ``n_ctx - prompt tokens - slack``, not a fixed cap.
+    When the remainder is below ``CV_LLM_MIN_COMPLETION_TOKENS`` this raises
+    ``llm_prompt_too_long`` and does not generate. ``finish_reason=length``
+    raises ``llm_output_truncated``. Both messages are the code; details are logged.
     """
     from core.cv_docpick_import import CvImportError
     from core.local_model_lock import hold_production_model
@@ -311,16 +372,9 @@ def chat_completion_inprocess(
             verbose=False,
         )
         try:
+            _sample_private_commit("after_load")
             n_prompt = prompt_token_count(llm, messages)
-            budget = int(max_tokens)
-            if n_prompt + budget > n_ctx:
-                raise CvImportError(
-                    "llm_context_exceeded",
-                    (
-                        f"Prompt ({n_prompt} Tokens) plus max_tokens ({budget}) "
-                        f"passt nicht in n_ctx ({n_ctx}). Keine Generierung gestartet."
-                    ),
-                )
+            budget = completion_token_budget(n_ctx, n_prompt)
             logger.info(
                 "cv_llm_inprocess n_ctx=%s n_threads=%s n_threads_batch=%s "
                 "n_prompt=%s max_tokens=%s",
@@ -330,34 +384,61 @@ def chat_completion_inprocess(
                 n_prompt,
                 budget,
             )
-            out = llm.create_chat_completion(
+            parts: list[str] = []
+            finish: str | None = None
+            saw_chunk = False
+            for chunk in _iter_chat_completion(
+                llm,
                 messages=messages,
                 temperature=float(temperature),
                 max_tokens=budget,
+            ):
+                if not saw_chunk:
+                    saw_chunk = True
+                    _sample_private_commit("after_prompt_eval")
+                choice = chunk["choices"][0]
+                delta = choice.get("delta") or {}
+                piece = delta.get("content")
+                if piece:
+                    parts.append(str(piece))
+                if choice.get("finish_reason"):
+                    finish = str(choice["finish_reason"])
+            if not saw_chunk:
+                _sample_private_commit("after_prompt_eval")
+            text = "".join(parts)
+            _sample_private_commit("after_generation")
+            n_answer = _count_answer_tokens(llm, text)
+            logger.info(
+                "cv_llm_inprocess n_answer=%s finish_reason=%s",
+                n_answer,
+                finish,
             )
-            choice = out["choices"][0]
-            if choice.get("finish_reason") == "length":
-                raise CvImportError(
-                    "llm_output_truncated",
-                    (
-                        "Die Modellantwort endete mit finish_reason=length "
-                        f"(max_tokens={budget}, n_ctx={n_ctx}). "
-                        "Abgeschnittener Text wird nicht als JSON gelesen."
-                    ),
+            if finish == "length":
+                logger.error(
+                    "llm_output_truncated n_ctx=%s n_prompt=%s max_tokens=%s n_answer=%s",
+                    n_ctx,
+                    n_prompt,
+                    budget,
+                    n_answer,
                 )
-            content = choice["message"]["content"]
-            return str(content or "")
+                raise CvImportError("llm_output_truncated", "llm_output_truncated")
+            return text
         finally:
-            # Sample private commit while weights are still resident. On Linux
-            # Rss_Anon drops after ``del llm``; the later after_model check
-            # would otherwise miss the in-model footprint. One read, no poll.
-            try:
-                from core.cv_docpick_import import _enforce_peak_rss
+            # Drop weights promptly so writing / cancel can reclaim RAM.
+            del llm
 
-                _enforce_peak_rss(stage="during_model", include_llama_server=False)
-            finally:
-                # Drop weights promptly so writing / cancel can reclaim RAM.
-                del llm
+
+def _count_answer_tokens(llm: Any, text: str) -> int | None:
+    if not text:
+        return 0
+    tokenize = getattr(llm, "tokenize", None)
+    if not callable(tokenize):
+        return None
+    try:
+        return len(tokenize(text.encode("utf-8"), add_bos=False, special=True))
+    except Exception:  # noqa: BLE001 — logging must not replace the model result
+        logger.warning("cv_llm_inprocess answer token count failed")
+        return None
 
 
 def is_frozen() -> bool:

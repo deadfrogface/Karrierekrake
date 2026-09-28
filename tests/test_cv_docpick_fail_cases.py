@@ -40,8 +40,33 @@ def test_timeout_hard_fails_without_hang(monkeypatch: pytest.MonkeyPatch) -> Non
     monkeypatch.setattr("core.cv_docpick_import.CV_IMPORT_TIMEOUT_S", 0.01)
     with pytest.raises(CvImportError) as ei:
         _enforce_timeout(0.0, stage="unit")
-    assert ei.value.code == "timeout"
-    assert "Timeout" in str(ei.value) or "timeout" in str(ei.value).lower()
+    assert ei.value.code == "llm_timeout"
+    assert str(ei.value) == "llm_timeout: llm_timeout"
+
+
+def test_unmeasured_private_commit_is_not_a_pass(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    from core.cv_docpick_import import reset_private_commit_high_water
+
+    reset_private_commit_high_water()
+    monkeypatch.setattr(
+        "core.cv_docpick_import.cv_path_peak_rss_bytes",
+        lambda **_kwargs: 0,
+    )
+    with caplog.at_level("ERROR"):
+        with pytest.raises(CvImportError) as ei:
+            _enforce_peak_rss(stage="unit")
+    assert ei.value.code == "peak_rss_unmeasured"
+    assert "unmeasured" in caplog.text
+    assert "not a pass" in caplog.text
+    monkeypatch.setattr(
+        "core.cv_docpick_import.cv_path_peak_rss_bytes",
+        lambda **_kwargs: None,
+    )
+    with pytest.raises(CvImportError) as ei2:
+        _enforce_peak_rss(stage="unit")
+    assert ei2.value.code == "peak_rss_unmeasured"
 
 
 def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -52,6 +77,9 @@ def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> Non
     with pytest.raises(CvImportError) as ei:
         _enforce_peak_rss(stage="unit")
     assert ei.value.code == "peak_rss_exceeded"
+    from core.cv_docpick_import import reset_private_commit_high_water
+
+    reset_private_commit_high_water()
     assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
     assert CV_IMPORT_PEAK_RSS_MB_MAX == 3_300_000_000 / (1024.0 * 1024.0)
 

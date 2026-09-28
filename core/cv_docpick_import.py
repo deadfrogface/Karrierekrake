@@ -918,8 +918,8 @@ _docling_converter = None
 # Content-addressed text cache: only reuse when file bytes + Docling version match.
 _docling_text_cache: dict[tuple[str, str], str] = {}
 _SCHEMA_JSON_CACHE: dict[str, str] | None = None
-# Production LLM generation cap. Measured: outputs typically << 2048 tokens;
-# lower cap cuts rare runaway generations without changing typical quality.
+# HTTP-server transport only. The in-process path sets max_tokens from the
+# remaining context (n_ctx - prompt - slack), not from this constant.
 _LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "2048"))
 # Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
@@ -1233,13 +1233,10 @@ def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
                     "model_missing",
                     "Das lokale CV-Modell (Qwen3.5-4B) fehlt. Kein DET-Fallback.",
                 )
-            # max_tokens is explicit. chat_completion_inprocess refuses the call
-            # when prompt tokens + max_tokens do not fit in n_ctx, and refuses
-            # finish_reason=length before JSON parsing.
+            # max_tokens is the remainder of n_ctx, computed inside the call.
             raw_text = chat_completion_inprocess(
                 messages,
                 model_path=model_path,
-                max_tokens=_LLM_MAX_TOKENS,
                 temperature=0.0,
             )
         data = parse_llm_json(raw_text)
@@ -1508,6 +1505,17 @@ def _windows_peak_pagefile_bytes() -> int:
     )
 
 
+# Max of Linux anonymous-RSS samples in this process. The kernel has no
+# Rss_Anon peak; VmHWM includes file-backed mmap and is not used. Reset at
+# the start of each import so a previous run cannot poison the next one.
+_private_commit_high_water = 0
+
+
+def reset_private_commit_high_water() -> None:
+    global _private_commit_high_water
+    _private_commit_high_water = 0
+
+
 def _self_rss_bytes() -> int:
     """Private committed memory for the in-app #69-style gate, in bytes.
 
@@ -1516,11 +1524,12 @@ def _self_rss_bytes() -> int:
     it is missing on Windows, and its ``ru_maxrss`` is the wrong counter.
 
     Linux: anonymous RSS from ``/proc/self/smaps_rollup`` (``Anonymous``, or
-    ``Rss_Anon`` when that key exists). ``ru_maxrss`` is not used because it
-    includes file-backed mmap pages such as the GGUF. The Linux value is the
-    anonymous RSS at this call, sampled only at the existing import stages —
-    there is no background poll. Windows ``PeakPagefileUsage`` is already a
-    process-lifetime peak.
+    ``Rss_Anon`` when that key exists). ``ru_maxrss`` and ``VmHWM`` are not
+    used because they include file-backed mmap pages such as the GGUF. The
+    Linux value is the anonymous RSS at this call. The import keeps the max
+    of its phase samples; the kernel has no Rss_Anon peak. Windows
+    ``PeakPagefileUsage`` is already a process-lifetime peak. ``0`` means the
+    read failed and is not a pass.
     """
     if sys.platform == "win32":
         return _windows_peak_pagefile_bytes()
@@ -1585,28 +1594,49 @@ def cv_path_peak_rss_mb(*, include_llama_server: bool = True) -> float:
 
 
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
-    """Hard fail when private commit exceeds 3_300_000_000 bytes.
+    """Hard fail when sampled private commit exceeds 3_300_000_000 bytes.
 
-    One sample per call (no polling loop).
+    One read per call (no polling loop). ``0`` and ``None`` are unmeasured:
+    they are logged and are not a pass. On Linux the compared value is the
+    max of samples taken so far in this process, because ``Rss_Anon`` is a
+    current value and ``VmHWM`` includes file-backed pages.
     """
+    global _private_commit_high_water
     rss = cv_path_peak_rss_bytes(include_llama_server=include_llama_server)
-    if rss > CV_IMPORT_PEAK_RSS_BYTES_MAX:
-        raise CvImportError(
-            "peak_rss_exceeded",
-            f"Privater Speicher {rss} Bytes über Hart-Limit {CV_IMPORT_PEAK_RSS_BYTES_MAX} Bytes "
-            f"(≤ 3,3 GB, ohne dateigestütztes mmap) bei Stufe '{stage}'. "
-            f"Import abgebrochen — kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
+    if rss is None or int(rss) <= 0:
+        logger.error(
+            "cv_import private commit unmeasured stage=%s value=%r; not a pass",
+            stage,
+            rss,
         )
+        raise CvImportError("peak_rss_unmeasured", "peak_rss_unmeasured")
+    _private_commit_high_water = max(_private_commit_high_water, int(rss))
+    logger.info(
+        "cv_import private_commit stage=%s bytes=%s high_water=%s",
+        stage,
+        int(rss),
+        _private_commit_high_water,
+    )
+    if _private_commit_high_water > CV_IMPORT_PEAK_RSS_BYTES_MAX:
+        logger.error(
+            "peak_rss_exceeded stage=%s bytes=%s limit=%s",
+            stage,
+            _private_commit_high_water,
+            CV_IMPORT_PEAK_RSS_BYTES_MAX,
+        )
+        raise CvImportError("peak_rss_exceeded", "peak_rss_exceeded")
 
 
 def _enforce_timeout(t0: float, *, stage: str) -> None:
     elapsed = time.monotonic() - t0
     if elapsed > CV_IMPORT_TIMEOUT_S:
-        raise CvImportError(
-            "timeout",
-            f"CV-Parser-Timeout nach {elapsed:.0f}s (Limit {CV_IMPORT_TIMEOUT_S:.0f}s) "
-            f"bei Stufe '{stage}'. Kein stilles Hängen — bitte manuell fortsetzen.",
+        logger.error(
+            "llm_timeout elapsed_s=%.3f limit_s=%s stage=%s",
+            elapsed,
+            CV_IMPORT_TIMEOUT_S,
+            stage,
         )
+        raise CvImportError("llm_timeout", "llm_timeout")
 
 
 def import_cv_docpick(
@@ -1622,7 +1652,7 @@ def import_cv_docpick(
     Explicit fail-cases (hard, no silent hang / no UI freeze forever):
       - ``empty_cv`` — zero-byte or no extractable text
       - ``unreadable_cv`` — corrupt / unreadable document
-      - ``timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
+      - ``llm_timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
       - ``peak_rss_exceeded`` — private commit over 3_300_000_000 bytes
         (Windows PeakPagefileUsage, Linux anonymous RSS; not file-backed mmap)
       - ``model_missing`` / ``llama_missing`` — sole GGUF or runtime absent
@@ -1632,6 +1662,7 @@ def import_cv_docpick(
     """
     path = Path(path)
     t0 = time.monotonic()
+    reset_private_commit_high_water()
 
     def _cancelled() -> bool:
         return bool(should_cancel and should_cancel())

@@ -8,6 +8,7 @@ so Docling / llama.cpp children do not keep running.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sys
 import tempfile
@@ -16,6 +17,8 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
+
+logger = logging.getLogger(__name__)
 
 from core.hardware_peak_gate import is_oom_exit
 from devops.peak_rss_harness import ContainedProcess, launch_contained
@@ -92,7 +95,21 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
     ]
 
 
+# Linux parent reads the child's anonymous RSS this often. One smaps_rollup
+# read with the GGUF mmap'd was 35 µs on this VM (0.0017% of one core at 2 s).
+# Windows PeakPagefileUsage is already a lifetime peak, so the interval is
+# Linux-only. A spike that rises and falls between samples is invisible:
+# the kernel does not expose an Rss_Anon high-water, and VmHWM counts mmap.
+_PARENT_ANON_SAMPLE_S = 2.0
+
+
 def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
+    """Start the extract child inside a job (Windows) or a process group.
+
+    ``enforce_memory_bytes`` is omitted. On Windows the job therefore does
+    not set ``JOB_OBJECT_LIMIT_JOB_MEMORY``. The #69 byte cap does not kill
+    this child. Cancel still uses ``TerminateJobObject`` / ``killpg``.
+    """
     return launch_contained(cv_import_child_argv(cv_path, out_path), console=False)
 
 
@@ -154,6 +171,7 @@ class CvImportSupervisor:
                 self._stop(proc)
                 return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
             deadline = time.monotonic() + self.timeout_s
+            next_anon = time.monotonic()
             while True:
                 if self._cancel.is_set():
                     self._stop(proc)
@@ -161,12 +179,28 @@ class CvImportSupervisor:
                 code = proc.poll()
                 if code is not None:
                     return self._classify(int(code), out_path)
-                if time.monotonic() >= deadline:
+                now = time.monotonic()
+                if now >= next_anon:
+                    next_anon = now + _PARENT_ANON_SAMPLE_S
+                    if _parent_anon_over_limit(proc):
+                        self._stop(proc)
+                        return ImportAttemptResult(
+                            False,
+                            "peak_rss_exceeded",
+                            "peak_rss_exceeded",
+                            None,
+                            attempts=1,
+                        )
+                if now >= deadline:
                     self._stop(proc)
+                    logger.error(
+                        "llm_timeout wall_clock limit_s=%s",
+                        self.timeout_s,
+                    )
                     return ImportAttemptResult(
                         False,
-                        "timeout",
-                        "timeout",
+                        "llm_timeout",
+                        "llm_timeout",
                         None,
                         attempts=1,
                     )
@@ -223,8 +257,9 @@ class CvImportSupervisor:
         message = str(payload.get("message") or "")
         if kind == "oom" or kind == "peak_rss_exceeded" or code == 3 or is_oom_exit(code):
             return ImportAttemptResult(False, "oom" if kind != "peak_rss_exceeded" else "peak_rss_exceeded", message or "oom", None, attempts=1)
-        if kind == "timeout":
-            return ImportAttemptResult(False, "timeout", message or "timeout", None, attempts=1)
+        if kind in {"timeout", "llm_timeout"}:
+            logger.error("llm_timeout child_kind=%s", kind or "timeout")
+            return ImportAttemptResult(False, "llm_timeout", "llm_timeout", None, attempts=1)
         if kind == "cancelled":
             return ImportAttemptResult(False, "cancelled", message or "cancelled", None, attempts=1)
         return ImportAttemptResult(
@@ -234,6 +269,52 @@ class CvImportSupervisor:
             None,
             attempts=1,
         )
+
+
+def _parent_anon_over_limit(proc: object) -> bool:
+    """True when a measurable child sample is over the #69 byte cap.
+
+    An unmeasured sample (0/None) is logged inside ``_parent_anon_sample``
+    and does not count as under the limit, and it does not by itself kill
+    the child: the in-process gate fails closed on its own 0/None read.
+    """
+    sample = _parent_anon_sample(proc)
+    if sample is None:
+        return False
+    from core.cv_docpick_import import CV_IMPORT_PEAK_RSS_BYTES_MAX
+
+    logger.info("cv_import parent anon bytes=%s", sample)
+    if sample > CV_IMPORT_PEAK_RSS_BYTES_MAX:
+        logger.error(
+            "peak_rss_exceeded parent anon bytes=%s limit=%s",
+            sample,
+            CV_IMPORT_PEAK_RSS_BYTES_MAX,
+        )
+        return True
+    return False
+
+
+def _parent_anon_sample(proc: object) -> int | None:
+    """Anonymous RSS of the extract child, or None when it is not measurable.
+
+    Linux only. ``0`` / missing ``/proc`` is unmeasured and is not a pass.
+    """
+    if sys.platform == "win32":
+        return None
+    pid = getattr(proc, "pid", None)
+    if not isinstance(pid, int) or pid <= 0:
+        return None
+    from core.cv_docpick_import import _linux_rss_anon_bytes
+
+    value = _linux_rss_anon_bytes(pid)
+    if value <= 0:
+        logger.error(
+            "cv_import parent anon sample unmeasured pid=%s value=%s; not a pass",
+            pid,
+            value,
+        )
+        return None
+    return value
 
 
 def _read_payload(path: Path) -> dict:

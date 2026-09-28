@@ -454,9 +454,6 @@ class CvImportDialog(QDialog):
             "empty_cv": "cv_import.error_empty_file",
             "unreadable_cv": "cv_import.error_unreadable",
             "llm_extract_failed": "cv_import.error_extract_failed",
-            "llm_context_exceeded": "cv_import.error_context",
-            "llm_output_truncated": "cv_import.error_truncated",
-            "llm_bad_config": "cv_import.error_bad_config",
             "llm_empty": "cv_import.error_extract_failed",
             "unreliable_extract": "cv_import.error_unreliable",
         }.get(kind)

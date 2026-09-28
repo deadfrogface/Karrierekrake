@@ -12,10 +12,13 @@ Zahlen aus dieser Agent-VM oder aus GitHub Actions sind **keine** Ship-Evidenz. 
 
 Dieselbe Speicherklasse wie `PeakJobMemoryUsed` in #69: privater festgeschriebener Speicher. Dateigestützte mmap-Seiten (die GGUF-Datei) zählen nicht.
 
-- Windows: `GetProcessMemoryInfo` → `PeakPagefileUsage` (Hochwasser des Pagefile-Commits dieses Prozesses). `resource` gibt es dort nicht; ein Rückgabewert 0 wäre das Gate ausgeschaltet.
-- Linux: anonymer RSS aus `/proc/self/smaps_rollup`. Kernel 6.12 nennt das Feld `Anonymous` (kB). `Rss_Anon` wird gelesen, falls vorhanden. `ru_maxrss` wird nicht verwendet, weil es dateigestützte Seiten enthält und 4096er-Läufe fälschlich über 3_300_000_000 Bytes hebt.
-- Die Stichprobe ist je ein Lesevorgang: preflight, nach PDF, solange das In-Process-Modell noch geladen ist (`during_model`), und nach dem Modell. Kein Hintergrund-Polling. Unter Linux ist jeder Wert der anonyme RSS zum Aufrufzeitpunkt. `during_model` liegt vor dem Freigeben der Gewichte, weil `Rss_Anon` danach fällt. Unter Windows ist `PeakPagefileUsage` bereits ein Prozess-Hochwasser und fällt nicht.
+- Windows: `GetProcessMemoryInfo` → `PeakPagefileUsage` (Hochwasser des privaten Pagefile-Commits dieses Prozesses). `0` oder fehlende Messung ist nicht bestanden: es wird geloggt und der Import bricht mit `peak_rss_unmeasured` ab.
+- Linux: anonymer RSS aus `/proc/<pid>/smaps_rollup` (`Anonymous`, sonst `Rss_Anon`). `ru_maxrss` und `VmHWM` zählen dateigestützte mmap-Seiten und sind nicht der #69-Zähler. Der Kernel liefert keinen Peak von `Rss_Anon`. Der verwendete Wert ist das Maximum der Stichproben in diesem Prozess. Was zwischen zwei Stichproben ansteigt und wieder fällt, fehlt.
+- Phasen im Kindprozess, jeweils ein Lesevorgang, Gewichte noch resident: `after_load`, `after_prompt_eval` (erstes Stream-Stück, Prompt-Auswertung ist dann fertig), `after_generation`, dazu `preflight`, `after_pdf`, `after_model`.
+- Elternprozess, nur Linux: alle 2,0 s ein Lesevorgang von `/proc/<kind-pid>/smaps_rollup`. Gemessen auf dieser VM mit eingeblendeter GGUF: 35 µs pro Lesevorgang, bei 2 s Abstand 0,0017 % einer Kernzeit. Das liegt unter 0,5 %. Windows braucht dieses Intervall nicht, weil `PeakPagefileUsage` bereits ein Hochwasser ist.
 - Ein optionaler llama.cpp-Server zählt ebenfalls nur anonymen RSS, nicht `VmRSS`.
+
+Der produktive Spawn (`desktop.cv_import_supervisor.default_spawn`) ruft `launch_contained` ohne `enforce_memory_bytes`. Auf Windows entsteht zwar ein Job Object (Zuordnung im suspendierten Zustand, kein Breakaway, `TerminateJobObject` beim Abbruch), aber `JOB_OBJECT_LIMIT_JOB_MEMORY` bleibt aus. Die Speicher-Sperre aus #69 umschließt den Extrakt-Kindprozess damit nicht. Sperre unter Windows bisher wirkungslos.
 
 Ship-Evidenz bleibt das Windows Job Object auf dem i3-Laptop. Eine Agent-VM mit AMX-Repack ist kein Ersatz dafür.
 
