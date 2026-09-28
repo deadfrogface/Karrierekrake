@@ -240,6 +240,56 @@ def test_resolve_meipass_still_materializes(
     assert rt.resolve_cv_model_path() == durable
 
 
+def test_resolve_stale_env_falls_through_to_sidecar(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Stale KARRIEREKRAKE_CV_LLM_MODEL must not force model_missing."""
+    from core import cv_llm_runtime as rt
+
+    exe_dir = tmp_path / "install"
+    sidecar = exe_dir / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+    sidecar.parent.mkdir(parents=True)
+    sidecar.write_bytes(b"sidecar-gguf")
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_MODEL", str(tmp_path / "gone.gguf"))
+    monkeypatch.setattr(rt, "is_frozen", lambda: True)
+    monkeypatch.setattr(rt, "_meipass_dir", lambda: None)
+    monkeypatch.setattr(rt, "_exe_dir", lambda: exe_dir)
+    monkeypatch.setattr(rt, "bundled_cv_model_candidates", lambda: [sidecar])
+    assert rt.resolve_cv_model_path() == sidecar
+
+
+def test_package_windows_release_requires_sidecar(tmp_path: Path) -> None:
+    from scripts import package_windows_release as pkg
+
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
+    with pytest.raises(SystemExit, match="sidecar missing"):
+        pkg.require_release_layout(dist)
+
+
+def test_package_windows_release_stages_install(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from scripts import package_windows_release as pkg
+
+    dist = tmp_path / "dist"
+    gguf = dist / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf"
+    gguf.parent.mkdir(parents=True)
+    # Size gate is 1GB — stub the check for unit speed.
+    gguf.write_bytes(b"x" * 64)
+    (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
+    monkeypatch.setattr(pkg, "_sha256", lambda _p: pkg.CV_MODEL_SHA256)
+    monkeypatch.setattr(
+        pkg,
+        "require_release_layout",
+        lambda d: d / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf",
+    )
+    install = tmp_path / "install"
+    exe = pkg.stage_install_dir(dist, install)
+    assert exe.is_file()
+    assert (install / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf").is_file()
+    assert (install / "INSTALL.txt").is_file()
+
+
 def test_ui_copy_has_no_internal_model_names() -> None:
     from desktop import i18n
 

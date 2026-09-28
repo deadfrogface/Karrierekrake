@@ -22,19 +22,25 @@ FALLBACK_MESSAGES = {
     "insufficient_ram": "guenther_unavailable_insufficient_ram",
 }
 
-# Human-readable German causes for UI (no PII).
+# Human-readable German causes for UI (no PII, no internal model brand names).
 UNAVAILABLE_CAUSE_DE = {
-    "guenther_unavailable_model_missing": "Modell fehlt — Qwen3.5-4B ist nicht installiert.",
+    "guenther_unavailable_model_missing": (
+        "Das lokale Modell fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren."
+    ),
     "guenther_unavailable_download_failed": "Download fehlgeschlagen.",
     "guenther_unavailable_model_corrupted": "Modell beschädigt (Prüfsumme ungültig).",
-    "guenther_unavailable_insufficient_ram": "RAM nicht ausreichend für Qwen3.5-4B.",
-    "guenther_unavailable_runtime_error": "Runtimefehler beim Laden von Qwen3.5-4B.",
-    "guenther_unavailable_runtime_missing": "Lokale AI-Runtime nicht verfügbar.",
-    "guenther_unavailable_timeout": "Zeitüberschreitung bei der AI-Verarbeitung.",
+    "guenther_unavailable_insufficient_ram": (
+        "Nicht genug Arbeitsspeicher für die lokale Auswertung."
+    ),
+    "guenther_unavailable_runtime_error": (
+        "Die lokale Auswertung konnte nicht gestartet werden."
+    ),
+    "guenther_unavailable_runtime_missing": "Lokale Auswertung nicht verfügbar.",
+    "guenther_unavailable_timeout": "Zeitüberschreitung bei der lokalen Auswertung.",
     "guenther_unavailable": "Günther ist derzeit nicht verfügbar.",
     "guenther_disabled": "Günther ist ausgeschaltet.",
 }
-
 
 def map_status_to_unavailable_reason(status: ProviderStatus | str, *, detail: str = "") -> str:
     """Map provider status / integrity detail to GUENTHER_UNAVAILABLE reason code."""

@@ -2,49 +2,46 @@
 
 **Branch:** `cursor/cv-import-exe-offline-bundle-d85b`  
 **Stand:** 2026-09-28  
-**CI-Commit:** `e2bae4f` — Windows Smoke Offline-E2E **grün** (`release_blocked: false`)
 
-## Anforderung
+## Root cause: `model_missing` auf dem Laptop
 
-Nach frischer Installation muss der Lebenslauf-Import **offline** funktionieren:
+Die Produktions-GGUF liegt **nicht** in der Onefile-EXE, sondern als Sidecar:
 
-- Modell + Inferenz-Runtime + Abhängigkeiten in der ausgelieferten Windows-Installation
-- kein Download, kein Modellpfad, kein Terminal, kein manuell gestarteter Dienst
-- kein Phi-/DET-Fallback
-- UI ohne Modellnamen / interne Technikbegriffe
-- Fehler: verständliche Meldung + sinnvolle Aktion; Technik nur in Diagnose-Logs
-- Nachweis: App starten → PDF importieren → Vorschau → übernehmen → Neustart → Profil; plus Anschreiben mit demselben Modell
-- Metriken: EXE-Größe, Startzeit, Importzeit, Peak-Speicher
+`models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf` **neben** `Karrierekrake.exe`.
 
-## Umsetzung in diesem PR
+Wer nur die EXE kopiert/herunterlädt (wie die alte README-Anweisung), bekommt `model_missing`.  
+CI-E2E lief bisher im Build-`dist/` mit vorhandenem Sidecar — das maskierte den Install-Fehler.
+
+## Fix in diesem Stand
 
 | Thema | Änderung |
 |-------|----------|
-| Modell-Auflösung | `core/cv_llm_runtime.py`: `_MEIPASS/models/…`, `<exe_dir>/models/…` Sidecar (ohne AppData-Copy), Vendor; Fail-closed |
-| Packaging | Sidecar `dist/models/…` neben EXE; optional Embed; `llama_cpp` collect_all; Unsloth-Spiegel für CI-Download |
-| Prepare | `scripts/prepare_bundled_cv_model.py` (SHA-256, optional HF nur auf Build-Maschine) |
-| UI | `desktop/i18n.py`, `cv_import_child.py`, Settings ohne Qwen/Docpick/DET |
-| Gate | `scripts/ci_cv_import_exe_offline_e2e.py` + Windows-Smoke/Build-Workflows |
-| Robustheit | Think-Block-Strip vor JSON-Parse; Parser-Timeout 300 s (CI 600 s) |
+| Auslieferung | `scripts/package_windows_release.py` → `Karrierekrake-Windows.zip` (EXE + `models/` + INSTALL.txt) |
+| CI | Sidecar-Pflicht (`--require-cv-model-sidecar`); Stage in leeren Install-Ordner; E2E von dort |
+| E2E | DE + EN Import; Negativ: corrupt + EXE-only → `model_missing`; `KARRIEREKRAKE_MODELS_DIR` isoliert |
+| Resolve | Stale `KARRIEREKRAKE_CV_LLM_MODEL` fällt auf Sidecar zurück |
+| Docs | README verlangt Zip, nicht EXE allein |
+| UI | Günther-Unavailable-Texte ohne Modellmarkennamen |
 
-## Metriken (Windows Smoke CI, Artifact `cv_import_exe_offline_e2e.json`)
+## Frühere Metriken (Commit `e2bae4f` / `8026afc`, nur DE, Build-`dist/`)
 
 | Metrik | Wert |
 |--------|------|
-| EXE-Größe | **242 717 868 Bytes** (~232 MiB); Sidecar-GGUF ~2,6 GiB |
-| Startzeit | **~20,3 s** |
-| Importzeit (DE_01) | **~235,6 s** — Mara König / mara.koenig@example.com |
-| Restart | **~21,6 s** — Profil persistiert |
-| Anschreiben | **~19,9 s**, gleiches GGUF, 480 Zeichen |
-| Peak (Host-Child, best-effort) | **~74 MiB** (nicht Job-Object i3/8 GB) |
+| EXE-Größe | ~242 MB; Sidecar-GGUF ~2,6 GiB |
+| Startzeit | ~20 s |
+| Import DE_01 | ~236 s |
+| Anschreiben | ~20 s |
+| Peak (Host-Child) | ~74 MiB — **nicht** Job-Object i3/8 GB |
+
+**Neuere Metriken** (Install-Simulation + EN + Negatives) erst nach dem nächsten grünen Windows-Smoke dieses Commits in `artifacts/cv_import_exe_offline_e2e.json` gültig.
 
 ## Release-Status
 
 | Schritt | Status |
 |---------|--------|
-| Code: Bundle-Resolve + llama_cpp collect + UI-Copy | **umgesetzt** |
-| Unit-Tests | **CI grün** |
-| Windows saubere Umgebung offline E2E | **CI grün** (`build-and-exe-smoke`) |
-| Manuelle Extra-Prüfung außer CI | optional |
+| Ursache EXE-only → `model_missing` | **behoben im Code/Packaging** |
+| Windows CI mit staged Install | **ausstehend / zu belegen** |
+| Heim-Laptop | **NICHT GETESTET** |
+| Öffentlicher Release | **weiter blockiert** bis Zip-Gate + Laptop-Abnahme |
 
-**Offline-EXE-Gate für diesen PR: erfüllt.**
+Siehe auch: `docs/project/GROK_PRUEFPLAN_STATUS.md`

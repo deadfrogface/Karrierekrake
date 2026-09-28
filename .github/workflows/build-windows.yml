@@ -91,8 +91,19 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-sidecar
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
+      - name: Package Windows release zip (EXE + models)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $install = Join-Path $env:RUNNER_TEMP "kk-install-$([guid]::NewGuid())"
+          python scripts/package_windows_release.py `
+            --dist dist `
+            --out dist/Karrierekrake-Windows.zip `
+            --stage-install $install
+          if ($LASTEXITCODE -ne 0) { Write-Error "package_windows_release FAILED"; exit 1 }
+          "INSTALL_DIR=$install" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: EXE smoke-test
         shell: pwsh
         run: |
@@ -104,11 +115,15 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $env:QT_QPA_PLATFORM = "offscreen"
+          $env:KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S = "600"
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
+          Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          $exe = Join-Path $env:INSTALL_DIR "Karrierekrake.exe"
           python scripts/ci_cv_import_exe_offline_e2e.py `
-            --exe dist/Karrierekrake.exe `
+            --exe $exe `
             --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
+            --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf `
             --out artifacts/cv_import_exe_offline_e2e.json `
             --import-timeout 900
           if ($LASTEXITCODE -ne 0) { Write-Error "Offline CV import FAILED — release blocked"; exit 1 }
@@ -117,6 +132,8 @@ jobs:
         with:
           name: Karrierekrake-Windows
           path: |
+            dist/Karrierekrake-Windows.zip
+            dist/Karrierekrake-Windows.zip.json
             dist/Karrierekrake.exe
             dist/models/**
             dist/build_metadata.txt

@@ -97,11 +97,20 @@ def materialize_bundled_model_to_appdata(src: Path) -> Path | None:
 
 
 def resolve_cv_model_path() -> Path | None:
-    """Locate the production GGUF (env → bundled EXE layout → AppData → cache)."""
+    """Locate the production GGUF (env → bundled EXE layout → AppData → cache).
+
+    A stale ``KARRIEREKRAKE_CV_LLM_MODEL`` pointing at a missing file must not
+    short-circuit the bundled sidecar — fall through to release layout.
+    """
     env = (os.environ.get("KARRIEREKRAKE_CV_LLM_MODEL") or "").strip()
     if env:
         p = Path(env)
-        return p if p.is_file() else None
+        if p.is_file():
+            return p
+        logger.warning(
+            "cv_model_env_missing path=%s — falling through to bundled candidates",
+            p.name,
+        )
 
     meipass = _meipass_dir()
     for bundled in bundled_cv_model_candidates():

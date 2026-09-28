@@ -45,7 +45,7 @@ if errorlevel 1 (
 )
 set KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL=1
 
-echo [4/5] Building ONEFILE EXE (Chromium NOT bundled; CV model IS bundled)...
+echo [4/5] Building ONEFILE EXE (Chromium NOT bundled; CV model as sidecar)...
 if not exist "dist" mkdir dist
 if not exist "build" mkdir build
 python -m PyInstaller --noconfirm --clean packaging\Karrierekrake.spec
@@ -61,9 +61,20 @@ if errorlevel 1 (
   exit /b 1
 )
 
+echo [4.6/5] Packaging release zip (EXE + models)...
+python scripts\package_windows_release.py --dist dist --out dist\Karrierekrake-Windows.zip
+if errorlevel 1 (
+  echo Release package failed.
+  exit /b 1
+)
+
 echo [5/5] Verifying output...
 if not exist "dist\Karrierekrake.exe" (
   echo EXE missing: dist\Karrierekrake.exe
+  exit /b 1
+)
+if not exist "dist\models\qwen3.5-4b\Qwen3.5-4B-Q4_K_M.gguf" (
+  echo CV model sidecar missing under dist\models\
   exit /b 1
 )
 if exist "dist\Karrierekrake\ms-playwright" (
@@ -72,8 +83,10 @@ if exist "dist\Karrierekrake\ms-playwright" (
 )
 
 echo.
-echo Final artifact:
+echo Final artifacts:
+echo   %CD%\dist\Karrierekrake-Windows.zip  ^(EXE + models — distribute this^)
 echo   %CD%\dist\Karrierekrake.exe
+echo   %CD%\dist\models\qwen3.5-4b\
 echo Browser installs on demand to:
 echo   %%LOCALAPPDATA%%\Karrierekrake\browsers
 exit /b 0

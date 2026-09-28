@@ -118,9 +118,23 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-sidecar
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
           Get-Content dist/content_manifest.json | Select-Object -First 40
+      - name: Package Windows release zip (EXE + models)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $install = Join-Path $env:RUNNER_TEMP "kk-install-$([guid]::NewGuid())"
+          python scripts/package_windows_release.py `
+            --dist dist `
+            --out dist/Karrierekrake-Windows.zip `
+            --stage-install $install
+          if ($LASTEXITCODE -ne 0) { Write-Error "package_windows_release FAILED"; exit 1 }
+          if (!(Test-Path "$install\Karrierekrake.exe")) { Write-Error "staged EXE missing"; exit 1 }
+          if (!(Test-Path "$install\models\qwen3.5-4b\Qwen3.5-4B-Q4_K_M.gguf")) { Write-Error "staged model missing"; exit 1 }
+          "INSTALL_DIR=$install" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "Staged install: $install"
       - name: Packaged EXE smoke-test (isolated LOCALAPPDATA)
         shell: pwsh
         run: |
@@ -150,11 +164,16 @@ jobs:
           $env:KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S = "600"
           # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
+          Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
           Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          # Run from staged install dir (simulates zip extract), not the build dist tree.
+          $exe = Join-Path $env:INSTALL_DIR "Karrierekrake.exe"
+          if (!(Test-Path $exe)) { Write-Error "INSTALL_DIR EXE missing: $exe"; exit 1 }
           python scripts/ci_cv_import_exe_offline_e2e.py `
-            --exe dist/Karrierekrake.exe `
+            --exe $exe `
             --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
+            --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf `
             --out artifacts/cv_import_exe_offline_e2e.json `
             --import-timeout 900
           $code = $LASTEXITCODE
@@ -206,6 +225,8 @@ jobs:
         with:
           name: Karrierekrake-Windows-Smoke
           path: |
+            dist/Karrierekrake-Windows.zip
+            dist/Karrierekrake-Windows.zip.json
             dist/Karrierekrake.exe
             dist/models/**
             dist/build_metadata.txt

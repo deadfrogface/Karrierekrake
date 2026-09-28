@@ -65,12 +65,14 @@ def test_suggest_writing_does_not_import_cv():
     assert "extract_cv" not in src
 
 
-def test_fallback_messages_name_qwen_not_phi():
+def test_fallback_messages_have_no_model_brand_names():
     from guenther.fallbacks import UNAVAILABLE_CAUSE_DE
 
     blob = " ".join(UNAVAILABLE_CAUSE_DE.values())
     assert "Phi" not in blob
-    assert "Qwen3.5-4B" in blob
+    assert "Qwen" not in blob
+    assert "DET" not in blob
+    assert "Modell" in blob or "Auswertung" in blob
 
 
 def test_ui_settings_label_not_phi():
