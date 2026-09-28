@@ -1408,6 +1408,88 @@ def test_generic_title_word_does_not_qualify_a_station():
     assert result.text == ""
 
 
+def _nordlicht_station(*tasks: str) -> ExperienceEntry:
+    return ExperienceEntry(
+        title="Sachbearbeiterin",
+        company="Nordlicht GmbH",
+        responsibilities=list(tasks),
+        start_date="2019-01",
+        end_date="2024-01",
+        source="manual",
+    )
+
+
+def test_generic_title_with_one_matching_task_is_not_a_station(tmp_path: Path):
+    """One ad task on a generic title is not a station. Excel alone is no_evidence."""
+    from core.cover_letter import (
+        _ad_requirement_keys,
+        _compiled_station,
+        _specific_title_keys,
+        _station_keys,
+    )
+
+    station = _nordlicht_station("Rechnungsprüfung")
+    assert _specific_title_keys(station.title) == frozenset()
+    description = "Anforderungen: Rechnungsprüfung und Excel."
+    qualifies, _keys = _station_keys(
+        _compiled_station(station),
+        _ad_requirement_keys(description),
+    )
+    assert qualifies is False
+    cfg = _cfg("Excel", stations=[station])
+    cfg.root = tmp_path
+    job = Job(
+        id="job-one-task",
+        source="indeed",
+        title="Buchhaltung",
+        company="Nordlicht Partner GmbH",
+        description=description,
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.ok is False
+    assert result.text == ""
+    assert result.found_references == ("Excel",)
+    with pytest.raises(CoverLetterRefused):
+        approve_cover_letter(job, cfg)
+    assert not (tmp_path / "cover_letters" / "job-one-task.txt").exists()
+    assert not (tmp_path / "cover_letters" / "job-one-task.meta.json").exists()
+
+
+def test_generic_title_with_two_matching_tasks_saves_the_letter(tmp_path: Path):
+    """Two distinct ad tasks qualify the generic title. The letter names both facts."""
+    from core.cover_letter import cover_profile_fingerprint
+
+    station = _nordlicht_station("Rechnungsprüfung", "Mahnwesen")
+    description = "Anforderungen: Rechnungsprüfung, Mahnwesen und Excel."
+    cfg = _cfg("Excel", stations=[station])
+    cfg.root = tmp_path
+    job = Job(
+        id="job-two-tasks",
+        source="indeed",
+        title="Buchhaltung",
+        company="Nordlicht Partner GmbH",
+        description=description,
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert result.reason_code == ""
+    assert len(result.found_references) == 2
+    assert "Excel" in result.found_references
+    assert "Sachbearbeiterin" in result.found_references
+    path = approve_cover_letter(
+        job,
+        cfg,
+        result.text,
+        generated_sha256=result.generated_sha256,
+        profile_fingerprint=cover_profile_fingerprint(cfg),
+    )
+    saved = path.read_text(encoding="utf-8")
+    assert "Sachbearbeiterin" in saved
+    assert "Nordlicht GmbH" in saved
+    assert "Excel" in saved
+
+
 def test_two_generic_task_words_do_not_qualify():
     cfg = _cfg(
         stations=[
