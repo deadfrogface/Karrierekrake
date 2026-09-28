@@ -942,7 +942,9 @@ def set_pasted_job_description(
 def approve_cover_letter(job: Job, config: AppConfig, text: str | None = None) -> Path:
     """Persist the approved preview via ``save_cover_letter``.
 
-    Re-runs the gate. Records the cleaned description that the letter used.
+    Re-runs the gate. When ``text`` is set and differs from the new
+    composition, nothing is written. Otherwise the bytes of ``text`` are
+    stored. Records the cleaned description that the letter used.
     """
     result = compose_cover_letter(job, config)
     if not result.ok or result.refusal is not None:
@@ -959,25 +961,30 @@ def approve_cover_letter(job: Job, config: AppConfig, text: str | None = None) -
                 REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE].message_key,
             )
         )
-    body = result.text
+    # The checked preview is what gets stored. A newer composition is a refusal.
+    if text is not None and text != result.text:
+        raise CoverLetterRefused(
+            CoverLetterRefusal("preview_stale", "cover.preview_stale")
+        )
+    body = result.text if text is None else text
     path = Path(config.root) / "cover_letters" / f"{job.id}.txt"
     save_cover_letter(body, path)
-    meta_path = Path(config.root) / "cover_letters" / f"{job.id}.meta.json"
-    meta_path.write_text(
-        json.dumps(
-            {
-                "job_id": job.id,
-                "description_used": result.description_used,
-            },
-            ensure_ascii=False,
-            indent=2,
-        ),
-        encoding="utf-8",
+    raw_meta = json.dumps(
+        {
+            "job_id": job.id,
+            "description_used": result.description_used,
+            "generated_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+        },
+        ensure_ascii=False,
+        indent=2,
     )
+    meta_path = Path(config.root) / "cover_letters" / f"{job.id}.meta.json"
+    meta_path.write_bytes(raw_meta.encode("utf-8"))
     return path
 
 
 def save_cover_letter(text: str, path: Path) -> Path:
+    """Write the letter as UTF-8 bytes. Newlines stay LF on every platform."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    path.write_bytes(text.encode("utf-8"))
     return path

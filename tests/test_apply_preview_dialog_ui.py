@@ -597,3 +597,111 @@ def test_reopen_after_removing_the_skill_enables_and_saves(qapp, tmp_path, monke
     qapp.processEvents()
     assert saved.read_bytes() == second.cover_letter_preview.encode("utf-8")
     again.close()
+
+
+def _approvable_preview(tmp_path):
+    from apply.preview import build_application_preview
+    from core.config import ExtractReview, SourcedText
+    from core.models import Job
+
+    cfg = _profile_with_licence(tmp_path, "B")
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    cfg.profile.qualifications.skills = [SourcedText(value="Excel", source="manual")]
+    job = Job(
+        id="vorschau-lf",
+        title="Disponent",
+        company="Nordlicht GmbH",
+        remote_type="remote",
+        description="Excel und Tourenplanung.",
+    )
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_letter_preview.strip()
+    return cfg, job, preview
+
+
+def test_approved_letter_bytes_are_lf_and_match_the_preview(qapp, tmp_path, monkeypatch):
+    """A confirm without edits stores LF bytes of the preview, also on Windows."""
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
+    cfg, job, preview = _approvable_preview(tmp_path)
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    dlg.show()
+    qapp.processEvents()
+    assert dlg.approve_btn.isEnabled()
+    dlg.approve_btn.click()
+    qapp.processEvents()
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    data = saved.read_bytes()
+    assert b"\r" not in data
+    assert data == preview.cover_letter_preview.encode("utf-8")
+    dlg.close()
+
+
+def test_cover_meta_json_is_lf_and_hashes_the_file(qapp, tmp_path, monkeypatch):
+    """The sidecar JSON keeps LF, and its hash is the saved letter."""
+    import hashlib
+    import json
+
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
+    cfg, job, preview = _approvable_preview(tmp_path)
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    dlg.show()
+    qapp.processEvents()
+    dlg.approve_btn.click()
+    qapp.processEvents()
+    letter = (tmp_path / "cover_letters" / f"{job.id}.txt").read_bytes()
+    meta_path = tmp_path / "cover_letters" / f"{job.id}.meta.json"
+    raw = meta_path.read_bytes()
+    assert b"\r" not in raw
+    meta = json.loads(raw.decode("utf-8"))
+    if "generated_sha256" in meta:
+        assert hashlib.sha256(letter).hexdigest() == meta["generated_sha256"]
+    dlg.close()
+
+
+def test_stale_preview_is_refused_without_saving(qapp, tmp_path, monkeypatch):
+    """A changed composition saves nothing and shows the stale-preview sentence."""
+    import core.cover_letter as cover_letter
+
+    cfg, job, preview = _approvable_preview(tmp_path)
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    dlg.show()
+    qapp.processEvents()
+    assert dlg.approve_btn.isEnabled()
+
+    def other_letter(*_args, **_kwargs):
+        return cover_letter.CoverLetterResult(
+            ok=True,
+            text=preview.cover_letter_preview + "\nNachtrag.\n",
+            description_used="",
+        )
+
+    monkeypatch.setattr(cover_letter, "compose_cover_letter", other_letter)
+    dlg.approve_btn.click()
+    qapp.processEvents()
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    assert not saved.exists()
+    assert not (tmp_path / "cover_letters" / f"{job.id}.meta.json").exists()
+    assert dlg._guard_notice.text() == (
+        "Die Vorschau ist veraltet. Bitte schließe sie und öffne sie neu."
+    )
+    assert "preview_stale" not in _dialog_copy(dlg)
+    assert not dlg.approve_btn.isEnabled()
+    assert dlg.close_btn.isEnabled()
+    dlg.close_btn.click()
+    qapp.processEvents()
+    assert not dlg.isVisible()
+
+
+def test_save_cover_letter_writes_lf_bytes(tmp_path):
+    """save_cover_letter stores the UTF-8 bytes of LF lines unchanged."""
+    from core.cover_letter import save_cover_letter
+
+    text = "Zeile eins\nZeile zwei\n"
+    path = save_cover_letter(text, tmp_path / "brief.txt")
+    assert path.read_bytes() == text.encode("utf-8")

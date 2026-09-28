@@ -1112,6 +1112,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.action.hide_demo": "Beispiele ausblenden",
         "cover.company_missing": "In der Anzeige fehlt der Firmenname.",
         "cover.saved": "Anschreiben gespeichert.",
+        "cover.preview_stale": "Die Vorschau ist veraltet. Bitte schließe sie und öffne sie neu.",
     },
     "en": {
         "app.name": "Karrierekrake",
@@ -2209,6 +2210,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.action.hide_demo": "Hide examples",
         "cover.company_missing": "The company name is missing from the job ad.",
         "cover.saved": "Cover letter saved.",
+        "cover.preview_stale": "The preview is out of date. Please close it and open it again.",
     },
 }
 

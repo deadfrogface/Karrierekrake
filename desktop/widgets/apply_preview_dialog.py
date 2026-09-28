@@ -531,6 +531,11 @@ class ApplyPreviewDialog(QDialog):
             )
         except CoverLetterRefused as exc:
             lang = getattr(self._config.settings, "language", "de")
+            if exc.refusal.message_key == "cover.preview_stale":
+                self._guard_notice.setText(exc.refusal.text(lang))
+                self._guard_notice.show()
+                self._sync_approve_button(blocked=True)
+                return
             QMessageBox.warning(self, self.windowTitle(), exc.refusal.text(lang))
             return
         QMessageBox.information(self, self.windowTitle(), tr("cover.saved") + f"\n{path}")
