@@ -27,12 +27,16 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import resource
 import subprocess
 import sys
 import tempfile
 import time
 from pathlib import Path
+
+try:
+    import resource as _resource  # Unix only — absent on Windows
+except ImportError:  # pragma: no cover - Windows CI
+    _resource = None
 
 _ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT) not in sys.path:
@@ -40,14 +44,21 @@ if str(_ROOT) not in sys.path:
 
 
 def _peak_rss_bytes() -> int:
-    """Best-effort peak RSS of this process (Linux) or 0."""
+    """Best-effort peak RSS (Unix children via resource; Windows via psutil when present)."""
+    if _resource is not None:
+        try:
+            usage = _resource.getrusage(_resource.RUSAGE_CHILDREN)
+            # ru_maxrss is KiB on Linux, bytes on macOS — normalize roughly.
+            val = int(usage.ru_maxrss)
+            if sys.platform == "darwin":
+                return val
+            return val * 1024
+        except Exception:  # noqa: BLE001
+            pass
     try:
-        usage = resource.getrusage(resource.RUSAGE_CHILDREN)
-        # ru_maxrss is KiB on Linux, bytes on macOS — normalize roughly.
-        val = int(usage.ru_maxrss)
-        if sys.platform == "darwin":
-            return val
-        return val * 1024
+        import psutil  # type: ignore
+
+        return int(psutil.Process(os.getpid()).memory_info().rss)
     except Exception:  # noqa: BLE001
         return 0
 
