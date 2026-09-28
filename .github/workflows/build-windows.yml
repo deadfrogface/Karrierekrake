@@ -67,6 +67,7 @@ jobs:
             exit 1
           }
           python scripts/prepare_bundled_cv_model.py --also-sidecar dist
+          if ($LASTEXITCODE -ne 0) { Write-Error "sidecar model failed"; exit 1 }
           $item = Get-Item "dist\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small"; exit 1 }
           $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash

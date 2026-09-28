@@ -62,3 +62,21 @@ def test_prepare_refuses_missing_without_download(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(prep, "_candidate_sources", lambda explicit: [])
     with pytest.raises(SystemExit, match="GGUF source missing"):
         prep.prepare(src=None, allow_download=False, also_sidecar=None)
+
+
+def test_also_sidecar_reuses_staged_vendor(tmp_path: Path, monkeypatch):
+    """Second prepare(--also-sidecar) must find vendor GGUF without re-download."""
+    root = tmp_path / "repo"
+    vendor = root / prep.VENDOR_REL
+    vendor.parent.mkdir(parents=True, exist_ok=True)
+    vendor.write_bytes(b"staged-gguf")
+    monkeypatch.setattr(prep, "_ROOT", root)
+    monkeypatch.setattr(prep, "_sha256", lambda path: CV_MODEL_SHA256)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MODEL", raising=False)
+    monkeypatch.delenv("KARRIEREKRAKE_MODELS_DIR", raising=False)
+    also = tmp_path / "dist"
+    out = prep.prepare(src=None, allow_download=False, also_sidecar=also)
+    assert out.resolve() == vendor.resolve()
+    side = also / "models" / "qwen3.5-4b" / CV_MODEL_FILENAME
+    assert side.is_file()
+    assert side.read_bytes() == b"staged-gguf"

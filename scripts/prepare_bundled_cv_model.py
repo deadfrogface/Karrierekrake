@@ -72,6 +72,8 @@ def _candidate_sources(explicit: Path | None) -> list[Path]:
         root = Path(models_dir)
         out.append(root / CV_MODEL_DIRNAME / CV_MODEL_FILENAME)
         out.append(root / CV_MODEL_FILENAME)
+    # Already-staged vendor weight (e.g. after --allow-download, then --also-sidecar).
+    out.append(_ROOT / VENDOR_REL)
     out.extend(
         [
             Path("/tmp/karrierekrake-models") / CV_MODEL_DIRNAME / CV_MODEL_FILENAME,

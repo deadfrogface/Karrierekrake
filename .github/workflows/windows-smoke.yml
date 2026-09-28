@@ -87,6 +87,8 @@ jobs:
       - name: Build onefile EXE (model + llama_cpp runtime bundled)
         env:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
+          # Reuse cache / vendor GGUF from the prepare step for sidecar placement.
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
           if (!(Test-Path "dist\Karrierekrake.exe")) { Write-Error "EXE missing"; exit 1 }
