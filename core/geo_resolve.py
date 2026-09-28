@@ -446,12 +446,15 @@ def _preload_worker(gen: int) -> None:
         if gen != _generation:
             return
         _pgeocode_nominatim(cc)
-    if gen != _generation:
-        return
-    # One epoch for the finished batch. Notify only after ``_preload_done`` so
-    # a country that never arrived is unavailable, not still loading.
-    _bump_geo_index_generation()
-    _preload_done.set()
+    # Publish under the same lock the test reset uses. A worker that already
+    # passed an earlier generation check must not mark the next epoch done.
+    with _load_lock:
+        if gen != _generation:
+            return
+        # One epoch for the finished batch. Notify only after ``_preload_done``
+        # so a country that never arrived is unavailable, not still loading.
+        _bump_geo_index_generation()
+        _preload_done.set()
     _notify_geo_index_generation()
     _fire_ready()
 
@@ -746,6 +749,13 @@ def _unavailable_resolution(country_code: str) -> PlaceResolution:
 
 
 def reset_pgeocode_index_for_tests() -> None:
+    """Drop preload, generation, UI-thread binding and both resolution caches.
+
+    The generation counters advance by one. That aborts a worker still in
+    flight without walking the caches. ``MainWindow`` binds the UI thread in
+    its constructor, before the window is shown, so an unshown window would
+    otherwise leave every later lookup on this thread in ``geo_index_loading``.
+    """
     global _generation, _preload_thread, _ui_thread_id, _test_hold, _preload_worker_ident
     with _load_lock:
         _generation += 1
@@ -753,6 +763,7 @@ def reset_pgeocode_index_for_tests() -> None:
         _pgeocode_index.clear()
         _resolution_cache.clear()
         _ready_callbacks.clear()
+        _generation_listeners.clear()
         _preload_thread = None
         _ui_thread_id = None
         _test_hold = None
@@ -765,7 +776,6 @@ def reset_pgeocode_index_for_tests() -> None:
     from core.location import reset_home_resolution_cache_for_tests
 
     reset_home_resolution_cache_for_tests()
-    _notify_geo_index_generation()
 
 
 def _finite(value: Any) -> float | None:

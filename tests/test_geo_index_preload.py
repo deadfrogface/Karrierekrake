@@ -538,3 +538,65 @@ def test_unresolvable_plz_still_shows_the_hint_after_preload(
         worker = geo_resolve._preload_thread
         if worker is not None:
             worker.join(timeout=30)
+
+
+def test_wizard_then_main_window_leaves_the_loading_notice(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """Real first-run wizard, then the main window. Loading does not stick.
+
+    ``desktop.app`` shows the window, which starts the loader, and then runs
+    the wizard. This test builds the real wizard first and the window after,
+    the order that left ``geo_index_loading`` behind for the next test when
+    the window was never shown. Once the loader has finished, Frankfurt
+    without a postal code is the PLZ hint, not ``dash.home_checking``.
+    """
+    monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
+    monkeypatch.setattr("desktop.tray.AppTray.showMessage", lambda *a, **k: None)
+    from desktop.i18n import tr
+    from desktop.main_window import MainWindow
+    from desktop.wizard import FirstRunWizard
+
+    i18n.set_language("de")
+    assert config_service.is_first_run()
+    wizard = FirstRunWizard(config_service)
+    wizard.accept()
+    assert not config_service.is_first_run()
+
+    cfg = config_service.load()
+    cfg.profile.location.home_address = "Frankfurt, Deutschland"
+    cfg.profile.location.postal_code = ""
+    cfg.profile.location.city = ""
+    cfg.profile.location.country = "DE"
+    config_service.save(cfg)
+
+    win = MainWindow(config_service)
+    worker = None
+    try:
+        assert tr("dash.home_checking") in win.dashboard.home_warning_label.text()
+        win.show()
+        deadline = time.monotonic() + 10
+        while geo_resolve._preload_thread is None and time.monotonic() < deadline:
+            qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        worker = geo_resolve._preload_thread
+        assert worker is not None
+        worker.join(timeout=30)
+        assert not worker.is_alive()
+        assert geo_resolve._preload_done.is_set()
+        text = _pump_until_label(
+            qapp,
+            win.dashboard.home_warning_label,
+            lambda value: tr("dash.home_checking") not in value,
+        )
+        assert text == tr("dash.home_plz_hint")
+        notice = home_location_notice(
+            config_service.load().profile.location, config_service.load()
+        )
+        assert notice.status != "loading"
+        assert notice.notice_key != "dash.home_checking"
+    finally:
+        win._shutting_down = True
+        win.close()
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        if worker is not None and worker.is_alive():
+            worker.join(timeout=30)
