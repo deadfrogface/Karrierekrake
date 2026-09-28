@@ -129,12 +129,12 @@ class CvImportSupervisor:
         self.ran_on_thread = threading.get_ident()
         # Release Günther's in-process weight before the import child loads the
         # same sole GGUF (parser and writing stay separate processes/roles).
+        # Never construct Guenther just to unload — llama_cpp import can AV on
+        # Windows when probed from a QThread (see CI shard-1 peak gate).
         try:
-            from guenther.service import get_guenther_service
+            from guenther.service import unload_guenther_if_loaded
 
-            g = get_guenther_service(enabled=True)
-            if g is not None and hasattr(g, "provider"):
-                g.provider.unload_model()
+            unload_guenther_if_loaded()
         except Exception:  # noqa: BLE001
             pass
         if self._cancel.is_set():
