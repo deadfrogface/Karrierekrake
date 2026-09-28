@@ -108,25 +108,36 @@ def normalize_driving_license(raw: str | list[str]) -> list[str]:
     """
     chunks = raw if isinstance(raw, list) else [raw]
     found: list[str] = []
+    previous_was_b = False
     for chunk in chunks:
         text = str(chunk or "").strip()
         if not text or _is_heading_value(text):
             continue
         codes = [m.group(1).upper() for m in _LICENSE_CLASS.finditer(text)]
-        if not codes:
-            continue
-        has_context = bool(_LICENCE_CONTEXT.search(text))
-        has_unambiguous = any(c not in _AMBIGUOUS_LICENCE_CEFR for c in codes)
-        for code in codes:
-            if code in _AMBIGUOUS_LICENCE_CEFR and not (has_context or has_unambiguous):
+        if codes:
+            has_context = bool(_LICENCE_CONTEXT.search(text))
+            has_unambiguous = any(c not in _AMBIGUOUS_LICENCE_CEFR for c in codes)
+            for code in codes:
+                if code in _AMBIGUOUS_LICENCE_CEFR and not (has_context or has_unambiguous):
+                    continue
+                if code not in found:
+                    found.append(code)
+        # A lone ``E`` token directly after ``B`` is the split form of class BE
+        # (real imports stored ``[B, E]``). Only that pair is repaired here.
+        for part in re.split(r"[\s,;/|&]+", text):
+            token = part.strip().upper()
+            if not token:
                 continue
-            if code not in found:
-                found.append(code)
+            if token == "E" and previous_was_b and "BE" not in found:
+                found.append("BE")
+                previous_was_b = False
+                continue
+            previous_was_b = token == "B"
     return found
 
 
-# Canonical EU class order for display. Longer codes are matched first when
-# a stored string was split into single characters (``B BE`` → ``B``, ``B``, ``E``).
+# Canonical EU class order for display. Only an exact token from this list is
+# reordered. Anything else is kept verbatim so a later drawer save cannot drop it.
 _LICENSE_DISPLAY_ORDER: tuple[str, ...] = (
     "AM",
     "A1",
@@ -168,25 +179,21 @@ def _license_chunks(raw: str | list | None) -> list[str]:
     return chunks
 
 
-def _coalesce_license_letters(letters: list[str]) -> list[str]:
-    """Rebuild class codes from single-character fragments (``B``+``E`` → ``BE``)."""
+_LICENSE_LIST_SPLIT = re.compile(r"[\s,;/|&]+")
+
+
+def _pure_class_pieces(text: str) -> list[str] | None:
+    """Split ``B, BE`` into class tokens. A phrase like ``Klasse 3`` stays whole."""
+    parts = [part for part in _LICENSE_LIST_SPLIT.split(text.strip()) if part]
+    if len(parts) <= 1:
+        return None
     known = set(_LICENSE_DISPLAY_ORDER)
-    out: list[str] = []
-    index = 0
-    while index < len(letters):
-        matched = False
-        for length in (3, 2, 1):
-            if index + length > len(letters):
-                continue
-            merged = "".join(letters[index : index + length])
-            if merged in known:
-                out.append(merged)
-                index += length
-                matched = True
-                break
-        if not matched:
-            index += 1
-    return out
+    for part in parts:
+        token = part.upper()
+        if token in known or token == "E":
+            continue
+        return None
+    return parts
 
 
 def _order_license_codes(codes: list[str]) -> list[str]:
@@ -202,32 +209,56 @@ def _order_license_codes(codes: list[str]) -> list[str]:
 
 
 def driving_classes_for_display(raw: str | list | None) -> list[str]:
-    """Licence classes for the UI: deduped, stable EU order.
+    """Licence classes for the UI.
 
-    This is the data-to-display step. It does not mutate ``raw`` and does not
-    rewrite stored records. A character-split value such as ``B, B, E`` (from
-    the string ``B BE`` or ``B, BE``) is shown as ``B, BE``.
+    Tokens that match a known EU class exactly are deduplicated and ordered.
+    Every other token is kept verbatim and appended, so ``B96``, ``Klasse 3``
+    and ``CE 95`` are not dropped. A lone ``E`` directly after ``B`` is the
+    split artefact of ``BE`` and becomes ``BE``; any other ``E`` stays ``E``.
+
+    Does not mutate ``raw``. Callers that persist the result (new CV imports,
+    and any drawer save after the editors were filled) do change what is stored.
     """
     chunks = _license_chunks(raw)
     if not chunks:
         return []
     known = set(_LICENSE_DISPLAY_ORDER)
-    # Single characters are a split string (``B BE`` → B, B, E), not stored codes.
-    if all(len(chunk) == 1 for chunk in chunks):
-        letters = [chunk.upper() for chunk in chunks if chunk.isalnum()]
-        return _order_license_codes(_coalesce_license_letters(letters))
-    codes: list[str] = []
+    recognised: list[str] = []
+    unknown: list[str] = []
+    seen_unknown: set[str] = set()
+    previous_was_b = False
+
+    def take(token: str) -> None:
+        nonlocal previous_was_b
+        text = token.strip()
+        if not text:
+            return
+        folded = text.upper()
+        if folded == "E" and previous_was_b:
+            recognised.append("BE")
+            previous_was_b = False
+            return
+        if folded in known:
+            recognised.append(folded)
+            previous_was_b = folded == "B"
+            return
+        key = text.casefold()
+        if key not in seen_unknown:
+            seen_unknown.add(key)
+            unknown.append(text)
+        previous_was_b = False
+
     for chunk in chunks:
-        token = chunk.strip().upper()
-        # Parser output is already a class (``C1``). Do not drop it: the
-        # normalizer rejects bare CEFR-overlapping codes without new context.
-        if token in known:
-            codes.append(token)
+        text = chunk.strip()
+        if not text or not any(ch.isalnum() for ch in text):
             continue
-        found = normalize_driving_license(chunk)
-        if found:
-            codes.extend(found)
-    return _order_license_codes(codes)
+        pieces = _pure_class_pieces(text)
+        if pieces is None:
+            take(text)
+        else:
+            for piece in pieces:
+                take(piece)
+    return _order_license_codes(recognised) + unknown
 
 
 # User-facing label when a field is simply absent from the CV — not a parser crash.
@@ -2708,6 +2739,10 @@ def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
         {
             "skills": _as_sourced(parsed.get("skills") or []),
             "software": _as_sourced(parsed.get("software") or []),
+            # New imports persist this list. That is a storage change: a string
+            # ``BE`` stays ``BE`` (it is not character-split into ``[B, E]``), and
+            # a lone ``E`` directly after ``B`` is stored as ``BE``. Unrecognised
+            # tokens such as ``B96`` or ``Klasse 3`` are stored verbatim.
             "driving_license": [
                 {"value": code, "source": "cv"}
                 for code in driving_classes_for_display(parsed.get("driving_license") or [])

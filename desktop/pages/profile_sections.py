@@ -164,8 +164,8 @@ class QualificationsSection(QGroupBox):
 
         self.skills.set_items(quals.skill_values())
         self.software.set_items(quals.software_values())
-        # Display dedupes and orders classes. Saving the drawer writes what
-        # the editor shows; merely loading does not touch the config object.
+        # Known classes are ordered. Unknown tokens stay, so saving any drawer
+        # cannot drop them. Loading itself does not write the config object.
         shown = driving_classes_for_display(quals.driving_license)
         self.driving.set_items(shown or quals.driving_values())
         self.certificates.set_items(quals.certificates)
