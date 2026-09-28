@@ -346,6 +346,7 @@ def test_profile_save_resolves_geo_once(qapp, config_service, geo_ready, monkeyp
     page.applicant.postal_code.setText("10115")
     page.applicant.city.setText("Berlin")
     page.applicant.app_country.setText("DE")
+    page.applicant.sync_home_from_address.setChecked(True)
     page.save_btn.click()
     qapp.processEvents()
     assert calls["cards"] == 1
@@ -435,6 +436,7 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         page.applicant.postal_code.setText("10115")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        page.applicant.sync_home_from_address.setChecked(True)
         assert not hold.is_set()
         page.save_btn.click()
         # save() has returned. A blocking save would still be inside click().
@@ -506,6 +508,7 @@ def test_unresolvable_plz_still_shows_the_hint_after_preload(
         page.applicant.postal_code.setText("00000")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        page.applicant.sync_home_from_address.setChecked(True)
         assert not hold.is_set()
         page.save_btn.click()
         assert not hold.is_set()

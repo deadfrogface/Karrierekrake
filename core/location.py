@@ -58,6 +58,7 @@ __all__ = [
     "HomeNotice",
     "home_location_notice",
     "apply_visible_home",
+    "retain_fresh_home_coordinates",
 ]
 
 DEFAULT_GEOCODE_TIMEOUT_S = 12.0
@@ -178,9 +179,9 @@ def apply_visible_home(
 ) -> bool:
     """Copy a contact address into the search home.
 
-    Callers must invoke this only after an explicit contact edit or after the
-    user checks the search-home opt-in. A stored CV contact must not be copied
-    while saving skills, experience, or any other section.
+    Callers must invoke this only when the user has checked the search-home
+    opt-in. A changed contact address alone must not be copied, and neither
+    must a stored CV contact while saving skills or any other section.
 
     Returns True when persisted coordinates were cleared. Does not invent a PLZ.
     Empty street/PLZ/city leaves an existing search home unchanged.
@@ -278,6 +279,44 @@ def commit_loaded_home(location: Any) -> str:
         locality = _locality_from_display(resolution.display_name or "", postal)
         if locality:
             location.city = locality
+    return "resolved"
+
+
+def retain_fresh_home_coordinates(location: Any) -> str:
+    """Store coordinates for the current address. Does not rewrite the address.
+
+    ``home_location_notice`` calls ``resolve_place`` and drops the coordinates.
+    A section save that then restores a snapshot with empty latitude/longitude
+    would resolve the same place again. This writes latitude, longitude, and
+    the notice fingerprint, and leaves street, postal code, and city untouched.
+    Returns ``unchanged``, ``pending``, ``unresolved``, or ``resolved``.
+    """
+    if _coords_match_address(location):
+        return "unchanged"
+    address = (getattr(location, "home_address", "") or "").strip()
+    postal = (getattr(location, "postal_code", "") or "").strip()
+    city = (getattr(location, "city", "") or "").strip()
+    country = (getattr(location, "country", "") or "").strip() or "DE"
+    if not postal and not city and not address:
+        return "unresolved"
+    place = normalize_place_fields(
+        address=address,
+        city=city or _city_from_address(address),
+        postal_code=postal or _plz_from_address(address),
+        country_code=normalize_country_code(country) or "DE",
+    )
+    resolution = resolve_place(place, allow_network=False)
+    if resolution.reason == "geo_index_loading":
+        return "pending"
+    if not resolution.ok or resolution.latitude is None or resolution.longitude is None:
+        return "unresolved"
+    location.home_latitude = float(resolution.latitude)
+    location.home_longitude = float(resolution.longitude)
+    # Same string ``home_location_notice`` fingerprints, so the next read
+    # short-circuits and does not call ``resolve_place`` again.
+    location.home_geocoded_address = address or (
+        f"{postal}|{city}" if (postal or city) else ""
+    )
     return "resolved"
 
 

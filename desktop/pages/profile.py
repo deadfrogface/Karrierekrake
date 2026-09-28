@@ -59,8 +59,24 @@ from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import apply_wheel_guard_to_spinboxes
 
 
-# Drawer keys that edit qualifications, career, or documents — never the search home.
-# ``personal`` / ``application`` share the contact form. ``None`` is the full save.
+# Keys of the drawer mapping in ``_edit_section``. A new drawer belongs in
+# exactly one of the two sets below; the partition test fails otherwise.
+PROFILE_DRAWER_KEYS = (
+    "personal",
+    "career",
+    "application",
+    "docs",
+    "experience",
+    "education",
+    "skills",
+    "languages",
+)
+
+# Contact address may be copied into the search home only from these scopes,
+# and only when ``sync_home_from_address`` is checked. ``None`` is the full save.
+_HOME_ADOPT_SCOPES = frozenset({None, "personal", "application"})
+
+# Every other drawer. Explicit, so a new mapping key is not adopted by default.
 _SECTION_SCOPES_WITHOUT_HOME = frozenset(
     {
         "career",
@@ -455,8 +471,9 @@ class ProfilePage(QWidget):
         layout.addWidget(chip)
         return chip
 
-    def _edit_section(self, key: str, *, focus: QWidget | None = None) -> None:
-        mapping = {
+    def _drawer_mapping(self) -> dict:
+        """Drawer key → (editor, title). Keys must match ``PROFILE_DRAWER_KEYS``."""
+        return {
             "personal": (self.applicant, tr("profile.card_personal")),
             "career": (self.career, tr("profile.card_career")),
             "application": (self.applicant, tr("profile.card_application")),
@@ -466,6 +483,9 @@ class ProfilePage(QWidget):
             "skills": (self.qualifications, tr("profile.card_skills")),
             "languages": (self.languages, tr("profile.languages")),
         }
+
+    def _edit_section(self, key: str, *, focus: QWidget | None = None) -> None:
+        mapping = self._drawer_mapping()
         section, title = mapping[key]
         self._career_persist = key == "career"
         self._save_scope = key
@@ -482,7 +502,10 @@ class ProfilePage(QWidget):
             self._drawer.take_content()
             section.setParent(self._editors_host)
             self._editors_host.layout().addWidget(section)
-            legacy = legacy_profile_search_ui_enabled(self.config_service.load().settings)
+            # ``ConfigService.load()`` re-reads YAML on every call. The flag is
+            # already in the cache filled by ``load_from_config``; ``save()``
+            # loads once for the write.
+            legacy = legacy_profile_search_ui_enabled(self.config_service.config.settings)
             if key == "career":
                 section.setHidden(not legacy)
             else:
@@ -933,37 +956,15 @@ class ProfilePage(QWidget):
         """
         return cfg == self.config_service._read_runtime_config()
 
-    def _contact_address_changed(self, app) -> bool:
-        """True when the contact form differs from the address last stored."""
+    def _should_adopt_contact_into_home(self) -> bool:
+        """Copy the contact address only when the search-home checkbox is on.
 
-        def _norm(value: object) -> str:
-            return str(value or "").strip()
-
-        if any(
-            _norm(widget) != _norm(stored)
-            for widget, stored in (
-                (self.applicant.street.text(), app.street),
-                (self.applicant.postal_code.text(), app.postal_code),
-                (self.applicant.city.text(), app.city),
-            )
-        ):
-            return True
-        widget_country = _norm(self.applicant.app_country.text()) or "DE"
-        stored_country = _norm(app.country) or "DE"
-        return widget_country != stored_country
-
-    def _should_adopt_contact_into_home(self, app) -> bool:
-        """Copy the contact address into the search home only on an explicit edit.
-
-        Skills, experience, education, languages, career, and documents must not
-        adopt a CV contact that already sits in the applicant form. The existing
-        checkbox is the confirmation for an unchanged CV address; there is no
-        separate suggestion banner.
+        A changed street, postal code, or city adopts nothing by itself, even
+        when the search home is empty. Only ``personal``, ``application``, and
+        a full save (scope ``None``) may adopt, and only with the checkbox.
         """
-        if self._save_scope in _SECTION_SCOPES_WITHOUT_HOME:
+        if self._save_scope not in _HOME_ADOPT_SCOPES:
             return False
-        if self._contact_address_changed(app):
-            return True
         return bool(self.applicant.sync_home_from_address.isChecked())
 
     def _restore_search_home(self, location, snapshot: dict[str, object]) -> None:
@@ -976,7 +977,7 @@ class ProfilePage(QWidget):
         legacy = legacy_profile_search_ui_enabled(cfg.settings)
         # Captured before any editor write-back. Other drawers must not move it.
         home_snapshot = {name: getattr(p.location, name) for name in _SEARCH_HOME_FIELDS}
-        adopt_home = self._should_adopt_contact_into_home(cfg.application)
+        adopt_home = self._should_adopt_contact_into_home()
         persist_location_editor = self._save_scope not in _SECTION_SCOPES_WITHOUT_HOME
         # Persist career goals when legacy OR when user edited Berufsziel drawer.
         # Never push into SearchIntent unless legacy combined UI is on — except
@@ -1042,8 +1043,7 @@ class ProfilePage(QWidget):
         sync_addr = self.applicant.save_into(a)
         self.config_service.set_sync_address_to_search(sync_addr)
         if adopt_home:
-            # Contact form was edited, or the user checked
-            # "Diese Adresse auch als Standort für die Jobsuche verwenden."
+            # Checkbox "Diese Adresse auch als Standort für die Jobsuche verwenden."
             from core.location import apply_visible_home
 
             apply_visible_home(
@@ -1059,6 +1059,12 @@ class ProfilePage(QWidget):
             self.location_work.refresh_home_notice(p.location)
         elif not persist_location_editor:
             self._restore_search_home(p.location, home_snapshot)
+            # The snapshot still has empty coordinates. Keep a resolution for
+            # this same address so the next save does not resolve it again.
+            # ``home_location_notice`` (core/location.py) resolves and discards.
+            from core.location import retain_fresh_home_coordinates
+
+            retain_fresh_home_coordinates(p.location)
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)
 

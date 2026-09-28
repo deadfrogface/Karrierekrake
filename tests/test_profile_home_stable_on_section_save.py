@@ -36,7 +36,12 @@ from core.models import Job, RemoteType
 from desktop.design_system.v2_chrome import SectionEditDrawer
 from desktop.i18n import i18n
 from desktop.pages.jobs import JobsPage
-from desktop.pages.profile import ProfilePage
+from desktop.pages.profile import (
+    _HOME_ADOPT_SCOPES,
+    _SECTION_SCOPES_WITHOUT_HOME,
+    PROFILE_DRAWER_KEYS,
+    ProfilePage,
+)
 from desktop.services import ConfigService
 
 CV_STREET = "Rosenfelder Straße 103c"
@@ -171,6 +176,24 @@ def _save_section(page: ProfilePage, key: str) -> None:
     page._edit_section(key)
 
 
+def _count_geo(monkeypatch) -> dict[str, int]:
+    calls = {"geo": 0}
+    original_postal = geo_resolve.resolve_postal_pgeocode
+    original_city = geo_resolve.resolve_city_pgeocode
+
+    def _postal(*args, **kwargs):
+        calls["geo"] += 1
+        return original_postal(*args, **kwargs)
+
+    def _city(*args, **kwargs):
+        calls["geo"] += 1
+        return original_city(*args, **kwargs)
+
+    monkeypatch.setattr(geo_resolve, "resolve_postal_pgeocode", _postal)
+    monkeypatch.setattr(geo_resolve, "resolve_city_pgeocode", _city)
+    return calls
+
+
 def _home_tuple(config_service: ConfigService) -> tuple:
     loc = config_service.load().profile.location
     return (
@@ -296,41 +319,102 @@ def test_set_home_is_byte_identical_after_other_section_save(
     page, _host = _open_page(qapp, config_service)
     before = _location_block(config_service.profile_path.read_text(encoding="utf-8"))
     frozen = _home_tuple(config_service)
+    calls = _count_geo(monkeypatch)
+    reset_pgeocode_index_for_tests()
     _mutate(page, key)
     _save_section(page, key)
     after = _location_block(config_service.profile_path.read_text(encoding="utf-8"))
     assert after == before
     assert _home_tuple(config_service) == frozen
+    assert calls["geo"] == 0
     _assert_section_persisted(config_service, key)
 
 
 def test_explicit_contact_edit_still_updates_search_home(
     qapp, config_service, geo_ready, monkeypatch
 ):
+    """Umgedreht: eine geänderte Kontaktadresse allein übernimmt den Wohnort nicht."""
     _silence_dialogs(monkeypatch)
     _seed_cv_contact(
         config_service, street=CV_STREET, postal=CV_POSTAL, city=CV_CITY
     )
     page, _host = _open_page(qapp, config_service)
+    assert page.applicant.sync_home_from_address.isChecked() is False
+    before = _location_block(config_service.profile_path.read_text(encoding="utf-8"))
     page.applicant.street.setText("Neuer Weg 1")
     page.applicant.postal_code.setText(RESOLVABLE_POSTAL)
     page.applicant.city.setText(RESOLVABLE_CITY)
     page.applicant.app_country.setText("DE")
     _save_section(page, "personal")
+    after = _location_block(config_service.profile_path.read_text(encoding="utf-8"))
+    assert after == before
     loc = config_service.load().profile.location
-    assert loc.postal_code == RESOLVABLE_POSTAL
-    assert RESOLVABLE_CITY in (loc.city or "")
-    assert "Neuer Weg 1" in (loc.home_address or "")
+    assert loc.home_address == ""
+    assert loc.postal_code == ""
+    assert loc.city == ""
     app = config_service.load().application
     assert app.street == "Neuer Weg 1"
     assert app.postal_code == RESOLVABLE_POSTAL
     assert app.city == RESOLVABLE_CITY
 
 
+@pytest.mark.parametrize("key", ("personal", "application"))
+def test_street_edit_without_checkbox_keeps_different_home(
+    qapp, config_service, geo_ready, monkeypatch, key
+):
+    """Gold (a): gesetzter, anderer Wohnort, Haken aus, nur die Straße ändern."""
+    _silence_dialogs(monkeypatch)
+    cfg = config_service.load()
+    cfg.application.street = CV_STREET
+    cfg.application.postal_code = CV_POSTAL
+    cfg.application.city = CV_CITY
+    cfg.application.country = "DE"
+    cfg.profile.location.home_address = "Speicherstraße 2, 20095 Hamburg, DE"
+    cfg.profile.location.postal_code = "20095"
+    cfg.profile.location.city = "Hamburg"
+    cfg.profile.location.country = "DE"
+    cfg.profile.location.home_latitude = 53.551
+    cfg.profile.location.home_longitude = 9.993
+    cfg.profile.location.home_geocoded_address = "Speicherstraße 2, 20095 Hamburg, DE"
+    config_service.save(cfg)
+    config_service.set_sync_address_to_search(False)
+    page, _host = _open_page(qapp, config_service)
+    assert page.applicant.sync_home_from_address.isChecked() is False
+    before = _location_block(config_service.profile_path.read_text(encoding="utf-8"))
+    page.applicant.street.setText("Nur die Straße 9")
+    _save_section(page, key)
+    after = _location_block(config_service.profile_path.read_text(encoding="utf-8"))
+    assert after == before
+    app = config_service.load().application
+    assert app.street == "Nur die Straße 9"
+    assert app.postal_code == CV_POSTAL
+    assert app.city == CV_CITY
+
+
+def test_street_edit_without_checkbox_leaves_empty_home_empty(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """Gold (b): leerer Wohnort, Haken aus, nur die Straße ändern."""
+    _silence_dialogs(monkeypatch)
+    _seed_cv_contact(
+        config_service, street=CV_STREET, postal=CV_POSTAL, city=CV_CITY
+    )
+    page, _host = _open_page(qapp, config_service)
+    assert page.applicant.sync_home_from_address.isChecked() is False
+    page.applicant.street.setText("Nur die Straße 9")
+    _save_section(page, "personal")
+    loc = config_service.load().profile.location
+    assert loc.home_address == ""
+    assert loc.postal_code == ""
+    assert loc.city == ""
+    assert loc.home_latitude is None and loc.home_longitude is None
+    assert config_service.load().application.street == "Nur die Straße 9"
+
+
 def test_sync_checkbox_adopts_unchanged_cv_address(
     qapp, config_service, geo_ready, monkeypatch
 ):
-    """Bestehender Haken ist der Bestätigungsweg; es gibt keinen extra Dialog."""
+    """Gold (c): gesetzter Haken übernimmt die Kontaktadresse in den Such-Wohnort."""
     _silence_dialogs(monkeypatch)
     _seed_cv_contact(
         config_service, street=CV_STREET, postal=CV_POSTAL, city=CV_CITY
@@ -460,6 +544,115 @@ def test_skill_save_keeps_existing_home_at_one_geo_resolve(
     assert RESOLVABLE_CITY in (loc.city or loc.home_address)
     assert CV_POSTAL not in (loc.postal_code or "")
     assert CV_CITY not in (loc.city or "")
+
+
+def test_second_skill_save_does_not_resolve_geo_again(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """Wohnort ohne Koordinaten: erstes Speichern höchstens 1 Geo-Aufruf, zweites 0.
+
+    ``home_location_notice`` löst auf und verwirft das Ergebnis. Der Restore
+    schrieb die leeren Koordinaten zurück. ``retain_fresh_home_coordinates``
+    hält sie für genau diese Adresse. ``retranslate`` darf danach nicht noch
+    einmal aus den Eingabefeldern auflösen. Der Cache wird vor dem zweiten
+    Speichern geleert.
+    """
+    _silence_dialogs(monkeypatch)
+    cfg = config_service.load()
+    cfg.application.street = CV_STREET
+    cfg.application.postal_code = CV_POSTAL
+    cfg.application.city = CV_CITY
+    cfg.application.country = "DE"
+    cfg.profile.location.home_address = "Alexanderplatz 1, 10115 Berlin, DE"
+    cfg.profile.location.postal_code = RESOLVABLE_POSTAL
+    cfg.profile.location.city = RESOLVABLE_CITY
+    cfg.profile.location.country = "DE"
+    cfg.profile.location.home_latitude = None
+    cfg.profile.location.home_longitude = None
+    cfg.profile.location.home_geocoded_address = ""
+    config_service.save(cfg)
+    page, _host = _open_page(qapp, config_service)
+    calls = _count_geo(monkeypatch)
+    reset_pgeocode_index_for_tests()
+    page.qualifications.skills.set_items(["SAP"])
+    _save_section(page, "skills")
+    assert calls["geo"] <= 1
+    loc = config_service.load().profile.location
+    assert loc.home_address == "Alexanderplatz 1, 10115 Berlin, DE"
+    assert loc.postal_code == RESOLVABLE_POSTAL
+    assert loc.city == RESOLVABLE_CITY
+    assert loc.home_latitude is not None and loc.home_longitude is not None
+    kept = (loc.home_latitude, loc.home_longitude, loc.home_geocoded_address)
+    reset_pgeocode_index_for_tests()
+    calls["geo"] = 0
+    page.qualifications.skills.set_items(["SAP", "Excel"])
+    _save_section(page, "skills")
+    assert calls["geo"] == 0
+    again = config_service.load().profile.location
+    assert (again.home_latitude, again.home_longitude, again.home_geocoded_address) == kept
+    assert config_service.load().profile.qualifications.skill_values() == ["SAP", "Excel"]
+
+
+def test_checkbox_on_skill_save_does_not_adopt_contact(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    _silence_dialogs(monkeypatch)
+    _seed_cv_contact(
+        config_service, street=CV_STREET, postal=CV_POSTAL, city=CV_CITY
+    )
+    page, _host = _open_page(qapp, config_service)
+    page.applicant.sync_home_from_address.setChecked(True)
+    page.qualifications.skills.set_items(["SAP"])
+    _save_section(page, "skills")
+    loc = config_service.load().profile.location
+    assert loc.home_address == ""
+    assert loc.postal_code == ""
+    assert loc.city == ""
+
+
+def test_edit_section_loads_config_only_inside_save(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    import inspect
+
+    from desktop.services import ConfigService
+
+    _silence_dialogs(monkeypatch)
+    _seed_cv_contact(
+        config_service, street=CV_STREET, postal=CV_POSTAL, city=CV_CITY
+    )
+    callers: list[str] = []
+    original = ConfigService.load
+
+    def _load(self):
+        callers.append(inspect.stack()[1].function)
+        return original(self)
+
+    monkeypatch.setattr(ConfigService, "load", _load)
+    page, _host = _open_page(qapp, config_service)
+    callers.clear()
+    page.qualifications.skills.set_items(["SAP"])
+    _save_section(page, "skills")
+    assert "_edit_section" not in callers
+    assert callers.count("save") == 1
+
+
+@pytest.mark.parametrize("key", PROFILE_DRAWER_KEYS)
+def test_drawer_key_is_in_exactly_one_home_set(key):
+    adopt = key in _HOME_ADOPT_SCOPES
+    deny = key in _SECTION_SCOPES_WITHOUT_HOME
+    assert adopt != deny
+
+
+def test_drawer_mapping_matches_the_home_partition(qapp, config_service):
+    page = ProfilePage(config_service)
+    live = set(page._drawer_mapping())
+    adopt = set(_HOME_ADOPT_SCOPES) - {None}
+    deny = set(_SECTION_SCOPES_WITHOUT_HOME)
+    assert adopt.isdisjoint(deny)
+    assert live == set(PROFILE_DRAWER_KEYS) == adopt | deny
+    assert None in _HOME_ADOPT_SCOPES
+    assert None not in deny
 
 
 def test_skill_save_keeps_nordmole_in_the_job_list(

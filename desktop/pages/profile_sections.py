@@ -511,7 +511,9 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.retranslate()
         self.excluded_companies.retranslate()
         self._refresh_geo_status()
-        self.refresh_home_notice()
+        # Widget text has no coordinates. Reuse the loaded home when the
+        # fields still match, so a language refresh does not resolve again.
+        self.refresh_home_notice(self._location_if_widgets_match())
 
     def _refresh_geo_status(self) -> None:
         try:
@@ -548,6 +550,20 @@ class LocationWorkSection(QGroupBox):
                 tr("profile.geo_status_bad", message=type(exc).__name__)
             )
 
+    def _location_if_widgets_match(self) -> LocationConfig | None:
+        loaded = getattr(self, "_loaded_location", None)
+        if loaded is None:
+            return None
+        if self.home_address.text().strip() != (loaded.home_address or "").strip():
+            return None
+        if self.postal_code.text().strip() != (getattr(loaded, "postal_code", "") or "").strip():
+            return None
+        widget_country = self.country.text().strip() or "DE"
+        loaded_country = (getattr(loaded, "country", "") or "").strip() or "DE"
+        if widget_country != loaded_country:
+            return None
+        return loaded
+
     def refresh_home_notice(self, location: LocationConfig | None = None) -> None:
         """Re-read resolver status for the home fields. Does not guess a PLZ."""
         from core.location import home_location_notice
@@ -568,6 +584,7 @@ class LocationWorkSection(QGroupBox):
         employment: EmploymentConfig,
         filters: FiltersConfig,
     ) -> None:
+        self._loaded_location = location
         self.home_address.setText(location.home_address)
         self.postal_code.setText(getattr(location, "postal_code", "") or "")
         self.max_distance.setValue(float(location.max_distance_km))
