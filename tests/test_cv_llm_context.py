@@ -417,7 +417,7 @@ def test_llama_constructor_receives_thread_and_ctx(monkeypatch: pytest.MonkeyPat
 
 
 def test_timeout_event_once_and_token_events_at_most_three(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
     """1000 tokens across 2 s yield at most 3 progress events, and one timeout."""
     import json
@@ -427,15 +427,12 @@ def test_timeout_event_once_and_token_events_at_most_three(
     throttle = TokenProgressThrottle()
     direct = []
     for index in range(1000):
-        event = throttle.consider(
-            tokens_done=index + 1,
-            max_tokens=1000,
-            now=index * (2.0 / 999),
-        )
+        event = throttle.consider(tokens_done=index + 1, now=index * (2.0 / 999))
         if event is not None:
             direct.append(event)
     assert len(direct) <= 3
-    assert all("tokens_done" in event and "max_tokens" in event for event in direct)
+    assert direct[0]["tokens_done"] == 1
+    assert all("tokens_done" in event and "max_tokens" not in event for event in direct)
 
     monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
     monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "95")
@@ -470,15 +467,17 @@ def test_timeout_event_once_and_token_events_at_most_three(
             return chunks()
 
     monkeypatch.setattr("core.cv_llm_runtime._llama_cls", lambda: Many)
-    chat_completion_inprocess(
-        [{"role": "user", "content": "x"}],
-        model_path=Path("unused.gguf"),
-    )
+    with caplog.at_level("INFO"):
+        chat_completion_inprocess(
+            [{"role": "user", "content": "x"}],
+            model_path=Path("unused.gguf"),
+        )
     lines = [json.loads(line) for line in phase.read_text(encoding="utf-8").splitlines() if line.strip()]
     timeouts = [line for line in lines if "timeout_s" in line]
     tokens = [line for line in lines if "tokens_done" in line]
     assert timeouts == [{"phase": "generation", "timeout_s": 95}]
     assert len(tokens) <= 3
-    assert tokens
-    assert all(item["max_tokens"] == 4096 - 100 - CV_LLM_CTX_SLACK_TOKENS for item in tokens)
+    assert tokens[0]["tokens_done"] == 1
+    assert all("max_tokens" not in item for item in tokens)
+    assert "max_tokens=" in caplog.text
     assert cursor["i"] == 1000

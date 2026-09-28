@@ -964,8 +964,8 @@ CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", 
 # 160 MiB is above that jump.
 JOB_LIMIT_MARGIN_BYTES = 160 * 1024 * 1024  # 167_772_160
 # llama.cpp crash exits when a job memory limit makes an allocation fail.
-# The completion-port message is preferred. These codes are the fallback
-# after a sample that was already near the child budget.
+# After the child ends, Windows PeakJobMemoryUsed is compared with the job
+# limit. These codes count only when that peak is within one margin of the limit.
 JOB_LIMIT_CRASH_EXIT_CODES = frozenset(
     {
         0xC0000005,  # STATUS_ACCESS_VIOLATION
@@ -1700,46 +1700,37 @@ def is_job_limit_crash_exit(code: int) -> bool:
     return normalize_process_exit(code) in JOB_LIMIT_CRASH_EXIT_CODES
 
 
-def sample_near_child_budget(sample: int, child_budget: int) -> bool:
-    """True when the sample is within one job-limit margin of the child budget."""
-    return int(sample) >= int(child_budget) - JOB_LIMIT_MARGIN_BYTES
+def peak_near_job_limit(peak_job_memory_used: int, job_limit: int) -> bool:
+    """True when ``PeakJobMemoryUsed`` is within one margin of the job limit."""
+    return int(peak_job_memory_used) >= int(job_limit) - JOB_LIMIT_MARGIN_BYTES
 
 
-def memory_kind_for_job_limit(*, child_budget: int, app_private: int) -> str:
-    """Classify a death at the job limit with the same rules as a gate sample.
-
-    The reached value is the job limit itself: the allocation was refused there.
-    """
-    reached = job_enforce_memory_bytes(child_budget=child_budget, app_private=app_private)
-    kind = classify_child_private_commit(reached, child_budget)
-    if kind is not None:
-        return kind
-    if reached > fresh_app_child_budget_bytes():
-        return "peak_rss_exceeded"
-    return "memory_budget_app_share"
-
-
-def memory_kind_for_limit_death(
+def memory_kind_for_crash_peak(
     *,
     exit_code: int | None,
-    last_sample: int | None,
+    peak_job_memory_used: int | None,
+    job_limit: int,
     child_budget: int,
-    app_private: int,
-    job_memory_limit: bool,
 ) -> str | None:
-    """Map a job-limit death to ``peak_rss_exceeded`` or ``memory_budget_app_share``.
+    """Map a crash plus a near job peak to a memory code, or None.
 
-    A completion-port ``JOB_OBJECT_MSG_JOB_MEMORY_LIMIT`` is enough on its own.
-    The crash exit codes count only when a previous sample was near the budget.
-    Otherwise this returns None and the caller keeps the payload kind.
+    Both are required: exit ``0xC0000005``, ``0xC0000017``, or ``0xC0000409``,
+    and ``PeakJobMemoryUsed >= job_limit - JOB_LIMIT_MARGIN_BYTES``. The peak
+    is then classified with the same rules as a gate sample. A crash far under
+    the limit returns None so the payload kind stays.
     """
-    if job_memory_limit:
-        return memory_kind_for_job_limit(child_budget=child_budget, app_private=app_private)
-    if exit_code is None or not is_job_limit_crash_exit(exit_code):
+    if exit_code is None or peak_job_memory_used is None or int(job_limit) <= 0:
         return None
-    if last_sample is None or not sample_near_child_budget(last_sample, child_budget):
+    if not is_job_limit_crash_exit(exit_code):
         return None
-    return memory_kind_for_job_limit(child_budget=child_budget, app_private=app_private)
+    if not peak_near_job_limit(peak_job_memory_used, job_limit):
+        return None
+    kind = classify_child_private_commit(int(peak_job_memory_used), child_budget)
+    if kind is not None:
+        return kind
+    if int(peak_job_memory_used) > fresh_app_child_budget_bytes():
+        return "peak_rss_exceeded"
+    return "memory_budget_app_share"
 
 
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:

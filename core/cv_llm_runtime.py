@@ -541,10 +541,11 @@ def chat_completion_inprocess(
                     saw_chunk = True
                     _sample_private_commit("after_prompt_eval")
                 tokens_done += 1
+                # max_tokens stays in the log line above. The UI event is the
+                # counter only. No remaining time is computed.
                 emit_token_progress(
                     token_events,
                     tokens_done=tokens_done,
-                    max_tokens=budget,
                     now=phase_clock(),
                 )
                 choice = chunk["choices"][0]

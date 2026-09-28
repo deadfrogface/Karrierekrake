@@ -52,33 +52,32 @@ def absorb_phase_message(
     *,
     timeout_s: int | None,
     tokens_done: int | None,
-    max_tokens: int | None,
-) -> tuple[int | None, int | None, int | None]:
-    """Keep the first ``timeout_s`` and the latest throttled token counts.
+) -> tuple[int | None, int | None]:
+    """Keep the first ``timeout_s`` and the latest ``tokens_done`` count.
 
-    Plain stage names are ignored. The visible status text stays the
-    existing progress sentence.
+    Plain stage names are ignored. ``max_tokens`` is not a UI field.
+    The visible status text stays the existing progress sentence.
+    There is no remaining-time calculation.
     """
     if not message.startswith("{"):
-        return timeout_s, tokens_done, max_tokens
+        return timeout_s, tokens_done
     try:
         event = json.loads(message)
     except json.JSONDecodeError:
-        return timeout_s, tokens_done, max_tokens
+        return timeout_s, tokens_done
     if not isinstance(event, dict):
-        return timeout_s, tokens_done, max_tokens
+        return timeout_s, tokens_done
     if "timeout_s" in event and timeout_s is None:
         try:
             timeout_s = int(event["timeout_s"])
         except (TypeError, ValueError):
             pass
-    if "tokens_done" in event and "max_tokens" in event:
+    if "tokens_done" in event:
         try:
             tokens_done = int(event["tokens_done"])
-            max_tokens = int(event["max_tokens"])
         except (TypeError, ValueError):
             pass
-    return timeout_s, tokens_done, max_tokens
+    return timeout_s, tokens_done
 
 
 def append_phase_event(event: dict) -> None:
@@ -111,27 +110,22 @@ class TokenProgressThrottle:
         self,
         *,
         tokens_done: int,
-        max_tokens: int,
         now: float,
     ) -> dict[str, int | str] | None:
+        """Emit immediately on the first token, then at most once per interval."""
         if self._last is not None and (now - self._last) < self.interval_s:
             return None
         self._last = now
-        return {
-            "phase": "generation",
-            "tokens_done": int(tokens_done),
-            "max_tokens": int(max_tokens),
-        }
+        return {"phase": "generation", "tokens_done": int(tokens_done)}
 
 
 def emit_token_progress(
     throttle: TokenProgressThrottle,
     *,
     tokens_done: int,
-    max_tokens: int,
     now: float,
 ) -> dict[str, int | str] | None:
-    event = throttle.consider(tokens_done=tokens_done, max_tokens=max_tokens, now=now)
+    event = throttle.consider(tokens_done=tokens_done, now=now)
     if event is not None:
         append_phase_event(event)
     return event

@@ -18,7 +18,7 @@ Dieselbe Speicherklasse wie `PeakJobMemoryUsed` in #69: privater festgeschrieben
 - Elternprozess, nur Linux: alle 2,0 s ein Lesevorgang von `/proc/<kind-pid>/smaps_rollup`. Gemessen auf dieser VM mit eingeblendeter GGUF: 35 µs pro Lesevorgang, bei 2 s Abstand 0,0017 % einer Kernzeit. Das liegt unter 0,5 %. Windows braucht dieses Intervall nicht, weil `PeakPagefileUsage` bereits ein Hochwasser ist.
 - Ein optionaler llama.cpp-Server zählt ebenfalls nur anonymen RSS, nicht `VmRSS`.
 
-Der produktive Spawn setzt `JOB_OBJECT_LIMIT_JOB_MEMORY` auf das Kind-Budget plus `JOB_LIMIT_MARGIN_BYTES` (160 MiB), nicht auf das Kind-Budget selbst. Das Gate im Kind vergleicht mit dem niedrigeren Kind-Budget und greift im Normalfall zuerst. Am Job hängt ein Completion Port für `JOB_OBJECT_MSG_JOB_MEMORY_LIMIT`. Ohne veröffentlichtes Budget bleibt das Job-Limit aus.
+Der produktive Spawn setzt `JOB_OBJECT_LIMIT_JOB_MEMORY` auf das Kind-Budget plus `JOB_LIMIT_MARGIN_BYTES` (160 MiB), nicht auf das Kind-Budget selbst. Das Gate im Kind vergleicht mit dem niedrigeren Kind-Budget und greift im Normalfall zuerst. Nach dem Ende eines Absturzes liest der Elternprozess einmal `PeakJobMemoryUsed`. Ohne veröffentlichtes Budget bleibt das Job-Limit aus.
 
 Ship-Evidenz bleibt das Windows Job Object auf dem i3-Laptop. Eine Agent-VM mit AMX-Repack ist kein Ersatz dafür.
 

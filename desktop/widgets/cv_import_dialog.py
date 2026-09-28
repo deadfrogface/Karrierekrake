@@ -163,7 +163,6 @@ class CvImportDialog(QDialog):
         self.attempt_count = 0
         self.phase_timeout_s: int | None = None
         self.phase_tokens_done: int | None = None
-        self.phase_max_tokens: int | None = None
 
         self.mode_replace = QRadioButton(tr("cv_import.mode_replace"))
         self.mode_merge = QRadioButton(tr("cv_import.mode_merge"))
@@ -400,15 +399,10 @@ class CvImportDialog(QDialog):
             return
         from core.cv_phase_events import absorb_phase_message
 
-        (
-            self.phase_timeout_s,
-            self.phase_tokens_done,
-            self.phase_max_tokens,
-        ) = absorb_phase_message(
+        self.phase_timeout_s, self.phase_tokens_done = absorb_phase_message(
             message,
             timeout_s=self.phase_timeout_s,
             tokens_done=self.phase_tokens_done,
-            max_tokens=self.phase_max_tokens,
         )
         self.progress.setVisible(True)
         self.status_label.setText(tr("cv_import.progress"))

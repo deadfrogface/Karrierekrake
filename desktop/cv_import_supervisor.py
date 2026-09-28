@@ -262,50 +262,34 @@ class CvImportSupervisor:
             self._proc = proc
             self._app_private = app_private
             self._child_budget = child_budget
+            from core.cv_docpick_import import job_enforce_memory_bytes
+
+            self._job_limit = job_enforce_memory_bytes(
+                child_budget=child_budget, app_private=app_private
+            )
             if self._cancel.is_set():
                 self._stop(proc)
                 return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
             deadline = time.monotonic() + self.timeout_s
             next_anon = time.monotonic()
             phase_offset = 0
-            last_sample: int | None = None
             while True:
                 if self._cancel.is_set():
                     self._stop(proc)
                     return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
                 phase_offset = _drain_phase_events(phase_path, phase_offset, progress)
-                if _job_memory_limit_signaled(proc):
-                    self._stop(proc)
-                    _drain_phase_events(phase_path, phase_offset, progress)
-                    code = proc.poll()
-                    return self._classify(
-                        int(code if code is not None else 1),
-                        out_path,
-                        last_sample=last_sample,
-                        job_memory_limit=True,
-                    )
                 code = proc.poll()
                 if code is not None:
-                    if last_sample is None:
-                        from core.cv_docpick_import import is_job_limit_crash_exit
-
-                        if is_job_limit_crash_exit(int(code)):
-                            sampled = _parent_anon_sample(proc)
-                            if sampled is not None:
-                                last_sample = sampled
                     _drain_phase_events(phase_path, phase_offset, progress)
+                    peak = _peak_after_exit(proc, int(code))
                     return self._classify(
                         int(code),
                         out_path,
-                        last_sample=last_sample,
-                        job_memory_limit=_job_memory_limit_signaled(proc),
+                        peak_job_memory_used=peak,
                     )
                 now = time.monotonic()
                 if now >= next_anon:
                     next_anon = now + _PARENT_ANON_SAMPLE_S
-                    sampled = _parent_anon_sample(proc)
-                    if sampled is not None:
-                        last_sample = sampled
                     memory_code = _parent_memory_code(proc, child_budget=child_budget)
                     if memory_code:
                         self._stop(proc)
@@ -384,8 +368,7 @@ class CvImportSupervisor:
         code: int,
         out_path: Path,
         *,
-        last_sample: int | None = None,
-        job_memory_limit: bool = False,
+        peak_job_memory_used: int | None = None,
     ) -> ImportAttemptResult:
         payload = _read_payload(out_path)
         if code == 0 and payload.get("ok") and isinstance(payload.get("parsed"), dict):
@@ -400,26 +383,39 @@ class CvImportSupervisor:
             return ImportAttemptResult(
                 False, "peak_rss_exceeded", message or kind, None, attempts=1
             )
-        from core.cv_docpick_import import memory_kind_for_limit_death
+        from core.cv_docpick_import import (
+            is_job_limit_crash_exit,
+            memory_kind_for_crash_peak,
+        )
 
-        limit_kind = memory_kind_for_limit_death(
+        job_limit = int(getattr(self, "_job_limit", 0))
+        crash = is_job_limit_crash_exit(code)
+        if crash:
+            logger.info(
+                "cv_import crash_exit peak_job_memory_used=%s job_limit=%s exit=%s",
+                peak_job_memory_used if peak_job_memory_used is not None else "unread",
+                job_limit,
+                code,
+            )
+        limit_kind = memory_kind_for_crash_peak(
             exit_code=code,
-            last_sample=last_sample,
+            peak_job_memory_used=peak_job_memory_used,
+            job_limit=job_limit,
             child_budget=getattr(self, "_child_budget", 0),
-            app_private=getattr(self, "_app_private", 0),
-            job_memory_limit=job_memory_limit,
         )
         if limit_kind:
             logger.error(
-                "%s job_memory_limit=%s exit=%s last_sample=%s child_budget=%s",
+                "%s peak_job_memory_used=%s job_limit=%s exit=%s",
                 limit_kind,
-                job_memory_limit,
+                peak_job_memory_used,
+                job_limit,
                 code,
-                last_sample,
-                getattr(self, "_child_budget", 0),
             )
             return ImportAttemptResult(False, limit_kind, limit_kind, None, attempts=1)
-        if kind == "oom" or code == 3 or is_oom_exit(code):
+        # A crash whose peak is known and far under the job limit keeps the
+        # payload kind. 0xC0000017 is not rewritten to oom in that case.
+        peak_was_far = crash and peak_job_memory_used is not None
+        if not peak_was_far and (kind == "oom" or code == 3 or is_oom_exit(code)):
             return ImportAttemptResult(False, "oom" if kind != "peak_rss_exceeded" else "peak_rss_exceeded", message or "oom", None, attempts=1)
         if kind in {"timeout", "llm_timeout"}:
             logger.error("llm_timeout child_kind=%s", kind or "timeout")
@@ -435,14 +431,31 @@ class CvImportSupervisor:
         )
 
 
-def _job_memory_limit_signaled(proc: object) -> bool:
-    probe = getattr(proc, "job_memory_limit_signaled", None)
-    if not callable(probe):
-        return False
+def _peak_after_exit(proc: object, code: int) -> int | None:
+    """One ``PeakJobMemoryUsed`` read after a crash exit. Windows job only.
+
+    Other exits are not queried. Off Windows, or without a job, this is None.
+    """
+    from core.cv_docpick_import import is_job_limit_crash_exit
+
+    if not is_job_limit_crash_exit(code):
+        return None
+    reader = getattr(proc, "read_peak_job_memory_used", None)
+    if not callable(reader):
+        return None
     try:
-        return bool(probe())
+        value = reader()
     except OSError:
-        return False
+        return None
+    if value is None:
+        return None
+    try:
+        peak = int(value)
+    except (TypeError, ValueError):
+        return None
+    if peak < 0:
+        return None
+    return peak
 
 
 def _drain_phase_events(path: Path, offset: int, progress: Callable[[str], None] | None) -> int:
