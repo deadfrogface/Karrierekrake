@@ -93,6 +93,10 @@ def test_driving_classes_deduped_for_display_without_mutating_storage():
     assert driving_classes_for_display("E") == ["E"]
     assert driving_classes_for_display(["A", "E"]) == ["A", "E"]
     assert driving_classes_for_display(["C1", "C1E"]) == ["C1", "C1E"]
+    # Digit leftovers from the old character split are not classes.
+    assert driving_classes_for_display(["C", "E", "9", "5"]) == ["C", "CE"]
+    assert "9" not in driving_classes_for_display(["C", "E", "9", "5"])
+    assert "5" not in driving_classes_for_display(["C", "E", "9", "5"])
 
 
 def test_import_license_strings_are_tokens_not_characters():
@@ -572,3 +576,265 @@ def test_licence_evaluators_accept_list_and_string():
     assert evaluate_rows[0] == evaluate_rows[1] == "B BE"
     assert post_rows[0] == post_rows[1] == (1.0, 1.0)
     assert phi_rows[0] == phi_rows[1] == {"B", "BE"}
+
+
+def _sourced_codes(codes: list[str]) -> list[SourcedText]:
+    return [SourcedText(value=code, source="cv") for code in codes]
+
+
+def _profile_yaml(codes: list[str]) -> str:
+    lines = ["qualifications:", "  driving_license:"]
+    for code in codes:
+        lines.append(f"    - value: {code!r}")
+        lines.append("      source: cv")
+    lines.append("")
+    return "\n".join(lines)
+
+
+@pytest.mark.parametrize("codes", (["B", "E"], ["B", "B", "E"]))
+def test_existing_profile_reads_be_without_rewriting_file(codes, tmp_path):
+    """Imported lists stay on disk. Reading them yields the normalised display."""
+    from core.config import load_config
+
+    profile_path = tmp_path / "profile.yaml"
+    application_path = tmp_path / "application_profile.yaml"
+    settings_path = tmp_path / "settings.yaml"
+    profile_path.write_text(_profile_yaml(codes), encoding="utf-8")
+    application_path.write_text("driving_license: ''\n", encoding="utf-8")
+    settings_path.write_text("{}\n", encoding="utf-8")
+    before = profile_path.read_bytes()
+
+    loaded = load_config(profile_path, application_path, settings_path, strip_placeholders=False)
+    assert loaded.profile.qualifications.driving_values() == codes
+    assert ", ".join(driving_classes_for_display(loaded.profile.qualifications.driving_license)) == "B, BE"
+    assert profile_path.read_bytes() == before
+
+    # Startup with the shutdown migration already applied does not rewrite the file.
+    from desktop.services import ConfigService
+
+    root = tmp_path / "Karrierekrake"
+    (root / "config").mkdir(parents=True)
+    for name in ("data", "logs", "browser_profile", "browsers", "cvs", "cache", "cover_letters"):
+        (root / name).mkdir()
+    disk_profile = root / "config" / "profile.yaml"
+    disk_profile.write_bytes(before)
+    (root / "config" / "application_profile.yaml").write_text("driving_license: ''\n", encoding="utf-8")
+    (root / "config" / "settings.yaml").write_text("{}\n", encoding="utf-8")
+    (root / "meta.json").write_text(
+        '{"shutdown_fix_v1": true, "first_run_completed": true}\n',
+        encoding="utf-8",
+    )
+
+    class _Started(ConfigService):
+        def __init__(self) -> None:
+            self.dirs = {
+                "root": root,
+                "config": root / "config",
+                "data": root / "data",
+                "logs": root / "logs",
+                "browser_profile": root / "browser_profile",
+                "browsers": root / "browsers",
+                "cvs": root / "cvs",
+                "cache": root / "cache",
+                "cover_letters": root / "cover_letters",
+            }
+            self.meta_path = root / "meta.json"
+            self._config = None
+
+    service = _Started()
+    shown = service.load()
+    assert ", ".join(driving_classes_for_display(shown.profile.qualifications.driving_license)) == "B, BE"
+    assert disk_profile.read_bytes() == before
+
+
+def test_digit_remnants_never_become_classes(tmp_path):
+    """9 and 5 from the old split are dropped everywhere. The file stays as stored."""
+    from core.config import ApplicationProfile, load_config
+    from core.cover_guard import confirmed_profile_text
+    from core.matcher import profile_licence_codes, reset_profile_licence_cache
+    from desktop.services.profile_merge import sync_application_summaries
+
+    codes = ["C", "E", "9", "5"]
+    profile_path = tmp_path / "profile.yaml"
+    application_path = tmp_path / "application_profile.yaml"
+    settings_path = tmp_path / "settings.yaml"
+    profile_path.write_text(_profile_yaml(codes), encoding="utf-8")
+    application_path.write_text("{}\n", encoding="utf-8")
+    settings_path.write_text("{}\n", encoding="utf-8")
+    before = profile_path.read_bytes()
+    loaded = load_config(profile_path, application_path, settings_path, strip_placeholders=False)
+    quals = loaded.profile.qualifications
+    assert quals.driving_values() == codes
+    assert ", ".join(driving_classes_for_display(quals.driving_license)) == "C, CE"
+    assert profile_path.read_bytes() == before
+
+    app = ApplicationProfile()
+    sync_application_summaries(app, quals, fill_empty=True)
+    assert app.driving_license == "C, CE"
+    assert "9" not in app.driving_license and "5" not in app.driving_license
+
+    reset_profile_licence_cache()
+    matched = profile_licence_codes(quals)
+    assert matched == frozenset({"C", "CE"})
+    assert "9" not in matched and "5" not in matched and "E" not in matched
+
+    evidence = confirmed_profile_text(loaded)
+    assert "C" in evidence and "CE" in evidence
+    assert "9" not in evidence and "5" not in evidence
+    _assert_no_list_repr_or_lone_e(evidence)
+
+
+def test_sync_summary_is_every_normalised_class():
+    from core.config import ApplicationProfile, QualificationsConfig
+    from desktop.services.profile_merge import sync_application_summaries
+
+    for stored in (["B", "BE"], ["B", "E"]):
+        app = ApplicationProfile()
+        quals = QualificationsConfig(driving_license=_sourced_codes(stored))
+        before = [item.value for item in quals.driving_license]
+        sync_application_summaries(app, quals, fill_empty=True)
+        assert app.driving_license == "B, BE"
+        assert [item.value for item in quals.driving_license] == before
+
+
+def _licence_points(stored: list[str]) -> int:
+    from core.config import AppConfig, QualificationsConfig
+    from core.matcher import score_job
+    from core.models import Job
+
+    job = Job(
+        title="Fahrer",
+        company="Logistik",
+        remote_type="onsite",
+        distance_km=5,
+        description="Führerschein Klasse B erforderlich",
+        employment_type="Vollzeit",
+    )
+
+    def scored(codes: list[str]) -> int:
+        cfg = AppConfig()
+        cfg.profile.qualifications = QualificationsConfig(driving_license=_sourced_codes(codes))
+        return score_job(job, cfg).score
+
+    return scored(stored) - scored([])
+
+
+def test_matching_class_b_is_set_membership():
+    from core.config import AppConfig, QualificationsConfig
+    from core.matcher import score_job
+    from core.models import Job
+
+    job = Job(
+        title="Fahrer",
+        company="Logistik",
+        remote_type="onsite",
+        distance_km=5,
+        description="Führerschein Klasse B erforderlich",
+        employment_type="Vollzeit",
+    )
+    assert _licence_points(["B"]) == 5
+    assert _licence_points(["BE"]) == 5
+    assert _licence_points(["C", "CE"]) == 3
+
+    def reasons(codes: list[str]) -> list[str]:
+        cfg = AppConfig()
+        cfg.profile.qualifications = QualificationsConfig(driving_license=_sourced_codes(codes))
+        return [row for row in score_job(job, cfg).match_reasons if "Führerschein" in row]
+
+    assert reasons(["B"]) == ["Direkt: Führerschein Klasse B"]
+    assert reasons(["BE"]) == ["Direkt: Führerschein Klasse B"]
+    assert reasons(["C", "CE"]) == ["Direkt: Führerschein vorhanden"]
+
+
+def test_five_thousand_ads_normalize_profile_once():
+    """Scoring 5000 ads normalises the profile classes once per profile state."""
+    from core.config import AppConfig, QualificationsConfig
+    import core.matcher as matcher
+    from core.matcher import reset_profile_licence_cache, score_job
+    from core.models import Job
+
+    jobs = [
+        Job(
+            id=str(i),
+            title="Fahrer",
+            company="Logistik",
+            remote_type="onsite",
+            distance_km=5,
+            description="Führerschein Klasse B erforderlich",
+            employment_type="Vollzeit",
+        )
+        for i in range(5000)
+    ]
+    counts = {}
+    for stored in (["B", "BE"], ["B", "E"]):
+        reset_profile_licence_cache()
+        cfg = AppConfig()
+        cfg.profile.qualifications = QualificationsConfig(driving_license=_sourced_codes(stored))
+        for job in jobs:
+            score_job(job, cfg)
+        counts[tuple(stored)] = matcher.profile_licence_normalizations
+        assert matcher.profile_licence_normalizations == 1
+        cfg.profile.qualifications.driving_license = _sourced_codes(["C"])
+        score_job(jobs[0], cfg)
+        assert matcher.profile_licence_normalizations == 2
+    assert counts[("B", "BE")] == 1
+    assert counts[("B", "E")] == 1
+
+
+_LONE_CLASS_E = __import__("re").compile(r"(?:^|[\s,\n])E(?:$|[\s,\n])")
+
+
+def _assert_no_list_repr_or_lone_e(text: str) -> None:
+    assert "['" not in text
+    assert _LONE_CLASS_E.search(text) is None
+
+
+def _letter_profile(codes: list[str]):
+    from core.config import AppConfig, QualificationsConfig
+
+    cfg = AppConfig()
+    cfg.application.first_name = "Ada"
+    cfg.application.last_name = "Beispiel"
+    cfg.profile.qualifications = QualificationsConfig(
+        skills=[SourcedText(value="Excel", source="manual")],
+        driving_license=_sourced_codes(codes),
+    )
+    return cfg
+
+
+def test_cover_evidence_uses_the_same_normalisation():
+    from core.cover_guard import confirmed_profile_text
+    from core.cover_letter import compose_cover_letter
+    from core.models import Job
+
+    job = Job(
+        title="Sachbearbeiter",
+        company="Nord GmbH",
+        remote_type="remote",
+        description=(
+            "Wir suchen Unterstützung in der Verwaltung mit Excel. "
+            "Führerschein Klasse B ist von Vorteil."
+        ),
+    )
+    paired = []
+    letters = []
+    for stored in (["B", "BE"], ["B", "E"]):
+        cfg = _letter_profile(stored)
+        evidence = confirmed_profile_text(cfg)
+        letter = compose_cover_letter(job, cfg)
+        assert letter.ok
+        paired.append(evidence)
+        letters.append(letter.text)
+        _assert_no_list_repr_or_lone_e(evidence)
+        _assert_no_list_repr_or_lone_e(letter.text)
+        assert "B" in evidence and "BE" in evidence
+    assert paired[0] == paired[1]
+    assert letters[0] == letters[1]
+
+    absent = confirmed_profile_text(_letter_profile(["B", "BE"]))
+    for phrase in ("B96", "CE 95", "Klasse 3"):
+        assert phrase not in absent
+    present = confirmed_profile_text(_letter_profile(["B96", "CE 95", "Klasse 3"]))
+    for phrase in ("B96", "CE 95", "Klasse 3"):
+        assert phrase in present
+    _assert_no_list_repr_or_lone_e(present)

@@ -230,7 +230,8 @@ def driving_classes_for_display(raw: str | list | None) -> list[str]:
     appended to the class directly before it when that class has an E variant
     (``B``→``BE``, ``C``→``CE``, ``C1``→``C1E``, ``D``→``DE``, ``D1``→``D1E``).
     The base class stays. ``[B, E]`` is therefore ``B, BE``. A lone ``E`` with
-    no such predecessor stays ``E``.
+    no such predecessor stays ``E``. A token that is only digits (``9``, ``5``)
+    is dropped and is not written back. ``CE 95`` is not rebuilt from those digits.
 
     This does not repair how an importer or LLM split ``Klassen B und BE``
     into ``[B, E]``. It only normalises a list that is already split.
@@ -254,6 +255,11 @@ def driving_classes_for_display(raw: str | list | None) -> list[str]:
         variant = _LICENSE_E_VARIANT.get(previous_base or "")
         if folded == "E" and variant:
             recognised.append(variant)
+            previous_base = None
+            return
+        # Leftover digits from the old character-by-character split ("BE" → B, E
+        # and "95" → 9, 5). They are not classes. The stored list is not rewritten.
+        if folded.isdigit():
             previous_base = None
             return
         if folded in known:
