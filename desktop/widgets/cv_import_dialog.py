@@ -71,6 +71,36 @@ from desktop.workers import start_worker
 # A second click in the same double-click must not dismiss the cancelled state.
 _CANCEL_CLOSE_GRACE_S = 0.8
 
+# The Qt busy indicator repaints at the style frame rate. A 2 Hz step keeps
+# the bar moving. Never under 250 ms.
+CV_IMPORT_PROGRESS_INTERVAL_MS = 500
+
+# Existing strings only. New import codes must not fall through to the generic
+# read error. ``llm_timeout`` keeps the timeout sentence and the retry button.
+_FAILURE_TEXT_KEYS = {
+    "oom": "cv_import.error_oom",
+    "peak_rss_exceeded": "cv_import.error_oom",
+    "memory_budget_app_share": "cv_import.error_oom",
+    "timeout": "cv_import.error_timeout",
+    "llm_timeout": "cv_import.error_timeout",
+    "llm_prompt_too_long": "cv_import.error_extract_failed",
+    "llm_output_truncated": "cv_import.error_extract_failed",
+    "model_missing": "cv_import.error_model_missing",
+    "llama_missing": "cv_import.error_llama_missing",
+    "llm_unavailable": "cv_import.error_llm_unavailable",
+    "docpick_missing": "cv_import.error_docpick_missing",
+    "empty_cv": "cv_import.error_empty_file",
+    "unreadable_cv": "cv_import.error_unreadable",
+    "llm_extract_failed": "cv_import.error_extract_failed",
+    "llm_empty": "cv_import.error_extract_failed",
+    "unreliable_extract": "cv_import.error_unreliable",
+}
+
+
+def failure_text_key(kind: str) -> str | None:
+    """i18n key for an import failure, or None when the generic read error applies."""
+    return _FAILURE_TEXT_KEYS.get(kind)
+
 _REDUCED_MOTION_VALUES = {"1", "true", "yes", "on", "reduce", "reduced"}
 
 
@@ -161,6 +191,8 @@ class CvImportDialog(QDialog):
         self._last_kind = ""
         self._phase = "idle"
         self.attempt_count = 0
+        self.phase_timeout_s: int | None = None
+        self.phase_tokens_done: int | None = None
 
         self.mode_replace = QRadioButton(tr("cv_import.mode_replace"))
         self.mode_merge = QRadioButton(tr("cv_import.mode_merge"))
@@ -207,10 +239,14 @@ class CvImportDialog(QDialog):
         self.path_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.progress = QProgressBar()
         self.progress.setObjectName("CvImportProgress")
-        self.progress.setRange(0, 0)
+        self.progress.setRange(0, 100)
+        self.progress.setValue(0)
         self.progress.setMinimumHeight(18)
         self.progress.setTextVisible(False)
         self.progress.setVisible(False)
+        self._progress_timer = QTimer(self)
+        self._progress_timer.setInterval(CV_IMPORT_PROGRESS_INTERVAL_MS)
+        self._progress_timer.timeout.connect(self._step_import_progress)
 
         self.empty_box = QWidget()
         self.empty_box.setObjectName("CvImportEmpty")
@@ -392,11 +428,21 @@ class CvImportDialog(QDialog):
         )
         return path or ""
 
-    def _on_progress(self, _message: str) -> None:
+    def _on_progress(self, message: str) -> None:
         if self._closing or self._cancel_requested or not self._running:
             return
-        self.progress.setVisible(True)
-        self.status_label.setText(tr("cv_import.progress"))
+        from core.cv_phase_events import absorb_phase_message
+
+        self.phase_timeout_s, self.phase_tokens_done = absorb_phase_message(
+            message,
+            timeout_s=self.phase_timeout_s,
+            tokens_done=self.phase_tokens_done,
+        )
+        if not self.progress.isVisible():
+            self.progress.setVisible(True)
+        text = tr("cv_import.progress")
+        if self.status_label.text() != text:
+            self.status_label.setText(text)
 
     def _on_attempt(self, result: object) -> None:
         self._running = False
@@ -443,20 +489,7 @@ class CvImportDialog(QDialog):
     def _show_failure(self, kind: str, message: str) -> None:
         self._clear_unapplied()
         self.preview.clear()
-        kind_key = {
-            "oom": "cv_import.error_oom",
-            "peak_rss_exceeded": "cv_import.error_oom",
-            "timeout": "cv_import.error_timeout",
-            "model_missing": "cv_import.error_model_missing",
-            "llama_missing": "cv_import.error_llama_missing",
-            "llm_unavailable": "cv_import.error_llm_unavailable",
-            "docpick_missing": "cv_import.error_docpick_missing",
-            "empty_cv": "cv_import.error_empty_file",
-            "unreadable_cv": "cv_import.error_unreadable",
-            "llm_extract_failed": "cv_import.error_extract_failed",
-            "llm_empty": "cv_import.error_extract_failed",
-            "unreliable_extract": "cv_import.error_unreliable",
-        }.get(kind)
+        kind_key = failure_text_key(kind)
         if kind_key:
             text = tr(kind_key)
         else:
@@ -509,6 +542,7 @@ class CvImportDialog(QDialog):
         else:
             self._cancelled_banner.setVisible(False)
         self.progress.setVisible(progress)
+        self._sync_progress_motion()
         self.path_label.setVisible(True)
         self.empty_box.setVisible(empty)
         self.error_box.setVisible(error)
@@ -530,6 +564,23 @@ class CvImportDialog(QDialog):
             self._cancel_btn.setText(tr("cv_import.cancel_btn"))
         else:
             self._cancel_btn.setText(tr("cv_import.close"))
+
+    def _step_import_progress(self) -> None:
+        """One repaint. The bar has no percent text and no remaining time."""
+        if self._phase != "progress":
+            self._progress_timer.stop()
+            return
+        self.progress.setValue((self.progress.value() + 8) % 101)
+
+    def _sync_progress_motion(self) -> None:
+        """Run the 2 Hz step only while an import is on screen."""
+        if self._phase == "progress" and not _prefers_reduced_motion():
+            if not self._progress_timer.isActive():
+                self._progress_timer.start()
+            return
+        self._progress_timer.stop()
+        if self._phase != "progress":
+            self.progress.setValue(0)
 
     def _detection_is_empty(self) -> bool:
         if self.personal_incoming:
@@ -585,6 +636,7 @@ class CvImportDialog(QDialog):
 
     def _finish_close(self) -> None:
         self._closing = True
+        self._progress_timer.stop()
         self.result_quals = None
         self.result_application = None
         if self._worker is not None:
@@ -607,6 +659,7 @@ class CvImportDialog(QDialog):
             return
         if not self._closing:
             self._closing = True
+            self._progress_timer.stop()
             self.result_quals = None
             self.result_application = None
         super().closeEvent(event)

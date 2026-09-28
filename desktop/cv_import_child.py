@@ -12,12 +12,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import shlex
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING, local_llm_cv_decision
 
@@ -128,11 +131,62 @@ def _fail(
     code: int = 1,
     stage: str = "",
 ) -> int:
+    from core.cv_llm_runtime import (
+        CODE_ONLY_LLM_ERROR_CODES,
+        INPUT_CONDITIONED_LLM_ERROR_CODES,
+    )
+
+    if kind == "peak_rss_exceeded":
+        # Input-conditioned: the load does not fit the fresh-app child budget.
+        # No automatic retry. The existing UI string stays; no new copy.
+        logger.warning(
+            "cv_import input_conditioned no_auto_retry kind=%s detail=%s",
+            kind,
+            message,
+        )
+    elif kind == "memory_budget_app_share":
+        # The app's share left too little for the child. Code only.
+        # No automatic retry. User copy is the UI PR.
+        logger.warning(
+            "cv_import app_share no_auto_retry kind=%s detail=%s",
+            kind,
+            message,
+        )
+        shown = kind
+        payload: dict = {
+            "ok": False,
+            "kind": kind,
+            "message": shown,
+            "parsed": None,
+        }
+        if stage:
+            payload["stage"] = stage
+        _write(out_path, _with_decision(payload, decision))
+        return code
+    if kind in CODE_ONLY_LLM_ERROR_CODES:
+        # Code and log only. User copy is added by the UI PR.
+        # llm_prompt_too_long and llm_output_truncated are input-conditioned.
+        # llm_timeout depends on the machine and is not deterministic.
+        # None of the three is retried automatically.
+        if kind in INPUT_CONDITIONED_LLM_ERROR_CODES:
+            logger.warning(
+                "cv_import input_conditioned kind=%s detail=%s", kind, message
+            )
+        else:
+            logger.warning(
+                "cv_import machine_dependent no_auto_retry kind=%s detail=%s",
+                kind,
+                message,
+            )
+        shown = kind
+    else:
+        shown = user_message_for_kind(kind, message)
     payload: dict = {
         "ok": False,
         "kind": kind,
-        "message": user_message_for_kind(kind, message),
-        # Technical detail for CI/logs only — UI uses ``message``.
+        # UNVERBINDLICH. ``shown`` ist der Fehlercode bei code-only (#103),
+        # sonst der Nutzertext (#101). ``detail`` bleibt der technische Text.
+        "message": shown,
         "detail": (message or "")[:400],
         "parsed": None,
     }
@@ -235,7 +289,7 @@ def run(argv: list[str] | None = None) -> int:
                 code = 1
                 if exc.code in {"oom", "peak_rss_exceeded"}:
                     code = 3
-                elif exc.code == "timeout":
+                elif exc.code == "llm_timeout":
                     code = 1
                 return _fail(
                     out_path,
