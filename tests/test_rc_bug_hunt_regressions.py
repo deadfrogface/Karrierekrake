@@ -746,8 +746,11 @@ def test_cover_letter_unknown_placeholder_does_not_raise(tmp_path: Path):
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Entwicklung", source="manual")
     )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Diensten", source="manual")
+    )
     tpl = tmp_path / "cover.txt"
-    tpl.write_text("{job_title} {bonus_line} {company}", encoding="utf-8")
+    tpl.write_text("{job_title} {bonus_line} {company} {skills}", encoding="utf-8")
     cfg.settings.cover_letter_template = str(tpl)
     cfg.root = tmp_path
     text = render_cover_letter(

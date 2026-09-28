@@ -400,6 +400,9 @@ def test_cover_letter_render_never_injects_unverified_person():
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Buchhaltung", source="manual")
     )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="DATEV", source="manual")
+    )
     # Unverified / weak claims
     weak = build_writer_claims(
         verify_candidate(_person("Weak Sig", source=SourceType.RECRUITER_SIGNATURE.value))
@@ -463,6 +466,9 @@ def test_e2e_discovery_verification_plan_cover_only_verified():
     cfg = _cfg()
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Buchhaltung", source="manual")
+    )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Excel", source="manual")
     )
     letter = render_cover_letter(job, cfg, contact_claims=claims)
     # Without salutation evidence → neutral, but name not freestyle-injected

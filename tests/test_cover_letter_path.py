@@ -21,6 +21,9 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Buchhaltung", source="manual")
     )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Monatsabschlüsse", source="manual")
+    )
     cfg.application.cv_path = str(tmp_path / "cv.pdf")
     (tmp_path / "cv.pdf").write_bytes(b"%PDF-1.4")
     cfg.settings.mode = OperatingMode.REVIEW_BEFORE_SUBMIT.value
