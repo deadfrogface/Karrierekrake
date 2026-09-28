@@ -374,7 +374,14 @@ class FirstRunWizard(QWizard):
         self.config_service.save(cfg)
         if self.cv.cv_path:
             self.config_service.copy_cv_into_storage(Path(self.cv.cv_path))
-        # Only mark first-run done on Finish — cancel leaves the wizard for next launch.
-        # OAuth success is saved only inside IntegrationsStepPage on real AuthOutcome.ok.
+        # Finish persists completion. OAuth success is saved only inside
+        # IntegrationsStepPage on a real AuthOutcome.ok.
         self.config_service.mark_first_run_done()
         super().accept()
+
+    def reject(self) -> None:
+        # Skip, Cancel and closing the window are a finished dismissal.
+        # A completed or skipped wizard must not return on the next start.
+        # Reopening from settings uses the same flag and stays idempotent.
+        self.config_service.mark_first_run_done()
+        super().reject()

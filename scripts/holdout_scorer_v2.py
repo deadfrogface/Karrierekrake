@@ -118,15 +118,9 @@ def pred_view(pred: dict[str, Any] | None) -> dict[str, Any]:
     if not pred:
         return {}
     pers = pred.get("personal") or {}
-    lic = pred.get("driving_license") or ""
-    if isinstance(lic, list):
-        parts = []
-        for item in lic:
-            if isinstance(item, dict):
-                parts.append(str(item.get("value") or item.get("name") or ""))
-            else:
-                parts.append(str(item))
-        lic = " ".join(p for p in parts if p)
+    from core.cv_parser import driving_classes_for_display
+
+    lic = " ".join(driving_classes_for_display(pred.get("driving_license")))
     return {
         "first_name": pers.get("first_name") or "",
         "last_name": pers.get("last_name") or "",

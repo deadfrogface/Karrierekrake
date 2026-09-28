@@ -253,12 +253,9 @@ def evaluate(parsed: dict[str, Any], exp: dict[str, Any]) -> list[dict[str, Any]
 
     # Licenses
     exp_lic_n = int(exp.get("FUEHRERSCHEINE_ANZAHL") or 0)
-    got_lic = []
-    for it in parsed.get("driving_license") or []:
-        if isinstance(it, dict):
-            got_lic.append(str(it.get("value") or ""))
-        else:
-            got_lic.append(str(it))
+    from core.cv_parser import driving_classes_for_display
+
+    got_lic = driving_classes_for_display(parsed.get("driving_license"))
     for i in range(1, exp_lic_n + 1):
         want = (exp.get(f"FUEHRERSCHEIN_{i}") or "").strip()
         if want and not any(_norm(want) == _norm(g) or _norm(want) in _norm(g) for g in got_lic):

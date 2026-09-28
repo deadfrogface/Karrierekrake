@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -123,6 +124,315 @@ def normalize_driving_license(raw: str | list[str]) -> list[str]:
             if code not in found:
                 found.append(code)
     return found
+
+
+# Canonical EU class order for display. Only an exact token from this list is
+# reordered. Anything else is kept verbatim so a later drawer save cannot drop it.
+_LICENSE_DISPLAY_ORDER: tuple[str, ...] = (
+    "AM",
+    "A1",
+    "A2",
+    "A",
+    "B1",
+    "B",
+    "BE",
+    "C1",
+    "C1E",
+    "C",
+    "CE",
+    "D1",
+    "D1E",
+    "D",
+    "DE",
+    "L",
+    "T",
+)
+
+
+def _license_chunks(raw: str | list | None) -> list[str]:
+    """Copy licence text out of a string, list, or sourced entries. Does not mutate ``raw``."""
+    if raw is None:
+        return []
+    if isinstance(raw, str):
+        text = raw.strip()
+        return [text] if text else []
+    chunks: list[str] = []
+    for item in raw:
+        if isinstance(item, dict):
+            text = str(item.get("value") or item.get("text") or "")
+        else:
+            value = getattr(item, "value", None)
+            text = str(item if value is None else value)
+        text = text.strip()
+        if text:
+            chunks.append(text)
+    return chunks
+
+
+# Commas, "und"/"and" and slashes always separate licence pieces.
+# Whitespace splits a piece only when every part is a known class.
+_LICENSE_DELIM_SPLIT = re.compile(r"\s*(?:,|/|\bund\b|\band\b)\s*")
+_RECOGNISED_LICENCE_CLASSES = frozenset(_LICENSE_DISPLAY_ORDER)
+
+
+def _split_licence_text(text: str) -> list[str]:
+    """Turn one licence string into tokens without tearing unknown phrases apart.
+
+    ``B, BE`` and ``B BE`` become ``B`` and ``BE``. ``Klasse 3``, ``CE 95`` and
+    ``B96 (Anhänger)`` stay whole, because a space splits only when every
+    resulting part is a class from ``_LICENSE_DISPLAY_ORDER``.
+    """
+    raw = text.strip()
+    if not raw:
+        return []
+    pieces = [part.strip() for part in _LICENSE_DELIM_SPLIT.split(raw) if part.strip()]
+    tokens: list[str] = []
+    for piece in pieces:
+        parts = piece.split()
+        if len(parts) > 1 and all(part.upper() in _RECOGNISED_LICENCE_CLASSES for part in parts):
+            tokens.extend(parts)
+        else:
+            tokens.append(piece)
+    return tokens
+
+
+def _order_license_codes(codes: list[str]) -> list[str]:
+    rank = {code: pos for pos, code in enumerate(_LICENSE_DISPLAY_ORDER)}
+    seen: list[str] = []
+    for code in codes:
+        token = str(code or "").strip().upper()
+        if token and token not in seen:
+            seen.append(token)
+    known = sorted((code for code in seen if code in rank), key=lambda code: rank[code])
+    unknown = [code for code in seen if code not in rank]
+    return known + unknown
+
+
+# Base classes that have a trailer-E variant. A lone ``E`` is appended to the
+# class directly before it; the base class itself stays.
+_LICENSE_E_VARIANT: dict[str, str] = {
+    "B": "BE",
+    "C": "CE",
+    "C1": "C1E",
+    "D": "DE",
+    "D1": "D1E",
+}
+
+
+@dataclass(frozen=True)
+class LicenceReading:
+    """One read of stored licence values. The file is not rewritten.
+
+    ``display`` is what the UI and the summary show. Matching uses those
+    classes plus :func:`leading_driving_class` on a verbatim phrase.
+    ``evidence`` is what a cover letter may state: a class built by recovering
+    fragments is not evidence until the stored list itself contains that class.
+    ``uncertain`` holds ``A``, ``C`` or ``D`` that cannot be completed because
+    the list still contains a one-digit remnant. ``recovered`` is true when
+    the stored list contains a one-character fragment (a lone ``E``, a lone
+    ``M``, or one digit).
+    """
+
+    display: list[str]
+    evidence: list[str]
+    uncertain: list[str]
+    recovered: bool
+
+
+def _flat_licence_tokens(raw: str | list | None) -> list[str]:
+    tokens: list[str] = []
+    for chunk in _license_chunks(raw):
+        text = chunk.strip()
+        if not text or not any(ch.isalnum() for ch in text):
+            continue
+        for piece in _split_licence_text(text):
+            piece = piece.strip()
+            if piece and any(ch.isalnum() for ch in piece):
+                tokens.append(piece)
+    return tokens
+
+
+def _single_char_fragment(token: str) -> bool:
+    """A leftover from the old character split: lone ``E``, lone ``M``, or one digit."""
+    text = token.strip()
+    if len(text) != 1:
+        return False
+    folded = text.upper()
+    return folded in {"E", "M"} or text.isdigit()
+
+
+def _one_digit(token: str) -> bool:
+    """One digit. ``95`` is a code suffix, not a remnant of the old split."""
+    text = token.strip()
+    return len(text) == 1 and text.isdigit()
+
+
+# Longer classes first. A leading class is a whole token, never a prefix of B96.
+_LEADING_CLASS_CODE = re.compile(
+    r"(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)(?![A-Za-z0-9])",
+    re.IGNORECASE,
+)
+_LEADING_CLASS_PREFIX = re.compile(
+    r"(?:führerschein|fuehrerschein|fahrerlaubnis|klasse)\s+",
+    re.IGNORECASE,
+)
+
+
+def leading_driving_class(entry: str) -> str:
+    """Class at the start of one verbatim entry.
+
+    ``Klasse B``, ``Führerschein Klasse B`` and ``CE 95`` yield ``B``, ``B``
+    and ``CE``. ``Klasse 3`` yields nothing: ``3`` is not a class, and ``B``
+    is not inferred. The stored text is not rewritten.
+    """
+    text = (entry or "").strip()
+    while text:
+        prefix = _LEADING_CLASS_PREFIX.match(text)
+        if prefix is None:
+            break
+        text = text[prefix.end() :]
+    found = _LEADING_CLASS_CODE.match(text)
+    if found is None:
+        return ""
+    return found.group(1).upper()
+
+
+def read_driving_classes(raw: str | list | None) -> LicenceReading:
+    """Normalise stored licence values for every reader.
+
+    Accepts a list of sourced entries, a list of strings, or one string.
+    Known classes are deduplicated and ordered. Unknown phrases stay verbatim
+    (``B96``, ``Klasse 3``, ``CE 95``). A lone ``E`` is appended to ``B``, ``C``,
+    ``C1``, ``D`` or ``D1`` directly before it, and that base stays.
+    ``[B, E]`` is therefore ``B, BE``. A lone ``E`` with no such base is dropped,
+    the same way a digit is dropped. A ``1`` directly after ``C`` or ``D``
+    rebuilds ``C1`` or ``D1``; ``[C, 1, E]`` rebuilds the single class ``C1E``.
+    ``A`` before ``1`` or ``2`` rebuilds ``A1`` or ``A2``. ``A`` before ``M``
+    rebuilds ``AM``. When the list contains a one-digit remnant, a bare ``A``,
+    ``C`` or ``D`` without that following digit is uncertain: it is not a
+    display class, not a match and not letter evidence. A multi-digit token
+    such as ``95`` does not make ``C`` uncertain. Pure digits never become
+    their own class. ``CE 95`` is not rebuilt from leftover ``9`` and ``5``.
+
+    Does not mutate ``raw`` and does not write the profile file.
+    """
+    tokens = _flat_licence_tokens(raw)
+    if not tokens:
+        return LicenceReading([], [], [], False)
+    known = set(_LICENSE_DISPLAY_ORDER)
+    has_digits = any(_one_digit(token) for token in tokens)
+    recovered = any(_single_char_fragment(token) for token in tokens)
+    recognised: list[str] = []
+    recognised_direct: list[bool] = []
+    unknown: list[str] = []
+    seen_unknown: set[str] = set()
+    uncertain: list[str] = []
+    seen_uncertain: set[str] = set()
+    previous: int | None = None
+
+    def add_unknown(text: str) -> None:
+        nonlocal previous
+        key = text.casefold()
+        if key not in seen_unknown:
+            seen_unknown.add(key)
+            unknown.append(text)
+        previous = None
+
+    def add_uncertain(code: str) -> None:
+        nonlocal previous
+        if code not in seen_uncertain:
+            seen_uncertain.add(code)
+            uncertain.append(code)
+        previous = None
+
+    stored_exact: set[str] = set()
+    for token in tokens:
+        if _single_char_fragment(token) or token.isdigit():
+            continue
+        folded = token.upper()
+        stored_exact.add(folded if folded in known else token)
+
+    i = 0
+    while i < len(tokens):
+        text = tokens[i]
+        folded = text.upper()
+        if folded.isdigit():
+            previous = None
+            i += 1
+            continue
+        if folded == "E":
+            base = recognised[previous] if previous is not None else ""
+            variant = _LICENSE_E_VARIANT.get(base)
+            if variant and previous is not None:
+                if recognised_direct[previous]:
+                    recognised.append(variant)
+                    recognised_direct.append(False)
+                else:
+                    # Fragments of one old token, such as C + 1 + E → C1E.
+                    recognised[previous] = variant
+                previous = None
+            else:
+                # A lone E with no base is a fragment, not a class.
+                previous = None
+            i += 1
+            continue
+        if folded == "M":
+            previous = None
+            i += 1
+            continue
+        nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
+        after = tokens[i + 2] if i + 2 < len(tokens) else ""
+        if folded == "A" and nxt in {"1", "2"}:
+            recognised.append(f"A{nxt}")
+            recognised_direct.append(False)
+            previous = None
+            i += 2
+            continue
+        if folded == "A" and nxt.upper() == "M":
+            recognised.append("AM")
+            recognised_direct.append(False)
+            previous = None
+            i += 2
+            continue
+        if folded == "A" and has_digits:
+            add_uncertain("A")
+            i += 1
+            continue
+        if folded in {"C", "D"} and nxt == "1":
+            code = f"{folded}1E" if after.upper() == "E" else f"{folded}1"
+            recognised.append(code)
+            recognised_direct.append(False)
+            previous = None if code.endswith("E") else len(recognised) - 1
+            i += 3 if code.endswith("E") else 2
+            continue
+        if folded in {"C", "D"} and has_digits:
+            add_uncertain(folded)
+            # The trailer fragment belonged to the class we will not assert.
+            if i + 1 < len(tokens) and tokens[i + 1].upper() == "E":
+                i += 2
+            else:
+                i += 1
+            continue
+        if folded in known:
+            recognised.append(folded)
+            recognised_direct.append(True)
+            previous = len(recognised) - 1 if folded in _LICENSE_E_VARIANT else None
+            i += 1
+            continue
+        add_unknown(text)
+        i += 1
+
+    display = _order_license_codes(recognised) + unknown
+    if recovered:
+        evidence = [code for code in display if code in stored_exact]
+    else:
+        evidence = list(display)
+    return LicenceReading(display, evidence, uncertain, recovered)
+
+
+def driving_classes_for_display(raw: str | list | None) -> list[str]:
+    """Display classes from :func:`read_driving_classes`. Does not write the file."""
+    return read_driving_classes(raw).display
 
 
 # User-facing label when a field is simply absent from the CV — not a parser crash.
@@ -2580,12 +2890,25 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
     return personal
 
 
+def _as_sequence(items: Any) -> list:
+    """Turn a parsed field into entries. A string is never walked character by character.
+
+    Commas, ``und``/``and`` and slashes separate tokens. A piece that still
+    contains spaces is split only when every part is a recognised licence
+    class, so ``B BE`` becomes ``B`` and ``BE`` while ``Klasse 3`` stays one entry.
+    """
+    if isinstance(items, str):
+        return _split_licence_text(items)
+    return list(items or [])
+
+
 def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
-    def _as_sourced(items: list) -> list[dict[str, str]]:
+
+    def _as_sourced(items: Any) -> list[dict[str, str]]:
         out = []
-        for s in items or []:
+        for s in _as_sequence(items):
             if isinstance(s, dict):
-                val = str(s.get("value") or s.get("text") or "").strip()
+                val = str(s.get("value") or s.get("name") or s.get("text") or "").strip()
                 if val:
                     out.append({"value": val, "source": "cv"})
             elif str(s).strip():
@@ -2596,8 +2919,19 @@ def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
         {
             "skills": _as_sourced(parsed.get("skills") or []),
             "software": _as_sourced(parsed.get("software") or []),
-            "driving_license": _as_sourced(parsed.get("driving_license") or []),
-            "languages": parsed.get("languages") or [],
+            # New imports persist this normalised list. A lone ``E`` after a
+            # class with an E variant is stored together with that base class
+            # (``[B, E]`` → ``B, BE``). This step does not undo an upstream
+            # split of ``Klassen B und BE`` into ``[B, E]``; that stays with
+            # the Data Engine. Unrecognised phrases such as ``Klasse 3`` and
+            # ``CE 95`` are stored verbatim when they still reach this step.
+            "driving_license": [
+                {"value": code, "source": "cv"}
+                for code in driving_classes_for_display(
+                    _as_sequence(parsed.get("driving_license") or [])
+                )
+            ],
+            "languages": _as_sequence(parsed.get("languages") or []),
             "education": parsed.get("education") or [],
             "work_experience": parsed.get("work_experience") or [],
             "certificates": parsed.get("certificates") or [],

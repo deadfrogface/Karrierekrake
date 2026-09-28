@@ -14,6 +14,15 @@ from core.match_contract import section_confirmed
 from core.text_normalize import clean_text
 
 _CLAIM_TOKEN = re.compile(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9+\-]{2,}")
+# Longer classes first so CE is not read as C.
+_LICENCE_CLASS = re.compile(
+    r"(?<![A-Za-z0-9])(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)(?![A-Za-z0-9])"
+)
+# C1/B1/A2 are also language levels. A class counts only in a licence sentence.
+_LICENCE_SENTENCE = re.compile(
+    r"\b(führerschein|fuehrerschein|fahrerlaubnis|klasse)\b",
+    re.I,
+)
 _FIRST_PERSON = re.compile(
     r"\b(ich|meine|meiner|meinem|meinen|mir|mich)\b",
     re.I,
@@ -164,6 +173,19 @@ def _in_job(token: str, job_norm: str) -> bool:
     return bool(re.search(rf"(?<!\w){re.escape(tok)}(?!\w)", job_norm))
 
 
+def _confirmed_licence_codes(confirmed_text: str) -> set[str]:
+    """Classes at the start of a confirmed licence line, including ``CE 95``."""
+    from core.cv_parser import leading_driving_class
+
+    found: set[str] = set()
+    for line in (confirmed_text or "").splitlines():
+        for part in line.split(","):
+            code = leading_driving_class(part.strip())
+            if code:
+                found.add(code)
+    return found
+
+
 def find_unsubstantiated_personal_claims(
     letter: str,
     *,
@@ -178,6 +200,7 @@ def find_unsubstantiated_personal_claims(
     """
     confirmed_norm = _norm(f"{confirmed_text} {allowed_context}")
     job_norm = _norm(job_text)
+    confirmed_licences = _confirmed_licence_codes(confirmed_text)
     violations: list[str] = []
     seen: set[str] = set()
     for raw in re.split(r"(?<=[.!?])\s+|\n+", letter or ""):
@@ -199,6 +222,11 @@ def find_unsubstantiated_personal_claims(
             employer = match.group(1).strip()
             if employer and not _supported(employer, confirmed_norm):
                 flagged.append(employer)
+        if _LICENCE_SENTENCE.search(sentence):
+            for match in _LICENCE_CLASS.finditer(sentence):
+                code = match.group(1)
+                if code not in confirmed_licences:
+                    flagged.append(code)
         for token in _CLAIM_TOKEN.findall(sentence):
             if token.casefold() in _STOP:
                 continue
@@ -278,6 +306,16 @@ def confirmed_profile_text(config: AppConfig) -> str:
     }
     for name, entries in sections.items():
         if not section_confirmed(review, name):
+            continue
+        if name == "driving_license":
+            from core.cv_parser import read_driving_classes
+
+            # Recovered classes (BE from [B, E]) are not evidence. A class the
+            # stored list already spells out is. Confirmation does not change that.
+            for code in read_driving_classes(entries).evidence:
+                text = clean_text(code)
+                if text:
+                    chunks.append(text)
             continue
         for entry in entries or []:
             if (getattr(entry, "source", "") or "").strip().lower() == "cv" and not section_confirmed(
