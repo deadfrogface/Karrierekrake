@@ -283,7 +283,9 @@ class ProfilePage(QWidget):
         self._licence_notice.hide()
         self._licence_review_btn = QPushButton()
         self._licence_review_btn.setObjectName("SecondaryButton")
-        self._licence_review_btn.clicked.connect(lambda: self._edit_section("skills"))
+        self._licence_review_btn.clicked.connect(
+            lambda: self._edit_section("skills", focus=self.qualifications.driving)
+        )
         self._licence_review_btn.hide()
         self.card_skills.body().addWidget(self._licence_line)
         self.card_skills.body().addWidget(self._licence_notice)
@@ -422,7 +424,7 @@ class ProfilePage(QWidget):
         layout.addWidget(chip)
         return chip
 
-    def _edit_section(self, key: str) -> None:
+    def _edit_section(self, key: str, *, focus: QWidget | None = None) -> None:
         mapping = {
             "personal": (self.applicant, tr("profile.card_personal")),
             "career": (self.career, tr("profile.card_career")),
@@ -443,7 +445,7 @@ class ProfilePage(QWidget):
         # Detach from hidden host
         section.setParent(None)
         section.show()
-        result = self._drawer.present(section)
+        result = self._drawer.present(section, focus=focus)
         self._drawer.take_content()
         section.setParent(self._editors_host)
         self._editors_host.layout().addWidget(section)
@@ -896,7 +898,7 @@ class ProfilePage(QWidget):
         """
         return cfg == self.config_service._read_runtime_config()
 
-    def save(self) -> None:
+    def save(self) -> bool:
         cfg = self.config_service.load()
         p = cfg.profile
         legacy = legacy_profile_search_ui_enabled(cfg.settings)
@@ -987,14 +989,15 @@ class ProfilePage(QWidget):
         errors = self.config_service.validate(cfg)
         if errors:
             QMessageBox.warning(self, tr("nav.profile"), "\n".join(errors))
-            return
-        # Editors are prefilled with the normalised display. That still differs
-        # from a recovered list on disk, so the first save writes. A second
-        # save of the same values does not. The check is the last file state.
+            return False
+        # Editors are prefilled with the normalised display. A recovered
+        # ``[B, E]`` still differs from ``B, BE`` on disk, so that first save
+        # writes. Unknown digits the editor does not show stay in the file,
+        # and a save that changes nothing reports that.
         if self._matches_last_file(cfg):
             self._career_persist = False
             QMessageBox.information(self, tr("nav.profile"), tr("profile.no_changes"))
-            return
+            return False
         self.config_service.save(cfg)
         self._career_persist = False
         parent = self.window()
@@ -1005,3 +1008,4 @@ class ProfilePage(QWidget):
         else:
             self.refresh_cards()
         QMessageBox.information(self, tr("nav.profile"), tr("profile.saved"))
+        return True

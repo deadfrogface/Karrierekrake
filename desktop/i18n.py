@@ -220,6 +220,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_status_draft": "Entwurf – wird nicht versendet",
         "apps.preview_status_ready": "Entwurf geprüft – Versand nur nach Freigabe",
         "apps.preview_confirm_draft": "Entwurf bestätigen",
+        "apps.preview_status_check": "Prüfen nötig",
+        "apps.preview_claim_blocked": (
+            "Dieser Satz ist durch dein Profil nicht belegt: ‚{sentence}‘ "
+            "Nimm ihn aus dem Brief oder bestätige Klasse {classes} im Profil."
+        ),
+        "apps.preview_claim_blocked_generic": (
+            "Im Brief steht eine Angabe, die dein Profil nicht belegt. "
+            "Bestätige sie im Profil oder nimm sie aus dem Brief."
+        ),
         "apps.preview_section_cv": "Lebenslauf",
         "apps.preview_section_cover": "Anschreiben",
         "apps.preview_section_form": "Formulardaten",
@@ -1315,6 +1324,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_status_draft": "Draft – will not be sent",
         "apps.preview_status_ready": "Draft reviewed – send only after approval",
         "apps.preview_confirm_draft": "Confirm draft",
+        "apps.preview_status_check": "Check needed",
+        "apps.preview_claim_blocked": (
+            "This sentence is not backed by your profile: ‚{sentence}‘ "
+            "Remove it from the letter or confirm class {classes} in your profile."
+        ),
+        "apps.preview_claim_blocked_generic": (
+            "The letter states something your profile does not confirm. "
+            "Confirm it in your profile or remove it from the letter."
+        ),
         "apps.preview_section_cv": "Resume",
         "apps.preview_section_cover": "Cover letter",
         "apps.preview_section_form": "Form data",

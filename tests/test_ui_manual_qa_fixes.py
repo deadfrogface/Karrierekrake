@@ -1048,12 +1048,20 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     monkeypatch.setattr(config_service, "_write_config_files", counting_write)
 
     def accept_drawer() -> None:
-        bar = page._drawer._scroll.verticalScrollBar()
-        assert bar.value() == 0
-        assert page._drawer.focusWidget() is not None
-        assert page.qualifications.licence_notice.isVisible()
-        assert "Aus einem älteren Import wiederhergestellt" in page.qualifications.licence_notice.text()
-        page._drawer.accept()
+        def verify() -> None:
+            try:
+                assert qapp.focusWidget() is page.qualifications.driving.list
+                viewport = page._drawer._scroll.viewport()
+                point = page.qualifications.driving.mapTo(
+                    viewport, page.qualifications.driving.rect().center()
+                )
+                assert viewport.rect().contains(point)
+                assert page.qualifications.licence_notice.isVisible()
+                assert "Aus einem älteren Import wiederhergestellt" in page.qualifications.licence_notice.text()
+            finally:
+                page._drawer.accept()
+
+        QTimer.singleShot(0, verify)
 
     QTimer.singleShot(0, accept_drawer)
     page._licence_review_btn.click()
@@ -1095,6 +1103,134 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     assert "Nicht sicher erkannt" not in am._licence_notice.text()
     assert am.qualifications.driving.get_items() == ["AM"]
     am.card_skills.grab().save("/opt/cursor/artifacts/licence-card-a-m.png")
+
+
+def test_uncertain_digits_stay_in_the_file_when_review_saves_nothing(qapp, config_service, monkeypatch):
+    """Prüfen on [C, E, 9, 5] shows an empty list. Saving without input keeps the file."""
+    from PySide6.QtCore import QTimer
+
+    i18n.set_language("de")
+    messages: list[str] = []
+
+    def information(_parent, _title, text, *_args, **_kwargs):
+        messages.append(str(text))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "information", information)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+    cfg = config_service.load()
+    cfg.profile.qualifications.driving_license = _sourced_codes(["C", "E", "9", "5"])
+    cfg.profile.qualifications.skills = []
+    config_service.save(cfg)
+    page = ProfilePage(config_service)
+    page.resize(1100, 800)
+    page.show()
+    page.load_from_config()
+    qapp.processEvents()
+    # The applicant form marks blank fields as manual. Persist that once so the
+    # measured save is only about the licence list.
+    settled = config_service.load()
+    page.applicant.save_into(settled.application)
+    config_service.save(settled)
+    page.load_from_config()
+    qapp.processEvents()
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_bytes()
+    assert page._licence_review_btn.isVisible()
+    assert page.qualifications.driving.get_items() == []
+    assert page._licence_notice.isVisible()
+    page.qualifications.skills.setMinimumHeight(900)
+    results: list[bool] = []
+    original = page.save
+
+    def wrapped() -> bool:
+        value = original()
+        results.append(value)
+        return value
+
+    page.save = wrapped
+
+    def accept_empty() -> None:
+        def verify() -> None:
+            try:
+                assert page.qualifications.driving.get_items() == []
+                assert qapp.focusWidget() is page.qualifications.driving.list
+                viewport = page._drawer._scroll.viewport()
+                point = page.qualifications.driving.mapTo(
+                    viewport, page.qualifications.driving.rect().center()
+                )
+                assert viewport.rect().contains(point)
+            finally:
+                page._drawer.accept()
+
+        QTimer.singleShot(0, verify)
+
+    QTimer.singleShot(0, accept_empty)
+    page._licence_review_btn.click()
+    qapp.processEvents()
+    assert results == [False]
+    assert messages[-1] == "Keine Änderungen."
+    assert profile_path.read_bytes() == before
+    assert config_service.load().profile.qualifications.driving_values() == ["C", "E", "9", "5"]
+    assert page._licence_notice.isVisible()
+    assert "Aus einem älteren Import wiederhergestellt" in page._licence_notice.text()
+
+
+def test_two_digit_suffix_stays_when_the_drawer_saves_nothing(qapp, config_service, monkeypatch):
+    """Opening [C, CE, 95] and saving without input keeps 95 and reports no change."""
+    from PySide6.QtCore import QTimer
+
+    i18n.set_language("de")
+    messages: list[str] = []
+
+    def information(_parent, _title, text, *_args, **_kwargs):
+        messages.append(str(text))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "information", information)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+    cfg = config_service.load()
+    cfg.profile.qualifications.driving_license = _sourced_codes(["C", "CE", "95"])
+    cfg.profile.qualifications.skills = []
+    config_service.save(cfg)
+    page = ProfilePage(config_service)
+    page.resize(1100, 800)
+    page.show()
+    page.load_from_config()
+    qapp.processEvents()
+    settled = config_service.load()
+    page.applicant.save_into(settled.application)
+    config_service.save(settled)
+    page.load_from_config()
+    qapp.processEvents()
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_bytes()
+    assert not page._licence_review_btn.isVisible()
+    assert page.qualifications.driving.get_items() == ["C", "CE"]
+    results: list[bool] = []
+    original = page.save
+
+    def wrapped() -> bool:
+        value = original()
+        results.append(value)
+        return value
+
+    page.save = wrapped
+
+    def accept_unchanged() -> None:
+        try:
+            assert page.qualifications.driving.get_items() == ["C", "CE"]
+        finally:
+            page._drawer.accept()
+
+    QTimer.singleShot(0, accept_unchanged)
+    page._edit_section("skills")
+    qapp.processEvents()
+    assert results == [False]
+    assert messages[-1] == "Keine Änderungen."
+    assert profile_path.read_bytes() == before
+    assert config_service.load().profile.qualifications.driving_values() == ["C", "CE", "95"]
+    assert "95" in profile_path.read_text(encoding="utf-8")
 
 
 def test_leading_class_is_shared_by_matcher_and_guard():
@@ -1758,6 +1894,304 @@ def test_sentence_break_covers_every_guard_check():
     )
     assert kept.ok
     assert kept.violations == []
+
+
+def _screen_profile_b():
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text
+
+    cfg = _letter_profile(["B"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    return confirmed_profile_text(cfg), confirmed_licence_codes(cfg)
+
+
+def test_class_at_sentence_end_does_not_hide_behind_the_next_sentence():
+    """A class before a new sentence stays a claim. Profile holds only B."""
+    from core.cover_guard import screen_cover_letter
+
+    text, codes = _screen_profile_b()
+    assert codes == {"B"}
+
+    def screen(sentence: str):
+        return screen_cover_letter(
+            sentence,
+            confirmed_text=text,
+            confirmed_licences=codes,
+            job_text="Lager",
+        )
+
+    for sentence in (
+        "Ich besitze den Führerschein Klasse C. Hiermit bewerbe ich mich als Disponent.",
+        "Ich besitze den Führerschein Klasse C.\nMit freundlichen Grüßen",
+        "Ich besitze den Führerschein Klasse C, gültig bis 2031. Gerne bewerbe ich mich bei Ihnen.",
+    ):
+        assert not screen(sentence).ok
+
+    from core.cover_guard import _split_claim_sentences
+
+    ordinal = "Ich habe die 3. größten Aufträge und den Führerschein Klasse C."
+    assert _split_claim_sentences(ordinal) == [ordinal]
+
+
+def test_compound_phrases_yield_the_same_classes_in_every_reader():
+    """Parser, guard and read_driving_classes share one licence-word list."""
+    from core.cover_guard import _licence_codes_in_sentence
+    from core.cv_parser import licence_class_tokens, read_driving_classes
+
+    for phrase, expected in (
+        ("Führerscheinklasse C", ["C"]),
+        ("Klassen B und C", ["B", "C"]),
+    ):
+        reading = read_driving_classes(phrase)
+        assert licence_class_tokens(phrase) == expected
+        assert _licence_codes_in_sentence(phrase) == expected
+        assert reading.evidence == expected
+
+
+def test_compound_licence_words_flag_an_unconfirmed_class():
+    """Führerscheinklasse, Führerscheinklassen and Klassen name a class."""
+    from core.cover_guard import screen_cover_letter
+
+    text, codes = _screen_profile_b()
+    assert codes == {"B"}
+    for sentence in (
+        "Ich besitze die Führerscheinklasse C.",
+        "Ich besitze die Führerscheinklassen B und C.",
+        "Ich besitze die Klassen B und C.",
+    ):
+        screened = screen_cover_letter(
+            sentence,
+            confirmed_text=text,
+            confirmed_licences=codes,
+            job_text="Lager",
+        )
+        assert not screened.ok
+
+
+_FULL_LETTER_TEMPLATE = """{salutation},
+
+hiermit bewerbe ich mich um die Position als {job_title} bei {company}.
+
+Praktische Erfahrung habe ich mit {skills}.
+
+Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
+
+Mit freundlichen Grüßen
+{full_name}
+"""
+
+
+def _compose_class_letter(tmp_path, codes: list[str]):
+    """Full letter: salutation, paragraphs and greeting, like the template."""
+    from core.config import ExtractReview
+    from core.cover_letter import compose_cover_letter, save_cover_letter
+    from core.models import Job
+
+    template = tmp_path / "cover_letter.txt"
+    template.write_text(_FULL_LETTER_TEMPLATE, encoding="utf-8")
+    cfg = _letter_profile(codes)
+    cfg.root = tmp_path
+    cfg.settings.cover_letter_template = str(template)
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    cfg.profile.qualifications.skills = [
+        SourcedText(value="Führerschein Klasse C", source="manual")
+    ]
+    job = Job(
+        id="brief-klasse-c",
+        title="Disponent",
+        company="Nordlicht GmbH",
+        remote_type="remote",
+        description="Führerschein Klasse C ist erforderlich.",
+    )
+    letter = compose_cover_letter(job, cfg)
+    return cfg, job, letter, save_cover_letter
+
+
+def test_full_letter_flags_unconfirmed_c_and_saves_nothing(tmp_path):
+    """A blank line must not glue the class sentence to the closing sentence."""
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg, job, letter, _save = _compose_class_letter(tmp_path, ["B"])
+    assert letter.ok
+    assert "Sehr geehrte Damen und Herren" in letter.text
+    assert "Mit freundlichen Grüßen" in letter.text
+    assert (
+        "Praktische Erfahrung habe ich mit Führerschein Klasse C.\n\n"
+        "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich."
+    ) in letter.text
+    screened = screen_cover_letter(
+        letter.text,
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text=f"{job.title} {job.description}",
+        allowed_context=f"{job.title} {job.company}",
+    )
+    assert not screened.ok
+    assert screened.violations == [
+        "Praktische Erfahrung habe ich mit Führerschein Klasse C."
+    ]
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    assert not saved.exists()
+
+
+def test_full_letter_saves_when_class_c_is_confirmed(tmp_path):
+    """Confirmed C passes the same full letter and is written to disk."""
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg, job, letter, save_cover_letter = _compose_class_letter(tmp_path, ["C"])
+    assert letter.ok
+    screened = screen_cover_letter(
+        letter.text,
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text=f"{job.title} {job.description}",
+        allowed_context=f"{job.title} {job.company}",
+    )
+    assert screened.ok
+    assert screened.violations == []
+    path = save_cover_letter(letter.text, tmp_path / "cover_letters" / f"{job.id}.txt")
+    assert path.is_file()
+    assert path.read_text(encoding="utf-8") == letter.text
+
+
+def _compose_shipped_letter(tmp_path, codes: list[str], skills: list[str], description: str):
+    """Letter from the shipped template file, not from a string built in the test."""
+    from core.config import ExtractReview
+    from core.cover_letter import (
+        DEFAULT_TEMPLATE,
+        compose_cover_letter,
+        resolve_cover_letter_template,
+        save_cover_letter,
+    )
+    from core.models import Job
+
+    cfg = _letter_profile(codes)
+    cfg.root = tmp_path
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    cfg.profile.qualifications.skills = [
+        SourcedText(value=skill, source="manual") for skill in skills
+    ]
+    shipped = resolve_cover_letter_template(cfg)
+    assert shipped is not None
+    assert shipped.name == "cover_letter.txt"
+    body = shipped.read_text(encoding="utf-8")
+    assert "Zu meinen relevanten Kenntnissen zählen insbesondere: {skills}." in body
+    assert "Zu meinen relevanten Kenntnissen zählen insbesondere: {skills}." in DEFAULT_TEMPLATE
+    assert "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich." in body
+    assert "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich." in DEFAULT_TEMPLATE
+    job = Job(
+        id="brief-vorlage",
+        title="Disponent",
+        company="Nordlicht GmbH",
+        remote_type="remote",
+        description=description,
+    )
+    letter = compose_cover_letter(job, cfg)
+    return cfg, job, letter, save_cover_letter
+
+
+def test_shipped_template_flags_class_c_at_the_end_of_the_skills_line(tmp_path):
+    """The delivered template ends the skills sentence on class C, then a blank line."""
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg, job, letter, _save = _compose_shipped_letter(
+        tmp_path,
+        ["B"],
+        ["Excel", "Führerschein Klasse C"],
+        "Führerschein Klasse C ist erforderlich.",
+    )
+    assert letter.ok
+    sentence = "Zu meinen relevanten Kenntnissen zählen insbesondere: Führerschein Klasse C."
+    closing = "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich."
+    assert f"{sentence}\n\n{closing}" in letter.text
+    screened = screen_cover_letter(
+        letter.text,
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text=f"{job.title} {job.description}",
+        allowed_context=f"{job.title} {job.company}",
+    )
+    assert not screened.ok
+    assert screened.violations == [sentence]
+    assert closing not in screened.violations[0]
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    assert not saved.exists()
+
+
+def test_shipped_template_flags_class_c_between_other_skills(tmp_path):
+    """Excel, class C, SAP stays a flagged skills sentence in the delivered template."""
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg, job, letter, _save = _compose_shipped_letter(
+        tmp_path,
+        ["B"],
+        ["Excel", "Führerschein Klasse C", "SAP"],
+        "Excel, Führerschein Klasse C und SAP sind erforderlich.",
+    )
+    assert letter.ok
+    sentence = (
+        "Zu meinen relevanten Kenntnissen zählen insbesondere: "
+        "Excel, Führerschein Klasse C, SAP."
+    )
+    assert sentence in letter.text
+    screened = screen_cover_letter(
+        letter.text,
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text=f"{job.title} {job.description}",
+        allowed_context=f"{job.title} {job.company}",
+    )
+    assert not screened.ok
+    assert sentence in screened.violations
+    assert all("persönlichen Gesprächs" not in item for item in screened.violations)
+
+
+def test_shipped_template_saves_when_class_c_is_confirmed(tmp_path):
+    """Confirmed C passes the delivered template and is written to disk."""
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg, job, letter, save_cover_letter = _compose_shipped_letter(
+        tmp_path,
+        ["C"],
+        ["Excel", "Führerschein Klasse C"],
+        "Führerschein Klasse C ist erforderlich.",
+    )
+    assert letter.ok
+    screened = screen_cover_letter(
+        letter.text,
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text=f"{job.title} {job.description}",
+        allowed_context=f"{job.title} {job.company}",
+    )
+    assert screened.ok
+    assert screened.violations == []
+    path = save_cover_letter(letter.text, tmp_path / "cover_letters" / f"{job.id}.txt")
+    assert path.is_file()
+    assert path.read_text(encoding="utf-8") == letter.text
+
+
+def test_guard_scans_a_long_abbreviation_letter_quickly():
+    """5000 characters of abbreviations must not backtrack in the guard."""
+    import time
+
+    from core.cover_guard import screen_cover_letter
+
+    text, codes = _screen_profile_b()
+    chunk = "u. a. 1. Kl. a.b.c."
+    letter = (chunk * (5000 // len(chunk) + 1))[:5000]
+    assert len(letter) == 5000
+    assert "u. a." in letter and "1." in letter and "Kl." in letter and "a.b.c." in letter
+    start = time.perf_counter()
+    screened = screen_cover_letter(
+        letter,
+        confirmed_text=text,
+        confirmed_licences=codes,
+        job_text="Lager",
+    )
+    elapsed = time.perf_counter() - start
+    assert isinstance(screened.ok, bool)
+    assert elapsed < 0.05
 
 
 def test_lowercase_licence_code_counts_only_after_a_licence_word():

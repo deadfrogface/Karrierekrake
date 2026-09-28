@@ -131,6 +131,44 @@ class EducationSection(QGroupBox):
         quals.education = self.education.get_items()
 
 
+def _licence_item_value(item: object) -> str:
+    if isinstance(item, str):
+        return item.strip()
+    return str(getattr(item, "value", "") or "").strip()
+
+
+def _licence_token_was_rebuilt(token: str, reading: object, recognised: frozenset[str]) -> bool:
+    """True when recovery folded this stored token into a class on screen."""
+    if reading is None or not getattr(reading, "recovered", False) or not getattr(reading, "display", None):
+        return False
+    text = token.strip()
+    display = list(reading.display)
+    if text in display or text.upper() in display:
+        return False
+    if len(text) == 1:
+        return True
+    upper = text.upper()
+    if upper not in recognised:
+        return False
+    return any(code.startswith(upper) and len(code) > len(upper) for code in display)
+
+
+def _hidden_licence_entries(stored: list, loaded_display: list[str], reading: object) -> list:
+    """Stored entries the editor does not show and recovery did not fold away."""
+    from core.cv_parser import _RECOGNISED_LICENCE_CLASSES
+
+    shown = set(loaded_display)
+    hidden = []
+    for item in stored or []:
+        value = _licence_item_value(item)
+        if not value or value in shown:
+            continue
+        if _licence_token_was_rebuilt(value, reading, _RECOGNISED_LICENCE_CLASSES):
+            continue
+        hidden.append(item)
+    return hidden
+
+
 class QualificationsSection(QGroupBox):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -173,7 +211,8 @@ class QualificationsSection(QGroupBox):
         # Display classes only. Uncertain C/D and digit remnants stay out of the
         # editor. Loading itself does not write the config object.
         self._licence_reading = read_driving_classes(quals.driving_license)
-        self.driving.set_items(self._licence_reading.display)
+        self._licence_loaded_display = list(self._licence_reading.display)
+        self.driving.set_items(self._licence_loaded_display)
         self._refresh_licence_notice()
         self.certificates.set_items(quals.certificates)
 
@@ -194,10 +233,36 @@ class QualificationsSection(QGroupBox):
     def save_into(self, quals: QualificationsConfig) -> None:
         quals.skills = preserve_sourced_on_edit(quals.skills, self.skills.get_items())
         quals.software = preserve_sourced_on_edit(quals.software, self.software.get_items())
-        quals.driving_license = preserve_sourced_on_edit(
-            quals.driving_license, self.driving.get_items()
-        )
+        self._save_driving_license(quals)
         quals.certificates = self.certificates.get_items()
+
+    def _save_driving_license(self, quals: QualificationsConfig) -> None:
+        """Keep unknown stored entries until the user deletes a visible one.
+
+        An unchanged editor does not replace the file with the display list
+        when that display dropped digits such as ``9``, ``5`` or ``95``.
+        A recovered ``[B, E]`` still saves as ``B, BE`` because those tokens
+        were folded into the classes on screen.
+        """
+        edited = self.driving.get_items()
+        loaded = getattr(self, "_licence_loaded_display", None)
+        reading = getattr(self, "_licence_reading", None)
+        if loaded is None or reading is None:
+            quals.driving_license = preserve_sourced_on_edit(quals.driving_license, edited)
+            return
+        proposed = preserve_sourced_on_edit(quals.driving_license, edited)
+        hidden = _hidden_licence_entries(quals.driving_license, list(loaded), reading)
+        seen = {item.value for item in proposed}
+        merged = list(proposed)
+        for item in hidden:
+            value = _licence_item_value(item)
+            if value not in seen:
+                merged.append(item)
+                seen.add(value)
+        stored_values = [_licence_item_value(item) for item in quals.driving_license]
+        if [item.value for item in merged] == stored_values:
+            return
+        quals.driving_license = merged
 
 
 class LanguagesSection(QGroupBox):

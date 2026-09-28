@@ -652,10 +652,11 @@ class SectionEditDrawer(QDialog):
         self.close_btn.setToolTip(cancel or "Schließen")
         set_accessible_name(self.close_btn, cancel or "Schließen")
 
-    def present(self, content: QWidget) -> int:
+    def present(self, content: QWidget, *, focus: QWidget | None = None) -> int:
         if self._content is not None:
             self._host.removeWidget(self._content)
         self._content = content
+        self._focus_target = focus
         content.setVisible(True)
         self._host.addWidget(content)
         from desktop.widgets.dialog_geometry import fit_dialog_to_screen
@@ -680,6 +681,13 @@ class SectionEditDrawer(QDialog):
             scroll.horizontalScrollBar().setValue(0)
         content = self._content
         if content is None:
+            return
+        target = getattr(self, "_focus_target", None)
+        if target is not None:
+            if scroll is not None:
+                scroll.ensureWidgetVisible(target)
+            field = self._first_input(target) or target
+            field.setFocus(Qt.FocusReason.OtherFocusReason)
             return
         field = self._first_input(content)
         if field is not None:

@@ -7,10 +7,11 @@ Does not change submit or safety logic — only presentation and labels.
 
 from __future__ import annotations
 
+import hashlib
 import webbrowser
 from typing import Iterable
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -32,6 +33,14 @@ from desktop.design_system.polish import apply_button_icon, polish_interactive
 from desktop.design_system.v2_chrome import DataItem, ProfileSectionCard, StatusChip
 from desktop.i18n import tr
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen, wrap_dialog_body
+
+
+# One timer per dialog. Every edit restarts it; the guard never runs on the key.
+COVER_GUARD_DEBOUNCE_MS = 400
+
+
+def _letter_digest(text: str) -> str:
+    return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
 
 
 def _looks_missing(value: str | None) -> bool:
@@ -99,6 +108,24 @@ def _is_technical_warning(warning: str) -> bool:
     )
 
 
+def _cover_refusal_text(preview: ApplicationPreview) -> str:
+    """German (or active-language) refusal. The reason code stays out of the UI."""
+    keys = {
+        "job_incomplete": "cover.job_incomplete",
+        "no_evidence": "cover.no_evidence",
+        "company_missing": "cover.company_missing",
+        "blocked_demo": "cover.demo_excluded",
+    }
+    key = (preview.cover_refusal_key or "").strip() or keys.get(preview.cover_refusal_code, "")
+    text = tr(key) if key else ""
+    if not text or text == key or text.startswith("cover."):
+        fallback = keys.get(preview.cover_refusal_code, "cover.no_evidence")
+        text = tr(fallback)
+    if not text or text.startswith("cover."):
+        return "Das Anschreiben kann so nicht erstellt werden."
+    return text
+
+
 def _humanize_warning(warning: str) -> str:
     """Softer copy for the main view; technical wording stays in details."""
     low = (warning or "").lower()
@@ -121,6 +148,12 @@ class ApplyPreviewDialog(QDialog):
         self.preview = preview
         self._config = config
         self._job = job
+        self._prepared = None
+        self._last_scanned_hash = ""
+        self._applied_hash = ""
+        self._last_scan_ok = True
+        if config is not None:
+            self._prepared = self._build_prepared_check()
         self.setObjectName("ApplyPreviewDialog")
         self.setModal(True)
         self.setMinimumWidth(520)
@@ -215,7 +248,7 @@ class ApplyPreviewDialog(QDialog):
         cover_body = self.cover_card.body()
         self.cover_edit = QPlainTextEdit()
         self.cover_edit.setObjectName("PreviewCoverEdit")
-        self.cover_edit.setReadOnly(True)
+        self.cover_edit.setReadOnly(False)
         self.cover_edit.setPlainText(preview.cover_letter_preview or "")
         self.cover_edit.setMinimumHeight(160)
         self.cover_edit.setSizePolicy(
@@ -225,10 +258,7 @@ class ApplyPreviewDialog(QDialog):
         cover_body.addWidget(self.cover_edit, 1)
         self.body = self.cover_edit  # back-compat for tests expecting .body
         if preview.cover_refusal_code:
-            refusal_text = tr(preview.cover_refusal_key) if preview.cover_refusal_key else ""
-            if refusal_text == preview.cover_refusal_key:
-                refusal_text = preview.cover_refusal_code
-            refusal = QLabel(f"{preview.cover_refusal_code}: {refusal_text}")
+            refusal = QLabel(_cover_refusal_text(preview))
             refusal.setObjectName("KkErrorText")
             refusal.setWordWrap(True)
             cover_body.addWidget(refusal)
@@ -240,6 +270,16 @@ class ApplyPreviewDialog(QDialog):
         self.cover_hints = self._hint_label(buckets["cover"])
         if self.cover_hints is not None:
             cover_body.addWidget(self.cover_hints)
+        self._guard_notice = QLabel()
+        self._guard_notice.setObjectName("KkErrorText")
+        self._guard_notice.setWordWrap(True)
+        self._guard_notice.hide()
+        cover_body.addWidget(self._guard_notice)
+        self._guard_timer = QTimer(self)
+        self._guard_timer.setSingleShot(True)
+        self._guard_timer.setInterval(COVER_GUARD_DEBOUNCE_MS)
+        self._guard_timer.timeout.connect(self._on_guard_debounce)
+        self.cover_edit.textChanged.connect(self._schedule_cover_guard)
         body_layout.addWidget(self.cover_card, 1)
 
         # Form values
@@ -363,6 +403,7 @@ class ApplyPreviewDialog(QDialog):
         root.addLayout(footer)
 
         fit_dialog_to_screen(self, preferred_width=720, preferred_height=640)
+        self._run_cover_guard(force=True)
 
     def _apply_status_chip(self) -> None:
         preview = self.preview
@@ -431,13 +472,105 @@ class ApplyPreviewDialog(QDialog):
             )
         return rows
 
+    def _build_prepared_check(self):
+        """Classes, employers, degrees and normalized evidence, once per dialog."""
+        from core.cover_guard import prepare_cover_check
+
+        job = self._job
+        job_text = f"{getattr(job, 'title', '')} {getattr(job, 'description', '')}".strip()
+        allowed = f"{getattr(job, 'title', '')} {getattr(job, 'company', '')}".strip()
+        return prepare_cover_check(self._config, job_text, allowed)
+
+    def _schedule_cover_guard(self) -> None:
+        """Restart the single debounce timer. Does not run the guard."""
+        self._guard_timer.start(COVER_GUARD_DEBOUNCE_MS)
+
+    def _on_guard_debounce(self) -> None:
+        self._run_cover_guard(force=False)
+
+    def _scan_letter(self, text: str) -> tuple[list[str], bool, str]:
+        """Letter-only scan. The profile side stays the object built at open."""
+        if self._prepared is None or not (text or "").strip():
+            return [], True, ""
+        from core.cover_guard import screen_prepared_letter, unconfirmed_licence_codes
+
+        screened = screen_prepared_letter(text, self._prepared)
+        if screened.ok:
+            return [], True, ""
+        sentence = screened.violations[0]
+        codes = unconfirmed_licence_codes(
+            sentence,
+            confirmed_licences=set(self._prepared.licence_codes),
+        )
+        return codes, False, sentence
+
+    def _guard_message(self, sentence: str, codes: list[str]) -> str:
+        if sentence and codes:
+            return tr(
+                "apps.preview_claim_blocked",
+                sentence=sentence,
+                classes=", ".join(codes),
+            )
+        return tr("apps.preview_claim_blocked_generic")
+
+    def _sync_approve_button(self, *, blocked: bool) -> None:
+        can = (
+            self._config is not None
+            and self._job is not None
+            and bool(self.cover_edit.toPlainText().strip())
+            and not self.preview.cover_refusal_code
+        )
+        self.approve_btn.setVisible(can)
+        self.approve_btn.setEnabled(can and not blocked)
+
+    def _mark_check_needed(self) -> None:
+        self.status_chip.set_status(tr("apps.preview_status_check"), kind="warn")
+        self._sync_approve_button(blocked=True)
+
+    def _apply_guard_result(self, text: str, codes: list[str], ok: bool, sentence: str) -> bool:
+        """Apply a run only when the editor still shows exactly ``text``."""
+        digest = _letter_digest(text)
+        if _letter_digest(self.cover_edit.toPlainText()) != digest:
+            self._last_scanned_hash = digest
+            self._applied_hash = ""
+            self._mark_check_needed()
+            return False
+        self._last_scanned_hash = digest
+        self._applied_hash = digest
+        self._last_scan_ok = ok
+        if ok:
+            self._guard_notice.hide()
+            self._guard_notice.clear()
+            self._apply_status_chip()
+            self._sync_approve_button(blocked=False)
+            return True
+        self._guard_notice.setText(self._guard_message(sentence, codes))
+        self._guard_notice.show()
+        self._mark_check_needed()
+        return False
+
+    def _run_cover_guard(self, *, force: bool) -> bool:
+        """Scan the current letter. ``force`` skips the text-hash cache (confirm)."""
+        text = self.cover_edit.toPlainText()
+        digest = _letter_digest(text)
+        if not force and digest == self._last_scanned_hash:
+            if digest != self._applied_hash:
+                self._mark_check_needed()
+                return False
+            return self._last_scan_ok
+        codes, ok, sentence = self._scan_letter(text)
+        return self._apply_guard_result(text, codes, ok, sentence)
+
     def _approve(self) -> None:
         from core.cover_letter import CoverLetterRefused, approve_cover_letter
 
         if self._config is None or self._job is None:
             return
+        self._guard_timer.stop()
+        if not self._run_cover_guard(force=True):
+            return
         try:
-            path = approve_cover_letter(self._job, self._config, self.preview.cover_letter_preview)
+            path = approve_cover_letter(self._job, self._config, self.cover_edit.toPlainText())
         except CoverLetterRefused as exc:
             lang = getattr(self._config.settings, "language", "de")
             QMessageBox.warning(self, self.windowTitle(), exc.refusal.text(lang))

@@ -10,24 +10,35 @@ import re
 from dataclasses import dataclass, field
 
 from core.config import AppConfig, ExtractReview, QualificationsConfig
+from core.licence_words import (
+    ENGLISH_CLASS_WORDS,
+    LICENCE_WORD_ALTERNATIVES,
+)
 from core.match_contract import section_confirmed
 from core.text_normalize import clean_text
 
 _CLAIM_TOKEN = re.compile(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9+\-]{2,}")
 # C1/B1/A2 are also language levels. A class counts only in a licence sentence.
-# German „Klasse“ is enough. English „class“/„category“ count only together
-# with licence/license in the same sentence.
+# German compounds (Führerscheinklasse, Klassen, …) are enough. English
+# „class“/„category“ count only together with licence/license in the same sentence.
+_LICENCE_WORD_BODY: tuple[str, ...] = tuple(
+    word for word in LICENCE_WORD_ALTERNATIVES if word not in ENGLISH_CLASS_WORDS and word != r"kl\."
+)
 _LICENCE_SENTENCE = re.compile(
-    r"\b(?:führerschein|fuehrerschein|fahrerlaubnis|klasse)\b"
-    r"|\bdriving\s+licen[cs]e\b"
-    r"|\bdriver['\u2019]s\s+licen[cs]e\b",
+    r"\b(?:" + "|".join(_LICENCE_WORD_BODY) + r")\b|\bkl\.",
     re.I,
 )
-_ENGLISH_CLASS_WORD = re.compile(r"\b(?:class|category)\b", re.I)
+_ENGLISH_CLASS_WORD = re.compile(
+    r"\b(?:"
+    + "|".join(word for word in LICENCE_WORD_ALTERNATIVES if word in ENGLISH_CLASS_WORDS)
+    + r")\b",
+    re.I,
+)
 _ENGLISH_LICENCE_WORD = re.compile(r"\blicen[cs]e\b", re.I)
-# A period ends a sentence except after an ordinal, a one-letter abbreviation
-# (``u. a.``, ``z. B.``, ``d. h.``) or a usual short form (``Jan.`` … ``Dez.``).
-_CLAIM_SENTENCE_BREAK = re.compile(r"[.!?]\s+|\n+")
+# A newline always ends a sentence. Space after . ! ? ends it too, except when
+# the period belongs to an abbreviation. ``\s`` is not used: it would swallow
+# the newline and glue the next line to a class (``Klasse C.\nMit``).
+_CLAIM_SENTENCE_BREAK = re.compile(r"[.!?][ \t]+|\n+")
 _ABBREV_BEFORE_PERIOD = frozenset(
     {
         "jan",
@@ -62,6 +73,43 @@ _ABBREV_BEFORE_PERIOD = frozenset(
 )
 _WORD_BEFORE_PERIOD = re.compile(r"[A-Za-zÄÖÜäöüß]+$")
 _ORDINAL_BEFORE_PERIOD = re.compile(r"\d+$")
+_WORD_AFTER_PERIOD = re.compile(r"[ \t]+([A-Za-zÄÖÜäöüß]+)")
+# „u. a.“, „z. B.“, „d. h.“: letter, period, optional space, letter, period.
+# The second letter may be uppercase (``z. B.``).
+_LETTER_DOT_PAIR_AFTER = re.compile(r"[ \t]*[A-Za-zÄÖÜäöüß]\.")
+_LETTER_DOT_PAIR_BEFORE = re.compile(r"[A-Za-zÄÖÜäöüß]\.[ \t]*[A-Za-zÄÖÜäöüß]$")
+# A number keeps the sentence only when a month or a lowercase word follows.
+_MONTH_AFTER_NUMBER = frozenset(
+    {
+        "januar",
+        "jan",
+        "februar",
+        "feb",
+        "febr",
+        "märz",
+        "maerz",
+        "mär",
+        "mrz",
+        "april",
+        "apr",
+        "mai",
+        "juni",
+        "jun",
+        "juli",
+        "jul",
+        "august",
+        "aug",
+        "september",
+        "sept",
+        "sep",
+        "oktober",
+        "okt",
+        "november",
+        "nov",
+        "dezember",
+        "dez",
+    }
+)
 # A lowercase class counts only when a licence word stands directly before it.
 _LOWER_CODE_AFTER_LICENCE_WORD = re.compile(
     r"(?:^|\W)(?:"
@@ -208,6 +256,21 @@ class ClaimScreen:
     violations: list[str] = field(default_factory=list)
 
 
+@dataclass(frozen=True)
+class PreparedCoverCheck:
+    """Profile side of one preview, fixed for the life of the dialog.
+
+    Confirmed classes, employers, degrees and the normalized evidence are
+    computed once. A letter scan reads only these fields and the letter.
+    """
+
+    confirmed_norm: str
+    job_norm: str
+    licence_codes: frozenset[str]
+    employers: tuple[str, ...]
+    degrees: tuple[str, ...]
+
+
 def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", (text or "").casefold()).strip()
 
@@ -227,17 +290,47 @@ def _supported(token: str, confirmed_norm: str) -> bool:
     return False
 
 
-def _period_keeps_sentence(text: str, dot: int) -> bool:
-    """True when this period belongs to a number or an abbreviation."""
-    before = text[:dot]
-    if _ORDINAL_BEFORE_PERIOD.search(before):
+def _word_after_period(text: str, dot: int) -> str:
+    match = _WORD_AFTER_PERIOD.match(text, dot + 1)
+    if match is None:
+        return ""
+    return match.group(1)
+
+
+def _number_keeps_sentence(text: str, dot: int) -> bool:
+    """``1. März`` and ``3. größten`` stay. ``2031. Gerne`` splits."""
+    word = _word_after_period(text, dot)
+    if not word:
+        return False
+    if word.casefold() in _MONTH_AFTER_NUMBER:
         return True
+    return word[:1].islower()
+
+
+# Only the tail before a period matters. Scanning the whole letter on every
+# dot would be quadratic on a page of abbreviations.
+_PERIOD_LOOKBACK = 40
+
+
+def _single_letter_keeps_sentence(text: str, dot: int) -> bool:
+    """Keep only ``u. a.`` / ``z. B.`` / ``d. h.``. ``Klasse C. Hiermit`` splits."""
+    if _LETTER_DOT_PAIR_AFTER.match(text, dot + 1):
+        return True
+    tail = text[max(0, dot - _PERIOD_LOOKBACK) : dot]
+    return _LETTER_DOT_PAIR_BEFORE.search(tail) is not None
+
+
+def _period_keeps_sentence(text: str, dot: int) -> bool:
+    """True when this period belongs to an abbreviation, not a sentence end."""
+    before = text[max(0, dot - _PERIOD_LOOKBACK) : dot]
+    if _ORDINAL_BEFORE_PERIOD.search(before):
+        return _number_keeps_sentence(text, dot)
     word = _WORD_BEFORE_PERIOD.search(before)
     if word is None:
         return False
     token = word.group(0)
     if len(token) == 1:
-        return True
+        return _single_letter_keeps_sentence(text, dot)
     return token.casefold() in _ABBREV_BEFORE_PERIOD
 
 
@@ -248,7 +341,8 @@ def _split_claim_sentences(letter: str) -> list[str]:
     start = 0
     for match in _CLAIM_SENTENCE_BREAK.finditer(text):
         mark = match.start()
-        if text[mark] == "." and _period_keeps_sentence(text, mark):
+        # A newline always separates, even after a class or an abbreviation.
+        if text[mark] != "\n" and text[mark] == "." and _period_keeps_sentence(text, mark):
             continue
         end = mark if text[mark] == "\n" else mark + 1
         chunk = text[start:end].strip()
@@ -324,6 +418,62 @@ def confirmed_licence_codes(config: AppConfig) -> set[str]:
     return found
 
 
+def _fact_supported(token: str, names: tuple[str, ...], confirmed_norm: str) -> bool:
+    """Employers and degrees were fixed when the profile side was prepared."""
+    if _supported(token, confirmed_norm):
+        return True
+    folded = token.casefold()
+    return any(folded == name.casefold() for name in names)
+
+
+def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> list[str]:
+    """Scan the letter only. ``prepared`` is not rebuilt here."""
+    violations: list[str] = []
+    seen: set[str] = set()
+    for sentence in _split_claim_sentences(letter):
+        if _APPLICATION_SENTENCE.search(sentence):
+            continue
+        if not _FIRST_PERSON.search(sentence):
+            continue
+        flagged: list[str] = []
+        for match in _CREDENTIAL.finditer(sentence):
+            name = next((g for g in match.groups() if g), "")
+            if name and not _supported(name, prepared.confirmed_norm):
+                flagged.append(name)
+        for match in _COMPLETED_DEGREE.finditer(sentence):
+            name = match.group(1)
+            if name and not _fact_supported(name, prepared.degrees, prepared.confirmed_norm):
+                flagged.append(name)
+        for match in _METRIC.finditer(sentence):
+            snippet = match.group(0)
+            if snippet.casefold() not in prepared.confirmed_norm:
+                flagged.append(snippet)
+        for match in _EMPLOYER.finditer(sentence):
+            employer = match.group(1).strip()
+            if employer and not _fact_supported(
+                employer, prepared.employers, prepared.confirmed_norm
+            ):
+                flagged.append(employer)
+        if _is_licence_sentence(sentence):
+            for code in _licence_codes_in_sentence(sentence):
+                if code not in prepared.licence_codes:
+                    flagged.append(code)
+        for token in _CLAIM_TOKEN.findall(sentence):
+            if token.casefold() in _STOP:
+                continue
+            if not _in_job(token, prepared.job_norm):
+                continue
+            if _supported(token, prepared.confirmed_norm):
+                continue
+            flagged.append(token)
+        if flagged:
+            key = sentence.casefold()
+            if key not in seen:
+                seen.add(key)
+                violations.append(sentence)
+    return violations
+
+
 def find_unsubstantiated_personal_claims(
     letter: str,
     *,
@@ -339,51 +489,14 @@ def find_unsubstantiated_personal_claims(
     Licence classes come only from ``confirmed_licences``, never from scanning
     ``confirmed_text``.
     """
-    confirmed_norm = _norm(f"{confirmed_text} {allowed_context}")
-    job_norm = _norm(job_text)
-    licence_codes = {code.upper() for code in (confirmed_licences or ())}
-    violations: list[str] = []
-    seen: set[str] = set()
-    for sentence in _split_claim_sentences(letter):
-        if _APPLICATION_SENTENCE.search(sentence):
-            continue
-        if not _FIRST_PERSON.search(sentence):
-            continue
-        flagged: list[str] = []
-        for match in _CREDENTIAL.finditer(sentence):
-            name = next((g for g in match.groups() if g), "")
-            if name and not _supported(name, confirmed_norm):
-                flagged.append(name)
-        for match in _COMPLETED_DEGREE.finditer(sentence):
-            name = match.group(1)
-            if name and not _supported(name, confirmed_norm):
-                flagged.append(name)
-        for match in _METRIC.finditer(sentence):
-            snippet = match.group(0)
-            if snippet.casefold() not in confirmed_norm:
-                flagged.append(snippet)
-        for match in _EMPLOYER.finditer(sentence):
-            employer = match.group(1).strip()
-            if employer and not _supported(employer, confirmed_norm):
-                flagged.append(employer)
-        if _is_licence_sentence(sentence):
-            for code in _licence_codes_in_sentence(sentence):
-                if code not in licence_codes:
-                    flagged.append(code)
-        for token in _CLAIM_TOKEN.findall(sentence):
-            if token.casefold() in _STOP:
-                continue
-            if not _in_job(token, job_norm):
-                continue
-            if _supported(token, confirmed_norm):
-                continue
-            flagged.append(token)
-        if flagged:
-            key = sentence.casefold()
-            if key not in seen:
-                seen.add(key)
-                violations.append(sentence)
-    return violations
+    prepared = PreparedCoverCheck(
+        confirmed_norm=_norm(f"{confirmed_text} {allowed_context}"),
+        job_norm=_norm(job_text),
+        licence_codes=frozenset(code.upper() for code in (confirmed_licences or ())),
+        employers=(),
+        degrees=(),
+    )
+    return _claims_in_prepared_letter(letter, prepared)
 
 
 def screen_cover_letter(
@@ -402,6 +515,40 @@ def screen_cover_letter(
         confirmed_licences=confirmed_licences,
     )
     return ClaimScreen(ok=not violations, violations=violations)
+
+
+def screen_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> ClaimScreen:
+    """Guard one letter against a profile side that was built earlier."""
+    violations = _claims_in_prepared_letter(letter, prepared)
+    return ClaimScreen(ok=not violations, violations=violations)
+
+
+def unconfirmed_licence_codes(
+    letter: str,
+    *,
+    confirmed_licences: set[str] | None = None,
+) -> list[str]:
+    """Class codes a personal licence sentence claims beyond the profile.
+
+    Order follows the letter. The same sentence split as
+    :func:`find_unsubstantiated_personal_claims` decides where a class sits.
+    """
+    allowed = {code.upper() for code in (confirmed_licences or ())}
+    found: list[str] = []
+    seen: set[str] = set()
+    for sentence in _split_claim_sentences(letter):
+        if _APPLICATION_SENTENCE.search(sentence):
+            continue
+        if not _FIRST_PERSON.search(sentence):
+            continue
+        if not _is_licence_sentence(sentence):
+            continue
+        for code in _licence_codes_in_sentence(sentence):
+            if code in allowed or code in seen:
+                continue
+            seen.add(code)
+            found.append(code)
+    return found
 
 
 def _entry_text(entry: object) -> str:
@@ -474,29 +621,33 @@ def confirmed_profile_text(config: AppConfig) -> str:
     return "\n".join(chunks)
 
 
-def strip_unsubstantiated_claims(
-    letter: str,
-    *,
-    confirmed_text: str,
+def _confirmed_field(config: AppConfig, section: str, attr: str) -> tuple[str, ...]:
+    """Named facts from one confirmed section. Unconfirmed sections contribute nothing."""
+    review = getattr(config.profile, "extract_review", None)
+    if not section_confirmed(review, section):
+        return ()
+    entries = getattr(config.profile.qualifications, section, None) or []
+    names: list[str] = []
+    for entry in entries:
+        text = clean_text(getattr(entry, attr, "") or "")
+        if text:
+            names.append(text)
+    return tuple(names)
+
+
+def prepare_cover_check(
+    config: AppConfig,
     job_text: str,
     allowed_context: str = "",
-    confirmed_licences: set[str] | None = None,
-) -> str:
-    """Drop sentences that assert personal facts the profile does not confirm."""
-    violations = set(
-        find_unsubstantiated_personal_claims(
-            letter,
-            confirmed_text=confirmed_text,
-            job_text=job_text,
-            allowed_context=allowed_context,
-            confirmed_licences=confirmed_licences,
-        )
+) -> PreparedCoverCheck:
+    """Build the profile side once. Later scans pass the letter only."""
+    confirmed = confirmed_profile_text(config)
+    return PreparedCoverCheck(
+        confirmed_norm=_norm(f"{confirmed} {allowed_context}"),
+        job_norm=_norm(job_text),
+        licence_codes=frozenset(code.upper() for code in confirmed_licence_codes(config)),
+        employers=_confirmed_field(config, "work_experience", "company"),
+        degrees=_confirmed_field(config, "education", "qualification"),
     )
-    if not violations:
-        return letter
-    kept: list[str] = []
-    for sentence in _split_claim_sentences(letter):
-        if sentence in violations:
-            continue
-        kept.append(sentence)
-    return "\n\n".join(kept).strip()
+
+

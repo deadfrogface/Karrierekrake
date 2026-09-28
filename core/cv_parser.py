@@ -21,6 +21,7 @@ from core.config import (
     parse_qualifications,
 )
 from core.cv_extract import extract_text
+from core.licence_words import LEADING_CLASS_PREFIX_PATTERN
 from core.cv_sections import (
     is_document_title as _is_document_title,
     is_heading as _is_heading,
@@ -292,26 +293,7 @@ _HYPHEN_KEEPS_CLASS = re.compile(
     r"(?:führerschein|fuehrerschein|fahrerlaubnis|klasse|licen[cs]e)\b",
     re.IGNORECASE,
 )
-_LEADING_CLASS_PREFIX = re.compile(
-    r"(?:"
-    r"driving\s+licen[cs]e|"
-    r"driver['\u2019]s\s+licen[cs]e|"
-    r"führerscheinklassen|fuehrerscheinklassen|"
-    r"fahrerlaubnisklassen|"
-    r"führerscheinklasse|fuehrerscheinklasse|"
-    r"fahrerlaubnisklasse|"
-    r"führerschein|fuehrerschein|"
-    r"fahrerlaubnis|"
-    r"klassen|"
-    r"category|categories|"
-    r"class|classes|"
-    r"klasse|"
-    r"kl\."
-    r")"
-    r"(?:\s+(?:der|die))?"
-    r"(?:\s*:\s*|\s+)",
-    re.IGNORECASE,
-)
+_LEADING_CLASS_PREFIX = re.compile(LEADING_CLASS_PREFIX_PATTERN, re.IGNORECASE)
 
 
 def _licence_class_tail_rejects(text: str, end: int) -> bool:
@@ -525,8 +507,52 @@ def read_driving_classes(raw: str | list | None) -> LicenceReading:
     if recovered:
         evidence = [code for code in display if code in stored_exact]
     else:
-        evidence = list(display)
+        # Display stays the stored phrase. Evidence uses the shared licence
+        # words, so „Führerscheinklasse C“ and „Klassen B und C“ yield classes.
+        evidence = _evidence_using_licence_words(display)
     return LicenceReading(display, evidence, uncertain, recovered)
+
+
+def _classes_spelled_after_licence_words(text: str) -> list[str] | None:
+    """Class codes when ``text`` is only shared licence words plus classes.
+
+    ``Führerscheinklasse C`` is ``C``. ``Klassen B`` is ``B``. ``Klasse 3``,
+    ``CE 95`` and ``Klasse B.`` stay phrases, so this returns ``None``.
+    """
+    rest = text.strip()
+    peeled = False
+    while rest:
+        prefix = _LEADING_CLASS_PREFIX.match(rest)
+        if prefix is None:
+            break
+        peeled = True
+        rest = rest[prefix.end() :].lstrip()
+    if not peeled or not rest:
+        return None
+    pieces = [part.strip() for part in _LICENSE_DELIM_SPLIT.split(rest) if part.strip()]
+    codes: list[str] = []
+    for piece in pieces:
+        parts = piece.split()
+        if parts and all(part.upper() in _RECOGNISED_LICENCE_CLASSES for part in parts):
+            codes.extend(part.upper() for part in parts)
+            continue
+        return None
+    return codes or None
+
+
+def _evidence_using_licence_words(display: list[str]) -> list[str]:
+    codes: list[str] = []
+    phrases: list[str] = []
+    for item in display:
+        spelled = _classes_spelled_after_licence_words(item)
+        if spelled:
+            codes.extend(spelled)
+        elif item.upper() in _RECOGNISED_LICENCE_CLASSES:
+            codes.append(item.upper())
+        else:
+            phrases.append(item)
+    ordered = _order_license_codes(codes)
+    return ordered + phrases
 
 
 def driving_classes_for_display(raw: str | list | None) -> list[str]:
