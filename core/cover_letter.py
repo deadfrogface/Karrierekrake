@@ -1362,22 +1362,49 @@ def _label_in_text(label: str, text: str) -> bool:
 _INFLECTION_TAILS = ("em", "en", "er", "es", "e", "s")
 
 
+def _key_bounded(key: str, folded: str) -> bool:
+    """Whole-word match of an already collapsed key. No ``re.compile``."""
+    if not key or not folded:
+        return False
+    if key in folded and _bounded_phrase(key, folded):
+        return True
+    if " " in key:
+        return False
+    for ending in _INFLECTION_TAILS:
+        variant = key + ending
+        if variant in folded and _bounded_phrase(variant, folded):
+            return True
+    return False
+
+
 def _label_bounded(label: str, folded: str) -> bool:
     """Whole-word label match, including one German ending on a single word.
 
     No ``re.compile``. The pattern cache stays untouched on the letter check.
     """
-    key = collapse_phrase(label)
-    if not key or not folded:
-        return False
-    if _bounded_phrase(key, folded):
-        return True
-    words = key.split(" ")
-    if len(words) == 1:
-        for ending in _INFLECTION_TAILS:
-            if _bounded_phrase(words[0] + ending, folded):
-                return True
-    return False
+    return _key_bounded(collapse_phrase(label), folded)
+
+
+def _company_needles(company: str) -> tuple[str, ...]:
+    """Collapsed company and its leading names. Built once per company string."""
+    folded_company = collapse_phrase(company)
+    if not folded_company:
+        return ()
+    tokens = [
+        part
+        for part in _CONTENT_TOKEN.findall(folded_company)
+        if not _is_glue_token(part)
+    ]
+    needles = [folded_company]
+    if len(tokens) == 1:
+        needles.extend(tokens[0] + ending for ending in _INFLECTION_TAILS)
+    for length in range(1, len(tokens) + 1):
+        needles.append(" ".join(tokens[:length]))
+    return tuple(dict.fromkeys(needle for needle in needles if needle))
+
+
+def _company_in_folded(needles: tuple[str, ...], folded: str) -> bool:
+    return any(needle in folded and _bounded_phrase(needle, folded) for needle in needles)
 
 
 def _company_in_text(company: str, text: str) -> bool:
@@ -1390,18 +1417,7 @@ def _company_in_text(company: str, text: str) -> bool:
         return True
     if not text or not str(text).strip():
         return False
-    folded = collapse_phrase(text)
-    if _label_bounded(company, folded):
-        return True
-    tokens = [
-        part
-        for part in _CONTENT_TOKEN.findall(collapse_phrase(company))
-        if not _is_glue_token(part)
-    ]
-    for length in range(1, len(tokens) + 1):
-        if _bounded_phrase(" ".join(tokens[:length]), folded):
-            return True
-    return False
+    return _company_in_folded(_company_needles(company), collapse_phrase(text))
 
 
 def _fact_in_text(fact: _CoverFact, text: str) -> bool:
@@ -1477,19 +1493,46 @@ def _sentence_supports(sentence: str, fact: _CoverFact, labels: list[str]) -> bo
 
 
 def _facts_in_sentences(text: str, facts: list[_CoverFact]) -> list[_CoverFact]:
-    """Facts that stand in their own sentence, not only inside a list."""
+    """Facts that stand in their own sentence, not only inside a list.
+
+    Each sentence is folded once. Each label is collapsed once per letter.
+    """
     if not text or not str(text).strip() or not facts:
         return []
-    labels = [fact.label for fact in facts if fact.label]
+    prepared = [
+        (fact, key)
+        for fact in facts
+        if fact.label and (key := collapse_phrase(fact.label))
+    ]
+    if not prepared:
+        return []
+    company_needles: dict[str, tuple[str, ...]] = {}
     kept: list[_CoverFact] = []
     seen: set[str] = set()
     for sentence in _sentences(text):
-        for fact in facts:
+        folded = collapse_phrase(sentence)
+        present_labels: list[str] = []
+        present: list[_CoverFact] = []
+        for fact, key in prepared:
+            if not _key_bounded(key, folded):
+                continue
+            present.append(fact)
+            if fact.label not in present_labels:
+                present_labels.append(fact.label)
+        if _enumeration_sentence(sentence, present_labels):
+            continue
+        for fact in present:
             if fact.fact_id in seen:
                 continue
-            if _sentence_supports(sentence, fact, labels):
-                seen.add(fact.fact_id)
-                kept.append(fact)
+            if fact.kind == "station" and fact.company:
+                needles = company_needles.get(fact.company)
+                if needles is None:
+                    needles = _company_needles(fact.company)
+                    company_needles[fact.company] = needles
+                if not _company_in_folded(needles, folded):
+                    continue
+            seen.add(fact.fact_id)
+            kept.append(fact)
     return kept
 
 
