@@ -59,6 +59,65 @@ from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import apply_wheel_guard_to_spinboxes
 
 
+# Keys of the drawer mapping in ``_edit_section``. A new drawer belongs in
+# exactly one of the two sets below; the partition test fails otherwise.
+PROFILE_DRAWER_KEYS = (
+    "personal",
+    "career",
+    "application",
+    "docs",
+    "experience",
+    "education",
+    "skills",
+    "languages",
+)
+
+# Contact address may be copied into the search home only from these scopes,
+# and only when ``sync_home_from_address`` is checked. ``None`` is the full save.
+_HOME_ADOPT_SCOPES = frozenset({None, "personal", "application"})
+
+# Every other drawer. Explicit, so a new mapping key is not adopted by default.
+_SECTION_SCOPES_WITHOUT_HOME = frozenset(
+    {
+        "career",
+        "docs",
+        "experience",
+        "education",
+        "skills",
+        "languages",
+    }
+)
+
+# Fields the distance filter and local geo resolution read. Other section saves
+# must leave this tuple byte-identical on disk.
+_SEARCH_HOME_FIELDS = (
+    "home_address",
+    "postal_code",
+    "city",
+    "country",
+    "max_distance_km",
+    "allow_remote_germany",
+    "allow_hybrid",
+    "cross_border_dach",
+    "home_latitude",
+    "home_longitude",
+    "home_geocoded_address",
+)
+
+
+def _search_home_text_changed(location, snapshot: dict[str, object]) -> bool:
+    """True when the user-facing home text differs from the pre-save snapshot."""
+    for name in ("home_address", "postal_code", "city", "country"):
+        current = str(getattr(location, name) or "").strip()
+        previous = str(snapshot.get(name) or "").strip()
+        if name == "country":
+            current = current or "DE"
+            previous = previous or "DE"
+        if current != previous:
+            return True
+    return False
+
+
 def legacy_profile_search_ui_enabled(settings=None) -> bool:
     """Rollback: show combined Bewerbungswunsch UI on Profile.
 
@@ -125,6 +184,7 @@ class ProfilePage(QWidget):
         super().__init__(parent)
         self.config_service = config_service
         self._career_persist = False  # True when Berufsziel drawer saves profile.jobs
+        self._save_scope: str | None = None
         self._exp_limit = 2
         self._skill_limit = 8
 
@@ -178,11 +238,16 @@ class ProfilePage(QWidget):
         self.page_subtitle.setWordWrap(True)
         self.home_status = QLabel()
         self.home_status.setWordWrap(True)
+        self.change_place_btn = QPushButton()
+        self.change_place_btn.setObjectName("SecondaryButton")
+        self.change_place_btn.hide()
+        self.change_place_btn.clicked.connect(self.edit_search_home)
         title_col = QVBoxLayout()
         title_col.setSpacing(2)
         title_col.addWidget(self.page_title)
         title_col.addWidget(self.page_subtitle)
         title_col.addWidget(self.home_status)
+        title_col.addWidget(self.change_place_btn, alignment=Qt.AlignmentFlag.AlignLeft)
         header.addLayout(title_col, stretch=1)
         # Top-right reserved for secondary icon-actions only (no primary CTAs)
         shell_layout.addLayout(header)
@@ -422,8 +487,9 @@ class ProfilePage(QWidget):
         layout.addWidget(chip)
         return chip
 
-    def _edit_section(self, key: str) -> None:
-        mapping = {
+    def _drawer_mapping(self) -> dict:
+        """Drawer key → (editor, title). Keys must match ``PROFILE_DRAWER_KEYS``."""
+        return {
             "personal": (self.applicant, tr("profile.card_personal")),
             "career": (self.career, tr("profile.card_career")),
             "application": (self.applicant, tr("profile.card_application")),
@@ -433,8 +499,12 @@ class ProfilePage(QWidget):
             "skills": (self.qualifications, tr("profile.card_skills")),
             "languages": (self.languages, tr("profile.languages")),
         }
+
+    def _edit_section(self, key: str) -> None:
+        mapping = self._drawer_mapping()
         section, title = mapping[key]
         self._career_persist = key == "career"
+        self._save_scope = key
         self._drawer.set_texts(
             title=title,
             save=tr("btn.save"),
@@ -443,18 +513,24 @@ class ProfilePage(QWidget):
         # Detach from hidden host
         section.setParent(None)
         section.show()
-        result = self._drawer.present(section)
-        self._drawer.take_content()
-        section.setParent(self._editors_host)
-        self._editors_host.layout().addWidget(section)
-        legacy = legacy_profile_search_ui_enabled(self.config_service.load().settings)
-        if key == "career":
-            section.setHidden(not legacy)
-        else:
-            section.hide()
-        if result == SectionEditDrawer.DialogCode.Accepted:
-            self.save()
-            self.refresh_cards()
+        try:
+            result = self._drawer.present(section)
+            self._drawer.take_content()
+            section.setParent(self._editors_host)
+            self._editors_host.layout().addWidget(section)
+            # ``ConfigService.load()`` re-reads YAML on every call. The flag is
+            # already in the cache filled by ``load_from_config``; ``save()``
+            # loads once for the write.
+            legacy = legacy_profile_search_ui_enabled(self.config_service.config.settings)
+            if key == "career":
+                section.setHidden(not legacy)
+            else:
+                section.hide()
+            if result == SectionEditDrawer.DialogCode.Accepted:
+                # save() already rebuilds the cards once (refresh_all or refresh_cards).
+                self.save()
+        finally:
+            self._save_scope = None
 
     def load_from_config(self) -> None:
         self._apply_legacy_visibility()
@@ -465,7 +541,7 @@ class ProfilePage(QWidget):
         self.education.load(p.qualifications)
         self.qualifications.load(p.qualifications)
         self.languages.load(p.qualifications)
-        self.location_work.load(p.location, p.employment, p.filters)
+        self.location_work.load(p.location, p.employment, p.filters, cfg)
         self.applicant.load(
             cfg.application,
             sync_address_to_search=self.config_service.get_sync_address_to_search(),
@@ -481,11 +557,37 @@ class ProfilePage(QWidget):
         """Update only the home-notice line. Does not rebuild the cards."""
         self._bind_home_status(self.config_service.load())
 
+    def edit_search_home(self) -> None:
+        """Open the search-home editor. Scope ``None`` persists the location fields."""
+        self._save_scope = None
+        section = self.location_work
+        self._drawer.set_texts(
+            title=tr("profile.location"),
+            save=tr("btn.save"),
+            cancel=tr("btn.cancel"),
+        )
+        section.setParent(None)
+        section.show()
+        try:
+            result = self._drawer.present(section)
+            self._drawer.take_content()
+            section.setParent(self._editors_host)
+            self._editors_host.layout().addWidget(section)
+            section.hide()
+            if result == SectionEditDrawer.DialogCode.Accepted:
+                self.save()
+        finally:
+            self._save_scope = None
+
     def _bind_home_status(self, cfg) -> None:
         from core.location import home_location_notice
         from desktop.pages.dashboard import bind_home_notice_label
 
-        bind_home_notice_label(self.home_status, home_location_notice(cfg.profile.location))
+        bind_home_notice_label(
+            self.home_status,
+            home_location_notice(cfg.profile.location, cfg),
+            self.change_place_btn,
+        )
 
     def refresh_cards(self) -> None:
         cfg = self.config_service.load()
@@ -888,6 +990,9 @@ class ProfilePage(QWidget):
         self.load_from_config()
         QMessageBox.information(self, tr("profile.reset_title"), done_msg)
 
+    # UNVERBINDLICH. Beide Helfer bleiben: ``_matches_last_file`` aus #105
+    # (kein Schreiben bei unverändertem Profil) und Wohnort-Regeln aus #104.
+    # ``save`` ruft alle drei bereits. Die Produktentscheidung liegt bei #104 und #105.
     def _matches_last_file(self, cfg) -> bool:
         """True when ``cfg`` equals the YAML last read from disk.
 
@@ -896,10 +1001,29 @@ class ProfilePage(QWidget):
         """
         return cfg == self.config_service._read_runtime_config()
 
+    def _should_adopt_contact_into_home(self) -> bool:
+        """Copy the contact address only when the search-home checkbox is on.
+
+        A changed street, postal code, or city adopts nothing by itself, even
+        when the search home is empty. Only ``personal``, ``application``, and
+        a full save (scope ``None``) may adopt, and only with the checkbox.
+        """
+        if self._save_scope not in _HOME_ADOPT_SCOPES:
+            return False
+        return bool(self.applicant.sync_home_from_address.isChecked())
+
+    def _restore_search_home(self, location, snapshot: dict[str, object]) -> None:
+        for name, value in snapshot.items():
+            setattr(location, name, value)
+
     def save(self) -> None:
         cfg = self.config_service.load()
         p = cfg.profile
         legacy = legacy_profile_search_ui_enabled(cfg.settings)
+        # Captured before any editor write-back. Other drawers must not move it.
+        home_snapshot = {name: getattr(p.location, name) for name in _SEARCH_HOME_FIELDS}
+        adopt_home = self._should_adopt_contact_into_home()
+        persist_location_editor = self._save_scope not in _SECTION_SCOPES_WITHOUT_HOME
         # Persist career goals when legacy OR when user edited Berufsziel drawer.
         # Never push into SearchIntent unless legacy combined UI is on — except
         # when clearing/editing Berufsziel: deleted profile values must not stay
@@ -926,7 +1050,8 @@ class ProfilePage(QWidget):
         self.education.save_into(p.qualifications)
         self.qualifications.save_into(p.qualifications)
         self.languages.save_into(p.qualifications)
-        self.location_work.save_into(p.location, p.employment, p.filters)
+        if persist_location_editor:
+            self.location_work.save_into(p.location, p.employment, p.filters)
 
         if legacy:
             from core.search_intent import (
@@ -962,19 +1087,30 @@ class ProfilePage(QWidget):
         a = cfg.application
         sync_addr = self.applicant.save_into(a)
         self.config_service.set_sync_address_to_search(sync_addr)
-        from core.location import apply_visible_home
+        if adopt_home:
+            # Checkbox "Diese Adresse auch als Standort für die Jobsuche verwenden."
+            from core.location import apply_visible_home
 
-        apply_visible_home(
-            p.location,
-            street=a.street,
-            postal_code=a.postal_code,
-            city=a.city,
-            country=a.country,
-        )
-        self.location_work.home_address.setText(p.location.home_address or "")
-        self.location_work.postal_code.setText(p.location.postal_code or "")
-        self.location_work.country.setText(p.location.country or "")
-        self.location_work.refresh_home_notice(p.location)
+            apply_visible_home(
+                p.location,
+                street=a.street,
+                postal_code=a.postal_code,
+                city=a.city,
+                country=a.country,
+            )
+            self.location_work.home_address.setText(p.location.home_address or "")
+            self.location_work.postal_code.setText(p.location.postal_code or "")
+            self.location_work.country.setText(p.location.country or "")
+            self.location_work.refresh_home_notice(p.location)
+        elif not persist_location_editor:
+            self._restore_search_home(p.location, home_snapshot)
+
+        if _search_home_text_changed(p.location, home_snapshot):
+            # Only a real home edit (location fields or the opt-in checkbox)
+            # may persist coordinates. The lookup itself is cached per address.
+            from core.location import store_user_home_coordinates
+
+            store_user_home_coordinates(p.location)
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)
 

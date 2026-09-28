@@ -56,7 +56,7 @@ def format_commute_label(job, *, with_duration: bool = True, home_status: str = 
     remote = (getattr(job, "remote_type", "") or "").lower()
     if remote == "remote":
         return tr("jobs.commute_remote")
-    if home_status in {"ambiguous", "unknown", "missing"}:
+    if home_status in {"ambiguous", "unknown", "missing", "loading", "unavailable"}:
         return tr("jobs.distance_skipped")
     err = (getattr(job, "distance_error", "") or "").strip()
     src = (getattr(job, "distance_source", "") or "").strip()
@@ -100,6 +100,8 @@ class JobsPage(QWidget):
         self.config_service = config_service
         self._jobs = []
         self._selected = None
+        self._last_pass_saw_loading = False
+        self._last_notice_status = ""
 
         self.header = PageHeader()
         self.page_title = self.header.title
@@ -487,7 +489,18 @@ class JobsPage(QWidget):
         self.detail_prepare.setEnabled(True)
         self.detail_open.setEnabled(True)
 
-    def _populate_table(self, jobs: list) -> None:
+    def _populate_table(self, jobs: list, *, preserve_view: bool = False) -> None:
+        selected_id = None
+        list_scroll = 0
+        table_scroll = 0
+        if preserve_view:
+            current = self.job_list.currentItem()
+            if current is not None:
+                selected_id = current.data(Qt.ItemDataRole.UserRole)
+            elif self._selected is not None:
+                selected_id = getattr(self._selected, "id", None)
+            list_scroll = self.job_list.verticalScrollBar().value()
+            table_scroll = self.table.verticalScrollBar().value()
         self.table.setRowCount(0)
         self.job_list.clear()
         cfg = self.config_service.load()
@@ -545,6 +558,20 @@ class JobsPage(QWidget):
         self.count_label.setText(tr("jobs.count", n=len(jobs)))
         if empty:
             self._clear_detail()
+        elif preserve_view:
+            restored = False
+            if selected_id:
+                for row in range(self.job_list.count()):
+                    item = self.job_list.item(row)
+                    if item is not None and item.data(Qt.ItemDataRole.UserRole) == selected_id:
+                        self.job_list.setCurrentRow(row)
+                        self.table.selectRow(row)
+                        restored = True
+                        break
+            if not restored and self.job_list.count():
+                self.job_list.setCurrentRow(0)
+            self.job_list.verticalScrollBar().setValue(list_scroll)
+            self.table.verticalScrollBar().setValue(table_scroll)
         elif self.job_list.count():
             self.job_list.setCurrentRow(0)
 
@@ -552,12 +579,16 @@ class JobsPage(QWidget):
         from core.location import home_location_notice
 
         cfg = self.config_service.load()
-        return home_location_notice(cfg.profile.location)
+        return home_location_notice(cfg.profile.location, cfg)
 
     def _home_status(self) -> str:
         return self._home_notice().status
 
     def refresh(self) -> None:
+        self.apply_filter_pass(preserve_view=False)
+
+    def apply_filter_pass(self, *, preserve_view: bool = False) -> None:
+        """Reload the job list. ``preserve_view`` keeps scroll position and selection."""
         cfg = self.config_service.load()
         self.min_match.setValue(self.min_match.value() or int(cfg.settings.minimum_match_for_dashboard))
         if self.max_dist.value() == 1 and not hasattr(self, "_dist_init"):
@@ -565,6 +596,7 @@ class JobsPage(QWidget):
             self._dist_init = True
         db = Database(cfg.db_path)
         notice = self._home_notice()
+        self._last_notice_status = notice.status
         # Unresolved home: do not drop jobs for a missing/stale radius.
         distance_cap = None if notice.status != "resolved" else float(self.max_dist.value())
         remote_types = []
@@ -587,9 +619,77 @@ class JobsPage(QWidget):
             city_query=self.city.text().strip() or None,
             source=self.source.text().strip() or None,
             limit=500,
+            include_unknown_distance=notice.status == "resolved",
         )
+        self._fill_pending_distances(jobs, notice, cfg)
+        if distance_cap is not None:
+            jobs = [job for job in jobs if self._job_within_cap(job, distance_cap)]
         self._jobs = self._sorted_jobs(jobs)
-        self._populate_table(self._jobs)
+        self._populate_table(self._jobs, preserve_view=preserve_view)
+
+    def _job_within_cap(self, job, cap: float) -> bool:
+        if (getattr(job, "remote_type", "") or "") == "remote":
+            return True
+        dist = getattr(job, "distance_km", None)
+        if dist is None:
+            dist = getattr(job, "airline_km", None)
+        return dist is not None and float(dist) <= cap
+
+    def _fill_pending_distances(self, jobs, notice, cfg) -> None:
+        """Resolve workplaces that still have no distance. Loading stays a flag.
+
+        Great-circle kilometres land on ``airline_km`` only. ``distance_km``
+        stays the BRouter Fahrstrecke and is not invented here.
+        """
+        from core.geo_resolve import haversine_km, place_from_job_like, resolve_place
+        from core.location import home_resolve_params
+
+        self._last_pass_saw_loading = False
+        border, home_cc = home_resolve_params(cfg.profile.location, cfg)
+        home_coords = None
+        if (
+            notice.status == "resolved"
+            and notice.latitude is not None
+            and notice.longitude is not None
+        ):
+            home_coords = (float(notice.latitude), float(notice.longitude))
+        for job in jobs:
+            if (getattr(job, "remote_type", "") or "") == "remote":
+                continue
+            if getattr(job, "distance_km", None) is not None or getattr(job, "airline_km", None) is not None:
+                continue
+            lat = getattr(job, "latitude", None)
+            lon = getattr(job, "longitude", None)
+            if home_coords is not None and lat is not None and lon is not None:
+                try:
+                    job.airline_km = haversine_km(home_coords[0], home_coords[1], float(lat), float(lon))
+                except ValueError:
+                    job.airline_km = None
+                continue
+            place = place_from_job_like(job)
+            if not (place.postal_code or place.city or place.address):
+                continue
+            resolution = resolve_place(
+                place,
+                cross_border=border,
+                home_country=home_cc,
+                allow_network=False,
+            )
+            if resolution.reason == "geo_index_loading":
+                self._last_pass_saw_loading = True
+                continue
+            if resolution.ok and home_coords is not None:
+                job.latitude = float(resolution.latitude)
+                job.longitude = float(resolution.longitude)
+                try:
+                    job.airline_km = haversine_km(
+                        home_coords[0],
+                        home_coords[1],
+                        float(resolution.latitude),
+                        float(resolution.longitude),
+                    )
+                except ValueError:
+                    job.airline_km = None
 
     def open_selected(self) -> None:
         job = self._selected or self._job_for_row(self.table.currentRow())

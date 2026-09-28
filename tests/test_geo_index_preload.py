@@ -223,18 +223,20 @@ def test_ui_thread_does_not_false_resolve_while_the_index_loads(qapp, geo_ready)
         country="DE",
     )
     loading = home_location_notice(munich)
-    assert loading.status != "resolved"
-    assert loading.ask_postal is True
+    assert loading.status == "loading"
+    assert loading.ask_postal is False
     assert munich.home_latitude is None and munich.home_longitude is None
 
     halle = LocationConfig(home_address="Halle", city="Halle", postal_code="", country="DE")
     while_loading = home_location_notice(halle)
-    assert while_loading.status != "resolved"
+    assert while_loading.status == "loading"
     label = QLabel()
     bind_home_notice_label(label, while_loading)
     assert label.isVisible()
+    assert label.objectName() == "HomeStatusPending"
+    assert "wird noch geprüft" in label.text()
+    assert "nicht gefunden" not in label.text()
     assert "aufgelöst" not in label.text()
-    assert "Postleitzahl" in label.text()
 
     hold.set()
     _wait_thread(thread)
@@ -346,6 +348,7 @@ def test_profile_save_resolves_geo_once(qapp, config_service, geo_ready, monkeyp
     page.applicant.postal_code.setText("10115")
     page.applicant.city.setText("Berlin")
     page.applicant.app_country.setText("DE")
+    page.applicant.sync_home_from_address.setChecked(True)
     page.save_btn.click()
     qapp.processEvents()
     assert calls["cards"] == 1
@@ -435,6 +438,7 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         page.applicant.postal_code.setText("10115")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        page.applicant.sync_home_from_address.setChecked(True)
         assert not hold.is_set()
         page.save_btn.click()
         # save() has returned. A blocking save would still be inside click().
@@ -459,12 +463,12 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         finished = config_service.load()
         loc = finished.profile.location
         assert loc.postal_code == "10115"
-        assert loc.city == "Berlin"
-        # GeoNames place_name for 10115 is Berlin, not the district Berlin-Mitte.
+        # The ready slot publishes Berlin on the banner. It does not invent a
+        # city or coordinates into profile.yaml.
+        assert loc.city == ""
         assert "Berlin-Mitte" not in text
         assert "Berlin-Mitte" not in _persisted_place_text(finished)
-        assert loc.home_latitude == pytest.approx(52.5323)
-        assert loc.home_longitude == pytest.approx(13.3846)
+        assert loc.home_latitude is None and loc.home_longitude is None
         assert "nicht auflösbar" not in _persisted_place_text(finished)
         assert "nicht prüfbar" not in _persisted_place_text(finished)
         assert [code for code, _ident in builds] == ["DE", "AT", "CH", "NL", "BE"]
@@ -506,6 +510,7 @@ def test_unresolvable_plz_still_shows_the_hint_after_preload(
         page.applicant.postal_code.setText("00000")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        page.applicant.sync_home_from_address.setChecked(True)
         assert not hold.is_set()
         page.save_btn.click()
         assert not hold.is_set()
