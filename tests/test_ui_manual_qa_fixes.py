@@ -95,6 +95,29 @@ def test_driving_classes_deduped_for_display_without_mutating_storage():
     assert driving_classes_for_display(["C1", "C1E"]) == ["C1", "C1E"]
 
 
+def test_import_license_strings_are_tokens_not_characters():
+    """Child imports hand in a space-joined string, not the LLM list."""
+    from core.cv_parser import _as_sequence
+
+    assert _as_sequence("B, BE") == ["B", "BE"]
+    assert _as_sequence("B BE") == ["B", "BE"]
+    assert _as_sequence("BE") == ["BE"]
+    assert _as_sequence("B und BE") == ["B", "BE"]
+    assert _as_sequence("B and BE") == ["B", "BE"]
+    assert _as_sequence("B/BE") == ["B", "BE"]
+    assert list("BE") == ["B", "E"]
+    assert _as_sequence("BE") != ["B", "E"]
+    cases = {
+        "B, BE": ["B", "BE"],
+        "BE": ["BE"],
+        "B BE": ["B", "BE"],
+    }
+    for raw, expected in cases.items():
+        got = parsed_to_qualifications({"driving_license": raw}).driving_values()
+        assert got == expected
+        assert got != ["B", "E"]
+
+
 def test_parsed_string_license_is_not_split_into_characters():
     quals = parsed_to_qualifications({"driving_license": "B BE"})
     assert quals.driving_values() == ["B", "BE"]
@@ -178,6 +201,45 @@ def test_other_drawer_save_keeps_license_in_file(
         assert token in profile_text
     assert reloaded.application.driving_license == ", ".join(expected)
     assert ", ".join(expected) in application_text
+
+
+def test_next_drawer_opens_at_top_with_first_input_focused(qapp, config_service):
+    from PySide6.QtCore import QTimer
+
+    i18n.set_language("de")
+    page = ProfilePage(config_service)
+    page.resize(1000, 700)
+    page.show()
+    page.load_from_config()
+    page.applicant.setMinimumHeight(1400)
+    page.qualifications.setMinimumHeight(1400)
+    qapp.processEvents()
+
+    def scroll_contact_down() -> None:
+        def apply() -> None:
+            bar = page._drawer._scroll.verticalScrollBar()
+            assert bar.maximum() > 0
+            bar.setValue(bar.maximum())
+            assert bar.value() > 0
+            page._drawer.reject()
+
+        QTimer.singleShot(0, apply)
+
+    def check_skills() -> None:
+        def verify() -> None:
+            bar = page._drawer._scroll.verticalScrollBar()
+            assert bar.maximum() > 0
+            assert bar.value() == 0
+            focus = qapp.focusWidget()
+            assert focus is page.qualifications.skills.list
+            page._drawer.reject()
+
+        QTimer.singleShot(0, verify)
+
+    QTimer.singleShot(0, scroll_contact_down)
+    page._edit_section("personal")
+    QTimer.singleShot(0, check_skills)
+    page._edit_section("skills")
 
 
 def test_wizard_completed_or_skipped_stays_done(qapp, config_service):

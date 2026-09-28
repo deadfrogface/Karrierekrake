@@ -2,16 +2,22 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import QEvent, QSize, Qt, Signal
+from PySide6.QtCore import QEvent, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import (
     QAbstractButton,
+    QAbstractSpinBox,
+    QComboBox,
     QDialog,
     QFrame,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
+    QListWidget,
+    QPlainTextEdit,
     QPushButton,
     QSizePolicy,
+    QTextEdit,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -657,7 +663,40 @@ class SectionEditDrawer(QDialog):
         fit_dialog_to_screen(self, preferred_width=560, preferred_height=640)
         self.save_btn.setDefault(True)
         self.save_btn.setAutoDefault(True)
+        # Shared scroll area keeps the previous drawer's offset. Open at the top
+        # and focus the first field so typing does not land in a leftover widget.
+        self._open_at_top()
+        QTimer.singleShot(0, self._open_at_top)
         return int(self.exec())
+
+    def showEvent(self, event) -> None:  # noqa: N802
+        super().showEvent(event)
+        self._open_at_top()
+
+    def _open_at_top(self) -> None:
+        scroll = getattr(self, "_scroll", None)
+        if scroll is not None:
+            scroll.verticalScrollBar().setValue(0)
+            scroll.horizontalScrollBar().setValue(0)
+        content = self._content
+        if content is None:
+            return
+        field = self._first_input(content)
+        if field is not None:
+            field.setFocus(Qt.FocusReason.TabFocusReason)
+
+    @staticmethod
+    def _first_input(content: QWidget) -> QWidget | None:
+        kinds = (QLineEdit, QTextEdit, QPlainTextEdit, QComboBox, QAbstractSpinBox, QListWidget)
+        for widget in content.findChildren(QWidget):
+            if not isinstance(widget, kinds):
+                continue
+            if not widget.isEnabled() or not widget.isVisible():
+                continue
+            if widget.focusPolicy() == Qt.FocusPolicy.NoFocus:
+                continue
+            return widget
+        return None
 
     def take_content(self) -> QWidget | None:
         content = self._content

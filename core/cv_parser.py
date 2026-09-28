@@ -2721,13 +2721,23 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
     return personal
 
 
+# Commas, slashes, "und"/"and", and whitespace separate tokens.
+# Never iterate the string: that yields characters ("BE" → "B", "E").
+_IMPORT_TOKEN_SPLIT = re.compile(r"\s*(?:,|/|\bund\b|\band\b)\s*|\s+")
+
+
+def _as_sequence(items: Any) -> list:
+    """Turn a parsed field into entries. A string is split into tokens, not characters."""
+    if isinstance(items, str):
+        text = items.strip()
+        if not text:
+            return []
+        parts = [part.strip() for part in _IMPORT_TOKEN_SPLIT.split(text) if part.strip()]
+        return parts or [text]
+    return list(items or [])
+
+
 def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
-    def _as_sequence(items: Any) -> list:
-        # A bare string must stay one entry. Iterating it yields characters.
-        if isinstance(items, str):
-            text = items.strip()
-            return [text] if text else []
-        return list(items or [])
 
     def _as_sourced(items: Any) -> list[dict[str, str]]:
         out = []
@@ -2751,7 +2761,9 @@ def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
             # the Data Engine. Unrecognised tokens are stored verbatim.
             "driving_license": [
                 {"value": code, "source": "cv"}
-                for code in driving_classes_for_display(parsed.get("driving_license") or [])
+                for code in driving_classes_for_display(
+                    _as_sequence(parsed.get("driving_license") or [])
+                )
             ],
             "languages": _as_sequence(parsed.get("languages") or []),
             "education": parsed.get("education") or [],
