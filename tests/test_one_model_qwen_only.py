@@ -82,10 +82,17 @@ def test_ui_settings_label_not_phi():
         "settings.guenther_hint",
         "settings.guenther_writer_status_on",
         "settings.guenther_model.sole",
+        "settings.cv_import_path_body",
+        "settings.local_llm_cv_disabled_hint",
+        "settings.local_llm_cv_kill",
     ):
         assert "Phi" not in de[key]
-        assert "Qwen" in de[key] or "qwen" in de[key].lower() or key.endswith("sole")
         assert "Phi" not in en[key]
+        # User-facing copy must not leak model/stack brand names.
+        for banned in ("Qwen", "Docpick", "DET", "llama", "GGUF", "LLM-CV"):
+            assert banned not in de[key]
+            assert banned not in en[key]
+        assert "Schreibhilfe" in de[key] or "lokal" in de[key].lower() or "Lebenslauf" in de[key]
 
 
 def test_letter_language_follows_job_not_hardcoded_german():

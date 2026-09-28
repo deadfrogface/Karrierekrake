@@ -208,7 +208,8 @@ def test_sole_production_pin():
     assert "phi4-mini" not in MODEL_CATALOG
     assert "phi4-mini" in HISTORICAL_MODEL_CATALOG
     prod = MODEL_CATALOG["qwen3.5-4b"]
-    assert prod.get("url", "").startswith("https://huggingface.co/Qwen/")
+    assert prod.get("url", "").startswith("https://huggingface.co/")
+    assert "Qwen3.5-4B-Q4_K_M.gguf" in prod["url"]
     assert prod["filename"] == "Qwen3.5-4B-Q4_K_M.gguf"
     assert len(prod["sha256"]) == 64
     assert prod["sha256"].startswith("00fe7986")

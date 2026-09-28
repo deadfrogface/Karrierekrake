@@ -59,8 +59,18 @@ jobs:
         run: python scripts/privacy_scan.py
       - name: Privacy allowlist regression
         run: python -m pytest -q tests/test_privacy_scan.py
+      - name: Cache bundled CV model weights
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: |
+            kk-cv-gguf-
       - name: Prepare bundled CV model (offline import)
         shell: pwsh
+        env:
+          # Optional: official Qwen repo when gated; unsloth mirror is the public fallback.
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           $ErrorActionPreference = "Stop"
           # Cache GGUF between runs when possible; never commit weights.

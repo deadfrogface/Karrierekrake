@@ -75,8 +75,10 @@ def test_guenther_settings_copy_no_deterministic_claim():
     assert "deterministisch" not in hint.lower()
     assert "Phi-4-mini" in hint or "Schreibhilfe" in hint
     cv_body = tr("settings.cv_import_path_body")
-    assert "Docpick" in cv_body or "Qwen" in cv_body
-    assert "DET" in cv_body
+    assert "lokal" in cv_body.lower() and "offline" in cv_body.lower()
+    assert "Installation" in cv_body
+    for banned in ("Docpick", "Qwen", "DET", "Phi", "llama", "GGUF"):
+        assert banned not in cv_body
 
 
 @pytest.mark.network

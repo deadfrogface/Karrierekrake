@@ -36,18 +36,21 @@ MODEL_CATALOG: dict[str, dict] = {
         "ram_gb_min": 5.0,
         "tier": "standard",
         "filename": "Qwen3.5-4B-Q4_K_M.gguf",
+        # Official Qwen/Qwen3.5-4B-GGUF resolve often returns 401 unauthenticated.
+        # Unsloth mirror is public and pins the same LFS oid / SHA-256.
         "url": (
-            "https://huggingface.co/Qwen/Qwen3.5-4B-GGUF/resolve/main/"
+            "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/"
             "Qwen3.5-4B-Q4_K_M.gguf"
         ),
         "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
-        "source_repo": "Qwen/Qwen3.5-4B-GGUF",
+        "source_repo": "unsloth/Qwen3.5-4B-GGUF",
         "base_model": "Qwen/Qwen3.5-4B",
         "upstream_license": "Apache-2.0",
         "quant": "Q4_K_M",
         "notes": (
             "SOLE production model for CV extract + Anschreiben (one-model dual-use). "
-            "No second local weight. No DET. No cloud."
+            "No second local weight. No DET. No cloud. "
+            "Weights mirrored from Qwen3.5-4B-GGUF (same SHA-256)."
         ),
         "role": "primary",
         "deferred": False,

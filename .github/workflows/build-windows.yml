@@ -45,10 +45,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -c constraints-runtime.txt -r requirements-runtime.txt
           pip install -c constraints-runtime.txt -r requirements-dev.txt
+      - name: Cache bundled CV model weights
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: |
+            kk-cv-gguf-
       - name: Build onefile EXE (no bundled Chromium)
         env:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
+          New-Item -ItemType Directory -Force -Path $env:KARRIEREKRAKE_MODELS_DIR | Out-Null
           python scripts/prepare_bundled_cv_model.py --allow-download
           if ($LASTEXITCODE -ne 0) { Write-Error "prepare_bundled_cv_model failed"; exit 1 }
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec

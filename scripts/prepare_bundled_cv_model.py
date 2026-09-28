@@ -24,6 +24,7 @@ import hashlib
 import os
 import shutil
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -38,9 +39,13 @@ from core.cv_llm_runtime import (  # noqa: E402
 )
 
 VENDOR_REL = Path("vendor") / "cv_model" / CV_MODEL_DIRNAME / CV_MODEL_FILENAME
-HF_URL = (
-    "https://huggingface.co/Qwen/Qwen3.5-4B-GGUF/resolve/main/"
-    f"{CV_MODEL_FILENAME}"
+
+# Official Qwen repo is gated (anonymous HTTP 401). Prefer the public Unsloth
+# mirror first; it pins the same LFS oid / SHA-256 as our production weight.
+# Optional HF_TOKEN / HUGGING_FACE_HUB_TOKEN still unlocks the official URL.
+DOWNLOAD_URLS = (
+    f"https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/{CV_MODEL_FILENAME}",
+    f"https://huggingface.co/Qwen/Qwen3.5-4B-GGUF/resolve/main/{CV_MODEL_FILENAME}",
 )
 
 
@@ -76,12 +81,50 @@ def _candidate_sources(explicit: Path | None) -> list[Path]:
     return out
 
 
+def _hf_auth_headers() -> dict[str, str]:
+    token = (
+        (os.environ.get("HF_TOKEN") or "").strip()
+        or (os.environ.get("HUGGING_FACE_HUB_TOKEN") or "").strip()
+    )
+    headers = {"User-Agent": "Karrierekrake-prepare-bundled-cv-model/1.0"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    return headers
+
+
+def _download_one(url: str, part: Path) -> None:
+    req = urllib.request.Request(url, headers=_hf_auth_headers())
+    print(f"download: {url}", flush=True)
+    with urllib.request.urlopen(req, timeout=600) as resp, part.open("wb") as out:  # noqa: S310
+        while True:
+            chunk = resp.read(1024 * 1024)
+            if not chunk:
+                break
+            out.write(chunk)
+
+
 def _download(dest: Path) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_suffix(dest.suffix + ".part")
-    print(f"download: {HF_URL}", flush=True)
-    urllib.request.urlretrieve(HF_URL, part)  # noqa: S310 — pinned SHA verified below
-    part.replace(dest)
+    errors: list[str] = []
+    for url in DOWNLOAD_URLS:
+        try:
+            if part.exists():
+                part.unlink()
+            _download_one(url, part)
+            part.replace(dest)
+            return
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError) as exc:
+            detail = str(exc)
+            if isinstance(exc, urllib.error.HTTPError):
+                detail = f"HTTP {exc.code} {exc.reason}"
+            print(f"download_failed: {url} ({detail})", flush=True)
+            errors.append(f"{url}: {detail}")
+            if part.exists():
+                part.unlink(missing_ok=True)
+    raise SystemExit(
+        "GGUF download failed from all mirrors:\n  - " + "\n  - ".join(errors)
+    )
 
 
 def prepare(*, src: Path | None, allow_download: bool, also_sidecar: Path | None) -> Path:
