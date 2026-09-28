@@ -454,7 +454,7 @@ def _load_script(name: str):
     import sys
 
     module_name = f"kk_{name}"
-    path = Path("/workspace/scripts") / f"{name}.py"
+    path = Path(__file__).resolve().parents[1] / "scripts" / f"{name}.py"
     spec = importlib.util.spec_from_file_location(module_name, path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
@@ -545,6 +545,9 @@ def test_parse_and_profile_readers_accept_list_and_string(tmp_path):
 
 def test_licence_evaluators_accept_list_and_string():
     corpus = _load_script("run_cv_corpus")
+    loaded = Path(corpus.__file__).resolve()
+    assert loaded == Path(__file__).resolve().parents[1] / "scripts" / "run_cv_corpus.py"
+    assert loaded.is_file()
     soll = _load_script("run_cv_sollwerte_corpus")
     holdout = _load_script("holdout_scorer_v2")
     evaluate = _load_script("evaluate_holdout_100")
