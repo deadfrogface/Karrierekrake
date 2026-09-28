@@ -557,10 +557,13 @@ def _resolve_writer_claims(
 
 
 class CoverReason(str, Enum):
-    """Every refusal code ``compose_cover_letter`` can return.
+    """Refusal codes for a letter and for approval after a profile change.
 
     A new member without a ``REFUSAL_REGISTRY`` entry fails the registry test.
-    ``blocked_demo`` keeps the i18n key ``cover.demo_excluded``.
+    ``compose_cover_letter`` returns the generation codes.
+    ``approve_cover_letter`` also returns ``profile_changed_evidence_lost``
+    when the profile changed since the preview and the letter no longer
+    meets the rule. ``blocked_demo`` keeps the i18n key ``cover.demo_excluded``.
     Its only action is ``hide_demo`` (de: Beispiele ausblenden).
     """
 
@@ -568,6 +571,7 @@ class CoverReason(str, Enum):
     NO_EVIDENCE = "no_evidence"
     COMPANY_MISSING = "company_missing"
     BLOCKED_DEMO = "blocked_demo"
+    PROFILE_CHANGED_EVIDENCE_LOST = "profile_changed_evidence_lost"
 
 
 @dataclass(frozen=True)
@@ -594,6 +598,10 @@ REFUSAL_REGISTRY: dict[CoverReason, RefusalSpec] = {
     CoverReason.BLOCKED_DEMO: RefusalSpec(
         "cover.demo_excluded",
         ("hide_demo",),
+    ),
+    CoverReason.PROFILE_CHANGED_EVIDENCE_LOST: RefusalSpec(
+        "cover.profile_changed_evidence_lost",
+        ("refresh_preview",),
     ),
 }
 
@@ -1020,9 +1028,10 @@ _GENERIC_ROLE_WORDS = frozenset(
     }
 )
 
-# Until the Personaler says otherwise, a station with neither tasks nor a
-# period in the profile does not count as a station. It is still reported in
-# stations_without_tasks. Flip this constant to allow that case.
+# Final Personaler decision: a station with neither tasks nor a period does
+# not count as a station. The result is no_evidence when no other station
+# carries the letter. The station is still reported in stations_without_tasks.
+# The hint to add what was done there comes from the UI.
 ALLOW_STATION_WITHOUT_TASKS_OR_PERIOD = False
 
 logger = logging.getLogger(__name__)
@@ -2065,6 +2074,17 @@ def _profile_fingerprint(config: AppConfig) -> tuple:
     )
 
 
+def cover_profile_fingerprint(config: AppConfig) -> str:
+    """Hash of the profile text cover facts are built from.
+
+    Skills, software, and each station's title, company, dates, and tasks.
+    Contact fields are not included. The preview stores this value.
+    Approval compares it with the profile it is given.
+    """
+    raw = repr(_profile_fingerprint(config))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
 def _plain_station_keys(quals: Any) -> frozenset[tuple]:
     keys: list[tuple] = []
     for exp in quals.work_experience or []:
@@ -2432,27 +2452,26 @@ def normalize_cover_text(text: str) -> str:
     return (body + "\n") if body else ""
 
 
-def approve_cover_letter(
-    job: Job,
-    config: AppConfig,
-    text: str | None = None,
-    *,
-    generated_sha256: str = "",
-) -> Path:
-    """Persist the approved preview via ``save_cover_letter``.
+def _raise_cover_result(result: CoverLetterResult) -> None:
+    spec = REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE]
+    refusal = result.refusal or CoverLetterRefusal(
+        CoverReason.NO_EVIDENCE.value, spec.message_key
+    )
+    raise CoverLetterRefused(refusal)
 
-    The gate still runs. ``generated_sha256`` is the hash from preview
-    generation and is stored as given. Line endings and trailing whitespace
-    are normalized before the edited flag is decided.
-    """
-    result = compose_cover_letter(job, config)
-    if not result.ok or result.refusal is not None:
-        spec = REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE]
-        refusal = result.refusal or CoverLetterRefusal(
-            CoverReason.NO_EVIDENCE.value, spec.message_key
-        )
-        raise CoverLetterRefused(refusal)
-    generated = normalize_cover_text(result.text)
+
+def _job_shape_refusal(job: Job) -> CoverLetterResult | None:
+    """Demo, empty ad, or missing company. These do not build cover facts."""
+    if is_demo_job(job):
+        return _refusal(CoverReason.BLOCKED_DEMO)
+    if not _clean_job_description(getattr(job, "description", "")):
+        return _refusal(CoverReason.JOB_INCOMPLETE)
+    if _company_missing(job):
+        return _refusal(CoverReason.COMPANY_MISSING)
+    return None
+
+
+def _require_preview_hash(job: Job, generated_sha256: str) -> str:
     sha = str(generated_sha256 or "").strip()
     if not sha:
         logger.error(
@@ -2460,21 +2479,37 @@ def approve_cover_letter(
             getattr(job, "id", ""),
         )
         raise ValueError("Freigabe braucht den Hash aus der Vorschau.")
-    # A supplied letter is the user's text. Refuse only the placeholder line
-    # or an empty letter. Missing references are the user's own statement.
+    return sha
+
+
+def _approved_body(text: str | None, generated: str, sha: str) -> tuple[str, bool]:
+    """User text, or the generated letter when no text was passed.
+
+    Refuse only an empty letter or the placeholder line.
+    """
     if text is None:
-        body = generated
-        edited = False
-    else:
-        body = normalize_cover_text(text)
-        if not body.strip() or _FORBIDDEN_LINE.search(body):
-            raise CoverLetterRefused(
-                CoverLetterRefusal(
-                    CoverReason.NO_EVIDENCE.value,
-                    REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE].message_key,
-                )
+        return generated, False
+    body = normalize_cover_text(text)
+    if not body.strip() or _FORBIDDEN_LINE.search(body):
+        raise CoverLetterRefused(
+            CoverLetterRefusal(
+                CoverReason.NO_EVIDENCE.value,
+                REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE].message_key,
             )
-        edited = hashlib.sha256(body.encode("utf-8")).hexdigest() != sha
+        )
+    edited = hashlib.sha256(body.encode("utf-8")).hexdigest() != sha
+    return body, edited
+
+
+def _save_approved_letter(
+    job: Job,
+    config: AppConfig,
+    body: str,
+    *,
+    edited: bool,
+    sha: str,
+    description_used: str,
+) -> Path:
     path = Path(config.root) / "cover_letters" / f"{job.id}.txt"
     save_cover_letter(body, path)
     meta_path = Path(config.root) / "cover_letters" / f"{job.id}.meta.json"
@@ -2482,7 +2517,7 @@ def approve_cover_letter(
         json.dumps(
             {
                 "job_id": job.id,
-                "description_used": result.description_used,
+                "description_used": description_used,
                 "edited": edited,
                 "generated_sha256": sha,
             },
@@ -2492,6 +2527,76 @@ def approve_cover_letter(
         encoding="utf-8",
     )
     return path
+
+
+def approve_cover_letter(
+    job: Job,
+    config: AppConfig,
+    text: str | None = None,
+    *,
+    generated_sha256: str = "",
+    profile_fingerprint: str = "",
+) -> Path:
+    """Persist the approved preview via ``save_cover_letter``.
+
+    ``profile_fingerprint`` is the value the preview stored. When it matches
+    the profile given here, facts are not built again. When it differs, facts
+    are built once from this profile and ``cover_letter_reference_hits`` runs
+    on the text being approved. A letter that no longer meets the rule is
+    refused with ``profile_changed_evidence_lost`` and nothing is written.
+    ``generated_sha256`` is the hash from preview generation and is stored
+    as given. Line endings and trailing whitespace are normalized before
+    the edited flag is decided.
+    """
+    supplied = str(profile_fingerprint or "").strip()
+    # A missing letter still has to be composed. The preview dialog always
+    # passes the text, and that is the path that skips a second fact build.
+    if supplied and text is not None:
+        blocked = _job_shape_refusal(job)
+        if blocked is not None:
+            _raise_cover_result(blocked)
+        description_used = _clean_job_description(getattr(job, "description", ""))
+        if cover_profile_fingerprint(config) != supplied:
+            bundle = _cover_bundle(job, config, description=description_used)
+            facts = list(bundle.facts)
+            letter = normalize_cover_text(text if text is not None else "")
+            cover_letter_reference_hits(letter, job, config, facts=facts)
+            if not cover_letter_reference_hits.accepted:  # type: ignore[attr-defined]
+                logger.error(
+                    "approve_cover_letter refused job %s: profile_changed_evidence_lost",
+                    getattr(job, "id", ""),
+                )
+                spec = REFUSAL_REGISTRY[CoverReason.PROFILE_CHANGED_EVIDENCE_LOST]
+                raise CoverLetterRefused(
+                    CoverLetterRefusal(
+                        CoverReason.PROFILE_CHANGED_EVIDENCE_LOST.value,
+                        spec.message_key,
+                    )
+                )
+        sha = _require_preview_hash(job, generated_sha256)
+        body, edited = _approved_body(text, "", sha)
+        return _save_approved_letter(
+            job,
+            config,
+            body,
+            edited=edited,
+            sha=sha,
+            description_used=description_used,
+        )
+    result = compose_cover_letter(job, config)
+    if not result.ok or result.refusal is not None:
+        _raise_cover_result(result)
+    sha = _require_preview_hash(job, generated_sha256)
+    generated = normalize_cover_text(result.text)
+    body, edited = _approved_body(text, generated, sha)
+    return _save_approved_letter(
+        job,
+        config,
+        body,
+        edited=edited,
+        sha=sha,
+        description_used=result.description_used,
+    )
 
 
 def save_cover_letter(text: str, path: Path) -> Path:
