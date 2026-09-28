@@ -504,7 +504,11 @@ class SettingsPage(QWidget):
         self.home_notice = QLabel()
         self.home_notice.setWordWrap(True)
         self.home_notice.setObjectName("WarningLabel")
+        self.change_place_btn = QPushButton()
+        self.change_place_btn.hide()
+        self.change_place_btn.clicked.connect(self._change_place)
         sform.addRow(self.home_notice)
+        sform.addRow(self.change_place_btn)
         adv_layout.addWidget(search_box)
 
         br_box = QGroupBox()
@@ -850,13 +854,22 @@ class SettingsPage(QWidget):
     def open_about(self) -> None:
         AboutDialog(self, data_dir=self.config_service.dirs["root"]).exec()
 
+    def _change_place(self) -> None:
+        parent = self.window()
+        if parent is not None and hasattr(parent, "edit_search_home"):
+            parent.edit_search_home()
+
     def _refresh_home_notice(self) -> None:
         """Re-read home resolution. No PLZ is guessed."""
         from core.location import home_location_notice
         from desktop.pages.dashboard import bind_home_notice_label
 
         cfg = self.config_service.load()
-        bind_home_notice_label(self.home_notice, home_location_notice(cfg.profile.location, cfg))
+        bind_home_notice_label(
+            self.home_notice,
+            home_location_notice(cfg.profile.location, cfg),
+            self.change_place_btn,
+        )
 
     def load_from_config(self) -> None:
         cfg = self.config_service.load()
