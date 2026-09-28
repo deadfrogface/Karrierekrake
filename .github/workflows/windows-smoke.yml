@@ -82,6 +82,33 @@ jobs:
           if ($subsystem -ne 2) { Write-Error "EXE subsystem=$subsystem (expected 2=WINDOWS_GUI / noconsole)"; exit 1 }
           Write-Host "EXE subsystem=WINDOWS_GUI (noconsole) OK"
         shell: pwsh
+      - name: EXE reads physical cores via psutil
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          # Windowed onefile: stdout is not the log. Poll the report file.
+          $out = Join-Path $env:RUNNER_TEMP "kk-physical-cores.txt"
+          if (Test-Path $out) { Remove-Item $out -Force }
+          $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
+          Start-Process -FilePath $exe -ArgumentList @("--report-physical-cores", $out) -WindowStyle Hidden | Out-Null
+          $deadline = (Get-Date).AddSeconds(180)
+          $line = ""
+          while ((Get-Date) -lt $deadline) {
+            if (Test-Path $out) {
+              $raw = Get-Content $out -Raw -ErrorAction SilentlyContinue
+              if ($raw -and $raw.Trim()) { $line = $raw.Trim(); break }
+            }
+            Start-Sleep -Milliseconds 400
+          }
+          Get-Process -Name "Karrierekrake" -ErrorAction SilentlyContinue | ForEach-Object {
+            try { Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue } catch {}
+          }
+          if (-not $line) { Write-Error "EXE physical-cores report missing"; exit 1 }
+          Write-Host $line
+          if ($line -notmatch '^physical_cores source=psutil count=[1-9][0-9]*$') {
+            Write-Error "EXE did not read physical cores via psutil (fallback or empty): $line"
+            exit 1
+          }
       - name: Production content scan + manifest
         shell: pwsh
         run: |

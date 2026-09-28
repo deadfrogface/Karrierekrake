@@ -148,6 +148,8 @@ def test_packaging_policy_allows_docpick() -> None:
     assert "docpick" in hidden
     assert "docpick.llm.vllm_provider" in hidden
     assert "llama_cpp" in hidden
+    assert "psutil" in hidden
+    assert "psutil._pswindows" in hidden
 
 
 def test_requirements_runtime_lists_docpick_and_llama() -> None:
@@ -157,6 +159,11 @@ def test_requirements_runtime_lists_docpick_and_llama() -> None:
     assert "--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu" in text
     constraints = Path("constraints-runtime.txt").read_text(encoding="utf-8")
     assert "llama-cpp-python==0.3.35" in constraints
+    assert "psutil>=5.9" in text
+    assert "psutil==7.2.2" in constraints
+    smoke = Path(".github/workflows/windows-smoke.yml").read_text(encoding="utf-8")
+    assert "--report-physical-cores" in smoke
+    assert "source=psutil" in smoke
     assert not any(
         line.strip().startswith("#") and "docpick" in line for line in text.splitlines() if "docpick" in line
     )

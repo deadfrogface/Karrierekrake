@@ -187,7 +187,13 @@ def test_supervisor_cancel_kills_contained_child(tmp_path: Path) -> None:
     "kind",
     ["llm_prompt_too_long", "llm_output_truncated", "llm_timeout"],
 )
-def test_deterministic_llm_errors_spawn_once(tmp_path: Path, kind: str) -> None:
+def test_llm_fail_codes_spawn_once_without_auto_retry(tmp_path: Path, kind: str) -> None:
+    """No automatic retry for any of the three codes.
+
+    ``llm_prompt_too_long`` and ``llm_output_truncated`` are input-conditioned.
+    ``llm_timeout`` depends on the machine and is not deterministic. A manual
+    retry for that code is the UI PR.
+    """
     calls: list[int] = []
 
     class _Done:
@@ -217,6 +223,46 @@ def test_deterministic_llm_errors_spawn_once(tmp_path: Path, kind: str) -> None:
     assert result.attempts == 1
     assert result.message == kind
     assert calls == [1]
+
+
+def test_child_stores_code_only_and_does_not_label_timeout_deterministic(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    from desktop.cv_import_child import _fail
+
+    with caplog.at_level("WARNING"):
+        assert (
+            _fail(
+                tmp_path / "timeout.json",
+                kind="llm_timeout",
+                message="elapsed",
+                decision=None,
+            )
+            == 1
+        )
+    text = (tmp_path / "timeout.json").read_text(encoding="utf-8")
+    payload = json.loads(text)
+    assert payload["kind"] == "llm_timeout"
+    assert payload["message"] == "llm_timeout"
+    assert "machine_dependent" in caplog.text
+    assert "deterministic" not in caplog.text
+
+    caplog.clear()
+    with caplog.at_level("WARNING"):
+        _fail(
+            tmp_path / "long.json",
+            kind="llm_prompt_too_long",
+            message="room",
+            decision=None,
+        )
+        _fail(
+            tmp_path / "trunc.json",
+            kind="llm_output_truncated",
+            message="length",
+            decision=None,
+        )
+    assert caplog.text.count("input_conditioned") == 2
+    assert "deterministic" not in caplog.text
 
 
 def test_parent_zero_anon_sample_is_not_over_and_not_a_pass(

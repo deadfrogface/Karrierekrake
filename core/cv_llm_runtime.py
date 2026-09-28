@@ -148,26 +148,49 @@ def _linux_physical_cpu_count(root: Path | None = None) -> int | None:
     return max(1, len(pairs))
 
 
-def physical_cpu_count() -> int:
-    """Physical cores for ``n_threads``.
+def _fallback_physical_count(logical: int | None) -> int:
+    """``max(1, os.cpu_count() // 2)``. ``None`` or ``0`` yields 1."""
+    if not logical:
+        return 1
+    return max(1, int(logical) // 2)
 
-    ``psutil.cpu_count(logical=False)`` when it returns a positive count.
-    When that is ``None`` (psutil missing or topology unknown), fall back to
-    ``max(1, os.cpu_count() // 2)`` and log it. This VM has no SMT, so the
-    fallback is not an i3 measurement.
+
+def resolve_physical_cpu_count() -> tuple[int, str]:
+    """``(count, source)`` for ``n_threads``.
+
+    Source is ``psutil`` when ``psutil.cpu_count(logical=False)`` returns a
+    positive count. Source is ``fallback`` when psutil is missing or that
+    call returns ``None``: ``max(1, os.cpu_count() // 2)``, and 1 when
+    ``os.cpu_count()`` is ``None``. The fallback is logged.
     """
     n = _psutil_cpu_count(logical=False)
     if n:
-        return n
-    logical = os.cpu_count() or 1
-    fallback = max(1, int(logical) // 2)
+        return n, "psutil"
+    logical = os.cpu_count()
+    fallback = _fallback_physical_count(logical)
     logger.warning(
         "cv_llm n_threads: psutil.cpu_count(logical=False) is None; "
         "fallback max(1, os.cpu_count()//2)=%s logical=%s",
         fallback,
         logical,
     )
-    return fallback
+    return fallback, "fallback"
+
+
+def physical_cpu_count() -> int:
+    """Physical cores for ``n_threads``. See ``resolve_physical_cpu_count``."""
+    count, _source = resolve_physical_cpu_count()
+    return count
+
+
+def physical_cores_report_line() -> str:
+    """One line for the packaged EXE: ``physical_cores source=psutil count=N``.
+
+    ``source=fallback`` means psutil was missing or returned ``None``. The
+    Windows smoke job fails on that line.
+    """
+    count, source = resolve_physical_cpu_count()
+    return f"physical_cores source={source} count={count}"
 
 
 def logical_cpu_count() -> int:
@@ -222,12 +245,20 @@ CV_LLM_CTX_SLACK_TOKENS = 8
 # size. A smaller remainder is llm_prompt_too_long and does not run the model.
 CV_LLM_MIN_COMPLETION_TOKENS = 832
 
-DETERMINISTIC_LLM_ERROR_CODES = frozenset(
+# Same document and the same settings fail the same way. No automatic retry.
+# The child stores the code only; user copy is the UI PR.
+INPUT_CONDITIONED_LLM_ERROR_CODES = frozenset(
     {
         "llm_prompt_too_long",
         "llm_output_truncated",
-        "llm_timeout",
     }
+)
+# Wall-clock limit. Depends on the machine, so it is not deterministic and
+# not input-conditioned. Still no automatic retry. The UI PR offers a manual
+# retry. The child stores the code only.
+LLM_TIMEOUT_ERROR_CODE = "llm_timeout"
+CODE_ONLY_LLM_ERROR_CODES = INPUT_CONDITIONED_LLM_ERROR_CODES | frozenset(
+    {LLM_TIMEOUT_ERROR_CODE}
 )
 
 

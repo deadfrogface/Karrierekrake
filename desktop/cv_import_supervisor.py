@@ -142,7 +142,12 @@ class CvImportSupervisor:
                     pass
 
     def run_once(self, progress: Callable[[str], None] | None = None) -> ImportAttemptResult:
-        """Parse once. Does not retry OOM, timeout, or model failures."""
+        """Parse once. Does not retry OOM, timeout, or model failures.
+
+        ``llm_timeout`` depends on the machine and is not deterministic.
+        It is still not retried automatically. A manual retry is the UI PR.
+        ``llm_prompt_too_long`` and ``llm_output_truncated`` are input-conditioned.
+        """
         self.ran_on_thread = threading.get_ident()
         # Release Günther's in-process weight before the import child loads the
         # same sole GGUF (parser and writing stay separate processes/roles).
@@ -193,6 +198,7 @@ class CvImportSupervisor:
                         )
                 if now >= deadline:
                     self._stop(proc)
+                    # Machine-dependent. Not deterministic. No automatic retry.
                     logger.error(
                         "llm_timeout wall_clock limit_s=%s",
                         self.timeout_s,

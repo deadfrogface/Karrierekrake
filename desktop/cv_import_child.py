@@ -122,11 +122,26 @@ def _fail(
     code: int = 1,
     stage: str = "",
 ) -> int:
-    from core.cv_llm_runtime import DETERMINISTIC_LLM_ERROR_CODES
+    from core.cv_llm_runtime import (
+        CODE_ONLY_LLM_ERROR_CODES,
+        INPUT_CONDITIONED_LLM_ERROR_CODES,
+    )
 
-    if kind in DETERMINISTIC_LLM_ERROR_CODES:
+    if kind in CODE_ONLY_LLM_ERROR_CODES:
         # Code and log only. User copy is added by the UI PR.
-        logger.warning("cv_import deterministic kind=%s detail=%s", kind, message)
+        # llm_prompt_too_long and llm_output_truncated are input-conditioned.
+        # llm_timeout depends on the machine and is not deterministic.
+        # None of the three is retried automatically.
+        if kind in INPUT_CONDITIONED_LLM_ERROR_CODES:
+            logger.warning(
+                "cv_import input_conditioned kind=%s detail=%s", kind, message
+            )
+        else:
+            logger.warning(
+                "cv_import machine_dependent no_auto_retry kind=%s detail=%s",
+                kind,
+                message,
+            )
         shown = kind
     else:
         shown = user_message_for_kind(kind, message)

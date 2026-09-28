@@ -1652,7 +1652,8 @@ def import_cv_docpick(
     Explicit fail-cases (hard, no silent hang / no UI freeze forever):
       - ``empty_cv`` — zero-byte or no extractable text
       - ``unreadable_cv`` — corrupt / unreadable document
-      - ``llm_timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
+      - ``llm_timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``.
+        Depends on the machine, so it is not deterministic. No automatic retry.
       - ``peak_rss_exceeded`` — private commit over 3_300_000_000 bytes
         (Windows PeakPagefileUsage, Linux anonymous RSS; not file-backed mmap)
       - ``model_missing`` / ``llama_missing`` — sole GGUF or runtime absent

@@ -84,6 +84,12 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "llama_cpp.llama",
     "llama_cpp.server",
     "llama_cpp.server.app",
+    # Lazy `import psutil` in core.cv_llm_runtime._psutil_cpu_count. Analysis of
+    # app.py does not see a top-level import; these names force the bundle,
+    # including the Windows extension the noconsole EXE must load.
+    "psutil",
+    "psutil._pswindows",
+    "psutil._psutil_windows",
 )
 
 # Always excluded from Analysis (dev / unused UI stacks).

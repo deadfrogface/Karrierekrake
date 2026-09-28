@@ -224,6 +224,8 @@ def main() -> int:
     # exits 1 with „Karrierekrake läuft bereits“.
     if "--cv-import-child" in sys.argv:
         return _run_cv_import_child()
+    if "--report-physical-cores" in sys.argv:
+        return _report_physical_cores()
     if os.environ.get("KARRIEREKRAKE_SMOKE_TEST", "").strip().lower() in {"1", "true", "yes"}:
         return _smoke_test()
     if "--smoke-test" in sys.argv:
@@ -239,6 +241,24 @@ def main() -> int:
     if "--once" in sys.argv:
         return _run_once_headless()
     return run()
+
+
+def _report_physical_cores() -> int:
+    """Write ``physical_cores source=psutil count=N`` and return 0.
+
+    The packaged EXE is windowed, so CI passes a path and reads that file.
+    Return 1 when the line is the fallback (psutil missing or ``None``).
+    """
+    from core.cv_llm_runtime import physical_cores_report_line
+
+    idx = sys.argv.index("--report-physical-cores")
+    line = physical_cores_report_line()
+    if idx + 1 < len(sys.argv) and not sys.argv[idx + 1].startswith("--"):
+        out = Path(sys.argv[idx + 1])
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(line + "\n", encoding="utf-8")
+    print(line, flush=True)
+    return 0 if "source=psutil " in line else 1
 
 
 def _run_cv_import_child() -> int:

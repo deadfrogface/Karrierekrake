@@ -13,6 +13,7 @@ from core.cv_llm_runtime import (
     chat_completion_inprocess,
     completion_token_budget,
     logical_cpu_count,
+    physical_cores_report_line,
     physical_cpu_count,
     resolve_cv_llm_n_ctx,
     resolve_cv_llm_threads,
@@ -174,7 +175,56 @@ def test_physical_count_uses_psutil_then_half_logical(
 ) -> None:
     monkeypatch.setattr("core.cv_llm_runtime._psutil_cpu_count", lambda **_k: 4)
     assert physical_cpu_count() == 4
+    assert physical_cores_report_line() == "physical_cores source=psutil count=4"
     monkeypatch.setattr("core.cv_llm_runtime._psutil_cpu_count", lambda **_k: None)
+    monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: 8)
+    with caplog.at_level("WARNING"):
+        assert physical_cpu_count() == 4
+        assert physical_cores_report_line() == "physical_cores source=fallback count=4"
+    assert "psutil.cpu_count(logical=False) is None" in caplog.text
+    monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: None)
+    assert physical_cpu_count() == 1
+    assert logical_cpu_count() == 1
+    monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: 1)
+    assert physical_cpu_count() == 1
+
+
+def test_physical_fallback_when_psutil_import_fails(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """psutil missing: max(1, os.cpu_count() // 2), and 1 if that count is None."""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def _block_psutil(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "psutil" or (isinstance(name, str) and name.startswith("psutil.")):
+            raise ImportError("psutil missing")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _block_psutil)
+    monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: 8)
+    with caplog.at_level("WARNING"):
+        assert physical_cpu_count() == 4
+    assert "fallback max(1, os.cpu_count()//2)=4" in caplog.text
+    monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: None)
+    assert physical_cpu_count() == 1
+    assert physical_cores_report_line() == "physical_cores source=fallback count=1"
+    monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: 1)
+    assert physical_cpu_count() == 1
+
+
+def test_physical_fallback_when_psutil_returns_none(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """psutil.cpu_count None: same fallback, including os.cpu_count() is None."""
+
+    class _PsutilNone:
+        @staticmethod
+        def cpu_count(*, logical: bool = True) -> None:
+            return None
+
+    monkeypatch.setitem(__import__("sys").modules, "psutil", _PsutilNone())
     monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: 8)
     with caplog.at_level("WARNING"):
         assert physical_cpu_count() == 4
@@ -182,6 +232,14 @@ def test_physical_count_uses_psutil_then_half_logical(
     monkeypatch.setattr("core.cv_llm_runtime.os.cpu_count", lambda: None)
     assert physical_cpu_count() == 1
     assert logical_cpu_count() == 1
+
+
+def test_report_line_uses_installed_psutil() -> None:
+    psutil = pytest.importorskip("psutil")
+    expected = psutil.cpu_count(logical=False)
+    if not expected:
+        pytest.skip("psutil.cpu_count(logical=False) is None on this host")
+    assert physical_cores_report_line() == f"physical_cores source=psutil count={int(expected)}"
 
 
 def test_linux_physical_cpu_count_dedups_siblings(tmp_path: Path) -> None:
