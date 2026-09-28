@@ -18,6 +18,11 @@ _CLAIM_TOKEN = re.compile(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9+\-]{2
 _LICENCE_CLASS = re.compile(
     r"(?<![A-Za-z0-9])(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)(?![A-Za-z0-9])"
 )
+# C1/B1/A2 are also language levels. A class counts only in a licence sentence.
+_LICENCE_SENTENCE = re.compile(
+    r"\b(führerschein|fuehrerschein|fahrerlaubnis|klasse)\b",
+    re.I,
+)
 _FIRST_PERSON = re.compile(
     r"\b(ich|meine|meiner|meinem|meinen|mir|mich)\b",
     re.I,
@@ -169,16 +174,15 @@ def _in_job(token: str, job_norm: str) -> bool:
 
 
 def _confirmed_licence_codes(confirmed_text: str) -> set[str]:
-    """Classes that stand on their own in the confirmed profile text."""
-    from core.cv_parser import _LICENSE_DISPLAY_ORDER
+    """Classes at the start of a confirmed licence line, including ``CE 95``."""
+    from core.cv_parser import leading_driving_class
 
-    known = set(_LICENSE_DISPLAY_ORDER)
     found: set[str] = set()
     for line in (confirmed_text or "").splitlines():
         for part in line.split(","):
-            token = part.strip()
-            if token in known:
-                found.add(token)
+            code = leading_driving_class(part.strip())
+            if code:
+                found.add(code)
     return found
 
 
@@ -218,10 +222,11 @@ def find_unsubstantiated_personal_claims(
             employer = match.group(1).strip()
             if employer and not _supported(employer, confirmed_norm):
                 flagged.append(employer)
-        for match in _LICENCE_CLASS.finditer(sentence):
-            code = match.group(1)
-            if code not in confirmed_licences:
-                flagged.append(code)
+        if _LICENCE_SENTENCE.search(sentence):
+            for match in _LICENCE_CLASS.finditer(sentence):
+                code = match.group(1)
+                if code not in confirmed_licences:
+                    flagged.append(code)
         for token in _CLAIM_TOKEN.findall(sentence):
             if token.casefold() in _STOP:
                 continue

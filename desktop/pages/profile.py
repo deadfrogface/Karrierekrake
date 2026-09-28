@@ -7,7 +7,6 @@ Legacy combined Berufswunsch UI is feature-flaggable for rollback.
 from __future__ import annotations
 
 import os
-from copy import deepcopy
 from pathlib import Path
 
 from PySide6.QtCore import Qt
@@ -889,9 +888,16 @@ class ProfilePage(QWidget):
         self.load_from_config()
         QMessageBox.information(self, tr("profile.reset_title"), done_msg)
 
+    def _matches_last_file(self, cfg) -> bool:
+        """True when ``cfg`` equals the YAML last read from disk.
+
+        The licence editor shows the normalised display. This comparison uses
+        the files (``ConfigService._read_runtime_config``), not that display.
+        """
+        return cfg == self.config_service._read_runtime_config()
+
     def save(self) -> None:
         cfg = self.config_service.load()
-        before = deepcopy(cfg)
         p = cfg.profile
         legacy = legacy_profile_search_ui_enabled(cfg.settings)
         # Persist career goals when legacy OR when user edited Berufsziel drawer.
@@ -984,8 +990,8 @@ class ProfilePage(QWidget):
             return
         # Editors are prefilled with the normalised display. That still differs
         # from a recovered list on disk, so the first save writes. A second
-        # save of the same values does not.
-        if cfg == before:
+        # save of the same values does not. The check is the last file state.
+        if self._matches_last_file(cfg):
             self._career_persist = False
             QMessageBox.information(self, tr("nav.profile"), tr("profile.no_changes"))
             return

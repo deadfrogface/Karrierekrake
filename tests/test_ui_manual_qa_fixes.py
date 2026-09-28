@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 from pathlib import Path
 
@@ -89,9 +90,11 @@ def test_driving_classes_deduped_for_display_without_mutating_storage():
     assert driving_classes_for_display(["C1", "E"]) == ["C1", "C1E"]
     assert driving_classes_for_display(["D", "E"]) == ["D", "DE"]
     assert driving_classes_for_display(["D1", "E"]) == ["D1", "D1E"]
-    assert driving_classes_for_display(["E"]) == ["E"]
-    assert driving_classes_for_display("E") == ["E"]
-    assert driving_classes_for_display(["A", "E"]) == ["A", "E"]
+    assert driving_classes_for_display(["E", "B"]) == ["B"]
+    assert "E" not in driving_classes_for_display(["E", "B"])
+    assert driving_classes_for_display(["E"]) == []
+    assert driving_classes_for_display("E") == []
+    assert driving_classes_for_display(["A", "E"]) == ["A"]
     assert driving_classes_for_display(["C1", "C1E"]) == ["C1", "C1E"]
     # Digit leftovers are not classes. A bare C beside them is uncertain.
     assert driving_classes_for_display(["C", "E", "9", "5"]) == []
@@ -166,7 +169,8 @@ def test_parsed_string_license_is_not_split_into_characters():
     assert parsed_to_qualifications({"driving_license": ["B", "E"]}).driving_values() == ["B", "BE"]
     assert parsed_to_qualifications({"driving_license": ["C", "E"]}).driving_values() == ["C", "CE"]
     assert parsed_to_qualifications({"driving_license": ["C1", "E"]}).driving_values() == ["C1", "C1E"]
-    assert parsed_to_qualifications({"driving_license": ["E"]}).driving_values() == ["E"]
+    assert parsed_to_qualifications({"driving_license": ["E"]}).driving_values() == []
+    assert parsed_to_qualifications({"driving_license": ["E", "B"]}).driving_values() == ["B"]
     imported = parsed_to_qualifications(
         {"driving_license": [{"value": "C1"}, {"value": "C1E"}, {"value": "B96"}]}
     )
@@ -199,7 +203,7 @@ def test_license_editor_shows_deduped_classes(qapp):
         (["B", "E"], "personal", ["B", "BE"]),
         (["C", "E"], "experience", ["C", "CE"]),
         (["C1", "E"], "education", ["C1", "C1E"]),
-        (["E"], "languages", ["E"]),
+        (["E", "B"], "languages", ["B"]),
     ],
 )
 def test_other_drawer_save_keeps_license_in_file(
@@ -868,7 +872,7 @@ def test_old_character_split_is_recovered_without_uncertain_classes():
     assert legacy.recovered
     assert read_driving_classes(["B", "BE"]).recovered is False
     assert read_driving_classes(["B", "BE"]).evidence == ["B", "BE"]
-    assert _licence_points(["C", "9"]) == 0
+    assert _licence_points(["C", "9"]) == 3
     assert _licence_points(["B", "C", "1", "D"]) == 5
 
 
@@ -895,8 +899,8 @@ def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
     letter = compose_cover_letter(job, cfg)
     assert letter.ok
     assert "BE" not in letter.text
-    claim = "Ich verfüge über BE."
-    blocked = screen_cover_letter(claim, confirmed_text=evidence, job_text=job.description)
+    claim = "Ich habe den Führerschein BE."
+    blocked = screen_cover_letter(claim, confirmed_text=evidence, job_text="Lager")
     assert not blocked.ok
 
     saved = _letter_profile(["B", "BE"])
@@ -904,7 +908,7 @@ def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
     evidence_saved = confirmed_profile_text(saved)
     assert "BE" in evidence_saved.splitlines()
     allowed = screen_cover_letter(
-        claim, confirmed_text=evidence_saved, job_text=job.description
+        claim, confirmed_text=evidence_saved, job_text="Lager"
     )
     assert allowed.ok
 
@@ -959,6 +963,14 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     page.card_skills.grab().save("/opt/cursor/artifacts/licence-card-b-e.png")
     profile_path = Path(config_service.profile_path)
     before_save = profile_path.read_bytes()
+    writes = {"n": 0}
+    original_write = config_service._write_config_files
+
+    def counting_write(config):
+        writes["n"] += 1
+        return original_write(config)
+
+    monkeypatch.setattr(config_service, "_write_config_files", counting_write)
 
     def accept_drawer() -> None:
         bar = page._drawer._scroll.verticalScrollBar()
@@ -981,6 +993,7 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     assert not page._licence_review_btn.isVisible()
 
     stored = profile_path.read_bytes()
+    stored_stat = (profile_path.stat().st_mtime_ns, hashlib.sha256(stored).hexdigest())
 
     def accept_again() -> None:
         page._drawer.accept()
@@ -989,5 +1002,267 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     page._edit_section("skills")
     qapp.processEvents()
     assert profile_path.read_bytes() == stored
+    assert (profile_path.stat().st_mtime_ns, hashlib.sha256(profile_path.read_bytes()).hexdigest()) == stored_stat
     assert config_service.load().profile.qualifications.driving_values() == ["B", "BE"]
     assert messages[-1] == "Keine Änderungen."
+    assert writes["n"] == 1
+
+    salad = prepare(["C", "E", "9", "5"])
+    assert salad._licence_line.text() == "Führerschein: —"
+    assert "Nicht sicher erkannt: C." in salad._licence_notice.text()
+    assert "Nicht sicher erkannt: C." in salad.qualifications.licence_notice.text()
+    assert salad.qualifications.driving.get_items() == []
+    salad.card_skills.grab().save("/opt/cursor/artifacts/licence-card-c-e-9-5.png")
+
+    am = prepare(["A", "M"])
+    assert am._licence_line.text() == "Führerschein: AM"
+    assert "Aus einem älteren Import wiederhergestellt" in am._licence_notice.text()
+    assert "Nicht sicher erkannt" not in am._licence_notice.text()
+    assert am.qualifications.driving.get_items() == ["AM"]
+    am.card_skills.grab().save("/opt/cursor/artifacts/licence-card-a-m.png")
+
+
+def test_leading_class_is_shared_by_matcher_and_guard():
+    """A verbatim entry keeps its text. The class at its start still counts."""
+    from core.config import AppConfig, ExtractReview, QualificationsConfig
+    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+    from core.cv_parser import leading_driving_class, read_driving_classes
+    from core.matcher import profile_licence_codes, reset_profile_licence_cache
+
+    assert leading_driving_class("Klasse B") == "B"
+    assert leading_driving_class("Führerschein Klasse B") == "B"
+    assert leading_driving_class("Fahrerlaubnis Klasse B") == "B"
+    assert leading_driving_class("CE 95") == "CE"
+    assert leading_driving_class("Klasse 3") == ""
+    assert driving_classes_for_display(["Klasse B"]) == ["Klasse B"]
+    assert driving_classes_for_display(["Führerschein Klasse B"]) == ["Führerschein Klasse B"]
+    assert driving_classes_for_display(["CE 95"]) == ["CE 95"]
+    assert driving_classes_for_display(["Klasse 3"]) == ["Klasse 3"]
+    assert _licence_points(["Klasse B"]) == 5
+    assert _licence_points(["Führerschein Klasse B"]) == 5
+    assert _licence_points(["Klasse 3"]) == 3
+
+    reset_profile_licence_cache()
+    ce = QualificationsConfig(driving_license=_sourced_codes(["CE 95"]))
+    assert profile_licence_codes(ce) == frozenset({"CE"})
+    assert _licence_points(["CE 95"]) == 3
+
+    cfg = _letter_profile(["CE 95"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    evidence = confirmed_profile_text(cfg)
+    assert "CE 95" in evidence
+    allowed = screen_cover_letter(
+        "Ich besitze den Führerschein CE 95.",
+        confirmed_text=evidence,
+        job_text="Lager",
+    )
+    assert allowed.ok
+    plain = AppConfig()
+    plain.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    blocked = screen_cover_letter(
+        "Ich besitze den Führerschein CE 95.",
+        confirmed_text=confirmed_profile_text(plain),
+        job_text="Lager",
+    )
+    assert not blocked.ok
+    klasse3 = read_driving_classes(["Klasse 3"])
+    assert klasse3.display == ["Klasse 3"]
+    assert "B" not in klasse3.evidence
+
+
+def test_two_digit_suffix_is_not_a_remnant(qapp):
+    from core.cover_guard import confirmed_profile_text
+    from core.cv_parser import read_driving_classes
+    from core.matcher import profile_licence_codes, reset_profile_licence_cache
+
+    reading = read_driving_classes(["C", "CE", "95"])
+    assert reading.display == ["C", "CE"]
+    assert reading.uncertain == []
+    assert reading.recovered is False
+    assert reading.evidence == ["C", "CE"]
+    assert "95" not in reading.display
+
+    section = QualificationsSection()
+    section.load(
+        QualificationsConfig(driving_license=_sourced_codes(["C", "CE", "95"]))
+    )
+    assert section.driving.get_items() == ["C", "CE"]
+    assert section.licence_notice.text() == ""
+
+    reset_profile_licence_cache()
+    quals = QualificationsConfig(driving_license=_sourced_codes(["C", "CE", "95"]))
+    assert profile_licence_codes(quals) == frozenset({"C", "CE"})
+    cfg = _letter_profile(["C", "CE", "95"])
+    evidence = confirmed_profile_text(cfg)
+    assert "C" in evidence.splitlines()
+    assert "CE" in evidence.splitlines()
+
+
+def test_a_classes_are_recovered_without_becoming_evidence():
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+    from core.cv_parser import read_driving_classes
+
+    rebuilt = read_driving_classes(["A", "1"])
+    assert rebuilt.display == ["A1"]
+    assert rebuilt.uncertain == []
+    assert rebuilt.evidence == []
+    assert "A" not in rebuilt.display
+    assert rebuilt.recovered
+
+    am = read_driving_classes(["A", "M"])
+    assert am.display == ["AM"]
+    assert am.evidence == []
+    assert am.recovered
+    assert am.uncertain == []
+
+    mixed = read_driving_classes(["B", "A", "2"])
+    assert mixed.display == ["A2", "B"]
+    assert mixed.evidence == ["B"]
+    assert "A" not in mixed.display
+    assert mixed.recovered
+
+    cfg = _letter_profile(["A", "M"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    evidence = confirmed_profile_text(cfg)
+    assert "AM" not in evidence.splitlines()
+    assert "A" not in evidence.splitlines()
+    blocked = screen_cover_letter(
+        "Ich habe den Führerschein AM.",
+        confirmed_text=evidence,
+        job_text="Lager",
+    )
+    assert not blocked.ok
+
+    bare = read_driving_classes(["A", "9"])
+    assert bare.uncertain == ["A"]
+    assert "A" not in bare.display
+    assert bare.evidence == []
+
+
+def test_uncertain_entries_are_a_licence_and_not_a_hard_exclusion():
+    from core.config import AppConfig, ExtractReview, QualificationsConfig
+    from core.match_contract import cv_field_status_map, hard_ko_allowed
+    from core.matcher import score_job
+    from core.models import Job
+
+    stored = ["C", "E", "9", "5"]
+    cfg = AppConfig()
+    cfg.settings.exclude_on_missing_mandatory = True
+    cfg.profile.extract_review = ExtractReview(
+        source="cv",
+        confirmed=True,
+        field_status={"driving_license": "absent"},
+    )
+    cfg.profile.qualifications = QualificationsConfig(driving_license=_sourced_codes(stored))
+    status = cv_field_status_map(cfg.profile.qualifications, cfg.profile.extract_review)
+    assert hard_ko_allowed(
+        evidenced=True,
+        field_name="driving_license",
+        field_status=status,
+        review=cfg.profile.extract_review,
+    )
+    asked = Job(
+        title="Lager",
+        company="Nord",
+        remote_type="onsite",
+        distance_km=5,
+        description="Führerschein erforderlich",
+        employment_type="Vollzeit",
+    )
+    plain = Job(
+        title="Lager",
+        company="Nord",
+        remote_type="onsite",
+        distance_km=5,
+        description="Teamarbeit im Lager",
+        employment_type="Vollzeit",
+    )
+    result = score_job(asked, cfg)
+    assert not result.excluded
+    assert result.score - score_job(plain, cfg).score == 3
+    assert "Direkt: Führerschein vorhanden" in result.match_reasons
+    assert "Direkt: Führerschein Klasse B" not in result.match_reasons
+
+    empty = AppConfig()
+    empty.settings.exclude_on_missing_mandatory = True
+    empty.profile.extract_review = ExtractReview(
+        source="cv",
+        confirmed=True,
+        field_status={"driving_license": "absent"},
+    )
+    missing = score_job(asked, empty)
+    assert missing.excluded
+    assert missing.score == 0
+
+
+def test_licence_requirement_follows_a_replaced_description():
+    from core.config import AppConfig, QualificationsConfig
+    from core.matcher import score_job
+    from core.models import Job
+
+    job = Job(
+        title="Fahrer",
+        company="Logistik",
+        remote_type="onsite",
+        distance_km=5,
+        description="",
+        employment_type="Vollzeit",
+    )
+    assert getattr(job, "_licence_requirement", None) is None
+    cfg = AppConfig()
+    cfg.profile.qualifications = QualificationsConfig(driving_license=_sourced_codes(["B"]))
+    first = score_job(job, cfg)
+    assert not any("Führerschein" in row for row in first.match_reasons)
+    job.description = "Führerschein Klasse B erforderlich"
+    second = score_job(job, cfg)
+    assert second.score - first.score == 5
+    assert "Direkt: Führerschein Klasse B" in second.match_reasons
+    assert job._licence_requirement[0] is job.description
+    assert job._licence_requirement[1] is job.title
+    assert job._licence_requirement[2] == "class_b"
+
+
+def test_language_levels_are_not_licence_classes():
+    from core.config import ExtractReview, LanguageEntry
+    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+
+    cfg = _letter_profile([])
+    cfg.profile.qualifications.languages = [
+        LanguageEntry(language="Englisch", level="C1", source="manual")
+    ]
+    cfg.profile.extract_review = ExtractReview(source="manual", confirmed=True)
+    evidence = confirmed_profile_text(cfg)
+    level = screen_cover_letter(
+        "Meine Englischkenntnisse liegen auf C1-Niveau.",
+        confirmed_text=evidence,
+        job_text="Lager",
+    )
+    assert level.ok
+    pair = screen_cover_letter(
+        "Ich spreche Englisch (B1) und Spanisch (A2).",
+        confirmed_text=evidence,
+        job_text="Lager",
+    )
+    assert pair.ok
+    claim = screen_cover_letter(
+        "Ich habe den Führerschein C1.",
+        confirmed_text=evidence,
+        job_text="Lager",
+    )
+    assert not claim.ok
+
+
+def test_profile_licence_cache_is_one_tuple():
+    from core.config import QualificationsConfig
+    import core.matcher as matcher
+    from core.matcher import profile_licence_codes, reset_profile_licence_cache
+
+    reset_profile_licence_cache()
+    quals = QualificationsConfig(driving_license=_sourced_codes(["B", "E"]))
+    assert profile_licence_codes(quals) == frozenset({"B", "BE"})
+    cached = matcher._profile_licence_cache
+    assert isinstance(cached, tuple) and len(cached) == 2
+    assert cached[1] == frozenset({"B", "BE"})
+    assert not hasattr(matcher, "_profile_licence_key")
+    assert not hasattr(matcher, "_profile_licence_codes")

@@ -15,13 +15,14 @@ def utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
-def licence_requirement(title: str, description: str) -> str:
-    """Classify a job ad once, when it is read.
+def licence_requirement(combined: str) -> str:
+    """Classify licence need from the folded ad text ``score_job`` already built.
 
     ``class_b`` asks for class B. ``any`` asks for a licence without naming B.
-    ``""`` asks for neither. Matching then compares profile class codes.
+    ``""`` asks for neither. The result is cached on the job as
+    ``(description, title, result)`` and is not computed while the job is built.
     """
-    blob = f"{clean_text(title)} {clean_text(description)}".casefold()
+    blob = combined or ""
     if "klasse b" in blob or re.search(r"führerschein\s*b|\bklasse\s*b\b", blob):
         return "class_b"
     if any(
@@ -115,7 +116,6 @@ class Job:
         self.source = clean_text(self.source)
         if is_blankish(self.remote_type):
             self.remote_type = RemoteType.UNKNOWN.value
-        self._licence_requirement = licence_requirement(self.title, self.description)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
