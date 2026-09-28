@@ -449,6 +449,30 @@ def test_import_shows_skill_and_language_cards(qapp, config_service, tmp_path, m
     assert any(lang.language == "Deutsch" for lang in reloaded.profile.qualifications.languages)
 
 
+def _stub_resource_if_missing() -> bool:
+    """Eval-Skripte importieren ``resource`` nur für den Peak-RSS.
+
+    Windows hat das Modul nicht. Der Stub lässt die Führerschein-Helfer
+    importieren. Unter Linux bleibt das echte Modul.
+    """
+    import sys
+    import types
+
+    try:
+        import resource  # noqa: F401
+    except ModuleNotFoundError:
+        stub = types.ModuleType("resource")
+        stub.RUSAGE_SELF = 0
+
+        def getrusage(_who: int = 0):
+            return types.SimpleNamespace(ru_maxrss=0.0)
+
+        stub.getrusage = getrusage
+        sys.modules["resource"] = stub
+        return True
+    return False
+
+
 def _load_script(name: str):
     import importlib.util
     import sys
@@ -459,7 +483,12 @@ def _load_script(name: str):
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     sys.modules[module_name] = module
-    spec.loader.exec_module(module)
+    stubbed = _stub_resource_if_missing()
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        if stubbed:
+            sys.modules.pop("resource", None)
     return module
 
 
