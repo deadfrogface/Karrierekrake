@@ -1,6 +1,6 @@
 # Anschreiben-Gold: erzeugte Briefe
 
-Die Briefe wurden auf Commit `c3eb2517937c90312c95901aef03fec2452d8f29` erzeugt.
+Die Briefe wurden auf Commit `2680292439a863a7924e41ddb21dd3ef9baed737` erzeugt.
 Das ist der Stand des Codes, aus dem die Texte kommen.
 Der Dump-Commit ändert nur diese Datei; sein Eltern-Commit ist dieser SHA.
 
@@ -12,7 +12,7 @@ den `approve_cover_letter` ohne nachträgliche Änderung speichert.
 ## cl-01-dispatch-hafenlogistik
 
 - Fall: `cl-01-dispatch-hafenlogistik`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -167,7 +167,7 @@ Nils Quendel
 ## cl-05-source-fixture
 
 - Fall: `cl-05-source-fixture`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -317,7 +317,7 @@ Nils Quendel
 ## cl-07-adr-schein-trap
 
 - Fall: `cl-07-adr-schein-trap`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -465,7 +465,7 @@ Nils Quendel
 ## cl-09-named-contact
 
 - Fall: `cl-09-named-contact`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -612,7 +612,7 @@ Nils Quendel
 ## cl-10-english-ad
 
 - Fall: `cl-10-english-ad`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -762,7 +762,7 @@ Nils Quendel
 ## cl-11-long-ad-requirements-end
 
 - Fall: `cl-11-long-ad-requirements-end`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -933,7 +933,7 @@ Nils Quendel
 ## cl-12-html-remnants
 
 - Fall: `cl-12-html-remnants`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1085,7 +1085,7 @@ Nils Quendel
 ## cl-14-two-stations
 
 - Fall: `cl-14-two-stations`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1161,7 +1161,7 @@ Nils Quendel
 ## cl-15-station-and-skill
 
 - Fall: `cl-15-station-and-skill`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1233,7 +1233,7 @@ Nils Quendel
 ## cl-18-sap-business-one-covers-sap
 
 - Fall: `cl-18-sap-business-one-covers-sap`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1307,7 +1307,7 @@ Nils Quendel
 ## cl-20-nordmole-dispatcher
 
 - Fall: `cl-20-nordmole-dispatcher`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1404,7 +1404,7 @@ Nils Quendel
 ## cl-24-two-requirements-in-title
 
 - Fall: `cl-24-two-requirements-in-title`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1476,7 +1476,7 @@ Nils Quendel
 ## cl-27-gender-title
 
 - Fall: `cl-27-gender-title`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1547,7 +1547,7 @@ Nils Quendel
 ## cl-28-titled-contact
 
 - Fall: `cl-28-titled-contact`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1632,7 +1632,7 @@ Nils Quendel
 ## cl-29-two-contacts
 
 - Fall: `cl-29-two-contacts`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1718,7 +1718,7 @@ Nils Quendel
 ## cl-30-html-contact
 
 - Fall: `cl-30-html-contact`
-- Commit: `c3eb2517937c90312c95901aef03fec2452d8f29`
+- Commit: `2680292439a863a7924e41ddb21dd3ef9baed737`
 - Ausgang: `interview`
 
 ### Anzeige
