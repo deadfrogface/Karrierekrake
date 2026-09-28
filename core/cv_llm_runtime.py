@@ -505,6 +505,18 @@ def chat_completion_inprocess(
             _sample_private_commit("after_load")
             n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
+            from core.cv_phase_events import (
+                TokenProgressThrottle,
+                emit_generation_timeout,
+                emit_token_progress,
+                phase_clock,
+                reset_generation_phase_events,
+            )
+
+            # The supervisor already chose the wall-clock limit and published it.
+            # This event copies that integer. It does not derive a new timeout.
+            reset_generation_phase_events()
+            emit_generation_timeout()
             logger.info(
                 "cv_llm_inprocess n_ctx=%s n_threads=%s n_threads_batch=%s "
                 "n_prompt=%s max_tokens=%s",
@@ -517,6 +529,8 @@ def chat_completion_inprocess(
             parts: list[str] = []
             finish: str | None = None
             saw_chunk = False
+            tokens_done = 0
+            token_events = TokenProgressThrottle()
             for chunk in _iter_chat_completion(
                 llm,
                 messages=messages,
@@ -526,6 +540,13 @@ def chat_completion_inprocess(
                 if not saw_chunk:
                     saw_chunk = True
                     _sample_private_commit("after_prompt_eval")
+                tokens_done += 1
+                emit_token_progress(
+                    token_events,
+                    tokens_done=tokens_done,
+                    max_tokens=budget,
+                    now=phase_clock(),
+                )
                 choice = chunk["choices"][0]
                 delta = choice.get("delta") or {}
                 piece = delta.get("content")

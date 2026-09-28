@@ -27,6 +27,9 @@ CREATE_BREAKAWAY_FROM_JOB = 0x01000000
 CREATE_NO_WINDOW = 0x08000000
 
 JobObjectExtendedLimitInformation = 9
+JobObjectAssociateCompletionPortInformation = 7
+# Posted on the job's completion port when a commit hits JobMemoryLimit.
+JOB_OBJECT_MSG_JOB_MEMORY_LIMIT = 10
 STILL_ACTIVE = 259
 PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
 
@@ -109,6 +112,66 @@ class JOBOBJECT_EXTENDED_LIMIT_INFORMATION(ctypes.Structure):
         ("PeakProcessMemoryUsed", ctypes.c_size_t),
         ("PeakJobMemoryUsed", ctypes.c_size_t),
     ]
+
+
+class JOBOBJECT_ASSOCIATE_COMPLETION_PORT(ctypes.Structure):
+    _fields_ = [
+        ("CompletionKey", ctypes.c_void_p),
+        ("CompletionPort", ctypes.c_void_p),
+    ]
+
+
+def is_job_memory_limit_message(number_of_bytes: int) -> bool:
+    """True for ``JOB_OBJECT_MSG_JOB_MEMORY_LIMIT`` (the completion-port payload)."""
+    return int(number_of_bytes) == JOB_OBJECT_MSG_JOB_MEMORY_LIMIT
+
+
+def associate_job_memory_completion_port(kernel: object, job_handle: int) -> object:
+    """Associate a new I/O completion port with ``job_handle``. Windows only.
+
+    The port receives ``JOB_OBJECT_MSG_JOB_MEMORY_LIMIT`` when the job memory
+    limit refuses a commit. The caller closes the returned handle.
+    """
+    invalid = ctypes.c_void_p(-1)
+    port = kernel.CreateIoCompletionPort(invalid, None, 0, 1)  # type: ignore[attr-defined]
+    if not port:
+        err = ctypes.get_last_error() if sys.platform == "win32" else 0
+        raise OSError(err, "CreateIoCompletionPort failed")
+    info = JOBOBJECT_ASSOCIATE_COMPLETION_PORT()
+    info.CompletionKey = 1
+    info.CompletionPort = port
+    ok = kernel.SetInformationJobObject(  # type: ignore[attr-defined]
+        job_handle,
+        JobObjectAssociateCompletionPortInformation,
+        ctypes.byref(info),
+        ctypes.sizeof(info),
+    )
+    if not ok:
+        err = ctypes.get_last_error() if sys.platform == "win32" else 0
+        kernel.CloseHandle(port)  # type: ignore[attr-defined]
+        raise OSError(err, "SetInformationJobObject completion port failed")
+    return port
+
+
+def drain_job_memory_limit(kernel: object, port: object) -> bool:
+    """Drain the job completion port. True if a job-memory-limit message was queued."""
+    hit = False
+    while True:
+        transferred = wintypes.DWORD(0)
+        key = ctypes.c_size_t(0)
+        overlapped = ctypes.c_void_p()
+        ok = kernel.GetQueuedCompletionStatus(  # type: ignore[attr-defined]
+            port,
+            ctypes.byref(transferred),
+            ctypes.byref(key),
+            ctypes.byref(overlapped),
+            0,
+        )
+        if not ok:
+            break
+        if is_job_memory_limit_message(int(transferred.value)):
+            hit = True
+    return hit
 
 
 def extended_limit_info(
@@ -215,6 +278,21 @@ def kernel32():
     k.OpenProcess.restype = wintypes.HANDLE
     k.IsProcessInJob.argtypes = [wintypes.HANDLE, wintypes.HANDLE, ctypes.POINTER(wintypes.BOOL)]
     k.IsProcessInJob.restype = wintypes.BOOL
+    k.CreateIoCompletionPort.argtypes = [
+        ctypes.c_void_p,
+        ctypes.c_void_p,
+        ctypes.c_size_t,
+        wintypes.DWORD,
+    ]
+    k.CreateIoCompletionPort.restype = ctypes.c_void_p
+    k.GetQueuedCompletionStatus.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(wintypes.DWORD),
+        ctypes.POINTER(ctypes.c_size_t),
+        ctypes.POINTER(ctypes.c_void_p),
+        wintypes.DWORD,
+    ]
+    k.GetQueuedCompletionStatus.restype = wintypes.BOOL
     _KERNEL = k
     return k
 

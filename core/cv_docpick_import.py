@@ -953,6 +953,26 @@ CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
 CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES = 1_698_168_832
 # Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
 CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "180"))
+# Gap between the in-process child gate and the Windows job memory limit.
+# The job limit sits above the child budget so the gate samples the overage
+# first. Largest measured rise between two phase samples on the pinned AVX2
+# wheel (VM, not i3, 2026-09-28): DE_06 after_load → after_prompt_eval,
+# median 138_223_616 bytes (1_866_338_304 − 1_728_114_688). The short-prompt
+# load → generation rise was 26_771_456. 64 MiB (67_108_864) is below the
+# DE_06 jump, so a child already within 64 MiB of its budget at after_load
+# can hit the job limit during prompt eval before the next gate sample.
+# 160 MiB is above that jump.
+JOB_LIMIT_MARGIN_BYTES = 160 * 1024 * 1024  # 167_772_160
+# llama.cpp crash exits when a job memory limit makes an allocation fail.
+# The completion-port message is preferred. These codes are the fallback
+# after a sample that was already near the child budget.
+JOB_LIMIT_CRASH_EXIT_CODES = frozenset(
+    {
+        0xC0000005,  # STATUS_ACCESS_VIOLATION
+        0xC0000017,  # STATUS_NO_MEMORY
+        0xC0000409,  # STATUS_STACK_BUFFER_OVERRUN
+    }
+)
 
 # Frozen CV↔profile/matching field contract (parsed shape from suggestion_to_parsed).
 # Bump only with an explicit Diff + justification — no silent schema drift.
@@ -1656,6 +1676,70 @@ def classify_child_private_commit(sample: int, child_budget: int) -> str | None:
     if int(sample) > int(child_budget):
         return "memory_budget_app_share"
     return None
+
+
+def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
+    """Job memory limit: child budget plus the margin, not equal to the budget.
+
+    ``min(child_budget + margin, 3_300_000_000 - app_private + margin)``.
+    The in-process gate compares against the child budget, which is lower,
+    so it trips first unless a single allocation jumps the whole margin.
+    """
+    margin = JOB_LIMIT_MARGIN_BYTES
+    kind_side = int(child_budget) + margin
+    group_side = CV_IMPORT_PEAK_RSS_BYTES_MAX - int(app_private) + margin
+    return min(kind_side, group_side)
+
+
+def normalize_process_exit(code: int) -> int:
+    """Unsigned 32-bit exit status. Signed NTSTATUS values compare equal."""
+    return int(code) & 0xFFFFFFFF
+
+
+def is_job_limit_crash_exit(code: int) -> bool:
+    return normalize_process_exit(code) in JOB_LIMIT_CRASH_EXIT_CODES
+
+
+def sample_near_child_budget(sample: int, child_budget: int) -> bool:
+    """True when the sample is within one job-limit margin of the child budget."""
+    return int(sample) >= int(child_budget) - JOB_LIMIT_MARGIN_BYTES
+
+
+def memory_kind_for_job_limit(*, child_budget: int, app_private: int) -> str:
+    """Classify a death at the job limit with the same rules as a gate sample.
+
+    The reached value is the job limit itself: the allocation was refused there.
+    """
+    reached = job_enforce_memory_bytes(child_budget=child_budget, app_private=app_private)
+    kind = classify_child_private_commit(reached, child_budget)
+    if kind is not None:
+        return kind
+    if reached > fresh_app_child_budget_bytes():
+        return "peak_rss_exceeded"
+    return "memory_budget_app_share"
+
+
+def memory_kind_for_limit_death(
+    *,
+    exit_code: int | None,
+    last_sample: int | None,
+    child_budget: int,
+    app_private: int,
+    job_memory_limit: bool,
+) -> str | None:
+    """Map a job-limit death to ``peak_rss_exceeded`` or ``memory_budget_app_share``.
+
+    A completion-port ``JOB_OBJECT_MSG_JOB_MEMORY_LIMIT`` is enough on its own.
+    The crash exit codes count only when a previous sample was near the budget.
+    Otherwise this returns None and the caller keeps the payload kind.
+    """
+    if job_memory_limit:
+        return memory_kind_for_job_limit(child_budget=child_budget, app_private=app_private)
+    if exit_code is None or not is_job_limit_crash_exit(exit_code):
+        return None
+    if last_sample is None or not sample_near_child_budget(last_sample, child_budget):
+        return None
+    return memory_kind_for_job_limit(child_budget=child_budget, app_private=app_private)
 
 
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:

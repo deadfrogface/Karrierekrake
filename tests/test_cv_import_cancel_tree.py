@@ -56,6 +56,8 @@ def test_extract_spawn_does_not_arm_job_memory_limit(monkeypatch: pytest.MonkeyP
         return object()
 
     monkeypatch.setattr("desktop.cv_import_supervisor.launch_contained", launch)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", raising=False)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", raising=False)
     default_spawn(Path("cv.pdf"), Path("out.json"))
     assert seen["kwargs"].get("enforce_memory_bytes") is None
 
@@ -424,3 +426,284 @@ def test_memory_codes_log_without_new_user_copy(tmp_path: Path, caplog: pytest.L
     assert peak["message"] != "memory_budget_app_share"
     assert "input_conditioned" in caplog.text
     assert "deterministic" not in caplog.text
+
+
+def test_job_limit_margin_is_above_the_measured_phase_rise() -> None:
+    """160 MiB covers the DE_06 load → prompt-eval jump. 64 MiB does not."""
+    from core.cv_docpick_import import (
+        JOB_LIMIT_MARGIN_BYTES,
+        child_budget_for_app_private,
+        job_enforce_memory_bytes,
+    )
+
+    measured_rise = 1_866_338_304 - 1_728_114_688
+    assert measured_rise == 138_223_616
+    assert 64 * 1024 * 1024 < measured_rise
+    assert JOB_LIMIT_MARGIN_BYTES == 160 * 1024 * 1024
+    assert JOB_LIMIT_MARGIN_BYTES > measured_rise
+    app_private = 400_000_000
+    budget = child_budget_for_app_private(app_private)
+    limit = job_enforce_memory_bytes(child_budget=budget, app_private=app_private)
+    assert limit == min(
+        budget + JOB_LIMIT_MARGIN_BYTES,
+        3_300_000_000 - app_private + JOB_LIMIT_MARGIN_BYTES,
+    )
+    assert limit == budget + JOB_LIMIT_MARGIN_BYTES
+    assert limit > budget
+
+
+def test_extract_spawn_arms_job_limit_above_the_child_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from core.cv_docpick_import import JOB_LIMIT_MARGIN_BYTES, job_enforce_memory_bytes
+
+    seen: dict = {}
+
+    def launch(argv, **kwargs):
+        seen["kwargs"] = kwargs
+        return object()
+
+    app_private = 400_000_000
+    budget = 3_300_000_000 - app_private
+    monkeypatch.setenv("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", str(app_private))
+    monkeypatch.setenv("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", str(budget))
+    monkeypatch.setattr("desktop.cv_import_supervisor.launch_contained", launch)
+    default_spawn(Path("cv.pdf"), Path("out.json"))
+    assert seen["kwargs"]["enforce_memory_bytes"] == job_enforce_memory_bytes(
+        child_budget=budget, app_private=app_private
+    )
+    assert seen["kwargs"]["enforce_memory_bytes"] == budget + JOB_LIMIT_MARGIN_BYTES
+
+
+def test_job_memory_limit_message_id() -> None:
+    from devops.win_job_object import (
+        JOB_OBJECT_MSG_JOB_MEMORY_LIMIT,
+        is_job_memory_limit_message,
+    )
+
+    assert JOB_OBJECT_MSG_JOB_MEMORY_LIMIT == 10
+    assert is_job_memory_limit_message(10) is True
+    assert is_job_memory_limit_message(9) is False
+
+
+def _crash_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    *,
+    app_private: int,
+    sample: int | None,
+    code: int,
+    job_limit: bool = False,
+) -> str:
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: app_private,
+    )
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._parent_anon_sample",
+        lambda _proc: sample,
+    )
+
+    class _Done:
+        pid = 1
+        exited = code
+
+        def poll(self):
+            return self.exited
+
+        def terminate(self) -> None:
+            self.exited = 1
+
+        def close(self) -> None:
+            return None
+
+        def job_memory_limit_signaled(self) -> bool:
+            return job_limit
+
+    def spawn(_cv: Path, out: Path):
+        out.write_text(
+            json.dumps(
+                {
+                    "ok": False,
+                    "kind": "llm_extract_failed",
+                    "message": "llm_extract_failed",
+                }
+            ),
+            encoding="utf-8",
+        )
+        if job_limit:
+            done = _Done()
+            done.exited = None  # type: ignore[assignment]
+            return done
+        return _Done()
+
+    result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn, timeout_s=30).run_once()
+    return result.kind
+
+
+def test_job_limit_crash_near_fresh_budget_is_peak_rss(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from core.cv_docpick_import import CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+
+    app = CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+    budget = 3_300_000_000 - app
+    kind = _crash_result(
+        monkeypatch,
+        tmp_path,
+        app_private=app,
+        sample=budget - 4096,
+        code=-1073741819,  # signed 0xC0000005
+    )
+    assert kind == "peak_rss_exceeded"
+    assert kind != "llm_extract_failed"
+
+
+def test_job_limit_crash_near_smaller_budget_is_app_share(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from core.cv_docpick_import import fresh_app_child_budget_bytes
+
+    budget = 2_000_000_000
+    assert budget + (160 * 1024 * 1024) <= fresh_app_child_budget_bytes()
+    kind = _crash_result(
+        monkeypatch,
+        tmp_path,
+        app_private=3_300_000_000 - budget,
+        sample=budget - 4096,
+        code=0xC0000017,
+    )
+    assert kind == "memory_budget_app_share"
+    assert kind != "llm_extract_failed"
+
+
+def test_stack_overrun_near_budget_is_not_extract_failed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from core.cv_docpick_import import CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+
+    app = CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+    budget = 3_300_000_000 - app
+    kind = _crash_result(
+        monkeypatch,
+        tmp_path,
+        app_private=app,
+        sample=budget - 4096,
+        code=0xC0000409,
+    )
+    assert kind == "peak_rss_exceeded"
+
+
+def test_access_violation_far_from_budget_stays_extract_failed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from core.cv_docpick_import import (
+        CV_IMPORT_FRESH_APP_PRIVATE_BYTES,
+        JOB_LIMIT_MARGIN_BYTES,
+    )
+
+    app = CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+    budget = 3_300_000_000 - app
+    kind = _crash_result(
+        monkeypatch,
+        tmp_path,
+        app_private=app,
+        sample=budget - JOB_LIMIT_MARGIN_BYTES - 1_000_000,
+        code=0xC0000005,
+    )
+    assert kind == "llm_extract_failed"
+
+
+def test_completion_port_maps_limit_without_the_crash_code(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from core.cv_docpick_import import (
+        CV_IMPORT_FRESH_APP_PRIVATE_BYTES,
+        fresh_app_child_budget_bytes,
+    )
+
+    fresh_kind = _crash_result(
+        monkeypatch,
+        tmp_path,
+        app_private=CV_IMPORT_FRESH_APP_PRIVATE_BYTES,
+        sample=None,
+        code=1,
+        job_limit=True,
+    )
+    assert fresh_kind == "peak_rss_exceeded"
+    share_kind = _crash_result(
+        monkeypatch,
+        tmp_path,
+        app_private=3_300_000_000 - 2_000_000_000,
+        sample=None,
+        code=1,
+        job_limit=True,
+    )
+    assert 2_000_000_000 + (160 * 1024 * 1024) <= fresh_app_child_budget_bytes()
+    assert share_kind == "memory_budget_app_share"
+
+
+def test_generation_timeout_event_matches_supervisor_once(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from core.cv_phase_events import emit_generation_timeout, reset_generation_phase_events
+
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 200_000_000,
+    )
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._parent_anon_sample",
+        lambda _proc: None,
+    )
+    reset_generation_phase_events()
+    seen: dict[str, object] = {}
+    progress_lines: list[str] = []
+
+    def spawn(_cv: Path, out: Path):
+        seen["timeout_env"] = os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S")
+        seen["first"] = emit_generation_timeout()
+        seen["second"] = emit_generation_timeout()
+        out.write_text(
+            json.dumps({"ok": True, "parsed": {"personal": {}}}),
+            encoding="utf-8",
+        )
+
+        class _Done:
+            def poll(self):
+                return 0
+
+            def terminate(self) -> None:
+                return None
+
+            def close(self) -> None:
+                return None
+
+        return _Done()
+
+    supervisor = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn, timeout_s=95)
+    result = supervisor.run_once(progress=progress_lines.append)
+    assert result.ok is True
+    assert seen["timeout_env"] == str(supervisor.timeout_s)
+    assert seen["second"] is None
+    timeouts = []
+    for line in progress_lines:
+        if not line.startswith("{"):
+            continue
+        event = json.loads(line)
+        if "timeout_s" in event:
+            timeouts.append(event["timeout_s"])
+    assert timeouts == [int(supervisor.timeout_s)]
+    from core.cv_phase_events import absorb_phase_message
+
+    timeout_s = None
+    tokens_done = None
+    max_tokens = None
+    for line in progress_lines:
+        timeout_s, tokens_done, max_tokens = absorb_phase_message(
+            line,
+            timeout_s=timeout_s,
+            tokens_done=tokens_done,
+            max_tokens=max_tokens,
+        )
+    assert timeout_s == int(supervisor.timeout_s)
