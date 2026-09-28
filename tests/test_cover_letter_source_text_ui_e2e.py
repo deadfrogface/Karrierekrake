@@ -197,7 +197,12 @@ def test_ui_e2e_preview_without_source_text_still_renders(qapp, config_service):
     cfg.application.cv_source_text = ""
     cfg.profile.qualifications = QualificationsConfig(
         work_experience=[
-            ExperienceEntry(title="Analyst", company="Green Data GmbH"),
+            ExperienceEntry(
+                title="Analyst",
+                company="Green Data GmbH",
+                start_date="2021-03",
+                end_date="2024-08",
+            ),
         ],
         skills=[SourcedText(value="Python", source="manual")],
     )

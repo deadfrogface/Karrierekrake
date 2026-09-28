@@ -1582,7 +1582,13 @@ def _build_cover_facts(
     folded_surface = collapse_phrase(surface)
     facts: list[_CoverFact] = []
     bare_stations: list[str] = []
-    if source_text or gate[0] or not gate[1]:
+    # A stored CV text still has to filter stations. The ready pairs skip that
+    # walk only when this profile has no source text to check.
+    if (
+        gate[0]
+        or not gate[1]
+        or resolve_cover_letter_source_text(config, source_text=source_text)
+    ):
         station_pairs = tuple(
             (exp, evidence.stations[_station_key(exp)])
             for exp in evidenced_stations(config, source_text=source_text, evidence=evidence)
