@@ -59,10 +59,29 @@ jobs:
         run: python scripts/privacy_scan.py
       - name: Privacy allowlist regression
         run: python -m pytest -q tests/test_privacy_scan.py
-      - name: Build onefile EXE
+      - name: Prepare bundled CV model (offline import)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          # Cache GGUF between runs when possible; never commit weights.
+          $cache = Join-Path $env:RUNNER_TEMP "kk-cv-model-cache"
+          New-Item -ItemType Directory -Force -Path $cache | Out-Null
+          $env:KARRIEREKRAKE_MODELS_DIR = $cache
+          python scripts/prepare_bundled_cv_model.py --allow-download
+          if ($LASTEXITCODE -ne 0) { throw "prepare_bundled_cv_model failed" }
+          $gguf = "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf"
+          if (!(Test-Path $gguf)) { throw "bundled GGUF missing after prepare" }
+          $len = (Get-Item $gguf).Length
+          if ($len -lt 1000000000) { throw "bundled GGUF too small: $len" }
+          Write-Host "bundled_model_bytes=$len"
+      - name: Build onefile EXE (model + llama_cpp runtime bundled)
+        env:
+          KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
           if (!(Test-Path "dist\Karrierekrake.exe")) { Write-Error "EXE missing"; exit 1 }
+          python scripts/prepare_bundled_cv_model.py --also-sidecar dist
+          if ($LASTEXITCODE -ne 0) { Write-Error "sidecar model failed"; exit 1 }
           $item = Get-Item "dist\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small: $($item.Length)"; exit 1 }
           $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash
@@ -72,6 +91,7 @@ jobs:
           sha256=$hash
           python=3.12
           console=false
+          cv_model_bundled=1
           "@ | Set-Content dist\build_metadata.txt
           Get-Content dist\build_metadata.txt
           # Fail if this is a console subsystem EXE (users must not see a terminal).
@@ -105,6 +125,28 @@ jobs:
           # Without --cv-import-child routing the child hits the lock and never writes --out.
           python scripts/ci_cv_import_child_exe_check.py --exe dist/Karrierekrake.exe
           if ($LASTEXITCODE -ne 0) { Write-Error "CV-import child EXE check FAILED"; exit 1 }
+      - name: Offline CV import + cover letter acceptance (release gate)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:QT_QPA_PLATFORM = "offscreen"
+          # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
+          Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
+          Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          python scripts/ci_cv_import_exe_offline_e2e.py `
+            --exe dist/Karrierekrake.exe `
+            --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
+            --out artifacts/cv_import_exe_offline_e2e.json `
+            --import-timeout 900
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Offline CV import EXE acceptance FAILED — release blocked"
+            if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
+              Get-Content artifacts/cv_import_exe_offline_e2e.json
+            }
+            exit 1
+          }
+          Get-Content artifacts/cv_import_exe_offline_e2e.json
       - name: Packaged legacy DB migration (library + EXE smoke)
         shell: pwsh
         run: |
@@ -146,9 +188,11 @@ jobs:
           name: Karrierekrake-Windows-Smoke
           path: |
             dist/Karrierekrake.exe
+            dist/models/**
             dist/build_metadata.txt
             dist/content_manifest.json
             dist/smoke_test_result.txt
+            artifacts/cv_import_exe_offline_e2e.json
           if-no-files-found: error
           retention-days: 14
       - name: Summary
@@ -160,6 +204,11 @@ jobs:
           - build: see job
           - production content gate: see job
           - EXE startup smoke: see job
+          - offline CV import E2E: see artifacts/cv_import_exe_offline_e2e.json
           - legacy DB EXE: see job
           - reset: see job
           "@ | Add-Content $env:GITHUB_STEP_SUMMARY
+          if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
+            Add-Content $env:GITHUB_STEP_SUMMARY "### Offline CV metrics"
+            Get-Content artifacts/cv_import_exe_offline_e2e.json | Add-Content $env:GITHUB_STEP_SUMMARY
+          }

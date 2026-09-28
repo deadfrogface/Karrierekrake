@@ -277,3 +277,9 @@ artifacts/cv_parser_replacement/**
 artifacts/cv_parser_replacement/smoke/**
 !artifacts/cv_parser_replacement/smoke/VARIANT_A_SUMMARY.json
 !artifacts/cv_parser_replacement/SMOKE_GATE_RESULT.json
+
+# Bundled CV/writing GGUF prepared for PyInstaller (never commit weights)
+vendor/cv_model/
+vendor/cv_model/**
+*.gguf
+!tests/fixtures/**/*.gguf

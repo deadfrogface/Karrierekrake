@@ -26,6 +26,9 @@ ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
     ("config/settings.yaml.example", "config"),
     ("assets/brand", "assets/brand"),
     ("data/geo", "data/geo"),
+    # Optional embed (slow onefile extract). Prefer sidecar next to EXE —
+    # enabled only when KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE=1.
+    # ("vendor/cv_model/qwen3.5-4b", "models/qwen3.5-4b"),
     ("NOTICE", "."),
     ("LICENSE", "."),
 )
@@ -52,11 +55,13 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 )
 
 # Third-party packages we intentionally collect_all / pull binaries for.
-# Documented: tls_client (jobspy DLLs), jobspy, playwright Python driver only.
+# Documented: tls_client (jobspy DLLs), jobspy, playwright Python driver only,
+# llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "tls_client",
     "jobspy",
     "playwright",
+    "llama_cpp",
 )
 
 # Extra hiddenimports (third-party) that Analysis may need.
@@ -310,8 +315,9 @@ def filter_hiddenimports(modules: Iterable[str]) -> list[str]:
 def datas_entry_allowed(src: str, dest: str = "") -> bool:
     """Allowlist check for a PyInstaller datas tuple source path."""
     norm = normalize_path(src)
+    allowed = list(ALLOWED_DATAS) + [("vendor/cv_model/qwen3.5-4b", "models/qwen3.5-4b")]
     # Absolute or relative: match against allowed source suffixes
-    for allowed_src, allowed_dest in ALLOWED_DATAS:
+    for allowed_src, allowed_dest in allowed:
         allowed_norm = normalize_path(allowed_src)
         if norm.endswith("/" + allowed_norm) or norm.endswith(allowed_norm) or allowed_norm in norm:
             # Dest should match expected when provided
@@ -411,8 +417,42 @@ def build_repo_datas(root: str) -> list[tuple[str, str]]:
     import os
 
     datas: list[tuple[str, str]] = []
-    for rel, dest in ALLOWED_DATAS:
+    entries: list[tuple[str, str]] = list(ALLOWED_DATAS)
+    embed = (os.environ.get("KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE") or "").strip().lower()
+    if embed in {"1", "true", "yes"}:
+        # Optional: embed GGUF into onefile (slow cold extract). Prefer sidecar.
+        entries.append(("vendor/cv_model/qwen3.5-4b", "models/qwen3.5-4b"))
+    for rel, dest in entries:
         src = os.path.join(root, *rel.split("/"))
         if os.path.exists(src):
             datas.append((src, dest))
     return datas
+
+
+def require_bundled_cv_model(root: str) -> str:
+    """Return absolute GGUF path or raise SystemExit when release build demands it.
+
+    Set ``KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL=1`` (Windows release CI) so a
+    build without the offline model cannot ship. Default layout: prepare vendor
+    GGUF then copy as ``dist/models/…`` sidecar beside the EXE (same install
+    folder). Optional embed into the EXE archive via
+    ``KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE=1``.
+    """
+    import os
+
+    flag = (os.environ.get("KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL") or "").strip().lower()
+    if flag not in {"1", "true", "yes"}:
+        return ""
+    rel = "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf"
+    path = os.path.join(root, *rel.split("/"))
+    if not os.path.isfile(path):
+        raise SystemExit(
+            "Production content policy: bundled CV model missing at "
+            f"{rel!r}. Run scripts/prepare_bundled_cv_model.py before PyInstaller."
+        )
+    size = os.path.getsize(path)
+    if size < 1_000_000_000:  # ~1 GiB floor — Q4_K_M is ~2.5 GiB
+        raise SystemExit(
+            f"Production content policy: bundled CV model too small ({size} bytes) at {rel!r}"
+        )
+    return path

@@ -33,12 +33,31 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [4/5] Building ONEFILE EXE (Chromium NOT bundled)...
+echo [3.5/5] Preparing bundled CV model (offline import)...
+if defined KARRIEREKRAKE_CV_LLM_MODEL (
+  python scripts\prepare_bundled_cv_model.py --src "%KARRIEREKRAKE_CV_LLM_MODEL%"
+) else (
+  python scripts\prepare_bundled_cv_model.py
+)
+if errorlevel 1 (
+  echo Bundled CV model missing — set KARRIEREKRAKE_CV_LLM_MODEL or place GGUF under models cache.
+  exit /b 1
+)
+set KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL=1
+
+echo [4/5] Building ONEFILE EXE (Chromium NOT bundled; CV model IS bundled)...
 if not exist "dist" mkdir dist
 if not exist "build" mkdir build
 python -m PyInstaller --noconfirm --clean packaging\Karrierekrake.spec
 if errorlevel 1 (
   echo PyInstaller failed.
+  exit /b 1
+)
+
+echo [4.5/5] Sidecar models next to EXE (same install folder)...
+python scripts\prepare_bundled_cv_model.py --also-sidecar dist
+if errorlevel 1 (
+  echo Sidecar model copy failed.
   exit /b 1
 )
 

@@ -368,7 +368,7 @@ class SettingsPage(QWidget):
         guenther_box = QGroupBox()
         self.guenther_box = guenther_box
         gform = QFormLayout(guenther_box)
-        self.guenther_model_fixed = QLabel("Qwen3.5-4B (einziges lokales Modell)")
+        self.guenther_model_fixed = QLabel("Lokale Schreibhilfe (mitgeliefert)")
         self.guenther_hint = QLabel()
         self.guenther_hint.setWordWrap(True)
         self.guenther_hint.setObjectName("KkHint")

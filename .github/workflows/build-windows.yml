@@ -46,12 +46,17 @@ jobs:
           pip install -c constraints-runtime.txt -r requirements-runtime.txt
           pip install -c constraints-runtime.txt -r requirements-dev.txt
       - name: Build onefile EXE (no bundled Chromium)
+        env:
+          KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
         run: |
+          python scripts/prepare_bundled_cv_model.py --allow-download
+          if ($LASTEXITCODE -ne 0) { Write-Error "prepare_bundled_cv_model failed"; exit 1 }
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
           if (!(Test-Path "dist\Karrierekrake.exe")) {
             Write-Error "Onefile EXE missing at dist\Karrierekrake.exe"
             exit 1
           }
+          python scripts/prepare_bundled_cv_model.py --also-sidecar dist
           $item = Get-Item "dist\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small"; exit 1 }
           $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash
@@ -60,6 +65,7 @@ jobs:
           size=$($item.Length)
           sha256=$hash
           console=false
+          cv_model_bundled=1
           "@ | Set-Content dist\build_metadata.txt
           Get-Item "dist\Karrierekrake.exe" | Format-List FullName, Length
           # Fail if this is a console subsystem EXE (users must not see a terminal).
@@ -82,13 +88,28 @@ jobs:
           $tmp = New-Item -ItemType Directory -Path "$env:RUNNER_TEMP\jhs-rel-$([guid]::NewGuid())"
           $env:QT_QPA_PLATFORM = "offscreen"
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake.exe") -LocalAppData $tmp.FullName
+      - name: Offline CV import acceptance
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:QT_QPA_PLATFORM = "offscreen"
+          Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          python scripts/ci_cv_import_exe_offline_e2e.py `
+            --exe dist/Karrierekrake.exe `
+            --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
+            --out artifacts/cv_import_exe_offline_e2e.json `
+            --import-timeout 900
+          if ($LASTEXITCODE -ne 0) { Write-Error "Offline CV import FAILED — release blocked"; exit 1 }
       - name: Upload Karrierekrake.exe
         uses: actions/upload-artifact@v4
         with:
           name: Karrierekrake-Windows
           path: |
             dist/Karrierekrake.exe
+            dist/models/**
             dist/build_metadata.txt
             dist/content_manifest.json
+            artifacts/cv_import_exe_offline_e2e.json
           if-no-files-found: error
           retention-days: 30
