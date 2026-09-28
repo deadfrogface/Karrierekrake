@@ -2294,19 +2294,24 @@ def _skill_sentences(
         pending.append(fact)
     if not pending or not description:
         return "" if not pending else _skill_block(pending, description, "")
-    head, dot, _rest = description.partition(".")
-    head_folded = head.casefold()
+    # ``lower`` keeps the same index as the ad. ``casefold`` turns „ß“ into „ss“
+    # and would cut the adverbial at the wrong place, so the whole ad lost it.
+    head, _dot, _rest = description.partition(".")
+    head_folded = head.lower()
     if len(head_folded) == len(head) and all(
         fact.label_key and _bounded_phrase(fact.label_key, head_folded) for fact in pending
     ):
         cache_key = (head, tuple(fact.label for fact in pending))
         if _SKILL_SLOT is not None and _SKILL_SLOT[0] == cache_key:
             return _SKILL_SLOT[1]
-        folded = head_folded if not dot else description.casefold()
+        lowered = description.lower()
+        folded = lowered if len(lowered) == len(description) else ""
         text = _skill_block(pending, description, folded)
         _SKILL_SLOT = (cache_key, text)
         return text
-    return _skill_block(pending, description, description.casefold())
+    lowered = description.lower()
+    folded = lowered if len(lowered) == len(description) else ""
+    return _skill_block(pending, description, folded)
 
 
 def _try_cover_model(

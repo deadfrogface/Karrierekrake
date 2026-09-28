@@ -1976,6 +1976,35 @@ def test_skill_context_is_taken_from_the_ad_sentence():
     assert "Praktische Erfahrung habe ich außerdem mit SAP TM." in both.text
 
 
+def test_eszett_elsewhere_keeps_the_adverbial_after_the_skill():
+    cfg = _cfg(
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Schichtkoordination im Lager"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+    cfg.profile.qualifications.software = [SourcedText(value="SAP TM", source="manual")]
+    job = Job(
+        id="j-eszett-context",
+        source="indeed",
+        title="Disponent",
+        company="HafenLogistik GmbH",
+        description=(
+            "Die Straße am Kai bleibt frei. "
+            "Sicherer Umgang mit SAP TM im Tagesgeschäft."
+        ),
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "Mit SAP TM im Tagesgeschäft habe ich praktische Erfahrung." in result.text
+
+
 def test_feminine_skill_uses_die_in_the_requirement_clause():
     cfg = _cfg(
         "Tourenplanung",
