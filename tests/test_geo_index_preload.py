@@ -461,12 +461,12 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         finished = config_service.load()
         loc = finished.profile.location
         assert loc.postal_code == "10115"
-        assert loc.city == "Berlin"
-        # GeoNames place_name for 10115 is Berlin, not the district Berlin-Mitte.
+        # The ready slot publishes Berlin on the banner. It does not invent a
+        # city or coordinates into profile.yaml.
+        assert loc.city == ""
         assert "Berlin-Mitte" not in text
         assert "Berlin-Mitte" not in _persisted_place_text(finished)
-        assert loc.home_latitude == pytest.approx(52.5323)
-        assert loc.home_longitude == pytest.approx(13.3846)
+        assert loc.home_latitude is None and loc.home_longitude is None
         assert "nicht auflösbar" not in _persisted_place_text(finished)
         assert "nicht prüfbar" not in _persisted_place_text(finished)
         assert [code for code, _ident in builds] == ["DE", "AT", "CH", "NL", "BE"]

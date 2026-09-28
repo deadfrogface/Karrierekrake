@@ -58,7 +58,6 @@ __all__ = [
     "HomeNotice",
     "home_location_notice",
     "apply_visible_home",
-    "retain_fresh_home_coordinates",
 ]
 
 DEFAULT_GEOCODE_TIMEOUT_S = 12.0
@@ -119,29 +118,73 @@ class HomeNotice:
     place_label: str = ""
 
 
-def home_location_notice(location: Any) -> HomeNotice:
-    """Re-read the current home place. Does not persist coordinates or guess a PLZ."""
+# One finished resolution per normalized home string. Not written to profile.yaml.
+_HOME_RESOLUTION_CACHE: dict[str, PlaceResolution] = {}
+
+
+def home_resolution_key(
+    *,
+    address: str = "",
+    postal_code: str = "",
+    city: str = "",
+    country: str = "",
+) -> str:
+    """Cache key: normalized address, postal code, city, and country."""
+    country_code = normalize_country_code(country) or "DE"
+    return "|".join(
+        (
+            _address_fingerprint(address),
+            (postal_code or "").strip(),
+            _address_fingerprint(city),
+            country_code.upper(),
+        )
+    )
+
+
+def reset_home_resolution_cache_for_tests() -> None:
+    _HOME_RESOLUTION_CACHE.clear()
+
+
+def _cached_home_resolution(location: Any) -> PlaceResolution | None:
+    """Resolve a home once per normalized string. Does not mutate ``location``."""
     address = (getattr(location, "home_address", "") or "").strip()
     postal = (getattr(location, "postal_code", "") or "").strip()
     city = (getattr(location, "city", "") or "").strip()
     country = (getattr(location, "country", "") or "").strip() or "DE"
-    lat = getattr(location, "home_latitude", None)
-    lon = getattr(location, "home_longitude", None)
-    stored = _address_fingerprint(getattr(location, "home_geocoded_address", "") or "")
-    current = _address_fingerprint(address or (f"{postal}|{city}" if (postal or city) else ""))
-    coords_match = False
-    try:
-        if lat is not None and lon is not None and current:
-            lat_f, lon_f = float(lat), float(lon)
-            coords_match = (
-                -90.0 <= lat_f <= 90.0
-                and -180.0 <= lon_f <= 180.0
-                and (not stored or stored == current)
-            )
-    except (TypeError, ValueError):
-        coords_match = False
+    if not postal and not city and not address:
+        return None
+    key = home_resolution_key(
+        address=address, postal_code=postal, city=city, country=country
+    )
+    cached = _HOME_RESOLUTION_CACHE.get(key)
+    if cached is not None:
+        return cached
+    place = normalize_place_fields(
+        address=address,
+        city=city or _city_from_address(address),
+        postal_code=postal or _plz_from_address(address),
+        country_code=normalize_country_code(country) or "DE",
+    )
+    resolution = resolve_place(place, allow_network=False)
+    # A still-loading index is not a resolution. The next read tries again.
+    if resolution.reason != "geo_index_loading":
+        _HOME_RESOLUTION_CACHE[key] = resolution
+    return resolution
+
+
+def home_location_notice(location: Any) -> HomeNotice:
+    """Re-read the current home place. Does not persist coordinates or guess a PLZ.
+
+    ``aufgelöst`` is returned only for a real resolution: persisted coordinates
+    that still match this address, or a successful cached lookup. A miss stays
+    a hint and does not claim the place was resolved.
+    """
+    address = (getattr(location, "home_address", "") or "").strip()
+    postal = (getattr(location, "postal_code", "") or "").strip()
+    city = (getattr(location, "city", "") or "").strip()
+    country = (getattr(location, "country", "") or "").strip() or "DE"
     label = city or _city_from_address(address) or address
-    if coords_match:
+    if _coords_match_address(location):
         return HomeNotice(
             status="resolved",
             ask_postal=False,
@@ -150,22 +193,19 @@ def home_location_notice(location: Any) -> HomeNotice:
         )
     if not postal and not city and not address:
         return HomeNotice(status="missing", ask_postal=True, notice_key="dash.home_missing")
-    place = normalize_place_fields(
-        address=address,
-        city=city or _city_from_address(address),
-        postal_code=postal or _plz_from_address(address),
-        country_code=normalize_country_code(country) or "DE",
-    )
-    resolution = resolve_place(place, allow_network=False)
-    if resolution.ok:
+    resolution = _cached_home_resolution(location)
+    if resolution is not None and resolution.ok:
         return HomeNotice(
             status="resolved",
             ask_postal=False,
             notice_key="dash.home_resolved",
             place_label=resolution.display_name or label,
         )
-    if resolution.status == "AMBIGUOUS":
+    if resolution is not None and resolution.status == "AMBIGUOUS":
         return HomeNotice(status="ambiguous", ask_postal=True, notice_key="dash.home_plz_hint")
+    if resolution is not None and resolution.reason == "geo_index_loading":
+        # The home is set; the index is not finished. Not a resolution.
+        return HomeNotice(status="unknown", ask_postal=True, notice_key="dash.home_plz_hint")
     return HomeNotice(status="unknown", ask_postal=True, notice_key="dash.home_plz_hint")
 
 
@@ -282,38 +322,37 @@ def commit_loaded_home(location: Any) -> str:
     return "resolved"
 
 
-def retain_fresh_home_coordinates(location: Any) -> str:
-    """Store coordinates for the current address. Does not rewrite the address.
+def store_user_home_coordinates(location: Any) -> str:
+    """Write coordinates after the user changed the search home.
 
-    ``home_location_notice`` calls ``resolve_place`` and drops the coordinates.
-    A section save that then restores a snapshot with empty latitude/longitude
-    would resolve the same place again. This writes latitude, longitude, and
-    the notice fingerprint, and leaves street, postal code, and city untouched.
-    Returns ``unchanged``, ``pending``, ``unresolved``, or ``resolved``.
+    This is the only profile-UI writer. Startup and other section saves keep
+    the resolution in ``_HOME_RESOLUTION_CACHE`` and leave ``profile.yaml``
+    coordinates untouched. Street, postal code, and city are not rewritten.
+    Returns ``resolved``, ``pending``, or ``unresolved``.
     """
-    if _coords_match_address(location):
-        return "unchanged"
     address = (getattr(location, "home_address", "") or "").strip()
     postal = (getattr(location, "postal_code", "") or "").strip()
     city = (getattr(location, "city", "") or "").strip()
-    country = (getattr(location, "country", "") or "").strip() or "DE"
     if not postal and not city and not address:
+        location.home_latitude = None
+        location.home_longitude = None
+        location.home_geocoded_address = ""
         return "unresolved"
-    place = normalize_place_fields(
-        address=address,
-        city=city or _city_from_address(address),
-        postal_code=postal or _plz_from_address(address),
-        country_code=normalize_country_code(country) or "DE",
-    )
-    resolution = resolve_place(place, allow_network=False)
-    if resolution.reason == "geo_index_loading":
+    resolution = _cached_home_resolution(location)
+    if resolution is not None and resolution.reason == "geo_index_loading":
         return "pending"
-    if not resolution.ok or resolution.latitude is None or resolution.longitude is None:
+    if (
+        resolution is None
+        or not resolution.ok
+        or resolution.latitude is None
+        or resolution.longitude is None
+    ):
+        location.home_latitude = None
+        location.home_longitude = None
+        location.home_geocoded_address = ""
         return "unresolved"
     location.home_latitude = float(resolution.latitude)
     location.home_longitude = float(resolution.longitude)
-    # Same string ``home_location_notice`` fingerprints, so the next read
-    # short-circuits and does not call ``resolve_place`` again.
     location.home_geocoded_address = address or (
         f"{postal}|{city}" if (postal or city) else ""
     )

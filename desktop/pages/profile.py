@@ -105,6 +105,19 @@ _SEARCH_HOME_FIELDS = (
 )
 
 
+def _search_home_text_changed(location, snapshot: dict[str, object]) -> bool:
+    """True when the user-facing home text differs from the pre-save snapshot."""
+    for name in ("home_address", "postal_code", "city", "country"):
+        current = str(getattr(location, name) or "").strip()
+        previous = str(snapshot.get(name) or "").strip()
+        if name == "country":
+            current = current or "DE"
+            previous = previous or "DE"
+        if current != previous:
+            return True
+    return False
+
+
 def legacy_profile_search_ui_enabled(settings=None) -> bool:
     """Rollback: show combined Bewerbungswunsch UI on Profile.
 
@@ -1059,12 +1072,13 @@ class ProfilePage(QWidget):
             self.location_work.refresh_home_notice(p.location)
         elif not persist_location_editor:
             self._restore_search_home(p.location, home_snapshot)
-            # The snapshot still has empty coordinates. Keep a resolution for
-            # this same address so the next save does not resolve it again.
-            # ``home_location_notice`` (core/location.py) resolves and discards.
-            from core.location import retain_fresh_home_coordinates
 
-            retain_fresh_home_coordinates(p.location)
+        if _search_home_text_changed(p.location, home_snapshot):
+            # Only a real home edit (location fields or the opt-in checkbox)
+            # may persist coordinates. The lookup itself is cached per address.
+            from core.location import store_user_home_coordinates
+
+            store_user_home_coordinates(p.location)
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)
 

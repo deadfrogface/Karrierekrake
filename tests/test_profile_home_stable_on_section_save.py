@@ -549,14 +549,7 @@ def test_skill_save_keeps_existing_home_at_one_geo_resolve(
 def test_second_skill_save_does_not_resolve_geo_again(
     qapp, config_service, geo_ready, monkeypatch
 ):
-    """Wohnort ohne Koordinaten: erstes Speichern höchstens 1 Geo-Aufruf, zweites 0.
-
-    ``home_location_notice`` löst auf und verwirft das Ergebnis. Der Restore
-    schrieb die leeren Koordinaten zurück. ``retain_fresh_home_coordinates``
-    hält sie für genau diese Adresse. ``retranslate`` darf danach nicht noch
-    einmal aus den Eingabefeldern auflösen. Der Cache wird vor dem zweiten
-    Speichern geleert.
-    """
+    """Skill-Saves lösen denselben Wohnort nicht erneut auf und schreiben keine Koordinaten."""
     _silence_dialogs(monkeypatch)
     cfg = config_service.load()
     cfg.application.street = CV_STREET
@@ -581,15 +574,13 @@ def test_second_skill_save_does_not_resolve_geo_again(
     assert loc.home_address == "Alexanderplatz 1, 10115 Berlin, DE"
     assert loc.postal_code == RESOLVABLE_POSTAL
     assert loc.city == RESOLVABLE_CITY
-    assert loc.home_latitude is not None and loc.home_longitude is not None
-    kept = (loc.home_latitude, loc.home_longitude, loc.home_geocoded_address)
-    reset_pgeocode_index_for_tests()
+    assert loc.home_latitude is None and loc.home_longitude is None
     calls["geo"] = 0
     page.qualifications.skills.set_items(["SAP", "Excel"])
     _save_section(page, "skills")
     assert calls["geo"] == 0
     again = config_service.load().profile.location
-    assert (again.home_latitude, again.home_longitude, again.home_geocoded_address) == kept
+    assert again.home_latitude is None and again.home_longitude is None
     assert config_service.load().profile.qualifications.skill_values() == ["SAP", "Excel"]
 
 
@@ -635,6 +626,119 @@ def test_edit_section_loads_config_only_inside_save(
     _save_section(page, "skills")
     assert "_edit_section" not in callers
     assert callers.count("save") == 1
+
+
+def _seed_resolvable_home_without_coords(config_service: ConfigService) -> None:
+    cfg = config_service.load()
+    cfg.application.street = CV_STREET
+    cfg.application.postal_code = CV_POSTAL
+    cfg.application.city = CV_CITY
+    cfg.application.country = "DE"
+    cfg.profile.location.home_address = "Alexanderplatz 1, 10115 Berlin, DE"
+    cfg.profile.location.postal_code = RESOLVABLE_POSTAL
+    cfg.profile.location.city = RESOLVABLE_CITY
+    cfg.profile.location.country = "DE"
+    cfg.profile.location.home_latitude = None
+    cfg.profile.location.home_longitude = None
+    cfg.profile.location.home_geocoded_address = ""
+    config_service.save(cfg)
+
+
+def _open_main_window(qapp, config_service, monkeypatch):
+    monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
+    from desktop.main_window import MainWindow
+
+    win = MainWindow(config_service)
+    win.show()
+    qapp.processEvents()
+    return win
+
+
+def _pump_until_resolved(qapp, label, timeout_s: float = 20.0) -> str:
+    import time
+
+    deadline = time.monotonic() + timeout_s
+    while "aufgelöst" not in label.text():
+        if time.monotonic() >= deadline:
+            raise AssertionError(label.text())
+        qapp.processEvents()
+    return label.text()
+
+
+def test_startup_does_not_write_profile_yaml(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """K: der Geo-Ready-Slot schreibt profile.yaml nicht."""
+    _silence_dialogs(monkeypatch)
+    _seed_resolvable_home_without_coords(config_service)
+    path = config_service.profile_path
+    before = path.read_bytes()
+    mtime = path.stat().st_mtime_ns
+    win = _open_main_window(qapp, config_service, monkeypatch)
+    try:
+        _pump_until_resolved(qapp, win.profile.home_status)
+        assert path.read_bytes() == before
+        assert path.stat().st_mtime_ns == mtime
+        loc = config_service.load().profile.location
+        assert loc.home_latitude is None and loc.home_longitude is None
+    finally:
+        win._shutting_down = True
+        win.close()
+        qapp.processEvents()
+
+
+def test_home_resolves_once_until_the_user_changes_it(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """M: 1 Auflösung beim Start, danach 0, nach Wohnort-Änderung genau 1."""
+    import core.location as location
+
+    _silence_dialogs(monkeypatch)
+    _seed_resolvable_home_without_coords(config_service)
+    calls = {"n": 0}
+    original = location.resolve_place
+
+    def _wrapped(*args, **kwargs):
+        result = original(*args, **kwargs)
+        if getattr(result, "reason", "") != "geo_index_loading":
+            calls["n"] += 1
+        return result
+
+    monkeypatch.setattr(location, "resolve_place", _wrapped)
+    reset_pgeocode_index_for_tests()
+    win = _open_main_window(qapp, config_service, monkeypatch)
+    try:
+        _pump_until_resolved(qapp, win.profile.home_status)
+        assert calls["n"] == 1
+        calls["n"] = 0
+        win.refresh_all()
+        qapp.processEvents()
+        assert calls["n"] == 0
+        win.refresh_all()
+        assert calls["n"] == 0
+        win.profile._drawer.present = (  # type: ignore[method-assign]
+            lambda _content: SectionEditDrawer.DialogCode.Accepted
+        )
+        win.profile.qualifications.skills.set_items(["SAP"])
+        win.profile._edit_section("skills")
+        assert calls["n"] == 0
+        win.profile.qualifications.skills.set_items(["SAP", "Excel"])
+        win.profile._edit_section("skills")
+        assert calls["n"] == 0
+        loc = config_service.load().profile.location
+        assert loc.home_latitude is None and loc.home_longitude is None
+        win.profile.location_work.home_address.setText("Speicherstraße 2")
+        win.profile.location_work.postal_code.setText("20095")
+        win.profile.save()
+        assert calls["n"] == 1
+        changed = config_service.load().profile.location
+        assert changed.postal_code == "20095"
+        assert changed.home_address == "Speicherstraße 2"
+        assert changed.home_latitude is not None and changed.home_longitude is not None
+    finally:
+        win._shutting_down = True
+        win.close()
+        qapp.processEvents()
 
 
 @pytest.mark.parametrize("key", PROFILE_DRAWER_KEYS)

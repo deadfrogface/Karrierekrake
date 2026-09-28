@@ -381,19 +381,16 @@ class MainWindow(QMainWindow):
         i18n.set_language(lang)
 
     def _refresh_home_notices_after_geo(self) -> None:
-        """Notice labels only. Does not rebuild profile cards."""
+        """Notice labels only. Does not rebuild profile cards or write YAML.
+
+        The geo index finishing is not a user edit. Coordinates stay in the
+        in-memory home cache; ``profile.yaml`` is left as it was.
+        """
         if self._shutting_down:
             return
         if not hasattr(self, "dashboard"):
             QTimer.singleShot(0, self._refresh_home_notices_after_geo)
             return
-        from core.location import commit_loaded_home
-
-        cfg = self.config_service.load()
-        # Same in-flight index, UI thread, no second Nominatim. A save that
-        # happened while the loader was still running lands here once.
-        if commit_loaded_home(cfg.profile.location) == "resolved":
-            self.config_service.save(cfg)
         try:
             self.profile.refresh_home_status()
             self.profile.location_work.refresh_home_notice(

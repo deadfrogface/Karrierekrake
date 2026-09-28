@@ -569,11 +569,22 @@ class LocationWorkSection(QGroupBox):
         from core.location import home_location_notice
 
         if location is None:
-            location = LocationConfig(
-                home_address=self.home_address.text().strip(),
-                postal_code=self.postal_code.text().strip(),
-                country=self.country.text().strip() or "DE",
-            )
+            # This section has no city field. A city-less stand-in would be a
+            # second cache key for the same home.
+            matched = self._location_if_widgets_match()
+            loaded = getattr(self, "_loaded_location", None)
+            city = ""
+            if matched is not None:
+                location = matched
+            else:
+                if loaded is not None:
+                    city = getattr(loaded, "city", "") or ""
+                location = LocationConfig(
+                    home_address=self.home_address.text().strip(),
+                    postal_code=self.postal_code.text().strip(),
+                    city=city,
+                    country=self.country.text().strip() or "DE",
+                )
         from desktop.pages.dashboard import bind_home_notice_label
 
         bind_home_notice_label(self.home_notice, home_location_notice(location))
