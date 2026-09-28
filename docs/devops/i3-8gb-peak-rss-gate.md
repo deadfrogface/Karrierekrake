@@ -14,7 +14,7 @@ Dieselbe Speicherklasse wie `PeakJobMemoryUsed` in #69: privater festgeschrieben
 
 - Windows: `GetProcessMemoryInfo` → `PeakPagefileUsage` (Hochwasser des Pagefile-Commits dieses Prozesses). `resource` gibt es dort nicht; ein Rückgabewert 0 wäre das Gate ausgeschaltet.
 - Linux: anonymer RSS aus `/proc/self/smaps_rollup`. Kernel 6.12 nennt das Feld `Anonymous` (kB). `Rss_Anon` wird gelesen, falls vorhanden. `ru_maxrss` wird nicht verwendet, weil es dateigestützte Seiten enthält und 4096er-Läufe fälschlich über 3_300_000_000 Bytes hebt.
-- Die Stichprobe ist ein Lesevorgang an den bestehenden Import-Stufen (preflight, nach PDF, nach Modell). Kein Hintergrund-Polling. Unter Linux ist der Wert der anonyme RSS zum Aufrufzeitpunkt. Unter Windows ist `PeakPagefileUsage` bereits ein Prozess-Hochwasser.
+- Die Stichprobe ist je ein Lesevorgang: preflight, nach PDF, solange das In-Process-Modell noch geladen ist (`during_model`), und nach dem Modell. Kein Hintergrund-Polling. Unter Linux ist jeder Wert der anonyme RSS zum Aufrufzeitpunkt. `during_model` liegt vor dem Freigeben der Gewichte, weil `Rss_Anon` danach fällt. Unter Windows ist `PeakPagefileUsage` bereits ein Prozess-Hochwasser und fällt nicht.
 - Ein optionaler llama.cpp-Server zählt ebenfalls nur anonymen RSS, nicht `VmRSS`.
 
 Ship-Evidenz bleibt das Windows Job Object auf dem i3-Laptop. Eine Agent-VM mit AMX-Repack ist kein Ersatz dafür.

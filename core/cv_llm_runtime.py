@@ -348,8 +348,16 @@ def chat_completion_inprocess(
             content = choice["message"]["content"]
             return str(content or "")
         finally:
-            # Drop weights promptly so writing / cancel can reclaim RAM.
-            del llm
+            # Sample private commit while weights are still resident. On Linux
+            # Rss_Anon drops after ``del llm``; the later after_model check
+            # would otherwise miss the in-model footprint. One read, no poll.
+            try:
+                from core.cv_docpick_import import _enforce_peak_rss
+
+                _enforce_peak_rss(stage="during_model", include_llama_server=False)
+            finally:
+                # Drop weights promptly so writing / cancel can reclaim RAM.
+                del llm
 
 
 def is_frozen() -> bool:

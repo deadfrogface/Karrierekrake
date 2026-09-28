@@ -183,6 +183,35 @@ def test_linux_physical_cpu_count_dedups_siblings(tmp_path: Path) -> None:
     assert _linux_physical_cpu_count(tmp_path) == 2
 
 
+def test_gate_is_sampled_while_fake_model_is_still_alive(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
+    stages: list[str] = []
+
+    def boom(*, stage: str, include_llama_server: bool = True) -> None:
+        stages.append(stage)
+        assert include_llama_server is False
+        raise CvImportError("peak_rss_exceeded", "over")
+
+    class Spy(_FakeLlama):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.prompt_tokens = 10
+
+    monkeypatch.setattr("core.cv_llm_runtime._llama_cls", lambda: Spy)
+    monkeypatch.setattr("core.cv_docpick_import._enforce_peak_rss", boom)
+    with pytest.raises(CvImportError) as ei:
+        chat_completion_inprocess(
+            [{"role": "user", "content": "x"}],
+            model_path=Path("unused.gguf"),
+            max_tokens=32,
+        )
+    assert ei.value.code == "peak_rss_exceeded"
+    assert stages == ["during_model"]
+    assert Spy.instances[-1].generate_calls == 1
+
+
 def test_llama_constructor_receives_thread_and_ctx(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
     monkeypatch.setattr("core.cv_llm_runtime.resolve_cv_llm_threads", lambda: (2, 4))
