@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-28-titled-contact",
+  "tags": [
+    "titled_contact"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550128",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "manual"
+        }
+      ],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "manual"
+        }
+      ],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-28-titled-contact",
+    "source": "indeed",
+    "source_job_id": "src-cl-28-titled-contact",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-28-titled-contact",
+    "status": "new",
+    "title": "Dispatcher (m/w/d)",
+    "company": "HafenLogistik GmbH",
+    "description": "Die HafenLogistik GmbH sucht Verstärkung in der Disposition am Musterhafen. Wir sind ein fiktiver Stückgutbetrieb.\n\nWir bieten unbefristete Vollzeit.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent für Stückgut\n- Tourenplanung für Stückgut\n- SAP TM im täglichen Einsatz\n\nAnsprechpartnerin: Frau Dr. Quendel, Leitung Personal.\n"
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Sehr geehrte Frau Dr. Quendel,",
+    "HafenLogistik GmbH",
+    "Nordkai Spedition GmbH",
+    "Tourenplanung für Stückgut",
+    "SAP TM"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige"
+  ],
+  "rationale": "Die Anzeige nennt eindeutig Frau Dr. Quendel. Der Brief übernimmt Anrede und Titel. Die Station nennt die Tätigkeit Tourenplanung für Stückgut im Wortlaut des Profils."
+}

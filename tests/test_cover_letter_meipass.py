@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from core.config import SourcedText, empty_app_config
+from core.config import ExperienceEntry, SourcedText, empty_app_config
 from core.cover_letter import render_cover_letter, resolve_cover_letter_template
 from core.models import Job
 
@@ -28,6 +28,18 @@ def test_resolve_template_uses_meipass_when_frozen(tmp_path: Path, monkeypatch) 
     cfg.application.last_name = "Beispiel"
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Sachbearbeitung", source="manual")
+    )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Terminabstimmung", source="manual")
+    )
+    cfg.profile.qualifications.work_experience.append(
+        ExperienceEntry(
+            title="Büroalltag",
+            company="Nordlicht Archiv GmbH",
+            start_date="2018-01",
+            end_date="2022-06",
+            source="manual",
+        )
     )
 
     resolved = resolve_cover_letter_template(cfg)

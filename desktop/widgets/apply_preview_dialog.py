@@ -431,13 +431,28 @@ class ApplyPreviewDialog(QDialog):
             )
         return rows
 
+    def _config_for_approval(self):
+        """Profile at approval time. A saved edit after the preview must count."""
+        parent = self.parent()
+        service = getattr(parent, "config_service", None) if parent is not None else None
+        loader = getattr(service, "load", None)
+        if callable(loader):
+            return loader()
+        return self._config
+
     def _approve(self) -> None:
         from core.cover_letter import CoverLetterRefused, approve_cover_letter
 
         if self._config is None or self._job is None:
             return
         try:
-            path = approve_cover_letter(self._job, self._config, self.preview.cover_letter_preview)
+            path = approve_cover_letter(
+                self._job,
+                self._config_for_approval(),
+                self.cover_edit.toPlainText(),
+                generated_sha256=self.preview.cover_letter_sha256,
+                profile_fingerprint=self.preview.cover_profile_fingerprint,
+            )
         except CoverLetterRefused as exc:
             lang = getattr(self._config.settings, "language", "de")
             QMessageBox.warning(self, self.windowTitle(), exc.refusal.text(lang))

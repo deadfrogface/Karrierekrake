@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-21-nordmole-payroll",
+  "tags": [
+    "nordmole_payroll"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550121",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Lohnbuchhalterin",
+          "company": "Lohnkontor Beispiel GmbH",
+          "location": "Musterhafen",
+          "start_date": "2018-02",
+          "end_date": "2024-05",
+          "responsibilities": [
+            "Lohnabrechnung erstellen",
+            "Gehaltsläufe prüfen"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [],
+      "software": [
+        {
+          "value": "DATEV",
+          "source": "manual"
+        },
+        {
+          "value": "Excel",
+          "source": "manual"
+        }
+      ],
+      "driving_license": [
+        {
+          "value": "Klasse B",
+          "source": "manual"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Deutsch",
+          "level": "C2",
+          "source": "manual"
+        }
+      ],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-21-nordmole-payroll",
+    "source": "fixture",
+    "source_job_id": "src-cl-21-nordmole-payroll",
+    "city": "Beispielstadt",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example/fixture/nordmole-disponent",
+    "status": "new",
+    "title": "Disponent / Dispatcher (m/w/d) Nahverkehr",
+    "company": "Nordmole Musterlogistik GmbH",
+    "description": "Die Nordmole Musterlogistik GmbH ist ein erfundenes Unternehmen. Diese Anzeige ist eine synthetische Testanzeige und keine echte Vakanz. In der Beispielstadt betreiben wir einen Stückgut-Umschlag für regionale Verlader und beschreiben hier nur einen fiktiven Arbeitsplatz in der Disposition.\n\nDein Einsatz im Leitstand\nDu disponierst täglich den Nahverkehr: Touren planen, Fahrer und Fahrzeuge zuordnen, Zeitfenster mit Kunden abstimmen und Abweichungen im Lauf des Tages nachsteuern. Du hältst Kontakt zu Lager, Fuhrpark und Auftraggebern, dokumentierst Statusmeldungen und sorgst dafür, dass Sendungen die avisierten Slots erreichen.\n\nIm Leitstand arbeitest du mit Tourenplanung, Sendungsdaten und der Abstimmung zwischen Disposition und Wareneingang. Du erkennst Engpässe früh, setzt Ersatzfahrzeuge auf und informierst die betroffenen Stellen, bevor ein Fenster verfällt. Rückfragen von Fahrern und Kunden laufen bei dir zusammen; du priorisierst, ohne den geplanten Tag auseinanderzunehmen.\n\nZur Rolle gehören außerdem die Übergabe an die Früh- und Spätschicht, kurze Lageberichte an die Betriebsleitung und das Nachhalten offener Sendungen bis zur Quittierung. Die Stelle ist ein Disponent- und Dispatcher-Arbeitsplatz in der Logistik, nicht im Personenverkehr.\n\nAnforderungen\nDu bringst eine abgeschlossene Ausbildung in Spedition oder Logistik oder eine vergleichbare Qualifikation mit und hast bereits in der Disposition gearbeitet. Sicherer Umgang mit Tourenplanung und SAP ist erforderlich, ebenso Deutsch in Wort und Schrift. Ein Führerschein der Klasse B ist von Vorteil. Bereitschaft zu gelegentlicher Frühschicht setzen wir voraus.\n\nWir bieten\nUnbefristete Festanstellung, 30 Tage Urlaub, ein Jobticket und ein festes Team im Leitstand. Die Einarbeitung übernimmt die bestehende Disposition. Arbeitsort ist die Beispielstadt, vor Ort im Umschlag.\n\nKontakt\nRobin Beispiel\nPersonalteam der Nordmole Musterlogistik GmbH\nbewerbung@example.com\n"
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
+  ],
+  "rationale": "Dieselbe Nordmole-Anzeige, Profil Lohnbuchhalterin mit DATEV und Excel. SAP Business One fehlt. Führerschein Klasse B und Deutsch stehen im Profil und in der Anzeige und zählen nicht als Bezug. Soll ist no_evidence und kein Brief."
+}

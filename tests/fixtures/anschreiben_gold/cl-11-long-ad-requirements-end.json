@@ -127,7 +127,8 @@
     "Disponent",
     "Nordkai Spedition",
     "Tourenplanung",
-    "SAP TM"
+    "SAP TM",
+    "Tourenplanung für Stückgut"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -139,7 +140,13 @@
     "der ausgeschriebenen Position",
     "[Ihr Name]",
     "15 Jahre",
-    "seit 2010"
+    "seit 2010",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige"
   ],
   "rationale": "Sehr lange Anzeige. Betrieb, Angebot und Alltag füllen den Vorspann. Disponent, Tourenplanung, SAP TM und Schichtkoordination stehen erst nach der Zeile Das bringen Sie mit. Der Brief muss diese späten Punkte mit Nordkai Spedition, Tourenplanung und SAP TM belegen. Firma Kaiwerk Logistik GmbH."
 }

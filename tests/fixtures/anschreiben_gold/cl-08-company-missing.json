@@ -132,7 +132,10 @@
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
     "[Ihr Name]",
-    "Firma 0"
+    "Firma 0",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Das Firmenfeld ist leer. Im Text steht nur der Platzhalter Firma 0. Soll ist company_missing und kein Brief: die Sperre liegt vor dem Generator, der Grund nennt die fehlende Firma. Die Beschreibung ist vorhanden, der Ausgang ist company_missing und nicht job_incomplete."
 }
