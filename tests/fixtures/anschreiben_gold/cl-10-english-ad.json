@@ -127,7 +127,8 @@
     "Dispatcher",
     "Nordkai Spedition",
     "Tourenplanung",
-    "SAP TM"
+    "SAP TM",
+    "Tourenplanung für Stückgut"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -140,7 +141,10 @@
     "[Ihr Name]",
     "15 Jahre",
     "seit 2010",
-    "ADR-Schein"
+    "ADR-Schein",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Englische Anzeige. Requirements stehen nach dem Angebot. dispatcher trifft die Station Disponent bei der Nordkai Spedition, route planning den Skill Tourenplanung, SAP TM die Software SAP TM. Der Brief bleibt an diese Belege gebunden. Firma Northquay Freight GmbH."
 }

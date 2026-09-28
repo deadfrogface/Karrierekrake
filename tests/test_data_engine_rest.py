@@ -146,8 +146,9 @@ def test_parser_debt_blocks_auto_match_and_cover_letter_until_confirmed():
         education=[],
         work_experience=[
             ExperienceEntry(
-                title="Verwaltung",
+                title="Büro",
                 company="Alt GmbH",
+                start_date="2019-01",
                 end_date="aktuell",
                 source="cv",
             )
@@ -382,7 +383,13 @@ def test_cover_letter_does_not_claim_job_ad_requirements():
         qualifications=QualificationsConfig(
             skills=[SourcedText("Excel", source="manual")],
             work_experience=[
-                ExperienceEntry(title="Büroorganisation", company="Nord GmbH", source="manual")
+                ExperienceEntry(
+                    title="Büroorganisation",
+                    company="Nord GmbH",
+                    start_date="2019-01",
+                    end_date="2024-01",
+                    source="manual",
+                )
             ],
         )
     )

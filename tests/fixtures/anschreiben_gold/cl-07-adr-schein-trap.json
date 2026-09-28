@@ -127,7 +127,8 @@
     "Dispatcher",
     "Nordkai Spedition",
     "Tourenplanung",
-    "SAP TM"
+    "SAP TM",
+    "Tourenplanung für Stückgut"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -142,7 +143,10 @@
     "Gefahrgut",
     "Gefahrgutabwicklung",
     "15 Jahre",
-    "seit 2010"
+    "seit 2010",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Die Anzeige fordert neben Disponent, Tourenplanung und SAP TM einen ADR-Schein und Gefahrgutabwicklung. Das Profil hat Staplerschein, aber keinen ADR-Schein und kein Gefahrgut. Ein Brief darf die belegten Punkte nennen und den ADR-Schein nicht behaupten. Eine solche Behauptung wäre Papierkorb."
 }

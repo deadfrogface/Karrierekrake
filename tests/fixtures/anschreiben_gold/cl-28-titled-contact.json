@@ -1,15 +1,15 @@
 {
   "schema_version": "1.0",
-  "id": "cl-15-station-and-skill",
+  "id": "cl-28-titled-contact",
   "tags": [
-    "station_plus_skill"
+    "titled_contact"
   ],
   "profile": {
     "application": {
       "first_name": "Nils",
       "last_name": "Quendel",
       "email": "nils.quendel@example.com",
-      "phone": "+49 000 5550115",
+      "phone": "+49 000 5550128",
       "street": "Quendelstieg 4",
       "postal_code": "00000",
       "city": "Musterhafen",
@@ -24,7 +24,11 @@
           "location": "Musterhafen",
           "start_date": "2019-03",
           "end_date": "2024-08",
-          "responsibilities": [],
+          "responsibilities": [
+            "Tourenplanung für Stückgut",
+            "Schichtkoordination im Lager",
+            "Abstimmung mit dem Fuhrpark"
+          ],
           "source": "manual"
         }
       ],
@@ -34,35 +38,39 @@
           "source": "manual"
         }
       ],
-      "software": [],
+      "software": [
+        {
+          "value": "SAP TM",
+          "source": "manual"
+        }
+      ],
       "driving_license": [],
       "languages": [],
       "certificates": []
     }
   },
   "job": {
-    "id": "job-cl-15-station-and-skill",
+    "id": "job-cl-28-titled-contact",
     "source": "indeed",
-    "source_job_id": "src-cl-15-station-and-skill",
-    "title": "Dispatcher (m/w/d)",
-    "company": "Hafenwerk GmbH",
-    "description": "Die Hafenwerk GmbH sucht Unterstützung in der Disposition. Der Betrieb ist fiktiv. Das Angebot steht vor den fachlichen Punkten.\n\nWir bieten eine unbefristete Vollzeitstelle und dreißig Tage Urlaub. Die Einarbeitung übernimmt das bestehende Team.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent\n- sichere Tourenplanung\n\nWeitere Stationen und weitere Skills nennt die Anzeige nicht.",
+    "source_job_id": "src-cl-28-titled-contact",
     "city": "Musterhafen",
     "postal_code": "00000",
     "country_code": "DE",
     "remote_type": "onsite",
     "employment_type": "full_time",
-    "url": "https://jobs.example.com/cl-15-station-and-skill",
-    "status": "new"
+    "url": "https://jobs.example.com/cl-28-titled-contact",
+    "status": "new",
+    "title": "Dispatcher (m/w/d)",
+    "company": "HafenLogistik GmbH",
+    "description": "Die HafenLogistik GmbH sucht Verstärkung in der Disposition am Musterhafen. Wir sind ein fiktiver Stückgutbetrieb.\n\nWir bieten unbefristete Vollzeit.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent für Stückgut\n- Tourenplanung für Stückgut\n- SAP TM im täglichen Einsatz\n\nAnsprechpartnerin: Frau Dr. Quendel, Leitung Personal.\n"
   },
   "expected_outcome": "interview",
   "must_mention": [
-    "Hafenwerk GmbH",
-    "Dispatcher",
-    "Disponent",
-    "Nordkai Spedition",
-    "Tourenplanung",
-    "von 2019 bis 2024"
+    "Sehr geehrte Frau Dr. Quendel,",
+    "HafenLogistik GmbH",
+    "Nordkai Spedition GmbH",
+    "Tourenplanung für Stückgut",
+    "SAP TM"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -77,5 +85,5 @@
     "Für die ausgeschriebene Aufgabe",
     "setze ich"
   ],
-  "rationale": "Ein Stationsbezug und ein Skillbezug. Disponent bei der Nordkai Spedition und der Skill Tourenplanung treffen zwei verschiedene Anforderungen. Beide stehen im Brief."
+  "rationale": "Die Anzeige nennt eindeutig Frau Dr. Quendel. Der Brief übernimmt Anrede und Titel. Die Station nennt die Tätigkeit Tourenplanung für Stückgut im Wortlaut des Profils."
 }

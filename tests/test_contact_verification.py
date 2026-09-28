@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from core.config import AppConfig, ApplicationProfile, SettingsConfig, SourcedText
+from core.config import AppConfig, ApplicationProfile, ExperienceEntry, SettingsConfig, SourcedText
 from core.contacts.models import (
     DEFAULT_VERIFICATION_STATUS,
     ContactCandidate,
@@ -403,6 +403,15 @@ def test_cover_letter_render_never_injects_unverified_person():
     cfg.profile.qualifications.skills.append(
         SourcedText(value="DATEV", source="manual")
     )
+    cfg.profile.qualifications.work_experience.append(
+        ExperienceEntry(
+            title="Buchhaltung",
+            company="Lohnkontor Beispiel GmbH",
+            start_date="2018-01",
+            end_date="2024-01",
+            source="manual",
+        )
+    )
     # Unverified / weak claims
     weak = build_writer_claims(
         verify_candidate(_person("Weak Sig", source=SourceType.RECRUITER_SIGNATURE.value))
@@ -469,6 +478,15 @@ def test_e2e_discovery_verification_plan_cover_only_verified():
     )
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Excel", source="manual")
+    )
+    cfg.profile.qualifications.work_experience.append(
+        ExperienceEntry(
+            title="Buchhaltung",
+            company="Lohnkontor Beispiel GmbH",
+            start_date="2018-01",
+            end_date="2024-01",
+            source="manual",
+        )
     )
     letter = render_cover_letter(job, cfg, contact_claims=claims)
     # Without salutation evidence → neutral, but name not freestyle-injected

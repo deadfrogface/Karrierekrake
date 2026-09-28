@@ -67,7 +67,10 @@
     "Ihres Unternehmens",
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
-    "[Ihr Name]"
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Genau ein belegter Bezug: der Skill Tourenplanung steht in der Anzeige, die Station Barkeeper nicht. Ein Bezug liegt unter dem Minimum von zwei. Soll ist no_evidence und kein Brief."
 }

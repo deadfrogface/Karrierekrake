@@ -72,7 +72,10 @@
     "Ihres Unternehmens",
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
-    "[Ihr Name]"
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Der Skill Excel und die Software MS Excel treffen dieselbe Anforderung MS Excel. Zwei Bezeichnungen eines Bezugs zählen einmal. Soll ist no_evidence und kein Brief."
 }

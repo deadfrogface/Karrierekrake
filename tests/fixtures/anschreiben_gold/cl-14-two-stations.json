@@ -66,7 +66,9 @@
     "Disponent",
     "Nordkai Spedition",
     "Fachlagerist",
-    "Kistenwerk Ost"
+    "Kistenwerk Ost",
+    "von 2019 bis 2024",
+    "von 2016 bis 2019"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -76,7 +78,10 @@
     "Ihres Unternehmens",
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
-    "[Ihr Name]"
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Zwei Stationen und keine Skills. Disponent bei der Nordkai Spedition und Fachlagerist beim Kistenwerk Ost treffen die Anzeige als zwei verschiedene Bezüge. Beide müssen im Brief stehen."
 }
