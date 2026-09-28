@@ -62,7 +62,7 @@ def resolve_cover_letter_template(config: AppConfig) -> Path | None:
         if mi is not None:
             candidates.append(mi / template_path)
         candidates.append(config.root / template_path)
-        candidates.append(Path(__file__).resolve().parent.parent / template_path)
+        candidates.append(_PACKAGE_ROOT / template_path)
     for path in candidates:
         if path.is_file():
             return path
@@ -240,7 +240,7 @@ def _job_blob(job: Job) -> str:
 def _experience_relevance(exp: ExperienceEntry, job_blob: str) -> int:
     """Score one station. Patterns come from the station cache, not this call."""
     folded = collapse_phrase(job_blob)
-    return _score_station(_compiled_station(exp), job_blob, folded)
+    return _score_station(_compiled_station(exp), job_blob, folded, _ad_forms(folded))
 
 
 def pick_relevant_experience(
@@ -521,6 +521,22 @@ class _Mention:
 
 
 @dataclass(frozen=True)
+class _ReadyToken:
+    """Profile token plus the ad-word forms that can make it hit.
+
+    Built once with the profile. A job checks these forms before any regex.
+    """
+
+    token: str
+    norm: str
+    forms: frozenset[str]
+    phrases: tuple[str, ...]
+    needles: tuple[str, ...]
+    allow_substring: bool
+    mention: _Mention
+
+
+@dataclass(frozen=True)
 class _StationCompiled:
     title_active: bool
     title_norm: str
@@ -529,6 +545,12 @@ class _StationCompiled:
     title_part_tokens: tuple[str, ...]
     resp_words: tuple[_Mention, ...]
     company_mention: _Mention | None
+    ready_title: _ReadyToken | None = None
+    ready_parts: tuple[_ReadyToken, ...] = ()
+    ready_tasks: tuple[_ReadyToken, ...] = ()
+    ready_title_words: tuple[_ReadyToken, ...] = ()
+    ready_resps: tuple[_ReadyToken, ...] = ()
+    ready_company: _ReadyToken | None = None
 
 
 @dataclass(frozen=True)
@@ -536,28 +558,39 @@ class _SkillCompiled:
     label: str
     glue: bool
     mentions: tuple[_Mention, ...]
+    ready: tuple[_ReadyToken, ...] = ()
 
 
 class _ProfileEvidence:
     """Patterns for one profile. Built once, then reused for every job."""
 
-    __slots__ = ("skills", "software", "stations")
+    __slots__ = ("skills", "software", "stations", "plain_keys")
 
     def __init__(
         self,
         skills: tuple[_SkillCompiled, ...],
         software: tuple[_SkillCompiled, ...],
         stations: dict[tuple, _StationCompiled],
+        plain_keys: frozenset[tuple],
     ) -> None:
         self.skills = skills
         self.software = software
         self.stations = stations
+        self.plain_keys = plain_keys
 
 
 _MENTION_CACHE: dict[str, _Mention] = {}
+_READY_CACHE: dict[tuple[str, bool], _ReadyToken] = {}
 _STATION_CACHE: dict[tuple, _StationCompiled] = {}
 _SKILL_CACHE: dict[str, _SkillCompiled] = {}
-_PROFILE_CACHE: dict[str, _ProfileEvidence] = {}
+_PROFILE_CACHE: dict[tuple, _ProfileEvidence] = {}
+# Last full fact list for one ad + profile gate. Repeated checks in the same
+# compose reuse it instead of scanning the ad again.
+_FACTS_SLOT: tuple[tuple, list[_CoverFact]] | None = None
+_TEMPLATE_CACHE: dict[str, tuple[tuple[int, int], str]] = {}
+_TEMPLATE_PATH_CACHE: dict[tuple[str, str, str], Path | None] = {}
+_PACKAGE_ROOT = Path(__file__).resolve().parent.parent
+_INFLECTION_STEMS = ("em", "en", "er", "es", "e", "s")
 
 
 def _boundary_pattern(token: str) -> re.Pattern[str] | None:
@@ -593,6 +626,66 @@ def _mention_for(token: str) -> _Mention:
     return compiled
 
 
+def _absorb_ready_form(text: str, forms: set[str], phrases: list[str], needles: list[str], *, needle: bool) -> None:
+    folded = collapse_phrase(text)
+    if not folded:
+        return
+    if " " in folded:
+        phrases.append(folded)
+    elif needle:
+        needles.append(folded)
+    for part in _CONTENT_TOKEN.findall(folded):
+        if not _is_glue_token(part):
+            forms.add(part)
+
+
+def _make_ready_token(token: str, *, allow_substring: bool = False) -> _ReadyToken:
+    """Token forms for the fast ad check. Compiled once per token text."""
+    cached = _READY_CACHE.get((token, allow_substring))
+    if cached is not None:
+        return cached
+    forms: set[str] = set()
+    phrases: list[str] = []
+    needles: list[str] = []
+    _absorb_ready_form(token, forms, phrases, needles, needle=False)
+    for form in _alias_forms(token):
+        _absorb_ready_form(form, forms, phrases, needles, needle=True)
+    ready = _ReadyToken(
+        token=token,
+        norm=_norm(token),
+        forms=frozenset(forms),
+        phrases=tuple(dict.fromkeys(phrases)),
+        needles=tuple(dict.fromkeys(needles)),
+        allow_substring=allow_substring,
+        mention=_mention_for(token),
+    )
+    _READY_CACHE[(token, allow_substring)] = ready
+    return ready
+
+
+def _ad_forms(folded: str) -> frozenset[str]:
+    """Words of one ad, plus one stripped inflection, for set lookups."""
+    words = _CONTENT_TOKEN.findall(folded)
+    forms = set(words)
+    for word in words:
+        for ending in _INFLECTION_STEMS:
+            if len(word) - len(ending) >= 3 and word.endswith(ending):
+                forms.add(word[: -len(ending)])
+                break
+    return frozenset(forms)
+
+
+def _ready_possible(ready: _ReadyToken, blob: str, folded: str, ad_forms: frozenset[str]) -> bool:
+    """False when this token cannot occur in the ad. No regex."""
+    if ready.forms & ad_forms:
+        return True
+    if any(phrase in folded for phrase in ready.phrases):
+        return True
+    if any(needle in folded for needle in ready.needles):
+        return True
+    return bool(ready.allow_substring and ready.norm and ready.norm in blob)
+
+
 def _station_key(exp: ExperienceEntry) -> tuple:
     return (
         clean_text(exp.title),
@@ -611,17 +704,32 @@ def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
     title_words: tuple[_Mention, ...] = ()
     title_mention = None
     part_tokens = _title_part_tokens(title)
-    for token in part_tokens:
-        _mention_for(token)
+    ready_parts = tuple(_make_ready_token(token) for token in part_tokens)
+    ready_title = None
+    ready_title_words: tuple[_ReadyToken, ...] = ()
     if active:
-        title_mention = _mention_for(title)
-        title_words = tuple(_mention_for(word) for word in _meaningful_words(title, min_len=4))
-    resp_words = tuple(
-        _mention_for(word)
+        ready_title = _make_ready_token(title, allow_substring=True)
+        title_mention = ready_title.mention
+        ready_title_words = tuple(
+            _make_ready_token(word) for word in _meaningful_words(title, min_len=4)
+        )
+        title_words = tuple(ready.mention for ready in ready_title_words)
+    resp_tokens = [
+        word
         for resp in key[2]
         for word in _meaningful_words(resp, min_len=5)
-    )
+    ]
+    ready_resps = tuple(_make_ready_token(word) for word in resp_tokens)
+    resp_words = tuple(ready.mention for ready in ready_resps)
+    seen_tasks: set[str] = set()
+    ready_tasks_list: list[_ReadyToken] = []
+    for ready in ready_resps:
+        if not ready.norm or ready.norm in seen_tasks:
+            continue
+        seen_tasks.add(ready.norm)
+        ready_tasks_list.append(ready)
     company = key[1]
+    ready_company = _make_ready_token(company) if company else None
     compiled = _StationCompiled(
         title_active=active,
         title_norm=_norm(title),
@@ -629,25 +737,49 @@ def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
         title_words=title_words,
         title_part_tokens=part_tokens,
         resp_words=resp_words,
-        company_mention=_mention_for(company) if company else None,
+        company_mention=ready_company.mention if ready_company is not None else None,
+        ready_title=ready_title,
+        ready_parts=ready_parts,
+        ready_tasks=tuple(ready_tasks_list),
+        ready_title_words=ready_title_words,
+        ready_resps=ready_resps,
+        ready_company=ready_company,
     )
     _STATION_CACHE[key] = compiled
     return compiled
 
 
-def _score_station(station: _StationCompiled, blob: str, folded: str) -> int:
+def _mention_hits(
+    ready: _ReadyToken | None,
+    mention: _Mention | None,
+    blob: str,
+    folded: str,
+    ad_forms: frozenset[str],
+) -> bool:
+    if ready is None or mention is None:
+        return False
+    if not _ready_possible(ready, blob, folded, ad_forms):
+        return False
+    return mention.hits(blob, folded)
+
+
+def _score_station(
+    station: _StationCompiled, blob: str, folded: str, ad_forms: frozenset[str]
+) -> int:
     score = 0
     if station.title_active:
-        title_hit = station.title_mention is not None and station.title_mention.hits(blob, folded)
+        title_hit = _mention_hits(
+            station.ready_title, station.title_mention, blob, folded, ad_forms
+        )
         if title_hit or (station.title_norm and station.title_norm in blob):
             score += 12
-        for mention in station.title_words:
-            if mention.hits(blob, folded):
+        for ready, mention in zip(station.ready_title_words, station.title_words):
+            if _mention_hits(ready, mention, blob, folded, ad_forms):
                 score += 3
-    for mention in station.resp_words:
-        if mention.hits(blob, folded):
+    for ready, mention in zip(station.ready_resps, station.resp_words):
+        if _mention_hits(ready, mention, blob, folded, ad_forms):
             score += 2
-    if station.company_mention is not None and station.company_mention.hits(blob, folded):
+    if _mention_hits(station.ready_company, station.company_mention, blob, folded, ad_forms):
         score += 1
     return score
 
@@ -735,10 +867,19 @@ def _keys_for_token(
     folded: str,
     *,
     allow_substring: bool = False,
+    ad_forms: frozenset[str] | None = None,
+    ready: _ReadyToken | None = None,
 ) -> set[str]:
-    if not token:
+    if ready is None:
+        if not token:
+            return set()
+        ready = _make_ready_token(token, allow_substring=allow_substring)
+    if ad_forms is None:
+        ad_forms = _ad_forms(folded)
+    if not _ready_possible(ready, blob, folded, ad_forms):
         return set()
-    mention = _mention_for(token)
+    mention = ready.mention
+    # Spans stay on the hit path only. A miss already returned above.
     keys = {
         key
         for start, end in _merged_spans(_mention_spans(mention, folded))
@@ -747,11 +888,11 @@ def _keys_for_token(
     if keys:
         return keys
     matched = mention.hits(blob, folded)
-    if not matched and allow_substring and _norm(token) and _norm(token) in blob:
+    if not matched and allow_substring and ready.norm and ready.norm in blob:
         matched = True
     if not matched:
         return set()
-    key = _canonical_requirement(token)
+    key = _canonical_requirement(token or ready.token)
     return {key} if key else set()
 
 
@@ -774,50 +915,74 @@ class _CoverFact:
     company: str
 
 
-def _station_keys(exp: ExperienceEntry, blob: str, folded: str) -> tuple[bool, frozenset[str]]:
+def _station_keys(
+    station: _StationCompiled,
+    blob: str,
+    folded: str,
+    ad_forms: frozenset[str],
+) -> tuple[bool, frozenset[str]]:
     """A station qualifies on a title hit or two distinct task words.
 
     A company-name hit does not qualify. One task word does not qualify.
     """
-    title = clean_text(exp.title)
     keys: set[str] = set()
     title_hit = False
-    if title and not _is_glue_token(title):
-        found = _keys_for_token(title, blob, folded, allow_substring=True)
+    if station.ready_title is not None:
+        found = _keys_for_token(
+            station.ready_title.token,
+            blob,
+            folded,
+            allow_substring=True,
+            ad_forms=ad_forms,
+            ready=station.ready_title,
+        )
         if found:
             title_hit = True
             keys |= found
-    for token in _title_part_tokens(title):
-        found = _keys_for_token(token, blob, folded)
+    for ready in station.ready_parts:
+        found = _keys_for_token(
+            ready.token,
+            blob,
+            folded,
+            ad_forms=ad_forms,
+            ready=ready,
+        )
         if found:
             title_hit = True
             keys |= found
     task_hits = 0
-    seen_tasks: set[str] = set()
-    for resp in exp.responsibilities or []:
-        for word in _meaningful_words(resp, min_len=5):
-            norm = _norm(word)
-            if not norm or norm in seen_tasks:
-                continue
-            found = _keys_for_token(word, blob, folded)
-            if not found:
-                continue
-            seen_tasks.add(norm)
-            task_hits += 1
-            keys |= found
+    for ready in station.ready_tasks:
+        found = _keys_for_token(
+            ready.token,
+            blob,
+            folded,
+            ad_forms=ad_forms,
+            ready=ready,
+        )
+        if not found:
+            continue
+        task_hits += 1
+        keys |= found
     if not title_hit and task_hits < 2:
         return False, frozenset()
     return True, frozenset(keys)
 
 
-def _skill_keys(label: str, blob: str, folded: str) -> frozenset[str]:
+def _skill_keys(
+    skill: _SkillCompiled,
+    blob: str,
+    folded: str,
+    ad_forms: frozenset[str],
+) -> frozenset[str]:
     keys: set[str] = set()
-    if label:
-        keys |= _keys_for_token(label, blob, folded)
-    for part in _SKILL_SPLIT.split(label):
-        part = part.strip()
-        if len(part) >= 3 and not _is_glue_token(part):
-            keys |= _keys_for_token(part, blob, folded)
+    for ready in skill.ready:
+        keys |= _keys_for_token(
+            ready.token,
+            blob,
+            folded,
+            ad_forms=ad_forms,
+            ready=ready,
+        )
     return frozenset(keys)
 
 
@@ -861,27 +1026,68 @@ def _unify_requirements(facts: list[_CoverFact]) -> list[_CoverFact]:
     return unified
 
 
-def _cover_facts(job: Job, config: AppConfig, source_text: str = "") -> list[_CoverFact]:
+def _profile_gate(config: AppConfig) -> tuple[bool, bool, bool, bool]:
+    return (
+        _debt_blocks(config),
+        _section_confirmed(config, "work_experience"),
+        _section_confirmed(config, "skills"),
+        _section_confirmed(config, "software"),
+    )
+
+
+def _job_match_text(job: Job, description: str | None = None) -> tuple[str, str, frozenset[str]]:
+    """Normalize and tokenize one ad. Callers do this once per job."""
+    if description is None:
+        description = _clean_job_description(getattr(job, "description", ""))
+    blob = _norm(f"{clean_text(job.title)} {description}")
+    folded = collapse_phrase(blob)
+    return blob, folded, _ad_forms(folded)
+
+
+def _cover_facts(
+    job: Job,
+    config: AppConfig,
+    source_text: str = "",
+    *,
+    description: str | None = None,
+) -> list[_CoverFact]:
     """Distinct profile facts and the ad requirements each one hits.
 
     Uses ``cached_profile_evidence`` as a cache. It does not drop or rebuild it.
+    The ad is normalized once per call. A repeated call for the same ad and
+    profile gate returns the list already built.
     """
+    global _FACTS_SLOT
     if _debt_blocks(config):
         return []
-    blob = _job_blob(job)
-    folded = collapse_phrase(blob)
-    if not blob:
-        return []
     evidence = cached_profile_evidence(config)
+    gate = _profile_gate(config)
+    slot_key = (
+        id(evidence),
+        getattr(job, "title", ""),
+        getattr(job, "description", ""),
+        source_text,
+        gate,
+    )
+    if _FACTS_SLOT is not None and _FACTS_SLOT[0] == slot_key:
+        return _FACTS_SLOT[1]
+    blob, folded, ad_forms = _job_match_text(job, description)
+    if not blob:
+        _FACTS_SLOT = (slot_key, [])
+        return []
     facts: list[_CoverFact] = []
-    for index, exp in enumerate(evidenced_stations(config, source_text=source_text)):
-        qualifies, keys = _station_keys(exp, blob, folded)
+    for index, exp in enumerate(
+        evidenced_stations(config, source_text=source_text, evidence=evidence)
+    ):
+        compiled = evidence.stations.get(_station_key(exp))
+        if compiled is None:
+            continue
+        qualifies, keys = _station_keys(compiled, blob, folded, ad_forms)
         if not qualifies or not keys:
             continue
         title = clean_text(exp.title)
         company = clean_text(exp.company)
-        compiled = evidence.stations.get(_station_key(exp))
-        score = _score_station(compiled, blob, folded) if compiled is not None else 0
+        score = _score_station(compiled, blob, folded, ad_forms)
         facts.append(
             _CoverFact(
                 fact_id=f"station:{index}:{title}|{company}",
@@ -893,17 +1099,17 @@ def _cover_facts(job: Job, config: AppConfig, source_text: str = "") -> list[_Co
                 company=company,
             )
         )
-    if not _debt_blocks(config):
+    if not gate[0]:
         pool: list[_SkillCompiled] = []
-        if _section_confirmed(config, "skills"):
+        if gate[2]:
             pool.extend(evidence.skills)
-        if _section_confirmed(config, "software"):
+        if gate[3]:
             pool.extend(evidence.software)
         seen: set[str] = set()
         for offset, skill in enumerate(pool):
             if not skill.label or skill.glue or skill.label in seen:
                 continue
-            keys = _skill_keys(skill.label, blob, folded)
+            keys = _skill_keys(skill, blob, folded, ad_forms)
             if not keys:
                 continue
             seen.add(skill.label)
@@ -918,7 +1124,9 @@ def _cover_facts(job: Job, config: AppConfig, source_text: str = "") -> list[_Co
                     company="",
                 )
             )
-    return _unify_requirements(facts)
+    unified = _unify_requirements(facts)
+    _FACTS_SLOT = (slot_key, unified)
+    return unified
 
 
 def _assign_cover_facts(facts: list[_CoverFact]) -> list[tuple[_CoverFact, str]]:
@@ -977,6 +1185,95 @@ def _fact_in_text(fact: _CoverFact, text: str) -> bool:
     return True
 
 
+def _bounded_phrase(needle: str, haystack: str) -> bool:
+    """True when ``needle`` occurs on a non-letter boundary. No regex."""
+    if not needle or not haystack:
+        return False
+    start = 0
+    while True:
+        index = haystack.find(needle, start)
+        if index < 0:
+            return False
+        before = haystack[index - 1] if index else " "
+        after_at = index + len(needle)
+        after = haystack[after_at] if after_at < len(haystack) else " "
+        if not before.isalnum() and not after.isalnum() and before != "_" and after != "_":
+            return True
+        start = index + 1
+
+
+def _label_in_folded(label: str, blob: str, folded: str) -> bool:
+    if not label or not folded:
+        return False
+    if _bounded_phrase(label, folded) or _bounded_phrase(collapse_phrase(label), folded):
+        return True
+    if not collapse_phrase(label):
+        return False
+    if phrase_pattern(label).search(folded) is not None:
+        return True
+    return _mention_for(label).hits(blob, folded)
+
+
+def _hits_from_facts(
+    text: str, facts: list[_CoverFact]
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Split an already matched fact list into labels still in ``text``."""
+    full = _assign_cover_facts(facts)
+    if not full:
+        return (), ()
+    if not text or not str(text).strip():
+        return (), tuple(fact.label for fact, _root in full)
+    folded = collapse_phrase(text)
+    blob = _norm(text)
+    present: list[_CoverFact] = []
+    for fact in facts:
+        if not _label_in_folded(fact.label, blob, folded):
+            continue
+        if fact.kind == "station" and fact.company and fact.company not in text:
+            continue
+        present.append(fact)
+    found = _assign_cover_facts(present)
+    found_roots = {root for _fact, root in found}
+    hits = tuple(fact.label for fact, _root in found)
+    missing = tuple(fact.label for fact, root in full if root not in found_roots)
+    return hits, missing
+
+
+def _text_keeps_two(text: str, assigned: list[tuple[_CoverFact, str]]) -> bool:
+    """True once two assigned references are still in the letter.
+
+    Stops at the second hit. Callers that need the full hit list use
+    ``_hits_from_facts``.
+    """
+    if len(assigned) < MIN_DISTINCT_COVER_HITS:
+        return False
+    if not text or not str(text).strip():
+        return False
+    folded = collapse_phrase(text)
+    blob: str | None = None
+    found = 0
+    seen: set[str] = set()
+    for fact, root in assigned:
+        if root in seen:
+            continue
+        label_key = collapse_phrase(fact.label)
+        if label_key and _bounded_phrase(label_key, folded):
+            present = True
+        else:
+            if blob is None:
+                blob = _norm(text)
+            present = _label_in_folded(fact.label, blob, folded)
+        if not present:
+            continue
+        if fact.kind == "station" and fact.company and fact.company not in text:
+            continue
+        seen.add(root)
+        found += 1
+        if found >= MIN_DISTINCT_COVER_HITS:
+            return True
+    return False
+
+
 def cover_letter_reference_hits(
     text: str,
     job: Job,
@@ -992,16 +1289,7 @@ def cover_letter_reference_hits(
 
     No model call, no ad reload, no rebuild of ``cached_profile_evidence``.
     """
-    facts = _cover_facts(job, config, source_text)
-    full = _assign_cover_facts(facts)
-    if not full:
-        return (), ()
-    present = [fact for fact in facts if _fact_in_text(fact, text)]
-    found = _assign_cover_facts(present)
-    found_roots = {root for _fact, root in found}
-    hits = tuple(fact.label for fact, _root in found)
-    missing = tuple(fact.label for fact, root in full if root not in found_roots)
-    return hits, missing
+    return _hits_from_facts(text, _cover_facts(job, config, source_text))
 
 
 def _experience_sentences(stations: list[_CoverFact]) -> str:
@@ -1048,36 +1336,54 @@ def _compiled_skill(label: str) -> _SkillCompiled:
     cached = _SKILL_CACHE.get(label)
     if cached is not None:
         return cached
-    mentions = [_mention_for(label)] if label else []
+    ready: list[_ReadyToken] = []
+    if label:
+        ready.append(_make_ready_token(label))
     for part in _SKILL_SPLIT.split(label):
         part = part.strip()
         if len(part) >= 3 and not _is_glue_token(part):
-            mentions.append(_mention_for(part))
-    compiled = _SkillCompiled(label, _is_glue_token(label) if label else True, tuple(mentions))
+            ready.append(_make_ready_token(part))
+    compiled = _SkillCompiled(
+        label,
+        _is_glue_token(label) if label else True,
+        tuple(item.mention for item in ready),
+        tuple(ready),
+    )
     _SKILL_CACHE[label] = compiled
     return compiled
 
 
-def _profile_material(config: AppConfig) -> str:
+def _profile_fingerprint(config: AppConfig) -> tuple:
+    """Hashable profile text. Equal profiles share one compiled evidence."""
     quals = config.profile.qualifications
-    payload = {
-        "skills": [clean_text(item) for item in quals.skill_values()],
-        "software": [clean_text(item) for item in quals.software_values()],
-        "stations": [
-            [
+    return (
+        tuple(clean_text(item) for item in quals.skill_values()),
+        tuple(clean_text(item) for item in quals.software_values()),
+        tuple(
+            (
                 clean_text(exp.title),
                 clean_text(exp.company),
-                [clean_text(item) for item in (exp.responsibilities or [])],
-            ]
+                tuple(clean_text(item) for item in (exp.responsibilities or [])),
+            )
             for exp in (quals.work_experience or [])
-        ],
-    }
-    return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        ),
+    )
+
+
+def _plain_station_keys(quals: Any) -> frozenset[tuple]:
+    keys: list[tuple] = []
+    for exp in quals.work_experience or []:
+        if _is_training_row(exp):
+            continue
+        key = _station_key(exp)
+        if key[0] or key[1]:
+            keys.append(key)
+    return frozenset(keys)
 
 
 def cached_profile_evidence(config: AppConfig) -> _ProfileEvidence:
-    """Compile mention patterns once per profile hash, then reuse them per job."""
-    key = hashlib.sha256(_profile_material(config).encode()).hexdigest()
+    """Compile mention patterns once per profile, then reuse them per job."""
+    key = _profile_fingerprint(config)
     cached = _PROFILE_CACHE.get(key)
     if cached is not None:
         return cached
@@ -1089,13 +1395,17 @@ def cached_profile_evidence(config: AppConfig) -> _ProfileEvidence:
             _station_key(exp): _compiled_station(exp)
             for exp in (quals.work_experience or [])
         },
+        plain_keys=_plain_station_keys(quals),
     )
     _PROFILE_CACHE[key] = evidence
     return evidence
 
 
 def evidenced_stations(
-    config: AppConfig, *, source_text: str = ""
+    config: AppConfig,
+    *,
+    source_text: str = "",
+    evidence: _ProfileEvidence | None = None,
 ) -> list[ExperienceEntry]:
     """Confirmed, non-debt professional stations. Training rows are excluded.
 
@@ -1105,21 +1415,24 @@ def evidenced_stations(
     """
     if _debt_blocks(config) or not _section_confirmed(config, "work_experience"):
         return []
+    if evidence is None:
+        evidence = cached_profile_evidence(config)
     source = resolve_cover_letter_source_text(config, source_text=source_text)
+    check_source = None
+    if source:
+        from core.cv_evidence import evidence_in_source
+
+        check_source = evidence_in_source
     stations: list[ExperienceEntry] = []
     for exp in list(config.profile.qualifications.work_experience or []):
-        if _is_training_row(exp):
+        key = _station_key(exp)
+        if key not in evidence.plain_keys:
             continue
-        title = clean_text(exp.title)
-        company = clean_text(exp.company)
-        if not (title or company):
-            continue
-        if source:
-            from core.cv_evidence import evidence_in_source
-
-            if title and not evidence_in_source(title, source):
+        if check_source is not None:
+            title, company = key[0], key[1]
+            if title and not check_source(title, source):
                 continue
-            if company and not evidence_in_source(company, source):
+            if company and not check_source(company, source):
                 continue
         stations.append(exp)
     return stations
@@ -1143,12 +1456,13 @@ def evidenced_skills_matching_description(config: AppConfig, description: str) -
     if _section_confirmed(config, "software"):
         pool.extend(evidence.software)
     folded = collapse_phrase(blob)
+    ad_forms = _ad_forms(folded)
     facts: list[_CoverFact] = []
     seen: set[str] = set()
     for offset, skill in enumerate(pool):
         if not skill.label or skill.glue or skill.label in seen:
             continue
-        keys = _skill_keys(skill.label, blob, folded)
+        keys = _skill_keys(skill, blob, folded, ad_forms)
         if not keys:
             continue
         seen.add(skill.label)
@@ -1179,15 +1493,16 @@ def _matching_stations(
     if not stations:
         return []
     evidence = cached_profile_evidence(config)
-    blob = _job_blob(job)
-    folded = collapse_phrase(blob)
+    blob, folded, ad_forms = _job_match_text(job)
     ranked: list[tuple[int, int, ExperienceEntry]] = []
     for index, exp in enumerate(stations):
-        qualifies, _keys = _station_keys(exp, blob, folded)
+        compiled = evidence.stations.get(_station_key(exp))
+        if compiled is None:
+            continue
+        qualifies, _keys = _station_keys(compiled, blob, folded, ad_forms)
         if not qualifies:
             continue
-        compiled = evidence.stations.get(_station_key(exp))
-        score = _score_station(compiled, blob, folded) if compiled is not None else 0
+        score = _score_station(compiled, blob, folded, ad_forms)
         ranked.append((score, -index, exp))
     ranked.sort(key=lambda item: (item[0], item[1]), reverse=True)
     return [exp for _score, _index, exp in ranked[:2]]
@@ -1209,9 +1524,25 @@ def _render_template(
     skills_list: list[str],
     experience_sentence: str,
 ) -> str:
-    template_path = resolve_cover_letter_template(config)
+    setting = str(config.settings.cover_letter_template)
+    root = str(config.root)
+    meipass = str(_meipass_dir() or "")
+    path_key = (setting, root, meipass)
+    if path_key in _TEMPLATE_PATH_CACHE:
+        template_path = _TEMPLATE_PATH_CACHE[path_key]
+    else:
+        template_path = resolve_cover_letter_template(config)
+        _TEMPLATE_PATH_CACHE[path_key] = template_path
     if template_path is not None:
-        template = template_path.read_text(encoding="utf-8")
+        cache_key = str(template_path)
+        stat = template_path.stat()
+        stamp = (stat.st_mtime_ns, stat.st_size)
+        cached = _TEMPLATE_CACHE.get(cache_key)
+        if cached is not None and cached[0] == stamp:
+            template = cached[1]
+        else:
+            template = template_path.read_text(encoding="utf-8")
+            _TEMPLATE_CACHE[cache_key] = (stamp, template)
     else:
         template = DEFAULT_TEMPLATE
 
@@ -1271,14 +1602,12 @@ def compose_cover_letter(
     # Before the template. A present description stays company_missing, not job_incomplete.
     if _company_missing(job):
         return _refusal(CoverReason.COMPANY_MISSING)
-    # Count distinct ad hits before any template fill and before any model hook.
-    _hits, missing = cover_letter_reference_hits(
-        "", job, config, source_text=source_text
-    )
-    if len(missing) < MIN_DISTINCT_COVER_HITS:
-        return _refusal(CoverReason.NO_EVIDENCE)
-    facts = _cover_facts(job, config, source_text)
+    # One ad scan, before the template and before any model hook.
+    # Stopping at two facts would drop later skills the letter still has to name.
+    facts = _cover_facts(job, config, source_text, description=description)
     assigned = _assign_cover_facts(facts)
+    if len(assigned) < MIN_DISTINCT_COVER_HITS:
+        return _refusal(CoverReason.NO_EVIDENCE)
     station_facts = [fact for fact, _root in assigned if fact.kind == "station"][:2]
     skills_list = [fact.label for fact, _root in assigned if fact.kind == "skill"]
     experience_sentence = _experience_sentences(station_facts)
@@ -1294,26 +1623,18 @@ def compose_cover_letter(
     model_text = _try_cover_model(job, config, missing=(), attempt=0)
     if model_text is not None:
         text = _strip_unfilled_claims(model_text)
-        letter_hits, letter_missing = cover_letter_reference_hits(
-            text, job, config, source_text=source_text
-        )
+        letter_hits, letter_missing = _hits_from_facts(text, facts)
         if len(letter_hits) < MIN_DISTINCT_COVER_HITS:
             # One retry only. The hook refuses attempt > 1.
             retried = _try_cover_model(job, config, missing=letter_missing, attempt=1)
             if not retried or not str(retried).strip():
                 return _refusal(CoverReason.NO_EVIDENCE)
             text = _strip_unfilled_claims(retried)
-            letter_hits, _letter_missing = cover_letter_reference_hits(
-                text, job, config, source_text=source_text
-            )
+            letter_hits, _letter_missing = _hits_from_facts(text, facts)
             if len(letter_hits) < MIN_DISTINCT_COVER_HITS:
                 return _refusal(CoverReason.NO_EVIDENCE)
-    else:
-        letter_hits, _letter_missing = cover_letter_reference_hits(
-            text, job, config, source_text=source_text
-        )
-        if len(letter_hits) < MIN_DISTINCT_COVER_HITS:
-            return _refusal(CoverReason.NO_EVIDENCE)
+    elif not _text_keeps_two(text, assigned):
+        return _refusal(CoverReason.NO_EVIDENCE)
     return CoverLetterResult(ok=True, text=text, description_used=description)
 
 
