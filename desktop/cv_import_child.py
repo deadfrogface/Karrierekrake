@@ -141,7 +141,12 @@ _DETAIL_FIELDS = (
     "n_ctx",
     "elapsed_s",
     "timeout_s",
+    "peak_bytes",
+    "budget_bytes",
+    "counter",
 )
+
+_DETAIL_COUNTERS = frozenset({"PeakJobMemoryUsed", "Anonymous"})
 
 
 def _safe_detail(
@@ -149,15 +154,34 @@ def _safe_detail(
     exception_type: str,
     reason: str,
     stage: str = "",
+    extra: dict | None = None,
 ) -> dict[str, str | int | float]:
     """Log detail from a fixed field list. No exception text, paths, or CV body."""
-    from core.cv_docpick_import import current_import_timeout_s, import_started_at
+    from core.cv_docpick_import import (
+        current_import_timeout_s,
+        import_progress_snapshot,
+        import_started_at,
+    )
 
+    snap = import_progress_snapshot()
     detail: dict[str, str | int | float] = {
         "exception_type": exception_type or "Exception",
         "reason": reason,
-        "stage": stage or "",
+        "stage": stage or str(snap.get("stage") or ""),
     }
+    for key in ("prompt_tokens", "tokens_done", "max_tokens", "n_ctx"):
+        if key in snap and isinstance(snap[key], int):
+            detail[key] = int(snap[key])
+    if extra:
+        for key in ("peak_bytes", "budget_bytes", "prompt_tokens", "tokens_done", "max_tokens", "n_ctx"):
+            if key in extra and isinstance(extra[key], int) and not isinstance(extra[key], bool):
+                detail[key] = int(extra[key])
+        extra_stage = extra.get("stage")
+        if isinstance(extra_stage, str) and extra_stage and not stage:
+            detail["stage"] = extra_stage
+        counter = extra.get("counter")
+        if isinstance(counter, str) and counter in _DETAIL_COUNTERS:
+            detail["counter"] = counter
     started = import_started_at()
     if started is not None:
         detail["elapsed_s"] = round(time.monotonic() - started, 3)
@@ -192,6 +216,7 @@ def _fail(
     code: int = 1,
     stage: str = "",
     exception_type: str = "",
+    extra: dict | None = None,
 ) -> int:
     from core.cv_llm_runtime import (
         CODE_ONLY_LLM_ERROR_CODES,
@@ -218,7 +243,9 @@ def _fail(
             "ok": False,
             "kind": kind,
             "message": shown,
-            "detail": _safe_detail(exception_type=exc_name, reason=kind, stage=stage),
+            "detail": _safe_detail(
+                exception_type=exc_name, reason=kind, stage=stage, extra=extra
+            ),
             "parsed": None,
         }
         if stage:
@@ -245,7 +272,9 @@ def _fail(
         "ok": False,
         "kind": kind,
         "message": shown,
-        "detail": _safe_detail(exception_type=exc_name, reason=kind, stage=stage),
+        "detail": _safe_detail(
+            exception_type=exc_name, reason=kind, stage=stage, extra=extra
+        ),
         "parsed": None,
     }
     if stage:
@@ -263,6 +292,9 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--llm-warmup", type=float, default=3.0)
     args = parser.parse_args(argv)
 
+    from core.cv_docpick_import import reset_import_progress
+
+    reset_import_progress()
     cv_path = Path(args.cv)
     out_path = Path(args.out)
     decision = None
@@ -359,6 +391,7 @@ def run(argv: list[str] | None = None) -> int:
                     decision=decision,
                     code=code,
                     exception_type=type(exc).__name__,
+                    extra=getattr(exc, "detail", None),
                 )
         except Exception:  # noqa: BLE001
             pass

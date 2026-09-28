@@ -385,6 +385,9 @@ def test_sentinel_stays_out_of_parse_error_and_timeout(
         "n_ctx",
         "elapsed_s",
         "timeout_s",
+        "peak_bytes",
+        "budget_bytes",
+        "counter",
     }
 
     def _assert_clean(out: Path) -> None:
@@ -419,3 +422,65 @@ def test_sentinel_stays_out_of_parse_error_and_timeout(
         assert run_child(["--cv", str(cv), "--out", str(out_time)]) == 1
     _assert_clean(out_time)
     assert json.loads(out_time.read_text(encoding="utf-8"))["kind"] == "llm_timeout"
+
+
+def test_peak_detail_carries_bytes_and_drops_free_text(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    sentinel = "KK_SENTINEL_7f3a"
+    cv = tmp_path / "cv.txt"
+    cv.write_text("x", encoding="utf-8")
+    out = tmp_path / "peak.json"
+
+    def boom(*_a, **_k):
+        raise CvImportError(
+            "peak_rss_exceeded",
+            sentinel,
+            detail={
+                "stage": "after_load",
+                "peak_bytes": 4_000_000_000,
+                "budget_bytes": 3_132_727_552,
+                "counter": "PeakJobMemoryUsed",
+                "leak": sentinel,
+            },
+        )
+
+    monkeypatch.setattr("core.cv_parser.import_cv", boom)
+    assert run_child(["--cv", str(cv), "--out", str(out)]) == 3
+    text = out.read_text(encoding="utf-8")
+    assert sentinel not in text
+    payload = json.loads(text)
+    assert payload["detail"]["stage"] == "after_load"
+    assert payload["detail"]["peak_bytes"] == 4_000_000_000
+    assert payload["detail"]["budget_bytes"] == 3_132_727_552
+    assert payload["detail"]["counter"] == "PeakJobMemoryUsed"
+    assert "leak" not in payload["detail"]
+
+
+def test_known_token_counts_reach_detail(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from core.cv_docpick_import import note_import_progress
+
+    cv = tmp_path / "cv.txt"
+    cv.write_text("x", encoding="utf-8")
+    out = tmp_path / "time.json"
+
+    def boom(*_a, **_k):
+        note_import_progress(
+            stage="before_generation",
+            prompt_tokens=1763,
+            tokens_done=4,
+            max_tokens=804,
+            n_ctx=4096,
+        )
+        raise CvImportError("llm_timeout", "llm_timeout")
+
+    monkeypatch.setattr("core.cv_parser.import_cv", boom)
+    assert run_child(["--cv", str(cv), "--out", str(out)]) == 1
+    detail = json.loads(out.read_text(encoding="utf-8"))["detail"]
+    assert detail["stage"] == "before_generation"
+    assert detail["prompt_tokens"] == 1763
+    assert detail["tokens_done"] == 4
+    assert detail["max_tokens"] == 804
+    assert detail["n_ctx"] == 4096

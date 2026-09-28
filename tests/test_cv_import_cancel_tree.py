@@ -1461,10 +1461,13 @@ def test_smaps_rollup_cost_is_logged_once(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
     clock = _fake_clock(monkeypatch)
-    monkeypatch.setattr(
-        "core.cv_docpick_import._linux_rss_anon_bytes",
-        lambda _pid: 4096,
-    )
+    calls = {"n": 0}
+
+    def _reader(_pid: int) -> int:
+        calls["n"] += 1
+        return 4096
+
+    monkeypatch.setattr("core.cv_docpick_import._linux_rss_anon_bytes", _reader)
 
     class _Pid:
         pid = 4242
@@ -1490,6 +1493,11 @@ def test_smaps_rollup_cost_is_logged_once(
         for rec in caplog.records
         if rec.name == "desktop.cv_import_supervisor" and "smaps_rollup" in rec.message
     ]
+    if sys.platform == "win32":
+        assert calls["n"] == 0
+        assert records == []
+        return
+    assert calls["n"] >= 1
     assert len(records) == 1
     assert "median_s=" in records[0].message
     assert "max_s=" in records[0].message
@@ -1568,6 +1576,7 @@ def test_timeout_logs_one_cv_llm_rates_line_with_partial_progress(
                     },
                     {"phase": "generation", "tokens_done": 10, "t_mono": 1.0},
                     {"phase": "generation", "tokens_done": 40, "t_mono": 5.0},
+                    {"diag": "cv_llm_think think_tokens=0", "level": "info"},
                 ]
                 self._phase.write_text(
                     "".join(
@@ -1608,6 +1617,7 @@ def test_timeout_logs_one_cv_llm_rates_line_with_partial_progress(
     assert "n_gen=40 gen_s=4.000" in line
     assert "prompt_tps=128.000" in line
     assert "gen_tps=10.000" in line
+    assert "think_tokens=0" in line
 
 
 def test_free_diag_and_fd2_do_not_reach_app_sinks(

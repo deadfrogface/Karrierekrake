@@ -52,8 +52,15 @@ DEFAULT_MODEL = _default_model_path()
 class CvImportError(RuntimeError):
     """Visible CV import failure — never recover via DET."""
 
-    def __init__(self, code: str, message: str) -> None:
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        *,
+        detail: dict[str, str | int | float] | None = None,
+    ) -> None:
         self.code = code
+        self.detail = dict(detail or {})
         super().__init__(f"{code}: {message}")
 
 
@@ -933,8 +940,13 @@ CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S",
 # (process group: App + Docling + Qwen/llama.cpp + ALL import children).
 # The in-app sample (`_self_rss_bytes`) counts the same kind of memory the Job
 # Object counts: private commit. File-backed mmap pages (the GGUF) do not count.
-# Windows: PeakPagefileUsage. Linux: anonymous RSS from smaps_rollup, not ru_maxrss.
+# Windows: PeakJobMemoryUsed of a job this process created for itself.
+# PeakPagefileUsage is only the app-share subtraction, not the gate.
+# Linux: anonymous RSS from smaps_rollup, not ru_maxrss.
 # Agent-VM numbers are NOT ship evidence. No automatic Phi fallback.
+# CI on 2d6837a compared PeakPagefileUsage with the fresh child budget
+# 3_132_727_552 (3_300_000_000 - 167_272_448). DE_01 exceeded it at
+# elapsed_s 12.625, before generation. The sample itself was not in the JSON.
 CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
     os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX", "3300000000")
 )
@@ -1529,6 +1541,108 @@ def _process_memory_counters_ex_type():
     return PROCESS_MEMORY_COUNTERS_EX
 
 
+# Fixed identifiers for the gate detail. No free text.
+PEAK_COUNTER_JOB = "PeakJobMemoryUsed"
+PEAK_COUNTER_ANON = "Anonymous"
+
+# Handle of the job this process created so the gate can read its
+# PeakJobMemoryUsed. A null handle is never queried: that would be the
+# caller's existing job (for example the GitHub runner job).
+_measure_job_handle: int | None = None
+_measure_job_query = None
+
+
+def reset_import_measure_job() -> None:
+    """Drop a job bound for a previous test. Does not close a real handle."""
+    global _measure_job_handle, _measure_job_query
+    _measure_job_handle = None
+    _measure_job_query = None
+
+
+def bind_import_measure_job(handle: int, query) -> None:
+    """Install the job the gate will read. ``query(handle) -> peak bytes``."""
+    global _measure_job_handle, _measure_job_query
+    _measure_job_handle = int(handle) if handle else None
+    _measure_job_query = query
+
+
+def _peak_job_memory_via_query(query, handle) -> int:
+    """Read ``PeakJobMemoryUsed`` from an explicit job handle.
+
+    ``handle`` 0 or ``None`` returns 0 and does not call ``query``. That
+    refuses the outer job a ``QueryInformationJobObject(NULL)`` would see.
+    """
+    if not handle or query is None:
+        return 0
+    try:
+        value = int(query(handle))
+    except (TypeError, ValueError, OSError):
+        return 0
+    return value if value > 0 else 0
+
+
+def _open_windows_measure_job() -> bool:
+    """Assign this process to a new job and keep that handle.
+
+    No memory limit is set here. The supervisor's containment job already
+    carries ``JOB_OBJECT_LIMIT_JOB_MEMORY``. This job exists so the in-process
+    gate can read ``PeakJobMemoryUsed`` of this process group and not
+    ``PeakPagefileUsage``. If the assign fails, the outer job is not used.
+    """
+    import ctypes
+
+    from devops.win_job_object import (
+        JOBOBJECT_EXTENDED_LIMIT_INFORMATION,
+        JobObjectExtendedLimitInformation,
+        kernel32,
+    )
+
+    kernel = kernel32()
+    job = kernel.CreateJobObjectW(None, None)
+    if not job:
+        return False
+    current = kernel.GetCurrentProcess()
+    if not kernel.AssignProcessToJobObject(job, current):
+        kernel.CloseHandle(job)
+        return False
+
+    def query(handle: int) -> int:
+        info = JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
+        ok = kernel.QueryInformationJobObject(
+            handle,
+            JobObjectExtendedLimitInformation,
+            ctypes.byref(info),
+            ctypes.sizeof(info),
+            None,
+        )
+        if not ok:
+            return 0
+        return int(info.PeakJobMemoryUsed)
+
+    bind_import_measure_job(int(job), query)
+    return True
+
+
+def ensure_import_measure_job() -> bool:
+    """Create the measure job once. False off Windows or when assign fails."""
+    if _measure_job_handle:
+        return True
+    if sys.platform != "win32":
+        return False
+    try:
+        return _open_windows_measure_job()
+    except OSError:
+        return False
+
+
+def _windows_measure_job_peak_bytes() -> int:
+    """``PeakJobMemoryUsed`` of this process's measure job. ``0`` if none."""
+    if not _measure_job_handle:
+        if not ensure_import_measure_job():
+            return 0
+    return _peak_job_memory_via_query(_measure_job_query, _measure_job_handle)
+
+
 def _peak_pagefile_via_get_info(get_info, get_process) -> int:
     """Read ``PeakPagefileUsage`` using an injected ``GetProcessMemoryInfo``.
 
@@ -1547,10 +1661,12 @@ def _peak_pagefile_via_get_info(get_info, get_process) -> int:
 
 
 def _windows_peak_pagefile_bytes() -> int:
-    """Peak private commit of this process (``PeakPagefileUsage``), one call.
+    """``PeakPagefileUsage`` of this process, for the app-share subtraction.
 
-    This is the per-process high-water that corresponds to Job Object
-    ``PeakJobMemoryUsed``. File-backed views are not part of pagefile commit.
+    The import gate does not compare this counter. It reads
+    ``PeakJobMemoryUsed`` of the measure job. CI head 2d6837a compared
+    ``PeakPagefileUsage`` with the fresh child budget and aborted DE_01
+    at elapsed_s 12.625, before generation.
     """
     import ctypes
     from ctypes import wintypes
@@ -1582,23 +1698,43 @@ def reset_private_commit_high_water() -> None:
 
 
 def _self_rss_bytes() -> int:
-    """Private committed memory for the in-app #69-style gate, in bytes.
+    """Private committed memory for the in-app #69 gate, in bytes.
 
-    Windows: ``PeakPagefileUsage`` (high-water of this process's pagefile
-    commit) via ``GetProcessMemoryInfo``. The ``resource`` module is not used;
-    it is missing on Windows, and its ``ru_maxrss`` is the wrong counter.
+    Windows: ``PeakJobMemoryUsed`` of the measure job created for this
+    process. ``PeakPagefileUsage`` is not this counter. A missing job is
+    ``0`` (unmeasured), not the outer job's peak. The ``resource`` module
+    is not used.
 
     Linux: anonymous RSS from ``/proc/self/smaps_rollup`` (``Anonymous``, or
     ``Rss_Anon`` when that key exists). ``ru_maxrss`` and ``VmHWM`` are not
     used because they include file-backed mmap pages such as the GGUF. The
     Linux value is the anonymous RSS at this call. The import keeps the max
-    of its phase samples; the kernel has no Rss_Anon peak. Windows
-    ``PeakPagefileUsage`` is already a process-lifetime peak. ``0`` means the
+    of its phase samples; the kernel has no Rss_Anon peak. ``0`` means the
     read failed and is not a pass.
+    """
+    if sys.platform == "win32":
+        return _windows_measure_job_peak_bytes()
+    return _linux_rss_anon_bytes("self")
+
+
+def app_private_commit_bytes() -> int:
+    """This process's private commit, for the one app-share subtraction.
+
+    This is not the #69 group peak. Windows reads ``PeakPagefileUsage`` of
+    this process only. Linux reads ``Anonymous``. The child gate compares
+    ``_self_rss_bytes`` (``PeakJobMemoryUsed`` on Windows) with the budget
+    derived from this number.
     """
     if sys.platform == "win32":
         return _windows_peak_pagefile_bytes()
     return _linux_rss_anon_bytes("self")
+
+
+def peak_counter_name() -> str:
+    """Fixed identifier of the counter ``_self_rss_bytes`` just read."""
+    if sys.platform == "win32":
+        return PEAK_COUNTER_JOB
+    return PEAK_COUNTER_ANON
 
 
 def _self_rss_mb() -> float:
@@ -1638,9 +1774,10 @@ def cv_path_peak_rss_bytes(*, include_llama_server: bool = True) -> int:
     Counts the same class of memory as Job Object ``PeakJobMemoryUsed`` (#69):
     private / anonymous commit. File-backed mmap pages do not count.
 
-    Windows: ``PeakPagefileUsage`` of this process. Linux: ``Anonymous`` from
-    ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers are not ship
-    evidence. Ship evidence remains a Windows Job Object on the i3 laptop.
+    Windows: ``PeakJobMemoryUsed`` of this process's measure job. Linux:
+    ``Anonymous`` from ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers
+    are not ship evidence. Ship evidence remains a Windows Job Object on the
+    i3 laptop.
 
     When the import loads Qwen in-process, external llama.cpp servers are not
     part of this path and must not trip the preflight gate.
@@ -1945,6 +2082,35 @@ def remaining_import_timeout_s(now: float | None = None) -> float:
     return max(0.0, float(limit) - (clock - started))
 
 
+_import_progress: dict[str, str | int] = {}
+
+
+def reset_import_progress() -> None:
+    """Drop token counts and the stage from a previous import in this process."""
+    _import_progress.clear()
+
+
+def note_import_progress(**fields: str | int | None) -> None:
+    """Remember whitelist progress once it is known. Unknown keys are ignored."""
+    allowed = {"stage", "prompt_tokens", "tokens_done", "max_tokens", "n_ctx"}
+    for key, value in fields.items():
+        if key not in allowed or value is None:
+            continue
+        if key == "stage":
+            text = str(value)
+            if text:
+                _import_progress["stage"] = text
+            continue
+        try:
+            _import_progress[key] = int(value)
+        except (TypeError, ValueError):
+            continue
+
+
+def import_progress_snapshot() -> dict[str, str | int]:
+    return dict(_import_progress)
+
+
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
     """Hard fail when the child's private-commit high-water exceeds its budget.
 
@@ -1960,6 +2126,7 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
     only the current child budget is ``memory_budget_app_share``.
     """
     global _private_commit_high_water
+    note_import_progress(stage=stage)
     rss = cv_path_peak_rss_bytes(include_llama_server=include_llama_server)
     if rss is None or int(rss) <= 0:
         logger.error(
@@ -1972,9 +2139,10 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
     child_budget = active_child_budget_bytes()
     fresh_budget = fresh_app_child_budget_bytes()
     app_private = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
+    counter = peak_counter_name()
     share_line = (
         "cv_import memory_shares stage=%s app_private=%s child_bytes=%s "
-        "child_budget=%s fresh_child_budget=%s high_water=%s"
+        "child_budget=%s fresh_child_budget=%s high_water=%s counter=%s"
         % (
             stage,
             app_private or "unset",
@@ -1982,6 +2150,7 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
             child_budget,
             fresh_budget,
             _private_commit_high_water,
+            counter,
         )
     )
     logger.info("%s", share_line)
@@ -1999,7 +2168,17 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
         child_budget,
         fresh_budget,
     )
-    raise CvImportError(code, code)
+    budget_for_detail = fresh_budget if code == "peak_rss_exceeded" else child_budget
+    raise CvImportError(
+        code,
+        code,
+        detail={
+            "stage": stage,
+            "peak_bytes": int(_private_commit_high_water),
+            "budget_bytes": int(budget_for_detail),
+            "counter": counter,
+        },
+    )
 
 
 def _enforce_timeout(t0: float, *, stage: str) -> None:
@@ -2009,6 +2188,7 @@ def _enforce_timeout(t0: float, *, stage: str) -> None:
     llama.cpp never reaches the next stage, so the parent watch is what
     applies the deadline mid-generation and what notices a token stall.
     """
+    note_import_progress(stage=stage)
     limit_s = current_import_timeout_s()
     elapsed = time.monotonic() - t0
     if elapsed > limit_s:
@@ -2058,6 +2238,8 @@ def import_cv_docpick(
     t0 = time.monotonic()
     reset_private_commit_high_water()
     reset_import_timeout()
+    reset_import_progress()
+    ensure_import_measure_job()
     note_import_started(t0)
 
     def _cancelled() -> bool:

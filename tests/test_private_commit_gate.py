@@ -7,10 +7,20 @@ import sys
 import pytest
 
 from core.cv_docpick_import import (
+    _enforce_peak_rss,
     _linux_rss_anon_bytes,
+    _peak_job_memory_via_query,
     _peak_pagefile_via_get_info,
     _rss_anon_bytes_from_smaps,
     _self_rss_bytes,
+    app_private_commit_bytes,
+    bind_import_measure_job,
+    fresh_app_child_budget_bytes,
+    reset_import_measure_job,
+    reset_private_commit_high_water,
+    CvImportError,
+    CV_IMPORT_FRESH_APP_PRIVATE_BYTES,
+    CV_IMPORT_PEAK_RSS_BYTES_MAX,
 )
 
 
@@ -49,13 +59,65 @@ def test_linux_branch_reads_smaps_not_ru_maxrss(monkeypatch: pytest.MonkeyPatch)
     assert _self_rss_bytes() == 1234
 
 
-def test_windows_branch_uses_peak_pagefile(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_fresh_child_budget_is_group_cap_minus_measured_app() -> None:
+    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
+    assert fresh_app_child_budget_bytes() == (
+        3_300_000_000 - CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+    )
+    assert fresh_app_child_budget_bytes() == 3_132_727_552
+
+
+def test_windows_gate_reads_job_peak_not_pagefile(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A file-sized pagefile reading must not reach the gate."""
+    reset_import_measure_job()
     monkeypatch.setattr(sys, "platform", "win32")
     monkeypatch.setattr(
         "core.cv_docpick_import._windows_peak_pagefile_bytes",
-        lambda: 3_200_000_000,
+        lambda: 4_400_000_000,
     )
-    assert _self_rss_bytes() == 3_200_000_000
+    bind_import_measure_job(7, lambda handle: 1_800_000_000 if handle == 7 else 0)
+    try:
+        assert _self_rss_bytes() == 1_800_000_000
+        assert app_private_commit_bytes() == 4_400_000_000
+    finally:
+        reset_import_measure_job()
+
+
+def test_null_job_handle_is_not_the_outer_job() -> None:
+    calls: list[int] = []
+
+    def query(handle: int) -> int:
+        calls.append(handle)
+        return 9_000_000_000
+
+    assert _peak_job_memory_via_query(query, None) == 0
+    assert _peak_job_memory_via_query(query, 0) == 0
+    assert calls == []
+
+
+def test_job_peak_over_fresh_budget_names_the_counter(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    reset_import_measure_job()
+    reset_private_commit_high_water()
+    monkeypatch.setattr(sys, "platform", "win32")
+    fresh = fresh_app_child_budget_bytes()
+    bind_import_measure_job(7, lambda _handle: fresh + 1)
+    monkeypatch.setattr(
+        "core.cv_docpick_import._windows_peak_pagefile_bytes",
+        lambda: 1,
+    )
+    try:
+        with pytest.raises(CvImportError) as ei:
+            _enforce_peak_rss(stage="after_load", include_llama_server=False)
+    finally:
+        reset_import_measure_job()
+        reset_private_commit_high_water()
+    assert ei.value.code == "peak_rss_exceeded"
+    assert ei.value.detail["stage"] == "after_load"
+    assert ei.value.detail["peak_bytes"] == fresh + 1
+    assert ei.value.detail["budget_bytes"] == fresh
+    assert ei.value.detail["counter"] == "PeakJobMemoryUsed"
 
 
 def test_peak_pagefile_reader_returns_counter_not_working_set() -> None:

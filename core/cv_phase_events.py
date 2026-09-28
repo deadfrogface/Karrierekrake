@@ -98,7 +98,7 @@ def emit_diag(message: str, *, level: str = "info") -> None:
 
 
 _SAFE_DIAG = re.compile(
-    r"^(cv_llm_rates|cv_llm_config|cv_llm_inprocess|cv_llm_load|cv_llm_prompt_prefix|"
+    r"^(cv_llm_rates|cv_llm_config|cv_llm_inprocess|cv_llm_load|cv_llm_think|cv_llm_prompt_prefix|"
     r"cv_llm_prompt_prefill|cv_import memory_shares|cv_import smaps_rollup|"
     r"llm_timeout|llm_prompt_too_long|llm_output_truncated|job_memory_limit_hit|"
     r"memory_budget_app_share|peak_rss_exceeded|peak_rss_unmeasured)"

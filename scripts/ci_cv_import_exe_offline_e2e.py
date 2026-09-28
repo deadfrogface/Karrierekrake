@@ -160,6 +160,9 @@ _DETAIL_KEYS = (
     "n_ctx",
     "elapsed_s",
     "timeout_s",
+    "peak_bytes",
+    "budget_bytes",
+    "counter",
 )
 
 

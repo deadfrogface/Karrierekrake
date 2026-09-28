@@ -246,20 +246,14 @@ jobs:
           $ErrorActionPreference = "Stop"
           $env:QT_QPA_PLATFORM = "offscreen"
           $env:PYTHONUTF8 = "1"
-          # Shipped defaults only. Tuning env vars are a developer override.
-          foreach ($name in @(
-            "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S",
-            "KARRIEREKRAKE_CV_LLM_MAX_TOKENS",
-            "KARRIEREKRAKE_CV_LLM_N_CTX",
-            "KARRIEREKRAKE_CV_LLM_N_THREADS",
-            "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH"
-          )) {
-            $val = [Environment]::GetEnvironmentVariable($name)
-            if (-not [string]::IsNullOrWhiteSpace($val)) {
-              Write-Error "Release gate refuses tuning env ${name}"
-              exit 1
-            }
-          }
+          # Shipped defaults only. Any set KARRIEREKRAKE_CV_ or KARRIEREKRAKE_LLM_
+          # variable fails. Allowlist is empty: PEAK_RSS_BYTES_MAX would hide a
+          # real PeakJobMemoryUsed breach, and LLM_BASE is set later inside the
+          # e2e child only.
+          python scripts/ci_release_env_gate.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/ci_release_env_gate.py --self-test
+          if ($LASTEXITCODE -ne 0) { Write-Error "Release env self-test failed"; exit 1 }
           # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue

@@ -113,7 +113,7 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
 # That is 0.72% of one core at 2 s, so the interval stays 2 s. It becomes
 # 5 s when the median of at least three reads, or the sum of the reads over
 # the wall clock, exceeds 1% of one core. The median and the max are logged
-# once per import. Windows PeakPagefileUsage is already a lifetime peak, so
+# once per import. Windows reads PeakJobMemoryUsed inside the child, so
 # this read does not run there. A spike that rises and falls between samples
 # is invisible: the kernel does not expose an Rss_Anon high-water, and
 # VmHWM counts mmap.
@@ -128,6 +128,7 @@ _THREAD_FIELD_IN_DIAG = re.compile(
     r"\b(n_threads|n_threads_batch|physical|logical|reserve)=(\d+)\b"
 )
 _SOURCE_IN_DIAG = re.compile(r"\bsource=(rule|env)\b")
+_THINK_IN_DIAG = re.compile(r"\bthink_tokens=(\d+)\b")
 
 
 def _monotonic() -> float:
@@ -582,6 +583,7 @@ class CvLlmRates:
         self.prompt_s = 0.0
         self._saw_block = False
         self.n_gen = 0
+        self.think_tokens: int | None = None
         self.gen_first: float | None = None
         self.gen_last: float | None = None
 
@@ -604,6 +606,9 @@ class CvLlmRates:
         prompt = _N_PROMPT_IN_DIAG.search(diag)
         if prompt is not None and self._diag_prompt is None:
             self._diag_prompt = int(prompt.group(1))
+        think = _THINK_IN_DIAG.search(diag)
+        if think is not None:
+            self.think_tokens = int(think.group(1))
 
     def note_phase(self, event: dict) -> None:
         if "prompt_tokens_done" in event:
@@ -681,7 +686,7 @@ class CvLlmRates:
         return (
             "cv_llm_rates n_threads=%s n_threads_batch=%s physical=%s "
             "logical=%s reserve=%s source=%s n_prompt=%s prompt_s=%s "
-            "n_gen=%s gen_s=%s prompt_tps=%s gen_tps=%s"
+            "n_gen=%s gen_s=%s prompt_tps=%s gen_tps=%s think_tokens=%s"
             % (
                 _fmt_int(self.n_threads),
                 _fmt_int(self.n_threads_batch),
@@ -695,6 +700,7 @@ class CvLlmRates:
                 _fmt_seconds(gen_s),
                 _fmt_rate(prompt_tps),
                 _fmt_rate(gen_tps),
+                _fmt_int(self.think_tokens),
             )
         )
 
@@ -882,9 +888,9 @@ def _spawn_with_child_budget(
 
 def _read_app_private_bytes() -> int:
     """One private-commit read of this process (the app). Not a poll loop."""
-    from core.cv_docpick_import import _self_rss_bytes
+    from core.cv_docpick_import import app_private_commit_bytes
 
-    return int(_self_rss_bytes())
+    return int(app_private_commit_bytes())
 
 
 def _anon_interval_s(
@@ -966,7 +972,7 @@ def _parent_anon_sample(
 
     Linux only. ``0`` / missing ``/proc`` is unmeasured and is not a pass.
     When ``durations`` is set, the ``smaps_rollup`` read time is appended.
-    Windows returns before any read: ``PeakPagefileUsage`` is not this path.
+    Windows returns before any read: the child gate uses ``PeakJobMemoryUsed``.
     """
     if sys.platform == "win32":
         return None

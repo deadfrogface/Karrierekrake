@@ -837,9 +837,61 @@ def _construct_llama(llama_cls: Any, **kwargs: Any) -> tuple[Any, str]:
 
     blob = io.StringIO()
     kwargs["verbose"] = False
+    # File-backed weights. A private copy of the GGUF is commit charge the
+    # #69 job peak counts. mlock would pin that copy.
+    kwargs["use_mmap"] = True
+    kwargs["use_mlock"] = False
     with contextlib.redirect_stderr(blob):
         llm = llama_cls(**kwargs)
     return llm, blob.getvalue()
+
+
+_THINK_OPEN = "<think>"
+_THINK_CLOSE = "</think>"
+
+
+class ThinkTokenCount:
+    """Stream chunks inside a think block, including a count of zero.
+
+    One chunk is one token. ``reasoning_content`` counts as a think token.
+    Content before ``<think>`` and after ``</think>`` does not. The total
+    stays 0 when ``/no_think`` keeps the block out of the stream.
+    """
+
+    def __init__(self) -> None:
+        self.total = 0
+        self._inside = False
+        self._tail = ""
+
+    def note(self, content: str | None, reasoning: str | None = None) -> None:
+        if reasoning:
+            self.total += 1
+        if content:
+            self._note_content(str(content))
+
+    def _note_content(self, piece: str) -> None:
+        buf = self._tail + piece
+        counted = False
+        while True:
+            if not self._inside:
+                idx = buf.find(_THINK_OPEN)
+                if idx < 0:
+                    break
+                self._inside = True
+                buf = buf[idx + len(_THINK_OPEN) :]
+                counted = True
+            else:
+                idx = buf.find(_THINK_CLOSE)
+                if idx < 0:
+                    counted = True
+                    break
+                counted = True
+                self._inside = False
+                buf = buf[idx + len(_THINK_CLOSE) :]
+        if counted:
+            self.total += 1
+        keep = max(len(_THINK_OPEN), len(_THINK_CLOSE)) - 1
+        self._tail = buf[-keep:] if buf else ""
 
 
 def chat_completion_inprocess(
@@ -856,10 +908,11 @@ def chat_completion_inprocess(
     ``llm_prompt_too_long`` and does not generate. ``finish_reason=length``
     raises ``llm_output_truncated``. Both messages are the code; details are logged.
     """
-    from core.cv_docpick_import import CvImportError
+    from core.cv_docpick_import import CvImportError, note_import_progress
     from core.local_model_lock import hold_production_model
 
     n_ctx = resolve_cv_llm_n_ctx()
+    note_import_progress(n_ctx=n_ctx)
     n_threads, n_threads_batch, physical, logical, reserve = resolve_cv_llm_thread_plan()
     Llama = _llama_cls()
     with hold_production_model(role="cv_import", timeout_s=90.0):
@@ -892,6 +945,7 @@ def chat_completion_inprocess(
             else:
                 n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
+            note_import_progress(prompt_tokens=n_prompt, max_tokens=budget, n_ctx=n_ctx)
             from core import cv_docpick_import as import_deadline
             from core.cv_phase_events import (
                 TokenProgressThrottle,
@@ -957,6 +1011,7 @@ def chat_completion_inprocess(
             finish: str | None = None
             saw_chunk = False
             tokens_done = 0
+            think = ThinkTokenCount()
             token_events = TokenProgressThrottle()
             for chunk in _iter_chat_completion(
                 llm,
@@ -970,6 +1025,7 @@ def chat_completion_inprocess(
                     saw_chunk = True
                     _sample_private_commit("after_prompt_eval")
                 tokens_done += 1
+                note_import_progress(tokens_done=tokens_done)
                 # max_tokens stays in the log line above. The UI event is the
                 # counter only. No remaining time is computed. t_mono is the
                 # child's monotonic delta at this token.
@@ -986,12 +1042,22 @@ def chat_completion_inprocess(
                 choice = chunk["choices"][0]
                 delta = choice.get("delta") or {}
                 piece = delta.get("content")
+                reasoning = delta.get("reasoning_content")
+                if reasoning is None:
+                    reasoning = delta.get("reasoning")
+                think.note(
+                    str(piece) if piece else None,
+                    str(reasoning) if reasoning else None,
+                )
                 if piece:
                     parts.append(str(piece))
                 if choice.get("finish_reason"):
                     finish = str(choice["finish_reason"])
             if not saw_chunk:
                 _sample_private_commit("after_prompt_eval")
+            think_line = "cv_llm_think think_tokens=%s" % think.total
+            logger.info("%s", think_line)
+            emit_diag(think_line)
             text = "".join(parts)
             _sample_private_commit("after_generation")
             n_answer = _count_answer_tokens(llm, text)

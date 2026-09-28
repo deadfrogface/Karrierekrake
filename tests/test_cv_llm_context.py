@@ -453,6 +453,8 @@ def test_llama_constructor_receives_thread_and_ctx(monkeypatch: pytest.MonkeyPat
     assert seen["n_threads_batch"] == 4
     assert seen["n_batch"] == 512
     assert seen["verbose"] is False
+    assert seen["use_mmap"] is True
+    assert seen["use_mlock"] is False
     assert Spy.instances[-1].verbose is False
     assert Spy.instances[-1].completion_kwargs["max_tokens"] == (
         4096 - 10 - CV_LLM_CTX_SLACK_TOKENS
@@ -746,3 +748,24 @@ def test_cv_llm_config_names_source_and_formula(monkeypatch: pytest.MonkeyPatch)
     assert "max_tokens_formula=" in overridden
     assert "n_threads=7 n_threads_source=env n_threads_formula=3" in overridden
     assert diag_line_is_safe(overridden)
+
+
+def test_think_tokens_count_until_the_block_ends_and_stay_zero() -> None:
+    from core.cv_llm_runtime import ThinkTokenCount
+    from core.cv_phase_events import diag_line_is_safe
+
+    quiet = ThinkTokenCount()
+    quiet.note('{"name":{"first_name":"A"}}')
+    quiet.note(None)
+    assert quiet.total == 0
+    assert diag_line_is_safe("cv_llm_think think_tokens=0")
+
+    split = ThinkTokenCount()
+    split.note("<thi")
+    split.note("nk>hidden")
+    split.note("</think>visible")
+    assert split.total == 2
+
+    reasoning = ThinkTokenCount()
+    reasoning.note('{"a":1}', "because")
+    assert reasoning.total == 1
