@@ -152,6 +152,8 @@ def test_packaging_policy_allows_docpick() -> None:
     assert "docpick" in hidden
     assert "docpick.llm.vllm_provider" in hidden
     assert "llama_cpp" in hidden
+    assert "psutil" in hidden
+    assert "psutil._pswindows" in hidden
     assert "llama_cpp" in mod.ALLOWED_COLLECT_ALL_PACKAGES
     assert mod.datas_entry_allowed(
         "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
@@ -314,6 +316,20 @@ def test_requirements_runtime_lists_docpick_and_llama() -> None:
     text = Path("requirements-runtime.txt").read_text(encoding="utf-8")
     assert "docpick" in text
     assert "llama-cpp-python" in text
+    assert "--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu" in text
+    constraints = Path("constraints-runtime.txt").read_text(encoding="utf-8")
+    assert "llama-cpp-python==0.3.35" in constraints
+    assert "psutil>=5.9" in text
+    assert "psutil==7.2.2" in constraints
+    smoke = Path(".github/workflows/windows-smoke.yml").read_text(encoding="utf-8")
+    assert "--report-physical-cores" in smoke
+    assert "source=psutil" in smoke
+    assert "--report-llm-load" in smoke
+    assert "AMX_INT8 = 1" in smoke
+    assert "llama_cpu_all_variants=0" in smoke
+    assert "llama_backend_libs=" in smoke
+    assert "ggml-cpu-haswell" in smoke
+    assert "llama_model_buffer=not_loaded" in smoke
     assert not any(
         line.strip().startswith("#") and "docpick" in line for line in text.splitlines() if "docpick" in line
     )

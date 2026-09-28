@@ -63,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
                 encoding="utf-8",
             )
             out = tmp_path / "out.json"
+            phase = tmp_path / "phase.jsonl"
             cmd = [
                 str(exe),
                 "--cv-import-child",
@@ -72,12 +73,15 @@ def main(argv: list[str] | None = None) -> int:
                 str(out),
             ]
             print(f"spawn (lock held): {cmd}", flush=True)
+            child_env = os.environ.copy()
+            child_env["KARRIEREKRAKE_CV_PHASE_EVENTS"] = str(phase)
             # Windowed onefile: do not trust process exit alone — poll --out.
             proc = subprocess.Popen(
                 cmd,
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
+                env=child_env,
             )
             deadline = time.monotonic() + float(args.timeout)
             while time.monotonic() < deadline:
@@ -133,6 +137,26 @@ def main(argv: list[str] | None = None) -> int:
                 f"exit={proc.returncode}",
                 flush=True,
             )
+            diag = phase.read_text(encoding="utf-8") if phase.is_file() else ""
+            present = [
+                key
+                for key in ("cv_llm_load", "memory_shares", "n_threads")
+                if key in diag
+            ]
+            if present:
+                print(
+                    "OK: EXE child diag events in the phase pipe: " + ", ".join(present),
+                    flush=True,
+                )
+            else:
+                # No GGUF on the runner, so the child never loads a buffer.
+                # The parent writes those lines into karrierekrake.log when a
+                # real import emits them. The fake-model test covers that relay.
+                print(
+                    "diag-log: EXE app log has no cv_llm_load/memory_shares/n_threads "
+                    "(no GGUF on this runner)",
+                    flush=True,
+                )
             return 0
     finally:
         try:

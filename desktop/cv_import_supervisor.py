@@ -8,19 +8,22 @@ so Docling / llama.cpp children do not keep running.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sys
 import tempfile
 import threading
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Callable
+
+logger = logging.getLogger(__name__)
 
 from core.hardware_peak_gate import is_oom_exit
 from devops.peak_rss_harness import ContainedProcess, launch_contained
 
-DEFAULT_CV_IMPORT_TIMEOUT_S = 180.0
 _ENV_TIMEOUT = "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"
 # QA only. Unset or 0 in production: the child starts immediately.
 _ENV_OBSERVE = "KARRIEREKRAKE_CV_IMPORT_OBSERVE_S"
@@ -39,9 +42,16 @@ class ImportAttemptResult:
 
 
 def default_import_timeout_s() -> float:
+    """Outer process deadline before the child reports its formula timeout.
+
+    An env override is that deadline. Otherwise the ceiling (900 s) is the
+    backstop until the child's one ``timeout_s`` event tightens it.
+    """
     raw = os.environ.get(_ENV_TIMEOUT)
     if raw is None or raw.strip() == "":
-        return DEFAULT_CV_IMPORT_TIMEOUT_S
+        from core.cv_docpick_import import CV_IMPORT_TIMEOUT_CEILING_S
+
+        return float(CV_IMPORT_TIMEOUT_CEILING_S)
     return float(raw)
 
 
@@ -92,8 +102,54 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
     ]
 
 
+# Linux parent reads the child's anonymous RSS this often. One smaps_rollup
+# read with the GGUF mmap'd was 35 µs on this VM (0.0017% of one core at 2 s).
+# Windows PeakPagefileUsage is already a lifetime peak, so the interval is
+# Linux-only. A spike that rises and falls between samples is invisible:
+# the kernel does not expose an Rss_Anon high-water, and VmHWM counts mmap.
+_PARENT_ANON_SAMPLE_S = 2.0
+
+
+def _job_limit_from_environ() -> int | None:
+    """Job limit from the child budget the supervisor just published, or None.
+
+    The limit equals that budget (the same byte count as the in-process gate).
+    None leaves ``JOB_OBJECT_LIMIT_JOB_MEMORY`` unset.
+    """
+    raw_budget = os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", "").strip()
+    raw_app = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
+    if not raw_budget or not raw_app:
+        return None
+    try:
+        child_budget = int(raw_budget)
+        app_private = int(raw_app)
+    except ValueError:
+        return None
+    if child_budget <= 0:
+        return None
+    from core.cv_docpick_import import job_enforce_memory_bytes
+
+    limit = job_enforce_memory_bytes(child_budget=child_budget, app_private=app_private)
+    if limit <= 0:
+        return None
+    return limit
+
+
 def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
-    return launch_contained(cv_import_child_argv(cv_path, out_path), console=False)
+    """Start the extract child inside a job (Windows) or a process group.
+
+    When the supervisor has published the child budget, the Windows job
+    limit is that budget: ``3_300_000_000`` minus the one app-private read.
+    The in-process gate uses the same number and, in the normal case,
+    raises the clean code first. Without a published budget the job does
+    not set ``JOB_OBJECT_LIMIT_JOB_MEMORY``. Cancel still uses
+    ``TerminateJobObject`` / ``killpg``.
+    """
+    return launch_contained(
+        cv_import_child_argv(cv_path, out_path),
+        console=False,
+        enforce_memory_bytes=_job_limit_from_environ(),
+    )
 
 
 class CvImportSupervisor:
@@ -108,6 +164,9 @@ class CvImportSupervisor:
     ) -> None:
         self.cv_path = Path(cv_path)
         self._spawn = spawn or default_spawn
+        self._publish_timeout = timeout_s is not None or bool(
+            os.environ.get(_ENV_TIMEOUT, "").strip()
+        )
         self.timeout_s = default_import_timeout_s() if timeout_s is None else float(timeout_s)
         self._cancel = threading.Event()
         self._proc: object | None = None
@@ -125,7 +184,15 @@ class CvImportSupervisor:
                     pass
 
     def run_once(self, progress: Callable[[str], None] | None = None) -> ImportAttemptResult:
-        """Parse once. Does not retry OOM, timeout, or model failures."""
+        """Parse once. Does not retry OOM, timeout, or model failures.
+
+        ``llm_timeout`` depends on the machine and is not deterministic.
+        It is still not retried automatically. A manual retry is the UI PR.
+        ``llm_prompt_too_long`` and ``llm_output_truncated`` are input-conditioned.
+        ``peak_rss_exceeded`` is input-conditioned (the child does not fit the
+        fresh-app budget). ``memory_budget_app_share`` is the app's share of
+        the group cap. Neither is retried automatically.
+        """
         self.ran_on_thread = threading.get_ident()
         # Release Günther's in-process weight before the import child loads the
         # same sole GGUF (parser and writing stay separate processes/roles).
@@ -143,30 +210,128 @@ class CvImportSupervisor:
             progress("parsing")
         if self._wait_qa_observe(progress):
             return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
+        # One app read. The child budget is the group cap minus this value.
+        # The app is not polled again while the child runs.
+        app_private = _read_app_private_bytes()
+        if app_private <= 0:
+            logger.error(
+                "cv_import app private unmeasured value=%s; not a pass",
+                app_private,
+            )
+            return ImportAttemptResult(
+                False, "peak_rss_unmeasured", "peak_rss_unmeasured", None, attempts=1
+            )
+        from core.cv_docpick_import import (
+            CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+            child_start_allowed,
+            fresh_app_child_budget_bytes,
+        )
+
+        allowed, child_budget = child_start_allowed(app_private)
+        fresh_budget = fresh_app_child_budget_bytes()
+        logger.info(
+            "cv_import memory_shares app_private=%s child_budget=%s "
+            "fresh_child_budget=%s child_min_after_load=%s",
+            app_private,
+            child_budget,
+            fresh_budget,
+            CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+        )
+        if not allowed:
+            logger.error(
+                "memory_budget_app_share app_private=%s child_budget=%s "
+                "child_min_after_load=%s",
+                app_private,
+                child_budget,
+                CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+            )
+            return ImportAttemptResult(
+                False,
+                "memory_budget_app_share",
+                "memory_budget_app_share",
+                None,
+                attempts=1,
+            )
         fd, name = tempfile.mkstemp(prefix="kk-cv-import-", suffix=".json")
         os.close(fd)
         out_path = Path(name)
+        phase_fd, phase_name = tempfile.mkstemp(prefix="kk-cv-phase-", suffix=".jsonl")
+        os.close(phase_fd)
+        phase_path = Path(phase_name)
         proc = None
         try:
-            proc = self._spawn(self.cv_path, out_path)
+            proc = _spawn_with_child_budget(
+                self._spawn,
+                self.cv_path,
+                out_path,
+                app_private=app_private,
+                child_budget=child_budget,
+                timeout_s=self.timeout_s,
+                phase_events=phase_path,
+                publish_timeout=self._publish_timeout,
+            )
             self._proc = proc
+            self._child_budget = child_budget
+            self._child_started_mono = time.monotonic()
             if self._cancel.is_set():
-                self._stop(proc)
+                self._stop(proc, reason="cancelled")
                 return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
-            deadline = time.monotonic() + self.timeout_s
+            started = time.monotonic()
+            deadline = started + self.timeout_s
+            next_anon = time.monotonic()
+            phase_offset = 0
+            adopted_timeout = False
             while True:
                 if self._cancel.is_set():
-                    self._stop(proc)
+                    self._stop(proc, reason="cancelled")
                     return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
+                phase_offset, event_timeout = _drain_phase_events(
+                    phase_path, phase_offset, progress
+                )
+                if event_timeout is not None and not adopted_timeout:
+                    adopted_timeout = True
+                    self.timeout_s = float(event_timeout)
+                    deadline = started + self.timeout_s
+                if _job_memory_limit_signaled(proc):
+                    self._stop(proc)
+                    _drain_phase_events(phase_path, phase_offset, progress)
+                    code = proc.poll()
+                    return self._classify(
+                        int(code if code is not None else 1),
+                        out_path,
+                        job_memory_limit=True,
+                    )
                 code = proc.poll()
                 if code is not None:
-                    return self._classify(int(code), out_path)
-                if time.monotonic() >= deadline:
+                    _drain_phase_events(phase_path, phase_offset, progress)
+                    return self._classify(
+                        int(code),
+                        out_path,
+                        job_memory_limit=_job_memory_limit_signaled(proc),
+                    )
+                now = time.monotonic()
+                if now >= next_anon:
+                    next_anon = now + _PARENT_ANON_SAMPLE_S
+                    memory_code = _parent_memory_code(proc, child_budget=child_budget)
+                    if memory_code:
+                        self._stop(proc)
+                        return ImportAttemptResult(
+                            False,
+                            memory_code,
+                            memory_code,
+                            None,
+                            attempts=1,
+                        )
+                if now >= deadline:
                     self._stop(proc)
+                    # Machine-dependent. Not deterministic. No automatic retry.
+                    timeout_line = "llm_timeout wall_clock limit_s=%s" % (self.timeout_s,)
+                    logger.error("%s", timeout_line)
+                    logging.getLogger("karrierekrake").error("%s", timeout_line)
                     return ImportAttemptResult(
                         False,
-                        "timeout",
-                        "timeout",
+                        "llm_timeout",
+                        "llm_timeout",
                         None,
                         attempts=1,
                     )
@@ -183,6 +348,10 @@ class CvImportSupervisor:
                 out_path.unlink(missing_ok=True)
             except OSError:
                 pass
+            try:
+                phase_path.unlink(missing_ok=True)
+            except OSError:
+                pass
 
     def _wait_qa_observe(self, progress: Callable[[str], None] | None) -> bool:
         """Hold on the worker thread so the progress bar can paint. True if cancelled."""
@@ -197,11 +366,12 @@ class CvImportSupervisor:
             now = time.monotonic()
             if progress is not None and now >= next_pulse:
                 progress("parsing")
-                next_pulse = now + 0.2
+                # UI pulses stay at half a second. No timer under 250 ms.
+                next_pulse = now + 0.5
             time.sleep(0.05)
         return self._cancel.is_set()
 
-    def _stop(self, proc: object) -> None:
+    def _stop(self, proc: object, *, reason: str = "") -> None:
         terminate = getattr(proc, "terminate", None)
         if callable(terminate):
             try:
@@ -214,17 +384,65 @@ class CvImportSupervisor:
                 wait(timeout=2)
             except Exception:
                 pass
+        if reason == "cancelled":
+            started = getattr(self, "_child_started_mono", None)
+            elapsed_ms = 0
+            if isinstance(started, float):
+                elapsed_ms = int(round((time.monotonic() - started) * 1000))
+            stamp = datetime.now().astimezone().isoformat(timespec="seconds")
+            logging.getLogger("karrierekrake").info(
+                "cv_import cancelled at=%s child_ended_ms=%s",
+                stamp,
+                elapsed_ms,
+            )
 
-    def _classify(self, code: int, out_path: Path) -> ImportAttemptResult:
+    def _classify(
+        self,
+        code: int,
+        out_path: Path,
+        *,
+        job_memory_limit: bool = False,
+    ) -> ImportAttemptResult:
         payload = _read_payload(out_path)
-        if code == 0 and payload.get("ok") and isinstance(payload.get("parsed"), dict):
-            return ImportAttemptResult(True, "ok", "", payload["parsed"], attempts=1)
         kind = str(payload.get("kind") or "")
         message = str(payload.get("message") or "")
-        if kind == "oom" or kind == "peak_rss_exceeded" or code == 3 or is_oom_exit(code):
+        if kind == "memory_budget_app_share":
+            return ImportAttemptResult(
+                False, "memory_budget_app_share", message or kind, None, attempts=1
+            )
+        if kind == "peak_rss_exceeded":
+            return ImportAttemptResult(
+                False, "peak_rss_exceeded", message or kind, None, attempts=1
+            )
+        if code == 0 and payload.get("ok") and isinstance(payload.get("parsed"), dict):
+            return ImportAttemptResult(True, "ok", "", payload["parsed"], attempts=1)
+        from core.cv_docpick_import import (
+            is_job_limit_crash_exit,
+            memory_kind_for_job_limit,
+        )
+
+        child_budget = int(getattr(self, "_child_budget", 0))
+        if job_memory_limit or is_job_limit_crash_exit(code):
+            if not job_memory_limit:
+                logger.error(
+                    "job_memory_limit_hit exit=%s child_budget=%s",
+                    code,
+                    child_budget,
+                )
+            limit_kind = memory_kind_for_job_limit(child_budget=child_budget)
+            logger.error(
+                "%s job_memory_limit=%s exit=%s child_budget=%s",
+                limit_kind,
+                job_memory_limit,
+                code,
+                child_budget,
+            )
+            return ImportAttemptResult(False, limit_kind, limit_kind, None, attempts=1)
+        if kind == "oom" or code == 3 or is_oom_exit(code):
             return ImportAttemptResult(False, "oom" if kind != "peak_rss_exceeded" else "peak_rss_exceeded", message or "oom", None, attempts=1)
-        if kind == "timeout":
-            return ImportAttemptResult(False, "timeout", message or "timeout", None, attempts=1)
+        if kind in {"timeout", "llm_timeout"}:
+            logger.error("llm_timeout child_kind=%s", kind or "timeout")
+            return ImportAttemptResult(False, "llm_timeout", "llm_timeout", None, attempts=1)
         if kind == "cancelled":
             return ImportAttemptResult(False, "cancelled", message or "cancelled", None, attempts=1)
         return ImportAttemptResult(
@@ -234,6 +452,159 @@ class CvImportSupervisor:
             None,
             attempts=1,
         )
+
+
+def _job_memory_limit_signaled(proc: object) -> bool:
+    """Non-blocking drain of the job completion port. No extra wait loop."""
+    probe = getattr(proc, "job_memory_limit_signaled", None)
+    if not callable(probe):
+        return False
+    try:
+        return bool(probe())
+    except OSError:
+        return False
+
+
+def _drain_phase_events(
+    path: Path,
+    offset: int,
+    progress: Callable[[str], None] | None,
+) -> tuple[int, int | None]:
+    """Forward complete JSON lines. Return the new offset and one ``timeout_s``."""
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return offset, None
+    if len(data) <= offset:
+        return offset, None
+    chunk = data[offset:]
+    newline = chunk.rfind(b"\n")
+    if newline < 0:
+        return offset, None
+    complete = chunk[: newline + 1]
+    seen_timeout: int | None = None
+    from core.cv_phase_events import relay_diag_event
+
+    for line in complete.decode("utf-8").splitlines():
+        if not line.strip():
+            continue
+        event = None
+        if line.startswith("{"):
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                event = None
+        if isinstance(event, dict) and relay_diag_event(event):
+            continue
+        if progress is not None:
+            progress(line)
+        if seen_timeout is None and isinstance(event, dict) and "timeout_s" in event:
+            try:
+                seen_timeout = int(event["timeout_s"])
+            except (TypeError, ValueError):
+                pass
+    return offset + newline + 1, seen_timeout
+
+
+def _spawn_with_child_budget(
+    spawn: Callable[..., object],
+    cv_path: Path,
+    out_path: Path,
+    *,
+    app_private: int,
+    child_budget: int,
+    timeout_s: float,
+    phase_events: Path,
+    publish_timeout: bool,
+) -> object:
+    """Publish the one-shot budget in the environment the child inherits.
+
+    The values are removed from this process after ``Popen`` copies them.
+    The app is not sampled again. ``timeout_s`` is published only when the
+    caller or the env var already chose it. Otherwise the child runs the
+    formula once after tokenization.
+    """
+    keys = {
+        "KARRIEREKRAKE_CV_APP_PRIVATE_BYTES": str(app_private),
+        "KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES": str(child_budget),
+        "KARRIEREKRAKE_CV_PHASE_EVENTS": str(phase_events),
+    }
+    if publish_timeout:
+        keys["KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"] = str(timeout_s)
+    previous = {key: os.environ.get(key) for key in keys}
+    os.environ.update(keys)
+    try:
+        return spawn(cv_path, out_path)
+    finally:
+        for key, old in previous.items():
+            if old is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = old
+
+
+def _read_app_private_bytes() -> int:
+    """One private-commit read of this process (the app). Not a poll loop."""
+    from core.cv_docpick_import import _self_rss_bytes
+
+    return int(_self_rss_bytes())
+
+
+def _parent_memory_code(proc: object, *, child_budget: int) -> str | None:
+    """Error code when a measurable child sample is over its budget.
+
+    An unmeasured sample (0/None) is logged inside ``_parent_anon_sample``
+    and does not by itself kill the child: the in-process gate fails closed
+    on its own 0/None read. The app's private commit is not read here.
+    """
+    sample = _parent_anon_sample(proc)
+    if sample is None:
+        return None
+    from core.cv_docpick_import import (
+        classify_child_private_commit,
+        fresh_app_child_budget_bytes,
+    )
+
+    fresh_budget = fresh_app_child_budget_bytes()
+    logger.info(
+        "cv_import memory_shares parent child_bytes=%s child_budget=%s fresh_child_budget=%s",
+        sample,
+        child_budget,
+        fresh_budget,
+    )
+    code = classify_child_private_commit(sample, child_budget)
+    if code is not None:
+        logger.error(
+            "%s parent child_bytes=%s child_budget=%s fresh_child_budget=%s",
+            code,
+            sample,
+            child_budget,
+            fresh_budget,
+        )
+    return code
+
+
+def _parent_anon_sample(proc: object) -> int | None:
+    """Anonymous RSS of the extract child, or None when it is not measurable.
+
+    Linux only. ``0`` / missing ``/proc`` is unmeasured and is not a pass.
+    """
+    if sys.platform == "win32":
+        return None
+    pid = getattr(proc, "pid", None)
+    if not isinstance(pid, int) or pid <= 0:
+        return None
+    from core.cv_docpick_import import _linux_rss_anon_bytes
+
+    value = _linux_rss_anon_bytes(pid)
+    if value <= 0:
+        logger.error(
+            "cv_import parent anon sample unmeasured pid=%s value=%s; not a pass",
+            pid,
+            value,
+        )
+        return None
+    return value
 
 
 def _read_payload(path: Path) -> dict:

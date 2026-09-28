@@ -15,8 +15,10 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import os
 import re
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -917,16 +919,21 @@ _docling_converter = None
 # Content-addressed text cache: only reuse when file bytes + Docling version match.
 _docling_text_cache: dict[tuple[str, str], str] = {}
 _SCHEMA_JSON_CACHE: dict[str, str] | None = None
-# Production LLM generation cap. Measured: outputs typically << 2048 tokens;
-# lower cap cuts rare runaway generations without changing typical quality.
+# Nur HTTP-Transport. Der In-Process-Pfad setzt max_tokens aus dem
+# Restfenster (n_ctx - Prompt - Puffer), nicht aus dieser Konstante.
+# Default 4096 kommt von main (PR #101). PR #103 ließ 2048 stehen.
+# Integrationsprobe behält 4096. Die HTTP-Obergrenze braucht eine Entscheidung.
 _LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "4096"))
 # Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
-# Hard Peak-RSS gate for target hardware: Intel Core i3 (11th gen), exactly 8 GB RAM.
+# Hard private-commit gate for target hardware: Intel Core i3 (11th gen), 8 GB RAM.
 # RETIRED_NOT_A_PASS: former soft 12 GB/12000 MB ceiling is not a pass condition.
 # Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
 # (process group: App + Docling + Qwen/llama.cpp + ALL import children).
+# The in-app sample (`_self_rss_bytes`) counts the same kind of memory the Job
+# Object counts: private commit. File-backed mmap pages (the GGUF) do not count.
+# Windows: PeakPagefileUsage. Linux: anonymous RSS from smaps_rollup, not ru_maxrss.
 # Agent-VM numbers are NOT ship evidence. No automatic Phi fallback.
 CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
     os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX", "3300000000")
@@ -934,8 +941,67 @@ CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
 # Derived MiB/GiB helpers for logs (primary compare is always BYTES).
 CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
 CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 ** 3)
-# Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
+# Private anonymous RSS of a freshly shown MainWindow after startup work has
+# settled (offscreen, empty AppData, stable for 5 s at t=35.7 s). The
+# transient startup peak before that drop was 591_810_560 and is not this
+# constant. VM, not i3. Measured 2026-09-28.
+# The group cap is App + child. The child's budget on a fresh app is
+# CV_IMPORT_PEAK_RSS_BYTES_MAX minus this constant.
+CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
+# Anonymous RSS of the import-sized llama load with the pinned 0.3.35 AVX2
+# wheel, after buffer allocation and before prompt eval. Median of 5, n_ctx
+# 4096, one libggml-cpu (CPU_REPACK 1297.97 MiB, no AMX buffer). VM, not i3.
+# Measured 2026-09-28. A remaining child budget below this does not start
+# the child.
+CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES = 1_698_168_832
+# Harte Wandzeit für den Import (kein stilles Hängen). Docling plus LLM.
+# Das Generierungsbudget ist ``import_timeout_seconds`` (Formel oder diese
+# Env-Variable). Ein Wert unter dem Floor erzwingt in Tests weiter
+# ``llm_timeout``. Default 300 kommt von main (PR #101). PR #103 ließ 180
+# stehen. ``current_import_timeout_s`` hebt jeden Default ab Floor auf die
+# Obergrenze, bis die Formel läuft. 300 gegen 180 ändert nur die HTTP-Klemme
+# ``min(300, CV_IMPORT_TIMEOUT_S)``. Integrationsprobe behält 300.
+# Diese HTTP-Klemme braucht eine Entscheidung.
 CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "300"))
+_ENV_IMPORT_TIMEOUT = "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"
+# Floor and ceiling for the formula. The env var is not clamped.
+CV_IMPORT_TIMEOUT_FLOOR_S = 180.0
+CV_IMPORT_TIMEOUT_CEILING_S = 900.0
+# Fresh-process model load, llama-cpp-python 0.3.35, one run in the
+# save_state measurement (VM, not i3, 2026-09-28). Not the native AMX
+# ``load_s`` of 1.187.
+CV_IMPORT_T_LOAD_S = 2.758
+# Docling and the rest of the import outside load, prompt eval, and
+# generation. DE_01 wall-clock median on this VM at n_threads=4 is 139.522 s.
+# Subtracting t_load, the n_threads=4 prompt-eval median (14.677 s) and
+# generation of 655 tokens at the n_threads=4 rate leaves about 52 s.
+# 60 s sits above that remainder. VM, not i3.
+CV_IMPORT_TIMEOUT_BUFFER_S = 60.0
+# VM medians of the pinned AVX2 wheel, n_threads=2, n_threads_batch=4,
+# median of 5 (VM, not i3, 2026-09-28). Prompt 1763 tokens, prompt-eval
+# median 14651.604 ms. Generation max_tokens 64, finish_reason=length,
+# median 12983.452 ms. Rates below are those tok/s medians divided by 2.
+# Rates on the i3 are unchecked and conservatively estimated.
+CV_IMPORT_VM_N2_PROMPT_TOKENS = 1763
+CV_IMPORT_VM_N2_PROMPT_EVAL_S = 14.651604
+CV_IMPORT_VM_N2_GEN_TOKENS = 64
+CV_IMPORT_VM_N2_GEN_S = 12.983452
+CV_IMPORT_RATE_CONSERVATIVE_DIVISOR = 2
+CV_IMPORT_R_PROMPT_TPS = (
+    CV_IMPORT_VM_N2_PROMPT_TOKENS / CV_IMPORT_VM_N2_PROMPT_EVAL_S
+) / CV_IMPORT_RATE_CONSERVATIVE_DIVISOR
+CV_IMPORT_R_GEN_TPS = (
+    CV_IMPORT_VM_N2_GEN_TOKENS / CV_IMPORT_VM_N2_GEN_S
+) / CV_IMPORT_RATE_CONSERVATIVE_DIVISOR
+# llama.cpp crash exits when a job memory limit makes an allocation fail.
+# These codes are the exit-code fallback when the completion port is absent.
+JOB_LIMIT_CRASH_EXIT_CODES = frozenset(
+    {
+        0xC0000005,  # STATUS_ACCESS_VIOLATION
+        0xC0000017,  # STATUS_NO_MEMORY
+        0xC0000409,  # STATUS_STACK_BUFFER_OVERRUN
+    }
+)
 
 # Frozen CV↔profile/matching field contract (parsed shape from suggestion_to_parsed).
 # Bump only with an explicit Diff + justification — no silent schema drift.
@@ -1229,10 +1295,10 @@ def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
                     "model_missing",
                     "Das lokale CV-Modell (Qwen3.5-4B) fehlt. Kein DET-Fallback.",
                 )
+            # max_tokens is the remainder of n_ctx, computed inside the call.
             raw_text = chat_completion_inprocess(
                 messages,
                 model_path=model_path,
-                max_tokens=_LLM_MAX_TOKENS,
                 temperature=0.0,
             )
         data = _parse_extraction_json(raw_text, parse_llm_json=parse_llm_json)
@@ -1443,14 +1509,129 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
     return has_name or has_contact
 
 
-def _self_rss_bytes() -> int:
-    try:
-        import resource
-    except ImportError:
-        # Windows has no resource module — Peak ship evidence is Job Object only.
+def _rss_anon_bytes_from_smaps(text: str) -> int:
+    """Anonymous RSS in bytes from a ``smaps_rollup`` body.
+
+    Linux 6.12 writes this as ``Anonymous:`` (kB). ``Rss_Anon:`` is used when
+    that key is present. File-backed ``Rss`` / ``Pss_File`` lines are ignored,
+    matching the #69 gate: mmap of the GGUF file does not count.
+    """
+    rss_anon_kb: int | None = None
+    anonymous_kb: int | None = None
+    for line in text.splitlines():
+        if line.startswith("Rss_Anon:"):
+            rss_anon_kb = int(line.split()[1])
+        elif line.startswith("Anonymous:"):
+            anonymous_kb = int(line.split()[1])
+    chosen = rss_anon_kb if rss_anon_kb is not None else anonymous_kb
+    if chosen is None:
         return 0
-    # Linux: ru_maxrss is kilobytes; convert to bytes.
-    return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
+    return int(chosen) * 1024
+
+
+def _linux_rss_anon_bytes(pid: int | str = "self") -> int:
+    """One read of ``/proc/<pid>/smaps_rollup``. Not a poll loop."""
+    path = Path(f"/proc/{pid}/smaps_rollup")
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return 0
+    return _rss_anon_bytes_from_smaps(text)
+
+
+def _process_memory_counters_ex_type():
+    """``PROCESS_MEMORY_COUNTERS_EX`` (PeakPagefileUsage is the private-commit peak)."""
+    import ctypes
+    from ctypes import wintypes
+
+    class PROCESS_MEMORY_COUNTERS_EX(ctypes.Structure):
+        _fields_ = [
+            ("cb", wintypes.DWORD),
+            ("PageFaultCount", wintypes.DWORD),
+            ("PeakWorkingSetSize", ctypes.c_size_t),
+            ("WorkingSetSize", ctypes.c_size_t),
+            ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+            ("QuotaPagedPoolUsage", ctypes.c_size_t),
+            ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+            ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+            ("PagefileUsage", ctypes.c_size_t),
+            ("PeakPagefileUsage", ctypes.c_size_t),
+            ("PrivateUsage", ctypes.c_size_t),
+        ]
+
+    return PROCESS_MEMORY_COUNTERS_EX
+
+
+def _peak_pagefile_via_get_info(get_info, get_process) -> int:
+    """Read ``PeakPagefileUsage`` using an injected ``GetProcessMemoryInfo``.
+
+    ``get_info(handle, byref(counters), cb) -> bool``. ``get_process()`` returns
+    the process handle. Used by the Windows branch and by tests without psapi.
+    """
+    import ctypes
+
+    cls = _process_memory_counters_ex_type()
+    counters = cls()
+    counters.cb = ctypes.sizeof(cls)
+    ok = get_info(get_process(), ctypes.byref(counters), counters.cb)
+    if not ok:
+        return 0
+    return int(counters.PeakPagefileUsage)
+
+
+def _windows_peak_pagefile_bytes() -> int:
+    """Peak private commit of this process (``PeakPagefileUsage``), one call.
+
+    This is the per-process high-water that corresponds to Job Object
+    ``PeakJobMemoryUsed``. File-backed views are not part of pagefile commit.
+    """
+    import ctypes
+    from ctypes import wintypes
+
+    psapi = ctypes.WinDLL("psapi")
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    psapi.GetProcessMemoryInfo.argtypes = [
+        wintypes.HANDLE,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+    ]
+    psapi.GetProcessMemoryInfo.restype = wintypes.BOOL
+    kernel32.GetCurrentProcess.restype = wintypes.HANDLE
+    return _peak_pagefile_via_get_info(
+        psapi.GetProcessMemoryInfo,
+        kernel32.GetCurrentProcess,
+    )
+
+
+# Max of Linux anonymous-RSS samples in this process. The kernel has no
+# Rss_Anon peak; VmHWM includes file-backed mmap and is not used. Reset at
+# the start of each import so a previous run cannot poison the next one.
+_private_commit_high_water = 0
+
+
+def reset_private_commit_high_water() -> None:
+    global _private_commit_high_water
+    _private_commit_high_water = 0
+
+
+def _self_rss_bytes() -> int:
+    """Private committed memory for the in-app #69-style gate, in bytes.
+
+    Windows: ``PeakPagefileUsage`` (high-water of this process's pagefile
+    commit) via ``GetProcessMemoryInfo``. The ``resource`` module is not used;
+    it is missing on Windows, and its ``ru_maxrss`` is the wrong counter.
+
+    Linux: anonymous RSS from ``/proc/self/smaps_rollup`` (``Anonymous``, or
+    ``Rss_Anon`` when that key exists). ``ru_maxrss`` and ``VmHWM`` are not
+    used because they include file-backed mmap pages such as the GGUF. The
+    Linux value is the anonymous RSS at this call. The import keeps the max
+    of its phase samples; the kernel has no Rss_Anon peak. Windows
+    ``PeakPagefileUsage`` is already a process-lifetime peak. ``0`` means the
+    read failed and is not a pass.
+    """
+    if sys.platform == "win32":
+        return _windows_peak_pagefile_bytes()
+    return _linux_rss_anon_bytes("self")
 
 
 def _self_rss_mb() -> float:
@@ -1458,7 +1639,10 @@ def _self_rss_mb() -> float:
 
 
 def _llama_server_rss_bytes() -> int:
-    """Sum VmRSS (bytes) of local llama.cpp server processes (0 if none)."""
+    """Sum anonymous RSS of local llama.cpp server processes (0 if none).
+
+    File-backed GGUF mappings are excluded, same rule as ``_self_rss_bytes``.
+    """
     total = 0
     try:
         proc = Path("/proc")
@@ -1471,14 +1655,7 @@ def _llama_server_rss_bytes() -> int:
                 continue
             if "llama_cpp.server" not in cmdline and "llama-server" not in cmdline:
                 continue
-            try:
-                for line in (entry / "status").read_text(encoding="utf-8").splitlines():
-                    if line.startswith("VmRSS:"):
-                        # VmRSS is kB
-                        total += int(line.split()[1]) * 1024
-                        break
-            except OSError:
-                continue
+            total += _linux_rss_anon_bytes(entry.name)
     except OSError:
         return total
     return total
@@ -1489,10 +1666,14 @@ def _llama_server_rss_mb() -> float:
 
 
 def cv_path_peak_rss_bytes(*, include_llama_server: bool = True) -> int:
-    """Honest CV-path footprint (bytes): this process + optional local LLM server.
+    """Private commit of this process plus optional local LLM servers.
 
-    Agent-VM /proc sum is informational only. Ship evidence requires a Windows
-    Job Object PeakJobMemoryUsed on the real i3 / 8 GB laptop.
+    Counts the same class of memory as Job Object ``PeakJobMemoryUsed`` (#69):
+    private / anonymous commit. File-backed mmap pages do not count.
+
+    Windows: ``PeakPagefileUsage`` of this process. Linux: ``Anonymous`` from
+    ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers are not ship
+    evidence. Ship evidence remains a Windows Job Object on the i3 laptop.
 
     When the import loads Qwen in-process, external llama.cpp servers are not
     part of this path and must not trip the preflight gate.
@@ -1510,26 +1691,236 @@ def cv_path_peak_rss_mb(*, include_llama_server: bool = True) -> float:
     )
 
 
+def fresh_app_child_budget_bytes() -> int:
+    """Child budget when the app is the measured fresh size. Never negative."""
+    remaining = CV_IMPORT_PEAK_RSS_BYTES_MAX - CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+    return remaining if remaining > 0 else 0
+
+
+def child_budget_for_app_private(app_private: int) -> int:
+    """``3_300_000_000`` minus the app's private commit. Never negative."""
+    remaining = CV_IMPORT_PEAK_RSS_BYTES_MAX - max(0, int(app_private))
+    return remaining if remaining > 0 else 0
+
+
+def child_start_allowed(app_private: int) -> tuple[bool, int]:
+    """False when the remaining child budget is below the measured load need.
+
+    A budget of 0 is not a start. The caller does not launch the child.
+    """
+    budget = child_budget_for_app_private(app_private)
+    return budget >= CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES, budget
+
+
+def active_child_budget_bytes() -> int:
+    """Child budget published once at import start, else the fresh-app budget.
+
+    ``KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES`` is set by the supervisor from one
+    app read. A negative value is treated as 0. The app is not polled again.
+    """
+    raw = os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", "").strip()
+    if not raw:
+        return fresh_app_child_budget_bytes()
+    try:
+        value = int(raw)
+    except ValueError:
+        return fresh_app_child_budget_bytes()
+    return value if value > 0 else 0
+
+
+def classify_child_private_commit(sample: int, child_budget: int) -> str | None:
+    """Map a child private-commit sample to an error code, or None.
+
+    ``peak_rss_exceeded``: sample is over the fresh-app child budget.
+    That case is input-conditioned (the CV/load does not fit a fresh app).
+    ``memory_budget_app_share``: sample is over the current child budget
+    and not over the fresh-app budget.
+    """
+    if int(sample) > fresh_app_child_budget_bytes():
+        return "peak_rss_exceeded"
+    if int(sample) > int(child_budget):
+        return "memory_budget_app_share"
+    return None
+
+
+def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
+    """Windows job memory limit: the child budget, the same number as the gate.
+
+    ``child_budget`` is ``3_300_000_000`` minus the one app-private read.
+    ``app_private`` is that read. The in-process gate compares the same
+    budget and, in the normal case, raises the clean code first.
+    """
+    budget = int(child_budget)
+    if budget > 0:
+        return budget
+    return child_budget_for_app_private(app_private)
+
+
+def normalize_process_exit(code: int) -> int:
+    """Unsigned 32-bit exit status. Signed NTSTATUS values compare equal."""
+    return int(code) & 0xFFFFFFFF
+
+
+def is_job_limit_crash_exit(code: int) -> bool:
+    return normalize_process_exit(code) in JOB_LIMIT_CRASH_EXIT_CODES
+
+
+def memory_kind_for_job_limit(*, child_budget: int) -> str:
+    """Map a job-limit hit with the same rules as a gate sample.
+
+    The job refused a commit at the child budget, so the reached value is
+    one byte over that budget. Over the fresh-app child budget this is
+    ``peak_rss_exceeded``. Over only the current child budget this is
+    ``memory_budget_app_share``.
+    """
+    reached = int(child_budget) + 1
+    kind = classify_child_private_commit(reached, child_budget)
+    if kind is not None:
+        return kind
+    if reached > fresh_app_child_budget_bytes():
+        return "peak_rss_exceeded"
+    return "memory_budget_app_share"
+
+
+_chosen_import_timeout_s: float | None = None
+_import_started_at: float | None = None
+
+
+def reset_import_timeout() -> None:
+    """Drop a timeout chosen for a previous generation in this process."""
+    global _chosen_import_timeout_s
+    _chosen_import_timeout_s = None
+
+
+def note_import_started(t0: float) -> None:
+    """Remember import start so the formula can be checked before generation."""
+    global _import_started_at
+    _import_started_at = float(t0)
+
+
+def import_started_at() -> float | None:
+    return _import_started_at
+
+
+def import_timeout_seconds(prompt_tokens: int, max_tokens: int) -> int:
+    """Wall-clock seconds for this import, from the token counts already known.
+
+    ``KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S`` overrides the formula and is not
+    clamped. Otherwise::
+
+        timeout = t_load + prompt_tokens / r_prompt + max_tokens / r_gen + buffer
+
+    clamped to ``[180, 900]``. Call once after tokenization. This does not
+    tokenize.
+    """
+    raw_env = os.environ.get(_ENV_IMPORT_TIMEOUT, "").strip()
+    if raw_env:
+        return int(float(raw_env))
+    raw = (
+        CV_IMPORT_T_LOAD_S
+        + int(prompt_tokens) / CV_IMPORT_R_PROMPT_TPS
+        + int(max_tokens) / CV_IMPORT_R_GEN_TPS
+        + CV_IMPORT_TIMEOUT_BUFFER_S
+    )
+    clamped = min(CV_IMPORT_TIMEOUT_CEILING_S, max(CV_IMPORT_TIMEOUT_FLOOR_S, raw))
+    return int(math.ceil(clamped - 1e-9))
+
+
+def choose_import_timeout_s(*, prompt_tokens: int, max_tokens: int) -> int:
+    """Compute the import timeout once and keep it for the generation."""
+    global _chosen_import_timeout_s
+    chosen = import_timeout_seconds(prompt_tokens, max_tokens)
+    _chosen_import_timeout_s = float(chosen)
+    return chosen
+
+
+def current_import_timeout_s() -> float:
+    """Chosen formula timeout, else the env override, else the ceiling.
+
+    A test that sets ``CV_IMPORT_TIMEOUT_S`` below the floor still wins,
+    so the hard-fail test can force ``llm_timeout`` without a generation.
+    """
+    if _chosen_import_timeout_s is not None:
+        return float(_chosen_import_timeout_s)
+    raw_env = os.environ.get(_ENV_IMPORT_TIMEOUT, "").strip()
+    if raw_env:
+        return float(raw_env)
+    if CV_IMPORT_TIMEOUT_S < CV_IMPORT_TIMEOUT_FLOOR_S:
+        return float(CV_IMPORT_TIMEOUT_S)
+    return float(CV_IMPORT_TIMEOUT_CEILING_S)
+
+
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
-    """Hard fail when CV-path Peak RSS exceeds 3_300_000_000 bytes."""
+    """Hard fail when the child's private-commit high-water exceeds its budget.
+
+    One read per call (no polling loop, and no read of the parent app).
+    ``0`` and ``None`` are unmeasured: they are logged and are not a pass.
+    On Linux the compared value is the max of samples taken so far in this
+    process, because ``Rss_Anon`` is a current value and ``VmHWM`` includes
+    file-backed pages.
+
+    The limit is the child budget from import start (group cap minus the
+    app's private commit), not the raw 3_300_000_000 group cap. A sample
+    over the fresh-app child budget is ``peak_rss_exceeded``. A sample over
+    only the current child budget is ``memory_budget_app_share``.
+    """
+    global _private_commit_high_water
     rss = cv_path_peak_rss_bytes(include_llama_server=include_llama_server)
-    if rss > CV_IMPORT_PEAK_RSS_BYTES_MAX:
-        raise CvImportError(
-            "peak_rss_exceeded",
-            f"Peak RSS {rss} Bytes über Hart-Limit {CV_IMPORT_PEAK_RSS_BYTES_MAX} Bytes "
-            f"(≤ 3,3 GB Process-Group) bei Stufe '{stage}'. Import abgebrochen — "
-            f"kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
+    if rss is None or int(rss) <= 0:
+        logger.error(
+            "cv_import private commit unmeasured stage=%s value=%r; not a pass",
+            stage,
+            rss,
         )
+        raise CvImportError("peak_rss_unmeasured", "peak_rss_unmeasured")
+    _private_commit_high_water = max(_private_commit_high_water, int(rss))
+    child_budget = active_child_budget_bytes()
+    fresh_budget = fresh_app_child_budget_bytes()
+    app_private = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
+    share_line = (
+        "cv_import memory_shares stage=%s app_private=%s child_bytes=%s "
+        "child_budget=%s fresh_child_budget=%s high_water=%s"
+        % (
+            stage,
+            app_private or "unset",
+            int(rss),
+            child_budget,
+            fresh_budget,
+            _private_commit_high_water,
+        )
+    )
+    logger.info("%s", share_line)
+    from core.cv_phase_events import emit_diag
+
+    emit_diag(share_line)
+    code = classify_child_private_commit(_private_commit_high_water, child_budget)
+    if code is None:
+        return
+    logger.error(
+        "%s stage=%s bytes=%s child_budget=%s fresh_child_budget=%s",
+        code,
+        stage,
+        _private_commit_high_water,
+        child_budget,
+        fresh_budget,
+    )
+    raise CvImportError(code, code)
 
 
 def _enforce_timeout(t0: float, *, stage: str) -> None:
+    limit_s = current_import_timeout_s()
     elapsed = time.monotonic() - t0
-    if elapsed > CV_IMPORT_TIMEOUT_S:
-        raise CvImportError(
-            "timeout",
-            f"CV-Parser-Timeout nach {elapsed:.0f}s (Limit {CV_IMPORT_TIMEOUT_S:.0f}s) "
-            f"bei Stufe '{stage}'. Kein stilles Hängen — bitte manuell fortsetzen.",
+    if elapsed > limit_s:
+        timeout_line = "llm_timeout elapsed_s=%.3f limit_s=%s stage=%s" % (
+            elapsed,
+            limit_s,
+            stage,
         )
+        logger.error("%s", timeout_line)
+        from core.cv_phase_events import emit_diag
+
+        emit_diag(timeout_line, level="error")
+        raise CvImportError("llm_timeout", "llm_timeout")
 
 
 def import_cv_docpick(
@@ -1545,8 +1936,15 @@ def import_cv_docpick(
     Explicit fail-cases (hard, no silent hang / no UI freeze forever):
       - ``empty_cv`` — zero-byte or no extractable text
       - ``unreadable_cv`` — corrupt / unreadable document
-      - ``timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
-      - ``peak_rss_exceeded`` — CV-path Peak RSS over 3_300_000_000 bytes
+      - ``llm_timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``.
+        Depends on the machine, so it is not deterministic. No automatic retry.
+      - ``peak_rss_exceeded`` — child private commit over the fresh-app
+        child budget (group cap minus the measured fresh-app private
+        commit). Input-conditioned. No automatic retry.
+      - ``memory_budget_app_share`` — current child budget (group cap
+        minus the app's private commit at import start) is below the
+        measured load need, or the child peak is over that current budget
+        and not over the fresh-app budget. No automatic retry.
       - ``model_missing`` / ``llama_missing`` — sole GGUF or runtime absent
 
     Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI
@@ -1554,6 +1952,9 @@ def import_cv_docpick(
     """
     path = Path(path)
     t0 = time.monotonic()
+    reset_private_commit_high_water()
+    reset_import_timeout()
+    note_import_started(t0)
 
     def _cancelled() -> bool:
         return bool(should_cancel and should_cancel())
