@@ -439,3 +439,136 @@ def test_import_shows_skill_and_language_cards(qapp, config_service, tmp_path, m
     reloaded = config_service.load()
     assert "SAP" in reloaded.profile.qualifications.skill_values()
     assert any(lang.language == "Deutsch" for lang in reloaded.profile.qualifications.languages)
+
+
+def _load_script(name: str):
+    import importlib.util
+    import sys
+
+    module_name = f"kk_{name}"
+    path = Path("/workspace/scripts") / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+_LICENSE_SHAPES = (["B", "BE"], "B, BE")
+
+
+def test_parse_and_profile_readers_accept_list_and_string(tmp_path):
+    """One normalisation. A list and a legacy string produce the same classes."""
+    import json
+
+    from core.config import (
+        AppConfig,
+        ApplicationProfile,
+        ExtractReview,
+        load_config,
+        parse_qualifications,
+    )
+    from core.cover_guard import confirmed_profile_text
+    from core.matcher import score_job
+    from core.models import Job
+    from desktop.services.profile_merge import sync_application_summaries
+    from desktop.services.profile_merge import summarize_incoming
+
+    quals = []
+    summaries = []
+    letters = []
+    match_reasons = []
+    app_summaries = []
+    for raw in _LICENSE_SHAPES:
+        parsed = parsed_to_qualifications({"driving_license": raw})
+        quals.append(parsed.driving_values())
+        summaries.append(summarize_incoming(parsed)["driving_license"])
+        cfg = AppConfig()
+        cfg.profile.qualifications = parsed
+        cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+        letters.append(confirmed_profile_text(cfg))
+        job = Job(
+            title="Fahrer",
+            company="Logistik",
+            remote_type="onsite",
+            distance_km=5,
+            description="Führerschein Klasse B erforderlich",
+            employment_type="Vollzeit",
+        )
+        scored = score_job(job, cfg)
+        match_reasons.append(
+            [reason for reason in scored.match_reasons if "Führerschein" in reason]
+        )
+        app = ApplicationProfile()
+        sync_application_summaries(app, parsed, fill_empty=True)
+        app_summaries.append(app.driving_license)
+        blob = json.loads(json.dumps({"parsed": {"driving_license": raw}}))
+        assert parsed_to_qualifications(blob["parsed"]).driving_values() == ["B", "BE"]
+
+    assert quals[0] == quals[1] == ["B", "BE"]
+    assert summaries[0] == summaries[1] == ["B", "BE"]
+    assert letters[0] == letters[1]
+    assert "B" in letters[0] and "BE" in letters[0]
+    assert match_reasons[0] == match_reasons[1]
+    assert match_reasons[0]
+    assert app_summaries[0] == app_summaries[1] == "B, BE"
+
+    from_list = parse_qualifications(
+        {"driving_license": [{"value": "B", "source": "cv"}, {"value": "BE", "source": "cv"}]}
+    )
+    from_string = parse_qualifications({"driving_license": "B, BE"})
+    assert from_list.driving_values() == from_string.driving_values() == ["B", "BE"]
+
+    profile_path = tmp_path / "profile.yaml"
+    application_path = tmp_path / "application_profile.yaml"
+    settings_path = tmp_path / "settings.yaml"
+    profile_path.write_text("qualifications:\n  driving_license: 'B, BE'\n", encoding="utf-8")
+    application_path.write_text("driving_license: 'B, BE'\n", encoding="utf-8")
+    settings_path.write_text("{}\n", encoding="utf-8")
+    before_profile = profile_path.read_bytes()
+    before_application = application_path.read_bytes()
+    loaded = load_config(profile_path, application_path, settings_path, strip_placeholders=False)
+    assert loaded.profile.qualifications.driving_values() == ["B", "BE"]
+    assert loaded.application.driving_license == "B, BE"
+    assert profile_path.read_bytes() == before_profile
+    assert application_path.read_bytes() == before_application
+
+
+def test_licence_evaluators_accept_list_and_string():
+    corpus = _load_script("run_cv_corpus")
+    soll = _load_script("run_cv_sollwerte_corpus")
+    holdout = _load_script("holdout_scorer_v2")
+    evaluate = _load_script("evaluate_holdout_100")
+    post = _load_script("run_post_analysis_language_eval")
+    phi = _load_script("run_phi_language_only_benchmark")
+
+    corpus_rows = []
+    soll_rows = []
+    holdout_rows = []
+    evaluate_rows = []
+    post_rows = []
+    phi_rows = []
+    for raw in _LICENSE_SHAPES:
+        parsed = {"personal": {}, "driving_license": raw, "languages": []}
+        corpus_rows.append(corpus.evaluate_doc(parsed, {"licenses": ["B", "BE"]})["licenses"])
+        soll_fails = soll.evaluate(
+            parsed,
+            {"FUEHRERSCHEINE_ANZAHL": "2", "FUEHRERSCHEIN_1": "B", "FUEHRERSCHEIN_2": "BE"},
+        )
+        soll_rows.append([row for row in soll_fails if str(row["field"]).startswith("FUEHRERSCHEIN")])
+        holdout_rows.append(holdout.pred_view(parsed)["licenses"])
+        evaluate_rows.append(evaluate.pred_view(parsed)["licenses"])
+        stats = post.language_licence_stats(
+            {"a.pdf": {"languages": [], "licenses": ["B", "BE"]}},
+            {"a.pdf": parsed},
+        )
+        post_rows.append((stats["licence_precision"], stats["licence_recall"]))
+        phi_rows.append(phi.licence_codes(raw))
+
+    assert corpus_rows[0] == corpus_rows[1] == (True, "ok")
+    assert soll_rows[0] == soll_rows[1] == []
+    assert holdout_rows[0] == holdout_rows[1] == "B BE"
+    assert evaluate_rows[0] == evaluate_rows[1] == "B BE"
+    assert post_rows[0] == post_rows[1] == (1.0, 1.0)
+    assert phi_rows[0] == phi_rows[1] == {"B", "BE"}
