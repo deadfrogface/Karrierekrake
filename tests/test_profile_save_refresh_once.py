@@ -126,4 +126,4 @@ def test_save_builds_cards_once_and_shows_one_dialog(qapp, config_service, geo_r
     assert not page.home_status.isHidden()
     loc = config_service.load().profile.location
     assert "Berlin" in (loc.city or loc.home_address)
-    assert loc.home_latitude is None
+    assert loc.home_latitude is not None

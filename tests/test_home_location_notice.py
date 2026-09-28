@@ -368,7 +368,7 @@ def test_profile_save_updates_overview_home_from_visible_address(
     page.save()
     loc = config_service.load().profile.location
     assert "Berlin" in (loc.city or loc.home_address)
-    assert loc.home_latitude is None
+    assert loc.home_latitude is not None
     notice = home_location_notice(loc)
     assert notice.status == "resolved"
     assert "aufgelöst" in page.home_status.text()

@@ -653,6 +653,11 @@ def reset_pgeocode_index_for_tests() -> None:
         _preload_worker_recorded.clear()
         _preload_done.clear()
         _pgeocode_warned.clear()
+    # Home notices keep their own string cache. A pgeocode reset must drop it
+    # too, otherwise tests keep a resolution after the postal index is gone.
+    from core.location import reset_home_resolution_cache_for_tests
+
+    reset_home_resolution_cache_for_tests()
 
 
 def _finite(value: Any) -> float | None:
