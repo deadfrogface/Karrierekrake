@@ -856,7 +856,7 @@ class SettingsPage(QWidget):
         from desktop.pages.dashboard import bind_home_notice_label
 
         cfg = self.config_service.load()
-        bind_home_notice_label(self.home_notice, home_location_notice(cfg.profile.location))
+        bind_home_notice_label(self.home_notice, home_location_notice(cfg.profile.location, cfg))
 
     def load_from_config(self) -> None:
         cfg = self.config_service.load()

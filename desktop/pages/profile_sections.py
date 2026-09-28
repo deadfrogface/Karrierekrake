@@ -564,7 +564,7 @@ class LocationWorkSection(QGroupBox):
             return None
         return loaded
 
-    def refresh_home_notice(self, location: LocationConfig | None = None) -> None:
+    def refresh_home_notice(self, location: LocationConfig | None = None, config=None) -> None:
         """Re-read resolver status for the home fields. Does not guess a PLZ."""
         from core.location import home_location_notice
 
@@ -587,13 +587,14 @@ class LocationWorkSection(QGroupBox):
                 )
         from desktop.pages.dashboard import bind_home_notice_label
 
-        bind_home_notice_label(self.home_notice, home_location_notice(location))
+        bind_home_notice_label(self.home_notice, home_location_notice(location, config))
 
     def load(
         self,
         location: LocationConfig,
         employment: EmploymentConfig,
         filters: FiltersConfig,
+        config=None,
     ) -> None:
         self._loaded_location = location
         self.home_address.setText(location.home_address)
@@ -611,7 +612,7 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.set_items(filters.preferred_companies)
         self.excluded_companies.set_items(filters.excluded_companies)
         self._refresh_geo_status()
-        self.refresh_home_notice(location)
+        self.refresh_home_notice(location, config)
 
     def save_into(
         self,
