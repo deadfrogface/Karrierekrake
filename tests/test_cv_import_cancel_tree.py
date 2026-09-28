@@ -1226,7 +1226,7 @@ def test_two_recalculations_emit_timeout_s_final_once() -> None:
         buffer_s=60,
         ceiling_s=900,
     )
-    watch.note_max_tokens(400)
+    watch.note_max_tokens(1000)
     watch.note_n_prompt(1024)
     watch.note_prompt(512, 10, t_mono=10, block_s=10)
     assert watch.revisions == 1
@@ -1608,3 +1608,87 @@ def test_timeout_logs_one_cv_llm_rates_line_with_partial_progress(
     assert "n_gen=40 gen_s=4.000" in line
     assert "prompt_tps=128.000" in line
     assert "gen_tps=10.000" in line
+
+
+def test_free_diag_and_fd2_do_not_reach_app_sinks(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A free child message and a write to fd 2 stay out of the app log."""
+    import logging
+
+    sentinel = "KK_SENTINEL_7f3a"
+    user = "KKSentinelUser"
+    cv = tmp_path / "Users" / user / "cv.txt"
+    cv.parent.mkdir(parents=True)
+    cv.write_text(sentinel, encoding="utf-8")
+
+    class _Done:
+        def __init__(self, out: Path) -> None:
+            phase = Path(os.environ["KARRIEREKRAKE_CV_PHASE_EVENTS"])
+            phase.write_text(
+                json.dumps({"diag": f"note {sentinel} {user}"}) + "\n"
+                + json.dumps(
+                    {
+                        "diag": (
+                            "cv_llm_config timeout_s=300 timeout_source=formula "
+                            "timeout_formula=300"
+                        )
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            out.write_text(
+                json.dumps(
+                    {"ok": False, "kind": "timeout", "message": sentinel, "parsed": None}
+                ),
+                encoding="utf-8",
+            )
+            self.returncode = 1
+
+        def poll(self):
+            return self.returncode
+
+        def wait(self, timeout=None):
+            return self.returncode
+
+        def terminate(self) -> None:
+            return None
+
+        def close(self) -> None:
+            return None
+
+        def job_memory_limit_signaled(self) -> bool:
+            return False
+
+    with caplog.at_level(logging.DEBUG):
+        result = CvImportSupervisor(cv, spawn=lambda _c, out: _Done(out), timeout_s=30).run_once()
+    assert result.kind == "llm_timeout"
+    blob = caplog.text
+    assert sentinel not in blob
+    assert user not in blob
+    assert "cv_llm_config" in blob
+    assert any(rec.message.startswith("cv_llm_rates ") for rec in caplog.records)
+    for rec in caplog.records:
+        if rec.message.startswith("cv_llm_rates ") or rec.message.startswith("cv_llm_config "):
+            assert sentinel not in rec.message
+            assert user not in rec.message
+
+    captured = tmp_path / "fd2.bin"
+    side = tmp_path / "attempted"
+    saved = os.dup(2)
+    raw = os.open(str(captured), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
+    os.dup2(raw, 2)
+    os.close(raw)
+    try:
+        from desktop.cv_import_child import discard_child_stderr
+
+        discard_child_stderr()
+        side.write_bytes(b"wrote")
+        os.write(2, f"{sentinel} {user}\n".encode())
+    finally:
+        os.dup2(saved, 2)
+        os.close(saved)
+    assert side.read_bytes() == b"wrote"
+    assert sentinel.encode() not in captured.read_bytes()
+    assert user.encode() not in captured.read_bytes()

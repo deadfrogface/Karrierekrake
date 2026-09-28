@@ -19,17 +19,20 @@ from typing import Any
 _LOG = logging.getLogger(__name__)
 
 # Exact product sentence. Do not paraphrase in docs.
+# User-facing copy avoids tech names (LLM/Qwen/Docpick); keep in sync with
+# desktop/i18n.py settings.local_llm_cv_kill.
 LOCAL_LLM_CV_KILL_WORDING = (
-    "wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; "
+    "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; "
     "der manuelle Profilimport bleibt möglich."
 )
 
 # First escalation before leaving the switch off permanently. Not implemented
 # here: no new weights, no prompt change, no automatic model swap.
+# Keep in sync with desktop/i18n.py settings.local_llm_cv_escalation.
 LOCAL_LLM_CV_ESCALATION = (
-    "Erster Eskalationsschritt: kleineres lokales Modell unter denselben "
+    "Erster Eskalationsschritt: kleinere lokale Auswertung unter denselben "
     "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
-    "Modell-Fallback und kein zweites Gewicht in diesem Schritt."
+    "Ersatz und kein zweites Modell in diesem Schritt."
 )
 
 _ENV_NAME = "KARRIEREKRAKE_LOCAL_LLM_CV_PARSING"

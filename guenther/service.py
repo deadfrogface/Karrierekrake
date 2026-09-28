@@ -807,6 +807,25 @@ _SERVICE: GuentherService | None = None
 _SERVICE_LOCK = threading.Lock()
 
 
+def unload_guenther_if_loaded() -> None:
+    """Unload in-process weights only when a service already exists.
+
+    Never constructs ``GuentherService`` / probes ``llama_cpp`` — that import can
+    access-violate on Windows when called from a QThread during CV-import prep.
+    """
+    with _SERVICE_LOCK:
+        svc = _SERVICE
+    if svc is None:
+        return
+    provider = getattr(svc, "provider", None)
+    unload = getattr(provider, "unload_model", None)
+    if callable(unload):
+        try:
+            unload()
+        except Exception:  # noqa: BLE001
+            pass
+
+
 def get_guenther_service(
     *,
     enabled: bool | None = None,

@@ -218,7 +218,7 @@ def main() -> int:
 
     if args.from_analysis:
         paths = dump_analysis_toc(args.out)
-        print(f"Wrote analysis manifest ({len(paths)} entries) → {args.out}")
+        print(f"Wrote analysis manifest ({len(paths)} entries) -> {args.out}")
         return 0
 
     paths: list[str] = []
@@ -237,7 +237,7 @@ def main() -> int:
         paths.extend(scan.list_toc_from_exe(args.exe))
 
     write_manifest(args.out, paths=paths, exe=args.exe)
-    print(f"Wrote content manifest ({len(paths)} entries) → {args.out}")
+    print(f"Wrote content manifest ({len(paths)} entries) -> {args.out}")
     return 0
 
 

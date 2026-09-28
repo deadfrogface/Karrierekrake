@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import time
 
 PHASE_EVENTS_ENV = "KARRIEREKRAKE_CV_PHASE_EVENTS"
@@ -96,18 +97,34 @@ def emit_diag(message: str, *, level: str = "info") -> None:
     append_phase_event({"diag": message, "level": level})
 
 
+_SAFE_DIAG = re.compile(
+    r"^(cv_llm_rates|cv_llm_config|cv_llm_inprocess|cv_llm_load|cv_llm_prompt_prefix|"
+    r"cv_llm_prompt_prefill|cv_import memory_shares|cv_import smaps_rollup|"
+    r"llm_timeout|llm_prompt_too_long|llm_output_truncated|job_memory_limit_hit|"
+    r"memory_budget_app_share|peak_rss_exceeded|peak_rss_unmeasured)"
+    r"( [a-z0-9_]+=-?[A-Za-z0-9_.:]+)*$"
+)
+
+
+def diag_line_is_safe(message: str) -> bool:
+    """True when a child diagnostic is a fixed line with whitelist values."""
+    return _SAFE_DIAG.match(message) is not None
+
+
 def relay_diag_event(event: dict) -> bool:
     """Write a child diagnostic into the app log. True when ``event`` is one.
 
     The parent is the only writer of ``karrierekrake.log``. A diag event is
-    not a UI progress line.
+    not a UI progress line. Free text, paths, and model output are dropped.
     """
     if "diag" not in event:
         return False
     message = str(event.get("diag") or "").strip()
-    if not message:
+    if not message or not diag_line_is_safe(message):
         return True
     level = str(event.get("level") or "info").lower()
+    if level not in {"info", "warning", "error"}:
+        level = "info"
     log = logging.getLogger("karrierekrake")
     if level == "error":
         log.error("%s", message)

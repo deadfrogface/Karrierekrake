@@ -919,9 +919,11 @@ _docling_converter = None
 # Content-addressed text cache: only reuse when file bytes + Docling version match.
 _docling_text_cache: dict[tuple[str, str], str] = {}
 _SCHEMA_JSON_CACHE: dict[str, str] | None = None
-# HTTP-server transport only. The in-process path sets max_tokens from the
-# remaining context (n_ctx - prompt - slack), not from this constant.
-_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "2048"))
+# Runaway-generation cap from #101. The in-process budget is
+# min(this cap, n_ctx - prompt tokens - slack). The env override is read
+# by ``llm_max_tokens_cap`` at call time, not cached here.
+_LLM_MAX_TOKENS_DEFAULT = 4096
+_ENV_LLM_MAX_TOKENS = "KARRIEREKRAKE_CV_LLM_MAX_TOKENS"
 # Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
@@ -953,13 +955,13 @@ CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
 # the child.
 CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES = 1_698_168_832
 # Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
-# The generation budget is ``import_timeout_seconds`` (formula, or this env
-# when it is set). This constant remains the env value, else 180, so a test
-# can still force a timeout and the HTTP transport keeps its previous clamp.
-CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "180"))
+# Shipped default when the formula has not run and no env override is set.
+# #101 used 300 s from Windows-CI runs of 168–196 s. The formula floor is
+# the same 300 s. The ceiling stays 900 s. The env var replaces the formula
+# and is not clamped.
+CV_IMPORT_TIMEOUT_S = 300.0
 _ENV_IMPORT_TIMEOUT = "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"
-# Floor and ceiling for the formula. The env var is not clamped.
-CV_IMPORT_TIMEOUT_FLOOR_S = 180.0
+CV_IMPORT_TIMEOUT_FLOOR_S = 300.0
 CV_IMPORT_TIMEOUT_CEILING_S = 900.0
 # Fresh-process model load, llama-cpp-python 0.3.35, one run in the
 # save_state measurement (VM, not i3, 2026-09-28). Not the native AMX
@@ -971,28 +973,24 @@ CV_IMPORT_T_LOAD_S = 2.758
 # generation of 655 tokens at the n_threads=4 rate leaves about 52 s.
 # 60 s sits above that remainder. VM, not i3.
 CV_IMPORT_TIMEOUT_BUFFER_S = 60.0
-# Configuration of the constants below, not the reserve rule.
-# Pinned AVX2 wheel, this VM (4 physical cores, 1 thread per core, no SMT),
-# n_threads=2, n_threads_batch=4, median of 5, 2026-09-28. Prompt 1763
-# tokens, prompt-eval median 14651.604 ms. Generation 64 tokens,
-# finish_reason=length, median 12983.452 ms. The tok/s medians are divided
-# by 2. That pair is the old 2-vs-4 comparison. This VM's reserve rule is
-# 3/3. The headless 7/7 remeasurement is not substituted: it oversubscribes
-# these 4 cores, and halving its generation rate would raise r_gen and
-# shorten the deadline. Rates on the i3 are unchecked. An 11th-gen i3 may
-# be i3-1115G4 (2C/4T) or i3-1125G4 (4C/8T); the model is unknown. The SMT
-# branch of the thread rule (reserve 0) is not measured.
-CV_IMPORT_VM_N2_PROMPT_TOKENS = 1763
-CV_IMPORT_VM_N2_PROMPT_EVAL_S = 14.651604
-CV_IMPORT_VM_N2_GEN_TOKENS = 64
-CV_IMPORT_VM_N2_GEN_S = 12.983452
-CV_IMPORT_RATE_CONSERVATIVE_DIVISOR = 2
-CV_IMPORT_R_PROMPT_TPS = (
-    CV_IMPORT_VM_N2_PROMPT_TOKENS / CV_IMPORT_VM_N2_PROMPT_EVAL_S
-) / CV_IMPORT_RATE_CONSERVATIVE_DIVISOR
-CV_IMPORT_R_GEN_TPS = (
-    CV_IMPORT_VM_N2_GEN_TOKENS / CV_IMPORT_VM_N2_GEN_S
-) / CV_IMPORT_RATE_CONSERVATIVE_DIVISOR
+# Prompt throughput per compute thread, before the safety factor.
+# Tester, headless, VM 8C no SMT, n_threads=7, median of 3, rate calculated,
+# i3 unchecked: 44.7 tok/s / 7 threads = 6.4 tok/s. The agent VM's headless
+# 7/7 remeasurement (4 cores, oversubscribed) was about 112 tok/s, more than
+# 20 % faster, so the slower tester rate is the basis. SMT siblings share
+# the AVX2 units and do not double this rate: the effective thread count is
+# min(n_threads_batch, physical - reserve), at least 1. The 0.5 factor is
+# the safety margin.
+# Variant (a): the prompt is evaluated in n_batch blocks and the parent
+# recalculates the deadline after the first block, so this rate is only
+# the start value. llama-cpp-python==0.3.35 does the block eval via llm.eval.
+CV_IMPORT_PROMPT_TPS_PER_THREAD = 6.4
+CV_IMPORT_PROMPT_SAFETY = 0.5
+# Generation rate, fixed. Tester headless, 7 threads, 9.93 tok/s, halved
+# is 5. The agent VM's oversubscribed 7/7 run was 7.21 tok/s, more than
+# 20 % slower. r_gen stays 5: generation is limited by memory bandwidth,
+# and the factor to the i3 is unchecked.
+CV_IMPORT_R_GEN_TPS = 5.0
 # llama.cpp crash exits when a job memory limit makes an allocation fail.
 # These codes are the exit-code fallback when the completion port is absent.
 JOB_LIMIT_CRASH_EXIT_CODES = frozenset(
@@ -1260,62 +1258,67 @@ def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
     try:
         from docpick.llm.prompt import parse_llm_json
     except ImportError as exc:
-        raise CvImportError(
-            "docpick_missing",
-            "Docpick fehlt in dieser Installation. "
-            "CV-Import kann nicht strukturieren. Kein DET-Fallback.",
-        ) from exc
+        raise CvImportError("docpick_missing", "docpick_missing") from exc
 
     messages = _extraction_messages(text)
     try:
         if transport == "http":
             from docpick.llm.vllm_provider import VLLMProvider
 
+            cap, _cap_source = llm_max_tokens_cap()
             provider = VLLMProvider(
                 base_url=DEFAULT_LLM_BASE,
                 model=DEFAULT_MODEL,
                 temperature=0.0,
-                max_tokens=_LLM_MAX_TOKENS,
-                timeout=max(5.0, min(300.0, CV_IMPORT_TIMEOUT_S)),
+                max_tokens=cap,
+                timeout=max(0.05, remaining_import_timeout_s()),
             )
             if not provider.is_available():
-                raise CvImportError(
-                    "llm_unavailable",
-                    "Lokales CV-Modell nicht erreichbar. "
-                    "Karrierekrake startet es automatisch, wenn Gewichte und "
-                    "llama-cpp vorhanden sind. Kein DET-Fallback.",
-                )
+                raise CvImportError("llm_unavailable", "llm_unavailable")
             raw_text = provider._call_chat(messages)
         else:
             from core.cv_llm_runtime import chat_completion_inprocess, resolve_cv_model_path
 
             model_path = resolve_cv_model_path()
             if model_path is None:
-                raise CvImportError(
-                    "model_missing",
-                    "Das lokale CV-Modell (Qwen3.5-4B) fehlt. Kein DET-Fallback.",
-                )
+                raise CvImportError("model_missing", "model_missing")
             # max_tokens is the remainder of n_ctx, computed inside the call.
             raw_text = chat_completion_inprocess(
                 messages,
                 model_path=model_path,
                 temperature=0.0,
             )
-        data = parse_llm_json(raw_text)
+        data = _parse_extraction_json(raw_text, parse_llm_json=parse_llm_json)
     except CvImportError:
         raise
     except Exception as exc:  # noqa: BLE001
-        raise CvImportError(
-            "llm_extract_failed",
-            f"Strukturierte Extraktion fehlgeschlagen ({type(exc).__name__}). "
-            "Bitte Felder manuell nachtragen.",
-        ) from exc
+        raise CvImportError("llm_extract_failed", "llm_extract_failed") from exc
     if not isinstance(data, dict) or not data:
-        raise CvImportError(
-            "llm_empty",
-            "Modell lieferte keine verwertbaren Felder. Bitte manuell korrigieren.",
-        )
+        raise CvImportError("llm_empty", "llm_empty")
     return data
+
+
+_THINK_BLOCK = re.compile(r"<think>[\s\S]*?</think>", re.IGNORECASE)
+
+
+def _parse_extraction_json(raw_text: str, *, parse_llm_json) -> dict[str, Any]:
+    """Parse model JSON; strip Qwen think-blocks that break docpick's parser."""
+    text = _THINK_BLOCK.sub("", raw_text or "").strip()
+    try:
+        data = parse_llm_json(text)
+        if isinstance(data, dict) and data:
+            return data
+    except Exception:  # noqa: BLE001 — fall through to hardened extractor
+        pass
+    try:
+        from guenther.validation import extract_json_object
+
+        data = extract_json_object(raw_text)
+        if isinstance(data, dict) and data:
+            return data
+    except Exception:  # noqa: BLE001
+        pass
+    raise json.JSONDecodeError("llm_json_parse_failed", "", 0)
 
 
 def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict[str, Any]:
@@ -1747,13 +1750,17 @@ def memory_kind_for_job_limit(*, child_budget: int) -> str:
 
 
 _chosen_import_timeout_s: float | None = None
+_import_timeout_formula_s: int | None = None
+_import_timeout_source: str | None = None
 _import_started_at: float | None = None
 
 
 def reset_import_timeout() -> None:
     """Drop a timeout chosen for a previous generation in this process."""
-    global _chosen_import_timeout_s
+    global _chosen_import_timeout_s, _import_timeout_formula_s, _import_timeout_source
     _chosen_import_timeout_s = None
+    _import_timeout_formula_s = None
+    _import_timeout_source = None
 
 
 def note_import_started(t0: float) -> None:
@@ -1766,52 +1773,176 @@ def import_started_at() -> float | None:
     return _import_started_at
 
 
-def import_timeout_seconds(prompt_tokens: int, max_tokens: int) -> int:
-    """Wall-clock seconds for this import, from the token counts already known.
+def env_import_timeout_override() -> float | None:
+    """Env override. ``choose_import_timeout_s`` stores the result.
 
-    ``KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S`` overrides the formula and is not
-    clamped. Otherwise::
-
-        timeout = t_load + prompt_tokens / r_prompt + max_tokens / r_gen + buffer
-
-    clamped to ``[180, 900]``. Call once after tokenization. This does not
-    tokenize.
+    ``current_import_timeout_s`` and ``_enforce_timeout`` use that stored
+    value and do not read the environment again.
     """
-    raw_env = os.environ.get(_ENV_IMPORT_TIMEOUT, "").strip()
-    if raw_env:
-        return int(float(raw_env))
-    raw = (
-        CV_IMPORT_T_LOAD_S
-        + int(prompt_tokens) / CV_IMPORT_R_PROMPT_TPS
-        + int(max_tokens) / CV_IMPORT_R_GEN_TPS
-        + CV_IMPORT_TIMEOUT_BUFFER_S
+    raw = os.environ.get(_ENV_IMPORT_TIMEOUT, "").strip()
+    if not raw:
+        return None
+    return float(raw)
+
+
+def llm_max_tokens_cap() -> tuple[int, str]:
+    """``(cap, source)``. Source is ``env`` or ``default`` (4096)."""
+    raw = os.environ.get(_ENV_LLM_MAX_TOKENS, "").strip()
+    if not raw:
+        return _LLM_MAX_TOKENS_DEFAULT, "default"
+    return int(raw), "env"
+
+
+def effective_prompt_threads(
+    *, n_threads_batch: int, physical: int, reserve: int
+) -> int:
+    """Compute threads that actually move the prompt.
+
+    SMT siblings share AVX2, so logical threads above ``physical - reserve``
+    do not raise the prompt rate.
+    """
+    cores = max(1, int(physical) - int(reserve))
+    return max(1, min(int(n_threads_batch), cores))
+
+
+def prompt_rate_tps(*, n_threads_batch: int, physical: int, reserve: int) -> float:
+    eff = effective_prompt_threads(
+        n_threads_batch=n_threads_batch, physical=physical, reserve=reserve
     )
+    return CV_IMPORT_PROMPT_TPS_PER_THREAD * eff * CV_IMPORT_PROMPT_SAFETY
+
+
+def _clamp_timeout(raw: float) -> int:
     clamped = min(CV_IMPORT_TIMEOUT_CEILING_S, max(CV_IMPORT_TIMEOUT_FLOOR_S, raw))
     return int(math.ceil(clamped - 1e-9))
 
 
-def choose_import_timeout_s(*, prompt_tokens: int, max_tokens: int) -> int:
+def formula_import_timeout_s(
+    prompt_tokens: int,
+    max_tokens: int,
+    *,
+    n_threads_batch: int,
+    physical: int,
+    reserve: int,
+) -> int:
+    """Start deadline. Variant (a): the parent may raise it after block 1."""
+    rate = prompt_rate_tps(
+        n_threads_batch=n_threads_batch, physical=physical, reserve=reserve
+    )
+    raw = (
+        CV_IMPORT_T_LOAD_S
+        + int(prompt_tokens) / rate
+        + int(max_tokens) / CV_IMPORT_R_GEN_TPS
+        + CV_IMPORT_TIMEOUT_BUFFER_S
+    )
+    return _clamp_timeout(raw)
+
+
+def import_timeout_seconds(
+    prompt_tokens: int,
+    max_tokens: int,
+    *,
+    n_threads_batch: int | None = None,
+    physical: int | None = None,
+    reserve: int | None = None,
+) -> int:
+    """Resolved wall-clock seconds. The env override is not clamped.
+
+    Without an override the formula is clamped to ``[300, 900]``.
+    """
+    value, _source, _formula = resolve_import_timeout(
+        prompt_tokens,
+        max_tokens,
+        n_threads_batch=n_threads_batch,
+        physical=physical,
+        reserve=reserve,
+    )
+    return value
+
+
+def resolve_import_timeout(
+    prompt_tokens: int,
+    max_tokens: int,
+    *,
+    n_threads_batch: int | None = None,
+    physical: int | None = None,
+    reserve: int | None = None,
+) -> tuple[int, str, int]:
+    """``(value, source, formula)``. Formula is always computed.
+
+    ``source`` is ``env`` or ``formula``. One env read per import.
+    """
+    if n_threads_batch is None or physical is None or reserve is None:
+        from core.cv_llm_runtime import resolve_cv_llm_thread_plan
+
+        _n, n_batch, phys, _logical, res = resolve_cv_llm_thread_plan()
+        if n_threads_batch is None:
+            n_threads_batch = n_batch
+        if physical is None:
+            physical = phys
+        if reserve is None:
+            reserve = res
+    formula = formula_import_timeout_s(
+        prompt_tokens,
+        max_tokens,
+        n_threads_batch=int(n_threads_batch),
+        physical=int(physical),
+        reserve=int(reserve),
+    )
+    override = env_import_timeout_override()
+    if override is not None:
+        return int(float(override)), "env", formula
+    return formula, "formula", formula
+
+
+def choose_import_timeout_s(
+    *,
+    prompt_tokens: int,
+    max_tokens: int,
+    n_threads_batch: int | None = None,
+    physical: int | None = None,
+    reserve: int | None = None,
+) -> int:
     """Compute the import timeout once and keep it for the generation."""
-    global _chosen_import_timeout_s
-    chosen = import_timeout_seconds(prompt_tokens, max_tokens)
-    _chosen_import_timeout_s = float(chosen)
-    return chosen
+    global _chosen_import_timeout_s, _import_timeout_formula_s, _import_timeout_source
+    value, source, formula = resolve_import_timeout(
+        prompt_tokens,
+        max_tokens,
+        n_threads_batch=n_threads_batch,
+        physical=physical,
+        reserve=reserve,
+    )
+    _chosen_import_timeout_s = float(value)
+    _import_timeout_formula_s = int(formula)
+    _import_timeout_source = source
+    return value
 
 
 def current_import_timeout_s() -> float:
-    """Chosen formula timeout, else the env override, else the ceiling.
+    """Chosen timeout. Does not read the environment again.
 
+    Before a choice, an env override already stored by the one read wins.
     A test that sets ``CV_IMPORT_TIMEOUT_S`` below the floor still wins,
     so the hard-fail test can force ``llm_timeout`` without a generation.
     """
     if _chosen_import_timeout_s is not None:
         return float(_chosen_import_timeout_s)
-    raw_env = os.environ.get(_ENV_IMPORT_TIMEOUT, "").strip()
-    if raw_env:
-        return float(raw_env)
+    override = env_import_timeout_override()
+    if override is not None:
+        return float(override)
     if CV_IMPORT_TIMEOUT_S < CV_IMPORT_TIMEOUT_FLOOR_S:
         return float(CV_IMPORT_TIMEOUT_S)
     return float(CV_IMPORT_TIMEOUT_CEILING_S)
+
+
+def remaining_import_timeout_s(now: float | None = None) -> float:
+    """Seconds left on the resolved deadline. Not a fixed 300 s clamp."""
+    limit = current_import_timeout_s()
+    started = import_started_at()
+    if started is None:
+        return float(limit)
+    clock = time.monotonic() if now is None else float(now)
+    return max(0.0, float(limit) - (clock - started))
 
 
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
@@ -1970,11 +2101,7 @@ def import_cv_docpick(
     try:
         import docpick  # noqa: F401
     except ImportError as exc:
-        raise CvImportError(
-            "docpick_missing",
-            "Docpick fehlt in dieser Installation. "
-            "CV-Import kann nicht strukturieren. Kein DET-Fallback.",
-        ) from exc
+        raise CvImportError("docpick_missing", "docpick_missing") from exc
     _progress("llm_preflight")
     _enforce_timeout(t0, stage="llm_preflight")
     from core.cv_llm_runtime import ensure_cv_llm_ready

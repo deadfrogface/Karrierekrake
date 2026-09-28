@@ -29,6 +29,11 @@ def _load_policy():
 
 policy = _load_policy()
 
+# Fail release builds early when the offline CV model must ship in the EXE.
+_bundled_model = policy.require_bundled_cv_model(ROOT)
+if _bundled_model:
+    sys.stderr.write(f"Bundled CV model OK: {_bundled_model}\n")
+
 hidden = (
     collect_submodules("search")
     + collect_submodules("apply")
@@ -47,6 +52,7 @@ binaries = []
 
 # Narrow collect_all: only allowlisted packages, then filter forbidden trees.
 # Do NOT collect Playwright browser binaries — only the Python driver package.
+# llama_cpp is allowlisted so libllama / ggml native libs ship in the EXE.
 for pkg in policy.ALLOWED_COLLECT_ALL_PACKAGES:
     try:
         pkg_datas, pkg_binaries, pkg_hidden = collect_all(pkg)

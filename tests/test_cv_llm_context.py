@@ -452,7 +452,7 @@ def test_llama_constructor_receives_thread_and_ctx(monkeypatch: pytest.MonkeyPat
     assert seen["n_threads"] == 2
     assert seen["n_threads_batch"] == 4
     assert seen["n_batch"] == 512
-    assert seen["verbose"] is True
+    assert seen["verbose"] is False
     assert Spy.instances[-1].verbose is False
     assert Spy.instances[-1].completion_kwargs["max_tokens"] == (
         4096 - 10 - CV_LLM_CTX_SLACK_TOKENS
@@ -606,42 +606,143 @@ def test_prompt_blocks_are_reported_and_prefix_is_reused(
     assert "cv_llm_prompt_prefill n_prompt=600 n_batch=512 blocks=2" in caplog.text
 
 
-def test_import_timeout_formula_env_floor_and_ceiling(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Env wins. DE_01 and DE_06 token counts, plus the floor and the ceiling."""
+def _expected_timeout(prompt: int, max_tokens: int, *, n_threads_batch: int, physical: int, reserve: int) -> int:
+    import math
+
     from core.cv_docpick_import import (
+        CV_IMPORT_PROMPT_SAFETY,
+        CV_IMPORT_PROMPT_TPS_PER_THREAD,
         CV_IMPORT_R_GEN_TPS,
-        CV_IMPORT_R_PROMPT_TPS,
         CV_IMPORT_T_LOAD_S,
         CV_IMPORT_TIMEOUT_BUFFER_S,
         CV_IMPORT_TIMEOUT_CEILING_S,
         CV_IMPORT_TIMEOUT_FLOOR_S,
-        import_timeout_seconds,
+        effective_prompt_threads,
     )
 
-    de01_prompt = 1763
-    de01_max = 4096 - de01_prompt - 8
-    de06_prompt = 2000
-    de06_max = 4096 - de06_prompt - 8
-    assert de01_max == 2325
-    assert de06_max == 2088
+    eff = effective_prompt_threads(
+        n_threads_batch=n_threads_batch, physical=physical, reserve=reserve
+    )
+    rate = CV_IMPORT_PROMPT_TPS_PER_THREAD * eff * CV_IMPORT_PROMPT_SAFETY
+    raw = (
+        CV_IMPORT_T_LOAD_S
+        + prompt / rate
+        + max_tokens / CV_IMPORT_R_GEN_TPS
+        + CV_IMPORT_TIMEOUT_BUFFER_S
+    )
+    clamped = min(CV_IMPORT_TIMEOUT_CEILING_S, max(CV_IMPORT_TIMEOUT_FLOOR_S, raw))
+    return int(math.ceil(clamped - 1e-9))
 
-    def raw(prompt: int, max_tokens: int) -> float:
-        return (
-            CV_IMPORT_T_LOAD_S
-            + prompt / CV_IMPORT_R_PROMPT_TPS
-            + max_tokens / CV_IMPORT_R_GEN_TPS
-            + CV_IMPORT_TIMEOUT_BUFFER_S
-        )
+
+def test_import_timeout_formula_env_floor_and_ceiling(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Prompt rate scales with effective threads. Env wins. Floor 300, ceiling 900."""
+    from core.cv_docpick_import import (
+        CV_IMPORT_TIMEOUT_CEILING_S,
+        CV_IMPORT_TIMEOUT_FLOOR_S,
+        import_timeout_seconds,
+    )
+    from core.cv_llm_runtime import thread_reserve
+
+    prompt = 1880
+    max_tokens = 804
+    two = _expected_timeout(
+        prompt, max_tokens, n_threads_batch=2, physical=8, reserve=1
+    )
+    seven = _expected_timeout(
+        prompt, max_tokens, n_threads_batch=7, physical=8, reserve=1
+    )
+    assert CV_IMPORT_TIMEOUT_FLOOR_S <= two <= CV_IMPORT_TIMEOUT_CEILING_S
+    assert CV_IMPORT_TIMEOUT_FLOOR_S <= seven <= CV_IMPORT_TIMEOUT_CEILING_S
+    assert two == 518
+    assert seven == 308
 
     monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", raising=False)
-    assert raw(de01_prompt, de01_max) > CV_IMPORT_TIMEOUT_CEILING_S
-    assert raw(de06_prompt, de06_max) > CV_IMPORT_TIMEOUT_CEILING_S
-    assert import_timeout_seconds(de01_prompt, de01_max) == int(CV_IMPORT_TIMEOUT_CEILING_S)
-    assert import_timeout_seconds(de06_prompt, de06_max) == int(CV_IMPORT_TIMEOUT_CEILING_S)
-    assert raw(1, 1) < CV_IMPORT_TIMEOUT_FLOOR_S
-    assert import_timeout_seconds(1, 1) == int(CV_IMPORT_TIMEOUT_FLOOR_S)
-    assert import_timeout_seconds(100_000, 100_000) == int(CV_IMPORT_TIMEOUT_CEILING_S)
+    kwargs = {"n_threads_batch": 2, "physical": 8, "reserve": 1}
+    assert import_timeout_seconds(prompt, max_tokens, **kwargs) == two
+    assert import_timeout_seconds(prompt, max_tokens, n_threads_batch=7, physical=8, reserve=1) == seven
+    assert import_timeout_seconds(1, 1, n_threads_batch=7, physical=8, reserve=1) == int(
+        CV_IMPORT_TIMEOUT_FLOOR_S
+    )
+    assert import_timeout_seconds(100_000, 100_000, n_threads_batch=7, physical=8, reserve=1) == int(
+        CV_IMPORT_TIMEOUT_CEILING_S
+    )
+
+    smt = import_timeout_seconds(prompt, max_tokens, n_threads_batch=4, physical=2, reserve=thread_reserve(2, 4))
+    plain = import_timeout_seconds(prompt, max_tokens, n_threads_batch=2, physical=2, reserve=thread_reserve(2, 2))
+    assert thread_reserve(2, 4) == 0
+    assert thread_reserve(2, 2) == 0
+    assert smt == plain == two
+
+    eight = import_timeout_seconds(
+        prompt, max_tokens, n_threads_batch=7, physical=8, reserve=thread_reserve(8, 8)
+    )
+    assert thread_reserve(8, 8) == 1
+    assert eight == seven
 
     monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "95")
-    assert import_timeout_seconds(de01_prompt, de01_max) == 95
-    assert import_timeout_seconds(1, 1) == 95
+    assert import_timeout_seconds(prompt, max_tokens, **kwargs) == 95
+    assert import_timeout_seconds(1, 1, **kwargs) == 95
+
+
+def test_completion_budget_respects_4096_cap(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", raising=False)
+    assert completion_token_budget(8192, 100) == 4096
+    assert completion_token_budget(4096, 100) == 4096 - 100 - CV_LLM_CTX_SLACK_TOKENS
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "1000")
+    assert completion_token_budget(8192, 100) == 1000
+
+
+def test_cv_llm_config_names_source_and_formula(monkeypatch: pytest.MonkeyPatch) -> None:
+    from core.cv_llm_runtime import cv_llm_config_line
+    from core.cv_phase_events import diag_line_is_safe
+
+    for name in (
+        "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S",
+        "KARRIEREKRAKE_CV_LLM_MAX_TOKENS",
+        "KARRIEREKRAKE_CV_LLM_N_CTX",
+        "KARRIEREKRAKE_CV_LLM_N_THREADS",
+        "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH",
+    ):
+        monkeypatch.delenv(name, raising=False)
+    plain = cv_llm_config_line(
+        n_ctx=4096,
+        n_threads=3,
+        n_threads_batch=3,
+        physical=4,
+        logical=4,
+        reserve=1,
+        n_prompt=1880,
+        max_tokens=2208,
+        timeout_s=518,
+        timeout_source="formula",
+        timeout_formula=518,
+    )
+    assert "timeout_source=formula" in plain
+    assert "timeout_formula=518" in plain
+    assert "max_tokens_source=formula" in plain
+    assert "n_ctx_source=default" in plain
+    assert "n_threads_source=formula" in plain
+    assert "n_threads_formula=3" in plain
+    assert diag_line_is_safe(plain)
+
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "95")
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_THREADS", "7")
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "1000")
+    overridden = cv_llm_config_line(
+        n_ctx=4096,
+        n_threads=7,
+        n_threads_batch=3,
+        physical=4,
+        logical=4,
+        reserve=1,
+        n_prompt=1880,
+        max_tokens=1000,
+        timeout_s=95,
+        timeout_source="env",
+        timeout_formula=518,
+    )
+    assert "timeout_s=95 timeout_source=env timeout_formula=518" in overridden
+    assert "max_tokens_source=env" in overridden
+    assert "max_tokens_formula=" in overridden
+    assert "n_threads=7 n_threads_source=env n_threads_formula=3" in overridden
+    assert diag_line_is_safe(overridden)

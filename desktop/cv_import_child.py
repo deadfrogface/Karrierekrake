@@ -27,44 +27,53 @@ from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING, local_llm_cv_decis
 # Generic last resort only — real CvImportError codes must reach the UI.
 _READ_FAILED = "Der Lebenslauf konnte nicht gelesen werden."
 
-# Stage-specific user copy. No absolute paths, CV body, or tokens.
+# Stage-specific user copy. No absolute paths, CV body, tokens, or internal
+# model / parser names (those belong in diagnostic logs only).
 _KIND_MESSAGES: dict[str, str] = {
     "file_missing": "Die ausgewählte Datei wurde nicht gefunden.",
     "empty_cv": "Die Datei ist leer oder enthält keinen lesbaren Text.",
     "unreadable_cv": (
-        "Die Datei konnte nicht als PDF oder DOCX gelesen werden. "
-        "Pfad und Eingaben bleiben erhalten."
+        "Die Datei konnte nicht als PDF oder Word-Dokument gelesen werden. "
+        "Bitte eine andere Datei wählen."
     ),
     "docpick_missing": (
-        "Die CV-Import-Komponente fehlt in dieser Installation. "
-        "Kein Wechsel auf den alten DET-Parser."
+        "Die Lebenslauf-Auswertung fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren."
     ),
     "docling_missing": (
-        "Docling ist für diesen Lauf vorgeschrieben, aber nicht installiert."
+        "Eine optionale Diagnose-Komponente fehlt. "
+        "Bitte den normalen Lebenslauf-Import nutzen oder neu installieren."
     ),
-    "extract_missing": "Die CV-Textextraktion fehlt in dieser Installation.",
+    "extract_missing": (
+        "Die Texterkennung fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren."
+    ),
     "model_missing": (
-        "Das lokale CV-Modell (Qwen3.5-4B) fehlt. "
-        "Ohne dieses Modell kann der Import nicht laufen. Kein DET-Fallback."
+        "Das lokale Lebenslauf-Modell fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen."
     ),
     "llama_missing": (
-        "Die lokale LLM-Laufzeit fehlt in dieser Installation. "
-        "CV-Import kann das Modell nicht starten. Kein DET-Fallback."
+        "Die lokale Auswertung fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen."
     ),
     "llm_unavailable": (
-        "Das lokale CV-Modell ist nicht erreichbar. "
-        "Karrierekrake startet es automatisch, wenn Modell und Laufzeit vorhanden sind."
+        "Die lokale Auswertung ist gerade nicht verfügbar. "
+        "Bitte erneut versuchen oder Karrierekrake neu starten."
     ),
     "llm_extract_failed": (
-        "Die strukturierte Extraktion ist fehlgeschlagen. Bitte Felder manuell nachtragen."
+        "Der Lebenslauf konnte nicht zuverlässig ausgelesen werden. "
+        "Bitte Felder manuell nachtragen."
     ),
-    "llm_empty": "Das Modell lieferte keine verwertbaren Felder. Bitte manuell korrigieren.",
+    "llm_empty": (
+        "Es wurden keine verwertbaren Angaben erkannt. "
+        "Bitte das Profil manuell ausfüllen."
+    ),
     "unreliable_extract": (
-        "Extraktion ohne Namen und Kontakt — Ergebnis nicht verlässlich. "
+        "Ohne Namen und Kontakt ist das Ergebnis nicht verlässlich. "
         "Bitte Profil manuell ausfüllen."
     ),
     "peak_rss_exceeded": (
-        "Nicht genug Arbeitsspeicher für den CV-Import auf diesem Gerät. "
+        "Nicht genug Arbeitsspeicher für den Lebenslauf-Import auf diesem Gerät. "
         "Es wurde nichts übernommen."
     ),
     "timeout": (
@@ -73,6 +82,15 @@ _KIND_MESSAGES: dict[str, str] = {
     ),
     "cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
     "oom": "Nicht genug Arbeitsspeicher, um diese Datei einzulesen.",
+    "llm_disabled": LOCAL_LLM_CV_KILL_WORDING,
+    "llm_command_exited": (
+        "Das angegebene lokale Modellkommando ist vor dem Import beendet. "
+        "Es wurde nichts übernommen."
+    ),
+    "llm_timeout": (
+        "Das Einlesen hat zu lange gedauert und wurde abgebrochen. "
+        "Es wurde nichts übernommen."
+    ),
 }
 
 
@@ -113,6 +131,58 @@ def _split_cmd(cmd: str) -> list[str]:
     return shlex.split(cmd, posix=(os.name != "nt"))
 
 
+_DETAIL_FIELDS = (
+    "exception_type",
+    "reason",
+    "stage",
+    "prompt_tokens",
+    "tokens_done",
+    "max_tokens",
+    "n_ctx",
+    "elapsed_s",
+    "timeout_s",
+)
+
+
+def _safe_detail(
+    *,
+    exception_type: str,
+    reason: str,
+    stage: str = "",
+) -> dict[str, str | int | float]:
+    """Log detail from a fixed field list. No exception text, paths, or CV body."""
+    from core.cv_docpick_import import current_import_timeout_s, import_started_at
+
+    detail: dict[str, str | int | float] = {
+        "exception_type": exception_type or "Exception",
+        "reason": reason,
+        "stage": stage or "",
+    }
+    started = import_started_at()
+    if started is not None:
+        detail["elapsed_s"] = round(time.monotonic() - started, 3)
+    try:
+        detail["timeout_s"] = round(float(current_import_timeout_s()), 3)
+    except Exception:  # noqa: BLE001
+        pass
+    return {key: detail[key] for key in _DETAIL_FIELDS if key in detail}
+
+
+def discard_child_stderr() -> None:
+    """Send file descriptor 2 to the null device for the rest of this process.
+
+    llama.cpp writes there directly and bypasses Python logging. Discarding
+    it keeps the parent's pipe from filling and keeps the text out of the
+    app log.
+    """
+    null_fd = os.open(os.devnull, os.O_WRONLY)
+    try:
+        os.dup2(null_fd, 2)
+    finally:
+        if null_fd != 2:
+            os.close(null_fd)
+
+
 def _fail(
     out_path: Path,
     *,
@@ -121,33 +191,34 @@ def _fail(
     decision,
     code: int = 1,
     stage: str = "",
+    exception_type: str = "",
 ) -> int:
     from core.cv_llm_runtime import (
         CODE_ONLY_LLM_ERROR_CODES,
         INPUT_CONDITIONED_LLM_ERROR_CODES,
     )
 
+    exc_name = exception_type or "Exception"
+    # ``message`` is intentionally unused in the log and in ``detail``.
+    del message
     if kind == "peak_rss_exceeded":
-        # Input-conditioned: the load does not fit the fresh-app child budget.
-        # No automatic retry. The existing UI string stays; no new copy.
         logger.warning(
-            "cv_import input_conditioned no_auto_retry kind=%s detail=%s",
+            "cv_import input_conditioned no_auto_retry kind=%s exception_type=%s",
             kind,
-            message,
+            exc_name,
         )
     elif kind == "memory_budget_app_share":
-        # The app's share left too little for the child. Code only.
-        # No automatic retry. User copy is the UI PR.
         logger.warning(
-            "cv_import app_share no_auto_retry kind=%s detail=%s",
+            "cv_import app_share no_auto_retry kind=%s exception_type=%s",
             kind,
-            message,
+            exc_name,
         )
         shown = kind
         payload: dict = {
             "ok": False,
             "kind": kind,
             "message": shown,
+            "detail": _safe_detail(exception_type=exc_name, reason=kind, stage=stage),
             "parsed": None,
         }
         if stage:
@@ -155,27 +226,26 @@ def _fail(
         _write(out_path, _with_decision(payload, decision))
         return code
     if kind in CODE_ONLY_LLM_ERROR_CODES:
-        # Code and log only. User copy is added by the UI PR.
-        # llm_prompt_too_long and llm_output_truncated are input-conditioned.
-        # llm_timeout depends on the machine and is not deterministic.
-        # None of the three is retried automatically.
         if kind in INPUT_CONDITIONED_LLM_ERROR_CODES:
             logger.warning(
-                "cv_import input_conditioned kind=%s detail=%s", kind, message
+                "cv_import input_conditioned kind=%s exception_type=%s",
+                kind,
+                exc_name,
             )
         else:
             logger.warning(
-                "cv_import machine_dependent no_auto_retry kind=%s detail=%s",
+                "cv_import machine_dependent no_auto_retry kind=%s exception_type=%s",
                 kind,
-                message,
+                exc_name,
             )
         shown = kind
     else:
-        shown = user_message_for_kind(kind, message)
-    payload: dict = {
+        shown = user_message_for_kind(kind, "")
+    payload = {
         "ok": False,
         "kind": kind,
         "message": shown,
+        "detail": _safe_detail(exception_type=exc_name, reason=kind, stage=stage),
         "parsed": None,
     }
     if stage:
@@ -249,25 +319,28 @@ def run(argv: list[str] | None = None) -> int:
         return _fail(
             out_path,
             kind="oom",
-            message=f"MemoryError: {type(exc).__name__}",
+            message="",
             decision=decision,
             code=3,
+            exception_type=type(exc).__name__,
         )
     except OSError as exc:
         if getattr(exc, "errno", None) == 12:  # ENOMEM
             return _fail(
                 out_path,
                 kind="oom",
-                message=f"ENOMEM: {type(exc).__name__}",
+                message="",
                 decision=decision,
                 code=3,
+                exception_type=type(exc).__name__,
             )
         return _fail(
             out_path,
             kind="error",
-            message=_READ_FAILED,
+            message="",
             decision=decision,
             code=1,
+            exception_type=type(exc).__name__,
         )
     except Exception as exc:  # noqa: BLE001 — child must report, not crash the UI
         try:
@@ -282,18 +355,20 @@ def run(argv: list[str] | None = None) -> int:
                 return _fail(
                     out_path,
                     kind=exc.code,
-                    message=str(exc),
+                    message="",
                     decision=decision,
                     code=code,
+                    exception_type=type(exc).__name__,
                 )
         except Exception:  # noqa: BLE001
             pass
         return _fail(
             out_path,
             kind="error",
-            message=_READ_FAILED,
+            message="",
             decision=decision,
             code=1,
+            exception_type=type(exc).__name__,
         )
     finally:
         if llm_proc is not None and llm_proc.poll() is None:
@@ -305,6 +380,7 @@ def run(argv: list[str] | None = None) -> int:
 
 
 def main() -> None:
+    discard_child_stderr()
     sys.exit(run())
 
 

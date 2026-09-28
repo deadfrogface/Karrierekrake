@@ -46,15 +46,18 @@ class ImportAttemptResult:
 def default_import_timeout_s() -> float:
     """Outer process deadline before the child reports its formula timeout.
 
-    An env override is that deadline. Otherwise the ceiling (900 s) is the
-    backstop until the child's one ``timeout_s`` event tightens it.
+    Uses the same env helper as the child's resolver. Otherwise the ceiling
+    (900 s) is the backstop until the child's one ``timeout_s`` event.
     """
-    raw = os.environ.get(_ENV_TIMEOUT)
-    if raw is None or raw.strip() == "":
-        from core.cv_docpick_import import CV_IMPORT_TIMEOUT_CEILING_S
+    from core.cv_docpick_import import (
+        CV_IMPORT_TIMEOUT_CEILING_S,
+        env_import_timeout_override,
+    )
 
+    override = env_import_timeout_override()
+    if override is None:
         return float(CV_IMPORT_TIMEOUT_CEILING_S)
-    return float(raw)
+    return float(override)
 
 
 def qa_observe_seconds() -> float:
@@ -170,6 +173,7 @@ def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
         cv_import_child_argv(cv_path, out_path),
         console=False,
         enforce_memory_bytes=_job_limit_from_environ(),
+        discard_stderr=True,
     )
 
 
@@ -185,9 +189,9 @@ class CvImportSupervisor:
     ) -> None:
         self.cv_path = Path(cv_path)
         self._spawn = spawn or default_spawn
-        self._publish_timeout = timeout_s is not None or bool(
-            os.environ.get(_ENV_TIMEOUT, "").strip()
-        )
+        from core.cv_docpick_import import env_import_timeout_override
+
+        self._publish_timeout = timeout_s is not None or env_import_timeout_override() is not None
         self.timeout_s = default_import_timeout_s() if timeout_s is None else float(timeout_s)
         self._cancel = threading.Event()
         self._proc: object | None = None
@@ -228,12 +232,12 @@ class CvImportSupervisor:
         self.ran_on_thread = threading.get_ident()
         # Release Günther's in-process weight before the import child loads the
         # same sole GGUF (parser and writing stay separate processes/roles).
+        # Never construct Guenther just to unload — llama_cpp import can AV on
+        # Windows when probed from a QThread (see CI shard-1 peak gate).
         try:
-            from guenther.service import get_guenther_service
+            from guenther.service import unload_guenther_if_loaded
 
-            g = get_guenther_service(enabled=True)
-            if g is not None and hasattr(g, "provider"):
-                g.provider.unload_model()
+            unload_guenther_if_loaded()
         except Exception:  # noqa: BLE001
             pass
         if self._cancel.is_set():
@@ -697,19 +701,19 @@ class CvLlmRates:
 
 def _fmt_int(value: int | None) -> str:
     if value is None:
-        return ""
+        return "na"
     return str(int(value))
 
 
 def _fmt_seconds(value: float | None) -> str:
     if value is None:
-        return ""
+        return "na"
     return "%.3f" % float(value)
 
 
 def _fmt_rate(value: float | None) -> str:
     if value is None:
-        return ""
+        return "na"
     return "%.3f" % float(value)
 
 
@@ -938,7 +942,7 @@ def _parent_memory_code(
 
     fresh_budget = fresh_app_child_budget_bytes()
     logger.info(
-        "cv_import memory_shares parent child_bytes=%s child_budget=%s fresh_child_budget=%s",
+        "cv_import memory_shares role=parent child_bytes=%s child_budget=%s fresh_child_budget=%s",
         sample,
         child_budget,
         fresh_budget,

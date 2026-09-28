@@ -18,20 +18,26 @@ Datenverzeichnis: `%LOCALAPPDATA%\Karrierekrake`
 
 ## Windows — schnell starten
 
-### Variante A: Fertige EXE
+### Variante A: Fertiges Windows-Paket (empfohlen)
 
-1. Neueste **Release**-Datei `Karrierekrake.exe` herunterladen  
-2. Starten (bei SmartScreen: „Weitere Informationen“ → trotzdem ausführen)  
-3. Kurzer 3-Schritt-Assistent: Lebenslauf → Sucheinstellungen → Bereit  
-4. **Jobs finden**
+1. Neueste **Release**-Datei `Karrierekrake-Windows.zip` herunterladen  
+   (enthält `Karrierekrake.exe` **und** den Ordner `models/` — beides gehört zusammen)
+2. Zip **vollständig** entpacken und `Karrierekrake.exe` aus diesem Ordner starten  
+   (EXE nicht allein ohne `models/` verschieben — sonst schlägt der Lebenslauf-Import fehl)
+3. Bei SmartScreen: „Weitere Informationen“ → trotzdem ausführen  
+4. Kurzer Assistent: Lebenslauf → Sucheinstellungen → Bereit  
+5. **Jobs finden**
 
 Profil & Daten: `%LOCALAPPDATA%\Karrierekrake`
+
+> Offline: Lebenslauf-Import und Anschreiben brauchen nach der Installation **kein Internet**.
 
 ### Variante B: Aus dem Quellcode
 
 1. Doppelklick auf **`setup.bat`** (Python 3.11+, `.venv`, Playwright Chromium, Basistests)  
 2. Start: **`start.bat`**  
-3. Optional EXE bauen: **`build.bat`** → `dist\Karrierekrake.exe`
+3. Optional EXE bauen: **`build.bat`** → `dist\Karrierekrake.exe` **plus** `dist\models\`  
+   (Release-Zip: `python scripts\package_windows_release.py --dist dist`)
 
 ---
 

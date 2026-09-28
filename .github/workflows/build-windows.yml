@@ -45,13 +45,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -c constraints-runtime.txt -r requirements-runtime.txt
           pip install -c constraints-runtime.txt -r requirements-dev.txt
+      - name: Cache bundled CV model weights
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: |
+            kk-cv-gguf-
       - name: Build onefile EXE (no bundled Chromium)
+        env:
+          KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
+          New-Item -ItemType Directory -Force -Path $env:KARRIEREKRAKE_MODELS_DIR | Out-Null
+          python scripts/prepare_bundled_cv_model.py --allow-download
+          if ($LASTEXITCODE -ne 0) { Write-Error "prepare_bundled_cv_model failed"; exit 1 }
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
           if (!(Test-Path "dist\Karrierekrake.exe")) {
             Write-Error "Onefile EXE missing at dist\Karrierekrake.exe"
             exit 1
           }
+          python scripts/prepare_bundled_cv_model.py --also-sidecar dist
+          if ($LASTEXITCODE -ne 0) { Write-Error "sidecar model failed"; exit 1 }
           $item = Get-Item "dist\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small"; exit 1 }
           $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash
@@ -60,6 +76,7 @@ jobs:
           size=$($item.Length)
           sha256=$hash
           console=false
+          cv_model_bundled=1
           "@ | Set-Content dist\build_metadata.txt
           Get-Item "dist\Karrierekrake.exe" | Format-List FullName, Length
           # Fail if this is a console subsystem EXE (users must not see a terminal).
@@ -74,21 +91,65 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-sidecar
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
+      - name: Package Windows release zip (EXE + models)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $install = Join-Path $env:RUNNER_TEMP "kk-install-$([guid]::NewGuid())"
+          python scripts/package_windows_release.py `
+            --dist dist `
+            --out dist/Karrierekrake-Windows.zip `
+            --stage-install $install
+          if ($LASTEXITCODE -ne 0) { Write-Error "package_windows_release FAILED"; exit 1 }
+          "INSTALL_DIR=$install" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: EXE smoke-test
         shell: pwsh
         run: |
           $tmp = New-Item -ItemType Directory -Path "$env:RUNNER_TEMP\jhs-rel-$([guid]::NewGuid())"
           $env:QT_QPA_PLATFORM = "offscreen"
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake.exe") -LocalAppData $tmp.FullName
+      - name: Offline CV import acceptance
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:QT_QPA_PLATFORM = "offscreen"
+          foreach ($name in @(
+            "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S",
+            "KARRIEREKRAKE_CV_LLM_MAX_TOKENS",
+            "KARRIEREKRAKE_CV_LLM_N_CTX",
+            "KARRIEREKRAKE_CV_LLM_N_THREADS",
+            "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH"
+          )) {
+            $val = [Environment]::GetEnvironmentVariable($name)
+            if (-not [string]::IsNullOrWhiteSpace($val)) {
+              Write-Error "Release gate refuses tuning env ${name}"
+              exit 1
+            }
+          }
+          Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
+          Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          $exe = Join-Path $env:INSTALL_DIR "Karrierekrake.exe"
+          python scripts/ci_cv_import_exe_offline_e2e.py `
+            --exe $exe `
+            --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
+            --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf `
+            --out artifacts/cv_import_exe_offline_e2e.json `
+            --import-timeout 900
+          if ($LASTEXITCODE -ne 0) { Write-Error "Offline CV import FAILED — release blocked"; exit 1 }
       - name: Upload Karrierekrake.exe
         uses: actions/upload-artifact@v4
         with:
           name: Karrierekrake-Windows
           path: |
+            dist/Karrierekrake-Windows.zip
+            dist/Karrierekrake-Windows.zip.json
             dist/Karrierekrake.exe
+            dist/models/**
             dist/build_metadata.txt
             dist/content_manifest.json
+            artifacts/cv_import_exe_offline_e2e.json
           if-no-files-found: error
           retention-days: 30

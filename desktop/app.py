@@ -300,8 +300,10 @@ def _report_llm_load() -> int:
 
 def _run_cv_import_child() -> int:
     """Frozen EXE CV-import worker: no Qt UI, no single-instance lock."""
+    from desktop.cv_import_child import discard_child_stderr
     from desktop.cv_import_child import run as run_cv_import_child
 
+    discard_child_stderr()
     child_argv = [a for a in sys.argv[1:] if a != "--cv-import-child"]
     return int(run_cv_import_child(child_argv))
 

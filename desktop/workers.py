@@ -134,7 +134,7 @@ class CvImportWorker(QObject):
             def on_progress(stage: str) -> None:
                 self.progress.emit(stage_labels.get(stage, stage))
 
-            # Productive path: Docpick + Qwen only. No DET fallback.
+            # Productive path: bundled local CV analysis only. No alternate-model fallback.
             parsed = import_cv_docpick(
                 self.cv_path,
                 progress=on_progress,

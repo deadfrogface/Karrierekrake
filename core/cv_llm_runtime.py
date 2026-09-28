@@ -1,15 +1,23 @@
-"""Local Qwen3.5-4B runtime for productive CV import.
+"""Local CV/writing model runtime for productive import and Günther writing.
 
 End users must not start a developer llama.cpp server by hand. When no OpenAI-
 compatible server is already listening on ``KARRIEREKRAKE_CV_LLM_BASE``, the
-import child loads the GGUF in-process via ``llama-cpp-python`` (same model,
-same prompts — not a different-model fallback).
+import child loads the bundled GGUF in-process via ``llama-cpp-python`` (same
+model, same prompts — not a different-model fallback).
+
+Release layout (offline after fresh install):
+1. Model next to the EXE: ``<exe_dir>/models/qwen3.5-4b/<file>.gguf``
+2. Or inside the frozen bundle (``sys._MEIPASS``) when datas were packaged
+3. AppData / cache only as optional override — never required for a clean install
+
+No Phi / DET fallback. Fail closed with ``CvImportError``.
 """
 
 from __future__ import annotations
 
 import logging
 import os
+import shutil
 import sys
 from pathlib import Path
 from typing import Any
@@ -18,14 +26,109 @@ logger = logging.getLogger(__name__)
 
 CV_MODEL_FILENAME = "Qwen3.5-4B-Q4_K_M.gguf"
 CV_MODEL_DIRNAME = "qwen3.5-4b"
+CV_MODEL_REL = Path("models") / CV_MODEL_DIRNAME / CV_MODEL_FILENAME
+
+# Expected size / checksum for release verification (not a silent download gate).
+CV_MODEL_SHA256 = "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+
+
+def is_frozen() -> bool:
+    return bool(getattr(sys, "frozen", False))
+
+
+def _exe_dir() -> Path | None:
+    if not is_frozen():
+        return None
+    try:
+        return Path(sys.executable).resolve().parent
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _meipass_dir() -> Path | None:
+    if not is_frozen():
+        return None
+    raw = getattr(sys, "_MEIPASS", None)
+    if not raw:
+        return None
+    return Path(str(raw))
+
+
+def bundled_cv_model_candidates() -> list[Path]:
+    """Ordered candidate paths for the production GGUF inside a release install."""
+    out: list[Path] = []
+    meipass = _meipass_dir()
+    if meipass is not None:
+        out.append(meipass / CV_MODEL_REL)
+        out.append(meipass / CV_MODEL_FILENAME)
+    exe = _exe_dir()
+    if exe is not None:
+        out.append(exe / CV_MODEL_REL)
+        out.append(exe / CV_MODEL_FILENAME)
+    # Dev / CI: vendor tree prepared by scripts/prepare_bundled_cv_model.py
+    try:
+        repo = Path(__file__).resolve().parents[1]
+        out.append(repo / "vendor" / "cv_model" / CV_MODEL_DIRNAME / CV_MODEL_FILENAME)
+    except Exception:  # noqa: BLE001
+        pass
+    return out
+
+
+def materialize_bundled_model_to_appdata(src: Path) -> Path | None:
+    """Copy bundled GGUF into AppData once so mmap stays on a durable path.
+
+    Never downloads. Returns the AppData path when copy succeeds, else None.
+    """
+    try:
+        from guenther.model_manager import default_models_dir
+
+        dest = default_models_dir() / CV_MODEL_DIRNAME / CV_MODEL_FILENAME
+        if dest.is_file() and dest.stat().st_size == src.stat().st_size:
+            return dest
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        shutil.copy2(src, tmp)
+        tmp.replace(dest)
+        logger.info("cv_model_materialized dest=%s bytes=%s", dest, dest.stat().st_size)
+        return dest
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("cv_model_materialize_failed err=%s", type(exc).__name__)
+        return None
 
 
 def resolve_cv_model_path() -> Path | None:
-    """Locate the Qwen3.5-4B GGUF used for CV import (env → AppData → cache)."""
+    """Locate the production GGUF (env → bundled EXE layout → AppData → cache).
+
+    A stale ``KARRIEREKRAKE_CV_LLM_MODEL`` pointing at a missing file must not
+    short-circuit the bundled sidecar — fall through to release layout.
+    """
     env = (os.environ.get("KARRIEREKRAKE_CV_LLM_MODEL") or "").strip()
     if env:
         p = Path(env)
-        return p if p.is_file() else None
+        if p.is_file():
+            return p
+        logger.warning(
+            "cv_model_env_missing path=%s — falling through to bundled candidates",
+            p.name,
+        )
+
+    meipass = _meipass_dir()
+    for bundled in bundled_cv_model_candidates():
+        if not bundled.is_file():
+            continue
+        # Onefile extract (_MEIPASS) is ephemeral — copy to AppData once.
+        # Sidecar next to the EXE is already durable; skip the 2.7 GB copy.
+        if meipass is not None:
+            try:
+                bundled.resolve().relative_to(meipass.resolve())
+            except ValueError:
+                return bundled
+            else:
+                durable = materialize_bundled_model_to_appdata(bundled)
+                if durable is not None and durable.is_file():
+                    return durable
+                return bundled
+        return bundled
 
     candidates: list[Path] = []
     try:
@@ -283,6 +386,65 @@ def cv_llm_thread_source() -> str:
     return "rule"
 
 
+def _thread_field_source(name: str) -> str:
+    if (os.environ.get(name) or "").strip():
+        return "env"
+    return "formula"
+
+
+def cv_llm_config_line(
+    *,
+    n_ctx: int,
+    n_threads: int,
+    n_threads_batch: int,
+    physical: int,
+    logical: int,
+    reserve: int,
+    n_prompt: int,
+    max_tokens: int,
+    timeout_s: int,
+    timeout_source: str,
+    timeout_formula: int,
+) -> str:
+    """One ``cv_llm_config`` line. Values are numbers and source tokens only."""
+    from core.cv_docpick_import import (
+        _LLM_MAX_TOKENS_DEFAULT,
+        llm_max_tokens_cap,
+    )
+
+    cap, cap_source = llm_max_tokens_cap()
+    room = int(n_ctx) - int(n_prompt) - CV_LLM_CTX_SLACK_TOKENS
+    max_formula = min(_LLM_MAX_TOKENS_DEFAULT, room) if room > 0 else 0
+    n_ctx_source = "env" if (os.environ.get("KARRIEREKRAKE_CV_LLM_N_CTX") or "").strip() else "default"
+    rule_threads = max(1, int(physical) - int(reserve))
+    rule_batch = max(1, int(logical) - int(reserve))
+    max_source = "env" if cap_source == "env" else "formula"
+    return (
+        "cv_llm_config timeout_s=%s timeout_source=%s timeout_formula=%s "
+        "max_tokens=%s max_tokens_source=%s max_tokens_formula=%s "
+        "n_ctx=%s n_ctx_source=%s n_ctx_default=%s "
+        "n_threads=%s n_threads_source=%s n_threads_formula=%s "
+        "n_threads_batch=%s n_threads_batch_source=%s n_threads_batch_formula=%s"
+        % (
+            int(timeout_s),
+            timeout_source,
+            int(timeout_formula),
+            int(max_tokens),
+            max_source,
+            int(max_formula),
+            int(n_ctx),
+            n_ctx_source,
+            4096,
+            int(n_threads),
+            _thread_field_source("KARRIEREKRAKE_CV_LLM_N_THREADS"),
+            rule_threads,
+            int(n_threads_batch),
+            _thread_field_source("KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH"),
+            rule_batch,
+        )
+    )
+
+
 def cv_llm_thread_report_line(
     plan: tuple[int, int, int, int, int] | None = None,
 ) -> str:
@@ -332,13 +494,14 @@ CODE_ONLY_LLM_ERROR_CODES = INPUT_CONDITIONED_LLM_ERROR_CODES | frozenset(
 
 
 def completion_token_budget(n_ctx: int, n_prompt: int) -> int:
-    """``max_tokens = n_ctx - prompt tokens - slack``.
+    """``max_tokens = min(cap, n_ctx - prompt tokens - slack)``.
 
-    Raises ``llm_prompt_too_long`` when the remainder is below
-    ``CV_LLM_MIN_COMPLETION_TOKENS``. The exception text is the code; the
-    numbers go to the log.
+    The cap is 4096, or ``KARRIEREKRAKE_CV_LLM_MAX_TOKENS`` when that
+    variable is set. Raises ``llm_prompt_too_long`` when the context
+    remainder is below ``CV_LLM_MIN_COMPLETION_TOKENS``. The exception
+    text is the code; the numbers go to the log.
     """
-    from core.cv_docpick_import import CvImportError
+    from core.cv_docpick_import import CvImportError, llm_max_tokens_cap
 
     room = int(n_ctx) - int(n_prompt) - CV_LLM_CTX_SLACK_TOKENS
     if room < CV_LLM_MIN_COMPLETION_TOKENS:
@@ -351,7 +514,10 @@ def completion_token_budget(n_ctx: int, n_prompt: int) -> int:
             CV_LLM_MIN_COMPLETION_TOKENS,
         )
         raise CvImportError("llm_prompt_too_long", "llm_prompt_too_long")
-    return room
+    cap, _source = llm_max_tokens_cap()
+    if cap < 1:
+        raise CvImportError("llm_bad_config", "llm_bad_config")
+    return min(int(cap), room)
 
 
 def prompt_token_count(llm: Any, messages: list[dict[str, Any]]) -> int:
@@ -577,15 +743,15 @@ def ensure_cv_llm_ready() -> str:
     if model is None:
         raise CvImportError(
             "model_missing",
-            "Das lokale CV-Modell (Qwen3.5-4B) fehlt. "
-            "Ohne dieses Modell kann der zugesagte CV-Import nicht laufen. "
-            "Kein Wechsel auf den alten DET-Parser.",
+            "Das lokale Lebenslauf-Modell fehlt in dieser Installation. "
+            "Bitte Karrierekrake neu installieren oder den Support kontaktieren. "
+            "Es wurde nichts übernommen.",
         )
     if not llama_cpp_importable():
         raise CvImportError(
             "llama_missing",
-            "Die lokale LLM-Laufzeit (llama-cpp) fehlt in dieser Installation. "
-            "CV-Import kann das Modell nicht starten. Kein DET-Fallback.",
+            "Die lokale Auswertung fehlt in dieser Installation. "
+            "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen.",
         )
     return "inprocess"
 
@@ -660,28 +826,19 @@ def llama_build_report_text() -> str:
 
 
 def _construct_llama(llama_cls: Any, **kwargs: Any) -> tuple[Any, str]:
-    """Construct Llama and keep stderr lines that name buffers and CPU features.
+    """Construct Llama. ``verbose`` stays false so llama.cpp does not write fd 2.
 
-    The caller passes ``verbose=True`` so the load is not silenced. This
-    function turns the llama logger back to errors afterwards.
+    Native llama.cpp writes to file descriptor 2 and bypasses Python logging.
+    The import child discards that descriptor. This function does not turn
+    the llama logger on.
     """
     import contextlib
     import io
 
     blob = io.StringIO()
-    setter = None
-    try:
-        from llama_cpp._logger import set_verbose as setter
-    except Exception:  # noqa: BLE001 — unit doubles must run without the wheel
-        setter = None
-    if setter is not None:
-        setter(True)
-    try:
-        with contextlib.redirect_stderr(blob):
-            llm = llama_cls(**kwargs)
-    finally:
-        if setter is not None:
-            setter(False)
+    kwargs["verbose"] = False
+    with contextlib.redirect_stderr(blob):
+        llm = llama_cls(**kwargs)
     return llm, blob.getvalue()
 
 
@@ -693,8 +850,9 @@ def chat_completion_inprocess(
 ) -> str:
     """Run one chat completion with in-process llama.cpp (no external server).
 
-    ``max_tokens`` is ``n_ctx - prompt tokens - slack``, not a fixed cap.
-    When the remainder is below ``CV_LLM_MIN_COMPLETION_TOKENS`` this raises
+    ``max_tokens`` is ``min(cap, n_ctx - prompt tokens - slack)``. The cap
+    is 4096 unless ``KARRIEREKRAKE_CV_LLM_MAX_TOKENS`` is set. When the
+    context remainder is below ``CV_LLM_MIN_COMPLETION_TOKENS`` this raises
     ``llm_prompt_too_long`` and does not generate. ``finish_reason=length``
     raises ``llm_output_truncated``. Both messages are the code; details are logged.
     """
@@ -705,8 +863,6 @@ def chat_completion_inprocess(
     n_threads, n_threads_batch, physical, logical, reserve = resolve_cv_llm_thread_plan()
     Llama = _llama_cls()
     with hold_production_model(role="cv_import", timeout_s=90.0):
-        # verbose=True only so llama.cpp emits buffer and CPU lines during
-        # load. It is turned off before any prompt evaluation.
         llm, load_log = _construct_llama(
             Llama,
             model_path=str(model_path),
@@ -714,7 +870,7 @@ def chat_completion_inprocess(
             n_threads=n_threads,
             n_threads_batch=n_threads_batch,
             n_batch=512,
-            verbose=True,
+            verbose=False,
         )
         try:
             llm.verbose = False
@@ -726,11 +882,7 @@ def chat_completion_inprocess(
             _log_llama_load_lines(load_log)
             from core.cv_phase_events import emit_diag
 
-            try:
-                info = llama_build_report_text().splitlines()[0]
-                load_line = "cv_llm_load " + info.removeprefix("llama_cpu_features=")
-            except Exception:  # noqa: BLE001
-                load_line = "cv_llm_load llama_system_info=unavailable"
+            load_line = "cv_llm_load llama_system_info=logged"
             logger.info("%s", load_line)
             emit_diag(load_line)
             _sample_private_commit("after_load")
@@ -740,7 +892,7 @@ def chat_completion_inprocess(
             else:
                 n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
-            from core.cv_docpick_import import choose_import_timeout_s
+            from core import cv_docpick_import as import_deadline
             from core.cv_phase_events import (
                 TokenProgressThrottle,
                 emit_generation_timeout,
@@ -750,17 +902,35 @@ def chat_completion_inprocess(
 
             # One formula evaluation, using the token counts above. The env
             # var overrides it. No second tokenization and no remaining time.
-            chosen_timeout_s = choose_import_timeout_s(
+            chosen_timeout_s = import_deadline.choose_import_timeout_s(
                 prompt_tokens=n_prompt,
                 max_tokens=budget,
+                n_threads_batch=n_threads_batch,
+                physical=physical,
+                reserve=reserve,
             )
+            config_line = cv_llm_config_line(
+                n_ctx=n_ctx,
+                n_threads=n_threads,
+                n_threads_batch=n_threads_batch,
+                physical=physical,
+                logical=logical,
+                reserve=reserve,
+                n_prompt=n_prompt,
+                max_tokens=budget,
+                timeout_s=chosen_timeout_s,
+                timeout_source=str(import_deadline._import_timeout_source or "formula"),
+                timeout_formula=int(import_deadline._import_timeout_formula_s or chosen_timeout_s),
+            )
+            logger.info("%s", config_line)
+            emit_diag(config_line)
             reset_generation_phase_events()
             emit_generation_timeout(chosen_timeout_s)
-            from core.cv_docpick_import import _enforce_timeout, import_started_at
+            from core.cv_docpick_import import import_started_at
 
             started = import_started_at()
             if started is not None:
-                _enforce_timeout(started, stage="before_generation")
+                import_deadline._enforce_timeout(started, stage="before_generation")
             thread_line = (
                 "cv_llm_inprocess n_ctx=%s n_threads=%s n_threads_batch=%s "
                 "physical=%s logical=%s reserve=%s source=%s "
@@ -856,7 +1026,3 @@ def _count_answer_tokens(llm: Any, text: str) -> int | None:
     except Exception:  # noqa: BLE001 — logging must not replace the model result
         logger.warning("cv_llm_inprocess answer token count failed")
         return None
-
-
-def is_frozen() -> bool:
-    return bool(getattr(sys, "frozen", False))

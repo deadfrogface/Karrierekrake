@@ -59,10 +59,41 @@ jobs:
         run: python scripts/privacy_scan.py
       - name: Privacy allowlist regression
         run: python -m pytest -q tests/test_privacy_scan.py
-      - name: Build onefile EXE
+      - name: Cache bundled CV model weights
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: |
+            kk-cv-gguf-
+      - name: Prepare bundled CV model (offline import)
+        shell: pwsh
+        env:
+          # Optional: official Qwen repo when gated; unsloth mirror is the public fallback.
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          # Cache GGUF between runs when possible; never commit weights.
+          $cache = Join-Path $env:RUNNER_TEMP "kk-cv-model-cache"
+          New-Item -ItemType Directory -Force -Path $cache | Out-Null
+          $env:KARRIEREKRAKE_MODELS_DIR = $cache
+          python scripts/prepare_bundled_cv_model.py --allow-download
+          if ($LASTEXITCODE -ne 0) { throw "prepare_bundled_cv_model failed" }
+          $gguf = "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf"
+          if (!(Test-Path $gguf)) { throw "bundled GGUF missing after prepare" }
+          $len = (Get-Item $gguf).Length
+          if ($len -lt 1000000000) { throw "bundled GGUF too small: $len" }
+          Write-Host "bundled_model_bytes=$len"
+      - name: Build onefile EXE (model + llama_cpp runtime bundled)
+        env:
+          KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
+          # Reuse cache / vendor GGUF from the prepare step for sidecar placement.
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
           if (!(Test-Path "dist\Karrierekrake.exe")) { Write-Error "EXE missing"; exit 1 }
+          python scripts/prepare_bundled_cv_model.py --also-sidecar dist
+          if ($LASTEXITCODE -ne 0) { Write-Error "sidecar model failed"; exit 1 }
           $item = Get-Item "dist\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small: $($item.Length)"; exit 1 }
           $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash
@@ -72,6 +103,7 @@ jobs:
           sha256=$hash
           python=3.12
           console=false
+          cv_model_bundled=1
           "@ | Set-Content dist\build_metadata.txt
           Get-Content dist\build_metadata.txt
           # Fail if this is a console subsystem EXE (users must not see a terminal).
@@ -175,9 +207,23 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-sidecar
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
           Get-Content dist/content_manifest.json | Select-Object -First 40
+      - name: Package Windows release zip (EXE + models)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $install = Join-Path $env:RUNNER_TEMP "kk-install-$([guid]::NewGuid())"
+          python scripts/package_windows_release.py `
+            --dist dist `
+            --out dist/Karrierekrake-Windows.zip `
+            --stage-install $install
+          if ($LASTEXITCODE -ne 0) { Write-Error "package_windows_release FAILED"; exit 1 }
+          if (!(Test-Path "$install\Karrierekrake.exe")) { Write-Error "staged EXE missing"; exit 1 }
+          if (!(Test-Path "$install\models\qwen3.5-4b\Qwen3.5-4B-Q4_K_M.gguf")) { Write-Error "staged model missing"; exit 1 }
+          "INSTALL_DIR=$install" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "Staged install: $install"
       - name: Packaged EXE smoke-test (isolated LOCALAPPDATA)
         shell: pwsh
         run: |
@@ -194,6 +240,48 @@ jobs:
           # Without --cv-import-child routing the child hits the lock and never writes --out.
           python scripts/ci_cv_import_child_exe_check.py --exe dist/Karrierekrake.exe
           if ($LASTEXITCODE -ne 0) { Write-Error "CV-import child EXE check FAILED"; exit 1 }
+      - name: Offline CV import + cover letter acceptance (release gate)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:QT_QPA_PLATFORM = "offscreen"
+          $env:PYTHONUTF8 = "1"
+          # Shipped defaults only. Tuning env vars are a developer override.
+          foreach ($name in @(
+            "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S",
+            "KARRIEREKRAKE_CV_LLM_MAX_TOKENS",
+            "KARRIEREKRAKE_CV_LLM_N_CTX",
+            "KARRIEREKRAKE_CV_LLM_N_THREADS",
+            "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH"
+          )) {
+            $val = [Environment]::GetEnvironmentVariable($name)
+            if (-not [string]::IsNullOrWhiteSpace($val)) {
+              Write-Error "Release gate refuses tuning env ${name}"
+              exit 1
+            }
+          }
+          # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
+          Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
+          Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
+          Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          # Run from staged install dir (simulates zip extract), not the build dist tree.
+          $exe = Join-Path $env:INSTALL_DIR "Karrierekrake.exe"
+          if (!(Test-Path $exe)) { Write-Error "INSTALL_DIR EXE missing: $exe"; exit 1 }
+          python scripts/ci_cv_import_exe_offline_e2e.py `
+            --exe $exe `
+            --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
+            --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf `
+            --out artifacts/cv_import_exe_offline_e2e.json `
+            --import-timeout 900
+          $code = $LASTEXITCODE
+          if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
+            Get-Content artifacts/cv_import_exe_offline_e2e.json
+          }
+          if ($code -ne 0) {
+            Write-Host "Offline CV import EXE acceptance FAILED — release blocked"
+            exit $code
+          }
       - name: Packaged legacy DB migration (library + EXE smoke)
         shell: pwsh
         run: |
@@ -230,15 +318,20 @@ jobs:
           $env:LOCALAPPDATA = $tmp.FullName
           python scripts/ci_packaged_reset_check.py
       - name: Upload EXE + metadata
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Karrierekrake-Windows-Smoke
           path: |
+            dist/Karrierekrake-Windows.zip
+            dist/Karrierekrake-Windows.zip.json
             dist/Karrierekrake.exe
+            dist/models/**
             dist/build_metadata.txt
             dist/content_manifest.json
             dist/smoke_test_result.txt
-          if-no-files-found: error
+            artifacts/cv_import_exe_offline_e2e.json
+          if-no-files-found: warn
           retention-days: 14
       - name: Summary
         if: always()
@@ -249,6 +342,11 @@ jobs:
           - build: see job
           - production content gate: see job
           - EXE startup smoke: see job
+          - offline CV import E2E: see artifacts/cv_import_exe_offline_e2e.json
           - legacy DB EXE: see job
           - reset: see job
           "@ | Add-Content $env:GITHUB_STEP_SUMMARY
+          if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
+            Add-Content $env:GITHUB_STEP_SUMMARY "### Offline CV metrics"
+            Get-Content artifacts/cv_import_exe_offline_e2e.json | Add-Content $env:GITHUB_STEP_SUMMARY
+          }

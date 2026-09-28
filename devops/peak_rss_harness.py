@@ -254,6 +254,7 @@ def launch_contained(
     cwd: str | None = None,
     console: bool = False,
     enforce_memory_bytes: int | None = None,
+    discard_stderr: bool = False,
 ) -> ContainedProcess:
     """Start ``argv`` inside one job (Windows) or one process group (elsewhere)."""
     if not argv:
@@ -264,8 +265,14 @@ def launch_contained(
             cwd=cwd,
             console=console,
             enforce_memory_bytes=enforce_memory_bytes,
+            discard_stderr=discard_stderr,
         )
-    return _launch_posix(argv, cwd=cwd, enforce_memory_bytes=enforce_memory_bytes)
+    return _launch_posix(
+        argv,
+        cwd=cwd,
+        enforce_memory_bytes=enforce_memory_bytes,
+        discard_stderr=discard_stderr,
+    )
 
 
 def _launch_posix(
@@ -273,12 +280,14 @@ def _launch_posix(
     *,
     cwd: str | None,
     enforce_memory_bytes: int | None,
+    discard_stderr: bool = False,
 ) -> ContainedProcess:
     proc = subprocess.Popen(
         argv,
         cwd=cwd,
         start_new_session=True,
         stdin=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL if discard_stderr else None,
     )
     notes = [
         "posix_process_group",
@@ -304,6 +313,7 @@ def _launch_windows(
     cwd: str | None,
     console: bool,
     enforce_memory_bytes: int | None,
+    discard_stderr: bool = False,
 ) -> ContainedProcess:
     import ctypes
     import subprocess as sp
@@ -325,6 +335,8 @@ def _launch_windows(
 
     port = None
     notes = ["assigned_while_suspended", "breakaway_not_granted"]
+    if discard_stderr:
+        notes.append("stderr_discarded_by_child")
     if enforce_memory_bytes is not None:
         try:
             port = associate_job_memory_completion_port(k, job)
