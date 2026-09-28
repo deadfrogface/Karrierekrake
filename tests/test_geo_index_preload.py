@@ -467,7 +467,7 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         assert loc.home_longitude == pytest.approx(13.3846)
         assert "nicht auflösbar" not in _persisted_place_text(finished)
         assert "nicht prüfbar" not in _persisted_place_text(finished)
-        assert [code for code, _ident in builds] == ["DE", "AT", "CH"]
+        assert [code for code, _ident in builds] == ["DE", "AT", "CH", "NL", "BE"]
         assert {ident for _code, ident in builds} == {worker_ident}
         assert dialogs == ["Gespeichert."]
     finally:

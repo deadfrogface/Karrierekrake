@@ -196,10 +196,22 @@ def build_job_fit_viewmodel(
 
     notice = home_notice if home_notice is not None else _home_notice(config)
     home_resolved = notice is None or getattr(notice, "status", "resolved") == "resolved"
-    if home_resolved and job.distance_km is not None:
-        dist_txt = f"{job.distance_km:.0f} km"
+    src = (getattr(job, "distance_source", "") or "").strip()
+    dist = getattr(job, "distance_km", None)
+    err = (getattr(job, "distance_error", "") or "").strip()
+    if home_resolved and dist is not None and (
+        src.startswith("brouter") or src == "brouter_v1"
+    ):
+        dist_txt = f"{float(dist):.0f} km Fahrstrecke"
         if not any("km" in b.text.casefold() for b in bullets):
             bullets.append(FitBullet(kind="pass", text=dist_txt))
+    elif home_resolved and dist is None:
+        from desktop.i18n import tr
+
+        reason = err or tr("jobs.commute_road_unknown_generic")
+        unknown = tr("jobs.commute_road_unknown", reason=reason)
+        if not any("fahrstrecke" in (b.text or "").casefold() for b in bullets):
+            bullets.append(FitBullet(kind="warn", text=unknown))
     elif not home_resolved:
         from desktop.i18n import tr
 

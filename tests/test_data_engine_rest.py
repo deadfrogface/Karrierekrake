@@ -199,9 +199,13 @@ def test_manual_current_job_is_not_parser_debt():
 
 
 def _assert_berlin_distance(tmp_path) -> None:
+    from unittest.mock import patch
+
     from core.database import Database
     from core.geo_dataset import GeoDatasetManager
+    from core.geo_resolve import haversine_km
     from core.location import LocationService, enrich_job_locations
+    from core.road_route_brouter import BROUTER_ENGINE_ID, RoadRouteResult
 
     info = GeoDatasetManager(config_root=tmp_path).ensure_active()
     assert info.valid, info.message
@@ -241,8 +245,16 @@ def _assert_berlin_distance(tmp_path) -> None:
         city="Berlin, Deutschland",
         remote_type=RemoteType.ONSITE.value,
     )
-    enrich_job_locations([job], svc)
+
+    def _echo_airline(lat1, lon1, lat2, lon2):
+        km = round(haversine_km(lat1, lon1, lat2, lon2), 3)
+        return RoadRouteResult(ok=True, distance_km=km, engine=BROUTER_ENGINE_ID)
+
+    with patch("core.location._route_road_km", side_effect=_echo_airline):
+        enrich_job_locations([job], svc)
+    assert job.airline_km is not None
     assert job.distance_km is not None
+    assert job.distance_source == BROUTER_ENGINE_ID
     assert job.distance_km < 30
     assert distance_exclude(job, cfg) is None
     assert job.country_code == "DE"

@@ -1,0 +1,135 @@
+{
+  "comparison_type": "AGENT_VM_GEO_RESOLVE_SPOTCHECK_NOT_LAPTOP",
+  "dataset_scope_note": "Bundled local geo DE/AT/CH/NL/BE via GeoNames/pgeocode",
+  "cases": [
+    {
+      "name": "ambiguous_neustadt_de",
+      "input": {
+        "city": "Neustadt",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 51.4672,
+      "lon": 10.4673,
+      "precision": "city_centroid",
+      "reason": "",
+      "display": "Neustadt, DE",
+      "source": "geonames",
+      "country_code": "DE"
+    },
+    {
+      "name": "ambiguous_frankfurt",
+      "input": {
+        "city": "Frankfurt",
+        "country_code": "DE"
+      },
+      "status": "AMBIGUOUS",
+      "ok": false,
+      "lat": null,
+      "lon": null,
+      "precision": "unknown",
+      "reason": "city_multi_place",
+      "display": "Frankfurt",
+      "source": "unresolved",
+      "country_code": "DE"
+    },
+    {
+      "name": "plz_koeln",
+      "input": {
+        "postal_code": "50667",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.9387,
+      "lon": 6.9547,
+      "precision": "postal_centroid",
+      "reason": "",
+      "display": "50667, Köln, DE",
+      "source": "geonames",
+      "country_code": "DE"
+    },
+    {
+      "name": "plz_maastricht",
+      "input": {
+        "city": "Maastricht",
+        "postal_code": "6211",
+        "country_code": "NL"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.8503,
+      "lon": 5.6882,
+      "precision": "postal_centroid",
+      "reason": "",
+      "display": "6211, Maastricht, NL",
+      "source": "geonames",
+      "country_code": "NL"
+    },
+    {
+      "name": "plz_6211_no_country",
+      "input": {
+        "postal_code": "6211"
+      },
+      "status": "AMBIGUOUS",
+      "ok": false,
+      "lat": null,
+      "lon": null,
+      "precision": "unknown",
+      "reason": "plz_needs_country",
+      "display": "6211",
+      "source": "unresolved",
+      "country_code": ""
+    },
+    {
+      "name": "plz_eupen_be",
+      "input": {
+        "city": "Eupen",
+        "postal_code": "4700",
+        "country_code": "BE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.6279,
+      "lon": 6.0365,
+      "precision": "postal_centroid",
+      "reason": "",
+      "display": "4700, Eupen, BE",
+      "source": "geonames",
+      "country_code": "BE"
+    },
+    {
+      "name": "city_eupen_be_no_plz",
+      "input": {
+        "city": "Eupen",
+        "country_code": "BE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.6279,
+      "lon": 6.0365,
+      "precision": "city_centroid",
+      "reason": "",
+      "display": "Eupen, BE",
+      "source": "geonames",
+      "country_code": "BE"
+    },
+    {
+      "name": "city_aachen_no_plz",
+      "input": {
+        "city": "Aachen",
+        "country_code": "DE"
+      },
+      "status": "RESOLVED",
+      "ok": true,
+      "lat": 50.76775,
+      "lon": 6.1029,
+      "precision": "city_centroid",
+      "reason": "",
+      "display": "Aachen, DE",
+      "source": "geonames",
+      "country_code": "DE"
+    }
+  ]
+}

@@ -47,23 +47,27 @@ from desktop.widgets.wheel_guard import IntentionalWheelSpinBox
 
 
 def format_commute_label(job, *, with_duration: bool = True, home_status: str = "resolved") -> str:
-    """UI distance text. Luftlinie only when the current home is resolved.
+    """UI distance text: only BRouter Fahrstrecke, never Luftlinie kilometres.
 
-    A stored kilometre value is shown for a resolved home even if
-    ``distance_source`` was never persisted. An unresolved home never claims
-    a radius and does not keep a stale „Standort nicht prüfbar“ from an older run.
+    Airline remains an invisible search prefilter (job.airline_km) and must not
+    appear here. Unresolved home skips radius claims.
     """
-    del with_duration  # no drive-time in v1
+    del with_duration  # no drive-time claim without a duration source
     remote = (getattr(job, "remote_type", "") or "").lower()
     if remote == "remote":
         return tr("jobs.commute_remote")
     if home_status in {"ambiguous", "unknown", "missing"}:
         return tr("jobs.distance_skipped")
+    err = (getattr(job, "distance_error", "") or "").strip()
+    src = (getattr(job, "distance_source", "") or "").strip()
     dist = getattr(job, "distance_km", None)
-    if dist is None:
-        return tr("jobs.commute_unknown")
-    km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
-    return tr("jobs.commute_airline", km=km)
+    if dist is not None and (src.startswith("brouter") or src == "brouter_v1"):
+        km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
+        return tr("jobs.commute_road", km=km)
+    # No BRouter km → honest unknown. Never fall back to airline_km / haversine.
+    if not err:
+        err = tr("jobs.commute_road_unknown_generic")
+    return tr("jobs.commute_road_unknown", reason=err)
 
 
 def _parse_discovered(value: str | None) -> datetime:

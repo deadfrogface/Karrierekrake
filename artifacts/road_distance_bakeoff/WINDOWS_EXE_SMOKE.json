@@ -1,0 +1,32 @@
+{
+  "platform": "linux",
+  "frozen": false,
+  "comparison_type": "NOT_WINDOWS_AGENT_VM_PROXY",
+  "manual_java_required": false,
+  "cold_start": {
+    "install_or_ensure_s": 0.0,
+    "java_ready_s": 0.001,
+    "first_route_s": 1.138,
+    "total_s": 1.139
+  },
+  "first_route": {
+    "ok": true,
+    "km": 39.679,
+    "error": "",
+    "snap_offset_m": 131.6
+  },
+  "peak_rss_mb_process_group": 24.9,
+  "dirs": {
+    "root": "/tmp/kk_brouter_runtime",
+    "segments": "/tmp/kk_brouter_runtime/segments4",
+    "profiles": "/tmp/kk_brouter_runtime/profiles2",
+    "custom_profiles": "/tmp/kk_brouter_runtime/customprofiles",
+    "jar": "/tmp/kk_brouter_runtime/brouter-all.jar",
+    "cache": "/tmp/kk_brouter_runtime/cache"
+  },
+  "attribution_file": "/tmp/kk_brouter_runtime/OSM_ATTRIBUTION.txt",
+  "qwen_parallel": {
+    "ran": false
+  },
+  "offline": true
+}

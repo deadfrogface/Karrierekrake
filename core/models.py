@@ -55,12 +55,17 @@ class Job:
     country_code: str = ""
     latitude: float | None = None
     longitude: float | None = None
-    # Airline (Luftlinie) km via local Haversine — never invented drive distance.
+    # Airline (Luftlinie) km via local Haversine — never shown as Fahrstrecke.
+    airline_km: float | None = None
+    # Authoritative commute distance for the radius filter when road routing works:
+    # BRouter Fahrstrecke (distance_source=brouter_v1). None when unknown.
     distance_km: float | None = None
-    # Always None in v1 (no drive-time claims without a local router).
+    # Always None in v1 when no duration claim is available.
     commute_duration_minutes: float | None = None
-    # "haversine_v1" when distance_km is authoritative airline distance.
+    # "brouter_v1" (road) or "haversine_v1" (legacy airline-only runs).
     distance_source: str = ""
+    # Human-readable reason when Fahrstrecke cannot be determined.
+    distance_error: str = ""
     remote_type: str = RemoteType.UNKNOWN.value
     employment_type: str = ""
     salary_min: float | None = None

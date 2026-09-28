@@ -1,11 +1,12 @@
-"""Local geocoding cache and Haversine airline distance (local-first).
+"""Local geocoding cache, Haversine airline prefilter, and BRouter Fahrstrecke.
 
-Production authority: bundled/updated GeoNames DACH postal data + haversine_v1.
-No Google Maps / Places / Routes / Distance Matrix.
-No public Nominatim.
+Production authority: bundled/updated GeoNames DE/AT/CH/NL/BE postal data.
+Airline (haversine_v1) is a fast radius prefilter only.
+Authoritative commute distance for remaining jobs is local BRouter road-km.
 
-On resolution failure → DISTANCE_UNKNOWN (None). Never invent km.
-max_commute_km means airline (Luftlinie) ≤ N km.
+On resolution or routing failure → DISTANCE_UNKNOWN (None). Never invent km.
+Never present airline kilometres as Fahrstrecke.
+max_commute_km means: airline prefilter, then Fahrstrecke ≤ N km.
 
 Home coordinates are resolved once per LocationService instance / run.
 Failed home resolution must NOT silently use arbitrary Germany center coordinates.
@@ -304,6 +305,9 @@ class EnrichStats:
     cross_border_enabled: bool = True
     airline_ok: int = 0
     airline_unknown: int = 0
+    airline_prefilter_excluded: int = 0
+    road_ok: int = 0
+    road_unknown: int = 0
     # Back-compat aliases used by older stats consumers
     google_route_ok: int = 0
     google_route_unknown: int = 0
@@ -873,27 +877,105 @@ def enrich_job_locations(
             if lat is not None:
                 job.latitude = lat
                 job.longitude = lon
-            if dist is not None:
-                job.distance_km = dist
-                if hasattr(job, "distance_source"):
-                    job.distance_source = HAVERSINE_ALGORITHM
-            else:
-                job.distance_km = None
-                if hasattr(job, "distance_source"):
-                    job.distance_source = ""
+            # Airline is invisible prefilter only — never written to distance_km.
+            if hasattr(job, "airline_km"):
+                job.airline_km = dist
+            job.distance_km = None
+            if hasattr(job, "distance_source"):
+                job.distance_source = ""
+            if hasattr(job, "distance_error"):
+                job.distance_error = (
+                    "" if dist is not None else "Standort nicht auflösbar"
+                )
             if hasattr(job, "commute_duration_minutes"):
                 job.commute_duration_minutes = None
             cc = getattr(job, "country_code", "") or sample_place.country_code
             if cc and hasattr(job, "country_code"):
                 job.country_code = cc
 
-    location.stats.google_route_ok = location.stats.airline_ok
-    location.stats.google_route_unknown = location.stats.airline_unknown
+        # Road distance only for jobs that survive the airline prefilter
+        # (airline > radius → skip BRouter; airline == radius still routes).
+        max_km = float(
+            getattr(getattr(location.config.profile, "location", None), "max_distance_km", 0)
+            or 0
+        )
+        home_coords = location.ensure_home_coords()
+        if (
+            home_coords is not None
+            and lat is not None
+            and lon is not None
+            and dist is not None
+            and (max_km <= 0 or float(dist) <= max_km)
+        ):
+            road = _route_road_km(home_coords[0], home_coords[1], float(lat), float(lon))
+            for job in group:
+                if road.ok and road.distance_km is not None:
+                    job.distance_km = float(road.distance_km)
+                    if hasattr(job, "distance_source"):
+                        job.distance_source = road.engine
+                    if hasattr(job, "distance_error"):
+                        job.distance_error = ""
+                    location.stats.road_ok += 1
+                else:
+                    job.distance_km = None
+                    if hasattr(job, "distance_source"):
+                        job.distance_source = ""
+                    if hasattr(job, "distance_error"):
+                        job.distance_error = _road_error_label(road.error)
+                    location.stats.road_unknown += 1
+        elif dist is not None and max_km > 0 and float(dist) > max_km:
+            # Airline prefilter hit: keep airline_km for distance_exclude only.
+            # distance_km stays None — never surface airline as Fahrstrecke.
+            for job in group:
+                if hasattr(job, "airline_km"):
+                    job.airline_km = dist
+                job.distance_km = None
+                if hasattr(job, "distance_source"):
+                    job.distance_source = ""
+                if hasattr(job, "distance_error"):
+                    job.distance_error = ""
+                location.stats.airline_prefilter_excluded = (
+                    getattr(location.stats, "airline_prefilter_excluded", 0) + 1
+                )
+
+    location.stats.google_route_ok = location.stats.road_ok or location.stats.airline_ok
+    location.stats.google_route_unknown = (
+        location.stats.road_unknown or location.stats.airline_unknown
+    )
     progress(
         f"Standorte fertig: {len(order)}/{total_q} Orte — "
         f"gelöst {location.stats.resolved}, Cache {location.stats.cached}, "
         f"ungeklärt {location.stats.failed}, Remote übersprungen {location.stats.remote_skipped}, "
-        f"Luftlinie OK {location.stats.airline_ok}, UNKNOWN {location.stats.airline_unknown}"
+        f"Luftlinie OK {location.stats.airline_ok}, UNKNOWN {location.stats.airline_unknown}, "
+        f"Fahrstrecke OK {location.stats.road_ok}, UNKNOWN {location.stats.road_unknown}"
         + ("" if home.resolved else " | Distanzfilter inaktiv (Heimat unklar)")
     )
     return jobs
+
+
+def _road_error_label(error: str) -> str:
+    text = (error or "").strip()
+    low = text.casefold()
+    if "island" in low:
+        return "Routing-Insel / kein Straßenanschluss"
+    if "start:" in low or "jar missing" in low or "profiles missing" in low:
+        return "Routing-Dienst nicht verfügbar"
+    if "segment" in low or "missing" in low:
+        return "Kartensegment fehlt"
+    if "http_4" in low or "http_5" in low:
+        return "Routingfehler"
+    if not text:
+        return "Routingfehler"
+    # Keep short — UI appends this in parentheses.
+    return text[:80]
+
+
+def _route_road_km(
+    lat1: float, lon1: float, lat2: float, lon2: float
+):
+    from core.road_route_brouter import RoadRouteResult, get_brouter_runtime
+
+    try:
+        return get_brouter_runtime().route(lat1, lon1, lat2, lon2)
+    except Exception as exc:  # noqa: BLE001
+        return RoadRouteResult(ok=False, distance_km=None, error=str(exc))

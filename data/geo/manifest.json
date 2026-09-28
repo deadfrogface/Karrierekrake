@@ -1,6 +1,6 @@
 {
-  "dataset_id": "dach-geonames-postal-v1",
-  "version": "2026-03-geonames-pgeocode",
+  "dataset_id": "local-geo-geonames-postal-v2",
+  "version": "2026-09-27-geonames-de-at-ch-nl-be",
   "source": "geonames",
   "source_url": "https://download.geonames.org/export/zip/",
   "license": "Creative Commons Attribution 4.0 (GeoNames)",
@@ -8,29 +8,43 @@
   "countries": [
     "DE",
     "AT",
-    "CH"
+    "CH",
+    "NL",
+    "BE"
   ],
   "algorithm": "haversine_v1",
   "earth_radius_km": 6371.0088,
-  "bundled_at": "2026-09-21",
+  "bundled_at": "2026-09-27",
   "files": {
     "DE": {
       "path": "geonames/DE.txt",
       "sha256": "e2a39fbd4dca31d6aa829c4b51f71be393a295a1164124a0cfa90f41afa7158f",
       "bytes": 2382873,
-      "lines": 23298
+      "lines": 23297
     },
     "AT": {
       "path": "geonames/AT.txt",
       "sha256": "78788584dcc94585a8d53b19b184e50fd1918be9982afca167fec9dcb8a78a52",
       "bytes": 2135462,
-      "lines": 19226
+      "lines": 19225
     },
     "CH": {
       "path": "geonames/CH.txt",
       "sha256": "fa341c2a5ab0744e98000936ec9538a5ddbab3581c305f90e708dd33e5a98066",
       "bytes": 421036,
-      "lines": 4521
+      "lines": 4520
+    },
+    "NL": {
+      "path": "geonames/NL.txt",
+      "sha256": "27d954315f0919d2bcb2b179786f729c16f9a5f3d5bfe6327cfb5ce98084316f",
+      "bytes": 325343,
+      "lines": 4334
+    },
+    "BE": {
+      "path": "geonames/BE.txt",
+      "sha256": "4beeb5c2c5ef040b9afd9326d859c9f19b479be869bfe7c651de6b2c3ef27a43",
+      "bytes": 210711,
+      "lines": 2781
     }
   }
 }

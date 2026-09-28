@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -202,9 +202,17 @@ def _minimal_config(tmp_path, *, home_plz="10115", country="DE", radius=50.0):
     return db, cfg
 
 
-def test_enrich_sets_airline_source(tmp_path):
+def test_enrich_sets_distance_fields(tmp_path):
     db, cfg = _minimal_config(tmp_path)
     svc = LocationService(db, cfg)
+
+    def _fake_road(lat1, lon1, lat2, lon2):
+        from core.road_route_brouter import RoadRouteResult
+
+        return RoadRouteResult(ok=True, distance_km=4.2, engine="brouter_v1")
+
+    import core.location as loc_mod
+
     jobs = [
         Job(
             title="SE",
@@ -215,10 +223,13 @@ def test_enrich_sets_airline_source(tmp_path):
             remote_type=RemoteType.ONSITE.value,
         )
     ]
-    enrich_job_locations(jobs, svc)
-    assert jobs[0].distance_source == HAVERSINE_ALGORITHM
-    assert jobs[0].distance_km is not None
+    with patch.object(loc_mod, "_route_road_km", side_effect=_fake_road):
+        enrich_job_locations(jobs, svc)
+    assert jobs[0].airline_km is not None
+    assert jobs[0].distance_source == "brouter_v1"
+    assert jobs[0].distance_km == 4.2
     assert jobs[0].commute_duration_minutes is None
+    assert not jobs[0].distance_error
 
 
 def test_remote_skips_radius(tmp_path):
@@ -227,7 +238,7 @@ def test_remote_skips_radius(tmp_path):
     assert distance_exclude(job, cfg) is None
 
 
-def test_unknown_not_zero_km(tmp_path):
+def test_unknown_road_not_silently_discarded(tmp_path):
     db, cfg = _minimal_config(tmp_path)
     job = Job(
         title="SE",
@@ -235,11 +246,14 @@ def test_unknown_not_zero_km(tmp_path):
         city="",
         postal_code="",
         remote_type=RemoteType.ONSITE.value,
+        airline_km=None,
         distance_km=None,
+        distance_error="Standort nicht auflösbar",
     )
-    reason = distance_exclude(job, cfg)
-    assert reason is not None
-    assert "prüfbar" in reason
+    # UNKNOWN must not invent 0 km and must not silently discard the job.
+    assert distance_exclude(job, cfg) is None
+    assert job.distance_km is None
+    assert job.distance_error
 
 
 def test_pipeline_geo_only_after_fachlich(tmp_path, monkeypatch):

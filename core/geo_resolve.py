@@ -1,4 +1,4 @@
-"""Local DACH place resolution + Haversine airline distance (authoritative).
+"""Local DE/AT/CH/NL/BE place resolution + Haversine airline distance.
 
 Production path (local-first):
   1. Trusted explicit coordinates with provenance
@@ -6,9 +6,13 @@ Production path (local-first):
   3. Unique country_code + city → city centroid
   4. Otherwise UNKNOWN / AMBIGUOUS — never guess
 
+Country is required for shared 4-digit PLZ shapes (AT/CH/NL/BE). Example:
+``6211`` + ``NL`` must resolve in NL, never silently to CH.
+
 No Google Maps / Places / Routes / Distance Matrix.
 No public Nominatim production calls.
-Distance = great-circle (Luftlinie) with documented R = 6371.0088 km (haversine_v1).
+Airline distance = great-circle with R = 6371.0088 km (haversine_v1).
+Road distance (Fahrstrecke) is handled separately via BRouter.
 """
 
 from __future__ import annotations
@@ -29,6 +33,7 @@ from core.geo_dataset import (
 )
 from core.geo_normalize import (
     DACH_COUNTRY_CODES,
+    LOCAL_GEO_COUNTRY_CODES,
     NormalizedPlace,
     ResolutionStatus,
     normalize_country_code,
@@ -193,6 +198,7 @@ _ready_callbacks: list[Callable[[], None]] = []
 _test_hold: threading.Event | None = None
 _generation = 0
 _DACH_PRELOAD = ("DE", "AT", "CH")
+_LOCAL_GEO_PRELOAD = ("DE", "AT", "CH", "NL", "BE")
 
 
 class _IndexLoading:
@@ -243,6 +249,7 @@ def _caller_is_ui_thread() -> bool:
 
 
 def _all_countries_loaded() -> bool:
+    # DACH is the minimum readiness gate for the UI; NL/BE load in the same pass.
     return all(cc in _pgeocode_index for cc in _DACH_PRELOAD)
 
 
@@ -358,7 +365,7 @@ def _preload_worker(gen: int) -> None:
     if hold is not None:
         # The test owns the release. A timeout here would let a second builder race the save.
         hold.wait()
-    for cc in _DACH_PRELOAD:
+    for cc in _LOCAL_GEO_PRELOAD:
         if gen != _generation:
             return
         _pgeocode_nominatim(cc)
@@ -525,7 +532,7 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
     UI callers see ``_INDEX_LOADING`` and must not invent coordinates.
     """
     cc = normalize_country_code(country_code)
-    if cc not in DACH_COUNTRY_CODES:
+    if cc not in LOCAL_GEO_COUNTRY_CODES:
         return None
     hit = _pgeocode_index.get(cc)
     if hit is not None:
@@ -904,6 +911,16 @@ def resolve_place_offline(place: NormalizedPlace) -> PlaceResolution:
         if cc:
             return resolve_postal_pgeocode(place.postal_code, cc)
         candidates = plz_candidate_countries(place.postal_code)
+        # Shared 4-digit PLZ shapes (AT/CH/NL/BE) must not silently pick one
+        # country when the caller omitted country — e.g. 6211 ≠ CH by default.
+        if len(candidates) > 1:
+            return PlaceResolution(
+                status="AMBIGUOUS",
+                reason="plz_needs_country",
+                display_name=place.postal_code,
+                data_source=GEO_DATA_SOURCE_UNRESOLVED,
+                data_version=GEO_DATA_VERSION_UNRESOLVED,
+            )
         hits: list[PlaceResolution] = []
         for cand in candidates:
             res = resolve_postal_pgeocode(place.postal_code, cand)

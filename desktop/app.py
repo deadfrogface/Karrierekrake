@@ -228,6 +228,10 @@ def main() -> int:
         return _smoke_test()
     if "--smoke-test" in sys.argv:
         return _smoke_test()
+    if "--smoke-brouter" in sys.argv:
+        from scripts.smoke_brouter_windows import main as _smoke_brouter
+
+        return int(_smoke_brouter())
     if "--smoke-browser" in sys.argv:
         return _smoke_browser()
     if "--smoke-cv-corpus" in sys.argv:

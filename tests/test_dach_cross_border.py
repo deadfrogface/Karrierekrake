@@ -43,6 +43,17 @@ def _geo_setup(tmp_path, monkeypatch):
     reset_pgeocode_index_for_tests()
     monkeypatch.setenv("KARRIEREKRAKE_GEO_DATA_DIR", str(tmp_path / "geo_active"))
     GeoDatasetManager(config_root=tmp_path).ensure_active()
+    # Unit tests assert airline geometry; keep road routing deterministic.
+    import core.location as loc_mod
+    from core.road_route_brouter import RoadRouteResult
+
+    def _echo_airline(lat1, lon1, lat2, lon2):
+        from core.road_route_brouter import BROUTER_ENGINE_ID
+
+        km = round(haversine_km(lat1, lon1, lat2, lon2), 3)
+        return RoadRouteResult(ok=True, distance_km=km, engine=BROUTER_ENGINE_ID)
+
+    monkeypatch.setattr(loc_mod, "_route_road_km", _echo_airline)
     yield
     reset_geo_dataset_manager_for_tests()
     reset_pgeocode_index_for_tests()
@@ -60,9 +71,11 @@ class _Job:
     country_code: str = ""
     latitude: float | None = None
     longitude: float | None = None
+    airline_km: float | None = None
     distance_km: float | None = None
     commute_duration_minutes: float | None = None
     distance_source: str = ""
+    distance_error: str = ""
     remote_type: str = RemoteType.ONSITE.value
     description: str = ""
 
@@ -236,10 +249,15 @@ def test_enrich_konstanz_example_e2e(tmp_path, monkeypatch):
         ),
     ]
     enrich_job_locations(jobs, svc)
+    assert jobs[0].airline_km is not None and jobs[0].airline_km <= 25
+    assert jobs[1].airline_km is not None and jobs[1].airline_km <= 25
+    assert jobs[2].airline_km is not None and jobs[2].airline_km > 25
     assert jobs[0].distance_km is not None and jobs[0].distance_km <= 25
     assert jobs[1].distance_km is not None and jobs[1].distance_km <= 25
-    assert jobs[2].distance_km is not None and jobs[2].distance_km > 25
-    assert all(j.distance_source == HAVERSINE_ALGORITHM for j in jobs if j.distance_km is not None)
+    assert jobs[2].distance_km is None  # Stage A prefilter skipped BRouter
+    assert jobs[0].distance_source == "brouter_v1"
+    assert jobs[1].distance_source == "brouter_v1"
+    assert jobs[2].distance_source == ""
 
 
 def test_cross_border_toggle_off_skips_foreign_plz(tmp_path, monkeypatch):
@@ -268,18 +286,14 @@ def test_cross_border_toggle_off_skips_foreign_plz(tmp_path, monkeypatch):
 def test_plz_6900_ambiguous_without_country():
     place = normalize_place_fields(postal_code="6900")
     res = resolve_place_offline(place)
-    assert res.status in {"AMBIGUOUS", "UNKNOWN"} or (
-        res.status == "RESOLVED" and res.country_code in {"AT", "CH"}
-    )
-    # Without country, multi-hit must not invent a single silent country when both resolve
-    if place.postal_code == "6900" and not place.country_code:
-        candidates = plz_candidate_countries("6900")
-        assert set(candidates) == {"AT", "CH"}
-        hits = [resolve_postal_pgeocode("6900", c) for c in candidates]
-        ok_hits = [h for h in hits if h.ok]
-        assert len(ok_hits) >= 2
-        # resolve_place_offline should mark AMBIGUOUS
-        assert res.status == "AMBIGUOUS"
+    # Shared 4-digit PLZ without country must stay AMBIGUOUS (AT/CH/NL/BE).
+    assert res.status == "AMBIGUOUS"
+    assert res.reason in {"plz_needs_country", "plz_multi_country"}
+    candidates = plz_candidate_countries("6900")
+    assert set(candidates) == {"AT", "CH", "NL", "BE"}
+    hits = [resolve_postal_pgeocode("6900", c) for c in ("AT", "CH")]
+    ok_hits = [h for h in hits if h.ok]
+    assert len(ok_hits) >= 2
 
 
 def test_plz_6900_with_country_at():
@@ -480,9 +494,11 @@ def test_plz_resolves_locally_without_google(tmp_path):
         _Job(postal_code="78462", country_code="DE", city="Konstanz"),
     ]
     enrich_job_locations(jobs, svc)
+    assert jobs[0].airline_km is not None
+    assert jobs[1].airline_km is not None
     assert jobs[0].distance_km is not None
     assert jobs[1].distance_km is not None
-    assert jobs[0].distance_source == HAVERSINE_ALGORITHM
+    assert jobs[0].distance_source == "brouter_v1"
 
 
 def test_unknown_city_no_coords_stays_unknown(tmp_path):
