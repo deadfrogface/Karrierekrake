@@ -239,9 +239,12 @@ def test_training_row_is_not_written_as_a_job():
 
 def test_school_staff_station_can_still_match_the_ad():
     """A job at a school stays employment. Only the course of study is training."""
-    cfg = _cfg(stations=[
-        ExperienceEntry(title="Lehrer", company="Berufskolleg Beispiel", source="manual"),
-    ])
+    cfg = _cfg(
+        "Unterricht",
+        stations=[
+            ExperienceEntry(title="Lehrer", company="Berufskolleg Beispiel", source="manual"),
+        ],
+    )
     job = Job(
         id="j-staff",
         source="indeed",
@@ -255,7 +258,7 @@ def test_school_staff_station_can_still_match_the_ad():
     assert "Berufskolleg Beispiel" in result.text
 
 
-def test_matching_skill_without_station_is_enough():
+def test_one_matching_skill_is_not_enough():
     cfg = _cfg("Tourenplanung")
     job = Job(
         id="j-skill",
@@ -265,8 +268,24 @@ def test_matching_skill_without_station_is_enough():
         description="Wir planen Touren. Anforderungen: Tourenplanung und SAP.",
     )
     result = compose_cover_letter(job, cfg)
+    assert result.ok is False
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
+
+
+def test_two_matching_skills_are_enough():
+    cfg = _cfg("Tourenplanung", "SAP")
+    job = Job(
+        id="j-skills",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Wir planen Touren. Anforderungen: Tourenplanung und SAP.",
+    )
+    result = compose_cover_letter(job, cfg)
     assert result.ok is True
     assert "Tourenplanung" in result.text
+    assert "SAP" in result.text
     _assert_clean(result.text)
 
 
@@ -296,7 +315,7 @@ def test_unconfirmed_cv_section_is_not_evidence():
 
 
 def test_confirmed_review_allows_matching_skill():
-    cfg = _cfg("Tourenplanung")
+    cfg = _cfg("Tourenplanung", "Leitstand")
 
     class _Review:
         confirmed = True
@@ -434,7 +453,7 @@ def test_demo_source_excluded_from_queue_and_letter(tmp_path: Path):
 
 
 def test_pasted_description_uses_clean_text_and_same_gate(tmp_path: Path):
-    cfg = _cfg("Tourenplanung")
+    cfg = _cfg("Tourenplanung", "Leitstand")
     job = Job(id="j-paste", source="indeed", title="Disponent", company="Nordmole Musterlogistik GmbH")
     db = Database(tmp_path / "jobs.db")
     refused = set_pasted_job_description(job, "  \n\t ", cfg, db=db)
@@ -455,7 +474,7 @@ def test_pasted_description_uses_clean_text_and_same_gate(tmp_path: Path):
 
 
 def test_approval_writes_cover_file_and_description(tmp_path: Path):
-    cfg = _cfg("Tourenplanung")
+    cfg = _cfg("Tourenplanung", "SAP")
     cfg.root = tmp_path
     description = "Anforderungen: Tourenplanung und SAP in der Disposition."
     job = Job(
@@ -476,6 +495,8 @@ def test_approval_writes_cover_file_and_description(tmp_path: Path):
     meta = json.loads((tmp_path / "cover_letters" / "job-approve-1.meta.json").read_text(encoding="utf-8"))
     assert meta["description_used"] == clean_text(description)
     assert meta["job_id"] == job.id
+    assert meta["edited"] is False
+    assert meta["generated_sha256"]
 
     job.description = "   "
     try:
@@ -532,7 +553,7 @@ def test_disposition_fixture_is_synthetic_and_idempotent(tmp_path: Path):
     assert rows[0].status != JobStatus.QUEUED.value
     assert rows[0].description == FIXTURE_DESCRIPTION.strip() or "Anforderungen" in rows[0].description
 
-    cfg = _cfg("Tourenplanung")
+    cfg = _cfg("Tourenplanung", "SAP")
     letter = compose_cover_letter(rows[0], cfg)
     assert letter.ok is True
     _assert_clean(letter.text)
@@ -698,7 +719,7 @@ def test_n_jobs_do_not_compile_evidence_patterns(monkeypatch):
 
 
 def test_fixture_cover_letter_allowed_demo_refused():
-    cfg = _cfg("Tourenplanung")
+    cfg = _cfg("Tourenplanung", "SAP")
     description = "Anforderungen: Tourenplanung und SAP in der Disposition."
     fixture = build_fixture_job()
     fixture.description = description
@@ -730,3 +751,240 @@ def test_disposition_fixture_remove(tmp_path: Path):
     assert remove_fixture(db_path) == 1
     assert remove_fixture(db_path) == 0
     assert Database(db_path).get_job(FIXTURE_JOB_ID) is None
+
+
+def test_company_name_only_is_not_a_reference():
+    cfg = _cfg(stations=[
+        ExperienceEntry(
+            title="Disponent",
+            company="Nordkai Spedition GmbH",
+            responsibilities=["Kommissionierung"],
+            source="manual",
+        ),
+    ])
+    job = Job(
+        id="j-employer",
+        source="indeed",
+        title="Konditor",
+        company="Zuckerkai Konditorei GmbH",
+        description="Frühere Beschäftigung bei der Nordkai Spedition GmbH. Gesucht wird eine Kraft für die Backstube.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
+
+
+def test_one_task_word_does_not_qualify_a_station():
+    cfg = _cfg(stations=[
+        ExperienceEntry(
+            title="Hilfskraft",
+            company="Hof Beispiel",
+            responsibilities=["Tourenplanung für den Hof"],
+            source="manual",
+        ),
+    ])
+    job = Job(
+        id="j-one-task",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung im Leitstand.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
+
+
+def test_excel_and_ms_excel_are_one_ad_requirement():
+    cfg = _cfg("Excel")
+    cfg.profile.qualifications.software = [SourcedText(value="MS Excel", source="manual")]
+    job = Job(
+        id="j-excel",
+        source="indeed",
+        title="Sachbearbeitung",
+        company="Kontor Beispiel GmbH",
+        description="Sicherer Umgang mit MS Excel im Tagesgeschäft.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
+    from core.cover_letter import cover_letter_reference_hits
+
+    hits, missing = cover_letter_reference_hits("", job, cfg)
+    assert hits == ()
+    assert len(missing) == 1
+
+
+def test_sap_station_and_sap_skill_are_one_requirement():
+    cfg = _cfg("SAP", stations=[
+        ExperienceEntry(title="SAP-Sachbearbeiter", company="Kontor Beispiel", source="manual"),
+    ])
+    job = Job(
+        id="j-sap",
+        source="indeed",
+        title="Sachbearbeitung",
+        company="Nordmole Musterlogistik GmbH",
+        description="Kenntnisse in SAP im Tagesgeschäft.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
+
+
+def test_two_stations_are_returned_and_written():
+    from core.cover_letter import _matching_stations
+
+    stations = [
+        ExperienceEntry(title="Disponent", company="Nordkai Spedition GmbH", source="manual"),
+        ExperienceEntry(title="Fachlagerist", company="Kistenwerk Ost GmbH", source="manual"),
+    ]
+    cfg = _cfg(stations=stations)
+    job = Job(
+        id="j-two",
+        source="indeed",
+        title="Teamleitung Umschlag",
+        company="Kaiwerk GmbH",
+        description="Erfahrung als Disponent und eine Station als Fachlagerist.",
+    )
+    matched = _matching_stations(cfg, job)
+    assert [item.title for item in matched] == ["Disponent", "Fachlagerist"]
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "Disponent" in result.text
+    assert "Fachlagerist" in result.text
+    assert "Nordkai Spedition GmbH" in result.text
+    assert "Kistenwerk Ost GmbH" in result.text
+
+
+def test_reference_hits_follow_the_saved_text():
+    from core.cover_letter import cover_letter_reference_hits
+
+    cfg = _cfg("Tourenplanung", "SAP")
+    job = Job(
+        id="j-hits",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung und SAP.",
+    )
+    result = compose_cover_letter(job, cfg)
+    hits, missing = cover_letter_reference_hits(result.text, job, cfg)
+    assert "Tourenplanung" in hits
+    assert "SAP" in hits
+    assert missing == ()
+    shorter = result.text.replace("SAP", "")
+    hits_after, missing_after = cover_letter_reference_hits(shorter, job, cfg)
+    assert "SAP" not in hits_after
+    assert "SAP" in missing_after
+
+
+def test_no_evidence_and_blocked_demo_do_not_call_the_model(monkeypatch):
+    import core.cover_letter as cover
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_CALLS", 0)
+
+    def boom(job, config, missing, attempt):
+        raise AssertionError("model hook must not run")
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_FN", boom)
+    cfg = _cfg("Excel")
+    no_evidence = Job(
+        id="j-none-model",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Tourenplanung und SAP in der Disposition.",
+    )
+    demo = Job(
+        id="demo-model",
+        source="demo",
+        title="Dispatcher",
+        company="HafenLogistik",
+        description="Tourenplanung und SAP und Excel in der Disposition.",
+    )
+    refused = compose_cover_letter(no_evidence, cfg)
+    blocked = compose_cover_letter(demo, cfg)
+    assert refused.reason_code == "no_evidence"
+    assert refused.text == ""
+    assert blocked.reason_code == "blocked_demo"
+    assert blocked.text == ""
+    assert cover.cover_model_calls() == 0
+
+
+def test_model_path_retries_once_then_refuses(monkeypatch):
+    import core.cover_letter as cover
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_CALLS", 0)
+    attempts: list[int] = []
+
+    def always_short(job, config, missing, attempt):
+        attempts.append(attempt)
+        return "Hier steht nur Excel."
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_FN", always_short)
+    cfg = _cfg("Excel", "SAP")
+    job = Job(
+        id="j-model",
+        source="indeed",
+        title="Sachbearbeitung",
+        company="Kontor Beispiel GmbH",
+        description="Excel und SAP im Tagesgeschäft.",
+    )
+    refused = compose_cover_letter(job, cfg)
+    assert refused.reason_code == "no_evidence"
+    assert refused.text == ""
+    assert attempts == [0, 1]
+    assert cover.cover_model_calls() == 2
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_CALLS", 0)
+    attempts.clear()
+
+    def second_is_complete(job, config, missing, attempt):
+        attempts.append(attempt)
+        if attempt == 0:
+            return "Hier steht nur Excel."
+        assert "SAP" in missing
+        return "Hier stehen Excel und SAP."
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_FN", second_is_complete)
+    saved = compose_cover_letter(job, cfg)
+    assert saved.ok is True
+    assert "Excel" in saved.text
+    assert "SAP" in saved.text
+    assert attempts == [0, 1]
+    assert cover.cover_model_calls() == 2
+
+
+def test_approve_saves_user_edit_and_refuses_empty_or_placeholder(tmp_path: Path):
+    import hashlib
+
+    cfg = _cfg("Tourenplanung", "SAP")
+    cfg.root = tmp_path
+    description = "Anforderungen: Tourenplanung und SAP in der Disposition."
+    job = Job(
+        id="job-edit-1",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description=description,
+    )
+    generated = compose_cover_letter(job, cfg)
+    assert generated.ok is True
+    edited = generated.text.replace("SAP", "Tabellen")
+    assert "SAP" not in edited
+    path = approve_cover_letter(job, cfg, edited)
+    assert path.read_text(encoding="utf-8") == edited
+    meta = json.loads((tmp_path / "cover_letters" / "job-edit-1.meta.json").read_text(encoding="utf-8"))
+    assert meta["edited"] is True
+    assert meta["generated_sha256"] == hashlib.sha256(generated.text.encode("utf-8")).hexdigest()
+    assert "SAP" not in path.read_text(encoding="utf-8")
+
+    with pytest.raises(CoverLetterRefused):
+        approve_cover_letter(job, cfg, "   \n\t")
+    with pytest.raises(CoverLetterRefused):
+        approve_cover_letter(
+            job,
+            cfg,
+            "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.\n",
+        )
+    assert path.read_text(encoding="utf-8") == edited

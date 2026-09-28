@@ -29,6 +29,9 @@ def test_resolve_template_uses_meipass_when_frozen(tmp_path: Path, monkeypatch) 
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Sachbearbeitung", source="manual")
     )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Terminabstimmung", source="manual")
+    )
 
     resolved = resolve_cover_letter_template(cfg)
     assert resolved is not None

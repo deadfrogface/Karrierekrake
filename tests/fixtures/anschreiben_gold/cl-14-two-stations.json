@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-14-two-stations",
+  "tags": [
+    "two_stations"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550114",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [],
+          "source": "manual"
+        },
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [],
+          "source": "manual"
+        }
+      ],
+      "skills": [],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-14-two-stations",
+    "source": "indeed",
+    "source_job_id": "src-cl-14-two-stations",
+    "title": "Teamleitung Umschlag (m/w/d)",
+    "company": "Kaiwerk GmbH",
+    "description": "Die Kaiwerk GmbH sucht eine Teamleitung für den Umschlag am Musterhafen. Der Betrieb ist fiktiv. Angebot und Arbeitszeit stehen vor den fachlichen Punkten.\n\nWir bieten eine unbefristete Vollzeitstelle, dreißig Tage Urlaub und eine Kantine. Die Einarbeitung dauert sechs Wochen. Der Arbeitsplatz ist der Hof.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent im Stückgut\n- eine Station als Fachlagerist\n\nSkills und Software nennt diese Anzeige nicht. Beide Stationen sollen im Anschreiben stehen.",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-14-two-stations",
+    "status": "new"
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Kaiwerk GmbH",
+    "Teamleitung Umschlag (m/w/d)",
+    "Disponent",
+    "Nordkai Spedition",
+    "Fachlagerist",
+    "Kistenwerk Ost"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]"
+  ],
+  "rationale": "Zwei Stationen und keine Skills. Disponent bei der Nordkai Spedition und Fachlagerist beim Kistenwerk Ost treffen die Anzeige als zwei verschiedene Bezüge. Beide müssen im Brief stehen."
+}

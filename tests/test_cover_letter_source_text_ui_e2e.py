@@ -188,7 +188,7 @@ def test_ui_e2e_import_persists_source_text_and_blocks_unevidenced_title(
 def test_ui_e2e_preview_without_source_text_still_renders(qapp, config_service):
     """Regression: preview must not crash when no CV source was imported."""
     from apply.preview import build_application_preview
-    from core.config import ExperienceEntry, QualificationsConfig
+    from core.config import ExperienceEntry, QualificationsConfig, SourcedText
     from core.models import Job
 
     cfg = config_service.load()
@@ -198,7 +198,8 @@ def test_ui_e2e_preview_without_source_text_still_renders(qapp, config_service):
     cfg.profile.qualifications = QualificationsConfig(
         work_experience=[
             ExperienceEntry(title="Analyst", company="Green Data GmbH"),
-        ]
+        ],
+        skills=[SourcedText(value="Python", source="manual")],
     )
     config_service.save(cfg)
     cfg = config_service.load()

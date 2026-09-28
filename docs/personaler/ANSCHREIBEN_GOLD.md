@@ -37,7 +37,7 @@ Eine unbelegte konkrete Behauptung, eine falsche Anrede oder Firma, oder eine le
 | `interview` | Alle fünf Kriterien sind erfüllt. | ja |
 | `papierkorb` | Harter Fehler nach Abschnitt 2. Kein Versand. | kein Interview-Brief |
 | `job_incomplete` | Die Stellenbeschreibung ist leer. | nein |
-| `no_evidence` | Keine belegte Station und kein belegter Skill treffen die Anzeige. | nein |
+| `no_evidence` | Weniger als zwei verschiedene belegte Bezüge treffen die Anzeige. Dieselbe Anforderung zweimal zählt einmal. | nein |
 | `blocked_demo` | `source` ist `demo`. | nein |
 | `company_missing` | Das Firmenfeld ist leer oder nur ein Platzhalter (`Firma 0`, `Ihr Unternehmen` und gebeugte Formen). | nein |
 
@@ -46,7 +46,7 @@ Eine unbelegte konkrete Behauptung, eine falsche Anrede oder Firma, oder eine le
 Vereinbartes Verhalten, das die Fälle festschreiben:
 
 - Leere Beschreibung, auch nach Trim nur Leerzeichen: `job_incomplete`, kein Brief.
-- Beschreibung vorhanden, aber keine belegte Station und kein belegter Skill: `no_evidence`, kein Brief.
+- Beschreibung vorhanden, aber weniger als zwei verschiedene belegte Bezüge: `no_evidence`, kein Brief. Zwei Stationen, zwei Skills oder eine Station und ein Skill zählen. Dieselbe Tatsache zweimal, oder zwei Bezeichnungen derselben Anforderung, zählen einmal. Ein Treffer nur über den Firmennamen zählt nicht.
 - Firmenfeld leer oder nur ein Platzhalter (`Firma 0`, `Ihr Unternehmen`, `Ihrem Unternehmen`, `Ihres Unternehmens`): `company_missing`, kein Brief. Die Sperre liegt vor dem Generator. Der Grund nennt die fehlende Firma. Eine vorhandene Beschreibung macht daraus kein `job_incomplete`.
 - `source == demo` bekommt nie einen Brief, auch wenn der Inhalt sonst tragen würde.
 - `source == fixture` darf einen Brief bekommen, wenn die fünf Kriterien erfüllt sind.
@@ -135,8 +135,13 @@ Minimales Profil, das der Anschreiben-Pfad liest. Suche, Filter, Settings und `s
 | `cl-10-english-ad` | `interview` | Englische Anzeige; dispatcher, route planning und SAP TM sind über das Profil belegt. |
 | `cl-11-long-ad-requirements-end` | `interview` | Lange Anzeige; Disponent, Tourenplanung und SAP TM stehen erst am Ende. |
 | `cl-12-html-remnants` | `interview` | Eingefügte Beschreibung mit HTML; nach der Bereinigung ein Treffer, ohne Markup im Brief. |
+| `cl-13-one-reference` | `no_evidence` | Nur Tourenplanung trifft die Anzeige. Ein Bezug reicht nicht. |
+| `cl-14-two-stations` | `interview` | Disponent und Fachlagerist treffen die Anzeige, Skills fehlen. Beide Stationen stehen im Brief. |
+| `cl-15-station-and-skill` | `interview` | Die Station Disponent und der Skill Tourenplanung sind zwei verschiedene Bezüge. |
+| `cl-16-employer-name-only` | `no_evidence` | Die Anzeige nennt den früheren Arbeitgeber Nordkai Spedition GmbH und sonst keinen Profilbezug. |
+| `cl-17-excel-one-requirement` | `no_evidence` | Excel und MS Excel treffen dieselbe Anforderung MS Excel und zählen als ein Bezug. |
 
-Zählung: `interview` 7, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 1, `blocked_demo` 1, `company_missing` 1. Zusammen 12 Fälle.
+Zählung: `interview` 9, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 4, `blocked_demo` 1, `company_missing` 1. Zusammen 17 Fälle.
 
 ## 7. Nicht Gegenstand dieses Stands
 

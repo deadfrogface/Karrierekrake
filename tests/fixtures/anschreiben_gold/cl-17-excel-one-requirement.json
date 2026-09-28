@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-17-excel-one-requirement",
+  "tags": [
+    "same_requirement"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550117",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Barkeeper",
+          "company": "Bar Beispiel",
+          "location": "Musterhafen",
+          "start_date": "2018-01",
+          "end_date": "2020-06",
+          "responsibilities": [
+            "Getränke zubereiten"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Excel",
+          "source": "manual"
+        }
+      ],
+      "software": [
+        {
+          "value": "MS Excel",
+          "source": "manual"
+        }
+      ],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-17-excel-one-requirement",
+    "source": "indeed",
+    "source_job_id": "src-cl-17-excel-one-requirement",
+    "title": "Sachbearbeitung (m/w/d)",
+    "company": "Kontor Beispiel GmbH",
+    "description": "Die Kontor Beispiel GmbH sucht Unterstützung in der Buchhaltung. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- sicheren Umgang mit MS Excel im Tagesgeschäft\n\nWeitere Werkzeuge und Stationen nennt die Anzeige nicht.",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-17-excel-one-requirement",
+    "status": "new"
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]"
+  ],
+  "rationale": "Der Skill Excel und die Software MS Excel treffen dieselbe Anforderung MS Excel. Zwei Bezeichnungen eines Bezugs zählen einmal. Soll ist no_evidence und kein Brief."
+}

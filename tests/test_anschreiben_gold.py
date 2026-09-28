@@ -81,6 +81,11 @@ REQUIRED_TAGS = frozenset(
         "english_ad",
         "long_ad",
         "html_remnants",
+        "single_reference",
+        "two_stations",
+        "station_plus_skill",
+        "employer_name_only",
+        "same_requirement",
     }
 )
 
