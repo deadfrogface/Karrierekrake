@@ -143,9 +143,14 @@ class QualificationsSection(QGroupBox):
         self.lbl_software = QLabel()
         self.lbl_certificates = QLabel()
         self.lbl_license = QLabel()
+        self.licence_notice = QLabel()
+        self.licence_notice.setObjectName("WarningLabel")
+        self.licence_notice.setWordWrap(True)
+        self.licence_notice.hide()
         form.addRow(self.lbl_skills, self.skills)
         form.addRow(self.lbl_software, self.software)
         form.addRow(self.lbl_certificates, self.certificates)
+        form.addRow(self.licence_notice)
         form.addRow(self.lbl_license, self.driving)
 
     def retranslate(self) -> None:
@@ -154,21 +159,37 @@ class QualificationsSection(QGroupBox):
         self.lbl_software.setText(tr("profile.software"))
         self.lbl_certificates.setText(tr("profile.certificates"))
         self.lbl_license.setText(tr("profile.license"))
+        self._refresh_licence_notice()
         for editor in (self.skills, self.software, self.driving):
             editor.retranslate()
         if hasattr(self.certificates, "retranslate"):
             self.certificates.retranslate()
 
     def load(self, quals: QualificationsConfig) -> None:
-        from core.cv_parser import driving_classes_for_display
+        from core.cv_parser import read_driving_classes
 
         self.skills.set_items(quals.skill_values())
         self.software.set_items(quals.software_values())
-        # Known classes are ordered. Unknown tokens stay, so saving any drawer
-        # cannot drop them. Loading itself does not write the config object.
-        shown = driving_classes_for_display(quals.driving_license)
-        self.driving.set_items(shown or quals.driving_values())
+        # Display classes only. Uncertain C/D and digit remnants stay out of the
+        # editor. Loading itself does not write the config object.
+        self._licence_reading = read_driving_classes(quals.driving_license)
+        self.driving.set_items(self._licence_reading.display)
+        self._refresh_licence_notice()
         self.certificates.set_items(quals.certificates)
+
+    def _refresh_licence_notice(self) -> None:
+        reading = getattr(self, "_licence_reading", None)
+        if reading is None or not reading.recovered:
+            self.licence_notice.hide()
+            self.licence_notice.clear()
+            return
+        parts = [tr("profile.licence_recovered")]
+        if reading.uncertain:
+            parts.append(
+                tr("profile.licence_uncertain", classes=", ".join(reading.uncertain))
+            )
+        self.licence_notice.setText("\n".join(parts))
+        self.licence_notice.show()
 
     def save_into(self, quals: QualificationsConfig) -> None:
         quals.skills = preserve_sourced_on_edit(quals.skills, self.skills.get_items())
