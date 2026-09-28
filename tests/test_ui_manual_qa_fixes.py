@@ -1109,6 +1109,18 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     am.card_skills.grab().save("/opt/cursor/artifacts/licence-card-a-m.png")
 
 
+def test_unknown_licence_line_equals_the_utf8_literal(qapp):
+    """The grey drawer line is this UTF-8 sentence, including the comma and the period."""
+    i18n.set_language("de")
+    section = QualificationsSection()
+    section.load(
+        QualificationsConfig(driving_license=_sourced_codes(["C", "E", "9", "5"]))
+    )
+    assert section.licence_unknown.text() == (
+        "Nicht sicher erkannt: 9, 5. Diese Einträge bleiben unverändert gespeichert."
+    )
+
+
 def test_uncertain_digits_stay_in_the_file_when_review_saves_nothing(qapp, config_service, monkeypatch):
     """Prüfen on [C, E, 9, 5] shows C and E. Saving without input keeps the file."""
     from PySide6.QtCore import QTimer

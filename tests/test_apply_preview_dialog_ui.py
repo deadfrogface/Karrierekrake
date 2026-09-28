@@ -298,6 +298,58 @@ def _assert_class_c_sentence_is_quoted_from_the_letter(dlg) -> None:
     assert "Prüfen nötig" in dlg.status_chip.text()
 
 
+def test_preview_hint_equals_the_utf8_literal(qapp, tmp_path):
+    """The hint under Prüfen nötig is this UTF-8 text, including the Skills label."""
+    cfg = _profile_with_licence(tmp_path, "B")
+    dlg = ApplyPreviewDialog(
+        _preview(cover_letter_preview=_INVENTED_C_LETTER, warnings=[]),
+        config=cfg,
+        job=_preview_job(),
+    )
+    dlg.show()
+    qapp.processEvents()
+    assert dlg._guard_notice.text() == (
+        "‚Zu meinen relevanten Kenntnissen zählen insbesondere: Führerschein Klasse C.‘\n"
+        "Bestätige Klasse C im Führerschein-Feld oder nimm den Eintrag aus deinen Skills."
+    )
+    dlg.close()
+
+
+def test_open_and_one_confirm_run_exactly_two_guard_scans(qapp, tmp_path, monkeypatch):
+    """Opening the dialog and confirming once runs the guard twice, and no more."""
+    import core.cover_guard as guard
+    from PySide6.QtWidgets import QMessageBox
+
+    scans = {"n": 0}
+    original = guard.screen_prepared_letter
+
+    def counting(letter, prepared):
+        scans["n"] += 1
+        return original(letter, prepared)
+
+    monkeypatch.setattr(guard, "screen_prepared_letter", counting)
+    monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
+    cfg = _profile_with_licence(tmp_path, "B")
+    dlg = ApplyPreviewDialog(
+        _preview(cover_letter_preview=_CLEAN_LETTER, warnings=[]),
+        config=cfg,
+        job=_preview_job(),
+    )
+    dlg.show()
+    qapp.processEvents()
+    assert scans["n"] == 1
+    assert dlg.approve_btn.isEnabled()
+    qapp.processEvents()
+    assert scans["n"] == 1
+    dlg.approve_btn.click()
+    qapp.processEvents()
+    assert scans["n"] == 2
+    dlg.close()
+    qapp.processEvents()
+    assert scans["n"] == 2
+
+
 def test_preview_blocks_confirm_when_the_letter_invents_class_c(qapp, tmp_path):
     """Opening on an unconfirmed class locks confirm and quotes the sentence."""
     cfg = _profile_with_licence(tmp_path, "B")
