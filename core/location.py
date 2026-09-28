@@ -32,10 +32,11 @@ from core.geo_resolve import (
     PlaceResolution,
     UNRESOLVED_MARKER,
     cache_query_key,
-    geo_index_generation,
     haversine_km,
+    lookup_cached_resolution,
     place_from_job_like,
     resolve_place,
+    store_cached_resolution,
 )
 
 if TYPE_CHECKING:
@@ -117,13 +118,16 @@ class HomeNotice:
     ask_postal: bool
     notice_key: str
     place_label: str = ""
+    country_code: str = ""
     latitude: float | None = None
     longitude: float | None = None
+    offer_change_place: bool = False
 
 
 # One finished resolution per normalized home plus the resolve_place arguments.
-# Not written to profile.yaml. The key includes the geo-index generation.
-_HOME_RESOLUTION_CACHE: dict[str, PlaceResolution] = {}
+# Not written to profile.yaml. Values are ``(generation, PlaceResolution)``.
+# The key does not include the generation.
+_HOME_RESOLUTION_CACHE: dict[str, tuple[int, PlaceResolution]] = {}
 # Address fingerprint → (cross_border, home_country) that the stored coordinates
 # belong to. A toggle must not reuse them.
 _PERSISTED_HOME_PARAMS: dict[str, tuple[bool, str]] = {}
@@ -141,7 +145,7 @@ def home_resolution_key(
 ) -> str:
     """Cache key: normalized home plus every argument ``resolve_place`` receives.
 
-    ``geo_index_generation()`` is part of the key so a later index epoch misses.
+    The geo-index generation is stored with the value, not in the key.
     """
     country_code = normalize_country_code(country) or "DE"
     home_cc = normalize_country_code(home_country) or country_code
@@ -154,7 +158,6 @@ def home_resolution_key(
             "1" if cross_border else "0",
             home_cc.upper(),
             "1" if allow_network else "0",
-            str(geo_index_generation()),
         )
     )
 
@@ -265,13 +268,13 @@ def cached_home_resolution(
     # Stored coordinates for this parameter set beat a cached miss. A later
     # save can attach coordinates to an address that was unknown a moment ago.
     if _persisted_covers(location, cross_border=cross_border, home_country=home_cc):
-        cached = _HOME_RESOLUTION_CACHE.get(key)
+        cached = lookup_cached_resolution(_HOME_RESOLUTION_CACHE, key)
         if cached is not None and cached.ok:
             return cached
         resolution = _persisted_resolution(location, home_country=home_cc)
-        _HOME_RESOLUTION_CACHE[key] = resolution
+        store_cached_resolution(_HOME_RESOLUTION_CACHE, key, resolution)
         return resolution
-    cached = _HOME_RESOLUTION_CACHE.get(key)
+    cached = lookup_cached_resolution(_HOME_RESOLUTION_CACHE, key)
     if cached is not None:
         return cached
     place = normalize_place_fields(
@@ -287,41 +290,63 @@ def cached_home_resolution(
         allow_network=False,
     )
     # A still-loading index is not a resolution. The next read tries again.
-    # Re-read the key: loading a country bumps the epoch during resolve_place.
-    if resolution.reason != "geo_index_loading":
-        key = home_resolution_key(
-            address=address,
-            postal_code=postal,
-            city=city,
-            country=country,
-            cross_border=cross_border,
-            home_country=home_cc,
-            allow_network=False,
+    # Same key: a stale miss is replaced in place.
+    store_cached_resolution(_HOME_RESOLUTION_CACHE, key, resolution)
+    if resolution.ok:
+        _remember_persisted_params(
+            location, cross_border=cross_border, home_country=home_cc
         )
-        _HOME_RESOLUTION_CACHE[key] = resolution
-        if resolution.ok:
-            _remember_persisted_params(
-                location, cross_border=cross_border, home_country=home_cc
-            )
     return resolution
 
 
 def _notice_from_resolution(location: Any, resolution: PlaceResolution | None) -> HomeNotice:
-    address, _postal, city, _country = _home_text(location)
-    label = city or _city_from_address(address) or address
+    address, _postal, city, country = _home_text(location)
+    label = city or _city_from_address(address) or address or _postal
+    country_code = normalize_country_code(country) or "DE"
     if resolution is not None and resolution.ok:
         return HomeNotice(
             status="resolved",
             ask_postal=False,
             notice_key="dash.home_resolved",
             place_label=resolution.display_name or label,
+            country_code=country_code,
             latitude=float(resolution.latitude) if resolution.latitude is not None else None,
             longitude=float(resolution.longitude) if resolution.longitude is not None else None,
         )
-    if resolution is not None and resolution.status == "AMBIGUOUS":
-        return HomeNotice(status="ambiguous", ask_postal=True, notice_key="dash.home_plz_hint")
-    # Loading, unknown, and a miss all stay a hint. None of them is "resolved".
-    return HomeNotice(status="unknown", ask_postal=True, notice_key="dash.home_plz_hint")
+    if resolution is not None and resolution.reason == "geo_index_loading":
+        return HomeNotice(
+            status="loading",
+            ask_postal=False,
+            notice_key="dash.home_checking",
+            place_label=label,
+            country_code=country_code,
+        )
+    if resolution is not None and resolution.reason == "geo_index_unavailable":
+        return HomeNotice(
+            status="unavailable",
+            ask_postal=False,
+            notice_key="dash.home_index_unavailable",
+            place_label=label,
+            country_code=country_code,
+        )
+    if resolution is not None and (
+        resolution.status == "AMBIGUOUS" or resolution.reason == "plz_not_found"
+    ):
+        return HomeNotice(
+            status="ambiguous" if resolution.status == "AMBIGUOUS" else "unknown",
+            ask_postal=True,
+            notice_key="dash.home_plz_hint",
+            place_label=label,
+            country_code=country_code,
+        )
+    return HomeNotice(
+        status="unknown",
+        ask_postal=True,
+        notice_key="dash.home_not_found",
+        place_label=label,
+        country_code=country_code,
+        offer_change_place=True,
+    )
 
 
 def home_location_notice(

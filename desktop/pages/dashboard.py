@@ -28,19 +28,41 @@ from desktop.util.human_time import format_human_datetime
 from desktop.widgets.scroll_page import wrap_scrollable
 
 
-def bind_home_notice_label(label, notice) -> None:
+def bind_home_notice_label(label, notice, button=None) -> None:
     """Show the fresh home status. Resolved is an OK line; unclear asks for a PLZ."""
+    from desktop.i18n import home_country_label
+
     if not getattr(notice, "notice_key", ""):
         label.clear()
         label.setVisible(False)
+        if button is not None:
+            button.setVisible(False)
         return
-    label.setText(tr(notice.notice_key, place=getattr(notice, "place_label", "") or ""))
-    label.setObjectName("WarningLabel" if notice.ask_postal else "HomeStatusOk")
+    status = getattr(notice, "status", "")
+    if status == "loading":
+        object_name = "HomeStatusPending"
+    elif status == "resolved":
+        object_name = "HomeStatusOk"
+    elif notice.ask_postal or status in {"unknown", "unavailable", "ambiguous"}:
+        object_name = "WarningLabel"
+    else:
+        object_name = "KkNotice"
+    label.setText(
+        tr(
+            notice.notice_key,
+            place=getattr(notice, "place_label", "") or "",
+            country=home_country_label(getattr(notice, "country_code", "") or ""),
+        )
+    )
+    label.setObjectName(object_name)
     label.setVisible(True)
     style = label.style()
     if style is not None:
         style.unpolish(label)
         style.polish(label)
+    if button is not None:
+        button.setText(tr("dash.home_change_place"))
+        button.setVisible(bool(getattr(notice, "offer_change_place", False)))
 
 
 class DashboardPage(QWidget):
@@ -178,6 +200,11 @@ class DashboardPage(QWidget):
         self.home_warning_label.setWordWrap(True)
         self.home_warning_label.setObjectName("KkNotice")
         root.addWidget(self.home_warning_label)
+        self.change_place_btn = QPushButton()
+        self.change_place_btn.setObjectName("SecondaryButton")
+        self.change_place_btn.hide()
+        self.change_place_btn.clicked.connect(self._change_place)
+        root.addWidget(self.change_place_btn, alignment=Qt.AlignmentFlag.AlignLeft)
 
         # Hidden compat widgets (signals / older tests) — never shown in production UI
         self.mode_label = QLabel()
@@ -394,6 +421,11 @@ class DashboardPage(QWidget):
         self.next_body.setText(tr("dash.next_search_body"))
         self.btn_primary.setText(tr("btn.find_jobs"))
 
+    def _change_place(self) -> None:
+        window = self.window()
+        if window is not None and hasattr(window, "edit_search_home"):
+            window.edit_search_home()
+
     def refresh(self) -> None:
         cfg = self.config_service.load()
         db = Database(cfg.db_path)
@@ -441,7 +473,11 @@ class DashboardPage(QWidget):
         loc = cfg.profile.location
         from core.location import home_location_notice
 
-        bind_home_notice_label(self.home_warning_label, home_location_notice(loc, cfg))
+        bind_home_notice_label(
+            self.home_warning_label,
+            home_location_notice(loc, cfg),
+            self.change_place_btn,
+        )
 
         # Keep diagnostics populated for tests / developer tooling — never shown.
         self.advanced_stats.setText(

@@ -223,18 +223,20 @@ def test_ui_thread_does_not_false_resolve_while_the_index_loads(qapp, geo_ready)
         country="DE",
     )
     loading = home_location_notice(munich)
-    assert loading.status != "resolved"
-    assert loading.ask_postal is True
+    assert loading.status == "loading"
+    assert loading.ask_postal is False
     assert munich.home_latitude is None and munich.home_longitude is None
 
     halle = LocationConfig(home_address="Halle", city="Halle", postal_code="", country="DE")
     while_loading = home_location_notice(halle)
-    assert while_loading.status != "resolved"
+    assert while_loading.status == "loading"
     label = QLabel()
     bind_home_notice_label(label, while_loading)
     assert label.isVisible()
+    assert label.objectName() == "HomeStatusPending"
+    assert "wird noch geprüft" in label.text()
+    assert "nicht gefunden" not in label.text()
     assert "aufgelöst" not in label.text()
-    assert "Postleitzahl" in label.text()
 
     hold.set()
     _wait_thread(thread)

@@ -246,7 +246,11 @@ class LocationWorkSection(QGroupBox):
         self.home_notice = QLabel()
         self.home_notice.setWordWrap(True)
         self.home_notice.setObjectName("WarningLabel")
+        self.change_place_btn = QPushButton()
+        self.change_place_btn.hide()
+        self.change_place_btn.clicked.connect(self._change_place)
         form.addRow(self.home_notice)
+        form.addRow(self.change_place_btn)
         self.home_address.editingFinished.connect(self.refresh_home_notice)
         self.postal_code.editingFinished.connect(self.refresh_home_notice)
         self.country.editingFinished.connect(self.refresh_home_notice)
@@ -359,6 +363,11 @@ class LocationWorkSection(QGroupBox):
             return None
         return loaded
 
+    def _change_place(self) -> None:
+        window = self.window()
+        if window is not None and hasattr(window, "edit_search_home"):
+            window.edit_search_home()
+
     def refresh_home_notice(self, location: LocationConfig | None = None, config=None) -> None:
         """Re-read resolver status for the home fields. Does not guess a PLZ."""
         from core.location import home_location_notice
@@ -382,7 +391,11 @@ class LocationWorkSection(QGroupBox):
                 )
         from desktop.pages.dashboard import bind_home_notice_label
 
-        bind_home_notice_label(self.home_notice, home_location_notice(location, config))
+        bind_home_notice_label(
+            self.home_notice,
+            home_location_notice(location, config),
+            self.change_place_btn,
+        )
 
     def load(
         self,

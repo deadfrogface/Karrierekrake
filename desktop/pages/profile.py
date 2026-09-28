@@ -238,11 +238,16 @@ class ProfilePage(QWidget):
         self.page_subtitle.setWordWrap(True)
         self.home_status = QLabel()
         self.home_status.setWordWrap(True)
+        self.change_place_btn = QPushButton()
+        self.change_place_btn.setObjectName("SecondaryButton")
+        self.change_place_btn.hide()
+        self.change_place_btn.clicked.connect(self.edit_search_home)
         title_col = QVBoxLayout()
         title_col.setSpacing(2)
         title_col.addWidget(self.page_title)
         title_col.addWidget(self.page_subtitle)
         title_col.addWidget(self.home_status)
+        title_col.addWidget(self.change_place_btn, alignment=Qt.AlignmentFlag.AlignLeft)
         header.addLayout(title_col, stretch=1)
         # Top-right reserved for secondary icon-actions only (no primary CTAs)
         shell_layout.addLayout(header)
@@ -535,11 +540,37 @@ class ProfilePage(QWidget):
         """Update only the home-notice line. Does not rebuild the cards."""
         self._bind_home_status(self.config_service.load())
 
+    def edit_search_home(self) -> None:
+        """Open the search-home editor. Scope ``None`` persists the location fields."""
+        self._save_scope = None
+        section = self.location_work
+        self._drawer.set_texts(
+            title=tr("profile.location"),
+            save=tr("btn.save"),
+            cancel=tr("btn.cancel"),
+        )
+        section.setParent(None)
+        section.show()
+        try:
+            result = self._drawer.present(section)
+            self._drawer.take_content()
+            section.setParent(self._editors_host)
+            self._editors_host.layout().addWidget(section)
+            section.hide()
+            if result == SectionEditDrawer.DialogCode.Accepted:
+                self.save()
+        finally:
+            self._save_scope = None
+
     def _bind_home_status(self, cfg) -> None:
         from core.location import home_location_notice
         from desktop.pages.dashboard import bind_home_notice_label
 
-        bind_home_notice_label(self.home_status, home_location_notice(cfg.profile.location, cfg))
+        bind_home_notice_label(
+            self.home_status,
+            home_location_notice(cfg.profile.location, cfg),
+            self.change_place_btn,
+        )
 
     def refresh_cards(self) -> None:
         cfg = self.config_service.load()
