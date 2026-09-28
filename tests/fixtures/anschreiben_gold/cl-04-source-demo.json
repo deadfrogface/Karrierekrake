@@ -134,7 +134,17 @@
     "[Ihr Name]",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Dieselbe tragfähige Anzeige wie im Logistik-Treffer, aber source ist demo. Demo-Stellen bekommen nie einen Brief. Soll ist blocked_demo, auch wenn Station und Skills passen würden."
 }

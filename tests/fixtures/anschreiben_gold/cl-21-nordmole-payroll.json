@@ -86,7 +86,17 @@
     "[Ihr Name]",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Dieselbe Nordmole-Anzeige, Profil Lohnbuchhalterin mit DATEV und Excel. SAP Business One fehlt. Führerschein Klasse B und Deutsch stehen im Profil und in der Anzeige und zählen nicht als Bezug. Soll ist no_evidence und kein Brief."
 }

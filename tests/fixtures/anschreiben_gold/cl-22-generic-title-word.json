@@ -65,7 +65,17 @@
     "[Ihr Name]",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die Station Sachbearbeiter Lohn und die Anzeige Sachbearbeiter Einkauf teilen nur das allgemeine Wort Sachbearbeiter. Das ist kein Titeltreffer der konkreten Rolle. Soll ist no_evidence."
 }

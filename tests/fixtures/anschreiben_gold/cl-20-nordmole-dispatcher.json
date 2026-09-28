@@ -72,7 +72,7 @@
   "expected_outcome": "interview",
   "must_mention": [
     "Nordmole Musterlogistik GmbH",
-    "Disponent / Dispatcher (m/w/d) Nahverkehr",
+    "Disponent / Dispatcher Nahverkehr",
     "Disponent",
     "Nordkai Spedition GmbH",
     "SAP",
@@ -93,7 +93,17 @@
     "setze ich",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die synthetische Nordmole-Anzeige aus der Quell-Fixture fordert Disponent und SAP. Das Profil belegt die Station Disponent mit den Aufgaben Tourenplanung und Fahrer zuordnen sowie die Software SAP. Beide Bezüge stehen im Brief. Führerschein Klasse B und Deutsch zählen nicht."
 }

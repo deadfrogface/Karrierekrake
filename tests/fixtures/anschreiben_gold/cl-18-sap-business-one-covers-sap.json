@@ -60,7 +60,6 @@
   "expected_outcome": "interview",
   "must_mention": [
     "Buchkontor Beispiel GmbH",
-    "Rechnungsprüfung (m/w/d)",
     "Rechnungsprüfung",
     "Kontor Beispiel GmbH",
     "SAP Business One",
@@ -81,7 +80,17 @@
     "als Rechnungsprüfung",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die Software SAP Business One ist spezieller als die Anforderung SAP und trifft sie als führende Wortfolge. Die Station Rechnungsprüfung trifft die Anzeige zusätzlich. Beide Bezüge stehen im Brief. Es bleibt eine Anforderung SAP, nicht zwei."
 }

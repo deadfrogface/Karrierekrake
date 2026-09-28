@@ -149,7 +149,17 @@
     "setze ich",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die Anzeige fordert neben Disponent, Tourenplanung und SAP TM einen ADR-Schein und Gefahrgutabwicklung. Das Profil hat Staplerschein, aber keinen ADR-Schein und kein Gefahrgut. Ein Brief darf die belegten Punkte nennen und den ADR-Schein nicht behaupten. Eine solche Behauptung wäre Papierkorb."
 }

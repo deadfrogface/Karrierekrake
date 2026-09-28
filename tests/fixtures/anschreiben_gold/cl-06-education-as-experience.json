@@ -79,7 +79,17 @@
     "Bestandskontrolle",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die einzige Station liegt unter work_experience, education ist leer. Es ist der Schulbesuch am Berufskolleg Quendel, keine Beschäftigung. Kriterium 5 scheitert: Ausbildung ist als Berufserfahrung abgelegt. Urteil papierkorb. Ein Brief, der die Schule als Arbeitgeber nennt oder Stationen aus einem anderen Profil erfindet, bleibt Papierkorb."
 }

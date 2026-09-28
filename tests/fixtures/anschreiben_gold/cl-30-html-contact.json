@@ -88,7 +88,17 @@
     "Lotte",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Der Name steht in einem HTML-Tag. Nach der bestehenden Bereinigung bleibt Frau Quendel, und der Brief spricht sie an. Die Station nennt Tourenplanung für Stückgut im Profilwortlaut."
 }

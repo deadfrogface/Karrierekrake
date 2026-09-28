@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -891,7 +892,8 @@ def test_excel_and_ms_excel_are_one_ad_requirement():
     assert result.text == ""
     from core.cover_letter import cover_letter_reference_hits
 
-    hits, missing = cover_letter_reference_hits("", job, cfg)
+    decision = cover_letter_reference_hits("", job, cfg)
+    hits, missing = decision.hits, decision.missing
     assert hits == ()
     assert len(missing) == 1
 
@@ -972,12 +974,14 @@ def test_reference_hits_follow_the_saved_text():
         description="Anforderungen: Tourenplanung und SAP.",
     )
     result = compose_cover_letter(job, cfg)
-    hits, missing = cover_letter_reference_hits(result.text, job, cfg)
+    decision = cover_letter_reference_hits(result.text, job, cfg)
+    hits, missing = decision.hits, decision.missing
     assert "Tourenplanung" in hits
     assert "SAP" in hits
     assert missing == ()
     shorter = result.text.replace("SAP", "")
-    hits_after, missing_after = cover_letter_reference_hits(shorter, job, cfg)
+    after = cover_letter_reference_hits(shorter, job, cfg)
+    hits_after, missing_after = after.hits, after.missing
     assert "SAP" not in hits_after
     assert "SAP" in missing_after
 
@@ -1105,7 +1109,7 @@ def test_approve_saves_user_edit_and_refuses_empty_or_placeholder(tmp_path: Path
     sha = generated.generated_sha256
     from core.cover_letter import cover_profile_fingerprint
 
-    fingerprint = cover_profile_fingerprint(cfg)
+    fingerprint = cover_profile_fingerprint(cfg, job)
     path = approve_cover_letter(
         job, cfg, edited, generated_sha256=sha, profile_fingerprint=fingerprint
     )
@@ -1155,7 +1159,8 @@ def test_sap_business_one_covers_sap_not_the_reverse():
     assert "SAP Business One" in written.text
     assert "setze ich SAP ein." not in written.text
     assert "Rechnungsprüfung" in written.text
-    hits, missing = cover_letter_reference_hits(written.text, ad_sap, specific)
+    decision = cover_letter_reference_hits(written.text, ad_sap, specific)
+    hits, missing = decision.hits, decision.missing
     assert "SAP Business One" in hits
     assert "Rechnungsprüfung" in hits
     assert missing == ()
@@ -1179,7 +1184,8 @@ def test_sap_business_one_covers_sap_not_the_reverse():
     reverse = compose_cover_letter(ad_product, broad)
     assert reverse.reason_code == "no_evidence"
     assert reverse.text == ""
-    reverse_hits, _reverse_missing = cover_letter_reference_hits("", ad_product, broad)
+    reverse = cover_letter_reference_hits("", ad_product, broad)
+    reverse_hits, _reverse_missing = reverse.hits, reverse.missing
     assert "SAP" not in reverse_hits
 
 
@@ -1276,7 +1282,8 @@ def test_deutsch_and_licence_are_not_references_on_nordmole():
     refused = compose_cover_letter(job, payroll)
     assert refused.reason_code == "no_evidence"
     assert refused.text == ""
-    hits, _missing = cover_letter_reference_hits("", job, payroll)
+    payroll_decision = cover_letter_reference_hits("", job, payroll)
+    hits, _missing = payroll_decision.hits, payroll_decision.missing
     folded = " ".join(hits).casefold()
     assert "deutsch" not in folded
     assert "führerschein" not in folded
@@ -1305,7 +1312,8 @@ def test_deutsch_and_licence_are_not_references_on_nordmole():
     assert written.ok is True
     assert "Disponent" in written.text
     assert "SAP" in written.text
-    letter_hits, letter_missing = cover_letter_reference_hits(written.text, job, dispatcher)
+    letter_decision = cover_letter_reference_hits(written.text, job, dispatcher)
+    letter_hits, letter_missing = letter_decision.hits, letter_decision.missing
     assert "Disponent" in letter_hits
     assert "SAP" in letter_hits
     assert letter_missing == ()
@@ -1380,7 +1388,8 @@ def test_available_references_come_from_facts_not_missing():
 
     facts = cover._cover_facts(job, cfg)
     available = available_cover_references(facts)
-    hits, missing = cover_letter_reference_hits("", job, cfg, facts=facts)
+    decision = cover_letter_reference_hits("", job, cfg, facts=facts)
+    hits, missing = decision.hits, decision.missing
     assert available == ("SAP Business One",)
     assert hits == ()
     assert len(available) != 0
@@ -1482,7 +1491,7 @@ def test_generic_title_with_two_matching_tasks_saves_the_letter(tmp_path: Path):
         cfg,
         result.text,
         generated_sha256=result.generated_sha256,
-        profile_fingerprint=cover_profile_fingerprint(cfg),
+        profile_fingerprint=cover_profile_fingerprint(cfg, job),
     )
     saved = path.read_text(encoding="utf-8")
     assert "Sachbearbeiterin" in saved
@@ -1558,8 +1567,10 @@ def test_enumeration_is_not_a_reference_via_text_check():
         description="Anforderungen: Tourenplanung und SAP.",
     )
     listed = "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung."
-    hits, _missing = cover_letter_reference_hits(listed, job, cfg)
-    assert cover_letter_reference_hits.accepted is False
+    listed_decision = cover_letter_reference_hits(listed, job, cfg)
+    hits, _missing = listed_decision.hits, listed_decision.missing
+    assert listed_decision.accepted is False
+    assert not hasattr(cover_letter_reference_hits, "accepted")
     refused = compose_cover_letter(job, cfg)
     assert refused.reason_code == "no_evidence"
     assert "Tourenplanung" in hits
@@ -1657,7 +1668,8 @@ def test_shortened_company_still_counts():
     assert generated.ok is True
     shortened = generated.text.replace("Nordmole Musterlogistik GmbH", "Nordmole")
     assert "Nordmole Musterlogistik GmbH" not in shortened
-    hits, missing = cover_letter_reference_hits(shortened, job, cfg)
+    shortened_decision = cover_letter_reference_hits(shortened, job, cfg)
+    hits, missing = shortened_decision.hits, shortened_decision.missing
     assert "Disponent" in hits
     assert "SAP" in hits
     assert missing == ()
@@ -1694,7 +1706,7 @@ def test_crlf_and_trailing_space_are_not_an_edit(tmp_path: Path):
         cfg,
         messy,
         generated_sha256=generated.generated_sha256,
-        profile_fingerprint=cover_profile_fingerprint(cfg),
+        profile_fingerprint=cover_profile_fingerprint(cfg, job),
     )
     meta = json.loads((tmp_path / "cover_letters" / "job-crlf.meta.json").read_text(encoding="utf-8"))
     assert meta["edited"] is False
@@ -1726,9 +1738,16 @@ def test_approve_without_preview_hash_is_refused(tmp_path: Path, caplog):
     )
     generated = compose_cover_letter(job, cfg)
     assert generated.ok is True
+    from core.cover_letter import cover_profile_fingerprint
+
     with caplog.at_level(logging.ERROR):
         with pytest.raises(ValueError, match="Hash"):
-            approve_cover_letter(job, cfg, generated.text)
+            approve_cover_letter(
+                job,
+                cfg,
+                generated.text,
+                profile_fingerprint=cover_profile_fingerprint(cfg, job),
+            )
     assert "hash" in caplog.text.casefold()
     assert not (tmp_path / "cover_letters" / "job-no-hash.txt").exists()
 
@@ -1764,8 +1783,9 @@ def test_only_the_matching_station_task_counts():
         "Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent "
         "für die Belege erfassen zuständig. SAP steht in der Anzeige."
     )
-    cover_letter_reference_hits(bad, job, cfg)
-    assert cover_letter_reference_hits.accepted is False
+    bad_decision = cover_letter_reference_hits(bad, job, cfg)
+    assert bad_decision.accepted is False
+    assert not hasattr(cover_letter_reference_hits, "accepted")
 
 
 def test_station_without_tasks_or_period_does_not_count():
@@ -1858,7 +1878,7 @@ def test_approve_same_profile_does_not_rebuild_facts(tmp_path: Path):
     cfg.root = tmp_path
     job = _dispatch_job("job-fp-same")
     preview = build_application_preview(job, cfg)
-    assert preview.cover_profile_fingerprint == cover.cover_profile_fingerprint(cfg)
+    assert preview.cover_profile_fingerprint == cover.cover_profile_fingerprint(cfg, job)
     cover._FACTS_SLOT = None
     counts = {"builder": 0}
     build = cover._build_cover_facts
@@ -1880,7 +1900,7 @@ def test_approve_same_profile_does_not_rebuild_facts(tmp_path: Path):
         assert not (tmp_path / "cover_letters" / "job-fp-same.txt").exists()
 
         cfg.application.phone = "040 123456"
-        assert cover.cover_profile_fingerprint(cfg) == preview.cover_profile_fingerprint
+        assert cover.cover_profile_fingerprint(cfg, job) == preview.cover_profile_fingerprint
         path = approve_cover_letter(
             job,
             cfg,
@@ -1906,7 +1926,7 @@ def test_approve_irrelevant_profile_change_still_saves(tmp_path: Path):
     job = _dispatch_job("job-fp-skill")
     preview = build_application_preview(job, cfg)
     cfg.profile.qualifications.skills.append(SourcedText(value="Origami", source="manual"))
-    assert cover.cover_profile_fingerprint(cfg) != preview.cover_profile_fingerprint
+    assert cover.cover_profile_fingerprint(cfg, job) != preview.cover_profile_fingerprint
     cover._FACTS_SLOT = None
     counts = {"builder": 0}
     build = cover._build_cover_facts
@@ -1947,7 +1967,7 @@ def test_approve_rejects_when_station_deleted_after_preview(tmp_path: Path, capl
     preview = build_application_preview(job, cfg)
     assert preview.cover_refusal_code == ""
     cfg.profile.qualifications.work_experience.clear()
-    assert cover.cover_profile_fingerprint(cfg) != preview.cover_profile_fingerprint
+    assert cover.cover_profile_fingerprint(cfg, job) != preview.cover_profile_fingerprint
     cover._FACTS_SLOT = None
     counts = {"builder": 0}
     build = cover._build_cover_facts
@@ -2235,8 +2255,234 @@ def test_activity_field_opening_says_stelle():
     )
     result = compose_cover_letter(job, cfg)
     assert result.ok is True
-    assert "um die Stelle in der Rechnungsprüfung (m/w/d)" in result.text
+    assert "um die Stelle in der Rechnungsprüfung" in result.text
+    assert "(m/w/d)" not in result.text
     assert "um die Position Rechnungsprüfung" not in result.text
     assert "Zu meinen Aufgaben gehörte dort: Belege erfassen." in result.text
     assert "als Rechnungsprüfung" not in result.text
     assert "übernommen" not in result.text
+
+
+_GENDER_TITLE_CASES = (
+    ("Dispatcher (m/w/d)", "Dispatcher"),
+    ("Dispatcher (w/m/d)", "Dispatcher"),
+    ("Dispatcher (d/m/w)", "Dispatcher"),
+    ("Dispatcher (m/f/d)", "Dispatcher"),
+    ("Dispatcher (all genders)", "Dispatcher"),
+    ("Dispatcher (ALL GENDERS)", "Dispatcher"),
+    ("Dispatcher (m|w|d)", "Dispatcher"),
+    ("Dispatcher (w/m/x)", "Dispatcher"),
+    ("Dispatcher (gn)", "Dispatcher"),
+    ("Dispatcher (m/w/div)", "Dispatcher"),
+    ("Dispatcher m/w/d", "Dispatcher"),
+    ("Disponent m/w/d Nahverkehr", "Disponent Nahverkehr"),
+    ("Disponent / Dispatcher (m/w/d) Nahverkehr", "Disponent / Dispatcher Nahverkehr"),
+    ("Disponent (Nahverkehr)", "Disponent (Nahverkehr)"),
+)
+
+
+@pytest.mark.parametrize(("raw", "expected"), _GENDER_TITLE_CASES)
+def test_gender_suffix_is_stripped_from_titles(raw: str, expected: str):
+    from core.cover_letter import _GENDER_MARKER, strip_gender_from_title
+
+    assert isinstance(_GENDER_MARKER, re.Pattern)
+    assert strip_gender_from_title(raw) == expected
+
+
+def test_factual_parentheses_stay_in_the_letter():
+    cfg = _cfg(
+        "SAP",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Tourenplanung für Stückgut"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+    job = Job(
+        id="j-nahverkehr",
+        source="indeed",
+        title="Disponent (Nahverkehr)",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung für Stückgut und SAP.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "Position als Disponent (Nahverkehr)" in result.text
+
+
+def test_cl20_title_becomes_disponent_dispatcher_nahverkehr():
+    import json
+
+    from core.cover_letter import strip_gender_from_title
+    from tests.test_cover_letter_gold import _config_from_case, _job_from_case
+
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "tests"
+        / "fixtures"
+        / "anschreiben_gold"
+        / "cl-20-nordmole-dispatcher.json"
+    )
+    case = json.loads(path.read_text(encoding="utf-8"))
+    result = compose_cover_letter(_job_from_case(case), _config_from_case(case))
+    assert result.ok is True
+    assert strip_gender_from_title(case["job"]["title"]) == "Disponent / Dispatcher Nahverkehr"
+    assert "Position als Disponent / Dispatcher Nahverkehr" in result.text
+    assert "(m/w/d)" not in result.text
+    assert "Disponent / Dispatcher  Nahverkehr" not in result.text
+
+
+def test_reference_decision_has_no_function_attribute():
+    from core.cover_letter import cover_letter_reference_hits
+
+    cfg = _dated_station_cfg()
+    job = _dispatch_job("job-decision-attr")
+    result = compose_cover_letter(job, cfg)
+    decision = cover_letter_reference_hits(result.text, job, cfg)
+    assert decision.accepted is True
+    assert decision.hits
+    assert not hasattr(cover_letter_reference_hits, "accepted")
+
+
+def test_two_threads_do_not_share_a_reference_decision():
+    import threading
+
+    from core.cover_letter import cover_letter_reference_hits
+
+    cfg = _dated_station_cfg()
+    job = _dispatch_job("job-threads")
+    letter = compose_cover_letter(job, cfg).text
+    barrier = threading.Barrier(2)
+    seen: dict[str, list[bool]] = {"yes": [], "no": []}
+    errors: list[str] = []
+
+    def _accepted() -> None:
+        try:
+            for _ in range(20):
+                barrier.wait(timeout=10)
+                decision = cover_letter_reference_hits(letter, job, cfg)
+                seen["yes"].append(decision.accepted)
+                if hasattr(cover_letter_reference_hits, "accepted"):
+                    errors.append("accepted attribute leaked")
+        except Exception as exc:  # pragma: no cover - reported below
+            errors.append(repr(exc))
+
+    def _rejected() -> None:
+        try:
+            for _ in range(20):
+                barrier.wait(timeout=10)
+                decision = cover_letter_reference_hits("", job, cfg)
+                seen["no"].append(decision.accepted)
+                if hasattr(cover_letter_reference_hits, "accepted"):
+                    errors.append("accepted attribute leaked")
+        except Exception as exc:  # pragma: no cover - reported below
+            errors.append(repr(exc))
+
+    threads = (
+        threading.Thread(target=_accepted),
+        threading.Thread(target=_rejected),
+    )
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    assert errors == []
+    assert seen["yes"] == [True] * 20
+    assert seen["no"] == [False] * 20
+
+
+def test_approve_refuses_when_only_the_ad_text_changes(tmp_path: Path):
+    import core.cover_letter as cover
+
+    cfg = _dated_station_cfg()
+    cfg.root = tmp_path
+    job = _dispatch_job("job-fp-ad")
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_letter_preview
+    skills = tuple(cfg.profile.qualifications.skill_values())
+    software = tuple(cfg.profile.qualifications.software_values())
+    stations = list(cfg.profile.qualifications.work_experience)
+    job.description = "Anforderungen: Schweißzertifikat und CAD-Konstruktion."
+    assert tuple(cfg.profile.qualifications.skill_values()) == skills
+    assert tuple(cfg.profile.qualifications.software_values()) == software
+    assert list(cfg.profile.qualifications.work_experience) == stations
+    assert cover.cover_profile_fingerprint(cfg, job) != preview.cover_profile_fingerprint
+    target = tmp_path / "cover_letters" / "job-fp-ad.txt"
+    with pytest.raises(CoverLetterRefused) as exc:
+        approve_cover_letter(
+            job,
+            cfg,
+            preview.cover_letter_preview,
+            generated_sha256=preview.cover_letter_sha256,
+            profile_fingerprint=preview.cover_profile_fingerprint,
+        )
+    assert exc.value.refusal.reason_code == "profile_changed_evidence_lost"
+    assert not target.exists()
+    assert not target.with_suffix(".meta.json").exists()
+
+
+def test_approve_refuses_when_only_the_cv_source_text_changes(tmp_path: Path):
+    cfg = _dated_station_cfg()
+    cfg.application.cv_source_text = (
+        "Disponent bei der Nordkai Spedition GmbH, Tourenplanung für Stückgut."
+    )
+    cfg.root = tmp_path
+    job = _dispatch_job("job-fp-cv")
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_refusal_code == ""
+    assert preview.cover_letter_preview
+    skills = tuple(cfg.profile.qualifications.skill_values())
+    software = tuple(cfg.profile.qualifications.software_values())
+    stations = list(cfg.profile.qualifications.work_experience)
+    cfg.application.cv_source_text = "Lebenslauf ohne die bisherige Station."
+    assert tuple(cfg.profile.qualifications.skill_values()) == skills
+    assert tuple(cfg.profile.qualifications.software_values()) == software
+    assert list(cfg.profile.qualifications.work_experience) == stations
+    target = tmp_path / "cover_letters" / "job-fp-cv.txt"
+    with pytest.raises(CoverLetterRefused) as exc:
+        approve_cover_letter(
+            job,
+            cfg,
+            preview.cover_letter_preview,
+            generated_sha256=preview.cover_letter_sha256,
+            profile_fingerprint=preview.cover_profile_fingerprint,
+        )
+    assert exc.value.refusal.reason_code == "profile_changed_evidence_lost"
+    assert not target.exists()
+    assert not target.with_suffix(".meta.json").exists()
+
+
+def test_guard_settings_change_the_profile_fingerprint(monkeypatch):
+    import core.cover_letter as cover
+
+    cfg = _dated_station_cfg()
+    job = _dispatch_job("job-fp-guard")
+    before = cover.cover_profile_fingerprint(cfg, job)
+    monkeypatch.setattr(cover, "ALLOW_STATION_WITHOUT_TASKS_OR_PERIOD", True)
+    assert cover.cover_profile_fingerprint(cfg, job) != before
+    monkeypatch.setattr(cover, "ALLOW_STATION_WITHOUT_TASKS_OR_PERIOD", False)
+    monkeypatch.setattr(cover, "MIN_DISTINCT_COVER_HITS", 3)
+    assert cover.cover_profile_fingerprint(cfg, job) != before
+
+
+def test_approve_with_text_and_no_fingerprint_saves_nothing(tmp_path: Path):
+    cfg = _dated_station_cfg()
+    cfg.root = tmp_path
+    job = _dispatch_job("job-fp-missing")
+    generated = compose_cover_letter(job, cfg)
+    assert generated.ok is True
+    target = tmp_path / "cover_letters" / "job-fp-missing.txt"
+    with pytest.raises(ValueError, match="Fingerabdruck"):
+        approve_cover_letter(
+            job,
+            cfg,
+            generated.text,
+            generated_sha256=generated.generated_sha256,
+        )
+    assert not target.exists()
+    assert not target.with_suffix(".meta.json").exists()

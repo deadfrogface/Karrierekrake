@@ -147,7 +147,17 @@
     "setze ich",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Tragfähiger Treffer: die Anzeige fordert Disponent, Tourenplanung und SAP TM, das Profil belegt Disponent bei der Nordkai Spedition GmbH, den Skill Tourenplanung und die Software SAP TM. Stelle und Firma müssen stimmen. Anforderungen stehen nach Betrieb und Angebot."
 }

@@ -1436,11 +1436,12 @@ def _cover_bundle(
     gate = _profile_gate(config)
     if gate[0]:
         return empty
+    resolved_source = resolve_cover_letter_source_text(config, source_text=source_text)
     slot_key = (
         id(evidence),
         getattr(job, "title", ""),
         getattr(job, "description", ""),
-        source_text,
+        resolved_source,
         gate,
     )
     if _FACTS_SLOT is not None and _FACTS_SLOT[0] == slot_key:
@@ -1496,8 +1497,14 @@ _MUST_TERM = re.compile(
     r"[A-ZÄÖÜ][a-zäöüß]{2,}(?:\s+[A-ZÄÖÜ][a-zäöüß]{2,})*)"
 )
 _FIELD_SUFFIX = ("ung", "schaft", "heit", "keit", "ion", "tät", "ik")
-_GENDER_PAREN = re.compile(
-    r"\s*\((?:[mwdfxgn])(?:\s*/\s*[mwdfxgn]){1,4}\)",
+# One pattern for every gender suffix that may sit in a job title.
+# Factual brackets such as "(Nahverkehr)" do not match.
+_GENDER_MARKER = re.compile(
+    r"(?:"
+    r"\(\s*(?:all\s+genders|gn|(?:div|[mwdfxgn])(?:\s*[\/|]\s*(?:div|[mwdfxgn])){1,4})\s*\)"
+    r"|"
+    r"\bm\s*/\s*w\s*/\s*d\b"
+    r")",
     re.IGNORECASE,
 )
 _MUST_STOP = frozenset(
@@ -1553,15 +1560,25 @@ def _role_phrase(fact: _CoverFact) -> str:
 _OPENING_SLOT: tuple[str, str] | None = None
 
 
+def strip_gender_from_title(title: str) -> str:
+    """Drop a gender suffix from a title, including one in the middle.
+
+    ``Disponent / Dispatcher (m/w/d) Nahverkehr`` becomes
+    ``Disponent / Dispatcher Nahverkehr``. ``Disponent (Nahverkehr)`` stays.
+    """
+    stripped = _GENDER_MARKER.sub(" ", title or "")
+    return " ".join(stripped.split())
+
+
 def _opening_role(title: str) -> str:
-    """Same field test as a station title. The job title itself stays in the phrase."""
+    """Same field test as a station title. The phrase uses the title without a gender suffix."""
     global _OPENING_SLOT
     if _OPENING_SLOT is not None and _OPENING_SLOT[0] == title:
         return _OPENING_SLOT[1]
-    bare = title
-    if "(" in title:
-        bare = _GENDER_PAREN.sub("", title).strip()
-    phrase = f"Stelle in der {title}" if _is_activity_field(bare) else f"Position als {title}"
+    shown = strip_gender_from_title(title)
+    phrase = (
+        f"Stelle in der {shown}" if _is_activity_field(shown) else f"Position als {shown}"
+    )
     _OPENING_SLOT = (title, phrase)
     return phrase
 
@@ -1710,7 +1727,7 @@ def _build_cover_facts(
         qualifies, keys = _station_keys(compiled, ad_keys)
         if not qualifies or not keys:
             continue
-        title = clean_text(exp.title)
+        title = strip_gender_from_title(clean_text(exp.title))
         company = clean_text(exp.company)
         score = _score_station(compiled, blob, ad_keys)
         matching = tuple(
@@ -1988,7 +2005,7 @@ def cover_letter_reference_hits(
     *,
     source_text: str = "",
     facts: list[_CoverFact] | None = None,
-) -> tuple[tuple[str, ...], tuple[str, ...]]:
+) -> _ReferenceDecision:
     """The only place that decides which references a letter text carries.
 
     Preview and generation both call this. Two hits must name two different ad
@@ -1998,13 +2015,12 @@ def cover_letter_reference_hits(
     count. A station with no tasks counts only with company, role, and the
     profile period. Two skills and no station are not enough. Education never
     arrives here. Task keys were stored on the facts; this function does not
-    walk the profile.
+    walk the profile. The decision is the return value. Nothing is stored on
+    the function.
     """
     if facts is None:
         facts = _cover_facts(job, config, source_text)
-    decision = _decide_references(text, facts)
-    cover_letter_reference_hits.accepted = decision.accepted  # type: ignore[attr-defined]
-    return decision.hits, decision.missing
+    return _decide_references(text, facts)
 
 
 def _decide_references(text: str, facts: list[_CoverFact]) -> _ReferenceDecision:
@@ -2359,11 +2375,11 @@ def _compiled_skill(label: str) -> _SkillCompiled:
     return compiled
 
 
-def _profile_fingerprint(config: AppConfig) -> tuple:
-    """Hashable profile text. Equal profiles share one compiled evidence.
+def _evidence_cache_key(config: AppConfig) -> tuple:
+    """Skills, software, and stations. The ad and the source text are not in this key.
 
-    Raw strings, not ``clean_text``. Cleaning stays inside the compile, which
-    runs once per profile. The lookup itself does not walk the normalizer.
+    ``cached_profile_evidence`` compiles mention patterns from these fields
+    only. The approval fingerprint adds the remaining fact inputs on top.
     """
     quals = config.profile.qualifications
     return (
@@ -2382,14 +2398,50 @@ def _profile_fingerprint(config: AppConfig) -> tuple:
     )
 
 
-def cover_profile_fingerprint(config: AppConfig) -> str:
-    """Hash of the profile text cover facts are built from.
+def _profile_fingerprint(
+    config: AppConfig,
+    job: Job | None = None,
+    source_text: str = "",
+) -> tuple:
+    """Every input of ``_cover_facts`` and ``_decide_references``.
 
-    Skills, software, and each station's title, company, dates, and tasks.
-    Contact fields are not included. The preview stores this value.
-    Approval compares it with the profile it is given.
+    Skills, software, stations, ``cv_source_text`` and an explicit
+    ``source_text``, the ad title and description, the profile gate, and the
+    two guard settings ``ALLOW_STATION_WITHOUT_TASKS_OR_PERIOD`` and
+    ``MIN_DISTINCT_COVER_HITS``. Raw strings, not ``clean_text``.
     """
-    raw = repr(_profile_fingerprint(config))
+    app = getattr(config, "application", None)
+    if job is None:
+        ad = ("", "")
+    else:
+        ad = (
+            str(getattr(job, "title", "") or ""),
+            str(getattr(job, "description", "") or ""),
+        )
+    return (
+        _evidence_cache_key(config),
+        str(getattr(app, "cv_source_text", "") or ""),
+        str(source_text or ""),
+        ad,
+        _profile_gate(config),
+        (
+            bool(ALLOW_STATION_WITHOUT_TASKS_OR_PERIOD),
+            int(MIN_DISTINCT_COVER_HITS),
+        ),
+    )
+
+
+def cover_profile_fingerprint(
+    config: AppConfig,
+    job: Job | None = None,
+    source_text: str = "",
+) -> str:
+    """Hash of every input cover facts and the reference decision are built from.
+
+    The preview stores this value for the job it rendered. Approval compares
+    it with the profile and the ad it is given. Contact fields are not included.
+    """
+    raw = repr(_profile_fingerprint(config, job, source_text))
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
@@ -2406,7 +2458,7 @@ def _plain_station_keys(quals: Any) -> frozenset[tuple]:
 
 def cached_profile_evidence(config: AppConfig) -> _ProfileEvidence:
     """Compile mention patterns once per profile, then reuse them per job."""
-    key = _profile_fingerprint(config)
+    key = _evidence_cache_key(config)
     cached = _PROFILE_CACHE.get(key)
     if cached is not None:
         return cached
@@ -2595,7 +2647,8 @@ def _render_template(
     claims = _resolve_writer_claims(config, contact_claims)
 
     mapping = {
-        "job_title": clean_text(job.title) or "die ausgeschriebene Position",
+        "job_title": strip_gender_from_title(clean_text(job.title))
+        or "die ausgeschriebene Position",
         "position_phrase": position_phrase,
         "company": company,
         "company_bei": _company_bei(company) if company else company,
@@ -2676,19 +2729,19 @@ def compose_cover_letter(
     model_text = _try_cover_model(job, config, missing=(), attempt=0)
     if model_text is not None:
         text = _apply_greeting(_strip_unfilled_claims(model_text), greeting)
-        _hits, letter_missing = cover_letter_reference_hits(text, job, config, facts=facts)
-        if not cover_letter_reference_hits.accepted:  # type: ignore[attr-defined]
-            retried = _try_cover_model(job, config, missing=letter_missing, attempt=1)
+        decision = cover_letter_reference_hits(text, job, config, facts=facts)
+        if not decision.accepted:
+            retried = _try_cover_model(job, config, missing=decision.missing, attempt=1)
             if not retried or not str(retried).strip():
                 return _refusal(CoverReason.NO_EVIDENCE, **shared)
             text = _apply_greeting(_strip_unfilled_claims(retried), greeting)
-            cover_letter_reference_hits(text, job, config, facts=facts)
-            if not cover_letter_reference_hits.accepted:  # type: ignore[attr-defined]
+            decision = cover_letter_reference_hits(text, job, config, facts=facts)
+            if not decision.accepted:
                 return _refusal(CoverReason.NO_EVIDENCE, **shared)
     else:
         text = _apply_greeting(text, greeting)
-        cover_letter_reference_hits(text, job, config, facts=facts)
-        if not cover_letter_reference_hits.accepted:  # type: ignore[attr-defined]
+        decision = cover_letter_reference_hits(text, job, config, facts=facts)
+        if not decision.accepted:
             return _refusal(CoverReason.NO_EVIDENCE, **shared)
     normalized = normalize_cover_text(text)
     return CoverLetterResult(
@@ -2844,8 +2897,10 @@ def approve_cover_letter(
 ) -> Path:
     """Persist the approved preview via ``save_cover_letter``.
 
-    ``profile_fingerprint`` is the value the preview stored. When it matches
-    the profile given here, facts are not built again. When it differs, facts
+    ``profile_fingerprint`` is the value the preview stored. A passed letter
+    without that value raises ``ValueError`` and writes nothing; it does not
+    fall back to ``compose_cover_letter``. When the value matches the profile
+    and the ad given here, facts are not built again. When it differs, facts
     are built once from this profile and ``cover_letter_reference_hits`` runs
     on the text being approved. A letter that no longer meets the rule is
     refused with ``profile_changed_evidence_lost`` and nothing is written.
@@ -2854,19 +2909,27 @@ def approve_cover_letter(
     the edited flag is decided.
     """
     supplied = str(profile_fingerprint or "").strip()
+    if text is not None and not supplied:
+        logger.error(
+            "approve_cover_letter refused job %s: profile fingerprint was not passed",
+            getattr(job, "id", ""),
+        )
+        raise ValueError(
+            "Freigabe mit Brieftext braucht den Profil-Fingerabdruck der Vorschau."
+        )
     # A missing letter still has to be composed. The preview dialog always
     # passes the text, and that is the path that skips a second fact build.
-    if supplied and text is not None:
+    if text is not None:
         blocked = _job_shape_refusal(job)
         if blocked is not None:
             _raise_cover_result(blocked)
         description_used = _clean_job_description(getattr(job, "description", ""))
-        if cover_profile_fingerprint(config) != supplied:
+        if cover_profile_fingerprint(config, job) != supplied:
             bundle = _cover_bundle(job, config, description=description_used)
             facts = list(bundle.facts)
-            letter = normalize_cover_text(text if text is not None else "")
-            cover_letter_reference_hits(letter, job, config, facts=facts)
-            if not cover_letter_reference_hits.accepted:  # type: ignore[attr-defined]
+            letter = normalize_cover_text(text)
+            decision = cover_letter_reference_hits(letter, job, config, facts=facts)
+            if not decision.accepted:
                 logger.error(
                     "approve_cover_letter refused job %s: profile_changed_evidence_lost",
                     getattr(job, "id", ""),

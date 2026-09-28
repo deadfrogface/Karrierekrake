@@ -88,7 +88,17 @@
     "Max Beispiel",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Zwei Ansprechpersonen sind nicht eindeutig. Der Brief bleibt bei der allgemeinen Anrede und nennt die Stationstätigkeit Tourenplanung für Stückgut im Profilwortlaut."
 }

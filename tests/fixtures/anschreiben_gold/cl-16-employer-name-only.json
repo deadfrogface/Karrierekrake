@@ -71,7 +71,17 @@
     "[Ihr Name]",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die Anzeige nennt den früheren Arbeitgeber Nordkai Spedition GmbH. Titel, Aufgaben und Skills treffen nicht. Ein reiner Firmennamentreffer zählt nicht. Soll ist no_evidence und kein Brief."
 }

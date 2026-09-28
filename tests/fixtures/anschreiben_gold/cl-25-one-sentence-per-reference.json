@@ -63,7 +63,17 @@
     "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung.",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Tourenplanung und SAP treffen die Anzeige, aber keine Station aus der Berufserfahrung. Zwei Kenntnisse ohne Station sind no_evidence. Eine Aufzählung der beiden Kenntnisse wäre ebenfalls kein Brief."
 }

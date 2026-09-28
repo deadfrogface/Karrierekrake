@@ -58,7 +58,17 @@
     "[Ihr Name]",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Im Profil steht nur die Software SAP Business One. Sie trifft die Anforderung SAP, aber kein zweiter belegter Bezug. Ein Bezug reicht nicht. Soll ist no_evidence und kein Brief."
 }

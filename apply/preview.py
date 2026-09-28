@@ -296,7 +296,7 @@ def build_application_preview(
         found_references=tuple(outcome.found_references),
         missing_required=tuple(outcome.missing_required),
         stations_without_tasks=tuple(outcome.stations_without_tasks),
-        cover_profile_fingerprint=cover_profile_fingerprint(config),
+        cover_profile_fingerprint=cover_profile_fingerprint(config, job),
         cover_refusal_code=outcome.reason_code,
         cover_refusal_key=outcome.message_key,
         description_used=outcome.description_used,

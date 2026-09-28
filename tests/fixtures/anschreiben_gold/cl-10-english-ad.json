@@ -147,7 +147,17 @@
     "setze ich",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Englische Anzeige. Requirements stehen nach dem Angebot. dispatcher trifft die Station Disponent bei der Nordkai Spedition, route planning den Skill Tourenplanung, SAP TM die Software SAP TM. Der Brief bleibt an diese Belege gebunden. Firma Northquay Freight GmbH."
 }

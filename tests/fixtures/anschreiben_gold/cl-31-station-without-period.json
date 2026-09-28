@@ -68,7 +68,17 @@
     "[Ihr Name]",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die Station Disponent hat im Profil weder Tätigkeiten noch einen Zeitraum. Sie zählt nicht als Station. Tourenplanung allein reicht nicht. Soll ist no_evidence."
 }

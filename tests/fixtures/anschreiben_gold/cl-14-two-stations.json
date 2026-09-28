@@ -62,7 +62,7 @@
   "expected_outcome": "interview",
   "must_mention": [
     "Kaiwerk GmbH",
-    "Teamleitung Umschlag (m/w/d)",
+    "Teamleitung Umschlag",
     "Disponent",
     "Nordkai Spedition",
     "Fachlagerist",
@@ -84,7 +84,17 @@
     "setze ich",
     "steht in der Anzeige. Damit habe ich gearbeitet",
     "deckt einen Punkt der Anzeige ab",
-    "genannt in der Anzeige"
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Zwei Stationen und keine Skills. Disponent bei der Nordkai Spedition und Fachlagerist beim Kistenwerk Ost treffen die Anzeige als zwei verschiedene Bezüge. Beide müssen im Brief stehen."
 }

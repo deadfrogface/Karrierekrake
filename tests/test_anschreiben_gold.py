@@ -17,6 +17,8 @@ from pathlib import Path
 
 import pytest
 
+from core.cover_letter import strip_gender_from_title
+
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "anschreiben_gold"
 DOC = ROOT / "docs" / "personaler" / "ANSCHREIBEN_GOLD.md"
@@ -149,7 +151,7 @@ def _load_cases() -> list[dict]:
 
 def _mention_grounded(fact: str, blob: str) -> bool:
     """Salutations and profile year spans are not stored as one string."""
-    if fact in blob:
+    if fact in blob or fact in strip_gender_from_title(blob):
         return True
     if fact.startswith(("Sehr geehrte ", "Sehr geehrter ", "Guten Tag ")):
         return True
