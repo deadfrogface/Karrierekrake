@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-25-one-sentence-per-reference",
+  "tags": [
+    "list_not_reference"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550125",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "manual"
+        },
+        {
+          "value": "SAP",
+          "source": "manual"
+        }
+      ],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-25-one-sentence-per-reference",
+    "source": "indeed",
+    "source_job_id": "src-cl-25-one-sentence-per-reference",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-25-one-sentence-per-reference",
+    "status": "new",
+    "title": "Disponent",
+    "company": "Nordmole Musterlogistik GmbH",
+    "description": "Die Nordmole Musterlogistik GmbH sucht einen Disponenten. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- Tourenplanung\n- SAP\n\nEine Aufzählung der beiden Kenntnisse in einem Satz ist kein Bezug."
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Nordmole Musterlogistik GmbH",
+    "Disponent",
+    "Tourenplanung",
+    "SAP"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung."
+  ],
+  "rationale": "Tourenplanung und SAP sind zwei Bezüge. Der Brief nennt jeden in einem eigenen Satz und in der Formulierung des Profils. Die Aufzählung in einem Satz zählt keinen Bezug und wäre kein interview."
+}

@@ -42,6 +42,8 @@ class ApplicationPreview:
     form_values: dict[str, str] = field(default_factory=dict)
     documents: dict[str, str] = field(default_factory=dict)
     cover_letter_preview: str = ""
+    cover_letter_sha256: str = ""
+    found_references: tuple[str, ...] = ()
     cover_refusal_code: str = ""
     cover_refusal_key: str = ""
     description_used: str = ""
@@ -287,6 +289,8 @@ def build_application_preview(
             "Anschreiben": "(generiert, siehe unten)",
         },
         cover_letter_preview=cover,
+        cover_letter_sha256=outcome.generated_sha256,
+        found_references=tuple(outcome.found_references),
         cover_refusal_code=outcome.reason_code,
         cover_refusal_key=outcome.message_key,
         description_used=outcome.description_used,

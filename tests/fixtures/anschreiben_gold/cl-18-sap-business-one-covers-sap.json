@@ -19,7 +19,7 @@
       "education": [],
       "work_experience": [
         {
-          "title": "Sachbearbeiter",
+          "title": "Rechnungsprüfung",
           "company": "Kontor Beispiel GmbH",
           "location": "Musterhafen",
           "start_date": "2019-04",
@@ -53,15 +53,15 @@
     "employment_type": "full_time",
     "url": "https://jobs.example.com/cl-18-sap-business-one-covers-sap",
     "status": "new",
-    "title": "Sachbearbeiter (m/w/d)",
+    "title": "Rechnungsprüfung (m/w/d)",
     "company": "Buchkontor Beispiel GmbH",
-    "description": "Die Buchkontor Beispiel GmbH sucht Unterstützung in der Buchhaltung. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- Erfahrung als Sachbearbeiter\n- sicheren Umgang mit SAP im Tagesgeschäft\n\nWeitere Werkzeuge nennt die Anzeige nicht."
+    "description": "Die Buchkontor Beispiel GmbH sucht Unterstützung in der Buchhaltung. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- Erfahrung in der Rechnungsprüfung\n- sicheren Umgang mit SAP im Tagesgeschäft\n\nWeitere Werkzeuge nennt die Anzeige nicht."
   },
   "expected_outcome": "interview",
   "must_mention": [
     "Buchkontor Beispiel GmbH",
-    "Sachbearbeiter (m/w/d)",
-    "Sachbearbeiter",
+    "Rechnungsprüfung (m/w/d)",
+    "Rechnungsprüfung",
     "Kontor Beispiel GmbH",
     "SAP Business One"
   ],
@@ -75,5 +75,5 @@
     "der ausgeschriebenen Position",
     "[Ihr Name]"
   ],
-  "rationale": "Die Software SAP Business One ist spezieller als die Anforderung SAP und trifft sie als führende Wortfolge. Die Station Sachbearbeiter trifft die Anzeige zusätzlich. Beide Bezüge stehen im Brief. Es bleibt eine Anforderung SAP, nicht zwei."
+  "rationale": "Die Software SAP Business One ist spezieller als die Anforderung SAP und trifft sie als führende Wortfolge. Die Station Rechnungsprüfung trifft die Anzeige zusätzlich. Beide Bezüge stehen im Brief. Es bleibt eine Anforderung SAP, nicht zwei."
 }

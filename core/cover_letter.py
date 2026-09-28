@@ -35,7 +35,7 @@ hiermit bewerbe ich mich um die Position als {job_title} bei {company}.
 
 {experience_sentence}
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: {skills}.
+{skills}
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -257,6 +257,7 @@ _SKILL_SPLIT = re.compile(r"[,/|]")
 _TITLE_PART = re.compile(r"[A-Za-zÄÖÜäöüß0-9]{3,}")
 _CONTENT_TOKEN = re.compile(r"[a-z0-9äöüß]{3,}")
 _SURFACE_WORD = re.compile(r"[A-Za-zÄÖÜäöüß0-9]+")
+_REQ_SPLIT = re.compile(r"[|\s]+")
 # A period, comma, or line break ends a product name. ``SAP. Excel`` is two
 # requirements. Spaces and hyphens stay inside ``SAP Business One``.
 _PHRASE_BREAK = frozenset(".;:!?,\n/|()[]\"'«»–—")
@@ -523,6 +524,10 @@ class CoverLetterResult:
     text: str = ""
     refusal: CoverLetterRefusal | None = None
     description_used: str = ""
+    # Profile wording of the ad hits, including a no_evidence result with one hit.
+    found_references: tuple[str, ...] = ()
+    # Hash of the normalized letter, taken when the letter is generated.
+    generated_sha256: str = ""
 
     @property
     def reason_code(self) -> str:
@@ -536,12 +541,19 @@ class CoverLetterResult:
         return self.refusal.text(language) if self.refusal else ""
 
 
-def _refusal(reason: CoverReason) -> CoverLetterResult:
+def _refusal(
+    reason: CoverReason,
+    *,
+    found_references: tuple[str, ...] = (),
+    description_used: str = "",
+) -> CoverLetterResult:
     spec = REFUSAL_REGISTRY[reason]
     return CoverLetterResult(
         ok=False,
         text="",
         refusal=CoverLetterRefusal(reason.value, spec.message_key),
+        description_used=description_used,
+        found_references=tuple(found_references),
     )
 
 
@@ -816,6 +828,70 @@ def _ready_possible(ready: _ReadyToken, blob: str, folded: str, ad_forms: frozen
     return bool(ready.allow_substring and ready.norm and ready.norm in blob)
 
 
+# A title hit is the specific role. These words alone do not qualify a station,
+# and the same list blocks generic task tokens such as Betreuung and Erstellung.
+_GENERIC_ROLE_WORDS = frozenset(
+    {
+        "sachbearbeiter",
+        "sachbearbeiterin",
+        "mitarbeiter",
+        "mitarbeiterin",
+        "assistent",
+        "assistentin",
+        "kaufmann",
+        "kauffrau",
+        "kaufleute",
+        "fachkraft",
+        "fachkräfte",
+        "helfer",
+        "helferin",
+        "leiter",
+        "leiterin",
+        "betreuung",
+        "erstellung",
+    }
+)
+
+
+def _word_forms(token: str) -> set[str]:
+    forms = {token}
+    for ending in ("em", "en", "er", "es", "e", "s", "in"):
+        if len(token) - len(ending) >= 4 and token.endswith(ending):
+            forms.add(token[: -len(ending)])
+            break
+    return forms
+
+
+_GENERIC_ROLE_FORMS = frozenset(
+    form for word in _GENERIC_ROLE_WORDS for form in _word_forms(word)
+)
+
+
+def _is_generic_role_word(word: str) -> bool:
+    token = collapse_phrase(word)
+    if not token:
+        return False
+    return bool(_word_forms(token) & _GENERIC_ROLE_FORMS)
+
+
+def _specific_title_keys(title: str) -> frozenset[str]:
+    """Keys of the specific role. A lone generic word such as Sachbearbeiter is empty."""
+    words = [word for word in _TITLE_PART.findall(title or "") if not _is_glue_token(word)]
+    specifics = [word for word in words if not _is_generic_role_word(word)]
+    if not specifics:
+        return frozenset()
+    keys: set[str] = set()
+    for word in specifics:
+        keys |= _claim_keys(word)
+    if len(words) >= 2:
+        generic_singles: set[str] = set()
+        for word in words:
+            if _is_generic_role_word(word):
+                generic_singles |= {key for key in _claim_keys(word) if " " not in key}
+        keys |= {key for key in _claim_keys(title) if key not in generic_singles}
+    return frozenset(keys)
+
+
 def _station_key(exp: ExperienceEntry) -> tuple:
     return (
         clean_text(exp.title),
@@ -832,11 +908,7 @@ def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
     title = key[0]
     active = bool(title) and not _is_glue_token(title)
     part_tokens = _title_part_tokens(title)
-    title_keys: set[str] = set()
-    if active:
-        title_keys |= _claim_keys(title)
-    for part in part_tokens:
-        title_keys |= _claim_keys(part)
+    title_keys = _specific_title_keys(title) if active else frozenset()
     title_word_keysets = tuple(
         _claim_keys(word) for word in _meaningful_words(title, min_len=4)
     ) if active else ()
@@ -850,7 +922,7 @@ def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
     task_keysets: list[frozenset[str]] = []
     for word, keys in zip(resp_tokens, resp_keysets):
         norm = _norm(word)
-        if not norm or norm in seen_tasks or not keys:
+        if not norm or norm in seen_tasks or not keys or _is_generic_role_word(word):
             continue
         seen_tasks.add(norm)
         task_keysets.append(keys)
@@ -863,7 +935,7 @@ def _compiled_station(exp: ExperienceEntry) -> _StationCompiled:
         title_part_tokens=part_tokens,
         resp_words=(),
         company_mention=None,
-        title_keys=frozenset(title_keys),
+        title_keys=title_keys,
         task_keysets=tuple(task_keysets),
         title_word_keysets=title_word_keysets,
         resp_keysets=resp_keysets,
@@ -1020,9 +1092,8 @@ def _keys_for_token(
 def _requirement_tokens(key: str) -> frozenset[str]:
     if key.startswith("alias:"):
         return frozenset(part for part in key[6:].split("|") if part)
-    if key.startswith("tok:"):
-        return frozenset(part for part in key[4:].split("|") if part)
-    return frozenset()
+    body = key[4:] if key.startswith("tok:") else key
+    return frozenset(part for part in _REQ_SPLIT.split(body) if part)
 
 
 @dataclass(frozen=True)
@@ -1066,7 +1137,12 @@ def _skill_keys(skill: _SkillCompiled, ad_keys: frozenset[str]) -> frozenset[str
 
 
 def _unify_requirements(facts: list[_CoverFact]) -> list[_CoverFact]:
-    """Collapse keys that name the same ad requirement (overlap via token subset or alias)."""
+    """Collapse keys that are the same requirement.
+
+    A composite such as ``tok:sachbearbeiter|sap`` must not pull two atomic
+    keys into one root. A composite merges only when it contains exactly one
+    atomic key (``sap`` and ``sap tm``).
+    """
     keys: list[str] = []
     for fact in facts:
         for key in fact.requirements:
@@ -1091,11 +1167,20 @@ def _unify_requirements(facts: list[_CoverFact]) -> list[_CoverFact]:
         if not left_tokens:
             continue
         for right in keys[index + 1 :]:
-            right_tokens = token_sets[right]
-            if not right_tokens:
-                continue
-            if left_tokens <= right_tokens or right_tokens <= left_tokens:
+            if left_tokens == token_sets[right]:
                 union(left, right)
+    atomics = [key for key in keys if len(token_sets[key]) == 1]
+    for composite in keys:
+        tokens = token_sets[composite]
+        if len(tokens) <= 1:
+            continue
+        contained = [
+            atom
+            for atom in atomics
+            if token_sets[atom] <= tokens and atom != composite
+        ]
+        if len(contained) == 1:
+            union(contained[0], composite)
     unified: list[_CoverFact] = []
     for fact in facts:
         roots = frozenset(find(key) for key in fact.requirements if key)
@@ -1128,12 +1213,7 @@ def _cover_facts(
     *,
     description: str | None = None,
 ) -> list[_CoverFact]:
-    """Distinct profile facts and the ad requirements each one hits.
-
-    Uses ``cached_profile_evidence`` as a cache. It does not drop or rebuild it.
-    The ad is normalized once per call. A repeated call for the same ad and
-    profile gate returns the list already built.
-    """
+    """Facts for one job and profile state. A repeated call does not rebuild."""
     global _FACTS_SLOT
     if _debt_blocks(config):
         return []
@@ -1148,11 +1228,36 @@ def _cover_facts(
     )
     if _FACTS_SLOT is not None and _FACTS_SLOT[0] == slot_key:
         return _FACTS_SLOT[1]
+    facts = _build_cover_facts(
+        job,
+        config,
+        source_text,
+        description=description,
+        evidence=evidence,
+        gate=gate,
+    )
+    _FACTS_SLOT = (slot_key, facts)
+    return facts
+
+
+def _build_cover_facts(
+    job: Job,
+    config: AppConfig,
+    source_text: str = "",
+    *,
+    description: str | None = None,
+    evidence: _ProfileEvidence | None = None,
+    gate: tuple[bool, bool, bool, bool] | None = None,
+) -> list[_CoverFact]:
+    """One scan of the ad against the compiled profile. Not a cache lookup."""
+    if evidence is None:
+        evidence = cached_profile_evidence(config)
+    if gate is None:
+        gate = _profile_gate(config)
     surface = _job_surface(job, description)
     ad_keys = _ad_requirement_keys(surface)
     blob = _norm(surface)
     if not blob:
-        _FACTS_SLOT = (slot_key, [])
         return []
     facts: list[_CoverFact] = []
     for index, exp in enumerate(
@@ -1203,9 +1308,7 @@ def _cover_facts(
                     company="",
                 )
             )
-    unified = _unify_requirements(facts)
-    _FACTS_SLOT = (slot_key, unified)
-    return unified
+    return _unify_requirements(facts)
 
 
 def _assign_cover_facts(facts: list[_CoverFact]) -> list[tuple[_CoverFact, str]]:
@@ -1256,10 +1359,55 @@ def _label_in_text(label: str, text: str) -> bool:
     return _mention_for(label).hits(blob, collapse_phrase(text))
 
 
+_INFLECTION_TAILS = ("em", "en", "er", "es", "e", "s")
+
+
+def _label_bounded(label: str, folded: str) -> bool:
+    """Whole-word label match, including one German ending on a single word.
+
+    No ``re.compile``. The pattern cache stays untouched on the letter check.
+    """
+    key = collapse_phrase(label)
+    if not key or not folded:
+        return False
+    if _bounded_phrase(key, folded):
+        return True
+    words = key.split(" ")
+    if len(words) == 1:
+        for ending in _INFLECTION_TAILS:
+            if _bounded_phrase(words[0] + ending, folded):
+                return True
+    return False
+
+
+def _company_in_text(company: str, text: str) -> bool:
+    """Company match with the same word rules as a label.
+
+    A shortened leading name counts: ``Nordmole`` still matches
+    ``Nordmole Musterlogistik GmbH``.
+    """
+    if not company:
+        return True
+    if not text or not str(text).strip():
+        return False
+    folded = collapse_phrase(text)
+    if _label_bounded(company, folded):
+        return True
+    tokens = [
+        part
+        for part in _CONTENT_TOKEN.findall(collapse_phrase(company))
+        if not _is_glue_token(part)
+    ]
+    for length in range(1, len(tokens) + 1):
+        if _bounded_phrase(" ".join(tokens[:length]), folded):
+            return True
+    return False
+
+
 def _fact_in_text(fact: _CoverFact, text: str) -> bool:
     if not _label_in_text(fact.label, text):
         return False
-    if fact.kind == "station" and fact.company and fact.company not in text:
+    if fact.kind == "station" and fact.company and not _company_in_text(fact.company, text):
         return False
     return True
 
@@ -1293,24 +1441,66 @@ def _label_in_folded(label: str, blob: str, folded: str) -> bool:
     return _mention_for(label).hits(blob, folded)
 
 
+_SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
+
+
+def available_cover_references(facts: list[_CoverFact]) -> tuple[str, ...]:
+    """Profile labels that hit the ad. Built from the facts, not from empty text."""
+    return tuple(fact.label for fact, _root in _assign_cover_facts(facts))
+
+
+def _sentences(text: str) -> list[str]:
+    return [part.strip() for part in _SENTENCE_SPLIT.split(text.strip()) if part.strip()]
+
+
+def _labels_in_sentence(sentence: str, labels: list[str]) -> list[str]:
+    folded = collapse_phrase(sentence)
+    return [label for label in labels if label and _label_bounded(label, folded)]
+
+
+def _enumeration_sentence(sentence: str, present: list[str]) -> bool:
+    """A comma or colon list that names two facts counts neither of them."""
+    if len(present) < 2:
+        return False
+    return "," in sentence or ":" in sentence
+
+
+def _sentence_supports(sentence: str, fact: _CoverFact, labels: list[str]) -> bool:
+    present = _labels_in_sentence(sentence, labels)
+    if fact.label not in present:
+        return False
+    if _enumeration_sentence(sentence, present):
+        return False
+    if fact.kind == "station" and fact.company and not _company_in_text(fact.company, sentence):
+        return False
+    return True
+
+
+def _facts_in_sentences(text: str, facts: list[_CoverFact]) -> list[_CoverFact]:
+    """Facts that stand in their own sentence, not only inside a list."""
+    if not text or not str(text).strip() or not facts:
+        return []
+    labels = [fact.label for fact in facts if fact.label]
+    kept: list[_CoverFact] = []
+    seen: set[str] = set()
+    for sentence in _sentences(text):
+        for fact in facts:
+            if fact.fact_id in seen:
+                continue
+            if _sentence_supports(sentence, fact, labels):
+                seen.add(fact.fact_id)
+                kept.append(fact)
+    return kept
+
+
 def _hits_from_facts(
     text: str, facts: list[_CoverFact]
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
-    """Split an already matched fact list into labels still in ``text``."""
+    """Split prebuilt facts into labels that stand as their own sentence in ``text``."""
     full = _assign_cover_facts(facts)
     if not full:
         return (), ()
-    if not text or not str(text).strip():
-        return (), tuple(fact.label for fact, _root in full)
-    folded = collapse_phrase(text)
-    blob = _norm(text)
-    present: list[_CoverFact] = []
-    for fact in facts:
-        if not _label_in_folded(fact.label, blob, folded):
-            continue
-        if fact.kind == "station" and fact.company and fact.company not in text:
-            continue
-        present.append(fact)
+    present = _facts_in_sentences(text, facts)
     found = _assign_cover_facts(present)
     found_roots = {root for _fact, root in found}
     hits = tuple(fact.label for fact, _root in found)
@@ -1318,39 +1508,9 @@ def _hits_from_facts(
     return hits, missing
 
 
-def _text_keeps_two(text: str, assigned: list[tuple[_CoverFact, str]]) -> bool:
-    """True once two assigned references are still in the letter.
-
-    Stops at the second hit. Callers that need the full hit list use
-    ``_hits_from_facts``.
-    """
-    if len(assigned) < MIN_DISTINCT_COVER_HITS:
-        return False
-    if not text or not str(text).strip():
-        return False
-    folded = collapse_phrase(text)
-    blob: str | None = None
-    found = 0
-    seen: set[str] = set()
-    for fact, root in assigned:
-        if root in seen:
-            continue
-        label_key = collapse_phrase(fact.label)
-        if label_key and _bounded_phrase(label_key, folded):
-            present = True
-        else:
-            if blob is None:
-                blob = _norm(text)
-            present = _label_in_folded(fact.label, blob, folded)
-        if not present:
-            continue
-        if fact.kind == "station" and fact.company and fact.company not in text:
-            continue
-        seen.add(root)
-        found += 1
-        if found >= MIN_DISTINCT_COVER_HITS:
-            return True
-    return False
+def _text_keeps_two(text: str, facts: list[_CoverFact]) -> bool:
+    hits, _missing = _hits_from_facts(text, facts)
+    return len(hits) >= MIN_DISTINCT_COVER_HITS
 
 
 def cover_letter_reference_hits(
@@ -1359,16 +1519,19 @@ def cover_letter_reference_hits(
     config: AppConfig,
     *,
     source_text: str = "",
+    facts: list[_CoverFact] | None = None,
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
     """Which evidenced references the letter text still carries.
 
-    ``hits`` are distinct ad requirements whose profile fact appears in ``text``.
-    ``missing`` are evidenced requirements whose fact does not.
-    The two-reference rule is ``len(hits) >= MIN_DISTINCT_COVER_HITS``.
-
-    No model call, no ad reload, no rebuild of ``cached_profile_evidence``.
+    ``facts`` is the list already built for this job and profile. Without it,
+    the cached list is used and is not rebuilt. ``hits`` are distinct ad
+    requirements whose profile fact stands in its own sentence. The count of
+    available references is ``available_cover_references``, not ``len(missing)``
+    on an empty text.
     """
-    return _hits_from_facts(text, _cover_facts(job, config, source_text))
+    if facts is None:
+        facts = _cover_facts(job, config, source_text)
+    return _hits_from_facts(text, facts)
 
 
 def _experience_sentences(stations: list[_CoverFact]) -> str:
@@ -1386,6 +1549,15 @@ def _experience_sentences(stations: list[_CoverFact]) -> str:
                 "habe ich für diese Stelle relevante Erfahrungen gesammelt."
             )
     return "\n\n".join(parts)
+
+
+def _skill_sentences(skills: list[_CoverFact]) -> str:
+    """One sentence per skill, in the profile's own wording."""
+    return "\n\n".join(
+        f"Für die ausgeschriebene Aufgabe setze ich {fact.label} ein."
+        for fact in skills
+        if fact.label
+    )
 
 
 def _try_cover_model(
@@ -1685,18 +1857,24 @@ def compose_cover_letter(
     # One ad scan, before the template and before any model hook.
     # Stopping at two facts would drop later skills the letter still has to name.
     facts = _cover_facts(job, config, source_text, description=description)
+    found = available_cover_references(facts)
+    if len(found) < MIN_DISTINCT_COVER_HITS:
+        return _refusal(
+            CoverReason.NO_EVIDENCE,
+            found_references=found,
+            description_used=description,
+        )
     assigned = _assign_cover_facts(facts)
-    if len(assigned) < MIN_DISTINCT_COVER_HITS:
-        return _refusal(CoverReason.NO_EVIDENCE)
     station_facts = [fact for fact, _root in assigned if fact.kind == "station"][:2]
-    skills_list = [fact.label for fact, _root in assigned if fact.kind == "skill"]
+    skill_facts = [fact for fact, _root in assigned if fact.kind == "skill"]
     experience_sentence = _experience_sentences(station_facts)
+    skill_block = _skill_sentences(skill_facts)
 
     text = _render_template(
         job,
         config,
         contact_claims=contact_claims,
-        skills_list=skills_list,
+        skills_list=[skill_block] if skill_block else [],
         experience_sentence=experience_sentence,
     )
     text = _insert_contact_sentence(text, description)
@@ -1708,14 +1886,33 @@ def compose_cover_letter(
             # One retry only. The hook refuses attempt > 1.
             retried = _try_cover_model(job, config, missing=letter_missing, attempt=1)
             if not retried or not str(retried).strip():
-                return _refusal(CoverReason.NO_EVIDENCE)
+                return _refusal(
+                    CoverReason.NO_EVIDENCE,
+                    found_references=found,
+                    description_used=description,
+                )
             text = _strip_unfilled_claims(retried)
             letter_hits, _letter_missing = _hits_from_facts(text, facts)
             if len(letter_hits) < MIN_DISTINCT_COVER_HITS:
-                return _refusal(CoverReason.NO_EVIDENCE)
-    elif not _text_keeps_two(text, assigned):
-        return _refusal(CoverReason.NO_EVIDENCE)
-    return CoverLetterResult(ok=True, text=text, description_used=description)
+                return _refusal(
+                    CoverReason.NO_EVIDENCE,
+                    found_references=found,
+                    description_used=description,
+                )
+    elif not _text_keeps_two(text, facts):
+        return _refusal(
+            CoverReason.NO_EVIDENCE,
+            found_references=found,
+            description_used=description,
+        )
+    normalized = normalize_cover_text(text)
+    return CoverLetterResult(
+        ok=True,
+        text=normalized,
+        description_used=description,
+        found_references=found,
+        generated_sha256=hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
+    )
 
 
 def _insert_contact_sentence(text: str, description: str) -> str:
@@ -1787,10 +1984,26 @@ def set_pasted_job_description(
     return compose_cover_letter(job, config)
 
 
-def approve_cover_letter(job: Job, config: AppConfig, text: str | None = None) -> Path:
+def normalize_cover_text(text: str) -> str:
+    """Line endings and trailing whitespace, before compare and hash."""
+    raw = (text or "").replace("\r\n", "\n").replace("\r", "\n")
+    lines = [line.rstrip() for line in raw.split("\n")]
+    body = "\n".join(lines).strip()
+    return (body + "\n") if body else ""
+
+
+def approve_cover_letter(
+    job: Job,
+    config: AppConfig,
+    text: str | None = None,
+    *,
+    generated_sha256: str = "",
+) -> Path:
     """Persist the approved preview via ``save_cover_letter``.
 
-    Re-runs the gate. Records the cleaned description that the letter used.
+    The gate still runs. ``generated_sha256`` is the hash from preview
+    generation and is stored as given. Line endings and trailing whitespace
+    are normalized before the edited flag is decided.
     """
     result = compose_cover_letter(job, config)
     if not result.ok or result.refusal is not None:
@@ -1799,26 +2012,23 @@ def approve_cover_letter(job: Job, config: AppConfig, text: str | None = None) -
             CoverReason.NO_EVIDENCE.value, spec.message_key
         )
         raise CoverLetterRefused(refusal)
-    generated = result.text
+    generated = normalize_cover_text(result.text)
+    sha = generated_sha256 or result.generated_sha256
     # A supplied letter is the user's text. Refuse only the placeholder line
     # or an empty letter. Missing references are the user's own statement.
     if text is None:
         body = generated
         edited = False
     else:
-        if not str(text).strip() or _FORBIDDEN_LINE.search(text):
+        body = normalize_cover_text(text)
+        if not body.strip() or _FORBIDDEN_LINE.search(body):
             raise CoverLetterRefused(
                 CoverLetterRefusal(
                     CoverReason.NO_EVIDENCE.value,
                     REFUSAL_REGISTRY[CoverReason.NO_EVIDENCE].message_key,
                 )
             )
-        if text != generated:
-            body = text
-            edited = True
-        else:
-            body = generated
-            edited = False
+        edited = hashlib.sha256(body.encode("utf-8")).hexdigest() != sha
     path = Path(config.root) / "cover_letters" / f"{job.id}.txt"
     save_cover_letter(body, path)
     meta_path = Path(config.root) / "cover_letters" / f"{job.id}.meta.json"
@@ -1828,7 +2038,7 @@ def approve_cover_letter(job: Job, config: AppConfig, text: str | None = None) -
                 "job_id": job.id,
                 "description_used": result.description_used,
                 "edited": edited,
-                "generated_sha256": hashlib.sha256(generated.encode("utf-8")).hexdigest(),
+                "generated_sha256": sha,
             },
             ensure_ascii=False,
             indent=2,

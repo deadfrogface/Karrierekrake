@@ -146,7 +146,7 @@ def test_parser_debt_blocks_auto_match_and_cover_letter_until_confirmed():
         education=[],
         work_experience=[
             ExperienceEntry(
-                title="Sachbearbeiter",
+                title="Verwaltung",
                 company="Alt GmbH",
                 end_date="aktuell",
                 source="cv",
@@ -378,11 +378,18 @@ def test_unconfirmed_extract_blocks_auto_match_without_a_fake_score():
 
 
 def test_cover_letter_does_not_claim_job_ad_requirements():
-    cfg = _config()
+    cfg = _config(
+        qualifications=QualificationsConfig(
+            skills=[SourcedText("Excel", source="manual")],
+            work_experience=[
+                ExperienceEntry(title="Büroorganisation", company="Nord GmbH", source="manual")
+            ],
+        )
+    )
     job = _job(
         description=(
             "Wir suchen Kubernetes-Zertifikat und fünf Jahre SAP. "
-            "Excel ist willkommen."
+            "Excel und Büroorganisation sind willkommen."
         )
     )
     letter = render_cover_letter(job, cfg)
