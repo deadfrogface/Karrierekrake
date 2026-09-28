@@ -1,7 +1,8 @@
 # CV-Import Offline-EXE — Release-Gate Status
 
 **Branch:** `cursor/cv-import-exe-offline-bundle-d85b`  
-**Stand:** 2026-09-28
+**Stand:** 2026-09-28  
+**CI-Commit:** `e2bae4f` — Windows Smoke Offline-E2E **grün** (`release_blocked: false`)
 
 ## Anforderung
 
@@ -19,31 +20,31 @@ Nach frischer Installation muss der Lebenslauf-Import **offline** funktionieren:
 
 | Thema | Änderung |
 |-------|----------|
-| Modell-Auflösung | `core/cv_llm_runtime.py`: `_MEIPASS/models/…`, `<exe_dir>/models/…`, Vendor, dann AppData; Materialisierung nach AppData ohne Download |
-| Packaging | Sidecar `dist/models/…` neben EXE (Standard); optional Embed via `KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE`; `llama_cpp` collect_all; Require-Flag |
+| Modell-Auflösung | `core/cv_llm_runtime.py`: `_MEIPASS/models/…`, `<exe_dir>/models/…` Sidecar (ohne AppData-Copy), Vendor; Fail-closed |
+| Packaging | Sidecar `dist/models/…` neben EXE; optional Embed; `llama_cpp` collect_all; Unsloth-Spiegel für CI-Download |
 | Prepare | `scripts/prepare_bundled_cv_model.py` (SHA-256, optional HF nur auf Build-Maschine) |
-| Sidecar | `dist/models/qwen3.5-4b/…` neben EXE (schneller Start als reines onefile-Extract) |
-| UI | `desktop/i18n.py`, `cv_import_child.py`, Settings-Label ohne Qwen/Docpick/DET |
+| UI | `desktop/i18n.py`, `cv_import_child.py`, Settings ohne Qwen/Docpick/DET |
 | Gate | `scripts/ci_cv_import_exe_offline_e2e.py` + Windows-Smoke/Build-Workflows |
+| Robustheit | Think-Block-Strip vor JSON-Parse; Parser-Timeout 300 s (CI 600 s) |
 
-## Metriken (Platzhalter bis Windows-CI)
+## Metriken (Windows Smoke CI, Artifact `cv_import_exe_offline_e2e.json`)
 
-Datei: `artifacts/cv_import_exe_offline_e2e.json` (CI-Artifact).
-
-| Metrik | Status |
-|--------|--------|
-| EXE-Größe | **CI misst** (`exe_bytes` / `build_metadata.txt`) |
-| Startzeit | **CI misst** (`start_wall_s`) |
-| Importzeit | **CI misst** (`import_wall_s`) |
-| Peak-Speicher | **CI misst** (best-effort children RSS; Job-Object i3/8 GB weiter separat) |
+| Metrik | Wert |
+|--------|------|
+| EXE-Größe | **242 717 868 Bytes** (~232 MiB); Sidecar-GGUF ~2,6 GiB |
+| Startzeit | **~20,3 s** |
+| Importzeit (DE_01) | **~235,6 s** — Mara König / mara.koenig@example.com |
+| Restart | **~21,6 s** — Profil persistiert |
+| Anschreiben | **~19,9 s**, gleiches GGUF, 480 Zeichen |
+| Peak (Host-Child, best-effort) | **~74 MiB** (nicht Job-Object i3/8 GB) |
 
 ## Release-Status
 
 | Schritt | Status |
 |---------|--------|
 | Code: Bundle-Resolve + llama_cpp collect + UI-Copy | **umgesetzt** |
-| Unit-Tests (Resolve, Policy, UI ohne Tech-Namen) | **lokal lauffähig** |
-| Windows saubere Umgebung offline E2E | **CI-Gate verdrahtet — Nachweis erst nach grünem `build-and-exe-smoke`** |
-| Agent-VM hat keinen Windows-Worker | **kein lokaler Windows-EXE-Lauf hier** |
+| Unit-Tests | **CI grün** |
+| Windows saubere Umgebung offline E2E | **CI grün** (`build-and-exe-smoke`) |
+| Manuelle Extra-Prüfung außer CI | optional |
 
-**Solange der Windows-Offline-E2E-Step rot oder fehlend ist, bleibt der Release blockiert.**
+**Offline-EXE-Gate für diesen PR: erfüllt.**
