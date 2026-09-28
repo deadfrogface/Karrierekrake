@@ -114,6 +114,64 @@ def test_preview_dialog_primary_is_confirm_draft_never_submit(qapp):
     dlg.close()
 
 
+def test_confirm_draft_without_fingerprint_shows_hint_and_saves_nothing(
+    qapp, tmp_path, caplog, monkeypatch
+):
+    import logging
+
+    from PySide6.QtWidgets import QMessageBox
+
+    from core.config import AppConfig, ApplicationProfile, SettingsConfig
+    from core.models import Job
+
+    cfg = AppConfig(
+        application=ApplicationProfile(
+            first_name="Max",
+            last_name="Mustermann",
+            email="max@example.com",
+        ),
+        settings=SettingsConfig(dry_run=True, mode="review_before_submit", language="de"),
+        root=tmp_path,
+    )
+    job = Job(
+        id="j1",
+        source="indeed",
+        title="Office Manager",
+        company="Nordlicht",
+        application_url="https://example.com/job",
+    )
+    shown: list[str] = []
+
+    def warning(_parent, _title, text, *_args, **_kwargs):
+        shown.append(text)
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "warning", warning)
+    dlg = ApplyPreviewDialog(
+        _preview(
+            cover_letter_preview="Sehr geehrte Damen und Herren,\n\nEntwurf ohne Fingerabdruck.",
+            cover_refusal_code="",
+            cover_profile_fingerprint="",
+        ),
+        config=cfg,
+        job=job,
+    )
+    dlg.show()
+    qapp.processEvents()
+    assert dlg.approve_btn.isEnabled()
+    with caplog.at_level(logging.DEBUG):
+        dlg.approve_btn.click()
+        qapp.processEvents()
+    hint = tr("cover.preview_required")
+    assert shown == [hint]
+    assert hint == "Die Freigabe braucht die Vorschau. Bitte den Entwurf erneut öffnen."
+    assert "ValueError" not in hint
+    assert "Code:" not in hint
+    assert "Traceback" not in caplog.text
+    assert not (tmp_path / "cover_letters").exists()
+    dlg.close()
+
+
 def test_preview_dialog_confirm_visible_when_draft_ready(qapp, tmp_path):
     from core.config import AppConfig, ApplicationProfile, SettingsConfig
     from core.models import Job

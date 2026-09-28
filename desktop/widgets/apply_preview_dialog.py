@@ -457,6 +457,9 @@ class ApplyPreviewDialog(QDialog):
             lang = getattr(self._config.settings, "language", "de")
             QMessageBox.warning(self, self.windowTitle(), exc.refusal.text(lang))
             return
+        except ValueError:
+            QMessageBox.warning(self, self.windowTitle(), tr("cover.preview_required"))
+            return
         QMessageBox.information(self, self.windowTitle(), tr("cover.saved") + f"\n{path}")
         self.accept()
 
