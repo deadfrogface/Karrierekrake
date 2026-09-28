@@ -1,7 +1,8 @@
 """Phase events from the CV-import child to the UI.
 
-``timeout_s`` is the supervisor's already chosen wall-clock limit, in whole
-seconds. Nothing in this module derives a new limit from the token count.
+``timeout_s`` is the integer already chosen for this generation: the formula
+result, or ``KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S`` when that variable is set.
+This module does not tokenize and does not compute a remaining time.
 Generation progress is at most one event per second.
 """
 
@@ -27,24 +28,26 @@ def reset_generation_phase_events() -> None:
     _timeout_sent = False
 
 
-def generation_timeout_event() -> dict[str, int | str] | None:
-    """One event with the published supervisor timeout, or None if already sent.
+def generation_timeout_event(timeout_s: int | None = None) -> dict[str, int | str] | None:
+    """One event with the already chosen timeout, or None if already sent.
 
-    Reads ``KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S`` as the supervisor set it.
-    Does not recompute the limit.
+    Pass the integer from ``choose_import_timeout_s``. Without that argument
+    the env override wins, then the value chosen earlier in this process.
+    This does not run the formula again.
     """
     global _timeout_sent
     if _timeout_sent:
         return None
     _timeout_sent = True
-    raw = os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "").strip()
-    if raw:
-        timeout_s = int(float(raw))
-    else:
-        from core.cv_docpick_import import CV_IMPORT_TIMEOUT_S
+    if timeout_s is None:
+        raw = os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "").strip()
+        if raw:
+            timeout_s = int(float(raw))
+        else:
+            from core.cv_docpick_import import current_import_timeout_s
 
-        timeout_s = int(CV_IMPORT_TIMEOUT_S)
-    return {"phase": "generation", "timeout_s": timeout_s}
+            timeout_s = int(current_import_timeout_s())
+    return {"phase": "generation", "timeout_s": int(timeout_s)}
 
 
 def absorb_phase_message(
@@ -92,8 +95,8 @@ def append_phase_event(event: dict) -> None:
         return
 
 
-def emit_generation_timeout() -> dict[str, int | str] | None:
-    event = generation_timeout_event()
+def emit_generation_timeout(timeout_s: int | None = None) -> dict[str, int | str] | None:
+    event = generation_timeout_event(timeout_s)
     if event is not None:
         append_phase_event(event)
     return event

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import os
 import re
 import sys
@@ -952,20 +953,42 @@ CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
 # the child.
 CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES = 1_698_168_832
 # Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
+# The generation budget is ``import_timeout_seconds`` (formula, or this env
+# when it is set). This constant remains the env value, else 180, so a test
+# can still force a timeout and the HTTP transport keeps its previous clamp.
 CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "180"))
-# Gap between the in-process child gate and the Windows job memory limit.
-# The job limit sits above the child budget so the gate samples the overage
-# first. Largest measured rise between two phase samples on the pinned AVX2
-# wheel (VM, not i3, 2026-09-28): DE_06 after_load → after_prompt_eval,
-# median 138_223_616 bytes (1_866_338_304 − 1_728_114_688). The short-prompt
-# load → generation rise was 26_771_456. 64 MiB (67_108_864) is below the
-# DE_06 jump, so a child already within 64 MiB of its budget at after_load
-# can hit the job limit during prompt eval before the next gate sample.
-# 160 MiB is above that jump.
-JOB_LIMIT_MARGIN_BYTES = 160 * 1024 * 1024  # 167_772_160
+_ENV_IMPORT_TIMEOUT = "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"
+# Floor and ceiling for the formula. The env var is not clamped.
+CV_IMPORT_TIMEOUT_FLOOR_S = 180.0
+CV_IMPORT_TIMEOUT_CEILING_S = 900.0
+# Fresh-process model load, llama-cpp-python 0.3.35, one run in the
+# save_state measurement (VM, not i3, 2026-09-28). Not the native AMX
+# ``load_s`` of 1.187.
+CV_IMPORT_T_LOAD_S = 2.758
+# Docling and the rest of the import outside load, prompt eval, and
+# generation. DE_01 wall-clock median on this VM at n_threads=4 is 139.522 s.
+# Subtracting t_load, the n_threads=4 prompt-eval median (14.677 s) and
+# generation of 655 tokens at the n_threads=4 rate leaves about 52 s.
+# 60 s sits above that remainder. VM, not i3.
+CV_IMPORT_TIMEOUT_BUFFER_S = 60.0
+# VM medians of the pinned AVX2 wheel, n_threads=2, n_threads_batch=4,
+# median of 5 (VM, not i3, 2026-09-28). Prompt 1763 tokens, prompt-eval
+# median 14651.604 ms. Generation max_tokens 64, finish_reason=length,
+# median 12983.452 ms. Rates below are those tok/s medians divided by 2.
+# Rates on the i3 are unchecked and conservatively estimated.
+CV_IMPORT_VM_N2_PROMPT_TOKENS = 1763
+CV_IMPORT_VM_N2_PROMPT_EVAL_S = 14.651604
+CV_IMPORT_VM_N2_GEN_TOKENS = 64
+CV_IMPORT_VM_N2_GEN_S = 12.983452
+CV_IMPORT_RATE_CONSERVATIVE_DIVISOR = 2
+CV_IMPORT_R_PROMPT_TPS = (
+    CV_IMPORT_VM_N2_PROMPT_TOKENS / CV_IMPORT_VM_N2_PROMPT_EVAL_S
+) / CV_IMPORT_RATE_CONSERVATIVE_DIVISOR
+CV_IMPORT_R_GEN_TPS = (
+    CV_IMPORT_VM_N2_GEN_TOKENS / CV_IMPORT_VM_N2_GEN_S
+) / CV_IMPORT_RATE_CONSERVATIVE_DIVISOR
 # llama.cpp crash exits when a job memory limit makes an allocation fail.
-# After the child ends, Windows PeakJobMemoryUsed is compared with the job
-# limit. These codes count only when that peak is within one margin of the limit.
+# These codes are the exit-code fallback when the completion port is absent.
 JOB_LIMIT_CRASH_EXIT_CODES = frozenset(
     {
         0xC0000005,  # STATUS_ACCESS_VIOLATION
@@ -1679,16 +1702,16 @@ def classify_child_private_commit(sample: int, child_budget: int) -> str | None:
 
 
 def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
-    """Job memory limit: child budget plus the margin, not equal to the budget.
+    """Windows job memory limit: the child budget, the same number as the gate.
 
-    ``min(child_budget + margin, 3_300_000_000 - app_private + margin)``.
-    The in-process gate compares against the child budget, which is lower,
-    so it trips first unless a single allocation jumps the whole margin.
+    ``child_budget`` is ``3_300_000_000`` minus the one app-private read.
+    ``app_private`` is that read. The in-process gate compares the same
+    budget and, in the normal case, raises the clean code first.
     """
-    margin = JOB_LIMIT_MARGIN_BYTES
-    kind_side = int(child_budget) + margin
-    group_side = CV_IMPORT_PEAK_RSS_BYTES_MAX - int(app_private) + margin
-    return min(kind_side, group_side)
+    budget = int(child_budget)
+    if budget > 0:
+        return budget
+    return child_budget_for_app_private(app_private)
 
 
 def normalize_process_exit(code: int) -> int:
@@ -1700,37 +1723,89 @@ def is_job_limit_crash_exit(code: int) -> bool:
     return normalize_process_exit(code) in JOB_LIMIT_CRASH_EXIT_CODES
 
 
-def peak_near_job_limit(peak_job_memory_used: int, job_limit: int) -> bool:
-    """True when ``PeakJobMemoryUsed`` is within one margin of the job limit."""
-    return int(peak_job_memory_used) >= int(job_limit) - JOB_LIMIT_MARGIN_BYTES
+def memory_kind_for_job_limit(*, child_budget: int) -> str:
+    """Map a job-limit hit with the same rules as a gate sample.
 
-
-def memory_kind_for_crash_peak(
-    *,
-    exit_code: int | None,
-    peak_job_memory_used: int | None,
-    job_limit: int,
-    child_budget: int,
-) -> str | None:
-    """Map a crash plus a near job peak to a memory code, or None.
-
-    Both are required: exit ``0xC0000005``, ``0xC0000017``, or ``0xC0000409``,
-    and ``PeakJobMemoryUsed >= job_limit - JOB_LIMIT_MARGIN_BYTES``. The peak
-    is then classified with the same rules as a gate sample. A crash far under
-    the limit returns None so the payload kind stays.
+    The job refused a commit at the child budget, so the reached value is
+    one byte over that budget. Over the fresh-app child budget this is
+    ``peak_rss_exceeded``. Over only the current child budget this is
+    ``memory_budget_app_share``.
     """
-    if exit_code is None or peak_job_memory_used is None or int(job_limit) <= 0:
-        return None
-    if not is_job_limit_crash_exit(exit_code):
-        return None
-    if not peak_near_job_limit(peak_job_memory_used, job_limit):
-        return None
-    kind = classify_child_private_commit(int(peak_job_memory_used), child_budget)
+    reached = int(child_budget) + 1
+    kind = classify_child_private_commit(reached, child_budget)
     if kind is not None:
         return kind
-    if int(peak_job_memory_used) > fresh_app_child_budget_bytes():
+    if reached > fresh_app_child_budget_bytes():
         return "peak_rss_exceeded"
     return "memory_budget_app_share"
+
+
+_chosen_import_timeout_s: float | None = None
+_import_started_at: float | None = None
+
+
+def reset_import_timeout() -> None:
+    """Drop a timeout chosen for a previous generation in this process."""
+    global _chosen_import_timeout_s
+    _chosen_import_timeout_s = None
+
+
+def note_import_started(t0: float) -> None:
+    """Remember import start so the formula can be checked before generation."""
+    global _import_started_at
+    _import_started_at = float(t0)
+
+
+def import_started_at() -> float | None:
+    return _import_started_at
+
+
+def import_timeout_seconds(prompt_tokens: int, max_tokens: int) -> int:
+    """Wall-clock seconds for this import, from the token counts already known.
+
+    ``KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S`` overrides the formula and is not
+    clamped. Otherwise::
+
+        timeout = t_load + prompt_tokens / r_prompt + max_tokens / r_gen + buffer
+
+    clamped to ``[180, 900]``. Call once after tokenization. This does not
+    tokenize.
+    """
+    raw_env = os.environ.get(_ENV_IMPORT_TIMEOUT, "").strip()
+    if raw_env:
+        return int(float(raw_env))
+    raw = (
+        CV_IMPORT_T_LOAD_S
+        + int(prompt_tokens) / CV_IMPORT_R_PROMPT_TPS
+        + int(max_tokens) / CV_IMPORT_R_GEN_TPS
+        + CV_IMPORT_TIMEOUT_BUFFER_S
+    )
+    clamped = min(CV_IMPORT_TIMEOUT_CEILING_S, max(CV_IMPORT_TIMEOUT_FLOOR_S, raw))
+    return int(math.ceil(clamped - 1e-9))
+
+
+def choose_import_timeout_s(*, prompt_tokens: int, max_tokens: int) -> int:
+    """Compute the import timeout once and keep it for the generation."""
+    global _chosen_import_timeout_s
+    chosen = import_timeout_seconds(prompt_tokens, max_tokens)
+    _chosen_import_timeout_s = float(chosen)
+    return chosen
+
+
+def current_import_timeout_s() -> float:
+    """Chosen formula timeout, else the env override, else the ceiling.
+
+    A test that sets ``CV_IMPORT_TIMEOUT_S`` below the floor still wins,
+    so the hard-fail test can force ``llm_timeout`` without a generation.
+    """
+    if _chosen_import_timeout_s is not None:
+        return float(_chosen_import_timeout_s)
+    raw_env = os.environ.get(_ENV_IMPORT_TIMEOUT, "").strip()
+    if raw_env:
+        return float(raw_env)
+    if CV_IMPORT_TIMEOUT_S < CV_IMPORT_TIMEOUT_FLOOR_S:
+        return float(CV_IMPORT_TIMEOUT_S)
+    return float(CV_IMPORT_TIMEOUT_CEILING_S)
 
 
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
@@ -1785,12 +1860,13 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
 
 
 def _enforce_timeout(t0: float, *, stage: str) -> None:
+    limit_s = current_import_timeout_s()
     elapsed = time.monotonic() - t0
-    if elapsed > CV_IMPORT_TIMEOUT_S:
+    if elapsed > limit_s:
         logger.error(
             "llm_timeout elapsed_s=%.3f limit_s=%s stage=%s",
             elapsed,
-            CV_IMPORT_TIMEOUT_S,
+            limit_s,
             stage,
         )
         raise CvImportError("llm_timeout", "llm_timeout")
@@ -1826,6 +1902,8 @@ def import_cv_docpick(
     path = Path(path)
     t0 = time.monotonic()
     reset_private_commit_high_water()
+    reset_import_timeout()
+    note_import_started(t0)
 
     def _cancelled() -> bool:
         return bool(should_cancel and should_cancel())

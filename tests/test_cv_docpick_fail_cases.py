@@ -37,6 +37,9 @@ def test_corrupt_cv_garbage_hard_fails(tmp_path: Path) -> None:
 
 
 def test_timeout_hard_fails_without_hang(monkeypatch: pytest.MonkeyPatch) -> None:
+    from core.cv_docpick_import import reset_import_timeout
+
+    reset_import_timeout()
     monkeypatch.setattr("core.cv_docpick_import.CV_IMPORT_TIMEOUT_S", 0.01)
     with pytest.raises(CvImportError) as ei:
         _enforce_timeout(0.0, stage="unit")

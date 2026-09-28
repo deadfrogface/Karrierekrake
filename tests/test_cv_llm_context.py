@@ -481,3 +481,44 @@ def test_timeout_event_once_and_token_events_at_most_three(
     assert all("max_tokens" not in item for item in tokens)
     assert "max_tokens=" in caplog.text
     assert cursor["i"] == 1000
+
+
+def test_import_timeout_formula_env_floor_and_ceiling(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Env wins. DE_01 and DE_06 token counts, plus the floor and the ceiling."""
+    from core.cv_docpick_import import (
+        CV_IMPORT_R_GEN_TPS,
+        CV_IMPORT_R_PROMPT_TPS,
+        CV_IMPORT_T_LOAD_S,
+        CV_IMPORT_TIMEOUT_BUFFER_S,
+        CV_IMPORT_TIMEOUT_CEILING_S,
+        CV_IMPORT_TIMEOUT_FLOOR_S,
+        import_timeout_seconds,
+    )
+
+    de01_prompt = 1763
+    de01_max = 4096 - de01_prompt - 8
+    de06_prompt = 2000
+    de06_max = 4096 - de06_prompt - 8
+    assert de01_max == 2325
+    assert de06_max == 2088
+
+    def raw(prompt: int, max_tokens: int) -> float:
+        return (
+            CV_IMPORT_T_LOAD_S
+            + prompt / CV_IMPORT_R_PROMPT_TPS
+            + max_tokens / CV_IMPORT_R_GEN_TPS
+            + CV_IMPORT_TIMEOUT_BUFFER_S
+        )
+
+    monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", raising=False)
+    assert raw(de01_prompt, de01_max) > CV_IMPORT_TIMEOUT_CEILING_S
+    assert raw(de06_prompt, de06_max) > CV_IMPORT_TIMEOUT_CEILING_S
+    assert import_timeout_seconds(de01_prompt, de01_max) == int(CV_IMPORT_TIMEOUT_CEILING_S)
+    assert import_timeout_seconds(de06_prompt, de06_max) == int(CV_IMPORT_TIMEOUT_CEILING_S)
+    assert raw(1, 1) < CV_IMPORT_TIMEOUT_FLOOR_S
+    assert import_timeout_seconds(1, 1) == int(CV_IMPORT_TIMEOUT_FLOOR_S)
+    assert import_timeout_seconds(100_000, 100_000) == int(CV_IMPORT_TIMEOUT_CEILING_S)
+
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "95")
+    assert import_timeout_seconds(de01_prompt, de01_max) == 95
+    assert import_timeout_seconds(1, 1) == 95

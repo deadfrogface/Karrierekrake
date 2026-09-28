@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 from core.hardware_peak_gate import is_oom_exit
 from devops.peak_rss_harness import ContainedProcess, launch_contained
 
-DEFAULT_CV_IMPORT_TIMEOUT_S = 180.0
 _ENV_TIMEOUT = "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"
 # QA only. Unset or 0 in production: the child starts immediately.
 _ENV_OBSERVE = "KARRIEREKRAKE_CV_IMPORT_OBSERVE_S"
@@ -42,9 +41,16 @@ class ImportAttemptResult:
 
 
 def default_import_timeout_s() -> float:
+    """Outer process deadline before the child reports its formula timeout.
+
+    An env override is that deadline. Otherwise the ceiling (900 s) is the
+    backstop until the child's one ``timeout_s`` event tightens it.
+    """
     raw = os.environ.get(_ENV_TIMEOUT)
     if raw is None or raw.strip() == "":
-        return DEFAULT_CV_IMPORT_TIMEOUT_S
+        from core.cv_docpick_import import CV_IMPORT_TIMEOUT_CEILING_S
+
+        return float(CV_IMPORT_TIMEOUT_CEILING_S)
     return float(raw)
 
 
@@ -104,10 +110,10 @@ _PARENT_ANON_SAMPLE_S = 2.0
 
 
 def _job_limit_from_environ() -> int | None:
-    """Job limit from the budget the supervisor just published, or None.
+    """Job limit from the child budget the supervisor just published, or None.
 
-    None leaves ``JOB_OBJECT_LIMIT_JOB_MEMORY`` unset. A published budget
-    sets the limit one margin above the child budget.
+    The limit equals that budget (the same byte count as the in-process gate).
+    None leaves ``JOB_OBJECT_LIMIT_JOB_MEMORY`` unset.
     """
     raw_budget = os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", "").strip()
     raw_app = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
@@ -132,10 +138,10 @@ def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
     """Start the extract child inside a job (Windows) or a process group.
 
     When the supervisor has published the child budget, the Windows job
-    limit is that budget plus ``JOB_LIMIT_MARGIN_BYTES``. The in-process
-    gate compares against the child budget, which is lower, and trips
-    first. Without a published budget the job does not set
-    ``JOB_OBJECT_LIMIT_JOB_MEMORY``. Cancel still uses
+    limit is that budget: ``3_300_000_000`` minus the one app-private read.
+    The in-process gate uses the same number and, in the normal case,
+    raises the clean code first. Without a published budget the job does
+    not set ``JOB_OBJECT_LIMIT_JOB_MEMORY``. Cancel still uses
     ``TerminateJobObject`` / ``killpg``.
     """
     return launch_contained(
@@ -157,6 +163,9 @@ class CvImportSupervisor:
     ) -> None:
         self.cv_path = Path(cv_path)
         self._spawn = spawn or default_spawn
+        self._publish_timeout = timeout_s is not None or bool(
+            os.environ.get(_ENV_TIMEOUT, "").strip()
+        )
         self.timeout_s = default_import_timeout_s() if timeout_s is None else float(timeout_s)
         self._cancel = threading.Event()
         self._proc: object | None = None
@@ -258,34 +267,45 @@ class CvImportSupervisor:
                 child_budget=child_budget,
                 timeout_s=self.timeout_s,
                 phase_events=phase_path,
+                publish_timeout=self._publish_timeout,
             )
             self._proc = proc
-            self._app_private = app_private
             self._child_budget = child_budget
-            from core.cv_docpick_import import job_enforce_memory_bytes
-
-            self._job_limit = job_enforce_memory_bytes(
-                child_budget=child_budget, app_private=app_private
-            )
             if self._cancel.is_set():
                 self._stop(proc)
                 return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
-            deadline = time.monotonic() + self.timeout_s
+            started = time.monotonic()
+            deadline = started + self.timeout_s
             next_anon = time.monotonic()
             phase_offset = 0
+            adopted_timeout = False
             while True:
                 if self._cancel.is_set():
                     self._stop(proc)
                     return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
-                phase_offset = _drain_phase_events(phase_path, phase_offset, progress)
+                phase_offset, event_timeout = _drain_phase_events(
+                    phase_path, phase_offset, progress
+                )
+                if event_timeout is not None and not adopted_timeout:
+                    adopted_timeout = True
+                    self.timeout_s = float(event_timeout)
+                    deadline = started + self.timeout_s
+                if _job_memory_limit_signaled(proc):
+                    self._stop(proc)
+                    _drain_phase_events(phase_path, phase_offset, progress)
+                    code = proc.poll()
+                    return self._classify(
+                        int(code if code is not None else 1),
+                        out_path,
+                        job_memory_limit=True,
+                    )
                 code = proc.poll()
                 if code is not None:
                     _drain_phase_events(phase_path, phase_offset, progress)
-                    peak = _peak_after_exit(proc, int(code))
                     return self._classify(
                         int(code),
                         out_path,
-                        peak_job_memory_used=peak,
+                        job_memory_limit=_job_memory_limit_signaled(proc),
                     )
                 now = time.monotonic()
                 if now >= next_anon:
@@ -368,11 +388,9 @@ class CvImportSupervisor:
         code: int,
         out_path: Path,
         *,
-        peak_job_memory_used: int | None = None,
+        job_memory_limit: bool = False,
     ) -> ImportAttemptResult:
         payload = _read_payload(out_path)
-        if code == 0 and payload.get("ok") and isinstance(payload.get("parsed"), dict):
-            return ImportAttemptResult(True, "ok", "", payload["parsed"], attempts=1)
         kind = str(payload.get("kind") or "")
         message = str(payload.get("message") or "")
         if kind == "memory_budget_app_share":
@@ -383,39 +401,31 @@ class CvImportSupervisor:
             return ImportAttemptResult(
                 False, "peak_rss_exceeded", message or kind, None, attempts=1
             )
+        if code == 0 and payload.get("ok") and isinstance(payload.get("parsed"), dict):
+            return ImportAttemptResult(True, "ok", "", payload["parsed"], attempts=1)
         from core.cv_docpick_import import (
             is_job_limit_crash_exit,
-            memory_kind_for_crash_peak,
+            memory_kind_for_job_limit,
         )
 
-        job_limit = int(getattr(self, "_job_limit", 0))
-        crash = is_job_limit_crash_exit(code)
-        if crash:
-            logger.info(
-                "cv_import crash_exit peak_job_memory_used=%s job_limit=%s exit=%s",
-                peak_job_memory_used if peak_job_memory_used is not None else "unread",
-                job_limit,
-                code,
-            )
-        limit_kind = memory_kind_for_crash_peak(
-            exit_code=code,
-            peak_job_memory_used=peak_job_memory_used,
-            job_limit=job_limit,
-            child_budget=getattr(self, "_child_budget", 0),
-        )
-        if limit_kind:
+        child_budget = int(getattr(self, "_child_budget", 0))
+        if job_memory_limit or is_job_limit_crash_exit(code):
+            if not job_memory_limit:
+                logger.error(
+                    "job_memory_limit_hit exit=%s child_budget=%s",
+                    code,
+                    child_budget,
+                )
+            limit_kind = memory_kind_for_job_limit(child_budget=child_budget)
             logger.error(
-                "%s peak_job_memory_used=%s job_limit=%s exit=%s",
+                "%s job_memory_limit=%s exit=%s child_budget=%s",
                 limit_kind,
-                peak_job_memory_used,
-                job_limit,
+                job_memory_limit,
                 code,
+                child_budget,
             )
             return ImportAttemptResult(False, limit_kind, limit_kind, None, attempts=1)
-        # A crash whose peak is known and far under the job limit keeps the
-        # payload kind. 0xC0000017 is not rewritten to oom in that case.
-        peak_was_far = crash and peak_job_memory_used is not None
-        if not peak_was_far and (kind == "oom" or code == 3 or is_oom_exit(code)):
+        if kind == "oom" or code == 3 or is_oom_exit(code):
             return ImportAttemptResult(False, "oom" if kind != "peak_rss_exceeded" else "peak_rss_exceeded", message or "oom", None, attempts=1)
         if kind in {"timeout", "llm_timeout"}:
             logger.error("llm_timeout child_kind=%s", kind or "timeout")
@@ -431,51 +441,51 @@ class CvImportSupervisor:
         )
 
 
-def _peak_after_exit(proc: object, code: int) -> int | None:
-    """One ``PeakJobMemoryUsed`` read after a crash exit. Windows job only.
-
-    Other exits are not queried. Off Windows, or without a job, this is None.
-    """
-    from core.cv_docpick_import import is_job_limit_crash_exit
-
-    if not is_job_limit_crash_exit(code):
-        return None
-    reader = getattr(proc, "read_peak_job_memory_used", None)
-    if not callable(reader):
-        return None
+def _job_memory_limit_signaled(proc: object) -> bool:
+    """Non-blocking drain of the job completion port. No extra wait loop."""
+    probe = getattr(proc, "job_memory_limit_signaled", None)
+    if not callable(probe):
+        return False
     try:
-        value = reader()
+        return bool(probe())
     except OSError:
-        return None
-    if value is None:
-        return None
-    try:
-        peak = int(value)
-    except (TypeError, ValueError):
-        return None
-    if peak < 0:
-        return None
-    return peak
+        return False
 
 
-def _drain_phase_events(path: Path, offset: int, progress: Callable[[str], None] | None) -> int:
-    """Forward complete JSON lines from the child to the UI progress callback."""
+def _drain_phase_events(
+    path: Path,
+    offset: int,
+    progress: Callable[[str], None] | None,
+) -> tuple[int, int | None]:
+    """Forward complete JSON lines. Return the new offset and one ``timeout_s``."""
     try:
         data = path.read_bytes()
     except OSError:
-        return offset
+        return offset, None
     if len(data) <= offset:
-        return offset
+        return offset, None
     chunk = data[offset:]
     newline = chunk.rfind(b"\n")
     if newline < 0:
-        return offset
+        return offset, None
     complete = chunk[: newline + 1]
-    if progress is not None:
-        for line in complete.decode("utf-8").splitlines():
-            if line.strip():
-                progress(line)
-    return offset + newline + 1
+    seen_timeout: int | None = None
+    for line in complete.decode("utf-8").splitlines():
+        if not line.strip():
+            continue
+        if progress is not None:
+            progress(line)
+        if seen_timeout is None and line.startswith("{"):
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                event = None
+            if isinstance(event, dict) and "timeout_s" in event:
+                try:
+                    seen_timeout = int(event["timeout_s"])
+                except (TypeError, ValueError):
+                    pass
+    return offset + newline + 1, seen_timeout
 
 
 def _spawn_with_child_budget(
@@ -487,19 +497,22 @@ def _spawn_with_child_budget(
     child_budget: int,
     timeout_s: float,
     phase_events: Path,
+    publish_timeout: bool,
 ) -> object:
     """Publish the one-shot budget in the environment the child inherits.
 
     The values are removed from this process after ``Popen`` copies them.
-    The app is not sampled again. ``timeout_s`` is the supervisor's already
-    chosen limit, not a second calculation.
+    The app is not sampled again. ``timeout_s`` is published only when the
+    caller or the env var already chose it. Otherwise the child runs the
+    formula once after tokenization.
     """
     keys = {
         "KARRIEREKRAKE_CV_APP_PRIVATE_BYTES": str(app_private),
         "KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES": str(child_budget),
-        "KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S": str(timeout_s),
         "KARRIEREKRAKE_CV_PHASE_EVENTS": str(phase_events),
     }
+    if publish_timeout:
+        keys["KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S"] = str(timeout_s)
     previous = {key: os.environ.get(key) for key in keys}
     os.environ.update(keys)
     try:

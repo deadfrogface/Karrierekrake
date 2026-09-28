@@ -505,6 +505,7 @@ def chat_completion_inprocess(
             _sample_private_commit("after_load")
             n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
+            from core.cv_docpick_import import choose_import_timeout_s
             from core.cv_phase_events import (
                 TokenProgressThrottle,
                 emit_generation_timeout,
@@ -513,10 +514,19 @@ def chat_completion_inprocess(
                 reset_generation_phase_events,
             )
 
-            # The supervisor already chose the wall-clock limit and published it.
-            # This event copies that integer. It does not derive a new timeout.
+            # One formula evaluation, using the token counts above. The env
+            # var overrides it. No second tokenization and no remaining time.
+            chosen_timeout_s = choose_import_timeout_s(
+                prompt_tokens=n_prompt,
+                max_tokens=budget,
+            )
             reset_generation_phase_events()
-            emit_generation_timeout()
+            emit_generation_timeout(chosen_timeout_s)
+            from core.cv_docpick_import import _enforce_timeout, import_started_at
+
+            started = import_started_at()
+            if started is not None:
+                _enforce_timeout(started, stage="before_generation")
             logger.info(
                 "cv_llm_inprocess n_ctx=%s n_threads=%s n_threads_batch=%s "
                 "n_prompt=%s max_tokens=%s",
