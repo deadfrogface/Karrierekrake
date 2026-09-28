@@ -287,16 +287,19 @@ _LICENCE_CLASS_CODES: tuple[str, ...] = (
     "L",
     "T",
 )
-# After a hyphen the class stays only for these words: B-Führerschein, not T-Systems.
+# After a hyphen the class stays only for these words: B-Führerschein, B-licence.
 _HYPHEN_KEEPS_CLASS = re.compile(
-    r"(?:führerschein|fuehrerschein|fahrerlaubnis|klasse)\b",
+    r"(?:führerschein|fuehrerschein|fahrerlaubnis|klasse|licen[cs]e)\b",
     re.IGNORECASE,
 )
 _LEADING_CLASS_PREFIX = re.compile(
     r"(?:"
+    r"driving\s+licen[cs]e|"
+    r"driver['\u2019]s\s+licen[cs]e|"
     r"führerscheinklasse|fuehrerscheinklasse|"
     r"fahrerlaubnisklasse|"
-    r"führerschein|fuehrerschein|fahrerlaubnis|klasse"
+    r"führerschein|fuehrerschein|fahrerlaubnis|"
+    r"category|class|klasse"
     r")"
     r"(?:\s*:\s*|\s+)",
     re.IGNORECASE,
@@ -308,8 +311,8 @@ def _licence_class_tail_rejects(text: str, end: int) -> bool:
 
     ``+`` and ``#`` always do (``C++``, ``C#``). ``.`` does only when a letter
     follows (``B.Sc.``, ``D.I.Y.``); ``Klasse B.`` stays ``B``. ``-`` does only
-    when the next word is not Führerschein, Fahrerlaubnis or Klasse, so
-    ``T-Systems`` drops out and ``B-Führerschein`` stays.
+    when the next word is not Führerschein, Fahrerlaubnis, Klasse, licence or
+    license, so ``T-Systems`` drops out and ``B-Führerschein`` stays.
     """
     if end >= len(text):
         return False
@@ -367,10 +370,10 @@ def licence_class_tokens(text: str) -> list[str]:
 def leading_driving_class(entry: str) -> str:
     """Class at the start of one verbatim entry.
 
-    ``Klasse B``, ``Führerscheinklasse B``, ``Führerschein: B``,
-    ``B-Führerschein`` and ``CE 95`` yield ``B``, ``B``, ``B``, ``B`` and
-    ``CE``. ``Klasse 3`` yields nothing. ``C++``, ``B.Sc.`` and ``T-Systems``
-    yield nothing. ``Klasse B.`` yields ``B``. The stored text is not rewritten.
+    ``Klasse B``, ``Führerschein: B``, ``Driving licence: B``, ``Category B``
+    and ``B-Führerschein`` yield ``B``. ``Klasse 3`` yields nothing. ``C++``,
+    ``B.Sc.`` and ``T-Systems`` yield nothing. ``Klasse B.`` yields ``B``.
+    The stored text is not rewritten.
     """
     text = (entry or "").strip()
     while text:

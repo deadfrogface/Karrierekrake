@@ -841,6 +841,21 @@ def _letter_profile(codes: list[str]):
     return cfg
 
 
+def _with_matching_station(cfg, *, title: str, company: str, task: str):
+    """A professional station whose task is also in the job ad."""
+    from core.config import ExperienceEntry
+
+    cfg.profile.qualifications.work_experience = [
+        ExperienceEntry(
+            title=title,
+            company=company,
+            responsibilities=[task],
+            source="manual",
+        )
+    ]
+    return cfg
+
+
 def test_cover_evidence_uses_the_same_normalisation():
     from core.cover_guard import confirmed_profile_text
     from core.cover_letter import compose_cover_letter
@@ -851,17 +866,25 @@ def test_cover_evidence_uses_the_same_normalisation():
         company="Nord GmbH",
         remote_type="remote",
         description=(
-            "Wir suchen Unterstützung in der Verwaltung mit Excel. "
+            "Wir suchen Unterstützung in der Verwaltung mit Excel und Rechnungsprüfung. "
             "Führerschein Klasse B ist von Vorteil."
         ),
     )
     paired = []
     letters = []
     for stored in (["B", "BE"], ["B", "E"]):
-        cfg = _letter_profile(stored)
+        cfg = _with_matching_station(
+            _letter_profile(stored),
+            title="Sachbearbeiterin",
+            company="Nordlicht GmbH",
+            task="Rechnungsprüfung",
+        )
         evidence = confirmed_profile_text(cfg)
         letter = compose_cover_letter(job, cfg)
         assert letter.ok
+        assert "Sachbearbeiterin" in letter.text
+        assert "Nordlicht GmbH" in letter.text
+        assert "Excel" in letter.text
         paired.append(evidence)
         letters.append(letter.text)
         _assert_no_list_repr_or_lone_e(evidence)
@@ -922,17 +945,25 @@ def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
         company="Nord GmbH",
         remote_type="remote",
         description=(
-            "Wir suchen eine Fahrerin mit Excel. "
+            "Wir suchen eine Fahrerin mit Excel und Tourenplanung. "
             "Führerschein Klasse BE ist erforderlich."
         ),
     )
-    cfg = _letter_profile(["B", "E"])
+    cfg = _with_matching_station(
+        _letter_profile(["B", "E"]),
+        title="Fahrerin",
+        company="Holm Logistik",
+        task="Tourenplanung",
+    )
     cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
     evidence = confirmed_profile_text(cfg)
     assert "B" in evidence.splitlines()
     assert "BE" not in evidence.splitlines()
     letter = compose_cover_letter(job, cfg)
     assert letter.ok
+    assert "Fahrerin" in letter.text
+    assert "Holm Logistik" in letter.text
+    assert "Excel" in letter.text
     assert "BE" not in letter.text
     claim = "Ich habe den Führerschein BE."
     blocked = screen_cover_letter(
@@ -1565,3 +1596,84 @@ def test_cover_guard_and_matcher_share_class_punctuation():
             job_text="Lager",
         )
         assert not screened.ok
+
+
+def test_english_licence_sentences_share_the_class_rule():
+    """English licence wording uses the same class scan as German."""
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+    from core.cv_parser import leading_driving_class
+
+    assert leading_driving_class("Driving licence: B") == "B"
+    assert leading_driving_class("Driving license: B") == "B"
+    assert leading_driving_class("Category B") == "B"
+    assert leading_driving_class("B-licence") == "B"
+    assert leading_driving_class("B-license") == "B"
+    assert _licence_points(["Driving licence: B"]) == 5
+    assert _licence_points(["Category B"]) == 5
+
+    held = _letter_profile(["B"])
+    held.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    text = confirmed_profile_text(held)
+    codes = confirmed_licence_codes(held)
+    assert codes == {"B"}
+
+    def screen(sentence: str, *, profile_codes=codes, profile_text=text):
+        return screen_cover_letter(
+            sentence,
+            confirmed_text=profile_text,
+            confirmed_licences=profile_codes,
+            job_text="Lager",
+        )
+
+    assert not screen("I hold a category C driving licence.").ok
+    assert screen("I hold a class B driver's license.").ok
+    assert screen("I hold a class B-licence.").ok
+    assert not screen("I hold a category C-license.").ok
+    assert screen("I hold a class B driver\u2019s license.").ok
+    assert screen("I have experience with C# and C++.").ok
+    assert screen("I taught a class of C1 learners.").ok
+
+    german = _letter_profile(["Klasse B"])
+    german.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    german_codes = confirmed_licence_codes(german)
+    assert german_codes == {"B"}
+    german_text = confirmed_profile_text(german)
+    assert screen(
+        "I hold a category B driving licence.",
+        profile_codes=german_codes,
+        profile_text=german_text,
+    ).ok
+    assert not screen(
+        "I hold a category C driving licence.",
+        profile_codes=german_codes,
+        profile_text=german_text,
+    ).ok
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    (
+        "Ich habe einen Lkw-Führerschein.",
+        "Ich habe einen Busführerschein.",
+        "Ich habe einen Motorradführerschein.",
+    ),
+)
+@pytest.mark.xfail(
+    strict=True,
+    reason="Fahrzeugart ohne Klassenbuchstaben wird noch nicht als fehlende Klasse markiert.",
+)
+def test_vehicle_word_without_class_letter_is_flagged(sentence):
+    """Lkw, Bus and Motorrad are not mapped to a class in this PR."""
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg = _letter_profile(["B"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    screened = screen_cover_letter(
+        sentence,
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text="Lager",
+    )
+    assert not screened.ok

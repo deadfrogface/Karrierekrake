@@ -39,6 +39,22 @@ class _MemoryKeyringBackend:
 
 
 @pytest.fixture(autouse=True)
+def _reset_geo_index_around_each_test():
+    """Drop the shared geo-index loader state around every test.
+
+    ``MainWindow`` binds the UI thread and registers a ready callback in
+    ``core.geo_resolve``. The first-run wizard test builds that window, so
+    the process-wide index, callback list and preload thread must not leak
+    into the next test.
+    """
+    from core.geo_resolve import reset_pgeocode_index_for_tests
+
+    reset_pgeocode_index_for_tests()
+    yield
+    reset_pgeocode_index_for_tests()
+
+
+@pytest.fixture(autouse=True)
 def _default_memory_keyring(monkeypatch: pytest.MonkeyPatch):
     """Prefer in-memory keyring unless a test replaces ``secure_tokens._keyring``."""
     try:

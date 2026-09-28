@@ -15,12 +15,18 @@ from core.text_normalize import clean_text
 
 _CLAIM_TOKEN = re.compile(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9+\-]{2,}")
 # C1/B1/A2 are also language levels. A class counts only in a licence sentence.
+# German „Klasse“ is enough. English „class“/„category“ count only together
+# with licence/license in the same sentence.
 _LICENCE_SENTENCE = re.compile(
-    r"\b(führerschein|fuehrerschein|fahrerlaubnis|klasse)\b",
+    r"\b(?:führerschein|fuehrerschein|fahrerlaubnis|klasse)\b"
+    r"|\bdriving\s+licen[cs]e\b"
+    r"|\bdriver['\u2019]s\s+licen[cs]e\b",
     re.I,
 )
+_ENGLISH_CLASS_WORD = re.compile(r"\b(?:class|category)\b", re.I)
+_ENGLISH_LICENCE_WORD = re.compile(r"\blicen[cs]e\b", re.I)
 _FIRST_PERSON = re.compile(
-    r"\b(ich|meine|meiner|meinem|meinen|mir|mich)\b",
+    r"\b(ich|meine|meiner|meinem|meinen|mir|mich|i|my|mine)\b",
     re.I,
 )
 _APPLICATION_SENTENCE = re.compile(
@@ -162,6 +168,36 @@ def _supported(token: str, confirmed_norm: str) -> bool:
     return False
 
 
+def _licence_codes_in_sentence(sentence: str) -> list[str]:
+    """Class codes in one sentence.
+
+    The scan is :func:`core.cv_parser.licence_class_tokens`. A lowercase
+    ``a`` is the English article (``a class B``, ``a category C``), not
+    class A. Class A stays when the letter itself is uppercase.
+    """
+    from core.cv_parser import _iter_licence_classes
+
+    codes: list[str] = []
+    for start, code in _iter_licence_classes(sentence):
+        if code == "A" and sentence[start : start + 1] == "a":
+            continue
+        codes.append(code)
+    return codes
+
+
+def _is_licence_sentence(sentence: str) -> bool:
+    """True when this sentence may name a driving-licence class.
+
+    ``class`` and ``category`` do not count on their own. They count when the
+    same sentence also contains ``licence`` or ``license``.
+    """
+    if _LICENCE_SENTENCE.search(sentence):
+        return True
+    return bool(
+        _ENGLISH_CLASS_WORD.search(sentence) and _ENGLISH_LICENCE_WORD.search(sentence)
+    )
+
+
 def _in_job(token: str, job_norm: str) -> bool:
     tok = token.casefold()
     if len(tok) < 3:
@@ -205,8 +241,6 @@ def find_unsubstantiated_personal_claims(
     Licence classes come only from ``confirmed_licences``, never from scanning
     ``confirmed_text``.
     """
-    from core.cv_parser import licence_class_tokens
-
     confirmed_norm = _norm(f"{confirmed_text} {allowed_context}")
     job_norm = _norm(job_text)
     licence_codes = {code.upper() for code in (confirmed_licences or ())}
@@ -231,8 +265,8 @@ def find_unsubstantiated_personal_claims(
             employer = match.group(1).strip()
             if employer and not _supported(employer, confirmed_norm):
                 flagged.append(employer)
-        if _LICENCE_SENTENCE.search(sentence):
-            for code in licence_class_tokens(sentence):
+        if _is_licence_sentence(sentence):
+            for code in _licence_codes_in_sentence(sentence):
                 if code not in licence_codes:
                     flagged.append(code)
         for token in _CLAIM_TOKEN.findall(sentence):
