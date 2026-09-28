@@ -176,7 +176,11 @@ def apply_visible_home(
     city: str = "",
     country: str = "",
 ) -> bool:
-    """Copy the address the profile UI actually edits into the search home.
+    """Copy a contact address into the search home.
+
+    Callers must invoke this only after an explicit contact edit or after the
+    user checks the search-home opt-in. A stored CV contact must not be copied
+    while saving skills, experience, or any other section.
 
     Returns True when persisted coordinates were cleared. Does not invent a PLZ.
     Empty street/PLZ/city leaves an existing search home unchanged.

@@ -59,6 +59,36 @@ from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import apply_wheel_guard_to_spinboxes
 
 
+# Drawer keys that edit qualifications, career, or documents — never the search home.
+# ``personal`` / ``application`` share the contact form. ``None`` is the full save.
+_SECTION_SCOPES_WITHOUT_HOME = frozenset(
+    {
+        "career",
+        "docs",
+        "experience",
+        "education",
+        "skills",
+        "languages",
+    }
+)
+
+# Fields the distance filter and local geo resolution read. Other section saves
+# must leave this tuple byte-identical on disk.
+_SEARCH_HOME_FIELDS = (
+    "home_address",
+    "postal_code",
+    "city",
+    "country",
+    "max_distance_km",
+    "allow_remote_germany",
+    "allow_hybrid",
+    "cross_border_dach",
+    "home_latitude",
+    "home_longitude",
+    "home_geocoded_address",
+)
+
+
 def legacy_profile_search_ui_enabled(settings=None) -> bool:
     """Rollback: show combined Bewerbungswunsch UI on Profile.
 
@@ -125,6 +155,7 @@ class ProfilePage(QWidget):
         super().__init__(parent)
         self.config_service = config_service
         self._career_persist = False  # True when Berufsziel drawer saves profile.jobs
+        self._save_scope: str | None = None
         self._exp_limit = 2
         self._skill_limit = 8
 
@@ -437,6 +468,7 @@ class ProfilePage(QWidget):
         }
         section, title = mapping[key]
         self._career_persist = key == "career"
+        self._save_scope = key
         self._drawer.set_texts(
             title=title,
             save=tr("btn.save"),
@@ -445,18 +477,21 @@ class ProfilePage(QWidget):
         # Detach from hidden host
         section.setParent(None)
         section.show()
-        result = self._drawer.present(section, focus=focus)
-        self._drawer.take_content()
-        section.setParent(self._editors_host)
-        self._editors_host.layout().addWidget(section)
-        legacy = legacy_profile_search_ui_enabled(self.config_service.load().settings)
-        if key == "career":
-            section.setHidden(not legacy)
-        else:
-            section.hide()
-        if result == SectionEditDrawer.DialogCode.Accepted:
-            self.save()
-            self.refresh_cards()
+        try:
+            result = self._drawer.present(section, focus=focus)
+            self._drawer.take_content()
+            section.setParent(self._editors_host)
+            self._editors_host.layout().addWidget(section)
+            legacy = legacy_profile_search_ui_enabled(self.config_service.load().settings)
+            if key == "career":
+                section.setHidden(not legacy)
+            else:
+                section.hide()
+            if result == SectionEditDrawer.DialogCode.Accepted:
+                # save() already rebuilds the cards once (refresh_all or refresh_cards).
+                self.save()
+        finally:
+            self._save_scope = None
 
     def load_from_config(self) -> None:
         self._apply_legacy_visibility()
@@ -898,10 +933,51 @@ class ProfilePage(QWidget):
         """
         return cfg == self.config_service._read_runtime_config()
 
+    def _contact_address_changed(self, app) -> bool:
+        """True when the contact form differs from the address last stored."""
+
+        def _norm(value: object) -> str:
+            return str(value or "").strip()
+
+        if any(
+            _norm(widget) != _norm(stored)
+            for widget, stored in (
+                (self.applicant.street.text(), app.street),
+                (self.applicant.postal_code.text(), app.postal_code),
+                (self.applicant.city.text(), app.city),
+            )
+        ):
+            return True
+        widget_country = _norm(self.applicant.app_country.text()) or "DE"
+        stored_country = _norm(app.country) or "DE"
+        return widget_country != stored_country
+
+    def _should_adopt_contact_into_home(self, app) -> bool:
+        """Copy the contact address into the search home only on an explicit edit.
+
+        Skills, experience, education, languages, career, and documents must not
+        adopt a CV contact that already sits in the applicant form. The existing
+        checkbox is the confirmation for an unchanged CV address; there is no
+        separate suggestion banner.
+        """
+        if self._save_scope in _SECTION_SCOPES_WITHOUT_HOME:
+            return False
+        if self._contact_address_changed(app):
+            return True
+        return bool(self.applicant.sync_home_from_address.isChecked())
+
+    def _restore_search_home(self, location, snapshot: dict[str, object]) -> None:
+        for name, value in snapshot.items():
+            setattr(location, name, value)
+
     def save(self) -> bool:
         cfg = self.config_service.load()
         p = cfg.profile
         legacy = legacy_profile_search_ui_enabled(cfg.settings)
+        # Captured before any editor write-back. Other drawers must not move it.
+        home_snapshot = {name: getattr(p.location, name) for name in _SEARCH_HOME_FIELDS}
+        adopt_home = self._should_adopt_contact_into_home(cfg.application)
+        persist_location_editor = self._save_scope not in _SECTION_SCOPES_WITHOUT_HOME
         # Persist career goals when legacy OR when user edited Berufsziel drawer.
         # Never push into SearchIntent unless legacy combined UI is on — except
         # when clearing/editing Berufsziel: deleted profile values must not stay
@@ -928,7 +1004,8 @@ class ProfilePage(QWidget):
         self.education.save_into(p.qualifications)
         self.qualifications.save_into(p.qualifications)
         self.languages.save_into(p.qualifications)
-        self.location_work.save_into(p.location, p.employment, p.filters)
+        if persist_location_editor:
+            self.location_work.save_into(p.location, p.employment, p.filters)
 
         if legacy:
             from core.search_intent import (
@@ -964,19 +1041,24 @@ class ProfilePage(QWidget):
         a = cfg.application
         sync_addr = self.applicant.save_into(a)
         self.config_service.set_sync_address_to_search(sync_addr)
-        from core.location import apply_visible_home
+        if adopt_home:
+            # Contact form was edited, or the user checked
+            # "Diese Adresse auch als Standort für die Jobsuche verwenden."
+            from core.location import apply_visible_home
 
-        apply_visible_home(
-            p.location,
-            street=a.street,
-            postal_code=a.postal_code,
-            city=a.city,
-            country=a.country,
-        )
-        self.location_work.home_address.setText(p.location.home_address or "")
-        self.location_work.postal_code.setText(p.location.postal_code or "")
-        self.location_work.country.setText(p.location.country or "")
-        self.location_work.refresh_home_notice(p.location)
+            apply_visible_home(
+                p.location,
+                street=a.street,
+                postal_code=a.postal_code,
+                city=a.city,
+                country=a.country,
+            )
+            self.location_work.home_address.setText(p.location.home_address or "")
+            self.location_work.postal_code.setText(p.location.postal_code or "")
+            self.location_work.country.setText(p.location.country or "")
+            self.location_work.refresh_home_notice(p.location)
+        elif not persist_location_editor:
+            self._restore_search_home(p.location, home_snapshot)
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)
 
