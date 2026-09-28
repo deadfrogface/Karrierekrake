@@ -44,6 +44,8 @@ class ApplicationPreview:
     cover_letter_preview: str = ""
     cover_letter_sha256: str = ""
     found_references: tuple[str, ...] = ()
+    missing_required: tuple[str, ...] = ()
+    stations_without_tasks: tuple[str, ...] = ()
     cover_refusal_code: str = ""
     cover_refusal_key: str = ""
     description_used: str = ""
@@ -291,6 +293,8 @@ def build_application_preview(
         cover_letter_preview=cover,
         cover_letter_sha256=outcome.generated_sha256,
         found_references=tuple(outcome.found_references),
+        missing_required=tuple(outcome.missing_required),
+        stations_without_tasks=tuple(outcome.stations_without_tasks),
         cover_refusal_code=outcome.reason_code,
         cover_refusal_key=outcome.message_key,
         description_used=outcome.description_used,

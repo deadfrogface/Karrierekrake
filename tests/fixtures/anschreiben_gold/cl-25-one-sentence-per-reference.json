@@ -49,13 +49,8 @@
     "company": "Nordmole Musterlogistik GmbH",
     "description": "Die Nordmole Musterlogistik GmbH sucht einen Disponenten. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- Tourenplanung\n- SAP\n\nEine Aufzählung der beiden Kenntnisse in einem Satz ist kein Bezug."
   },
-  "expected_outcome": "interview",
-  "must_mention": [
-    "Nordmole Musterlogistik GmbH",
-    "Disponent",
-    "Tourenplanung",
-    "SAP"
-  ],
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
     "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
@@ -65,7 +60,10 @@
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
     "[Ihr Name]",
-    "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung."
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung.",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
-  "rationale": "Tourenplanung und SAP sind zwei Bezüge. Der Brief nennt jeden in einem eigenen Satz und in der Formulierung des Profils. Die Aufzählung in einem Satz zählt keinen Bezug und wäre kein interview."
+  "rationale": "Tourenplanung und SAP treffen die Anzeige, aber keine Station aus der Berufserfahrung. Zwei Kenntnisse ohne Station sind no_evidence. Eine Aufzählung der beiden Kenntnisse wäre ebenfalls kein Brief."
 }

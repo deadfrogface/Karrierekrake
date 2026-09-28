@@ -75,7 +75,9 @@
     "Disponent / Dispatcher (m/w/d) Nahverkehr",
     "Disponent",
     "Nordkai Spedition GmbH",
-    "SAP"
+    "SAP",
+    "Tourenplanung",
+    "Guten Tag Robin Beispiel,"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -85,7 +87,10 @@
     "Ihres Unternehmens",
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
-    "[Ihr Name]"
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Die synthetische Nordmole-Anzeige aus der Quell-Fixture fordert Disponent und SAP. Das Profil belegt die Station Disponent mit den Aufgaben Tourenplanung und Fahrer zuordnen sowie die Software SAP. Beide Bezüge stehen im Brief. Führerschein Klasse B und Deutsch zählen nicht."
 }

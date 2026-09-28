@@ -63,7 +63,8 @@
     "Rechnungsprüfung (m/w/d)",
     "Rechnungsprüfung",
     "Kontor Beispiel GmbH",
-    "SAP Business One"
+    "SAP Business One",
+    "Belege erfassen"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -73,7 +74,11 @@
     "Ihres Unternehmens",
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
-    "[Ihr Name]"
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "als Rechnungsprüfung"
   ],
   "rationale": "Die Software SAP Business One ist spezieller als die Anforderung SAP und trifft sie als führende Wortfolge. Die Station Rechnungsprüfung trifft die Anzeige zusätzlich. Beide Bezüge stehen im Brief. Es bleibt eine Anforderung SAP, nicht zwei."
 }

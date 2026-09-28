@@ -51,6 +51,9 @@ COMMON_FORBIDDEN = (
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
     "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
 )
 
 REQUIRED_KEYS = frozenset(
@@ -94,6 +97,12 @@ REQUIRED_TAGS = frozenset(
         "generic_tasks",
         "distinct_requirements",
         "list_not_reference",
+        "generic_activity_words",
+        "gender_title",
+        "titled_contact",
+        "two_contacts",
+        "html_contact",
+        "station_without_period",
     }
 )
 
@@ -136,6 +145,18 @@ def _load_cases() -> list[dict]:
         data["_path"] = path
         cases.append(data)
     return cases
+
+
+def _mention_grounded(fact: str, blob: str) -> bool:
+    """Salutations and profile year spans are not stored as one string."""
+    if fact in blob:
+        return True
+    if fact.startswith(("Sehr geehrte ", "Sehr geehrter ", "Guten Tag ")):
+        return True
+    span = re.fullmatch(r"von (\d{4}) bis (\d{4})", fact)
+    if span and span.group(1) in blob and span.group(2) in blob:
+        return True
+    return False
 
 
 def _texts(value: object) -> str:
@@ -205,7 +226,9 @@ def test_gold_case_schema(case: dict) -> None:
         assert domain in ALLOWED_EMAIL_DOMAINS, case["id"]
 
     for fact in case["must_mention"]:
-        assert fact in blob, f"{case['id']}: must_mention {fact!r} not in profile or job"
+        assert _mention_grounded(fact, blob), (
+            f"{case['id']}: must_mention {fact!r} not in profile or job"
+        )
         folded = fact.casefold()
         for banned in case["must_not_contain"]:
             assert banned.casefold() not in folded, (
@@ -286,7 +309,7 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     contact = by_tag["named_contact"]
     assert contact["expected_outcome"] == "interview"
     assert "Lotte Quendel" in contact["job"]["description"]
-    assert "Lotte Quendel" in contact["must_mention"]
+    assert "Sehr geehrte Frau Quendel," in contact["must_mention"]
 
     english = by_tag["english_ad"]
     assert english["expected_outcome"] == "interview"
@@ -356,10 +379,45 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     assert "SAP" in distinct["must_mention"]
 
     listed = by_tag["list_not_reference"]
-    assert listed["expected_outcome"] == "interview"
-    assert "Tourenplanung" in listed["must_mention"]
-    assert "SAP" in listed["must_mention"]
+    assert listed["expected_outcome"] == "no_evidence"
+    assert listed["must_mention"] == []
+    assert listed["profile"]["qualifications"]["work_experience"] == []
     assert "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung." in listed["must_not_contain"]
+
+    activity = by_tag["generic_activity_words"]
+    assert activity["expected_outcome"] == "no_evidence"
+    tasks = activity["profile"]["qualifications"]["work_experience"][0]["responsibilities"]
+    assert tasks == ["Bearbeitung", "Unterstützung"]
+
+    gender = by_tag["gender_title"]
+    assert gender["expected_outcome"] == "interview"
+    assert gender["profile"]["qualifications"]["work_experience"][0]["title"] == "Industriekauffrau"
+    assert "Industriekaufmann (m/w/d)" in gender["job"]["title"]
+    assert "Industriekauffrau" in gender["must_mention"]
+
+    titled = by_tag["titled_contact"]
+    assert titled["expected_outcome"] == "interview"
+    assert "Frau Dr. Quendel" in titled["job"]["description"]
+    assert "Sehr geehrte Frau Dr. Quendel," in titled["must_mention"]
+
+    pair = by_tag["two_contacts"]
+    assert pair["expected_outcome"] == "interview"
+    assert "Frau Lotte Quendel" in pair["job"]["description"]
+    assert "Herr Max Beispiel" in pair["job"]["description"]
+    assert "Sehr geehrte Damen und Herren," in pair["must_mention"]
+    assert "Lotte" in pair["must_not_contain"]
+
+    html_contact = by_tag["html_contact"]
+    assert html_contact["expected_outcome"] == "interview"
+    assert "<b>" in html_contact["job"]["description"]
+    assert "Sehr geehrte Frau Quendel," in html_contact["must_mention"]
+
+    bare = by_tag["station_without_period"]
+    assert bare["expected_outcome"] == "no_evidence"
+    station = bare["profile"]["qualifications"]["work_experience"][0]
+    assert station["responsibilities"] == []
+    assert station["start_date"] == ""
+    assert station["end_date"] == ""
 
 
 def test_doc_names_every_case(cases: list[dict]) -> None:

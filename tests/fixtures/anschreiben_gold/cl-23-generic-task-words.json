@@ -63,7 +63,10 @@
     "Ihres Unternehmens",
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
-    "[Ihr Name]"
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Betreuung und Erstellung sind allgemeine Aufgabenwörter. Zwei solche Wörter qualifizieren die Station Hilfskraft nicht. Der Titel trifft die Anzeige nicht. Soll ist no_evidence."
 }

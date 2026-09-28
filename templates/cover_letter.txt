@@ -1,6 +1,6 @@
-Sehr geehrte Damen und Herren,
+{salutation},
 
-hiermit bewerbe ich mich um die Position als {job_title} bei {company}.
+hiermit bewerbe ich mich um die Position {position_phrase} bei {company_bei}.
 
 {experience_sentence}
 
