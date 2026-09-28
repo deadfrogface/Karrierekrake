@@ -774,7 +774,8 @@ def test_fake_model_import_writes_each_diagnostic_once(tmp_path: Path, monkeypat
         lines = text.splitlines()
         assert len([ln for ln in lines if "cv_llm_load" in ln]) == 1
         assert len([ln for ln in lines if "memory_shares" in ln]) == 1
-        assert len([ln for ln in lines if "n_threads=" in ln]) == 1
+        assert len([ln for ln in lines if "cv_llm_inprocess" in ln and "n_threads=" in ln]) == 1
+        assert len([ln for ln in lines if "cv_llm_rates " in ln]) == 1
         assert all("cv_llm_load" not in ln and "memory_shares" not in ln for ln in progress)
     finally:
         restore()
@@ -1493,3 +1494,117 @@ def test_smaps_rollup_cost_is_logged_once(
     assert "median_s=" in records[0].message
     assert "max_s=" in records[0].message
     assert "reads=3" in records[0].message
+
+
+def test_one_pass_drains_twenty_events_and_stall_follows_the_last(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """One drain reads every pending event. Stall uses the last real token."""
+    from core.cv_import_deadline import ImportDeadlineWatch
+    from desktop.cv_import_supervisor import CvLlmRates, _drain_phase_events
+
+    monkeypatch.setattr("desktop.cv_import_supervisor._monotonic", lambda: 100.0)
+    path = tmp_path / "phase.jsonl"
+    lines = [
+        json.dumps(
+            {"phase": "generation", "tokens_done": i, "t_mono": i * 0.9},
+            separators=(",", ":"),
+        )
+        for i in range(1, 21)
+    ]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    watch = ImportDeadlineWatch(
+        initial_s=900,
+        started_at=0,
+        env_locked=True,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    seen: list[str] = []
+    rates = CvLlmRates()
+    offset = _drain_phase_events(path, 0, seen.append, watch, rates)
+    assert offset == path.stat().st_size
+    assert len(seen) == 20
+    assert watch.tokens_done == 20
+    # Parent now is 100. First t_mono is 0.9, last is 18.0.
+    assert watch.last_progress_at == pytest.approx(117.1)
+    assert watch.failure(117.1 + 59.9) is None
+    assert watch.failure(117.1 + 60.0) == "stall"
+    assert rates.n_gen == 20
+    assert rates.gen_duration_s == pytest.approx(17.1)
+    # A second pass on the same tail does not apply the events again.
+    again = _drain_phase_events(path, offset, seen.append, watch, rates)
+    assert again == offset
+    assert len(seen) == 20
+    assert rates.n_gen == 20
+
+
+def test_timeout_logs_one_cv_llm_rates_line_with_partial_progress(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    clock = _fake_clock(monkeypatch)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_N_THREADS", raising=False)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH", raising=False)
+
+    class _Partial:
+        def __init__(self, _out: Path) -> None:
+            self._phase = Path(os.environ["KARRIEREKRAKE_CV_PHASE_EVENTS"])
+            self._wrote = False
+
+        def poll(self):
+            if not self._wrote:
+                diag = (
+                    "cv_llm_inprocess n_ctx=4096 n_threads=3 n_threads_batch=3 "
+                    "physical=4 logical=4 reserve=1 source=rule "
+                    "n_prompt=1763 max_tokens=2325"
+                )
+                events = [
+                    {"diag": diag, "level": "info"},
+                    {
+                        "phase": "prompt",
+                        "prompt_tokens_done": 512,
+                        "t_mono": 4.0,
+                        "block_s": 4.0,
+                    },
+                    {"phase": "generation", "tokens_done": 10, "t_mono": 1.0},
+                    {"phase": "generation", "tokens_done": 40, "t_mono": 5.0},
+                ]
+                self._phase.write_text(
+                    "".join(
+                        json.dumps(event, separators=(",", ":")) + "\n"
+                        for event in events
+                    ),
+                    encoding="utf-8",
+                )
+                self._wrote = True
+            if clock["t"] > 5000:
+                return 1
+            return None
+
+        def terminate(self) -> None:
+            return None
+
+        def close(self) -> None:
+            return None
+
+        def job_memory_limit_signaled(self) -> bool:
+            return False
+
+    with caplog.at_level("INFO", logger="desktop.cv_import_supervisor"):
+        result = CvImportSupervisor(
+            tmp_path / "cv.pdf", spawn=lambda _c, out: _Partial(out)
+        ).run_once()
+    assert result.kind == "llm_timeout"
+    assert result.reason == "stall"
+    records = [
+        rec
+        for rec in caplog.records
+        if rec.name == "desktop.cv_import_supervisor" and rec.message.startswith("cv_llm_rates ")
+    ]
+    assert len(records) == 1
+    line = records[0].message
+    assert "n_threads=3 n_threads_batch=3 physical=4 logical=4 reserve=1 source=rule" in line
+    assert "n_prompt=512 prompt_s=4.000" in line
+    assert "n_gen=40 gen_s=4.000" in line
+    assert "prompt_tps=128.000" in line
+    assert "gen_tps=10.000" in line

@@ -224,23 +224,29 @@ def _env_thread_override(name: str, default: int) -> int:
 def thread_reserve(physical: int, logical: int) -> int:
     """Cores left free for the GUI and the display server.
 
-    Tester, UI, VM, 8 physical cores, no SMT, commit ``3a41462``,
+    Tester, UI, shared VM with unregulated background load, 8 physical
+    cores, no SMT, commit ``3a41462``,
     ``KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S=900``, three alternating runs,
     fresh app start. ``n_threads=8`` (batch 8) took 179.7 s (178.2–179.8)
     and the child used 7.0 cores. ``n_threads=7`` (batch still 8) took
-    131.7 s (130.6–133.7), 26.7% faster. The spans do not overlap. llama
-    threads wait on the slowest thread, and the GUI plus the display
-    server need about 0.5 cores. Headless with 8 threads: prompt 1880
-    tokens in 40.5 s (46 tok/s), generation 804 tokens in 110 s (7.3 tok/s).
+    131.7 s (130.6–133.7). The spans do not overlap, so the direction is
+    that 7 threads were faster in that UI. The size of the gap is not an
+    expected gain. The controlled comparison is the headless 7/7 vs 8/8
+    remeasurement on the 4-core agent VM. llama threads wait on the
+    slowest thread, and the GUI plus the display server need about 0.5
+    cores. Headless with 8 threads on the tester VM: prompt 1880 tokens
+    in 40.5 s (46 tok/s), generation 804 tokens in 110 s (7.3 tok/s).
     GUI CPU over 60 s, bar and no child: app 0.10 cores plus Xvfb 0.28,
     sum 0.38 cores. During the import the app used 0.24 cores.
 
     Reserve one core only when there is no SMT (logical == physical) and
-    at least four physical cores. A 2-core/4-thread machine keeps 2/4:
-    with SMT the GUI and the display server sit on the sibling threads.
+    at least four physical cores. The SMT branch (reserve 0) is not
+    measured. A 2-core/4-thread shape would keep 2/4, on the assumption
+    that the GUI and the display server sit on the sibling threads.
     Below four cores and no SMT, one thread less would halve the compute,
-    so the reserve stays 0. Effect on the i3 is unchecked; that model is
-    not known yet.
+    so the reserve stays 0. An 11th-gen i3 may be 2C/4T (i3-1115G4) or
+    4C/8T (i3-1125G4). That model is unknown, and neither shape has been
+    measured.
     """
     if int(logical) == int(physical) and int(physical) >= 4:
         return 1
@@ -264,6 +270,17 @@ def resolve_cv_llm_thread_plan() -> tuple[int, int, int, int, int]:
         "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH", max(1, logical - reserve)
     )
     return n_threads, n_batch, physical, logical, reserve
+
+
+def cv_llm_thread_source() -> str:
+    """``env`` when either thread override is set, else ``rule``."""
+    for name in (
+        "KARRIEREKRAKE_CV_LLM_N_THREADS",
+        "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH",
+    ):
+        if (os.environ.get(name) or "").strip():
+            return "env"
+    return "rule"
 
 
 def cv_llm_thread_report_line(
@@ -746,7 +763,8 @@ def chat_completion_inprocess(
                 _enforce_timeout(started, stage="before_generation")
             thread_line = (
                 "cv_llm_inprocess n_ctx=%s n_threads=%s n_threads_batch=%s "
-                "physical=%s logical=%s reserve=%s n_prompt=%s max_tokens=%s"
+                "physical=%s logical=%s reserve=%s source=%s "
+                "n_prompt=%s max_tokens=%s"
                 % (
                     n_ctx,
                     n_threads,
@@ -754,6 +772,7 @@ def chat_completion_inprocess(
                     physical,
                     logical,
                     reserve,
+                    cv_llm_thread_source(),
                     n_prompt,
                     budget,
                 )

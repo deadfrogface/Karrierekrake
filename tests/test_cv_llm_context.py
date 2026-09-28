@@ -14,6 +14,7 @@ from core.cv_llm_runtime import (
     completion_token_budget,
     logical_cpu_count,
     cv_llm_thread_report_line,
+    cv_llm_thread_source,
     physical_cores_report_line,
     physical_cpu_count,
     resolve_cv_llm_n_ctx,
@@ -192,12 +193,14 @@ def test_thread_reserve_keeps_a_core_only_without_smt(
         f"n_threads={n_threads} n_threads_batch={n_batch} "
         f"physical={physical} logical={logical} reserve={reserve}"
     )
+    assert cv_llm_thread_source() == "rule"
 
 
 def test_thread_env_override(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_THREADS", "3")
     monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH", "5")
     assert resolve_cv_llm_threads() == (3, 5)
+    assert cv_llm_thread_source() == "env"
 
 
 def test_thread_env_rejects_zero(monkeypatch: pytest.MonkeyPatch) -> None:

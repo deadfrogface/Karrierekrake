@@ -121,6 +121,10 @@ _PARENT_ANON_SAMPLE_SLOW_S = 5.0
 _POLL_SLICE_S = 0.25
 _MAX_TOKENS_IN_DIAG = re.compile(r"\bmax_tokens=(\d+)\b")
 _N_PROMPT_IN_DIAG = re.compile(r"\bn_prompt=(\d+)\b")
+_THREAD_FIELD_IN_DIAG = re.compile(
+    r"\b(n_threads|n_threads_batch|physical|logical|reserve)=(\d+)\b"
+)
+_SOURCE_IN_DIAG = re.compile(r"\bsource=(rule|env)\b")
 
 
 def _monotonic() -> float:
@@ -287,6 +291,7 @@ class CvImportSupervisor:
         os.close(phase_fd)
         phase_path = Path(phase_name)
         proc = None
+        rates = CvLlmRates()
         anon_interval = _PARENT_ANON_SAMPLE_S
         anon_durations: list[float] = []
         anon_logged = False
@@ -329,15 +334,23 @@ class CvImportSupervisor:
             phase_offset = 0
             while True:
                 if self._cancel.is_set():
+                    # Events already in the file still count toward cv_llm_rates.
+                    _drain_phase_events(
+                        phase_path, phase_offset, progress, watch, rates
+                    )
                     self._stop(proc, reason="cancelled")
                     return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
+                # Every complete line in this pass, not one event per wait.
+                # A single-event read would let the child's event pipe fill.
                 phase_offset = _drain_phase_events(
-                    phase_path, phase_offset, progress, watch
+                    phase_path, phase_offset, progress, watch, rates
                 )
                 self.timeout_s = watch.limit_s
                 if _job_memory_limit_signaled(proc):
                     self._stop(proc)
-                    _drain_phase_events(phase_path, phase_offset, progress, watch)
+                    _drain_phase_events(
+                        phase_path, phase_offset, progress, watch, rates
+                    )
                     code = proc.poll()
                     return self._classify(
                         int(code if code is not None else 1),
@@ -346,7 +359,9 @@ class CvImportSupervisor:
                     )
                 code = proc.poll()
                 if code is not None:
-                    _drain_phase_events(phase_path, phase_offset, progress, watch)
+                    _drain_phase_events(
+                        phase_path, phase_offset, progress, watch, rates
+                    )
                     return self._classify(
                         int(code),
                         out_path,
@@ -376,7 +391,12 @@ class CvImportSupervisor:
                             None,
                             attempts=1,
                         )
-                reason = watch.failure(now)
+                # Events written during poll or the smaps read belong to this
+                # pass. Stall uses the last of them, not the first.
+                phase_offset = _drain_phase_events(
+                    phase_path, phase_offset, progress, watch, rates
+                )
+                reason = watch.failure(_monotonic())
                 if reason is not None:
                     self._stop(proc)
                     # Machine-dependent. Not deterministic. No automatic retry.
@@ -399,6 +419,8 @@ class CvImportSupervisor:
                 rest_anon = max(0.0, next_anon - _monotonic())
                 self._pause(min(_POLL_SLICE_S, rest_anon))
         finally:
+            if proc is not None:
+                _emit_cv_llm_rates(rates)
             if not anon_logged and anon_durations:
                 _log_smaps_rollup_once(anon_durations, anon_interval)
                 anon_logged = True
@@ -534,18 +556,184 @@ def _job_memory_limit_signaled(proc: object) -> bool:
         return False
 
 
+class CvLlmRates:
+    """What the parent has seen, for one ``cv_llm_rates`` line at the end.
+
+    Prompt tokens prefer the blocks already reported. The diagnostic
+    ``n_prompt`` fills in only when no block has arrived. Prompt duration is
+    the sum of ``block_s``. Generation duration is the span from the first
+    generated token's ``t_mono`` to the last. Rates are counts divided by
+    those durations. A cancel or a timeout keeps the partial figures.
+    """
+
+    def __init__(self) -> None:
+        self.n_threads: int | None = None
+        self.n_threads_batch: int | None = None
+        self.physical: int | None = None
+        self.logical: int | None = None
+        self.reserve: int | None = None
+        self.source: str | None = None
+        self._event_prompt = 0
+        self._diag_prompt: int | None = None
+        self.prompt_s = 0.0
+        self._saw_block = False
+        self.n_gen = 0
+        self.gen_first: float | None = None
+        self.gen_last: float | None = None
+
+    def note_diag(self, diag: str) -> None:
+        for match in _THREAD_FIELD_IN_DIAG.finditer(diag):
+            name, raw = match.group(1), int(match.group(2))
+            if name == "n_threads":
+                self.n_threads = raw
+            elif name == "n_threads_batch":
+                self.n_threads_batch = raw
+            elif name == "physical":
+                self.physical = raw
+            elif name == "logical":
+                self.logical = raw
+            elif name == "reserve":
+                self.reserve = raw
+        source = _SOURCE_IN_DIAG.search(diag)
+        if source is not None:
+            self.source = source.group(1)
+        prompt = _N_PROMPT_IN_DIAG.search(diag)
+        if prompt is not None and self._diag_prompt is None:
+            self._diag_prompt = int(prompt.group(1))
+
+    def note_phase(self, event: dict) -> None:
+        if "prompt_tokens_done" in event:
+            try:
+                count = int(event["prompt_tokens_done"])
+            except (TypeError, ValueError):
+                count = 0
+            if count > self._event_prompt:
+                self._event_prompt = count
+                block = event.get("block_s")
+                try:
+                    block_s = float(block) if block is not None else 0.0
+                except (TypeError, ValueError):
+                    block_s = 0.0
+                if block_s > 0:
+                    self.prompt_s += block_s
+                    self._saw_block = True
+        if "tokens_done" not in event:
+            return
+        try:
+            count = int(event["tokens_done"])
+        except (TypeError, ValueError):
+            return
+        if count <= self.n_gen:
+            return
+        self.n_gen = count
+        raw = event.get("t_mono")
+        if raw is None:
+            return
+        try:
+            stamp = float(raw)
+        except (TypeError, ValueError):
+            return
+        if self.gen_first is None:
+            self.gen_first = stamp
+        self.gen_last = stamp
+
+    @property
+    def n_prompt(self) -> int | None:
+        if self._event_prompt > 0:
+            return self._event_prompt
+        return self._diag_prompt
+
+    @property
+    def prompt_duration_s(self) -> float | None:
+        if not self._saw_block:
+            return None
+        return self.prompt_s
+
+    @property
+    def gen_duration_s(self) -> float | None:
+        if (
+            self.gen_first is None
+            or self.gen_last is None
+            or self.gen_last <= self.gen_first
+        ):
+            return None
+        return self.gen_last - self.gen_first
+
+    def line(self) -> str:
+        source = self.source
+        if source not in {"rule", "env"}:
+            from core.cv_llm_runtime import cv_llm_thread_source
+
+            source = cv_llm_thread_source()
+        prompt_s = self.prompt_duration_s
+        gen_s = self.gen_duration_s
+        n_prompt = self.n_prompt
+        prompt_tps = None
+        if n_prompt and prompt_s and prompt_s > 0:
+            prompt_tps = n_prompt / prompt_s
+        gen_tps = None
+        if self.n_gen > 0 and gen_s and gen_s > 0:
+            gen_tps = self.n_gen / gen_s
+        return (
+            "cv_llm_rates n_threads=%s n_threads_batch=%s physical=%s "
+            "logical=%s reserve=%s source=%s n_prompt=%s prompt_s=%s "
+            "n_gen=%s gen_s=%s prompt_tps=%s gen_tps=%s"
+            % (
+                _fmt_int(self.n_threads),
+                _fmt_int(self.n_threads_batch),
+                _fmt_int(self.physical),
+                _fmt_int(self.logical),
+                _fmt_int(self.reserve),
+                source,
+                _fmt_int(n_prompt),
+                _fmt_seconds(prompt_s),
+                str(self.n_gen),
+                _fmt_seconds(gen_s),
+                _fmt_rate(prompt_tps),
+                _fmt_rate(gen_tps),
+            )
+        )
+
+
+def _fmt_int(value: int | None) -> str:
+    if value is None:
+        return ""
+    return str(int(value))
+
+
+def _fmt_seconds(value: float | None) -> str:
+    if value is None:
+        return ""
+    return "%.3f" % float(value)
+
+
+def _fmt_rate(value: float | None) -> str:
+    if value is None:
+        return ""
+    return "%.3f" % float(value)
+
+
+def _emit_cv_llm_rates(rates: CvLlmRates) -> None:
+    """One app-log line. Also after cancel and timeout, with partial figures."""
+    line = rates.line()
+    logger.info("%s", line)
+    logging.getLogger("karrierekrake").info("%s", line)
+
+
 def _drain_phase_events(
     path: Path,
     offset: int,
     progress: Callable[[str], None] | None,
     watch: object | None = None,
+    rates: CvLlmRates | None = None,
 ) -> int:
-    """Forward complete JSON lines. Return the new offset.
+    """Forward every complete JSON line currently in the file.
 
-    Diagnostic lines stay in the app log. ``max_tokens`` and ``n_prompt`` are
-    read from the child diagnostic and are not UI fields. The first
-    ``timeout_s`` is the initial deadline. ``timeout_s_final`` is one event
-    after the generation recalculation, with no new sentence.
+    One call consumes the whole pending tail, not a single event. Diagnostic
+    lines stay in the app log. ``max_tokens`` and ``n_prompt`` are read from
+    the child diagnostic and are not UI fields. The first ``timeout_s`` is
+    the initial deadline. ``timeout_s_final`` is one event after the
+    generation recalculation, with no new sentence.
     """
     try:
         data = path.read_bytes()
@@ -570,10 +758,15 @@ def _drain_phase_events(
             except json.JSONDecodeError:
                 event = None
         if isinstance(event, dict) and relay_diag_event(event):
-            _note_diag_budget(watch, str(event.get("diag") or ""))
+            diag = str(event.get("diag") or "")
+            _note_diag_budget(watch, diag)
+            if rates is not None:
+                rates.note_diag(diag)
             continue
         if isinstance(event, dict):
             _note_phase_budget(watch, event, progress)
+            if rates is not None:
+                rates.note_phase(event)
         if progress is not None:
             progress(line)
     return offset + newline + 1

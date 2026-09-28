@@ -971,11 +971,17 @@ CV_IMPORT_T_LOAD_S = 2.758
 # generation of 655 tokens at the n_threads=4 rate leaves about 52 s.
 # 60 s sits above that remainder. VM, not i3.
 CV_IMPORT_TIMEOUT_BUFFER_S = 60.0
-# VM medians of the pinned AVX2 wheel, n_threads=2, n_threads_batch=4,
-# median of 5 (VM, not i3, 2026-09-28). Prompt 1763 tokens, prompt-eval
-# median 14651.604 ms. Generation max_tokens 64, finish_reason=length,
-# median 12983.452 ms. Rates below are those tok/s medians divided by 2.
-# Rates on the i3 are unchecked and conservatively estimated.
+# Configuration of the constants below, not the reserve rule.
+# Pinned AVX2 wheel, this VM (4 physical cores, 1 thread per core, no SMT),
+# n_threads=2, n_threads_batch=4, median of 5, 2026-09-28. Prompt 1763
+# tokens, prompt-eval median 14651.604 ms. Generation 64 tokens,
+# finish_reason=length, median 12983.452 ms. The tok/s medians are divided
+# by 2. That pair is the old 2-vs-4 comparison. This VM's reserve rule is
+# 3/3. The headless 7/7 remeasurement is not substituted: it oversubscribes
+# these 4 cores, and halving its generation rate would raise r_gen and
+# shorten the deadline. Rates on the i3 are unchecked. An 11th-gen i3 may
+# be i3-1115G4 (2C/4T) or i3-1125G4 (4C/8T); the model is unknown. The SMT
+# branch of the thread rule (reserve 0) is not measured.
 CV_IMPORT_VM_N2_PROMPT_TOKENS = 1763
 CV_IMPORT_VM_N2_PROMPT_EVAL_S = 14.651604
 CV_IMPORT_VM_N2_GEN_TOKENS = 64
