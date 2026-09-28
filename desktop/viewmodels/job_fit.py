@@ -151,7 +151,7 @@ def _home_notice(config: Any | None):
         return None
     from core.location import home_location_notice
 
-    return home_location_notice(loc)
+    return home_location_notice(loc, config)
 
 
 def build_job_fit_viewmodel(

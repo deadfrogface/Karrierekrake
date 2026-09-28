@@ -519,7 +519,7 @@ class ProfilePage(QWidget):
         self.education.load(p.qualifications)
         self.qualifications.load(p.qualifications)
         self.languages.load(p.qualifications)
-        self.location_work.load(p.location, p.employment, p.filters)
+        self.location_work.load(p.location, p.employment, p.filters, cfg)
         self.applicant.load(
             cfg.application,
             sync_address_to_search=self.config_service.get_sync_address_to_search(),
@@ -539,7 +539,7 @@ class ProfilePage(QWidget):
         from core.location import home_location_notice
         from desktop.pages.dashboard import bind_home_notice_label
 
-        bind_home_notice_label(self.home_status, home_location_notice(cfg.profile.location))
+        bind_home_notice_label(self.home_status, home_location_notice(cfg.profile.location, cfg))
 
     def refresh_cards(self) -> None:
         cfg = self.config_service.load()

@@ -735,10 +735,157 @@ def test_home_resolves_once_until_the_user_changes_it(
         assert changed.postal_code == "20095"
         assert changed.home_address == "Speicherstraße 2"
         assert changed.home_latitude is not None and changed.home_longitude is not None
+        calls["n"] = 0
+        toggled = config_service.load()
+        toggled.profile.location.cross_border_dach = False
+        toggled.settings.cross_border_dach_enabled = False
+        config_service.save(toggled)
+        win.refresh_all()
+        qapp.processEvents()
+        assert calls["n"] == 1
     finally:
         win._shutting_down = True
         win.close()
         qapp.processEvents()
+
+
+def _home_for(config_service: ConfigService, **fields):
+    from core.location import reset_home_resolution_cache_for_tests
+
+    cfg = config_service.load()
+    loc = cfg.profile.location
+    loc.home_latitude = None
+    loc.home_longitude = None
+    loc.home_geocoded_address = ""
+    for name, value in fields.items():
+        setattr(loc, name, value)
+    cfg.settings.cross_border_dach_enabled = bool(loc.cross_border_dach)
+    reset_home_resolution_cache_for_tests()
+    return cfg, loc
+
+
+def _hint_and_resolve_home_agree(
+    config_service, cross_border, place, resolved
+):
+    """Hinweis und resolve_home sehen Status und Koordinaten derselben Auflösung."""
+    from desktop.i18n import tr
+
+    from core.location import LocationService
+
+    i18n.set_language("de")
+    cfg, loc = _home_for(
+        config_service,
+        cross_border_dach=cross_border,
+        **place,
+    )
+    notice = home_location_notice(loc, cfg)
+    home = LocationService(Database(cfg.db_path, recover=False), cfg).resolve_home()
+    assert (notice.status == "resolved") is home.resolved is resolved
+    if home.coords is None:
+        assert notice.latitude is None and notice.longitude is None
+        text = tr(notice.notice_key, place=notice.place_label or "")
+        assert "Distanzfilter aktiv" not in text
+    else:
+        assert notice.latitude == pytest.approx(home.coords[0])
+        assert notice.longitude == pytest.approx(home.coords[1])
+        assert "Distanzfilter aktiv" in tr(notice.notice_key, place=notice.place_label or "")
+
+
+@pytest.mark.parametrize("cross_border", [False, True])
+@pytest.mark.parametrize(
+    ("place", "resolved"),
+    [
+        (
+            {
+                "home_address": "Alexanderplatz 1, 10115 Berlin, DE",
+                "postal_code": "10115",
+                "city": "Berlin",
+                "country": "DE",
+            },
+            True,
+        ),
+        (
+            {
+                "home_address": "Stephansplatz 1, 1010 Wien, AT",
+                "postal_code": "1010",
+                "city": "Wien",
+                "country": "AT",
+            },
+            True,
+        ),
+        (
+            {
+                "home_address": "Frankfurt",
+                "postal_code": "",
+                "city": "Frankfurt",
+                "country": "DE",
+            },
+            False,
+        ),
+    ],
+)
+def test_hint_matches_resolve_home_for_border_and_country(
+    config_service, geo_ready, cross_border, place, resolved
+):
+    _hint_and_resolve_home_agree(config_service, cross_border, place, resolved)
+
+
+def test_index_generation_retries_a_cached_miss(config_service, geo_ready, monkeypatch):
+    """Ein Fehlschlag bleibt nur bis zur nächsten Index-Generation im Cache."""
+    import core.geo_resolve as geo
+    import core.location as location
+
+    cfg, loc = _home_for(
+        config_service,
+        home_address="Stephansplatz 1, 1010 Wien, AT",
+        postal_code="1010",
+        city="Wien",
+        country="AT",
+        cross_border_dach=True,
+    )
+    # First LocationService may seed the dataset and bump the index epoch.
+    LocationService = location.LocationService
+    LocationService(Database(cfg.db_path, recover=False), cfg)
+    calls = {"n": 0}
+    original = location.resolve_place
+
+    def _wrapped(*args, **kwargs):
+        result = original(*args, **kwargs)
+        if getattr(result, "reason", "") != "geo_index_loading":
+            calls["n"] += 1
+        return result
+
+    monkeypatch.setattr(location, "resolve_place", _wrapped)
+    real_postal = geo.resolve_postal_pgeocode
+
+    def _miss(postal_code, country_code):
+        from core.geo_resolve import PlaceResolution
+
+        return PlaceResolution(
+            status="UNKNOWN",
+            reason="plz_not_found",
+            country_code=country_code,
+        )
+
+    monkeypatch.setattr(geo, "resolve_postal_pgeocode", _miss)
+    failed = home_location_notice(loc, cfg)
+    assert failed.status != "resolved"
+    assert calls["n"] == 1
+    monkeypatch.setattr(geo, "resolve_postal_pgeocode", real_postal)
+    calls["n"] = 0
+    before = geo.geo_index_generation()
+    geo._bump_geo_index_generation()
+    assert geo.geo_index_generation() == before + 1
+    resolved = home_location_notice(loc, cfg)
+    assert calls["n"] == 1
+    assert resolved.status == "resolved"
+    assert resolved.latitude is not None and resolved.longitude is not None
+    home = location.LocationService(Database(cfg.db_path, recover=False), cfg).resolve_home()
+    assert home.resolved is True
+    assert calls["n"] == 1
+    assert home.coords is not None
+    assert resolved.latitude == pytest.approx(home.coords[0])
+    assert resolved.longitude == pytest.approx(home.coords[1])
 
 
 @pytest.mark.parametrize("key", PROFILE_DRAWER_KEYS)

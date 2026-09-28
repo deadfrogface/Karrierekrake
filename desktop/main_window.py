@@ -393,9 +393,8 @@ class MainWindow(QMainWindow):
             return
         try:
             self.profile.refresh_home_status()
-            self.profile.location_work.refresh_home_notice(
-                self.config_service.load().profile.location
-            )
+            cfg = self.config_service.load()
+            self.profile.location_work.refresh_home_notice(cfg.profile.location, cfg)
             self.dashboard.refresh()
             self.settings._refresh_home_notice()
             self.jobs.refresh()
@@ -497,7 +496,8 @@ class MainWindow(QMainWindow):
                 extra = (extra + "\n" if extra else "\n") + "\n".join(stats.get("source_errors") or [])
             from core.location import home_location_notice
 
-            notice = home_location_notice(self.config_service.load().profile.location)
+            cfg = self.config_service.load()
+            notice = home_location_notice(cfg.profile.location, cfg)
             if notice.ask_postal and notice.notice_key:
                 extra += "\n\n" + tr(notice.notice_key)
             if stats.get("ats_unknown") is not None:

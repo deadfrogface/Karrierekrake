@@ -441,7 +441,7 @@ class DashboardPage(QWidget):
         loc = cfg.profile.location
         from core.location import home_location_notice
 
-        bind_home_notice_label(self.home_warning_label, home_location_notice(loc))
+        bind_home_notice_label(self.home_warning_label, home_location_notice(loc, cfg))
 
         # Keep diagnostics populated for tests / developer tooling — never shown.
         self.advanced_stats.setText(

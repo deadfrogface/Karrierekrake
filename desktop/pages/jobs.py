@@ -566,7 +566,7 @@ class JobsPage(QWidget):
         from core.location import home_location_notice
 
         cfg = self.config_service.load()
-        return home_location_notice(cfg.profile.location)
+        return home_location_notice(cfg.profile.location, cfg)
 
     def _home_status(self) -> str:
         return self._home_notice().status

@@ -197,6 +197,9 @@ _ui_thread_id: int | None = None
 _ready_callbacks: list[Callable[[], None]] = []
 _test_hold: threading.Event | None = None
 _generation = 0
+# Bumps when the postal index actually changes. Cache keys read this int.
+# Distinct from ``_generation``, which only aborts a stale preload worker.
+_index_generation = 0
 _DACH_PRELOAD = ("DE", "AT", "CH")
 _LOCAL_GEO_PRELOAD = ("DE", "AT", "CH", "NL", "BE")
 
@@ -209,11 +212,23 @@ _INDEX_LOADING = _IndexLoading()
 
 
 
+def geo_index_generation() -> int:
+    """Monotonic index epoch. Hot path: one int read, no lock and no polling."""
+    return _index_generation
+
+
+def _bump_geo_index_generation() -> None:
+    """Drop cached place lookups after the postal index changes."""
+    global _index_generation
+    _index_generation += 1
+
+
 def _invalidate_pgeocode_index() -> None:
     """Drop in-memory Nominatim when the active dataset changes."""
     global _generation, _preload_thread, _preload_worker_ident
     with _load_lock:
         _generation += 1
+        _bump_geo_index_generation()
         _pgeocode_index.clear()
         _resolution_cache.clear()
         _ready_callbacks.clear()
@@ -371,6 +386,8 @@ def _preload_worker(gen: int) -> None:
         _pgeocode_nominatim(cc)
     if gen != _generation:
         return
+    # One epoch for the finished batch, before ready callbacks resolve homes.
+    _bump_geo_index_generation()
     _preload_done.set()
     _fire_ready()
 
@@ -564,7 +581,12 @@ def _pgeocode_nominatim(country_code: str) -> Any | None:
         gen = _generation
         nom = _build_nominatim(cc)
         if nom is not None and gen == _generation:
+            first = cc not in _pgeocode_index
             _pgeocode_index[cc] = nom
+            # A country that arrives after the initial batch must invalidate
+            # a 'not found' cached while that country was missing.
+            if first and _preload_done.is_set():
+                _bump_geo_index_generation()
             return nom
         return _pgeocode_index.get(cc)
 
@@ -643,6 +665,7 @@ def reset_pgeocode_index_for_tests() -> None:
     global _generation, _preload_thread, _ui_thread_id, _test_hold, _preload_worker_ident
     with _load_lock:
         _generation += 1
+        _bump_geo_index_generation()
         _pgeocode_index.clear()
         _resolution_cache.clear()
         _ready_callbacks.clear()
@@ -997,6 +1020,7 @@ def _result_cache_key(
         bool(cross_border),
         (home_country or "").upper(),
         bool(allow_network),
+        geo_index_generation(),
     )
 
 
@@ -1030,7 +1054,16 @@ def resolve_place(
         network_geocode=network_geocode,
     )
     if result.reason != "geo_index_loading":
-        _resolution_cache[key] = result
+        # A country load inside the lookup bumps the epoch. Store under that
+        # epoch so the next read hits instead of resolving again.
+        _resolution_cache[
+            _result_cache_key(
+                place,
+                cross_border=cross_border,
+                home_country=home_country,
+                allow_network=allow_network,
+            )
+        ] = result
     return result
 
 
@@ -1115,6 +1148,7 @@ __all__ = [
     "preload_geo_index_async",
     "hold_geo_preload_for_tests",
     "preload_worker_ident",
+    "geo_index_generation",
     "reset_pgeocode_index_for_tests",
     "resolve_postal_pgeocode",
     "resolve_city_pgeocode",
