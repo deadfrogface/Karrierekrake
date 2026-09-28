@@ -79,6 +79,14 @@ def test_driving_classes_deduped_for_display_without_mutating_storage():
     # A class the parser already stored must survive display (C1 overlaps CEFR).
     assert driving_classes_for_display([{"value": "C1"}]) == ["C1"]
     assert driving_classes_for_display(["C1", "B", "B"]) == ["B", "C1"]
+    # Unknown tokens stay. Only a lone E directly after B becomes BE.
+    assert driving_classes_for_display(["B", "B96"]) == ["B", "B96"]
+    assert driving_classes_for_display(["B", "E", "C1"]) == ["B", "BE", "C1"]
+    assert driving_classes_for_display("Klasse 3") == ["Klasse 3"]
+    assert driving_classes_for_display("CE 95") == ["CE 95"]
+    assert driving_classes_for_display(["B", "E"]) == ["B", "BE"]
+    assert driving_classes_for_display(["C", "E"]) == ["C", "E"]
+    assert driving_classes_for_display(["C1", "C1E"]) == ["C1", "C1E"]
 
 
 def test_parsed_string_license_is_not_split_into_characters():
@@ -90,6 +98,13 @@ def test_parsed_string_license_is_not_split_into_characters():
         {"driving_license": [{"value": "B"}, {"value": "BE"}]}
     )
     assert already.driving_values() == ["B", "BE"]
+    # Import persists the repaired list. ``BE`` is not stored as the split [B, E].
+    assert parsed_to_qualifications({"driving_license": "BE"}).driving_values() == ["BE"]
+    assert parsed_to_qualifications({"driving_license": ["B", "E"]}).driving_values() == ["B", "BE"]
+    imported = parsed_to_qualifications(
+        {"driving_license": [{"value": "C1"}, {"value": "C1E"}, {"value": "B96"}]}
+    )
+    assert imported.driving_values() == ["C1", "C1E", "B96"]
 
 
 def test_license_editor_shows_deduped_classes(qapp):
@@ -105,6 +120,52 @@ def test_license_editor_shows_deduped_classes(qapp):
     section.load(quals)
     assert section.driving.get_items() == ["B", "BE"]
     assert [item.value for item in quals.driving_license] == before
+
+
+@pytest.mark.parametrize(
+    ("stored", "drawer", "expected"),
+    [
+        (["B", "B96"], "languages", ["B", "B96"]),
+        (["B", "E", "C1"], "experience", ["B", "BE", "C1"]),
+        (["Klasse 3"], "education", ["Klasse 3"]),
+        (["CE 95"], "career", ["CE 95"]),
+        (["C1", "C1E"], "docs", ["C1", "C1E"]),
+        (["B", "E"], "personal", ["B", "BE"]),
+    ],
+)
+def test_other_drawer_save_keeps_license_in_file(
+    qapp, config_service, monkeypatch, stored, drawer, expected
+):
+    """Loading fills every editor. Saving a different drawer must not drop classes."""
+    from desktop.services.profile_merge import SOURCE_CV
+
+    cfg = config_service.load()
+    cfg.profile.qualifications.driving_license = [
+        SourcedText(value=value, source="cv") for value in stored
+    ]
+    cfg.application.driving_license = "vorher"
+    cfg.application.field_origins["driving_license"] = SOURCE_CV
+    config_service.save(cfg)
+
+    page = ProfilePage(config_service)
+    page.load_from_config()
+    monkeypatch.setattr(QMessageBox, "information", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+    monkeypatch.setattr(
+        page._drawer,
+        "present",
+        lambda *_args, **_kwargs: page._drawer.DialogCode.Accepted,
+    )
+    page._edit_section(drawer)
+
+    profile_text = Path(config_service.profile_path).read_text(encoding="utf-8")
+    application_text = Path(config_service.application_path).read_text(encoding="utf-8")
+    reloaded = config_service.load()
+    assert reloaded.profile.qualifications.driving_values() == expected
+    for token in expected:
+        assert token in profile_text
+    assert reloaded.application.driving_license == ", ".join(expected)
+    assert ", ".join(expected) in application_text
 
 
 def test_wizard_completed_or_skipped_stays_done(qapp, config_service):
@@ -168,11 +229,35 @@ def test_mode_chip_size_hint_fits_full_text(qapp, scale):
     advance = chip.fontMetrics().horizontalAdvance(chip.text())
     assert chip.text() == label
     assert chip.sizeHint().width() >= advance
-    assert chip.minimumSizeHint().width() >= advance
+    # The floor is the longest word, so the full label does not set the window minimum.
+    assert chip.minimumSizeHint().width() < chip.sizeHint().width()
+    assert chip.minimumSizeHint().width() >= chip.fontMetrics().horizontalAdvance("bewerben")
     chip.adjustSize()
     chip.show()
     qapp.processEvents()
     assert chip.width() >= advance
+    assert "…" not in chip.text()
+
+
+def test_long_chip_wraps_inside_narrow_host(qapp):
+    from PySide6.QtWidgets import QVBoxLayout, QWidget
+
+    from desktop.design_system.v2_chrome import TagChip
+
+    text = "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda"
+    host = QWidget()
+    layout = QVBoxLayout(host)
+    layout.setContentsMargins(0, 0, 0, 0)
+    chip = TagChip(text, kind="neutral")
+    layout.addWidget(chip)
+    host.setFixedWidth(200)
+    host.show()
+    qapp.processEvents()
+    assert chip.sizeHint().width() > 200
+    assert chip.minimumSizeHint().width() <= 200
+    assert chip.width() <= 200
+    assert chip.height() > chip.fontMetrics().lineSpacing()
+    assert chip.text() == text
     assert "…" not in chip.text()
 
 
