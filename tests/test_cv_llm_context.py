@@ -253,6 +253,74 @@ def test_linux_physical_cpu_count_dedups_siblings(tmp_path: Path) -> None:
     assert _linux_physical_cpu_count(tmp_path) == 2
 
 
+def test_over_limit_after_load_skips_prompt_eval(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Private commit over the gate at load must not start prompt evaluation."""
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
+    stages: list[str] = []
+
+    class Spy(_FakeLlama):
+        def count_chat_tokens(self, messages):
+            raise AssertionError("token count ran after an over-limit load")
+
+        def create_chat_completion(self, **kwargs):
+            raise AssertionError("prompt eval ran after an over-limit load")
+
+    def boom(*, stage: str, include_llama_server: bool = True) -> None:
+        stages.append(stage)
+        assert include_llama_server is False
+        if stage == "after_load":
+            raise CvImportError("peak_rss_exceeded", "peak_rss_exceeded")
+
+    monkeypatch.setattr("core.cv_llm_runtime._llama_cls", lambda: Spy)
+    monkeypatch.setattr("core.cv_docpick_import._enforce_peak_rss", boom)
+    with pytest.raises(CvImportError) as ei:
+        chat_completion_inprocess(
+            [{"role": "user", "content": "x"}],
+            model_path=Path("unused.gguf"),
+        )
+    assert ei.value.code == "peak_rss_exceeded"
+    assert stages == ["after_load"]
+
+
+def test_load_log_keeps_buffer_and_cpu_lines(caplog: pytest.LogCaptureFixture) -> None:
+    from core.cv_llm_runtime import _log_llama_load_lines
+
+    blob = "\n".join(
+        [
+            "llama_model_loader: loaded meta data",
+            "load_tensors: CPU_REPACK model buffer size = 1297.97 MiB",
+            "load_tensors: AMX model buffer size = 2647.61 MiB",
+            "CPU : SSE3 = 1 | AVX2 = 1 | REPACK = 1 | ",
+            "some other line",
+        ]
+    )
+    with caplog.at_level("INFO"):
+        _log_llama_load_lines(blob)
+    assert "CPU_REPACK model buffer" in caplog.text
+    assert "AMX model buffer" in caplog.text
+    assert "AVX2 = 1" in caplog.text
+    assert "loaded meta data" not in caplog.text
+
+
+def test_build_report_marks_single_cpu_library() -> None:
+    from core.cv_llm_runtime import format_llama_build_report
+
+    text = format_llama_build_report(
+        "CPU : AVX2 = 1 | REPACK = 1 | ",
+        ["ggml-cpu.dll", "ggml.dll"],
+    )
+    assert "llama_cpu_features=CPU : AVX2 = 1 | REPACK = 1 |" in text
+    assert "llama_cpu_all_variants=0" in text
+    assert "llama_runtime_isa=fixed" in text
+    assert "llama_model_buffer=not_loaded" in text
+    variants = format_llama_build_report(
+        "CPU : AVX2 = 1 | ",
+        ["ggml-cpu-haswell.dll", "ggml-cpu-sapphirerapids.dll"],
+    )
+    assert "llama_cpu_all_variants=1" in variants
+    assert "llama_runtime_isa=runtime" in variants
+
+
 def test_gate_is_sampled_while_fake_model_is_still_alive(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -302,7 +370,8 @@ def test_llama_constructor_receives_thread_and_ctx(monkeypatch: pytest.MonkeyPat
     assert seen["n_threads"] == 2
     assert seen["n_threads_batch"] == 4
     assert seen["n_batch"] == 512
-    assert seen["verbose"] is False
+    assert seen["verbose"] is True
+    assert Spy.instances[-1].verbose is False
     assert Spy.instances[-1].completion_kwargs["max_tokens"] == (
         4096 - 10 - CV_LLM_CTX_SLACK_TOKENS
     )

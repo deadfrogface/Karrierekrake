@@ -57,6 +57,12 @@ keyring==25.7.0
 #   https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.35/llama_cpp_python-0.3.35-py3-none-win_amd64.whl
 # diskcache, jinja2 and MarkupSafe are the non-extra requires of 0.3.35
 # (versions resolved with that CPU wheel on Python 3.12, 2026-09-28).
+# The Windows wheel's ggml-cpu.dll is one library (GGML_CPU_ALL_VARIANTS OFF,
+# GGML_BACKEND_DL OFF). Disassembly: AVX2 ymm ops, no zmm, no AMX
+# (tileloadd/tdpbssd). build-and-exe-smoke installs this wheel; it does not
+# compile with -march=native on the runner. The import logs CPU_REPACK/AMX
+# buffer lines when a GGUF loads. Do not replace the wheel without a
+# measurement on the i3.
 diskcache==5.6.3
 jinja2==3.1.6
 llama-cpp-python==0.3.35

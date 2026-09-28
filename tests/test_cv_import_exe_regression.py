@@ -164,6 +164,9 @@ def test_requirements_runtime_lists_docpick_and_llama() -> None:
     smoke = Path(".github/workflows/windows-smoke.yml").read_text(encoding="utf-8")
     assert "--report-physical-cores" in smoke
     assert "source=psutil" in smoke
+    assert "--report-llm-load" in smoke
+    assert "AMX_INT8 = 1" in smoke
+    assert "llama_cpu_all_variants=0" in smoke
     assert not any(
         line.strip().startswith("#") and "docpick" in line for line in text.splitlines() if "docpick" in line
     )

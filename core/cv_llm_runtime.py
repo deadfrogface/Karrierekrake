@@ -368,6 +368,90 @@ def _sample_private_commit(stage: str) -> None:
     _enforce_peak_rss(stage=stage, include_llama_server=False)
 
 
+def _interesting_load_line(line: str) -> bool:
+    """Buffer-type and CPU-feature lines from llama.cpp. Nothing else."""
+    text = line.strip()
+    if "model buffer" in text or "compute buffer" in text:
+        return True
+    return text.startswith("CPU :")
+
+
+def _log_llama_load_lines(blob: str) -> None:
+    for line in blob.splitlines():
+        if _interesting_load_line(line):
+            logger.info("cv_llm_load %s", line.strip())
+
+
+def _is_cpu_variant_lib(name: str) -> bool:
+    """True for ``ggml-cpu-haswell.dll``, false for ``ggml-cpu.dll`` / ``.so.0``."""
+    rest = name.lower().split("ggml-cpu-", 1)
+    if len(rest) != 2 or not rest[1]:
+        return False
+    return rest[1][0].isalpha()
+
+
+def format_llama_build_report(system_info: str, lib_names: list[str]) -> str:
+    """One report for the packaged EXE.
+
+    ``llama_cpu_all_variants=0`` means a single CPU library, not
+    ``GGML_CPU_ALL_VARIANTS`` / ``GGML_BACKEND_DL`` runtime selection.
+    Buffer-type lines (``CPU_REPACK`` / ``AMX``) are logged by the import
+    when a GGUF is loaded; this report has no weights.
+    """
+    variant_names = [name for name in lib_names if _is_cpu_variant_lib(name)]
+    runtime = "runtime" if variant_names else "fixed"
+    lines = [
+        f"llama_cpu_features={system_info.strip()}",
+        "llama_backend_libs=" + ",".join(lib_names),
+        f"llama_cpu_all_variants={1 if variant_names else 0}",
+        f"llama_runtime_isa={runtime}",
+        "llama_model_buffer=not_loaded",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def llama_build_report_text() -> str:
+    """CPU features of the llama build this process actually loaded."""
+    import llama_cpp
+
+    info = llama_cpp.llama_print_system_info().decode("utf-8", "replace")
+    libdir = Path(llama_cpp.__file__).resolve().parent / "lib"
+    names: list[str] = []
+    if libdir.is_dir():
+        names = sorted(
+            p.name
+            for p in libdir.iterdir()
+            if p.is_file() and "ggml-cpu" in p.name.lower() and not p.name.endswith(".lib")
+        )
+    return format_llama_build_report(info, names)
+
+
+def _construct_llama(llama_cls: Any, **kwargs: Any) -> tuple[Any, str]:
+    """Construct Llama and keep stderr lines that name buffers and CPU features.
+
+    The caller passes ``verbose=True`` so the load is not silenced. This
+    function turns the llama logger back to errors afterwards.
+    """
+    import contextlib
+    import io
+
+    blob = io.StringIO()
+    setter = None
+    try:
+        from llama_cpp._logger import set_verbose as setter
+    except Exception:  # noqa: BLE001 — unit doubles must run without the wheel
+        setter = None
+    if setter is not None:
+        setter(True)
+    try:
+        with contextlib.redirect_stderr(blob):
+            llm = llama_cls(**kwargs)
+    finally:
+        if setter is not None:
+            setter(False)
+    return llm, blob.getvalue()
+
+
 def _iter_chat_completion(llm: Any, **kwargs: Any):
     """Stream so the first chunk is the moment prompt evaluation has finished."""
     kwargs["stream"] = True
@@ -394,15 +478,30 @@ def chat_completion_inprocess(
     n_threads, n_threads_batch = resolve_cv_llm_threads()
     Llama = _llama_cls()
     with hold_production_model(role="cv_import", timeout_s=90.0):
-        llm = Llama(
+        # verbose=True only so llama.cpp emits buffer and CPU lines during
+        # load. It is turned off before any prompt evaluation.
+        llm, load_log = _construct_llama(
+            Llama,
             model_path=str(model_path),
             n_ctx=n_ctx,
             n_threads=n_threads,
             n_threads_batch=n_threads_batch,
             n_batch=512,
-            verbose=False,
+            verbose=True,
         )
         try:
+            llm.verbose = False
+        except (AttributeError, TypeError):
+            pass
+        try:
+            # Buffer allocation has finished inside Llama(). Log CPU features
+            # and buffer types, then gate, before any prompt evaluation.
+            _log_llama_load_lines(load_log)
+            try:
+                info = llama_build_report_text().splitlines()[0]
+                logger.info("cv_llm_load %s", info.removeprefix("llama_cpu_features="))
+            except Exception:  # noqa: BLE001
+                logger.info("cv_llm_load llama_system_info=unavailable")
             _sample_private_commit("after_load")
             n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
