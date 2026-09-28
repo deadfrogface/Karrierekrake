@@ -92,6 +92,7 @@ def _run_child_import(
     env.pop("KARRIEREKRAKE_CV_LLM_BASE", None)
     # Force in-process: pretend no HTTP server.
     env["KARRIEREKRAKE_CV_LLM_BASE"] = "http://127.0.0.1:1/v1"
+    err_log = out.with_suffix(out.suffix + ".stderr.txt")
     cmd = [
         str(exe),
         "--cv-import-child",
@@ -101,34 +102,82 @@ def _run_child_import(
         str(out),
     ]
     t0 = time.perf_counter()
-    proc = subprocess.Popen(
-        cmd,
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        env=env,
-    )
-    deadline = time.time() + timeout_s
-    while time.time() < deadline:
-        if out.is_file() and out.stat().st_size > 0:
-            break
-        if proc.poll() is not None and out.is_file():
-            break
-        time.sleep(0.5)
-    else:
-        proc.kill()
-        raise SystemExit(f"FAIL: child import timed out after {timeout_s}s")
-    # Give writer a moment to flush.
-    time.sleep(0.2)
-    if proc.poll() is None:
-        try:
-            proc.wait(timeout=30)
-        except subprocess.TimeoutExpired:
+    with err_log.open("wb") as err_fh:
+        proc = subprocess.Popen(
+            cmd,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=err_fh,
+            env=env,
+        )
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            if out.is_file() and out.stat().st_size > 0:
+                break
+            if proc.poll() is not None and out.is_file():
+                break
+            time.sleep(0.5)
+        else:
             proc.kill()
+            raise RuntimeError(f"child import timed out after {timeout_s}s")
+        # Give writer a moment to flush.
+        time.sleep(0.2)
+        if proc.poll() is None:
+            try:
+                proc.wait(timeout=30)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait(timeout=5)
     elapsed = time.perf_counter() - t0
+    if not out.is_file():
+        stderr_tail = ""
+        try:
+            stderr_tail = err_log.read_text(encoding="utf-8", errors="replace")[-2000:]
+        except OSError:
+            pass
+        raise RuntimeError(
+            f"child wrote no --out (exit={proc.returncode}); stderr_tail={stderr_tail!r}"
+        )
     payload = json.loads(out.read_text(encoding="utf-8"))
     payload["_wall_s"] = round(elapsed, 3)
+    payload["_exit_code"] = proc.returncode
+    try:
+        payload["_stderr_tail"] = err_log.read_text(encoding="utf-8", errors="replace")[-2000:]
+    except OSError:
+        payload["_stderr_tail"] = ""
     return payload
+
+
+def _import_report_slice(payload: dict) -> dict:
+    """Compact import payload for CI logs (no full CV body)."""
+    parsed = payload.get("parsed") if isinstance(payload.get("parsed"), dict) else {}
+    personal = parsed.get("personal") if isinstance(parsed, dict) else {}
+    if not isinstance(personal, dict):
+        personal = {}
+    emails = parsed.get("emails") if isinstance(parsed, dict) else []
+    return {
+        "ok": payload.get("ok"),
+        "kind": payload.get("kind"),
+        "message": (payload.get("message") or "")[:240],
+        "wall_s": payload.get("_wall_s"),
+        "exit_code": payload.get("_exit_code"),
+        "personal_preview": {
+            "first_name": personal.get("first_name"),
+            "last_name": personal.get("last_name"),
+            "city": personal.get("city"),
+        },
+        "emails_preview": list(emails)[:2] if isinstance(emails, list) else [],
+        "pipeline": parsed.get("pipeline") if isinstance(parsed, dict) else None,
+        "llm_transport": parsed.get("llm_transport") if isinstance(parsed, dict) else None,
+        "stderr_tail": (payload.get("_stderr_tail") or "")[:800],
+        "preview_keys": sorted(payload.keys())[:40],
+    }
+
+
+def _write_report(path: Path, report: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps(report, indent=2, ensure_ascii=False), flush=True)
 
 
 def _smoke_start(exe: Path, local_appdata: Path, timeout_s: float) -> float:
@@ -347,9 +396,7 @@ def main(argv: list[str] | None = None) -> int:
             report["steps"]["start"] = {"ok": True, "wall_s": round(start_s, 3)}
         except Exception as exc:  # noqa: BLE001
             report["steps"]["start"] = {"ok": False, "error": str(exc)}
-            args.out.parent.mkdir(parents=True, exist_ok=True)
-            args.out.write_text(json.dumps(report, indent=2), encoding="utf-8")
-            print(json.dumps(report, indent=2), flush=True)
+            _write_report(args.out, report)
             return 1
 
         # 3: import
@@ -360,36 +407,32 @@ def main(argv: list[str] | None = None) -> int:
             )
             import_ok = bool(payload.get("ok")) and _preview_has_identity(payload)
             report["steps"]["import"] = {
+                **_import_report_slice(payload),
                 "ok": import_ok,
-                "wall_s": payload.get("_wall_s"),
-                "kind": payload.get("kind"),
-                "message": (payload.get("message") or "")[:240],
-                "preview_keys": sorted(payload.keys())[:40],
             }
             if not import_ok:
-                raise SystemExit("import preview incomplete")
+                _write_report(args.out, report)
+                return 1
         except Exception as exc:  # noqa: BLE001
             report["steps"]["import"] = {
                 "ok": False,
                 "error": str(exc),
                 **(report["steps"].get("import") or {}),
             }
-            args.out.parent.mkdir(parents=True, exist_ok=True)
-            args.out.write_text(json.dumps(report, indent=2), encoding="utf-8")
-            print(json.dumps(report, indent=2), flush=True)
+            _write_report(args.out, report)
             return 1
 
         # 4: Übernehmen simulation
         applied = _apply_preview_to_profile(payload, local)
         report["steps"]["apply"] = {
-            "ok": bool(applied.get("applicant", {}).get("full_name") or applied.get("applicant", {}).get("email")),
+            "ok": bool(
+                applied.get("applicant", {}).get("full_name")
+                or applied.get("applicant", {}).get("email")
+            ),
             "applicant": applied.get("applicant"),
         }
         if not report["steps"]["apply"]["ok"]:
-            report["steps"]["apply"]["ok"] = False
-            args.out.parent.mkdir(parents=True, exist_ok=True)
-            args.out.write_text(json.dumps(report, indent=2), encoding="utf-8")
-            print(json.dumps(report, indent=2), flush=True)
+            _write_report(args.out, report)
             return 1
 
         # 5: restart + reload profile
@@ -403,21 +446,18 @@ def main(argv: list[str] | None = None) -> int:
                 "applicant": (reloaded.get("applicant") or {}),
             }
             if not same:
-                raise SystemExit("profile not persisted across restart")
+                _write_report(args.out, report)
+                return 1
         except Exception as exc:  # noqa: BLE001
             report["steps"]["restart"] = {"ok": False, "error": str(exc)}
-            args.out.parent.mkdir(parents=True, exist_ok=True)
-            args.out.write_text(json.dumps(report, indent=2), encoding="utf-8")
-            print(json.dumps(report, indent=2), flush=True)
+            _write_report(args.out, report)
             return 1
 
         # 6: cover letter / writing with same model (library when EXE child cannot)
         if args.skip_cover_letter:
             report["steps"]["cover_letter"] = {"ok": True, "skipped": True}
         else:
-            # Ensure models dir points at materialized / sidecar copy under LOCALAPPDATA
             os.environ["LOCALAPPDATA"] = str(local)
-            # Also accept vendor / exe-adjacent model for the writing probe.
             sidecar = exe.parent / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf"
             if sidecar.is_file():
                 os.environ["KARRIEREKRAKE_CV_LLM_MODEL"] = str(sidecar)
@@ -435,7 +475,6 @@ def main(argv: list[str] | None = None) -> int:
             "cover_letter_wall_s": (report["steps"].get("cover_letter") or {}).get("wall_s"),
             "peak_rss_bytes_children": report["peak_rss_bytes_children"],
         }
-
         step_ok = all(
             bool((report["steps"].get(name) or {}).get("ok"))
             for name in ("start", "import", "apply", "restart", "cover_letter")
@@ -443,9 +482,7 @@ def main(argv: list[str] | None = None) -> int:
         report["ok"] = step_ok
         report["release_blocked"] = not step_ok
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(json.dumps(report, indent=2, ensure_ascii=False), flush=True)
+    _write_report(args.out, report)
     return 0 if report["ok"] else 1
 
 

@@ -142,6 +142,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $env:QT_QPA_PLATFORM = "offscreen"
+          $env:PYTHONUTF8 = "1"
           # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
@@ -151,14 +152,14 @@ jobs:
             --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
             --out artifacts/cv_import_exe_offline_e2e.json `
             --import-timeout 900
-          if ($LASTEXITCODE -ne 0) {
-            Write-Error "Offline CV import EXE acceptance FAILED — release blocked"
-            if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
-              Get-Content artifacts/cv_import_exe_offline_e2e.json
-            }
-            exit 1
+          $code = $LASTEXITCODE
+          if (Test-Path artifacts/cv_import_exe_offline_e2e.json) {
+            Get-Content artifacts/cv_import_exe_offline_e2e.json
           }
-          Get-Content artifacts/cv_import_exe_offline_e2e.json
+          if ($code -ne 0) {
+            Write-Host "Offline CV import EXE acceptance FAILED — release blocked"
+            exit $code
+          }
       - name: Packaged legacy DB migration (library + EXE smoke)
         shell: pwsh
         run: |
@@ -195,6 +196,7 @@ jobs:
           $env:LOCALAPPDATA = $tmp.FullName
           python scripts/ci_packaged_reset_check.py
       - name: Upload EXE + metadata
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Karrierekrake-Windows-Smoke
@@ -205,7 +207,7 @@ jobs:
             dist/content_manifest.json
             dist/smoke_test_result.txt
             artifacts/cv_import_exe_offline_e2e.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
       - name: Summary
         if: always()
