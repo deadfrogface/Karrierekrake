@@ -483,6 +483,86 @@ def test_timeout_event_once_and_token_events_at_most_three(
     assert cursor["i"] == 1000
 
 
+def test_prompt_blocks_are_reported_and_prefix_is_reused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Prefill evals each ``n_batch`` block, then the completion reuses it."""
+    import json
+    import sys
+
+    from core.cv_llm_runtime import _prefix_reuse_from_stderr
+
+    assert _prefix_reuse_from_stderr(
+        "Llama.generate: full prompt already cached, skipping reset\n"
+    ) == (1, "0")
+    assert _prefix_reuse_from_stderr(
+        "Llama.generate: 100 prefix-match hit, remaining 12 prompt tokens to eval\n"
+    ) == (0, "12")
+
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
+    phase = tmp_path / "phase.jsonl"
+    monkeypatch.setenv("KARRIEREKRAKE_CV_PHASE_EVENTS", str(phase))
+    ids = list(range(600))
+
+    class Prefill(_FakeLlama):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.n_batch = kwargs.get("n_batch", 512)
+            self.n_tokens = 0
+            self.verbose = False
+            self.evals: list[list[int]] = []
+
+        def chat_prompt_token_ids(self, messages):
+            assert messages
+            return list(ids)
+
+        def eval(self, tokens):
+            block = [int(token) for token in tokens]
+            self.evals.append(block)
+            self.n_tokens += len(block)
+
+        def create_chat_completion(self, **kwargs):
+            self.generate_calls += 1
+            self.completion_kwargs = kwargs
+
+            def chunks():
+                if self.verbose and self.n_tokens == len(ids):
+                    print(
+                        "Llama.generate: full prompt already cached, skipping reset",
+                        file=sys.stderr,
+                    )
+                yield {
+                    "choices": [
+                        {"delta": {"content": "{}"}, "finish_reason": "stop"}
+                    ]
+                }
+
+            return chunks()
+
+    monkeypatch.setattr("core.cv_llm_runtime._llama_cls", lambda: Prefill)
+    with caplog.at_level("INFO"):
+        text = chat_completion_inprocess(
+            [{"role": "user", "content": "x"}],
+            model_path=Path("unused.gguf"),
+        )
+    assert text == "{}"
+    llama = Prefill.instances[-1]
+    assert llama.evals == [ids[:512], ids[512:]]
+    assert llama.n_tokens == 600
+    assert llama.verbose is False
+    lines = [
+        json.loads(line)
+        for line in phase.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    prompts = [line for line in lines if "prompt_tokens_done" in line]
+    assert [line["prompt_tokens_done"] for line in prompts] == [512, 600]
+    assert all("t_mono" in line and "block_s" in line for line in prompts)
+    assert "cv_llm_prompt_prefix reused=1 remaining_prompt_eval=0" in caplog.text
+    assert "first_chunk_eval_tokens=0" in caplog.text
+    assert "cv_llm_prompt_prefill n_prompt=600 n_batch=512 blocks=2" in caplog.text
+
+
 def test_import_timeout_formula_env_floor_and_ceiling(monkeypatch: pytest.MonkeyPatch) -> None:
     """Env wins. DE_01 and DE_06 token counts, plus the floor and the ceiling."""
     from core.cv_docpick_import import (

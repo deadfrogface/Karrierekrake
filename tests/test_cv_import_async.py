@@ -18,7 +18,11 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 
 from core.config import ApplicationProfile, QualificationsConfig
-from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
+from desktop.cv_import_supervisor import (
+    CvImportSupervisor,
+    ImportAttemptResult,
+    qa_observe_seconds,
+)
 from desktop.i18n import TRANSLATIONS, i18n, tr
 from desktop.widgets.cv_import_dialog import CvImportDialog, failure_text_key
 
@@ -433,6 +437,49 @@ def test_import_progress_steps_at_two_hertz(qapp, tmp_path: Path, monkeypatch):
     dlg._on_progress('{"timeout_s_final":800}')
     assert dlg.phase_timeout_s == 180
     assert dlg.phase_timeout_s_final == 400
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_llm_timeout_reason_reaches_the_dialog(qapp, tmp_path: Path, monkeypatch):
+    """``deadline`` and ``stall`` arrive, and both keep the existing sentence."""
+    monkeypatch.setattr(
+        "desktop.widgets.cv_import_dialog.start_worker", lambda _worker: None
+    )
+
+    def spawn(path: Path, out: Path):
+        return _Proc(None)
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(city="Hamburg"),
+        spawn=spawn,
+        timeout_s=30,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    expected = tr("cv_import.error_timeout")
+    for reason in ("deadline", "stall"):
+        dlg.timeout_reason = "stale"
+        dlg.start_parse()
+        assert dlg.timeout_reason is None
+        dlg._on_attempt(
+            ImportAttemptResult(
+                False,
+                "llm_timeout",
+                "llm_timeout",
+                None,
+                1,
+                reason,
+            )
+        )
+        assert dlg.timeout_reason == reason
+        assert dlg.error_text.text() == expected
+        assert reason not in dlg.error_text.text()
+        assert dlg.error_detail.isVisible() is False
+        dlg._running = False
     dlg.close()
     qapp.processEvents()
 

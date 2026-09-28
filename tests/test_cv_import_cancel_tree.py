@@ -864,6 +864,11 @@ class _ScriptedChild:
         token_every: float,
         done_at: float | None,
         last_token_at: float | None,
+        n_prompt: int = 10,
+        prompt_at: float | None = None,
+        prompt_every: float = 1.0,
+        prompt_block_s: float = 1.0,
+        prompt_batch: int = 512,
     ) -> None:
         self._out = out
         self._clock = clock
@@ -872,10 +877,17 @@ class _ScriptedChild:
         self._every = token_every
         self._done_at = done_at
         self._last_token_at = last_token_at
+        self._n_prompt = n_prompt
+        self._prompt_at = prompt_at
+        self._prompt_every = prompt_every
+        self._prompt_block_s = prompt_block_s
+        self._prompt_batch = prompt_batch
         self._phase = Path(os.environ["KARRIEREKRAKE_CV_PHASE_EVENTS"])
         self._header = False
         self._tokens = 0
+        self._prompt_done = 0
         self._next = first_token_at
+        self._next_prompt = prompt_at if prompt_at is not None else 0.0
 
     def poll(self):
         now = self._clock["t"]
@@ -884,7 +896,7 @@ class _ScriptedChild:
         if not self._header:
             diag = (
                 "cv_llm_inprocess n_ctx=4096 n_threads=4 n_threads_batch=4 "
-                "n_prompt=10 max_tokens=%s" % self._max_tokens
+                "n_prompt=%s max_tokens=%s" % (self._n_prompt, self._max_tokens)
             )
             self._phase.write_text(
                 json.dumps({"diag": diag, "level": "info"}, separators=(",", ":"))
@@ -897,6 +909,24 @@ class _ScriptedChild:
                 encoding="utf-8",
             )
             self._header = True
+        if self._prompt_at is not None:
+            while self._prompt_done < self._n_prompt and now >= self._next_prompt:
+                step = min(self._prompt_batch, self._n_prompt - self._prompt_done)
+                self._prompt_done += step
+                with self._phase.open("a", encoding="utf-8") as handle:
+                    handle.write(
+                        json.dumps(
+                            {
+                                "phase": "prompt",
+                                "prompt_tokens_done": self._prompt_done,
+                                "t_mono": self._next_prompt,
+                                "block_s": self._prompt_block_s,
+                            },
+                            separators=(",", ":"),
+                        )
+                        + "\n"
+                    )
+                self._next_prompt += self._prompt_every
         while self._tokens < self._max_tokens and now >= self._next:
             if self._last_token_at is not None and self._next > self._last_token_at:
                 break
@@ -953,13 +983,15 @@ def test_deadline_changes_once_and_never_shrinks() -> None:
     watch.note_max_tokens(1000)
     assert watch.note_tokens(1, 10) is None
     # 64 tokens one second into generation recalculates under the initial 180 s.
-    assert watch.note_tokens(64, 11) is None
+    # The generation step is the last recalculation, so the current deadline
+    # is still announced once.
+    assert watch.note_tokens(64, 11) == 180
     assert watch.limit_s == 180
-    assert watch.revisions == 0
-    assert watch.timeout_s_final is None
+    assert watch.revisions == 1
+    assert watch.timeout_s_final == 180
     assert watch.note_tokens(65, 80) is None
     assert watch.limit_s == 180
-    assert watch.revisions == 0
+    assert watch.revisions == 1
 
     raised = ImportDeadlineWatch(
         initial_s=180,
@@ -1082,6 +1114,7 @@ def test_token_stall_is_llm_timeout_in_the_parent(
         )
     assert result.kind == "llm_timeout"
     assert result.message == "llm_timeout"
+    assert result.reason == "stall"
     assert clock["t"] < 500
     assert "reason=stall" in caplog.text
     assert "reason=deadline" not in caplog.text
@@ -1109,6 +1142,7 @@ def test_deadline_before_the_first_token(
         result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn).run_once()
     assert result.kind == "llm_timeout"
     assert result.message == "llm_timeout"
+    assert result.reason == "deadline"
     assert clock["t"] > 180
     assert clock["t"] < 200
     assert "reason=deadline" in caplog.text
@@ -1140,7 +1174,168 @@ def test_env_timeout_is_not_recalculated(
         )
     assert result.kind == "llm_timeout"
     assert result.message == "llm_timeout"
+    assert result.reason == "deadline"
     assert clock["t"] > 40
     assert clock["t"] < 80
     assert "reason=deadline" in caplog.text
     assert _finals(progress) == []
+
+
+def test_prompt_stall_threshold_scales_with_the_first_block() -> None:
+    """A long first block raises the prompt stall gap above 60 s."""
+    from core.cv_import_deadline import ImportDeadlineWatch
+
+    watch = ImportDeadlineWatch(
+        initial_s=900,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    assert watch.failure(100) is None
+    watch.note_max_tokens(100)
+    watch.note_n_prompt(2048)
+    watch.note_prompt(512, 25, t_mono=25, block_s=25)
+    assert watch.failure(25 + 60) is None
+    assert watch.failure(25 + 74.9) is None
+    assert watch.failure(25 + 75) == "stall"
+
+    after_token = ImportDeadlineWatch(
+        initial_s=900,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    after_token.note_prompt(512, 10, block_s=30)
+    after_token.note_tokens(1, 20)
+    assert after_token.failure(20 + 59.9) is None
+    assert after_token.failure(20 + 60) == "stall"
+
+
+def test_two_recalculations_emit_timeout_s_final_once() -> None:
+    """Prompt raises the deadline quietly. Generation announces it once."""
+    from core.cv_import_deadline import ImportDeadlineWatch
+
+    watch = ImportDeadlineWatch(
+        initial_s=180,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    watch.note_max_tokens(400)
+    watch.note_n_prompt(1024)
+    watch.note_prompt(512, 10, t_mono=10, block_s=10)
+    assert watch.revisions == 1
+    assert watch.timeout_s_final is None
+    assert watch.limit_s > 180
+    prompt_limit = watch.limit_s
+    assert watch.note_tokens(1, 30) is None
+    final = watch.note_tokens(64, 90)
+    assert final is not None
+    assert watch.revisions == 2
+    assert watch.limit_s >= prompt_limit
+    assert watch.timeout_s_final == final
+    assert watch.note_tokens(65, 91) is None
+    assert watch.revisions == 2
+    assert watch.timeout_s_final == final
+
+
+def test_throttled_token_stamp_is_not_a_stall_after_59s() -> None:
+    """Tokens 0.9 s apart, then 59 s, use the real token time."""
+    from core.cv_import_deadline import ImportDeadlineWatch
+    from core.cv_phase_events import TokenProgressThrottle
+
+    throttle = TokenProgressThrottle()
+    first = throttle.consider(tokens_done=1, now=0.0, t_mono=0.0)
+    assert first is not None
+    assert throttle.consider(tokens_done=2, now=0.9, t_mono=0.9) is None
+    assert throttle.flush(0.99) is None
+    flushed = throttle.flush(1.0)
+    assert flushed is not None
+    assert flushed["tokens_done"] == 2
+    assert flushed["t_mono"] == 0.9
+
+    watch = ImportDeadlineWatch(
+        initial_s=900,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    watch.note_tokens(int(first["tokens_done"]), 0.0, t_mono=float(first["t_mono"]))
+    watch.note_tokens(
+        int(flushed["tokens_done"]), 1.0, t_mono=float(flushed["t_mono"])
+    )
+    assert watch.failure(0.9 + 59) is None
+    assert watch.failure(60.0) is None
+    assert watch.failure(0.9 + 60) == "stall"
+
+
+def test_slow_prompt_blocks_are_not_aborted(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Steady prompt blocks and no tokens pass the initial deadline."""
+    clock = _fake_clock(monkeypatch)
+    progress: list[str] = []
+
+    def spawn(_cv: Path, out: Path):
+        return _ScriptedChild(
+            out,
+            clock,
+            timeout_s=180,
+            max_tokens=2000,
+            first_token_at=10_000,
+            token_every=1,
+            done_at=200,
+            last_token_at=None,
+            n_prompt=2048,
+            prompt_at=30,
+            prompt_every=40,
+            prompt_block_s=30,
+            prompt_batch=512,
+        )
+
+    result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn).run_once(
+        progress=progress.append
+    )
+    assert result.ok is True
+    assert clock["t"] > 180
+    assert clock["t"] < 900
+    assert _finals(progress) == []
+
+
+def test_timeout_s_final_once_after_prompt_and_generation(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    clock = _fake_clock(monkeypatch)
+    progress: list[str] = []
+
+    def spawn(_cv: Path, out: Path):
+        return _ScriptedChild(
+            out,
+            clock,
+            timeout_s=180,
+            max_tokens=400,
+            first_token_at=40,
+            token_every=1,
+            done_at=160,
+            last_token_at=None,
+            n_prompt=1024,
+            prompt_at=10,
+            prompt_every=10,
+            prompt_block_s=10,
+            prompt_batch=512,
+        )
+
+    result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn).run_once(
+        progress=progress.append
+    )
+    assert result.ok is True
+    finals = _finals(progress)
+    assert len(finals) == 1
+    assert 180 <= finals[0] <= 900
+    final_at = next(i for i, line in enumerate(progress) if "timeout_s_final" in line)
+    assert any("prompt_tokens_done" in line for line in progress[:final_at])
+    assert any("tokens_done" in line for line in progress[:final_at])

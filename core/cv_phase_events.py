@@ -138,23 +138,65 @@ def emit_generation_timeout(timeout_s: int | None = None) -> dict[str, int | str
 
 
 class TokenProgressThrottle:
-    """At most one generation-progress event per ``interval_s``."""
+    """At most one generation-progress event per ``interval_s``.
+
+    A count that arrives inside the window is held and sent when the window
+    ends. The sent ``t_mono`` is the child's monotonic delta of the last real
+    token in that window, not the flush time.
+    """
 
     def __init__(self, interval_s: float = TOKEN_EVENT_INTERVAL_S) -> None:
         self.interval_s = float(interval_s)
-        self._last: float | None = None
+        self._window_at: float | None = None
+        self._pending_count: int | None = None
+        self._pending_at: float | None = None
 
     def consider(
         self,
         *,
         tokens_done: int,
         now: float,
-    ) -> dict[str, int | str] | None:
-        """Emit immediately on the first token, then at most once per interval."""
-        if self._last is not None and (now - self._last) < self.interval_s:
+        t_mono: float | None = None,
+    ) -> dict[str, int | float | str] | None:
+        """Emit the first token immediately. Later tokens stay within 1/s."""
+        count = int(tokens_done)
+        if count <= 0:
             return None
-        self._last = now
-        return {"phase": "generation", "tokens_done": int(tokens_done)}
+        stamp = float(now if t_mono is None else t_mono)
+        if self._window_at is None:
+            self._window_at = float(now)
+            return self._event(count, stamp)
+        due = (float(now) - self._window_at) >= self.interval_s
+        if due and self._pending_count is not None:
+            event = self._emit_pending(float(now))
+            if count > int(event["tokens_done"]):
+                self._pending_count = count
+                self._pending_at = stamp
+            return event
+        if self._pending_count is None or count > self._pending_count:
+            self._pending_count = count
+            self._pending_at = stamp
+        return None
+
+    def flush(self, now: float) -> dict[str, int | float | str] | None:
+        """Send a held count once the window has elapsed."""
+        if self._pending_count is None or self._window_at is None:
+            return None
+        if (float(now) - self._window_at) < self.interval_s:
+            return None
+        return self._emit_pending(float(now))
+
+    def _emit_pending(self, now: float) -> dict[str, int | float | str]:
+        count = int(self._pending_count or 0)
+        stamp = float(self._pending_at if self._pending_at is not None else now)
+        self._pending_count = None
+        self._pending_at = None
+        self._window_at = now
+        return self._event(count, stamp)
+
+    @staticmethod
+    def _event(count: int, stamp: float) -> dict[str, int | float | str]:
+        return {"phase": "generation", "tokens_done": int(count), "t_mono": stamp}
 
 
 def emit_token_progress(
@@ -162,8 +204,9 @@ def emit_token_progress(
     *,
     tokens_done: int,
     now: float,
-) -> dict[str, int | str] | None:
-    event = throttle.consider(tokens_done=tokens_done, now=now)
+    t_mono: float | None = None,
+) -> dict[str, int | float | str] | None:
+    event = throttle.consider(tokens_done=tokens_done, now=now, t_mono=t_mono)
     if event is not None:
         append_phase_event(event)
     return event

@@ -194,6 +194,7 @@ class CvImportDialog(QDialog):
         self.phase_timeout_s: int | None = None
         self.phase_tokens_done: int | None = None
         self.phase_timeout_s_final: int | None = None
+        self.timeout_reason: str | None = None
 
         self.mode_replace = QRadioButton(tr("cv_import.mode_replace"))
         self.mode_merge = QRadioButton(tr("cv_import.mode_merge"))
@@ -378,6 +379,7 @@ class CvImportDialog(QDialog):
         self.phase_timeout_s = None
         self.phase_tokens_done = None
         self.phase_timeout_s_final = None
+        self.timeout_reason = None
         self.incoming = None
         self.parsed = None
         self.personal_incoming = {}
@@ -467,6 +469,7 @@ class CvImportDialog(QDialog):
             self._show_failure("error", str(result))
             return
         self._last_kind = result.kind
+        self.timeout_reason = result.reason if result.kind == "llm_timeout" else None
         if result.ok and isinstance(result.parsed, dict):
             self._apply_parsed(result.parsed)
             if self._detection_is_empty():

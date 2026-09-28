@@ -288,18 +288,22 @@ def completion_token_budget(n_ctx: int, n_prompt: int) -> int:
 def prompt_token_count(llm: Any, messages: list[dict[str, Any]]) -> int:
     """Token count of the chat prompt, before any forward pass.
 
-    A test double may implement ``count_chat_tokens(messages) -> int``.
-    The real ``Llama`` object is counted with the same Jinja chat template
-    and ``tokenize(..., add_bos=not added_special, special=True)`` path that
+    A test double may implement ``count_chat_tokens(messages) -> int`` or
+    ``chat_prompt_token_ids(messages) -> list[int]``. The real ``Llama``
+    object is counted with the same Jinja chat template and
+    ``tokenize(..., add_bos=not added_special, special=True)`` path that
     ``create_chat_completion`` uses for GGUF ``tokenizer.chat_template``.
     """
+    ids_fn = getattr(llm, "chat_prompt_token_ids", None)
+    if callable(ids_fn):
+        return len(list(ids_fn(messages)))
     counter = getattr(llm, "count_chat_tokens", None)
     if callable(counter):
         return int(counter(messages))
     return _gguf_chat_prompt_token_count(llm, messages)
 
 
-def _gguf_chat_prompt_token_count(llm: Any, messages: list[dict[str, Any]]) -> int:
+def _gguf_chat_prompt_token_ids(llm: Any, messages: list[dict[str, Any]]) -> list[int]:
     from llama_cpp import llama_chat_format
 
     meta = getattr(llm, "metadata", None) or {}
@@ -328,7 +332,163 @@ def _gguf_chat_prompt_token_count(llm: Any, messages: list[dict[str, Any]]) -> i
         add_bos=not rendered.added_special,
         special=True,
     )
-    return len(token_ids)
+    return [int(token) for token in token_ids]
+
+
+def _gguf_chat_prompt_token_count(llm: Any, messages: list[dict[str, Any]]) -> int:
+    return len(_gguf_chat_prompt_token_ids(llm, messages))
+
+
+def _prompt_ids_for_prefill(llm: Any, messages: list[dict[str, Any]]) -> list[int] | None:
+    """Ids to eval in ``n_batch`` blocks, or None when this object cannot.
+
+    Test doubles that only implement ``count_chat_tokens`` skip the prefill.
+    """
+    if not callable(getattr(llm, "eval", None)):
+        return None
+    ids_fn = getattr(llm, "chat_prompt_token_ids", None)
+    if callable(ids_fn):
+        return [int(token) for token in ids_fn(messages)]
+    if callable(getattr(llm, "count_chat_tokens", None)):
+        return None
+    if not callable(getattr(llm, "tokenize", None)):
+        return None
+    return _gguf_chat_prompt_token_ids(llm, messages)
+
+
+def _child_stamp(origin: dict[str, float | None]) -> tuple[float, float]:
+    """``(absolute monotonic, delta)``. The delta is not a wall clock."""
+    from core.cv_phase_events import phase_clock
+
+    now = phase_clock()
+    if origin["t"] is None:
+        origin["t"] = now
+    return now, now - float(origin["t"])
+
+
+def _prefill_prompt_blocks(
+    llm: Any,
+    token_ids: list[int],
+    *,
+    origin: dict[str, float | None],
+) -> bool:
+    """Eval the prompt in ``n_batch`` blocks and report each block.
+
+    ``create_chat_completion`` then sees the same token ids and can reuse
+    the prefix instead of evaluating it again.
+    """
+    from core.cv_phase_events import append_phase_event, emit_diag
+
+    if not token_ids:
+        return False
+    n_batch = int(getattr(llm, "n_batch", 512) or 512)
+    if n_batch < 1:
+        n_batch = 512
+    done = 0
+    blocks = 0
+    for offset in range(0, len(token_ids), n_batch):
+        block = token_ids[offset : offset + n_batch]
+        before, _before_delta = _child_stamp(origin)
+        llm.eval(block)
+        after, t_mono = _child_stamp(origin)
+        done += len(block)
+        blocks += 1
+        append_phase_event(
+            {
+                "phase": "prompt",
+                "prompt_tokens_done": done,
+                "t_mono": t_mono,
+                "block_s": after - before,
+            }
+        )
+    prefill_line = "cv_llm_prompt_prefill n_prompt=%s n_batch=%s blocks=%s" % (
+        len(token_ids),
+        n_batch,
+        blocks,
+    )
+    logger.info("%s", prefill_line)
+    emit_diag(prefill_line)
+    return True
+
+
+def _prefix_reuse_from_stderr(blob: str) -> tuple[int, str]:
+    """``(reused, remaining)`` from llama.cpp's verbose generate line."""
+    import re
+
+    if "full prompt already cached, skipping reset" in blob:
+        return 1, "0"
+    if "re-evaluating full prompt" in blob:
+        return 0, "full"
+    match = re.search(r"remaining (\d+) prompt tokens to eval", blob)
+    if match is not None:
+        remaining = match.group(1)
+        return (1 if remaining == "0" else 0), remaining
+    return 0, "unknown"
+
+
+def _iter_chat_completion(
+    llm: Any,
+    *,
+    prefilled: bool,
+    n_prompt: int,
+    **kwargs: Any,
+):
+    """Stream one completion. After a prefill, log whether the prefix was reused."""
+    kwargs["stream"] = True
+    if not prefilled:
+        return llm.create_chat_completion(**kwargs)
+
+    import contextlib
+    import io
+
+    n_before = int(getattr(llm, "n_tokens", 0) or 0)
+    eval_tokens = {"n": 0}
+    original_eval = getattr(llm, "eval", None)
+
+    def _counting_eval(tokens: Any, *args: Any, **eval_kwargs: Any) -> Any:
+        eval_tokens["n"] += len(list(tokens))
+        return original_eval(tokens, *args, **eval_kwargs)
+
+    blob = io.StringIO()
+    previous_verbose = getattr(llm, "verbose", False)
+    try:
+        llm.verbose = True
+    except (AttributeError, TypeError):
+        pass
+    if callable(original_eval):
+        llm.eval = _counting_eval
+    stream = llm.create_chat_completion(**kwargs)
+    iterator = iter(stream)
+    try:
+        with contextlib.redirect_stderr(blob):
+            try:
+                first = next(iterator)
+            except StopIteration:
+                first = None
+    finally:
+        if callable(original_eval):
+            llm.eval = original_eval
+        try:
+            llm.verbose = previous_verbose
+        except (AttributeError, TypeError):
+            pass
+    reused, remaining = _prefix_reuse_from_stderr(blob.getvalue())
+    prefix_line = (
+        "cv_llm_prompt_prefix reused=%s remaining_prompt_eval=%s "
+        "n_prompt=%s n_tokens_before=%s first_chunk_eval_tokens=%s"
+        % (reused, remaining, n_prompt, n_before, eval_tokens["n"])
+    )
+    logger.info("%s", prefix_line)
+    from core.cv_phase_events import emit_diag
+
+    emit_diag(prefix_line)
+
+    def _chunks():
+        if first is not None:
+            yield first
+        yield from iterator
+
+    return _chunks()
 
 
 def ensure_cv_llm_ready() -> str:
@@ -456,12 +616,6 @@ def _construct_llama(llama_cls: Any, **kwargs: Any) -> tuple[Any, str]:
     return llm, blob.getvalue()
 
 
-def _iter_chat_completion(llm: Any, **kwargs: Any):
-    """Stream so the first chunk is the moment prompt evaluation has finished."""
-    kwargs["stream"] = True
-    return llm.create_chat_completion(**kwargs)
-
-
 def chat_completion_inprocess(
     messages: list[dict[str, Any]],
     *,
@@ -511,14 +665,17 @@ def chat_completion_inprocess(
             logger.info("%s", load_line)
             emit_diag(load_line)
             _sample_private_commit("after_load")
-            n_prompt = prompt_token_count(llm, messages)
+            prefill_ids = _prompt_ids_for_prefill(llm, messages)
+            if prefill_ids is not None:
+                n_prompt = len(prefill_ids)
+            else:
+                n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
             from core.cv_docpick_import import choose_import_timeout_s
             from core.cv_phase_events import (
                 TokenProgressThrottle,
                 emit_generation_timeout,
                 emit_token_progress,
-                phase_clock,
                 reset_generation_phase_events,
             )
 
@@ -542,6 +699,10 @@ def chat_completion_inprocess(
             )
             logger.info("%s", thread_line)
             emit_diag(thread_line)
+            origin: dict[str, float | None] = {"t": started}
+            prefilled = False
+            if prefill_ids:
+                prefilled = _prefill_prompt_blocks(llm, prefill_ids, origin=origin)
             parts: list[str] = []
             finish: str | None = None
             saw_chunk = False
@@ -549,6 +710,8 @@ def chat_completion_inprocess(
             token_events = TokenProgressThrottle()
             for chunk in _iter_chat_completion(
                 llm,
+                prefilled=prefilled,
+                n_prompt=n_prompt,
                 messages=messages,
                 temperature=float(temperature),
                 max_tokens=budget,
@@ -558,15 +721,18 @@ def chat_completion_inprocess(
                     _sample_private_commit("after_prompt_eval")
                 tokens_done += 1
                 # max_tokens stays in the log line above. The UI event is the
-                # counter only. No remaining time is computed.
+                # counter only. No remaining time is computed. t_mono is the
+                # child's monotonic delta at this token.
+                now, t_mono = _child_stamp(origin)
                 emit_token_progress(
                     token_events,
                     tokens_done=tokens_done,
-                    now=phase_clock(),
+                    now=now,
+                    t_mono=t_mono,
                 )
-                # Mid-generation deadline and the 60 s stall are the parent's
-                # watch. A check here does not run inside a llama.cpp C call,
-                # and it would not see the parent's one extension.
+                # Deadline and stall are the parent's watch, including the
+                # prompt blocks above. A check here does not run inside a
+                # llama.cpp C call, and it would not see a raised deadline.
                 choice = chunk["choices"][0]
                 delta = choice.get("delta") or {}
                 piece = delta.get("content")

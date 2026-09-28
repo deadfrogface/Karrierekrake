@@ -40,6 +40,7 @@ class ImportAttemptResult:
     message: str
     parsed: dict | None = None
     attempts: int = 1
+    reason: str | None = None
 
 
 def default_import_timeout_s() -> float:
@@ -110,6 +111,7 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
 # the kernel does not expose an Rss_Anon high-water, and VmHWM counts mmap.
 _PARENT_ANON_SAMPLE_S = 2.0
 _MAX_TOKENS_IN_DIAG = re.compile(r"\bmax_tokens=(\d+)\b")
+_N_PROMPT_IN_DIAG = re.compile(r"\bn_prompt=(\d+)\b")
 
 
 def _monotonic() -> float:
@@ -296,7 +298,8 @@ class CvImportSupervisor:
             started = _monotonic()
             # The env var, and an explicit timeout published as that var,
             # stay put. Otherwise the ceiling holds until the child reports
-            # the formula, and generation may raise it once.
+            # the formula. The prompt block and generation may each raise it
+            # once. ``timeout_s_final`` follows only the generation step.
             watch = ImportDeadlineWatch(
                 initial_s=self.timeout_s,
                 started_at=started,
@@ -362,6 +365,7 @@ class CvImportSupervisor:
                         "llm_timeout",
                         None,
                         attempts=1,
+                        reason=reason,
                     )
                 _sleep(0.02)
         finally:
@@ -501,10 +505,10 @@ def _drain_phase_events(
 ) -> int:
     """Forward complete JSON lines. Return the new offset.
 
-    Diagnostic lines stay in the app log. ``max_tokens`` is read from the
-    child diagnostic and is not a UI field. The first ``timeout_s`` is the
-    initial deadline. A raised deadline is one separate ``timeout_s_final``
-    event for the UI, with no new sentence.
+    Diagnostic lines stay in the app log. ``max_tokens`` and ``n_prompt`` are
+    read from the child diagnostic and are not UI fields. The first
+    ``timeout_s`` is the initial deadline. ``timeout_s_final`` is one event
+    after the generation recalculation, with no new sentence.
     """
     try:
         data = path.read_bytes()
@@ -538,15 +542,28 @@ def _drain_phase_events(
     return offset + newline + 1
 
 
+def _event_float(event: dict, key: str) -> float | None:
+    if key not in event:
+        return None
+    try:
+        return float(event[key])
+    except (TypeError, ValueError):
+        return None
+
+
 def _note_diag_budget(watch: object | None, diag: str) -> None:
     if watch is None:
         return
     match = _MAX_TOKENS_IN_DIAG.search(diag)
-    if match is None:
-        return
-    note = getattr(watch, "note_max_tokens", None)
-    if callable(note):
-        note(int(match.group(1)))
+    if match is not None:
+        note = getattr(watch, "note_max_tokens", None)
+        if callable(note):
+            note(int(match.group(1)))
+    prompt = _N_PROMPT_IN_DIAG.search(diag)
+    if prompt is not None:
+        note_prompt = getattr(watch, "note_n_prompt", None)
+        if callable(note_prompt):
+            note_prompt(int(prompt.group(1)))
 
 
 def _note_phase_budget(
@@ -563,6 +580,20 @@ def _note_phase_budget(
                 adopt(float(event["timeout_s"]))
             except (TypeError, ValueError):
                 pass
+    if "prompt_tokens_done" in event:
+        note_prompt = getattr(watch, "note_prompt", None)
+        if callable(note_prompt):
+            try:
+                count = int(event["prompt_tokens_done"])
+            except (TypeError, ValueError):
+                count = 0
+            if count > 0:
+                note_prompt(
+                    count,
+                    _monotonic(),
+                    _event_float(event, "t_mono"),
+                    _event_float(event, "block_s"),
+                )
     if "tokens_done" not in event:
         return
     note = getattr(watch, "note_tokens", None)
@@ -572,7 +603,7 @@ def _note_phase_budget(
         count = int(event["tokens_done"])
     except (TypeError, ValueError):
         return
-    final = note(count, _monotonic())
+    final = note(count, _monotonic(), _event_float(event, "t_mono"))
     if final is None or progress is None:
         return
     progress(json.dumps({"timeout_s_final": int(final)}, separators=(",", ":")))
