@@ -1681,14 +1681,27 @@ def test_free_diag_and_fd2_do_not_reach_app_sinks(
     os.dup2(raw, 2)
     os.close(raw)
     try:
+        from core.cv_llm_runtime import _construct_llama
         from desktop.cv_import_child import discard_child_stderr
+
+        class _Fd2Llama:
+            """Stub that writes the sentinel straight to file descriptor 2."""
+
+            def __init__(self, *args, **kwargs):
+                os.write(2, f"{sentinel} {user}\n".encode())
+                self.kwargs = kwargs
 
         discard_child_stderr()
         side.write_bytes(b"wrote")
-        os.write(2, f"{sentinel} {user}\n".encode())
+        llm, load_log = _construct_llama(_Fd2Llama, model_path="unused.gguf", verbose=True)
     finally:
         os.dup2(saved, 2)
         os.close(saved)
     assert side.read_bytes() == b"wrote"
+    assert llm.kwargs["verbose"] is False
+    assert sentinel not in load_log
+    assert user not in load_log
     assert sentinel.encode() not in captured.read_bytes()
     assert user.encode() not in captured.read_bytes()
+    assert sentinel not in caplog.text
+    assert user not in caplog.text
