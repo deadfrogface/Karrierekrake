@@ -55,6 +55,18 @@ _KIND_MESSAGES: dict[str, str] = {
     "llm_extract_failed": (
         "Die strukturierte Extraktion ist fehlgeschlagen. Bitte Felder manuell nachtragen."
     ),
+    "llm_context_exceeded": (
+        "Der Lebenslauf passt nicht ins Kontextfenster. "
+        "Es wurde nichts berechnet. Bitte eine kürzere Datei verwenden."
+    ),
+    "llm_output_truncated": (
+        "Die Antwort wurde abgeschnitten, bevor sie vollständig war. "
+        "Es wurde nichts übernommen."
+    ),
+    "llm_bad_config": (
+        "Die lokale Auswertung ist falsch konfiguriert. "
+        "Es wurde nichts übernommen."
+    ),
     "llm_empty": "Das Modell lieferte keine verwertbaren Felder. Bitte manuell korrigieren.",
     "unreliable_extract": (
         "Extraktion ohne Namen und Kontakt — Ergebnis nicht verlässlich. "

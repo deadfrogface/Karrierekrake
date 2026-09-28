@@ -651,6 +651,18 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Die strukturierte Extraktion ist fehlgeschlagen. "
             "Bitte Felder manuell nachtragen. Es wurde nichts übernommen."
         ),
+        "cv_import.error_context": (
+            "Der Lebenslauf passt nicht ins Kontextfenster. "
+            "Es wurde nichts berechnet. Bitte eine kürzere Datei verwenden."
+        ),
+        "cv_import.error_truncated": (
+            "Die Antwort wurde abgeschnitten, bevor sie vollständig war. "
+            "Es wurde nichts übernommen."
+        ),
+        "cv_import.error_bad_config": (
+            "Die lokale Auswertung ist falsch konfiguriert. "
+            "Es wurde nichts übernommen."
+        ),
         "cv_import.error_unreliable": (
             "Extraktion ohne Namen und Kontakt — bitte Profil manuell ausfüllen. "
             "Es wurde nichts übernommen."
@@ -1728,6 +1740,16 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.error_extract_failed": (
             "Structured extraction failed. Please complete fields manually. "
             "Nothing was applied."
+        ),
+        "cv_import.error_context": (
+            "This CV does not fit in the context window. "
+            "Nothing was computed. Please use a shorter file."
+        ),
+        "cv_import.error_truncated": (
+            "The answer was cut off before it was complete. Nothing was applied."
+        ),
+        "cv_import.error_bad_config": (
+            "Local extraction is configured incorrectly. Nothing was applied."
         ),
         "cv_import.error_unreliable": (
             "Extraction has no name or contact — please fill the profile manually. "

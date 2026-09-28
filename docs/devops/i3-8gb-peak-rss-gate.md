@@ -8,6 +8,17 @@ Ein weiches ≤12-GB-Kriterium ist **kein** Erfolg. 12 GB dezimal (`12_000_000_0
 
 Zahlen aus dieser Agent-VM oder aus GitHub Actions sind **keine** Ship-Evidenz. Ship-Evidenz ist nur ein Lauf des Windows Job Objects auf dem physischen Laptop (`ship_evidence: true`).
 
+## In-App-Stichprobe (`_self_rss_bytes`)
+
+Dieselbe Speicherklasse wie `PeakJobMemoryUsed` in #69: privater festgeschriebener Speicher. Dateigestützte mmap-Seiten (die GGUF-Datei) zählen nicht.
+
+- Windows: `GetProcessMemoryInfo` → `PeakPagefileUsage` (Hochwasser des Pagefile-Commits dieses Prozesses). `resource` gibt es dort nicht; ein Rückgabewert 0 wäre das Gate ausgeschaltet.
+- Linux: anonymer RSS aus `/proc/self/smaps_rollup`. Kernel 6.12 nennt das Feld `Anonymous` (kB). `Rss_Anon` wird gelesen, falls vorhanden. `ru_maxrss` wird nicht verwendet, weil es dateigestützte Seiten enthält und 4096er-Läufe fälschlich über 3_300_000_000 Bytes hebt.
+- Die Stichprobe ist ein Lesevorgang an den bestehenden Import-Stufen (preflight, nach PDF, nach Modell). Kein Hintergrund-Polling. Unter Linux ist der Wert der anonyme RSS zum Aufrufzeitpunkt. Unter Windows ist `PeakPagefileUsage` bereits ein Prozess-Hochwasser.
+- Ein optionaler llama.cpp-Server zählt ebenfalls nur anonymen RSS, nicht `VmRSS`.
+
+Ship-Evidenz bleibt das Windows Job Object auf dem i3-Laptop. Eine Agent-VM mit AMX-Repack ist kein Ersatz dafür.
+
 ## Was der Harness misst
 
 Der Runner legt Karrierekrake, optional Docling und ein explizites llama.cpp-/Qwen-Kommando in **eine** Prozessgruppe:

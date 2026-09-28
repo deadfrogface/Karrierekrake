@@ -18,6 +18,8 @@ def test_user_message_for_known_kinds_is_stage_specific() -> None:
     assert "Qwen" in msg or "Modell" in msg
     assert "Users\\" not in msg
     assert user_message_for_kind("unreadable_cv").startswith("Die Datei")
+    assert "Kontextfenster" in user_message_for_kind("llm_context_exceeded", "raw")
+    assert "abgeschnitten" in user_message_for_kind("llm_output_truncated", "raw")
 
 
 def test_user_message_strips_sensitive_fallback() -> None:
@@ -154,6 +156,9 @@ def test_requirements_runtime_lists_docpick_and_llama() -> None:
     text = Path("requirements-runtime.txt").read_text(encoding="utf-8")
     assert "docpick" in text
     assert "llama-cpp-python" in text
+    assert "--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu" in text
+    constraints = Path("constraints-runtime.txt").read_text(encoding="utf-8")
+    assert "llama-cpp-python==0.3.35" in constraints
     assert not any(
         line.strip().startswith("#") and "docpick" in line for line in text.splitlines() if "docpick" in line
     )

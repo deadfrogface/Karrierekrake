@@ -35,6 +35,11 @@ dateparser>=1.2.0
 icalendar>=5.0.0
 holidays>=0.40
 # Optional: Günther embedded local LLM + productive CV import (Qwen in-process).
+# PyPI 0.3.35 is an sdist only. This index publishes the CPU wheels, including
+# llama_cpp_python-0.3.35-py3-none-win_amd64.whl (GitHub release v0.3.35).
+# The exact version is pinned in constraints-runtime.txt. Windows
+# build-and-exe-smoke installs this file with that constraints file.
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
 llama-cpp-python>=0.3.0
 # Productive CV structured extract (Docpick schema + prompt; Apache-2.0).
 docpick>=0.1.3

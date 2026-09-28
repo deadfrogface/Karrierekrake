@@ -17,6 +17,7 @@ import json
 import logging
 import os
 import re
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -923,10 +924,13 @@ _LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "2048"))
 # Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
-# Hard Peak-RSS gate for target hardware: Intel Core i3 (11th gen), exactly 8 GB RAM.
+# Hard private-commit gate for target hardware: Intel Core i3 (11th gen), 8 GB RAM.
 # RETIRED_NOT_A_PASS: former soft 12 GB/12000 MB ceiling is not a pass condition.
 # Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
 # (process group: App + Docling + Qwen/llama.cpp + ALL import children).
+# The in-app sample (`_self_rss_bytes`) counts the same kind of memory the Job
+# Object counts: private commit. File-backed mmap pages (the GGUF) do not count.
+# Windows: PeakPagefileUsage. Linux: anonymous RSS from smaps_rollup, not ru_maxrss.
 # Agent-VM numbers are NOT ship evidence. No automatic Phi fallback.
 CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
     os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX", "3300000000")
@@ -1229,6 +1233,9 @@ def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
                     "model_missing",
                     "Das lokale CV-Modell (Qwen3.5-4B) fehlt. Kein DET-Fallback.",
                 )
+            # max_tokens is explicit. chat_completion_inprocess refuses the call
+            # when prompt tokens + max_tokens do not fit in n_ctx, and refuses
+            # finish_reason=length before JSON parsing.
             raw_text = chat_completion_inprocess(
                 messages,
                 model_path=model_path,
@@ -1407,14 +1414,117 @@ def _core_fields_present(parsed: dict[str, Any]) -> bool:
     return has_name or has_contact
 
 
-def _self_rss_bytes() -> int:
-    try:
-        import resource
-    except ImportError:
-        # Windows has no resource module — Peak ship evidence is Job Object only.
+def _rss_anon_bytes_from_smaps(text: str) -> int:
+    """Anonymous RSS in bytes from a ``smaps_rollup`` body.
+
+    Linux 6.12 writes this as ``Anonymous:`` (kB). ``Rss_Anon:`` is used when
+    that key is present. File-backed ``Rss`` / ``Pss_File`` lines are ignored,
+    matching the #69 gate: mmap of the GGUF file does not count.
+    """
+    rss_anon_kb: int | None = None
+    anonymous_kb: int | None = None
+    for line in text.splitlines():
+        if line.startswith("Rss_Anon:"):
+            rss_anon_kb = int(line.split()[1])
+        elif line.startswith("Anonymous:"):
+            anonymous_kb = int(line.split()[1])
+    chosen = rss_anon_kb if rss_anon_kb is not None else anonymous_kb
+    if chosen is None:
         return 0
-    # Linux: ru_maxrss is kilobytes; convert to bytes.
-    return int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
+    return int(chosen) * 1024
+
+
+def _linux_rss_anon_bytes(pid: int | str = "self") -> int:
+    """One read of ``/proc/<pid>/smaps_rollup``. Not a poll loop."""
+    path = Path(f"/proc/{pid}/smaps_rollup")
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return 0
+    return _rss_anon_bytes_from_smaps(text)
+
+
+def _process_memory_counters_ex_type():
+    """``PROCESS_MEMORY_COUNTERS_EX`` (PeakPagefileUsage is the private-commit peak)."""
+    import ctypes
+    from ctypes import wintypes
+
+    class PROCESS_MEMORY_COUNTERS_EX(ctypes.Structure):
+        _fields_ = [
+            ("cb", wintypes.DWORD),
+            ("PageFaultCount", wintypes.DWORD),
+            ("PeakWorkingSetSize", ctypes.c_size_t),
+            ("WorkingSetSize", ctypes.c_size_t),
+            ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+            ("QuotaPagedPoolUsage", ctypes.c_size_t),
+            ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+            ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+            ("PagefileUsage", ctypes.c_size_t),
+            ("PeakPagefileUsage", ctypes.c_size_t),
+            ("PrivateUsage", ctypes.c_size_t),
+        ]
+
+    return PROCESS_MEMORY_COUNTERS_EX
+
+
+def _peak_pagefile_via_get_info(get_info, get_process) -> int:
+    """Read ``PeakPagefileUsage`` using an injected ``GetProcessMemoryInfo``.
+
+    ``get_info(handle, byref(counters), cb) -> bool``. ``get_process()`` returns
+    the process handle. Used by the Windows branch and by tests without psapi.
+    """
+    import ctypes
+
+    cls = _process_memory_counters_ex_type()
+    counters = cls()
+    counters.cb = ctypes.sizeof(cls)
+    ok = get_info(get_process(), ctypes.byref(counters), counters.cb)
+    if not ok:
+        return 0
+    return int(counters.PeakPagefileUsage)
+
+
+def _windows_peak_pagefile_bytes() -> int:
+    """Peak private commit of this process (``PeakPagefileUsage``), one call.
+
+    This is the per-process high-water that corresponds to Job Object
+    ``PeakJobMemoryUsed``. File-backed views are not part of pagefile commit.
+    """
+    import ctypes
+    from ctypes import wintypes
+
+    psapi = ctypes.WinDLL("psapi")
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    psapi.GetProcessMemoryInfo.argtypes = [
+        wintypes.HANDLE,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+    ]
+    psapi.GetProcessMemoryInfo.restype = wintypes.BOOL
+    kernel32.GetCurrentProcess.restype = wintypes.HANDLE
+    return _peak_pagefile_via_get_info(
+        psapi.GetProcessMemoryInfo,
+        kernel32.GetCurrentProcess,
+    )
+
+
+def _self_rss_bytes() -> int:
+    """Private committed memory for the in-app #69-style gate, in bytes.
+
+    Windows: ``PeakPagefileUsage`` (high-water of this process's pagefile
+    commit) via ``GetProcessMemoryInfo``. The ``resource`` module is not used;
+    it is missing on Windows, and its ``ru_maxrss`` is the wrong counter.
+
+    Linux: anonymous RSS from ``/proc/self/smaps_rollup`` (``Anonymous``, or
+    ``Rss_Anon`` when that key exists). ``ru_maxrss`` is not used because it
+    includes file-backed mmap pages such as the GGUF. The Linux value is the
+    anonymous RSS at this call, sampled only at the existing import stages —
+    there is no background poll. Windows ``PeakPagefileUsage`` is already a
+    process-lifetime peak.
+    """
+    if sys.platform == "win32":
+        return _windows_peak_pagefile_bytes()
+    return _linux_rss_anon_bytes("self")
 
 
 def _self_rss_mb() -> float:
@@ -1422,7 +1532,10 @@ def _self_rss_mb() -> float:
 
 
 def _llama_server_rss_bytes() -> int:
-    """Sum VmRSS (bytes) of local llama.cpp server processes (0 if none)."""
+    """Sum anonymous RSS of local llama.cpp server processes (0 if none).
+
+    File-backed GGUF mappings are excluded, same rule as ``_self_rss_bytes``.
+    """
     total = 0
     try:
         proc = Path("/proc")
@@ -1435,14 +1548,7 @@ def _llama_server_rss_bytes() -> int:
                 continue
             if "llama_cpp.server" not in cmdline and "llama-server" not in cmdline:
                 continue
-            try:
-                for line in (entry / "status").read_text(encoding="utf-8").splitlines():
-                    if line.startswith("VmRSS:"):
-                        # VmRSS is kB
-                        total += int(line.split()[1]) * 1024
-                        break
-            except OSError:
-                continue
+            total += _linux_rss_anon_bytes(entry.name)
     except OSError:
         return total
     return total
@@ -1453,10 +1559,14 @@ def _llama_server_rss_mb() -> float:
 
 
 def cv_path_peak_rss_bytes(*, include_llama_server: bool = True) -> int:
-    """Honest CV-path footprint (bytes): this process + optional local LLM server.
+    """Private commit of this process plus optional local LLM servers.
 
-    Agent-VM /proc sum is informational only. Ship evidence requires a Windows
-    Job Object PeakJobMemoryUsed on the real i3 / 8 GB laptop.
+    Counts the same class of memory as Job Object ``PeakJobMemoryUsed`` (#69):
+    private / anonymous commit. File-backed mmap pages do not count.
+
+    Windows: ``PeakPagefileUsage`` of this process. Linux: ``Anonymous`` from
+    ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers are not ship
+    evidence. Ship evidence remains a Windows Job Object on the i3 laptop.
 
     When the import loads Qwen in-process, external llama.cpp servers are not
     part of this path and must not trip the preflight gate.
@@ -1475,14 +1585,17 @@ def cv_path_peak_rss_mb(*, include_llama_server: bool = True) -> float:
 
 
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
-    """Hard fail when CV-path Peak RSS exceeds 3_300_000_000 bytes."""
+    """Hard fail when private commit exceeds 3_300_000_000 bytes.
+
+    One sample per call (no polling loop).
+    """
     rss = cv_path_peak_rss_bytes(include_llama_server=include_llama_server)
     if rss > CV_IMPORT_PEAK_RSS_BYTES_MAX:
         raise CvImportError(
             "peak_rss_exceeded",
-            f"Peak RSS {rss} Bytes über Hart-Limit {CV_IMPORT_PEAK_RSS_BYTES_MAX} Bytes "
-            f"(≤ 3,3 GB Process-Group) bei Stufe '{stage}'. Import abgebrochen — "
-            f"kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
+            f"Privater Speicher {rss} Bytes über Hart-Limit {CV_IMPORT_PEAK_RSS_BYTES_MAX} Bytes "
+            f"(≤ 3,3 GB, ohne dateigestütztes mmap) bei Stufe '{stage}'. "
+            f"Import abgebrochen — kein Weiterlaufen über dem Zielgeräte-Limit (i3 / 8 GB RAM).",
         )
 
 
@@ -1510,7 +1623,8 @@ def import_cv_docpick(
       - ``empty_cv`` — zero-byte or no extractable text
       - ``unreadable_cv`` — corrupt / unreadable document
       - ``timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``
-      - ``peak_rss_exceeded`` — CV-path Peak RSS over 3_300_000_000 bytes
+      - ``peak_rss_exceeded`` — private commit over 3_300_000_000 bytes
+        (Windows PeakPagefileUsage, Linux anonymous RSS; not file-backed mmap)
       - ``model_missing`` / ``llama_missing`` — sole GGUF or runtime absent
 
     Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI
