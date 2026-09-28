@@ -661,6 +661,10 @@ class ProfilePage(QWidget):
             empty.setObjectName("KkHint")
             self._mark_decorative(empty)
             self._lang_row.addWidget(empty)
+        # Flow hosts must report their new height after chips are replaced.
+        # One geometry update, not a second refresh_cards() pass.
+        self._skills_host.updateGeometry()
+        self._lang_host.updateGeometry()
 
     def _show_more_experience(self) -> None:
         self.card_experience.set_expanded(True)

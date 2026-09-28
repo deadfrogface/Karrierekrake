@@ -125,6 +125,111 @@ def normalize_driving_license(raw: str | list[str]) -> list[str]:
     return found
 
 
+# Canonical EU class order for display. Longer codes are matched first when
+# a stored string was split into single characters (``B BE`` → ``B``, ``B``, ``E``).
+_LICENSE_DISPLAY_ORDER: tuple[str, ...] = (
+    "AM",
+    "A1",
+    "A2",
+    "A",
+    "B1",
+    "B",
+    "BE",
+    "C1",
+    "C1E",
+    "C",
+    "CE",
+    "D1",
+    "D1E",
+    "D",
+    "DE",
+    "L",
+    "T",
+)
+
+
+def _license_chunks(raw: str | list | None) -> list[str]:
+    """Copy licence text out of a string, list, or sourced entries. Does not mutate ``raw``."""
+    if raw is None:
+        return []
+    if isinstance(raw, str):
+        text = raw.strip()
+        return [text] if text else []
+    chunks: list[str] = []
+    for item in raw:
+        if isinstance(item, dict):
+            text = str(item.get("value") or item.get("text") or "")
+        else:
+            value = getattr(item, "value", None)
+            text = str(item if value is None else value)
+        text = text.strip()
+        if text:
+            chunks.append(text)
+    return chunks
+
+
+def _coalesce_license_letters(letters: list[str]) -> list[str]:
+    """Rebuild class codes from single-character fragments (``B``+``E`` → ``BE``)."""
+    known = set(_LICENSE_DISPLAY_ORDER)
+    out: list[str] = []
+    index = 0
+    while index < len(letters):
+        matched = False
+        for length in (3, 2, 1):
+            if index + length > len(letters):
+                continue
+            merged = "".join(letters[index : index + length])
+            if merged in known:
+                out.append(merged)
+                index += length
+                matched = True
+                break
+        if not matched:
+            index += 1
+    return out
+
+
+def _order_license_codes(codes: list[str]) -> list[str]:
+    rank = {code: pos for pos, code in enumerate(_LICENSE_DISPLAY_ORDER)}
+    seen: list[str] = []
+    for code in codes:
+        token = str(code or "").strip().upper()
+        if token and token not in seen:
+            seen.append(token)
+    known = sorted((code for code in seen if code in rank), key=lambda code: rank[code])
+    unknown = [code for code in seen if code not in rank]
+    return known + unknown
+
+
+def driving_classes_for_display(raw: str | list | None) -> list[str]:
+    """Licence classes for the UI: deduped, stable EU order.
+
+    This is the data-to-display step. It does not mutate ``raw`` and does not
+    rewrite stored records. A character-split value such as ``B, B, E`` (from
+    the string ``B BE`` or ``B, BE``) is shown as ``B, BE``.
+    """
+    chunks = _license_chunks(raw)
+    if not chunks:
+        return []
+    known = set(_LICENSE_DISPLAY_ORDER)
+    # Single characters are a split string (``B BE`` → B, B, E), not stored codes.
+    if all(len(chunk) == 1 for chunk in chunks):
+        letters = [chunk.upper() for chunk in chunks if chunk.isalnum()]
+        return _order_license_codes(_coalesce_license_letters(letters))
+    codes: list[str] = []
+    for chunk in chunks:
+        token = chunk.strip().upper()
+        # Parser output is already a class (``C1``). Do not drop it: the
+        # normalizer rejects bare CEFR-overlapping codes without new context.
+        if token in known:
+            codes.append(token)
+            continue
+        found = normalize_driving_license(chunk)
+        if found:
+            codes.extend(found)
+    return _order_license_codes(codes)
+
+
 # User-facing label when a field is simply absent from the CV — not a parser crash.
 MISSING_IN_DOCUMENT = "Im Dokument nicht gefunden"
 
@@ -2581,11 +2686,18 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
 
 
 def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
-    def _as_sourced(items: list) -> list[dict[str, str]]:
+    def _as_sequence(items: Any) -> list:
+        # A bare string must stay one entry. Iterating it yields characters.
+        if isinstance(items, str):
+            text = items.strip()
+            return [text] if text else []
+        return list(items or [])
+
+    def _as_sourced(items: Any) -> list[dict[str, str]]:
         out = []
-        for s in items or []:
+        for s in _as_sequence(items):
             if isinstance(s, dict):
-                val = str(s.get("value") or s.get("text") or "").strip()
+                val = str(s.get("value") or s.get("name") or s.get("text") or "").strip()
                 if val:
                     out.append({"value": val, "source": "cv"})
             elif str(s).strip():
@@ -2596,8 +2708,11 @@ def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
         {
             "skills": _as_sourced(parsed.get("skills") or []),
             "software": _as_sourced(parsed.get("software") or []),
-            "driving_license": _as_sourced(parsed.get("driving_license") or []),
-            "languages": parsed.get("languages") or [],
+            "driving_license": [
+                {"value": code, "source": "cv"}
+                for code in driving_classes_for_display(parsed.get("driving_license") or [])
+            ],
+            "languages": _as_sequence(parsed.get("languages") or []),
             "education": parsed.get("education") or [],
             "work_experience": parsed.get("work_experience") or [],
             "certificates": parsed.get("certificates") or [],
