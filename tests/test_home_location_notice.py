@@ -364,6 +364,7 @@ def test_profile_save_updates_overview_home_from_visible_address(
     page.applicant.city.setText("Berlin, Deutschland")
     page.applicant.postal_code.setText("")
     page.applicant.app_country.setText("DE")
+    page.applicant.sync_home_from_address.setChecked(True)
     page.save()
     loc = config_service.load().profile.location
     assert "Berlin" in (loc.city or loc.home_address)
