@@ -841,15 +841,16 @@ def _letter_profile(codes: list[str]):
     return cfg
 
 
-def _with_matching_station(cfg, *, title: str, company: str, task: str):
-    """A professional station whose task is also in the job ad."""
+def _with_matching_station(cfg, *, title: str, company: str, task: str | list[str]):
+    """A professional station whose tasks are also in the job ad."""
     from core.config import ExperienceEntry
 
+    responsibilities = [task] if isinstance(task, str) else list(task)
     cfg.profile.qualifications.work_experience = [
         ExperienceEntry(
             title=title,
             company=company,
-            responsibilities=[task],
+            responsibilities=responsibilities,
             source="manual",
         )
     ]
@@ -866,7 +867,7 @@ def test_cover_evidence_uses_the_same_normalisation():
         company="Nord GmbH",
         remote_type="remote",
         description=(
-            "Wir suchen Unterstützung in der Verwaltung mit Excel und Rechnungsprüfung. "
+            "Wir suchen Unterstützung in der Verwaltung mit Excel, Rechnungsprüfung und Mahnwesen. "
             "Führerschein Klasse B ist von Vorteil."
         ),
     )
@@ -877,7 +878,7 @@ def test_cover_evidence_uses_the_same_normalisation():
             _letter_profile(stored),
             title="Sachbearbeiterin",
             company="Nordlicht GmbH",
-            task="Rechnungsprüfung",
+            task=["Rechnungsprüfung", "Mahnwesen"],
         )
         evidence = confirmed_profile_text(cfg)
         letter = compose_cover_letter(job, cfg)
@@ -945,7 +946,7 @@ def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
         company="Nord GmbH",
         remote_type="remote",
         description=(
-            "Wir suchen eine Fahrerin mit Excel und Tourenplanung. "
+            "Wir suchen eine Fahrerin mit Excel, Tourenplanung und Ladungssicherung. "
             "Führerschein Klasse BE ist erforderlich."
         ),
     )
@@ -953,7 +954,7 @@ def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
         _letter_profile(["B", "E"]),
         title="Fahrerin",
         company="Holm Logistik",
-        task="Tourenplanung",
+        task=["Tourenplanung", "Ladungssicherung"],
     )
     cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
     evidence = confirmed_profile_text(cfg)
