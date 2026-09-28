@@ -1,6 +1,6 @@
 # Anschreiben-Gold: erzeugte Briefe
 
-Die Briefe wurden auf Commit `2879a3945c260e9276580f2e0c30cb559b1e7079` erzeugt.
+Die Briefe wurden auf Commit `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8` erzeugt.
 Das ist der Stand des Codes, aus dem die Texte kommen.
 Der Dump-Commit ändert nur diese Datei; sein Eltern-Commit ist dieser SHA.
 
@@ -12,7 +12,7 @@ den `approve_cover_letter` ohne nachträgliche Änderung speichert.
 ## cl-01-dispatch-hafenlogistik
 
 - Fall: `cl-01-dispatch-hafenlogistik`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -149,7 +149,7 @@ Ein Anschreiben, das diese Punkte mit eigenen Stationen belegt, ist uns lieber a
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der HafenLogistik GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der HafenLogistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut, die Schichtkoordination im Lager und die Abstimmung mit dem Fuhrpark zuständig.
 
@@ -165,7 +165,7 @@ Nils Quendel
 ## cl-05-source-fixture
 
 - Fall: `cl-05-source-fixture`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -297,7 +297,7 @@ Bitte belegen Sie im Anschreiben, an welcher Station Sie diese Punkte bereits ge
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Disponent Stückgut (m/w/d) bei der Südkai Umschlag GmbH.
+hiermit bewerbe ich mich um die Position als Disponent Stückgut bei der Südkai Umschlag GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut und die Schichtkoordination im Lager zuständig.
 
@@ -313,7 +313,7 @@ Nils Quendel
 ## cl-07-adr-schein-trap
 
 - Fall: `cl-07-adr-schein-trap`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -443,7 +443,7 @@ Den ADR-Schein setzen wir voraus. Bitte nennen Sie ihn nur, wenn Sie ihn wirklic
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der Ostkai Spedition GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der Ostkai Spedition GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut zuständig.
 
@@ -459,7 +459,7 @@ Nils Quendel
 ## cl-09-named-contact
 
 - Fall: `cl-09-named-contact`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -588,7 +588,7 @@ Schreiben Sie Frau Quendel direkt an: Lotte Quendel, lotte.quendel@example.com.
 ```
 Sehr geehrte Frau Quendel,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der HafenLogistik GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der HafenLogistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut, die Schichtkoordination im Lager und die Abstimmung mit dem Fuhrpark zuständig.
 
@@ -604,7 +604,7 @@ Nils Quendel
 ## cl-10-english-ad
 
 - Fall: `cl-10-english-ad`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -752,7 +752,7 @@ Nils Quendel
 ## cl-11-long-ad-requirements-end
 
 - Fall: `cl-11-long-ad-requirements-end`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -905,7 +905,7 @@ Wir lesen Bewerbungen fortlaufend. Ein Anschreiben, das diese Punkte mit eigenen
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Disponent Stückgut (m/w/d) bei der Kaiwerk Logistik GmbH.
+hiermit bewerbe ich mich um die Position als Disponent Stückgut bei der Kaiwerk Logistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut, die Schichtkoordination im Lager und die Abstimmung mit dem Fuhrpark zuständig.
 
@@ -921,7 +921,7 @@ Nils Quendel
 ## cl-12-html-remnants
 
 - Fall: `cl-12-html-remnants`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1055,7 +1055,7 @@ Beschreibung:
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der HafenLogistik GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der HafenLogistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut und die Schichtkoordination im Lager zuständig.
 
@@ -1071,7 +1071,7 @@ Nils Quendel
 ## cl-14-two-stations
 
 - Fall: `cl-14-two-stations`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1131,7 +1131,7 @@ Skills und Software nennt diese Anzeige nicht. Beide Stationen sollen im Anschre
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Teamleitung Umschlag (m/w/d) bei der Kaiwerk GmbH.
+hiermit bewerbe ich mich um die Position als Teamleitung Umschlag bei der Kaiwerk GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent tätig.
 
@@ -1147,7 +1147,7 @@ Nils Quendel
 ## cl-15-station-and-skill
 
 - Fall: `cl-15-station-and-skill`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1203,7 +1203,7 @@ Weitere Stationen und weitere Skills nennt die Anzeige nicht.
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der Hafenwerk GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der Hafenwerk GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent tätig.
 
@@ -1219,7 +1219,7 @@ Nils Quendel
 ## cl-18-sap-business-one-covers-sap
 
 - Fall: `cl-18-sap-business-one-covers-sap`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1277,7 +1277,7 @@ Weitere Werkzeuge nennt die Anzeige nicht.
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Stelle in der Rechnungsprüfung (m/w/d) bei der Buchkontor Beispiel GmbH.
+hiermit bewerbe ich mich um die Stelle in der Rechnungsprüfung bei der Buchkontor Beispiel GmbH.
 
 Bei der Kontor Beispiel GmbH war ich von 2019 bis 2024 in der Rechnungsprüfung tätig. Zu meinen Aufgaben gehörte dort: Belege erfassen.
 
@@ -1293,7 +1293,7 @@ Nils Quendel
 ## cl-20-nordmole-dispatcher
 
 - Fall: `cl-20-nordmole-dispatcher`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1374,7 +1374,7 @@ bewerbung@example.com
 ```
 Guten Tag Robin Beispiel,
 
-hiermit bewerbe ich mich um die Position als Disponent / Dispatcher (m/w/d) Nahverkehr bei der Nordmole Musterlogistik GmbH.
+hiermit bewerbe ich mich um die Position als Disponent / Dispatcher Nahverkehr bei der Nordmole Musterlogistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung zuständig. Zu meinen Aufgaben gehörte dort: Fahrer zuordnen.
 
@@ -1390,7 +1390,7 @@ Nils Quendel
 ## cl-24-two-requirements-in-title
 
 - Fall: `cl-24-two-requirements-in-title`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1462,7 +1462,7 @@ Nils Quendel
 ## cl-27-gender-title
 
 - Fall: `cl-27-gender-title`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1517,7 +1517,7 @@ Das bringen Sie mit:
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Industriekaufmann (m/w/d) bei der Kaufkontor Beispiel GmbH.
+hiermit bewerbe ich mich um die Position als Industriekaufmann bei der Kaufkontor Beispiel GmbH.
 
 Bei der Handel Beispiel GmbH war ich von 2018 bis 2023 als Industriekauffrau tätig.
 
@@ -1533,7 +1533,7 @@ Nils Quendel
 ## cl-28-titled-contact
 
 - Fall: `cl-28-titled-contact`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1600,7 +1600,7 @@ Ansprechpartnerin: Frau Dr. Quendel, Leitung Personal.
 ```
 Sehr geehrte Frau Dr. Quendel,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der HafenLogistik GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der HafenLogistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut zuständig.
 
@@ -1616,7 +1616,7 @@ Nils Quendel
 ## cl-29-two-contacts
 
 - Fall: `cl-29-two-contacts`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1684,7 +1684,7 @@ Ansprechpartner: Herr Max Beispiel.
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der HafenLogistik GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der HafenLogistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut zuständig.
 
@@ -1700,7 +1700,7 @@ Nils Quendel
 ## cl-30-html-contact
 
 - Fall: `cl-30-html-contact`
-- Commit: `2879a3945c260e9276580f2e0c30cb559b1e7079`
+- Commit: `f48c2e3fe09c44ee54b532b076e3cd5e509a2da8`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1767,7 +1767,7 @@ Ansprechpartnerin: Frau <b>Lotte</b> Quendel.
 ```
 Sehr geehrte Frau Quendel,
 
-hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei der HafenLogistik GmbH.
+hiermit bewerbe ich mich um die Position als Dispatcher bei der HafenLogistik GmbH.
 
 Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent für die Tourenplanung für Stückgut zuständig.
 
