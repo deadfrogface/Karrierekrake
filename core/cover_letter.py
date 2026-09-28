@@ -175,7 +175,14 @@ def _ad_requirement_keys(surface: str) -> frozenset[str]:
         pending_acronym = None
         tail.clear()
 
-    for raw in _SURFACE_WORD.findall(surface or ""):
+    previous_end = 0
+    for match in _SURFACE_WORD.finditer(surface or ""):
+        if pending_acronym is not None and any(
+            char in _PHRASE_BREAK for char in surface[previous_end : match.start()]
+        ):
+            flush_product()
+        previous_end = match.end()
+        raw = match.group()
         folded = raw.casefold()
         if _is_glue_token(folded):
             flush_product()
@@ -250,6 +257,9 @@ _SKILL_SPLIT = re.compile(r"[,/|]")
 _TITLE_PART = re.compile(r"[A-Za-zÄÖÜäöüß0-9]{3,}")
 _CONTENT_TOKEN = re.compile(r"[a-z0-9äöüß]{3,}")
 _SURFACE_WORD = re.compile(r"[A-Za-zÄÖÜäöüß0-9]+")
+# A period, comma, or line break ends a product name. ``SAP. Excel`` is two
+# requirements. Spaces and hyphens stay inside ``SAP Business One``.
+_PHRASE_BREAK = frozenset(".;:!?,\n/|()[]\"'«»–—")
 
 # Hard minimum: two distinct ad requirements, each backed by a distinct profile fact.
 MIN_DISTINCT_COVER_HITS = 2

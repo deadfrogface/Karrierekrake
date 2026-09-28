@@ -1036,6 +1036,26 @@ def test_sap_business_one_covers_sap_not_the_reverse():
     assert "SAP" not in reverse_hits
 
 
+def test_sentence_break_splits_sap_and_excel():
+    cfg = _cfg(
+        "Excel",
+        stations=[ExperienceEntry(title="Sachbearbeiter", company="Nord GmbH", source="manual")],
+    )
+    job = Job(
+        id="j-period",
+        source="indeed",
+        title="Sachbearbeiter",
+        company="Beispiel GmbH",
+        description="Wir suchen Kubernetes-Zertifikat und fünf Jahre SAP. Excel ist willkommen.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    low = result.text.casefold()
+    assert "excel" in low
+    assert "sap" not in low
+    assert "kubernetes" not in low
+
+
 def test_java_does_not_hit_javascript():
     station = ExperienceEntry(title="Sachbearbeiter", company="Kontor Beispiel GmbH", source="manual")
     java = _cfg(stations=[station])
