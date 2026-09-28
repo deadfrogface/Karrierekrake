@@ -505,7 +505,7 @@ class ApplyPreviewDialog(QDialog):
 
     def _run_cover_guard(self) -> bool:
         """Scan the letter on screen. Opening and confirming each run it in full."""
-        text = self.cover_edit.toPlainText()
+        text = self.preview.cover_letter_preview or ""
         codes, ok, sentence = self._scan_letter(text)
         if ok:
             self._guard_notice.hide()

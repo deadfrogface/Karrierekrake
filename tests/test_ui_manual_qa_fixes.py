@@ -1311,6 +1311,175 @@ def test_unchanged_c_with_two_digit_suffix_stays_byte_identical(qapp, config_ser
     assert config_service.load().profile.qualifications.driving_values() == ["C", "95"]
 
 
+def _profile_for_licence(qapp, config_service, monkeypatch, codes: list[str]):
+    """Load a profile whose only licence data is ``codes``, with origins settled."""
+    messages: list[str] = []
+
+    def information(_parent, _title, text, *_args, **_kwargs):
+        messages.append(str(text))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "information", information)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+    cfg = config_service.load()
+    cfg.profile.qualifications.driving_license = _sourced_codes(codes)
+    cfg.profile.qualifications.skills = []
+    config_service.save(cfg)
+    page = ProfilePage(config_service)
+    page.resize(1100, 800)
+    page.show()
+    page.load_from_config()
+    qapp.processEvents()
+    settled = config_service.load()
+    page.applicant.save_into(settled.application)
+    config_service.save(settled)
+    page.load_from_config()
+    qapp.processEvents()
+    return page, messages
+
+
+def _save_drawer_without_edit(page, qapp) -> list[bool]:
+    from PySide6.QtCore import QTimer
+
+    results: list[bool] = []
+    original = page.save
+
+    def wrapped() -> bool:
+        value = original()
+        results.append(value)
+        return value
+
+    page.save = wrapped
+
+    def accept_unchanged() -> None:
+        page._drawer.accept()
+
+    QTimer.singleShot(0, accept_unchanged)
+    page._edit_section("skills")
+    qapp.processEvents()
+    return results
+
+
+def test_b_with_digits_keeps_the_grey_line_and_the_file(qapp, config_service, monkeypatch):
+    """[B, 9, 5] shows B and the grey line. Saving without input keeps the file."""
+    i18n.set_language("de")
+    page, messages = _profile_for_licence(qapp, config_service, monkeypatch, ["B", "9", "5"])
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_bytes()
+    assert page.qualifications.driving.get_items() == ["B"]
+    assert page.qualifications.licence_unknown.text() == (
+        "Nicht sicher erkannt: 9, 5. Diese Einträge bleiben unverändert gespeichert."
+    )
+    results = _save_drawer_without_edit(page, qapp)
+    assert results == [False]
+    assert messages[-1] == "Keine Änderungen."
+    assert profile_path.read_bytes() == before
+    assert config_service.load().profile.qualifications.driving_values() == ["B", "9", "5"]
+
+
+def test_ce_with_digits_stays_byte_identical(qapp, config_service, monkeypatch):
+    """[CE, 9, 5] shows CE and the same grey line. Saving without input keeps the file."""
+    i18n.set_language("de")
+    page, messages = _profile_for_licence(qapp, config_service, monkeypatch, ["CE", "9", "5"])
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_bytes()
+    assert page.qualifications.driving.get_items() == ["CE"]
+    assert page.qualifications.licence_unknown.text() == (
+        "Nicht sicher erkannt: 9, 5. Diese Einträge bleiben unverändert gespeichert."
+    )
+    results = _save_drawer_without_edit(page, qapp)
+    assert results == [False]
+    assert messages[-1] == "Keine Änderungen."
+    assert profile_path.read_bytes() == before
+    assert config_service.load().profile.qualifications.driving_values() == ["CE", "9", "5"]
+
+
+def test_b_and_m_keeps_m_as_a_row(qapp, config_service, monkeypatch):
+    """[B, M] shows M as its own row. Saving without input keeps both entries."""
+    i18n.set_language("de")
+    page, messages = _profile_for_licence(qapp, config_service, monkeypatch, ["B", "M"])
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_bytes()
+    assert page.qualifications.driving.get_items() == ["B", "M"]
+    assert not page.qualifications.licence_unknown.isVisible()
+    assert page.qualifications.licence_unknown.text() == ""
+    results = _save_drawer_without_edit(page, qapp)
+    assert results == [False]
+    assert messages[-1] == "Keine Änderungen."
+    assert profile_path.read_bytes() == before
+    assert config_service.load().profile.qualifications.driving_values() == ["B", "M"]
+
+
+def test_b_c_e_with_digits_keeps_e_and_the_digits(qapp, config_service, monkeypatch):
+    """[B, C, E, 9, 5] keeps E, 9 and 5 in the file and names them in the grey line."""
+    i18n.set_language("de")
+    page, messages = _profile_for_licence(
+        qapp, config_service, monkeypatch, ["B", "C", "E", "9", "5"]
+    )
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_bytes()
+    assert page.qualifications.driving.get_items() == ["B", "C"]
+    assert page.qualifications.licence_unknown.text() == (
+        "Nicht sicher erkannt: E, 9, 5. Diese Einträge bleiben unverändert gespeichert."
+    )
+    results = _save_drawer_without_edit(page, qapp)
+    assert results == [False]
+    assert messages[-1] == "Keine Änderungen."
+    assert profile_path.read_bytes() == before
+    assert config_service.load().profile.qualifications.driving_values() == ["B", "C", "E", "9", "5"]
+
+
+def _yaml_block(text: str, key: str) -> str:
+    lines = text.splitlines()
+    start = None
+    indent = 0
+    for index, line in enumerate(lines):
+        stripped = line.lstrip(" ")
+        if stripped.startswith(f"{key}:"):
+            start = index
+            indent = len(line) - len(stripped)
+            break
+    assert start is not None
+    end = start + 1
+    while end < len(lines):
+        line = lines[end]
+        if not line.strip():
+            end += 1
+            continue
+        current = len(line) - len(line.lstrip(" "))
+        if current > indent or (current == indent and line.lstrip(" ").startswith("- ")):
+            end += 1
+            continue
+        break
+    return "\n".join(lines[start:end])
+
+
+def test_language_save_keeps_digits_beside_class_b(qapp, config_service, monkeypatch):
+    """Changing only languages through ProfilePage.save leaves 9 and 5 verbatim."""
+    i18n.set_language("de")
+    page, messages = _profile_for_licence(qapp, config_service, monkeypatch, ["B", "9", "5"])
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_text(encoding="utf-8")
+    licence_before = _yaml_block(before, "driving_license")
+    assert page.qualifications.driving.get_items() == ["B"]
+    assert page.qualifications.licence_unknown.text() == (
+        "Nicht sicher erkannt: 9, 5. Diese Einträge bleiben unverändert gespeichert."
+    )
+    page.languages.languages.set_items(
+        [LanguageEntry(language="Englisch", level="C1", source="manual")]
+    )
+    assert page.save() is True
+    qapp.processEvents()
+    after = profile_path.read_text(encoding="utf-8")
+    assert messages[-1] == "Gespeichert."
+    assert _yaml_block(after, "driving_license") == licence_before
+    assert "9" in licence_before and "5" in licence_before
+    saved = config_service.load()
+    assert saved.profile.qualifications.driving_values() == ["B", "9", "5"]
+    assert saved.profile.qualifications.languages[0].language == "Englisch"
+    assert saved.profile.qualifications.languages[0].level == "C1"
+
+
 def test_two_digit_suffix_stays_when_the_drawer_saves_nothing(qapp, config_service, monkeypatch):
     """Opening [C, CE, 95] and saving without input keeps 95 and reports no change."""
     from PySide6.QtCore import QTimer

@@ -132,14 +132,75 @@ class EducationSection(QGroupBox):
         quals.education = self.education.get_items()
 
 
+def _has_stored_entry_before(stored: list, item: object) -> bool:
+    for current in stored or []:
+        if current is item:
+            return False
+        if _licence_item_value(current):
+            return True
+    return False
+
+
 def _licence_item_value(item: object) -> str:
     if isinstance(item, str):
         return item.strip()
     return str(getattr(item, "value", "") or "").strip()
 
 
-def _licence_token_was_rebuilt(token: str, reading: object, recognised: frozenset[str]) -> bool:
-    """True when recovery folded this stored token into a class on screen."""
+def _stored_licence_values(stored: list) -> set[str]:
+    values: set[str] = set()
+    for item in stored or []:
+        value = _licence_item_value(item).upper()
+        if value:
+            values.add(value)
+    return values
+
+
+def _fragment_joined_displayed_class(fragment: str, display: list[str], stored_values: set[str]) -> bool:
+    """True when this one character and another stored entry form a class on screen.
+
+    ``C`` and ``1`` form ``C1``, ``B`` and ``E`` form ``BE``, ``A`` and ``M``
+    form ``AM``. A character that merely sits beside a class does not.
+    """
+    piece = fragment.strip().upper()
+    if len(piece) != 1 or piece not in stored_values:
+        return False
+    parts = [token for token in stored_values if token and any(token in code.upper() for code in display)]
+
+    def joins(code: str) -> bool:
+        target = code.upper()
+        if len(target) < 2 or piece not in target:
+            return False
+
+        def walk(pos: int, used_piece: bool, others: int) -> bool:
+            if pos == len(target):
+                return used_piece and others >= 1
+            for token in parts:
+                if target.startswith(token, pos) and walk(
+                    pos + len(token),
+                    used_piece or token == piece,
+                    others + (token != piece),
+                ):
+                    return True
+            return False
+
+        return walk(0, False, 0)
+
+    return any(joins(code) for code in display)
+
+
+def _licence_token_was_rebuilt(
+    token: str,
+    reading: object,
+    recognised: frozenset[str],
+    stored_values: set[str],
+) -> bool:
+    """True when recovery folded this stored token into a class on screen.
+
+    A recognised code counts when a longer class on screen starts with it
+    (``C`` inside ``C1``). Any other single character counts only when that
+    character and another stored entry together make the class on screen.
+    """
     if reading is None or not getattr(reading, "recovered", False) or not getattr(reading, "display", None):
         return False
     text = token.strip()
@@ -148,23 +209,26 @@ def _licence_token_was_rebuilt(token: str, reading: object, recognised: frozense
         return False
     upper = text.upper()
     if upper in recognised:
-        return any(code.startswith(upper) and len(code) > len(upper) for code in display)
-    return len(text) == 1
+        return any(len(code) > len(upper) and code.upper().startswith(upper) for code in display)
+    return _fragment_joined_displayed_class(text, display, stored_values)
 
 
 def _visible_and_unknown_licence(stored: list, reading: object) -> tuple[list[str], list]:
     """Rows the drawer shows, and stored entries that are not a class.
 
     Display classes come first. A recognised code the parser left off that
-    list (an uncertain ``C`` or ``D``) is a row, and so is a lone ``E`` or
-    ``M`` that was not folded into a longer class. Digits and other leftovers
-    such as ``9``, ``5`` and ``95`` stay out of the list. They are returned
-    as the original stored objects.
+    list (an uncertain ``C`` or ``D``) is a row. ``M`` is a row when it was
+    not folded into ``AM``. A lone ``E`` is a row only when nothing is on
+    screen, as with ``[C, E, 9, 5]``. An ``E`` beside a shown class, and
+    leftovers such as ``9``, ``5`` and ``95``, stay out of the list. They
+    are returned as the original stored objects. An ``E`` with no stored
+    entry before it is dropped when a class is already on screen (``[E, B]``).
     """
     from core.cv_parser import _RECOGNISED_LICENCE_CLASSES
 
     display = list(getattr(reading, "display", None) or [])
     shown = {item.upper() for item in display}
+    stored_values = _stored_licence_values(stored)
     rows = list(display)
     unknown: list = []
     for item in stored or []:
@@ -174,9 +238,12 @@ def _visible_and_unknown_licence(stored: list, reading: object) -> tuple[list[st
         upper = value.upper()
         if value in display or upper in shown:
             continue
-        if _licence_token_was_rebuilt(value, reading, _RECOGNISED_LICENCE_CLASSES):
+        if _licence_token_was_rebuilt(value, reading, _RECOGNISED_LICENCE_CLASSES, stored_values):
             continue
-        if upper in _RECOGNISED_LICENCE_CLASSES or (len(value) == 1 and value.isalpha()):
+        if upper == "E" and display and not _has_stored_entry_before(stored, item):
+            continue
+        lone_letter_on_empty = not display and len(value) == 1 and value.isalpha()
+        if upper in _RECOGNISED_LICENCE_CLASSES or upper == "M" or lone_letter_on_empty:
             if upper not in shown:
                 rows.append(upper)
                 shown.add(upper)
@@ -286,9 +353,10 @@ class QualificationsSection(QGroupBox):
     def _save_driving_license(self, quals: QualificationsConfig) -> None:
         """Save the classes on screen and keep unknown entries verbatim.
 
-        Every recognised class is a row the user can remove. A lone ``E`` or
-        ``M`` that was not folded into a longer class is a row too. Entries
-        such as ``9``, ``5`` and ``95`` are not rows: they stay in the file
+        Every recognised class is a row the user can remove. ``M`` is a row
+        when it was not folded into ``AM``. A lone ``E`` is a row only when
+        the drawer has no class on screen. An ``E`` that did not join a shown
+        class, and entries such as ``9``, ``5`` and ``95``, stay in the file
         unchanged and are not classes. Removing a visible class drops it.
         It is not written back as a hidden entry.
 

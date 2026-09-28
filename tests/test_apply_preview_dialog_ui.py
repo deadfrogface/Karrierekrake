@@ -315,6 +315,54 @@ def test_preview_hint_equals_the_utf8_literal(qapp, tmp_path):
     dlg.close()
 
 
+def test_guard_scans_nbsp_as_the_saved_letter(qapp, tmp_path, monkeypatch):
+    """A letter with U+00A0 is scanned as the string that confirm stores."""
+    import core.cover_guard as guard
+    from PySide6.QtWidgets import QMessageBox
+
+    from apply.preview import build_application_preview
+    from core.config import ExtractReview, SourcedText
+    from core.models import Job
+
+    seen: list[str] = []
+    original = guard.screen_prepared_letter
+
+    def recording(text, prepared):
+        seen.append(text)
+        return original(text, prepared)
+
+    monkeypatch.setattr(guard, "screen_prepared_letter", recording)
+    monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
+    cfg = _profile_with_licence(tmp_path, "B")
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    cfg.profile.qualifications.skills = [SourcedText(value="Excel", source="manual")]
+    cfg.application.first_name = "Ada\u00a0Lena"
+    cfg.application.last_name = "Beispiel"
+    job = Job(
+        id="vorschau-nbsp",
+        title="Disponent",
+        company="Nordlicht GmbH",
+        remote_type="remote",
+        description="Excel und Tourenplanung.",
+    )
+    preview = build_application_preview(job, cfg)
+    letter = preview.cover_letter_preview
+    assert "\u00a0" in letter
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    dlg.show()
+    qapp.processEvents()
+    assert "\u00a0" not in dlg.cover_edit.toPlainText()
+    assert dlg.cover_edit.toPlainText() != letter
+    assert dlg.approve_btn.isEnabled()
+    dlg.approve_btn.click()
+    qapp.processEvents()
+    assert seen == [letter, letter]
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    assert saved.read_bytes() == letter.encode("utf-8")
+    dlg.close()
+
+
 def test_open_and_one_confirm_run_exactly_two_guard_scans(qapp, tmp_path, monkeypatch):
     """Opening the dialog and confirming once runs the guard twice, and no more."""
     import core.cover_guard as guard
