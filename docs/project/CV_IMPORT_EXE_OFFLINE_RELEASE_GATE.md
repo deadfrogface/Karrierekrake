@@ -2,6 +2,7 @@
 
 **Branch:** `cursor/cv-import-exe-offline-bundle-d85b`  
 **Stand:** 2026-09-28  
+**CI-Commit:** `c60867f` — Windows Smoke Offline-E2E **grün** (`release_blocked: false`)
 
 ## Root cause: `model_missing` auf dem Laptop
 
@@ -9,39 +10,36 @@ Die Produktions-GGUF liegt **nicht** in der Onefile-EXE, sondern als Sidecar:
 
 `models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf` **neben** `Karrierekrake.exe`.
 
-Wer nur die EXE kopiert/herunterlädt (wie die alte README-Anweisung), bekommt `model_missing`.  
-CI-E2E lief bisher im Build-`dist/` mit vorhandenem Sidecar — das maskierte den Install-Fehler.
+Wer nur die EXE kopiert/herunterlädt, bekommt `model_missing`.  
+Auslieferung ist jetzt **`Karrierekrake-Windows.zip`** (EXE + `models/` + INSTALL.txt).
 
-## Fix in diesem Stand
+## Metriken (Windows Smoke CI, staged Install-Ordner)
 
-| Thema | Änderung |
-|-------|----------|
-| Auslieferung | `scripts/package_windows_release.py` → `Karrierekrake-Windows.zip` (EXE + `models/` + INSTALL.txt) |
-| CI | Sidecar-Pflicht (`--require-cv-model-sidecar`); Stage in leeren Install-Ordner; E2E von dort |
-| E2E | DE + EN Import; Negativ: corrupt + EXE-only → `model_missing`; `KARRIEREKRAKE_MODELS_DIR` isoliert |
-| Resolve | Stale `KARRIEREKRAKE_CV_LLM_MODEL` fällt auf Sidecar zurück |
-| Docs | README verlangt Zip, nicht EXE allein |
-| UI | Günther-Unavailable-Texte ohne Modellmarkennamen |
-
-## Frühere Metriken (Commit `e2bae4f` / `8026afc`, nur DE, Build-`dist/`)
+Quelle: `artifacts/cv_import_exe_offline_e2e.json` (Run nach `c60867f`)
 
 | Metrik | Wert |
 |--------|------|
-| EXE-Größe | ~242 MB; Sidecar-GGUF ~2,6 GiB |
-| Startzeit | ~20 s |
-| Import DE_01 | ~236 s |
-| Anschreiben | ~20 s |
-| Peak (Host-Child) | ~74 MiB — **nicht** Job-Object i3/8 GB |
+| EXE-Größe | **242 715 746 Bytes** (~232 MiB) |
+| Sidecar-GGUF | **2 740 937 888 Bytes** (~2,55 GiB) |
+| Startzeit | **~24,9 s** |
+| Import DE_01 | **~196 s** — Mara König / mara.koenig@example.com |
+| Import EN_01 | **~168 s** — Emily Carter / emily.carter@example.com |
+| Restart | **~19,6 s** — Profil persistiert |
+| Anschreiben | **~20,4 s**, gleiches GGUF, 480 Zeichen |
+| Corrupt PDF | `unreadable_cv`, verständliche DE-Meldung, keine Technikbegriffe |
+| EXE ohne models | `model_missing`, „neu installieren“, nichts übernommen |
+| Peak (Host-Child) | **~72 MiB** — **nicht** Job-Object i3/8 GB |
 
-**Neuere Metriken** (Install-Simulation + EN + Negatives) erst nach dem nächsten grünen Windows-Smoke dieses Commits in `artifacts/cv_import_exe_offline_e2e.json` gültig.
+Transport: `inprocess` · Install-Pfad: frischer Temp-Ordner (Zip-Simulation), nicht Build-`dist/`.
 
 ## Release-Status
 
 | Schritt | Status |
 |---------|--------|
-| Ursache EXE-only → `model_missing` | **behoben im Code/Packaging** |
-| Windows CI mit staged Install | **ausstehend / zu belegen** |
+| Code: Bundle-Resolve + Zip + UI-Copy | **umgesetzt** |
+| Unit-Tests | **CI grün** (`c60867f`) |
+| Windows staged-install offline E2E (DE+EN+Negatives) | **CI grün** |
 | Heim-Laptop | **NICHT GETESTET** |
-| Öffentlicher Release | **weiter blockiert** bis Zip-Gate + Laptop-Abnahme |
+| Öffentlicher Release | **weiter blockiert** bis Laptop-Abnahme |
 
 Siehe auch: `docs/project/GROK_PRUEFPLAN_STATUS.md`
