@@ -1411,16 +1411,16 @@ def test_b_and_m_keeps_m_as_a_row(qapp, config_service, monkeypatch):
 
 
 def test_b_c_e_with_digits_keeps_e_and_the_digits(qapp, config_service, monkeypatch):
-    """[B, C, E, 9, 5] keeps E, 9 and 5 in the file and names them in the grey line."""
+    """[B, C, E, 9, 5] shows B, C and E. The grey line names only 9 and 5."""
     i18n.set_language("de")
     page, messages = _profile_for_licence(
         qapp, config_service, monkeypatch, ["B", "C", "E", "9", "5"]
     )
     profile_path = Path(config_service.profile_path)
     before = profile_path.read_bytes()
-    assert page.qualifications.driving.get_items() == ["B", "C"]
+    assert page.qualifications.driving.get_items() == ["B", "C", "E"]
     assert page.qualifications.licence_unknown.text() == (
-        "Nicht sicher erkannt: E, 9, 5. Diese Einträge bleiben unverändert gespeichert."
+        "Nicht sicher erkannt: 9, 5. Diese Einträge bleiben unverändert gespeichert."
     )
     results = _save_drawer_without_edit(page, qapp)
     assert results == [False]

@@ -218,10 +218,10 @@ def _visible_and_unknown_licence(stored: list, reading: object) -> tuple[list[st
 
     Display classes come first. A recognised code the parser left off that
     list (an uncertain ``C`` or ``D``) is a row. ``M`` is a row when it was
-    not folded into ``AM``. A lone ``E`` is a row only when nothing is on
-    screen, as with ``[C, E, 9, 5]``. An ``E`` beside a shown class, and
-    leftovers such as ``9``, ``5`` and ``95``, stay out of the list. They
-    are returned as the original stored objects. An ``E`` with no stored
+    not folded into ``AM``. An ``E`` that did not join a displayed class is
+    a row too, as with ``[C, E, 9, 5]`` and ``[B, C, E, 9, 5]``. Digits and
+    other non-classes such as ``9``, ``5`` and ``95`` stay out of the list.
+    They are returned as the original stored objects. An ``E`` with no stored
     entry before it is dropped when a class is already on screen (``[E, B]``).
     """
     from core.cv_parser import _RECOGNISED_LICENCE_CLASSES
@@ -243,7 +243,7 @@ def _visible_and_unknown_licence(stored: list, reading: object) -> tuple[list[st
         if upper == "E" and display and not _has_stored_entry_before(stored, item):
             continue
         lone_letter_on_empty = not display and len(value) == 1 and value.isalpha()
-        if upper in _RECOGNISED_LICENCE_CLASSES or upper == "M" or lone_letter_on_empty:
+        if upper in _RECOGNISED_LICENCE_CLASSES or upper in {"E", "M"} or lone_letter_on_empty:
             if upper not in shown:
                 rows.append(upper)
                 shown.add(upper)
@@ -354,11 +354,10 @@ class QualificationsSection(QGroupBox):
         """Save the classes on screen and keep unknown entries verbatim.
 
         Every recognised class is a row the user can remove. ``M`` is a row
-        when it was not folded into ``AM``. A lone ``E`` is a row only when
-        the drawer has no class on screen. An ``E`` that did not join a shown
-        class, and entries such as ``9``, ``5`` and ``95``, stay in the file
-        unchanged and are not classes. Removing a visible class drops it.
-        It is not written back as a hidden entry.
+        when it was not folded into ``AM``. An ``E`` that did not join a
+        displayed class is a row too. Entries that are not a class, such as
+        ``9``, ``5`` and ``95``, stay in the file unchanged. Removing a
+        visible class drops it. It is not written back as a hidden entry.
 
         An unchanged row list does not rewrite the file when the stored
         values already match, so ``[C, 95]`` stays byte-identical. A recovered
