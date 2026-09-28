@@ -96,7 +96,7 @@ def test_driving_classes_deduped_for_display_without_mutating_storage():
 
 
 def test_import_license_strings_are_tokens_not_characters():
-    """Child imports hand in a space-joined string, not the LLM list."""
+    """A licence string is split into classes, never into characters."""
     from core.cv_parser import _as_sequence
 
     assert _as_sequence("B, BE") == ["B", "BE"]
@@ -105,17 +105,47 @@ def test_import_license_strings_are_tokens_not_characters():
     assert _as_sequence("B und BE") == ["B", "BE"]
     assert _as_sequence("B and BE") == ["B", "BE"]
     assert _as_sequence("B/BE") == ["B", "BE"]
+    assert _as_sequence("Klasse 3") == ["Klasse 3"]
+    assert _as_sequence("CE 95") == ["CE 95"]
+    assert _as_sequence("B96 (Anhänger)") == ["B96 (Anhänger)"]
+    assert _as_sequence("B, CE 95") == ["B", "CE 95"]
     assert list("BE") == ["B", "E"]
     assert _as_sequence("BE") != ["B", "E"]
     cases = {
         "B, BE": ["B", "BE"],
         "BE": ["BE"],
         "B BE": ["B", "BE"],
+        "Klasse 3": ["Klasse 3"],
+        "B, CE 95": ["B", "CE 95"],
+        "CE 95": ["CE 95"],
+        "B96 (Anhänger)": ["B96 (Anhänger)"],
     }
     for raw, expected in cases.items():
         got = parsed_to_qualifications({"driving_license": raw}).driving_values()
         assert got == expected
         assert got != ["B", "E"]
+
+
+def test_suggestion_to_parsed_passes_licence_list():
+    """Docpick keeps the class list. It does not join codes into one string."""
+    from core.cv_docpick_import import suggestion_to_parsed
+
+    parsed = suggestion_to_parsed(
+        {
+            "name": {"first_name": "A", "last_name": "B"},
+            "email": "a@example.com",
+            "licenses": ["B", "BE"],
+            "employment": [],
+            "education": [],
+            "skills": [],
+            "software": [],
+            "certificates": [],
+            "languages": [],
+        }
+    )
+    assert isinstance(parsed["driving_license"], list)
+    assert parsed["driving_license"] == ["B", "BE"]
+    assert parsed_to_qualifications(parsed).driving_values() == ["B", "BE"]
 
 
 def test_parsed_string_license_is_not_split_into_characters():
