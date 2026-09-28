@@ -11,7 +11,7 @@
 | `emails` | list[str] | profile email |
 | `phones` | list[str] | profile phone |
 | `languages` | list[{language, level}] | qualifications / matching language filters |
-| `driving_license` | str (space-joined classes) | qualifications / hard filters |
+| `driving_license` | list[str] on new imports; a legacy string is still read | qualifications / hard filters |
 | `education` | list[{institution, qualification, start_date, end_date}] | qualifications |
 | `work_experience` | list[{title, company, start_date, end_date, responsibilities}] | qualifications / matching experience |
 | `skills` | list[str] | qualifications / matching skills |
@@ -26,7 +26,8 @@
 
 | Change | Justification |
 |--------|----------------|
-| **None** to field names/types | Round8 quality fixes only postprocess values (`heute` repair, education enrich). Shape unchanged. |
+| **None** to field names | Key set unchanged. |
+| `driving_license` type | New Docpick imports store a list of class codes (`["B", "BE"]`). Readers still accept a legacy string (`"B, BE"`) through `driving_classes_for_display`. The contract version stays 1 because the key set is unchanged and both shapes are valid input. |
 | Additive metadata only | `parsed_cv_contract_version`, `peak_rss_mb_at_end` — not matching inputs |
 
 If a future change renames/removes a key or changes list/object types, bump `PARSED_CV_CONTRACT_VERSION` and append an explicit Diff here.

@@ -171,19 +171,16 @@ def language_licence_stats(gt_docs: dict, preds: dict) -> dict[str, Any]:
                 if name.upper() in {"A1", "A2", "B1", "B", "BE", "C1", "C", "CE"}:
                     confusion += 1
 
-        exp_lic = {
-            str(x).upper()
-            for x in (g.get("licenses") or g.get("driving_license") or [])
-            if str(x).strip()
-        }
-        act_lic_raw = p.get("driving_license") or p.get("licenses") or []
-        act_lic = set()
-        for item in act_lic_raw:
-            if isinstance(item, dict):
-                act_lic.add(str(item.get("value") or "").upper())
-            else:
-                act_lic.add(str(item).upper())
-        act_lic.discard("")
+        from core.cv_parser import driving_classes_for_display
+
+        exp_src = g.get("licenses")
+        if exp_src in (None, ""):
+            exp_src = g.get("driving_license") or []
+        exp_lic = {code.upper() for code in driving_classes_for_display(exp_src) if code}
+        act_src = p.get("driving_license")
+        if act_src in (None, "", []):
+            act_src = p.get("licenses") or []
+        act_lic = {code.upper() for code in driving_classes_for_display(act_src) if code}
         lic_tp += len(exp_lic & act_lic)
         lic_fp += len(act_lic - exp_lic)
         lic_fn += len(exp_lic - act_lic)

@@ -728,8 +728,18 @@ def parse_qualifications(raw: dict[str, Any] | None) -> QualificationsConfig:
             certificates.append(parsed)
 
     def _list_sourced(key: str) -> list[SourcedText]:
+        value = raw.get(key)
+        # Old profiles may store this one field as a string. Read it as classes.
+        # Load does not write the file back.
+        if key == "driving_license" and isinstance(value, str):
+            from core.cv_parser import driving_classes_for_display
+
+            return [
+                SourcedText(value=code, source="")
+                for code in driving_classes_for_display(value)
+            ]
         out: list[SourcedText] = []
-        for item in raw.get(key) or []:
+        for item in value or []:
             parsed = _parse_sourced_text(item)
             if parsed:
                 out.append(parsed)

@@ -167,7 +167,9 @@ def evaluate_doc(parsed: dict, expected: dict) -> dict[str, tuple[bool, str]]:
 
     # licenses — context sensitive
     lic_fails: list[str] = []
-    got_lic = [str(x.get("value") if isinstance(x, dict) else x).upper() for x in (parsed.get("driving_license") or [])]
+    from core.cv_parser import driving_classes_for_display
+
+    got_lic = [code.upper() for code in driving_classes_for_display(parsed.get("driving_license"))]
     exp_lic = [str(x).upper() for x in (expected.get("licenses") or [])]
     if "licenses" in expected or "licenses" in expected:
         for code in exp_lic:

@@ -179,6 +179,13 @@ def _phi_extract(llm, block: str) -> tuple[dict[str, Any], float, bool]:
     return {"languages": clean_langs, "licences": clean_lics}, elapsed, invalid
 
 
+def licence_codes(raw: Any) -> set[str]:
+    """Class codes from a list or a legacy string. Same result for both."""
+    from core.cv_parser import driving_classes_for_display
+
+    return {code.upper() for code in driving_classes_for_display(raw) if code}
+
+
 def _to_pred(phi: dict[str, Any]) -> dict[str, Any]:
     langs = [
         {"language": x["name"], "level": x.get("level") or "", "source": "phi_language_only"}
@@ -260,8 +267,7 @@ def main() -> None:
         fn += stats["entry_fn"]
         hallu += sum(1 for r in rows if r.status == "hallucinated")
         exp_lic = {str(x).upper() for x in (g.get("licenses") or []) if str(x).strip()}
-        act_lic = {str(x.get("value") or "").upper() for x in pred.get("driving_license") or []}
-        act_lic.discard("")
+        act_lic = licence_codes(pred.get("driving_license"))
         lic_tp += len(exp_lic & act_lic)
         lic_fp += len(act_lic - exp_lic)
         lic_fn += len(exp_lic - act_lic)
