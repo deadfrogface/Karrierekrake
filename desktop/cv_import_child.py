@@ -127,6 +127,33 @@ def _fail(
         INPUT_CONDITIONED_LLM_ERROR_CODES,
     )
 
+    if kind == "peak_rss_exceeded":
+        # Input-conditioned: the load does not fit the fresh-app child budget.
+        # No automatic retry. The existing UI string stays; no new copy.
+        logger.warning(
+            "cv_import input_conditioned no_auto_retry kind=%s detail=%s",
+            kind,
+            message,
+        )
+    elif kind == "memory_budget_app_share":
+        # The app's share left too little for the child. Code only.
+        # No automatic retry. User copy is the UI PR.
+        logger.warning(
+            "cv_import app_share no_auto_retry kind=%s detail=%s",
+            kind,
+            message,
+        )
+        shown = kind
+        payload: dict = {
+            "ok": False,
+            "kind": kind,
+            "message": shown,
+            "parsed": None,
+        }
+        if stage:
+            payload["stage"] = stage
+        _write(out_path, _with_decision(payload, decision))
+        return code
     if kind in CODE_ONLY_LLM_ERROR_CODES:
         # Code and log only. User copy is added by the UI PR.
         # llm_prompt_too_long and llm_output_truncated are input-conditioned.

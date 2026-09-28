@@ -167,6 +167,9 @@ def test_requirements_runtime_lists_docpick_and_llama() -> None:
     assert "--report-llm-load" in smoke
     assert "AMX_INT8 = 1" in smoke
     assert "llama_cpu_all_variants=0" in smoke
+    assert "llama_backend_libs=" in smoke
+    assert "ggml-cpu-haswell" in smoke
+    assert "llama_model_buffer=not_loaded" in smoke
     assert not any(
         line.strip().startswith("#") and "docpick" in line for line in text.splitlines() if "docpick" in line
     )

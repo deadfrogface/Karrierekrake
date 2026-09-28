@@ -84,6 +84,58 @@ def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> Non
     assert CV_IMPORT_PEAK_RSS_MB_MAX == 3_300_000_000 / (1024.0 * 1024.0)
 
 
+def test_child_budget_is_never_negative() -> None:
+    from core.cv_docpick_import import (
+        CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+        CV_IMPORT_FRESH_APP_PRIVATE_BYTES,
+        child_budget_for_app_private,
+        child_start_allowed,
+        fresh_app_child_budget_bytes,
+    )
+
+    assert CV_IMPORT_FRESH_APP_PRIVATE_BYTES == 167_272_448
+    assert CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES == 1_698_168_832
+    fresh = fresh_app_child_budget_bytes()
+    assert fresh == 3_300_000_000 - 167_272_448
+    assert child_budget_for_app_private(3_300_000_000) == 0
+    assert child_budget_for_app_private(4_000_000_000) == 0
+    assert child_budget_for_app_private(-1) == 3_300_000_000
+    allowed, budget = child_start_allowed(3_200_000_000)
+    assert budget == 100_000_000
+    assert budget < CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES
+    assert allowed is False
+
+
+def test_over_current_budget_but_under_fresh_is_app_share(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    from core.cv_docpick_import import (
+        CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+        fresh_app_child_budget_bytes,
+        reset_private_commit_high_water,
+    )
+
+    reset_private_commit_high_water()
+    sample = CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES + 1
+    assert sample < fresh_app_child_budget_bytes()
+    monkeypatch.setenv(
+        "KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES",
+        str(CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES),
+    )
+    monkeypatch.setenv("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "1601831168")
+    monkeypatch.setattr(
+        "core.cv_docpick_import.cv_path_peak_rss_bytes",
+        lambda **_kwargs: sample,
+    )
+    with caplog.at_level("INFO"):
+        with pytest.raises(CvImportError) as ei:
+            _enforce_peak_rss(stage="after_load")
+    assert ei.value.code == "memory_budget_app_share"
+    assert "app_private=1601831168" in caplog.text
+    assert f"child_bytes={sample}" in caplog.text
+    reset_private_commit_high_water()
+
+
 def test_parsed_cv_matching_contract_stable() -> None:
     """No silent schema drift vs profile/matching consumers."""
     assert PARSED_CV_CONTRACT_VERSION == 1

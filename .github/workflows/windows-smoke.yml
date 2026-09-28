@@ -113,10 +113,12 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          # No GGUF on the runner. The EXE still loads the bundled llama DLL
-          # and writes the CPU-feature line plus whether a single fixed CPU
-          # library is present. Buffer names (CPU_REPACK / AMX) are logged by
-          # the import as cv_llm_load when a model is loaded.
+          # No GGUF on the runner, so this step cannot allocate CPU_REPACK/AMX
+          # buffers. It still loads the bundled llama DLL and writes which
+          # ggml-cpu library the EXE ships, plus the CPU-feature line of the
+          # runner (not the i3). Buffer names are logged by the import as
+          # cv_llm_load when a model is loaded. llama_model_buffer=not_loaded
+          # is the expected line here.
           $out = Join-Path $env:RUNNER_TEMP "kk-llm-load.txt"
           if (Test-Path $out) { Remove-Item $out -Force }
           $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
@@ -149,6 +151,18 @@ jobs:
           }
           if ($text -notmatch 'llama_runtime_isa=fixed') {
             Write-Error "EXE llama build reports runtime CPU selection: $text"
+            exit 1
+          }
+          if ($text -notmatch 'llama_backend_libs=.*ggml-cpu') {
+            Write-Error "EXE did not list a bundled ggml-cpu library: $text"
+            exit 1
+          }
+          if ($text -match 'ggml-cpu-haswell|ggml-cpu-sapphirerapids|ggml-cpu-skylakex|ggml-cpu-icelake') {
+            Write-Error "EXE ships GGML_CPU_ALL_VARIANTS libraries: $text"
+            exit 1
+          }
+          if ($text -notmatch 'llama_model_buffer=not_loaded') {
+            Write-Error "EXE load report did not state that no model buffer was allocated: $text"
             exit 1
           }
       - name: Production content scan + manifest

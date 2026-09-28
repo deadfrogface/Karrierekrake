@@ -14,7 +14,7 @@ import pytest
 
 from desktop.cv_import_supervisor import (
     CvImportSupervisor,
-    _parent_anon_over_limit,
+    _parent_memory_code,
     default_spawn,
 )
 from devops.peak_rss_harness import ContainedProcess, launch_contained
@@ -274,6 +274,153 @@ def test_parent_zero_anon_sample_is_not_over_and_not_a_pass(
     monkeypatch.setattr("desktop.cv_import_supervisor.sys.platform", "linux")
     monkeypatch.setattr("core.cv_docpick_import._linux_rss_anon_bytes", lambda pid: 0)
     with caplog.at_level("ERROR"):
-        assert _parent_anon_over_limit(_Pid()) is False
+        assert _parent_memory_code(_Pid(), child_budget=1_000) is None
     assert "unmeasured" in caplog.text
     assert "not a pass" in caplog.text
+
+
+def test_high_app_share_does_not_start_the_child(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    spawned: list[int] = []
+
+    def spawn(*_args, **_kwargs):
+        spawned.append(1)
+        raise AssertionError("child started")
+
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 3_300_000_000,
+    )
+    with caplog.at_level("INFO"):
+        result = CvImportSupervisor(Path("cv.pdf"), spawn=spawn).run_once()
+    assert result.kind == "memory_budget_app_share"
+    assert result.attempts == 1
+    assert spawned == []
+    assert "app_private=3300000000" in caplog.text
+    assert "child_budget=0" in caplog.text
+
+
+def test_unmeasured_app_private_does_not_start_the_child(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 0,
+    )
+    result = CvImportSupervisor(Path("cv.pdf"), spawn=lambda *_a, **_k: None).run_once()
+    assert result.kind == "peak_rss_unmeasured"
+    assert result.attempts == 1
+
+
+def test_parent_sample_over_current_budget_is_app_share(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from core.cv_docpick_import import (
+        CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+        fresh_app_child_budget_bytes,
+    )
+
+    sample = CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES + 1
+    assert sample < fresh_app_child_budget_bytes()
+
+    class _Pid:
+        pid = os.getpid()
+
+    monkeypatch.setattr("desktop.cv_import_supervisor.sys.platform", "linux")
+    monkeypatch.setattr(
+        "core.cv_docpick_import._linux_rss_anon_bytes",
+        lambda pid: sample,
+    )
+    assert (
+        _parent_memory_code(_Pid(), child_budget=CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES)
+        == "memory_budget_app_share"
+    )
+
+
+def test_parent_sample_over_fresh_budget_is_peak_rss(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from core.cv_docpick_import import fresh_app_child_budget_bytes
+
+    fresh = fresh_app_child_budget_bytes()
+
+    class _Pid:
+        pid = os.getpid()
+
+    monkeypatch.setattr("desktop.cv_import_supervisor.sys.platform", "linux")
+    monkeypatch.setattr(
+        "core.cv_docpick_import._linux_rss_anon_bytes",
+        lambda pid: fresh + 1,
+    )
+    assert _parent_memory_code(_Pid(), child_budget=fresh) == "peak_rss_exceeded"
+
+
+def test_spawn_inherits_budget_and_parent_does_not_keep_it(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: dict[str, str | None] = {}
+
+    def spawn(cv_path: Path, out_path: Path):
+        seen["app"] = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES")
+        seen["budget"] = os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES")
+
+        class _Done:
+            pid = os.getpid()
+
+            def poll(self):
+                return 0
+
+            def terminate(self):
+                return None
+
+        return _Done()
+
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 200_000_000,
+    )
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_payload",
+        lambda _path: {"ok": True, "parsed": {"personal": {}}},
+    )
+    os.environ.pop("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", None)
+    os.environ.pop("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", None)
+    result = CvImportSupervisor(Path("cv.pdf"), spawn=spawn).run_once()
+    assert result.ok is True
+    assert seen["app"] == "200000000"
+    assert seen["budget"] == str(3_300_000_000 - 200_000_000)
+    assert os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES") is None
+    assert os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES") is None
+
+
+def test_memory_codes_log_without_new_user_copy(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    from desktop.cv_import_child import _fail
+
+    with caplog.at_level("WARNING"):
+        assert (
+            _fail(
+                tmp_path / "share.json",
+                kind="memory_budget_app_share",
+                message="detail",
+                decision=None,
+            )
+            == 1
+        )
+    payload = json.loads((tmp_path / "share.json").read_text(encoding="utf-8"))
+    assert payload["kind"] == "memory_budget_app_share"
+    assert payload["message"] == "memory_budget_app_share"
+    assert "app_share" in caplog.text
+    assert "deterministic" not in caplog.text
+
+    caplog.clear()
+    with caplog.at_level("WARNING"):
+        _fail(
+            tmp_path / "peak.json",
+            kind="peak_rss_exceeded",
+            message="detail",
+            decision=None,
+        )
+    peak = json.loads((tmp_path / "peak.json").read_text(encoding="utf-8"))
+    assert peak["kind"] == "peak_rss_exceeded"
+    assert peak["message"] != "memory_budget_app_share"
+    assert "input_conditioned" in caplog.text
+    assert "deterministic" not in caplog.text

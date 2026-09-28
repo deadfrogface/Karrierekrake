@@ -147,6 +147,9 @@ class CvImportSupervisor:
         ``llm_timeout`` depends on the machine and is not deterministic.
         It is still not retried automatically. A manual retry is the UI PR.
         ``llm_prompt_too_long`` and ``llm_output_truncated`` are input-conditioned.
+        ``peak_rss_exceeded`` is input-conditioned (the child does not fit the
+        fresh-app budget). ``memory_budget_app_share`` is the app's share of
+        the group cap. Neither is retried automatically.
         """
         self.ran_on_thread = threading.get_ident()
         # Release Günther's in-process weight before the import child loads the
@@ -165,12 +168,60 @@ class CvImportSupervisor:
             progress("parsing")
         if self._wait_qa_observe(progress):
             return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
+        # One app read. The child budget is the group cap minus this value.
+        # The app is not polled again while the child runs.
+        app_private = _read_app_private_bytes()
+        if app_private <= 0:
+            logger.error(
+                "cv_import app private unmeasured value=%s; not a pass",
+                app_private,
+            )
+            return ImportAttemptResult(
+                False, "peak_rss_unmeasured", "peak_rss_unmeasured", None, attempts=1
+            )
+        from core.cv_docpick_import import (
+            CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+            child_start_allowed,
+            fresh_app_child_budget_bytes,
+        )
+
+        allowed, child_budget = child_start_allowed(app_private)
+        fresh_budget = fresh_app_child_budget_bytes()
+        logger.info(
+            "cv_import memory_shares app_private=%s child_budget=%s "
+            "fresh_child_budget=%s child_min_after_load=%s",
+            app_private,
+            child_budget,
+            fresh_budget,
+            CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+        )
+        if not allowed:
+            logger.error(
+                "memory_budget_app_share app_private=%s child_budget=%s "
+                "child_min_after_load=%s",
+                app_private,
+                child_budget,
+                CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+            )
+            return ImportAttemptResult(
+                False,
+                "memory_budget_app_share",
+                "memory_budget_app_share",
+                None,
+                attempts=1,
+            )
         fd, name = tempfile.mkstemp(prefix="kk-cv-import-", suffix=".json")
         os.close(fd)
         out_path = Path(name)
         proc = None
         try:
-            proc = self._spawn(self.cv_path, out_path)
+            proc = _spawn_with_child_budget(
+                self._spawn,
+                self.cv_path,
+                out_path,
+                app_private=app_private,
+                child_budget=child_budget,
+            )
             self._proc = proc
             if self._cancel.is_set():
                 self._stop(proc)
@@ -187,12 +238,13 @@ class CvImportSupervisor:
                 now = time.monotonic()
                 if now >= next_anon:
                     next_anon = now + _PARENT_ANON_SAMPLE_S
-                    if _parent_anon_over_limit(proc):
+                    memory_code = _parent_memory_code(proc, child_budget=child_budget)
+                    if memory_code:
                         self._stop(proc)
                         return ImportAttemptResult(
                             False,
-                            "peak_rss_exceeded",
-                            "peak_rss_exceeded",
+                            memory_code,
+                            memory_code,
                             None,
                             attempts=1,
                         )
@@ -261,6 +313,10 @@ class CvImportSupervisor:
             return ImportAttemptResult(True, "ok", "", payload["parsed"], attempts=1)
         kind = str(payload.get("kind") or "")
         message = str(payload.get("message") or "")
+        if kind == "memory_budget_app_share":
+            return ImportAttemptResult(
+                False, "memory_budget_app_share", message or kind, None, attempts=1
+            )
         if kind == "oom" or kind == "peak_rss_exceeded" or code == 3 or is_oom_exit(code):
             return ImportAttemptResult(False, "oom" if kind != "peak_rss_exceeded" else "peak_rss_exceeded", message or "oom", None, attempts=1)
         if kind in {"timeout", "llm_timeout"}:
@@ -277,27 +333,74 @@ class CvImportSupervisor:
         )
 
 
-def _parent_anon_over_limit(proc: object) -> bool:
-    """True when a measurable child sample is over the #69 byte cap.
+def _spawn_with_child_budget(
+    spawn: Callable[..., object],
+    cv_path: Path,
+    out_path: Path,
+    *,
+    app_private: int,
+    child_budget: int,
+) -> object:
+    """Publish the one-shot budget in the environment the child inherits.
+
+    The values are removed from this process after ``Popen`` copies them.
+    The app is not sampled again.
+    """
+    keys = {
+        "KARRIEREKRAKE_CV_APP_PRIVATE_BYTES": str(app_private),
+        "KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES": str(child_budget),
+    }
+    previous = {key: os.environ.get(key) for key in keys}
+    os.environ.update(keys)
+    try:
+        return spawn(cv_path, out_path)
+    finally:
+        for key, old in previous.items():
+            if old is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = old
+
+
+def _read_app_private_bytes() -> int:
+    """One private-commit read of this process (the app). Not a poll loop."""
+    from core.cv_docpick_import import _self_rss_bytes
+
+    return int(_self_rss_bytes())
+
+
+def _parent_memory_code(proc: object, *, child_budget: int) -> str | None:
+    """Error code when a measurable child sample is over its budget.
 
     An unmeasured sample (0/None) is logged inside ``_parent_anon_sample``
-    and does not count as under the limit, and it does not by itself kill
-    the child: the in-process gate fails closed on its own 0/None read.
+    and does not by itself kill the child: the in-process gate fails closed
+    on its own 0/None read. The app's private commit is not read here.
     """
     sample = _parent_anon_sample(proc)
     if sample is None:
-        return False
-    from core.cv_docpick_import import CV_IMPORT_PEAK_RSS_BYTES_MAX
+        return None
+    from core.cv_docpick_import import (
+        classify_child_private_commit,
+        fresh_app_child_budget_bytes,
+    )
 
-    logger.info("cv_import parent anon bytes=%s", sample)
-    if sample > CV_IMPORT_PEAK_RSS_BYTES_MAX:
+    fresh_budget = fresh_app_child_budget_bytes()
+    logger.info(
+        "cv_import memory_shares parent child_bytes=%s child_budget=%s fresh_child_budget=%s",
+        sample,
+        child_budget,
+        fresh_budget,
+    )
+    code = classify_child_private_commit(sample, child_budget)
+    if code is not None:
         logger.error(
-            "peak_rss_exceeded parent anon bytes=%s limit=%s",
+            "%s parent child_bytes=%s child_budget=%s fresh_child_budget=%s",
+            code,
             sample,
-            CV_IMPORT_PEAK_RSS_BYTES_MAX,
+            child_budget,
+            fresh_budget,
         )
-        return True
-    return False
+    return code
 
 
 def _parent_anon_sample(proc: object) -> int | None:

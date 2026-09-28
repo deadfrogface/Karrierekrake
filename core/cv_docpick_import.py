@@ -938,6 +938,19 @@ CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
 # Derived MiB/GiB helpers for logs (primary compare is always BYTES).
 CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
 CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 ** 3)
+# Private anonymous RSS of a freshly shown MainWindow after startup work has
+# settled (offscreen, empty AppData, stable for 5 s at t=35.7 s). The
+# transient startup peak before that drop was 591_810_560 and is not this
+# constant. VM, not i3. Measured 2026-09-28.
+# The group cap is App + child. The child's budget on a fresh app is
+# CV_IMPORT_PEAK_RSS_BYTES_MAX minus this constant.
+CV_IMPORT_FRESH_APP_PRIVATE_BYTES = 167_272_448
+# Anonymous RSS of the import-sized llama load with the pinned 0.3.35 AVX2
+# wheel, after buffer allocation and before prompt eval. Median of 5, n_ctx
+# 4096, one libggml-cpu (CPU_REPACK 1297.97 MiB, no AMX buffer). VM, not i3.
+# Measured 2026-09-28. A remaining child budget below this does not start
+# the child.
+CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES = 1_698_168_832
 # Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
 CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "180"))
 
@@ -1593,13 +1606,71 @@ def cv_path_peak_rss_mb(*, include_llama_server: bool = True) -> float:
     )
 
 
-def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
-    """Hard fail when sampled private commit exceeds 3_300_000_000 bytes.
+def fresh_app_child_budget_bytes() -> int:
+    """Child budget when the app is the measured fresh size. Never negative."""
+    remaining = CV_IMPORT_PEAK_RSS_BYTES_MAX - CV_IMPORT_FRESH_APP_PRIVATE_BYTES
+    return remaining if remaining > 0 else 0
 
-    One read per call (no polling loop). ``0`` and ``None`` are unmeasured:
-    they are logged and are not a pass. On Linux the compared value is the
-    max of samples taken so far in this process, because ``Rss_Anon`` is a
-    current value and ``VmHWM`` includes file-backed pages.
+
+def child_budget_for_app_private(app_private: int) -> int:
+    """``3_300_000_000`` minus the app's private commit. Never negative."""
+    remaining = CV_IMPORT_PEAK_RSS_BYTES_MAX - max(0, int(app_private))
+    return remaining if remaining > 0 else 0
+
+
+def child_start_allowed(app_private: int) -> tuple[bool, int]:
+    """False when the remaining child budget is below the measured load need.
+
+    A budget of 0 is not a start. The caller does not launch the child.
+    """
+    budget = child_budget_for_app_private(app_private)
+    return budget >= CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES, budget
+
+
+def active_child_budget_bytes() -> int:
+    """Child budget published once at import start, else the fresh-app budget.
+
+    ``KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES`` is set by the supervisor from one
+    app read. A negative value is treated as 0. The app is not polled again.
+    """
+    raw = os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", "").strip()
+    if not raw:
+        return fresh_app_child_budget_bytes()
+    try:
+        value = int(raw)
+    except ValueError:
+        return fresh_app_child_budget_bytes()
+    return value if value > 0 else 0
+
+
+def classify_child_private_commit(sample: int, child_budget: int) -> str | None:
+    """Map a child private-commit sample to an error code, or None.
+
+    ``peak_rss_exceeded``: sample is over the fresh-app child budget.
+    That case is input-conditioned (the CV/load does not fit a fresh app).
+    ``memory_budget_app_share``: sample is over the current child budget
+    and not over the fresh-app budget.
+    """
+    if int(sample) > fresh_app_child_budget_bytes():
+        return "peak_rss_exceeded"
+    if int(sample) > int(child_budget):
+        return "memory_budget_app_share"
+    return None
+
+
+def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
+    """Hard fail when the child's private-commit high-water exceeds its budget.
+
+    One read per call (no polling loop, and no read of the parent app).
+    ``0`` and ``None`` are unmeasured: they are logged and are not a pass.
+    On Linux the compared value is the max of samples taken so far in this
+    process, because ``Rss_Anon`` is a current value and ``VmHWM`` includes
+    file-backed pages.
+
+    The limit is the child budget from import start (group cap minus the
+    app's private commit), not the raw 3_300_000_000 group cap. A sample
+    over the fresh-app child budget is ``peak_rss_exceeded``. A sample over
+    only the current child budget is ``memory_budget_app_share``.
     """
     global _private_commit_high_water
     rss = cv_path_peak_rss_bytes(include_llama_server=include_llama_server)
@@ -1611,20 +1682,31 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
         )
         raise CvImportError("peak_rss_unmeasured", "peak_rss_unmeasured")
     _private_commit_high_water = max(_private_commit_high_water, int(rss))
+    child_budget = active_child_budget_bytes()
+    fresh_budget = fresh_app_child_budget_bytes()
+    app_private = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
     logger.info(
-        "cv_import private_commit stage=%s bytes=%s high_water=%s",
+        "cv_import memory_shares stage=%s app_private=%s child_bytes=%s "
+        "child_budget=%s fresh_child_budget=%s high_water=%s",
         stage,
+        app_private or "unset",
         int(rss),
+        child_budget,
+        fresh_budget,
         _private_commit_high_water,
     )
-    if _private_commit_high_water > CV_IMPORT_PEAK_RSS_BYTES_MAX:
-        logger.error(
-            "peak_rss_exceeded stage=%s bytes=%s limit=%s",
-            stage,
-            _private_commit_high_water,
-            CV_IMPORT_PEAK_RSS_BYTES_MAX,
-        )
-        raise CvImportError("peak_rss_exceeded", "peak_rss_exceeded")
+    code = classify_child_private_commit(_private_commit_high_water, child_budget)
+    if code is None:
+        return
+    logger.error(
+        "%s stage=%s bytes=%s child_budget=%s fresh_child_budget=%s",
+        code,
+        stage,
+        _private_commit_high_water,
+        child_budget,
+        fresh_budget,
+    )
+    raise CvImportError(code, code)
 
 
 def _enforce_timeout(t0: float, *, stage: str) -> None:
@@ -1654,8 +1736,13 @@ def import_cv_docpick(
       - ``unreadable_cv`` — corrupt / unreadable document
       - ``llm_timeout`` — wall-clock over ``CV_IMPORT_TIMEOUT_S``.
         Depends on the machine, so it is not deterministic. No automatic retry.
-      - ``peak_rss_exceeded`` — private commit over 3_300_000_000 bytes
-        (Windows PeakPagefileUsage, Linux anonymous RSS; not file-backed mmap)
+      - ``peak_rss_exceeded`` — child private commit over the fresh-app
+        child budget (group cap minus the measured fresh-app private
+        commit). Input-conditioned. No automatic retry.
+      - ``memory_budget_app_share`` — current child budget (group cap
+        minus the app's private commit at import start) is below the
+        measured load need, or the child peak is over that current budget
+        and not over the fresh-app budget. No automatic retry.
       - ``model_missing`` / ``llama_missing`` — sole GGUF or runtime absent
 
     Optional ``progress(str)`` and ``should_cancel() -> bool`` keep the UI

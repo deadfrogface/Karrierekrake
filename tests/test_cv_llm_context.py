@@ -282,6 +282,45 @@ def test_over_limit_after_load_skips_prompt_eval(monkeypatch: pytest.MonkeyPatch
     assert stages == ["after_load"]
 
 
+def test_app_share_after_load_skips_prompt_eval(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A load over the current child budget must not evaluate the prompt."""
+    from core.cv_docpick_import import (
+        CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES,
+        fresh_app_child_budget_bytes,
+        reset_private_commit_high_water,
+    )
+
+    reset_private_commit_high_water()
+    sample = CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES + 1
+    assert sample < fresh_app_child_budget_bytes()
+    monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
+    monkeypatch.setenv(
+        "KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES",
+        str(CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES),
+    )
+    monkeypatch.setenv("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "1601831168")
+    monkeypatch.setattr(
+        "core.cv_docpick_import.cv_path_peak_rss_bytes",
+        lambda **_kwargs: sample,
+    )
+
+    class Spy(_FakeLlama):
+        def count_chat_tokens(self, messages):
+            raise AssertionError("token count ran after an over-budget load")
+
+        def create_chat_completion(self, **kwargs):
+            raise AssertionError("prompt eval ran after an over-budget load")
+
+    monkeypatch.setattr("core.cv_llm_runtime._llama_cls", lambda: Spy)
+    with pytest.raises(CvImportError) as ei:
+        chat_completion_inprocess(
+            [{"role": "user", "content": "x"}],
+            model_path=Path("unused.gguf"),
+        )
+    assert ei.value.code == "memory_budget_app_share"
+    reset_private_commit_high_water()
+
+
 def test_load_log_keeps_buffer_and_cpu_lines(caplog: pytest.LogCaptureFixture) -> None:
     from core.cv_llm_runtime import _log_llama_load_lines
 
