@@ -753,6 +753,24 @@ def _loading_resolution(country_code: str) -> PlaceResolution:
     )
 
 
+def ui_geo_index_loading_resolution(country_code: str) -> PlaceResolution | None:
+    """UI-thread loading sentinel, without entering ``resolve_place``.
+
+    Returns None when the caller should resolve: this is not the UI thread,
+    preload has finished, the country is outside the local set, or that
+    country's file is already published. A published home country is resolved
+    even while other countries are still loading.
+    """
+    cc = normalize_country_code(country_code)
+    if not cc or cc not in LOCAL_GEO_COUNTRY_CODES:
+        return None
+    if _pgeocode_index.get(cc) is not None:
+        return None
+    if not _caller_is_ui_thread() or _preload_done.is_set():
+        return None
+    return _loading_resolution(cc)
+
+
 def _unavailable_resolution(country_code: str) -> PlaceResolution:
     return PlaceResolution(
         status="UNKNOWN",
@@ -1259,6 +1277,7 @@ __all__ = [
     "resolve_city_pgeocode",
     "resolve_place_offline",
     "resolve_place",
+    "ui_geo_index_loading_resolution",
     "place_from_job_like",
     "DISTANCE_UNKNOWN",
     "UNKNOWN_DISTANCE",

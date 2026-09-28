@@ -43,6 +43,7 @@ from core.geo_resolve import (
     place_from_job_like,
     resolve_place,
     store_cached_resolution,
+    ui_geo_index_loading_resolution,
 )
 
 if TYPE_CHECKING:
@@ -207,7 +208,10 @@ def cached_home_resolution(
     Does not mutate ``location``. ``cross_border``, ``home_country`` and
     ``allow_network=False`` are the same arguments ``resolve_place`` receives.
     A disk-cache hit returns without calling ``resolve_place`` and without
-    waiting for the postal index.
+    waiting for the postal index. On the UI thread a still-missing home
+    country returns the loading sentinel the same way, also without
+    ``resolve_place``. The lookup after the index is published is the one
+    shared resolution.
     """
     address, postal, city, country = _home_text(location)
     if not postal and not city and not address:
@@ -259,6 +263,12 @@ def cached_home_resolution(
         postal_code=postal or _plz_from_address(address),
         country_code=normalize_country_code(country) or "DE",
     )
+    # The UI thread cannot build the index. Returning the sentinel here keeps
+    # that wait out of ``resolve_place``. The same home is resolved once the
+    # country file is published; hint and distance filter share that result.
+    loading = ui_geo_index_loading_resolution(place.country_code)
+    if loading is not None:
+        return loading
     resolution = resolve_place(
         place,
         cross_border=cross_border,

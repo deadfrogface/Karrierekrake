@@ -223,6 +223,47 @@ def test_second_start_with_cache_does_not_resolve(
         _close(win2, qapp)
 
 
+def test_start_resolves_once_without_cache_and_never_with_cache(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """Ohne Cache genau ein resolve_place pro Start, mit Cache keins.
+
+    Der Lade-Sentinel vor dem Index zählt nicht: Hinweis und Distanzfilter
+    teilen die eine Auflösung nach dem Preload.
+    """
+    import core.location as location
+
+    _silence(monkeypatch)
+    i18n.set_language("de")
+    _seed_berlin(config_service)
+    reset_home_resolution_cache_for_tests()
+    calls = {"n": 0}
+    original = location.resolve_place
+
+    def _wrapped(*args, **kwargs):
+        calls["n"] += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(location, "resolve_place", _wrapped)
+    win = _open_main(qapp, config_service)
+    try:
+        _pump_resolved(qapp, win.profile.home_status)
+        assert calls["n"] == 1
+    finally:
+        _close(win, qapp)
+    loaded = config_service.load().profile.location
+    assert read_home_coordinates(config_service.dirs["cache"], loaded) is not None
+
+    reset_home_resolution_cache_for_tests()
+    calls["n"] = 0
+    win2 = _open_main(qapp, config_service)
+    try:
+        _pump_resolved(qapp, win2.profile.home_status)
+        assert calls["n"] == 0
+    finally:
+        _close(win2, qapp)
+
+
 def test_country_change_at_to_ch_same_plz_is_cache_miss(
     config_service, geo_ready
 ):
