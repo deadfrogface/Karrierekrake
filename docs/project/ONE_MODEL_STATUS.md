@@ -64,8 +64,12 @@ Siehe `ONE_MODEL_KEEP_REVERT.md`. Soft-Grounding Skills/Software **REVERT** (F1 
 | Fehlendes Modell → `model_missing` | **PASS** (kein CV in Message) |
 | Beschädigte Datei → `unreadable_cv` | **PASS** |
 | Timeout → `timeout` | **PASS** |
-| Windows-EXE öffnen→import→Vorschau→Übernehmen→Restart | **OFFEN / UNGEPRÜFT** |
+| Bundled model resolve (`_MEIPASS` / `<exe>/models`) | **Code + Unit-Tests** (`cursor/cv-import-exe-offline-bundle-d85b`) |
+| UI ohne Modell-/Techniknamen | **Code + Unit-Tests** |
+| Windows-EXE öffnen→import→Vorschau→Übernehmen→Restart offline | **CI-Gate verdrahtet** — Nachweis nur nach grünem Offline-E2E |
 | Job-Object Peak ≤ 3 300 000 000 auf i3/8 GB | **OFFEN / UNGEPRÜFT** |
+
+Siehe `CV_IMPORT_EXE_OFFLINE_RELEASE_GATE.md`.
 
 ## 7. 99 %
 

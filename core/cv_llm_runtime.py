@@ -1,15 +1,23 @@
-"""Local Qwen3.5-4B runtime for productive CV import.
+"""Local CV/writing model runtime for productive import and Günther writing.
 
 End users must not start a developer llama.cpp server by hand. When no OpenAI-
 compatible server is already listening on ``KARRIEREKRAKE_CV_LLM_BASE``, the
-import child loads the GGUF in-process via ``llama-cpp-python`` (same model,
-same prompts — not a different-model fallback).
+import child loads the bundled GGUF in-process via ``llama-cpp-python`` (same
+model, same prompts — not a different-model fallback).
+
+Release layout (offline after fresh install):
+1. Model next to the EXE: ``<exe_dir>/models/qwen3.5-4b/<file>.gguf``
+2. Or inside the frozen bundle (``sys._MEIPASS``) when datas were packaged
+3. AppData / cache only as optional override — never required for a clean install
+
+No Phi / DET fallback. Fail closed with ``CvImportError``.
 """
 
 from __future__ import annotations
 
 import logging
 import os
+import shutil
 import sys
 from pathlib import Path
 from typing import Any
@@ -18,14 +26,109 @@ logger = logging.getLogger(__name__)
 
 CV_MODEL_FILENAME = "Qwen3.5-4B-Q4_K_M.gguf"
 CV_MODEL_DIRNAME = "qwen3.5-4b"
+CV_MODEL_REL = Path("models") / CV_MODEL_DIRNAME / CV_MODEL_FILENAME
+
+# Expected size / checksum for release verification (not a silent download gate).
+CV_MODEL_SHA256 = "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+
+
+def is_frozen() -> bool:
+    return bool(getattr(sys, "frozen", False))
+
+
+def _exe_dir() -> Path | None:
+    if not is_frozen():
+        return None
+    try:
+        return Path(sys.executable).resolve().parent
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _meipass_dir() -> Path | None:
+    if not is_frozen():
+        return None
+    raw = getattr(sys, "_MEIPASS", None)
+    if not raw:
+        return None
+    return Path(str(raw))
+
+
+def bundled_cv_model_candidates() -> list[Path]:
+    """Ordered candidate paths for the production GGUF inside a release install."""
+    out: list[Path] = []
+    meipass = _meipass_dir()
+    if meipass is not None:
+        out.append(meipass / CV_MODEL_REL)
+        out.append(meipass / CV_MODEL_FILENAME)
+    exe = _exe_dir()
+    if exe is not None:
+        out.append(exe / CV_MODEL_REL)
+        out.append(exe / CV_MODEL_FILENAME)
+    # Dev / CI: vendor tree prepared by scripts/prepare_bundled_cv_model.py
+    try:
+        repo = Path(__file__).resolve().parents[1]
+        out.append(repo / "vendor" / "cv_model" / CV_MODEL_DIRNAME / CV_MODEL_FILENAME)
+    except Exception:  # noqa: BLE001
+        pass
+    return out
+
+
+def materialize_bundled_model_to_appdata(src: Path) -> Path | None:
+    """Copy bundled GGUF into AppData once so mmap stays on a durable path.
+
+    Never downloads. Returns the AppData path when copy succeeds, else None.
+    """
+    try:
+        from guenther.model_manager import default_models_dir
+
+        dest = default_models_dir() / CV_MODEL_DIRNAME / CV_MODEL_FILENAME
+        if dest.is_file() and dest.stat().st_size == src.stat().st_size:
+            return dest
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        shutil.copy2(src, tmp)
+        tmp.replace(dest)
+        logger.info("cv_model_materialized dest=%s bytes=%s", dest, dest.stat().st_size)
+        return dest
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("cv_model_materialize_failed err=%s", type(exc).__name__)
+        return None
 
 
 def resolve_cv_model_path() -> Path | None:
-    """Locate the Qwen3.5-4B GGUF used for CV import (env → AppData → cache)."""
+    """Locate the production GGUF (env → bundled EXE layout → AppData → cache).
+
+    A stale ``KARRIEREKRAKE_CV_LLM_MODEL`` pointing at a missing file must not
+    short-circuit the bundled sidecar — fall through to release layout.
+    """
     env = (os.environ.get("KARRIEREKRAKE_CV_LLM_MODEL") or "").strip()
     if env:
         p = Path(env)
-        return p if p.is_file() else None
+        if p.is_file():
+            return p
+        logger.warning(
+            "cv_model_env_missing path=%s — falling through to bundled candidates",
+            p.name,
+        )
+
+    meipass = _meipass_dir()
+    for bundled in bundled_cv_model_candidates():
+        if not bundled.is_file():
+            continue
+        # Onefile extract (_MEIPASS) is ephemeral — copy to AppData once.
+        # Sidecar next to the EXE is already durable; skip the 2.7 GB copy.
+        if meipass is not None:
+            try:
+                bundled.resolve().relative_to(meipass.resolve())
+            except ValueError:
+                return bundled
+            else:
+                durable = materialize_bundled_model_to_appdata(bundled)
+                if durable is not None and durable.is_file():
+                    return durable
+                return bundled
+        return bundled
 
     candidates: list[Path] = []
     try:
@@ -94,15 +197,15 @@ def ensure_cv_llm_ready() -> str:
     if model is None:
         raise CvImportError(
             "model_missing",
-            "Das lokale CV-Modell (Qwen3.5-4B) fehlt. "
-            "Ohne dieses Modell kann der zugesagte CV-Import nicht laufen. "
-            "Kein Wechsel auf den alten DET-Parser.",
+            "Das lokale Lebenslauf-Modell fehlt in dieser Installation. "
+            "Bitte Karrierekrake neu installieren oder den Support kontaktieren. "
+            "Es wurde nichts übernommen.",
         )
     if not llama_cpp_importable():
         raise CvImportError(
             "llama_missing",
-            "Die lokale LLM-Laufzeit (llama-cpp) fehlt in dieser Installation. "
-            "CV-Import kann das Modell nicht starten. Kein DET-Fallback.",
+            "Die lokale Auswertung fehlt in dieser Installation. "
+            "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen.",
         )
     return "inprocess"
 
@@ -119,10 +222,11 @@ def chat_completion_inprocess(
     from llama_cpp import Llama
 
     n_threads = max(2, (os.cpu_count() or 2))
+    n_ctx = int(os.environ.get("KARRIEREKRAKE_CV_LLM_N_CTX", "4096"))
     with hold_production_model(role="cv_import", timeout_s=90.0):
         llm = Llama(
             model_path=str(model_path),
-            n_ctx=int(os.environ.get("KARRIEREKRAKE_CV_LLM_N_CTX", "2048")),
+            n_ctx=n_ctx,
             n_threads=n_threads,
             n_batch=512,
             verbose=False,
@@ -138,7 +242,3 @@ def chat_completion_inprocess(
         finally:
             # Drop weights promptly so writing / cancel can reclaim RAM.
             del llm
-
-
-def is_frozen() -> bool:
-    return bool(getattr(sys, "frozen", False))

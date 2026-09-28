@@ -24,44 +24,53 @@ from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING, local_llm_cv_decis
 # Generic last resort only — real CvImportError codes must reach the UI.
 _READ_FAILED = "Der Lebenslauf konnte nicht gelesen werden."
 
-# Stage-specific user copy. No absolute paths, CV body, or tokens.
+# Stage-specific user copy. No absolute paths, CV body, tokens, or internal
+# model / parser names (those belong in diagnostic logs only).
 _KIND_MESSAGES: dict[str, str] = {
     "file_missing": "Die ausgewählte Datei wurde nicht gefunden.",
     "empty_cv": "Die Datei ist leer oder enthält keinen lesbaren Text.",
     "unreadable_cv": (
-        "Die Datei konnte nicht als PDF oder DOCX gelesen werden. "
-        "Pfad und Eingaben bleiben erhalten."
+        "Die Datei konnte nicht als PDF oder Word-Dokument gelesen werden. "
+        "Bitte eine andere Datei wählen."
     ),
     "docpick_missing": (
-        "Die CV-Import-Komponente fehlt in dieser Installation. "
-        "Kein Wechsel auf den alten DET-Parser."
+        "Die Lebenslauf-Auswertung fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren."
     ),
     "docling_missing": (
-        "Docling ist für diesen Lauf vorgeschrieben, aber nicht installiert."
+        "Eine optionale Diagnose-Komponente fehlt. "
+        "Bitte den normalen Lebenslauf-Import nutzen oder neu installieren."
     ),
-    "extract_missing": "Die CV-Textextraktion fehlt in dieser Installation.",
+    "extract_missing": (
+        "Die Texterkennung fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren."
+    ),
     "model_missing": (
-        "Das lokale CV-Modell (Qwen3.5-4B) fehlt. "
-        "Ohne dieses Modell kann der Import nicht laufen. Kein DET-Fallback."
+        "Das lokale Lebenslauf-Modell fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen."
     ),
     "llama_missing": (
-        "Die lokale LLM-Laufzeit fehlt in dieser Installation. "
-        "CV-Import kann das Modell nicht starten. Kein DET-Fallback."
+        "Die lokale Auswertung fehlt in dieser Installation. "
+        "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen."
     ),
     "llm_unavailable": (
-        "Das lokale CV-Modell ist nicht erreichbar. "
-        "Karrierekrake startet es automatisch, wenn Modell und Laufzeit vorhanden sind."
+        "Die lokale Auswertung ist gerade nicht verfügbar. "
+        "Bitte erneut versuchen oder Karrierekrake neu starten."
     ),
     "llm_extract_failed": (
-        "Die strukturierte Extraktion ist fehlgeschlagen. Bitte Felder manuell nachtragen."
+        "Der Lebenslauf konnte nicht zuverlässig ausgelesen werden. "
+        "Bitte Felder manuell nachtragen."
     ),
-    "llm_empty": "Das Modell lieferte keine verwertbaren Felder. Bitte manuell korrigieren.",
+    "llm_empty": (
+        "Es wurden keine verwertbaren Angaben erkannt. "
+        "Bitte das Profil manuell ausfüllen."
+    ),
     "unreliable_extract": (
-        "Extraktion ohne Namen und Kontakt — Ergebnis nicht verlässlich. "
+        "Ohne Namen und Kontakt ist das Ergebnis nicht verlässlich. "
         "Bitte Profil manuell ausfüllen."
     ),
     "peak_rss_exceeded": (
-        "Nicht genug Arbeitsspeicher für den CV-Import auf diesem Gerät. "
+        "Nicht genug Arbeitsspeicher für den Lebenslauf-Import auf diesem Gerät. "
         "Es wurde nichts übernommen."
     ),
     "timeout": (
@@ -123,6 +132,8 @@ def _fail(
         "ok": False,
         "kind": kind,
         "message": user_message_for_kind(kind, message),
+        # Technical detail for CI/logs only — UI uses ``message``.
+        "detail": (message or "")[:400],
         "parsed": None,
     }
     if stage:

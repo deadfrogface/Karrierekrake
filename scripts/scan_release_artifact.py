@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 
 def _load_policy():
@@ -228,6 +230,35 @@ def scan_artifact(
     return collected, hits
 
 
+def require_cv_model_sidecar(dist: Path) -> list:
+    """Fail closed when the offline GGUF is not beside the EXE in dist/."""
+    from core.cv_llm_runtime import CV_MODEL_REL
+
+    hits = []
+    gguf = dist / CV_MODEL_REL
+    if not gguf.is_file():
+        hits.append(
+            PolicyHit(
+                kind="cv_model_sidecar_missing",
+                path=CV_MODEL_REL.as_posix(),
+                detail=(
+                    "Offline CV model must ship as dist/models/... sidecar "
+                    "(or enable KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE=1)."
+                ),
+            )
+        )
+        return hits
+    if gguf.stat().st_size < 1_000_000_000:
+        hits.append(
+            PolicyHit(
+                kind="cv_model_sidecar_too_small",
+                path=CV_MODEL_REL.as_posix(),
+                detail=f"size={gguf.stat().st_size}",
+            )
+        )
+    return hits
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exe", type=Path, help="PyInstaller onefile EXE")
@@ -243,6 +274,11 @@ def main() -> int:
         action="store_true",
         help="Fail if no TOC entries found (avoids silent empty scans)",
     )
+    parser.add_argument(
+        "--require-cv-model-sidecar",
+        action="store_true",
+        help="Require dist/models/.../Qwen*.gguf next to the EXE (release default)",
+    )
     args = parser.parse_args()
 
     if not any([args.exe, args.dist, args.toc_json]):
@@ -257,6 +293,12 @@ def main() -> int:
     if args.fail_on_empty and not paths:
         print("Release content gate FAILED: empty TOC (nothing to scan).")
         return 1
+
+    if args.require_cv_model_sidecar:
+        if args.dist is None or not args.dist.is_dir():
+            print("Release content gate FAILED: --require-cv-model-sidecar needs --dist")
+            return 1
+        hits.extend(require_cv_model_sidecar(args.dist))
 
     if args.manifest_out:
         gen_path = ROOT / "scripts" / "generate_content_manifest.py"

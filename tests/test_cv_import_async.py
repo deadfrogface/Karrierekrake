@@ -130,7 +130,11 @@ def test_settings_checkbox_shows_kill_wording_and_persists(qapp, tmp_path, monke
     assert page.local_llm_cv_parsing.isChecked() is False
     assert page.local_llm_cv_parsing.toolTip() == i18n.t("settings.local_llm_cv_unavailable")
     assert page.local_llm_cv_hint.text() == i18n.t("settings.local_llm_cv_disabled_hint")
-    assert "Docpick" in page.local_llm_cv_hint.text() or "Qwen" in page.local_llm_cv_hint.text()
+    hint = page.local_llm_cv_hint.text()
+    assert "mitgelieferte lokale Auswertung" in hint
+    assert "Diagnose-/Benchmark-Pfad" in hint
+    for banned in ("Docpick", "Qwen", "DET", "LLM", "llama", "GGUF"):
+        assert banned not in hint
     page.save()
     loaded = ConfigService().load()
     assert loaded.settings.local_llm_cv_parsing_enabled is False
@@ -719,3 +723,27 @@ def test_supervisor_run_once_does_not_loop_on_oom(tmp_path: Path):
     assert result.ok is False
     assert calls and calls[0] == threading.get_ident()
     assert len(calls) == 1
+
+
+def test_supervisor_unload_does_not_construct_guenther(tmp_path: Path, monkeypatch):
+    """Regression: constructing Guenther to unload can AV llama_cpp on Windows CI."""
+    import guenther.service as gs
+
+    monkeypatch.setattr(gs, "_SERVICE", None)
+    calls: list[str] = []
+
+    def boom(*_a, **_k):
+        calls.append("constructed")
+        raise AssertionError("get_guenther_service must not run during unload-before-spawn")
+
+    monkeypatch.setattr(gs, "get_guenther_service", boom)
+    monkeypatch.setattr(gs, "GuentherService", boom)
+
+    def spawn(path: Path, out: Path):
+        _write(out, {"ok": False, "kind": "timeout", "message": "t", "parsed": None})
+        return _Proc(None)
+
+    result = CvImportSupervisor(tmp_path / "cv.txt", spawn=spawn, timeout_s=2).run_once()
+    assert result.kind == "timeout"
+    assert calls == []
+    assert gs._SERVICE is None

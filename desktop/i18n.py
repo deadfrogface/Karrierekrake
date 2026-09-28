@@ -624,52 +624,54 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Die Datei konnte nicht gelesen werden. Pfad und Eingaben bleiben erhalten."
         ),
         "cv_import.error_model_missing": (
-            "Das lokale CV-Modell fehlt. Ohne Qwen3.5-4B kann der Import nicht laufen. "
-            "Es wurde nichts übernommen."
+            "Das lokale Lebenslauf-Modell fehlt in dieser Installation. "
+            "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen."
         ),
         "cv_import.error_llama_missing": (
-            "Die lokale LLM-Laufzeit fehlt in dieser Installation. "
-            "CV-Import kann das Modell nicht starten. Es wurde nichts übernommen."
+            "Die lokale Auswertung fehlt in dieser Installation. "
+            "Bitte Karrierekrake neu installieren. Es wurde nichts übernommen."
         ),
         "cv_import.error_llm_unavailable": (
-            "Das lokale CV-Modell ist nicht erreichbar. "
-            "Pfad und Eingaben bleiben erhalten."
+            "Die lokale Auswertung ist gerade nicht verfügbar. "
+            "Bitte erneut versuchen oder Karrierekrake neu starten."
         ),
         "cv_import.error_docpick_missing": (
-            "Die CV-Import-Komponente fehlt in dieser Installation. "
-            "Kein Wechsel auf den alten DET-Parser."
+            "Die Lebenslauf-Auswertung fehlt in dieser Installation. "
+            "Bitte Karrierekrake neu installieren."
         ),
         "cv_import.error_empty_file": (
             "Die Datei ist leer oder enthält keinen lesbaren Text. "
-            "Pfad und Eingaben bleiben erhalten."
+            "Bitte eine andere Datei wählen."
         ),
         "cv_import.error_unreadable": (
-            "Die Datei konnte nicht als PDF oder DOCX gelesen werden. "
-            "Pfad und Eingaben bleiben erhalten."
+            "Die Datei konnte nicht als PDF oder Word-Dokument gelesen werden. "
+            "Bitte eine andere Datei wählen."
         ),
         "cv_import.error_extract_failed": (
-            "Die strukturierte Extraktion ist fehlgeschlagen. "
+            "Der Lebenslauf konnte nicht zuverlässig ausgelesen werden. "
             "Bitte Felder manuell nachtragen. Es wurde nichts übernommen."
         ),
         "cv_import.error_unreliable": (
-            "Extraktion ohne Namen und Kontakt — bitte Profil manuell ausfüllen. "
-            "Es wurde nichts übernommen."
+            "Ohne Namen und Kontakt ist das Ergebnis nicht verlässlich. "
+            "Bitte Profil manuell ausfüllen. Es wurde nichts übernommen."
         ),
         "cv_import.empty": (
             "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
             "oder lies die Datei erneut ein."
         ),
         "cv_import.manual_profile": "Profil manuell eintragen",
-        "cv_import.pipeline": "CV-Extraktion",
-        "cv_import.pipeline_det": "Docpick + Qwen3.5-4B (lokal)",
-        "cv_import.manual_hint": "Bitte Felder manuell ergänzen. Es gibt keinen automatischen Wechsel auf den alten DET-Parser.",
-        "cv_import.needs_review": "Bitte Extraktion prüfen und fehlende Felder manuell ergänzen.",
+        "cv_import.pipeline": "Lebenslauf-Import",
+        "cv_import.pipeline_det": "Lokale Auswertung (mitgeliefert)",
+        "cv_import.manual_hint": (
+            "Bitte Felder manuell ergänzen. Es gibt keinen automatischen Ersatz-Import."
+        ),
+        "cv_import.needs_review": "Bitte Angaben prüfen und fehlende Felder manuell ergänzen.",
         "cv_import.extracting": "Lebenslauf wird ausgelesen…",
-        "cv_import.extracting_hint": "Die Oberfläche bleibt bedienbar. Lokale Extraktion kann 1–2 Minuten dauern. Abbrechen schließt den Dialog; der Abbruch greift zwischen den Arbeitsschritten.",
+        "cv_import.extracting_hint": "Die Oberfläche bleibt bedienbar. Das Auslesen kann 1–2 Minuten dauern. Abbrechen schließt den Dialog; der Abbruch greift zwischen den Arbeitsschritten.",
         "cv_import.extract_done": "Auslesen abgeschlossen — bitte prüfen und übernehmen.",
-        "cv_import.progress_preflight": "Lokales CV-Modell wird geprüft…",
+        "cv_import.progress_preflight": "Lokale Auswertung wird geprüft…",
         "cv_import.progress_pdf": "PDF wird gelesen…",
-        "cv_import.progress_model": "Lokales CV-Modell arbeitet…",
+        "cv_import.progress_model": "Lebenslauf wird ausgewertet…",
         "btn.reset_profile": "Profil zurücksetzen",
         "settings.general": "Allgemein",
         "settings.appearance": "Darstellung",
@@ -688,48 +690,48 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.allow_employer_email_send": "Echten Versand freigeben (nur mit Freigabe pro Mail)",
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther (immer aktiv, nur lokal)",
-        "settings.guenther_model": "Modell",
-        "settings.guenther_model.sole": "Qwen3.5-4B (einziges lokales Modell)",
-        "settings.guenther_model.phi_only": "Qwen3.5-4B (einziges lokales Modell)",
-        "settings.guenther_model.auto": "Automatisch (Qwen3.5-4B)",
-        "settings.guenther_model.primary": "Empfohlen — Qwen3.5-4B",
+        "settings.guenther_model": "Schreibhilfe",
+        "settings.guenther_model.sole": "Lokale Schreibhilfe (mitgeliefert)",
+        "settings.guenther_model.phi_only": "Lokale Schreibhilfe (mitgeliefert)",
+        "settings.guenther_model.auto": "Automatisch (lokale Schreibhilfe)",
+        "settings.guenther_model.primary": "Empfohlen — lokale Schreibhilfe",
         "settings.guenther_model.light": "Entfernt — kein zweites Modell",
-        "settings.guenther_model.legacy4b": "Entfernt — kein Legacy-Qwen",
-        "settings.guenther_model.standard": "Entfernt — kein Legacy-Qwen",
-        "settings.guenther_model.alt": "Empfohlen — Qwen3.5-4B",
+        "settings.guenther_model.legacy4b": "Entfernt — kein zweites Modell",
+        "settings.guenther_model.standard": "Entfernt — kein zweites Modell",
+        "settings.guenther_model.alt": "Empfohlen — lokale Schreibhilfe",
         "settings.guenther_hint": (
-            "Günther ist immer aktiv und nutzt lokales Qwen3.5-4B nur für Schreibhilfe "
+            "Günther ist immer aktiv und nutzt die mitgelieferte lokale Schreibhilfe "
             "(Anschreiben, E-Mails, Motivationstexte). "
-            "Fehlt das Writer-Modell: Schreibhilfe nicht verfügbar "
-            "(kein Heuristik-Ersatz). Günther schlägt vor — Karrierekrake entscheidet."
+            "Fehlt die Schreibhilfe: Funktion nicht verfügbar "
+            "(kein stiller Ersatz). Günther schlägt vor — Karrierekrake entscheidet."
         ),
-        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (Qwen3.5-4B lokal)",
-        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (Qwen3.5-4B lokal)",
+        "settings.guenther_writer_status_on": "Schreibhilfe: aktiv (lokal, mitgeliefert)",
+        "settings.guenther_writer_status_off": "Schreibhilfe: aktiv (lokal, mitgeliefert)",
         "settings.guenther_writer_unavailable": (
-            "Schreibhilfe: Modell fehlt — Günther nicht nutzbar (kein stiller Ersatz)."
+            "Schreibhilfe: fehlt in dieser Installation — bitte neu installieren."
         ),
-        "settings.cv_import_path_title": "CV-Import (Produktion)",
+        "settings.cv_import_path_title": "Lebenslauf-Import",
         "settings.cv_import_path_body": (
-            "Lebensläufe werden mit Docpick + lokalem Qwen3.5-4B gelesen. "
-            "Kein stiller Wechsel auf den alten DET-Parser."
+            "Lebensläufe werden lokal und offline ausgewertet. "
+            "Modell und Laufzeit sind in der Installation enthalten."
         ),
-        "settings.cv_import_status_ready": "CV-Import: bereit (Docpick + Qwen3.5-4B)",
+        "settings.cv_import_status_ready": "Lebenslauf-Import: bereit (lokal, offline)",
         "settings.cv_import_status_unavailable": (
-            "CV-Import: Qwen-Modell oder lokaler LLM-Dienst nicht erreichbar — "
-            "Import schlägt klar fehl (kein DET-Fallback)."
+            "Lebenslauf-Import: lokale Auswertung nicht verfügbar — "
+            "bitte Karrierekrake neu installieren."
         ),
-        "settings.local_llm_cv_parsing": "Lokales LLM-CV-Parsing (Diagnose-Schalter)",
+        "settings.local_llm_cv_parsing": "Lokale Lebenslauf-Auswertung (Diagnose-Schalter)",
         "settings.local_llm_cv_kill": (
-            "wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; "
+            "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; "
             "der manuelle Profilimport bleibt möglich."
         ),
         "settings.local_llm_cv_escalation": (
-            "Erster Eskalationsschritt: kleineres lokales Modell unter denselben "
+            "Erster Eskalationsschritt: kleinere lokale Auswertung unter denselben "
             "Qualitäts-, RAM- und Laufzeit-Gates messen. Kein automatischer "
-            "Modell-Fallback und kein zweites Gewicht in diesem Schritt."
+            "Ersatz und kein zweites Modell in diesem Schritt."
         ),
         "settings.local_llm_cv_disabled_hint": (
-            "Der Produktions-CV-Import nutzt Docpick + Qwen3.5-4B. "
+            "Der Lebenslauf-Import nutzt die mitgelieferte lokale Auswertung. "
             "Dieser Schalter steuert nur einen separaten Diagnose-/Benchmark-Pfad "
             "und ist hier deaktiviert."
         ),
@@ -1705,49 +1707,52 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "The file could not be read. The path and your entries stay as they are."
         ),
         "cv_import.error_model_missing": (
-            "The local CV model is missing. Without Qwen3.5-4B import cannot run. "
-            "Nothing was applied."
+            "The local CV model is missing from this installation. "
+            "Please reinstall Karrierekrake. Nothing was applied."
         ),
         "cv_import.error_llama_missing": (
-            "The local LLM runtime is missing from this install. "
-            "CV import cannot start the model. Nothing was applied."
+            "Local CV analysis is missing from this installation. "
+            "Please reinstall Karrierekrake. Nothing was applied."
         ),
         "cv_import.error_llm_unavailable": (
-            "The local CV model is not reachable. Path and inputs are kept."
+            "Local CV analysis is temporarily unavailable. "
+            "Please try again or restart Karrierekrake."
         ),
         "cv_import.error_docpick_missing": (
-            "The CV import component is missing from this install. "
-            "No switch to the legacy DET parser."
+            "CV analysis is missing from this installation. "
+            "Please reinstall Karrierekrake."
         ),
         "cv_import.error_empty_file": (
-            "The file is empty or has no readable text. Path and inputs are kept."
+            "The file is empty or has no readable text. Please choose another file."
         ),
         "cv_import.error_unreadable": (
-            "The file could not be read as PDF or DOCX. Path and inputs are kept."
+            "The file could not be read as PDF or Word document. Please choose another file."
         ),
         "cv_import.error_extract_failed": (
-            "Structured extraction failed. Please complete fields manually. "
+            "The CV could not be read reliably. Please complete fields manually. "
             "Nothing was applied."
         ),
         "cv_import.error_unreliable": (
-            "Extraction has no name or contact — please fill the profile manually. "
-            "Nothing was applied."
+            "Without name and contact the result is not reliable. "
+            "Please fill the profile manually. Nothing was applied."
         ),
         "cv_import.empty": (
             "Nothing was found in the document. Enter the profile manually "
             "or read the file again."
         ),
         "cv_import.manual_profile": "Enter profile manually",
-        "cv_import.pipeline": "CV extraction",
-        "cv_import.pipeline_det": "Docpick + Qwen3.5-4B (local)",
-        "cv_import.manual_hint": "Please complete fields manually. There is no automatic fallback to the legacy DET parser.",
-        "cv_import.needs_review": "Please review extraction and fill missing fields manually.",
+        "cv_import.pipeline": "CV import",
+        "cv_import.pipeline_det": "Local analysis (bundled)",
+        "cv_import.manual_hint": (
+            "Please complete fields manually. There is no automatic substitute import."
+        ),
+        "cv_import.needs_review": "Please review the results and fill missing fields manually.",
         "cv_import.extracting": "Reading CV…",
-        "cv_import.extracting_hint": "The UI stays responsive. Local extraction can take 1–2 minutes. Cancel closes the dialog; abort takes effect between stages.",
-        "cv_import.extract_done": "Extraction finished — review and apply.",
-        "cv_import.progress_preflight": "Checking local CV model…",
+        "cv_import.extracting_hint": "The UI stays responsive. Reading can take 1–2 minutes. Cancel closes the dialog; abort takes effect between stages.",
+        "cv_import.extract_done": "Reading finished — review and apply.",
+        "cv_import.progress_preflight": "Checking local analysis…",
         "cv_import.progress_pdf": "Reading PDF…",
-        "cv_import.progress_model": "Local CV model is working…",
+        "cv_import.progress_model": "Analyzing CV…",
         "cv_import.cancelled": "Cancelled.",
         "btn.reset_profile": "Reset profile",
         "settings.general": "General",
@@ -1767,48 +1772,47 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "settings.allow_employer_email_send": "Allow real send (still requires per-mail approval)",
         "settings.guenther": "Günther die Krake",
         "settings.guenther_enabled": "Günther (always on, local only)",
-        "settings.guenther_model": "Model",
-        "settings.guenther_model.sole": "Qwen3.5-4B (sole local model)",
-        "settings.guenther_model.phi_only": "Qwen3.5-4B (sole local model)",
-        "settings.guenther_model.auto": "Automatic (Qwen3.5-4B)",
-        "settings.guenther_model.primary": "Recommended — Qwen3.5-4B",
+        "settings.guenther_model": "Writing help",
+        "settings.guenther_model.sole": "Local writing help (bundled)",
+        "settings.guenther_model.phi_only": "Local writing help (bundled)",
+        "settings.guenther_model.auto": "Automatic (local writing help)",
+        "settings.guenther_model.primary": "Recommended — local writing help",
         "settings.guenther_model.light": "Removed — no second model",
-        "settings.guenther_model.legacy4b": "Removed — no legacy Qwen",
-        "settings.guenther_model.standard": "Removed — no legacy Qwen",
-        "settings.guenther_model.alt": "Recommended — Qwen3.5-4B",
+        "settings.guenther_model.legacy4b": "Removed — no second model",
+        "settings.guenther_model.standard": "Removed — no second model",
+        "settings.guenther_model.alt": "Recommended — local writing help",
         "settings.guenther_hint": (
-            "Günther is always on and uses local Qwen3.5-4B only for writing assistance "
+            "Günther is always on and uses the bundled local writing help "
             "(cover letters, emails, motivation texts). "
-            "If the writer model is missing: writing help unavailable "
-            "(no heuristic substitute). Günther suggests — Karrierekrake decides."
+            "If writing help is missing: feature unavailable "
+            "(no silent substitute). Günther suggests — Karrierekrake decides."
         ),
-        "settings.guenther_writer_status_on": "Writing help: active (Qwen3.5-4B local)",
-        "settings.guenther_writer_status_off": "Writing help: active (Qwen3.5-4B local)",
+        "settings.guenther_writer_status_on": "Writing help: active (local, bundled)",
+        "settings.guenther_writer_status_off": "Writing help: active (local, bundled)",
         "settings.guenther_writer_unavailable": (
-            "Writing help: model missing — Günther unavailable (no silent substitute)."
+            "Writing help: missing from this installation — please reinstall."
         ),
-        "settings.cv_import_path_title": "CV import (production)",
+        "settings.cv_import_path_title": "CV import",
         "settings.cv_import_path_body": (
-            "CVs are read with Docpick + local Qwen3.5-4B. "
-            "No silent fallback to the old DET parser."
+            "CVs are analyzed locally and offline. "
+            "Model and runtime ship with the installation."
         ),
-        "settings.cv_import_status_ready": "CV import: ready (Docpick + Qwen3.5-4B)",
+        "settings.cv_import_status_ready": "CV import: ready (local, offline)",
         "settings.cv_import_status_unavailable": (
-            "CV import: Qwen model or local LLM service unreachable — "
-            "import fails clearly (no DET fallback)."
+            "CV import: local analysis unavailable — please reinstall Karrierekrake."
         ),
-        "settings.local_llm_cv_parsing": "Local LLM CV parsing (diagnostic switch)",
+        "settings.local_llm_cv_parsing": "Local CV analysis (diagnostic switch)",
         "settings.local_llm_cv_kill": (
-            "Local LLM CV parsing is removed on this hardware; "
+            "Local CV analysis is removed on this hardware; "
             "manual profile import remains available."
         ),
         "settings.local_llm_cv_escalation": (
-            "First escalation: measure a smaller local model under the same "
-            "quality, RAM, and runtime gates. No automatic model fallback and "
-            "no new model in this step."
+            "First escalation: measure a smaller local analysis under the same "
+            "quality, RAM, and runtime gates. No automatic substitute and "
+            "no second model in this step."
         ),
         "settings.local_llm_cv_disabled_hint": (
-            "Production CV import uses Docpick + Qwen3.5-4B. "
+            "CV import uses the bundled local analysis. "
             "This switch only controls a separate diagnostic/benchmark path "
             "and is disabled here."
         ),

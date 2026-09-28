@@ -21,10 +21,14 @@ from scripts.run_i3_peak_job_benchmark import main as benchmark_main
 
 def test_kill_wording_is_exact_and_in_german_catalog():
     assert LOCAL_LLM_CV_KILL_WORDING == (
-        "wird lokales LLM-CV-Parsing auf dieser Hardware gestrichen; "
+        "wird die lokale Lebenslauf-Auswertung auf dieser Hardware gestrichen; "
         "der manuelle Profilimport bleibt möglich."
     )
     assert TRANSLATIONS["de"]["settings.local_llm_cv_kill"] == LOCAL_LLM_CV_KILL_WORDING
+    assert TRANSLATIONS["de"]["settings.local_llm_cv_escalation"] == LOCAL_LLM_CV_ESCALATION
+    assert "LLM" not in LOCAL_LLM_CV_KILL_WORDING
+    assert "Qwen" not in LOCAL_LLM_CV_KILL_WORDING
+    assert "Docpick" not in LOCAL_LLM_CV_KILL_WORDING
     assert "settings.local_llm_cv_kill" in TRANSLATIONS["en"]
     assert "settings.local_llm_cv_escalation" in TRANSLATIONS["de"]
     assert "settings.local_llm_cv_escalation" in TRANSLATIONS["en"]
