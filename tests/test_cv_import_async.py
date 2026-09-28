@@ -20,7 +20,7 @@ from PySide6.QtWidgets import QApplication
 from core.config import ApplicationProfile, QualificationsConfig
 from desktop.cv_import_supervisor import CvImportSupervisor, qa_observe_seconds
 from desktop.i18n import TRANSLATIONS, i18n, tr
-from desktop.widgets.cv_import_dialog import CvImportDialog
+from desktop.widgets.cv_import_dialog import CvImportDialog, failure_text_key
 
 
 @pytest.fixture(scope="module")
@@ -287,7 +287,8 @@ def test_timeout_is_manual_retry_only(qapp, tmp_path: Path):
     assert _pump(qapp, lambda: dlg._last_kind == "llm_timeout", timeout=3)
     assert calls == [1]
     assert dlg._phase == "error"
-    assert dlg.error_text.text() == tr("cv_import.error_generic")
+    assert dlg.error_text.text() == tr("cv_import.error_timeout")
+    assert dlg.error_text.text() != tr("cv_import.error_generic")
     assert dlg._retry_btn.isVisible()
     assert dlg._retry_btn.text() == tr("cv_import.retry")
     assert dlg._ok_btn.isVisible() is False
@@ -356,6 +357,101 @@ def test_cancel_stops_the_worker_without_a_second_launch(qapp, tmp_path: Path):
     cancel.click()
     qapp.processEvents()
     assert dlg.isVisible() is False
+
+
+@pytest.mark.parametrize(
+    ("kind", "key"),
+    [
+        ("llm_prompt_too_long", "cv_import.error_extract_failed"),
+        ("llm_output_truncated", "cv_import.error_extract_failed"),
+        ("llm_timeout", "cv_import.error_timeout"),
+        ("peak_rss_exceeded", "cv_import.error_oom"),
+        ("memory_budget_app_share", "cv_import.error_oom"),
+    ],
+)
+def test_new_import_codes_use_existing_texts(qapp, tmp_path: Path, kind: str, key: str):
+    i18n.set_language("de")
+    assert failure_text_key(kind) == key
+
+    def spawn(path: Path, out: Path):
+        _write(out, {"ok": False, "kind": kind, "message": kind, "parsed": None})
+        return _Proc(1)
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(city="Hamburg"),
+        spawn=spawn,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._phase == "error" and dlg._retry_btn.isVisible())
+    assert dlg.error_text.text() == tr(key)
+    assert dlg.error_text.text() != tr("cv_import.error_generic")
+    assert "nicht gelesen" not in dlg.error_text.text()
+    assert dlg._retry_btn.text() == tr("cv_import.retry")
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_import_progress_steps_at_two_hertz(qapp, tmp_path: Path, monkeypatch):
+    monkeypatch.delenv("KK_REDUCED_MOTION", raising=False)
+    monkeypatch.delenv("PREFERS_REDUCED_MOTION", raising=False)
+
+    def spawn(path: Path, out: Path):
+        return _Proc(None)
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(city="Hamburg"),
+        spawn=spawn,
+        timeout_s=30,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._running and dlg.progress.isVisible())
+    assert dlg.progress.minimum() == 0
+    assert dlg.progress.maximum() == 100
+    assert dlg.progress.isTextVisible() is False
+    assert dlg._progress_timer.interval() == 500
+    assert dlg._progress_timer.interval() >= 250
+    assert dlg._progress_timer.isActive()
+    assert dlg.status_label.text() == tr("cv_import.progress")
+    dlg._on_progress('{"phase":"generation","tokens_done":1}')
+    assert dlg._progress_timer.interval() >= 250
+    assert dlg.phase_tokens_done == 1
+    dlg.close()
+    qapp.processEvents()
+
+
+def test_reduced_motion_keeps_the_import_bar_still(qapp, tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("KK_REDUCED_MOTION", "1")
+
+    def spawn(path: Path, out: Path):
+        return _Proc(None)
+
+    dlg = CvImportDialog(
+        tmp_path / "cv.txt",
+        QualificationsConfig(),
+        ApplicationProfile(),
+        spawn=spawn,
+        timeout_s=30,
+        autostart=False,
+    )
+    dlg.show()
+    qapp.processEvents()
+    dlg.start_parse()
+    assert _pump(qapp, lambda: dlg._running and dlg.progress.isVisible())
+    assert dlg._progress_timer.isActive() is False
+    assert dlg.progress.maximum() > 0
+    assert dlg.progress.isTextVisible() is False
+    dlg.close()
+    qapp.processEvents()
 
 
 def test_read_error_has_manual_retry_cta_and_does_not_auto_start(qapp, tmp_path: Path):

@@ -15,6 +15,7 @@ import tempfile
 import threading
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Callable
 
@@ -271,8 +272,9 @@ class CvImportSupervisor:
             )
             self._proc = proc
             self._child_budget = child_budget
+            self._child_started_mono = time.monotonic()
             if self._cancel.is_set():
-                self._stop(proc)
+                self._stop(proc, reason="cancelled")
                 return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
             started = time.monotonic()
             deadline = started + self.timeout_s
@@ -281,7 +283,7 @@ class CvImportSupervisor:
             adopted_timeout = False
             while True:
                 if self._cancel.is_set():
-                    self._stop(proc)
+                    self._stop(proc, reason="cancelled")
                     return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
                 phase_offset, event_timeout = _drain_phase_events(
                     phase_path, phase_offset, progress
@@ -323,10 +325,9 @@ class CvImportSupervisor:
                 if now >= deadline:
                     self._stop(proc)
                     # Machine-dependent. Not deterministic. No automatic retry.
-                    logger.error(
-                        "llm_timeout wall_clock limit_s=%s",
-                        self.timeout_s,
-                    )
+                    timeout_line = "llm_timeout wall_clock limit_s=%s" % (self.timeout_s,)
+                    logger.error("%s", timeout_line)
+                    logging.getLogger("karrierekrake").error("%s", timeout_line)
                     return ImportAttemptResult(
                         False,
                         "llm_timeout",
@@ -365,11 +366,12 @@ class CvImportSupervisor:
             now = time.monotonic()
             if progress is not None and now >= next_pulse:
                 progress("parsing")
-                next_pulse = now + 0.2
+                # UI pulses stay at half a second. No timer under 250 ms.
+                next_pulse = now + 0.5
             time.sleep(0.05)
         return self._cancel.is_set()
 
-    def _stop(self, proc: object) -> None:
+    def _stop(self, proc: object, *, reason: str = "") -> None:
         terminate = getattr(proc, "terminate", None)
         if callable(terminate):
             try:
@@ -382,6 +384,17 @@ class CvImportSupervisor:
                 wait(timeout=2)
             except Exception:
                 pass
+        if reason == "cancelled":
+            started = getattr(self, "_child_started_mono", None)
+            elapsed_ms = 0
+            if isinstance(started, float):
+                elapsed_ms = int(round((time.monotonic() - started) * 1000))
+            stamp = datetime.now().astimezone().isoformat(timespec="seconds")
+            logging.getLogger("karrierekrake").info(
+                "cv_import cancelled at=%s child_ended_ms=%s",
+                stamp,
+                elapsed_ms,
+            )
 
     def _classify(
         self,
@@ -470,21 +483,26 @@ def _drain_phase_events(
         return offset, None
     complete = chunk[: newline + 1]
     seen_timeout: int | None = None
+    from core.cv_phase_events import relay_diag_event
+
     for line in complete.decode("utf-8").splitlines():
         if not line.strip():
             continue
-        if progress is not None:
-            progress(line)
-        if seen_timeout is None and line.startswith("{"):
+        event = None
+        if line.startswith("{"):
             try:
                 event = json.loads(line)
             except json.JSONDecodeError:
                 event = None
-            if isinstance(event, dict) and "timeout_s" in event:
-                try:
-                    seen_timeout = int(event["timeout_s"])
-                except (TypeError, ValueError):
-                    pass
+        if isinstance(event, dict) and relay_diag_event(event):
+            continue
+        if progress is not None:
+            progress(line)
+        if seen_timeout is None and isinstance(event, dict) and "timeout_s" in event:
+            try:
+                seen_timeout = int(event["timeout_s"])
+            except (TypeError, ValueError):
+                pass
     return offset + newline + 1, seen_timeout
 
 

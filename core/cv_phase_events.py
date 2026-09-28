@@ -9,6 +9,7 @@ Generation progress is at most one event per second.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import time
 
@@ -81,6 +82,33 @@ def absorb_phase_message(
         except (TypeError, ValueError):
             pass
     return timeout_s, tokens_done
+
+
+def emit_diag(message: str, *, level: str = "info") -> None:
+    """One diagnostic line for the parent. The child process has no app log."""
+    append_phase_event({"diag": message, "level": level})
+
+
+def relay_diag_event(event: dict) -> bool:
+    """Write a child diagnostic into the app log. True when ``event`` is one.
+
+    The parent is the only writer of ``karrierekrake.log``. A diag event is
+    not a UI progress line.
+    """
+    if "diag" not in event:
+        return False
+    message = str(event.get("diag") or "").strip()
+    if not message:
+        return True
+    level = str(event.get("level") or "info").lower()
+    log = logging.getLogger("karrierekrake")
+    if level == "error":
+        log.error("%s", message)
+    elif level == "warning":
+        log.warning("%s", message)
+    else:
+        log.info("%s", message)
+    return True
 
 
 def append_phase_event(event: dict) -> None:

@@ -665,3 +665,167 @@ def test_supervisor_adopts_the_child_timeout_event(
     elapsed = time.monotonic() - t0
     assert result.kind == "llm_timeout"
     assert elapsed < 2.0
+
+
+def _fresh_app_log(tmp_path: Path):
+    """Point the app logger at a new file and return ``(logger, restore)``."""
+    import logging
+
+    from core.logging import setup_logging
+
+    log = logging.getLogger("karrierekrake")
+    saved_handlers = list(log.handlers)
+    saved_level = log.level
+    for handler in saved_handlers:
+        log.removeHandler(handler)
+    setup_logging(tmp_path)
+
+    def restore() -> None:
+        for handler in list(log.handlers):
+            handler.flush()
+            log.removeHandler(handler)
+            handler.close()
+        log.setLevel(saved_level)
+        for handler in saved_handlers:
+            log.addHandler(handler)
+
+    return log, restore
+
+
+def test_fake_model_import_writes_each_diagnostic_once(tmp_path: Path, monkeypatch):
+    """Child diagnostics arrive in the app log, one line each, via the phase pipe."""
+    from core.cv_docpick_import import note_import_started, reset_import_timeout
+    from core.cv_llm_runtime import chat_completion_inprocess
+
+    _log, restore = _fresh_app_log(tmp_path)
+    try:
+        monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", raising=False)
+        monkeypatch.setattr(
+            "desktop.cv_import_supervisor._read_app_private_bytes",
+            lambda: 167_272_448,
+        )
+        monkeypatch.setattr(
+            "desktop.cv_import_supervisor._parent_anon_sample",
+            lambda _proc: None,
+        )
+        monkeypatch.setattr("core.cv_docpick_import._self_rss_bytes", lambda: 50_000_000)
+        reset_import_timeout()
+        note_import_started(time.monotonic())
+
+        class _Fake:
+            def __init__(self, *args, **kwargs):
+                self.prompt_tokens = 100
+
+            def count_chat_tokens(self, messages):
+                assert messages
+                return self.prompt_tokens
+
+            def create_chat_completion(self, **kwargs):
+                raise RuntimeError("stop after the diagnostic lines")
+
+        monkeypatch.setattr("core.cv_llm_runtime._llama_cls", lambda: _Fake)
+        progress: list[str] = []
+
+        def spawn(_cv: Path, out: Path):
+            try:
+                chat_completion_inprocess(
+                    [{"role": "user", "content": "x"}],
+                    model_path=Path("unused.gguf"),
+                )
+            except RuntimeError:
+                pass
+            out.write_text(
+                json.dumps(
+                    {
+                        "ok": False,
+                        "kind": "llm_extract_failed",
+                        "message": "llm_extract_failed",
+                        "parsed": None,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            class _Done:
+                def poll(self):
+                    return 1
+
+                def terminate(self) -> None:
+                    return None
+
+                def close(self) -> None:
+                    return None
+
+                def job_memory_limit_signaled(self) -> bool:
+                    return False
+
+            return _Done()
+
+        result = CvImportSupervisor(
+            tmp_path / "cv.pdf", spawn=spawn, timeout_s=30
+        ).run_once(progress=progress.append)
+        assert result.kind == "llm_extract_failed"
+        for handler in _log.handlers:
+            handler.flush()
+        text = (tmp_path / "karrierekrake.log").read_text(encoding="utf-8")
+        lines = text.splitlines()
+        assert len([ln for ln in lines if "cv_llm_load" in ln]) == 1
+        assert len([ln for ln in lines if "memory_shares" in ln]) == 1
+        assert len([ln for ln in lines if "n_threads=" in ln]) == 1
+        assert all("cv_llm_load" not in ln and "memory_shares" not in ln for ln in progress)
+    finally:
+        restore()
+
+
+def test_timeout_and_cancel_write_the_app_log(tmp_path: Path, monkeypatch):
+    import subprocess
+
+    _log, restore = _fresh_app_log(tmp_path)
+    try:
+        monkeypatch.setattr(
+            "desktop.cv_import_supervisor._read_app_private_bytes",
+            lambda: 167_272_448,
+        )
+        monkeypatch.setattr(
+            "desktop.cv_import_supervisor._parent_anon_sample",
+            lambda _proc: None,
+        )
+
+        def spawn_sleep(_cv: Path, _out: Path):
+            return subprocess.Popen(["sleep", "30"])
+
+        timed = CvImportSupervisor(
+            tmp_path / "cv.pdf", spawn=spawn_sleep, timeout_s=0.25
+        ).run_once()
+        assert timed.kind == "llm_timeout"
+
+        started = threading.Event()
+
+        def spawn_hang(_cv: Path, _out: Path):
+            proc = subprocess.Popen(["sleep", "30"])
+            started.set()
+            return proc
+
+        supervisor = CvImportSupervisor(
+            tmp_path / "cv.pdf", spawn=spawn_hang, timeout_s=30
+        )
+
+        def _run() -> None:
+            supervisor.run_once()
+
+        thread = threading.Thread(target=_run)
+        thread.start()
+        assert started.wait(3)
+        time.sleep(0.15)
+        supervisor.request_cancel()
+        thread.join(5)
+        assert not thread.is_alive()
+        for handler in _log.handlers:
+            handler.flush()
+        text = (tmp_path / "karrierekrake.log").read_text(encoding="utf-8")
+        assert len([ln for ln in text.splitlines() if "llm_timeout" in ln]) == 1
+        cancel_lines = [ln for ln in text.splitlines() if "cv_import cancelled at=" in ln]
+        assert len(cancel_lines) == 1
+        assert "child_ended_ms=" in cancel_lines[0]
+    finally:
+        restore()

@@ -1835,16 +1835,22 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
     child_budget = active_child_budget_bytes()
     fresh_budget = fresh_app_child_budget_bytes()
     app_private = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
-    logger.info(
+    share_line = (
         "cv_import memory_shares stage=%s app_private=%s child_bytes=%s "
-        "child_budget=%s fresh_child_budget=%s high_water=%s",
-        stage,
-        app_private or "unset",
-        int(rss),
-        child_budget,
-        fresh_budget,
-        _private_commit_high_water,
+        "child_budget=%s fresh_child_budget=%s high_water=%s"
+        % (
+            stage,
+            app_private or "unset",
+            int(rss),
+            child_budget,
+            fresh_budget,
+            _private_commit_high_water,
+        )
     )
+    logger.info("%s", share_line)
+    from core.cv_phase_events import emit_diag
+
+    emit_diag(share_line)
     code = classify_child_private_commit(_private_commit_high_water, child_budget)
     if code is None:
         return
@@ -1863,12 +1869,15 @@ def _enforce_timeout(t0: float, *, stage: str) -> None:
     limit_s = current_import_timeout_s()
     elapsed = time.monotonic() - t0
     if elapsed > limit_s:
-        logger.error(
-            "llm_timeout elapsed_s=%.3f limit_s=%s stage=%s",
+        timeout_line = "llm_timeout elapsed_s=%.3f limit_s=%s stage=%s" % (
             elapsed,
             limit_s,
             stage,
         )
+        logger.error("%s", timeout_line)
+        from core.cv_phase_events import emit_diag
+
+        emit_diag(timeout_line, level="error")
         raise CvImportError("llm_timeout", "llm_timeout")
 
 

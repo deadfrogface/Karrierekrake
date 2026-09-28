@@ -377,9 +377,13 @@ def _interesting_load_line(line: str) -> bool:
 
 
 def _log_llama_load_lines(blob: str) -> None:
+    from core.cv_phase_events import emit_diag
+
     for line in blob.splitlines():
         if _interesting_load_line(line):
-            logger.info("cv_llm_load %s", line.strip())
+            message = f"cv_llm_load {line.strip()}"
+            logger.info("%s", message)
+            emit_diag(message)
 
 
 def _is_cpu_variant_lib(name: str) -> bool:
@@ -497,11 +501,15 @@ def chat_completion_inprocess(
             # Buffer allocation has finished inside Llama(). Log CPU features
             # and buffer types, then gate, before any prompt evaluation.
             _log_llama_load_lines(load_log)
+            from core.cv_phase_events import emit_diag
+
             try:
                 info = llama_build_report_text().splitlines()[0]
-                logger.info("cv_llm_load %s", info.removeprefix("llama_cpu_features="))
+                load_line = "cv_llm_load " + info.removeprefix("llama_cpu_features=")
             except Exception:  # noqa: BLE001
-                logger.info("cv_llm_load llama_system_info=unavailable")
+                load_line = "cv_llm_load llama_system_info=unavailable"
+            logger.info("%s", load_line)
+            emit_diag(load_line)
             _sample_private_commit("after_load")
             n_prompt = prompt_token_count(llm, messages)
             budget = completion_token_budget(n_ctx, n_prompt)
@@ -527,15 +535,13 @@ def chat_completion_inprocess(
             started = import_started_at()
             if started is not None:
                 _enforce_timeout(started, stage="before_generation")
-            logger.info(
+            thread_line = (
                 "cv_llm_inprocess n_ctx=%s n_threads=%s n_threads_batch=%s "
-                "n_prompt=%s max_tokens=%s",
-                n_ctx,
-                n_threads,
-                n_threads_batch,
-                n_prompt,
-                budget,
+                "n_prompt=%s max_tokens=%s"
+                % (n_ctx, n_threads, n_threads_batch, n_prompt, budget)
             )
+            logger.info("%s", thread_line)
+            emit_diag(thread_line)
             parts: list[str] = []
             finish: str | None = None
             saw_chunk = False
