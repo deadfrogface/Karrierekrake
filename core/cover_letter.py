@@ -1526,8 +1526,8 @@ def _period_phrase(start: str, end: str) -> str:
 
 def _is_activity_field(title: str) -> bool:
     """A field of work, not a person. ``Rechnungsprüfung`` is a field."""
-    folded = collapse_phrase(title)
-    word = folded.split()[-1] if folded else ""
+    parts = (title or "").casefold().split()
+    word = parts[-1] if parts else ""
     if not word:
         return False
     if word.endswith(("ist", "ent", "ant", "mann", "frau", "erin", "eur")):
@@ -1537,8 +1537,7 @@ def _is_activity_field(title: str) -> bool:
 
 def _company_bei(company: str) -> str:
     """Words after ``bei``. GmbH and the other feminine legal forms take ``der``."""
-    folded = collapse_phrase(company)
-    parts = folded.split()
+    parts = (company or "").casefold().split()
     if any(part in _FEMININE_LEGAL for part in parts[-2:]):
         return f"der {company}"
     return company
@@ -1551,19 +1550,30 @@ def _role_phrase(fact: _CoverFact) -> str:
     return f"als {title}"
 
 
+_OPENING_SLOT: tuple[str, str] | None = None
+
+
 def _opening_role(title: str) -> str:
     """Same field test as a station title. The job title itself stays in the phrase."""
-    bare = _GENDER_PAREN.sub("", title).strip()
-    if _is_activity_field(bare):
-        return f"Stelle in der {title}"
-    return f"Position als {title}"
+    global _OPENING_SLOT
+    if _OPENING_SLOT is not None and _OPENING_SLOT[0] == title:
+        return _OPENING_SLOT[1]
+    bare = title
+    if "(" in title:
+        bare = _GENDER_PAREN.sub("", title).strip()
+    phrase = f"Stelle in der {title}" if _is_activity_field(bare) else f"Position als {title}"
+    _OPENING_SLOT = (title, phrase)
+    return phrase
+
+
+def _phrase_words(phrase: str) -> list[str]:
+    """Split a short profile phrase. Not the ad normalizer."""
+    return (phrase or "").casefold().split()
 
 
 def _last_word(phrase: str) -> str:
-    folded = collapse_phrase(phrase)
-    if not folded:
-        return ""
-    return folded.split()[-1]
+    words = _phrase_words(phrase)
+    return words[-1] if words else ""
 
 
 _TASK_PREPOSITIONS = frozenset(
@@ -1580,7 +1590,7 @@ def _is_verb_phrase(phrase: str) -> bool:
     ``Fahrer zuordnen`` is a verb phrase. ``Tourenplanung für Stückgut`` is not.
     A preposition marks a noun phrase; its head is the first word.
     """
-    words = collapse_phrase(phrase).split()
+    words = _phrase_words(phrase)
     if not words or any(word in _TASK_PREPOSITIONS for word in words):
         return False
     word = words[-1]
@@ -1593,16 +1603,6 @@ def _is_verb_phrase(phrase: str) -> bool:
     return not words[0].endswith(_FEMININE_ENDINGS)
 
 
-def _is_feminine_noun(phrase: str) -> bool:
-    """Gender is fixed only by the head's ending, never guessed."""
-    if _is_verb_phrase(phrase):
-        return False
-    words = collapse_phrase(phrase).split()
-    if not words:
-        return False
-    return words[0].endswith(_FEMININE_ENDINGS)
-
-
 def _join_phrases(bits: list[str]) -> str:
     if not bits:
         return ""
@@ -1613,11 +1613,17 @@ def _join_phrases(bits: list[str]) -> str:
     return ", ".join(bits[:-1]) + " und " + bits[-1]
 
 
+def _feminine_head(phrase: str) -> bool:
+    """Head ending only. The caller already kept verbs out of this list."""
+    words = _phrase_words(phrase)
+    return bool(words) and words[0].endswith(_FEMININE_ENDINGS)
+
+
 def _noun_list(phrases: list[str]) -> str:
     """Article only on a noun whose gender is fixed by its ending."""
     bits = []
     for phrase in phrases:
-        if _is_feminine_noun(phrase):
+        if _feminine_head(phrase):
             bits.append(f"die {phrase}")
         else:
             bits.append(phrase)
@@ -2048,8 +2054,33 @@ def _station_with_nouns(place: str, period: str, role: str, nouns: list[str], in
     return f"Bei {place} habe ich {role} für {listed} gearbeitet."
 
 
+# Same station block, next letter. One slot, same idea as ``_FACTS_SLOT``.
+# The third field is the casefold, so the skill filter does not fold it again.
+_EXPERIENCE_SLOT: tuple[tuple, str, str] | None = None
+
+
+def _experience_key(stations: list[_CoverFact]) -> tuple:
+    return tuple(
+        (
+            fact.kind,
+            fact.company,
+            fact.label,
+            fact.title,
+            fact.activity_field,
+            fact.period,
+            fact.has_tasks,
+            fact.counted_tasks,
+        )
+        for fact in stations
+    )
+
+
 def _experience_sentences(stations: list[_CoverFact]) -> str:
     """One block per station. Nouns and infinitives never share one list."""
+    global _EXPERIENCE_SLOT
+    key = _experience_key(stations)
+    if _EXPERIENCE_SLOT is not None and _EXPERIENCE_SLOT[0] == key:
+        return _EXPERIENCE_SLOT[1]
     parts: list[str] = []
     index = 0
     for fact in stations:
@@ -2058,8 +2089,15 @@ def _experience_sentences(stations: list[_CoverFact]) -> str:
         place = _company_bei(fact.company) if fact.company else ""
         role = _role_phrase(fact)
         period = fact.period
-        nouns = [task for task in fact.counted_tasks if task and not _is_verb_phrase(task)]
-        verbs = [task for task in fact.counted_tasks if task and _is_verb_phrase(task)]
+        nouns: list[str] = []
+        verbs: list[str] = []
+        for task in fact.counted_tasks:
+            if not task:
+                continue
+            if _is_verb_phrase(task):
+                verbs.append(task)
+            else:
+                nouns.append(task)
         block: list[str] = []
         if nouns:
             block.append(_station_with_nouns(place, period, role, nouns, index))
@@ -2069,46 +2107,140 @@ def _experience_sentences(stations: list[_CoverFact]) -> str:
             block.append(_verb_frame(verbs))
         parts.append(" ".join(block))
         index += 1
-    return "\n\n".join(parts)
+    text = "\n\n".join(parts)
+    _EXPERIENCE_SLOT = (key, text, text.casefold())
+    return text
 
 
-def _context_after_label(label: str, sentence: str) -> str:
-    """A short prepositional phrase that follows the label in this sentence."""
-    if not label or not sentence:
+def _local_clause(description: str, start: int, end: int) -> str:
+    """The line or sentence that holds the label. Stops at the next break."""
+    left_nl = description.rfind("\n", 0, start)
+    left_dot = description.rfind(".", 0, start)
+    begin = max(left_nl, left_dot) + 1
+    right_nl = description.find("\n", end)
+    right_dot = description.find(".", end)
+    finish = len(description)
+    if right_nl >= 0:
+        finish = right_nl
+    if right_dot >= 0 and right_dot < finish:
+        finish = right_dot
+    return description[begin:finish]
+
+
+def _pp_word(original: str, folded: str, index: int) -> tuple[str, int]:
+    """One adverbial word. At least three characters, same cut as ``_SKILL_PP``."""
+    size = len(folded)
+    if index >= size or not folded[index].isalpha():
+        return "", index
+    end = index + 1
+    while end < size and (folded[end].isalnum() or folded[end] in "-_"):
+        end += 1
+    if end - index < 3:
+        return "", index
+    return original[index:end], end
+
+
+def _pp_from_tail(tail: str) -> str:
+    """Short adverbial at the start of the tail. Empty when the regex would miss."""
+    if not tail:
         return ""
-    folded = sentence.casefold()
-    needle = label.casefold()
+    folded = tail.casefold()
+    # „ß“ grows under casefold. The regex still sees the original characters.
+    if len(folded) != len(tail):
+        match = _SKILL_PP.match(tail)
+        if match is None:
+            return ""
+        words = match.group(0).rstrip(" .,;:").split()
+        while len(words) > 1 and words[-1].casefold() in _SKILL_PP_STOP:
+            words.pop()
+        if len(words) < 2 or any(word.casefold() in _SKILL_PP_STOP for word in words):
+            return ""
+        return " ".join(words)
+    size = len(folded)
+    prefix_end = 0
+    for text in ("in der", "in dem", "beim", "im", "am"):
+        length = len(text)
+        if folded.startswith(text) and (size == length or folded[length] in " \t"):
+            prefix_end = length
+            break
+    if not prefix_end:
+        return ""
+    index = prefix_end
+    while index < size and folded[index] in " \t":
+        index += 1
+    first, index = _pp_word(tail, folded, index)
+    if not first:
+        return ""
+    parts = [tail[:prefix_end], first]
+    look = index
+    while look < size and folded[look] in " \t":
+        look += 1
+    second, _end = _pp_word(tail, folded, look)
+    if second:
+        parts.append(second)
+    while len(parts) > 1 and parts[-1].casefold() in _SKILL_PP_STOP:
+        parts.pop()
+    if len(parts) < 2 or any(part.casefold() in _SKILL_PP_STOP for part in parts):
+        return ""
+    return " ".join(parts)
+
+
+def _clause_has_must(clause: str) -> bool:
+    """Must-marker in this clause. The hint skips the regex when it cannot hit."""
+    folded = clause.casefold()
+    if (
+        "voraus" not in folded
+        and "zwingend" not in folded
+        and "erforderlich" not in folded
+        and "required" not in folded
+        and "must" not in folded
+    ):
+        return False
+    return _MUST_RE.search(clause) is not None
+
+
+def _context_after_label(needle: str, description: str, folded: str) -> tuple[str, str]:
+    """A short prepositional phrase after the label, and its local clause."""
+    if not needle or not description or not folded:
+        return "", ""
+    # ``casefold`` expands „ß“. A shifted index would cut the wrong words.
+    if len(folded) != len(description):
+        return "", ""
     start = 0
     while True:
         idx = folded.find(needle, start)
         if idx < 0:
-            return ""
+            return "", ""
         end = idx + len(needle)
         before_ok = idx == 0 or not folded[idx - 1].isalnum()
         after_ok = end >= len(folded) or not folded[end].isalnum()
-        if before_ok and after_ok:
-            tail = sentence[end:].lstrip(" ,;:")
-            match = _SKILL_PP.match(tail)
-            if match is None:
-                return ""
-            words = match.group(0).rstrip(" .,;:").split()
-            while len(words) > 1 and words[-1].casefold() in _SKILL_PP_STOP:
-                words.pop()
-            if len(words) < 2 or any(word.casefold() in _SKILL_PP_STOP for word in words):
-                return ""
-            return " ".join(words)
-        start = end
+        if not (before_ok and after_ok):
+            start = end
+            continue
+        # The adverbial stays on this line. The next line is a different fact.
+        line_end = description.find("\n", end)
+        if line_end < 0:
+            line_end = len(description)
+        dot = description.find(".", end)
+        if dot >= 0 and dot < line_end:
+            line_end = dot
+        context = _pp_from_tail(description[end:line_end].lstrip(" ,;:"))
+        if not context:
+            return "", ""
+        return context, _local_clause(description, idx, end)
 
 
-def _one_skill_sentence(label: str, description: str, *, follow_up: bool) -> str:
+def _one_skill_sentence(
+    label: str,
+    description: str,
+    folded: str,
+    *,
+    follow_up: bool,
+    needle: str = "",
+) -> str:
     """Two or three shapes, chosen from the ad sentence. No random pick."""
-    sentence = ""
-    for part in _sentences(description) or [description]:
-        if _label_bounded(label, collapse_phrase(part)):
-            sentence = part
-            break
-    context = _context_after_label(label, sentence)
-    if context and sentence and _MUST_RE.search(sentence):
+    context, clause = _context_after_label(needle or label.casefold(), description, folded)
+    if context and clause and _clause_has_must(clause):
         pronoun = "die" if _last_word(label).endswith(_FEMININE_ENDINGS) else "das"
         return (
             f"Mit {label}, {pronoun} Sie {context} voraussetzen, "
@@ -2121,23 +2253,60 @@ def _one_skill_sentence(label: str, description: str, *, follow_up: bool) -> str
     return f"Praktische Erfahrung habe ich mit {label}."
 
 
+# Same first sentence and the same remaining skills. The finder stops at the
+# first bounded label, so a later sentence cannot change that letter.
+_SKILL_SLOT: tuple[tuple, str] | None = None
+
+
+def _skill_block(pending: list[_CoverFact], description: str, folded: str) -> str:
+    parts: list[str] = []
+    for fact in pending:
+        parts.append(
+            _one_skill_sentence(
+                fact.label,
+                description,
+                folded,
+                follow_up=bool(parts),
+                needle=fact.label_key,
+            )
+        )
+    return "\n\n".join(parts)
+
+
 def _skill_sentences(
     skills: list[_CoverFact],
     description: str = "",
     experience: str = "",
 ) -> str:
     """Skills that the station block does not already name."""
-    folded = collapse_phrase(experience)
-    parts: list[str] = []
+    global _SKILL_SLOT
+    if experience and _EXPERIENCE_SLOT is not None and experience is _EXPERIENCE_SLOT[1]:
+        folded_experience = _EXPERIENCE_SLOT[2]
+    else:
+        folded_experience = experience.casefold() if experience else ""
+    pending: list[_CoverFact] = []
     for fact in skills:
         if not fact.label:
             continue
-        if folded and _label_bounded(fact.label, folded):
+        key = fact.label_key or collapse_phrase(fact.label)
+        if folded_experience and _key_bounded(key, folded_experience):
             continue
-        parts.append(
-            _one_skill_sentence(fact.label, description, follow_up=bool(parts))
-        )
-    return "\n\n".join(parts)
+        pending.append(fact)
+    if not pending or not description:
+        return "" if not pending else _skill_block(pending, description, "")
+    head, dot, _rest = description.partition(".")
+    head_folded = head.casefold()
+    if len(head_folded) == len(head) and all(
+        fact.label_key and _bounded_phrase(fact.label_key, head_folded) for fact in pending
+    ):
+        cache_key = (head, tuple(fact.label for fact in pending))
+        if _SKILL_SLOT is not None and _SKILL_SLOT[0] == cache_key:
+            return _SKILL_SLOT[1]
+        folded = head_folded if not dot else description.casefold()
+        text = _skill_block(pending, description, folded)
+        _SKILL_SLOT = (cache_key, text)
+        return text
+    return _skill_block(pending, description, description.casefold())
 
 
 def _try_cover_model(
