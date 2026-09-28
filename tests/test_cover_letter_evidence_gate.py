@@ -993,7 +993,7 @@ def test_approve_saves_user_edit_and_refuses_empty_or_placeholder(tmp_path: Path
 def test_sap_business_one_covers_sap_not_the_reverse():
     from core.cover_letter import cover_letter_reference_hits
 
-    station = ExperienceEntry(title="Sachbearbeiter", company="Kontor Beispiel GmbH", source="manual")
+    station = ExperienceEntry(title="Rechnungsprüfung", company="Kontor Beispiel GmbH", source="manual")
     specific = _cfg(stations=[station])
     specific.profile.qualifications.software = [
         SourcedText(value="SAP Business One", source="manual")
@@ -1001,17 +1001,18 @@ def test_sap_business_one_covers_sap_not_the_reverse():
     ad_sap = Job(
         id="j-sap-family",
         source="indeed",
-        title="Sachbearbeiter",
+        title="Rechnungsprüfung",
         company="Buchkontor Beispiel GmbH",
-        description="Erfahrung als Sachbearbeiter und sicherer Umgang mit SAP.",
+        description="Erfahrung in der Rechnungsprüfung und sicherer Umgang mit SAP.",
     )
     written = compose_cover_letter(ad_sap, specific)
     assert written.ok is True
     assert "SAP Business One" in written.text
-    assert "Sachbearbeiter" in written.text
+    assert "setze ich SAP ein." not in written.text
+    assert "Rechnungsprüfung" in written.text
     hits, missing = cover_letter_reference_hits(written.text, ad_sap, specific)
     assert "SAP Business One" in hits
-    assert "Sachbearbeiter" in hits
+    assert "Rechnungsprüfung" in hits
     assert missing == ()
 
     only = _cfg()
@@ -1019,15 +1020,16 @@ def test_sap_business_one_covers_sap_not_the_reverse():
     alone = compose_cover_letter(ad_sap, only)
     assert alone.reason_code == "no_evidence"
     assert alone.text == ""
+    assert alone.found_references == ("SAP Business One",)
 
     broad = _cfg(stations=[station])
     broad.profile.qualifications.software = [SourcedText(value="SAP", source="manual")]
     ad_product = Job(
         id="j-sap-reverse",
         source="indeed",
-        title="Sachbearbeiter",
+        title="Rechnungsprüfung",
         company="Buchkontor Beispiel GmbH",
-        description="Erfahrung als Sachbearbeiter und SAP Business One im Tagesgeschäft.",
+        description="Erfahrung in der Rechnungsprüfung und SAP Business One im Tagesgeschäft.",
     )
     reverse = compose_cover_letter(ad_product, broad)
     assert reverse.reason_code == "no_evidence"
@@ -1039,14 +1041,14 @@ def test_sap_business_one_covers_sap_not_the_reverse():
 def test_sentence_break_splits_sap_and_excel():
     cfg = _cfg(
         "Excel",
-        stations=[ExperienceEntry(title="Sachbearbeiter", company="Nord GmbH", source="manual")],
+        stations=[ExperienceEntry(title="Büroorganisation", company="Nord GmbH", source="manual")],
     )
     job = Job(
         id="j-period",
         source="indeed",
-        title="Sachbearbeiter",
+        title="Büroorganisation",
         company="Beispiel GmbH",
-        description="Wir suchen Kubernetes-Zertifikat und fünf Jahre SAP. Excel ist willkommen.",
+        description="Wir suchen Kubernetes-Zertifikat und fünf Jahre SAP. Excel und Büroorganisation sind willkommen.",
     )
     result = compose_cover_letter(job, cfg)
     assert result.ok is True
@@ -1057,15 +1059,15 @@ def test_sentence_break_splits_sap_and_excel():
 
 
 def test_java_does_not_hit_javascript():
-    station = ExperienceEntry(title="Sachbearbeiter", company="Kontor Beispiel GmbH", source="manual")
+    station = ExperienceEntry(title="Rechnungsprüfung", company="Kontor Beispiel GmbH", source="manual")
     java = _cfg(stations=[station])
     java.profile.qualifications.software = [SourcedText(value="Java", source="manual")]
     javascript_ad = Job(
         id="j-javascript",
         source="indeed",
-        title="Sachbearbeiter",
+        title="Rechnungsprüfung",
         company="Buchkontor Beispiel GmbH",
-        description="Erfahrung als Sachbearbeiter und JavaScript im Frontend.",
+        description="Erfahrung in der Rechnungsprüfung und JavaScript im Frontend.",
     )
     missed = compose_cover_letter(javascript_ad, java)
     assert missed.reason_code == "no_evidence"
@@ -1075,9 +1077,9 @@ def test_java_does_not_hit_javascript():
     java_ad = Job(
         id="j-java",
         source="indeed",
-        title="Sachbearbeiter",
+        title="Rechnungsprüfung",
         company="Buchkontor Beispiel GmbH",
-        description="Erfahrung als Sachbearbeiter und Java im Backend.",
+        description="Erfahrung in der Rechnungsprüfung und Java im Backend.",
     )
     also_missed = compose_cover_letter(java_ad, script)
     assert also_missed.reason_code == "no_evidence"
@@ -1152,3 +1154,261 @@ def test_deutsch_and_licence_are_not_references_on_nordmole():
     assert "deutsch" not in named
     assert "klasse b" not in named
     assert "führerschein" not in named
+
+
+def test_facts_are_built_once_per_job_and_profile():
+    import core.cover_letter as cover
+
+    cover._FACTS_SLOT = None
+    counts = {"builder": 0, "station": 0}
+    build = cover._build_cover_facts
+    station = cover._station_keys
+
+    def counted_build(*args, **kwargs):
+        counts["builder"] += 1
+        return build(*args, **kwargs)
+
+    def counted_station(*args, **kwargs):
+        counts["station"] += 1
+        return station(*args, **kwargs)
+
+    cover._build_cover_facts = counted_build
+    cover._station_keys = counted_station
+    try:
+        cfg = _cfg(
+            "SAP",
+            stations=[
+                ExperienceEntry(title="Disponent", company="Nordkai Spedition GmbH", source="manual")
+            ],
+        )
+        job = Job(
+            id="j-once",
+            source="indeed",
+            title="Disponent",
+            company="Nordmole Musterlogistik GmbH",
+            description="Anforderungen: Disponent und SAP im Leitstand.",
+        )
+        result = compose_cover_letter(job, cfg)
+        assert result.ok is True
+        assert counts == {"builder": 1, "station": 1}
+        cover.cover_letter_reference_hits("Vorschau ohne die Bezüge.", job, cfg)
+        assert counts == {"builder": 1, "station": 1}
+    finally:
+        cover._build_cover_facts = build
+        cover._station_keys = station
+        cover._FACTS_SLOT = None
+
+
+def test_available_references_come_from_facts_not_missing():
+    from core.cover_letter import available_cover_references, cover_letter_reference_hits
+
+    cfg = _cfg()
+    cfg.profile.qualifications.software = [SourcedText(value="SAP Business One", source="manual")]
+    job = Job(
+        id="j-available",
+        source="indeed",
+        title="Buchhaltung",
+        company="Buchkontor Beispiel GmbH",
+        description="Sicherer Umgang mit SAP.",
+    )
+    import core.cover_letter as cover
+
+    facts = cover._cover_facts(job, cfg)
+    available = available_cover_references(facts)
+    hits, missing = cover_letter_reference_hits("", job, cfg, facts=facts)
+    assert available == ("SAP Business One",)
+    assert hits == ()
+    assert len(available) != 0
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.found_references == available
+    assert result.found_references != missing or missing == available
+
+
+def test_generic_title_word_does_not_qualify_a_station():
+    cfg = _cfg(
+        stations=[
+            ExperienceEntry(title="Sachbearbeiter Lohn", company="Kontor Beispiel GmbH", source="manual")
+        ]
+    )
+    job = Job(
+        id="j-generic-title",
+        source="indeed",
+        title="Sachbearbeiter Einkauf",
+        company="Einkauf Beispiel GmbH",
+        description="Gesucht wird ein Sachbearbeiter Einkauf für die Beschaffung.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
+
+
+def test_two_generic_task_words_do_not_qualify():
+    cfg = _cfg(
+        stations=[
+            ExperienceEntry(
+                title="Hilfskraft",
+                company="Hof Beispiel",
+                responsibilities=["Betreuung der Ablage", "Erstellung von Listen"],
+                source="manual",
+            )
+        ]
+    )
+    job = Job(
+        id="j-generic-tasks",
+        source="indeed",
+        title="Bürohilfe",
+        company="Amt Beispiel GmbH",
+        description="Aufgaben: Betreuung der Vorgänge und Erstellung der Unterlagen.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.reason_code == "no_evidence"
+    assert result.text == ""
+
+
+def test_composite_key_does_not_merge_distinct_requirements():
+    from core.cover_letter import _CoverFact, _assign_cover_facts, _unify_requirements
+
+    facts = _unify_requirements(
+        [
+            _CoverFact("skill:sap", "skill", "SAP", frozenset({"tok:sap"}), 0, "", ""),
+            _CoverFact(
+                "station:sb",
+                "station",
+                "Sachbearbeiter",
+                frozenset({"tok:sachbearbeiter"}),
+                1,
+                "Sachbearbeiter",
+                "Kontor",
+            ),
+            _CoverFact(
+                "span",
+                "station",
+                "SAP-Sachbearbeiter",
+                frozenset({"tok:sachbearbeiter|sap"}),
+                1,
+                "SAP-Sachbearbeiter",
+                "Kontor",
+            ),
+        ]
+    )
+    assigned = _assign_cover_facts(facts)
+    roots = {root for _fact, root in assigned}
+    assert "tok:sap" in roots or any(root.endswith("sap") and "sachbearbeiter" not in root for root in roots)
+    assert any("sachbearbeiter" in root and root != "tok:sachbearbeiter|sap" for root in roots)
+    assert len(assigned) >= 2
+
+
+def test_enumeration_is_not_a_reference_via_text_check():
+    from core.cover_letter import cover_letter_reference_hits
+
+    cfg = _cfg("Tourenplanung", "SAP")
+    job = Job(
+        id="j-list",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung und SAP.",
+    )
+    listed = "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung."
+    hits, _missing = cover_letter_reference_hits(listed, job, cfg)
+    assert hits == ()
+
+
+def test_enumeration_is_not_a_reference_via_model_hook(monkeypatch):
+    import core.cover_letter as cover
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_CALLS", 0)
+
+    def only_a_list(job, config, missing, attempt):
+        return "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung."
+
+    monkeypatch.setattr(cover, "_COVER_MODEL_FN", only_a_list)
+    cfg = _cfg("Tourenplanung", "SAP")
+    job = Job(
+        id="j-list-model",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung und SAP.",
+    )
+    refused = compose_cover_letter(job, cfg)
+    assert refused.reason_code == "no_evidence"
+    assert refused.text == ""
+    assert refused.ok is False
+    assert cover.cover_model_calls() == 2
+
+
+def test_letter_uses_profile_wording_for_sap_business_one():
+    cfg = _cfg(
+        stations=[
+            ExperienceEntry(title="Rechnungsprüfung", company="Kontor Beispiel GmbH", source="manual")
+        ]
+    )
+    cfg.profile.qualifications.software = [SourcedText(value="SAP Business One", source="manual")]
+    job = Job(
+        id="j-wording",
+        source="indeed",
+        title="Rechnungsprüfung",
+        company="Buchkontor Beispiel GmbH",
+        description="Rechnungsprüfung und SAP im Tagesgeschäft.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "Für die ausgeschriebene Aufgabe setze ich SAP Business One ein." in result.text
+    assert "setze ich SAP ein." not in result.text
+
+
+def test_shortened_company_still_counts():
+    from core.cover_letter import cover_letter_reference_hits
+
+    cfg = _cfg(
+        "SAP",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordmole Musterlogistik GmbH",
+                source="manual",
+            )
+        ],
+    )
+    job = Job(
+        id="j-short-company",
+        source="indeed",
+        title="Disponent",
+        company="Kaiwerk GmbH",
+        description="Anforderungen: Disponent und SAP.",
+    )
+    generated = compose_cover_letter(job, cfg)
+    assert generated.ok is True
+    shortened = generated.text.replace("Nordmole Musterlogistik GmbH", "Nordmole")
+    assert "Nordmole Musterlogistik GmbH" not in shortened
+    hits, missing = cover_letter_reference_hits(shortened, job, cfg)
+    assert "Disponent" in hits
+    assert "SAP" in hits
+    assert missing == ()
+
+
+def test_crlf_and_trailing_space_are_not_an_edit(tmp_path: Path):
+    cfg = _cfg("Tourenplanung", "SAP")
+    cfg.root = tmp_path
+    job = Job(
+        id="job-crlf",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung und SAP.",
+    )
+    generated = compose_cover_letter(job, cfg)
+    assert generated.ok is True
+    messy = "\r\n".join(line + "   " for line in generated.text.split("\n"))
+    path = approve_cover_letter(
+        job,
+        cfg,
+        messy,
+        generated_sha256=generated.generated_sha256,
+    )
+    meta = json.loads((tmp_path / "cover_letters" / "job-crlf.meta.json").read_text(encoding="utf-8"))
+    assert meta["edited"] is False
+    assert meta["generated_sha256"] == generated.generated_sha256
+    assert path.read_text(encoding="utf-8") == generated.text

@@ -437,7 +437,12 @@ class ApplyPreviewDialog(QDialog):
         if self._config is None or self._job is None:
             return
         try:
-            path = approve_cover_letter(self._job, self._config, self.preview.cover_letter_preview)
+            path = approve_cover_letter(
+                self._job,
+                self._config,
+                self.cover_edit.toPlainText(),
+                generated_sha256=self.preview.cover_letter_sha256,
+            )
         except CoverLetterRefused as exc:
             lang = getattr(self._config.settings, "language", "de")
             QMessageBox.warning(self, self.windowTitle(), exc.refusal.text(lang))

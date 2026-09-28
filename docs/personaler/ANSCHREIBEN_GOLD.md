@@ -140,12 +140,16 @@ Minimales Profil, das der Anschreiben-Pfad liest. Suche, Filter, Settings und `s
 | `cl-15-station-and-skill` | `interview` | Die Station Disponent und der Skill Tourenplanung sind zwei verschiedene Bezüge. |
 | `cl-16-employer-name-only` | `no_evidence` | Die Anzeige nennt den früheren Arbeitgeber Nordkai Spedition GmbH und sonst keinen Profilbezug. |
 | `cl-17-excel-one-requirement` | `no_evidence` | Excel und MS Excel treffen dieselbe Anforderung MS Excel und zählen als ein Bezug. |
-| `cl-18-sap-business-one-covers-sap` | `interview` | SAP Business One im Profil trifft die Anforderung SAP. Die Station Sachbearbeiter ist der zweite Bezug. |
+| `cl-18-sap-business-one-covers-sap` | `interview` | SAP Business One im Profil trifft die Anforderung SAP. Die Station Rechnungsprüfung ist der zweite Bezug. |
 | `cl-19-sap-business-one-only` | `no_evidence` | Nur SAP Business One, kein zweiter Bezug. Die Produktfamilie zählt als eine Anforderung. |
 | `cl-20-nordmole-dispatcher` | `interview` | Nordmole-Anzeige aus der Quell-Fixture. Station Disponent und Software SAP stehen im Brief. |
 | `cl-21-nordmole-payroll` | `no_evidence` | Dieselbe Anzeige, Profil Lohnbuchhalterin mit DATEV und Excel. Deutsch und Klasse B zählen nicht. |
+| `cl-22-generic-title-word` | `no_evidence` | Sachbearbeiter Lohn und Sachbearbeiter Einkauf teilen nur das allgemeine Wort Sachbearbeiter. |
+| `cl-23-generic-task-words` | `no_evidence` | Betreuung und Erstellung sind allgemeine Aufgabenwörter und qualifizieren die Station nicht. |
+| `cl-24-two-requirements-in-title` | `interview` | Der Titel enthält Fachlagerist und SAP. Das bleiben zwei Bezüge. |
+| `cl-25-one-sentence-per-reference` | `interview` | Tourenplanung und SAP stehen je in einem Satz. Eine Aufzählung wäre kein Brief. |
 
-Zählung: `interview` 11, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 6, `blocked_demo` 1, `company_missing` 1. Zusammen 21 Fälle.
+Zählung: `interview` 13, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 8, `blocked_demo` 1, `company_missing` 1. Zusammen 25 Fälle.
 
 Die erzeugten Briefe der `interview`-Fälle stehen in `docs/qa/anschreiben_gold_briefe.md`.
 

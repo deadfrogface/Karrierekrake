@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-22-generic-title-word",
+  "tags": [
+    "generic_title"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550122",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Sachbearbeiter Lohn",
+          "company": "Lohnkontor Beispiel GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-01",
+          "end_date": "2024-01",
+          "responsibilities": [
+            "Belege ablegen"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-22-generic-title-word",
+    "source": "indeed",
+    "source_job_id": "src-cl-22-generic-title-word",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-22-generic-title-word",
+    "status": "new",
+    "title": "Sachbearbeiter Einkauf",
+    "company": "Einkauf Beispiel GmbH",
+    "description": "Die Einkauf Beispiel GmbH sucht Unterstützung im Einkauf. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- Erfahrung als Sachbearbeiter Einkauf\n\nWeitere Stationen nennt die Anzeige nicht."
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]"
+  ],
+  "rationale": "Die Station Sachbearbeiter Lohn und die Anzeige Sachbearbeiter Einkauf teilen nur das allgemeine Wort Sachbearbeiter. Das ist kein Titeltreffer der konkreten Rolle. Soll ist no_evidence."
+}

@@ -90,6 +90,10 @@ REQUIRED_TAGS = frozenset(
         "product_only",
         "nordmole_dispatcher",
         "nordmole_payroll",
+        "generic_title",
+        "generic_tasks",
+        "distinct_requirements",
+        "list_not_reference",
     }
 )
 
@@ -309,7 +313,7 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     assert family["expected_outcome"] == "interview"
     assert "SAP Business One" in _texts(family["profile"])
     assert "SAP Business One" in family["must_mention"]
-    assert "Sachbearbeiter" in family["must_mention"]
+    assert "Rechnungsprüfung" in family["must_mention"]
     assert "mit SAP" in family["job"]["description"]
 
     product_only = by_tag["product_only"]
@@ -334,6 +338,28 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     assert "SAP Business One" not in _texts(payroll["profile"])
     assert payroll["profile"]["qualifications"]["languages"][0]["language"] == "Deutsch"
     assert payroll["profile"]["qualifications"]["driving_license"][0]["value"] == "Klasse B"
+
+    generic_title = by_tag["generic_title"]
+    assert generic_title["expected_outcome"] == "no_evidence"
+    assert generic_title["profile"]["qualifications"]["work_experience"][0]["title"] == "Sachbearbeiter Lohn"
+    assert "Sachbearbeiter Einkauf" in generic_title["job"]["title"]
+
+    generic_tasks = by_tag["generic_tasks"]
+    assert generic_tasks["expected_outcome"] == "no_evidence"
+    tasks = generic_tasks["profile"]["qualifications"]["work_experience"][0]["responsibilities"]
+    assert tasks == ["Betreuung der Ablage", "Erstellung von Listen"]
+
+    distinct = by_tag["distinct_requirements"]
+    assert distinct["expected_outcome"] == "interview"
+    assert distinct["job"]["title"] == "Fachlagerist SAP"
+    assert "Fachlagerist" in distinct["must_mention"]
+    assert "SAP" in distinct["must_mention"]
+
+    listed = by_tag["list_not_reference"]
+    assert listed["expected_outcome"] == "interview"
+    assert "Tourenplanung" in listed["must_mention"]
+    assert "SAP" in listed["must_mention"]
+    assert "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung." in listed["must_not_contain"]
 
 
 def test_doc_names_every_case(cases: list[dict]) -> None:
