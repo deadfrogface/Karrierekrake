@@ -564,6 +564,9 @@ def chat_completion_inprocess(
                     tokens_done=tokens_done,
                     now=phase_clock(),
                 )
+                # Mid-generation deadline and the 60 s stall are the parent's
+                # watch. A check here does not run inside a llama.cpp C call,
+                # and it would not see the parent's one extension.
                 choice = chunk["choices"][0]
                 delta = choice.get("delta") or {}
                 piece = delta.get("content")

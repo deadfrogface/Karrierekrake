@@ -1866,13 +1866,22 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
 
 
 def _enforce_timeout(t0: float, *, stage: str) -> None:
+    """Fail when the wall clock is past the deadline at a stage boundary.
+
+    This does not run while tokens are streaming. A child blocked inside
+    llama.cpp never reaches the next stage, so the parent watch is what
+    applies the deadline mid-generation and what notices a token stall.
+    """
     limit_s = current_import_timeout_s()
     elapsed = time.monotonic() - t0
     if elapsed > limit_s:
-        timeout_line = "llm_timeout elapsed_s=%.3f limit_s=%s stage=%s" % (
-            elapsed,
-            limit_s,
-            stage,
+        timeout_line = (
+            "llm_timeout reason=deadline elapsed_s=%.3f limit_s=%s stage=%s"
+            % (
+                elapsed,
+                limit_s,
+                stage,
+            )
         )
         logger.error("%s", timeout_line)
         from core.cv_phase_events import emit_diag

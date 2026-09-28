@@ -56,24 +56,31 @@ def absorb_phase_message(
     *,
     timeout_s: int | None,
     tokens_done: int | None,
-) -> tuple[int | None, int | None]:
+    timeout_s_final: int | None = None,
+) -> tuple[int | None, int | None, int | None]:
     """Keep the first ``timeout_s`` and the latest ``tokens_done`` count.
 
-    Plain stage names are ignored. ``max_tokens`` is not a UI field.
-    The visible status text stays the existing progress sentence.
-    There is no remaining-time calculation.
+    ``timeout_s_final`` is kept the first time it appears. It does not
+    replace ``timeout_s``. Plain stage names are ignored. ``max_tokens``
+    is not a UI field. The visible status text stays the existing
+    progress sentence. There is no remaining-time calculation.
     """
     if not message.startswith("{"):
-        return timeout_s, tokens_done
+        return timeout_s, tokens_done, timeout_s_final
     try:
         event = json.loads(message)
     except json.JSONDecodeError:
-        return timeout_s, tokens_done
+        return timeout_s, tokens_done, timeout_s_final
     if not isinstance(event, dict):
-        return timeout_s, tokens_done
+        return timeout_s, tokens_done, timeout_s_final
     if "timeout_s" in event and timeout_s is None:
         try:
             timeout_s = int(event["timeout_s"])
+        except (TypeError, ValueError):
+            pass
+    if "timeout_s_final" in event and timeout_s_final is None:
+        try:
+            timeout_s_final = int(event["timeout_s_final"])
         except (TypeError, ValueError):
             pass
     if "tokens_done" in event:
@@ -81,7 +88,7 @@ def absorb_phase_message(
             tokens_done = int(event["tokens_done"])
         except (TypeError, ValueError):
             pass
-    return timeout_s, tokens_done
+    return timeout_s, tokens_done, timeout_s_final
 
 
 def emit_diag(message: str, *, level: str = "info") -> None:

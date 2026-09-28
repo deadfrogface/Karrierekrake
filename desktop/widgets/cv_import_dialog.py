@@ -193,6 +193,7 @@ class CvImportDialog(QDialog):
         self.attempt_count = 0
         self.phase_timeout_s: int | None = None
         self.phase_tokens_done: int | None = None
+        self.phase_timeout_s_final: int | None = None
 
         self.mode_replace = QRadioButton(tr("cv_import.mode_replace"))
         self.mode_merge = QRadioButton(tr("cv_import.mode_merge"))
@@ -374,6 +375,9 @@ class CvImportDialog(QDialog):
         self._cancel_btn.setText(tr("cv_import.cancel_btn"))
         self.attempt_count += 1
         self._last_kind = ""
+        self.phase_timeout_s = None
+        self.phase_tokens_done = None
+        self.phase_timeout_s_final = None
         self.incoming = None
         self.parsed = None
         self.personal_incoming = {}
@@ -433,10 +437,15 @@ class CvImportDialog(QDialog):
             return
         from core.cv_phase_events import absorb_phase_message
 
-        self.phase_timeout_s, self.phase_tokens_done = absorb_phase_message(
+        (
+            self.phase_timeout_s,
+            self.phase_tokens_done,
+            self.phase_timeout_s_final,
+        ) = absorb_phase_message(
             message,
             timeout_s=self.phase_timeout_s,
             tokens_done=self.phase_tokens_done,
+            timeout_s_final=self.phase_timeout_s_final,
         )
         if not self.progress.isVisible():
             self.progress.setVisible(True)

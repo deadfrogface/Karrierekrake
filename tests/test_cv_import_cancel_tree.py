@@ -613,14 +613,17 @@ def test_generation_timeout_event_matches_supervisor_once(
 
     timeout_s = None
     tokens_done = None
+    timeout_s_final = None
     for line in progress_lines:
-        timeout_s, tokens_done = absorb_phase_message(
+        timeout_s, tokens_done, timeout_s_final = absorb_phase_message(
             line,
             timeout_s=timeout_s,
             tokens_done=tokens_done,
+            timeout_s_final=timeout_s_final,
         )
     assert timeout_s == int(supervisor.timeout_s)
     assert tokens_done is None
+    assert timeout_s_final is None
 
 
 def test_supervisor_adopts_the_child_timeout_event(
@@ -829,3 +832,315 @@ def test_timeout_and_cancel_write_the_app_log(tmp_path: Path, monkeypatch):
         assert "child_ended_ms=" in cancel_lines[0]
     finally:
         restore()
+
+
+def _fake_clock(monkeypatch: pytest.MonkeyPatch) -> dict[str, float]:
+    """Advance one second per supervisor sleep. No wall-clock wait."""
+    clock = {"t": 0.0}
+    monkeypatch.setattr("desktop.cv_import_supervisor._monotonic", lambda: clock["t"])
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._sleep",
+        lambda _seconds: clock.__setitem__("t", clock["t"] + 1.0),
+    )
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 167_272_448,
+    )
+    monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", raising=False)
+    return clock
+
+
+class _ScriptedChild:
+    """Phase events follow the fake clock. ``poll`` does not sleep."""
+
+    def __init__(
+        self,
+        out: Path,
+        clock: dict[str, float],
+        *,
+        timeout_s: int,
+        max_tokens: int,
+        first_token_at: float,
+        token_every: float,
+        done_at: float | None,
+        last_token_at: float | None,
+    ) -> None:
+        self._out = out
+        self._clock = clock
+        self._timeout_s = timeout_s
+        self._max_tokens = max_tokens
+        self._every = token_every
+        self._done_at = done_at
+        self._last_token_at = last_token_at
+        self._phase = Path(os.environ["KARRIEREKRAKE_CV_PHASE_EVENTS"])
+        self._header = False
+        self._tokens = 0
+        self._next = first_token_at
+
+    def poll(self):
+        now = self._clock["t"]
+        if now > 2000:
+            return 1
+        if not self._header:
+            diag = (
+                "cv_llm_inprocess n_ctx=4096 n_threads=4 n_threads_batch=4 "
+                "n_prompt=10 max_tokens=%s" % self._max_tokens
+            )
+            self._phase.write_text(
+                json.dumps({"diag": diag, "level": "info"}, separators=(",", ":"))
+                + "\n"
+                + json.dumps(
+                    {"phase": "generation", "timeout_s": self._timeout_s},
+                    separators=(",", ":"),
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            self._header = True
+        while self._tokens < self._max_tokens and now >= self._next:
+            if self._last_token_at is not None and self._next > self._last_token_at:
+                break
+            self._tokens += 1
+            with self._phase.open("a", encoding="utf-8") as handle:
+                handle.write(
+                    json.dumps(
+                        {"phase": "generation", "tokens_done": self._tokens},
+                        separators=(",", ":"),
+                    )
+                    + "\n"
+                )
+            self._next += self._every
+        if self._done_at is not None and now >= self._done_at:
+            self._out.write_text(
+                json.dumps({"ok": True, "parsed": {"personal": {}}}),
+                encoding="utf-8",
+            )
+            return 0
+        return None
+
+    def terminate(self) -> None:
+        return None
+
+    def close(self) -> None:
+        return None
+
+    def job_memory_limit_signaled(self) -> bool:
+        return False
+
+
+def _finals(lines: list[str]) -> list[int]:
+    found = []
+    for line in lines:
+        if not line.startswith("{"):
+            continue
+        event = json.loads(line)
+        if "timeout_s_final" in event:
+            found.append(int(event["timeout_s_final"]))
+    return found
+
+
+def test_deadline_changes_once_and_never_shrinks() -> None:
+    """The measured rate may raise the deadline once. It cannot lower it."""
+    from core.cv_import_deadline import ImportDeadlineWatch
+
+    watch = ImportDeadlineWatch(
+        initial_s=180,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    watch.note_max_tokens(1000)
+    assert watch.note_tokens(1, 10) is None
+    # 64 tokens one second into generation recalculates under the initial 180 s.
+    assert watch.note_tokens(64, 11) is None
+    assert watch.limit_s == 180
+    assert watch.revisions == 0
+    assert watch.timeout_s_final is None
+    assert watch.note_tokens(65, 80) is None
+    assert watch.limit_s == 180
+    assert watch.revisions == 0
+
+    raised = ImportDeadlineWatch(
+        initial_s=180,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    raised.note_max_tokens(400)
+    assert raised.note_tokens(1, 20) is None
+    assert raised.note_tokens(10, 25) is None
+    assert raised.limit_s == 180
+    final = raised.note_tokens(11, 35)
+    assert final is not None
+    assert raised.revisions == 1
+    assert 180 < raised.limit_s <= 900
+    assert final >= 180
+    assert raised.note_tokens(12, 36) is None
+    assert raised.revisions == 1
+    assert raised.timeout_s_final == final
+
+
+def test_env_override_skips_deadline_refinement() -> None:
+    from core.cv_import_deadline import ImportDeadlineWatch
+
+    watch = ImportDeadlineWatch(
+        initial_s=50,
+        started_at=0,
+        env_locked=True,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    watch.note_max_tokens(500)
+    watch.note_tokens(1, 1)
+    assert watch.note_tokens(80, 20) is None
+    assert watch.limit_s == 50
+    assert watch.timeout_s_final is None
+    assert watch.revisions == 0
+    assert watch.failure(50) is None
+    assert watch.failure(50.01) == "deadline"
+
+
+def test_stall_after_first_token_and_deadline_before_it() -> None:
+    from core.cv_import_deadline import ImportDeadlineWatch
+
+    stall = ImportDeadlineWatch(
+        initial_s=500,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    assert stall.failure(100) is None
+    stall.note_tokens(1, 10)
+    assert stall.failure(69.9) is None
+    assert stall.failure(70) == "stall"
+
+    waiting = ImportDeadlineWatch(
+        initial_s=180,
+        started_at=0,
+        env_locked=False,
+        buffer_s=60,
+        ceiling_s=900,
+    )
+    assert waiting.failure(180) is None
+    assert waiting.failure(180.01) == "deadline"
+
+
+def test_slow_fake_child_past_the_initial_deadline_is_not_killed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Steady tokens past the formula deadline and under 900 s finish."""
+    clock = _fake_clock(monkeypatch)
+    progress: list[str] = []
+
+    def spawn(_cv: Path, out: Path):
+        return _ScriptedChild(
+            out,
+            clock,
+            timeout_s=180,
+            max_tokens=200,
+            first_token_at=20,
+            token_every=1,
+            done_at=220,
+            last_token_at=None,
+        )
+
+    result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn).run_once(
+        progress=progress.append
+    )
+    assert result.ok is True
+    assert clock["t"] > 180
+    assert clock["t"] < 900
+    finals = _finals(progress)
+    assert len(finals) == 1
+    assert 180 <= finals[0] <= 900
+
+
+def test_token_stall_is_llm_timeout_in_the_parent(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    clock = _fake_clock(monkeypatch)
+    progress: list[str] = []
+
+    def spawn(_cv: Path, out: Path):
+        return _ScriptedChild(
+            out,
+            clock,
+            timeout_s=500,
+            max_tokens=200,
+            first_token_at=10,
+            token_every=1,
+            done_at=None,
+            last_token_at=10,
+        )
+
+    with caplog.at_level("ERROR", logger="desktop.cv_import_supervisor"):
+        result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn).run_once(
+            progress=progress.append
+        )
+    assert result.kind == "llm_timeout"
+    assert result.message == "llm_timeout"
+    assert clock["t"] < 500
+    assert "reason=stall" in caplog.text
+    assert "reason=deadline" not in caplog.text
+    assert _finals(progress) == []
+
+
+def test_deadline_before_the_first_token(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    clock = _fake_clock(monkeypatch)
+
+    def spawn(_cv: Path, out: Path):
+        return _ScriptedChild(
+            out,
+            clock,
+            timeout_s=180,
+            max_tokens=200,
+            first_token_at=10_000,
+            token_every=1,
+            done_at=None,
+            last_token_at=None,
+        )
+
+    with caplog.at_level("ERROR", logger="desktop.cv_import_supervisor"):
+        result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn).run_once()
+    assert result.kind == "llm_timeout"
+    assert result.message == "llm_timeout"
+    assert clock["t"] > 180
+    assert clock["t"] < 200
+    assert "reason=deadline" in caplog.text
+    assert "reason=stall" not in caplog.text
+
+
+def test_env_timeout_is_not_recalculated(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    clock = _fake_clock(monkeypatch)
+    monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "40")
+    progress: list[str] = []
+
+    def spawn(_cv: Path, out: Path):
+        return _ScriptedChild(
+            out,
+            clock,
+            timeout_s=40,
+            max_tokens=400,
+            first_token_at=1,
+            token_every=1,
+            done_at=None,
+            last_token_at=None,
+        )
+
+    with caplog.at_level("ERROR", logger="desktop.cv_import_supervisor"):
+        result = CvImportSupervisor(tmp_path / "cv.pdf", spawn=spawn).run_once(
+            progress=progress.append
+        )
+    assert result.kind == "llm_timeout"
+    assert result.message == "llm_timeout"
+    assert clock["t"] > 40
+    assert clock["t"] < 80
+    assert "reason=deadline" in caplog.text
+    assert _finals(progress) == []

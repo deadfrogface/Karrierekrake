@@ -425,6 +425,14 @@ def test_import_progress_steps_at_two_hertz(qapp, tmp_path: Path, monkeypatch):
     dlg._on_progress('{"phase":"generation","tokens_done":1}')
     assert dlg._progress_timer.interval() >= 250
     assert dlg.phase_tokens_done == 1
+    dlg._on_progress('{"phase":"generation","timeout_s":180}')
+    dlg._on_progress('{"timeout_s_final":400}')
+    assert dlg.phase_timeout_s == 180
+    assert dlg.phase_timeout_s_final == 400
+    assert dlg.status_label.text() == tr("cv_import.progress")
+    dlg._on_progress('{"timeout_s_final":800}')
+    assert dlg.phase_timeout_s == 180
+    assert dlg.phase_timeout_s_final == 400
     dlg.close()
     qapp.processEvents()
 

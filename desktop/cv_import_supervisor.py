@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import sys
 import tempfile
 import threading
@@ -108,6 +109,15 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
 # Linux-only. A spike that rises and falls between samples is invisible:
 # the kernel does not expose an Rss_Anon high-water, and VmHWM counts mmap.
 _PARENT_ANON_SAMPLE_S = 2.0
+_MAX_TOKENS_IN_DIAG = re.compile(r"\bmax_tokens=(\d+)\b")
+
+
+def _monotonic() -> float:
+    return time.monotonic()
+
+
+def _sleep(seconds: float) -> None:
+    time.sleep(seconds)
 
 
 def _job_limit_from_environ() -> int | None:
@@ -187,7 +197,8 @@ class CvImportSupervisor:
         """Parse once. Does not retry OOM, timeout, or model failures.
 
         ``llm_timeout`` depends on the machine and is not deterministic.
-        It is still not retried automatically. A manual retry is the UI PR.
+        It is still not retried automatically. The dialog shows the existing
+        timeout sentence and the retry button.
         ``llm_prompt_too_long`` and ``llm_output_truncated`` are input-conditioned.
         ``peak_rss_exceeded`` is input-conditioned (the child does not fit the
         fresh-app budget). ``memory_budget_app_share`` is the app's share of
@@ -276,25 +287,36 @@ class CvImportSupervisor:
             if self._cancel.is_set():
                 self._stop(proc, reason="cancelled")
                 return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
-            started = time.monotonic()
-            deadline = started + self.timeout_s
-            next_anon = time.monotonic()
+            from core.cv_docpick_import import (
+                CV_IMPORT_TIMEOUT_BUFFER_S,
+                CV_IMPORT_TIMEOUT_CEILING_S,
+            )
+            from core.cv_import_deadline import ImportDeadlineWatch
+
+            started = _monotonic()
+            # The env var, and an explicit timeout published as that var,
+            # stay put. Otherwise the ceiling holds until the child reports
+            # the formula, and generation may raise it once.
+            watch = ImportDeadlineWatch(
+                initial_s=self.timeout_s,
+                started_at=started,
+                env_locked=self._publish_timeout,
+                buffer_s=CV_IMPORT_TIMEOUT_BUFFER_S,
+                ceiling_s=CV_IMPORT_TIMEOUT_CEILING_S,
+            )
+            next_anon = started
             phase_offset = 0
-            adopted_timeout = False
             while True:
                 if self._cancel.is_set():
                     self._stop(proc, reason="cancelled")
                     return ImportAttemptResult(False, "cancelled", "cancelled", None, attempts=1)
-                phase_offset, event_timeout = _drain_phase_events(
-                    phase_path, phase_offset, progress
+                phase_offset = _drain_phase_events(
+                    phase_path, phase_offset, progress, watch
                 )
-                if event_timeout is not None and not adopted_timeout:
-                    adopted_timeout = True
-                    self.timeout_s = float(event_timeout)
-                    deadline = started + self.timeout_s
+                self.timeout_s = watch.limit_s
                 if _job_memory_limit_signaled(proc):
                     self._stop(proc)
-                    _drain_phase_events(phase_path, phase_offset, progress)
+                    _drain_phase_events(phase_path, phase_offset, progress, watch)
                     code = proc.poll()
                     return self._classify(
                         int(code if code is not None else 1),
@@ -303,13 +325,13 @@ class CvImportSupervisor:
                     )
                 code = proc.poll()
                 if code is not None:
-                    _drain_phase_events(phase_path, phase_offset, progress)
+                    _drain_phase_events(phase_path, phase_offset, progress, watch)
                     return self._classify(
                         int(code),
                         out_path,
                         job_memory_limit=_job_memory_limit_signaled(proc),
                     )
-                now = time.monotonic()
+                now = _monotonic()
                 if now >= next_anon:
                     next_anon = now + _PARENT_ANON_SAMPLE_S
                     memory_code = _parent_memory_code(proc, child_budget=child_budget)
@@ -322,10 +344,16 @@ class CvImportSupervisor:
                             None,
                             attempts=1,
                         )
-                if now >= deadline:
+                reason = watch.failure(now)
+                if reason is not None:
                     self._stop(proc)
                     # Machine-dependent. Not deterministic. No automatic retry.
-                    timeout_line = "llm_timeout wall_clock limit_s=%s" % (self.timeout_s,)
+                    # The UI message stays ``llm_timeout`` so no new sentence appears.
+                    self.timeout_s = watch.limit_s
+                    timeout_line = "llm_timeout reason=%s limit_s=%.3f" % (
+                        reason,
+                        watch.limit_s,
+                    )
                     logger.error("%s", timeout_line)
                     logging.getLogger("karrierekrake").error("%s", timeout_line)
                     return ImportAttemptResult(
@@ -335,7 +363,7 @@ class CvImportSupervisor:
                         None,
                         attempts=1,
                     )
-                time.sleep(0.02)
+                _sleep(0.02)
         finally:
             closer = getattr(proc, "close", None) if proc is not None else None
             if callable(closer):
@@ -469,20 +497,26 @@ def _drain_phase_events(
     path: Path,
     offset: int,
     progress: Callable[[str], None] | None,
-) -> tuple[int, int | None]:
-    """Forward complete JSON lines. Return the new offset and one ``timeout_s``."""
+    watch: object | None = None,
+) -> int:
+    """Forward complete JSON lines. Return the new offset.
+
+    Diagnostic lines stay in the app log. ``max_tokens`` is read from the
+    child diagnostic and is not a UI field. The first ``timeout_s`` is the
+    initial deadline. A raised deadline is one separate ``timeout_s_final``
+    event for the UI, with no new sentence.
+    """
     try:
         data = path.read_bytes()
     except OSError:
-        return offset, None
+        return offset
     if len(data) <= offset:
-        return offset, None
+        return offset
     chunk = data[offset:]
     newline = chunk.rfind(b"\n")
     if newline < 0:
-        return offset, None
+        return offset
     complete = chunk[: newline + 1]
-    seen_timeout: int | None = None
     from core.cv_phase_events import relay_diag_event
 
     for line in complete.decode("utf-8").splitlines():
@@ -495,15 +529,53 @@ def _drain_phase_events(
             except json.JSONDecodeError:
                 event = None
         if isinstance(event, dict) and relay_diag_event(event):
+            _note_diag_budget(watch, str(event.get("diag") or ""))
             continue
+        if isinstance(event, dict):
+            _note_phase_budget(watch, event, progress)
         if progress is not None:
             progress(line)
-        if seen_timeout is None and isinstance(event, dict) and "timeout_s" in event:
+    return offset + newline + 1
+
+
+def _note_diag_budget(watch: object | None, diag: str) -> None:
+    if watch is None:
+        return
+    match = _MAX_TOKENS_IN_DIAG.search(diag)
+    if match is None:
+        return
+    note = getattr(watch, "note_max_tokens", None)
+    if callable(note):
+        note(int(match.group(1)))
+
+
+def _note_phase_budget(
+    watch: object | None,
+    event: dict,
+    progress: Callable[[str], None] | None,
+) -> None:
+    if watch is None:
+        return
+    if "timeout_s" in event:
+        adopt = getattr(watch, "adopt_initial", None)
+        if callable(adopt):
             try:
-                seen_timeout = int(event["timeout_s"])
+                adopt(float(event["timeout_s"]))
             except (TypeError, ValueError):
                 pass
-    return offset + newline + 1, seen_timeout
+    if "tokens_done" not in event:
+        return
+    note = getattr(watch, "note_tokens", None)
+    if not callable(note):
+        return
+    try:
+        count = int(event["tokens_done"])
+    except (TypeError, ValueError):
+        return
+    final = note(count, _monotonic())
+    if final is None or progress is None:
+        return
+    progress(json.dumps({"timeout_s_final": int(final)}, separators=(",", ":")))
 
 
 def _spawn_with_child_budget(
