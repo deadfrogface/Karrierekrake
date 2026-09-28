@@ -179,6 +179,67 @@ def test_resolve_cv_model_prefers_vendor_bundle(
     assert rt.resolve_cv_model_path() == gguf
 
 
+def test_resolve_sidecar_skips_appdata_copy_when_frozen(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Sidecar next to the EXE must not pay for a 2.7 GB AppData copy."""
+    from core import cv_llm_runtime as rt
+
+    exe_dir = tmp_path / "dist"
+    sidecar = exe_dir / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+    sidecar.parent.mkdir(parents=True)
+    sidecar.write_bytes(b"sidecar-gguf")
+    meipass = tmp_path / "_internal"
+    meipass.mkdir()
+    calls: list[Path] = []
+
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MODEL", raising=False)
+    monkeypatch.setattr(rt, "is_frozen", lambda: True)
+    monkeypatch.setattr(rt, "_meipass_dir", lambda: meipass)
+    monkeypatch.setattr(rt, "_exe_dir", lambda: exe_dir)
+    monkeypatch.setattr(
+        rt,
+        "bundled_cv_model_candidates",
+        lambda: [sidecar],
+    )
+    monkeypatch.setattr(
+        rt,
+        "materialize_bundled_model_to_appdata",
+        lambda src: calls.append(src) or None,
+    )
+    assert rt.resolve_cv_model_path() == sidecar
+    assert calls == []
+
+
+def test_resolve_meipass_still_materializes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from core import cv_llm_runtime as rt
+
+    meipass = tmp_path / "_internal"
+    embedded = meipass / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+    embedded.parent.mkdir(parents=True)
+    embedded.write_bytes(b"embedded-gguf")
+    durable = tmp_path / "AppData" / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MODEL", raising=False)
+    monkeypatch.setattr(rt, "is_frozen", lambda: True)
+    monkeypatch.setattr(rt, "_meipass_dir", lambda: meipass)
+    monkeypatch.setattr(
+        rt,
+        "bundled_cv_model_candidates",
+        lambda: [embedded],
+    )
+    monkeypatch.setattr(
+        rt,
+        "materialize_bundled_model_to_appdata",
+        lambda _src: durable,
+    )
+    durable.parent.mkdir(parents=True)
+    durable.write_bytes(b"durable-gguf")
+    assert rt.resolve_cv_model_path() == durable
+
+
 def test_ui_copy_has_no_internal_model_names() -> None:
     from desktop import i18n
 

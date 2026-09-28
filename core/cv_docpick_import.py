@@ -935,7 +935,7 @@ CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
 CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
 CV_IMPORT_PEAK_RSS_GB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 ** 3)
 # Overall import wall-clock hard fail (no silent hang). Covers Docling + LLM.
-CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "180"))
+CV_IMPORT_TIMEOUT_S = float(os.environ.get("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "300"))
 
 # Frozen CV↔profile/matching field contract (parsed shape from suggestion_to_parsed).
 # Bump only with an explicit Diff + justification — no silent schema drift.

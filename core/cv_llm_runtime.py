@@ -103,13 +103,23 @@ def resolve_cv_model_path() -> Path | None:
         p = Path(env)
         return p if p.is_file() else None
 
+    meipass = _meipass_dir()
     for bundled in bundled_cv_model_candidates():
-        if bundled.is_file():
-            # Prefer durable AppData copy when we can materialize from the bundle.
-            durable = materialize_bundled_model_to_appdata(bundled)
-            if durable is not None and durable.is_file():
-                return durable
-            return bundled
+        if not bundled.is_file():
+            continue
+        # Onefile extract (_MEIPASS) is ephemeral — copy to AppData once.
+        # Sidecar next to the EXE is already durable; skip the 2.7 GB copy.
+        if meipass is not None:
+            try:
+                bundled.resolve().relative_to(meipass.resolve())
+            except ValueError:
+                return bundled
+            else:
+                durable = materialize_bundled_model_to_appdata(bundled)
+                if durable is not None and durable.is_file():
+                    return durable
+                return bundled
+        return bundled
 
     candidates: list[Path] = []
     try:

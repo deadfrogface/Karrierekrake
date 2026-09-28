@@ -146,6 +146,8 @@ jobs:
           # Headroom for Qwen JSON (+ optional think tokens) on Windows runners.
           $env:KARRIEREKRAKE_CV_LLM_MAX_TOKENS = "4096"
           $env:KARRIEREKRAKE_CV_LLM_N_CTX = "4096"
+          # Cold onefile extract + CPU inference often exceeds 180s on windows-latest.
+          $env:KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S = "600"
           # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
