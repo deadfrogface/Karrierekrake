@@ -38,7 +38,7 @@ from core.text_normalize import clean_company, clean_text
 
 DEFAULT_TEMPLATE = """{salutation},
 
-hiermit bewerbe ich mich um die Position {position_phrase} bei {company_bei}.
+hiermit bewerbe ich mich um die {position_phrase} bei {company_bei}.
 
 {experience_sentence}
 
@@ -1477,6 +1477,20 @@ _MUST_RE = re.compile(
     r"voraussetzung|\brequired\b|must[\s-]have",
     re.IGNORECASE,
 )
+# Short adverbial on the same line as the skill label. No second walk of the ad.
+_SKILL_PP = re.compile(
+    r"^(?:im|in der|in dem|beim|am)[ \t]+"
+    r"[A-Za-zÄÖÜäöüß][\wÄÖÜäöüß\-]{2,}"
+    r"(?:[ \t]+[A-Za-zÄÖÜäöüß][\wÄÖÜäöüß\-]{2,})?",
+    re.IGNORECASE,
+)
+_SKILL_PP_STOP = frozenset(
+    {
+        "und", "oder", "sowie", "ist", "sind", "setzen", "setzt",
+        "wird", "werden", "sie", "wir", "ebenso",
+    }
+)
+_FEMININE_ENDINGS = ("ung", "ion", "heit", "keit", "schaft", "ität")
 _MUST_TERM = re.compile(
     r"\b([A-ZÄÖÜ][\wÄÖÜäöüß]*(?:-[\wÄÖÜäöüß]+)+|[A-ZÄÖÜ]{2,}(?:-[\wÄÖÜäöüß]+)?|"
     r"[A-ZÄÖÜ][a-zäöüß]{2,}(?:\s+[A-ZÄÖÜ][a-zäöüß]{2,})*)"
@@ -1535,6 +1549,87 @@ def _role_phrase(fact: _CoverFact) -> str:
     if fact.activity_field:
         return f"in der {title}"
     return f"als {title}"
+
+
+def _opening_role(title: str) -> str:
+    """Same field test as a station title. The job title itself stays in the phrase."""
+    bare = _GENDER_PAREN.sub("", title).strip()
+    if _is_activity_field(bare):
+        return f"Stelle in der {title}"
+    return f"Position als {title}"
+
+
+def _last_word(phrase: str) -> str:
+    folded = collapse_phrase(phrase)
+    if not folded:
+        return ""
+    return folded.split()[-1]
+
+
+_TASK_PREPOSITIONS = frozenset(
+    {
+        "für", "mit", "im", "in", "von", "zur", "zum", "am", "beim",
+        "auf", "aus", "nach", "über", "unter", "zwischen",
+    }
+)
+
+
+def _is_verb_phrase(phrase: str) -> bool:
+    """An infinitive at the end, and the phrase does not open as a noun.
+
+    ``Fahrer zuordnen`` is a verb phrase. ``Tourenplanung für Stückgut`` is not.
+    A preposition marks a noun phrase; its head is the first word.
+    """
+    words = collapse_phrase(phrase).split()
+    if not words or any(word in _TASK_PREPOSITIONS for word in words):
+        return False
+    word = words[-1]
+    if len(word) < 5 or word.endswith(_FEMININE_ENDINGS):
+        return False
+    if word.endswith(("chen", "lein", "tum", "nis")):
+        return False
+    if not word.endswith(("eln", "ern", "en")):
+        return False
+    return not words[0].endswith(_FEMININE_ENDINGS)
+
+
+def _is_feminine_noun(phrase: str) -> bool:
+    """Gender is fixed only by the head's ending, never guessed."""
+    if _is_verb_phrase(phrase):
+        return False
+    words = collapse_phrase(phrase).split()
+    if not words:
+        return False
+    return words[0].endswith(_FEMININE_ENDINGS)
+
+
+def _join_phrases(bits: list[str]) -> str:
+    if not bits:
+        return ""
+    if len(bits) == 1:
+        return bits[0]
+    if len(bits) == 2:
+        return f"{bits[0]} und {bits[1]}"
+    return ", ".join(bits[:-1]) + " und " + bits[-1]
+
+
+def _noun_list(phrases: list[str]) -> str:
+    """Article only on a noun whose gender is fixed by its ending."""
+    bits = []
+    for phrase in phrases:
+        if _is_feminine_noun(phrase):
+            bits.append(f"die {phrase}")
+        else:
+            bits.append(phrase)
+    return _join_phrases(bits)
+
+
+def _verb_frame(phrases: list[str]) -> str:
+    """Keep the profile wording. Do not place an infinitive after an article."""
+    listed = _join_phrases(list(phrases))
+    if len(phrases) == 1:
+        return f"Zu meinen Aufgaben gehörte dort: {listed}."
+    return f"Zu meinen Aufgaben gehörten dort: {listed}."
 
 
 def _missing_required(surface: str, covered: frozenset[str]) -> tuple[str, ...]:
@@ -1933,76 +2028,115 @@ def _can_render(facts: list[_CoverFact]) -> bool:
     return any(_station_countable(fact) for fact, _root in assigned)
 
 
-def _task_list(tasks: tuple[str, ...]) -> str:
-    if not tasks:
-        return ""
-    if len(tasks) == 1:
-        return tasks[0]
-    if len(tasks) == 2:
-        return f"{tasks[0]} und die {tasks[1]}"
-    head = ", die ".join(tasks[:-1])
-    return f"{head} und die {tasks[-1]}"
+def _bare_station(place: str, period: str, role: str, index: int) -> str:
+    """A station without a task sentence. The second station uses another shape."""
+    when = f" {period}" if period else ""
+    if index == 0:
+        return f"Bei {place} war ich{when} {role} tätig."
+    if period:
+        return f"Ich habe {period} bei {place} {role} gearbeitet."
+    return f"Bei {place} habe ich {role} gearbeitet."
+
+
+def _station_with_nouns(place: str, period: str, role: str, nouns: list[str], index: int) -> str:
+    listed = _noun_list(nouns)
+    when = f" {period}" if period else ""
+    if index == 0:
+        return f"Bei {place} war ich{when} {role} für {listed} zuständig."
+    if period:
+        return f"Ich habe {period} bei {place} {role} für {listed} gearbeitet."
+    return f"Bei {place} habe ich {role} für {listed} gearbeitet."
 
 
 def _experience_sentences(stations: list[_CoverFact]) -> str:
-    """One block per station. Wording follows the fact shape, not a single blank."""
+    """One block per station. Nouns and infinitives never share one list."""
     parts: list[str] = []
+    index = 0
     for fact in stations:
         if not _station_countable(fact):
             continue
         place = _company_bei(fact.company) if fact.company else ""
         role = _role_phrase(fact)
         period = fact.period
-        tasks = fact.counted_tasks
-        when = f" {period}" if period else ""
-        if fact.has_tasks and fact.title_only and tasks:
-            extra = ""
-            if len(tasks) > 1:
-                rest = " ".join(f"Außerdem habe ich dort {item} übernommen." for item in tasks[1:])
-                extra = " " + rest
-            parts.append(
-                f"Bei {place} war ich{when} {role}. "
-                f"Dort habe ich {tasks[0]} übernommen.{extra}"
-            )
-        elif len(tasks) >= 3:
-            parts.append(
-                f"Bei {place} war ich{when} {role} für die {_task_list(tasks[:2])} zuständig, "
-                "zwei Punkte, die Sie ausdrücklich nennen. "
-                + " ".join(f"Außerdem habe ich dort {item} übernommen." for item in tasks[2:])
-            )
-        elif len(tasks) == 2:
-            parts.append(
-                f"Bei {place} war ich{when} {role} für die {_task_list(tasks)} zuständig, "
-                "zwei Punkte, die Sie ausdrücklich nennen."
-            )
-        elif len(tasks) == 1:
-            parts.append(
-                f"Bei {place} war ich{when} {role} für die {tasks[0]} zuständig, "
-                "ein Punkt, den Sie in der Anzeige nennen."
-            )
-        elif period:
-            parts.append(f"Bei {place} war ich {period} {role}.")
+        nouns = [task for task in fact.counted_tasks if task and not _is_verb_phrase(task)]
+        verbs = [task for task in fact.counted_tasks if task and _is_verb_phrase(task)]
+        block: list[str] = []
+        if nouns:
+            block.append(_station_with_nouns(place, period, role, nouns, index))
+        else:
+            block.append(_bare_station(place, period, role, index))
+        if verbs:
+            block.append(_verb_frame(verbs))
+        parts.append(" ".join(block))
+        index += 1
     return "\n\n".join(parts)
 
 
-def _skill_sentences(skills: list[_CoverFact]) -> str:
-    """Skills stay separate from stations. No present-tense claim of current use."""
+def _context_after_label(label: str, sentence: str) -> str:
+    """A short prepositional phrase that follows the label in this sentence."""
+    if not label or not sentence:
+        return ""
+    folded = sentence.casefold()
+    needle = label.casefold()
+    start = 0
+    while True:
+        idx = folded.find(needle, start)
+        if idx < 0:
+            return ""
+        end = idx + len(needle)
+        before_ok = idx == 0 or not folded[idx - 1].isalnum()
+        after_ok = end >= len(folded) or not folded[end].isalnum()
+        if before_ok and after_ok:
+            tail = sentence[end:].lstrip(" ,;:")
+            match = _SKILL_PP.match(tail)
+            if match is None:
+                return ""
+            words = match.group(0).rstrip(" .,;:").split()
+            while len(words) > 1 and words[-1].casefold() in _SKILL_PP_STOP:
+                words.pop()
+            if len(words) < 2 or any(word.casefold() in _SKILL_PP_STOP for word in words):
+                return ""
+            return " ".join(words)
+        start = end
+
+
+def _one_skill_sentence(label: str, description: str, *, follow_up: bool) -> str:
+    """Two or three shapes, chosen from the ad sentence. No random pick."""
+    sentence = ""
+    for part in _sentences(description) or [description]:
+        if _label_bounded(label, collapse_phrase(part)):
+            sentence = part
+            break
+    context = _context_after_label(label, sentence)
+    if context and sentence and _MUST_RE.search(sentence):
+        pronoun = "die" if _last_word(label).endswith(_FEMININE_ENDINGS) else "das"
+        return (
+            f"Mit {label}, {pronoun} Sie {context} voraussetzen, "
+            "habe ich praktische Erfahrung."
+        )
+    if context:
+        return f"Mit {label} {context} habe ich praktische Erfahrung."
+    if follow_up:
+        return f"Praktische Erfahrung habe ich außerdem mit {label}."
+    return f"Praktische Erfahrung habe ich mit {label}."
+
+
+def _skill_sentences(
+    skills: list[_CoverFact],
+    description: str = "",
+    experience: str = "",
+) -> str:
+    """Skills that the station block does not already name."""
+    folded = collapse_phrase(experience)
     parts: list[str] = []
     for fact in skills:
         if not fact.label:
             continue
-        if fact.quoted and len(fact.label) % 2 == 0:
-            parts.append(
-                f"Mit {fact.label}, genannt in der Anzeige, habe ich praktisch gearbeitet."
-            )
-        elif fact.quoted:
-            parts.append(
-                f"{fact.label} steht in der Anzeige. Damit habe ich gearbeitet."
-            )
-        else:
-            parts.append(
-                f"Meine Erfahrung mit {fact.label} deckt einen Punkt der Anzeige ab."
-            )
+        if folded and _label_bounded(fact.label, folded):
+            continue
+        parts.append(
+            _one_skill_sentence(fact.label, description, follow_up=bool(parts))
+        )
     return "\n\n".join(parts)
 
 
@@ -2281,11 +2415,8 @@ def _render_template(
         template = DEFAULT_TEMPLATE
 
     company = "" if _company_missing(job) else clean_company(job.company)
-    position = clean_text(job.title) or "die ausgeschriebene Position"
-    if _is_activity_field(_GENDER_PAREN.sub("", position)):
-        position_phrase = position
-    else:
-        position_phrase = f"als {position}"
+    position = clean_text(job.title)
+    position_phrase = _opening_role(position) if position else "Position"
 
     claims = _resolve_writer_claims(config, contact_claims)
 
@@ -2358,7 +2489,7 @@ def compose_cover_letter(
     ][:2]
     skill_facts = [fact for fact, _root in assigned if fact.kind == "skill"]
     experience_sentence = _experience_sentences(station_facts)
-    skill_block = _skill_sentences(skill_facts)
+    skill_block = _skill_sentences(skill_facts, description, experience_sentence)
 
     text = _render_template(
         job,

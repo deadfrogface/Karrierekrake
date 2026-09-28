@@ -237,6 +237,12 @@ def test_gold_case_schema(case: dict) -> None:
 
     outcome = case["expected_outcome"]
     if outcome == "interview":
+        for phrase in (
+            "steht in der Anzeige. Damit habe ich gearbeitet",
+            "deckt einen Punkt der Anzeige ab",
+            "genannt in der Anzeige",
+        ):
+            assert phrase in case["must_not_contain"], f"{case['id']}: missing {phrase!r}"
         assert len(case["must_mention"]) >= 2, case["id"]
         qual_blob = _texts(qualifications)
         linked = [fact for fact in case["must_mention"] if fact in qual_blob]

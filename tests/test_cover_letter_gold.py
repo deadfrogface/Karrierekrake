@@ -146,6 +146,31 @@ def actual_outcome(result) -> str:
     return result.reason_code or "empty"
 
 
+_BROKEN_LETTER = (
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige",
+    "übernommen",
+    "zwei Punkte, die Sie ausdrücklich nennen",
+    "ein Punkt, den Sie in der Anzeige nennen",
+    "für die Fahrer zuordnen",
+    "für die Belege erfassen",
+    "dort Abstimmung",
+    "als Fachlagerist.",
+    "als Disponent.",
+)
+_VERB_AFTER_ARTICLE = re.compile(
+    r"für die (?:\S+ ){0,6}\S+(?:eln|ern|en) zuständig"
+)
+
+
+def _assert_letter_grammar(letter: str, case_id: str) -> None:
+    """Nominal and verbal tasks stay in frames that keep the profile wording."""
+    for phrase in _BROKEN_LETTER:
+        assert phrase not in letter, f"{case_id}: {phrase!r}"
+    assert _VERB_AFTER_ARTICLE.search(letter) is None, case_id
+
+
 def _assert_interview(result, case: dict) -> None:
     assert result.ok, result.reason_code
     letter = result.text
@@ -205,5 +230,8 @@ else:
                     "Nordkai Spedition GmbH, Disponent",
                     "Kistenwerk Ost GmbH, Fachlagerist",
                 )
+            if "nordmole_dispatcher" in case["tags"]:
+                assert result.missing_required == ("Frühschicht",)
+            _assert_letter_grammar(result.text, case["id"])
             return
         pytest.fail(f"unknown expected_outcome {expected!r}")

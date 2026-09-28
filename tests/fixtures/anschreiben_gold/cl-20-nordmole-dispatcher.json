@@ -90,7 +90,10 @@
     "[Ihr Name]",
     "relevante Erfahrungen gesammelt",
     "Für die ausgeschriebene Aufgabe",
-    "setze ich"
+    "setze ich",
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige"
   ],
   "rationale": "Die synthetische Nordmole-Anzeige aus der Quell-Fixture fordert Disponent und SAP. Das Profil belegt die Station Disponent mit den Aufgaben Tourenplanung und Fahrer zuordnen sowie die Software SAP. Beide Bezüge stehen im Brief. Führerschein Klasse B und Deutsch zählen nicht."
 }
