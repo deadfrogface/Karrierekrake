@@ -13,10 +13,13 @@ from core.cv_llm_runtime import (
     chat_completion_inprocess,
     completion_token_budget,
     logical_cpu_count,
+    cv_llm_thread_report_line,
     physical_cores_report_line,
     physical_cpu_count,
     resolve_cv_llm_n_ctx,
+    resolve_cv_llm_thread_plan,
     resolve_cv_llm_threads,
+    thread_reserve,
 )
 
 
@@ -155,6 +158,40 @@ def test_thread_defaults_follow_cpu_helpers(monkeypatch: pytest.MonkeyPatch) -> 
     monkeypatch.setattr("core.cv_llm_runtime.physical_cpu_count", lambda: 2)
     monkeypatch.setattr("core.cv_llm_runtime.logical_cpu_count", lambda: 4)
     assert resolve_cv_llm_threads() == (2, 4)
+
+
+@pytest.mark.parametrize(
+    ("physical", "logical", "n_threads", "n_batch", "reserve"),
+    [
+        (8, 8, 7, 7, 1),
+        (2, 4, 2, 4, 0),
+        (4, 8, 4, 8, 0),
+        (2, 2, 2, 2, 0),
+        (4, 4, 3, 3, 1),
+    ],
+)
+def test_thread_reserve_keeps_a_core_only_without_smt(
+    monkeypatch: pytest.MonkeyPatch,
+    physical: int,
+    logical: int,
+    n_threads: int,
+    n_batch: int,
+    reserve: int,
+) -> None:
+    """(8,8), (2,4), (4,8), (2,2), (4,4): physical, logical."""
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_N_THREADS", raising=False)
+    monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH", raising=False)
+    monkeypatch.setattr("core.cv_llm_runtime.physical_cpu_count", lambda: physical)
+    monkeypatch.setattr("core.cv_llm_runtime.logical_cpu_count", lambda: logical)
+    assert thread_reserve(physical, logical) == reserve
+    assert resolve_cv_llm_threads() == (n_threads, n_batch)
+    plan = resolve_cv_llm_thread_plan()
+    assert plan == (n_threads, n_batch, physical, logical, reserve)
+    line = cv_llm_thread_report_line()
+    assert line == (
+        f"n_threads={n_threads} n_threads_batch={n_batch} "
+        f"physical={physical} logical={logical} reserve={reserve}"
+    )
 
 
 def test_thread_env_override(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -391,7 +428,10 @@ def test_gate_is_sampled_while_fake_model_is_still_alive(
 
 def test_llama_constructor_receives_thread_and_ctx(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
-    monkeypatch.setattr("core.cv_llm_runtime.resolve_cv_llm_threads", lambda: (2, 4))
+    monkeypatch.setattr(
+        "core.cv_llm_runtime.resolve_cv_llm_thread_plan",
+        lambda: (2, 4, 2, 4, 0),
+    )
     seen: dict = {}
 
     class Spy(_FakeLlama):

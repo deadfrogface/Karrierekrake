@@ -569,7 +569,7 @@ def test_generation_timeout_event_matches_supervisor_once(
     )
     monkeypatch.setattr(
         "desktop.cv_import_supervisor._parent_anon_sample",
-        lambda _proc: None,
+        lambda *_a, **_k: None,
     )
     reset_generation_phase_events()
     seen: dict[str, object] = {}
@@ -638,7 +638,7 @@ def test_supervisor_adopts_the_child_timeout_event(
     )
     monkeypatch.setattr(
         "desktop.cv_import_supervisor._parent_anon_sample",
-        lambda _proc: None,
+        lambda *_a, **_k: None,
     )
 
     def spawn(_cv: Path, _out: Path):
@@ -709,7 +709,7 @@ def test_fake_model_import_writes_each_diagnostic_once(tmp_path: Path, monkeypat
         )
         monkeypatch.setattr(
             "desktop.cv_import_supervisor._parent_anon_sample",
-            lambda _proc: None,
+            lambda *_a, **_k: None,
         )
         monkeypatch.setattr("core.cv_docpick_import._self_rss_bytes", lambda: 50_000_000)
         reset_import_timeout()
@@ -791,7 +791,7 @@ def test_timeout_and_cancel_write_the_app_log(tmp_path: Path, monkeypatch):
         )
         monkeypatch.setattr(
             "desktop.cv_import_supervisor._parent_anon_sample",
-            lambda _proc: None,
+            lambda *_a, **_k: None,
         )
 
         def spawn_sleep(_cv: Path, _out: Path):
@@ -835,12 +835,13 @@ def test_timeout_and_cancel_write_the_app_log(tmp_path: Path, monkeypatch):
 
 
 def _fake_clock(monkeypatch: pytest.MonkeyPatch) -> dict[str, float]:
-    """Advance one second per supervisor sleep. No wall-clock wait."""
+    """Advance one second per supervisor wake. No wall-clock wait."""
     clock = {"t": 0.0}
     monkeypatch.setattr("desktop.cv_import_supervisor._monotonic", lambda: clock["t"])
     monkeypatch.setattr(
-        "desktop.cv_import_supervisor._sleep",
-        lambda _seconds: clock.__setitem__("t", clock["t"] + 1.0),
+        CvImportSupervisor,
+        "_pause",
+        lambda _self, _timeout: clock.__setitem__("t", clock["t"] + 1.0),
     )
     monkeypatch.setattr(
         "desktop.cv_import_supervisor._read_app_private_bytes",
@@ -1339,3 +1340,156 @@ def test_timeout_s_final_once_after_prompt_and_generation(
     final_at = next(i for i, line in enumerate(progress) if "timeout_s_final" in line)
     assert any("prompt_tokens_done" in line for line in progress[:final_at])
     assert any("tokens_done" in line for line in progress[:final_at])
+
+
+def test_cancel_is_noticed_within_100ms(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A fake child is cancelled in under 100 ms. The event wakes the wait."""
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 167_272_448,
+    )
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._parent_anon_sample",
+        lambda *_a, **_k: None,
+    )
+    monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", raising=False)
+    entered = threading.Event()
+
+    class _Hang:
+        def poll(self):
+            entered.set()
+            return None
+
+        def terminate(self) -> None:
+            return None
+
+        def wait(self, timeout=None):
+            return None
+
+        def close(self) -> None:
+            return None
+
+    holder: dict = {}
+    supervisor = CvImportSupervisor(tmp_path / "cv.pdf", spawn=lambda _c, _o: _Hang())
+
+    def _run() -> None:
+        holder["result"] = supervisor.run_once()
+
+    thread = threading.Thread(target=_run)
+    thread.start()
+    assert entered.wait(2)
+    time.sleep(0.02)
+    started = time.perf_counter()
+    supervisor.request_cancel()
+    thread.join(1)
+    elapsed = time.perf_counter() - started
+    assert not thread.is_alive()
+    assert holder["result"].kind == "cancelled"
+    assert elapsed < 0.1
+
+
+def test_wait_loop_stays_under_five_iterations_per_second(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A running child wakes the parent at most five times a second."""
+    clock = {"t": 0.0}
+    waits: list[float] = []
+    polls: list[float] = []
+    monkeypatch.setattr("desktop.cv_import_supervisor._monotonic", lambda: clock["t"])
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._read_app_private_bytes",
+        lambda: 167_272_448,
+    )
+    monkeypatch.setattr(
+        "desktop.cv_import_supervisor._parent_anon_sample",
+        lambda *_a, **_k: None,
+    )
+    monkeypatch.delenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", raising=False)
+
+    def _pause(_self, timeout: float) -> None:
+        waits.append(float(timeout))
+        clock["t"] += float(timeout)
+
+    monkeypatch.setattr(CvImportSupervisor, "_pause", _pause)
+
+    class _Hang:
+        def poll(self):
+            polls.append(clock["t"])
+            if clock["t"] >= 1.0:
+                return 0
+            return None
+
+        def terminate(self) -> None:
+            return None
+
+        def wait(self, timeout=None):
+            return 0
+
+        def close(self) -> None:
+            return None
+
+    CvImportSupervisor(tmp_path / "cv.pdf", spawn=lambda _c, _o: _Hang()).run_once()
+    running = [t for t in polls if t < 1.0]
+    assert running
+    assert len(running) <= 5
+    assert waits
+    assert max(waits) <= 0.25
+    assert min(waits) > 0
+
+
+def test_smaps_interval_stretches_only_above_one_percent_of_a_core() -> None:
+    from desktop.cv_import_supervisor import _anon_interval_s
+
+    # Fewer than three reads do not decide, including one slow read.
+    assert _anon_interval_s([35e-6], elapsed_s=2.0, current_s=2.0) == 2.0
+    assert _anon_interval_s([0.036], elapsed_s=2.0, current_s=2.0) == 2.0
+    # Median 14 ms at 2 s is 0.7% of one core.
+    assert (
+        _anon_interval_s([0.014, 0.014, 0.036], elapsed_s=4.0, current_s=2.0) == 2.0
+    )
+    # Median 30 ms at 2 s is 1.5% of one core.
+    assert (
+        _anon_interval_s([0.030, 0.030, 0.030], elapsed_s=6.0, current_s=2.0) == 5.0
+    )
+    assert (
+        _anon_interval_s([0.060, 0.060, 0.060], elapsed_s=15.0, current_s=5.0) == 5.0
+    )
+
+
+def test_smaps_rollup_cost_is_logged_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    clock = _fake_clock(monkeypatch)
+    monkeypatch.setattr(
+        "core.cv_docpick_import._linux_rss_anon_bytes",
+        lambda _pid: 4096,
+    )
+
+    class _Pid:
+        pid = 4242
+
+        def poll(self):
+            if clock["t"] >= 5:
+                return 0
+            return None
+
+        def terminate(self) -> None:
+            return None
+
+        def wait(self, timeout=None):
+            return 0
+
+        def close(self) -> None:
+            return None
+
+    with caplog.at_level("INFO", logger="desktop.cv_import_supervisor"):
+        CvImportSupervisor(tmp_path / "cv.pdf", spawn=lambda _c, _o: _Pid()).run_once()
+    records = [
+        rec
+        for rec in caplog.records
+        if rec.name == "desktop.cv_import_supervisor" and "smaps_rollup" in rec.message
+    ]
+    assert len(records) == 1
+    assert "median_s=" in records[0].message
+    assert "max_s=" in records[0].message
+    assert "reads=3" in records[0].message

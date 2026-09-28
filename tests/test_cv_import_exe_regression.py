@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from unittest.mock import patch
 
@@ -152,6 +153,32 @@ def test_packaging_policy_allows_docpick() -> None:
     assert "psutil._pswindows" in hidden
 
 
+def test_physical_cores_report_writes_reserve_line(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The EXE report keeps the psutil line and adds the reserve line."""
+    out = tmp_path / "cores.txt"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["Karrierekrake", "--report-physical-cores", str(out)],
+    )
+    monkeypatch.setattr(
+        "core.cv_llm_runtime.physical_cores_report_line",
+        lambda: "physical_cores source=psutil count=8",
+    )
+    monkeypatch.setattr(
+        "core.cv_llm_runtime.cv_llm_thread_report_line",
+        lambda: "n_threads=7 n_threads_batch=7 physical=8 logical=8 reserve=1",
+    )
+    from desktop.app import _report_physical_cores
+
+    assert _report_physical_cores() == 0
+    lines = out.read_text(encoding="utf-8").splitlines()
+    assert lines[0] == "physical_cores source=psutil count=8"
+    assert lines[1] == "n_threads=7 n_threads_batch=7 physical=8 logical=8 reserve=1"
+
+
 def test_requirements_runtime_lists_docpick_and_llama() -> None:
     text = Path("requirements-runtime.txt").read_text(encoding="utf-8")
     assert "docpick" in text
@@ -164,6 +191,7 @@ def test_requirements_runtime_lists_docpick_and_llama() -> None:
     smoke = Path(".github/workflows/windows-smoke.yml").read_text(encoding="utf-8")
     assert "--report-physical-cores" in smoke
     assert "source=psutil" in smoke
+    assert "reserve=" in smoke
     assert "--report-llm-load" in smoke
     assert "AMX_INT8 = 1" in smoke
     assert "llama_cpu_all_variants=0" in smoke

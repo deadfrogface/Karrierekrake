@@ -221,19 +221,71 @@ def _env_thread_override(name: str, default: int) -> int:
     return n
 
 
+def thread_reserve(physical: int, logical: int) -> int:
+    """Cores left free for the GUI and the display server.
+
+    Tester, UI, VM, 8 physical cores, no SMT, commit ``3a41462``,
+    ``KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S=900``, three alternating runs,
+    fresh app start. ``n_threads=8`` (batch 8) took 179.7 s (178.2–179.8)
+    and the child used 7.0 cores. ``n_threads=7`` (batch still 8) took
+    131.7 s (130.6–133.7), 26.7% faster. The spans do not overlap. llama
+    threads wait on the slowest thread, and the GUI plus the display
+    server need about 0.5 cores. Headless with 8 threads: prompt 1880
+    tokens in 40.5 s (46 tok/s), generation 804 tokens in 110 s (7.3 tok/s).
+    GUI CPU over 60 s, bar and no child: app 0.10 cores plus Xvfb 0.28,
+    sum 0.38 cores. During the import the app used 0.24 cores.
+
+    Reserve one core only when there is no SMT (logical == physical) and
+    at least four physical cores. A 2-core/4-thread machine keeps 2/4:
+    with SMT the GUI and the display server sit on the sibling threads.
+    Below four cores and no SMT, one thread less would halve the compute,
+    so the reserve stays 0. Effect on the i3 is unchecked; that model is
+    not known yet.
+    """
+    if int(logical) == int(physical) and int(physical) >= 4:
+        return 1
+    return 0
+
+
+def resolve_cv_llm_thread_plan() -> tuple[int, int, int, int, int]:
+    """``(n_threads, n_threads_batch, physical, logical, reserve)``.
+
+    Overrides ``KARRIEREKRAKE_CV_LLM_N_THREADS`` and
+    ``KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH`` replace the two thread counts
+    and leave ``physical``, ``logical``, and ``reserve`` as the machine.
+    """
+    physical = physical_cpu_count()
+    logical = logical_cpu_count()
+    reserve = thread_reserve(physical, logical)
+    n_threads = _env_thread_override(
+        "KARRIEREKRAKE_CV_LLM_N_THREADS", max(1, physical - reserve)
+    )
+    n_batch = _env_thread_override(
+        "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH", max(1, logical - reserve)
+    )
+    return n_threads, n_batch, physical, logical, reserve
+
+
+def cv_llm_thread_report_line(
+    plan: tuple[int, int, int, int, int] | None = None,
+) -> str:
+    """``n_threads=.. n_threads_batch=.. physical=.. logical=.. reserve=..``."""
+    n_threads, n_batch, physical, logical, reserve = (
+        plan if plan is not None else resolve_cv_llm_thread_plan()
+    )
+    return (
+        f"n_threads={n_threads} n_threads_batch={n_batch} "
+        f"physical={physical} logical={logical} reserve={reserve}"
+    )
+
+
 def resolve_cv_llm_threads() -> tuple[int, int]:
     """``(n_threads, n_threads_batch)`` for in-process CV import.
 
-    Generation threads follow physical cores. Prompt-batch threads follow
-    logical CPUs. On a machine without SMT the two counts are equal.
-
-    Overrides: ``KARRIEREKRAKE_CV_LLM_N_THREADS`` and
-    ``KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH``.
+    See ``thread_reserve``. Overrides: ``KARRIEREKRAKE_CV_LLM_N_THREADS``
+    and ``KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH``.
     """
-    n_threads = _env_thread_override("KARRIEREKRAKE_CV_LLM_N_THREADS", physical_cpu_count())
-    n_batch = _env_thread_override(
-        "KARRIEREKRAKE_CV_LLM_N_THREADS_BATCH", logical_cpu_count()
-    )
+    n_threads, n_batch, _physical, _logical, _reserve = resolve_cv_llm_thread_plan()
     return n_threads, n_batch
 
 
@@ -633,7 +685,7 @@ def chat_completion_inprocess(
     from core.local_model_lock import hold_production_model
 
     n_ctx = resolve_cv_llm_n_ctx()
-    n_threads, n_threads_batch = resolve_cv_llm_threads()
+    n_threads, n_threads_batch, physical, logical, reserve = resolve_cv_llm_thread_plan()
     Llama = _llama_cls()
     with hold_production_model(role="cv_import", timeout_s=90.0):
         # verbose=True only so llama.cpp emits buffer and CPU lines during
@@ -694,8 +746,17 @@ def chat_completion_inprocess(
                 _enforce_timeout(started, stage="before_generation")
             thread_line = (
                 "cv_llm_inprocess n_ctx=%s n_threads=%s n_threads_batch=%s "
-                "n_prompt=%s max_tokens=%s"
-                % (n_ctx, n_threads, n_threads_batch, n_prompt, budget)
+                "physical=%s logical=%s reserve=%s n_prompt=%s max_tokens=%s"
+                % (
+                    n_ctx,
+                    n_threads,
+                    n_threads_batch,
+                    physical,
+                    logical,
+                    reserve,
+                    n_prompt,
+                    budget,
+                )
             )
             logger.info("%s", thread_line)
             emit_diag(thread_line)

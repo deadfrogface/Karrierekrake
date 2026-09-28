@@ -104,22 +104,27 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
     ]
 
 
-# Linux parent reads the child's anonymous RSS this often. One smaps_rollup
-# read with the GGUF mmap'd was 35 µs on this VM (0.0017% of one core at 2 s).
-# Windows PeakPagefileUsage is already a lifetime peak, so the interval is
-# Linux-only. A spike that rises and falls between samples is invisible:
-# the kernel does not expose an Rss_Anon high-water, and VmHWM counts mmap.
+# Linux parent reads the child's anonymous RSS this often. Each read walks
+# the child's page tables (smaps_rollup). Parent reads of a headless DE_01
+# child on this VM (not the i3), 15 times: median 0.0144 s, max 0.0267 s.
+# That is 0.72% of one core at 2 s, so the interval stays 2 s. It becomes
+# 5 s when the median of at least three reads, or the sum of the reads over
+# the wall clock, exceeds 1% of one core. The median and the max are logged
+# once per import. Windows PeakPagefileUsage is already a lifetime peak, so
+# this read does not run there. A spike that rises and falls between samples
+# is invisible: the kernel does not expose an Rss_Anon high-water, and
+# VmHWM counts mmap.
 _PARENT_ANON_SAMPLE_S = 2.0
+_PARENT_ANON_SAMPLE_SLOW_S = 5.0
+# Deadline and stall are rechecked after each wake, so the wait stays
+# at most this long. Cancel wakes the same wait immediately.
+_POLL_SLICE_S = 0.25
 _MAX_TOKENS_IN_DIAG = re.compile(r"\bmax_tokens=(\d+)\b")
 _N_PROMPT_IN_DIAG = re.compile(r"\bn_prompt=(\d+)\b")
 
 
 def _monotonic() -> float:
     return time.monotonic()
-
-
-def _sleep(seconds: float) -> None:
-    time.sleep(seconds)
 
 
 def _job_limit_from_environ() -> int | None:
@@ -183,6 +188,16 @@ class CvImportSupervisor:
         self._cancel = threading.Event()
         self._proc: object | None = None
         self.ran_on_thread: int | None = None
+
+    def _pause(self, timeout: float) -> None:
+        """Wait until cancel or ``timeout`` seconds.
+
+        ``self._cancel.wait`` wakes as soon as ``request_cancel`` sets the
+        event. ``timeout`` is at most 0.25 s, so the deadline and the stall
+        check run on that grid. The QA observe hold calls the same wait and
+        stays off unless ``KARRIEREKRAKE_CV_IMPORT_OBSERVE_S`` is set.
+        """
+        self._cancel.wait(timeout)
 
     def request_cancel(self) -> None:
         self._cancel.set()
@@ -272,6 +287,9 @@ class CvImportSupervisor:
         os.close(phase_fd)
         phase_path = Path(phase_name)
         proc = None
+        anon_interval = _PARENT_ANON_SAMPLE_S
+        anon_durations: list[float] = []
+        anon_logged = False
         try:
             proc = _spawn_with_child_budget(
                 self._spawn,
@@ -336,8 +354,19 @@ class CvImportSupervisor:
                     )
                 now = _monotonic()
                 if now >= next_anon:
-                    next_anon = now + _PARENT_ANON_SAMPLE_S
-                    memory_code = _parent_memory_code(proc, child_budget=child_budget)
+                    memory_code = _parent_memory_code(
+                        proc,
+                        child_budget=child_budget,
+                        durations=anon_durations,
+                    )
+                    elapsed = max(0.0, now - started)
+                    anon_interval = _anon_interval_s(
+                        anon_durations, elapsed_s=elapsed, current_s=anon_interval
+                    )
+                    next_anon = now + anon_interval
+                    if not anon_logged and len(anon_durations) >= 3:
+                        _log_smaps_rollup_once(anon_durations, anon_interval)
+                        anon_logged = True
                     if memory_code:
                         self._stop(proc)
                         return ImportAttemptResult(
@@ -367,8 +396,12 @@ class CvImportSupervisor:
                         attempts=1,
                         reason=reason,
                     )
-                _sleep(0.02)
+                rest_anon = max(0.0, next_anon - _monotonic())
+                self._pause(min(_POLL_SLICE_S, rest_anon))
         finally:
+            if not anon_logged and anon_durations:
+                _log_smaps_rollup_once(anon_durations, anon_interval)
+                anon_logged = True
             closer = getattr(proc, "close", None) if proc is not None else None
             if callable(closer):
                 try:
@@ -400,7 +433,11 @@ class CvImportSupervisor:
                 progress("parsing")
                 # UI pulses stay at half a second. No timer under 250 ms.
                 next_pulse = now + 0.5
-            time.sleep(0.05)
+            rest = max(0.0, deadline - time.monotonic())
+            until_pulse = max(0.0, next_pulse - time.monotonic()) if progress is not None else rest
+            # QA only (KARRIEREKRAKE_CV_IMPORT_OBSERVE_S). Off in production.
+            # Same wake as the import loop: cancel returns immediately.
+            self._cancel.wait(min(_POLL_SLICE_S, rest, until_pulse))
         return self._cancel.is_set()
 
     def _stop(self, proc: object, *, reason: str = "") -> None:
@@ -653,14 +690,52 @@ def _read_app_private_bytes() -> int:
     return int(_self_rss_bytes())
 
 
-def _parent_memory_code(proc: object, *, child_budget: int) -> str | None:
+def _anon_interval_s(
+    durations: list[float], *, elapsed_s: float, current_s: float
+) -> float:
+    """2 s until the reads exceed 1% of one core, then 5 s.
+
+    The decision uses the median once three reads exist, so one slow read
+    does not move the interval. It also uses the sum of the read times over
+    the wall clock once that window covers at least three intervals.
+    Windows does not call this.
+    """
+    if len(durations) < 3 or current_s <= 0:
+        return current_s
+    import statistics
+
+    if statistics.median(durations) / current_s > 0.01:
+        return _PARENT_ANON_SAMPLE_SLOW_S
+    if elapsed_s >= 3 * current_s and sum(durations) / elapsed_s > 0.01:
+        return _PARENT_ANON_SAMPLE_SLOW_S
+    return current_s
+
+
+def _log_smaps_rollup_once(durations: list[float], interval_s: float) -> None:
+    """One line: median and max of the Linux ``smaps_rollup`` reads."""
+    import statistics
+
+    line = (
+        "cv_import smaps_rollup reads=%s median_s=%.6f max_s=%.6f interval_s=%.1f"
+        % (len(durations), statistics.median(durations), max(durations), interval_s)
+    )
+    logger.info("%s", line)
+    logging.getLogger("karrierekrake").info("%s", line)
+
+
+def _parent_memory_code(
+    proc: object,
+    *,
+    child_budget: int,
+    durations: list[float] | None = None,
+) -> str | None:
     """Error code when a measurable child sample is over its budget.
 
     An unmeasured sample (0/None) is logged inside ``_parent_anon_sample``
     and does not by itself kill the child: the in-process gate fails closed
     on its own 0/None read. The app's private commit is not read here.
     """
-    sample = _parent_anon_sample(proc)
+    sample = _parent_anon_sample(proc, durations=durations)
     if sample is None:
         return None
     from core.cv_docpick_import import (
@@ -687,10 +762,14 @@ def _parent_memory_code(proc: object, *, child_budget: int) -> str | None:
     return code
 
 
-def _parent_anon_sample(proc: object) -> int | None:
+def _parent_anon_sample(
+    proc: object, *, durations: list[float] | None = None
+) -> int | None:
     """Anonymous RSS of the extract child, or None when it is not measurable.
 
     Linux only. ``0`` / missing ``/proc`` is unmeasured and is not a pass.
+    When ``durations`` is set, the ``smaps_rollup`` read time is appended.
+    Windows returns before any read: ``PeakPagefileUsage`` is not this path.
     """
     if sys.platform == "win32":
         return None
@@ -699,7 +778,10 @@ def _parent_anon_sample(proc: object) -> int | None:
         return None
     from core.cv_docpick_import import _linux_rss_anon_bytes
 
+    started = time.perf_counter()
     value = _linux_rss_anon_bytes(pid)
+    if durations is not None:
+        durations.append(time.perf_counter() - started)
     if value <= 0:
         logger.error(
             "cv_import parent anon sample unmeasured pid=%s value=%s; not a pass",

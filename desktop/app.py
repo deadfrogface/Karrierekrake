@@ -246,21 +246,25 @@ def main() -> int:
 
 
 def _report_physical_cores() -> int:
-    """Write ``physical_cores source=psutil count=N`` and return 0.
+    """Write the psutil core line and the thread-reserve line. Return 0.
 
     The packaged EXE is windowed, so CI passes a path and reads that file.
-    Return 1 when the line is the fallback (psutil missing or ``None``).
+    Return 1 when the core line is the fallback (psutil missing or ``None``).
+    The second line is ``n_threads=.. n_threads_batch=.. physical=..
+    logical=.. reserve=..``.
     """
-    from core.cv_llm_runtime import physical_cores_report_line
+    from core.cv_llm_runtime import cv_llm_thread_report_line, physical_cores_report_line
 
     idx = sys.argv.index("--report-physical-cores")
-    line = physical_cores_report_line()
+    cores = physical_cores_report_line()
+    threads = cv_llm_thread_report_line()
+    text = cores + "\n" + threads + "\n"
     if idx + 1 < len(sys.argv) and not sys.argv[idx + 1].startswith("--"):
         out = Path(sys.argv[idx + 1])
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(line + "\n", encoding="utf-8")
-    print(line, flush=True)
-    return 0 if "source=psutil " in line else 1
+        out.write_text(text, encoding="utf-8")
+    print(text, end="", flush=True)
+    return 0 if "source=psutil " in cores else 1
 
 
 def _report_llm_load() -> int:

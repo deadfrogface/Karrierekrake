@@ -105,8 +105,14 @@ jobs:
           }
           if (-not $line) { Write-Error "EXE physical-cores report missing"; exit 1 }
           Write-Host $line
-          if ($line -notmatch '^physical_cores source=psutil count=[1-9][0-9]*$') {
+          $cores = @($line -split "`r?`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -like "physical_cores *" } | Select-Object -First 1)
+          $threads = @($line -split "`r?`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -like "n_threads=*" } | Select-Object -First 1)
+          if (-not $cores -or $cores -notmatch '^physical_cores source=psutil count=[1-9][0-9]*$') {
             Write-Error "EXE did not read physical cores via psutil (fallback or empty): $line"
+            exit 1
+          }
+          if (-not $threads -or $threads -notmatch '^n_threads=[1-9][0-9]* n_threads_batch=[1-9][0-9]* physical=[1-9][0-9]* logical=[1-9][0-9]* reserve=[01]$') {
+            Write-Error "EXE thread reserve line missing: $line"
             exit 1
           }
       - name: EXE llama load log (CPU features and backend variant)
