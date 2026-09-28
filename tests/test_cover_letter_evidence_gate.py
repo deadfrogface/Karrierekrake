@@ -133,6 +133,7 @@ def test_i18n_keys_de_and_en():
         "cover.no_evidence",
         "cover.demo_excluded",
         "cover.company_missing",
+        "cover.profile_changed_evidence_lost",
     ):
         assert key in TRANSLATIONS["de"]
         assert key in TRANSLATIONS["en"]
@@ -140,6 +141,14 @@ def test_i18n_keys_de_and_en():
     assert TRANSLATIONS["en"]["cover.job_incomplete"] == "The job ad has no description."
     assert TRANSLATIONS["de"]["cover.company_missing"] == "In der Anzeige fehlt der Firmenname."
     assert TRANSLATIONS["en"]["cover.company_missing"] == "The company name is missing from the job ad."
+    assert TRANSLATIONS["de"]["cover.profile_changed_evidence_lost"] == (
+        "Das Profil hat sich seit der Vorschau geändert. "
+        "Der Brief hat nicht mehr zwei verschiedene belegte Bezüge."
+    )
+    assert TRANSLATIONS["en"]["cover.profile_changed_evidence_lost"] == (
+        "The profile changed since the preview. "
+        "The letter no longer has two different evidenced references."
+    )
 
 
 def test_empty_and_whitespace_description_refuse_without_placeholder():
@@ -529,11 +538,13 @@ def test_approval_writes_cover_file_and_description(tmp_path: Path):
     )
     preview = build_application_preview(job, cfg)
     assert preview.cover_refusal_code == ""
+    assert preview.cover_profile_fingerprint
     path = approve_cover_letter(
         job,
         cfg,
         preview.cover_letter_preview,
         generated_sha256=preview.cover_letter_sha256,
+        profile_fingerprint=preview.cover_profile_fingerprint,
     )
     assert path == tmp_path / "cover_letters" / "job-approve-1.txt"
     assert path.is_file()
@@ -1092,7 +1103,12 @@ def test_approve_saves_user_edit_and_refuses_empty_or_placeholder(tmp_path: Path
     edited = generated.text.replace("SAP", "Tabellen")
     assert "SAP" not in edited
     sha = generated.generated_sha256
-    path = approve_cover_letter(job, cfg, edited, generated_sha256=sha)
+    from core.cover_letter import cover_profile_fingerprint
+
+    fingerprint = cover_profile_fingerprint(cfg)
+    path = approve_cover_letter(
+        job, cfg, edited, generated_sha256=sha, profile_fingerprint=fingerprint
+    )
     assert path.read_text(encoding="utf-8") == edited
     meta = json.loads((tmp_path / "cover_letters" / "job-edit-1.meta.json").read_text(encoding="utf-8"))
     assert meta["edited"] is True
@@ -1100,13 +1116,16 @@ def test_approve_saves_user_edit_and_refuses_empty_or_placeholder(tmp_path: Path
     assert "SAP" not in path.read_text(encoding="utf-8")
 
     with pytest.raises(CoverLetterRefused):
-        approve_cover_letter(job, cfg, "   \n\t", generated_sha256=sha)
+        approve_cover_letter(
+            job, cfg, "   \n\t", generated_sha256=sha, profile_fingerprint=fingerprint
+        )
     with pytest.raises(CoverLetterRefused):
         approve_cover_letter(
             job,
             cfg,
             "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.\n",
             generated_sha256=sha,
+            profile_fingerprint=fingerprint,
         )
 
 
@@ -1586,11 +1605,14 @@ def test_crlf_and_trailing_space_are_not_an_edit(tmp_path: Path):
     generated = compose_cover_letter(job, cfg)
     assert generated.ok is True
     messy = "\r\n".join(line + "   " for line in generated.text.split("\n"))
+    from core.cover_letter import cover_profile_fingerprint
+
     path = approve_cover_letter(
         job,
         cfg,
         messy,
         generated_sha256=generated.generated_sha256,
+        profile_fingerprint=cover_profile_fingerprint(cfg),
     )
     meta = json.loads((tmp_path / "cover_letters" / "job-crlf.meta.json").read_text(encoding="utf-8"))
     assert meta["edited"] is False
@@ -1665,6 +1687,9 @@ def test_only_the_matching_station_task_counts():
 
 
 def test_station_without_tasks_or_period_does_not_count():
+    from core.cover_letter import ALLOW_STATION_WITHOUT_TASKS_OR_PERIOD
+
+    assert ALLOW_STATION_WITHOUT_TASKS_OR_PERIOD is False
     cfg = _cfg(
         "Tourenplanung",
         stations=[
@@ -1715,3 +1740,159 @@ def test_unclosed_contact_tag_keeps_the_general_salutation():
     assert result.ok is True
     assert result.text.startswith("Sehr geehrte Damen und Herren,")
     assert "Quendel" not in result.text.split("\n", 1)[0]
+
+
+def _dated_station_cfg() -> AppConfig:
+    return _cfg(
+        "Tourenplanung",
+        "SAP",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Tourenplanung für Stückgut"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+
+
+def _dispatch_job(job_id: str) -> Job:
+    return Job(
+        id=job_id,
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung für Stückgut und SAP.",
+    )
+
+
+def test_approve_same_profile_does_not_rebuild_facts(tmp_path: Path):
+    import core.cover_letter as cover
+
+    cfg = _dated_station_cfg()
+    cfg.root = tmp_path
+    job = _dispatch_job("job-fp-same")
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_profile_fingerprint == cover.cover_profile_fingerprint(cfg)
+    cover._FACTS_SLOT = None
+    counts = {"builder": 0}
+    build = cover._build_cover_facts
+
+    def counted(*args, **kwargs):
+        counts["builder"] += 1
+        return build(*args, **kwargs)
+
+    cover._build_cover_facts = counted
+    try:
+        with pytest.raises(ValueError, match="Hash"):
+            approve_cover_letter(
+                job,
+                cfg,
+                preview.cover_letter_preview,
+                profile_fingerprint=preview.cover_profile_fingerprint,
+            )
+        assert counts["builder"] == 0
+        assert not (tmp_path / "cover_letters" / "job-fp-same.txt").exists()
+
+        cfg.application.phone = "040 123456"
+        assert cover.cover_profile_fingerprint(cfg) == preview.cover_profile_fingerprint
+        path = approve_cover_letter(
+            job,
+            cfg,
+            preview.cover_letter_preview,
+            generated_sha256=preview.cover_letter_sha256,
+            profile_fingerprint=preview.cover_profile_fingerprint,
+        )
+        assert counts["builder"] == 0
+        assert path.is_file()
+        meta = json.loads(path.with_suffix(".meta.json").read_text(encoding="utf-8"))
+        assert meta["edited"] is False
+        assert meta["generated_sha256"] == preview.cover_letter_sha256
+    finally:
+        cover._build_cover_facts = build
+        cover._FACTS_SLOT = None
+
+
+def test_approve_irrelevant_profile_change_still_saves(tmp_path: Path):
+    import core.cover_letter as cover
+
+    cfg = _dated_station_cfg()
+    cfg.root = tmp_path
+    job = _dispatch_job("job-fp-skill")
+    preview = build_application_preview(job, cfg)
+    cfg.profile.qualifications.skills.append(SourcedText(value="Origami", source="manual"))
+    assert cover.cover_profile_fingerprint(cfg) != preview.cover_profile_fingerprint
+    cover._FACTS_SLOT = None
+    counts = {"builder": 0}
+    build = cover._build_cover_facts
+
+    def counted(*args, **kwargs):
+        counts["builder"] += 1
+        return build(*args, **kwargs)
+
+    cover._build_cover_facts = counted
+    try:
+        path = approve_cover_letter(
+            job,
+            cfg,
+            preview.cover_letter_preview,
+            generated_sha256=preview.cover_letter_sha256,
+            profile_fingerprint=preview.cover_profile_fingerprint,
+        )
+        assert counts["builder"] == 1
+        assert path.is_file()
+        body = path.read_text(encoding="utf-8")
+        assert body == preview.cover_letter_preview
+        assert "Origami" not in body
+        meta = json.loads(path.with_suffix(".meta.json").read_text(encoding="utf-8"))
+        assert meta["edited"] is False
+    finally:
+        cover._build_cover_facts = build
+        cover._FACTS_SLOT = None
+
+
+def test_approve_rejects_when_station_deleted_after_preview(tmp_path: Path, caplog):
+    import logging
+
+    import core.cover_letter as cover
+
+    cfg = _dated_station_cfg()
+    cfg.root = tmp_path
+    job = _dispatch_job("job-fp-deleted")
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_refusal_code == ""
+    cfg.profile.qualifications.work_experience.clear()
+    assert cover.cover_profile_fingerprint(cfg) != preview.cover_profile_fingerprint
+    cover._FACTS_SLOT = None
+    counts = {"builder": 0}
+    build = cover._build_cover_facts
+
+    def counted(*args, **kwargs):
+        counts["builder"] += 1
+        return build(*args, **kwargs)
+
+    cover._build_cover_facts = counted
+    target = tmp_path / "cover_letters" / "job-fp-deleted.txt"
+    try:
+        with caplog.at_level(logging.ERROR):
+            with pytest.raises(CoverLetterRefused) as exc:
+                approve_cover_letter(
+                    job,
+                    cfg,
+                    preview.cover_letter_preview,
+                    generated_sha256=preview.cover_letter_sha256,
+                    profile_fingerprint=preview.cover_profile_fingerprint,
+                )
+        assert counts["builder"] == 1
+        assert exc.value.refusal.reason_code == "profile_changed_evidence_lost"
+        assert exc.value.refusal.message_key == "cover.profile_changed_evidence_lost"
+        assert "profile_changed_evidence_lost" in caplog.text
+        assert "Ergänze, was du dort gemacht hast." not in exc.value.refusal.text("de")
+        assert not target.exists()
+        assert not target.with_suffix(".meta.json").exists()
+    finally:
+        cover._build_cover_facts = build
+        cover._FACTS_SLOT = None

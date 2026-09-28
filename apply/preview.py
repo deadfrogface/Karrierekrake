@@ -14,7 +14,7 @@ from typing import Any, Literal
 
 from apply.detector import ATSDetector, classify_ats_support
 from core.config import AppConfig
-from core.cover_letter import compose_cover_letter
+from core.cover_letter import compose_cover_letter, cover_profile_fingerprint
 from core.documents import (
     active_cv_variant,
     normalize_role,
@@ -46,6 +46,7 @@ class ApplicationPreview:
     found_references: tuple[str, ...] = ()
     missing_required: tuple[str, ...] = ()
     stations_without_tasks: tuple[str, ...] = ()
+    cover_profile_fingerprint: str = ""
     cover_refusal_code: str = ""
     cover_refusal_key: str = ""
     description_used: str = ""
@@ -295,6 +296,7 @@ def build_application_preview(
         found_references=tuple(outcome.found_references),
         missing_required=tuple(outcome.missing_required),
         stations_without_tasks=tuple(outcome.stations_without_tasks),
+        cover_profile_fingerprint=cover_profile_fingerprint(config),
         cover_refusal_code=outcome.reason_code,
         cover_refusal_key=outcome.message_key,
         description_used=outcome.description_used,
