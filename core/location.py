@@ -475,6 +475,17 @@ def _drop_model_coordinates(location: Any) -> None:
     location.home_latitude = None
     location.home_longitude = None
     location.home_geocoded_address = ""
+    if hasattr(location, "_resolved_home"):
+        del location._resolved_home
+
+
+def _remember_resolved_home(location: Any, coords: tuple[float, float]) -> None:
+    """In-memory mark that this process resolved the current home.
+
+    Not a dataclass field, so ``save_config`` does not write it. The match
+    contract reads it. Profile fields stay empty.
+    """
+    location._resolved_home = (float(coords[0]), float(coords[1]))
 
 
 def commit_loaded_home(location: Any, *, cache_dir: Any = None) -> str:
@@ -708,6 +719,7 @@ class LocationService:
         } and resolution.ok:
             coords = (float(resolution.latitude), float(resolution.longitude))  # type: ignore[arg-type]
             self._home = coords
+            _remember_resolved_home(loc, coords)
             self._home_resolution = HomeResolution(
                 coords=coords,
                 resolved=True,
@@ -750,6 +762,7 @@ class LocationService:
 
         coords = (float(resolution.latitude), float(resolution.longitude))  # type: ignore[arg-type]
         self._home = coords
+        _remember_resolved_home(loc, coords)
         self.home_updated = True
         self._home_resolution = HomeResolution(
             coords=coords,
