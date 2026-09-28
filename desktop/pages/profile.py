@@ -338,6 +338,21 @@ class ProfilePage(QWidget):
         self.card_skills = ProfileSectionCard()
         self.card_skills.action_btn.clicked.connect(lambda: self._edit_section("skills"))
         self._skills_host, self._skills_row = self._make_flow()
+        self._licence_line = QLabel()
+        self._licence_line.setObjectName("PageSubtitle")
+        self._licence_line.setWordWrap(True)
+        self._licence_line.hide()
+        self._licence_notice = QLabel()
+        self._licence_notice.setObjectName("WarningLabel")
+        self._licence_notice.setWordWrap(True)
+        self._licence_notice.hide()
+        self._licence_review_btn = QPushButton()
+        self._licence_review_btn.setObjectName("SecondaryButton")
+        self._licence_review_btn.clicked.connect(lambda: self._edit_section("skills"))
+        self._licence_review_btn.hide()
+        self.card_skills.body().addWidget(self._licence_line)
+        self.card_skills.body().addWidget(self._licence_notice)
+        self.card_skills.body().addWidget(self._licence_review_btn)
         self.card_skills.body().addWidget(self._skills_host)
 
         self.card_languages = ProfileSectionCard()
@@ -412,6 +427,8 @@ class ProfilePage(QWidget):
         self.card_education.set_action_text(tr("profile.add"))
         self.card_skills.set_title(tr("profile.card_skills_certs"))
         self.card_skills.set_action_text(tr("profile.edit"))
+        self._licence_review_btn.setText(tr("profile.licence_review"))
+        set_accessible_name(self._licence_review_btn, tr("profile.licence_review"))
         self.card_languages.set_title(tr("profile.languages"))
         self.card_languages.set_action_text(tr("profile.edit"))
         self._wanted_label.setText(tr("profile.desired_short"))
@@ -724,6 +741,7 @@ class ProfilePage(QWidget):
             self._mark_decorative(empty)
             self._edu_body.addWidget(empty)
 
+        self._bind_licence_notice(cfg)
         self._clear_layout(self._skills_row)
         skills = list(cfg.profile.qualifications.skill_values() or [])
         software = list(cfg.profile.qualifications.software_values() or [])
@@ -763,6 +781,31 @@ class ProfilePage(QWidget):
             empty.setObjectName("KkHint")
             self._mark_decorative(empty)
             self._lang_row.addWidget(empty)
+        # Flow hosts must report their new height after chips are replaced.
+        # One geometry update, not a second refresh_cards() pass.
+        self._skills_host.updateGeometry()
+        self._lang_host.updateGeometry()
+
+    def _bind_licence_notice(self, cfg) -> None:
+        from core.cv_parser import read_driving_classes
+
+        reading = read_driving_classes(cfg.profile.qualifications.driving_license)
+        if not reading.recovered:
+            self._licence_line.hide()
+            self._licence_notice.hide()
+            self._licence_review_btn.hide()
+            return
+        shown = ", ".join(reading.display) if reading.display else "—"
+        self._licence_line.setText(f"{tr('profile.license')}: {shown}")
+        parts = [tr("profile.licence_recovered")]
+        if reading.uncertain:
+            parts.append(tr("profile.licence_uncertain", classes=", ".join(reading.uncertain)))
+        self._licence_notice.setText("\n".join(parts))
+        self._licence_review_btn.setText(tr("profile.licence_review"))
+        set_accessible_name(self._licence_review_btn, tr("profile.licence_review"))
+        self._licence_line.show()
+        self._licence_notice.show()
+        self._licence_review_btn.show()
 
     def _show_more_experience(self) -> None:
         self.card_experience.set_expanded(True)
@@ -962,6 +1005,14 @@ class ProfilePage(QWidget):
         for name, value in snapshot.items():
             setattr(location, name, value)
 
+    def _matches_last_file(self, cfg) -> bool:
+        """True when ``cfg`` equals the YAML last read from disk.
+
+        The licence editor shows the normalised display. This comparison uses
+        the files (``ConfigService._read_runtime_config``), not that display.
+        """
+        return cfg == self.config_service._read_runtime_config()
+
     def save(self) -> None:
         cfg = self.config_service.load()
         p = cfg.profile
@@ -1069,6 +1120,13 @@ class ProfilePage(QWidget):
         errors = self.config_service.validate(cfg)
         if errors:
             QMessageBox.warning(self, tr("nav.profile"), "\n".join(errors))
+            return
+        # Editors are prefilled with the normalised display. That still differs
+        # from a recovered list on disk, so the first save writes. A second
+        # save of the same values does not. The check is the last file state.
+        if self._matches_last_file(cfg):
+            self._career_persist = False
+            QMessageBox.information(self, tr("nav.profile"), tr("profile.no_changes"))
             return
         self.config_service.save(cfg)
         self._career_persist = False

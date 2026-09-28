@@ -25,6 +25,7 @@ class FlowLayout(QLayout):
 
     def addItem(self, item: QLayoutItem) -> None:  # noqa: N802
         self._items.append(item)
+        self.invalidate()
 
     def count(self) -> int:
         return len(self._items)
@@ -36,7 +37,9 @@ class FlowLayout(QLayout):
 
     def takeAt(self, index: int) -> QLayoutItem | None:  # noqa: N802
         if 0 <= index < len(self._items):
-            return self._items.pop(index)
+            item = self._items.pop(index)
+            self.invalidate()
+            return item
         return None
 
     def expandingDirections(self) -> Qt.Orientation:  # noqa: N802

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from enum import Enum
@@ -12,6 +13,24 @@ from core.text_normalize import clean_company, clean_text, is_blankish
 
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def licence_requirement(combined: str) -> str:
+    """Classify licence need from the folded ad text ``score_job`` already built.
+
+    ``class_b`` asks for class B. ``any`` asks for a licence without naming B.
+    ``""`` asks for neither. The result is cached on the job as
+    ``(description, title, result)`` and is not computed while the job is built.
+    """
+    blob = combined or ""
+    if "klasse b" in blob or re.search(r"führerschein\s*b|\bklasse\s*b\b", blob):
+        return "class_b"
+    if any(
+        token in blob
+        for token in ("führerschein", "fuehrerschein", "driving licence", "driving license")
+    ):
+        return "any"
+    return ""
 
 
 class JobStatus(str, Enum):
