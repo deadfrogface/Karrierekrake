@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import QSize, Qt, Signal
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import (
     QAbstractButton,
@@ -271,6 +271,11 @@ class TagChip(QLabel):
     inside the chip when the parent line is narrower than the text.
     """
 
+    # Matches QLabel#Badge* padding (10px / 4px) plus the 1px border.
+    _PAD_X = 10
+    _PAD_Y = 4
+    _BORDER = 1
+
     def __init__(
         self,
         text: str = "",
@@ -287,11 +292,40 @@ class TagChip(QLabel):
         }
         self.setObjectName(mapping.get(kind, "BadgeMuted"))
         self.setWordWrap(True)
+        self.setTextFormat(Qt.TextFormat.PlainText)
         self.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
-        # Minimum: layout must not squash pills; Preferred height allows wrap.
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        # No fixed width and no elision: the pill grows with the full label.
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         set_accessible_name(self, text)
         polish_chip(self)
+
+    def setText(self, text: str) -> None:  # noqa: N802
+        super().setText(text)
+        set_accessible_name(self, text)
+        self.updateGeometry()
+
+    def _unwrapped_text_width(self) -> int:
+        metrics = self.fontMetrics()
+        text = self.text() or ""
+        if not text:
+            return 0
+        advance = metrics.horizontalAdvance(text)
+        bounds = metrics.boundingRect(text).width()
+        return max(int(advance), int(bounds))
+
+    def _padded_size(self) -> QSize:
+        metrics = self.fontMetrics()
+        text_w = self._unwrapped_text_width()
+        # Slack covers semibold hinting so the last glyph is not clipped.
+        width = text_w + (2 * self._PAD_X) + (2 * self._BORDER) + 4
+        height = metrics.height() + (2 * self._PAD_Y) + (2 * self._BORDER)
+        return QSize(max(width, 1), max(height, 1))
+
+    def sizeHint(self) -> QSize:  # noqa: N802
+        return self._padded_size()
+
+    def minimumSizeHint(self) -> QSize:  # noqa: N802
+        return self._padded_size()
 
     def hasHeightForWidth(self) -> bool:  # noqa: N802
         return True
@@ -300,15 +334,16 @@ class TagChip(QLabel):
         if width <= 0:
             return int(self.sizeHint().height())
         metrics = self.fontMetrics()
+        inner = max(24, int(width) - (2 * self._PAD_X) - (2 * self._BORDER))
         rect = metrics.boundingRect(
             0,
             0,
-            max(24, int(width)),
+            inner,
             4000,
             int(Qt.TextFlag.TextWordWrap),
             self.text(),
         )
-        return int(rect.height() + 8)
+        return int(rect.height() + (2 * self._PAD_Y) + (2 * self._BORDER))
 
 
 class DataItem(QWidget):

@@ -433,7 +433,12 @@ def sync_application_summaries(
             app.work_experience = quals.work_experience[0].label()
             set_field_origin(app, "work_experience", SOURCE_CV)
     if quals.driving_values() and _may_sync_summary(app, "driving_license", fill_empty=fill_empty):
-        app.driving_license = quals.driving_values()[0]
+        from core.cv_parser import driving_classes_for_display
+
+        classes = driving_classes_for_display(quals.driving_license)
+        # Summary text only. Structured entries stay as stored apart from
+        # what the caller already saved; this join does not rewrite the list.
+        app.driving_license = ", ".join(classes) if classes else quals.driving_values()[0]
         set_field_origin(app, "driving_license", SOURCE_CV)
 
 
@@ -564,6 +569,14 @@ def clear_complete_application(app: ApplicationProfile | None = None) -> Applica
     return app
 
 
+def _driving_display_values(q: QualificationsConfig) -> list[str]:
+    """Deduped licence classes for preview text. Does not mutate ``q``."""
+    from core.cv_parser import driving_classes_for_display
+
+    shown = driving_classes_for_display(q.driving_license)
+    return shown or q.driving_values()
+
+
 def summarize_incoming(q: QualificationsConfig) -> dict[str, list[str]]:
     return {
         "languages": q.language_labels(),
@@ -572,7 +585,7 @@ def summarize_incoming(q: QualificationsConfig) -> dict[str, list[str]]:
         "certificates": q.certificate_labels(),
         "skills": q.skill_values(),
         "software": q.software_values(),
-        "driving_license": q.driving_values(),
+        "driving_license": _driving_display_values(q),
     }
 
 

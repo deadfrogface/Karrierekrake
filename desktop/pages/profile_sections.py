@@ -160,9 +160,14 @@ class QualificationsSection(QGroupBox):
             self.certificates.retranslate()
 
     def load(self, quals: QualificationsConfig) -> None:
+        from core.cv_parser import driving_classes_for_display
+
         self.skills.set_items(quals.skill_values())
         self.software.set_items(quals.software_values())
-        self.driving.set_items(quals.driving_values())
+        # Display dedupes and orders classes. Saving the drawer writes what
+        # the editor shows; merely loading does not touch the config object.
+        shown = driving_classes_for_display(quals.driving_license)
+        self.driving.set_items(shown or quals.driving_values())
         self.certificates.set_items(quals.certificates)
 
     def save_into(self, quals: QualificationsConfig) -> None:
@@ -482,7 +487,10 @@ class ApplicantSection(QGroupBox):
         self.email.setText(app.email)
         self.phone.setText(app.phone)
         self.dob.setText(app.date_of_birth)
-        self.drv.setText(app.driving_license)
+        from core.cv_parser import driving_classes_for_display
+
+        classes = driving_classes_for_display(app.driving_license)
+        self.drv.setText(", ".join(classes) if classes else (app.driving_license or ""))
         self.work_auth.setText(app.work_authorization)
         self.notice.setText(app.notice_period)
         self.start.setText(app.earliest_start_date)

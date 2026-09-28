@@ -603,8 +603,12 @@ def _parse_language(value: Any) -> LanguageEntry | None:
     if isinstance(value, LanguageEntry):
         return value
     if isinstance(value, dict):
-        lang = str(value.get("language") or "").strip()
-        level = str(value.get("level") or "").strip()
+        lang = str(
+            value.get("language") or value.get("name") or value.get("value") or ""
+        ).strip()
+        level = str(
+            value.get("level") or value.get("proficiency") or value.get("cefr") or ""
+        ).strip()
         source = str(value.get("source") or "").strip()
         if not lang and not level:
             return None

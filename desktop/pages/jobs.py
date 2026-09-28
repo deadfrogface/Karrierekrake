@@ -198,16 +198,6 @@ class JobsPage(QWidget):
         toolbar.addWidget(self.lbl_sort)
         toolbar.addWidget(self.sort)
 
-        self.open_btn = QPushButton()
-        self.open_btn.setObjectName("SecondaryButton")
-        self.open_btn.clicked.connect(self.open_selected)
-        self.prepare_btn = QPushButton()
-        self.prepare_btn.setObjectName("PrimaryButton")
-        self.prepare_btn.clicked.connect(self.prepare_application)
-        polish_interactive(self.prepare_btn)
-        # List-level prepare/open live in a bottom footer (not above the splitter)
-        action_row = footer_actions_layout(self.open_btn, self.prepare_btn)
-
         self.table = QTableWidget(0, len(self.COLS))
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
@@ -302,7 +292,6 @@ class JobsPage(QWidget):
         layout.addLayout(primary)
         layout.addLayout(toolbar)
         layout.addWidget(splitter, 1)
-        layout.addLayout(action_row)
 
         polish_card(self.detail)
 
@@ -403,9 +392,6 @@ class JobsPage(QWidget):
         self.apply_btn.setText(tr("btn.filter"))
         apply_button_icon(self.apply_btn, "filter", color="#ffffff")
         self.more_filters_btn.setText(tr("jobs.more_filters"))
-        self.open_btn.setText(tr("btn.open_job"))
-        self.prepare_btn.setText(tr("btn.prepare_application"))
-        apply_button_icon(self.prepare_btn, "apply", color="#ffffff")
         self.search_intent_btn.setText(tr("jobs.open_search_intent"))
         set_accessible_name(self.search_intent_btn, tr("jobs.open_search_intent"))
         self.detail_prepare.setText(tr("btn.prepare_application"))
