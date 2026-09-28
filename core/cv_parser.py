@@ -108,31 +108,20 @@ def normalize_driving_license(raw: str | list[str]) -> list[str]:
     """
     chunks = raw if isinstance(raw, list) else [raw]
     found: list[str] = []
-    previous_was_b = False
     for chunk in chunks:
         text = str(chunk or "").strip()
         if not text or _is_heading_value(text):
             continue
         codes = [m.group(1).upper() for m in _LICENSE_CLASS.finditer(text)]
-        if codes:
-            has_context = bool(_LICENCE_CONTEXT.search(text))
-            has_unambiguous = any(c not in _AMBIGUOUS_LICENCE_CEFR for c in codes)
-            for code in codes:
-                if code in _AMBIGUOUS_LICENCE_CEFR and not (has_context or has_unambiguous):
-                    continue
-                if code not in found:
-                    found.append(code)
-        # A lone ``E`` token directly after ``B`` is the split form of class BE
-        # (real imports stored ``[B, E]``). Only that pair is repaired here.
-        for part in re.split(r"[\s,;/|&]+", text):
-            token = part.strip().upper()
-            if not token:
+        if not codes:
+            continue
+        has_context = bool(_LICENCE_CONTEXT.search(text))
+        has_unambiguous = any(c not in _AMBIGUOUS_LICENCE_CEFR for c in codes)
+        for code in codes:
+            if code in _AMBIGUOUS_LICENCE_CEFR and not (has_context or has_unambiguous):
                 continue
-            if token == "E" and previous_was_b and "BE" not in found:
-                found.append("BE")
-                previous_was_b = False
-                continue
-            previous_was_b = token == "B"
+            if code not in found:
+                found.append(code)
     return found
 
 
@@ -208,16 +197,31 @@ def _order_license_codes(codes: list[str]) -> list[str]:
     return known + unknown
 
 
+# Base classes that have a trailer-E variant. A lone ``E`` is appended to the
+# class directly before it; the base class itself stays.
+_LICENSE_E_VARIANT: dict[str, str] = {
+    "B": "BE",
+    "C": "CE",
+    "C1": "C1E",
+    "D": "DE",
+    "D1": "D1E",
+}
+
+
 def driving_classes_for_display(raw: str | list | None) -> list[str]:
-    """Licence classes for the UI.
+    """Licence classes for the UI and for what a new import stores.
 
     Tokens that match a known EU class exactly are deduplicated and ordered.
     Every other token is kept verbatim and appended, so ``B96``, ``Klasse 3``
-    and ``CE 95`` are not dropped. A lone ``E`` directly after ``B`` is the
-    split artefact of ``BE`` and becomes ``BE``; any other ``E`` stays ``E``.
+    and ``CE 95`` are not dropped. A lone ``E`` is appended to the class
+    directly before it when that class has an E variant (``B``→``BE``,
+    ``C``→``CE``, ``C1``→``C1E``, ``D``→``DE``, ``D1``→``D1E``). The base
+    class stays. ``[B, E]`` is therefore ``B, BE``. A lone ``E`` with no such
+    predecessor stays ``E``.
 
-    Does not mutate ``raw``. Callers that persist the result (new CV imports,
-    and any drawer save after the editors were filled) do change what is stored.
+    This does not repair how an importer or LLM split ``Klassen B und BE``
+    into ``[B, E]``. It only normalises a list that is already split.
+    Does not mutate ``raw``.
     """
     chunks = _license_chunks(raw)
     if not chunks:
@@ -226,27 +230,28 @@ def driving_classes_for_display(raw: str | list | None) -> list[str]:
     recognised: list[str] = []
     unknown: list[str] = []
     seen_unknown: set[str] = set()
-    previous_was_b = False
+    previous_base: str | None = None
 
     def take(token: str) -> None:
-        nonlocal previous_was_b
+        nonlocal previous_base
         text = token.strip()
         if not text:
             return
         folded = text.upper()
-        if folded == "E" and previous_was_b:
-            recognised.append("BE")
-            previous_was_b = False
+        variant = _LICENSE_E_VARIANT.get(previous_base or "")
+        if folded == "E" and variant:
+            recognised.append(variant)
+            previous_base = None
             return
         if folded in known:
             recognised.append(folded)
-            previous_was_b = folded == "B"
+            previous_base = folded if folded in _LICENSE_E_VARIANT else None
             return
         key = text.casefold()
         if key not in seen_unknown:
             seen_unknown.add(key)
             unknown.append(text)
-        previous_was_b = False
+        previous_base = None
 
     for chunk in chunks:
         text = chunk.strip()
@@ -2739,10 +2744,11 @@ def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
         {
             "skills": _as_sourced(parsed.get("skills") or []),
             "software": _as_sourced(parsed.get("software") or []),
-            # New imports persist this list. That is a storage change: a string
-            # ``BE`` stays ``BE`` (it is not character-split into ``[B, E]``), and
-            # a lone ``E`` directly after ``B`` is stored as ``BE``. Unrecognised
-            # tokens such as ``B96`` or ``Klasse 3`` are stored verbatim.
+            # New imports persist this normalised list. A lone ``E`` after a
+            # class with an E variant is stored together with that base class
+            # (``[B, E]`` → ``B, BE``). This step does not undo an upstream
+            # split of ``Klassen B und BE`` into ``[B, E]``; that stays with
+            # the Data Engine. Unrecognised tokens are stored verbatim.
             "driving_license": [
                 {"value": code, "source": "cv"}
                 for code in driving_classes_for_display(parsed.get("driving_license") or [])

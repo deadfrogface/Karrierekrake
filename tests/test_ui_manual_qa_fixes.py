@@ -79,13 +79,19 @@ def test_driving_classes_deduped_for_display_without_mutating_storage():
     # A class the parser already stored must survive display (C1 overlaps CEFR).
     assert driving_classes_for_display([{"value": "C1"}]) == ["C1"]
     assert driving_classes_for_display(["C1", "B", "B"]) == ["B", "C1"]
-    # Unknown tokens stay. Only a lone E directly after B becomes BE.
+    # Unknown tokens stay. A lone E extends the class directly before it.
     assert driving_classes_for_display(["B", "B96"]) == ["B", "B96"]
     assert driving_classes_for_display(["B", "E", "C1"]) == ["B", "BE", "C1"]
     assert driving_classes_for_display("Klasse 3") == ["Klasse 3"]
     assert driving_classes_for_display("CE 95") == ["CE 95"]
     assert driving_classes_for_display(["B", "E"]) == ["B", "BE"]
-    assert driving_classes_for_display(["C", "E"]) == ["C", "E"]
+    assert driving_classes_for_display(["C", "E"]) == ["C", "CE"]
+    assert driving_classes_for_display(["C1", "E"]) == ["C1", "C1E"]
+    assert driving_classes_for_display(["D", "E"]) == ["D", "DE"]
+    assert driving_classes_for_display(["D1", "E"]) == ["D1", "D1E"]
+    assert driving_classes_for_display(["E"]) == ["E"]
+    assert driving_classes_for_display("E") == ["E"]
+    assert driving_classes_for_display(["A", "E"]) == ["A", "E"]
     assert driving_classes_for_display(["C1", "C1E"]) == ["C1", "C1E"]
 
 
@@ -98,9 +104,12 @@ def test_parsed_string_license_is_not_split_into_characters():
         {"driving_license": [{"value": "B"}, {"value": "BE"}]}
     )
     assert already.driving_values() == ["B", "BE"]
-    # Import persists the repaired list. ``BE`` is not stored as the split [B, E].
+    # Import stores the same normalisation. The base class stays beside the E variant.
     assert parsed_to_qualifications({"driving_license": "BE"}).driving_values() == ["BE"]
     assert parsed_to_qualifications({"driving_license": ["B", "E"]}).driving_values() == ["B", "BE"]
+    assert parsed_to_qualifications({"driving_license": ["C", "E"]}).driving_values() == ["C", "CE"]
+    assert parsed_to_qualifications({"driving_license": ["C1", "E"]}).driving_values() == ["C1", "C1E"]
+    assert parsed_to_qualifications({"driving_license": ["E"]}).driving_values() == ["E"]
     imported = parsed_to_qualifications(
         {"driving_license": [{"value": "C1"}, {"value": "C1E"}, {"value": "B96"}]}
     )
@@ -131,6 +140,9 @@ def test_license_editor_shows_deduped_classes(qapp):
         (["CE 95"], "career", ["CE 95"]),
         (["C1", "C1E"], "docs", ["C1", "C1E"]),
         (["B", "E"], "personal", ["B", "BE"]),
+        (["C", "E"], "experience", ["C", "CE"]),
+        (["C1", "E"], "education", ["C1", "C1E"]),
+        (["E"], "languages", ["E"]),
     ],
 )
 def test_other_drawer_save_keeps_license_in_file(
