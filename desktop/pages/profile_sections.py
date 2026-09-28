@@ -246,7 +246,11 @@ class LocationWorkSection(QGroupBox):
         self.home_notice = QLabel()
         self.home_notice.setWordWrap(True)
         self.home_notice.setObjectName("WarningLabel")
+        self.change_place_btn = QPushButton()
+        self.change_place_btn.hide()
+        self.change_place_btn.clicked.connect(self._change_place)
         form.addRow(self.home_notice)
+        form.addRow(self.change_place_btn)
         self.home_address.editingFinished.connect(self.refresh_home_notice)
         self.postal_code.editingFinished.connect(self.refresh_home_notice)
         self.country.editingFinished.connect(self.refresh_home_notice)
@@ -306,7 +310,9 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.retranslate()
         self.excluded_companies.retranslate()
         self._refresh_geo_status()
-        self.refresh_home_notice()
+        # Widget text has no coordinates. Reuse the loaded home when the
+        # fields still match, so a language refresh does not resolve again.
+        self.refresh_home_notice(self._location_if_widgets_match())
 
     def _refresh_geo_status(self) -> None:
         try:
@@ -343,26 +349,62 @@ class LocationWorkSection(QGroupBox):
                 tr("profile.geo_status_bad", message=type(exc).__name__)
             )
 
-    def refresh_home_notice(self, location: LocationConfig | None = None) -> None:
+    def _location_if_widgets_match(self) -> LocationConfig | None:
+        loaded = getattr(self, "_loaded_location", None)
+        if loaded is None:
+            return None
+        if self.home_address.text().strip() != (loaded.home_address or "").strip():
+            return None
+        if self.postal_code.text().strip() != (getattr(loaded, "postal_code", "") or "").strip():
+            return None
+        widget_country = self.country.text().strip() or "DE"
+        loaded_country = (getattr(loaded, "country", "") or "").strip() or "DE"
+        if widget_country != loaded_country:
+            return None
+        return loaded
+
+    def _change_place(self) -> None:
+        window = self.window()
+        if window is not None and hasattr(window, "edit_search_home"):
+            window.edit_search_home()
+
+    def refresh_home_notice(self, location: LocationConfig | None = None, config=None) -> None:
         """Re-read resolver status for the home fields. Does not guess a PLZ."""
         from core.location import home_location_notice
 
         if location is None:
-            location = LocationConfig(
-                home_address=self.home_address.text().strip(),
-                postal_code=self.postal_code.text().strip(),
-                country=self.country.text().strip() or "DE",
-            )
+            # This section has no city field. A city-less stand-in would be a
+            # second cache key for the same home.
+            matched = self._location_if_widgets_match()
+            loaded = getattr(self, "_loaded_location", None)
+            city = ""
+            if matched is not None:
+                location = matched
+            else:
+                if loaded is not None:
+                    city = getattr(loaded, "city", "") or ""
+                location = LocationConfig(
+                    home_address=self.home_address.text().strip(),
+                    postal_code=self.postal_code.text().strip(),
+                    city=city,
+                    country=self.country.text().strip() or "DE",
+                )
         from desktop.pages.dashboard import bind_home_notice_label
 
-        bind_home_notice_label(self.home_notice, home_location_notice(location))
+        bind_home_notice_label(
+            self.home_notice,
+            home_location_notice(location, config),
+            self.change_place_btn,
+        )
 
     def load(
         self,
         location: LocationConfig,
         employment: EmploymentConfig,
         filters: FiltersConfig,
+        config=None,
     ) -> None:
+        self._loaded_location = location
         self.home_address.setText(location.home_address)
         self.postal_code.setText(getattr(location, "postal_code", "") or "")
         self.max_distance.setValue(float(location.max_distance_km))
@@ -378,7 +420,7 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.set_items(filters.preferred_companies)
         self.excluded_companies.set_items(filters.excluded_companies)
         self._refresh_geo_status()
-        self.refresh_home_notice(location)
+        self.refresh_home_notice(location, config)
 
     def save_into(
         self,

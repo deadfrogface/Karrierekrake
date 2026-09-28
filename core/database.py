@@ -946,6 +946,7 @@ class Database:
         title_query: str | None = None,
         city_query: str | None = None,
         limit: int = 500,
+        include_unknown_distance: bool = False,
     ) -> list[Job]:
         clauses: list[str] = []
         params: list[Any] = []
@@ -954,10 +955,17 @@ class Database:
             params.append(min_match)
         if max_distance is not None:
             # Remote always passes; hybrid/onsite need a known distance within radius.
-            # NULL distance must not slip through (was: IS NULL OR …).
-            clauses.append(
-                "(remote_type = 'remote' OR (distance_km IS NOT NULL AND distance_km <= ?))"
-            )
+            # NULL distance must not slip through (was: IS NULL OR …), except when
+            # the caller still has to resolve places that were waiting on the index.
+            if include_unknown_distance:
+                clauses.append(
+                    "(remote_type = 'remote' OR distance_km IS NULL "
+                    "OR (distance_km IS NOT NULL AND distance_km <= ?))"
+                )
+            else:
+                clauses.append(
+                    "(remote_type = 'remote' OR (distance_km IS NOT NULL AND distance_km <= ?))"
+                )
             params.append(max_distance)
         if statuses:
             clauses.append(f"status IN ({','.join('?' for _ in statuses)})")

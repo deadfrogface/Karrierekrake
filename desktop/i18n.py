@@ -211,6 +211,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
         ),
         "dash.home_resolved": "Wohnort aufgelöst: {place}. Distanzfilter aktiv.",
+        "dash.home_checking": "Standort wird noch geprüft …",
+        "dash.home_index_unavailable": (
+            "Für {country} fehlen die Standortdaten. "
+            "Die Suche läuft deshalb ohne Entfernungsfilter."
+        ),
+        "dash.home_not_found": (
+            "„{place}“ wurde nicht gefunden. Die Suche läuft ohne Entfernungsfilter."
+        ),
+        "dash.home_change_place": "Anderen Ort eintragen",
         "jobs.distance_skipped": "Umkreis übersprungen — bitte PLZ angeben",
         "dash.run_stats": "Lauf-Statistik",
         "apps.preview_title": "Bewerbung vorbereiten",
@@ -1302,6 +1311,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "without a postal code no place is guessed and the radius filter is skipped."
         ),
         "dash.home_resolved": "Home location resolved: {place}. Distance filter active.",
+        "dash.home_checking": "Location is still being checked …",
+        "dash.home_index_unavailable": (
+            "Location data for {country} is missing. "
+            "Search therefore runs without a distance filter."
+        ),
+        "dash.home_not_found": (
+            "“{place}” was not found. Search runs without a distance filter."
+        ),
+        "dash.home_change_place": "Enter a different place",
         "jobs.distance_skipped": "Radius skipped — please enter a postal code",
         "dash.run_stats": "Run stats",
         "apps.preview_title": "Prepare application",
@@ -2230,6 +2248,34 @@ i18n = TranslationService("de")
 
 def tr(key: str, **kwargs: str) -> str:
     return i18n.t(key, **kwargs)
+
+
+# Fixed names. Never a country code, never a resolver reason string.
+_HOME_COUNTRY_NAMES = {
+    "de": {
+        "DE": "Deutschland",
+        "AT": "Österreich",
+        "CH": "Schweiz",
+        "NL": "Niederlande",
+        "BE": "Belgien",
+    },
+    "en": {
+        "DE": "Germany",
+        "AT": "Austria",
+        "CH": "Switzerland",
+        "NL": "Netherlands",
+        "BE": "Belgium",
+    },
+}
+
+
+def home_country_label(country_code: str) -> str:
+    """Display name for a home country. Empty when the code is not in the map."""
+    from core.geo_normalize import normalize_country_code
+
+    cc = normalize_country_code(country_code) or ""
+    table = _HOME_COUNTRY_NAMES.get(i18n.language) or _HOME_COUNTRY_NAMES["de"]
+    return table.get(cc) or _HOME_COUNTRY_NAMES["de"].get(cc, "")
 
 
 def escape_mnemonic(text: str) -> str:
