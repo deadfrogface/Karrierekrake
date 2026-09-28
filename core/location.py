@@ -26,6 +26,7 @@ from core.geo_normalize import (
 from core.home_coord_cache import (
     cache_dir_of,
     read_home_coordinates,
+    read_home_record,
     write_home_coordinates,
 )
 from core.geo_resolve import (
@@ -212,10 +213,10 @@ def cached_home_resolution(
     if not postal and not city and not address:
         return None
     home_cc = normalize_country_code(home_country) or normalize_country_code(country) or "DE"
-    cached_coords = read_home_coordinates(cache_dir, location)
-    if cached_coords is not None:
-        lat, lon = cached_coords
-        label = city or _city_from_address(address) or address
+    cached_record = read_home_record(cache_dir, location)
+    if cached_record is not None:
+        lat, lon, stored_display = cached_record
+        label = stored_display or city or _city_from_address(address) or address
         return PlaceResolution(
             status="RESOLVED",
             latitude=lat,
@@ -245,7 +246,11 @@ def cached_home_resolution(
             and cached.longitude is not None
         ):
             write_home_coordinates(
-                cache_dir, location, float(cached.latitude), float(cached.longitude)
+                cache_dir,
+                location,
+                float(cached.latitude),
+                float(cached.longitude),
+                cached.display_name or "",
             )
         return cached
     place = normalize_place_fields(
@@ -265,7 +270,11 @@ def cached_home_resolution(
     store_cached_resolution(_HOME_RESOLUTION_CACHE, key, resolution)
     if resolution.ok and resolution.latitude is not None and resolution.longitude is not None:
         write_home_coordinates(
-            cache_dir, location, float(resolution.latitude), float(resolution.longitude)
+            cache_dir,
+            location,
+            float(resolution.latitude),
+            float(resolution.longitude),
+            resolution.display_name or "",
         )
     return resolution
 

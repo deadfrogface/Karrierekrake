@@ -385,7 +385,7 @@ def test_search_home_divergent_place_clears_checkbox_and_shows_hint(
     page.location_work.home_address.setText("Alexanderplatz 1")
     page.location_work.postal_code.setText("10115")
     page.location_work.country.setText("DE")
-    page._drawer.present = lambda _content: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
+    page._drawer.present = lambda _content, focus=None: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
     page.edit_search_home()
     qapp.processEvents()
     loc = config_service.load().profile.location
@@ -410,7 +410,7 @@ def test_search_home_exact_contact_keeps_checkbox_without_hint(
     page.location_work.home_address.setText("Speicherstraße 2, 20095 Hamburg, DE")
     page.location_work.postal_code.setText("20095")
     page.location_work.country.setText("DE")
-    page._drawer.present = lambda _content: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
+    page._drawer.present = lambda _content, focus=None: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
     page.edit_search_home()
     qapp.processEvents()
     assert page.applicant.sync_home_from_address.isChecked() is True
@@ -428,7 +428,7 @@ def test_search_home_checkbox_again_restores_contact_without_restart(
     page.location_work.home_address.setText("Alexanderplatz 1, 10115 Berlin, DE")
     page.location_work.postal_code.setText("10115")
     page.location_work.country.setText("DE")
-    page._drawer.present = lambda _content: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
+    page._drawer.present = lambda _content, focus=None: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
     page.edit_search_home()
     qapp.processEvents()
     assert page.applicant.custom_home_hint.text() == HINT
@@ -438,7 +438,7 @@ def test_search_home_checkbox_again_restores_contact_without_restart(
     assert berlin is not None
 
     page.applicant.sync_home_from_address.setChecked(True)
-    page._drawer.present = lambda _content: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
+    page._drawer.present = lambda _content, focus=None: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
     page._edit_section("personal")
     qapp.processEvents()
     loc = config_service.load().profile.location

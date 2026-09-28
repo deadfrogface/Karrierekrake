@@ -168,7 +168,7 @@ def _open_page(qapp, config_service) -> tuple[ProfilePage, _Host]:
 
 
 def _accept_drawer(page: ProfilePage) -> None:
-    page._drawer.present = lambda _content: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
+    page._drawer.present = lambda _content, focus=None: SectionEditDrawer.DialogCode.Accepted  # type: ignore[method-assign]
 
 
 def _save_section(page: ProfilePage, key: str) -> None:
@@ -722,7 +722,7 @@ def test_home_resolves_once_until_the_user_changes_it(
         win.refresh_all()
         assert calls["n"] == 0
         win.profile._drawer.present = (  # type: ignore[method-assign]
-            lambda _content: SectionEditDrawer.DialogCode.Accepted
+            lambda _content, focus=None: SectionEditDrawer.DialogCode.Accepted
         )
         win.profile.qualifications.skills.set_items(["SAP"])
         win.profile._edit_section("skills")

@@ -50,22 +50,28 @@ def home_cache_key(location: Any, *, geo_index: str | None = None) -> dict[str, 
     }
 
 
-def _payload(location: Any, latitude: float, longitude: float) -> dict[str, Any]:
-    return {
+def _payload(
+    location: Any, latitude: float, longitude: float, display_name: str = ""
+) -> dict[str, Any]:
+    data: dict[str, Any] = {
         "key": home_cache_key(location),
         "latitude": float(latitude),
         "longitude": float(longitude),
     }
+    shown = (display_name or "").strip()
+    if shown:
+        data["display_name"] = shown
+    return data
 
 
 def _canonical(data: dict[str, Any]) -> str:
     return json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
 
 
-def read_home_coordinates(
+def read_home_record(
     cache_dir: Path | str | None, location: Any
-) -> tuple[float, float] | None:
-    """Return coordinates only when the stored key matches. Otherwise ignore."""
+) -> tuple[float, float, str] | None:
+    """Coordinates and the place label, only when the stored key matches."""
     if not cache_dir:
         return None
     path = cache_file(cache_dir)
@@ -86,7 +92,18 @@ def read_home_coordinates(
         return None
     if not (-90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0):
         return None
-    return lat, lon
+    shown = data.get("display_name")
+    return lat, lon, shown if isinstance(shown, str) else ""
+
+
+def read_home_coordinates(
+    cache_dir: Path | str | None, location: Any
+) -> tuple[float, float] | None:
+    """Return coordinates only when the stored key matches. Otherwise ignore."""
+    record = read_home_record(cache_dir, location)
+    if record is None:
+        return None
+    return record[0], record[1]
 
 
 def write_home_coordinates(
@@ -94,13 +111,14 @@ def write_home_coordinates(
     location: Any,
     latitude: float,
     longitude: float,
+    display_name: str = "",
 ) -> bool:
     """Atomically replace the cache file. Return False when nothing changed."""
     if not cache_dir:
         return False
     path = cache_file(cache_dir)
     path.parent.mkdir(parents=True, exist_ok=True)
-    text = _canonical(_payload(location, latitude, longitude))
+    text = _canonical(_payload(location, latitude, longitude, display_name))
     try:
         if path.is_file() and path.read_text(encoding="utf-8") == text:
             return False
