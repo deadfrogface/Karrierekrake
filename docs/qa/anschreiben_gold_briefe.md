@@ -1,6 +1,6 @@
 # Anschreiben-Gold: erzeugte Briefe
 
-Die Briefe wurden auf Commit `bb8454c962c9820af551c00b39614e303151aa51` erzeugt.
+Die Briefe wurden auf Commit `d8f21c19be0e4609c82303a19e1f4e64a078778e` erzeugt.
 Das ist der Stand des Codes, aus dem die Texte kommen.
 Der Dump-Commit ändert nur diese Datei; sein Eltern-Commit ist dieser SHA.
 
@@ -12,7 +12,7 @@ den `approve_cover_letter` ohne nachträgliche Änderung speichert.
 ## cl-01-dispatch-hafenlogistik
 
 - Fall: `cl-01-dispatch-hafenlogistik`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -153,7 +153,9 @@ hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei HafenLogisti
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung, SAP TM.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
+
+Für die ausgeschriebene Aufgabe setze ich SAP TM ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -165,7 +167,7 @@ Nils Quendel
 ## cl-05-source-fixture
 
 - Fall: `cl-05-source-fixture`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -301,7 +303,9 @@ hiermit bewerbe ich mich um die Position als Disponent Stückgut (m/w/d) bei Sü
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung, SAP TM.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
+
+Für die ausgeschriebene Aufgabe setze ich SAP TM ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -313,7 +317,7 @@ Nils Quendel
 ## cl-07-adr-schein-trap
 
 - Fall: `cl-07-adr-schein-trap`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -447,7 +451,9 @@ hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei Ostkai Spedi
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung, SAP TM.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
+
+Für die ausgeschriebene Aufgabe setze ich SAP TM ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -459,7 +465,7 @@ Nils Quendel
 ## cl-09-named-contact
 
 - Fall: `cl-09-named-contact`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -592,9 +598,11 @@ hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei HafenLogisti
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Ihre Ausschreibung nennt Lotte Quendel als Ansprechpartnerin.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung, SAP TM.
+Für die ausgeschriebene Aufgabe setze ich SAP TM ein.
+
+Ihre Ausschreibung nennt Lotte Quendel als Ansprechpartnerin.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -606,7 +614,7 @@ Nils Quendel
 ## cl-10-english-ad
 
 - Fall: `cl-10-english-ad`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -742,7 +750,9 @@ hiermit bewerbe ich mich um die Position als Dispatcher bei Northquay Freight Gm
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung, SAP TM.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
+
+Für die ausgeschriebene Aufgabe setze ich SAP TM ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -754,7 +764,7 @@ Nils Quendel
 ## cl-11-long-ad-requirements-end
 
 - Fall: `cl-11-long-ad-requirements-end`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -911,7 +921,9 @@ hiermit bewerbe ich mich um die Position als Disponent Stückgut (m/w/d) bei Kai
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung, SAP TM.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
+
+Für die ausgeschriebene Aufgabe setze ich SAP TM ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -923,7 +935,7 @@ Nils Quendel
 ## cl-12-html-remnants
 
 - Fall: `cl-12-html-remnants`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1061,7 +1073,9 @@ hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei HafenLogisti
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung, SAP TM.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
+
+Für die ausgeschriebene Aufgabe setze ich SAP TM ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -1073,7 +1087,7 @@ Nils Quendel
 ## cl-14-two-stations
 
 - Fall: `cl-14-two-stations`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1149,7 +1163,7 @@ Nils Quendel
 ## cl-15-station-and-skill
 
 - Fall: `cl-15-station-and-skill`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1209,7 +1223,7 @@ hiermit bewerbe ich mich um die Position als Dispatcher (m/w/d) bei Hafenwerk Gm
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: Tourenplanung.
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -1221,12 +1235,12 @@ Nils Quendel
 ## cl-18-sap-business-one-covers-sap
 
 - Fall: `cl-18-sap-business-one-covers-sap`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
 
-- Titel: Sachbearbeiter (m/w/d)
+- Titel: Rechnungsprüfung (m/w/d)
 - Firma: Buchkontor Beispiel GmbH
 
 Beschreibung:
@@ -1237,7 +1251,7 @@ Die Buchkontor Beispiel GmbH sucht Unterstützung in der Buchhaltung. Der Betrie
 Wir bieten eine unbefristete Vollzeitstelle.
 
 Das bringen Sie mit:
-- Erfahrung als Sachbearbeiter
+- Erfahrung in der Rechnungsprüfung
 - sicheren Umgang mit SAP im Tagesgeschäft
 
 Weitere Werkzeuge nennt die Anzeige nicht.
@@ -1250,7 +1264,7 @@ Weitere Werkzeuge nennt die Anzeige nicht.
   "education": [],
   "work_experience": [
     {
-      "title": "Sachbearbeiter",
+      "title": "Rechnungsprüfung",
       "company": "Kontor Beispiel GmbH",
       "location": "Musterhafen",
       "start_date": "2019-04",
@@ -1279,11 +1293,11 @@ Weitere Werkzeuge nennt die Anzeige nicht.
 ```
 Sehr geehrte Damen und Herren,
 
-hiermit bewerbe ich mich um die Position als Sachbearbeiter (m/w/d) bei Buchkontor Beispiel GmbH.
+hiermit bewerbe ich mich um die Position als Rechnungsprüfung (m/w/d) bei Buchkontor Beispiel GmbH.
 
-In meiner Tätigkeit als Sachbearbeiter bei Kontor Beispiel GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
+In meiner Tätigkeit als Rechnungsprüfung bei Kontor Beispiel GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: SAP Business One.
+Für die ausgeschriebene Aufgabe setze ich SAP Business One ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -1295,7 +1309,7 @@ Nils Quendel
 ## cl-20-nordmole-dispatcher
 
 - Fall: `cl-20-nordmole-dispatcher`
-- Commit: `bb8454c962c9820af551c00b39614e303151aa51`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
 - Ausgang: `interview`
 
 ### Anzeige
@@ -1380,7 +1394,145 @@ hiermit bewerbe ich mich um die Position als Disponent / Dispatcher (m/w/d) Nahv
 
 In meiner Tätigkeit als Disponent bei Nordkai Spedition GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
 
-Zu meinen relevanten Kenntnissen zählen insbesondere: SAP.
+Für die ausgeschriebene Aufgabe setze ich SAP ein.
+
+Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
+
+Mit freundlichen Grüßen
+Nils Quendel
+
+```
+
+## cl-24-two-requirements-in-title
+
+- Fall: `cl-24-two-requirements-in-title`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
+- Ausgang: `interview`
+
+### Anzeige
+
+- Titel: Fachlagerist SAP
+- Firma: Kaiwerk GmbH
+
+Beschreibung:
+
+```
+Die Kaiwerk GmbH sucht Unterstützung im Umschlag. Der Betrieb ist fiktiv.
+
+Wir bieten eine unbefristete Vollzeitstelle.
+
+Das bringen Sie mit:
+- eine Station als Fachlagerist
+- Umgang mit SAP
+
+Der Titel der Stelle nennt beide Anforderungen.
+```
+
+### Profilfakten
+
+```json
+{
+  "education": [],
+  "work_experience": [
+    {
+      "title": "Fachlagerist",
+      "company": "Kistenwerk Ost GmbH",
+      "location": "Musterhafen",
+      "start_date": "2016-09",
+      "end_date": "2019-02",
+      "responsibilities": [],
+      "source": "manual"
+    }
+  ],
+  "skills": [],
+  "software": [
+    {
+      "value": "SAP",
+      "source": "manual"
+    }
+  ],
+  "driving_license": [],
+  "languages": [],
+  "certificates": []
+}
+```
+
+### Brief
+
+```
+Sehr geehrte Damen und Herren,
+
+hiermit bewerbe ich mich um die Position als Fachlagerist SAP bei Kaiwerk GmbH.
+
+In meiner Tätigkeit als Fachlagerist bei Kistenwerk Ost GmbH habe ich für diese Stelle relevante Erfahrungen gesammelt.
+
+Für die ausgeschriebene Aufgabe setze ich SAP ein.
+
+Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
+
+Mit freundlichen Grüßen
+Nils Quendel
+
+```
+
+## cl-25-one-sentence-per-reference
+
+- Fall: `cl-25-one-sentence-per-reference`
+- Commit: `d8f21c19be0e4609c82303a19e1f4e64a078778e`
+- Ausgang: `interview`
+
+### Anzeige
+
+- Titel: Disponent
+- Firma: Nordmole Musterlogistik GmbH
+
+Beschreibung:
+
+```
+Die Nordmole Musterlogistik GmbH sucht einen Disponenten. Der Betrieb ist fiktiv.
+
+Wir bieten eine unbefristete Vollzeitstelle.
+
+Das bringen Sie mit:
+- Tourenplanung
+- SAP
+
+Eine Aufzählung der beiden Kenntnisse in einem Satz ist kein Bezug.
+```
+
+### Profilfakten
+
+```json
+{
+  "education": [],
+  "work_experience": [],
+  "skills": [
+    {
+      "value": "Tourenplanung",
+      "source": "manual"
+    },
+    {
+      "value": "SAP",
+      "source": "manual"
+    }
+  ],
+  "software": [],
+  "driving_license": [],
+  "languages": [],
+  "certificates": []
+}
+```
+
+### Brief
+
+```
+Sehr geehrte Damen und Herren,
+
+hiermit bewerbe ich mich um die Position als Disponent bei Nordmole Musterlogistik GmbH.
+
+Für die ausgeschriebene Aufgabe setze ich Tourenplanung ein.
+
+Für die ausgeschriebene Aufgabe setze ich SAP ein.
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
