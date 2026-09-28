@@ -20,7 +20,7 @@ def _config(**qual_overrides) -> AppConfig:
     quals = QualificationsConfig(
         skills=["Excel", "Kommunikation"],
         languages=[LanguageEntry(language="Deutsch", level="C2")],
-        driving_license=["Klasse B (PKW)"],
+        driving_license=["B"],
         software=["Shopify"],
         certificates=[],
         education=[],

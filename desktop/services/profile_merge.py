@@ -432,13 +432,13 @@ def sync_application_summaries(
         if _may_sync_summary(app, "work_experience", fill_empty=fill_empty):
             app.work_experience = quals.work_experience[0].label()
             set_field_origin(app, "work_experience", SOURCE_CV)
-    if quals.driving_values() and _may_sync_summary(app, "driving_license", fill_empty=fill_empty):
-        from core.cv_parser import driving_classes_for_display
+    from core.cv_parser import driving_classes_for_display
 
-        classes = driving_classes_for_display(quals.driving_license)
-        # Summary text only. Structured entries stay as stored apart from
-        # what the caller already saved; this join does not rewrite the list.
-        app.driving_license = ", ".join(classes) if classes else quals.driving_values()[0]
+    classes = driving_classes_for_display(quals.driving_license)
+    # Summary is every normalised class, not the first stored token.
+    # The qualifications list in the file is left as stored.
+    if classes and _may_sync_summary(app, "driving_license", fill_empty=fill_empty):
+        app.driving_license = ", ".join(classes)
         set_field_origin(app, "driving_license", SOURCE_CV)
 
 

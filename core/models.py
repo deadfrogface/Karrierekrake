@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from enum import Enum
@@ -12,6 +13,23 @@ from core.text_normalize import clean_company, clean_text, is_blankish
 
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def licence_requirement(title: str, description: str) -> str:
+    """Classify a job ad once, when it is read.
+
+    ``class_b`` asks for class B. ``any`` asks for a licence without naming B.
+    ``""`` asks for neither. Matching then compares profile class codes.
+    """
+    blob = f"{clean_text(title)} {clean_text(description)}".casefold()
+    if "klasse b" in blob or re.search(r"führerschein\s*b|\bklasse\s*b\b", blob):
+        return "class_b"
+    if any(
+        token in blob
+        for token in ("führerschein", "fuehrerschein", "driving licence", "driving license")
+    ):
+        return "any"
+    return ""
 
 
 class JobStatus(str, Enum):
@@ -97,6 +115,7 @@ class Job:
         self.source = clean_text(self.source)
         if is_blankish(self.remote_type):
             self.remote_type = RemoteType.UNKNOWN.value
+        self._licence_requirement = licence_requirement(self.title, self.description)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

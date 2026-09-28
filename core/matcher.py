@@ -14,7 +14,7 @@ import re
 from dataclasses import asdict, dataclass, field
 from typing import Any, Literal
 
-from core.config import AppConfig, LanguageEntry
+from core.config import AppConfig, LanguageEntry, QualificationsConfig
 from core.hard_filter import hard_exclude
 from core.intent_aliases import ranking_version_token
 from core.intent_filter import apply_search_intent
@@ -262,9 +262,41 @@ def _profile_lang_level(languages: list[LanguageEntry], name: str) -> int:
     return best
 
 
-def _has_driving_class_b(licenses: list[str], text: str) -> bool:
-    joined = " ".join(licenses).lower()
-    return bool(re.search(r"klasse\s*b|\b[b]\b.*pkw|führerschein\s*b", joined))
+_profile_licence_key: tuple[str, ...] | None = None
+_profile_licence_codes: frozenset[str] = frozenset()
+profile_licence_normalizations = 0
+
+
+def reset_profile_licence_cache() -> None:
+    """Drop the cached class set. Tests use this before a counted run."""
+    global _profile_licence_key, _profile_licence_codes, profile_licence_normalizations
+    _profile_licence_key = None
+    _profile_licence_codes = frozenset()
+    profile_licence_normalizations = 0
+
+
+def profile_licence_codes(quals: QualificationsConfig) -> frozenset[str]:
+    """Normalised classes for this profile state. Computed once until it changes."""
+    global _profile_licence_key, _profile_licence_codes, profile_licence_normalizations
+    from core.cv_parser import driving_classes_for_display
+
+    key = tuple(driving_values_key(quals))
+    if key == _profile_licence_key:
+        return _profile_licence_codes
+    profile_licence_normalizations += 1
+    _profile_licence_codes = frozenset(driving_classes_for_display(quals.driving_license))
+    _profile_licence_key = key
+    return _profile_licence_codes
+
+
+def driving_values_key(quals: QualificationsConfig) -> list[str]:
+    values: list[str] = []
+    for item in quals.driving_license or []:
+        if isinstance(item, str):
+            values.append(item)
+        else:
+            values.append(str(getattr(item, "value", "") or ""))
+    return values
 
 
 def _extract_hard_requirements(combined: str) -> list[str]:
@@ -647,19 +679,22 @@ def score_job(
                 score += 6
                 reasons.append("Direkt: Deutschkenntnisse vorhanden")
 
-    # Driving license (0-5)
-    needs_license = any(
-        x in combined
-        for x in ("führerschein", "fuehrerschein", "driving licence", "driving license", "klasse b")
-    )
-    if needs_license:
-        if quals.driving_license:
-            license_vals = quals.driving_values()
-            if "klasse b" in combined or re.search(r"führerschein\s*b|\bklasse\s*b\b", combined):
-                if _has_driving_class_b(license_vals, combined):
+    # Driving license (0-5). Profile classes are cached per profile state.
+    # The ad's requirement was classified once when the job was read.
+    need = getattr(job, "_licence_requirement", None)
+    if need is None:
+        from core.models import licence_requirement
+
+        need = licence_requirement(job.title, job.description)
+        job._licence_requirement = need
+    if need:
+        codes = profile_licence_codes(quals)
+        if codes:
+            if need == "class_b":
+                if "B" in codes or "BE" in codes:
                     score += 5
                     reasons.append("Direkt: Führerschein Klasse B")
-                elif license_vals:
+                else:
                     score += 3
                     reasons.append("Direkt: Führerschein vorhanden")
             else:

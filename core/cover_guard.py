@@ -279,6 +279,14 @@ def confirmed_profile_text(config: AppConfig) -> str:
     for name, entries in sections.items():
         if not section_confirmed(review, name):
             continue
+        if name == "driving_license":
+            from core.cv_parser import driving_classes_for_display
+
+            for code in driving_classes_for_display(entries):
+                text = clean_text(code)
+                if text:
+                    chunks.append(text)
+            continue
         for entry in entries or []:
             if (getattr(entry, "source", "") or "").strip().lower() == "cv" and not section_confirmed(
                 review, name
