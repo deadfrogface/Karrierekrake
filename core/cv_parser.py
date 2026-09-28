@@ -267,14 +267,29 @@ def _one_digit(token: str) -> bool:
     return len(text) == 1 and text.isdigit()
 
 
-# Longer classes first. A leading class is a whole token, never a prefix of B96.
-# ``+`` and ``#`` (``C++``, ``C#``) are never a class. ``.`` and ``-`` are not a
-# class when another word follows (``B.Sc.``, ``T-Systems``, ``A-Levels``).
-_LEADING_CLASS_CODE = re.compile(
-    r"(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)"
-    r"(?![A-Za-z0-9])"
-    r"(?![+#])"
-    r"(?![.\-'](?:[.\-']|[A-Za-z0-9]))",
+# Longer classes first. A class is a whole token, never a prefix of B96.
+_LICENCE_CLASS_CODES: tuple[str, ...] = (
+    "C1E",
+    "D1E",
+    "C1",
+    "D1",
+    "BE",
+    "CE",
+    "DE",
+    "AM",
+    "A1",
+    "A2",
+    "B1",
+    "A",
+    "B",
+    "C",
+    "D",
+    "L",
+    "T",
+)
+# After a hyphen the class stays only for these words: B-Führerschein, not T-Systems.
+_HYPHEN_KEEPS_CLASS = re.compile(
+    r"(?:führerschein|fuehrerschein|fahrerlaubnis|klasse)\b",
     re.IGNORECASE,
 )
 _LEADING_CLASS_PREFIX = re.compile(
@@ -288,13 +303,74 @@ _LEADING_CLASS_PREFIX = re.compile(
 )
 
 
+def _licence_class_tail_rejects(text: str, end: int) -> bool:
+    """True when the characters after a class code disqualify that code.
+
+    ``+`` and ``#`` always do (``C++``, ``C#``). ``.`` does only when a letter
+    follows (``B.Sc.``, ``D.I.Y.``); ``Klasse B.`` stays ``B``. ``-`` does only
+    when the next word is not Führerschein, Fahrerlaubnis or Klasse, so
+    ``T-Systems`` drops out and ``B-Führerschein`` stays.
+    """
+    if end >= len(text):
+        return False
+    nxt = text[end]
+    if nxt.isalnum():
+        return True
+    if nxt in "+#":
+        return True
+    if nxt == ".":
+        after = text[end + 1 : end + 2]
+        return bool(after) and after.isalpha()
+    if nxt == "-":
+        return _HYPHEN_KEEPS_CLASS.match(text[end + 1 :]) is None
+    return False
+
+
+def _iter_licence_classes(text: str) -> list[tuple[int, str]]:
+    """``(start, CODE)`` for every class that survives the punctuation rule."""
+    raw = text or ""
+    upper = raw.upper()
+    found: list[tuple[int, str]] = []
+    i = 0
+    limit = len(raw)
+    while i < limit:
+        if i > 0 and raw[i - 1].isalnum():
+            i += 1
+            continue
+        accepted = ""
+        step = 1
+        for code in _LICENCE_CLASS_CODES:
+            size = len(code)
+            if not upper.startswith(code, i):
+                continue
+            if _licence_class_tail_rejects(raw, i + size):
+                continue
+            accepted = code
+            step = size
+            break
+        if accepted:
+            found.append((i, accepted))
+        i += step
+    return found
+
+
+def licence_class_tokens(text: str) -> list[str]:
+    """Class codes in ``text``, using :func:`_licence_class_tail_rejects`.
+
+    The cover-letter guard and :func:`leading_driving_class` both use this
+    scan, so a hyphen or a dot means the same thing in a profile entry and
+    in a sentence.
+    """
+    return [code for _start, code in _iter_licence_classes(text)]
+
+
 def leading_driving_class(entry: str) -> str:
     """Class at the start of one verbatim entry.
 
-    ``Klasse B``, ``Führerscheinklasse B``, ``Führerschein: B`` and ``CE 95``
-    yield ``B``, ``B``, ``B``     and ``CE``. ``Klasse 3`` yields nothing: ``3``
-    is not a class, and ``B`` is not inferred. ``C++``, ``B.Sc. Informatik``,
-    ``T-Systems`` and ``L'Oréal`` yield nothing. The stored text is not rewritten.
+    ``Klasse B``, ``Führerscheinklasse B``, ``Führerschein: B``,
+    ``B-Führerschein`` and ``CE 95`` yield ``B``, ``B``, ``B``, ``B`` and
+    ``CE``. ``Klasse 3`` yields nothing. ``C++``, ``B.Sc.`` and ``T-Systems``
+    yield nothing. ``Klasse B.`` yields ``B``. The stored text is not rewritten.
     """
     text = (entry or "").strip()
     while text:
@@ -302,10 +378,10 @@ def leading_driving_class(entry: str) -> str:
         if prefix is None:
             break
         text = text[prefix.end() :]
-    found = _LEADING_CLASS_CODE.match(text)
-    if found is None:
+    found = _iter_licence_classes(text)
+    if not found or found[0][0] != 0:
         return ""
-    return found.group(1).upper()
+    return found[0][1]
 
 
 def read_driving_classes(raw: str | list | None) -> LicenceReading:

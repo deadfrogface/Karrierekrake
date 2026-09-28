@@ -733,7 +733,10 @@ def test_sync_summary_is_every_normalised_class():
         assert [item.value for item in quals.driving_license] == before
 
 
-def _licence_points(stored: list[str]) -> int:
+def _licence_points(
+    stored: list[str],
+    description: str = "Führerschein Klasse B erforderlich",
+) -> int:
     from core.config import AppConfig, QualificationsConfig
     from core.matcher import score_job
     from core.models import Job
@@ -743,7 +746,7 @@ def _licence_points(stored: list[str]) -> int:
         company="Logistik",
         remote_type="onsite",
         distance_km=5,
-        description="Führerschein Klasse B erforderlich",
+        description=description,
         employment_type="Vollzeit",
     )
 
@@ -1078,6 +1081,10 @@ def test_leading_class_is_shared_by_matcher_and_guard():
     assert leading_driving_class("Klasse: B") == "B"
     assert leading_driving_class("CE 95") == "CE"
     assert leading_driving_class("Klasse 3") == ""
+    assert leading_driving_class("Klasse B.") == "B"
+    assert leading_driving_class("B-Führerschein") == "B"
+    assert leading_driving_class("CE-Führerschein") == "CE"
+    assert leading_driving_class("C1-Fahrerlaubnis") == "C1"
     for not_a_class in (
         "C++",
         "C#",
@@ -1086,7 +1093,6 @@ def test_leading_class_is_shared_by_matcher_and_guard():
         "T-Systems",
         "A-Levels",
         "D.I.Y. Markt",
-        "L'Oréal",
     ):
         assert leading_driving_class(not_a_class) == ""
     assert driving_classes_for_display(["Klasse B"]) == ["Klasse B"]
@@ -1103,6 +1109,8 @@ def test_leading_class_is_shared_by_matcher_and_guard():
     ):
         assert leading_driving_class(phrase) == "B"
         assert _licence_points([phrase]) == 5
+    assert _licence_points(["B-Führerschein"]) == 5
+    assert _licence_points(["CE-Führerschein"], "Führerschein Klasse CE erforderlich") == 5
     assert _licence_points(["Klasse 3"]) == 3
 
     reset_profile_licence_cache()
@@ -1463,3 +1471,97 @@ def test_blank_or_fragment_is_a_missing_licence():
     assert uncertain.score - score_job(plain, configured(["C", "E", "9", "5"])).score == 3
     assert "Direkt: Führerschein vorhanden" in uncertain.match_reasons
     assert _licence_points(["C", "E", "9", "5"]) == 3
+
+
+def test_cover_guard_and_matcher_share_class_punctuation():
+    """Hyphen, dot and plus mean the same thing in a profile entry and a letter."""
+    from core.config import EducationEntry, ExperienceEntry, ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+    from core.cv_parser import licence_class_tokens
+
+    assert licence_class_tokens("C++") == []
+    assert licence_class_tokens("C#") == []
+    assert licence_class_tokens("B.Sc. Informatik") == []
+    assert licence_class_tokens("D.I.Y. Markt") == []
+    assert licence_class_tokens("T-Systems") == []
+    assert licence_class_tokens("Klasse B.") == ["B"]
+    assert licence_class_tokens("Ich habe den B-Führerschein.") == ["B"]
+    assert licence_class_tokens("Ich habe einen C-Führerschein.") == ["C"]
+    assert licence_class_tokens("CE-Führerschein") == ["CE"]
+    assert licence_class_tokens("C1-Fahrerlaubnis") == ["C1"]
+
+    held = _letter_profile(["B"])
+    held.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    held.profile.qualifications.skills = [SourcedText(value="C++", source="manual")]
+    held_text = confirmed_profile_text(held)
+    held_codes = confirmed_licence_codes(held)
+    assert held_codes == {"B"}
+    assert "C++" in held_text
+    for sentence in (
+        "Ich habe den Führerschein Klasse B und arbeite täglich mit C++.",
+        "Ich habe den Führerschein Klasse B, dazu einen B.Sc. Informatik.",
+    ):
+        screened = screen_cover_letter(
+            sentence,
+            confirmed_text=held_text,
+            confirmed_licences=held_codes,
+            job_text="Lager",
+        )
+        assert screened.ok
+
+    for phrase in ("Führerscheinklasse B", "Führerschein: B"):
+        cfg = _letter_profile([phrase])
+        cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+        assert confirmed_licence_codes(cfg) == {"B"}
+        allowed = screen_cover_letter(
+            "Ich besitze den Führerschein Klasse B.",
+            confirmed_text=confirmed_profile_text(cfg),
+            confirmed_licences=confirmed_licence_codes(cfg),
+            job_text="Lager",
+        )
+        assert allowed.ok
+
+    blocked = screen_cover_letter(
+        "Ich habe einen C-Führerschein.",
+        confirmed_text=held_text,
+        confirmed_licences=held_codes,
+        job_text="Lager",
+    )
+    assert not blocked.ok
+    owned = screen_cover_letter(
+        "Ich habe den B-Führerschein.",
+        confirmed_text=held_text,
+        confirmed_licences=held_codes,
+        job_text="Lager",
+    )
+    assert owned.ok
+
+    bare = _letter_profile([])
+    bare.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    bare.profile.qualifications.skills = [SourcedText(value="C++", source="cv")]
+    bare.profile.qualifications.education = [
+        EducationEntry(qualification="B.Sc. Informatik", source="cv")
+    ]
+    bare.profile.qualifications.work_experience = [
+        ExperienceEntry(title="Beraterin", company="T-Systems", source="cv")
+    ]
+    bare_text = confirmed_profile_text(bare)
+    assert "C++" in bare_text
+    assert "B.Sc. Informatik" in bare_text
+    assert "T-Systems" in bare_text
+    assert confirmed_licence_codes(bare) == set()
+    for sentence in (
+        "Ich habe die Fahrerlaubnis C und B.",
+        "Ich habe die Fahrerlaubnis T.",
+        "Ich habe die Fahrerlaubnis A.",
+        "Ich habe den Führerschein Klasse B.",
+        "Ich habe den B-Führerschein.",
+        "Ich habe einen C-Führerschein.",
+    ):
+        screened = screen_cover_letter(
+            sentence,
+            confirmed_text=bare_text,
+            confirmed_licences=confirmed_licence_codes(bare),
+            job_text="Lager",
+        )
+        assert not screened.ok

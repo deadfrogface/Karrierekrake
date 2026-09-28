@@ -14,10 +14,6 @@ from core.match_contract import section_confirmed
 from core.text_normalize import clean_text
 
 _CLAIM_TOKEN = re.compile(r"[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9+\-]{2,}")
-# Longer classes first so CE is not read as C.
-_LICENCE_CLASS = re.compile(
-    r"(?<![A-Za-z0-9])(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)(?![A-Za-z0-9])"
-)
 # C1/B1/A2 are also language levels. A class counts only in a licence sentence.
 _LICENCE_SENTENCE = re.compile(
     r"\b(führerschein|fuehrerschein|fahrerlaubnis|klasse)\b",
@@ -209,6 +205,8 @@ def find_unsubstantiated_personal_claims(
     Licence classes come only from ``confirmed_licences``, never from scanning
     ``confirmed_text``.
     """
+    from core.cv_parser import licence_class_tokens
+
     confirmed_norm = _norm(f"{confirmed_text} {allowed_context}")
     job_norm = _norm(job_text)
     licence_codes = {code.upper() for code in (confirmed_licences or ())}
@@ -234,9 +232,8 @@ def find_unsubstantiated_personal_claims(
             if employer and not _supported(employer, confirmed_norm):
                 flagged.append(employer)
         if _LICENCE_SENTENCE.search(sentence):
-            for match in _LICENCE_CLASS.finditer(sentence):
-                code = match.group(1)
-                if code.upper() not in licence_codes:
+            for code in licence_class_tokens(sentence):
+                if code not in licence_codes:
                     flagged.append(code)
         for token in _CLAIM_TOKEN.findall(sentence):
             if token.casefold() in _STOP:
