@@ -168,21 +168,31 @@ def _license_chunks(raw: str | list | None) -> list[str]:
     return chunks
 
 
-_LICENSE_LIST_SPLIT = re.compile(r"[\s,;/|&]+")
+# Commas, "und"/"and" and slashes always separate licence pieces.
+# Whitespace splits a piece only when every part is a known class.
+_LICENSE_DELIM_SPLIT = re.compile(r"\s*(?:,|/|\bund\b|\band\b)\s*")
+_RECOGNISED_LICENCE_CLASSES = frozenset(_LICENSE_DISPLAY_ORDER)
 
 
-def _pure_class_pieces(text: str) -> list[str] | None:
-    """Split ``B, BE`` into class tokens. A phrase like ``Klasse 3`` stays whole."""
-    parts = [part for part in _LICENSE_LIST_SPLIT.split(text.strip()) if part]
-    if len(parts) <= 1:
-        return None
-    known = set(_LICENSE_DISPLAY_ORDER)
-    for part in parts:
-        token = part.upper()
-        if token in known or token == "E":
-            continue
-        return None
-    return parts
+def _split_licence_text(text: str) -> list[str]:
+    """Turn one licence string into tokens without tearing unknown phrases apart.
+
+    ``B, BE`` and ``B BE`` become ``B`` and ``BE``. ``Klasse 3``, ``CE 95`` and
+    ``B96 (Anhänger)`` stay whole, because a space splits only when every
+    resulting part is a class from ``_LICENSE_DISPLAY_ORDER``.
+    """
+    raw = text.strip()
+    if not raw:
+        return []
+    pieces = [part.strip() for part in _LICENSE_DELIM_SPLIT.split(raw) if part.strip()]
+    tokens: list[str] = []
+    for piece in pieces:
+        parts = piece.split()
+        if len(parts) > 1 and all(part.upper() in _RECOGNISED_LICENCE_CLASSES for part in parts):
+            tokens.extend(parts)
+        else:
+            tokens.append(piece)
+    return tokens
 
 
 def _order_license_codes(codes: list[str]) -> list[str]:
@@ -213,11 +223,14 @@ def driving_classes_for_display(raw: str | list | None) -> list[str]:
 
     Tokens that match a known EU class exactly are deduplicated and ordered.
     Every other token is kept verbatim and appended, so ``B96``, ``Klasse 3``
-    and ``CE 95`` are not dropped. A lone ``E`` is appended to the class
-    directly before it when that class has an E variant (``B``→``BE``,
-    ``C``→``CE``, ``C1``→``C1E``, ``D``→``DE``, ``D1``→``D1E``). The base
-    class stays. ``[B, E]`` is therefore ``B, BE``. A lone ``E`` with no such
-    predecessor stays ``E``.
+    and ``CE 95`` are not dropped. A string is split on commas, ``und``/``and``
+    and slashes. A piece that still contains spaces is split only when every
+    part is a recognised class: ``B BE`` becomes ``B`` and ``BE``, while
+    ``Klasse 3``, ``CE 95`` and ``B96 (Anhänger)`` stay whole. A lone ``E`` is
+    appended to the class directly before it when that class has an E variant
+    (``B``→``BE``, ``C``→``CE``, ``C1``→``C1E``, ``D``→``DE``, ``D1``→``D1E``).
+    The base class stays. ``[B, E]`` is therefore ``B, BE``. A lone ``E`` with
+    no such predecessor stays ``E``.
 
     This does not repair how an importer or LLM split ``Klassen B und BE``
     into ``[B, E]``. It only normalises a list that is already split.
@@ -257,12 +270,8 @@ def driving_classes_for_display(raw: str | list | None) -> list[str]:
         text = chunk.strip()
         if not text or not any(ch.isalnum() for ch in text):
             continue
-        pieces = _pure_class_pieces(text)
-        if pieces is None:
-            take(text)
-        else:
-            for piece in pieces:
-                take(piece)
+        for piece in _split_licence_text(text):
+            take(piece)
     return _order_license_codes(recognised) + unknown
 
 
@@ -2721,19 +2730,15 @@ def _parse_personal_header(text: str, sections: dict[str, str]) -> dict[str, str
     return personal
 
 
-# Commas, slashes, "und"/"and", and whitespace separate tokens.
-# Never iterate the string: that yields characters ("BE" → "B", "E").
-_IMPORT_TOKEN_SPLIT = re.compile(r"\s*(?:,|/|\bund\b|\band\b)\s*|\s+")
-
-
 def _as_sequence(items: Any) -> list:
-    """Turn a parsed field into entries. A string is split into tokens, not characters."""
+    """Turn a parsed field into entries. A string is never walked character by character.
+
+    Commas, ``und``/``and`` and slashes separate tokens. A piece that still
+    contains spaces is split only when every part is a recognised licence
+    class, so ``B BE`` becomes ``B`` and ``BE`` while ``Klasse 3`` stays one entry.
+    """
     if isinstance(items, str):
-        text = items.strip()
-        if not text:
-            return []
-        parts = [part.strip() for part in _IMPORT_TOKEN_SPLIT.split(text) if part.strip()]
-        return parts or [text]
+        return _split_licence_text(items)
     return list(items or [])
 
 
@@ -2758,7 +2763,8 @@ def parsed_to_qualifications(parsed: dict[str, Any]) -> QualificationsConfig:
             # class with an E variant is stored together with that base class
             # (``[B, E]`` → ``B, BE``). This step does not undo an upstream
             # split of ``Klassen B und BE`` into ``[B, E]``; that stays with
-            # the Data Engine. Unrecognised tokens are stored verbatim.
+            # the Data Engine. Unrecognised phrases such as ``Klasse 3`` and
+            # ``CE 95`` are stored verbatim when they still reach this step.
             "driving_license": [
                 {"value": code, "source": "cv"}
                 for code in driving_classes_for_display(

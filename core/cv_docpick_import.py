@@ -1427,7 +1427,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         "emails": [email] if email else [],
         "phones": [str(data["phone"])] if data.get("phone") else [],
         "languages": langs,
-        "driving_license": " ".join(lic_codes),
+        "driving_license": list(lic_codes),
         "education": edu,
         "work_experience": work,
         "skills": skills,
