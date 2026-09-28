@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -218,67 +219,155 @@ _LICENSE_E_VARIANT: dict[str, str] = {
 }
 
 
-def driving_classes_for_display(raw: str | list | None) -> list[str]:
-    """Licence classes for the UI and for what a new import stores.
+@dataclass(frozen=True)
+class LicenceReading:
+    """One read of stored licence values. The file is not rewritten.
 
-    Tokens that match a known EU class exactly are deduplicated and ordered.
-    Every other token is kept verbatim and appended, so ``B96``, ``Klasse 3``
-    and ``CE 95`` are not dropped. A string is split on commas, ``und``/``and``
-    and slashes. A piece that still contains spaces is split only when every
-    part is a recognised class: ``B BE`` becomes ``B`` and ``BE``, while
-    ``Klasse 3``, ``CE 95`` and ``B96 (Anhänger)`` stay whole. A lone ``E`` is
-    appended to the class directly before it when that class has an E variant
-    (``B``→``BE``, ``C``→``CE``, ``C1``→``C1E``, ``D``→``DE``, ``D1``→``D1E``).
-    The base class stays. ``[B, E]`` is therefore ``B, BE``. A lone ``E`` with
-    no such predecessor stays ``E``. A token that is only digits (``9``, ``5``)
-    is dropped and is not written back. ``CE 95`` is not rebuilt from those digits.
-
-    This does not repair how an importer or LLM split ``Klassen B und BE``
-    into ``[B, E]``. It only normalises a list that is already split.
-    Does not mutate ``raw``.
+    ``display`` is what the UI, the summary and matching use. ``evidence`` is
+    what a cover letter may state: a class built by recovering fragments is
+    not evidence until the stored list itself contains that class.
+    ``uncertain`` holds ``C`` or ``D`` that cannot be told from ``C1``/``D1``
+    because the list still contains digit remnants. ``recovered`` is true when
+    the stored list contains a one-character fragment (a lone ``E`` or a digit).
     """
-    chunks = _license_chunks(raw)
-    if not chunks:
-        return []
-    known = set(_LICENSE_DISPLAY_ORDER)
-    recognised: list[str] = []
-    unknown: list[str] = []
-    seen_unknown: set[str] = set()
-    previous_base: str | None = None
 
-    def take(token: str) -> None:
-        nonlocal previous_base
-        text = token.strip()
-        if not text:
-            return
-        folded = text.upper()
-        variant = _LICENSE_E_VARIANT.get(previous_base or "")
-        if folded == "E" and variant:
-            recognised.append(variant)
-            previous_base = None
-            return
-        # Leftover digits from the old character-by-character split ("BE" → B, E
-        # and "95" → 9, 5). They are not classes. The stored list is not rewritten.
-        if folded.isdigit():
-            previous_base = None
-            return
-        if folded in known:
-            recognised.append(folded)
-            previous_base = folded if folded in _LICENSE_E_VARIANT else None
-            return
-        key = text.casefold()
-        if key not in seen_unknown:
-            seen_unknown.add(key)
-            unknown.append(text)
-        previous_base = None
+    display: list[str]
+    evidence: list[str]
+    uncertain: list[str]
+    recovered: bool
 
-    for chunk in chunks:
+
+def _flat_licence_tokens(raw: str | list | None) -> list[str]:
+    tokens: list[str] = []
+    for chunk in _license_chunks(raw):
         text = chunk.strip()
         if not text or not any(ch.isalnum() for ch in text):
             continue
         for piece in _split_licence_text(text):
-            take(piece)
-    return _order_license_codes(recognised) + unknown
+            piece = piece.strip()
+            if piece and any(ch.isalnum() for ch in piece):
+                tokens.append(piece)
+    return tokens
+
+
+def _single_char_fragment(token: str) -> bool:
+    """A leftover from the old character split: lone ``E`` or one digit."""
+    text = token.strip()
+    return len(text) == 1 and (text.upper() == "E" or text.isdigit())
+
+
+def read_driving_classes(raw: str | list | None) -> LicenceReading:
+    """Normalise stored licence values for every reader.
+
+    Accepts a list of sourced entries, a list of strings, or one string.
+    Known classes are deduplicated and ordered. Unknown phrases stay verbatim
+    (``B96``, ``Klasse 3``, ``CE 95``). A lone ``E`` is appended to ``B``, ``C``,
+    ``C1``, ``D`` or ``D1`` directly before it, and that base stays.
+    ``[B, E]`` is therefore ``B, BE``. A ``1`` directly after ``C`` or ``D``
+    rebuilds ``C1`` or ``D1``; ``[C, 1, E]`` rebuilds the single class ``C1E``.
+    When the list contains digit remnants, a ``C`` or ``D`` without that
+    following ``1`` is uncertain: it is not a display class, not a match and
+    not letter evidence. Pure digits never become their own class. ``CE 95``
+    is not rebuilt from leftover ``9`` and ``5``.
+
+    Does not mutate ``raw`` and does not write the profile file.
+    """
+    tokens = _flat_licence_tokens(raw)
+    if not tokens:
+        return LicenceReading([], [], [], False)
+    known = set(_LICENSE_DISPLAY_ORDER)
+    has_digits = any(token.isdigit() for token in tokens)
+    recovered = any(_single_char_fragment(token) for token in tokens)
+    recognised: list[str] = []
+    recognised_direct: list[bool] = []
+    unknown: list[str] = []
+    seen_unknown: set[str] = set()
+    uncertain: list[str] = []
+    seen_uncertain: set[str] = set()
+    previous: int | None = None
+
+    def add_unknown(text: str) -> None:
+        nonlocal previous
+        key = text.casefold()
+        if key not in seen_unknown:
+            seen_unknown.add(key)
+            unknown.append(text)
+        previous = None
+
+    def add_uncertain(code: str) -> None:
+        nonlocal previous
+        if code not in seen_uncertain:
+            seen_uncertain.add(code)
+            uncertain.append(code)
+        previous = None
+
+    stored_exact: set[str] = set()
+    for token in tokens:
+        if _single_char_fragment(token) or token.isdigit():
+            continue
+        folded = token.upper()
+        stored_exact.add(folded if folded in known else token)
+
+    i = 0
+    while i < len(tokens):
+        text = tokens[i]
+        folded = text.upper()
+        if folded.isdigit():
+            previous = None
+            i += 1
+            continue
+        if folded == "E":
+            base = recognised[previous] if previous is not None else ""
+            variant = _LICENSE_E_VARIANT.get(base)
+            if variant and previous is not None:
+                if recognised_direct[previous]:
+                    recognised.append(variant)
+                    recognised_direct.append(False)
+                else:
+                    # Fragments of one old token, such as C + 1 + E → C1E.
+                    recognised[previous] = variant
+                previous = None
+            else:
+                add_unknown(text)
+            i += 1
+            continue
+        nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
+        after = tokens[i + 2] if i + 2 < len(tokens) else ""
+        if folded in {"C", "D"} and nxt == "1":
+            code = f"{folded}1E" if after.upper() == "E" else f"{folded}1"
+            recognised.append(code)
+            recognised_direct.append(False)
+            previous = None if code.endswith("E") else len(recognised) - 1
+            i += 3 if code.endswith("E") else 2
+            continue
+        if folded in {"C", "D"} and has_digits:
+            add_uncertain(folded)
+            # The trailer fragment belonged to the class we will not assert.
+            if i + 1 < len(tokens) and tokens[i + 1].upper() == "E":
+                i += 2
+            else:
+                i += 1
+            continue
+        if folded in known:
+            recognised.append(folded)
+            recognised_direct.append(True)
+            previous = len(recognised) - 1 if folded in _LICENSE_E_VARIANT else None
+            i += 1
+            continue
+        add_unknown(text)
+        i += 1
+
+    display = _order_license_codes(recognised) + unknown
+    if recovered:
+        evidence = [code for code in display if code in stored_exact]
+    else:
+        evidence = list(display)
+    return LicenceReading(display, evidence, uncertain, recovered)
+
+
+def driving_classes_for_display(raw: str | list | None) -> list[str]:
+    """Display classes from :func:`read_driving_classes`. Does not write the file."""
+    return read_driving_classes(raw).display
 
 
 # User-facing label when a field is simply absent from the CV — not a parser crash.

@@ -93,8 +93,8 @@ def test_driving_classes_deduped_for_display_without_mutating_storage():
     assert driving_classes_for_display("E") == ["E"]
     assert driving_classes_for_display(["A", "E"]) == ["A", "E"]
     assert driving_classes_for_display(["C1", "C1E"]) == ["C1", "C1E"]
-    # Digit leftovers from the old character split are not classes.
-    assert driving_classes_for_display(["C", "E", "9", "5"]) == ["C", "CE"]
+    # Digit leftovers are not classes. A bare C beside them is uncertain.
+    assert driving_classes_for_display(["C", "E", "9", "5"]) == []
     assert "9" not in driving_classes_for_display(["C", "E", "9", "5"])
     assert "5" not in driving_classes_for_display(["C", "E", "9", "5"])
 
@@ -665,21 +665,21 @@ def test_digit_remnants_never_become_classes(tmp_path):
     loaded = load_config(profile_path, application_path, settings_path, strip_placeholders=False)
     quals = loaded.profile.qualifications
     assert quals.driving_values() == codes
-    assert ", ".join(driving_classes_for_display(quals.driving_license)) == "C, CE"
+    assert driving_classes_for_display(quals.driving_license) == []
     assert profile_path.read_bytes() == before
 
     app = ApplicationProfile()
     sync_application_summaries(app, quals, fill_empty=True)
-    assert app.driving_license == "C, CE"
+    assert app.driving_license == ""
     assert "9" not in app.driving_license and "5" not in app.driving_license
 
     reset_profile_licence_cache()
     matched = profile_licence_codes(quals)
-    assert matched == frozenset({"C", "CE"})
-    assert "9" not in matched and "5" not in matched and "E" not in matched
+    assert matched == frozenset()
+    assert "C" not in matched and "CE" not in matched
 
     evidence = confirmed_profile_text(loaded)
-    assert "C" in evidence and "CE" in evidence
+    assert "C" not in evidence and "CE" not in evidence
     assert "9" not in evidence and "5" not in evidence
     _assert_no_list_repr_or_lone_e(evidence)
 
@@ -827,9 +827,10 @@ def test_cover_evidence_uses_the_same_normalisation():
         letters.append(letter.text)
         _assert_no_list_repr_or_lone_e(evidence)
         _assert_no_list_repr_or_lone_e(letter.text)
-        assert "B" in evidence and "BE" in evidence
-    assert paired[0] == paired[1]
-    assert letters[0] == letters[1]
+        assert "B" in evidence.splitlines()
+    assert "BE" in paired[0].splitlines()
+    assert "BE" not in paired[1].splitlines()
+    assert "BE" not in letters[0] and "BE" not in letters[1]
 
     absent = confirmed_profile_text(_letter_profile(["B", "BE"]))
     for phrase in ("B96", "CE 95", "Klasse 3"):
@@ -838,3 +839,155 @@ def test_cover_evidence_uses_the_same_normalisation():
     for phrase in ("B96", "CE 95", "Klasse 3"):
         assert phrase in present
     _assert_no_list_repr_or_lone_e(present)
+
+
+def test_old_character_split_is_recovered_without_uncertain_classes():
+    from core.cv_parser import read_driving_classes
+
+    broken = read_driving_classes(["B", "C", "1", "D"])
+    assert broken.display == ["B", "C1"]
+    assert "D" not in broken.display
+    assert broken.uncertain == ["D"]
+    assert broken.recovered
+    assert broken.evidence == ["B"]
+
+    rebuilt = read_driving_classes(["C", "1", "E"])
+    assert rebuilt.display == ["C1E"]
+    assert rebuilt.evidence == []
+    assert rebuilt.recovered
+
+    mixed = read_driving_classes(["B", "E", "C"])
+    assert mixed.display == ["B", "BE", "C"]
+    assert "CE" not in mixed.display
+    assert mixed.evidence == ["B", "C"]
+    assert mixed.recovered
+
+    legacy = read_driving_classes(["B", "E"])
+    assert legacy.display == ["B", "BE"]
+    assert legacy.evidence == ["B"]
+    assert legacy.recovered
+    assert read_driving_classes(["B", "BE"]).recovered is False
+    assert read_driving_classes(["B", "BE"]).evidence == ["B", "BE"]
+    assert _licence_points(["C", "9"]) == 0
+    assert _licence_points(["B", "C", "1", "D"]) == 5
+
+
+def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+    from core.cover_letter import compose_cover_letter
+    from core.models import Job
+
+    job = Job(
+        title="Fahrer",
+        company="Nord GmbH",
+        remote_type="remote",
+        description=(
+            "Wir suchen eine Fahrerin mit Excel. "
+            "Führerschein Klasse BE ist erforderlich."
+        ),
+    )
+    cfg = _letter_profile(["B", "E"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    evidence = confirmed_profile_text(cfg)
+    assert "B" in evidence.splitlines()
+    assert "BE" not in evidence.splitlines()
+    letter = compose_cover_letter(job, cfg)
+    assert letter.ok
+    assert "BE" not in letter.text
+    claim = "Ich verfüge über BE."
+    blocked = screen_cover_letter(claim, confirmed_text=evidence, job_text=job.description)
+    assert not blocked.ok
+
+    saved = _letter_profile(["B", "BE"])
+    saved.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    evidence_saved = confirmed_profile_text(saved)
+    assert "BE" in evidence_saved.splitlines()
+    allowed = screen_cover_letter(
+        claim, confirmed_text=evidence_saved, job_text=job.description
+    )
+    assert allowed.ok
+
+
+def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatch):
+    """A recovered list shows a warning. Saving the drawer writes the clean list once."""
+    from PySide6.QtCore import QTimer
+
+    from desktop.theme import apply_theme
+
+    i18n.set_language("de")
+    apply_theme(qapp, "light")
+    messages: list[str] = []
+
+    def information(_parent, _title, text, *_args, **_kwargs):
+        messages.append(str(text))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "information", information)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+
+    def prepare(codes: list[str]):
+        cfg = config_service.load()
+        cfg.profile.qualifications.driving_license = _sourced_codes(codes)
+        cfg.profile.qualifications.skills = []
+        config_service.save(cfg)
+        page = ProfilePage(config_service)
+        page.resize(1100, 800)
+        page.show()
+        page.load_from_config()
+        qapp.processEvents()
+        return page
+
+    uncertain = prepare(["B", "C", "1", "D"])
+    assert uncertain._licence_notice.isVisible()
+    assert uncertain._licence_review_btn.isVisible()
+    assert uncertain._licence_review_btn.text() == "Prüfen"
+    assert uncertain._licence_notice.objectName() == "WarningLabel"
+    assert "Aus einem älteren Import wiederhergestellt" in uncertain._licence_notice.text()
+    assert "Nicht sicher erkannt: D." in uncertain._licence_notice.text()
+    assert uncertain._licence_line.text() == "Führerschein: B, C1"
+    assert "D" not in [part.strip() for part in uncertain._licence_line.text().split(":")[-1].split(",")]
+    assert uncertain.qualifications.driving.get_items() == ["B", "C1"]
+    assert "Nicht sicher erkannt: D." in uncertain.qualifications.licence_notice.text()
+    uncertain.card_skills.grab().save("/opt/cursor/artifacts/licence-card-b-c1-d.png")
+
+    page = prepare(["B", "E"])
+    assert "Aus einem älteren Import wiederhergestellt" in page._licence_notice.text()
+    assert "Nicht sicher erkannt" not in page._licence_notice.text()
+    assert page._licence_line.text() == "Führerschein: B, BE"
+    assert page.qualifications.driving.get_items() == ["B", "BE"]
+    page.card_skills.grab().save("/opt/cursor/artifacts/licence-card-b-e.png")
+    profile_path = Path(config_service.profile_path)
+    before_save = profile_path.read_bytes()
+
+    def accept_drawer() -> None:
+        bar = page._drawer._scroll.verticalScrollBar()
+        assert bar.value() == 0
+        assert page._drawer.focusWidget() is not None
+        assert page.qualifications.licence_notice.isVisible()
+        assert "Aus einem älteren Import wiederhergestellt" in page.qualifications.licence_notice.text()
+        page._drawer.accept()
+
+    QTimer.singleShot(0, accept_drawer)
+    page._licence_review_btn.click()
+    qapp.processEvents()
+    reloaded = config_service.load()
+    assert reloaded.profile.qualifications.driving_values() == ["B", "BE"]
+    assert profile_path.read_bytes() != before_save
+    assert messages[-1] == "Gespeichert."
+    page.load_from_config()
+    qapp.processEvents()
+    assert not page._licence_notice.isVisible()
+    assert not page._licence_review_btn.isVisible()
+
+    stored = profile_path.read_bytes()
+
+    def accept_again() -> None:
+        page._drawer.accept()
+
+    QTimer.singleShot(0, accept_again)
+    page._edit_section("skills")
+    qapp.processEvents()
+    assert profile_path.read_bytes() == stored
+    assert config_service.load().profile.qualifications.driving_values() == ["B", "BE"]
+    assert messages[-1] == "Keine Änderungen."
