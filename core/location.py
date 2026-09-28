@@ -222,12 +222,16 @@ def _persisted_resolution(
     location: Any, *, home_country: str
 ) -> PlaceResolution:
     address, postal, city, _country = _home_text(location)
+    # Same label the hint used before the shared lookup: city, not the raw address.
+    label = city or _city_from_address(address) or address or ", ".join(
+        p for p in (postal, home_country) if p
+    )
     return PlaceResolution(
         status="RESOLVED",
         latitude=float(location.home_latitude),
         longitude=float(location.home_longitude),
         country_code=home_country,
-        display_name=address or ", ".join(p for p in (postal, city, home_country) if p),
+        display_name=label,
         data_source="existing_source",
         reason="persisted_coords",
         precision="exact_coordinates",
@@ -258,13 +262,18 @@ def cached_home_resolution(
         home_country=home_cc,
         allow_network=False,
     )
-    cached = _HOME_RESOLUTION_CACHE.get(key)
-    if cached is not None:
-        return cached
+    # Stored coordinates for this parameter set beat a cached miss. A later
+    # save can attach coordinates to an address that was unknown a moment ago.
     if _persisted_covers(location, cross_border=cross_border, home_country=home_cc):
+        cached = _HOME_RESOLUTION_CACHE.get(key)
+        if cached is not None and cached.ok:
+            return cached
         resolution = _persisted_resolution(location, home_country=home_cc)
         _HOME_RESOLUTION_CACHE[key] = resolution
         return resolution
+    cached = _HOME_RESOLUTION_CACHE.get(key)
+    if cached is not None:
+        return cached
     place = normalize_place_fields(
         address=address,
         city=city or _city_from_address(address),
