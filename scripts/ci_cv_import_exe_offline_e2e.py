@@ -159,6 +159,7 @@ def _import_report_slice(payload: dict) -> dict:
         "ok": payload.get("ok"),
         "kind": payload.get("kind"),
         "message": (payload.get("message") or "")[:240],
+        "detail": (payload.get("detail") or "")[:400],
         "wall_s": payload.get("_wall_s"),
         "exit_code": payload.get("_exit_code"),
         "personal_preview": {

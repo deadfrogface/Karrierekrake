@@ -132,6 +132,8 @@ def _fail(
         "ok": False,
         "kind": kind,
         "message": user_message_for_kind(kind, message),
+        # Technical detail for CI/logs only — UI uses ``message``.
+        "detail": (message or "")[:400],
         "parsed": None,
     }
     if stage:

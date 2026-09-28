@@ -919,7 +919,7 @@ _docling_text_cache: dict[tuple[str, str], str] = {}
 _SCHEMA_JSON_CACHE: dict[str, str] | None = None
 # Production LLM generation cap. Measured: outputs typically << 2048 tokens;
 # lower cap cuts rare runaway generations without changing typical quality.
-_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "2048"))
+_LLM_MAX_TOKENS = int(os.environ.get("KARRIEREKRAKE_CV_LLM_MAX_TOKENS", "4096"))
 # Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
@@ -1235,7 +1235,7 @@ def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
                 max_tokens=_LLM_MAX_TOKENS,
                 temperature=0.0,
             )
-        data = parse_llm_json(raw_text)
+        data = _parse_extraction_json(raw_text, parse_llm_json=parse_llm_json)
     except CvImportError:
         raise
     except Exception as exc:  # noqa: BLE001
@@ -1250,6 +1250,33 @@ def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
             "Modell lieferte keine verwertbaren Felder. Bitte manuell korrigieren.",
         )
     return data
+
+
+_THINK_BLOCK = re.compile(r"<think>[\s\S]*?</think>", re.IGNORECASE)
+
+
+def _parse_extraction_json(raw_text: str, *, parse_llm_json) -> dict[str, Any]:
+    """Parse model JSON; strip Qwen think-blocks that break docpick's parser."""
+    text = _THINK_BLOCK.sub("", raw_text or "").strip()
+    try:
+        data = parse_llm_json(text)
+        if isinstance(data, dict) and data:
+            return data
+    except Exception:  # noqa: BLE001 — fall through to hardened extractor
+        pass
+    try:
+        from guenther.validation import extract_json_object
+
+        data = extract_json_object(raw_text)
+        if isinstance(data, dict) and data:
+            return data
+    except Exception:  # noqa: BLE001
+        pass
+    raise json.JSONDecodeError(
+        "Failed to parse JSON from LLM response",
+        (raw_text or "")[:200],
+        0,
+    )
 
 
 def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict[str, Any]:

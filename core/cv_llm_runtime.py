@@ -203,10 +203,11 @@ def chat_completion_inprocess(
     from llama_cpp import Llama
 
     n_threads = max(2, (os.cpu_count() or 2))
+    n_ctx = int(os.environ.get("KARRIEREKRAKE_CV_LLM_N_CTX", "4096"))
     with hold_production_model(role="cv_import", timeout_s=90.0):
         llm = Llama(
             model_path=str(model_path),
-            n_ctx=int(os.environ.get("KARRIEREKRAKE_CV_LLM_N_CTX", "2048")),
+            n_ctx=n_ctx,
             n_threads=n_threads,
             n_batch=512,
             verbose=False,
