@@ -267,12 +267,17 @@ class ApplicationManager:
         cover = outcome.text if outcome.ok else ""
         cover_path: Path | str = ""
         if outcome.ok:
-            from core.cover_guard import confirmed_profile_text, screen_cover_letter
+            from core.cover_guard import (
+                confirmed_licence_codes,
+                confirmed_profile_text,
+                screen_cover_letter,
+            )
 
             debt = auto_actions_blocked(self.config)
             claim_screen = screen_cover_letter(
                 cover,
                 confirmed_text=confirmed_profile_text(self.config),
+                confirmed_licences=confirmed_licence_codes(self.config),
                 job_text=f"{job.title} {job.description}",
                 allowed_context=f"{job.title} {job.company}",
             )

@@ -277,8 +277,9 @@ def reset_profile_licence_cache() -> None:
 def profile_licence_codes(quals: QualificationsConfig) -> frozenset[str]:
     """Certain classes for this profile state. Computed once until it changes.
 
-    A verbatim phrase contributes the class at its start (``Klasse B`` → ``B``,
-    ``CE 95`` → ``CE``). Uncertain ``A``/``C``/``D`` are not included.
+    A verbatim phrase contributes the class at its start (``Führerscheinklasse B``
+    → ``B``, ``CE 95`` → ``CE``). Uncertain ``A``/``C``/``D`` are not included.
+    An empty entry or a lone remnant does not become a code.
     """
     global _profile_licence_cache, profile_licence_normalizations
     from core.cv_parser import leading_driving_class, read_driving_classes
@@ -301,6 +302,20 @@ def profile_licence_codes(quals: QualificationsConfig) -> frozenset[str]:
     codes = frozenset(found)
     _profile_licence_cache = (key, codes)
     return codes
+
+
+def profile_has_driving_entry(quals: QualificationsConfig) -> bool:
+    """True when the read licence list still contains a licence.
+
+    Presence follows the reading, not ``bool(driving_license)``. An empty
+    string or a lone remnant such as ``E`` is not a licence. An uncertain
+    ``C`` is a licence even though it contributes no class code.
+    """
+    if profile_licence_codes(quals):
+        return True
+    from core.cv_parser import read_driving_classes
+
+    return bool(read_driving_classes(quals.driving_license).uncertain)
 
 
 def driving_values_key(quals: QualificationsConfig) -> list[str]:
@@ -712,7 +727,7 @@ def score_job(
     need = slot[2]
     if need:
         codes = profile_licence_codes(quals)
-        has_entry = bool(quals.driving_license)
+        has_entry = profile_has_driving_entry(quals)
         if has_entry and not codes:
             # Stored entries exist, but every class is uncertain. That is a
             # licence, not a missing one: +3, never +5, never a hard exclusion.

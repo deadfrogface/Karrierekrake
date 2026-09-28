@@ -910,7 +910,7 @@ def test_old_character_split_is_recovered_without_uncertain_classes():
 
 def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
     from core.config import ExtractReview
-    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
     from core.cover_letter import compose_cover_letter
     from core.models import Job
 
@@ -932,7 +932,12 @@ def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
     assert letter.ok
     assert "BE" not in letter.text
     claim = "Ich habe den Führerschein BE."
-    blocked = screen_cover_letter(claim, confirmed_text=evidence, job_text="Lager")
+    blocked = screen_cover_letter(
+        claim,
+        confirmed_text=evidence,
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text="Lager",
+    )
     assert not blocked.ok
 
     saved = _letter_profile(["B", "BE"])
@@ -940,7 +945,10 @@ def test_recovered_be_is_not_a_letter_until_the_drawer_saves_it():
     evidence_saved = confirmed_profile_text(saved)
     assert "BE" in evidence_saved.splitlines()
     allowed = screen_cover_letter(
-        claim, confirmed_text=evidence_saved, job_text="Lager"
+        claim,
+        confirmed_text=evidence_saved,
+        confirmed_licences=confirmed_licence_codes(saved),
+        job_text="Lager",
     )
     assert allowed.ok
 
@@ -1057,21 +1065,44 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
 def test_leading_class_is_shared_by_matcher_and_guard():
     """A verbatim entry keeps its text. The class at its start still counts."""
     from core.config import AppConfig, ExtractReview, QualificationsConfig
-    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
     from core.cv_parser import leading_driving_class, read_driving_classes
     from core.matcher import profile_licence_codes, reset_profile_licence_cache
 
     assert leading_driving_class("Klasse B") == "B"
     assert leading_driving_class("Führerschein Klasse B") == "B"
     assert leading_driving_class("Fahrerlaubnis Klasse B") == "B"
+    assert leading_driving_class("Führerscheinklasse B") == "B"
+    assert leading_driving_class("Fahrerlaubnisklasse B") == "B"
+    assert leading_driving_class("Führerschein: B") == "B"
+    assert leading_driving_class("Klasse: B") == "B"
     assert leading_driving_class("CE 95") == "CE"
     assert leading_driving_class("Klasse 3") == ""
+    for not_a_class in (
+        "C++",
+        "C#",
+        "B.Sc. Informatik",
+        "B.A. BWL",
+        "T-Systems",
+        "A-Levels",
+        "D.I.Y. Markt",
+        "L'Oréal",
+    ):
+        assert leading_driving_class(not_a_class) == ""
     assert driving_classes_for_display(["Klasse B"]) == ["Klasse B"]
     assert driving_classes_for_display(["Führerschein Klasse B"]) == ["Führerschein Klasse B"]
     assert driving_classes_for_display(["CE 95"]) == ["CE 95"]
     assert driving_classes_for_display(["Klasse 3"]) == ["Klasse 3"]
     assert _licence_points(["Klasse B"]) == 5
     assert _licence_points(["Führerschein Klasse B"]) == 5
+    for phrase in (
+        "Führerscheinklasse B",
+        "Fahrerlaubnisklasse B",
+        "Führerschein: B",
+        "Klasse: B",
+    ):
+        assert leading_driving_class(phrase) == "B"
+        assert _licence_points([phrase]) == 5
     assert _licence_points(["Klasse 3"]) == 3
 
     reset_profile_licence_cache()
@@ -1086,6 +1117,7 @@ def test_leading_class_is_shared_by_matcher_and_guard():
     allowed = screen_cover_letter(
         "Ich besitze den Führerschein CE 95.",
         confirmed_text=evidence,
+        confirmed_licences=confirmed_licence_codes(cfg),
         job_text="Lager",
     )
     assert allowed.ok
@@ -1094,6 +1126,7 @@ def test_leading_class_is_shared_by_matcher_and_guard():
     blocked = screen_cover_letter(
         "Ich besitze den Führerschein CE 95.",
         confirmed_text=confirmed_profile_text(plain),
+        confirmed_licences=confirmed_licence_codes(plain),
         job_text="Lager",
     )
     assert not blocked.ok
@@ -1132,7 +1165,7 @@ def test_two_digit_suffix_is_not_a_remnant(qapp):
 
 def test_a_classes_are_recovered_without_becoming_evidence():
     from core.config import ExtractReview
-    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
     from core.cv_parser import read_driving_classes
 
     rebuilt = read_driving_classes(["A", "1"])
@@ -1162,6 +1195,7 @@ def test_a_classes_are_recovered_without_becoming_evidence():
     blocked = screen_cover_letter(
         "Ich habe den Führerschein AM.",
         confirmed_text=evidence,
+        confirmed_licences=confirmed_licence_codes(cfg),
         job_text="Lager",
     )
     assert not blocked.ok
@@ -1257,7 +1291,7 @@ def test_licence_requirement_follows_a_replaced_description():
 
 def test_language_levels_are_not_licence_classes():
     from core.config import ExtractReview, LanguageEntry
-    from core.cover_guard import confirmed_profile_text, screen_cover_letter
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
 
     cfg = _letter_profile([])
     cfg.profile.qualifications.languages = [
@@ -1268,18 +1302,21 @@ def test_language_levels_are_not_licence_classes():
     level = screen_cover_letter(
         "Meine Englischkenntnisse liegen auf C1-Niveau.",
         confirmed_text=evidence,
+        confirmed_licences=confirmed_licence_codes(cfg),
         job_text="Lager",
     )
     assert level.ok
     pair = screen_cover_letter(
         "Ich spreche Englisch (B1) und Spanisch (A2).",
         confirmed_text=evidence,
+        confirmed_licences=confirmed_licence_codes(cfg),
         job_text="Lager",
     )
     assert pair.ok
     claim = screen_cover_letter(
         "Ich habe den Führerschein C1.",
         confirmed_text=evidence,
+        confirmed_licences=confirmed_licence_codes(cfg),
         job_text="Lager",
     )
     assert not claim.ok
@@ -1298,3 +1335,131 @@ def test_profile_licence_cache_is_one_tuple():
     assert cached[1] == frozenset({"B", "BE"})
     assert not hasattr(matcher, "_profile_licence_key")
     assert not hasattr(matcher, "_profile_licence_codes")
+
+
+def _decoy_profile(codes: list[str]):
+    """Name, skills and history that must not become licence classes."""
+    from core.config import AppConfig, EducationEntry, ExperienceEntry, ExtractReview, QualificationsConfig
+
+    cfg = AppConfig()
+    cfg.application.first_name = "Mara"
+    cfg.application.last_name = "König"
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    cfg.profile.qualifications = QualificationsConfig(
+        skills=[
+            SourcedText(value="C++", source="cv"),
+            SourcedText(value="C#", source="cv"),
+        ],
+        education=[
+            EducationEntry(qualification="B.Sc. Informatik", institution="TU Berlin", source="cv"),
+            EducationEntry(qualification="A-Levels", source="cv"),
+        ],
+        work_experience=[
+            ExperienceEntry(title="Beraterin", company="T-Systems", source="cv"),
+        ],
+        driving_license=_sourced_codes(codes),
+    )
+    return cfg
+
+
+def test_guard_reads_licence_evidence_not_the_profile_text():
+    """C++, degrees and employers are not driving classes."""
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    bare = _decoy_profile([])
+    text = confirmed_profile_text(bare)
+    for snippet in ("Mara König", "C++", "C#", "B.Sc. Informatik", "TU Berlin", "T-Systems", "A-Levels"):
+        assert snippet in text
+    assert confirmed_licence_codes(bare) == set()
+    for sentence in (
+        "Ich habe die Fahrerlaubnis C und B.",
+        "Ich habe die Fahrerlaubnis T.",
+        "Ich habe die Fahrerlaubnis A.",
+    ):
+        screened = screen_cover_letter(
+            sentence,
+            confirmed_text=text,
+            confirmed_licences=confirmed_licence_codes(bare),
+            job_text="Lager",
+        )
+        assert not screened.ok
+        assert sentence in screened.violations
+
+    held = _decoy_profile(["B"])
+    held_text = confirmed_profile_text(held)
+    assert "C++" in held_text
+    assert confirmed_licence_codes(held) == {"B"}
+    passed = screen_cover_letter(
+        "Ich habe die Fahrerlaubnis B.",
+        confirmed_text=held_text,
+        confirmed_licences=confirmed_licence_codes(held),
+        job_text="Lager",
+    )
+    assert passed.ok
+    flagged = screen_cover_letter(
+        "Ich habe die Fahrerlaubnis C.",
+        confirmed_text=held_text,
+        confirmed_licences=confirmed_licence_codes(held),
+        job_text="Lager",
+    )
+    assert not flagged.ok
+
+    unconfirmed = _decoy_profile(["B"])
+    unconfirmed.profile.extract_review = ExtractReview(source="cv", confirmed=False)
+    assert confirmed_licence_codes(unconfirmed) == set()
+    hidden = screen_cover_letter(
+        "Ich habe die Fahrerlaubnis B.",
+        confirmed_text=confirmed_profile_text(unconfirmed),
+        confirmed_licences=confirmed_licence_codes(unconfirmed),
+        job_text="Lager",
+    )
+    assert not hidden.ok
+
+
+def test_blank_or_fragment_is_a_missing_licence():
+    """An empty entry or a lone E is not a licence. Uncertain C still is."""
+    from core.config import AppConfig, ExtractReview, QualificationsConfig
+    from core.matcher import score_job
+    from core.models import Job
+
+    asked = Job(
+        title="Lager",
+        company="Nord",
+        remote_type="onsite",
+        distance_km=5,
+        description="Führerschein erforderlich",
+        employment_type="Vollzeit",
+    )
+    plain = Job(
+        title="Lager",
+        company="Nord",
+        remote_type="onsite",
+        distance_km=5,
+        description="Teamarbeit im Lager",
+        employment_type="Vollzeit",
+    )
+
+    def configured(codes: list[str]) -> AppConfig:
+        cfg = AppConfig()
+        cfg.settings.exclude_on_missing_mandatory = True
+        cfg.profile.extract_review = ExtractReview(
+            source="cv",
+            confirmed=True,
+            field_status={"driving_license": "absent"},
+        )
+        cfg.profile.qualifications = QualificationsConfig(driving_license=_sourced_codes(codes))
+        return cfg
+
+    for stored in ([""], ["E"]):
+        assert _licence_points(stored) == 0
+        result = score_job(asked, configured(stored))
+        assert result.excluded
+        assert result.score == 0
+        assert "Direkt: Führerschein vorhanden" not in result.match_reasons
+
+    uncertain = score_job(asked, configured(["C", "E", "9", "5"]))
+    assert not uncertain.excluded
+    assert uncertain.score - score_job(plain, configured(["C", "E", "9", "5"])).score == 3
+    assert "Direkt: Führerschein vorhanden" in uncertain.match_reasons
+    assert _licence_points(["C", "E", "9", "5"]) == 3

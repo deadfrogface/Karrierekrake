@@ -268,12 +268,22 @@ def _one_digit(token: str) -> bool:
 
 
 # Longer classes first. A leading class is a whole token, never a prefix of B96.
+# ``+`` and ``#`` (``C++``, ``C#``) are never a class. ``.`` and ``-`` are not a
+# class when another word follows (``B.Sc.``, ``T-Systems``, ``A-Levels``).
 _LEADING_CLASS_CODE = re.compile(
-    r"(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)(?![A-Za-z0-9])",
+    r"(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)"
+    r"(?![A-Za-z0-9])"
+    r"(?![+#])"
+    r"(?![.\-'](?:[.\-']|[A-Za-z0-9]))",
     re.IGNORECASE,
 )
 _LEADING_CLASS_PREFIX = re.compile(
-    r"(?:führerschein|fuehrerschein|fahrerlaubnis|klasse)\s+",
+    r"(?:"
+    r"führerscheinklasse|fuehrerscheinklasse|"
+    r"fahrerlaubnisklasse|"
+    r"führerschein|fuehrerschein|fahrerlaubnis|klasse"
+    r")"
+    r"(?:\s*:\s*|\s+)",
     re.IGNORECASE,
 )
 
@@ -281,9 +291,10 @@ _LEADING_CLASS_PREFIX = re.compile(
 def leading_driving_class(entry: str) -> str:
     """Class at the start of one verbatim entry.
 
-    ``Klasse B``, ``Führerschein Klasse B`` and ``CE 95`` yield ``B``, ``B``
-    and ``CE``. ``Klasse 3`` yields nothing: ``3`` is not a class, and ``B``
-    is not inferred. The stored text is not rewritten.
+    ``Klasse B``, ``Führerscheinklasse B``, ``Führerschein: B`` and ``CE 95``
+    yield ``B``, ``B``, ``B``     and ``CE``. ``Klasse 3`` yields nothing: ``3``
+    is not a class, and ``B`` is not inferred. ``C++``, ``B.Sc. Informatik``,
+    ``T-Systems`` and ``L'Oréal`` yield nothing. The stored text is not rewritten.
     """
     text = (entry or "").strip()
     while text:

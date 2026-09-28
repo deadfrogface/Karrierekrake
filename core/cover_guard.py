@@ -173,16 +173,24 @@ def _in_job(token: str, job_norm: str) -> bool:
     return bool(re.search(rf"(?<!\w){re.escape(tok)}(?!\w)", job_norm))
 
 
-def _confirmed_licence_codes(confirmed_text: str) -> set[str]:
-    """Classes at the start of a confirmed licence line, including ``CE 95``."""
-    from core.cv_parser import leading_driving_class
+def confirmed_licence_codes(config: AppConfig) -> set[str]:
+    """Classes a letter may claim.
 
+    The value is ``read_driving_classes(qualifications.driving_license).evidence``,
+    read as a leading class (``CE 95`` → ``CE``), and only when the driving
+    licence section is confirmed. Name, skills, software, education and
+    experience stay in the profile text and are not split into classes.
+    """
+    from core.cv_parser import leading_driving_class, read_driving_classes
+
+    review = getattr(config.profile, "extract_review", None)
+    if not section_confirmed(review, "driving_license"):
+        return set()
     found: set[str] = set()
-    for line in (confirmed_text or "").splitlines():
-        for part in line.split(","):
-            code = leading_driving_class(part.strip())
-            if code:
-                found.add(code)
+    for item in read_driving_classes(config.profile.qualifications.driving_license).evidence:
+        code = leading_driving_class(str(item))
+        if code:
+            found.add(code)
     return found
 
 
@@ -192,15 +200,18 @@ def find_unsubstantiated_personal_claims(
     confirmed_text: str,
     job_text: str,
     allowed_context: str = "",
+    confirmed_licences: set[str] | None = None,
 ) -> list[str]:
     """Return personal claim snippets that are not backed by confirmed facts.
 
     Job-ad tokens used as if they were the applicant's qualifications are
     violations. The application sentence (title/company) is not a personal claim.
+    Licence classes come only from ``confirmed_licences``, never from scanning
+    ``confirmed_text``.
     """
     confirmed_norm = _norm(f"{confirmed_text} {allowed_context}")
     job_norm = _norm(job_text)
-    confirmed_licences = _confirmed_licence_codes(confirmed_text)
+    licence_codes = {code.upper() for code in (confirmed_licences or ())}
     violations: list[str] = []
     seen: set[str] = set()
     for raw in re.split(r"(?<=[.!?])\s+|\n+", letter or ""):
@@ -225,7 +236,7 @@ def find_unsubstantiated_personal_claims(
         if _LICENCE_SENTENCE.search(sentence):
             for match in _LICENCE_CLASS.finditer(sentence):
                 code = match.group(1)
-                if code not in confirmed_licences:
+                if code.upper() not in licence_codes:
                     flagged.append(code)
         for token in _CLAIM_TOKEN.findall(sentence):
             if token.casefold() in _STOP:
@@ -249,12 +260,14 @@ def screen_cover_letter(
     confirmed_text: str,
     job_text: str,
     allowed_context: str = "",
+    confirmed_licences: set[str] | None = None,
 ) -> ClaimScreen:
     violations = find_unsubstantiated_personal_claims(
         letter,
         confirmed_text=confirmed_text,
         job_text=job_text,
         allowed_context=allowed_context,
+        confirmed_licences=confirmed_licences,
     )
     return ClaimScreen(ok=not violations, violations=violations)
 
@@ -334,6 +347,7 @@ def strip_unsubstantiated_claims(
     confirmed_text: str,
     job_text: str,
     allowed_context: str = "",
+    confirmed_licences: set[str] | None = None,
 ) -> str:
     """Drop sentences that assert personal facts the profile does not confirm."""
     violations = set(
@@ -342,6 +356,7 @@ def strip_unsubstantiated_claims(
             confirmed_text=confirmed_text,
             job_text=job_text,
             allowed_context=allowed_context,
+            confirmed_licences=confirmed_licences,
         )
     )
     if not violations:
