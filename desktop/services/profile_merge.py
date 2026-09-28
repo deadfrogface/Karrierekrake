@@ -574,7 +574,9 @@ def _driving_display_values(q: QualificationsConfig) -> list[str]:
     from core.cv_parser import driving_classes_for_display
 
     shown = driving_classes_for_display(q.driving_license)
-    return shown or q.driving_values()
+    # Empty display means every token was a remnant or an uncertain class.
+    # Do not fall back to those raw fragments.
+    return shown
 
 
 def summarize_incoming(q: QualificationsConfig) -> dict[str, list[str]]:

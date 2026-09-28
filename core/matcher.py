@@ -262,31 +262,45 @@ def _profile_lang_level(languages: list[LanguageEntry], name: str) -> int:
     return best
 
 
-_profile_licence_key: tuple[str, ...] | None = None
-_profile_licence_codes: frozenset[str] = frozenset()
+# One assignment: (stored values, certain class codes). No second global for the set.
+_profile_licence_cache: tuple[tuple[str, ...], frozenset[str]] | None = None
 profile_licence_normalizations = 0
 
 
 def reset_profile_licence_cache() -> None:
     """Drop the cached class set. Tests use this before a counted run."""
-    global _profile_licence_key, _profile_licence_codes, profile_licence_normalizations
-    _profile_licence_key = None
-    _profile_licence_codes = frozenset()
+    global _profile_licence_cache, profile_licence_normalizations
+    _profile_licence_cache = None
     profile_licence_normalizations = 0
 
 
 def profile_licence_codes(quals: QualificationsConfig) -> frozenset[str]:
-    """Normalised classes for this profile state. Computed once until it changes."""
-    global _profile_licence_key, _profile_licence_codes, profile_licence_normalizations
-    from core.cv_parser import driving_classes_for_display
+    """Certain classes for this profile state. Computed once until it changes.
+
+    A verbatim phrase contributes the class at its start (``Klasse B`` → ``B``,
+    ``CE 95`` → ``CE``). Uncertain ``A``/``C``/``D`` are not included.
+    """
+    global _profile_licence_cache, profile_licence_normalizations
+    from core.cv_parser import leading_driving_class, read_driving_classes
 
     key = tuple(driving_values_key(quals))
-    if key == _profile_licence_key:
-        return _profile_licence_codes
+    cached = _profile_licence_cache
+    if cached is not None and cached[0] == key:
+        return cached[1]
     profile_licence_normalizations += 1
-    _profile_licence_codes = frozenset(driving_classes_for_display(quals.driving_license))
-    _profile_licence_key = key
-    return _profile_licence_codes
+    reading = read_driving_classes(quals.driving_license)
+    found: set[str] = set()
+    for item in reading.display:
+        lead = leading_driving_class(item)
+        if lead:
+            found.add(lead)
+        else:
+            # A verbatim phrase such as „Klasse 3“ stays a licence entry.
+            # It does not invent a class the helper did not read.
+            found.add(item)
+    codes = frozenset(found)
+    _profile_licence_cache = (key, codes)
+    return codes
 
 
 def driving_values_key(quals: QualificationsConfig) -> list[str]:
@@ -680,16 +694,31 @@ def score_job(
                 reasons.append("Direkt: Deutschkenntnisse vorhanden")
 
     # Driving license (0-5). Profile classes are cached per profile state.
-    # The ad's requirement was classified once when the job was read.
-    need = getattr(job, "_licence_requirement", None)
-    if need is None:
+    # The ad is classified from this combined text and cached by string identity,
+    # because a later fetch replaces description after the job was built.
+    desc = job.description
+    title = job.title
+    slot = getattr(job, "_licence_requirement", None)
+    if not (
+        isinstance(slot, tuple)
+        and len(slot) == 3
+        and slot[0] is desc
+        and slot[1] is title
+    ):
         from core.models import licence_requirement
 
-        need = licence_requirement(job.title, job.description)
-        job._licence_requirement = need
+        slot = (desc, title, licence_requirement(combined))
+        job._licence_requirement = slot
+    need = slot[2]
     if need:
         codes = profile_licence_codes(quals)
-        if codes:
+        has_entry = bool(quals.driving_license)
+        if has_entry and not codes:
+            # Stored entries exist, but every class is uncertain. That is a
+            # licence, not a missing one: +3, never +5, never a hard exclusion.
+            score += 3
+            reasons.append("Direkt: Führerschein vorhanden")
+        elif codes:
             if need == "class_b":
                 if "B" in codes or "BE" in codes:
                     score += 5

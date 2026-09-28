@@ -223,12 +223,14 @@ _LICENSE_E_VARIANT: dict[str, str] = {
 class LicenceReading:
     """One read of stored licence values. The file is not rewritten.
 
-    ``display`` is what the UI, the summary and matching use. ``evidence`` is
-    what a cover letter may state: a class built by recovering fragments is
-    not evidence until the stored list itself contains that class.
-    ``uncertain`` holds ``C`` or ``D`` that cannot be told from ``C1``/``D1``
-    because the list still contains digit remnants. ``recovered`` is true when
-    the stored list contains a one-character fragment (a lone ``E`` or a digit).
+    ``display`` is what the UI and the summary show. Matching uses those
+    classes plus :func:`leading_driving_class` on a verbatim phrase.
+    ``evidence`` is what a cover letter may state: a class built by recovering
+    fragments is not evidence until the stored list itself contains that class.
+    ``uncertain`` holds ``A``, ``C`` or ``D`` that cannot be completed because
+    the list still contains a one-digit remnant. ``recovered`` is true when
+    the stored list contains a one-character fragment (a lone ``E``, a lone
+    ``M``, or one digit).
     """
 
     display: list[str]
@@ -251,9 +253,48 @@ def _flat_licence_tokens(raw: str | list | None) -> list[str]:
 
 
 def _single_char_fragment(token: str) -> bool:
-    """A leftover from the old character split: lone ``E`` or one digit."""
+    """A leftover from the old character split: lone ``E``, lone ``M``, or one digit."""
     text = token.strip()
-    return len(text) == 1 and (text.upper() == "E" or text.isdigit())
+    if len(text) != 1:
+        return False
+    folded = text.upper()
+    return folded in {"E", "M"} or text.isdigit()
+
+
+def _one_digit(token: str) -> bool:
+    """One digit. ``95`` is a code suffix, not a remnant of the old split."""
+    text = token.strip()
+    return len(text) == 1 and text.isdigit()
+
+
+# Longer classes first. A leading class is a whole token, never a prefix of B96.
+_LEADING_CLASS_CODE = re.compile(
+    r"(C1E|D1E|C1|D1|BE|CE|DE|AM|A1|A2|B1|A|B|C|D|L|T)(?![A-Za-z0-9])",
+    re.IGNORECASE,
+)
+_LEADING_CLASS_PREFIX = re.compile(
+    r"(?:führerschein|fuehrerschein|fahrerlaubnis|klasse)\s+",
+    re.IGNORECASE,
+)
+
+
+def leading_driving_class(entry: str) -> str:
+    """Class at the start of one verbatim entry.
+
+    ``Klasse B``, ``Führerschein Klasse B`` and ``CE 95`` yield ``B``, ``B``
+    and ``CE``. ``Klasse 3`` yields nothing: ``3`` is not a class, and ``B``
+    is not inferred. The stored text is not rewritten.
+    """
+    text = (entry or "").strip()
+    while text:
+        prefix = _LEADING_CLASS_PREFIX.match(text)
+        if prefix is None:
+            break
+        text = text[prefix.end() :]
+    found = _LEADING_CLASS_CODE.match(text)
+    if found is None:
+        return ""
+    return found.group(1).upper()
 
 
 def read_driving_classes(raw: str | list | None) -> LicenceReading:
@@ -263,12 +304,15 @@ def read_driving_classes(raw: str | list | None) -> LicenceReading:
     Known classes are deduplicated and ordered. Unknown phrases stay verbatim
     (``B96``, ``Klasse 3``, ``CE 95``). A lone ``E`` is appended to ``B``, ``C``,
     ``C1``, ``D`` or ``D1`` directly before it, and that base stays.
-    ``[B, E]`` is therefore ``B, BE``. A ``1`` directly after ``C`` or ``D``
+    ``[B, E]`` is therefore ``B, BE``. A lone ``E`` with no such base is dropped,
+    the same way a digit is dropped. A ``1`` directly after ``C`` or ``D``
     rebuilds ``C1`` or ``D1``; ``[C, 1, E]`` rebuilds the single class ``C1E``.
-    When the list contains digit remnants, a ``C`` or ``D`` without that
-    following ``1`` is uncertain: it is not a display class, not a match and
-    not letter evidence. Pure digits never become their own class. ``CE 95``
-    is not rebuilt from leftover ``9`` and ``5``.
+    ``A`` before ``1`` or ``2`` rebuilds ``A1`` or ``A2``. ``A`` before ``M``
+    rebuilds ``AM``. When the list contains a one-digit remnant, a bare ``A``,
+    ``C`` or ``D`` without that following digit is uncertain: it is not a
+    display class, not a match and not letter evidence. A multi-digit token
+    such as ``95`` does not make ``C`` uncertain. Pure digits never become
+    their own class. ``CE 95`` is not rebuilt from leftover ``9`` and ``5``.
 
     Does not mutate ``raw`` and does not write the profile file.
     """
@@ -276,7 +320,7 @@ def read_driving_classes(raw: str | list | None) -> LicenceReading:
     if not tokens:
         return LicenceReading([], [], [], False)
     known = set(_LICENSE_DISPLAY_ORDER)
-    has_digits = any(token.isdigit() for token in tokens)
+    has_digits = any(_one_digit(token) for token in tokens)
     recovered = any(_single_char_fragment(token) for token in tokens)
     recognised: list[str] = []
     recognised_direct: list[bool] = []
@@ -328,11 +372,32 @@ def read_driving_classes(raw: str | list | None) -> LicenceReading:
                     recognised[previous] = variant
                 previous = None
             else:
-                add_unknown(text)
+                # A lone E with no base is a fragment, not a class.
+                previous = None
+            i += 1
+            continue
+        if folded == "M":
+            previous = None
             i += 1
             continue
         nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
         after = tokens[i + 2] if i + 2 < len(tokens) else ""
+        if folded == "A" and nxt in {"1", "2"}:
+            recognised.append(f"A{nxt}")
+            recognised_direct.append(False)
+            previous = None
+            i += 2
+            continue
+        if folded == "A" and nxt.upper() == "M":
+            recognised.append("AM")
+            recognised_direct.append(False)
+            previous = None
+            i += 2
+            continue
+        if folded == "A" and has_digits:
+            add_uncertain("A")
+            i += 1
+            continue
         if folded in {"C", "D"} and nxt == "1":
             code = f"{folded}1E" if after.upper() == "E" else f"{folded}1"
             recognised.append(code)
