@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 from apply.base import ApplyResult
 from apply.manager import ApplicationManager
-from core.config import SourcedText, empty_app_config
+from core.config import ExperienceEntry, SourcedText, empty_app_config
 from core.database import Database
 from core.models import Job, JobStatus, OperatingMode
 
@@ -20,6 +20,18 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     cfg.application.phone = "+491701111111"
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Buchhaltung", source="manual")
+    )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Monatsabschlüsse", source="manual")
+    )
+    cfg.profile.qualifications.work_experience.append(
+        ExperienceEntry(
+            title="Buchhaltung",
+            company="Mandant Beispiel GmbH",
+            start_date="2018-01",
+            end_date="2024-06",
+            source="manual",
+        )
     )
     cfg.application.cv_path = str(tmp_path / "cv.pdf")
     (tmp_path / "cv.pdf").write_bytes(b"%PDF-1.4")

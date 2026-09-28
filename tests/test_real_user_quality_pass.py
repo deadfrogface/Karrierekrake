@@ -178,6 +178,8 @@ def test_nan_company_never_in_cover_letter():
 
 def test_cover_letter_ranks_relevant_experience_not_newest():
     cfg = _cfg()
+    cfg.profile.qualifications.skills.append(SourcedText(value="GOZ", source="manual"))
+    cfg.profile.qualifications.work_experience[0].responsibilities.append("Praxisverwaltung")
     job = Job(
         title="Zahnmedizinische Abrechnung",
         company="Praxis Test GmbH",

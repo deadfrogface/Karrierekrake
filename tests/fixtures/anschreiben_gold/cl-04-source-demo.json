@@ -131,7 +131,10 @@
     "Ihres Unternehmens",
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
-    "[Ihr Name]"
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
   ],
   "rationale": "Dieselbe tragfähige Anzeige wie im Logistik-Treffer, aber source ist demo. Demo-Stellen bekommen nie einen Brief. Soll ist blocked_demo, auch wenn Station und Skills passen würden."
 }

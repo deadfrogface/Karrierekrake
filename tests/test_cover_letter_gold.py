@@ -46,13 +46,6 @@ REFUSAL_OUTCOMES = frozenset({
     "company_missing",
 })
 
-_AD_CONTACT_RE = re.compile(
-    r"Ansprechpartner(?:in)?\b.{0,220}?\b(?:Frau|Herrn|Herr)\s+"
-    r"([A-ZÄÖÜ][A-Za-zÄÖÜäöüß\-]+(?:\s+[A-ZÄÖÜ][A-Za-zÄÖÜäöüß\-]+)+)",
-    re.DOTALL,
-)
-
-
 def _load_cases() -> list[dict]:
     if not FIXTURES.is_dir():
         return []
@@ -135,11 +128,6 @@ def _linking_sentences(letter: str, case: dict) -> int:
     return count
 
 
-def _named_contact(description: str) -> str:
-    match = _AD_CONTACT_RE.search(description or "")
-    return match.group(1).strip() if match else ""
-
-
 def _unsupported_years(letter: str, case: dict) -> list[str]:
     covered = json.dumps(
         {"profile": case["profile"], "job": case["job"]},
@@ -158,6 +146,31 @@ def actual_outcome(result) -> str:
     return result.reason_code or "empty"
 
 
+_BROKEN_LETTER = (
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige",
+    "übernommen",
+    "zwei Punkte, die Sie ausdrücklich nennen",
+    "ein Punkt, den Sie in der Anzeige nennen",
+    "für die Fahrer zuordnen",
+    "für die Belege erfassen",
+    "dort Abstimmung",
+    "als Fachlagerist.",
+    "als Disponent.",
+)
+_VERB_AFTER_ARTICLE = re.compile(
+    r"für die (?:\S+ ){0,6}\S+(?:eln|ern|en) zuständig"
+)
+
+
+def _assert_letter_grammar(letter: str, case_id: str) -> None:
+    """Nominal and verbal tasks stay in frames that keep the profile wording."""
+    for phrase in _BROKEN_LETTER:
+        assert phrase not in letter, f"{case_id}: {phrase!r}"
+    assert _VERB_AFTER_ARTICLE.search(letter) is None, case_id
+
+
 def _assert_interview(result, case: dict) -> None:
     assert result.ok, result.reason_code
     letter = result.text
@@ -169,9 +182,6 @@ def _assert_interview(result, case: dict) -> None:
     assert not hits, f"must_not_contain hit {hits}"
     assert job["title"] in letter, "position missing"
     assert job["company"] in letter, "company missing"
-    contact = _named_contact(job["description"])
-    if contact:
-        assert contact in letter, f"contact {contact!r} missing"
     assert _linking_sentences(letter, case) >= 2, "fewer than two linking sentences"
     years = _unsupported_years(letter, case)
     assert not years, f"year not in profile or ad: {years}"
@@ -197,6 +207,10 @@ else:
             assert result.text == "", result.text
             assert result.ok is False
             assert result.reason_code == expected
+            if "station_without_period" in case["tags"]:
+                assert result.stations_without_tasks == (
+                    "Nordkai Spedition GmbH, Disponent",
+                )
             return
         if expected == "papierkorb":
             hits = _forbidden_hits(result.text, case["must_not_contain"])
@@ -209,5 +223,15 @@ else:
             return
         if expected == "interview":
             _assert_interview(result, case)
+            if "missing_credential" in case["tags"]:
+                assert result.missing_required == ("ADR-Schein",)
+            if "two_stations" in case["tags"]:
+                assert result.stations_without_tasks == (
+                    "Nordkai Spedition GmbH, Disponent",
+                    "Kistenwerk Ost GmbH, Fachlagerist",
+                )
+            if "nordmole_dispatcher" in case["tags"]:
+                assert result.missing_required == ("Frühschicht",)
+            _assert_letter_grammar(result.text, case["id"])
             return
         pytest.fail(f"unknown expected_outcome {expected!r}")

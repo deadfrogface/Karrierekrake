@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-26-generic-activity-words",
+  "tags": [
+    "generic_activity_words"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550126",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Aushilfe",
+          "company": "Hof Beispiel GmbH",
+          "location": "Musterhafen",
+          "start_date": "2018-02",
+          "end_date": "2023-11",
+          "responsibilities": [
+            "Bearbeitung",
+            "Unterstützung"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-26-generic-activity-words",
+    "source": "indeed",
+    "source_job_id": "src-cl-26-generic-activity-words",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-26-generic-activity-words",
+    "status": "new",
+    "title": "Bürohilfe",
+    "company": "Amt Beispiel GmbH",
+    "description": "Das Amt Beispiel GmbH sucht eine Bürohilfe. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- Bearbeitung\n- Unterstützung\n\nWeitere Stationen nennt die Anzeige nicht."
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
+  ],
+  "rationale": "Bearbeitung und Unterstützung sind allgemeine Aufgabenwörter, unabhängig vom Goldfall mit Betreuung und Erstellung. Sie qualifizieren die Station Aushilfe nicht. Soll ist no_evidence."
+}

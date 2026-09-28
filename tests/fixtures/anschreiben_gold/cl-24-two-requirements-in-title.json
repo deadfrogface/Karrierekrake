@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-24-two-requirements-in-title",
+  "tags": [
+    "distinct_requirements"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550124",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Fachlagerist",
+          "company": "Kistenwerk Ost GmbH",
+          "location": "Musterhafen",
+          "start_date": "2016-09",
+          "end_date": "2019-02",
+          "responsibilities": [],
+          "source": "manual"
+        }
+      ],
+      "skills": [],
+      "software": [
+        {
+          "value": "SAP",
+          "source": "manual"
+        }
+      ],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-24-two-requirements-in-title",
+    "source": "indeed",
+    "source_job_id": "src-cl-24-two-requirements-in-title",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-24-two-requirements-in-title",
+    "status": "new",
+    "title": "Fachlagerist SAP",
+    "company": "Kaiwerk GmbH",
+    "description": "Die Kaiwerk GmbH sucht Unterstützung im Umschlag. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- eine Station als Fachlagerist\n- Umgang mit SAP\n\nDer Titel der Stelle nennt beide Anforderungen."
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Kaiwerk GmbH",
+    "Fachlagerist SAP",
+    "Fachlagerist",
+    "Kistenwerk Ost GmbH",
+    "SAP",
+    "von 2016 bis 2019"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige"
+  ],
+  "rationale": "Der Stellentitel enthält Fachlagerist und SAP. Das sind zwei verschiedene Anforderungen. Die Station Fachlagerist und die Software SAP bleiben zwei Bezüge und stehen im Brief."
+}

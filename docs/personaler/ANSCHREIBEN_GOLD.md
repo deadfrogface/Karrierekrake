@@ -37,7 +37,7 @@ Eine unbelegte konkrete Behauptung, eine falsche Anrede oder Firma, oder eine le
 | `interview` | Alle fünf Kriterien sind erfüllt. | ja |
 | `papierkorb` | Harter Fehler nach Abschnitt 2. Kein Versand. | kein Interview-Brief |
 | `job_incomplete` | Die Stellenbeschreibung ist leer. | nein |
-| `no_evidence` | Keine belegte Station und kein belegter Skill treffen die Anzeige. | nein |
+| `no_evidence` | Weniger als zwei verschiedene belegte Bezüge treffen die Anzeige. Dieselbe Anforderung zweimal zählt einmal. | nein |
 | `blocked_demo` | `source` ist `demo`. | nein |
 | `company_missing` | Das Firmenfeld ist leer oder nur ein Platzhalter (`Firma 0`, `Ihr Unternehmen` und gebeugte Formen). | nein |
 
@@ -46,7 +46,7 @@ Eine unbelegte konkrete Behauptung, eine falsche Anrede oder Firma, oder eine le
 Vereinbartes Verhalten, das die Fälle festschreiben:
 
 - Leere Beschreibung, auch nach Trim nur Leerzeichen: `job_incomplete`, kein Brief.
-- Beschreibung vorhanden, aber keine belegte Station und kein belegter Skill: `no_evidence`, kein Brief.
+- Beschreibung vorhanden, aber weniger als zwei verschiedene belegte Bezüge: `no_evidence`, kein Brief. Mindestens ein Bezug ist eine Station aus der Berufserfahrung. Zwei Kenntnisse ohne Station reichen nicht. Eine Station ohne Tätigkeiten zählt nur mit Firma, Rolle und dem Zeitraum aus dem Profil. Eine Station ohne Tätigkeiten und ohne Zeitraum zählt nicht. Dieselbe Tatsache zweimal, oder zwei Bezeichnungen derselben Anforderung, zählen einmal. Ein Treffer nur über den Firmennamen zählt nicht. Ausbildung ist keine Station.
 - Firmenfeld leer oder nur ein Platzhalter (`Firma 0`, `Ihr Unternehmen`, `Ihrem Unternehmen`, `Ihres Unternehmens`): `company_missing`, kein Brief. Die Sperre liegt vor dem Generator. Der Grund nennt die fehlende Firma. Eine vorhandene Beschreibung macht daraus kein `job_incomplete`.
 - `source == demo` bekommt nie einen Brief, auch wenn der Inhalt sonst tragen würde.
 - `source == fixture` darf einen Brief bekommen, wenn die fünf Kriterien erfüllt sind.
@@ -86,6 +86,9 @@ Gemeinsame Sperrliste, in jedem Fall vollständig vorhanden:
 - `die ausgeschriebene Position`
 - `der ausgeschriebenen Position`
 - `[Ihr Name]`
+- `relevante Erfahrungen gesammelt`
+- `Für die ausgeschriebene Aufgabe`
+- `setze ich`
 
 Bei `interview` nennt `must_mention` mindestens zwei Fakten aus dem Profil (Station, Skill, Software) und dazu Titel, Firma und, wenn vorhanden, die Ansprechperson. Die Anforderungen sitzen in der Beschreibung in der unteren Hälfte, nach Betrieb und Angebot.
 
@@ -131,13 +134,34 @@ Minimales Profil, das der Anschreiben-Pfad liest. Suche, Filter, Settings und `s
 | `cl-06-education-as-experience` | `papierkorb` | Die einzige Station ist eine Ausbildung und liegt unter Berufserfahrung. |
 | `cl-07-adr-schein-trap` | `interview` | ADR-Schein und Gefahrgut stehen in der Anzeige, nicht im Profil, und dürfen nicht behauptet werden. |
 | `cl-08-company-missing` | `company_missing` | Firmenfeld leer, nur der Platzhalter Firma 0; Sperre vor dem Generator, der Grund nennt die fehlende Firma. |
-| `cl-09-named-contact` | `interview` | Die Anzeige nennt Frau Lotte Quendel; der Brief muss sie ansprechen. |
+| `cl-09-named-contact` | `interview` | Die Anzeige nennt Frau Lotte Quendel; der Brief beginnt mit Sehr geehrte Frau Quendel. |
 | `cl-10-english-ad` | `interview` | Englische Anzeige; dispatcher, route planning und SAP TM sind über das Profil belegt. |
 | `cl-11-long-ad-requirements-end` | `interview` | Lange Anzeige; Disponent, Tourenplanung und SAP TM stehen erst am Ende. |
 | `cl-12-html-remnants` | `interview` | Eingefügte Beschreibung mit HTML; nach der Bereinigung ein Treffer, ohne Markup im Brief. |
+| `cl-13-one-reference` | `no_evidence` | Nur Tourenplanung trifft die Anzeige. Ein Bezug reicht nicht. |
+| `cl-14-two-stations` | `interview` | Disponent und Fachlagerist treffen die Anzeige, Skills fehlen. Beide Stationen stehen im Brief. |
+| `cl-15-station-and-skill` | `interview` | Die Station Disponent und der Skill Tourenplanung sind zwei verschiedene Bezüge. |
+| `cl-16-employer-name-only` | `no_evidence` | Die Anzeige nennt den früheren Arbeitgeber Nordkai Spedition GmbH und sonst keinen Profilbezug. |
+| `cl-17-excel-one-requirement` | `no_evidence` | Excel und MS Excel treffen dieselbe Anforderung MS Excel und zählen als ein Bezug. |
+| `cl-18-sap-business-one-covers-sap` | `interview` | SAP Business One im Profil trifft die Anforderung SAP. Die Station Rechnungsprüfung ist der zweite Bezug. |
+| `cl-19-sap-business-one-only` | `no_evidence` | Nur SAP Business One, kein zweiter Bezug. Die Produktfamilie zählt als eine Anforderung. |
+| `cl-20-nordmole-dispatcher` | `interview` | Nordmole-Anzeige aus der Quell-Fixture. Station Disponent und Software SAP stehen im Brief. |
+| `cl-21-nordmole-payroll` | `no_evidence` | Dieselbe Anzeige, Profil Lohnbuchhalterin mit DATEV und Excel. Deutsch und Klasse B zählen nicht. |
+| `cl-22-generic-title-word` | `no_evidence` | Sachbearbeiter Lohn und Sachbearbeiter Einkauf teilen nur das allgemeine Wort Sachbearbeiter. |
+| `cl-23-generic-task-words` | `no_evidence` | Betreuung und Erstellung sind allgemeine Aufgabenwörter und qualifizieren die Station nicht. |
+| `cl-24-two-requirements-in-title` | `interview` | Der Titel enthält Fachlagerist und SAP. Das bleiben zwei Bezüge. |
+| `cl-25-one-sentence-per-reference` | `no_evidence` | Tourenplanung und SAP treffen die Anzeige, aber keine Station. Zwei Kenntnisse ohne Station sind kein Brief. |
+| `cl-26-generic-activity-words` | `no_evidence` | Bearbeitung und Unterstützung sind allgemeine Aufgabenwörter und qualifizieren die Station nicht. |
+| `cl-27-gender-title` | `interview` | Industriekauffrau im Profil trifft Industriekaufmann (m/w/d) in der Anzeige über den Titel. Excel ist der zweite Bezug. |
+| `cl-28-titled-contact` | `interview` | Ansprechpartnerin Frau Dr. Quendel. Der Brief übernimmt Anrede und Titel. |
+| `cl-29-two-contacts` | `interview` | Zwei Ansprechpersonen. Der Brief bleibt bei Sehr geehrte Damen und Herren. |
+| `cl-30-html-contact` | `interview` | Der Name steht in einem HTML-Tag. Nach der Bereinigung spricht der Brief Frau Quendel an. |
+| `cl-31-station-without-period` | `no_evidence` | Die Station hat weder Tätigkeiten noch einen Zeitraum und zählt nicht. |
 
-Zählung: `interview` 7, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 1, `blocked_demo` 1, `company_missing` 1. Zusammen 12 Fälle.
+Zählung: `interview` 16, `papierkorb` 1, `job_incomplete` 1, `no_evidence` 11, `blocked_demo` 1, `company_missing` 1. Zusammen 31 Fälle.
+
+Die erzeugten Briefe der `interview`-Fälle stehen in `docs/qa/anschreiben_gold_briefe.md`.
 
 ## 7. Nicht Gegenstand dieses Stands
 
-Keine Änderung an Parser, Scrapern, Qt-Oberfläche, `i18n.py`, CI oder `core/`. Kein Aufruf von `render_cover_letter()` und kein gespeicherter Musterbrief. `save_cover_letter()` bleibt unberührt.
+Der Gold-Stand selbst ändert Parser, Scraper, Qt-Oberfläche, `i18n.py` und CI nicht. Die erzeugten Interview-Briefe liegen in `docs/qa/anschreiben_gold_briefe.md` und werden mit `scripts/dump_cover_gold_letters.py` neu geschrieben.

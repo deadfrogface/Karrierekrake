@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-23-generic-task-words",
+  "tags": [
+    "generic_tasks"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550123",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Hilfskraft",
+          "company": "Hof Beispiel GmbH",
+          "location": "Musterhafen",
+          "start_date": "2018-02",
+          "end_date": "2023-11",
+          "responsibilities": [
+            "Betreuung der Ablage",
+            "Erstellung von Listen"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-23-generic-task-words",
+    "source": "indeed",
+    "source_job_id": "src-cl-23-generic-task-words",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-23-generic-task-words",
+    "status": "new",
+    "title": "Bürohilfe",
+    "company": "Amt Beispiel GmbH",
+    "description": "Das Amt Beispiel GmbH sucht eine Bürohilfe. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- Betreuung der Vorgänge\n- Erstellung der Unterlagen\n\nWeitere Stationen nennt die Anzeige nicht."
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
+  ],
+  "rationale": "Betreuung und Erstellung sind allgemeine Aufgabenwörter. Zwei solche Wörter qualifizieren die Station Hilfskraft nicht. Der Titel trifft die Anzeige nicht. Soll ist no_evidence."
+}

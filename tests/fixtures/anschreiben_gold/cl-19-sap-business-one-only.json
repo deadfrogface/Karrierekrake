@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-19-sap-business-one-only",
+  "tags": [
+    "product_only"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550119",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [],
+      "skills": [],
+      "software": [
+        {
+          "value": "SAP Business One",
+          "source": "manual"
+        }
+      ],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-19-sap-business-one-only",
+    "source": "indeed",
+    "source_job_id": "src-cl-19-sap-business-one-only",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-19-sap-business-one-only",
+    "status": "new",
+    "title": "Sachbearbeitung (m/w/d)",
+    "company": "Buchkontor Beispiel GmbH",
+    "description": "Die Buchkontor Beispiel GmbH sucht Unterstützung in der Buchhaltung. Der Betrieb ist fiktiv.\n\nWir bieten eine unbefristete Vollzeitstelle.\n\nDas bringen Sie mit:\n- sicheren Umgang mit SAP im Tagesgeschäft\n\nWeitere Stationen nennt die Anzeige nicht."
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich"
+  ],
+  "rationale": "Im Profil steht nur die Software SAP Business One. Sie trifft die Anforderung SAP, aber kein zweiter belegter Bezug. Ein Bezug reicht nicht. Soll ist no_evidence und kein Brief."
+}
