@@ -1,6 +1,6 @@
 {salutation},
 
-hiermit bewerbe ich mich um die Position {position_phrase} bei {company_bei}.
+hiermit bewerbe ich mich um die {position_phrase} bei {company_bei}.
 
 {experience_sentence}
 

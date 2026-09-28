@@ -1896,3 +1896,236 @@ def test_approve_rejects_when_station_deleted_after_preview(tmp_path: Path, capl
     finally:
         cover._build_cover_facts = build
         cover._FACTS_SLOT = None
+
+
+def test_requirement_named_by_the_station_is_not_repeated_as_skill():
+    cfg = _cfg(
+        "Tourenplanung",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Tourenplanung für Stückgut"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+    cfg.profile.qualifications.software = [SourcedText(value="SAP", source="manual")]
+    job = Job(
+        id="j-once-req",
+        source="indeed",
+        title="Disponent",
+        company="HafenLogistik GmbH",
+        description="Anforderungen: Disponent, Tourenplanung für Stückgut und SAP.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert result.text.count("Tourenplanung") == 1
+    assert "Praktische Erfahrung habe ich mit SAP." in result.text
+    assert "steht in der Anzeige" not in result.text
+    assert "deckt einen Punkt der Anzeige ab" not in result.text
+    assert "genannt in der Anzeige" not in result.text
+
+
+def test_skill_context_is_taken_from_the_ad_sentence():
+    cfg = _cfg(
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Schichtkoordination im Lager"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+    cfg.profile.qualifications.software = [SourcedText(value="SAP TM", source="manual")]
+    cfg.profile.qualifications.skills = [SourcedText(value="Excel", source="manual")]
+    marked = Job(
+        id="j-skill-context",
+        source="indeed",
+        title="Disponent",
+        company="HafenLogistik GmbH",
+        description=(
+            "Gesucht wird ein Disponent für die Schichtkoordination im Lager. "
+            "Sicherer Umgang mit SAP TM im Tagesgeschäft setzen wir voraus."
+        ),
+    )
+    written = compose_cover_letter(marked, cfg)
+    assert written.ok is True
+    assert (
+        "Mit SAP TM, das Sie im Tagesgeschäft voraussetzen, habe ich praktische Erfahrung."
+        in written.text
+    )
+    assert "Excel" not in written.text
+
+    plain = Job(
+        id="j-skill-plain",
+        source="indeed",
+        title="Disponent",
+        company="HafenLogistik GmbH",
+        description="Gesucht wird ein Disponent. SAP TM und Excel stehen zur Auswahl.",
+    )
+    cfg.profile.qualifications.skills = [SourcedText(value="Excel", source="manual")]
+    both = compose_cover_letter(plain, cfg)
+    assert both.ok is True
+    assert "Praktische Erfahrung habe ich mit Excel." in both.text
+    assert "Praktische Erfahrung habe ich außerdem mit SAP TM." in both.text
+
+
+def test_feminine_skill_uses_die_in_the_requirement_clause():
+    cfg = _cfg(
+        "Tourenplanung",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Schichtkoordination im Lager"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+    job = Job(
+        id="j-feminine-skill",
+        source="indeed",
+        title="Disponent",
+        company="HafenLogistik GmbH",
+        description=(
+            "Gesucht wird ein Disponent für die Schichtkoordination im Lager. "
+            "Umgang mit Tourenplanung im Lager ist erforderlich."
+        ),
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert (
+        "Mit Tourenplanung, die Sie im Lager voraussetzen, habe ich praktische Erfahrung."
+        in result.text
+    )
+
+
+def test_verb_and_noun_tasks_are_not_mixed():
+    cfg = _cfg(
+        "SAP",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Tourenplanung", "Fahrer zuordnen"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+    job = Job(
+        id="j-verb-noun",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Tourenplanung, Fahrer zuordnen und SAP.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "für die Tourenplanung zuständig." in result.text
+    assert "Zu meinen Aufgaben gehörte dort: Fahrer zuordnen." in result.text
+    assert "für die Fahrer zuordnen" not in result.text
+    assert "übernommen" not in result.text
+
+
+def test_noun_without_a_known_gender_has_no_article():
+    cfg = _cfg(
+        "SAP",
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                responsibilities=["Excel"],
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            )
+        ],
+    )
+    job = Job(
+        id="j-no-article",
+        source="indeed",
+        title="Disponent",
+        company="Nordmole Musterlogistik GmbH",
+        description="Anforderungen: Disponent, Excel und SAP im Leitstand.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "für Excel zuständig." in result.text
+    assert "für die Excel" not in result.text
+
+
+def test_bare_stations_use_two_sentence_shapes():
+    cfg = _cfg(
+        stations=[
+            ExperienceEntry(
+                title="Disponent",
+                company="Nordkai Spedition GmbH",
+                start_date="2019-03",
+                end_date="2024-08",
+                source="manual",
+            ),
+            ExperienceEntry(
+                title="Fachlagerist",
+                company="Kistenwerk Ost GmbH",
+                start_date="2016-09",
+                end_date="2019-02",
+                source="manual",
+            ),
+        ],
+    )
+    job = Job(
+        id="j-two-shapes",
+        source="indeed",
+        title="Teamleitung Umschlag (m/w/d)",
+        company="Kaiwerk GmbH",
+        description="Erfahrung als Disponent und eine Station als Fachlagerist.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "Bei der Nordkai Spedition GmbH war ich von 2019 bis 2024 als Disponent tätig." in result.text
+    assert (
+        "Ich habe von 2016 bis 2019 bei der Kistenwerk Ost GmbH als Fachlagerist gearbeitet."
+        in result.text
+    )
+    assert "als Fachlagerist." not in result.text
+    assert result.text.count("war ich") == 1
+
+
+def test_activity_field_opening_says_stelle():
+    cfg = _cfg(
+        stations=[
+            ExperienceEntry(
+                title="Rechnungsprüfung",
+                company="Kontor Beispiel GmbH",
+                responsibilities=["Belege erfassen"],
+                start_date="2019-04",
+                end_date="2024-06",
+                source="manual",
+            )
+        ]
+    )
+    cfg.profile.qualifications.software = [SourcedText(value="SAP Business One", source="manual")]
+    job = Job(
+        id="j-stelle",
+        source="indeed",
+        title="Rechnungsprüfung (m/w/d)",
+        company="Buchkontor Beispiel GmbH",
+        description="Erfahrung in der Rechnungsprüfung und sicherer Umgang mit SAP.",
+    )
+    result = compose_cover_letter(job, cfg)
+    assert result.ok is True
+    assert "um die Stelle in der Rechnungsprüfung (m/w/d)" in result.text
+    assert "um die Position Rechnungsprüfung" not in result.text
+    assert "Zu meinen Aufgaben gehörte dort: Belege erfassen." in result.text
+    assert "als Rechnungsprüfung" not in result.text
+    assert "übernommen" not in result.text
