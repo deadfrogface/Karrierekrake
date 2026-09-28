@@ -296,11 +296,19 @@ _LEADING_CLASS_PREFIX = re.compile(
     r"(?:"
     r"driving\s+licen[cs]e|"
     r"driver['\u2019]s\s+licen[cs]e|"
+    r"führerscheinklassen|fuehrerscheinklassen|"
+    r"fahrerlaubnisklassen|"
     r"führerscheinklasse|fuehrerscheinklasse|"
     r"fahrerlaubnisklasse|"
-    r"führerschein|fuehrerschein|fahrerlaubnis|"
-    r"category|class|klasse"
+    r"führerschein|fuehrerschein|"
+    r"fahrerlaubnis|"
+    r"klassen|"
+    r"category|categories|"
+    r"class|classes|"
+    r"klasse|"
+    r"kl\."
     r")"
+    r"(?:\s+(?:der|die))?"
     r"(?:\s*:\s*|\s+)",
     re.IGNORECASE,
 )
@@ -370,10 +378,11 @@ def licence_class_tokens(text: str) -> list[str]:
 def leading_driving_class(entry: str) -> str:
     """Class at the start of one verbatim entry.
 
-    ``Klasse B``, ``Führerschein: B``, ``Driving licence: B``, ``Category B``
-    and ``B-Führerschein`` yield ``B``. ``Klasse 3`` yields nothing. ``C++``,
-    ``B.Sc.`` and ``T-Systems`` yield nothing. ``Klasse B.`` yields ``B``.
-    The stored text is not rewritten.
+    ``Klasse B``, ``Führerschein der Klasse B``, ``Klassen B``,
+    ``Führerscheinklassen B``, ``Kl. B``, ``Driving licence: B`` and
+    ``Category B`` yield ``B``. ``Fahrerlaubnis der Klasse CE`` yields ``CE``.
+    ``Klasse 3`` yields nothing. ``C++``, ``B.Sc.`` and ``T-Systems`` yield
+    nothing. ``Klasse B.`` yields ``B``. The stored text is not rewritten.
     """
     text = (entry or "").strip()
     while text:

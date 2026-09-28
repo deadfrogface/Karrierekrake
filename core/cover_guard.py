@@ -25,6 +25,56 @@ _LICENCE_SENTENCE = re.compile(
 )
 _ENGLISH_CLASS_WORD = re.compile(r"\b(?:class|category)\b", re.I)
 _ENGLISH_LICENCE_WORD = re.compile(r"\blicen[cs]e\b", re.I)
+# A period ends a sentence except after an ordinal, a one-letter abbreviation
+# (``u. a.``, ``z. B.``, ``d. h.``) or a usual short form (``Jan.`` … ``Dez.``).
+_CLAIM_SENTENCE_BREAK = re.compile(r"[.!?]\s+|\n+")
+_ABBREV_BEFORE_PERIOD = frozenset(
+    {
+        "jan",
+        "feb",
+        "febr",
+        "mär",
+        "maerz",
+        "mrz",
+        "apr",
+        "mai",
+        "jun",
+        "juni",
+        "jul",
+        "juli",
+        "aug",
+        "sept",
+        "sep",
+        "okt",
+        "nov",
+        "dez",
+        "nr",
+        "kl",
+        "ca",
+        "bzw",
+        "inkl",
+        "evtl",
+        "ggf",
+        "usw",
+        "dr",
+        "str",
+    }
+)
+_WORD_BEFORE_PERIOD = re.compile(r"[A-Za-zÄÖÜäöüß]+$")
+_ORDINAL_BEFORE_PERIOD = re.compile(r"\d+$")
+# A lowercase class counts only when a licence word stands directly before it.
+_LOWER_CODE_AFTER_LICENCE_WORD = re.compile(
+    r"(?:^|\W)(?:"
+    r"führerscheinklassen|fuehrerscheinklassen|fahrerlaubnisklassen|"
+    r"führerscheinklasse|fuehrerscheinklasse|fahrerlaubnisklasse|"
+    r"führerschein|fuehrerschein|fahrerlaubnis|"
+    r"klassen|klasse|"
+    r"categories|category|classes|class|"
+    r"licen[cs]es|licen[cs]e|"
+    r"kl\."
+    r")\s*:?\s*$",
+    re.IGNORECASE,
+)
 _FIRST_PERSON = re.compile(
     r"\b(ich|meine|meiner|meinem|meinen|mir|mich|i|my|mine)\b",
     re.I,
@@ -39,6 +89,15 @@ _CREDENTIAL = re.compile(
     r"\bzertifikat\s+([A-Za-z0-9][A-Za-z0-9+\-]{2,})\b|"
     r"\babschluss\s+als\s+([A-Za-zÄÖÜäöüß0-9+\-]{3,})\b|"
     r"\bausbildung\s+als\s+([A-Za-zÄÖÜäöüß0-9+\-]{3,})",
+    re.I,
+)
+# „den Master in BWL abgeschlossen“ is a degree claim. The name has to sit
+# in the same sentence as the completion, which the sentence splitter keeps
+# together across „3.“ and „u. a.“.
+_COMPLETED_DEGREE = re.compile(
+    r"\b((?:master|bachelor|diplom|staatsexamen|promotion)"
+    r"(?:\s+in\s+[A-Za-zÄÖÜäöüß0-9+\-]{2,})?)\b"
+    r"(?=[^.!?\n]{0,40}\babgeschlossen\b)",
     re.I,
 )
 _METRIC = re.compile(
@@ -168,18 +227,57 @@ def _supported(token: str, confirmed_norm: str) -> bool:
     return False
 
 
-def _licence_codes_in_sentence(sentence: str) -> list[str]:
-    """Class codes in one sentence.
+def _period_keeps_sentence(text: str, dot: int) -> bool:
+    """True when this period belongs to a number or an abbreviation."""
+    before = text[:dot]
+    if _ORDINAL_BEFORE_PERIOD.search(before):
+        return True
+    word = _WORD_BEFORE_PERIOD.search(before)
+    if word is None:
+        return False
+    token = word.group(0)
+    if len(token) == 1:
+        return True
+    return token.casefold() in _ABBREV_BEFORE_PERIOD
 
-    The scan is :func:`core.cv_parser.licence_class_tokens`. A lowercase
-    ``a`` is the English article (``a class B``, ``a category C``), not
-    class A. Class A stays when the letter itself is uppercase.
+
+def _split_claim_sentences(letter: str) -> list[str]:
+    """Split a letter into sentences. Abbreviations stay in the same sentence."""
+    text = letter or ""
+    sentences: list[str] = []
+    start = 0
+    for match in _CLAIM_SENTENCE_BREAK.finditer(text):
+        mark = match.start()
+        if text[mark] == "." and _period_keeps_sentence(text, mark):
+            continue
+        end = mark if text[mark] == "\n" else mark + 1
+        chunk = text[start:end].strip()
+        if chunk:
+            sentences.append(chunk)
+        start = match.end()
+    tail = text[start:].strip()
+    if tail:
+        sentences.append(tail)
+    return sentences
+
+
+def _licence_codes_in_sentence(sentence: str) -> list[str]:
+    """Class codes a licence sentence may claim.
+
+    The scan is :func:`core.cv_parser._iter_licence_classes`. An uppercase
+    code counts anywhere in the sentence. A lowercase code counts only
+    directly after a licence word (``Klasse b``, ``Führerschein c``,
+    ``class b``). ``am`` is therefore not class AM, and the article ``a``
+    is not class A.
     """
     from core.cv_parser import _iter_licence_classes
 
     codes: list[str] = []
     for start, code in _iter_licence_classes(sentence):
-        if code == "A" and sentence[start : start + 1] == "a":
+        span = sentence[start : start + len(code)]
+        letters = [char for char in span if char.isalpha()]
+        upper = bool(letters) and all(char.isupper() for char in letters)
+        if not upper and _LOWER_CODE_AFTER_LICENCE_WORD.search(sentence[:start]) is None:
             continue
         codes.append(code)
     return codes
@@ -246,15 +344,18 @@ def find_unsubstantiated_personal_claims(
     licence_codes = {code.upper() for code in (confirmed_licences or ())}
     violations: list[str] = []
     seen: set[str] = set()
-    for raw in re.split(r"(?<=[.!?])\s+|\n+", letter or ""):
-        sentence = raw.strip()
-        if not sentence or _APPLICATION_SENTENCE.search(sentence):
+    for sentence in _split_claim_sentences(letter):
+        if _APPLICATION_SENTENCE.search(sentence):
             continue
         if not _FIRST_PERSON.search(sentence):
             continue
         flagged: list[str] = []
         for match in _CREDENTIAL.finditer(sentence):
             name = next((g for g in match.groups() if g), "")
+            if name and not _supported(name, confirmed_norm):
+                flagged.append(name)
+        for match in _COMPLETED_DEGREE.finditer(sentence):
+            name = match.group(1)
             if name and not _supported(name, confirmed_norm):
                 flagged.append(name)
         for match in _METRIC.finditer(sentence):
@@ -304,26 +405,27 @@ def screen_cover_letter(
 
 
 def _entry_text(entry: object) -> str:
+    parts: list[str] = []
     label = getattr(entry, "label", None)
     if callable(label):
         text = clean_text(label())
         if text:
-            return text
-    parts = []
-    for attr in (
-        "value",
-        "title",
-        "company",
-        "qualification",
-        "institution",
-        "name",
-        "language",
-        "level",
-    ):
-        parts.append(clean_text(getattr(entry, attr, "")))
+            parts.append(text)
+    if not parts:
+        for attr in (
+            "value",
+            "title",
+            "company",
+            "qualification",
+            "institution",
+            "name",
+            "language",
+            "level",
+        ):
+            parts.append(clean_text(getattr(entry, attr, "")))
     responsibilities = getattr(entry, "responsibilities", None) or []
-    parts.extend(clean_text(r) for r in responsibilities)
-    return " ".join(p for p in parts if p)
+    parts.extend(clean_text(item) for item in responsibilities)
+    return " ".join(part for part in parts if part)
 
 
 def confirmed_profile_text(config: AppConfig) -> str:
@@ -393,10 +495,7 @@ def strip_unsubstantiated_claims(
     if not violations:
         return letter
     kept: list[str] = []
-    for raw in re.split(r"(?<=[.!?])\s+|\n+", letter or ""):
-        sentence = raw.strip()
-        if not sentence:
-            continue
+    for sentence in _split_claim_sentences(letter):
         if sentence in violations:
             continue
         kept.append(sentence)

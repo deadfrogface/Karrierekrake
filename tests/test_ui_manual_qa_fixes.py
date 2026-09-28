@@ -1677,3 +1677,146 @@ def test_vehicle_word_without_class_letter_is_flagged(sentence):
         job_text="Lager",
     )
     assert not screened.ok
+
+
+def test_cover_guard_keeps_abbreviations_inside_the_claim():
+    """A period in a date or an abbreviation does not hide the class that follows."""
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg = _letter_profile(["B"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    text = confirmed_profile_text(cfg)
+    codes = confirmed_licence_codes(cfg)
+
+    def screen(sentence: str):
+        return screen_cover_letter(
+            sentence,
+            confirmed_text=text,
+            confirmed_licences=codes,
+            job_text="Lager",
+        )
+
+    for sentence in (
+        "Ich habe am 1. März 2015 den Führerschein Klasse C erworben.",
+        "Ich habe u. a. den Führerschein Klasse CE.",
+        "Ich besitze seit Jan. 2012 die Fahrerlaubnis Klasse CE.",
+    ):
+        assert not screen(sentence).ok
+
+    two = screen(
+        "Ich arbeite in Hamburg. Der Führerschein Klasse C ist in der Anzeige gefordert."
+    )
+    assert two.ok
+    assert two.violations == []
+
+
+def test_sentence_break_covers_every_guard_check():
+    """Abbreviations stay inside employer, degree, number and licence checks."""
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    bare = _letter_profile(["B"])
+    bare.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    text = confirmed_profile_text(bare)
+    codes = confirmed_licence_codes(bare)
+    assert "Siemens" not in text
+    assert "Master" not in text
+
+    def screen(sentence: str, *, profile_text=text, profile_codes=codes, job_text="Lager"):
+        return screen_cover_letter(
+            sentence,
+            confirmed_text=profile_text,
+            confirmed_licences=profile_codes,
+            job_text=job_text,
+        )
+
+    for sentence in (
+        "Ich war u. a. bei Siemens als Teamleiter tätig.",
+        "Ich habe am 3. Mai 2018 den Master in BWL abgeschlossen.",
+        "Ich habe u. a. 12 Jahre in der Disposition gearbeitet.",
+        "Ich habe u. a. den Führerschein Klasse CE.",
+    ):
+        assert not screen(sentence).ok
+
+    station = _with_matching_station(
+        _letter_profile(["B"]),
+        title="Fahrerin",
+        company="Holm Logistik",
+        task="Tourenplanung, z. B. für Kühltransporte",
+    )
+    station.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    station_text = confirmed_profile_text(station)
+    assert "Tourenplanung, z. B. für Kühltransporte" in station_text
+    kept = screen(
+        "In meiner Tätigkeit als Fahrerin bei Holm Logistik habe ich die "
+        "Tourenplanung, z. B. für Kühltransporte übernommen.",
+        profile_text=station_text,
+        profile_codes=confirmed_licence_codes(station),
+        job_text="Tourenplanung für Kühltransporte",
+    )
+    assert kept.ok
+    assert kept.violations == []
+
+
+def test_lowercase_licence_code_counts_only_after_a_licence_word():
+    """Uppercase codes count anywhere. Lowercase codes count only after a licence word."""
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg = _letter_profile(["B"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    screened = screen_cover_letter(
+        "Den Führerschein Klasse B besitze ich, am Steuer eines Transporters bin ich täglich.",
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text="Lager",
+    )
+    assert screened.ok
+    flagged = screen_cover_letter(
+        "Ich habe den Führerschein Klasse c.",
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text="Lager",
+    )
+    assert not flagged.ok
+
+
+def test_leading_class_allows_article_plural_and_abbreviation():
+    """der/die, plurals and Kl. sit in front of the same leading class."""
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+    from core.cv_parser import leading_driving_class, read_driving_classes
+
+    assert leading_driving_class("Führerschein der Klasse B") == "B"
+    assert leading_driving_class("Führerschein die Klasse B") == "B"
+    assert _licence_points(["Führerschein der Klasse B"]) == 5
+    assert leading_driving_class("Fahrerlaubnis der Klasse CE") == "CE"
+    assert _licence_points(
+        ["Fahrerlaubnis der Klasse CE"],
+        "Führerschein Klasse CE erforderlich",
+    ) == 5
+    assert leading_driving_class("Klassen B") == "B"
+    assert _licence_points(["Klassen B"]) == 5
+    assert leading_driving_class("Führerscheinklassen B") == "B"
+    assert _licence_points(["Führerscheinklassen B"]) == 5
+    assert leading_driving_class("Kl. B") == "B"
+    assert _licence_points(["Kl. B"]) == 5
+    assert leading_driving_class("Klasse 3") == ""
+
+    # The comma split already separates BE. The helper itself still returns the first class.
+    assert leading_driving_class("Klassen B, BE") == "B"
+    reading = read_driving_classes("Klassen B, BE")
+    assert {leading_driving_class(item) for item in reading.evidence} == {"B", "BE"}
+    assert _licence_points(["Klassen B, BE"]) == 5
+
+    cfg = _letter_profile(["Führerschein der Klasse B"])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    assert confirmed_licence_codes(cfg) == {"B"}
+    allowed = screen_cover_letter(
+        "Ich besitze den Führerschein Klasse B.",
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text="Lager",
+    )
+    assert allowed.ok
