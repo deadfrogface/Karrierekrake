@@ -316,6 +316,11 @@ def test_set_home_is_byte_identical_after_other_section_save(
     cfg.profile.location.allow_remote_germany = False
     cfg.profile.location.allow_hybrid = True
     config_service.save(cfg)
+    from core.home_coord_cache import write_home_coordinates
+
+    write_home_coordinates(
+        config_service.dirs["cache"], cfg.profile.location, 53.551, 9.993
+    )
     page, _host = _open_page(qapp, config_service)
     before = _location_block(config_service.profile_path.read_text(encoding="utf-8"))
     frozen = _home_tuple(config_service)
@@ -734,7 +739,10 @@ def test_home_resolves_once_until_the_user_changes_it(
         changed = config_service.load().profile.location
         assert changed.postal_code == "20095"
         assert changed.home_address == "Speicherstraße 2"
-        assert changed.home_latitude is not None and changed.home_longitude is not None
+        from core.home_coord_cache import read_home_coordinates
+
+        assert read_home_coordinates(config_service.dirs["cache"], changed) is not None
+        assert "home_latitude" not in config_service.profile_path.read_text(encoding="utf-8")
         calls["n"] = 0
         toggled = config_service.load()
         toggled.profile.location.cross_border_dach = False
@@ -742,7 +750,7 @@ def test_home_resolves_once_until_the_user_changes_it(
         config_service.save(toggled)
         win.refresh_all()
         qapp.processEvents()
-        assert calls["n"] == 1
+        assert calls["n"] == 0
     finally:
         win._shutting_down = True
         win.close()

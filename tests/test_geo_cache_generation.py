@@ -562,6 +562,11 @@ def test_bump_filters_once_when_jobs_were_loading(
     cfg.profile.location.home_longitude = 16.373
     cfg.profile.location.home_geocoded_address = ""
     config_service.save(cfg)
+    from core.home_coord_cache import write_home_coordinates
+
+    write_home_coordinates(
+        config_service.dirs["cache"], cfg.profile.location, 48.208, 16.373
+    )
     db = Database(cfg.db_path, recover=False)
     db.upsert_job(
         Job(

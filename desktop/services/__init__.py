@@ -84,6 +84,7 @@ class ConfigService:
 
     def _apply_runtime_paths(self, config: AppConfig) -> None:
         """Force absolute runtime paths under AppData (memory only)."""
+        config.home_coord_cache_dir = self.dirs["cache"]
         config.settings.database_path = str(self.dirs["data"] / "jobs.db")
         config.settings.logs_dir = str(self.dirs["logs"])
         config.settings.browser_profile_dir = str(self.dirs["browser_profile"])
@@ -184,21 +185,20 @@ class ConfigService:
         )
 
     def save_home_coords_from(self, run_config: AppConfig) -> AppConfig:
-        """Persist home lat/lon + geocode fingerprint from a pipeline run.
+        """Store home coordinates from a pipeline run in the cache file.
 
-        Writes only location provenance fields into freshly loaded settings so
-        transient overrides (dry_run, mode) from apply-test / worker config are
-        not flushed to disk. Always store ``home_geocoded_address`` with the
-        coords so a later address edit can invalidate stale coordinates.
+        Does not write profile.yaml, application_profile.yaml or settings.yaml,
+        so dry_run and mode overrides on the worker config stay off disk.
         """
-        fresh = self.load()
+        from core.home_coord_cache import write_home_coordinates
+
         run_loc = run_config.profile.location
-        fresh.profile.location.home_latitude = run_loc.home_latitude
-        fresh.profile.location.home_longitude = run_loc.home_longitude
-        fresh.profile.location.home_geocoded_address = (
-            getattr(run_loc, "home_geocoded_address", "") or run_loc.home_address or ""
-        )
-        return self.save(fresh)
+        lat = getattr(run_loc, "home_latitude", None)
+        lon = getattr(run_loc, "home_longitude", None)
+        if lat is not None and lon is not None:
+            write_home_coordinates(self.dirs["cache"], run_loc, float(lat), float(lon))
+        self._config = self._read_runtime_config()
+        return self._config
 
     def validate(self, config: AppConfig | None = None) -> list[str]:
         config = config or self.config

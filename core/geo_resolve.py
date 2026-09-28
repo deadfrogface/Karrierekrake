@@ -224,6 +224,21 @@ def geo_index_generation() -> int:
     return _index_generation
 
 
+def geo_index_stamp() -> str:
+    """Dataset version of the geo index. Does not build the postal index.
+
+    The in-memory generation resets every process, so it is not part of the
+    on-disk home-coordinate key. A changed dataset version is.
+    """
+    from core.geo_dataset import get_geo_dataset_manager
+
+    info = get_geo_dataset_manager().current_info()
+    version = (info.version or "").strip() if info.valid else ""
+    if version:
+        return version
+    return _ensure_geo_data() or GEO_DATA_VERSION_PGEOCODE
+
+
 def on_geo_index_generation(callback: Callable[[], None]) -> None:
     """Run ``callback`` after the index epoch changes. The callback hops threads."""
     if callback not in _generation_listeners:

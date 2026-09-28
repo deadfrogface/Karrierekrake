@@ -23,6 +23,11 @@ from core.geo_normalize import (
     normalize_country_code,
     normalize_place_fields,
 )
+from core.home_coord_cache import (
+    cache_dir_of,
+    read_home_coordinates,
+    write_home_coordinates,
+)
 from core.geo_resolve import (
     DISTANCE_UNKNOWN,
     GEO_DATA_SOURCE_GEONAMES,
@@ -128,9 +133,6 @@ class HomeNotice:
 # Not written to profile.yaml. Values are ``(generation, PlaceResolution)``.
 # The key does not include the generation.
 _HOME_RESOLUTION_CACHE: dict[str, tuple[int, PlaceResolution]] = {}
-# Address fingerprint → (cross_border, home_country) that the stored coordinates
-# belong to. A toggle must not reuse them.
-_PERSISTED_HOME_PARAMS: dict[str, tuple[bool, str]] = {}
 
 
 def home_resolution_key(
@@ -164,7 +166,6 @@ def home_resolution_key(
 
 def reset_home_resolution_cache_for_tests() -> None:
     _HOME_RESOLUTION_CACHE.clear()
-    _PERSISTED_HOME_PARAMS.clear()
 
 
 def _home_text(location: Any) -> tuple[str, str, str, str]:
@@ -173,11 +174,6 @@ def _home_text(location: Any) -> tuple[str, str, str, str]:
     city = (getattr(location, "city", "") or "").strip()
     country = (getattr(location, "country", "") or "").strip() or "DE"
     return address, postal, city, country
-
-
-def _home_fingerprint(location: Any) -> str:
-    address, postal, city, _country = _home_text(location)
-    return _address_fingerprint(address or (f"{postal}|{city}" if (postal or city) else ""))
 
 
 def home_resolve_params(
@@ -198,64 +194,38 @@ def home_resolve_params(
     return bool(cross_border), normalize_country_code(home_country) or "DE"
 
 
-def _remember_persisted_params(
-    location: Any, *, cross_border: bool, home_country: str
-) -> None:
-    fingerprint = _home_fingerprint(location)
-    if fingerprint:
-        _PERSISTED_HOME_PARAMS[fingerprint] = (bool(cross_border), home_country.upper())
-
-
-def _persisted_covers(
-    location: Any, *, cross_border: bool, home_country: str
-) -> bool:
-    """True when stored coordinates were produced for these resolve parameters."""
-    if not _coords_match_address(location):
-        return False
-    fingerprint = _home_fingerprint(location)
-    known = _PERSISTED_HOME_PARAMS.get(fingerprint)
-    current = (bool(cross_border), (home_country or "DE").upper())
-    if known is None:
-        _PERSISTED_HOME_PARAMS[fingerprint] = current
-        return True
-    return known == current
-
-
-def _persisted_resolution(
-    location: Any, *, home_country: str
-) -> PlaceResolution:
-    address, postal, city, _country = _home_text(location)
-    # Same label the hint used before the shared lookup: city, not the raw address.
-    label = city or _city_from_address(address) or address or ", ".join(
-        p for p in (postal, home_country) if p
-    )
-    return PlaceResolution(
-        status="RESOLVED",
-        latitude=float(location.home_latitude),
-        longitude=float(location.home_longitude),
-        country_code=home_country,
-        display_name=label,
-        data_source="existing_source",
-        reason="persisted_coords",
-        precision="exact_coordinates",
-    )
-
-
 def cached_home_resolution(
     location: Any,
     *,
     cross_border: bool,
     home_country: str,
+    cache_dir: Any = None,
 ) -> PlaceResolution | None:
     """One lookup for the hint and for ``LocationService.resolve_home``.
 
     Does not mutate ``location``. ``cross_border``, ``home_country`` and
     ``allow_network=False`` are the same arguments ``resolve_place`` receives.
+    A disk-cache hit returns without calling ``resolve_place`` and without
+    waiting for the postal index.
     """
     address, postal, city, country = _home_text(location)
     if not postal and not city and not address:
         return None
     home_cc = normalize_country_code(home_country) or normalize_country_code(country) or "DE"
+    cached_coords = read_home_coordinates(cache_dir, location)
+    if cached_coords is not None:
+        lat, lon = cached_coords
+        label = city or _city_from_address(address) or address
+        return PlaceResolution(
+            status="RESOLVED",
+            latitude=lat,
+            longitude=lon,
+            country_code=home_cc,
+            display_name=label,
+            data_source="existing_source",
+            reason="home_coord_cache",
+            precision="exact_coordinates",
+        )
     key = home_resolution_key(
         address=address,
         postal_code=postal,
@@ -265,17 +235,18 @@ def cached_home_resolution(
         home_country=home_cc,
         allow_network=False,
     )
-    # Stored coordinates for this parameter set beat a cached miss. A later
-    # save can attach coordinates to an address that was unknown a moment ago.
-    if _persisted_covers(location, cross_border=cross_border, home_country=home_cc):
-        cached = lookup_cached_resolution(_HOME_RESOLUTION_CACHE, key)
-        if cached is not None and cached.ok:
-            return cached
-        resolution = _persisted_resolution(location, home_country=home_cc)
-        store_cached_resolution(_HOME_RESOLUTION_CACHE, key, resolution)
-        return resolution
+    # Profile fields are not a distance source. The disk cache above is.
     cached = lookup_cached_resolution(_HOME_RESOLUTION_CACHE, key)
     if cached is not None:
+        if (
+            cache_dir is not None
+            and cached.ok
+            and cached.latitude is not None
+            and cached.longitude is not None
+        ):
+            write_home_coordinates(
+                cache_dir, location, float(cached.latitude), float(cached.longitude)
+            )
         return cached
     place = normalize_place_fields(
         address=address,
@@ -292,9 +263,9 @@ def cached_home_resolution(
     # A still-loading index is not a resolution. The next read tries again.
     # Same key: a stale miss is replaced in place.
     store_cached_resolution(_HOME_RESOLUTION_CACHE, key, resolution)
-    if resolution.ok:
-        _remember_persisted_params(
-            location, cross_border=cross_border, home_country=home_cc
+    if resolution.ok and resolution.latitude is not None and resolution.longitude is not None:
+        write_home_coordinates(
+            cache_dir, location, float(resolution.latitude), float(resolution.longitude)
         )
     return resolution
 
@@ -369,7 +340,12 @@ def home_location_notice(
     )
     return _notice_from_resolution(
         location,
-        cached_home_resolution(location, cross_border=border, home_country=home_cc),
+        cached_home_resolution(
+            location,
+            cross_border=border,
+            home_country=home_cc,
+            cache_dir=cache_dir_of(config),
+        ),
     )
 
 
@@ -398,10 +374,13 @@ def apply_visible_home(
         return False
     parts = [part for part in (street_n, f"{postal} {city_n}".strip(), country_n) if part]
     new_home = ", ".join(parts)
+    previous_country = normalize_country_code(getattr(location, "country", "") or "") or "DE"
+    next_country = normalize_country_code(country_n) or previous_country
     changed = (
         new_home != (getattr(location, "home_address", "") or "").strip()
         or postal != (getattr(location, "postal_code", "") or "").strip()
         or city_n != (getattr(location, "city", "") or "").strip()
+        or (country_n and next_country != previous_country)
     )
     if changed:
         location.home_latitude = None
@@ -415,16 +394,58 @@ def apply_visible_home(
     return changed
 
 
+def composed_contact_home(application: Any) -> tuple[str, str, str, str]:
+    """The search-home text ``apply_visible_home`` would write for this contact."""
+    postal = (getattr(application, "postal_code", "") or "").strip()
+    city = (getattr(application, "city", "") or "").strip()
+    street = (getattr(application, "street", "") or "").strip()
+    country = (getattr(application, "country", "") or "").strip() or "DE"
+    parts = [part for part in (street, f"{postal} {city}".strip(), country) if part]
+    return ", ".join(parts), postal, city, country
+
+
+def search_home_matches_contact(location: Any, application: Any) -> bool:
+    """True when the search home is the contact address, normalized."""
+    composed, postal, city, country = composed_contact_home(application)
+    home_country = normalize_country_code(getattr(location, "country", "") or "") or "DE"
+    contact_country = normalize_country_code(country) or "DE"
+    return (
+        _address_fingerprint(getattr(location, "home_address", "") or "")
+        == _address_fingerprint(composed)
+        and (getattr(location, "postal_code", "") or "").strip() == postal
+        and _address_fingerprint(getattr(location, "city", "") or "")
+        == _address_fingerprint(city)
+        and home_country == contact_country
+    )
+
+
+def custom_search_home_hint_visible(location: Any, application: Any, checked: bool) -> bool:
+    """Gray hint under the checkbox after a search home of the user's own."""
+    if checked:
+        return False
+    if not (
+        (getattr(location, "home_address", "") or "").strip()
+        or (getattr(location, "postal_code", "") or "").strip()
+        or (getattr(location, "city", "") or "").strip()
+    ):
+        return False
+    return not search_home_matches_contact(location, application)
+
+
 def _coords_match_address(location: Any) -> bool:
-    address = (getattr(location, "home_address", "") or "").strip()
-    postal = (getattr(location, "postal_code", "") or "").strip()
-    city = (getattr(location, "city", "") or "").strip()
+    """Model coordinates match only when the stored text includes the country.
+
+    An empty fingerprint does not match. Country is part of the comparison,
+    the same fields the disk-cache key uses.
+    """
+    address, postal, city, country = _home_text(location)
     lat = getattr(location, "home_latitude", None)
     lon = getattr(location, "home_longitude", None)
+    country_code = normalize_country_code(country) or "DE"
     stored = _address_fingerprint(getattr(location, "home_geocoded_address", "") or "")
-    current = _address_fingerprint(address or (f"{postal}|{city}" if (postal or city) else ""))
+    current = _address_fingerprint(f"{address}|{postal}|{city}|{country_code}")
     try:
-        if lat is None or lon is None or not current:
+        if lat is None or lon is None or not current or not stored:
             return False
         lat_f, lon_f = float(lat), float(lon)
     except (TypeError, ValueError):
@@ -432,7 +453,7 @@ def _coords_match_address(location: Any) -> bool:
     return (
         -90.0 <= lat_f <= 90.0
         and -180.0 <= lon_f <= 180.0
-        and (not stored or stored == current)
+        and stored == current
     )
 
 
@@ -449,33 +470,36 @@ def _locality_from_display(display_name: str, postal_code: str) -> str:
     return ""
 
 
-def commit_loaded_home(location: Any) -> str:
-    """Write a finished local resolution onto ``location``.
+def _drop_model_coordinates(location: Any) -> None:
+    """Coordinates on the profile model are not kept as a distance source."""
+    location.home_latitude = None
+    location.home_longitude = None
+    location.home_geocoded_address = ""
+
+
+def commit_loaded_home(location: Any, *, cache_dir: Any = None) -> str:
+    """Remember a finished resolution in the coordinate cache, not profile.yaml.
 
     Returns ``resolved``, ``unchanged``, ``pending``, or ``unresolved``.
-    A still-loading index is ``pending`` and stores neither coordinates nor an
-    error string. A genuine miss stays without coordinates so the notice can
-    keep asking for a real PLZ. Does not start a second geo stack.
+    A cache hit is ``unchanged`` and does not resolve or wait for the index.
+    A still-loading index is ``pending`` and stores nothing. A genuine miss
+    stays without coordinates so the notice can keep asking for a real PLZ.
     """
-    if _coords_match_address(location):
-        return "unchanged"
     address = (getattr(location, "home_address", "") or "").strip()
     postal = (getattr(location, "postal_code", "") or "").strip()
     city = (getattr(location, "city", "") or "").strip()
-    country = (getattr(location, "country", "") or "").strip() or "DE"
+    if read_home_coordinates(cache_dir, location) is not None:
+        return "unchanged"
     if not postal and not city and not address:
         return "unresolved"
     border, home_cc = home_resolve_params(location)
     resolution = cached_home_resolution(
-        location, cross_border=border, home_country=home_cc
+        location, cross_border=border, home_country=home_cc, cache_dir=cache_dir
     )
     if resolution is None or resolution.reason == "geo_index_loading":
         return "pending"
     if not resolution.ok or resolution.latitude is None or resolution.longitude is None:
         return "unresolved"
-    location.home_latitude = float(resolution.latitude)
-    location.home_longitude = float(resolution.longitude)
-    location.home_geocoded_address = address or (resolution.display_name or "")
     if not city:
         locality = _locality_from_display(resolution.display_name or "", postal)
         if locality:
@@ -483,25 +507,24 @@ def commit_loaded_home(location: Any) -> str:
     return "resolved"
 
 
-def store_user_home_coordinates(location: Any) -> str:
+def store_user_home_coordinates(location: Any, *, cache_dir: Any = None) -> str:
     """Write coordinates after the user changed the search home.
 
-    This is the only profile-UI writer. Startup and other section saves keep
-    the resolution in ``_HOME_RESOLUTION_CACHE`` and leave ``profile.yaml``
-    coordinates untouched. Street, postal code, and city are not rewritten.
+    The cache file is the only store. ``profile.yaml`` is not touched.
+    A changed address, postal code, city or country drops the previous
+    coordinates immediately, including when the index is still loading and
+    this returns ``pending``. Street, postal code and city are not rewritten.
     Returns ``resolved``, ``pending``, or ``unresolved``.
     """
     address = (getattr(location, "home_address", "") or "").strip()
     postal = (getattr(location, "postal_code", "") or "").strip()
     city = (getattr(location, "city", "") or "").strip()
+    _drop_model_coordinates(location)
     if not postal and not city and not address:
-        location.home_latitude = None
-        location.home_longitude = None
-        location.home_geocoded_address = ""
         return "unresolved"
     border, home_cc = home_resolve_params(location)
     resolution = cached_home_resolution(
-        location, cross_border=border, home_country=home_cc
+        location, cross_border=border, home_country=home_cc, cache_dir=cache_dir
     )
     if resolution is not None and resolution.reason == "geo_index_loading":
         return "pending"
@@ -511,15 +534,7 @@ def store_user_home_coordinates(location: Any) -> str:
         or resolution.latitude is None
         or resolution.longitude is None
     ):
-        location.home_latitude = None
-        location.home_longitude = None
-        location.home_geocoded_address = ""
         return "unresolved"
-    location.home_latitude = float(resolution.latitude)
-    location.home_longitude = float(resolution.longitude)
-    location.home_geocoded_address = address or (
-        f"{postal}|{city}" if (postal or city) else ""
-    )
     return "resolved"
 
 
@@ -648,27 +663,18 @@ class LocationService:
         postal = getattr(loc, "postal_code", "") or ""
         city = getattr(loc, "city", "") or ""
         current_fp = _address_fingerprint(address or f"{postal}|{city}")
-        stored_fp = _address_fingerprint(getattr(loc, "home_geocoded_address", "") or "")
         home_cc = self.home_country()
         border = self.cross_border
         stamp = (border, home_cc, current_fp)
         if self._home_resolution is not None and getattr(self, "_home_stamp", None) == stamp:
             return self._home_resolution
 
-        if loc.home_latitude is not None and loc.home_longitude is not None:
-            if not current_fp:
-                loc.home_latitude = None
-                loc.home_longitude = None
-                loc.home_geocoded_address = ""
-                self.home_updated = True
-            elif stored_fp and stored_fp != current_fp:
-                loc.home_latitude = None
-                loc.home_longitude = None
-                loc.home_geocoded_address = ""
-                self.home_updated = True
-            elif not stored_fp and current_fp:
-                loc.home_geocoded_address = address or current_fp
-                self.home_updated = True
+        if not _coords_match_address(loc) and (
+            loc.home_latitude is not None
+            or loc.home_longitude is not None
+            or (getattr(loc, "home_geocoded_address", "") or "")
+        ):
+            _drop_model_coordinates(loc)
 
         if not postal and not city and not address:
             warning = (
@@ -691,20 +697,38 @@ class LocationService:
             return self._home_resolution
 
         resolution = cached_home_resolution(
-            loc, cross_border=border, home_country=home_cc
+            loc,
+            cross_border=border,
+            home_country=home_cc,
+            cache_dir=cache_dir_of(self.config),
         )
-        if resolution is not None and resolution.reason == "persisted_coords" and resolution.ok:
+        if resolution is not None and resolution.reason in {
+            "persisted_coords",
+            "home_coord_cache",
+        } and resolution.ok:
             coords = (float(resolution.latitude), float(resolution.longitude))  # type: ignore[arg-type]
             self._home = coords
             self._home_resolution = HomeResolution(
                 coords=coords,
                 resolved=True,
-                source="persisted",
+                source="cache",
                 address_used=address,
                 country_code=home_cc,
             )
             self._home_stamp = stamp
             self.stats.home_resolved = True
+            return self._home_resolution
+        if resolution is not None and resolution.reason == "geo_index_loading":
+            self._home = None
+            self._home_resolution = HomeResolution(
+                coords=None,
+                resolved=False,
+                source="pending",
+                address_used=address,
+                country_code=home_cc,
+            )
+            self.stats.home_resolved = False
+            self.stats.skipped_distance_no_home = True
             return self._home_resolution
         if resolution is None or not resolution.ok:
             warning = HOME_PLZ_HINT
@@ -726,9 +750,6 @@ class LocationService:
 
         coords = (float(resolution.latitude), float(resolution.longitude))  # type: ignore[arg-type]
         self._home = coords
-        loc.home_latitude = coords[0]
-        loc.home_longitude = coords[1]
-        loc.home_geocoded_address = address or resolution.display_name
         self.home_updated = True
         self._home_resolution = HomeResolution(
             coords=coords,

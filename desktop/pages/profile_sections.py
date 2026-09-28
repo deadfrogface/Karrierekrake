@@ -412,6 +412,8 @@ class LocationWorkSection(QGroupBox):
     def __init__(self, parent=None, *, include_search_fields: bool = False) -> None:
         super().__init__(parent)
         self.include_search_fields = include_search_fields
+        self._notice_config = None
+        self._loaded_location = None
         self.home_address = QLineEdit()
         self.postal_code = QLineEdit()
         self.postal_code.setPlaceholderText("PLZ")
@@ -517,7 +519,7 @@ class LocationWorkSection(QGroupBox):
         self._refresh_geo_status()
         # Widget text has no coordinates. Reuse the loaded home when the
         # fields still match, so a language refresh does not resolve again.
-        self.refresh_home_notice(self._location_if_widgets_match())
+        self.refresh_home_notice(self._location_if_widgets_match(), self._notice_config)
 
     def _refresh_geo_status(self) -> None:
         try:
@@ -577,6 +579,8 @@ class LocationWorkSection(QGroupBox):
         """Re-read resolver status for the home fields. Does not guess a PLZ."""
         from core.location import home_location_notice
 
+        if config is None:
+            config = getattr(self, "_notice_config", None)
         if location is None:
             # This section has no city field. A city-less stand-in would be a
             # second cache key for the same home.
@@ -610,6 +614,7 @@ class LocationWorkSection(QGroupBox):
         config=None,
     ) -> None:
         self._loaded_location = location
+        self._notice_config = config
         self.home_address.setText(location.home_address)
         self.postal_code.setText(getattr(location, "postal_code", "") or "")
         self.max_distance.setValue(float(location.max_distance_km))
@@ -635,8 +640,12 @@ class LocationWorkSection(QGroupBox):
     ) -> None:
         new_home = self.home_address.text().strip()
         new_plz = self.postal_code.text().strip()
-        if new_home != (location.home_address or "").strip() or new_plz != (
-            getattr(location, "postal_code", "") or ""
+        new_country = self.country.text().strip() or "DE"
+        previous_country = (getattr(location, "country", "") or "").strip() or "DE"
+        if (
+            new_home != (location.home_address or "").strip()
+            or new_plz != (getattr(location, "postal_code", "") or "")
+            or new_country != previous_country
         ):
             location.home_latitude = None
             location.home_longitude = None
@@ -684,6 +693,11 @@ class ApplicantSection(QGroupBox):
         self.remote_pref = QLineEdit()
         self.sync_home_from_address = QCheckBox()
         self.sync_home_from_address.setChecked(False)
+        self.custom_home_hint = QLabel()
+        self.custom_home_hint.setObjectName("CustomSearchHomeHint")
+        self.custom_home_hint.setWordWrap(True)
+        self.custom_home_hint.setStyleSheet("color: #6e6e6e;")
+        self.custom_home_hint.hide()
         form = QFormLayout(self)
         self.app_field_labels: list[tuple[QLabel, str]] = []
         for key, widget in [
@@ -712,12 +726,18 @@ class ApplicantSection(QGroupBox):
             self.app_field_labels.append((lbl, key))
             form.addRow(lbl, widget)
         form.addRow(self.sync_home_from_address)
+        form.addRow(self.custom_home_hint)
 
     def retranslate(self) -> None:
         self.setTitle(tr("profile.app_data"))
         for lbl, key in self.app_field_labels:
             lbl.setText(tr(key))
         self.sync_home_from_address.setText(tr("profile.sync_home_address"))
+        self.custom_home_hint.setText(tr("profile.custom_search_home"))
+
+    def set_custom_home_hint(self, visible: bool) -> None:
+        self.custom_home_hint.setText(tr("profile.custom_search_home"))
+        self.custom_home_hint.setVisible(bool(visible))
 
     def load(self, app: ApplicationProfile, *, sync_address_to_search: bool) -> None:
         self.first_name.setText(app.first_name)

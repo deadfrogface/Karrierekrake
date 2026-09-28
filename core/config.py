@@ -922,8 +922,13 @@ def save_config(
     else:
         intent_payload = SearchIntent().model_dump(mode="json")
 
+    location_data = _dataclass_to_dict(config.profile.location)
+    # Coordinates live in the home-coordinate cache, not in profile.yaml.
+    # Old files may still contain the keys; the next user save drops them.
+    for _coord_key in ("home_latitude", "home_longitude", "home_geocoded_address"):
+        location_data.pop(_coord_key, None)
     profile_data = {
-        "location": _dataclass_to_dict(config.profile.location),
+        "location": location_data,
         "jobs": _dataclass_to_dict(config.profile.jobs),
         "employment": _dataclass_to_dict(config.profile.employment),
         "qualifications": _dataclass_to_dict(config.profile.qualifications),

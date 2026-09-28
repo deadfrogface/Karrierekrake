@@ -548,6 +548,7 @@ class ProfilePage(QWidget):
             cfg.application,
             sync_address_to_search=self.config_service.get_sync_address_to_search(),
         )
+        self._sync_custom_home_hint(cfg)
         self.cv.cv_label.setText(
             self.config_service.get_active_cv_info().get("label")
             or cfg.application.cv_path
@@ -555,13 +556,28 @@ class ProfilePage(QWidget):
         )
         self.refresh_cards()
 
+    def _sync_custom_home_hint(self, cfg) -> None:
+        from core.location import custom_search_home_hint_visible
+
+        self.applicant.set_custom_home_hint(
+            custom_search_home_hint_visible(
+                cfg.profile.location,
+                cfg.application,
+                self.config_service.get_sync_address_to_search(),
+            )
+        )
+
     def refresh_home_status(self) -> None:
         """Update only the home-notice line. Does not rebuild the cards."""
         self._bind_home_status(self.config_service.load())
 
     def edit_search_home(self) -> None:
-        """Open the search-home editor. Scope ``None`` persists the location fields."""
-        self._save_scope = None
+        """Open the search-home editor.
+
+        Scope ``search_home`` persists the location fields and never copies
+        the contact address over them.
+        """
+        self._save_scope = "search_home"
         section = self.location_work
         self._drawer.set_texts(
             title=tr("profile.location"),
@@ -1101,15 +1117,28 @@ class ProfilePage(QWidget):
             self.location_work.postal_code.setText(p.location.postal_code or "")
             self.location_work.country.setText(p.location.country or "")
             self.location_work.refresh_home_notice(p.location)
+            self.applicant.set_custom_home_hint(False)
         elif not persist_location_editor:
             self._restore_search_home(p.location, home_snapshot)
 
+        if self._save_scope == "search_home":
+            from core.location import search_home_matches_contact
+
+            if search_home_matches_contact(p.location, a):
+                self.applicant.set_custom_home_hint(False)
+            else:
+                self.applicant.sync_home_from_address.setChecked(False)
+                self.config_service.set_sync_address_to_search(False)
+                self.applicant.set_custom_home_hint(True)
+
         if _search_home_text_changed(p.location, home_snapshot):
             # Only a real home edit (location fields or the opt-in checkbox)
-            # may persist coordinates. The lookup itself is cached per address.
+            # may persist coordinates. They go to the cache, not profile.yaml.
             from core.location import store_user_home_coordinates
 
-            store_user_home_coordinates(p.location)
+            store_user_home_coordinates(
+                p.location, cache_dir=self.config_service.dirs["cache"]
+            )
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)
 
