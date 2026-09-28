@@ -7,11 +7,10 @@ Does not change submit or safety logic — only presentation and labels.
 
 from __future__ import annotations
 
-import hashlib
 import webbrowser
 from typing import Iterable
 
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -33,14 +32,6 @@ from desktop.design_system.polish import apply_button_icon, polish_interactive
 from desktop.design_system.v2_chrome import DataItem, ProfileSectionCard, StatusChip
 from desktop.i18n import tr
 from desktop.widgets.dialog_geometry import fit_dialog_to_screen, wrap_dialog_body
-
-
-# One timer per dialog. Every edit restarts it; the guard never runs on the key.
-COVER_GUARD_DEBOUNCE_MS = 400
-
-
-def _letter_digest(text: str) -> str:
-    return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
 
 
 def _looks_missing(value: str | None) -> bool:
@@ -149,9 +140,6 @@ class ApplyPreviewDialog(QDialog):
         self._config = config
         self._job = job
         self._prepared = None
-        self._last_scanned_hash = ""
-        self._applied_hash = ""
-        self._last_scan_ok = True
         if config is not None:
             self._prepared = self._build_prepared_check()
         self.setObjectName("ApplyPreviewDialog")
@@ -248,7 +236,7 @@ class ApplyPreviewDialog(QDialog):
         cover_body = self.cover_card.body()
         self.cover_edit = QPlainTextEdit()
         self.cover_edit.setObjectName("PreviewCoverEdit")
-        self.cover_edit.setReadOnly(False)
+        self.cover_edit.setReadOnly(True)
         self.cover_edit.setPlainText(preview.cover_letter_preview or "")
         self.cover_edit.setMinimumHeight(160)
         self.cover_edit.setSizePolicy(
@@ -275,11 +263,6 @@ class ApplyPreviewDialog(QDialog):
         self._guard_notice.setWordWrap(True)
         self._guard_notice.hide()
         cover_body.addWidget(self._guard_notice)
-        self._guard_timer = QTimer(self)
-        self._guard_timer.setSingleShot(True)
-        self._guard_timer.setInterval(COVER_GUARD_DEBOUNCE_MS)
-        self._guard_timer.timeout.connect(self._on_guard_debounce)
-        self.cover_edit.textChanged.connect(self._schedule_cover_guard)
         body_layout.addWidget(self.cover_card, 1)
 
         # Form values
@@ -403,7 +386,7 @@ class ApplyPreviewDialog(QDialog):
         root.addLayout(footer)
 
         fit_dialog_to_screen(self, preferred_width=720, preferred_height=640)
-        self._run_cover_guard(force=True)
+        self._run_cover_guard()
 
     def _apply_status_chip(self) -> None:
         preview = self.preview
@@ -481,13 +464,6 @@ class ApplyPreviewDialog(QDialog):
         allowed = f"{getattr(job, 'title', '')} {getattr(job, 'company', '')}".strip()
         return prepare_cover_check(self._config, job_text, allowed)
 
-    def _schedule_cover_guard(self) -> None:
-        """Restart the single debounce timer. Does not run the guard."""
-        self._guard_timer.start(COVER_GUARD_DEBOUNCE_MS)
-
-    def _on_guard_debounce(self) -> None:
-        self._run_cover_guard(force=False)
-
     def _scan_letter(self, text: str) -> tuple[list[str], bool, str]:
         """Letter-only scan. The profile side stays the object built at open."""
         if self._prepared is None or not (text or "").strip():
@@ -527,17 +503,10 @@ class ApplyPreviewDialog(QDialog):
         self.status_chip.set_status(tr("apps.preview_status_check"), kind="warn")
         self._sync_approve_button(blocked=True)
 
-    def _apply_guard_result(self, text: str, codes: list[str], ok: bool, sentence: str) -> bool:
-        """Apply a run only when the editor still shows exactly ``text``."""
-        digest = _letter_digest(text)
-        if _letter_digest(self.cover_edit.toPlainText()) != digest:
-            self._last_scanned_hash = digest
-            self._applied_hash = ""
-            self._mark_check_needed()
-            return False
-        self._last_scanned_hash = digest
-        self._applied_hash = digest
-        self._last_scan_ok = ok
+    def _run_cover_guard(self) -> bool:
+        """Scan the letter on screen. Opening and confirming each run it in full."""
+        text = self.cover_edit.toPlainText()
+        codes, ok, sentence = self._scan_letter(text)
         if ok:
             self._guard_notice.hide()
             self._guard_notice.clear()
@@ -549,28 +518,17 @@ class ApplyPreviewDialog(QDialog):
         self._mark_check_needed()
         return False
 
-    def _run_cover_guard(self, *, force: bool) -> bool:
-        """Scan the current letter. ``force`` skips the text-hash cache (confirm)."""
-        text = self.cover_edit.toPlainText()
-        digest = _letter_digest(text)
-        if not force and digest == self._last_scanned_hash:
-            if digest != self._applied_hash:
-                self._mark_check_needed()
-                return False
-            return self._last_scan_ok
-        codes, ok, sentence = self._scan_letter(text)
-        return self._apply_guard_result(text, codes, ok, sentence)
-
     def _approve(self) -> None:
         from core.cover_letter import CoverLetterRefused, approve_cover_letter
 
         if self._config is None or self._job is None:
             return
-        self._guard_timer.stop()
-        if not self._run_cover_guard(force=True):
+        if not self._run_cover_guard():
             return
         try:
-            path = approve_cover_letter(self._job, self._config, self.cover_edit.toPlainText())
+            path = approve_cover_letter(
+                self._job, self._config, self.preview.cover_letter_preview
+            )
         except CoverLetterRefused as exc:
             lang = getattr(self._config.settings, "language", "de")
             QMessageBox.warning(self, self.windowTitle(), exc.refusal.text(lang))

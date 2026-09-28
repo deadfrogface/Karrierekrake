@@ -222,12 +222,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_confirm_draft": "Entwurf bestätigen",
         "apps.preview_status_check": "Prüfen nötig",
         "apps.preview_claim_blocked": (
-            "Dieser Satz ist durch dein Profil nicht belegt: ‚{sentence}‘ "
-            "Nimm ihn aus dem Brief oder bestätige Klasse {classes} im Profil."
+            "‚{sentence}‘\n"
+            "Bestätige Klasse {classes} im Führerschein-Feld oder nimm den Eintrag aus deinen Skills."
         ),
         "apps.preview_claim_blocked_generic": (
             "Im Brief steht eine Angabe, die dein Profil nicht belegt. "
-            "Bestätige sie im Profil oder nimm sie aus dem Brief."
+            "Bestätige sie im Profil."
         ),
         "apps.preview_section_cv": "Lebenslauf",
         "apps.preview_section_cover": "Anschreiben",
@@ -309,6 +309,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.license": "Führerschein",
         "profile.licence_recovered": "Aus einem älteren Import wiederhergestellt. Bitte prüfen und speichern.",
         "profile.licence_uncertain": "Nicht sicher erkannt: {classes}. Bitte ergänze die genaue Klasse.",
+        "profile.licence_unknown_kept": (
+            "Nicht sicher erkannt: {entries}. Diese Einträge bleiben unverändert gespeichert."
+        ),
         "profile.licence_review": "Prüfen",
         "profile.no_changes": "Keine Änderungen.",
         "profile.languages": "Sprachen",
@@ -1326,12 +1329,12 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_confirm_draft": "Confirm draft",
         "apps.preview_status_check": "Check needed",
         "apps.preview_claim_blocked": (
-            "This sentence is not backed by your profile: ‚{sentence}‘ "
-            "Remove it from the letter or confirm class {classes} in your profile."
+            "‚{sentence}‘\n"
+            "Confirm class {classes} in the driving-license field or remove the entry from your skills."
         ),
         "apps.preview_claim_blocked_generic": (
             "The letter states something your profile does not confirm. "
-            "Confirm it in your profile or remove it from the letter."
+            "Confirm it in your profile."
         ),
         "apps.preview_section_cv": "Resume",
         "apps.preview_section_cover": "Cover letter",
@@ -1435,6 +1438,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.saved": "Saved.",
         "profile.licence_recovered": "Restored from an older import. Please check and save.",
         "profile.licence_uncertain": "Not recognised with certainty: {classes}. Please enter the exact class.",
+        "profile.licence_unknown_kept": (
+            "Not recognised with certainty: {entries}. These entries stay saved unchanged."
+        ),
         "profile.licence_review": "Review",
         "profile.no_changes": "No changes.",
         "search.subtitle": "What am I looking for now? Explicit search intent — independent of profile evidence.",

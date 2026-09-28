@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QCheckBox,
     QFormLayout,
@@ -145,28 +146,55 @@ def _licence_token_was_rebuilt(token: str, reading: object, recognised: frozense
     display = list(reading.display)
     if text in display or text.upper() in display:
         return False
-    if len(text) == 1:
-        return True
     upper = text.upper()
-    if upper not in recognised:
-        return False
-    return any(code.startswith(upper) and len(code) > len(upper) for code in display)
+    if upper in recognised:
+        return any(code.startswith(upper) and len(code) > len(upper) for code in display)
+    return len(text) == 1
 
 
-def _hidden_licence_entries(stored: list, loaded_display: list[str], reading: object) -> list:
-    """Stored entries the editor does not show and recovery did not fold away."""
+def _visible_and_unknown_licence(stored: list, reading: object) -> tuple[list[str], list]:
+    """Rows the drawer shows, and stored entries that are not a class.
+
+    Display classes come first. A recognised code the parser left off that
+    list (an uncertain ``C`` or ``D``) is a row, and so is a lone ``E`` or
+    ``M`` that was not folded into a longer class. Digits and other leftovers
+    such as ``9``, ``5`` and ``95`` stay out of the list. They are returned
+    as the original stored objects.
+    """
     from core.cv_parser import _RECOGNISED_LICENCE_CLASSES
 
-    shown = set(loaded_display)
-    hidden = []
+    display = list(getattr(reading, "display", None) or [])
+    shown = {item.upper() for item in display}
+    rows = list(display)
+    unknown: list = []
     for item in stored or []:
         value = _licence_item_value(item)
-        if not value or value in shown:
+        if not value:
+            continue
+        upper = value.upper()
+        if value in display or upper in shown:
             continue
         if _licence_token_was_rebuilt(value, reading, _RECOGNISED_LICENCE_CLASSES):
             continue
-        hidden.append(item)
-    return hidden
+        if upper in _RECOGNISED_LICENCE_CLASSES or (len(value) == 1 and value.isalpha()):
+            if upper not in shown:
+                rows.append(upper)
+                shown.add(upper)
+            continue
+        unknown.append(item)
+    return rows, unknown
+
+
+def _with_unknown_licence_entries(visible: list, unknown: list) -> list:
+    """Visible classes first, then the original unknown entries, without duplicates."""
+    merged = list(visible)
+    seen = {_licence_item_value(item) for item in merged}
+    for item in unknown:
+        value = _licence_item_value(item)
+        if value and value not in seen:
+            merged.append(item)
+            seen.add(value)
+    return merged
 
 
 class QualificationsSection(QGroupBox):
@@ -185,11 +213,18 @@ class QualificationsSection(QGroupBox):
         self.licence_notice.setObjectName("WarningLabel")
         self.licence_notice.setWordWrap(True)
         self.licence_notice.hide()
+        self.licence_unknown = QLabel()
+        self.licence_unknown.setObjectName("KkHint")
+        self.licence_unknown.setWordWrap(True)
+        self.licence_unknown.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
+        self.licence_unknown.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.licence_unknown.hide()
         form.addRow(self.lbl_skills, self.skills)
         form.addRow(self.lbl_software, self.software)
         form.addRow(self.lbl_certificates, self.certificates)
         form.addRow(self.licence_notice)
         form.addRow(self.lbl_license, self.driving)
+        form.addRow(self.licence_unknown)
 
     def retranslate(self) -> None:
         self.setTitle(tr("profile.qualifications"))
@@ -208,27 +243,39 @@ class QualificationsSection(QGroupBox):
 
         self.skills.set_items(quals.skill_values())
         self.software.set_items(quals.software_values())
-        # Display classes only. Uncertain C/D and digit remnants stay out of the
-        # editor. Loading itself does not write the config object.
+        # Recognised classes are rows. Unknown leftovers stay beside the list.
+        # Loading itself does not write the config object.
         self._licence_reading = read_driving_classes(quals.driving_license)
-        self._licence_loaded_display = list(self._licence_reading.display)
+        rows, unknown = _visible_and_unknown_licence(
+            quals.driving_license, self._licence_reading
+        )
+        self._licence_loaded_display = list(rows)
+        self._licence_unknown = list(unknown)
         self.driving.set_items(self._licence_loaded_display)
         self._refresh_licence_notice()
         self.certificates.set_items(quals.certificates)
 
     def _refresh_licence_notice(self) -> None:
         reading = getattr(self, "_licence_reading", None)
-        if reading is None or not reading.recovered:
+        if reading is not None and reading.recovered:
+            self.licence_notice.setText(tr("profile.licence_recovered"))
+            self.licence_notice.show()
+        else:
             self.licence_notice.hide()
             self.licence_notice.clear()
-            return
-        parts = [tr("profile.licence_recovered")]
-        if reading.uncertain:
-            parts.append(
-                tr("profile.licence_uncertain", classes=", ".join(reading.uncertain))
+        labels = [
+            _licence_item_value(item)
+            for item in getattr(self, "_licence_unknown", [])
+        ]
+        labels = [label for label in labels if label]
+        if labels:
+            self.licence_unknown.setText(
+                tr("profile.licence_unknown_kept", entries=", ".join(labels))
             )
-        self.licence_notice.setText("\n".join(parts))
-        self.licence_notice.show()
+            self.licence_unknown.show()
+        else:
+            self.licence_unknown.hide()
+            self.licence_unknown.clear()
 
     def save_into(self, quals: QualificationsConfig) -> None:
         quals.skills = preserve_sourced_on_edit(quals.skills, self.skills.get_items())
@@ -237,30 +284,30 @@ class QualificationsSection(QGroupBox):
         quals.certificates = self.certificates.get_items()
 
     def _save_driving_license(self, quals: QualificationsConfig) -> None:
-        """Keep unknown stored entries until the user deletes a visible one.
+        """Save the classes on screen and keep unknown entries verbatim.
 
-        An unchanged editor does not replace the file with the display list
-        when that display dropped digits such as ``9``, ``5`` or ``95``.
-        A recovered ``[B, E]`` still saves as ``B, BE`` because those tokens
-        were folded into the classes on screen.
+        Every recognised class is a row the user can remove. A lone ``E`` or
+        ``M`` that was not folded into a longer class is a row too. Entries
+        such as ``9``, ``5`` and ``95`` are not rows: they stay in the file
+        unchanged and are not classes. Removing a visible class drops it.
+        It is not written back as a hidden entry.
+
+        An unchanged row list does not rewrite the file when the stored
+        values already match, so ``[C, 95]`` stays byte-identical. A recovered
+        ``[B, E]`` still saves as ``B, BE`` because those are the classes on
+        screen and they differ from storage.
         """
         edited = self.driving.get_items()
         loaded = getattr(self, "_licence_loaded_display", None)
-        reading = getattr(self, "_licence_reading", None)
-        if loaded is None or reading is None:
+        unknown = getattr(self, "_licence_unknown", None)
+        if loaded is None or unknown is None:
             quals.driving_license = preserve_sourced_on_edit(quals.driving_license, edited)
             return
         proposed = preserve_sourced_on_edit(quals.driving_license, edited)
-        hidden = _hidden_licence_entries(quals.driving_license, list(loaded), reading)
-        seen = {item.value for item in proposed}
-        merged = list(proposed)
-        for item in hidden:
-            value = _licence_item_value(item)
-            if value not in seen:
-                merged.append(item)
-                seen.add(value)
+        merged = _with_unknown_licence_entries(proposed, unknown)
         stored_values = [_licence_item_value(item) for item in quals.driving_license]
-        if [item.value for item in merged] == stored_values:
+        merged_values = [_licence_item_value(item) for item in merged]
+        if edited == list(loaded) and merged_values == stored_values:
             return
         quals.driving_license = merged
 

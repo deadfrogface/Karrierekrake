@@ -1026,8 +1026,9 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     assert "Nicht sicher erkannt: D." in uncertain._licence_notice.text()
     assert uncertain._licence_line.text() == "Führerschein: B, C1"
     assert "D" not in [part.strip() for part in uncertain._licence_line.text().split(":")[-1].split(",")]
-    assert uncertain.qualifications.driving.get_items() == ["B", "C1"]
-    assert "Nicht sicher erkannt: D." in uncertain.qualifications.licence_notice.text()
+    assert uncertain.qualifications.driving.get_items() == ["B", "C1", "D"]
+    assert "Aus einem älteren Import wiederhergestellt" in uncertain.qualifications.licence_notice.text()
+    assert "Nicht sicher erkannt" not in uncertain.qualifications.licence_notice.text()
     uncertain.card_skills.grab().save("/opt/cursor/artifacts/licence-card-b-c1-d.png")
 
     page = prepare(["B", "E"])
@@ -1093,8 +1094,11 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
     salad = prepare(["C", "E", "9", "5"])
     assert salad._licence_line.text() == "Führerschein: —"
     assert "Nicht sicher erkannt: C." in salad._licence_notice.text()
-    assert "Nicht sicher erkannt: C." in salad.qualifications.licence_notice.text()
-    assert salad.qualifications.driving.get_items() == []
+    assert salad.qualifications.driving.get_items() == ["C", "E"]
+    assert salad.qualifications.licence_unknown.text() == (
+        "Nicht sicher erkannt: 9, 5. Diese Einträge bleiben unverändert gespeichert."
+    )
+    assert "Nicht sicher erkannt" not in salad.qualifications.licence_notice.text()
     salad.card_skills.grab().save("/opt/cursor/artifacts/licence-card-c-e-9-5.png")
 
     am = prepare(["A", "M"])
@@ -1106,7 +1110,7 @@ def test_recovered_licence_hint_and_drawer_save(qapp, config_service, monkeypatc
 
 
 def test_uncertain_digits_stay_in_the_file_when_review_saves_nothing(qapp, config_service, monkeypatch):
-    """Prüfen on [C, E, 9, 5] shows an empty list. Saving without input keeps the file."""
+    """Prüfen on [C, E, 9, 5] shows C and E. Saving without input keeps the file."""
     from PySide6.QtCore import QTimer
 
     i18n.set_language("de")
@@ -1137,7 +1141,10 @@ def test_uncertain_digits_stay_in_the_file_when_review_saves_nothing(qapp, confi
     profile_path = Path(config_service.profile_path)
     before = profile_path.read_bytes()
     assert page._licence_review_btn.isVisible()
-    assert page.qualifications.driving.get_items() == []
+    assert page.qualifications.driving.get_items() == ["C", "E"]
+    assert page.qualifications.licence_unknown.text() == (
+        "Nicht sicher erkannt: 9, 5. Diese Einträge bleiben unverändert gespeichert."
+    )
     assert page._licence_notice.isVisible()
     page.qualifications.skills.setMinimumHeight(900)
     results: list[bool] = []
@@ -1153,7 +1160,7 @@ def test_uncertain_digits_stay_in_the_file_when_review_saves_nothing(qapp, confi
     def accept_empty() -> None:
         def verify() -> None:
             try:
-                assert page.qualifications.driving.get_items() == []
+                assert page.qualifications.driving.get_items() == ["C", "E"]
                 assert qapp.focusWidget() is page.qualifications.driving.list
                 viewport = page._drawer._scroll.viewport()
                 point = page.qualifications.driving.mapTo(
@@ -1174,6 +1181,122 @@ def test_uncertain_digits_stay_in_the_file_when_review_saves_nothing(qapp, confi
     assert config_service.load().profile.qualifications.driving_values() == ["C", "E", "9", "5"]
     assert page._licence_notice.isVisible()
     assert "Aus einem älteren Import wiederhergestellt" in page._licence_notice.text()
+
+
+def test_unchecking_e_drops_it_and_keeps_unknown_digits(qapp, config_service, monkeypatch):
+    """Removing E from [C, E, 9, 5] leaves C, 9 and 5, and does not hide E."""
+    from PySide6.QtCore import Qt, QTimer
+
+    i18n.set_language("de")
+    messages: list[str] = []
+
+    def information(_parent, _title, text, *_args, **_kwargs):
+        messages.append(str(text))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "information", information)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+    cfg = config_service.load()
+    cfg.profile.qualifications.driving_license = _sourced_codes(["C", "E", "9", "5"])
+    cfg.profile.qualifications.skills = []
+    config_service.save(cfg)
+    page = ProfilePage(config_service)
+    page.resize(1100, 800)
+    page.show()
+    page.load_from_config()
+    qapp.processEvents()
+    settled = config_service.load()
+    page.applicant.save_into(settled.application)
+    config_service.save(settled)
+    page.load_from_config()
+    qapp.processEvents()
+    assert page.qualifications.driving.get_items() == ["C", "E"]
+
+    def drop_e() -> None:
+        def verify() -> None:
+            try:
+                driving = page.qualifications.driving
+                match = driving.list.findItems("E", Qt.MatchFlag.MatchExactly)
+                assert len(match) == 1
+                match[0].setSelected(True)
+                driving.remove_btn.click()
+                assert driving.get_items() == ["C"]
+            finally:
+                page._drawer.accept()
+
+        QTimer.singleShot(0, verify)
+
+    QTimer.singleShot(0, drop_e)
+    page._licence_review_btn.click()
+    qapp.processEvents()
+    assert messages[-1] == "Gespeichert."
+    values = config_service.load().profile.qualifications.driving_values()
+    assert values == ["C", "9", "5"]
+    assert "E" not in values
+
+
+def test_unchanged_c_with_two_digit_suffix_stays_byte_identical(qapp, config_service, monkeypatch):
+    """[C, 95] shows C and the unknown line. Saving without input keeps the file."""
+    from PySide6.QtCore import QTimer
+
+    i18n.set_language("de")
+    messages: list[str] = []
+
+    def information(_parent, _title, text, *_args, **_kwargs):
+        messages.append(str(text))
+        return QMessageBox.StandardButton.Ok
+
+    monkeypatch.setattr(QMessageBox, "information", information)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: QMessageBox.StandardButton.Ok)
+    cfg = config_service.load()
+    cfg.profile.qualifications.driving_license = _sourced_codes(["C", "95"])
+    cfg.profile.qualifications.skills = []
+    config_service.save(cfg)
+    page = ProfilePage(config_service)
+    page.resize(1100, 800)
+    page.show()
+    page.load_from_config()
+    qapp.processEvents()
+    settled = config_service.load()
+    page.applicant.save_into(settled.application)
+    config_service.save(settled)
+    page.load_from_config()
+    qapp.processEvents()
+    profile_path = Path(config_service.profile_path)
+    before = profile_path.read_bytes()
+    assert page.qualifications.driving.get_items() == ["C"]
+    assert page.qualifications.licence_unknown.text() == (
+        "Nicht sicher erkannt: 95. Diese Einträge bleiben unverändert gespeichert."
+    )
+    from PySide6.QtCore import Qt
+
+    assert (
+        page.qualifications.licence_unknown.textInteractionFlags()
+        == Qt.TextInteractionFlag.NoTextInteraction
+    )
+    results: list[bool] = []
+    original = page.save
+
+    def wrapped() -> bool:
+        value = original()
+        results.append(value)
+        return value
+
+    page.save = wrapped
+
+    def accept_unchanged() -> None:
+        try:
+            assert page.qualifications.driving.get_items() == ["C"]
+        finally:
+            page._drawer.accept()
+
+    QTimer.singleShot(0, accept_unchanged)
+    page._edit_section("skills")
+    qapp.processEvents()
+    assert results == [False]
+    assert messages[-1] == "Keine Änderungen."
+    assert profile_path.read_bytes() == before
+    assert config_service.load().profile.qualifications.driving_values() == ["C", "95"]
 
 
 def test_two_digit_suffix_stays_when_the_drawer_saves_nothing(qapp, config_service, monkeypatch):

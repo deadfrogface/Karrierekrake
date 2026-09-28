@@ -170,7 +170,7 @@ def test_preview_dialog_sections_separate_and_cover_scrollable(qapp):
     assert dlg.cover_card.isVisible()
     assert dlg.form_card.isVisible()
     assert dlg.cover_edit.toPlainText() == long_cover
-    assert not dlg.cover_edit.isReadOnly()
+    assert dlg.cover_edit.isReadOnly()
     assert dlg.cover_edit.minimumHeight() >= 160
     # Section-local hints (technical dry-run filtered out of main buckets)
     assert dlg.cv_hints is not None
@@ -283,20 +283,17 @@ _CLASS_C_SENTENCE = (
 )
 
 
-def _insert_unconfirmed_class_c(dlg) -> None:
-    plain = dlg.cover_edit.toPlainText()
-    at = plain.index("insbesondere:") + len("insbesondere:")
-    cursor = dlg.cover_edit.textCursor()
-    cursor.setPosition(at)
-    dlg.cover_edit.setTextCursor(cursor)
-    dlg.cover_edit.insertPlainText(" Führerschein Klasse C.")
+_PATH_FOR_CLASS_C = (
+    "Bestätige Klasse C im Führerschein-Feld oder nimm den Eintrag aus deinen Skills."
+)
 
 
 def _assert_class_c_sentence_is_quoted_from_the_letter(dlg) -> None:
     notice = dlg._guard_notice.text()
-    assert f"‚{_CLASS_C_SENTENCE}‘" in notice
+    assert notice.startswith(f"‚{_CLASS_C_SENTENCE}‘")
+    assert _PATH_FOR_CLASS_C in notice
     assert _CLASS_C_SENTENCE in dlg.cover_edit.toPlainText()
-    assert "Klasse C" in notice
+    assert "Nimm ihn aus dem Brief" not in notice
     assert "Fahrerlaubnis" not in notice
     assert "Prüfen nötig" in dlg.status_chip.text()
 
@@ -321,160 +318,182 @@ def test_preview_blocks_confirm_when_the_letter_invents_class_c(qapp, tmp_path):
     dlg.close()
 
 
-def test_preview_confirm_screens_the_edited_letter_again(qapp, tmp_path):
-    """A clean draft stays editable. Inserting class C and confirming saves nothing."""
-    cfg = _profile_with_licence(tmp_path, "B")
-    job = _preview_job()
-    dlg = ApplyPreviewDialog(
-        _preview(cover_letter_preview=_CLEAN_LETTER, warnings=[]),
-        config=cfg,
-        job=job,
-    )
-    dlg.show()
-    qapp.processEvents()
-    assert dlg.approve_btn.isEnabled()
-    assert "Prüfen nötig" not in dlg.status_chip.text()
-    _insert_unconfirmed_class_c(dlg)
-    dlg.approve_btn.click()
-    qapp.processEvents()
-    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
-    assert not saved.exists()
-    assert not dlg.approve_btn.isEnabled()
-    _assert_class_c_sentence_is_quoted_from_the_letter(dlg)
-    assert "unsubstantiated_claims" not in _dialog_copy(dlg)
-    dlg.close()
-
-
-def test_confirm_during_debounce_checks_that_text(qapp, tmp_path, monkeypatch):
-    """Confirm under 400 ms runs a full check and quotes that exact sentence."""
-    import core.cover_guard as guard
-
-    scans = {"n": 0}
-    original = guard.screen_prepared_letter
-
-    def counting(letter, prepared):
-        scans["n"] += 1
-        return original(letter, prepared)
-
-    monkeypatch.setattr(guard, "screen_prepared_letter", counting)
-    cfg = _profile_with_licence(tmp_path, "B")
-    job = _preview_job()
-    dlg = ApplyPreviewDialog(
-        _preview(cover_letter_preview=_CLEAN_LETTER, warnings=[]),
-        config=cfg,
-        job=job,
-    )
-    dlg.show()
-    qapp.processEvents()
-    assert scans["n"] == 1
-    assert dlg.approve_btn.isEnabled()
-    _insert_unconfirmed_class_c(dlg)
-    assert scans["n"] == 1
-    assert dlg._guard_timer.isActive()
-    dlg.approve_btn.click()
-    qapp.processEvents()
-    assert scans["n"] == 2
-    assert not dlg._guard_timer.isActive()
-    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
-    assert not saved.exists()
-    assert not dlg.approve_btn.isEnabled()
-    _assert_class_c_sentence_is_quoted_from_the_letter(dlg)
+def test_preview_cover_is_read_only(qapp):
+    """Typing and paste leave the generated letter unchanged."""
+    from PySide6.QtGui import QGuiApplication
     from PySide6.QtTest import QTest
 
-    QTest.qWait(dlg._guard_timer.interval() + 50)
-    assert scans["n"] == 2
-    dlg.close()
-
-
-def test_stale_guard_result_keeps_confirm_locked(qapp, tmp_path, monkeypatch):
-    """A run of the clean letter must not unlock confirm after the text changed."""
-    import core.cover_guard as guard
-
-    cfg = _profile_with_licence(tmp_path, "B")
-    dlg = ApplyPreviewDialog(
-        _preview(cover_letter_preview=_CLEAN_LETTER, warnings=[]),
-        config=cfg,
-        job=_preview_job(),
-    )
+    dlg = ApplyPreviewDialog(_preview(cover_letter_preview=_CLEAN_LETTER, warnings=[]))
     dlg.show()
     qapp.processEvents()
-    assert dlg.approve_btn.isEnabled()
-    original = guard.screen_prepared_letter
-
-    def delayed(letter, prepared):
-        assert "Führerschein Klasse C." not in letter
-        _insert_unconfirmed_class_c(dlg)
-        return original(letter, prepared)
-
-    monkeypatch.setattr(guard, "screen_prepared_letter", delayed)
-    # The clean letter was already scanned. Hold a second run of that text.
-    dlg._last_scanned_hash = ""
-    dlg._on_guard_debounce()
-    assert "Führerschein Klasse C." in dlg.cover_edit.toPlainText()
-    assert not dlg.approve_btn.isEnabled()
-    assert "Prüfen nötig" in dlg.status_chip.text()
+    assert dlg.cover_edit.isReadOnly()
+    before = dlg.cover_edit.toPlainText()
+    dlg.cover_edit.setFocus()
+    QTest.keyClicks(dlg.cover_edit, "Klasse C")
+    assert dlg.cover_edit.toPlainText() == before
+    QGuiApplication.clipboard().setText("Eingefügt")
+    dlg.cover_edit.paste()
+    qapp.processEvents()
+    assert dlg.cover_edit.toPlainText() == before
     dlg.close()
 
 
-def test_fifty_keystrokes_run_one_guard_after_the_pause_and_one_on_confirm(
-    qapp, tmp_path, monkeypatch
-):
-    """50 characters at 50 ms: one scan after the pause, one more on confirm."""
-    import core.cover_guard as guard
-    from PySide6.QtCore import QTimer
-    from PySide6.QtTest import QTest
+def test_approve_saves_the_generated_preview_bytes(qapp, tmp_path, monkeypatch):
+    """Confirm stores preview.cover_letter_preview, not a typed editor value."""
     from PySide6.QtWidgets import QMessageBox
 
-    scans = {"n": 0}
-    prepares = {"n": 0}
-    profile_reads = {"n": 0}
-    original_scan = guard.screen_prepared_letter
-    original_prepare = guard.prepare_cover_check
-    original_profile = guard.confirmed_profile_text
+    from apply.preview import build_application_preview
+    from core.config import ExtractReview, SourcedText
+    from core.cover_letter import approve_cover_letter
+    from core.models import Job
 
-    def counting_scan(letter, prepared):
-        scans["n"] += 1
-        return original_scan(letter, prepared)
+    monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
+    cfg = _profile_with_licence(tmp_path, "B")
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    cfg.profile.qualifications.skills = [SourcedText(value="Excel", source="manual")]
+    job = Job(
+        id="vorschau-speichern",
+        title="Disponent",
+        company="Nordlicht GmbH",
+        remote_type="remote",
+        description="Excel und Tourenplanung.",
+    )
+    preview = build_application_preview(job, cfg)
+    assert preview.cover_letter_preview.strip()
+    seen: dict[str, str] = {}
+    original = approve_cover_letter
+
+    def wrapped(job, config, text=None):
+        seen["text"] = text
+        return original(job, config, text)
+
+    monkeypatch.setattr("core.cover_letter.approve_cover_letter", wrapped)
+    dlg = ApplyPreviewDialog(preview, config=cfg, job=job)
+    dlg.show()
+    qapp.processEvents()
+    assert dlg.approve_btn.isEnabled()
+    dlg.approve_btn.click()
+    qapp.processEvents()
+    assert seen["text"] == preview.cover_letter_preview
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    assert saved.read_bytes() == preview.cover_letter_preview.encode("utf-8")
+    dlg.close()
+
+
+def _shipped_class_c_profile(tmp_path, codes: list[str], skills: list[str]):
+    from core.config import ExtractReview, SourcedText
+    from core.models import Job
+
+    cfg = _profile_with_licence(tmp_path, codes[0] if codes else "B")
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    cfg.profile.qualifications.driving_license = [
+        SourcedText(value=code, source="manual") for code in codes
+    ]
+    cfg.profile.qualifications.skills = [
+        SourcedText(value=skill, source="manual") for skill in skills
+    ]
+    job = Job(
+        id="vorschau-neu",
+        title="Disponent",
+        company="Nordlicht GmbH",
+        remote_type="remote",
+        description="Excel und Führerschein Klasse C sind erforderlich.",
+    )
+    return cfg, job
+
+
+def test_reopen_after_confirming_class_c_enables_and_saves(qapp, tmp_path, monkeypatch):
+    """Closing, confirming C, and opening again rebuilds the letter and saves it."""
+    import core.cover_guard as guard
+    from PySide6.QtWidgets import QMessageBox
+
+    from apply.preview import build_application_preview
+    from core.config import SourcedText
+
+    prepares = {"n": 0}
+    original_prepare = guard.prepare_cover_check
 
     def counting_prepare(*args, **kwargs):
         prepares["n"] += 1
         return original_prepare(*args, **kwargs)
 
-    def counting_profile(config):
-        profile_reads["n"] += 1
-        return original_profile(config)
-
-    monkeypatch.setattr(guard, "screen_prepared_letter", counting_scan)
     monkeypatch.setattr(guard, "prepare_cover_check", counting_prepare)
-    monkeypatch.setattr(guard, "confirmed_profile_text", counting_profile)
     monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
     monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
-    cfg = _profile_with_licence(tmp_path, "B")
-    dlg = ApplyPreviewDialog(
-        _preview(cover_letter_preview=_CLEAN_LETTER, warnings=[]),
-        config=cfg,
-        job=_preview_job(),
-    )
+    cfg, job = _shipped_class_c_profile(tmp_path, ["B"], ["Führerschein Klasse C"])
+    first = build_application_preview(job, cfg)
+    dlg = ApplyPreviewDialog(first, config=cfg, job=job)
     dlg.show()
     qapp.processEvents()
     assert prepares["n"] == 1
-    assert profile_reads["n"] == 1
-    assert scans["n"] == 1
-    assert dlg._guard_timer.interval() >= 400
-    assert len(dlg.findChildren(QTimer)) == 1
-    scans["n"] = 0
-    for _ in range(50):
-        dlg.cover_edit.insertPlainText("x")
-        QTest.qWait(50)
-    assert scans["n"] == 0
-    assert prepares["n"] == 1
-    assert profile_reads["n"] == 1
-    QTest.qWait(dlg._guard_timer.interval() + 80)
-    assert scans["n"] == 1
-    assert dlg.approve_btn.isEnabled()
-    dlg.approve_btn.click()
-    qapp.processEvents()
-    assert scans["n"] == 2
-    assert prepares["n"] == 1
-    assert profile_reads["n"] == 1
+    assert not dlg.approve_btn.isEnabled()
+    _assert_class_c_sentence_is_quoted_from_the_letter(dlg)
     dlg.close()
+    qapp.processEvents()
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    assert not saved.exists()
+    cfg.profile.qualifications.driving_license = [SourcedText(value="C", source="manual")]
+    second = build_application_preview(job, cfg)
+    assert "Führerschein Klasse C" in second.cover_letter_preview
+    again = ApplyPreviewDialog(second, config=cfg, job=job)
+    again.show()
+    qapp.processEvents()
+    assert prepares["n"] == 2
+    assert again._prepared is not dlg._prepared
+    assert "C" in again._prepared.licence_codes
+    assert again.approve_btn.isEnabled()
+    assert "Prüfen nötig" not in again.status_chip.text()
+    again.approve_btn.click()
+    qapp.processEvents()
+    assert saved.read_bytes() == second.cover_letter_preview.encode("utf-8")
+    again.close()
+
+
+def test_reopen_after_removing_the_skill_enables_and_saves(qapp, tmp_path, monkeypatch):
+    """Closing, removing the skill, and opening again rebuilds a letter that saves."""
+    import core.cover_guard as guard
+    from PySide6.QtWidgets import QMessageBox
+
+    from apply.preview import build_application_preview
+    from core.config import SourcedText
+
+    prepares = {"n": 0}
+    original_prepare = guard.prepare_cover_check
+
+    def counting_prepare(*args, **kwargs):
+        prepares["n"] += 1
+        return original_prepare(*args, **kwargs)
+
+    monkeypatch.setattr(guard, "prepare_cover_check", counting_prepare)
+    monkeypatch.setattr(QMessageBox, "information", lambda *args, **kwargs: None)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *args, **kwargs: None)
+    cfg, job = _shipped_class_c_profile(
+        tmp_path, ["B"], ["Excel", "Führerschein Klasse C"]
+    )
+    first = build_application_preview(job, cfg)
+    dlg = ApplyPreviewDialog(first, config=cfg, job=job)
+    dlg.show()
+    qapp.processEvents()
+    assert not dlg.approve_btn.isEnabled()
+    assert _PATH_FOR_CLASS_C in dlg._guard_notice.text()
+    assert "Führerschein Klasse C" in dlg._guard_notice.text()
+    dlg.close()
+    qapp.processEvents()
+    saved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    assert not saved.exists()
+    cfg.profile.qualifications.skills = [SourcedText(value="Excel", source="manual")]
+    second = build_application_preview(job, cfg)
+    assert "Führerschein Klasse C" not in second.cover_letter_preview
+    assert second.cover_letter_preview != first.cover_letter_preview
+    again = ApplyPreviewDialog(second, config=cfg, job=job)
+    again.show()
+    qapp.processEvents()
+    assert prepares["n"] == 2
+    assert again._prepared is not dlg._prepared
+    assert again.cover_edit.toPlainText() == second.cover_letter_preview
+    assert again.approve_btn.isEnabled()
+    again.approve_btn.click()
+    qapp.processEvents()
+    assert saved.read_bytes() == second.cover_letter_preview.encode("utf-8")
+    again.close()
