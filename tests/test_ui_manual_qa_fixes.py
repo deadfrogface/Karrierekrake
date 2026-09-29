@@ -2100,12 +2100,8 @@ def test_english_licence_sentences_share_the_class_rule():
         "Ich habe einen Motorradführerschein.",
     ),
 )
-@pytest.mark.xfail(
-    strict=True,
-    reason="Fahrzeugart ohne Klassenbuchstaben wird noch nicht als fehlende Klasse markiert.",
-)
 def test_vehicle_word_without_class_letter_is_flagged(sentence):
-    """Lkw, Bus and Motorrad are not mapped to a class in this PR."""
+    """A vehicle claim needs a matching confirmed driving class."""
     from core.config import ExtractReview
     from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
 
@@ -2118,6 +2114,34 @@ def test_vehicle_word_without_class_letter_is_flagged(sentence):
         job_text="Lager",
     )
     assert not screened.ok
+
+
+@pytest.mark.parametrize(
+    ("sentence", "licence", "expected"),
+    (
+        ("Ich habe einen Lkw-Führerschein.", "C1", True),
+        ("Ich habe einen Busführerschein.", "D", True),
+        ("Ich habe einen Motorradführerschein.", "A2", True),
+        ("I hold a truck driving licence.", "B", False),
+        ("I hold a truck driving licence.", "CE", True),
+        ("I have a bus driver's license.", "B", False),
+        ("I have a bus driver's license.", "D1", True),
+        ("Für die Stelle ist ein Lkw-Führerschein nötig.", "B", True),
+    ),
+)
+def test_vehicle_claims_respect_confirmed_class_and_person(sentence, licence, expected):
+    from core.config import ExtractReview
+    from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
+
+    cfg = _letter_profile([licence])
+    cfg.profile.extract_review = ExtractReview(source="cv", confirmed=True)
+    screened = screen_cover_letter(
+        sentence,
+        confirmed_text=confirmed_profile_text(cfg),
+        confirmed_licences=confirmed_licence_codes(cfg),
+        job_text="Lager",
+    )
+    assert screened.ok is expected
 
 
 def test_cover_guard_keeps_abbreviations_inside_the_claim():
