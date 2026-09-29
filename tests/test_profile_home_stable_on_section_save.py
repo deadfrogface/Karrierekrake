@@ -176,6 +176,43 @@ def _save_section(page: ProfilePage, key: str) -> None:
     page._edit_section(key)
 
 
+def test_cancel_personal_edit_cannot_leak_into_later_skill_save(
+    qapp, config_service, monkeypatch
+) -> None:
+    _silence_dialogs(monkeypatch)
+    page, _host = _open_page(qapp, config_service)
+    original = config_service.profile_path.read_bytes()
+
+    def reject_with_edit(_content, focus=None):
+        page.applicant.first_name.setText("Nicht speichern")
+        return SectionEditDrawer.DialogCode.Rejected
+
+    page._drawer.present = reject_with_edit
+    page._edit_section("personal")
+    assert page.applicant.first_name.text() == ""
+    assert config_service.profile_path.read_bytes() == original
+
+    page.qualifications.skills.set_items(["SAP"])
+    _save_section(page, "skills")
+    cfg = config_service.load()
+    assert cfg.application.first_name == ""
+    assert cfg.profile.qualifications.skill_values() == ["SAP"]
+
+
+def test_cancel_search_home_restores_unsaved_widget(qapp, config_service) -> None:
+    page, _host = _open_page(qapp, config_service)
+    original = config_service.profile_path.read_bytes()
+
+    def reject_with_edit(_content, focus=None):
+        page.location_work.home_address.setText("Falscher Suchort 1")
+        return SectionEditDrawer.DialogCode.Rejected
+
+    page._drawer.present = reject_with_edit
+    page.edit_search_home()
+    assert page.location_work.home_address.text() == ""
+    assert config_service.profile_path.read_bytes() == original
+
+
 def _count_geo(monkeypatch) -> dict[str, int]:
     calls = {"geo": 0}
     original_postal = geo_resolve.resolve_postal_pgeocode
