@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-15-station-and-skill",
+  "tags": [
+    "station_plus_skill"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550115",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "2019-03",
+          "end_date": "2024-08",
+          "responsibilities": [],
+          "source": "manual"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "manual"
+        }
+      ],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-15-station-and-skill",
+    "source": "indeed",
+    "source_job_id": "src-cl-15-station-and-skill",
+    "title": "Dispatcher (m/w/d)",
+    "company": "Hafenwerk GmbH",
+    "description": "Die Hafenwerk GmbH sucht Unterstützung in der Disposition. Der Betrieb ist fiktiv. Das Angebot steht vor den fachlichen Punkten.\n\nWir bieten eine unbefristete Vollzeitstelle und dreißig Tage Urlaub. Die Einarbeitung übernimmt das bestehende Team.\n\nDas bringen Sie mit:\n- Erfahrung als Disponent\n- sichere Tourenplanung\n\nWeitere Stationen und weitere Skills nennt die Anzeige nicht.",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-15-station-and-skill",
+    "status": "new"
+  },
+  "expected_outcome": "interview",
+  "must_mention": [
+    "Hafenwerk GmbH",
+    "Dispatcher",
+    "Disponent",
+    "Nordkai Spedition",
+    "Tourenplanung",
+    "von 2019 bis 2024"
+  ],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
+  ],
+  "rationale": "Ein Stationsbezug und ein Skillbezug. Disponent bei der Nordkai Spedition und der Skill Tourenplanung treffen zwei verschiedene Anforderungen. Beide stehen im Brief."
+}

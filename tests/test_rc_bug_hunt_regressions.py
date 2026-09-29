@@ -734,7 +734,7 @@ def test_hcaptcha_detected():
 
 
 def test_cover_letter_unknown_placeholder_does_not_raise(tmp_path: Path):
-    from core.config import SourcedText, empty_app_config
+    from core.config import ExperienceEntry, SourcedText, empty_app_config
     from core.cover_letter import render_cover_letter
     from core.models import Job
 
@@ -742,8 +742,23 @@ def test_cover_letter_unknown_placeholder_does_not_raise(tmp_path: Path):
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Entwicklung", source="manual")
     )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Diensten", source="manual")
+    )
+    cfg.profile.qualifications.work_experience.append(
+        ExperienceEntry(
+            title="Entwicklung",
+            company="Werk GmbH",
+            start_date="2019-01",
+            end_date="2023-01",
+            source="manual",
+        )
+    )
     tpl = tmp_path / "cover.txt"
-    tpl.write_text("{job_title} {bonus_line} {company}", encoding="utf-8")
+    tpl.write_text(
+        "{job_title} {bonus_line} {company} {skills}\n{experience_sentence}",
+        encoding="utf-8",
+    )
     cfg.settings.cover_letter_template = str(tpl)
     cfg.root = tmp_path
     text = render_cover_letter(

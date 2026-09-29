@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-13-one-reference",
+  "tags": [
+    "single_reference"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550113",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Barkeeper",
+          "company": "Bar Beispiel",
+          "location": "Musterhafen",
+          "start_date": "2018-01",
+          "end_date": "2020-06",
+          "responsibilities": [
+            "Getränke zubereiten"
+          ],
+          "source": "manual"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "manual"
+        }
+      ],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-13-one-reference",
+    "source": "indeed",
+    "source_job_id": "src-cl-13-one-reference",
+    "title": "Disponent (m/w/d)",
+    "company": "Nordmole Musterlogistik GmbH",
+    "description": "Die Nordmole Musterlogistik GmbH sucht Verstärkung im Leitstand. Die Beschreibung ist vorhanden und nennt eine Anforderung aus dem Profil.\n\nDas bringen Sie mit:\n- sichere Tourenplanung im Stückgut\n- Bereitschaft zur Frühschicht\n\nWeitere Werkzeuge und Stationen nennt die Anzeige nicht.",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-13-one-reference",
+    "status": "new"
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
+  ],
+  "rationale": "Genau ein belegter Bezug: der Skill Tourenplanung steht in der Anzeige, die Station Barkeeper nicht. Ein Bezug liegt unter dem Minimum von zwei. Soll ist no_evidence und kein Brief."
+}

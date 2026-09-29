@@ -134,7 +134,20 @@
     "[Ihr Name]",
     "Gesellenbrief",
     "Marzipan",
-    "Tortenansprache"
+    "Tortenansprache",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die Beschreibung ist vorhanden, trifft aber keine Station und keinen Skill aus dem Profil. Gesellenbrief, Torten und Marzipan sind nicht belegt. Soll ist no_evidence und kein Brief."
 }
