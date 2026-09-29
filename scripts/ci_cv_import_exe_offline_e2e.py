@@ -153,7 +153,7 @@ def build_smoke_metrics(report: dict) -> dict:
     steps = report.get("steps") if isinstance(report.get("steps"), dict) else {}
     metrics: dict = {
         "exe_bytes": int(report.get("exe_bytes") or 0),
-        "sidecar_bytes": int(report.get("sidecar_bytes") or 0),
+        "model_embedded": bool(report.get("model_embedded")),
         "start_wall_s": _numeric_metric((steps.get("start") or {}).get("wall_s"), whole=False),
         "import_wall_s": _numeric_metric((steps.get("import") or {}).get("wall_s"), whole=False),
         "import_en_wall_s": _numeric_metric(
@@ -645,10 +645,8 @@ def _run_negative_cases(
     exe: Path,
     local_appdata: Path,
     timeout_s: float,
-    *,
-    readable_cv: Path,
 ) -> dict:
-    """Corrupt file + EXE-only layout must fail closed with safe user copy."""
+    """Corrupt input must fail closed with safe user copy."""
     results: dict = {}
     with tempfile.TemporaryDirectory(prefix="kk-neg-") as neg:
         neg_path = Path(neg)
@@ -681,46 +679,8 @@ def _run_negative_cases(
             "forbidden": forbidden,
         }
 
-        # EXE alone (no models/) must surface model_missing, not invent a download.
-        # Use a readable CV so the failure is the missing sidecar, not extract.
-        import shutil
-
-        exe_only = neg_path / "exe_only"
-        exe_only.mkdir()
-        alone = exe_only / "Karrierekrake.exe"
-        shutil.copy2(exe, alone)
-        # Isolate AppData so no prior materialize path exists.
-        alone_appdata = neg_path / "LocalAppData-exe-only"
-        alone_appdata.mkdir()
-        out2 = neg_path / "exe_only_out.json"
-        try:
-            payload2 = _run_child_import(
-                alone,
-                readable_cv,
-                out2,
-                local_appdata=alone_appdata,
-                timeout_s=min(300.0, timeout_s),
-            )
-        except Exception as exc:  # noqa: BLE001
-            results["exe_only"] = {"ok": False, "error": str(exc)}
-            return results
-        kind2 = str(payload2.get("kind") or "")
-        msg2 = str(payload2.get("message") or "")
-        forbidden2 = _forbidden_in_user_copy(msg2)
-        results["exe_only"] = {
-            "ok": (not payload2.get("ok"))
-            and kind2 == "model_missing"
-            and not forbidden2
-            and (
-                "install" in msg2.lower()
-                or "modell" in msg2.lower()
-                or "model" in msg2.lower()
-            ),
-            "kind": kind2,
-            "message": msg2[:240],
-            "forbidden": forbidden2,
-        }
-    results["ok"] = all(bool((results.get(k) or {}).get("ok")) for k in ("corrupt", "exe_only"))
+    # The primary import already runs the EXE alone from a clean staged folder.
+    results["ok"] = bool((results.get("corrupt") or {}).get("ok"))
     return results
 
 
@@ -765,13 +725,11 @@ def main(argv: list[str] | None = None) -> int:
     if not cv.is_file():
         print(f"FAIL: CV fixture missing: {cv}", flush=True)
         return 2
-    sidecar = exe.parent / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf"
-    if not sidecar.is_file():
-        print(
-            f"FAIL: CV model sidecar missing next to EXE: {sidecar} "
-            "(release package must keep models/ beside Karrierekrake.exe)",
-            flush=True,
-        )
+    from scripts.scan_release_artifact import require_cv_model_embedded
+
+    model_hits = require_cv_model_embedded(exe)
+    if model_hits:
+        print(f"FAIL: standalone EXE model gate: {model_hits}", flush=True)
         return 2
 
     _clear_network_env()
@@ -784,8 +742,7 @@ def main(argv: list[str] | None = None) -> int:
         "exe_bytes": exe.stat().st_size,
         "cv": str(cv),
         "install_dir": str(exe.parent),
-        "sidecar_present": True,
-        "sidecar_bytes": sidecar.stat().st_size,
+        "model_embedded": True,
         "runner_cpu": runner,
         "steps": {},
     }
@@ -891,19 +848,19 @@ def main(argv: list[str] | None = None) -> int:
             report["steps"]["cover_letter"] = {"ok": True, "skipped": True}
         else:
             os.environ["LOCALAPPDATA"] = str(local)
-            if sidecar.is_file():
-                os.environ["KARRIEREKRAKE_CV_LLM_MODEL"] = str(sidecar)
+            # Import child materializes the embedded GGUF under this isolated
+            # LOCALAPPDATA; writing must resolve the very same weight.
             try:
                 report["steps"]["cover_letter"] = _cover_letter_same_model()
             except Exception as exc:  # noqa: BLE001
                 report["steps"]["cover_letter"] = {"ok": False, "error": str(exc)}
 
-        # 7: negative cases (corrupt + EXE without models)
+        # 7: corrupt input must fail safely; standalone EXE was tested above.
         if args.skip_negatives:
             report["steps"]["negatives"] = {"ok": True, "skipped": True}
         else:
             report["steps"]["negatives"] = _run_negative_cases(
-                exe, local, args.import_timeout, readable_cv=cv
+                exe, local, args.import_timeout
             )
 
         required = ["start", "import", "apply", "restart", "cover_letter", "negatives"]

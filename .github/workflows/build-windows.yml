@@ -64,6 +64,7 @@ jobs:
       - name: Build onefile EXE (no bundled Chromium)
         env:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
+          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: "1"
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
@@ -75,8 +76,6 @@ jobs:
             Write-Error "Onefile EXE missing at dist\Karrierekrake.exe"
             exit 1
           }
-          python scripts/prepare_bundled_cv_model.py --also-sidecar dist
-          if ($LASTEXITCODE -ne 0) { Write-Error "sidecar model failed"; exit 1 }
           $item = Get-Item "dist\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small"; exit 1 }
           $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash
@@ -85,7 +84,7 @@ jobs:
           size=$($item.Length)
           sha256=$hash
           console=false
-          cv_model_bundled=1
+          cv_model_embedded=1
           "@ | Set-Content dist\build_metadata.txt
           Get-Item "dist\Karrierekrake.exe" | Format-List FullName, Length
           # Fail if this is a console subsystem EXE (users must not see a terminal).
@@ -100,9 +99,9 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-sidecar
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-embedded
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
-      - name: Package Windows release zip (EXE + models)
+      - name: Package Windows release zip (standalone EXE)
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
@@ -151,7 +150,6 @@ jobs:
             dist/Karrierekrake-Windows.zip
             dist/Karrierekrake-Windows.zip.json
             dist/Karrierekrake.exe
-            dist/models/**
             dist/build_metadata.txt
             dist/content_manifest.json
             artifacts/cv_import_exe_offline_e2e.json

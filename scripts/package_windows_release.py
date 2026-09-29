@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""Assemble the Windows release unit: EXE + CV model sidecar + install notes.
+"""Assemble the Windows release unit with its offline model inside the EXE.
 
-Users who download only ``Karrierekrake.exe`` hit ``model_missing`` because the
-~2.6 GiB GGUF ships as ``models/qwen3.5-4b/*.gguf`` next to the EXE (not inside
-the onefile archive by default). This script builds one zip that must stay
-intact after extract.
+The public EXE must work by itself from a clean directory. A sidecar-only
+build is rejected, even when a model exists in the build tree.
 
 Usage::
 
@@ -14,7 +12,6 @@ Usage::
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 import zipfile
@@ -24,19 +21,15 @@ _ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from core.cv_llm_runtime import CV_MODEL_FILENAME, CV_MODEL_REL, CV_MODEL_SHA256
+from core.cv_llm_runtime import CV_MODEL_REL, CV_MODEL_SHA256
 
 INSTALL_TXT = """Karrierekrake — Windows-Paket
 
 Dieses Zip enthält:
   Karrierekrake.exe
-  models/qwen3.5-4b/<Modelldatei>
   INSTALL.txt (diese Datei)
 
-WICHTIG:
-  Beide Teile gehören zusammen. Entpacken Sie den kompletten Ordner und
-  starten Sie Karrierekrake.exe aus diesem Ordner. Verschieben Sie die EXE
-  nicht allein ohne den Ordner \"models\".
+Starten Sie Karrierekrake.exe. Die lokale Auswertung ist darin enthalten.
 
 Nach dem Start:
   - Kein Internet nötig für Lebenslauf-Import und Anschreiben
@@ -44,63 +37,43 @@ Nach dem Start:
   - Daten unter %LOCALAPPDATA%\\Karrierekrake
 
 Bei der Meldung \"lokales Lebenslauf-Modell fehlt\":
-  Paket erneut vollständig entpacken (EXE + models) und neu starten.
+  Bitte ein aktuelles Release-Paket installieren.
 """
 
 
-def _sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
 def require_release_layout(dist: Path) -> Path:
-    """Return the sidecar GGUF path or raise SystemExit."""
+    """Reject a release whose EXE cannot run without adjacent files."""
     exe = dist / "Karrierekrake.exe"
     if not exe.is_file():
         raise SystemExit(f"EXE missing: {exe}")
-    gguf = dist / CV_MODEL_REL
-    if not gguf.is_file():
-        raise SystemExit(
-            f"CV model sidecar missing: {gguf}. "
-            "Run: python scripts/prepare_bundled_cv_model.py --also-sidecar dist"
-        )
-    if gguf.stat().st_size < 1_000_000_000:
-        raise SystemExit(f"CV model too small: {gguf.stat().st_size} bytes")
-    digest = _sha256(gguf)
-    if digest != CV_MODEL_SHA256:
-        raise SystemExit(
-            f"CV model SHA-256 mismatch:\n  got  {digest}\n  want {CV_MODEL_SHA256}"
-        )
-    return gguf
+    from scripts.scan_release_artifact import require_cv_model_embedded
+
+    hits = require_cv_model_embedded(exe)
+    if hits:
+        raise SystemExit(f"Standalone EXE model gate failed: {hits}")
+    return exe
 
 
 def stage_install_dir(dist: Path, dest: Path) -> Path:
-    """Copy EXE + models into an empty install folder (simulates user extract)."""
+    """Copy only the EXE into an empty install folder (simulates user extract)."""
     import shutil
 
     if dest.exists():
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
     shutil.copy2(dist / "Karrierekrake.exe", dest / "Karrierekrake.exe")
-    models_src = dist / "models"
-    models_dst = dest / "models"
-    shutil.copytree(models_src, models_dst)
     (dest / "INSTALL.txt").write_text(INSTALL_TXT, encoding="utf-8")
     return dest / "Karrierekrake.exe"
 
 
 def build_zip(dist: Path, out_zip: Path) -> dict:
-    gguf = require_release_layout(dist)
+    exe = require_release_layout(dist)
     out_zip.parent.mkdir(parents=True, exist_ok=True)
     if out_zip.exists():
         out_zip.unlink()
 
     members = [
-        dist / "Karrierekrake.exe",
-        gguf,
+        exe,
     ]
     for name in ("build_metadata.txt", "content_manifest.json"):
         p = dist / name
@@ -118,7 +91,7 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
         "zip_bytes": out_zip.stat().st_size,
         "exe_bytes": (dist / "Karrierekrake.exe").stat().st_size,
         "model_rel": CV_MODEL_REL.as_posix(),
-        "model_bytes": gguf.stat().st_size,
+        "model_embedded": True,
         "model_sha256": CV_MODEL_SHA256,
         "members": sorted(
             [Path(i.filename).as_posix() for i in zipfile.ZipFile(out_zip).infolist()]
@@ -152,8 +125,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     dist = args.dist.resolve()
-    gguf = require_release_layout(dist)
-    print(f"OK layout: {gguf} ({gguf.stat().st_size} bytes)", flush=True)
+    exe = require_release_layout(dist)
+    print(f"OK standalone EXE: {exe} ({exe.stat().st_size} bytes)", flush=True)
 
     if args.stage_install is not None:
         exe = stage_install_dir(dist, args.stage_install.resolve())

@@ -96,13 +96,11 @@ jobs:
       - name: Build onefile EXE (model + llama_cpp runtime bundled)
         env:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
-          # Reuse cache / vendor GGUF from the prepare step for sidecar placement.
+          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: "1"
           KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
           if (!(Test-Path "dist\Karrierekrake.exe")) { Write-Error "EXE missing"; exit 1 }
-          python scripts/prepare_bundled_cv_model.py --also-sidecar dist
-          if ($LASTEXITCODE -ne 0) { Write-Error "sidecar model failed"; exit 1 }
           $item = Get-Item "dist\Karrierekrake.exe"
           if ($item.Length -lt 1000000) { Write-Error "EXE too small: $($item.Length)"; exit 1 }
           $hash = (Get-FileHash "dist\Karrierekrake.exe" -Algorithm SHA256).Hash
@@ -112,7 +110,7 @@ jobs:
           sha256=$hash
           python=3.12
           console=false
-          cv_model_bundled=1
+          cv_model_embedded=1
           "@ | Set-Content dist\build_metadata.txt
           Get-Content dist\build_metadata.txt
           # Fail if this is a console subsystem EXE (users must not see a terminal).
@@ -216,10 +214,10 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-sidecar
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-embedded
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
           Get-Content dist/content_manifest.json | Select-Object -First 40
-      - name: Package Windows release zip (EXE + models)
+      - name: Package Windows release zip (standalone EXE)
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
@@ -230,7 +228,6 @@ jobs:
             --stage-install $install
           if ($LASTEXITCODE -ne 0) { Write-Error "package_windows_release FAILED"; exit 1 }
           if (!(Test-Path "$install\Karrierekrake.exe")) { Write-Error "staged EXE missing"; exit 1 }
-          if (!(Test-Path "$install\models\qwen3.5-4b\Qwen3.5-4B-Q4_K_M.gguf")) { Write-Error "staged model missing"; exit 1 }
           "INSTALL_DIR=$install" | Out-File -FilePath $env:GITHUB_ENV -Append
           Write-Host "Staged install: $install"
       - name: Packaged EXE smoke-test (isolated LOCALAPPDATA)
@@ -263,7 +260,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/ci_release_env_gate.py --self-test
           if ($LASTEXITCODE -ne 0) { Write-Error "Release env self-test failed"; exit 1 }
-          # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
+          # Fresh LOCALAPPDATA, no model env overrides — must use embedded GGUF.
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
           Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
@@ -329,7 +326,6 @@ jobs:
             dist/Karrierekrake-Windows.zip
             dist/Karrierekrake-Windows.zip.json
             dist/Karrierekrake.exe
-            dist/models/**
             dist/build_metadata.txt
             dist/content_manifest.json
             dist/smoke_test_result.txt

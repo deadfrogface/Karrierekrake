@@ -259,6 +259,22 @@ def require_cv_model_sidecar(dist: Path) -> list:
     return hits
 
 
+def require_cv_model_embedded(exe: Path) -> list:
+    """Fail closed if the standalone EXE does not contain its offline model."""
+    from core.cv_llm_runtime import CV_MODEL_REL
+
+    try:
+        names = list_toc_from_exe(exe)
+    except Exception as exc:  # noqa: BLE001
+        return [PolicyHit(kind="cv_model_archive_unreadable", path=str(exe), detail=str(exc))]
+    expected = CV_MODEL_REL.as_posix().lower()
+    if not any(str(name).replace("\\", "/").lower() == expected for name in names):
+        return [PolicyHit(kind="cv_model_embedded_missing", path=expected, detail="GGUF absent from onefile archive")]
+    if exe.stat().st_size < 1_000_000_000:
+        return [PolicyHit(kind="cv_model_embedded_too_small", path=str(exe), detail="onefile archive below model size floor")]
+    return []
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exe", type=Path, help="PyInstaller onefile EXE")
@@ -279,6 +295,7 @@ def main() -> int:
         action="store_true",
         help="Require dist/models/.../Qwen*.gguf next to the EXE (release default)",
     )
+    parser.add_argument("--require-cv-model-embedded", action="store_true")
     args = parser.parse_args()
 
     if not any([args.exe, args.dist, args.toc_json]):
@@ -299,6 +316,10 @@ def main() -> int:
             print("Release content gate FAILED: --require-cv-model-sidecar needs --dist")
             return 1
         hits.extend(require_cv_model_sidecar(args.dist))
+    if args.require_cv_model_embedded:
+        if not args.exe:
+            parser.error("--require-cv-model-embedded needs --exe")
+        hits.extend(require_cv_model_embedded(args.exe))
 
     if args.manifest_out:
         gen_path = ROOT / "scripts" / "generate_content_manifest.py"

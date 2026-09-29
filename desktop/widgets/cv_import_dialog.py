@@ -39,7 +39,6 @@ from PySide6.QtWidgets import (
 
 from core.config import ApplicationProfile, QualificationsConfig
 from core.cv_parser import parsed_to_qualifications
-from core.local_llm_cv_gate import local_llm_cv_parsing_allowed
 from desktop.cv_import_supervisor import (
     CvImportSupervisor,
     ImportAttemptResult,
@@ -215,10 +214,9 @@ class CvImportDialog(QDialog):
         self.llm_notice = QLabel()
         self.llm_notice.setWordWrap(True)
         self.llm_notice.setObjectName("CvImportLlmNotice")
-        llm_allowed = local_llm_cv_parsing_allowed(settings)
-        self.llm_notice.setVisible(not llm_allowed)
-        if not llm_allowed:
-            self.llm_notice.setText(tr("settings.local_llm_cv_disabled_hint"))
+        # The diagnostic switch does not control the production importer.
+        # Never show it in the user-facing import flow.
+        self.llm_notice.setVisible(False)
 
         self.status_label = QLabel()
         self.status_label.setWordWrap(True)
@@ -512,7 +510,7 @@ class CvImportDialog(QDialog):
         if detail.lower() in {"", "oom", "timeout", "error", "cancelled", kind.lower()}:
             self.error_detail.clear()
             self.error_detail.setVisible(False)
-        elif detail == text:
+        elif kind == "model_missing" or detail == text:
             self.error_detail.clear()
             self.error_detail.setVisible(False)
         else:
