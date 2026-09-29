@@ -224,6 +224,10 @@ def main() -> int:
     # exits 1 with „Karrierekrake läuft bereits“.
     if "--cv-import-child" in sys.argv:
         return _run_cv_import_child()
+    if "--report-physical-cores" in sys.argv:
+        return _report_physical_cores()
+    if "--report-llm-load" in sys.argv:
+        return _report_llm_load()
     if os.environ.get("KARRIEREKRAKE_SMOKE_TEST", "").strip().lower() in {"1", "true", "yes"}:
         return _smoke_test()
     if "--smoke-test" in sys.argv:
@@ -241,10 +245,65 @@ def main() -> int:
     return run()
 
 
+def _report_physical_cores() -> int:
+    """Write the psutil core line and the thread-reserve line. Return 0.
+
+    The packaged EXE is windowed, so CI passes a path and reads that file.
+    Return 1 when the core line is the fallback (psutil missing or ``None``).
+    The second line is ``n_threads=.. n_threads_batch=.. physical=..
+    logical=.. reserve=..``.
+    """
+    from core.cv_llm_runtime import cv_llm_thread_report_line, physical_cores_report_line
+
+    idx = sys.argv.index("--report-physical-cores")
+    cores = physical_cores_report_line()
+    threads = cv_llm_thread_report_line()
+    text = cores + "\n" + threads + "\n"
+    if idx + 1 < len(sys.argv) and not sys.argv[idx + 1].startswith("--"):
+        out = Path(sys.argv[idx + 1])
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text, encoding="utf-8")
+    print(text, end="", flush=True)
+    return 0 if "source=psutil " in cores else 1
+
+
+def _report_llm_load() -> int:
+    """Write the bundled llama CPU line. Windowed EXE: CI reads the file.
+
+    ``AMX_INT8 = 1`` or ``AVX512 = 1`` means this is not the pinned AVX2
+    wheel (native kernels of a newer build machine). Exit 1 in that case.
+    Model-buffer names are logged by the import (``cv_llm_load``) when a
+    GGUF is loaded; this flag does not load weights.
+    """
+    from core.cv_llm_runtime import llama_build_report_text
+
+    idx = sys.argv.index("--report-llm-load")
+    text = llama_build_report_text()
+    if idx + 1 < len(sys.argv) and not sys.argv[idx + 1].startswith("--"):
+        out = Path(sys.argv[idx + 1])
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text, encoding="utf-8")
+    print(text, end="" if text.endswith("\n") else "\n", flush=True)
+    features = ""
+    for line in text.splitlines():
+        if line.startswith("llama_cpu_features="):
+            features = line
+            break
+    if "AVX2 = 1" not in features:
+        return 1
+    if "AMX_INT8 = 1" in features or "AVX512 = 1" in features:
+        return 1
+    if "llama_cpu_all_variants=0" not in text:
+        return 1
+    return 0
+
+
 def _run_cv_import_child() -> int:
     """Frozen EXE CV-import worker: no Qt UI, no single-instance lock."""
+    from desktop.cv_import_child import discard_child_stderr
     from desktop.cv_import_child import run as run_cv_import_child
 
+    discard_child_stderr()
     child_argv = [a for a in sys.argv[1:] if a != "--cv-import-child"]
     return int(run_cv_import_child(child_argv))
 

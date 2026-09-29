@@ -12,12 +12,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import shlex
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 from core.local_llm_cv_gate import LOCAL_LLM_CV_KILL_WORDING, local_llm_cv_decision
 
@@ -79,6 +82,15 @@ _KIND_MESSAGES: dict[str, str] = {
     ),
     "cancelled": "Einlesen abgebrochen. Es wurde nichts übernommen.",
     "oom": "Nicht genug Arbeitsspeicher, um diese Datei einzulesen.",
+    "llm_disabled": LOCAL_LLM_CV_KILL_WORDING,
+    "llm_command_exited": (
+        "Das angegebene lokale Modellkommando ist vor dem Import beendet. "
+        "Es wurde nichts übernommen."
+    ),
+    "llm_timeout": (
+        "Das Einlesen hat zu lange gedauert und wurde abgebrochen. "
+        "Es wurde nichts übernommen."
+    ),
 }
 
 
@@ -109,6 +121,17 @@ def _write(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, default=str), encoding="utf-8")
 
 
+def llm_step_for_report() -> dict:
+    """Timings of the last completion plus ``PeakJobMemoryUsed`` of this process."""
+    from core.cv_docpick_import import model_process_peak_job_memory_used_bytes
+    from core.cv_llm_runtime import last_llm_step_metrics, public_llm_step
+
+    step = last_llm_step_metrics()
+    step["peak_job_memory_used_bytes"] = int(model_process_peak_job_memory_used_bytes())
+    step["peak_counter"] = "PeakJobMemoryUsed"
+    return public_llm_step(step)
+
+
 def _with_decision(payload: dict, decision) -> dict:
     if decision is not None:
         payload["local_llm_cv"] = decision.as_dict()
@@ -119,6 +142,82 @@ def _split_cmd(cmd: str) -> list[str]:
     return shlex.split(cmd, posix=(os.name != "nt"))
 
 
+_DETAIL_FIELDS = (
+    "exception_type",
+    "reason",
+    "stage",
+    "prompt_tokens",
+    "tokens_done",
+    "max_tokens",
+    "n_ctx",
+    "elapsed_s",
+    "timeout_s",
+    "peak_bytes",
+    "budget_bytes",
+    "counter",
+)
+
+_DETAIL_COUNTERS = frozenset({"PeakJobMemoryUsed", "PeakPagefileUsage", "Anonymous"})
+
+
+def _safe_detail(
+    *,
+    exception_type: str,
+    reason: str,
+    stage: str = "",
+    extra: dict | None = None,
+) -> dict[str, str | int | float]:
+    """Log detail from a fixed field list. No exception text, paths, or CV body."""
+    from core.cv_docpick_import import (
+        current_import_timeout_s,
+        import_progress_snapshot,
+        import_started_at,
+    )
+
+    snap = import_progress_snapshot()
+    detail: dict[str, str | int | float] = {
+        "exception_type": exception_type or "Exception",
+        "reason": reason,
+        "stage": stage or str(snap.get("stage") or ""),
+    }
+    for key in ("prompt_tokens", "tokens_done", "max_tokens", "n_ctx"):
+        if key in snap and isinstance(snap[key], int):
+            detail[key] = int(snap[key])
+    if extra:
+        for key in ("peak_bytes", "budget_bytes", "prompt_tokens", "tokens_done", "max_tokens", "n_ctx"):
+            if key in extra and isinstance(extra[key], int) and not isinstance(extra[key], bool):
+                detail[key] = int(extra[key])
+        extra_stage = extra.get("stage")
+        if isinstance(extra_stage, str) and extra_stage and not stage:
+            detail["stage"] = extra_stage
+        counter = extra.get("counter")
+        if isinstance(counter, str) and counter in _DETAIL_COUNTERS:
+            detail["counter"] = counter
+    started = import_started_at()
+    if started is not None:
+        detail["elapsed_s"] = round(time.monotonic() - started, 3)
+    try:
+        detail["timeout_s"] = round(float(current_import_timeout_s()), 3)
+    except Exception:  # noqa: BLE001
+        pass
+    return {key: detail[key] for key in _DETAIL_FIELDS if key in detail}
+
+
+def discard_child_stderr() -> None:
+    """Send file descriptor 2 to the null device for the rest of this process.
+
+    llama.cpp writes there directly and bypasses Python logging. Discarding
+    it keeps the parent's pipe from filling and keeps the text out of the
+    app log.
+    """
+    null_fd = os.open(os.devnull, os.O_WRONLY)
+    try:
+        os.dup2(null_fd, 2)
+    finally:
+        if null_fd != 2:
+            os.close(null_fd)
+
+
 def _fail(
     out_path: Path,
     *,
@@ -127,17 +226,72 @@ def _fail(
     decision,
     code: int = 1,
     stage: str = "",
+    exception_type: str = "",
+    extra: dict | None = None,
 ) -> int:
-    payload: dict = {
+    from core.cv_llm_runtime import (
+        CODE_ONLY_LLM_ERROR_CODES,
+        INPUT_CONDITIONED_LLM_ERROR_CODES,
+    )
+
+    exc_name = exception_type or "Exception"
+    # ``message`` is intentionally unused in the log and in ``detail``.
+    del message
+    if kind == "peak_rss_exceeded":
+        logger.warning(
+            "cv_import input_conditioned no_auto_retry kind=%s exception_type=%s",
+            kind,
+            exc_name,
+        )
+    elif kind == "memory_budget_app_share":
+        logger.warning(
+            "cv_import app_share no_auto_retry kind=%s exception_type=%s",
+            kind,
+            exc_name,
+        )
+        shown = kind
+        payload: dict = {
+            "ok": False,
+            "kind": kind,
+            "message": shown,
+            "detail": _safe_detail(
+                exception_type=exc_name, reason=kind, stage=stage, extra=extra
+            ),
+            "parsed": None,
+        }
+        if stage:
+            payload["stage"] = stage
+        payload["llm_step"] = llm_step_for_report()
+        _write(out_path, _with_decision(payload, decision))
+        return code
+    if kind in CODE_ONLY_LLM_ERROR_CODES:
+        if kind in INPUT_CONDITIONED_LLM_ERROR_CODES:
+            logger.warning(
+                "cv_import input_conditioned kind=%s exception_type=%s",
+                kind,
+                exc_name,
+            )
+        else:
+            logger.warning(
+                "cv_import machine_dependent no_auto_retry kind=%s exception_type=%s",
+                kind,
+                exc_name,
+            )
+        shown = kind
+    else:
+        shown = user_message_for_kind(kind, "")
+    payload = {
         "ok": False,
         "kind": kind,
-        "message": user_message_for_kind(kind, message),
-        # Technical detail for CI/logs only — UI uses ``message``.
-        "detail": (message or "")[:400],
+        "message": shown,
+        "detail": _safe_detail(
+            exception_type=exc_name, reason=kind, stage=stage, extra=extra
+        ),
         "parsed": None,
     }
     if stage:
         payload["stage"] = stage
+    payload["llm_step"] = llm_step_for_report()
     _write(out_path, _with_decision(payload, decision))
     return code
 
@@ -151,6 +305,9 @@ def run(argv: list[str] | None = None) -> int:
     parser.add_argument("--llm-warmup", type=float, default=3.0)
     args = parser.parse_args(argv)
 
+    from core.cv_docpick_import import reset_import_progress
+
+    reset_import_progress()
     cv_path = Path(args.cv)
     out_path = Path(args.out)
     decision = None
@@ -198,6 +355,7 @@ def run(argv: list[str] | None = None) -> int:
                     "kind": "ok",
                     "message": "",
                     "parsed": parsed,
+                    "llm_step": llm_step_for_report(),
                 },
                 decision,
             ),
@@ -207,25 +365,28 @@ def run(argv: list[str] | None = None) -> int:
         return _fail(
             out_path,
             kind="oom",
-            message=f"MemoryError: {type(exc).__name__}",
+            message="",
             decision=decision,
             code=3,
+            exception_type=type(exc).__name__,
         )
     except OSError as exc:
         if getattr(exc, "errno", None) == 12:  # ENOMEM
             return _fail(
                 out_path,
                 kind="oom",
-                message=f"ENOMEM: {type(exc).__name__}",
+                message="",
                 decision=decision,
                 code=3,
+                exception_type=type(exc).__name__,
             )
         return _fail(
             out_path,
             kind="error",
-            message=_READ_FAILED,
+            message="",
             decision=decision,
             code=1,
+            exception_type=type(exc).__name__,
         )
     except Exception as exc:  # noqa: BLE001 — child must report, not crash the UI
         try:
@@ -235,23 +396,26 @@ def run(argv: list[str] | None = None) -> int:
                 code = 1
                 if exc.code in {"oom", "peak_rss_exceeded"}:
                     code = 3
-                elif exc.code == "timeout":
+                elif exc.code == "llm_timeout":
                     code = 1
                 return _fail(
                     out_path,
                     kind=exc.code,
-                    message=str(exc),
+                    message="",
                     decision=decision,
                     code=code,
+                    exception_type=type(exc).__name__,
+                    extra=getattr(exc, "detail", None),
                 )
         except Exception:  # noqa: BLE001
             pass
         return _fail(
             out_path,
             kind="error",
-            message=_READ_FAILED,
+            message="",
             decision=decision,
             code=1,
+            exception_type=type(exc).__name__,
         )
     finally:
         if llm_proc is not None and llm_proc.poll() is None:
@@ -263,6 +427,7 @@ def run(argv: list[str] | None = None) -> int:
 
 
 def main() -> None:
+    discard_child_stderr()
     sys.exit(run())
 
 

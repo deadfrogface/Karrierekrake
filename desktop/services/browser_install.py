@@ -13,14 +13,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+from core.cv_llm_runtime import is_frozen
+
 logger = logging.getLogger("karrierekrake")
 
 BROWSERS_DIRNAME = "browsers"
 LEGACY_MS_PLAYWRIGHT = "ms-playwright"
-
-
-def is_frozen() -> bool:
-    return bool(getattr(sys, "frozen", False))
 
 
 def project_or_bundle_root() -> Path:

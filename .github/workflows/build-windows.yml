@@ -36,6 +36,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Runner CPU
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $cpus = @(Get-CimInstance Win32_Processor)
+          $name = ($cpus | Select-Object -First 1).Name
+          $logical = ($cpus | Measure-Object NumberOfLogicalProcessors -Sum).Sum
+          $physical = ($cpus | Measure-Object NumberOfCores -Sum).Sum
+          Write-Host "runner_cpu name=$name logical=$logical physical=$physical"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -115,7 +124,14 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $env:QT_QPA_PLATFORM = "offscreen"
-          $env:KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S = "600"
+          # Shipped defaults only. Any set KARRIEREKRAKE_CV_ or KARRIEREKRAKE_LLM_
+          # variable fails. Allowlist is empty: PEAK_RSS_BYTES_MAX would hide a
+          # real PeakJobMemoryUsed breach, and LLM_BASE is set later inside the
+          # e2e child only.
+          python scripts/ci_release_env_gate.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/ci_release_env_gate.py --self-test
+          if ($LASTEXITCODE -ne 0) { Write-Error "Release env self-test failed"; exit 1 }
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
