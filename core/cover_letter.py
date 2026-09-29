@@ -2878,6 +2878,7 @@ def _save_approved_letter(
                 "description_used": description_used,
                 "edited": edited,
                 "generated_sha256": sha,
+                "profile_fingerprint": cover_profile_fingerprint(config, job),
             },
             ensure_ascii=False,
             indent=2,

@@ -8,11 +8,35 @@ from copy import deepcopy
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import hashlib
+import json
+
 from apply.base import ApplyResult
 from apply.manager import ApplicationManager
 from core.config import empty_app_config
+from core.cover_letter import cover_profile_fingerprint
 from core.database import Database
 from core.models import Job, JobStatus, OperatingMode
+
+
+def _seed_approval(cfg, job: Job) -> None:
+    text = "Guten Tag.\n"
+    folder = Path(cfg.root) / "cover_letters"
+    folder.mkdir(parents=True, exist_ok=True)
+    raw = text.encode("utf-8")
+    (folder / f"{job.id}.txt").write_bytes(raw)
+    (folder / f"{job.id}.meta.json").write_text(
+        json.dumps(
+            {
+                "job_id": job.id,
+                "edited": False,
+                "generated_sha256": hashlib.sha256(raw).hexdigest(),
+                "profile_fingerprint": cover_profile_fingerprint(cfg, job),
+            }
+        ),
+        encoding="utf-8",
+        newline="",
+    )
 
 
 def _cfg(tmp_path: Path, *, dry_run: bool, auto_submit: bool, mode: str) -> object:
@@ -71,9 +95,11 @@ def test_mid_run_safety_escalate_does_not_open_submit(tmp_path: Path, monkeypatc
         staticmethod(lambda url: "greenhouse"),
     )
     mgr = ApplicationManager(cfg, db, MagicMock())
+    _seed_approval(cfg, _job(1))
     mgr.prepare_and_apply(_job(1))
     cfg.settings.dry_run = False
     cfg.settings.automatic_submission = True
+    _seed_approval(cfg, _job(2))
     mgr.prepare_and_apply(_job(2))
     assert captured[0]["submit"] is False
     assert captured[1]["submit"] is False
@@ -111,9 +137,11 @@ def test_live_dry_run_tightening_still_closes_open_gate(tmp_path: Path, monkeypa
     )
     mgr = ApplicationManager(cfg, db, MagicMock())
     assert mgr._submit_gate_open is True
+    _seed_approval(cfg, _job(1))
     mgr.prepare_and_apply(_job(1))
     assert captured[0]["submit"] is True
     cfg.settings.dry_run = True  # user enables safety mid-run
+    _seed_approval(cfg, _job(2))
     mgr.prepare_and_apply(_job(2))
     assert captured[1]["submit"] is False
     assert captured[1]["dry_run"] is True

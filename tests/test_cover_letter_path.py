@@ -69,7 +69,11 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     )
 
     result = mgr.prepare_and_apply(job)
-    assert result.success or result.needs_review
-    expected = tmp_path / "cover_letters" / f"{job.id}.txt"
-    assert expected.is_file(), f"missing cover letter at {expected}"
+    assert result.needs_review is True
+    assert "cover_not_approved" in (result.error_message or "")
+    approved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    draft = tmp_path / "cover_letters" / "drafts" / f"{job.id}.txt"
+    assert not approved.exists()
+    assert draft.is_file(), f"missing draft cover letter at {draft}"
+    assert b"\r" not in draft.read_bytes()
     assert not (tmp_path / "private" / "cover_letters" / f"{job.id}.txt").exists()

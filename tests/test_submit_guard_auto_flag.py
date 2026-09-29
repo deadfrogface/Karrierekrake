@@ -5,11 +5,36 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import hashlib
+import json
+
 from apply.base import ApplyResult
 from apply.manager import ApplicationManager
 from core.config import empty_app_config
+from core.cover_letter import cover_profile_fingerprint
 from core.database import Database
 from core.models import Job, JobStatus, OperatingMode
+
+
+def _seed_approval(cfg, job) -> None:
+    """These tests cover the submit gate, which runs only after a human approval."""
+    text = "Guten Tag.\n"
+    folder = Path(cfg.root) / "cover_letters"
+    folder.mkdir(parents=True, exist_ok=True)
+    raw = text.encode("utf-8")
+    (folder / f"{job.id}.txt").write_bytes(raw)
+    meta = {
+        "job_id": job.id,
+        "description_used": job.description or "",
+        "edited": False,
+        "generated_sha256": hashlib.sha256(raw).hexdigest(),
+        "profile_fingerprint": cover_profile_fingerprint(cfg, job),
+    }
+    (folder / f"{job.id}.meta.json").write_text(
+        json.dumps(meta),
+        encoding="utf-8",
+        newline="",
+    )
 
 
 def _mgr(tmp_path: Path, *, mode: str, dry_run: bool, auto_submit: bool) -> ApplicationManager:
@@ -63,6 +88,7 @@ def test_fully_automatic_without_auto_submit_stays_dry(tmp_path: Path, monkeypat
         ats_type="greenhouse",
         match_score=90,
     )
+    _seed_approval(mgr.config, job)
     mgr.prepare_and_apply(job)
     assert captured.get("submit") is False
     assert captured.get("dry_run") is True
@@ -101,6 +127,7 @@ def test_fully_automatic_with_auto_submit_can_request_submit(tmp_path: Path, mon
         ats_type="greenhouse",
         match_score=90,
     )
+    _seed_approval(mgr.config, job)
     mgr.prepare_and_apply(job)
     assert captured.get("submit") is True
     assert captured.get("dry_run") is False
@@ -140,6 +167,7 @@ def test_partial_ats_never_gets_submit_under_full_auto(tmp_path: Path, monkeypat
         ats_type="personio",
         match_score=90,
     )
+    _seed_approval(mgr.config, job)
     mgr.prepare_and_apply(job)
     assert captured.get("submit") is False
     assert captured.get("dry_run") is True
