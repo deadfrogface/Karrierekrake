@@ -188,19 +188,6 @@ def _assert_interview(result, case: dict) -> None:
     assert not years, f"year not in profile or ad: {years}"
 
 
-def _case_param(case: dict):
-    if case["id"] == "cl-10-english-ad":
-        return pytest.param(
-            case,
-            id=case["id"],
-            marks=pytest.mark.xfail(
-                strict=True,
-                reason="blocked until posting_language PR (no letter for en ads)",
-            ),
-        )
-    return pytest.param(case, id=case["id"])
-
-
 _CASES = _load_cases()
 
 if not _CASES:
@@ -213,12 +200,9 @@ if not _CASES:
 
 else:
 
-    @pytest.mark.parametrize("case", [_case_param(case) for case in _CASES])
+    @pytest.mark.parametrize("case", [pytest.param(case, id=case["id"]) for case in _CASES])
     def test_cover_letter_gold(case: dict) -> None:
         result = compose_cover_letter(_job_from_case(case), _config_from_case(case))
-        if case["id"] == "cl-10-english-ad":
-            assert not (result.ok and result.text.strip())
-            return
         expected = case["expected_outcome"]
         if expected in REFUSAL_OUTCOMES:
             assert result.text == "", result.text
@@ -240,6 +224,11 @@ else:
             return
         if expected == "interview":
             _assert_interview(result, case)
+            if "english_ad" in case["tags"]:
+                assert result.text.startswith("Dear Hiring Team,")
+                assert "Sincerely," in result.text
+                assert "Sehr geehrte" not in result.text
+                assert "Mit freundlichen Grüßen" not in result.text
             if "missing_credential" in case["tags"]:
                 assert result.missing_required == ("ADR-Schein",)
             if "two_stations" in case["tags"]:
@@ -252,3 +241,16 @@ else:
             _assert_letter_grammar(result.text, case["id"])
             return
         pytest.fail(f"unknown expected_outcome {expected!r}")
+
+
+def test_german_ad_with_english_tool_names_keeps_german_letter() -> None:
+    case = next(case for case in _CASES if case["id"] == "cl-10-english-ad")
+    job = _job_from_case(case)
+    job.description = (
+        "Wir suchen einen Disponenten mit Erfahrung in Tourenplanung und SAP TM. "
+        "Zu Ihren Aufgaben gehören Tourenplanung für Stückgut und Schichtkoordination. "
+        "Bei uns arbeiten Sie mit Excel und SAP TM im Team."
+    )
+    result = compose_cover_letter(job, _config_from_case(case))
+    assert result.ok, result.reason_code
+    assert result.text.startswith("Sehr geehrte Damen und Herren,")
