@@ -46,6 +46,15 @@ jobs:
     needs: [qt-smoke]
     steps:
       - uses: actions/checkout@v4
+      - name: Runner CPU
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $cpus = @(Get-CimInstance Win32_Processor)
+          $name = ($cpus | Select-Object -First 1).Name
+          $logical = ($cpus | Measure-Object NumberOfLogicalProcessors -Sum).Sum
+          $physical = ($cpus | Measure-Object NumberOfCores -Sum).Sum
+          Write-Host "runner_cpu name=$name logical=$logical physical=$physical"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -114,6 +123,95 @@ jobs:
           if ($subsystem -ne 2) { Write-Error "EXE subsystem=$subsystem (expected 2=WINDOWS_GUI / noconsole)"; exit 1 }
           Write-Host "EXE subsystem=WINDOWS_GUI (noconsole) OK"
         shell: pwsh
+      - name: EXE reads physical cores via psutil
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          # Windowed onefile: stdout is not the log. Poll the report file.
+          $out = Join-Path $env:RUNNER_TEMP "kk-physical-cores.txt"
+          if (Test-Path $out) { Remove-Item $out -Force }
+          $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
+          Start-Process -FilePath $exe -ArgumentList @("--report-physical-cores", $out) -WindowStyle Hidden | Out-Null
+          $deadline = (Get-Date).AddSeconds(180)
+          $line = ""
+          while ((Get-Date) -lt $deadline) {
+            if (Test-Path $out) {
+              $raw = Get-Content $out -Raw -ErrorAction SilentlyContinue
+              if ($raw -and $raw.Trim()) { $line = $raw.Trim(); break }
+            }
+            Start-Sleep -Milliseconds 400
+          }
+          Get-Process -Name "Karrierekrake" -ErrorAction SilentlyContinue | ForEach-Object {
+            try { Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue } catch {}
+          }
+          if (-not $line) { Write-Error "EXE physical-cores report missing"; exit 1 }
+          Write-Host $line
+          $cores = @($line -split "`r?`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -like "physical_cores *" } | Select-Object -First 1)
+          $threads = @($line -split "`r?`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -like "n_threads=*" } | Select-Object -First 1)
+          if (-not $cores -or $cores -notmatch '^physical_cores source=psutil count=[1-9][0-9]*$') {
+            Write-Error "EXE did not read physical cores via psutil (fallback or empty): $line"
+            exit 1
+          }
+          if (-not $threads -or $threads -notmatch '^n_threads=[1-9][0-9]* n_threads_batch=[1-9][0-9]* physical=[1-9][0-9]* logical=[1-9][0-9]* reserve=[01]$') {
+            Write-Error "EXE thread reserve line missing: $line"
+            exit 1
+          }
+      - name: EXE llama load log (CPU features and backend variant)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          # No GGUF on the runner, so this step cannot allocate CPU_REPACK/AMX
+          # buffers. It still loads the bundled llama DLL and writes which
+          # ggml-cpu library the EXE ships, plus the CPU-feature line of the
+          # runner (not the i3). Buffer names are logged by the import as
+          # cv_llm_load when a model is loaded. llama_model_buffer=not_loaded
+          # is the expected line here.
+          $out = Join-Path $env:RUNNER_TEMP "kk-llm-load.txt"
+          if (Test-Path $out) { Remove-Item $out -Force }
+          $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
+          Start-Process -FilePath $exe -ArgumentList @("--report-llm-load", $out) -WindowStyle Hidden | Out-Null
+          $deadline = (Get-Date).AddSeconds(180)
+          $text = ""
+          while ((Get-Date) -lt $deadline) {
+            if (Test-Path $out) {
+              $raw = Get-Content $out -Raw -ErrorAction SilentlyContinue
+              if ($raw -and $raw.Trim()) { $text = $raw.Trim(); break }
+            }
+            Start-Sleep -Milliseconds 400
+          }
+          Get-Process -Name "Karrierekrake" -ErrorAction SilentlyContinue | ForEach-Object {
+            try { Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue } catch {}
+          }
+          if (-not $text) { Write-Error "EXE llama load report missing"; exit 1 }
+          Write-Host $text
+          if ($text -notmatch 'llama_cpu_features=.*AVX2 = 1') {
+            Write-Error "EXE llama build did not report AVX2: $text"
+            exit 1
+          }
+          if ($text -match 'AMX_INT8 = 1' -or $text -match 'AVX512 = 1') {
+            Write-Error "EXE llama build has native AVX512/AMX kernels: $text"
+            exit 1
+          }
+          if ($text -notmatch 'llama_cpu_all_variants=0') {
+            Write-Error "EXE llama build is not a single fixed CPU library: $text"
+            exit 1
+          }
+          if ($text -notmatch 'llama_runtime_isa=fixed') {
+            Write-Error "EXE llama build reports runtime CPU selection: $text"
+            exit 1
+          }
+          if ($text -notmatch 'llama_backend_libs=.*ggml-cpu') {
+            Write-Error "EXE did not list a bundled ggml-cpu library: $text"
+            exit 1
+          }
+          if ($text -match 'ggml-cpu-haswell|ggml-cpu-sapphirerapids|ggml-cpu-skylakex|ggml-cpu-icelake') {
+            Write-Error "EXE ships GGML_CPU_ALL_VARIANTS libraries: $text"
+            exit 1
+          }
+          if ($text -notmatch 'llama_model_buffer=not_loaded') {
+            Write-Error "EXE load report did not state that no model buffer was allocated: $text"
+            exit 1
+          }
       - name: Production content scan + manifest
         shell: pwsh
         run: |
@@ -157,11 +255,14 @@ jobs:
           $ErrorActionPreference = "Stop"
           $env:QT_QPA_PLATFORM = "offscreen"
           $env:PYTHONUTF8 = "1"
-          # Headroom for Qwen JSON (+ optional think tokens) on Windows runners.
-          $env:KARRIEREKRAKE_CV_LLM_MAX_TOKENS = "4096"
-          $env:KARRIEREKRAKE_CV_LLM_N_CTX = "4096"
-          # Cold onefile extract + CPU inference often exceeds 180s on windows-latest.
-          $env:KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S = "600"
+          # Shipped defaults only. Any set KARRIEREKRAKE_CV_ or KARRIEREKRAKE_LLM_
+          # variable fails. Allowlist is empty: PEAK_RSS_BYTES_MAX would hide a
+          # real PeakJobMemoryUsed breach, and LLM_BASE is set later inside the
+          # e2e child only.
+          python scripts/ci_release_env_gate.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/ci_release_env_gate.py --self-test
+          if ($LASTEXITCODE -ne 0) { Write-Error "Release env self-test failed"; exit 1 }
           # Fresh LOCALAPPDATA, no model env overrides — must use bundled/sidecar GGUF.
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue

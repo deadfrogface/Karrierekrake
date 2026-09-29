@@ -211,6 +211,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
         ),
         "dash.home_resolved": "Wohnort aufgelöst: {place}. Distanzfilter aktiv.",
+        "dash.home_checking": "Entfernung wird ermittelt …",
+        "dash.home_index_unavailable": (
+            "Für {country} fehlen die Standortdaten. "
+            "Die Suche läuft deshalb ohne Entfernungsfilter."
+        ),
+        "dash.home_not_found": (
+            "„{place}“ wurde nicht gefunden. Die Suche läuft ohne Entfernungsfilter."
+        ),
+        "dash.home_change_place": "Anderen Ort eintragen",
         "jobs.distance_skipped": "Umkreis übersprungen — bitte PLZ angeben",
         "dash.run_stats": "Lauf-Statistik",
         "apps.preview_title": "Bewerbung vorbereiten",
@@ -333,6 +342,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.ex_companies": "Ausgeschlossene Firmen",
         "profile.app_data": "Bewerbungsdaten",
         "profile.sync_home_address": "Diese Adresse auch als Standort für die Jobsuche verwenden.",
+        "profile.custom_search_home": "Eigener Suchort gespeichert. Die Kontaktadresse wird nicht mehr übernommen.",
         "profile.cv": "Lebenslauf",
         "profile.no_cv": "Kein CV ausgewählt",
         "profile.saved": "Gespeichert.",
@@ -1321,6 +1331,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "without a postal code no place is guessed and the radius filter is skipped."
         ),
         "dash.home_resolved": "Home location resolved: {place}. Distance filter active.",
+        "dash.home_checking": "Distance is being determined …",
+        "dash.home_index_unavailable": (
+            "Location data for {country} is missing. "
+            "Search therefore runs without a distance filter."
+        ),
+        "dash.home_not_found": (
+            "“{place}” was not found. Search runs without a distance filter."
+        ),
+        "dash.home_change_place": "Enter a different place",
         "jobs.distance_skipped": "Radius skipped — please enter a postal code",
         "dash.run_stats": "Run stats",
         "apps.preview_title": "Prepare application",
@@ -1436,6 +1455,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.ex_companies": "Excluded companies",
         "profile.app_data": "Application data",
         "profile.sync_home_address": "Also use this address as the job search location.",
+        "profile.custom_search_home": "Custom search location saved. The contact address is no longer copied.",
         "profile.cv": "CV",
         "profile.no_cv": "No CV selected",
         "profile.saved": "Saved.",
@@ -2268,6 +2288,34 @@ i18n = TranslationService("de")
 
 def tr(key: str, **kwargs: str) -> str:
     return i18n.t(key, **kwargs)
+
+
+# Fixed names. Never a country code, never a resolver reason string.
+_HOME_COUNTRY_NAMES = {
+    "de": {
+        "DE": "Deutschland",
+        "AT": "Österreich",
+        "CH": "Schweiz",
+        "NL": "Niederlande",
+        "BE": "Belgien",
+    },
+    "en": {
+        "DE": "Germany",
+        "AT": "Austria",
+        "CH": "Switzerland",
+        "NL": "Netherlands",
+        "BE": "Belgium",
+    },
+}
+
+
+def home_country_label(country_code: str) -> str:
+    """Display name for a home country. Empty when the code is not in the map."""
+    from core.geo_normalize import normalize_country_code
+
+    cc = normalize_country_code(country_code) or ""
+    table = _HOME_COUNTRY_NAMES.get(i18n.language) or _HOME_COUNTRY_NAMES["de"]
+    return table.get(cc) or _HOME_COUNTRY_NAMES["de"].get(cc, "")
 
 
 def escape_mnemonic(text: str) -> str:

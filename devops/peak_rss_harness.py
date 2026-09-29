@@ -28,6 +28,7 @@ from devops.win_job_object import (
     PROCESS_INFORMATION,
     STARTUPINFOW,
     assign_then_resume,
+    associate_job_memory_completion_port,
     create_process_flags,
     extended_limit_info,
     kernel32,
@@ -51,6 +52,8 @@ class ContainedProcess:
     _win_job: object | None = None
     _win_process: object | None = None
     _win_thread: object | None = None
+    _win_port: object | None = None
+    _job_memory_limit: bool = False
     enforce_memory_bytes: int | None = None
     breakaway_flags_set: bool = False
     notes: list[str] = field(default_factory=list)
@@ -65,6 +68,36 @@ class ContainedProcess:
         if self.popen is not None:
             return int(self.popen.wait(timeout=timeout))
         return self._win_wait(timeout)
+
+    def read_peak_job_memory_used(self) -> int | None:
+        """One ``QueryInformationJobObject`` read of ``PeakJobMemoryUsed``.
+
+        Windows only, after the child has ended. ``None`` off Windows or when
+        the query fails. This is not a polling loop.
+        """
+        if self.platform != "win32" or not self._win_job:
+            return None
+        value = self._query_job_peak()
+        if value <= 0:
+            return None
+        return int(value)
+
+    def job_memory_limit_signaled(self) -> bool:
+        """True once the job completion port reports ``JOB_OBJECT_MSG_JOB_MEMORY_LIMIT``.
+
+        The latch stays set after the first hit. Without a port this is false;
+        the supervisor then uses the crash-exit fallback. The drain does not
+        wait.
+        """
+        if self._job_memory_limit:
+            return True
+        if self.platform != "win32" or not self._win_port:
+            return False
+        from devops.win_job_object import drain_job_memory_limit
+
+        if drain_job_memory_limit(kernel32(), self._win_port):
+            self._job_memory_limit = True
+        return self._job_memory_limit
 
     def peak_bytes(self) -> int:
         self._sample_peak()
@@ -112,11 +145,12 @@ class ContainedProcess:
         self._closed = True
         if self.platform == "win32":
             k = kernel32()
-            for handle in (self._win_thread, self._win_process, self._win_job):
+            for handle in (self._win_thread, self._win_process, self._win_port, self._win_job):
                 if handle:
                     k.CloseHandle(handle)
             self._win_thread = None
             self._win_process = None
+            self._win_port = None
             self._win_job = None
             return
         if self.popen is not None:
@@ -220,6 +254,7 @@ def launch_contained(
     cwd: str | None = None,
     console: bool = False,
     enforce_memory_bytes: int | None = None,
+    discard_stderr: bool = False,
 ) -> ContainedProcess:
     """Start ``argv`` inside one job (Windows) or one process group (elsewhere)."""
     if not argv:
@@ -230,8 +265,14 @@ def launch_contained(
             cwd=cwd,
             console=console,
             enforce_memory_bytes=enforce_memory_bytes,
+            discard_stderr=discard_stderr,
         )
-    return _launch_posix(argv, cwd=cwd, enforce_memory_bytes=enforce_memory_bytes)
+    return _launch_posix(
+        argv,
+        cwd=cwd,
+        enforce_memory_bytes=enforce_memory_bytes,
+        discard_stderr=discard_stderr,
+    )
 
 
 def _launch_posix(
@@ -239,12 +280,14 @@ def _launch_posix(
     *,
     cwd: str | None,
     enforce_memory_bytes: int | None,
+    discard_stderr: bool = False,
 ) -> ContainedProcess:
     proc = subprocess.Popen(
         argv,
         cwd=cwd,
         start_new_session=True,
         stdin=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL if discard_stderr else None,
     )
     notes = [
         "posix_process_group",
@@ -270,6 +313,7 @@ def _launch_windows(
     cwd: str | None,
     console: bool,
     enforce_memory_bytes: int | None,
+    discard_stderr: bool = False,
 ) -> ContainedProcess:
     import ctypes
     import subprocess as sp
@@ -288,6 +332,18 @@ def _launch_windows(
         err = ctypes.get_last_error()
         k.CloseHandle(job)
         raise OSError(err, "SetInformationJobObject failed")
+
+    port = None
+    notes = ["assigned_while_suspended", "breakaway_not_granted"]
+    if discard_stderr:
+        notes.append("stderr_discarded_by_child")
+    if enforce_memory_bytes is not None:
+        try:
+            port = associate_job_memory_completion_port(k, job)
+            notes.append("job_memory_completion_port")
+        except OSError:
+            notes.append("job_memory_completion_port_unavailable")
+            port = None
 
     si = STARTUPINFOW()
     si.cb = ctypes.sizeof(si)
@@ -310,6 +366,8 @@ def _launch_windows(
     )
     if not ok:
         err = ctypes.get_last_error()
+        if port:
+            k.CloseHandle(port)
         k.CloseHandle(job)
         raise OSError(err, "CreateProcessW failed")
     try:
@@ -318,6 +376,8 @@ def _launch_windows(
         k.TerminateProcess(pi.hProcess, 1)
         k.CloseHandle(pi.hThread)
         k.CloseHandle(pi.hProcess)
+        if port:
+            k.CloseHandle(port)
         k.CloseHandle(job)
         raise
     return ContainedProcess(
@@ -327,9 +387,10 @@ def _launch_windows(
         _win_job=job,
         _win_process=pi.hProcess,
         _win_thread=pi.hThread,
+        _win_port=port,
         enforce_memory_bytes=enforce_memory_bytes,
         breakaway_flags_set=False,
-        notes=["assigned_while_suspended", "breakaway_not_granted"],
+        notes=notes,
     )
 
 

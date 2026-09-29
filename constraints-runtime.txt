@@ -47,7 +47,27 @@ jaraco.classes==3.4.0
 jaraco.context==6.1.2
 jaraco.functools==4.6.0
 keyring==25.7.0
+# llama-cpp-python 0.3.35: PyPI has only the sdist (no wheels).
+# CPU wheels come from the upstream index in requirements-runtime.txt
+# (https://abetlen.github.io/llama-cpp-python/whl/cpu), which lists the
+# GitHub release assets for v0.3.35. build-and-exe-smoke and build-windows
+# install with `-c constraints-runtime.txt -r requirements-runtime.txt`, so
+# the Windows EXE resolves this pin to:
+#   llama_cpp_python-0.3.35-py3-none-win_amd64.whl
+#   https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.35/llama_cpp_python-0.3.35-py3-none-win_amd64.whl
+# diskcache, jinja2 and MarkupSafe are the non-extra requires of 0.3.35
+# (versions resolved with that CPU wheel on Python 3.12, 2026-09-28).
+# The Windows wheel's ggml-cpu.dll is one library (GGML_CPU_ALL_VARIANTS OFF,
+# GGML_BACKEND_DL OFF). Disassembly: AVX2 ymm ops, no zmm, no AMX
+# (tileloadd/tdpbssd). build-and-exe-smoke installs this wheel; it does not
+# compile with -march=native on the runner. The import logs CPU_REPACK/AMX
+# buffer lines when a GGUF loads. Do not replace the wheel without a
+# measurement on the i3.
+diskcache==5.6.3
+jinja2==3.1.6
+llama-cpp-python==0.3.35
 lxml==6.1.3
+MarkupSafe==3.0.3
 markdownify==0.13.1
 more-itertools==11.1.0
 numpy==1.26.3
@@ -58,6 +78,10 @@ pgeocode==0.5.0
 playwright==1.63.0
 proto-plus==1.28.4
 protobuf==7.36.2
+# Physical core count for CV LLM n_threads. A runtime-only install
+# (`-c constraints-runtime.txt -r requirements-runtime.txt`) must be able to
+# `import psutil`. 7.2.2 is the version resolved in the dev venv on 2026-09-28.
+psutil==7.2.2
 pyasn1==0.6.4
 pyasn1_modules==0.4.2
 pycparser==3.0

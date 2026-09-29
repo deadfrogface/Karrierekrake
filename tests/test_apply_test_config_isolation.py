@@ -74,14 +74,14 @@ def test_save_home_coords_from_does_not_persist_dry_run_or_mode(
     run_cfg.profile.location.home_latitude = 52.52
     run_cfg.profile.location.home_longitude = 13.405
 
-    saved = svc.save_home_coords_from(run_cfg)
-    assert saved.profile.location.home_latitude == 52.52
-    assert saved.profile.location.home_longitude == 13.405
-    assert saved.settings.dry_run is False
-    assert saved.settings.mode == "fully_automatic"
+    assert not hasattr(svc, "save_home_coords_from")
+    from core.home_coord_cache import cache_file
+
+    assert not cache_file(svc.dirs["cache"]).exists()
+    assert "home_latitude" not in svc.profile_path.read_text(encoding="utf-8")
 
     reloaded = svc.load()
     assert reloaded.settings.dry_run is False
     assert reloaded.settings.mode == "fully_automatic"
-    assert reloaded.profile.location.home_latitude == 52.52
-    assert reloaded.profile.location.home_longitude == 13.405
+    assert reloaded.profile.location.home_latitude is None
+    assert reloaded.profile.location.home_longitude is None

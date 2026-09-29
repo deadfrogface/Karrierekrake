@@ -138,11 +138,18 @@ def hard_ko_allowed(
 
 
 def user_location_verified(location: Any) -> bool:
-    """Verified means resolved coordinates, not a free-text guess."""
+    """Verified means this process resolved the current home.
+
+    A marker set by ``resolve_home`` counts. Leftover ``home_latitude`` /
+    ``home_longitude`` on the model do not: they are not a distance source.
+    """
     if location is None:
         return False
-    lat = getattr(location, "home_latitude", None)
-    lon = getattr(location, "home_longitude", None)
+    remembered = getattr(location, "_resolved_home", None)
+    if isinstance(remembered, tuple) and len(remembered) == 2:
+        lat, lon = remembered
+    else:
+        lat, lon = None, None
     try:
         if lat is None or lon is None:
             return False

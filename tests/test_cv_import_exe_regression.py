@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import logging
+import sys
 from pathlib import Path
 from unittest.mock import patch
 
@@ -152,11 +154,39 @@ def test_packaging_policy_allows_docpick() -> None:
     assert "docpick" in hidden
     assert "docpick.llm.vllm_provider" in hidden
     assert "llama_cpp" in hidden
+    assert "psutil" in hidden
+    assert "psutil._pswindows" in hidden
     assert "llama_cpp" in mod.ALLOWED_COLLECT_ALL_PACKAGES
     assert mod.datas_entry_allowed(
         "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
         "models/qwen3.5-4b",
     )
+
+
+def test_physical_cores_report_writes_reserve_line(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The EXE report keeps the psutil line and adds the reserve line."""
+    out = tmp_path / "cores.txt"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["Karrierekrake", "--report-physical-cores", str(out)],
+    )
+    monkeypatch.setattr(
+        "core.cv_llm_runtime.physical_cores_report_line",
+        lambda: "physical_cores source=psutil count=8",
+    )
+    monkeypatch.setattr(
+        "core.cv_llm_runtime.cv_llm_thread_report_line",
+        lambda: "n_threads=7 n_threads_batch=7 physical=8 logical=8 reserve=1",
+    )
+    from desktop.app import _report_physical_cores
+
+    assert _report_physical_cores() == 0
+    lines = out.read_text(encoding="utf-8").splitlines()
+    assert lines[0] == "physical_cores source=psutil count=8"
+    assert lines[1] == "n_threads=7 n_threads_batch=7 physical=8 logical=8 reserve=1"
 
 
 def test_resolve_cv_model_prefers_vendor_bundle(
@@ -314,6 +344,143 @@ def test_requirements_runtime_lists_docpick_and_llama() -> None:
     text = Path("requirements-runtime.txt").read_text(encoding="utf-8")
     assert "docpick" in text
     assert "llama-cpp-python" in text
+    assert "--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu" in text
+    constraints = Path("constraints-runtime.txt").read_text(encoding="utf-8")
+    assert "llama-cpp-python==0.3.35" in constraints
+    assert "psutil>=5.9" in text
+    assert "psutil==7.2.2" in constraints
+    smoke = Path(".github/workflows/windows-smoke.yml").read_text(encoding="utf-8")
+    assert "--report-physical-cores" in smoke
+    assert "source=psutil" in smoke
+    assert "reserve=" in smoke
+    assert "--report-llm-load" in smoke
+    assert "AMX_INT8 = 1" in smoke
+    assert "llama_cpu_all_variants=0" in smoke
+    assert "llama_backend_libs=" in smoke
+    assert "ggml-cpu-haswell" in smoke
+    assert "llama_model_buffer=not_loaded" in smoke
     assert not any(
         line.strip().startswith("#") and "docpick" in line for line in text.splitlines() if "docpick" in line
     )
+
+
+def test_sentinel_stays_out_of_parse_error_and_timeout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    """CV text and a username path never enter the result, the log, or the pipe."""
+    sentinel = "KK_SENTINEL_7f3a"
+    user = "KKSentinelUser"
+    cv = tmp_path / "Users" / user / "cv.txt"
+    cv.parent.mkdir(parents=True)
+    cv.write_text(sentinel, encoding="utf-8")
+    phase = tmp_path / "phase.jsonl"
+    monkeypatch.setenv("KARRIEREKRAKE_CV_PHASE_EVENTS", str(phase))
+    detail_keys = {
+        "exception_type",
+        "reason",
+        "stage",
+        "prompt_tokens",
+        "tokens_done",
+        "max_tokens",
+        "n_ctx",
+        "elapsed_s",
+        "timeout_s",
+        "peak_bytes",
+        "budget_bytes",
+        "counter",
+    }
+
+    def _assert_clean(out: Path) -> None:
+        text = out.read_text(encoding="utf-8")
+        if phase.is_file():
+            text += phase.read_text(encoding="utf-8")
+        text += caplog.text
+        assert sentinel not in text
+        assert user not in text
+        payload = json.loads(out.read_text(encoding="utf-8"))
+        assert set(payload["detail"]) <= detail_keys
+        assert "message" in payload
+
+    def parse_fail(*_a, **_k):
+        raise CvImportError("llm_extract_failed", f"{sentinel} path={cv}")
+
+    def time_fail(*_a, **_k):
+        raise CvImportError("llm_timeout", f"{sentinel} path={cv}")
+
+    out_parse = tmp_path / "parse.json"
+    monkeypatch.setattr("core.cv_parser.import_cv", parse_fail)
+    with caplog.at_level(logging.DEBUG):
+        assert run_child(["--cv", str(cv), "--out", str(out_parse)]) == 1
+    _assert_clean(out_parse)
+    assert json.loads(out_parse.read_text(encoding="utf-8"))["kind"] == "llm_extract_failed"
+
+    caplog.clear()
+    phase.write_text("", encoding="utf-8")
+    out_time = tmp_path / "time.json"
+    monkeypatch.setattr("core.cv_parser.import_cv", time_fail)
+    with caplog.at_level(logging.DEBUG):
+        assert run_child(["--cv", str(cv), "--out", str(out_time)]) == 1
+    _assert_clean(out_time)
+    assert json.loads(out_time.read_text(encoding="utf-8"))["kind"] == "llm_timeout"
+
+
+def test_peak_detail_carries_bytes_and_drops_free_text(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    sentinel = "KK_SENTINEL_7f3a"
+    cv = tmp_path / "cv.txt"
+    cv.write_text("x", encoding="utf-8")
+    out = tmp_path / "peak.json"
+
+    def boom(*_a, **_k):
+        raise CvImportError(
+            "peak_rss_exceeded",
+            sentinel,
+            detail={
+                "stage": "after_load",
+                "peak_bytes": 4_000_000_000,
+                "budget_bytes": 3_132_727_552,
+                "counter": "PeakPagefileUsage",
+                "leak": sentinel,
+            },
+        )
+
+    monkeypatch.setattr("core.cv_parser.import_cv", boom)
+    assert run_child(["--cv", str(cv), "--out", str(out)]) == 3
+    text = out.read_text(encoding="utf-8")
+    assert sentinel not in text
+    payload = json.loads(text)
+    assert payload["detail"]["stage"] == "after_load"
+    assert payload["detail"]["peak_bytes"] == 4_000_000_000
+    assert payload["detail"]["budget_bytes"] == 3_132_727_552
+    assert payload["detail"]["counter"] == "PeakPagefileUsage"
+    assert "leak" not in payload["detail"]
+
+
+def test_known_token_counts_reach_detail(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from core.cv_docpick_import import note_import_progress
+
+    cv = tmp_path / "cv.txt"
+    cv.write_text("x", encoding="utf-8")
+    out = tmp_path / "time.json"
+
+    def boom(*_a, **_k):
+        note_import_progress(
+            stage="before_generation",
+            prompt_tokens=1763,
+            tokens_done=4,
+            max_tokens=804,
+            n_ctx=4096,
+        )
+        raise CvImportError("llm_timeout", "llm_timeout")
+
+    monkeypatch.setattr("core.cv_parser.import_cv", boom)
+    assert run_child(["--cv", str(cv), "--out", str(out)]) == 1
+    detail = json.loads(out.read_text(encoding="utf-8"))["detail"]
+    assert detail["stage"] == "before_generation"
+    assert detail["prompt_tokens"] == 1763
+    assert detail["tokens_done"] == 4
+    assert detail["max_tokens"] == 804
+    assert detail["n_ctx"] == 4096

@@ -309,18 +309,14 @@ def test_save_home_coords_persists_geocode_fingerprint(tmp_path: Path, monkeypat
     run_cfg.profile.location.home_longitude = 13.40
     run_cfg.profile.location.home_geocoded_address = "Berlin, Germany"
     run_cfg.settings.dry_run = True  # must not leak
-    saved = svc.save_home_coords_from(run_cfg)
-    assert saved.profile.location.home_geocoded_address
-    assert "Berlin" in saved.profile.location.home_geocoded_address
-    assert saved.settings.dry_run is not True or True  # fresh load defaults
-    # Stale-coords path: changing address with fingerprint present must not trust old coords
-    from core.location import LocationService
+    assert not hasattr(svc, "save_home_coords_from")
+    from core.home_coord_cache import cache_file
 
-    saved.profile.location.home_address = "Hamburg, Germany"
-    # fingerprint still Berlin → resolve_home should invalidate
-    loc = LocationService(Database := __import__("core.database", fromlist=["Database"]).Database(tmp_path / "d.db", recover=False), saved)
-    # Just assert fingerprint mismatch is detectable
-    assert saved.profile.location.home_geocoded_address != saved.profile.location.home_address
+    assert not cache_file(svc.dirs["cache"]).exists()
+    assert "home_latitude" not in svc.profile_path.read_text(encoding="utf-8")
+    reloaded = svc.load()
+    assert reloaded.profile.location.home_latitude is None
+    assert reloaded.profile.location.home_longitude is None
 
 
 def test_ba_text_remote_not_misclassified_as_onsite():

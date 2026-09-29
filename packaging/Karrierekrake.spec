@@ -11,7 +11,7 @@ import importlib.util
 import os
 import sys
 
-from PyInstaller.utils.hooks import collect_all, collect_submodules
+from PyInstaller.utils.hooks import collect_all, collect_dynamic_libs, collect_submodules
 
 block_cipher = None
 ROOT = os.path.abspath(os.path.join(SPECPATH, ".."))
@@ -61,6 +61,13 @@ for pkg in policy.ALLOWED_COLLECT_ALL_PACKAGES:
         hidden += policy.filter_hiddenimports(pkg_hidden)
     except Exception:
         pass
+
+# llama-cpp loads ggml/llama by path (llama_cpp/lib), not by import.
+# --report-llm-load in build-and-exe-smoke needs those DLLs in the EXE.
+try:
+    binaries += policy.filter_collect_all_binaries(collect_dynamic_libs("llama_cpp"))
+except Exception:
+    pass
 
 hidden += list(policy.ALLOWED_THIRD_PARTY_HIDDEN)
 hidden = policy.filter_hiddenimports(list(dict.fromkeys(hidden)))
