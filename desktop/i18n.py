@@ -1095,6 +1095,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.demo_excluded": "Demo-Anzeigen sind von Bewerbungen und Anschreiben ausgeschlossen.",
         "cover.action.hide_demo": "Beispiele ausblenden",
         "cover.company_missing": "In der Anzeige fehlt der Firmenname.",
+        "cover.profile_changed_evidence_lost": "Das Profil hat sich seit der Vorschau geändert. Der Brief hat nicht mehr zwei verschiedene belegte Bezüge.",
+        "cover.preview_required": "Die Freigabe braucht die Vorschau. Bitte den Entwurf erneut öffnen.",
         "cover.saved": "Anschreiben gespeichert.",
     },
     "en": {
@@ -2176,6 +2178,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.demo_excluded": "Demo listings are excluded from applications and cover letters.",
         "cover.action.hide_demo": "Hide examples",
         "cover.company_missing": "The company name is missing from the job ad.",
+        "cover.profile_changed_evidence_lost": "The profile changed since the preview. The letter no longer has two different evidenced references.",
+        "cover.preview_required": "Approval needs the preview. Open the draft again.",
         "cover.saved": "Cover letter saved.",
     },
 }

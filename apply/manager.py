@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import time
 from pathlib import Path
@@ -21,7 +22,7 @@ from apply.successfactors import SuccessFactorsApplier
 from apply.workday import WorkdayApplier
 from core.config import AppConfig
 from core.application_queue import is_application_source
-from core.cover_letter import compose_cover_letter, save_cover_letter
+from core.cover_letter import compose_cover_letter, cover_profile_fingerprint
 from core.parser_debt import auto_actions_blocked
 from core.database import Database
 from core.known_jobs import refuse_reapply
@@ -157,6 +158,68 @@ class ApplicationManager:
             return False, f"ATS unsupported: {ats}"
         return True, "ok"
 
+    def _needs_review(self, job: Job, reason: str) -> ApplyResult:
+        job.status = JobStatus.NEEDS_REVIEW.value
+        job.rejection_reasons = list({*job.rejection_reasons, reason})
+        self.db.upsert_job(job)
+        return ApplyResult(success=False, needs_review=True, error_message=reason)
+
+    def _approved_letter_paths(self, job: Job) -> tuple[Path, Path]:
+        letter = Path(self.config.root) / "cover_letters" / f"{job.id}.txt"
+        return letter, letter.with_name(f"{job.id}.meta.json")
+
+    def _matching_approved_cover(self, job: Job) -> tuple[str, Path] | ApplyResult | None:
+        """Approved file bytes when the stored fingerprint still matches.
+
+        A file plus meta.json is an approval. A mismatch keeps those bytes
+        and returns needs_review. No pair means there is nothing to send.
+        """
+        letter_path, meta_path = self._approved_letter_paths(job)
+        if not (letter_path.is_file() and meta_path.is_file()):
+            return None
+        try:
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, UnicodeError):
+            meta = {}
+        stored = str(meta.get("profile_fingerprint") or "").strip()
+        current = cover_profile_fingerprint(self.config, job)
+        if not stored or stored != current:
+            return self._needs_review(job, "profile_changed_evidence_lost")
+        try:
+            cover = letter_path.read_bytes().decode("utf-8")
+        except (OSError, UnicodeError):
+            return self._needs_review(job, "profile_changed_evidence_lost")
+        return cover, letter_path
+
+    def _save_unapproved_draft(self, job: Job) -> None:
+        """Compose a draft beside the approval path. Never write that path."""
+        outcome = compose_cover_letter(job, self.config)
+        text = outcome.text if outcome.ok else ""
+        if not text.strip():
+            return
+        draft = Path(self.config.root) / "cover_letters" / "drafts" / f"{job.id}.txt"
+        draft.parent.mkdir(parents=True, exist_ok=True)
+        draft.write_text(text, encoding="utf-8", newline="")
+
+    def _screen_approved_cover(self, job: Job, cover: str) -> ApplyResult | None:
+        from core.cover_guard import confirmed_profile_text, screen_cover_letter
+
+        debt = auto_actions_blocked(self.config)
+        claim_screen = screen_cover_letter(
+            cover,
+            confirmed_text=confirmed_profile_text(self.config),
+            job_text=f"{job.title} {job.description}",
+            allowed_context=f"{job.title} {job.company}",
+        )
+        if debt.blocked or not cover.strip() or not claim_screen.ok:
+            reason = debt.reason or (
+                "needs_confirmation: unsubstantiated_claims"
+                if not claim_screen.ok
+                else "needs_confirmation: cover_blocked"
+            )
+            return self._needs_review(job, reason)
+        return None
+
     def prepare_and_apply(self, job: Job, *, force_submit: bool | None = None) -> ApplyResult:
         settings = self.config.settings
         mode = settings.mode
@@ -263,31 +326,16 @@ class ApplicationManager:
         if self.db.has_applied(job):
             return ApplyResult(success=False, error_message="already applied (safety)")
 
-        outcome = compose_cover_letter(job, self.config)
-        cover = outcome.text if outcome.ok else ""
-        cover_path: Path | str = ""
-        if outcome.ok:
-            from core.cover_guard import confirmed_profile_text, screen_cover_letter
-
-            debt = auto_actions_blocked(self.config)
-            claim_screen = screen_cover_letter(
-                cover,
-                confirmed_text=confirmed_profile_text(self.config),
-                job_text=f"{job.title} {job.description}",
-                allowed_context=f"{job.title} {job.company}",
-            )
-            if debt.blocked or not cover.strip() or not claim_screen.ok:
-                reason = debt.reason or (
-                    "needs_confirmation: unsubstantiated_claims"
-                    if not claim_screen.ok
-                    else "needs_confirmation: cover_blocked"
-                )
-                job.status = JobStatus.NEEDS_REVIEW.value
-                job.rejection_reasons = list({*job.rejection_reasons, reason})
-                self.db.upsert_job(job)
-                return ApplyResult(success=False, needs_review=True, error_message=reason)
-            cover_path = self.config.root / "cover_letters" / f"{job.id}.txt"
-            save_cover_letter(cover, cover_path)
+        approved = self._matching_approved_cover(job)
+        if isinstance(approved, ApplyResult):
+            return approved
+        if approved is None:
+            self._save_unapproved_draft(job)
+            return self._needs_review(job, "needs_confirmation: cover_not_approved")
+        cover, cover_path = approved
+        screened = self._screen_approved_cover(job, cover)
+        if screened is not None:
+            return screened
         cv_path = self._resolve_cv_path()
 
         job.status = JobStatus.APPLYING.value

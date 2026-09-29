@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 from apply.base import ApplyResult
 from apply.manager import ApplicationManager
-from core.config import SourcedText, empty_app_config
+from core.config import ExperienceEntry, SourcedText, empty_app_config
 from core.database import Database
 from core.models import Job, JobStatus, OperatingMode
 
@@ -20,6 +20,18 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     cfg.application.phone = "+491701111111"
     cfg.profile.qualifications.skills.append(
         SourcedText(value="Buchhaltung", source="manual")
+    )
+    cfg.profile.qualifications.skills.append(
+        SourcedText(value="Monatsabschlüsse", source="manual")
+    )
+    cfg.profile.qualifications.work_experience.append(
+        ExperienceEntry(
+            title="Buchhaltung",
+            company="Mandant Beispiel GmbH",
+            start_date="2018-01",
+            end_date="2024-06",
+            source="manual",
+        )
     )
     cfg.application.cv_path = str(tmp_path / "cv.pdf")
     (tmp_path / "cv.pdf").write_bytes(b"%PDF-1.4")
@@ -57,7 +69,11 @@ def test_prepare_writes_cover_letter_to_appdata_dir(tmp_path: Path, monkeypatch)
     )
 
     result = mgr.prepare_and_apply(job)
-    assert result.success or result.needs_review
-    expected = tmp_path / "cover_letters" / f"{job.id}.txt"
-    assert expected.is_file(), f"missing cover letter at {expected}"
+    assert result.needs_review is True
+    assert "cover_not_approved" in (result.error_message or "")
+    approved = tmp_path / "cover_letters" / f"{job.id}.txt"
+    draft = tmp_path / "cover_letters" / "drafts" / f"{job.id}.txt"
+    assert not approved.exists()
+    assert draft.is_file(), f"missing draft cover letter at {draft}"
+    assert b"\r" not in draft.read_bytes()
     assert not (tmp_path / "private" / "cover_letters" / f"{job.id}.txt").exists()
