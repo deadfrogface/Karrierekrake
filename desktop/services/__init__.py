@@ -84,6 +84,7 @@ class ConfigService:
 
     def _apply_runtime_paths(self, config: AppConfig) -> None:
         """Force absolute runtime paths under AppData (memory only)."""
+        config.home_coord_cache_dir = self.dirs["cache"]
         config.settings.database_path = str(self.dirs["data"] / "jobs.db")
         config.settings.logs_dir = str(self.dirs["logs"])
         config.settings.browser_profile_dir = str(self.dirs["browser_profile"])
@@ -182,23 +183,6 @@ class ConfigService:
             application_path=self.application_path,
             settings_path=self.settings_path,
         )
-
-    def save_home_coords_from(self, run_config: AppConfig) -> AppConfig:
-        """Persist home lat/lon + geocode fingerprint from a pipeline run.
-
-        Writes only location provenance fields into freshly loaded settings so
-        transient overrides (dry_run, mode) from apply-test / worker config are
-        not flushed to disk. Always store ``home_geocoded_address`` with the
-        coords so a later address edit can invalidate stale coordinates.
-        """
-        fresh = self.load()
-        run_loc = run_config.profile.location
-        fresh.profile.location.home_latitude = run_loc.home_latitude
-        fresh.profile.location.home_longitude = run_loc.home_longitude
-        fresh.profile.location.home_geocoded_address = (
-            getattr(run_loc, "home_geocoded_address", "") or run_loc.home_address or ""
-        )
-        return self.save(fresh)
 
     def validate(self, config: AppConfig | None = None) -> list[str]:
         config = config or self.config

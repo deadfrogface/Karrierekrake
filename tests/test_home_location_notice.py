@@ -364,10 +364,14 @@ def test_profile_save_updates_overview_home_from_visible_address(
     page.applicant.city.setText("Berlin, Deutschland")
     page.applicant.postal_code.setText("")
     page.applicant.app_country.setText("DE")
+    page.applicant.sync_home_from_address.setChecked(True)
     page.save()
     loc = config_service.load().profile.location
     assert "Berlin" in (loc.city or loc.home_address)
-    assert loc.home_latitude is None
+    from core.home_coord_cache import read_home_coordinates
+
+    assert read_home_coordinates(config_service.dirs["cache"], loc) is not None
+    assert "home_latitude" not in config_service.profile_path.read_text(encoding="utf-8")
     notice = home_location_notice(loc)
     assert notice.status == "resolved"
     assert "aufgelöst" in page.home_status.text()

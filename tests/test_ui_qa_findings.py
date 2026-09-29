@@ -253,9 +253,11 @@ def test_dashboard_home_notice_follows_live_resolver(qapp, config_service):
     assert not page.home_warning_label.isHidden()
 
     cfg = config_service.load()
-    cfg.profile.location.home_latitude = 50.11
-    cfg.profile.location.home_longitude = 8.68
-    config_service.save(cfg)
+    from core.home_coord_cache import write_home_coordinates
+
+    write_home_coordinates(
+        config_service.dirs["cache"], cfg.profile.location, 50.11, 8.68
+    )
     page.refresh()
     resolved = page.home_warning_label.text()
     assert resolved == tr("dash.home_resolved", place="Frankfurt")

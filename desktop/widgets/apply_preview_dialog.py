@@ -99,6 +99,24 @@ def _is_technical_warning(warning: str) -> bool:
     )
 
 
+def _cover_refusal_text(preview: ApplicationPreview) -> str:
+    """German (or active-language) refusal. The reason code stays out of the UI."""
+    keys = {
+        "job_incomplete": "cover.job_incomplete",
+        "no_evidence": "cover.no_evidence",
+        "company_missing": "cover.company_missing",
+        "blocked_demo": "cover.demo_excluded",
+    }
+    key = (preview.cover_refusal_key or "").strip() or keys.get(preview.cover_refusal_code, "")
+    text = tr(key) if key else ""
+    if not text or text == key or text.startswith("cover."):
+        fallback = keys.get(preview.cover_refusal_code, "cover.no_evidence")
+        text = tr(fallback)
+    if not text or text.startswith("cover."):
+        return "Das Anschreiben kann so nicht erstellt werden."
+    return text
+
+
 def _humanize_warning(warning: str) -> str:
     """Softer copy for the main view; technical wording stays in details."""
     low = (warning or "").lower()
@@ -121,6 +139,9 @@ class ApplyPreviewDialog(QDialog):
         self.preview = preview
         self._config = config
         self._job = job
+        self._prepared = None
+        if config is not None:
+            self._prepared = self._build_prepared_check()
         self.setObjectName("ApplyPreviewDialog")
         self.setModal(True)
         self.setMinimumWidth(520)
@@ -225,10 +246,7 @@ class ApplyPreviewDialog(QDialog):
         cover_body.addWidget(self.cover_edit, 1)
         self.body = self.cover_edit  # back-compat for tests expecting .body
         if preview.cover_refusal_code:
-            refusal_text = tr(preview.cover_refusal_key) if preview.cover_refusal_key else ""
-            if refusal_text == preview.cover_refusal_key:
-                refusal_text = preview.cover_refusal_code
-            refusal = QLabel(f"{preview.cover_refusal_code}: {refusal_text}")
+            refusal = QLabel(_cover_refusal_text(preview))
             refusal.setObjectName("KkErrorText")
             refusal.setWordWrap(True)
             cover_body.addWidget(refusal)
@@ -240,6 +258,11 @@ class ApplyPreviewDialog(QDialog):
         self.cover_hints = self._hint_label(buckets["cover"])
         if self.cover_hints is not None:
             cover_body.addWidget(self.cover_hints)
+        self._guard_notice = QLabel()
+        self._guard_notice.setObjectName("KkErrorText")
+        self._guard_notice.setWordWrap(True)
+        self._guard_notice.hide()
+        cover_body.addWidget(self._guard_notice)
         body_layout.addWidget(self.cover_card, 1)
 
         # Form values
@@ -363,6 +386,7 @@ class ApplyPreviewDialog(QDialog):
         root.addLayout(footer)
 
         fit_dialog_to_screen(self, preferred_width=720, preferred_height=640)
+        self._run_cover_guard()
 
     def _apply_status_chip(self) -> None:
         preview = self.preview
@@ -431,6 +455,69 @@ class ApplyPreviewDialog(QDialog):
             )
         return rows
 
+    def _build_prepared_check(self):
+        """Classes, employers, degrees and normalized evidence, once per dialog."""
+        from core.cover_guard import prepare_cover_check
+
+        job = self._job
+        job_text = f"{getattr(job, 'title', '')} {getattr(job, 'description', '')}".strip()
+        allowed = f"{getattr(job, 'title', '')} {getattr(job, 'company', '')}".strip()
+        return prepare_cover_check(self._config, job_text, allowed)
+
+    def _scan_letter(self, text: str) -> tuple[list[str], bool, str]:
+        """Letter-only scan. The profile side stays the object built at open."""
+        if self._prepared is None or not (text or "").strip():
+            return [], True, ""
+        from core.cover_guard import screen_prepared_letter, unconfirmed_licence_codes
+
+        screened = screen_prepared_letter(text, self._prepared)
+        if screened.ok:
+            return [], True, ""
+        sentence = screened.violations[0]
+        codes = unconfirmed_licence_codes(
+            sentence,
+            confirmed_licences=set(self._prepared.licence_codes),
+        )
+        return codes, False, sentence
+
+    def _guard_message(self, sentence: str, codes: list[str]) -> str:
+        if sentence and codes:
+            return tr(
+                "apps.preview_claim_blocked",
+                sentence=sentence,
+                classes=", ".join(codes),
+            )
+        return tr("apps.preview_claim_blocked_generic")
+
+    def _sync_approve_button(self, *, blocked: bool) -> None:
+        can = (
+            self._config is not None
+            and self._job is not None
+            and bool(self.cover_edit.toPlainText().strip())
+            and not self.preview.cover_refusal_code
+        )
+        self.approve_btn.setVisible(can)
+        self.approve_btn.setEnabled(can and not blocked)
+
+    def _mark_check_needed(self) -> None:
+        self.status_chip.set_status(tr("apps.preview_status_check"), kind="warn")
+        self._sync_approve_button(blocked=True)
+
+    def _run_cover_guard(self) -> bool:
+        """Scan the letter on screen. Opening and confirming each run it in full."""
+        text = self.preview.cover_letter_preview or ""
+        codes, ok, sentence = self._scan_letter(text)
+        if ok:
+            self._guard_notice.hide()
+            self._guard_notice.clear()
+            self._apply_status_chip()
+            self._sync_approve_button(blocked=False)
+            return True
+        self._guard_notice.setText(self._guard_message(sentence, codes))
+        self._guard_notice.show()
+        self._mark_check_needed()
+        return False
+
     def _config_for_approval(self):
         """Profile at approval time. A saved edit after the preview must count."""
         parent = self.parent()
@@ -445,6 +532,8 @@ class ApplyPreviewDialog(QDialog):
 
         if self._config is None or self._job is None:
             return
+        if not self._run_cover_guard():
+            return
         try:
             path = approve_cover_letter(
                 self._job,
@@ -455,6 +544,11 @@ class ApplyPreviewDialog(QDialog):
             )
         except CoverLetterRefused as exc:
             lang = getattr(self._config.settings, "language", "de")
+            if exc.refusal.message_key == "cover.preview_stale":
+                self._guard_notice.setText(exc.refusal.text(lang))
+                self._guard_notice.show()
+                self._sync_approve_button(blocked=True)
+                return
             QMessageBox.warning(self, self.windowTitle(), exc.refusal.text(lang))
             return
         except ValueError:

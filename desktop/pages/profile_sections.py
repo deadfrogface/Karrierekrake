@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QCheckBox,
     QFormLayout,
@@ -131,6 +132,138 @@ class EducationSection(QGroupBox):
         quals.education = self.education.get_items()
 
 
+def _has_stored_entry_before(stored: list, item: object) -> bool:
+    for current in stored or []:
+        if current is item:
+            return False
+        if _licence_item_value(current):
+            return True
+    return False
+
+
+def _licence_item_value(item: object) -> str:
+    if isinstance(item, str):
+        return item.strip()
+    return str(getattr(item, "value", "") or "").strip()
+
+
+def _stored_licence_values(stored: list) -> set[str]:
+    values: set[str] = set()
+    for item in stored or []:
+        value = _licence_item_value(item).upper()
+        if value:
+            values.add(value)
+    return values
+
+
+def _fragment_joined_displayed_class(fragment: str, display: list[str], stored_values: set[str]) -> bool:
+    """True when this one character and another stored entry form a class on screen.
+
+    ``C`` and ``1`` form ``C1``, ``B`` and ``E`` form ``BE``, ``A`` and ``M``
+    form ``AM``. A character that merely sits beside a class does not.
+    """
+    piece = fragment.strip().upper()
+    if len(piece) != 1 or piece not in stored_values:
+        return False
+    parts = [token for token in stored_values if token and any(token in code.upper() for code in display)]
+
+    def joins(code: str) -> bool:
+        target = code.upper()
+        if len(target) < 2 or piece not in target:
+            return False
+
+        def walk(pos: int, used_piece: bool, others: int) -> bool:
+            if pos == len(target):
+                return used_piece and others >= 1
+            for token in parts:
+                if target.startswith(token, pos) and walk(
+                    pos + len(token),
+                    used_piece or token == piece,
+                    others + (token != piece),
+                ):
+                    return True
+            return False
+
+        return walk(0, False, 0)
+
+    return any(joins(code) for code in display)
+
+
+def _licence_token_was_rebuilt(
+    token: str,
+    reading: object,
+    recognised: frozenset[str],
+    stored_values: set[str],
+) -> bool:
+    """True when recovery folded this stored token into a class on screen.
+
+    A recognised code counts when a longer class on screen starts with it
+    (``C`` inside ``C1``). Any other single character counts only when that
+    character and another stored entry together make the class on screen.
+    """
+    if reading is None or not getattr(reading, "recovered", False) or not getattr(reading, "display", None):
+        return False
+    text = token.strip()
+    display = list(reading.display)
+    if text in display or text.upper() in display:
+        return False
+    upper = text.upper()
+    if upper in recognised:
+        return any(len(code) > len(upper) and code.upper().startswith(upper) for code in display)
+    return _fragment_joined_displayed_class(text, display, stored_values)
+
+
+def _visible_and_unknown_licence(stored: list, reading: object) -> tuple[list[str], list]:
+    """Rows the drawer shows, and stored entries that are not a class.
+
+    Display classes come first. A recognised code the parser left off that
+    list (an uncertain ``C`` or ``D``) is a row. ``M`` is a row when it was
+    not folded into ``AM``. An ``E`` that did not join a displayed class is
+    a row too, as with ``[C, E, 9, 5]`` and ``[B, C, E, 9, 5]``. Digits and
+    other non-classes such as ``9``, ``5`` and ``95`` stay out of the list.
+    They are returned as the original stored objects. An ``E`` with no stored
+    entry before it is dropped when a class is already on screen (``[E, B]``).
+    """
+    from core.cv_parser import _RECOGNISED_LICENCE_CLASSES
+
+    display = list(getattr(reading, "display", None) or [])
+    shown = {item.upper() for item in display}
+    stored_values = _stored_licence_values(stored)
+    rows = list(display)
+    unknown: list = []
+    for item in stored or []:
+        value = _licence_item_value(item)
+        if not value:
+            continue
+        upper = value.upper()
+        if value in display or upper in shown:
+            continue
+        if _licence_token_was_rebuilt(value, reading, _RECOGNISED_LICENCE_CLASSES, stored_values):
+            continue
+        if upper == "E" and display and not _has_stored_entry_before(stored, item):
+            continue
+        lone_letter_on_empty = not display and len(value) == 1 and value.isalpha()
+        if upper in _RECOGNISED_LICENCE_CLASSES or upper in {"E", "M"} or lone_letter_on_empty:
+            if upper not in shown:
+                rows.append(upper)
+                shown.add(upper)
+            continue
+        unknown.append(item)
+    return rows, unknown
+
+
+def _with_unknown_licence_entries(visible: list, unknown: list) -> list:
+    """Visible classes first, then the original unknown entries, without duplicates."""
+    merged = list(visible)
+    seen = {_licence_item_value(item) for item in merged}
+    for item in unknown:
+        value = _licence_item_value(item)
+        if value and value not in seen:
+            merged.append(item)
+            seen.add(value)
+    return merged
+
+
 class QualificationsSection(QGroupBox):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -143,10 +276,22 @@ class QualificationsSection(QGroupBox):
         self.lbl_software = QLabel()
         self.lbl_certificates = QLabel()
         self.lbl_license = QLabel()
+        self.licence_notice = QLabel()
+        self.licence_notice.setObjectName("WarningLabel")
+        self.licence_notice.setWordWrap(True)
+        self.licence_notice.hide()
+        self.licence_unknown = QLabel()
+        self.licence_unknown.setObjectName("KkHint")
+        self.licence_unknown.setWordWrap(True)
+        self.licence_unknown.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
+        self.licence_unknown.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.licence_unknown.hide()
         form.addRow(self.lbl_skills, self.skills)
         form.addRow(self.lbl_software, self.software)
         form.addRow(self.lbl_certificates, self.certificates)
+        form.addRow(self.licence_notice)
         form.addRow(self.lbl_license, self.driving)
+        form.addRow(self.licence_unknown)
 
     def retranslate(self) -> None:
         self.setTitle(tr("profile.qualifications"))
@@ -154,24 +299,84 @@ class QualificationsSection(QGroupBox):
         self.lbl_software.setText(tr("profile.software"))
         self.lbl_certificates.setText(tr("profile.certificates"))
         self.lbl_license.setText(tr("profile.license"))
+        self._refresh_licence_notice()
         for editor in (self.skills, self.software, self.driving):
             editor.retranslate()
         if hasattr(self.certificates, "retranslate"):
             self.certificates.retranslate()
 
     def load(self, quals: QualificationsConfig) -> None:
+        from core.cv_parser import read_driving_classes
+
         self.skills.set_items(quals.skill_values())
         self.software.set_items(quals.software_values())
-        self.driving.set_items(quals.driving_values())
+        # Recognised classes are rows. Unknown leftovers stay beside the list.
+        # Loading itself does not write the config object.
+        self._licence_reading = read_driving_classes(quals.driving_license)
+        rows, unknown = _visible_and_unknown_licence(
+            quals.driving_license, self._licence_reading
+        )
+        self._licence_loaded_display = list(rows)
+        self._licence_unknown = list(unknown)
+        self.driving.set_items(self._licence_loaded_display)
+        self._refresh_licence_notice()
         self.certificates.set_items(quals.certificates)
+
+    def _refresh_licence_notice(self) -> None:
+        reading = getattr(self, "_licence_reading", None)
+        if reading is not None and reading.recovered:
+            self.licence_notice.setText(tr("profile.licence_recovered"))
+            self.licence_notice.show()
+        else:
+            self.licence_notice.hide()
+            self.licence_notice.clear()
+        labels = [
+            _licence_item_value(item)
+            for item in getattr(self, "_licence_unknown", [])
+        ]
+        labels = [label for label in labels if label]
+        if labels:
+            self.licence_unknown.setText(
+                tr("profile.licence_unknown_kept", entries=", ".join(labels))
+            )
+            self.licence_unknown.show()
+        else:
+            self.licence_unknown.hide()
+            self.licence_unknown.clear()
 
     def save_into(self, quals: QualificationsConfig) -> None:
         quals.skills = preserve_sourced_on_edit(quals.skills, self.skills.get_items())
         quals.software = preserve_sourced_on_edit(quals.software, self.software.get_items())
-        quals.driving_license = preserve_sourced_on_edit(
-            quals.driving_license, self.driving.get_items()
-        )
+        self._save_driving_license(quals)
         quals.certificates = self.certificates.get_items()
+
+    def _save_driving_license(self, quals: QualificationsConfig) -> None:
+        """Save the classes on screen and keep unknown entries verbatim.
+
+        Every recognised class is a row the user can remove. ``M`` is a row
+        when it was not folded into ``AM``. An ``E`` that did not join a
+        displayed class is a row too. Entries that are not a class, such as
+        ``9``, ``5`` and ``95``, stay in the file unchanged. Removing a
+        visible class drops it. It is not written back as a hidden entry.
+
+        An unchanged row list does not rewrite the file when the stored
+        values already match, so ``[C, 95]`` stays byte-identical. A recovered
+        ``[B, E]`` still saves as ``B, BE`` because those are the classes on
+        screen and they differ from storage.
+        """
+        edited = self.driving.get_items()
+        loaded = getattr(self, "_licence_loaded_display", None)
+        unknown = getattr(self, "_licence_unknown", None)
+        if loaded is None or unknown is None:
+            quals.driving_license = preserve_sourced_on_edit(quals.driving_license, edited)
+            return
+        proposed = preserve_sourced_on_edit(quals.driving_license, edited)
+        merged = _with_unknown_licence_entries(proposed, unknown)
+        stored_values = [_licence_item_value(item) for item in quals.driving_license]
+        merged_values = [_licence_item_value(item) for item in merged]
+        if edited == list(loaded) and merged_values == stored_values:
+            return
+        quals.driving_license = merged
 
 
 class LanguagesSection(QGroupBox):
@@ -207,6 +412,8 @@ class LocationWorkSection(QGroupBox):
     def __init__(self, parent=None, *, include_search_fields: bool = False) -> None:
         super().__init__(parent)
         self.include_search_fields = include_search_fields
+        self._notice_config = None
+        self._loaded_location = None
         self.home_address = QLineEdit()
         self.postal_code = QLineEdit()
         self.postal_code.setPlaceholderText("PLZ")
@@ -246,7 +453,11 @@ class LocationWorkSection(QGroupBox):
         self.home_notice = QLabel()
         self.home_notice.setWordWrap(True)
         self.home_notice.setObjectName("WarningLabel")
+        self.change_place_btn = QPushButton()
+        self.change_place_btn.hide()
+        self.change_place_btn.clicked.connect(self._change_place)
         form.addRow(self.home_notice)
+        form.addRow(self.change_place_btn)
         self.home_address.editingFinished.connect(self.refresh_home_notice)
         self.postal_code.editingFinished.connect(self.refresh_home_notice)
         self.country.editingFinished.connect(self.refresh_home_notice)
@@ -306,7 +517,9 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.retranslate()
         self.excluded_companies.retranslate()
         self._refresh_geo_status()
-        self.refresh_home_notice()
+        # Widget text has no coordinates. Reuse the loaded home when the
+        # fields still match, so a language refresh does not resolve again.
+        self.refresh_home_notice(self._location_if_widgets_match(), self._notice_config)
 
     def _refresh_geo_status(self) -> None:
         try:
@@ -343,26 +556,65 @@ class LocationWorkSection(QGroupBox):
                 tr("profile.geo_status_bad", message=type(exc).__name__)
             )
 
-    def refresh_home_notice(self, location: LocationConfig | None = None) -> None:
+    def _location_if_widgets_match(self) -> LocationConfig | None:
+        loaded = getattr(self, "_loaded_location", None)
+        if loaded is None:
+            return None
+        if self.home_address.text().strip() != (loaded.home_address or "").strip():
+            return None
+        if self.postal_code.text().strip() != (getattr(loaded, "postal_code", "") or "").strip():
+            return None
+        widget_country = self.country.text().strip() or "DE"
+        loaded_country = (getattr(loaded, "country", "") or "").strip() or "DE"
+        if widget_country != loaded_country:
+            return None
+        return loaded
+
+    def _change_place(self) -> None:
+        window = self.window()
+        if window is not None and hasattr(window, "edit_search_home"):
+            window.edit_search_home()
+
+    def refresh_home_notice(self, location: LocationConfig | None = None, config=None) -> None:
         """Re-read resolver status for the home fields. Does not guess a PLZ."""
         from core.location import home_location_notice
 
+        if config is None:
+            config = getattr(self, "_notice_config", None)
         if location is None:
-            location = LocationConfig(
-                home_address=self.home_address.text().strip(),
-                postal_code=self.postal_code.text().strip(),
-                country=self.country.text().strip() or "DE",
-            )
+            # This section has no city field. A city-less stand-in would be a
+            # second cache key for the same home.
+            matched = self._location_if_widgets_match()
+            loaded = getattr(self, "_loaded_location", None)
+            city = ""
+            if matched is not None:
+                location = matched
+            else:
+                if loaded is not None:
+                    city = getattr(loaded, "city", "") or ""
+                location = LocationConfig(
+                    home_address=self.home_address.text().strip(),
+                    postal_code=self.postal_code.text().strip(),
+                    city=city,
+                    country=self.country.text().strip() or "DE",
+                )
         from desktop.pages.dashboard import bind_home_notice_label
 
-        bind_home_notice_label(self.home_notice, home_location_notice(location))
+        bind_home_notice_label(
+            self.home_notice,
+            home_location_notice(location, config),
+            self.change_place_btn,
+        )
 
     def load(
         self,
         location: LocationConfig,
         employment: EmploymentConfig,
         filters: FiltersConfig,
+        config=None,
     ) -> None:
+        self._loaded_location = location
+        self._notice_config = config
         self.home_address.setText(location.home_address)
         self.postal_code.setText(getattr(location, "postal_code", "") or "")
         self.max_distance.setValue(float(location.max_distance_km))
@@ -378,7 +630,7 @@ class LocationWorkSection(QGroupBox):
         self.preferred_companies.set_items(filters.preferred_companies)
         self.excluded_companies.set_items(filters.excluded_companies)
         self._refresh_geo_status()
-        self.refresh_home_notice(location)
+        self.refresh_home_notice(location, config)
 
     def save_into(
         self,
@@ -388,8 +640,12 @@ class LocationWorkSection(QGroupBox):
     ) -> None:
         new_home = self.home_address.text().strip()
         new_plz = self.postal_code.text().strip()
-        if new_home != (location.home_address or "").strip() or new_plz != (
-            getattr(location, "postal_code", "") or ""
+        new_country = self.country.text().strip() or "DE"
+        previous_country = (getattr(location, "country", "") or "").strip() or "DE"
+        if (
+            new_home != (location.home_address or "").strip()
+            or new_plz != (getattr(location, "postal_code", "") or "")
+            or new_country != previous_country
         ):
             location.home_latitude = None
             location.home_longitude = None
@@ -437,6 +693,11 @@ class ApplicantSection(QGroupBox):
         self.remote_pref = QLineEdit()
         self.sync_home_from_address = QCheckBox()
         self.sync_home_from_address.setChecked(False)
+        self.custom_home_hint = QLabel()
+        self.custom_home_hint.setObjectName("CustomSearchHomeHint")
+        self.custom_home_hint.setWordWrap(True)
+        self.custom_home_hint.setStyleSheet("color: #6e6e6e;")
+        self.custom_home_hint.hide()
         form = QFormLayout(self)
         self.app_field_labels: list[tuple[QLabel, str]] = []
         for key, widget in [
@@ -465,12 +726,18 @@ class ApplicantSection(QGroupBox):
             self.app_field_labels.append((lbl, key))
             form.addRow(lbl, widget)
         form.addRow(self.sync_home_from_address)
+        form.addRow(self.custom_home_hint)
 
     def retranslate(self) -> None:
         self.setTitle(tr("profile.app_data"))
         for lbl, key in self.app_field_labels:
             lbl.setText(tr(key))
         self.sync_home_from_address.setText(tr("profile.sync_home_address"))
+        self.custom_home_hint.setText(tr("profile.custom_search_home"))
+
+    def set_custom_home_hint(self, visible: bool) -> None:
+        self.custom_home_hint.setText(tr("profile.custom_search_home"))
+        self.custom_home_hint.setVisible(bool(visible))
 
     def load(self, app: ApplicationProfile, *, sync_address_to_search: bool) -> None:
         self.first_name.setText(app.first_name)
@@ -482,7 +749,10 @@ class ApplicantSection(QGroupBox):
         self.email.setText(app.email)
         self.phone.setText(app.phone)
         self.dob.setText(app.date_of_birth)
-        self.drv.setText(app.driving_license)
+        from core.cv_parser import driving_classes_for_display
+
+        classes = driving_classes_for_display(app.driving_license)
+        self.drv.setText(", ".join(classes) if classes else (app.driving_license or ""))
         self.work_auth.setText(app.work_authorization)
         self.notice.setText(app.notice_period)
         self.start.setText(app.earliest_start_date)

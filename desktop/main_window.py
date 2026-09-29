@@ -49,6 +49,7 @@ class _GeoIndexBridge(QObject):
     """Hop from the geo-loader thread back onto the UI thread."""
 
     ready = Signal()
+    generation = Signal()
 
 
 class MainWindow(QMainWindow):
@@ -58,10 +59,13 @@ class MainWindow(QMainWindow):
         self._force_quit = False
         self._shutting_down = False
         self._geo_preload_armed = False
+        self._home_notice_status = ""
         self._geo_bridge = _GeoIndexBridge(self)
-        self._geo_bridge.ready.connect(self._refresh_home_notices_after_geo)
+        self._geo_bridge.ready.connect(self._on_geo_index_changed)
+        self._geo_bridge.generation.connect(self._on_geo_index_changed)
         from core.geo_resolve import (
             bind_ui_thread,
+            on_geo_index_generation,
             when_geo_index_ready,
         )
 
@@ -70,6 +74,8 @@ class MainWindow(QMainWindow):
         def _emit_geo_ready() -> None:
             self._geo_bridge.ready.emit()
 
+        self._geo_listener = self._emit_geo_generation
+        on_geo_index_generation(self._geo_listener)
         when_geo_index_ready(_emit_geo_ready)
         self._worker = None
         self._thread = None
@@ -239,6 +245,7 @@ class MainWindow(QMainWindow):
         self._restore_geometry()
         self._navigate(0)
         self.refresh_all()
+        self._home_notice_status = getattr(self.jobs, "_last_notice_status", "")
 
     def showEvent(self, event: QShowEvent) -> None:
         super().showEvent(event)
@@ -380,30 +387,71 @@ class MainWindow(QMainWindow):
             install_qt_translator(app, lang)
         i18n.set_language(lang)
 
-    def _refresh_home_notices_after_geo(self) -> None:
-        """Notice labels only. Does not rebuild profile cards."""
+    def _emit_geo_generation(self) -> None:
+        self._geo_bridge.generation.emit()
+
+    def _drop_geo_listener(self) -> None:
+        listener = getattr(self, "_geo_listener", None)
+        if listener is None:
+            return
+        from core.geo_resolve import off_geo_index_generation
+
+        off_geo_index_generation(listener)
+        self._geo_listener = None
+
+    def edit_search_home(self) -> None:
+        self.profile.edit_search_home()
+
+    def _bind_home_notices(self, notice) -> None:
+        from desktop.pages.dashboard import bind_home_notice_label
+
+        bind_home_notice_label(
+            self.profile.home_status, notice, self.profile.change_place_btn
+        )
+        bind_home_notice_label(
+            self.profile.location_work.home_notice,
+            notice,
+            self.profile.location_work.change_place_btn,
+        )
+        bind_home_notice_label(
+            self.dashboard.home_warning_label,
+            notice,
+            self.dashboard.change_place_btn,
+        )
+        bind_home_notice_label(
+            self.settings.home_notice, notice, self.settings.change_place_btn
+        )
+
+    def _on_geo_index_changed(self) -> None:
+        """Re-resolve the home and redraw notices. One filter pass only when needed.
+
+        Does not call ``refresh_all``. The geo index finishing is not a user edit.
+        """
         if self._shutting_down:
             return
         if not hasattr(self, "dashboard"):
-            QTimer.singleShot(0, self._refresh_home_notices_after_geo)
+            QTimer.singleShot(0, self._on_geo_index_changed)
             return
-        from core.location import commit_loaded_home
-
-        cfg = self.config_service.load()
-        # Same in-flight index, UI thread, no second Nominatim. A save that
-        # happened while the loader was still running lands here once.
-        if commit_loaded_home(cfg.profile.location) == "resolved":
-            self.config_service.save(cfg)
         try:
-            self.profile.refresh_home_status()
-            self.profile.location_work.refresh_home_notice(
-                self.config_service.load().profile.location
-            )
-            self.dashboard.refresh()
-            self.settings._refresh_home_notice()
-            self.jobs.refresh()
+            from core.location import home_location_notice
+
+            cfg = self.config_service.load()
+            notice = home_location_notice(cfg.profile.location, cfg)
+            previous = self._home_notice_status
+            self._bind_home_notices(notice)
+            self._home_notice_status = notice.status
+            saw_loading = bool(getattr(self.jobs, "_last_pass_saw_loading", False))
+            if previous != notice.status or saw_loading:
+                self.jobs.apply_filter_pass(preserve_view=True)
         except Exception:
+            import logging
+
+            logging.getLogger("karrierekrake").exception("geo index notice update failed")
             return
+
+    def _refresh_home_notices_after_geo(self) -> None:
+        """Notice labels only. Does not rebuild profile cards or write YAML."""
+        self._on_geo_index_changed()
 
     def refresh_all(self) -> None:
         self.dashboard.refresh()
@@ -483,12 +531,8 @@ class MainWindow(QMainWindow):
             self.dashboard.set_pipeline_running(False)
             self.progress_label.setText(tr("status.done"))
             self.dashboard.set_status(tr("status.done"))
-            # Persist only home coords (never dry_run/mode overrides from apply-test).
-            if stats.get("home_updated") and getattr(worker, "config", None) is not None:
-                try:
-                    self.config_service.save_home_coords_from(worker.config)
-                except Exception:
-                    pass
+            # Home coordinates are written only by cached_home_resolution.
+            # The worker config is not saved, so dry_run and mode stay off disk.
             self.config_service.set_last_search(
                 datetime.now(timezone.utc).replace(microsecond=0).isoformat()
             )
@@ -500,7 +544,8 @@ class MainWindow(QMainWindow):
                 extra = (extra + "\n" if extra else "\n") + "\n".join(stats.get("source_errors") or [])
             from core.location import home_location_notice
 
-            notice = home_location_notice(self.config_service.load().profile.location)
+            cfg = self.config_service.load()
+            notice = home_location_notice(cfg.profile.location, cfg)
             if notice.ask_postal and notice.notice_key:
                 extra += "\n\n" + tr(notice.notice_key)
             if stats.get("ats_unknown") is not None:
@@ -678,6 +723,7 @@ class MainWindow(QMainWindow):
                 return
 
         self._shutting_down = True
+        self._drop_geo_listener()
         event.accept()
         get_shutdown_manager().shutdown(reason="window_close")
 

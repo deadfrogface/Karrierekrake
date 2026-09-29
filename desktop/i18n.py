@@ -211,6 +211,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
         ),
         "dash.home_resolved": "Wohnort aufgelöst: {place}. Distanzfilter aktiv.",
+        "dash.home_checking": "Entfernung wird ermittelt …",
+        "dash.home_index_unavailable": (
+            "Für {country} fehlen die Standortdaten. "
+            "Die Suche läuft deshalb ohne Entfernungsfilter."
+        ),
+        "dash.home_not_found": (
+            "„{place}“ wurde nicht gefunden. Die Suche läuft ohne Entfernungsfilter."
+        ),
+        "dash.home_change_place": "Anderen Ort eintragen",
         "jobs.distance_skipped": "Umkreis übersprungen — bitte PLZ angeben",
         "dash.run_stats": "Lauf-Statistik",
         "apps.preview_title": "Bewerbung vorbereiten",
@@ -220,6 +229,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_status_draft": "Entwurf – wird nicht versendet",
         "apps.preview_status_ready": "Entwurf geprüft – Versand nur nach Freigabe",
         "apps.preview_confirm_draft": "Entwurf bestätigen",
+        "apps.preview_status_check": "Prüfen nötig",
+        "apps.preview_claim_blocked": (
+            "‚{sentence}‘\n"
+            "Bestätige Klasse {classes} im Führerschein-Feld oder nimm den Eintrag aus deinen Skills."
+        ),
+        "apps.preview_claim_blocked_generic": (
+            "Im Brief steht eine Angabe, die dein Profil nicht belegt. "
+            "Bestätige sie im Profil."
+        ),
         "apps.preview_section_cv": "Lebenslauf",
         "apps.preview_section_cover": "Anschreiben",
         "apps.preview_section_form": "Formulardaten",
@@ -298,6 +316,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.software": "Software",
         "profile.certificates": "Zertifikate / Weiterbildungen",
         "profile.license": "Führerschein",
+        "profile.licence_recovered": "Aus einem älteren Import wiederhergestellt. Bitte prüfen und speichern.",
+        "profile.licence_uncertain": "Nicht sicher erkannt: {classes}. Bitte ergänze die genaue Klasse.",
+        "profile.licence_unknown_kept": (
+            "Nicht sicher erkannt: {entries}. Diese Einträge bleiben unverändert gespeichert."
+        ),
+        "profile.licence_review": "Prüfen",
+        "profile.no_changes": "Keine Änderungen.",
         "profile.languages": "Sprachen",
         "profile.location_work": "Standort & Arbeitsmodell",
         "profile.home": "Heimatadresse",
@@ -317,6 +342,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.ex_companies": "Ausgeschlossene Firmen",
         "profile.app_data": "Bewerbungsdaten",
         "profile.sync_home_address": "Diese Adresse auch als Standort für die Jobsuche verwenden.",
+        "profile.custom_search_home": "Eigener Suchort gespeichert. Die Kontaktadresse wird nicht mehr übernommen.",
         "profile.cv": "Lebenslauf",
         "profile.no_cv": "Kein CV ausgewählt",
         "profile.saved": "Gespeichert.",
@@ -1098,6 +1124,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.profile_changed_evidence_lost": "Das Profil hat sich seit der Vorschau geändert. Der Brief hat nicht mehr zwei verschiedene belegte Bezüge.",
         "cover.preview_required": "Die Freigabe braucht die Vorschau. Bitte den Entwurf erneut öffnen.",
         "cover.saved": "Anschreiben gespeichert.",
+        "cover.preview_stale": "Die Vorschau ist veraltet. Bitte schließe sie und öffne sie neu.",
     },
     "en": {
         "app.name": "Karrierekrake",
@@ -1304,6 +1331,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "without a postal code no place is guessed and the radius filter is skipped."
         ),
         "dash.home_resolved": "Home location resolved: {place}. Distance filter active.",
+        "dash.home_checking": "Distance is being determined …",
+        "dash.home_index_unavailable": (
+            "Location data for {country} is missing. "
+            "Search therefore runs without a distance filter."
+        ),
+        "dash.home_not_found": (
+            "“{place}” was not found. Search runs without a distance filter."
+        ),
+        "dash.home_change_place": "Enter a different place",
         "jobs.distance_skipped": "Radius skipped — please enter a postal code",
         "dash.run_stats": "Run stats",
         "apps.preview_title": "Prepare application",
@@ -1313,6 +1349,15 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "apps.preview_status_draft": "Draft – will not be sent",
         "apps.preview_status_ready": "Draft reviewed – send only after approval",
         "apps.preview_confirm_draft": "Confirm draft",
+        "apps.preview_status_check": "Check needed",
+        "apps.preview_claim_blocked": (
+            "‚{sentence}‘\n"
+            "Confirm class {classes} in the driving-license field or remove the entry from your skills."
+        ),
+        "apps.preview_claim_blocked_generic": (
+            "The letter states something your profile does not confirm. "
+            "Confirm it in your profile."
+        ),
         "apps.preview_section_cv": "Resume",
         "apps.preview_section_cover": "Cover letter",
         "apps.preview_section_form": "Form data",
@@ -1410,9 +1455,17 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "profile.ex_companies": "Excluded companies",
         "profile.app_data": "Application data",
         "profile.sync_home_address": "Also use this address as the job search location.",
+        "profile.custom_search_home": "Custom search location saved. The contact address is no longer copied.",
         "profile.cv": "CV",
         "profile.no_cv": "No CV selected",
         "profile.saved": "Saved.",
+        "profile.licence_recovered": "Restored from an older import. Please check and save.",
+        "profile.licence_uncertain": "Not recognised with certainty: {classes}. Please enter the exact class.",
+        "profile.licence_unknown_kept": (
+            "Not recognised with certainty: {entries}. These entries stay saved unchanged."
+        ),
+        "profile.licence_review": "Review",
+        "profile.no_changes": "No changes.",
         "search.subtitle": "What am I looking for now? Explicit search intent — independent of profile evidence.",
         "search.roles_skills": "Target roles, skills & keywords",
         "search.target_roles": "Target roles",
@@ -2181,6 +2234,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cover.profile_changed_evidence_lost": "The profile changed since the preview. The letter no longer has two different evidenced references.",
         "cover.preview_required": "Approval needs the preview. Open the draft again.",
         "cover.saved": "Cover letter saved.",
+        "cover.preview_stale": "The preview is out of date. Please close it and open it again.",
     },
 }
 
@@ -2234,6 +2288,34 @@ i18n = TranslationService("de")
 
 def tr(key: str, **kwargs: str) -> str:
     return i18n.t(key, **kwargs)
+
+
+# Fixed names. Never a country code, never a resolver reason string.
+_HOME_COUNTRY_NAMES = {
+    "de": {
+        "DE": "Deutschland",
+        "AT": "Österreich",
+        "CH": "Schweiz",
+        "NL": "Niederlande",
+        "BE": "Belgien",
+    },
+    "en": {
+        "DE": "Germany",
+        "AT": "Austria",
+        "CH": "Switzerland",
+        "NL": "Netherlands",
+        "BE": "Belgium",
+    },
+}
+
+
+def home_country_label(country_code: str) -> str:
+    """Display name for a home country. Empty when the code is not in the map."""
+    from core.geo_normalize import normalize_country_code
+
+    cc = normalize_country_code(country_code) or ""
+    table = _HOME_COUNTRY_NAMES.get(i18n.language) or _HOME_COUNTRY_NAMES["de"]
+    return table.get(cc) or _HOME_COUNTRY_NAMES["de"].get(cc, "")
 
 
 def escape_mnemonic(text: str) -> str:

@@ -113,6 +113,7 @@ def test_save_builds_cards_once_and_shows_one_dialog(qapp, config_service, geo_r
     page.applicant.postal_code.setText("")
     page.applicant.street.setText("Alexanderplatz 1")
     page.applicant.app_country.setText("DE")
+    page.applicant.sync_home_from_address.setChecked(True)
     page.save_btn.click()
     qapp.processEvents()
 
@@ -125,4 +126,7 @@ def test_save_builds_cards_once_and_shows_one_dialog(qapp, config_service, geo_r
     assert not page.home_status.isHidden()
     loc = config_service.load().profile.location
     assert "Berlin" in (loc.city or loc.home_address)
-    assert loc.home_latitude is None
+    from core.home_coord_cache import read_home_coordinates
+
+    assert read_home_coordinates(config_service.dirs["cache"], loc) is not None
+    assert "home_latitude" not in config_service.profile_path.read_text(encoding="utf-8")

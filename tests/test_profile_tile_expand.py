@@ -194,4 +194,5 @@ def test_tag_chip_keeps_long_german_and_english(qapp):
     en = TagChip("Accounts receivable specialist", kind="wanted")
     assert de.text() == "Umsatzsteuer-Voranmeldung"
     assert en.text() == "Accounts receivable specialist"
-    assert de.sizePolicy().horizontalPolicy() == de.sizePolicy().Policy.Minimum
+    assert de.sizePolicy().horizontalPolicy() == de.sizePolicy().Policy.Preferred
+    assert de.minimumSizeHint().width() <= de.sizeHint().width()

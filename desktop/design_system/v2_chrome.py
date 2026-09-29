@@ -2,16 +2,22 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import QEvent, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import (
     QAbstractButton,
+    QAbstractSpinBox,
+    QComboBox,
     QDialog,
     QFrame,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
+    QListWidget,
+    QPlainTextEdit,
     QPushButton,
     QSizePolicy,
+    QTextEdit,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -266,10 +272,17 @@ class IconActionButton(QPushButton):
 class TagChip(QLabel):
     """Compact tag / chip for skills and career goals.
 
-    Horizontal size never shrinks below the text need — a wrapping ``FlowLayout``
-    moves chips to the next line instead of eliding. Very long tokens wrap
-    inside the chip when the parent line is narrower than the text.
+    Preferred width is the full label, so short chips such as
+    „Nur Suche – nie bewerben“ stay on one line. The minimum width is the
+    longest word (capped), so a long chip wraps instead of widening the window.
     """
+
+    # Matches QLabel#Badge* padding (10px / 4px) plus the 1px border.
+    _PAD_X = 10
+    _PAD_Y = 4
+    _BORDER = 1
+    # A single enormous token must not become the window's minimum width.
+    _MIN_WIDTH_CAP = 240
 
     def __init__(
         self,
@@ -278,6 +291,12 @@ class TagChip(QLabel):
         kind: str = "neutral",
         parent: QWidget | None = None,
     ) -> None:
+        self._metrics_key: tuple | None = None
+        self._full_width = 0
+        self._word_width = 0
+        self._line_height = 1
+        self._metrics = None
+        self._height_for_width: dict[int, int] = {}
         super().__init__(text, parent)
         mapping = {
             "wanted": "BadgeOk",
@@ -287,28 +306,116 @@ class TagChip(QLabel):
         }
         self.setObjectName(mapping.get(kind, "BadgeMuted"))
         self.setWordWrap(True)
+        self.setTextFormat(Qt.TextFormat.PlainText)
         self.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
-        # Minimum: layout must not squash pills; Preferred height allows wrap.
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        # Preferred, not Minimum: the floor is minimumSizeHint, so heightForWidth
+        # can wrap. Minimum would treat the full text width as the window floor.
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         set_accessible_name(self, text)
         polish_chip(self)
+        self._rebuild_text_metrics()
+
+    def setText(self, text: str) -> None:  # noqa: N802
+        super().setText(text)
+        set_accessible_name(self, text)
+        self._rebuild_text_metrics()
+        self.updateGeometry()
+
+    def setFont(self, font) -> None:  # noqa: N802
+        super().setFont(font)
+        self._rebuild_text_metrics()
+        self.updateGeometry()
+
+    def changeEvent(self, event) -> None:  # noqa: N802
+        super().changeEvent(event)
+        if event.type() not in (
+            QEvent.Type.FontChange,
+            QEvent.Type.ApplicationFontChange,
+            QEvent.Type.StyleChange,
+        ):
+            return
+        if self._metrics_key == self._font_key():
+            return
+        self._rebuild_text_metrics()
+        self.updateGeometry()
+
+    def _font_key(self) -> tuple:
+        font = self.font()
+        return (
+            font.family(),
+            font.pixelSize(),
+            font.pointSizeF(),
+            int(font.weight()),
+            font.italic(),
+        )
+
+    def _rebuild_text_metrics(self) -> None:
+        """Measure once. ``sizeHint`` and ``heightForWidth`` reuse this cache."""
+        metrics = self.fontMetrics()
+        text = self.text() or ""
+        if text:
+            full = max(int(metrics.horizontalAdvance(text)), int(metrics.boundingRect(text).width()))
+        else:
+            full = 0
+        word = 0
+        for piece in text.replace("–", " ").replace("—", " ").replace("-", " ").split():
+            word = max(
+                word,
+                int(metrics.horizontalAdvance(piece)),
+                int(metrics.boundingRect(piece).width()),
+            )
+        self._metrics = metrics
+        self._full_width = full
+        self._word_width = word
+        self._line_height = max(int(metrics.height()), 1)
+        self._metrics_key = self._font_key()
+        self._height_for_width = {}
+
+    def _ensure_text_metrics(self) -> None:
+        if self._metrics is None or self._metrics_key != self._font_key():
+            self._rebuild_text_metrics()
+
+    def _padded_width(self, text_width: int) -> int:
+        # Slack covers semibold hinting so the last glyph is not clipped.
+        return int(text_width) + (2 * self._PAD_X) + (2 * self._BORDER) + 4
+
+    def _padded_height(self, text_height: int) -> int:
+        return int(text_height) + (2 * self._PAD_Y) + (2 * self._BORDER)
+
+    def sizeHint(self) -> QSize:  # noqa: N802
+        self._ensure_text_metrics()
+        return QSize(max(self._padded_width(self._full_width), 1), max(self._padded_height(self._line_height), 1))
+
+    def minimumSizeHint(self) -> QSize:  # noqa: N802
+        self._ensure_text_metrics()
+        word = self._word_width or self._full_width
+        text_width = min(word, self._MIN_WIDTH_CAP)
+        width = min(self._padded_width(text_width), self.sizeHint().width())
+        return QSize(max(width, 1), max(self._padded_height(self._line_height), 1))
 
     def hasHeightForWidth(self) -> bool:  # noqa: N802
         return True
 
     def heightForWidth(self, width: int) -> int:  # noqa: N802
-        if width <= 0:
+        self._ensure_text_metrics()
+        width = int(width)
+        if width <= 0 or width >= self.sizeHint().width():
             return int(self.sizeHint().height())
-        metrics = self.fontMetrics()
-        rect = metrics.boundingRect(
+        cached = self._height_for_width.get(width)
+        if cached is not None:
+            return cached
+        inner = max(8, width - (2 * self._PAD_X) - (2 * self._BORDER))
+        rect = self._metrics.boundingRect(
             0,
             0,
-            max(24, int(width)),
+            inner,
             4000,
             int(Qt.TextFlag.TextWordWrap),
-            self.text(),
+            self.text() or "",
         )
-        return int(rect.height() + 8)
+        height = max(self._padded_height(rect.height()), self._padded_height(self._line_height))
+        self._height_for_width[width] = height
+        return height
 
 
 class DataItem(QWidget):
@@ -545,10 +652,11 @@ class SectionEditDrawer(QDialog):
         self.close_btn.setToolTip(cancel or "Schließen")
         set_accessible_name(self.close_btn, cancel or "Schließen")
 
-    def present(self, content: QWidget) -> int:
+    def present(self, content: QWidget, *, focus: QWidget | None = None) -> int:
         if self._content is not None:
             self._host.removeWidget(self._content)
         self._content = content
+        self._focus_target = focus
         content.setVisible(True)
         self._host.addWidget(content)
         from desktop.widgets.dialog_geometry import fit_dialog_to_screen
@@ -556,7 +664,47 @@ class SectionEditDrawer(QDialog):
         fit_dialog_to_screen(self, preferred_width=560, preferred_height=640)
         self.save_btn.setDefault(True)
         self.save_btn.setAutoDefault(True)
+        # Shared scroll area keeps the previous drawer's offset. Open at the top
+        # and focus the first field so typing does not land in a leftover widget.
+        self._open_at_top()
+        QTimer.singleShot(0, self._open_at_top)
         return int(self.exec())
+
+    def showEvent(self, event) -> None:  # noqa: N802
+        super().showEvent(event)
+        self._open_at_top()
+
+    def _open_at_top(self) -> None:
+        scroll = getattr(self, "_scroll", None)
+        if scroll is not None:
+            scroll.verticalScrollBar().setValue(0)
+            scroll.horizontalScrollBar().setValue(0)
+        content = self._content
+        if content is None:
+            return
+        target = getattr(self, "_focus_target", None)
+        if target is not None:
+            if scroll is not None:
+                scroll.ensureWidgetVisible(target)
+            field = self._first_input(target) or target
+            field.setFocus(Qt.FocusReason.OtherFocusReason)
+            return
+        field = self._first_input(content)
+        if field is not None:
+            field.setFocus(Qt.FocusReason.TabFocusReason)
+
+    @staticmethod
+    def _first_input(content: QWidget) -> QWidget | None:
+        kinds = (QLineEdit, QTextEdit, QPlainTextEdit, QComboBox, QAbstractSpinBox, QListWidget)
+        for widget in content.findChildren(QWidget):
+            if not isinstance(widget, kinds):
+                continue
+            if not widget.isEnabled() or not widget.isVisible():
+                continue
+            if widget.focusPolicy() == Qt.FocusPolicy.NoFocus:
+                continue
+            return widget
+        return None
 
     def take_content(self) -> QWidget | None:
         content = self._content

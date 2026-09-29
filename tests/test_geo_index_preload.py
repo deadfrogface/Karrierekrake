@@ -223,18 +223,20 @@ def test_ui_thread_does_not_false_resolve_while_the_index_loads(qapp, geo_ready)
         country="DE",
     )
     loading = home_location_notice(munich)
-    assert loading.status != "resolved"
-    assert loading.ask_postal is True
+    assert loading.status == "loading"
+    assert loading.ask_postal is False
     assert munich.home_latitude is None and munich.home_longitude is None
 
     halle = LocationConfig(home_address="Halle", city="Halle", postal_code="", country="DE")
     while_loading = home_location_notice(halle)
-    assert while_loading.status != "resolved"
+    assert while_loading.status == "loading"
     label = QLabel()
     bind_home_notice_label(label, while_loading)
     assert label.isVisible()
+    assert label.objectName() == "HomeStatusPending"
+    assert "Entfernung wird ermittelt" in label.text()
+    assert "nicht gefunden" not in label.text()
     assert "aufgelöst" not in label.text()
-    assert "Postleitzahl" in label.text()
 
     hold.set()
     _wait_thread(thread)
@@ -346,6 +348,7 @@ def test_profile_save_resolves_geo_once(qapp, config_service, geo_ready, monkeyp
     page.applicant.postal_code.setText("10115")
     page.applicant.city.setText("Berlin")
     page.applicant.app_country.setText("DE")
+    page.applicant.sync_home_from_address.setChecked(True)
     page.save_btn.click()
     qapp.processEvents()
     assert calls["cards"] == 1
@@ -435,6 +438,7 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         page.applicant.postal_code.setText("10115")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        page.applicant.sync_home_from_address.setChecked(True)
         assert not hold.is_set()
         page.save_btn.click()
         # save() has returned. A blocking save would still be inside click().
@@ -459,12 +463,12 @@ def test_save_during_preload_resolves_10115_from_the_same_load(
         finished = config_service.load()
         loc = finished.profile.location
         assert loc.postal_code == "10115"
-        assert loc.city == "Berlin"
-        # GeoNames place_name for 10115 is Berlin, not the district Berlin-Mitte.
+        # The ready slot publishes Berlin on the banner. It does not invent a
+        # city or coordinates into profile.yaml.
+        assert loc.city == ""
         assert "Berlin-Mitte" not in text
         assert "Berlin-Mitte" not in _persisted_place_text(finished)
-        assert loc.home_latitude == pytest.approx(52.5323)
-        assert loc.home_longitude == pytest.approx(13.3846)
+        assert loc.home_latitude is None and loc.home_longitude is None
         assert "nicht auflösbar" not in _persisted_place_text(finished)
         assert "nicht prüfbar" not in _persisted_place_text(finished)
         assert [code for code, _ident in builds] == ["DE", "AT", "CH", "NL", "BE"]
@@ -506,6 +510,7 @@ def test_unresolvable_plz_still_shows_the_hint_after_preload(
         page.applicant.postal_code.setText("00000")
         page.applicant.city.setText("")
         page.applicant.app_country.setText("DE")
+        page.applicant.sync_home_from_address.setChecked(True)
         assert not hold.is_set()
         page.save_btn.click()
         assert not hold.is_set()
@@ -532,4 +537,66 @@ def test_unresolvable_plz_still_shows_the_hint_after_preload(
         qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
         worker = geo_resolve._preload_thread
         if worker is not None:
+            worker.join(timeout=30)
+
+
+def test_wizard_then_main_window_leaves_the_loading_notice(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """Real first-run wizard, then the main window. Loading does not stick.
+
+    ``desktop.app`` shows the window, which starts the loader, and then runs
+    the wizard. This test builds the real wizard first and the window after,
+    the order that left ``geo_index_loading`` behind for the next test when
+    the window was never shown. Once the loader has finished, Frankfurt
+    without a postal code is the PLZ hint, not ``dash.home_checking``.
+    """
+    monkeypatch.setattr("desktop.tray.AppTray.show", lambda self: None)
+    monkeypatch.setattr("desktop.tray.AppTray.showMessage", lambda *a, **k: None)
+    from desktop.i18n import tr
+    from desktop.main_window import MainWindow
+    from desktop.wizard import FirstRunWizard
+
+    i18n.set_language("de")
+    assert config_service.is_first_run()
+    wizard = FirstRunWizard(config_service)
+    wizard.accept()
+    assert not config_service.is_first_run()
+
+    cfg = config_service.load()
+    cfg.profile.location.home_address = "Frankfurt, Deutschland"
+    cfg.profile.location.postal_code = ""
+    cfg.profile.location.city = ""
+    cfg.profile.location.country = "DE"
+    config_service.save(cfg)
+
+    win = MainWindow(config_service)
+    worker = None
+    try:
+        assert tr("dash.home_checking") in win.dashboard.home_warning_label.text()
+        win.show()
+        deadline = time.monotonic() + 10
+        while geo_resolve._preload_thread is None and time.monotonic() < deadline:
+            qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        worker = geo_resolve._preload_thread
+        assert worker is not None
+        worker.join(timeout=30)
+        assert not worker.is_alive()
+        assert geo_resolve._preload_done.is_set()
+        text = _pump_until_label(
+            qapp,
+            win.dashboard.home_warning_label,
+            lambda value: tr("dash.home_checking") not in value,
+        )
+        assert text == tr("dash.home_plz_hint")
+        notice = home_location_notice(
+            config_service.load().profile.location, config_service.load()
+        )
+        assert notice.status != "loading"
+        assert notice.notice_key != "dash.home_checking"
+    finally:
+        win._shutting_down = True
+        win.close()
+        qapp.processEvents(QEventLoop.ProcessEventsFlag.AllEvents)
+        if worker is not None and worker.is_alive():
             worker.join(timeout=30)

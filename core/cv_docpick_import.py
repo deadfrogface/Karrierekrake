@@ -1339,8 +1339,12 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         if isinstance(item, dict):
             langs.append(
                 {
-                    "language": str(item.get("language") or ""),
-                    "level": str(item.get("level") or ""),
+                    "language": str(
+                        item.get("language") or item.get("name") or ""
+                    ),
+                    "level": str(
+                        item.get("level") or item.get("proficiency") or ""
+                    ),
                 }
             )
     work = []
@@ -1454,12 +1458,17 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         )
         personal = _enrich_dob_from_text(personal, source_text)
     personal = _normalize_person_apostrophes(personal)
+    def _skill_text(item: Any) -> str:
+        if isinstance(item, dict):
+            return str(item.get("value") or item.get("name") or item.get("skill") or "")
+        return str(item or "")
+
     skills = [
-        s for s in (_strip_skill_level(str(x)) for x in (data.get("skills") or [])) if s
+        s for s in (_strip_skill_level(_skill_text(x)) for x in (data.get("skills") or [])) if s
     ]
     software = [
         s
-        for s in (_strip_skill_level(str(x)) for x in (data.get("software") or []))
+        for s in (_strip_skill_level(_skill_text(x)) for x in (data.get("software") or []))
         if s
     ]
     certs, software, skills = _reroute_certs_software_skills(certs, software, skills)
@@ -1470,7 +1479,7 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         "emails": [email] if email else [],
         "phones": [str(data["phone"])] if data.get("phone") else [],
         "languages": langs,
-        "driving_license": " ".join(lic_codes),
+        "driving_license": list(lic_codes),
         "education": edu,
         "work_experience": work,
         "skills": skills,

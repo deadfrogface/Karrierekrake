@@ -603,8 +603,12 @@ def _parse_language(value: Any) -> LanguageEntry | None:
     if isinstance(value, LanguageEntry):
         return value
     if isinstance(value, dict):
-        lang = str(value.get("language") or "").strip()
-        level = str(value.get("level") or "").strip()
+        lang = str(
+            value.get("language") or value.get("name") or value.get("value") or ""
+        ).strip()
+        level = str(
+            value.get("level") or value.get("proficiency") or value.get("cefr") or ""
+        ).strip()
         source = str(value.get("source") or "").strip()
         if not lang and not level:
             return None
@@ -724,8 +728,18 @@ def parse_qualifications(raw: dict[str, Any] | None) -> QualificationsConfig:
             certificates.append(parsed)
 
     def _list_sourced(key: str) -> list[SourcedText]:
+        value = raw.get(key)
+        # Old profiles may store this one field as a string. Read it as classes.
+        # Load does not write the file back.
+        if key == "driving_license" and isinstance(value, str):
+            from core.cv_parser import driving_classes_for_display
+
+            return [
+                SourcedText(value=code, source="")
+                for code in driving_classes_for_display(value)
+            ]
         out: list[SourcedText] = []
-        for item in raw.get(key) or []:
+        for item in value or []:
             parsed = _parse_sourced_text(item)
             if parsed:
                 out.append(parsed)
@@ -908,8 +922,13 @@ def save_config(
     else:
         intent_payload = SearchIntent().model_dump(mode="json")
 
+    location_data = _dataclass_to_dict(config.profile.location)
+    # Coordinates live in the home-coordinate cache, not in profile.yaml.
+    # Old files may still contain the keys; the next user save drops them.
+    for _coord_key in ("home_latitude", "home_longitude", "home_geocoded_address"):
+        location_data.pop(_coord_key, None)
     profile_data = {
-        "location": _dataclass_to_dict(config.profile.location),
+        "location": location_data,
         "jobs": _dataclass_to_dict(config.profile.jobs),
         "employment": _dataclass_to_dict(config.profile.employment),
         "qualifications": _dataclass_to_dict(config.profile.qualifications),
