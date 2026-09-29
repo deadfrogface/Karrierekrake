@@ -587,11 +587,10 @@ def _cover_letter_same_model() -> dict:
                 },
             ],
             model_path=model,
-            max_tokens=180,
         )
         ok = len((text or "").strip()) >= 40
     except Exception as exc:  # noqa: BLE001
-        err = type(exc).__name__
+        err = f"{type(exc).__name__}: {exc}"
         ok = False
     from core.cv_docpick_import import model_process_peak_job_memory_used_bytes
     from core.cv_llm_runtime import last_llm_step_metrics, public_llm_step
