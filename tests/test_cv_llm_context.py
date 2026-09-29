@@ -333,6 +333,7 @@ def test_app_share_after_load_skips_prompt_eval(monkeypatch: pytest.MonkeyPatch)
     reset_private_commit_high_water()
     sample = CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES + 1
     assert sample < fresh_app_child_budget_bytes()
+    monkeypatch.setenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", "1")
     monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_N_CTX", "4096")
     monkeypatch.setenv(
         "KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES",
