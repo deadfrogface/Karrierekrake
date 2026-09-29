@@ -50,6 +50,44 @@ Mit freundlichen Grüßen
 {full_name}
 """
 
+ENGLISH_TEMPLATE = """{salutation},
+
+I am applying for the {job_title} position at {company}.
+
+{experience_sentence}
+
+{skills}
+
+I would welcome the opportunity to discuss my experience with you.
+
+Sincerely,
+{full_name}
+"""
+
+_ENGLISH_AD_WORDS = frozenset({
+    "the", "we", "our", "and", "with", "for", "you", "your", "are",
+    "will", "role", "requirements", "experience", "skills", "apply",
+    "please", "work", "team", "offer",
+})
+_GERMAN_AD_WORDS = frozenset({
+    "der", "die", "das", "und", "mit", "für", "wir", "sie", "ihre",
+    "erfahrung", "kenntnisse", "bewerbung", "stellen", "aufgaben",
+    "voraussetzungen", "bieten", "suchen", "bei",
+})
+
+
+def _ad_language(description: str) -> str:
+    """Choose English only when the ad supplies clear language evidence.
+
+    Tool names, a foreign company name, or a single translated job title do
+    not change the letter language. Ambiguous short ads retain German.
+    """
+    words = re.findall(r"[^\W\d_]+", description.casefold(), flags=re.UNICODE)
+    english = sum(word in _ENGLISH_AD_WORDS for word in words)
+    german = sum(word in _GERMAN_AD_WORDS for word in words)
+    distinct = len(_ENGLISH_AD_WORDS.intersection(words))
+    return "en" if english >= 4 and distinct >= 3 and english > german * 2 else "de"
+
 
 def _meipass_dir() -> Path | None:
     """PyInstaller extract dir when running as a frozen onefile/onedir bundle."""
@@ -2128,6 +2166,32 @@ def _experience_sentences(stations: list[_CoverFact]) -> str:
     return text
 
 
+def _english_experience_sentences(stations: list[_CoverFact]) -> str:
+    """Keep the verified profile wording inside English station sentences."""
+    parts: list[str] = []
+    for fact in stations:
+        if not _station_countable(fact):
+            continue
+        role = fact.title or fact.label
+        station = f"At {fact.company}, I worked as {role}"
+        if fact.counted_tasks:
+            parts.append(f"{station}, with responsibilities including {', '.join(fact.counted_tasks)}.")
+        elif fact.period:
+            # Preserve the exact verified period for the downstream evidence gate.
+            parts.append(f"{station} ({fact.period}).")
+    return "\n\n".join(parts)
+
+
+def _english_skill_sentences(skills: list[_CoverFact], experience: str) -> str:
+    """Only mention additional profile labels backed by ad requirements."""
+    folded = collapse_phrase(experience)
+    return "\n\n".join(
+        f"I have practical experience with {fact.label}."
+        for fact in skills
+        if fact.label and not _key_bounded(fact.label_key or collapse_phrase(fact.label), folded)
+    )
+
+
 def _local_clause(description: str, start: int, end: int) -> str:
     """The line or sentence that holds the label. Stops at the next break."""
     left_nl = description.rfind("\n", 0, start)
@@ -2617,6 +2681,7 @@ def _render_template(
     contact_claims: Any | None,
     skills_list: list[str],
     experience_sentence: str,
+    language: str = "de",
 ) -> str:
     setting = str(config.settings.cover_letter_template)
     root = str(config.root)
@@ -2627,7 +2692,10 @@ def _render_template(
     else:
         template_path = resolve_cover_letter_template(config)
         _TEMPLATE_PATH_CACHE[path_key] = template_path
-    if template_path is not None:
+    default_english = language == "en" and setting == "templates/cover_letter.txt"
+    if default_english:
+        template = ENGLISH_TEMPLATE
+    elif template_path is not None:
         cache_key = str(template_path)
         stat = template_path.stat()
         stamp = (stat.st_mtime_ns, stat.st_size)
@@ -2638,11 +2706,11 @@ def _render_template(
             template = template_path.read_text(encoding="utf-8")
             _TEMPLATE_CACHE[cache_key] = (stamp, template)
     else:
-        template = DEFAULT_TEMPLATE
+        template = ENGLISH_TEMPLATE if language == "en" else DEFAULT_TEMPLATE
 
     company = "" if _company_missing(job) else clean_company(job.company)
     position = clean_text(job.title)
-    position_phrase = _opening_role(position) if position else "Position"
+    position_phrase = (position if language == "en" else _opening_role(position)) if position else "Position"
 
     claims = _resolve_writer_claims(config, contact_claims)
 
@@ -2657,9 +2725,15 @@ def _render_template(
         "full_name": clean_text(config.application.full_name) or "[Ihr Name]",
         "first_name": clean_text(config.application.first_name),
         "last_name": clean_text(config.application.last_name),
-        "salutation": "Sehr geehrte Damen und Herren",
+        "salutation": "Dear Hiring Team" if language == "en" else "Sehr geehrte Damen und Herren",
     }
     mapping = apply_claims_to_template_mapping(mapping, claims)
+    if language == "en":
+        mapping["salutation"] = (
+            f"Dear {claims.CONTACT_NAME}"
+            if claims.CONTACT_VERIFIED and claims.CONTACT_NAME
+            else "Dear Hiring Team"
+        )
 
     class _Safe(dict):
         def __missing__(self, key: str) -> str:
@@ -2668,7 +2742,7 @@ def _render_template(
     try:
         text = template.format_map(_Safe(mapping))
     except (ValueError, IndexError):
-        text = DEFAULT_TEMPLATE.format_map(_Safe(mapping))
+        text = (ENGLISH_TEMPLATE if language == "en" else DEFAULT_TEMPLATE).format_map(_Safe(mapping))
 
     text = sanitize_cover_body_for_claims(
         text,
@@ -2715,8 +2789,13 @@ def compose_cover_letter(
         fact for fact, _root in assigned if fact.kind == "station" and _station_countable(fact)
     ][:2]
     skill_facts = [fact for fact, _root in assigned if fact.kind == "skill"]
-    experience_sentence = _experience_sentences(station_facts)
-    skill_block = _skill_sentences(skill_facts, description, experience_sentence)
+    language = _ad_language(description)
+    if language == "en":
+        experience_sentence = _english_experience_sentences(station_facts)
+        skill_block = _english_skill_sentences(skill_facts, experience_sentence)
+    else:
+        experience_sentence = _experience_sentences(station_facts)
+        skill_block = _skill_sentences(skill_facts, description, experience_sentence)
 
     text = _render_template(
         job,
@@ -2724,8 +2803,9 @@ def compose_cover_letter(
         contact_claims=contact_claims,
         skills_list=[skill_block] if skill_block else [],
         experience_sentence=experience_sentence,
+        language=language,
     )
-    greeting = _greeting_from_ad(description)
+    greeting = _greeting_from_ad(description) if language == "de" else ""
     model_text = _try_cover_model(job, config, missing=(), attempt=0)
     if model_text is not None:
         text = _apply_greeting(_strip_unfilled_claims(model_text), greeting)
