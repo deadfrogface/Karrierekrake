@@ -17,6 +17,8 @@ from pathlib import Path
 
 import pytest
 
+from core.cover_letter import strip_gender_from_title
+
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "anschreiben_gold"
 DOC = ROOT / "docs" / "personaler" / "ANSCHREIBEN_GOLD.md"
@@ -51,6 +53,9 @@ COMMON_FORBIDDEN = (
     "die ausgeschriebene Position",
     "der ausgeschriebenen Position",
     "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
 )
 
 REQUIRED_KEYS = frozenset(
@@ -81,6 +86,25 @@ REQUIRED_TAGS = frozenset(
         "english_ad",
         "long_ad",
         "html_remnants",
+        "single_reference",
+        "two_stations",
+        "station_plus_skill",
+        "employer_name_only",
+        "same_requirement",
+        "product_family",
+        "product_only",
+        "nordmole_dispatcher",
+        "nordmole_payroll",
+        "generic_title",
+        "generic_tasks",
+        "distinct_requirements",
+        "list_not_reference",
+        "generic_activity_words",
+        "gender_title",
+        "titled_contact",
+        "two_contacts",
+        "html_contact",
+        "station_without_period",
     }
 )
 
@@ -123,6 +147,18 @@ def _load_cases() -> list[dict]:
         data["_path"] = path
         cases.append(data)
     return cases
+
+
+def _mention_grounded(fact: str, blob: str) -> bool:
+    """Salutations and profile year spans are not stored as one string."""
+    if fact in blob or fact in strip_gender_from_title(blob):
+        return True
+    if fact.startswith(("Sehr geehrte ", "Sehr geehrter ", "Guten Tag ")):
+        return True
+    span = re.fullmatch(r"von (\d{4}) bis (\d{4})", fact)
+    if span and span.group(1) in blob and span.group(2) in blob:
+        return True
+    return False
 
 
 def _texts(value: object) -> str:
@@ -192,7 +228,9 @@ def test_gold_case_schema(case: dict) -> None:
         assert domain in ALLOWED_EMAIL_DOMAINS, case["id"]
 
     for fact in case["must_mention"]:
-        assert fact in blob, f"{case['id']}: must_mention {fact!r} not in profile or job"
+        assert _mention_grounded(fact, blob), (
+            f"{case['id']}: must_mention {fact!r} not in profile or job"
+        )
         folded = fact.casefold()
         for banned in case["must_not_contain"]:
             assert banned.casefold() not in folded, (
@@ -201,6 +239,12 @@ def test_gold_case_schema(case: dict) -> None:
 
     outcome = case["expected_outcome"]
     if outcome == "interview":
+        for phrase in (
+            "steht in der Anzeige. Damit habe ich gearbeitet",
+            "deckt einen Punkt der Anzeige ab",
+            "genannt in der Anzeige",
+        ):
+            assert phrase in case["must_not_contain"], f"{case['id']}: missing {phrase!r}"
         assert len(case["must_mention"]) >= 2, case["id"]
         qual_blob = _texts(qualifications)
         linked = [fact for fact in case["must_mention"] if fact in qual_blob]
@@ -273,7 +317,7 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     contact = by_tag["named_contact"]
     assert contact["expected_outcome"] == "interview"
     assert "Lotte Quendel" in contact["job"]["description"]
-    assert "Lotte Quendel" in contact["must_mention"]
+    assert "Sehr geehrte Frau Quendel," in contact["must_mention"]
 
     english = by_tag["english_ad"]
     assert english["expected_outcome"] == "interview"
@@ -295,6 +339,93 @@ def test_scenario_shapes(cases: list[dict]) -> None:
     assert "<p>" in body and "&nbsp;" in body
     assert "<p>" in html["must_not_contain"]
     assert "&nbsp;" in html["must_not_contain"]
+
+    family = by_tag["product_family"]
+    assert family["expected_outcome"] == "interview"
+    assert "SAP Business One" in _texts(family["profile"])
+    assert "SAP Business One" in family["must_mention"]
+    assert "Rechnungsprüfung" in family["must_mention"]
+    assert "mit SAP" in family["job"]["description"]
+
+    product_only = by_tag["product_only"]
+    assert product_only["expected_outcome"] == "no_evidence"
+    assert product_only["profile"]["qualifications"]["work_experience"] == []
+    assert product_only["profile"]["qualifications"]["software"][0]["value"] == "SAP Business One"
+
+    dispatcher = by_tag["nordmole_dispatcher"]
+    assert dispatcher["expected_outcome"] == "interview"
+    assert dispatcher["job"]["source"] == "fixture"
+    assert dispatcher["job"]["company"] == "Nordmole Musterlogistik GmbH"
+    assert "Disponent" in dispatcher["must_mention"]
+    assert "SAP" in dispatcher["must_mention"]
+    tasks = dispatcher["profile"]["qualifications"]["work_experience"][0]["responsibilities"]
+    assert tasks == ["Tourenplanung", "Fahrer zuordnen"]
+
+    payroll = by_tag["nordmole_payroll"]
+    assert payroll["expected_outcome"] == "no_evidence"
+    assert payroll["job"]["description"] == dispatcher["job"]["description"]
+    software = [item["value"] for item in payroll["profile"]["qualifications"]["software"]]
+    assert software == ["DATEV", "Excel"]
+    assert "SAP Business One" not in _texts(payroll["profile"])
+    assert payroll["profile"]["qualifications"]["languages"][0]["language"] == "Deutsch"
+    assert payroll["profile"]["qualifications"]["driving_license"][0]["value"] == "Klasse B"
+
+    generic_title = by_tag["generic_title"]
+    assert generic_title["expected_outcome"] == "no_evidence"
+    assert generic_title["profile"]["qualifications"]["work_experience"][0]["title"] == "Sachbearbeiter Lohn"
+    assert "Sachbearbeiter Einkauf" in generic_title["job"]["title"]
+
+    generic_tasks = by_tag["generic_tasks"]
+    assert generic_tasks["expected_outcome"] == "no_evidence"
+    tasks = generic_tasks["profile"]["qualifications"]["work_experience"][0]["responsibilities"]
+    assert tasks == ["Betreuung der Ablage", "Erstellung von Listen"]
+
+    distinct = by_tag["distinct_requirements"]
+    assert distinct["expected_outcome"] == "interview"
+    assert distinct["job"]["title"] == "Fachlagerist SAP"
+    assert "Fachlagerist" in distinct["must_mention"]
+    assert "SAP" in distinct["must_mention"]
+
+    listed = by_tag["list_not_reference"]
+    assert listed["expected_outcome"] == "no_evidence"
+    assert listed["must_mention"] == []
+    assert listed["profile"]["qualifications"]["work_experience"] == []
+    assert "Zu meinen relevanten Kenntnissen zählen insbesondere: SAP, Tourenplanung." in listed["must_not_contain"]
+
+    activity = by_tag["generic_activity_words"]
+    assert activity["expected_outcome"] == "no_evidence"
+    tasks = activity["profile"]["qualifications"]["work_experience"][0]["responsibilities"]
+    assert tasks == ["Bearbeitung", "Unterstützung"]
+
+    gender = by_tag["gender_title"]
+    assert gender["expected_outcome"] == "interview"
+    assert gender["profile"]["qualifications"]["work_experience"][0]["title"] == "Industriekauffrau"
+    assert "Industriekaufmann (m/w/d)" in gender["job"]["title"]
+    assert "Industriekauffrau" in gender["must_mention"]
+
+    titled = by_tag["titled_contact"]
+    assert titled["expected_outcome"] == "interview"
+    assert "Frau Dr. Quendel" in titled["job"]["description"]
+    assert "Sehr geehrte Frau Dr. Quendel," in titled["must_mention"]
+
+    pair = by_tag["two_contacts"]
+    assert pair["expected_outcome"] == "interview"
+    assert "Frau Lotte Quendel" in pair["job"]["description"]
+    assert "Herr Max Beispiel" in pair["job"]["description"]
+    assert "Sehr geehrte Damen und Herren," in pair["must_mention"]
+    assert "Lotte" in pair["must_not_contain"]
+
+    html_contact = by_tag["html_contact"]
+    assert html_contact["expected_outcome"] == "interview"
+    assert "<b>" in html_contact["job"]["description"]
+    assert "Sehr geehrte Frau Quendel," in html_contact["must_mention"]
+
+    bare = by_tag["station_without_period"]
+    assert bare["expected_outcome"] == "no_evidence"
+    station = bare["profile"]["qualifications"]["work_experience"][0]
+    assert station["responsibilities"] == []
+    assert station["start_date"] == ""
+    assert station["end_date"] == ""
 
 
 def test_doc_names_every_case(cases: list[dict]) -> None:

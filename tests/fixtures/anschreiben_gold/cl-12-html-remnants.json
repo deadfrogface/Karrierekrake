@@ -127,7 +127,8 @@
     "Dispatcher",
     "Nordkai Spedition",
     "Tourenplanung",
-    "SAP TM"
+    "SAP TM",
+    "Tourenplanung für Stückgut"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -144,7 +145,23 @@
     "<strong>",
     "&nbsp;",
     "<div",
-    "</"
+    "</",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Eingefügte Beschreibung mit HTML-Resten. Dieselbe Bereinigung und dasselbe Gate wie bei einer abgegriffenen Anzeige. Nach dem Entfernen der Tags bleiben Disponent, Tourenplanung und SAP TM, belegt durch Nordkai Spedition, Tourenplanung und SAP TM. Der Brief darf kein Markup enthalten. Firma HafenLogistik GmbH."
 }

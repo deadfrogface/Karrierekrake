@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "id": "cl-31-station-without-period",
+  "tags": [
+    "station_without_period"
+  ],
+  "profile": {
+    "application": {
+      "first_name": "Nils",
+      "last_name": "Quendel",
+      "email": "nils.quendel@example.com",
+      "phone": "+49 000 5550131",
+      "street": "Quendelstieg 4",
+      "postal_code": "00000",
+      "city": "Musterhafen",
+      "country": "DE"
+    },
+    "qualifications": {
+      "education": [],
+      "work_experience": [
+        {
+          "title": "Disponent",
+          "company": "Nordkai Spedition GmbH",
+          "location": "Musterhafen",
+          "start_date": "",
+          "end_date": "",
+          "responsibilities": [],
+          "source": "manual"
+        }
+      ],
+      "skills": [
+        {
+          "value": "Tourenplanung",
+          "source": "manual"
+        }
+      ],
+      "software": [],
+      "driving_license": [],
+      "languages": [],
+      "certificates": []
+    }
+  },
+  "job": {
+    "id": "job-cl-31-station-without-period",
+    "source": "indeed",
+    "source_job_id": "src-cl-31-station-without-period",
+    "city": "Musterhafen",
+    "postal_code": "00000",
+    "country_code": "DE",
+    "remote_type": "onsite",
+    "employment_type": "full_time",
+    "url": "https://jobs.example.com/cl-31-station-without-period",
+    "status": "new",
+    "title": "Disponent",
+    "company": "HafenLogistik GmbH",
+    "description": "Die HafenLogistik GmbH sucht einen Disponenten.\n\nDas bringen Sie mit:\n- Disponent\n- Tourenplanung\n"
+  },
+  "expected_outcome": "no_evidence",
+  "must_mention": [],
+  "must_not_contain": [
+    "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
+    "Zu meinen relevanten Kenntnissen zählen insbesondere: meine bisherigen beruflichen Erfahrungen.",
+    "Ihr Unternehmen",
+    "Ihrem Unternehmen",
+    "Ihres Unternehmens",
+    "die ausgeschriebene Position",
+    "der ausgeschriebenen Position",
+    "[Ihr Name]",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
+  ],
+  "rationale": "Die Station Disponent hat im Profil weder Tätigkeiten noch einen Zeitraum. Sie zählt nicht als Station. Tourenplanung allein reicht nicht. Soll ist no_evidence."
+}

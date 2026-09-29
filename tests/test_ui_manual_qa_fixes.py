@@ -2274,9 +2274,11 @@ def test_compound_licence_words_flag_an_unconfirmed_class():
 
 _FULL_LETTER_TEMPLATE = """{salutation},
 
-hiermit bewerbe ich mich um die Position als {job_title} bei {company}.
+hiermit bewerbe ich mich um die {position_phrase} bei {company_bei}.
 
-Praktische Erfahrung habe ich mit {skills}.
+{experience_sentence}
+
+{skills}
 
 Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
 
@@ -2287,7 +2289,7 @@ Mit freundlichen Grüßen
 
 def _compose_class_letter(tmp_path, codes: list[str]):
     """Full letter: salutation, paragraphs and greeting, like the template."""
-    from core.config import ExtractReview
+    from core.config import ExperienceEntry, ExtractReview
     from core.cover_letter import compose_cover_letter, save_cover_letter
     from core.models import Job
 
@@ -2300,12 +2302,29 @@ def _compose_class_letter(tmp_path, codes: list[str]):
     cfg.profile.qualifications.skills = [
         SourcedText(value="Führerschein Klasse C", source="manual")
     ]
+    cfg.profile.qualifications.work_experience = [
+        ExperienceEntry(
+            title="Disponent",
+            company="Alpha",
+            responsibilities=["Tourenplanung", "Excel"],
+            source="manual",
+        ),
+        ExperienceEntry(
+            title="Disponent",
+            company="Beta",
+            responsibilities=["Disposition", "Excel"],
+            source="manual",
+        ),
+    ]
     job = Job(
         id="brief-klasse-c",
         title="Disponent",
         company="Nordlicht GmbH",
         remote_type="remote",
-        description="Führerschein Klasse C ist erforderlich.",
+        description=(
+            "Excel, Tourenplanung und Disposition. "
+            "Führerschein Klasse C ist erforderlich."
+        ),
     )
     letter = compose_cover_letter(job, cfg)
     return cfg, job, letter, save_cover_letter
@@ -2360,7 +2379,7 @@ def test_full_letter_saves_when_class_c_is_confirmed(tmp_path):
 
 def _compose_shipped_letter(tmp_path, codes: list[str], skills: list[str], description: str):
     """Letter from the shipped template file, not from a string built in the test."""
-    from core.config import ExtractReview
+    from core.config import ExperienceEntry, ExtractReview
     from core.cover_letter import (
         DEFAULT_TEMPLATE,
         compose_cover_letter,
@@ -2375,12 +2394,26 @@ def _compose_shipped_letter(tmp_path, codes: list[str], skills: list[str], descr
     cfg.profile.qualifications.skills = [
         SourcedText(value=skill, source="manual") for skill in skills
     ]
+    cfg.profile.qualifications.work_experience = [
+        ExperienceEntry(
+            title="Disponent",
+            company="Alpha",
+            responsibilities=["Tourenplanung", "Excel"],
+            source="manual",
+        ),
+        ExperienceEntry(
+            title="Disponent",
+            company="Beta",
+            responsibilities=["Disposition", "Excel"],
+            source="manual",
+        ),
+    ]
     shipped = resolve_cover_letter_template(cfg)
     assert shipped is not None
     assert shipped.name == "cover_letter.txt"
     body = shipped.read_text(encoding="utf-8")
-    assert "Zu meinen relevanten Kenntnissen zählen insbesondere: {skills}." in body
-    assert "Zu meinen relevanten Kenntnissen zählen insbesondere: {skills}." in DEFAULT_TEMPLATE
+    assert "{skills}" in body
+    assert "{skills}" in DEFAULT_TEMPLATE
     assert "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich." in body
     assert "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich." in DEFAULT_TEMPLATE
     job = Job(
@@ -2395,17 +2428,17 @@ def _compose_shipped_letter(tmp_path, codes: list[str], skills: list[str], descr
 
 
 def test_shipped_template_flags_class_c_at_the_end_of_the_skills_line(tmp_path):
-    """The delivered template ends the skills sentence on class C, then a blank line."""
+    """The delivered template keeps class C as its own skills sentence before the close."""
     from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
 
     cfg, job, letter, _save = _compose_shipped_letter(
         tmp_path,
         ["B"],
         ["Excel", "Führerschein Klasse C"],
-        "Führerschein Klasse C ist erforderlich.",
+        "Excel, Tourenplanung und Disposition. Führerschein Klasse C ist erforderlich.",
     )
     assert letter.ok
-    sentence = "Zu meinen relevanten Kenntnissen zählen insbesondere: Führerschein Klasse C."
+    sentence = "Praktische Erfahrung habe ich mit Führerschein Klasse C."
     closing = "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich."
     assert f"{sentence}\n\n{closing}" in letter.text
     screened = screen_cover_letter(
@@ -2423,21 +2456,19 @@ def test_shipped_template_flags_class_c_at_the_end_of_the_skills_line(tmp_path):
 
 
 def test_shipped_template_flags_class_c_between_other_skills(tmp_path):
-    """Excel, class C, SAP stays a flagged skills sentence in the delivered template."""
+    """Class C stays a flagged skills sentence among Excel and SAP."""
     from core.cover_guard import confirmed_licence_codes, confirmed_profile_text, screen_cover_letter
 
     cfg, job, letter, _save = _compose_shipped_letter(
         tmp_path,
         ["B"],
         ["Excel", "Führerschein Klasse C", "SAP"],
-        "Excel, Führerschein Klasse C und SAP sind erforderlich.",
+        "Excel, Tourenplanung, Disposition, Führerschein Klasse C und SAP sind erforderlich.",
     )
     assert letter.ok
-    sentence = (
-        "Zu meinen relevanten Kenntnissen zählen insbesondere: "
-        "Excel, Führerschein Klasse C, SAP."
-    )
+    sentence = "Praktische Erfahrung habe ich mit Führerschein Klasse C."
     assert sentence in letter.text
+    assert "Praktische Erfahrung habe ich außerdem mit SAP." in letter.text
     screened = screen_cover_letter(
         letter.text,
         confirmed_text=confirmed_profile_text(cfg),
@@ -2458,7 +2489,7 @@ def test_shipped_template_saves_when_class_c_is_confirmed(tmp_path):
         tmp_path,
         ["C"],
         ["Excel", "Führerschein Klasse C"],
-        "Führerschein Klasse C ist erforderlich.",
+        "Excel, Tourenplanung und Disposition. Führerschein Klasse C ist erforderlich.",
     )
     assert letter.ok
     screened = screen_cover_letter(

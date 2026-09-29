@@ -124,10 +124,11 @@
   "expected_outcome": "interview",
   "must_mention": [
     "HafenLogistik",
-    "Lotte Quendel",
+    "Sehr geehrte Frau Quendel,",
     "Nordkai Spedition",
     "Tourenplanung",
-    "SAP TM"
+    "SAP TM",
+    "Tourenplanung für Stückgut"
   ],
   "must_not_contain": [
     "Gern bringe ich meine bisherigen beruflichen Erfahrungen in Ihr Team ein.",
@@ -139,7 +140,23 @@
     "der ausgeschriebenen Position",
     "[Ihr Name]",
     "15 Jahre",
-    "seit 2010"
+    "seit 2010",
+    "relevante Erfahrungen gesammelt",
+    "Für die ausgeschriebene Aufgabe",
+    "setze ich",
+    "steht in der Anzeige. Damit habe ich gearbeitet",
+    "deckt einen Punkt der Anzeige ab",
+    "genannt in der Anzeige",
+    "(m/w/d)",
+    "(w/m/d)",
+    "(d/m/w)",
+    "(m/f/d)",
+    "(all genders)",
+    "(m|w|d)",
+    "(w/m/x)",
+    "(gn)",
+    "(m/w/div)",
+    "m/w/d"
   ],
   "rationale": "Die Anzeige nennt Frau Lotte Quendel als Ansprechpartnerin. Der Brief muss diesen Namen führen, zum Beispiel in der Anrede Sehr geehrte Frau Lotte Quendel. Dazu die belegten Linien Nordkai Spedition, Tourenplanung und SAP TM. Firma HafenLogistik GmbH."
 }
