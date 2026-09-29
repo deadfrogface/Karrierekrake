@@ -109,6 +109,32 @@ def _payload(
     return data
 
 
+def _publish_written_home(
+    location: Any,
+    latitude: float,
+    longitude: float,
+    display_name: str,
+    *,
+    cross_border: bool,
+    home_country: str,
+    allow_network: bool,
+    resolved_country: str,
+) -> None:
+    """The next lookup must see this write even if a miss is already in memory."""
+    from core.location import remember_written_home_coordinates
+
+    remember_written_home_coordinates(
+        location,
+        latitude,
+        longitude,
+        display_name,
+        cross_border=cross_border,
+        home_country=home_country,
+        allow_network=allow_network,
+        resolved_country=resolved_country,
+    )
+
+
 def _canonical(data: dict[str, Any]) -> str:
     return json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
 
@@ -208,8 +234,21 @@ def write_home_coordinates(
             resolved_country=resolved_country,
         )
     )
+    def _publish() -> None:
+        _publish_written_home(
+            location,
+            latitude,
+            longitude,
+            display_name,
+            cross_border=cross_border,
+            home_country=home_cc,
+            allow_network=allow_network,
+            resolved_country=resolved_country,
+        )
+
     try:
         if path.is_file() and path.read_text(encoding="utf-8") == text:
+            _publish()
             return False
     except OSError:
         pass
@@ -219,4 +258,5 @@ def write_home_coordinates(
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(tmp, path)
+    _publish()
     return True

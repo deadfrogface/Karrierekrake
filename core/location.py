@@ -180,6 +180,46 @@ def reset_home_resolution_cache_for_tests() -> None:
     _HOME_DISK_READS.clear()
 
 
+def remember_written_home_coordinates(
+    location: Any,
+    latitude: float,
+    longitude: float,
+    display_name: str = "",
+    *,
+    cross_border: bool,
+    home_country: str,
+    allow_network: bool = False,
+    resolved_country: str = "",
+) -> None:
+    """Replace a cached miss when ``write_home_coordinates`` has just stored a hit."""
+    place = normalized_home_place(location)
+    home_cc = normalize_country_code(home_country) or "DE"
+    key = home_resolution_key(
+        address=place.address,
+        postal_code=place.postal_code,
+        city=place.city,
+        country=place.country_code,
+        cross_border=cross_border,
+        home_country=home_cc,
+        allow_network=allow_network,
+    )
+    label = (display_name or "").strip() or place.city or place.address
+    store_cached_resolution(
+        _HOME_RESOLUTION_CACHE,
+        key,
+        PlaceResolution(
+            status="RESOLVED",
+            latitude=float(latitude),
+            longitude=float(longitude),
+            country_code=normalize_country_code(resolved_country) or home_cc,
+            display_name=label,
+            data_source="existing_source",
+            reason="home_coord_cache",
+            precision="exact_coordinates",
+        ),
+    )
+
+
 def flush_home_coord_writes() -> None:
     """Join cache writes that left the UI thread. Tests call this before reading."""
     with _HOME_WRITE_LOCK:

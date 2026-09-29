@@ -358,7 +358,7 @@ class JobsPage(QWidget):
         key = self._sort_key()
         if key == "match_asc":
             return sorted(jobs, key=lambda j: int(j.match_score or 0))
-        if key in {"distance_near", "distance_far"} and self._last_notice_status != "resolved":
+        if key in {"distance_near", "distance_far"} and self._last_notice_status == "loading":
             return list(jobs)
         if key == "distance_near":
             return sorted(
