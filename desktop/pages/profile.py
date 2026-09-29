@@ -531,6 +531,11 @@ class ProfilePage(QWidget):
             if result == SectionEditDrawer.DialogCode.Accepted:
                 # save() already rebuilds the cards once (refresh_all or refresh_cards).
                 self.save()
+            else:
+                # Editors are reused across drawers. Discard unsaved widget state
+                # before another section's save can persist it accidentally.
+                self._career_persist = False
+                self.load_from_config()
         finally:
             self._save_scope = None
 
@@ -594,6 +599,8 @@ class ProfilePage(QWidget):
             section.hide()
             if result == SectionEditDrawer.DialogCode.Accepted:
                 self.save()
+            else:
+                self.load_from_config()
         finally:
             self._save_scope = None
 
