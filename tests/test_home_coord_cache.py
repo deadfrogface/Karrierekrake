@@ -610,9 +610,6 @@ def test_start_resolves_once_when_location_flag_differs(
     assert reasons
     assert any("caller=" in line and "key=" in line for line in reasons)
     assert any("geo_index_loading" in line or "status=RESOLVED" in line for line in reasons)
-    from pathlib import Path
-
-    Path("/tmp/home-resolution-reasons.log").write_text("\n".join(reasons) + "\n", encoding="utf-8")
 
 
 def test_memory_hit_does_not_touch_the_coordinate_file(
