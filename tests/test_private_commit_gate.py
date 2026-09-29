@@ -102,6 +102,7 @@ def test_pagefile_over_fresh_budget_names_the_counter(
 ) -> None:
     reset_import_measure_job()
     reset_private_commit_high_water()
+    monkeypatch.setenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", "1")
     monkeypatch.setattr(sys, "platform", "win32")
     fresh = fresh_app_child_budget_bytes()
     bind_import_measure_job(7, lambda _handle: 1)
@@ -120,6 +121,29 @@ def test_pagefile_over_fresh_budget_names_the_counter(
     assert ei.value.detail["peak_bytes"] == fresh + 1
     assert ei.value.detail["budget_bytes"] == fresh
     assert ei.value.detail["counter"] == "PeakPagefileUsage"
+
+
+def test_pagefile_over_budget_soft_pass_without_physical_i3(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    reset_import_measure_job()
+    reset_private_commit_high_water()
+    monkeypatch.delenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", raising=False)
+    monkeypatch.setattr(sys, "platform", "win32")
+    fresh = fresh_app_child_budget_bytes()
+    bind_import_measure_job(7, lambda _handle: 1)
+    monkeypatch.setattr(
+        "core.cv_docpick_import._windows_peak_pagefile_bytes",
+        lambda: fresh + 1,
+    )
+    try:
+        with caplog.at_level("WARNING"):
+            _enforce_peak_rss(stage="after_load", include_llama_server=False)
+    finally:
+        reset_import_measure_job()
+        reset_private_commit_high_water()
+    assert "soft-pass" in caplog.text
+    assert "peak_rss_exceeded" in caplog.text
 
 
 def test_job_enforce_limit_only_on_physical_i3(monkeypatch: pytest.MonkeyPatch) -> None:

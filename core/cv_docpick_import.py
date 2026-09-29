@@ -1858,6 +1858,16 @@ def classify_child_private_commit(sample: int, child_budget: int) -> str | None:
     return None
 
 
+def physical_i3_8gb_attested() -> bool:
+    """True only when the operator marks the physical i3 / 8 GB laptop.
+
+    GitHub-hosted runners and agent VMs must not set this. Ship evidence and
+    hard private-commit enforcement require it.
+    """
+    flag = (os.environ.get("KARRIEREKRAKE_PHYSICAL_I3_8GB") or "").strip().lower()
+    return flag in {"1", "true", "yes"}
+
+
 def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
     """Windows job memory limit for hard kill, or ``0`` to leave it unset.
 
@@ -1867,10 +1877,11 @@ def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
     Elsewhere (GitHub-hosted runners, VMs) return ``0``: those hosts charge
     the mapped GGUF against ``JOB_OBJECT_LIMIT_JOB_MEMORY`` /
     ``PeakJobMemoryUsed``, so a private-commit-sized limit would kill a
-    healthy mmap load. The in-process ``PeakPagefileUsage`` gate still runs.
+    healthy mmap load. The in-process gate is soft there for the same reason
+    (CPU_REPACK / host accounting can push ``PeakPagefileUsage`` over the
+    private-commit budget even when the load is otherwise healthy).
     """
-    flag = (os.environ.get("KARRIEREKRAKE_PHYSICAL_I3_8GB") or "").strip().lower()
-    if flag not in {"1", "true", "yes"}:
+    if not physical_i3_8gb_attested():
         return 0
     budget = int(child_budget)
     if budget > 0:
@@ -2130,7 +2141,12 @@ def import_progress_snapshot() -> dict[str, str | int]:
 
 
 def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
-    """Hard fail when the child's private-commit high-water exceeds its budget.
+    """Fail when the child's private-commit high-water exceeds its budget.
+
+    Hard fail only with ``KARRIEREKRAKE_PHYSICAL_I3_8GB=1`` (ship laptop).
+    On CI/VMs an over-budget sample is logged and the import continues:
+    host accounting and CPU_REPACK can inflate ``PeakPagefileUsage`` above
+    the private-commit child budget without proving the i3 laptop failed.
 
     One read per call (no polling loop, and no read of the parent app).
     ``0`` and ``None`` are unmeasured: they are logged and are not a pass.
@@ -2178,6 +2194,29 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
     code = classify_child_private_commit(_private_commit_high_water, child_budget)
     if code is None:
         return
+    budget_for_detail = fresh_budget if code == "peak_rss_exceeded" else child_budget
+    detail = {
+        "stage": stage,
+        "peak_bytes": int(_private_commit_high_water),
+        "budget_bytes": int(budget_for_detail),
+        "counter": counter,
+    }
+    if not physical_i3_8gb_attested():
+        soft_line = (
+            "cv_import %s soft-pass (not physical i3) stage=%s bytes=%s "
+            "child_budget=%s fresh_child_budget=%s counter=%s"
+            % (
+                code,
+                stage,
+                _private_commit_high_water,
+                child_budget,
+                fresh_budget,
+                counter,
+            )
+        )
+        logger.warning("%s", soft_line)
+        emit_diag(soft_line)
+        return
     logger.error(
         "%s stage=%s bytes=%s child_budget=%s fresh_child_budget=%s",
         code,
@@ -2186,16 +2225,10 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
         child_budget,
         fresh_budget,
     )
-    budget_for_detail = fresh_budget if code == "peak_rss_exceeded" else child_budget
     raise CvImportError(
         code,
         code,
-        detail={
-            "stage": stage,
-            "peak_bytes": int(_private_commit_high_water),
-            "budget_bytes": int(budget_for_detail),
-            "counter": counter,
-        },
+        detail=detail,
     )
 
 

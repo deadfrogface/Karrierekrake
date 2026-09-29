@@ -73,6 +73,7 @@ def test_unmeasured_private_commit_is_not_a_pass(
 
 
 def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", "1")
     monkeypatch.setattr(
         "core.cv_docpick_import.cv_path_peak_rss_bytes",
         lambda **_kwargs: 9_000_000_000,
@@ -85,6 +86,19 @@ def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> Non
     reset_private_commit_high_water()
     assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
     assert CV_IMPORT_PEAK_RSS_MB_MAX == 3_300_000_000 / (1024.0 * 1024.0)
+
+
+def test_peak_rss_above_budget_soft_on_ci(monkeypatch: pytest.MonkeyPatch) -> None:
+    from core.cv_docpick_import import reset_private_commit_high_water
+
+    reset_private_commit_high_water()
+    monkeypatch.delenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", raising=False)
+    monkeypatch.setattr(
+        "core.cv_docpick_import.cv_path_peak_rss_bytes",
+        lambda **_kwargs: 9_000_000_000,
+    )
+    _enforce_peak_rss(stage="unit")
+    reset_private_commit_high_water()
 
 
 def test_child_budget_is_never_negative() -> None:
@@ -121,6 +135,7 @@ def test_over_current_budget_but_under_fresh_is_app_share(
     reset_private_commit_high_water()
     sample = CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES + 1
     assert sample < fresh_app_child_budget_bytes()
+    monkeypatch.setenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", "1")
     monkeypatch.setenv(
         "KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES",
         str(CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES),
