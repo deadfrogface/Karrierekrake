@@ -113,8 +113,9 @@ def cv_import_child_argv(cv_path: Path, out_path: Path) -> list[str]:
 # That is 0.72% of one core at 2 s, so the interval stays 2 s. It becomes
 # 5 s when the median of at least three reads, or the sum of the reads over
 # the wall clock, exceeds 1% of one core. The median and the max are logged
-# once per import. Windows reads PeakJobMemoryUsed inside the child, so
-# this read does not run there. A spike that rises and falls between samples
+# once per import. Windows gate samples PeakPagefileUsage inside the child
+# (private commit); PeakJobMemoryUsed remains a diagnostic / laptop harness
+# counter. A spike that rises and falls between samples
 # is invisible: the kernel does not expose an Rss_Anon high-water, and
 # VmHWM counts mmap.
 _PARENT_ANON_SAMPLE_S = 2.0
@@ -138,8 +139,9 @@ def _monotonic() -> float:
 def _job_limit_from_environ() -> int | None:
     """Job limit from the child budget the supervisor just published, or None.
 
-    The limit equals that budget (the same byte count as the in-process gate).
-    None leaves ``JOB_OBJECT_LIMIT_JOB_MEMORY`` unset.
+    On the physical i3 laptop the limit equals that budget. Elsewhere
+    ``job_enforce_memory_bytes`` returns 0 so ``JOB_OBJECT_LIMIT_JOB_MEMORY``
+    stays unset (mapped GGUF must not trip a private-commit-sized limit).
     """
     raw_budget = os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", "").strip()
     raw_app = os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "").strip()
@@ -163,11 +165,11 @@ def _job_limit_from_environ() -> int | None:
 def default_spawn(cv_path: Path, out_path: Path) -> ContainedProcess:
     """Start the extract child inside a job (Windows) or a process group.
 
-    When the supervisor has published the child budget, the Windows job
-    limit is that budget: ``3_300_000_000`` minus the one app-private read.
-    The in-process gate uses the same number and, in the normal case,
-    raises the clean code first. Without a published budget the job does
-    not set ``JOB_OBJECT_LIMIT_JOB_MEMORY``. Cancel still uses
+    When the supervisor has published the child budget and
+    ``KARRIEREKRAKE_PHYSICAL_I3_8GB=1``, the Windows job limit is that
+    budget. The in-process gate always compares private commit
+    (``PeakPagefileUsage`` / Anonymous). Without a physical-i3 flag the job
+    does not set ``JOB_OBJECT_LIMIT_JOB_MEMORY``. Cancel still uses
     ``TerminateJobObject`` / ``killpg``.
     """
     return launch_contained(

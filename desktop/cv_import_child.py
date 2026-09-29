@@ -157,7 +157,7 @@ _DETAIL_FIELDS = (
     "counter",
 )
 
-_DETAIL_COUNTERS = frozenset({"PeakJobMemoryUsed", "Anonymous"})
+_DETAIL_COUNTERS = frozenset({"PeakJobMemoryUsed", "PeakPagefileUsage", "Anonymous"})
 
 
 def _safe_detail(

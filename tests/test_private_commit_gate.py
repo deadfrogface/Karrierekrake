@@ -16,6 +16,7 @@ from core.cv_docpick_import import (
     app_private_commit_bytes,
     bind_import_measure_job,
     fresh_app_child_budget_bytes,
+    model_process_peak_job_memory_used_bytes,
     reset_import_measure_job,
     reset_private_commit_high_water,
     CvImportError,
@@ -67,18 +68,19 @@ def test_fresh_child_budget_is_group_cap_minus_measured_app() -> None:
     assert fresh_app_child_budget_bytes() == 3_132_727_552
 
 
-def test_windows_gate_reads_job_peak_not_pagefile(monkeypatch: pytest.MonkeyPatch) -> None:
-    """A file-sized pagefile reading must not reach the gate."""
+def test_windows_gate_reads_pagefile_not_job_peak(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Mapped-GGUF-sized job peaks must not trip the private-commit gate."""
     reset_import_measure_job()
     monkeypatch.setattr(sys, "platform", "win32")
     monkeypatch.setattr(
         "core.cv_docpick_import._windows_peak_pagefile_bytes",
-        lambda: 4_400_000_000,
+        lambda: 1_800_000_000,
     )
-    bind_import_measure_job(7, lambda handle: 1_800_000_000 if handle == 7 else 0)
+    bind_import_measure_job(7, lambda handle: 4_400_000_000 if handle == 7 else 0)
     try:
         assert _self_rss_bytes() == 1_800_000_000
-        assert app_private_commit_bytes() == 4_400_000_000
+        assert app_private_commit_bytes() == 1_800_000_000
+        assert model_process_peak_job_memory_used_bytes() == 4_400_000_000
     finally:
         reset_import_measure_job()
 
@@ -95,17 +97,17 @@ def test_null_job_handle_is_not_the_outer_job() -> None:
     assert calls == []
 
 
-def test_job_peak_over_fresh_budget_names_the_counter(
+def test_pagefile_over_fresh_budget_names_the_counter(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     reset_import_measure_job()
     reset_private_commit_high_water()
     monkeypatch.setattr(sys, "platform", "win32")
     fresh = fresh_app_child_budget_bytes()
-    bind_import_measure_job(7, lambda _handle: fresh + 1)
+    bind_import_measure_job(7, lambda _handle: 1)
     monkeypatch.setattr(
         "core.cv_docpick_import._windows_peak_pagefile_bytes",
-        lambda: 1,
+        lambda: fresh + 1,
     )
     try:
         with pytest.raises(CvImportError) as ei:
@@ -117,7 +119,19 @@ def test_job_peak_over_fresh_budget_names_the_counter(
     assert ei.value.detail["stage"] == "after_load"
     assert ei.value.detail["peak_bytes"] == fresh + 1
     assert ei.value.detail["budget_bytes"] == fresh
-    assert ei.value.detail["counter"] == "PeakJobMemoryUsed"
+    assert ei.value.detail["counter"] == "PeakPagefileUsage"
+
+
+def test_job_enforce_limit_only_on_physical_i3(monkeypatch: pytest.MonkeyPatch) -> None:
+    from core.cv_docpick_import import job_enforce_memory_bytes
+
+    monkeypatch.delenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", raising=False)
+    assert job_enforce_memory_bytes(child_budget=3_132_727_552, app_private=1) == 0
+    monkeypatch.setenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", "1")
+    assert (
+        job_enforce_memory_bytes(child_budget=3_132_727_552, app_private=1)
+        == 3_132_727_552
+    )
 
 
 def test_peak_pagefile_reader_returns_counter_not_working_set() -> None:

@@ -440,7 +440,7 @@ def test_peak_detail_carries_bytes_and_drops_free_text(
                 "stage": "after_load",
                 "peak_bytes": 4_000_000_000,
                 "budget_bytes": 3_132_727_552,
-                "counter": "PeakJobMemoryUsed",
+                "counter": "PeakPagefileUsage",
                 "leak": sentinel,
             },
         )
@@ -453,7 +453,7 @@ def test_peak_detail_carries_bytes_and_drops_free_text(
     assert payload["detail"]["stage"] == "after_load"
     assert payload["detail"]["peak_bytes"] == 4_000_000_000
     assert payload["detail"]["budget_bytes"] == 3_132_727_552
-    assert payload["detail"]["counter"] == "PeakJobMemoryUsed"
+    assert payload["detail"]["counter"] == "PeakPagefileUsage"
     assert "leak" not in payload["detail"]
 
 

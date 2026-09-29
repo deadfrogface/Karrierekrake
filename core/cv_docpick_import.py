@@ -937,16 +937,14 @@ CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S",
 # Hard private-commit gate for target hardware: Intel Core i3 (11th gen), 8 GB RAM.
 # RETIRED_NOT_A_PASS: former soft 12 GB/12000 MB ceiling is not a pass condition.
 # Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
-# (process group: App + Docling + Qwen/llama.cpp + ALL import children).
-# The in-app sample (`_self_rss_bytes`) counts the same kind of memory the Job
-# Object counts: private commit. File-backed mmap pages (the GGUF) do not count.
-# Windows: PeakJobMemoryUsed of a job this process created for itself.
-# PeakPagefileUsage is only the app-share subtraction, not the gate.
-# Linux: anonymous RSS from smaps_rollup, not ru_maxrss.
-# Agent-VM numbers are NOT ship evidence. No automatic Phi fallback.
-# CI on 2d6837a compared PeakPagefileUsage with the fresh child budget
-# 3_132_727_552 (3_300_000_000 - 167_272_448). DE_01 exceeded it at
-# elapsed_s 12.625, before generation. The sample itself was not in the JSON.
+# (process group: App + Docling + Qwen/llama.cpp + ALL import children) on the
+# physical i3 laptop (`KARRIEREKRAKE_PHYSICAL_I3_8GB=1`).
+# In-app gate samples count private commit only. File-backed mmap pages (the
+# GGUF) must not count: Windows uses PeakPagefileUsage; Linux uses Anonymous
+# RSS from smaps_rollup. PeakJobMemoryUsed is still logged for diagnostics
+# and for the outer laptop harness, but on GitHub-hosted runners it charges
+# the mapped GGUF (~2.7 GiB) and is not the private-commit gate.
+# Agent-VM / GHA numbers are NOT ship evidence. No automatic Phi fallback.
 CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
     os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX", "3300000000")
 )
@@ -1543,6 +1541,7 @@ def _process_memory_counters_ex_type():
 
 # Fixed identifiers for the gate detail. No free text.
 PEAK_COUNTER_JOB = "PeakJobMemoryUsed"
+PEAK_COUNTER_PAGEFILE = "PeakPagefileUsage"
 PEAK_COUNTER_ANON = "Anonymous"
 
 # Handle of the job this process created so the gate can read its
@@ -1713,10 +1712,11 @@ def reset_private_commit_high_water() -> None:
 def _self_rss_bytes() -> int:
     """Private committed memory for the in-app #69 gate, in bytes.
 
-    Windows: ``PeakJobMemoryUsed`` of the measure job created for this
-    process. ``PeakPagefileUsage`` is not this counter. A missing job is
-    ``0`` (unmeasured), not the outer job's peak. The ``resource`` module
-    is not used.
+    Windows: ``PeakPagefileUsage`` via ``GetProcessMemoryInfo``. That is the
+    process private-commit high-water and excludes file-backed GGUF mmap
+    pages. ``PeakJobMemoryUsed`` is logged separately for diagnostics / the
+    laptop harness; on GitHub-hosted runners it charges the mapped GGUF and
+    must not be the gate. The ``resource`` module is not used.
 
     Linux: anonymous RSS from ``/proc/self/smaps_rollup`` (``Anonymous``, or
     ``Rss_Anon`` when that key exists). ``ru_maxrss`` and ``VmHWM`` are not
@@ -1726,17 +1726,16 @@ def _self_rss_bytes() -> int:
     read failed and is not a pass.
     """
     if sys.platform == "win32":
-        return _windows_measure_job_peak_bytes()
+        return _windows_peak_pagefile_bytes()
     return _linux_rss_anon_bytes("self")
 
 
 def app_private_commit_bytes() -> int:
     """This process's private commit, for the one app-share subtraction.
 
-    This is not the #69 group peak. Windows reads ``PeakPagefileUsage`` of
-    this process only. Linux reads ``Anonymous``. The child gate compares
-    ``_self_rss_bytes`` (``PeakJobMemoryUsed`` on Windows) with the budget
-    derived from this number.
+    Same counter as ``_self_rss_bytes`` on both platforms (Windows pagefile
+    peak / Linux Anonymous). The child gate compares that counter with the
+    budget derived from this number.
     """
     if sys.platform == "win32":
         return _windows_peak_pagefile_bytes()
@@ -1746,7 +1745,7 @@ def app_private_commit_bytes() -> int:
 def peak_counter_name() -> str:
     """Fixed identifier of the counter ``_self_rss_bytes`` just read."""
     if sys.platform == "win32":
-        return PEAK_COUNTER_JOB
+        return PEAK_COUNTER_PAGEFILE
     return PEAK_COUNTER_ANON
 
 
@@ -1784,13 +1783,12 @@ def _llama_server_rss_mb() -> float:
 def cv_path_peak_rss_bytes(*, include_llama_server: bool = True) -> int:
     """Private commit of this process plus optional local LLM servers.
 
-    Counts the same class of memory as Job Object ``PeakJobMemoryUsed`` (#69):
-    private / anonymous commit. File-backed mmap pages do not count.
+    Counts private / anonymous commit. File-backed mmap pages do not count.
 
-    Windows: ``PeakJobMemoryUsed`` of this process's measure job. Linux:
-    ``Anonymous`` from ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers
-    are not ship evidence. Ship evidence remains a Windows Job Object on the
-    i3 laptop.
+    Windows: ``PeakPagefileUsage`` of this process. Linux: ``Anonymous`` from
+    ``smaps_rollup`` (not ``ru_maxrss``). Agent-VM numbers are not ship
+    evidence. Ship evidence remains a Windows Job Object on the i3 laptop
+    with ``KARRIEREKRAKE_PHYSICAL_I3_8GB=1``.
 
     When the import loads Qwen in-process, external llama.cpp servers are not
     part of this path and must not trip the preflight gate.
@@ -1861,12 +1859,19 @@ def classify_child_private_commit(sample: int, child_budget: int) -> str | None:
 
 
 def job_enforce_memory_bytes(*, child_budget: int, app_private: int) -> int:
-    """Windows job memory limit: the child budget, the same number as the gate.
+    """Windows job memory limit for hard kill, or ``0`` to leave it unset.
 
-    ``child_budget`` is ``3_300_000_000`` minus the one app-private read.
-    ``app_private`` is that read. The in-process gate compares the same
-    budget and, in the normal case, raises the clean code first.
+    On the physical i3 laptop (``KARRIEREKRAKE_PHYSICAL_I3_8GB=1``) the limit
+    equals the child budget so the group cannot swap-death the machine.
+
+    Elsewhere (GitHub-hosted runners, VMs) return ``0``: those hosts charge
+    the mapped GGUF against ``JOB_OBJECT_LIMIT_JOB_MEMORY`` /
+    ``PeakJobMemoryUsed``, so a private-commit-sized limit would kill a
+    healthy mmap load. The in-process ``PeakPagefileUsage`` gate still runs.
     """
+    flag = (os.environ.get("KARRIEREKRAKE_PHYSICAL_I3_8GB") or "").strip().lower()
+    if flag not in {"1", "true", "yes"}:
+        return 0
     budget = int(child_budget)
     if budget > 0:
         return budget

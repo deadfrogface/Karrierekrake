@@ -51,7 +51,7 @@ def test_job_memory_limit_flag_is_off_without_a_cap() -> None:
 def test_extract_spawn_arms_job_limit_at_the_child_budget(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """The Windows job limit is the child budget, the same number as the gate."""
+    """On the physical i3 flag, the Windows job limit equals the child budget."""
     from core.cv_docpick_import import child_budget_for_app_private, job_enforce_memory_bytes
 
     seen: dict = {}
@@ -62,6 +62,7 @@ def test_extract_spawn_arms_job_limit_at_the_child_budget(
 
     app_private = 400_000_000
     budget = child_budget_for_app_private(app_private)
+    monkeypatch.setenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", "1")
     monkeypatch.setenv("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", str(app_private))
     monkeypatch.setenv("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", str(budget))
     monkeypatch.setattr("desktop.cv_import_supervisor.launch_contained", launch)
@@ -71,6 +72,23 @@ def test_extract_spawn_arms_job_limit_at_the_child_budget(
         child_budget=budget, app_private=app_private
     )
     assert seen["kwargs"]["enforce_memory_bytes"] == 3_300_000_000 - app_private
+
+
+def test_extract_spawn_skips_job_limit_without_physical_i3(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    seen: dict = {}
+
+    def launch(argv, **kwargs):
+        seen["kwargs"] = kwargs
+        return object()
+
+    monkeypatch.delenv("KARRIEREKRAKE_PHYSICAL_I3_8GB", raising=False)
+    monkeypatch.setenv("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES", "400000000")
+    monkeypatch.setenv("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES", "2900000000")
+    monkeypatch.setattr("desktop.cv_import_supervisor.launch_contained", launch)
+    default_spawn(Path("cv.pdf"), Path("out.json"))
+    assert seen["kwargs"]["enforce_memory_bytes"] is None
 
 
 def test_terminate_mentions_job_object_and_killpg() -> None:
