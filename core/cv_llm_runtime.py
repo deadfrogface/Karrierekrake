@@ -894,6 +894,150 @@ class ThinkTokenCount:
         self._tail = buf[-keep:] if buf else ""
 
 
+def _tok_per_s(tokens: int, seconds: float) -> float:
+    """Tokens per second. ``0`` when either side is not a positive duration."""
+    if tokens <= 0 or seconds <= 0:
+        return 0.0
+    return round(float(tokens) / float(seconds), 3)
+
+
+def _blank_llm_step() -> dict[str, Any]:
+    """Numeric timings plus fixed identifiers. No free text."""
+    return {
+        "prompt_tokens": 0,
+        "prompt_eval_s": 0.0,
+        "prompt_tok_per_s": 0.0,
+        "gen_tokens": 0,
+        "gen_s": 0.0,
+        "gen_tok_per_s": 0.0,
+        "n_threads": 0,
+        "physical_cores": 0,
+        "physical_cores_source": "",
+        "ggml_cpu_isa": "",
+        "ggml_cpu_backend": "",
+        "timing_source": "",
+        "peak_job_memory_used_bytes": 0,
+        "peak_counter": "PeakJobMemoryUsed",
+    }
+
+
+_LLM_STEP_SOURCES = frozenset({"", "psutil", "fallback"})
+_LLM_STEP_TIMING = frozenset({"", "llama_perf_context", "phase_clock"})
+_last_llm_step: dict[str, Any] = _blank_llm_step()
+
+
+def last_llm_step_metrics() -> dict[str, Any]:
+    """Copy of the timings from the last in-process completion in this process."""
+    return dict(_last_llm_step)
+
+
+def _publish_llm_step(step: dict[str, Any]) -> None:
+    global _last_llm_step
+    _last_llm_step = public_llm_step(step)
+
+
+def _safe_token(text: str, *, limit: int) -> str:
+    if not text or "\n" in text or len(text) > limit:
+        return ""
+    for ch in text:
+        if not (ch.isalnum() or ch in " _.:|=,+-/|"):
+            return ""
+    return text
+
+
+def public_llm_step(raw: object) -> dict[str, Any]:
+    """Keep the smoke fields. Drop anything that is not a number or a fixed token."""
+    out = _blank_llm_step()
+    if not isinstance(raw, dict):
+        return out
+    for key in (
+        "prompt_tokens",
+        "prompt_eval_s",
+        "prompt_tok_per_s",
+        "gen_tokens",
+        "gen_s",
+        "gen_tok_per_s",
+        "n_threads",
+        "physical_cores",
+        "peak_job_memory_used_bytes",
+    ):
+        value = raw.get(key, out[key])
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            continue
+        if key.endswith("_s") or key.endswith("_per_s"):
+            out[key] = round(float(value), 3)
+        else:
+            out[key] = int(value)
+    source = raw.get("physical_cores_source")
+    if source in _LLM_STEP_SOURCES:
+        out["physical_cores_source"] = source
+    timing = raw.get("timing_source")
+    if timing in _LLM_STEP_TIMING:
+        out["timing_source"] = timing
+    if raw.get("peak_counter") == "PeakJobMemoryUsed":
+        out["peak_counter"] = "PeakJobMemoryUsed"
+    isa = raw.get("ggml_cpu_isa")
+    if isinstance(isa, str) and isa.startswith("CPU :"):
+        out["ggml_cpu_isa"] = _safe_token(isa, limit=400)
+    backend = raw.get("ggml_cpu_backend")
+    if isinstance(backend, str):
+        out["ggml_cpu_backend"] = _safe_token(backend, limit=200)
+    return out
+
+
+def _ggml_cpu_identity() -> tuple[str, str]:
+    """``(ISA line, ggml-cpu library names)`` of the loaded llama build."""
+    try:
+        import llama_cpp
+    except Exception:  # noqa: BLE001
+        return "", ""
+    try:
+        isa = llama_cpp.llama_print_system_info().decode("utf-8", "replace").strip()
+    except Exception:  # noqa: BLE001
+        isa = ""
+    isa = " ".join(isa.split())
+    names: list[str] = []
+    try:
+        libdir = Path(llama_cpp.__file__).resolve().parent / "lib"
+        if libdir.is_dir():
+            names = sorted(
+                p.name
+                for p in libdir.iterdir()
+                if p.is_file()
+                and "ggml-cpu" in p.name.lower()
+                and not p.name.endswith(".lib")
+            )
+    except OSError:
+        names = []
+    return isa, ",".join(names)
+
+
+def _read_llama_perf(llm: Any) -> dict[str, Any] | None:
+    """Prompt and generation time from ``llama_perf_context``. None if unread."""
+    try:
+        import llama_cpp
+
+        ctx_box = getattr(llm, "_ctx", None)
+        ctx = getattr(ctx_box, "ctx", None)
+        if ctx is None:
+            return None
+        perf = llama_cpp.llama_perf_context(ctx)
+        prompt_tokens = int(perf.n_p_eval)
+        prompt_eval_s = float(perf.t_p_eval_ms) / 1000.0
+        gen_tokens = int(perf.n_eval)
+        gen_s = float(perf.t_eval_ms) / 1000.0
+    except Exception:  # noqa: BLE001
+        return None
+    return {
+        "prompt_tokens": prompt_tokens,
+        "prompt_eval_s": round(prompt_eval_s, 3),
+        "prompt_tok_per_s": _tok_per_s(prompt_tokens, prompt_eval_s),
+        "gen_tokens": gen_tokens,
+        "gen_s": round(gen_s, 3),
+        "gen_tok_per_s": _tok_per_s(gen_tokens, gen_s),
+    }
+
+
 def chat_completion_inprocess(
     messages: list[dict[str, Any]],
     *,
@@ -908,13 +1052,55 @@ def chat_completion_inprocess(
     ``llm_prompt_too_long`` and does not generate. ``finish_reason=length``
     raises ``llm_output_truncated``. Both messages are the code; details are logged.
     """
-    from core.cv_docpick_import import CvImportError, note_import_progress
-    from core.local_model_lock import hold_production_model
+    from core.cv_docpick_import import note_import_progress
 
     n_ctx = resolve_cv_llm_n_ctx()
     note_import_progress(n_ctx=n_ctx)
     n_threads, n_threads_batch, physical, logical, reserve = resolve_cv_llm_thread_plan()
+    cores, core_source = resolve_physical_cpu_count()
+    isa, backend = _ggml_cpu_identity()
+    obs = _blank_llm_step()
+    obs["n_threads"] = int(n_threads)
+    obs["physical_cores"] = int(cores)
+    obs["physical_cores_source"] = core_source
+    obs["ggml_cpu_isa"] = isa
+    obs["ggml_cpu_backend"] = backend
     Llama = _llama_cls()
+    try:
+        return _run_chat_completion_inprocess(
+            messages,
+            model_path=model_path,
+            temperature=temperature,
+            n_ctx=n_ctx,
+            n_threads=n_threads,
+            n_threads_batch=n_threads_batch,
+            physical=physical,
+            logical=logical,
+            reserve=reserve,
+            obs=obs,
+            Llama=Llama,
+        )
+    finally:
+        _publish_llm_step(obs)
+
+
+def _run_chat_completion_inprocess(
+    messages: list[dict[str, Any]],
+    *,
+    model_path: Path,
+    temperature: float,
+    n_ctx: int,
+    n_threads: int,
+    n_threads_batch: int,
+    physical: int,
+    logical: int,
+    reserve: int,
+    obs: dict[str, Any],
+    Llama: Any,
+) -> str:
+    from core.cv_docpick_import import CvImportError, note_import_progress
+    from core.local_model_lock import hold_production_model
+
     with hold_production_model(role="cv_import", timeout_s=90.0):
         llm, load_log = _construct_llama(
             Llama,
@@ -929,6 +1115,11 @@ def chat_completion_inprocess(
             llm.verbose = False
         except (AttributeError, TypeError):
             pass
+        try:
+            used = getattr(llm, "n_threads", n_threads)
+            obs["n_threads"] = int(used) if used else int(n_threads)
+        except (TypeError, ValueError):
+            obs["n_threads"] = int(n_threads)
         try:
             # Buffer allocation has finished inside Llama(). Log CPU features
             # and buffer types, then gate, before any prompt evaluation.
@@ -1004,15 +1195,27 @@ def chat_completion_inprocess(
             logger.info("%s", thread_line)
             emit_diag(thread_line)
             origin: dict[str, float | None] = {"t": started}
+            # perf_counter, not the phase clock: the phase clock feeds the
+            # token events, and an extra read would shift those stamps.
+            import time as _time
+
             prefilled = False
+            prompt_eval_s = 0.0
             if prefill_ids:
+                prefill_t0 = _time.perf_counter()
                 prefilled = _prefill_prompt_blocks(llm, prefill_ids, origin=origin)
+                prompt_eval_s = _time.perf_counter() - prefill_t0
+            obs["prompt_tokens"] = int(n_prompt)
+            obs["prompt_eval_s"] = round(prompt_eval_s, 3)
+            obs["prompt_tok_per_s"] = _tok_per_s(int(n_prompt), prompt_eval_s)
+            obs["timing_source"] = "phase_clock"
             parts: list[str] = []
             finish: str | None = None
             saw_chunk = False
             tokens_done = 0
             think = ThinkTokenCount()
             token_events = TokenProgressThrottle()
+            gen_t0: float | None = None
             for chunk in _iter_chat_completion(
                 llm,
                 prefilled=prefilled,
@@ -1024,6 +1227,7 @@ def chat_completion_inprocess(
                 if not saw_chunk:
                     saw_chunk = True
                     _sample_private_commit("after_prompt_eval")
+                    gen_t0 = _time.perf_counter()
                 tokens_done += 1
                 note_import_progress(tokens_done=tokens_done)
                 # max_tokens stays in the log line above. The UI event is the
@@ -1055,6 +1259,21 @@ def chat_completion_inprocess(
                     finish = str(choice["finish_reason"])
             if not saw_chunk:
                 _sample_private_commit("after_prompt_eval")
+            gen_s = 0.0
+            if gen_t0 is not None:
+                gen_s = _time.perf_counter() - gen_t0
+            obs["gen_tokens"] = int(tokens_done)
+            obs["gen_s"] = round(gen_s, 3)
+            obs["gen_tok_per_s"] = _tok_per_s(int(tokens_done), gen_s)
+            perf = _read_llama_perf(llm)
+            if perf is not None and (
+                perf["prompt_eval_s"] > 0
+                or perf["gen_s"] > 0
+                or perf["prompt_tokens"] > 0
+                or perf["gen_tokens"] > 0
+            ):
+                obs.update(perf)
+                obs["timing_source"] = "llama_perf_context"
             think_line = "cv_llm_think think_tokens=%s" % think.total
             logger.info("%s", think_line)
             emit_diag(think_line)

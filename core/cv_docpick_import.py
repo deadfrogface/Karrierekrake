@@ -1643,6 +1643,19 @@ def _windows_measure_job_peak_bytes() -> int:
     return _peak_job_memory_via_query(_measure_job_query, _measure_job_handle)
 
 
+def model_process_peak_job_memory_used_bytes() -> int:
+    """``PeakJobMemoryUsed`` of the job that holds this process.
+
+    This is the #69 process-group high-water mark. ``0`` off Windows and
+    when this process has no measure job. A null handle is not queried, so
+    the outer runner job is not this number. ``PeakPagefileUsage`` is not
+    this number.
+    """
+    if sys.platform != "win32":
+        return 0
+    return int(_windows_measure_job_peak_bytes())
+
+
 def _peak_pagefile_via_get_info(get_info, get_process) -> int:
     """Read ``PeakPagefileUsage`` using an injected ``GetProcessMemoryInfo``.
 

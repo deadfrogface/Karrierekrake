@@ -43,24 +43,267 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 
-def _peak_rss_bytes() -> int:
-    """Best-effort peak RSS (Unix children via resource; Windows via psutil when present)."""
+# What ``peak_rss_bytes_children`` used to store, split by the counter it
+# actually read. Neither number is ``PeakJobMemoryUsed``.
+LEGACY_RUSAGE_KEY = "rusage_children_ru_maxrss_bytes"
+LEGACY_WORKING_SET_KEY = "e2e_host_working_set_bytes"
+PEAK_JOB_KEY = "peak_job_memory_used_bytes"
+
+_LLM_STEPS = (
+    ("import", "import_de"),
+    ("import_en", "import_en"),
+    ("cover_letter", "cover_letter"),
+)
+_LLM_NUMERIC = (
+    "prompt_tokens",
+    "prompt_eval_s",
+    "prompt_tok_per_s",
+    "gen_tokens",
+    "gen_s",
+    "gen_tok_per_s",
+    "outside_model_s",
+    "n_threads",
+    "physical_cores",
+    PEAK_JOB_KEY,
+)
+_LLM_TEXT = (
+    "physical_cores_source",
+    "ggml_cpu_isa",
+    "ggml_cpu_backend",
+    "timing_source",
+    "peak_counter",
+)
+
+
+def legacy_rss_observation() -> dict[str, int]:
+    """The old smoke RSS number, under names that say which counter it is.
+
+    Unix reads ``RUSAGE_CHILDREN.ru_maxrss`` (maximum RSS of children this
+    process has waited for, file-backed pages included). Windows has no
+    ``resource`` module; the old function then read the working set of this
+    e2e process, about 72 MB, which does not include the EXE that holds the
+    model. The unused counter stays ``0``.
+    """
+    observed = {LEGACY_RUSAGE_KEY: 0, LEGACY_WORKING_SET_KEY: 0}
     if _resource is not None:
         try:
             usage = _resource.getrusage(_resource.RUSAGE_CHILDREN)
-            # ru_maxrss is KiB on Linux, bytes on macOS — normalize roughly.
             val = int(usage.ru_maxrss)
             if sys.platform == "darwin":
-                return val
-            return val * 1024
+                observed[LEGACY_RUSAGE_KEY] = val
+            else:
+                observed[LEGACY_RUSAGE_KEY] = val * 1024
         except Exception:  # noqa: BLE001
             pass
+        return observed
     try:
         import psutil  # type: ignore
 
-        return int(psutil.Process(os.getpid()).memory_info().rss)
+        observed[LEGACY_WORKING_SET_KEY] = int(psutil.Process(os.getpid()).memory_info().rss)
     except Exception:  # noqa: BLE001
-        return 0
+        pass
+    return observed
+
+
+def outside_model_s(wall_s: float, prompt_eval_s: float, gen_s: float) -> float:
+    """Wall clock minus llama prompt-eval and generation time."""
+    return round(float(wall_s) - float(prompt_eval_s) - float(gen_s), 3)
+
+
+def _numeric_metric(value: object, *, whole: bool) -> int | float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return 0 if whole else 0.0
+    if whole:
+        return int(value)
+    return round(float(value), 3)
+
+
+def annotate_llm_steps(report: dict) -> None:
+    """Fill ``outside_model_s`` on each step from that step's wall clock."""
+    steps = report.get("steps")
+    if not isinstance(steps, dict):
+        return
+    for name, _prefix in _LLM_STEPS:
+        step = steps.get(name)
+        if not isinstance(step, dict):
+            continue
+        llm = step.get("llm_step")
+        if not isinstance(llm, dict):
+            continue
+        wall = step.get("wall_s")
+        if isinstance(wall, bool) or not isinstance(wall, (int, float)):
+            llm["outside_model_s"] = 0.0
+            continue
+        llm["outside_model_s"] = outside_model_s(
+            float(wall),
+            float(llm.get("prompt_eval_s") or 0),
+            float(llm.get("gen_s") or 0),
+        )
+
+
+def build_smoke_metrics(report: dict) -> dict:
+    """Flat numeric timings for the printed smoke JSON.
+
+    ``peak_job_memory_used_bytes`` is the maximum ``PeakJobMemoryUsed``
+    reported by a step that loaded the model. The old children-RSS key is
+    not written.
+    """
+    from core.cv_llm_runtime import public_llm_step
+
+    steps = report.get("steps") if isinstance(report.get("steps"), dict) else {}
+    metrics: dict = {
+        "exe_bytes": int(report.get("exe_bytes") or 0),
+        "sidecar_bytes": int(report.get("sidecar_bytes") or 0),
+        "start_wall_s": _numeric_metric((steps.get("start") or {}).get("wall_s"), whole=False),
+        "import_wall_s": _numeric_metric((steps.get("import") or {}).get("wall_s"), whole=False),
+        "import_en_wall_s": _numeric_metric(
+            (steps.get("import_en") or {}).get("wall_s"), whole=False
+        ),
+        "restart_wall_s": _numeric_metric((steps.get("restart") or {}).get("wall_s"), whole=False),
+        "cover_letter_wall_s": _numeric_metric(
+            (steps.get("cover_letter") or {}).get("wall_s"), whole=False
+        ),
+    }
+    peaks: list[int] = []
+    for name, prefix in _LLM_STEPS:
+        step = steps.get(name)
+        if not isinstance(step, dict) or not isinstance(step.get("llm_step"), dict):
+            continue
+        llm = public_llm_step(step["llm_step"])
+        llm["outside_model_s"] = _numeric_metric(step["llm_step"].get("outside_model_s"), whole=False)
+        whole_keys = {
+            "prompt_tokens",
+            "gen_tokens",
+            "n_threads",
+            "physical_cores",
+            PEAK_JOB_KEY,
+        }
+        for key in _LLM_NUMERIC:
+            metrics["%s_%s" % (prefix, key)] = _numeric_metric(
+                llm.get(key), whole=key in whole_keys
+            )
+        for key in _LLM_TEXT:
+            value = llm.get(key)
+            metrics["%s_%s" % (prefix, key)] = value if isinstance(value, str) else ""
+        peaks.append(int(llm[PEAK_JOB_KEY]))
+    metrics[PEAK_JOB_KEY] = max(peaks) if peaks else 0
+    metrics.update(legacy_rss_observation())
+    return metrics
+
+
+def format_llm_step_line(prefix: str, llm: dict) -> str:
+    """One greppable line. The ISA string is quoted because it contains spaces."""
+    isa = str(llm.get("ggml_cpu_isa") or "").replace('"', "'")
+    return (
+        "llm_step %s prompt_tokens=%s prompt_eval_s=%s prompt_tok_per_s=%s "
+        "gen_tokens=%s gen_s=%s gen_tok_per_s=%s outside_model_s=%s "
+        "n_threads=%s physical_cores source=%s count=%s "
+        "ggml_cpu_backend=%s timing_source=%s peak_job_memory_used_bytes=%s "
+        'ggml_cpu_isa="%s"'
+        % (
+            prefix,
+            llm.get("prompt_tokens"),
+            llm.get("prompt_eval_s"),
+            llm.get("prompt_tok_per_s"),
+            llm.get("gen_tokens"),
+            llm.get("gen_s"),
+            llm.get("gen_tok_per_s"),
+            llm.get("outside_model_s"),
+            llm.get("n_threads"),
+            llm.get("physical_cores_source"),
+            llm.get("physical_cores"),
+            llm.get("ggml_cpu_backend"),
+            llm.get("timing_source"),
+            llm.get("peak_job_memory_used_bytes"),
+            isa,
+        )
+    )
+
+
+def format_runner_cpu_line(info: dict) -> str:
+    name = str(info.get("runner_cpu_name") or "").replace("\n", " ").strip()
+    return "runner_cpu name=%s logical=%s physical=%s" % (
+        name,
+        int(info.get("runner_logical_cores") or 0),
+        int(info.get("runner_physical_cores") or 0),
+    )
+
+
+def parse_linux_cpuinfo(text: str) -> dict:
+    """Model name plus logical and physical counts from ``/proc/cpuinfo``."""
+    name = ""
+    logical = 0
+    packages: set[str] = set()
+    cores_per_package: int | None = None
+    for line in text.splitlines():
+        if line.startswith("processor"):
+            logical += 1
+        elif line.startswith("model name") and not name:
+            name = line.split(":", 1)[1].strip()
+        elif line.startswith("physical id"):
+            packages.add(line.split(":", 1)[1].strip())
+        elif line.startswith("cpu cores") and cores_per_package is None:
+            try:
+                cores_per_package = int(line.split(":", 1)[1].strip())
+            except ValueError:
+                cores_per_package = None
+    if cores_per_package and packages:
+        physical = cores_per_package * len(packages)
+    else:
+        physical = logical
+    return {
+        "runner_cpu_name": name,
+        "runner_logical_cores": logical,
+        "runner_physical_cores": physical,
+    }
+
+
+def parse_win32_processor_rows(rows: list[dict]) -> dict:
+    """Sums from ``Get-CimInstance Win32_Processor``."""
+    name = ""
+    logical = 0
+    physical = 0
+    for row in rows:
+        if not name:
+            name = str(row.get("Name") or "").strip()
+        logical += int(row.get("NumberOfLogicalProcessors") or 0)
+        physical += int(row.get("NumberOfCores") or 0)
+    return {
+        "runner_cpu_name": name,
+        "runner_logical_cores": logical,
+        "runner_physical_cores": physical,
+    }
+
+
+def read_runner_cpu() -> dict:
+    """CPU model and core counts. Windows uses ``Win32_Processor``."""
+    if sys.platform == "win32":
+        script = (
+            "Get-CimInstance Win32_Processor | "
+            "Select-Object Name,NumberOfLogicalProcessors,NumberOfCores | "
+            "ConvertTo-Json -Compress"
+        )
+        try:
+            proc = subprocess.run(
+                ["powershell", "-NoProfile", "-Command", script],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            payload = json.loads(proc.stdout or "[]")
+        except (OSError, json.JSONDecodeError, subprocess.TimeoutExpired):
+            payload = []
+        if isinstance(payload, dict):
+            payload = [payload]
+        if not isinstance(payload, list):
+            payload = []
+        return parse_win32_processor_rows(payload)
+    try:
+        text = Path("/proc/cpuinfo").read_text(encoding="utf-8")
+    except OSError:
+        text = ""
+    return parse_linux_cpuinfo(text)
 
 
 def _clear_network_env() -> None:
@@ -196,6 +439,7 @@ def _import_report_slice(payload: dict) -> dict:
         "llm_transport": parsed.get("llm_transport") if isinstance(parsed, dict) else None,
         "stderr_bytes": int(payload.get("_stderr_bytes") or 0),
         "preview_keys": sorted(payload.keys())[:40],
+        "llm_step": payload.get("llm_step") if isinstance(payload.get("llm_step"), dict) else {},
     }
 
 
@@ -203,6 +447,18 @@ def _write_report(path: Path, report: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(report, indent=2, ensure_ascii=False), flush=True)
+
+
+def emit_smoke_report(path: Path, report: dict) -> None:
+    """Print one line per LLM step, then the JSON, including the #69 peak."""
+    annotate_llm_steps(report)
+    for step_name, prefix in _LLM_STEPS:
+        step = report.get("steps", {}).get(step_name) if isinstance(report.get("steps"), dict) else None
+        if isinstance(step, dict) and isinstance(step.get("llm_step"), dict):
+            print(format_llm_step_line(prefix, step["llm_step"]), flush=True)
+    report["metrics"] = build_smoke_metrics(report)
+    report[PEAK_JOB_KEY] = report["metrics"][PEAK_JOB_KEY]
+    _write_report(path, report)
 
 
 def _smoke_start(exe: Path, local_appdata: Path, timeout_s: float) -> float:
@@ -337,6 +593,12 @@ def _cover_letter_same_model() -> dict:
     except Exception as exc:  # noqa: BLE001
         err = type(exc).__name__
         ok = False
+    from core.cv_docpick_import import model_process_peak_job_memory_used_bytes
+    from core.cv_llm_runtime import last_llm_step_metrics, public_llm_step
+
+    llm_step = last_llm_step_metrics()
+    llm_step["peak_job_memory_used_bytes"] = int(model_process_peak_job_memory_used_bytes())
+    llm_step["peak_counter"] = "PeakJobMemoryUsed"
     return {
         "ok": ok,
         "writing_ok": ok,
@@ -345,6 +607,7 @@ def _cover_letter_same_model() -> dict:
         "wall_s": round(time.perf_counter() - t0, 3),
         "text_preview_len": len(text or ""),
         "error": err,
+        "llm_step": public_llm_step(llm_step),
     }
 
 
@@ -513,6 +776,8 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     _clear_network_env()
+    runner = read_runner_cpu()
+    print(format_runner_cpu_line(runner), flush=True)
     report: dict = {
         "ok": False,
         "release_blocked": True,
@@ -522,6 +787,7 @@ def main(argv: list[str] | None = None) -> int:
         "install_dir": str(exe.parent),
         "sidecar_present": True,
         "sidecar_bytes": sidecar.stat().st_size,
+        "runner_cpu": runner,
         "steps": {},
     }
 
@@ -535,7 +801,7 @@ def main(argv: list[str] | None = None) -> int:
             report["steps"]["start"] = {"ok": True, "wall_s": round(start_s, 3)}
         except Exception as exc:  # noqa: BLE001
             report["steps"]["start"] = {"ok": False, "error": str(exc)}
-            _write_report(args.out, report)
+            emit_smoke_report(args.out, report)
             return 1
 
         # 3: import (primary, typically DE)
@@ -553,7 +819,7 @@ def main(argv: list[str] | None = None) -> int:
                 "forbidden_tokens": forbidden,
             }
             if not report["steps"]["import"]["ok"]:
-                _write_report(args.out, report)
+                emit_smoke_report(args.out, report)
                 return 1
         except Exception as exc:  # noqa: BLE001
             report["steps"]["import"] = {
@@ -561,7 +827,7 @@ def main(argv: list[str] | None = None) -> int:
                 "error": str(exc),
                 **(report["steps"].get("import") or {}),
             }
-            _write_report(args.out, report)
+            emit_smoke_report(args.out, report)
             return 1
 
         # 3b: optional EN import (same install layout, fresh out file)
@@ -569,7 +835,7 @@ def main(argv: list[str] | None = None) -> int:
             cv_en = args.cv_en.resolve()
             if not cv_en.is_file():
                 report["steps"]["import_en"] = {"ok": False, "error": f"missing {cv_en}"}
-                _write_report(args.out, report)
+                emit_smoke_report(args.out, report)
                 return 1
             out_en = Path(tmp) / "import_en_out.json"
             try:
@@ -583,11 +849,11 @@ def main(argv: list[str] | None = None) -> int:
                     "cv": str(cv_en),
                 }
                 if not en_ok:
-                    _write_report(args.out, report)
+                    emit_smoke_report(args.out, report)
                     return 1
             except Exception as exc:  # noqa: BLE001
                 report["steps"]["import_en"] = {"ok": False, "error": str(exc)}
-                _write_report(args.out, report)
+                emit_smoke_report(args.out, report)
                 return 1
 
         # 4: Übernehmen simulation
@@ -600,7 +866,7 @@ def main(argv: list[str] | None = None) -> int:
             "applicant": applied.get("applicant"),
         }
         if not report["steps"]["apply"]["ok"]:
-            _write_report(args.out, report)
+            emit_smoke_report(args.out, report)
             return 1
 
         # 5: restart + reload profile
@@ -614,11 +880,11 @@ def main(argv: list[str] | None = None) -> int:
                 "applicant": (reloaded.get("applicant") or {}),
             }
             if not same:
-                _write_report(args.out, report)
+                emit_smoke_report(args.out, report)
                 return 1
         except Exception as exc:  # noqa: BLE001
             report["steps"]["restart"] = {"ok": False, "error": str(exc)}
-            _write_report(args.out, report)
+            emit_smoke_report(args.out, report)
             return 1
 
         # 6: cover letter / writing with same model (library when EXE child cannot)
@@ -641,17 +907,6 @@ def main(argv: list[str] | None = None) -> int:
                 exe, local, args.import_timeout, readable_cv=cv
             )
 
-        report["peak_rss_bytes_children"] = _peak_rss_bytes()
-        report["metrics"] = {
-            "exe_bytes": report["exe_bytes"],
-            "sidecar_bytes": report["sidecar_bytes"],
-            "start_wall_s": report["steps"]["start"].get("wall_s"),
-            "import_wall_s": report["steps"]["import"].get("wall_s"),
-            "import_en_wall_s": (report["steps"].get("import_en") or {}).get("wall_s"),
-            "restart_wall_s": report["steps"]["restart"].get("wall_s"),
-            "cover_letter_wall_s": (report["steps"].get("cover_letter") or {}).get("wall_s"),
-            "peak_rss_bytes_children": report["peak_rss_bytes_children"],
-        }
         required = ["start", "import", "apply", "restart", "cover_letter", "negatives"]
         if args.cv_en is not None:
             required.append("import_en")
@@ -659,7 +914,7 @@ def main(argv: list[str] | None = None) -> int:
         report["ok"] = step_ok
         report["release_blocked"] = not step_ok
 
-    _write_report(args.out, report)
+    emit_smoke_report(args.out, report)
     return 0 if report["ok"] else 1
 
 

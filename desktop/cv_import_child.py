@@ -121,6 +121,17 @@ def _write(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, default=str), encoding="utf-8")
 
 
+def llm_step_for_report() -> dict:
+    """Timings of the last completion plus ``PeakJobMemoryUsed`` of this process."""
+    from core.cv_docpick_import import model_process_peak_job_memory_used_bytes
+    from core.cv_llm_runtime import last_llm_step_metrics, public_llm_step
+
+    step = last_llm_step_metrics()
+    step["peak_job_memory_used_bytes"] = int(model_process_peak_job_memory_used_bytes())
+    step["peak_counter"] = "PeakJobMemoryUsed"
+    return public_llm_step(step)
+
+
 def _with_decision(payload: dict, decision) -> dict:
     if decision is not None:
         payload["local_llm_cv"] = decision.as_dict()
@@ -250,6 +261,7 @@ def _fail(
         }
         if stage:
             payload["stage"] = stage
+        payload["llm_step"] = llm_step_for_report()
         _write(out_path, _with_decision(payload, decision))
         return code
     if kind in CODE_ONLY_LLM_ERROR_CODES:
@@ -279,6 +291,7 @@ def _fail(
     }
     if stage:
         payload["stage"] = stage
+    payload["llm_step"] = llm_step_for_report()
     _write(out_path, _with_decision(payload, decision))
     return code
 
@@ -342,6 +355,7 @@ def run(argv: list[str] | None = None) -> int:
                     "kind": "ok",
                     "message": "",
                     "parsed": parsed,
+                    "llm_step": llm_step_for_report(),
                 },
                 decision,
             ),
