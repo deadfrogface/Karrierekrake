@@ -367,7 +367,7 @@ def test_missing_at_after_preload_is_unavailable_on_the_ui_thread(
 def test_notice_states_and_cold_start_never_says_not_found(
     qapp, config_service, geo_ready, monkeypatch
 ):
-    """Kaltstart Wien: erst 'wird noch geprüft', dann 'aufgelöst', nie 'nicht gefunden'."""
+    """Kaltstart Wien: erst 'Entfernung wird ermittelt', dann 'aufgelöst', nie 'nicht gefunden'."""
     from desktop.main_window import MainWindow
 
     _silence(monkeypatch)
@@ -395,7 +395,7 @@ def test_notice_states_and_cold_start_never_says_not_found(
                 seen.append(text)
             return text
 
-        _pump(qapp, lambda: "wird noch geprüft" in _snap(), timeout_s=5)
+        _pump(qapp, lambda: "Entfernung wird ermittelt" in _snap(), timeout_s=5)
         assert "nicht gefunden" not in _snap()
         assert win.profile.home_status.objectName() == "HomeStatusPending"
         assert win.profile.change_place_btn.isHidden()
@@ -404,7 +404,7 @@ def test_notice_states_and_cold_start_never_says_not_found(
         _wait_thread(geo._preload_thread)
         _pump(qapp, lambda: "aufgelöst" in _snap())
         assert all("nicht gefunden" not in text for text in seen)
-        assert "wird noch geprüft" in seen[0] or any("wird noch geprüft" in text for text in seen)
+        assert "Entfernung wird ermittelt" in seen[0] or any("Entfernung wird ermittelt" in text for text in seen)
         assert any("aufgelöst" in text for text in seen)
     finally:
         hold.set()
@@ -527,7 +527,7 @@ def test_bump_that_resolves_home_filters_once(
     win.show()
     qapp.processEvents()
     try:
-        _pump(qapp, lambda: "wird noch geprüft" in win.profile.home_status.text(), timeout_s=5)
+        _pump(qapp, lambda: "Entfernung wird ermittelt" in win.profile.home_status.text(), timeout_s=5)
         counts["filter"] = 0
         counts["refresh"] = 0
         hold.set()

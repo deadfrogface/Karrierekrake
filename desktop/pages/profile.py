@@ -1137,7 +1137,7 @@ class ProfilePage(QWidget):
             from core.location import store_user_home_coordinates
 
             store_user_home_coordinates(
-                p.location, cache_dir=self.config_service.dirs["cache"]
+                p.location, cfg, cache_dir=self.config_service.dirs["cache"]
             )
 
         sync_application_summaries(a, p.qualifications, fill_empty=False)

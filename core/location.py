@@ -14,7 +14,9 @@ Failed home resolution must NOT silently use arbitrary Germany center coordinate
 
 from __future__ import annotations
 
+import inspect
 import logging
+import threading
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Callable
 
@@ -25,7 +27,7 @@ from core.geo_normalize import (
 )
 from core.home_coord_cache import (
     cache_dir_of,
-    read_home_coordinates,
+    normalized_home_place,
     read_home_record,
     write_home_coordinates,
 )
@@ -103,14 +105,15 @@ HOME_PLZ_HINT = (
 
 
 def cross_border_dach_enabled(config: "AppConfig") -> bool:
-    """Feature toggle: DACH commute across DE/AT/CH (default on)."""
+    """Feature toggle: DACH commute across DE/AT/CH (default on).
+
+    The only source is ``settings.cross_border_dach_enabled``. The location
+    flag is not consulted.
+    """
     settings = getattr(config, "settings", None)
-    if settings is not None and hasattr(settings, "cross_border_dach_enabled"):
-        return bool(settings.cross_border_dach_enabled)
-    loc = getattr(getattr(config, "profile", None), "location", None)
-    if loc is not None and hasattr(loc, "cross_border_dach"):
-        return bool(loc.cross_border_dach)
-    return True
+    if settings is None:
+        return True
+    return bool(getattr(settings, "cross_border_dach_enabled", True))
 
 
 @dataclass(frozen=True)
@@ -135,6 +138,11 @@ class HomeNotice:
 # Not written to profile.yaml. Values are ``(generation, PlaceResolution)``.
 # The key does not include the generation.
 _HOME_RESOLUTION_CACHE: dict[str, tuple[int, PlaceResolution]] = {}
+# File reads, once per process and memory key. A restart clears this set.
+_HOME_DISK_READS: set[str] = set()
+_HOME_WRITE_THREADS: list[threading.Thread] = []
+_HOME_WRITE_LOCK = threading.Lock()
+_home_log = logging.getLogger("karrierekrake.home")
 
 
 def home_resolution_key(
@@ -151,8 +159,8 @@ def home_resolution_key(
 
     The geo-index generation is stored with the value, not in the key.
     """
-    country_code = normalize_country_code(country) or "DE"
-    home_cc = normalize_country_code(home_country) or country_code
+    country_code = normalize_country_code(country)
+    home_cc = normalize_country_code(home_country) or "DE"
     return "|".join(
         (
             _address_fingerprint(address),
@@ -167,33 +175,110 @@ def home_resolution_key(
 
 
 def reset_home_resolution_cache_for_tests() -> None:
+    flush_home_coord_writes()
     _HOME_RESOLUTION_CACHE.clear()
+    _HOME_DISK_READS.clear()
+
+
+def flush_home_coord_writes() -> None:
+    """Join cache writes that left the UI thread. Tests call this before reading."""
+    with _HOME_WRITE_LOCK:
+        threads = list(_HOME_WRITE_THREADS)
+    for thread in threads:
+        thread.join(timeout=30)
+    with _HOME_WRITE_LOCK:
+        _HOME_WRITE_THREADS[:] = [thread for thread in _HOME_WRITE_THREADS if thread.is_alive()]
+
+
+def _home_caller() -> str:
+    for frame in inspect.stack()[2:]:
+        name = frame.filename.replace("\\", "/")
+        if name.endswith(("/location.py", "/home_coord_cache.py", "/geo_resolve.py")):
+            continue
+        return f"{frame.function}"
+    return "cached_home_resolution"
+
+
+def _log_home_resolution(key: str, resolution: PlaceResolution | None) -> None:
+    status = getattr(resolution, "status", None) or "none"
+    reason = getattr(resolution, "reason", "") or ""
+    if reason == "geo_index_loading":
+        status = "geo_index_loading"
+    _home_log.info(
+        "home_resolution caller=%s key=%s status=%s reason=%s",
+        _home_caller(),
+        key,
+        status,
+        reason,
+    )
 
 
 def _home_text(location: Any) -> tuple[str, str, str, str]:
     address = (getattr(location, "home_address", "") or "").strip()
     postal = (getattr(location, "postal_code", "") or "").strip()
     city = (getattr(location, "city", "") or "").strip()
-    country = (getattr(location, "country", "") or "").strip() or "DE"
+    country = (getattr(location, "country", "") or "").strip()
     return address, postal, city, country
 
 
 def home_resolve_params(
     location: Any,
-    config: Any | None = None,
+    config: Any,
     *,
     cross_border: bool | None = None,
     home_country: str | None = None,
 ) -> tuple[bool, str]:
-    """The ``cross_border`` / ``home_country`` pair ``resolve_home`` passes through."""
-    if cross_border is None and config is not None:
-        cross_border = cross_border_dach_enabled(config)
+    """The ``cross_border`` / ``home_country`` pair ``resolve_home`` passes through.
+
+    ``cross_border`` comes only from ``settings.cross_border_dach_enabled``.
+    """
     if cross_border is None:
-        cross_border = bool(getattr(location, "cross_border_dach", True))
+        cross_border = cross_border_dach_enabled(config) if config is not None else True
     if home_country is None:
         _address, _postal, _city, country = _home_text(location)
         home_country = country
     return bool(cross_border), normalize_country_code(home_country) or "DE"
+
+
+def _persist_fresh_home(
+    cache_dir: Any,
+    location: Any,
+    resolution: PlaceResolution,
+    *,
+    cross_border: bool,
+    home_country: str,
+    allow_gui_write: bool,
+) -> None:
+    """Write only after a fresh resolution. The UI thread does not fsync.
+
+    A user save may pass ``allow_gui_write`` and then performs the one
+    fsync on the caller thread.
+    """
+    if not resolution.ok or resolution.latitude is None or resolution.longitude is None:
+        return
+
+    def _write() -> None:
+        write_home_coordinates(
+            cache_dir,
+            location,
+            float(resolution.latitude),
+            float(resolution.longitude),
+            resolution.display_name or "",
+            cross_border=cross_border,
+            home_country=home_country,
+            allow_network=False,
+            resolved_country=resolution.country_code or "",
+        )
+
+    from core.geo_resolve import _caller_is_ui_thread
+
+    if _caller_is_ui_thread() and not allow_gui_write:
+        thread = threading.Thread(target=_write, name="home-coord-cache", daemon=False)
+        with _HOME_WRITE_LOCK:
+            _HOME_WRITE_THREADS.append(thread)
+        thread.start()
+        return
+    _write()
 
 
 def cached_home_resolution(
@@ -202,72 +287,65 @@ def cached_home_resolution(
     cross_border: bool,
     home_country: str,
     cache_dir: Any = None,
+    allow_gui_write: bool = False,
 ) -> PlaceResolution | None:
     """One lookup for the hint and for ``LocationService.resolve_home``.
 
-    Does not mutate ``location``. ``cross_border``, ``home_country`` and
-    ``allow_network=False`` are the same arguments ``resolve_place`` receives.
-    A disk-cache hit returns without calling ``resolve_place`` and without
-    waiting for the postal index. On the UI thread a still-missing home
-    country returns the loading sentinel the same way, also without
-    ``resolve_place``. The lookup after the index is published is the one
-    shared resolution.
+    Memory first. The file is read at most once per process and key, and
+    only on a memory miss. A memory hit does not read, parse or stamp the
+    file, and it does not write. A fresh resolution is the only writer.
+    On the UI thread a still-missing home country returns the loading
+    sentinel without entering ``resolve_place``.
     """
-    address, postal, city, country = _home_text(location)
-    if not postal and not city and not address:
+    place = normalized_home_place(location)
+    if not place.postal_code and not place.city and not place.address:
         return None
-    home_cc = normalize_country_code(home_country) or normalize_country_code(country) or "DE"
-    cached_record = read_home_record(cache_dir, location)
-    if cached_record is not None:
-        lat, lon, stored_display = cached_record
-        label = stored_display or city or _city_from_address(address) or address
-        return PlaceResolution(
-            status="RESOLVED",
-            latitude=lat,
-            longitude=lon,
-            country_code=home_cc,
-            display_name=label,
-            data_source="existing_source",
-            reason="home_coord_cache",
-            precision="exact_coordinates",
-        )
+    home_cc = normalize_country_code(home_country) or "DE"
     key = home_resolution_key(
-        address=address,
-        postal_code=postal,
-        city=city,
-        country=country,
+        address=place.address,
+        postal_code=place.postal_code,
+        city=place.city,
+        country=place.country_code,
         cross_border=cross_border,
         home_country=home_cc,
         allow_network=False,
     )
-    # Profile fields are not a distance source. The disk cache above is.
     cached = lookup_cached_resolution(_HOME_RESOLUTION_CACHE, key)
     if cached is not None:
-        if (
-            cache_dir is not None
-            and cached.ok
-            and cached.latitude is not None
-            and cached.longitude is not None
-        ):
-            write_home_coordinates(
-                cache_dir,
-                location,
-                float(cached.latitude),
-                float(cached.longitude),
-                cached.display_name or "",
-            )
+        _log_home_resolution(key, cached)
         return cached
-    place = normalize_place_fields(
-        address=address,
-        city=city or _city_from_address(address),
-        postal_code=postal or _plz_from_address(address),
-        country_code=normalize_country_code(country) or "DE",
-    )
+    if cache_dir is not None and key not in _HOME_DISK_READS:
+        _HOME_DISK_READS.add(key)
+        cached_record = read_home_record(
+            cache_dir,
+            location,
+            cross_border=cross_border,
+            home_country=home_cc,
+            allow_network=False,
+        )
+        if cached_record is not None:
+            lat, lon, stored_display, resolved_country = cached_record
+            label = stored_display or place.city or place.address
+            hit = PlaceResolution(
+                status="RESOLVED",
+                latitude=lat,
+                longitude=lon,
+                country_code=resolved_country or home_cc,
+                display_name=label,
+                data_source="existing_source",
+                reason="home_coord_cache",
+                precision="exact_coordinates",
+            )
+            store_cached_resolution(_HOME_RESOLUTION_CACHE, key, hit)
+            _log_home_resolution(key, hit)
+            return hit
     # The UI thread cannot build the index. Returning the sentinel here keeps
     # that wait out of ``resolve_place``. The same home is resolved once the
     # country file is published; hint and distance filter share that result.
-    loading = ui_geo_index_loading_resolution(place.country_code)
+    loading_cc = place.country_code or home_cc
+    loading = ui_geo_index_loading_resolution(loading_cc)
     if loading is not None:
+        _log_home_resolution(key, loading)
         return loading
     resolution = resolve_place(
         place,
@@ -275,16 +353,18 @@ def cached_home_resolution(
         home_country=home_cc,
         allow_network=False,
     )
+    _log_home_resolution(key, resolution)
     # A still-loading index is not a resolution. The next read tries again.
     # Same key: a stale miss is replaced in place.
     store_cached_resolution(_HOME_RESOLUTION_CACHE, key, resolution)
-    if resolution.ok and resolution.latitude is not None and resolution.longitude is not None:
-        write_home_coordinates(
+    if resolution.reason != "geo_index_loading":
+        _persist_fresh_home(
             cache_dir,
             location,
-            float(resolution.latitude),
-            float(resolution.longitude),
-            resolution.display_name or "",
+            resolution,
+            cross_border=cross_border,
+            home_country=home_cc,
+            allow_gui_write=allow_gui_write,
         )
     return resolution
 
@@ -507,25 +587,26 @@ def _remember_resolved_home(location: Any, coords: tuple[float, float]) -> None:
     location._resolved_home = (float(coords[0]), float(coords[1]))
 
 
-def commit_loaded_home(location: Any, *, cache_dir: Any = None) -> str:
+def commit_loaded_home(location: Any, config: Any, *, cache_dir: Any = None) -> str:
     """Remember a finished resolution in the coordinate cache, not profile.yaml.
 
     Returns ``resolved``, ``unchanged``, ``pending``, or ``unresolved``.
     A cache hit is ``unchanged`` and does not resolve or wait for the index.
     A still-loading index is ``pending`` and stores nothing. A genuine miss
     stays without coordinates so the notice can keep asking for a real PLZ.
+    ``config`` is required. Cross-border comes from its settings.
     """
     address = (getattr(location, "home_address", "") or "").strip()
     postal = (getattr(location, "postal_code", "") or "").strip()
     city = (getattr(location, "city", "") or "").strip()
-    if read_home_coordinates(cache_dir, location) is not None:
-        return "unchanged"
     if not postal and not city and not address:
         return "unresolved"
-    border, home_cc = home_resolve_params(location)
+    border, home_cc = home_resolve_params(location, config)
     resolution = cached_home_resolution(
         location, cross_border=border, home_country=home_cc, cache_dir=cache_dir
     )
+    if resolution is not None and resolution.reason == "home_coord_cache":
+        return "unchanged"
     if resolution is None or resolution.reason == "geo_index_loading":
         return "pending"
     if not resolution.ok or resolution.latitude is None or resolution.longitude is None:
@@ -537,7 +618,7 @@ def commit_loaded_home(location: Any, *, cache_dir: Any = None) -> str:
     return "resolved"
 
 
-def store_user_home_coordinates(location: Any, *, cache_dir: Any = None) -> str:
+def store_user_home_coordinates(location: Any, config: Any, *, cache_dir: Any = None) -> str:
     """Write coordinates after the user changed the search home.
 
     The cache file is the only store. ``profile.yaml`` is not touched.
@@ -545,6 +626,8 @@ def store_user_home_coordinates(location: Any, *, cache_dir: Any = None) -> str:
     coordinates immediately, including when the index is still loading and
     this returns ``pending``. Street, postal code and city are not rewritten.
     Returns ``resolved``, ``pending``, or ``unresolved``.
+    ``config`` is required. Cross-border comes from its settings.
+    The one fsync of this save may run on the UI thread.
     """
     address = (getattr(location, "home_address", "") or "").strip()
     postal = (getattr(location, "postal_code", "") or "").strip()
@@ -552,9 +635,13 @@ def store_user_home_coordinates(location: Any, *, cache_dir: Any = None) -> str:
     _drop_model_coordinates(location)
     if not postal and not city and not address:
         return "unresolved"
-    border, home_cc = home_resolve_params(location)
+    border, home_cc = home_resolve_params(location, config)
     resolution = cached_home_resolution(
-        location, cross_border=border, home_country=home_cc, cache_dir=cache_dir
+        location,
+        cross_border=border,
+        home_country=home_cc,
+        cache_dir=cache_dir,
+        allow_gui_write=True,
     )
     if resolution is not None and resolution.reason == "geo_index_loading":
         return "pending"

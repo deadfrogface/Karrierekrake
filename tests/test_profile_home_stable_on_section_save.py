@@ -750,7 +750,8 @@ def test_home_resolves_once_until_the_user_changes_it(
         config_service.save(toggled)
         win.refresh_all()
         qapp.processEvents()
-        assert calls["n"] == 0
+        # The file key includes cross_border, so the toggle is a new lookup.
+        assert calls["n"] == 1
     finally:
         win._shutting_down = True
         win.close()

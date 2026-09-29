@@ -56,12 +56,16 @@ def format_commute_label(job, *, with_duration: bool = True, home_status: str = 
     remote = (getattr(job, "remote_type", "") or "").lower()
     if remote == "remote":
         return tr("jobs.commute_remote")
-    if home_status in {"ambiguous", "unknown", "missing", "loading", "unavailable"}:
+    if home_status == "loading":
+        return ""
+    if home_status in {"ambiguous", "unknown", "missing", "unavailable"}:
         return tr("jobs.distance_skipped")
     err = (getattr(job, "distance_error", "") or "").strip()
     src = (getattr(job, "distance_source", "") or "").strip()
     dist = getattr(job, "distance_km", None)
     if dist is not None and (src.startswith("brouter") or src == "brouter_v1"):
+        if float(dist) == 0:
+            return ""
         km = f"{dist:.0f}" if float(dist) == int(float(dist)) else f"{float(dist):.1f}"
         return tr("jobs.commute_road", km=km)
     # No BRouter km → honest unknown. Never fall back to airline_km / haversine.
@@ -102,6 +106,8 @@ class JobsPage(QWidget):
         self._selected = None
         self._last_pass_saw_loading = False
         self._last_notice_status = ""
+        self._distance_order_passes = 0
+        self._distance_order_done = False
 
         self.header = PageHeader()
         self.page_title = self.header.title
@@ -352,6 +358,8 @@ class JobsPage(QWidget):
         key = self._sort_key()
         if key == "match_asc":
             return sorted(jobs, key=lambda j: int(j.match_score or 0))
+        if key in {"distance_near", "distance_far"} and self._last_notice_status != "resolved":
+            return list(jobs)
         if key == "distance_near":
             return sorted(
                 jobs,
@@ -542,9 +550,12 @@ class JobsPage(QWidget):
                 self.table.setItem(row, col, item)
             # Demo card row (compact)
             dist_txt = format_commute_label(job, with_duration=True, home_status=home_status)
+            place = display_or_dash(job.city)
+            if dist_txt:
+                place = f"{place} ({dist_txt})"
             card = (
                 f"{display_or_dash(job.title)}\n"
-                f"{display_or_dash(job.company)} · {display_or_dash(job.city)} ({dist_txt}) · "
+                f"{display_or_dash(job.company)} · {place} · "
                 f"{display_or_dash(job.remote_type)}\n"
                 f"{fit_label} — {reason}"
             )
@@ -624,6 +635,9 @@ class JobsPage(QWidget):
         self._fill_pending_distances(jobs, notice, cfg)
         if distance_cap is not None:
             jobs = [job for job in jobs if self._job_within_cap(job, distance_cap)]
+            if not self._distance_order_done:
+                self._distance_order_done = True
+                self._distance_order_passes += 1
         self._jobs = self._sorted_jobs(jobs)
         self._populate_table(self._jobs, preserve_view=preserve_view)
 

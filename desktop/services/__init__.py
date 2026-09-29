@@ -184,22 +184,6 @@ class ConfigService:
             settings_path=self.settings_path,
         )
 
-    def save_home_coords_from(self, run_config: AppConfig) -> AppConfig:
-        """Store home coordinates from a pipeline run in the cache file.
-
-        Does not write profile.yaml, application_profile.yaml or settings.yaml,
-        so dry_run and mode overrides on the worker config stay off disk.
-        """
-        from core.home_coord_cache import write_home_coordinates
-
-        run_loc = run_config.profile.location
-        lat = getattr(run_loc, "home_latitude", None)
-        lon = getattr(run_loc, "home_longitude", None)
-        if lat is not None and lon is not None:
-            write_home_coordinates(self.dirs["cache"], run_loc, float(lat), float(lon))
-        self._config = self._read_runtime_config()
-        return self._config
-
     def validate(self, config: AppConfig | None = None) -> list[str]:
         config = config or self.config
         errors: list[str] = []

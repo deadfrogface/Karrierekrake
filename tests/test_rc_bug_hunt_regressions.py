@@ -309,14 +309,14 @@ def test_save_home_coords_persists_geocode_fingerprint(tmp_path: Path, monkeypat
     run_cfg.profile.location.home_longitude = 13.40
     run_cfg.profile.location.home_geocoded_address = "Berlin, Germany"
     run_cfg.settings.dry_run = True  # must not leak
-    saved = svc.save_home_coords_from(run_cfg)
-    from core.home_coord_cache import read_home_coordinates
+    assert not hasattr(svc, "save_home_coords_from")
+    from core.home_coord_cache import cache_file
 
-    assert read_home_coordinates(svc.dirs["cache"], run_cfg.profile.location) == (52.52, 13.40)
+    assert not cache_file(svc.dirs["cache"]).exists()
     assert "home_latitude" not in svc.profile_path.read_text(encoding="utf-8")
-    saved.profile.location.home_address = "Hamburg, Germany"
-    saved.profile.location.city = "Hamburg"
-    assert read_home_coordinates(svc.dirs["cache"], saved.profile.location) is None
+    reloaded = svc.load()
+    assert reloaded.profile.location.home_latitude is None
+    assert reloaded.profile.location.home_longitude is None
 
 
 def test_ba_text_remote_not_misclassified_as_onsite():

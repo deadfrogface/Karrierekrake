@@ -531,12 +531,8 @@ class MainWindow(QMainWindow):
             self.dashboard.set_pipeline_running(False)
             self.progress_label.setText(tr("status.done"))
             self.dashboard.set_status(tr("status.done"))
-            # Persist only home coords (never dry_run/mode overrides from apply-test).
-            if stats.get("home_updated") and getattr(worker, "config", None) is not None:
-                try:
-                    self.config_service.save_home_coords_from(worker.config)
-                except Exception:
-                    pass
+            # Home coordinates are written only by cached_home_resolution.
+            # The worker config is not saved, so dry_run and mode stay off disk.
             self.config_service.set_last_search(
                 datetime.now(timezone.utc).replace(microsecond=0).isoformat()
             )

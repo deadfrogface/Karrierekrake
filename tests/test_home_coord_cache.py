@@ -148,9 +148,12 @@ def _pump_resolved(qapp, label, timeout_s: float = 20.0) -> None:
 
 
 def _close(win, qapp) -> None:
+    from core.location import flush_home_coord_writes
+
     win._shutting_down = True
     win.close()
     qapp.processEvents()
+    flush_home_coord_writes()
 
 
 def test_first_and_second_start_leave_yaml_sha256_equal(
@@ -370,7 +373,9 @@ def test_country_change_while_index_loads_drops_at_distance(
     loc.country = "CH"
     loc.city = "Lausanne"
     try:
-        outcome = store_user_home_coordinates(loc, cache_dir=config_service.dirs["cache"])
+        outcome = store_user_home_coordinates(
+            loc, cfg, cache_dir=config_service.dirs["cache"]
+        )
         assert outcome == "pending"
         assert loc.home_latitude is None and loc.home_longitude is None
         assert read_home_coordinates(config_service.dirs["cache"], loc) is None
@@ -495,3 +500,344 @@ def test_search_home_checkbox_again_restores_contact_without_restart(
     assert home.coords is not None
     assert abs(home.coords[0] - berlin[0]) > 0.4
     assert home.coords[0] > 53.0
+
+
+def test_1010_empty_country_cross_border_off_is_not_a_hit(config_service, geo_ready):
+    """1010, leeres Land: cross_border an, dann aus. Kein Treffer, kein Abstand.
+
+    Gilt im selben Prozess und nach einem simulierten Neustart. Der Datei-Schlüssel
+    enthält cross_border, das aufgelöste Land bleibt AT und wird nicht zu DE.
+    """
+    from core.geo_resolve import preload_geo_index_async
+    import core.geo_resolve as geo
+
+    cfg = config_service.load()
+    loc = cfg.profile.location
+    loc.home_address = ""
+    loc.postal_code = "1010"
+    loc.city = ""
+    loc.country = ""
+    loc.cross_border_dach = False
+    cfg.settings.cross_border_dach_enabled = True
+    reset_home_resolution_cache_for_tests()
+    thread = preload_geo_index_async()
+    if thread is not None:
+        thread.join(timeout=60)
+    assert geo._preload_done.is_set()
+
+    db = Database(cfg.db_path, recover=False)
+    on = LocationService(db, cfg).resolve_home()
+    if on.coords is None:
+        write_home_coordinates(
+            config_service.dirs["cache"],
+            loc,
+            *AT_COORDS,
+            display_name="1010, Wien, AT",
+            cross_border=True,
+            home_country="DE",
+            resolved_country="AT",
+        )
+    hit = read_home_coordinates(
+        config_service.dirs["cache"],
+        loc,
+        cross_border=True,
+        home_country="DE",
+    )
+    assert hit is not None
+    assert abs(hit[0] - AT_COORDS[0]) < 0.05
+    record = __import__(
+        "core.home_coord_cache", fromlist=["read_home_record"]
+    ).read_home_record(
+        config_service.dirs["cache"],
+        loc,
+        cross_border=True,
+        home_country="DE",
+    )
+    assert record is not None and record[3] == "AT"
+
+    cfg.settings.cross_border_dach_enabled = False
+    off = LocationService(db, cfg).resolve_home()
+    assert off.coords is None
+    assert off.resolved is False
+    assert (
+        read_home_coordinates(
+            config_service.dirs["cache"],
+            loc,
+            cross_border=False,
+            home_country="DE",
+        )
+        is None
+    )
+
+    reset_home_resolution_cache_for_tests()
+    restarted = LocationService(db, cfg).resolve_home()
+    assert restarted.coords is None
+    assert restarted.resolved is False
+
+
+def test_start_resolves_once_when_location_flag_differs(
+    qapp, config_service, geo_ready, monkeypatch, caplog
+):
+    """Ohne Cache genau ein resolve_place, auch wenn die beiden Flags abweichen."""
+    import logging
+
+    import core.location as location
+
+    _silence(monkeypatch)
+    i18n.set_language("de")
+    _seed_berlin(config_service)
+    cfg = config_service.load()
+    cfg.profile.location.cross_border_dach = False
+    cfg.settings.cross_border_dach_enabled = True
+    config_service.save(cfg)
+    reset_home_resolution_cache_for_tests()
+    calls = {"n": 0}
+    original = location.resolve_place
+
+    def _wrapped(*args, **kwargs):
+        calls["n"] += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(location, "resolve_place", _wrapped)
+    caplog.set_level(logging.INFO, logger="karrierekrake.home")
+    win = _open_main(qapp, config_service)
+    try:
+        _pump_resolved(qapp, win.profile.home_status)
+        assert calls["n"] == 1
+    finally:
+        _close(win, qapp)
+    reasons = [rec.getMessage() for rec in caplog.records if rec.name == "karrierekrake.home"]
+    assert reasons
+    assert any("caller=" in line and "key=" in line for line in reasons)
+    assert any("geo_index_loading" in line or "status=RESOLVED" in line for line in reasons)
+    from pathlib import Path
+
+    Path("/tmp/home-resolution-reasons.log").write_text("\n".join(reasons) + "\n", encoding="utf-8")
+
+
+def test_memory_hit_does_not_touch_the_coordinate_file(
+    config_service, geo_ready, monkeypatch
+):
+    """Speicher-Treffer und der zweite Refresh: kein read, kein json, kein Stempel."""
+    import core.home_coord_cache as cache
+    import core.location as location_mod
+    from core.geo_resolve import preload_geo_index_async
+    from core.location import cached_home_resolution, home_location_notice
+    import core.geo_resolve as geo
+
+    _seed_berlin(config_service)
+    cfg = config_service.load()
+    reset_home_resolution_cache_for_tests()
+    thread = preload_geo_index_async()
+    if thread is not None:
+        thread.join(timeout=60)
+    assert geo._preload_done.is_set()
+    loc = cfg.profile.location
+    first = cached_home_resolution(
+        loc,
+        cross_border=True,
+        home_country="DE",
+        cache_dir=config_service.dirs["cache"],
+    )
+    assert first is not None and first.ok
+    from core.location import flush_home_coord_writes
+
+    flush_home_coord_writes()
+
+    counts = {"read": 0, "json": 0, "stamp": 0}
+    real_read = cache.read_home_record
+    real_loads = cache.json.loads
+    real_stamp = cache.geo_index_stamp
+
+    def _read(*args, **kwargs):
+        counts["read"] += 1
+        return real_read(*args, **kwargs)
+
+    def _loads(*args, **kwargs):
+        counts["json"] += 1
+        return real_loads(*args, **kwargs)
+
+    def _stamp():
+        counts["stamp"] += 1
+        return real_stamp()
+
+    monkeypatch.setattr(location_mod, "read_home_record", _read)
+    monkeypatch.setattr(cache.json, "loads", _loads)
+    monkeypatch.setattr(cache, "geo_index_stamp", _stamp)
+    second = cached_home_resolution(
+        loc, cross_border=True, home_country="DE", cache_dir=config_service.dirs["cache"]
+    )
+    assert second is first or (second is not None and second.ok)
+    assert counts == {"read": 0, "json": 0, "stamp": 0}
+    home_location_notice(loc, cfg)
+    assert counts == {"read": 0, "json": 0, "stamp": 0}
+
+
+def test_user_save_writes_once_on_the_caller_thread(config_service, geo_ready, monkeypatch):
+    """Nutzer-Speichern: genau ein fsync, auf dem Aufrufer-Thread."""
+    import core.location as location_mod
+    from core.geo_resolve import bind_ui_thread, preload_geo_index_async
+    import core.geo_resolve as geo
+
+    _seed_berlin(config_service)
+    cfg = config_service.load()
+    reset_home_resolution_cache_for_tests()
+    thread = preload_geo_index_async()
+    if thread is not None:
+        thread.join(timeout=60)
+    assert geo._preload_done.is_set()
+    bind_ui_thread()
+    writes = []
+    real = location_mod.write_home_coordinates
+
+    def _wrapped(*args, **kwargs):
+        writes.append(threading.get_ident())
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(location_mod, "write_home_coordinates", _wrapped)
+    loc = cfg.profile.location
+    loc.home_address = "Speicherstraße 1, 20095 Hamburg"
+    loc.postal_code = "20095"
+    loc.city = "Hamburg"
+    loc.country = "DE"
+    outcome = store_user_home_coordinates(loc, cfg, cache_dir=config_service.dirs["cache"])
+    assert outcome == "resolved"
+    assert writes == [threading.get_ident()]
+
+
+def test_gui_refresh_while_loading_stays_under_5ms_and_does_not_write(
+    qapp, config_service, geo_ready, monkeypatch
+):
+    """GUI-Thread: jeder Aufruf unter 5 ms, kein Schreiben. Abstand kommt nach dem Worker."""
+    import time
+
+    import core.geo_resolve as geo
+    import core.location as location
+    from core.models import Job, RemoteType
+
+    _silence(monkeypatch)
+    i18n.set_language("de")
+    _seed_berlin(config_service)
+    cfg = config_service.load()
+    db = Database(cfg.db_path, recover=False)
+    db.upsert_job(
+        Job(
+            id="stale-12",
+            source="indeed",
+            title="Alpha",
+            company="Nord",
+            city="Berlin",
+            postal_code="10115",
+            country_code="DE",
+            remote_type=RemoteType.ONSITE.value,
+            match_score=90,
+            status="new",
+            distance_km=12.0,
+        )
+    )
+    db.upsert_job(
+        Job(
+            id="stale-0",
+            source="indeed",
+            title="Beta",
+            company="Süd",
+            city="Hamburg",
+            postal_code="20095",
+            country_code="DE",
+            remote_type=RemoteType.ONSITE.value,
+            match_score=80,
+            status="new",
+            distance_km=0.0,
+        )
+    )
+    db.upsert_job(
+        Job(
+            id="needs-place",
+            source="indeed",
+            title="Gamma",
+            company="Ost",
+            city="Leipzig",
+            postal_code="04109",
+            country_code="DE",
+            remote_type=RemoteType.ONSITE.value,
+            match_score=70,
+            status="new",
+        )
+    )
+    hold = threading.Event()
+    hold_geo_preload_for_tests(hold)
+    records: list[tuple[int, float, str]] = []
+
+    def _timed(kind, real):
+        def _wrapped(*args, **kwargs):
+            started = time.perf_counter()
+            try:
+                return real(*args, **kwargs)
+            finally:
+                records.append((threading.get_ident(), time.perf_counter() - started, kind))
+
+        return _wrapped
+
+    monkeypatch.setattr(location, "resolve_place", _timed("resolve", location.resolve_place))
+    monkeypatch.setattr(geo, "resolve_place", _timed("resolve", geo.resolve_place))
+    monkeypatch.setattr(
+        location, "write_home_coordinates", _timed("write", location.write_home_coordinates)
+    )
+    win = _open_main(qapp, config_service)
+    try:
+        gui = threading.get_ident()
+        qapp.processEvents()
+        assert "Entfernung wird ermittelt" in win.profile.home_status.text()
+        assert win.profile.home_status.objectName() == "HomeStatusPending"
+        assert win.profile.home_status.movie() is None
+        for row in range(win.jobs.table.rowCount()):
+            cell = win.jobs.table.item(row, 3).text()
+            assert cell == ""
+            assert "0 km" not in cell
+            assert "12" not in cell
+        gui_calls = [item for item in records if item[0] == gui]
+        assert gui_calls
+        assert all(duration < 0.005 for _ident, duration, _kind in gui_calls)
+        assert all(kind != "write" for _ident, _duration, kind in gui_calls)
+        from PySide6.QtCore import Qt
+
+        role = Qt.ItemDataRole.UserRole
+        beta_row = None
+        for row in range(win.jobs.job_list.count()):
+            item = win.jobs.job_list.item(row)
+            if item is not None and item.data(role) == "stale-0":
+                beta_row = row
+                win.jobs.job_list.setCurrentRow(row)
+        assert beta_row is not None
+        bar = win.jobs.job_list.verticalScrollBar()
+        if bar.maximum() > 0:
+            bar.setValue(bar.maximum())
+        scroll = bar.value()
+        selected = win.jobs.job_list.currentItem().data(role)
+        passes = win.jobs._distance_order_passes
+        seen = [win.profile.home_status.text()]
+        hold.set()
+        deadline = time.monotonic() + 20
+        while "aufgelöst" not in win.profile.home_status.text():
+            text = win.profile.home_status.text()
+            if not seen or seen[-1] != text:
+                seen.append(text)
+            if time.monotonic() >= deadline:
+                raise AssertionError(seen)
+            qapp.processEvents()
+        final = win.profile.home_status.text()
+        if not seen or seen[-1] != final:
+            seen.append(final)
+        assert seen[0].startswith("Entfernung wird ermittelt") or any(
+            text.startswith("Entfernung wird ermittelt") for text in seen
+        )
+        assert sum(text.startswith("Entfernung wird ermittelt") for text in seen) == 1
+        assert seen[-1] != seen[0]
+        assert "aufgelöst" in seen[-1]
+        assert win.jobs._distance_order_passes == passes + 1
+        current = win.jobs.job_list.currentItem()
+        assert current is not None and current.data(role) == selected
+        assert win.jobs.job_list.verticalScrollBar().value() == scroll
+    finally:
+        hold.set()
+        _close(win, qapp)

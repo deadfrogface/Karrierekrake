@@ -234,7 +234,7 @@ def test_ui_thread_does_not_false_resolve_while_the_index_loads(qapp, geo_ready)
     bind_home_notice_label(label, while_loading)
     assert label.isVisible()
     assert label.objectName() == "HomeStatusPending"
-    assert "wird noch geprüft" in label.text()
+    assert "Entfernung wird ermittelt" in label.text()
     assert "nicht gefunden" not in label.text()
     assert "aufgelöst" not in label.text()
 

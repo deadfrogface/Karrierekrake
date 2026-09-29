@@ -211,7 +211,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "ohne PLZ wird kein Ort geschätzt und der Umkreisfilter übersprungen."
         ),
         "dash.home_resolved": "Wohnort aufgelöst: {place}. Distanzfilter aktiv.",
-        "dash.home_checking": "Standort wird noch geprüft …",
+        "dash.home_checking": "Entfernung wird ermittelt …",
         "dash.home_index_unavailable": (
             "Für {country} fehlen die Standortdaten. "
             "Die Suche läuft deshalb ohne Entfernungsfilter."
@@ -1329,7 +1329,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "without a postal code no place is guessed and the radius filter is skipped."
         ),
         "dash.home_resolved": "Home location resolved: {place}. Distance filter active.",
-        "dash.home_checking": "Location is still being checked …",
+        "dash.home_checking": "Distance is being determined …",
         "dash.home_index_unavailable": (
             "Location data for {country} is missing. "
             "Search therefore runs without a distance filter."
