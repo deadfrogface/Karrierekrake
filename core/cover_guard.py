@@ -35,6 +35,34 @@ _ENGLISH_CLASS_WORD = re.compile(
     re.I,
 )
 _ENGLISH_LICENCE_WORD = re.compile(r"\blicen[cs]e\b", re.I)
+_VEHICLE_LICENCE = re.compile(
+    r"\b(?P<vehicle>lkw|lastwagen|truck|hgv|bus|motorrad|motorcycle|motorbike)"
+    r"(?:[-\s]*)"
+    r"(?:führerschein|fuehrerschein|fahrerlaubnis|(?:(?:driver(?:['’]s)?|driving)\s+)?licen[cs]e)\b|"
+    r"\b(?:führerschein|fuehrerschein|fahrerlaubnis|(?:(?:driver(?:['’]s)?|driving)\s+)?licen[cs]e)"
+    r"\s+(?:für|fuer|for)\s+(?:einen?\s+)?"
+    r"(?P<after>lkw|lastwagen|truck|hgv|bus|motorrad|motorcycle|motorbike)\b",
+    re.I,
+)
+_VEHICLE_LICENCE_CLASSES = {
+    "lkw": frozenset({"C1", "C1E", "C", "CE"}),
+    "bus": frozenset({"D1", "D1E", "D", "DE"}),
+    "motorrad": frozenset({"A1", "A2", "A"}),
+}
+
+
+def _vehicle_licence_claims(sentence: str, allowed: frozenset[str]) -> list[str]:
+    """Reject broad vehicle claims unless a fitting confirmed class exists."""
+    unsupported: list[str] = []
+    for match in _VEHICLE_LICENCE.finditer(sentence):
+        vehicle = (match.group("vehicle") or match.group("after")).casefold()
+        if vehicle in {"lastwagen", "truck", "hgv"}:
+            vehicle = "lkw"
+        elif vehicle in {"motorcycle", "motorbike"}:
+            vehicle = "motorrad"
+        if not (_VEHICLE_LICENCE_CLASSES[vehicle] & allowed):
+            unsupported.append(match.group(0))
+    return unsupported
 # A newline always ends a sentence. Space after . ! ? ends it too, except when
 # the period belongs to an abbreviation. ``\s`` is not used: it would swallow
 # the newline and glue the next line to a class (``Klasse C.\nMit``).
@@ -383,7 +411,7 @@ def _is_licence_sentence(sentence: str) -> bool:
     ``class`` and ``category`` do not count on their own. They count when the
     same sentence also contains ``licence`` or ``license``.
     """
-    if _LICENCE_SENTENCE.search(sentence):
+    if _LICENCE_SENTENCE.search(sentence) or _VEHICLE_LICENCE.search(sentence):
         return True
     return bool(
         _ENGLISH_CLASS_WORD.search(sentence) and _ENGLISH_LICENCE_WORD.search(sentence)
@@ -458,6 +486,7 @@ def _claims_in_prepared_letter(letter: str, prepared: PreparedCoverCheck) -> lis
             for code in _licence_codes_in_sentence(sentence):
                 if code not in prepared.licence_codes:
                     flagged.append(code)
+            flagged.extend(_vehicle_licence_claims(sentence, prepared.licence_codes))
         for token in _CLAIM_TOKEN.findall(sentence):
             if token.casefold() in _STOP:
                 continue
@@ -649,5 +678,3 @@ def prepare_cover_check(
         employers=_confirmed_field(config, "work_experience", "company"),
         degrees=_confirmed_field(config, "education", "qualification"),
     )
-
-
