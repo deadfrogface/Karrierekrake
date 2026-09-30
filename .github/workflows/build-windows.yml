@@ -88,9 +88,15 @@ jobs:
           "@ | Set-Content dist\build_metadata.txt
           Get-Item "dist\Karrierekrake.exe" | Format-List FullName, Length
           # Fail if this is a console subsystem EXE (users must not see a terminal).
-          $bytes = [System.IO.File]::ReadAllBytes("dist\Karrierekrake.exe")
-          $pe = [BitConverter]::ToInt32($bytes, 0x3C)
-          $subsystem = [BitConverter]::ToUInt16($bytes, $pe + 0x5C)
+          $stream = [System.IO.File]::OpenRead("dist\Karrierekrake.exe")
+          try {
+            $bytes = [byte[]]::new(4096)
+            $read = $stream.Read($bytes, 0, $bytes.Length)
+            if ($read -lt 256) { throw "EXE header truncated" }
+            $pe = [BitConverter]::ToInt32($bytes, 0x3C)
+            if ($pe -lt 0 -or $pe + 0x5E -gt $read) { throw "Invalid PE header offset" }
+            $subsystem = [BitConverter]::ToUInt16($bytes, $pe + 0x5C)
+          } finally { $stream.Dispose() }
           # 2 = WINDOWS_GUI, 3 = WINDOWS_CUI
           if ($subsystem -ne 2) { Write-Error "EXE subsystem=$subsystem (expected 2=WINDOWS_GUI / noconsole)"; exit 1 }
           Write-Host "EXE subsystem=WINDOWS_GUI (noconsole) OK"

@@ -27,6 +27,7 @@ protobuf>=5.29.6
 # Optional: Gmail / Calendar OAuth (features degrade gracefully if missing)
 google-api-python-client>=2.100.0
 google-auth-oauthlib>=1.2.0
+oauthlib>=4.0.0
 google-auth>=2.23.0
 keyring>=24.0.0
 tenacity>=8.2.0
