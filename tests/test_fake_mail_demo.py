@@ -13,6 +13,13 @@ from integrations.providers.enums import ProviderError
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def restore_demo_environment(monkeypatch):
+    """The demo sets process env directly; do not leak it into later tests."""
+    monkeypatch.setenv("KARRIEREKRAKE_FAKE_MAIL_DEMO", "0")
+    monkeypatch.setenv("KARRIEREKRAKE_ALLOW_FAKE_PROVIDERS", "0")
+
+
 def test_demo_is_isolated_idempotent_and_draft_only(tmp_path, monkeypatch):
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     base = configure_isolation()
