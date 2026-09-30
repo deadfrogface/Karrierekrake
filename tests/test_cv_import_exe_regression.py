@@ -288,35 +288,26 @@ def test_resolve_stale_env_falls_through_to_sidecar(
     assert rt.resolve_cv_model_path() == sidecar
 
 
-def test_package_windows_release_requires_sidecar(tmp_path: Path) -> None:
+def test_package_windows_release_rejects_exe_without_embedded_model(tmp_path: Path) -> None:
     from scripts import package_windows_release as pkg
 
     dist = tmp_path / "dist"
     dist.mkdir()
     (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
-    with pytest.raises(SystemExit, match="sidecar missing"):
+    with pytest.raises(SystemExit, match="Standalone EXE model gate failed"):
         pkg.require_release_layout(dist)
 
 
-def test_package_windows_release_stages_install(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_package_windows_release_stages_install(tmp_path: Path) -> None:
     from scripts import package_windows_release as pkg
 
     dist = tmp_path / "dist"
-    gguf = dist / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf"
-    gguf.parent.mkdir(parents=True)
-    # Size gate is 1GB — stub the check for unit speed.
-    gguf.write_bytes(b"x" * 64)
+    dist.mkdir()
     (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
-    monkeypatch.setattr(pkg, "_sha256", lambda _p: pkg.CV_MODEL_SHA256)
-    monkeypatch.setattr(
-        pkg,
-        "require_release_layout",
-        lambda d: d / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf",
-    )
     install = tmp_path / "install"
     exe = pkg.stage_install_dir(dist, install)
     assert exe.is_file()
-    assert (install / "models" / "qwen3.5-4b" / "Qwen3.5-4B-Q4_K_M.gguf").is_file()
+    assert not (install / "models").exists()
     assert (install / "INSTALL.txt").is_file()
 
 
