@@ -5,6 +5,7 @@ HARD RULE: never try Gmail → Outlook → IMAP. One selected provider or error.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +31,10 @@ def resolve_mail_adapter(
     Never silently substitutes another provider.
     """
     chosen = parse_mail_provider(provider)
+    if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1" and chosen not in {
+        MailProvider.NONE, MailProvider.FAKE_INPROCESS,
+    }:
+        raise ProviderError("mail", "real_provider_forbidden_in_fake_demo", reconnectable=False)
     if chosen is MailProvider.NONE:
         if allow_none:
             return None

@@ -5,6 +5,7 @@ HARD RULE: never try Google → Microsoft → CalDAV. One selected provider or e
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +26,10 @@ def resolve_calendar_adapter(
     allow_none: bool = False,
 ) -> CalendarProviderAdapter | None:
     chosen = parse_calendar_provider(provider)
+    if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1" and chosen not in {
+        CalendarProvider.NONE, CalendarProvider.FAKE_INPROCESS,
+    }:
+        raise ProviderError("calendar", "real_provider_forbidden_in_fake_demo", reconnectable=False)
     if chosen is CalendarProvider.NONE:
         if allow_none:
             return None

@@ -6,9 +6,13 @@ six-button control wall.
 
 from __future__ import annotations
 
+import os
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtWidgets import (
     QFrame,
+    QDialog,
+    QDialogButtonBox,
+    QFormLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -77,6 +81,11 @@ class InboxPage(QWidget):
         header.addLayout(title_col, stretch=1)
         self.account_chip = TagChip("", kind="neutral")
         header.addWidget(self.account_chip)
+        self.add_test_mail_btn = QPushButton("Test-Mail hinzufügen")
+        self.add_test_mail_btn.setObjectName("SecondaryButton")
+        self.add_test_mail_btn.setVisible(os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1")
+        self.add_test_mail_btn.clicked.connect(self._add_test_mail)
+        header.addWidget(self.add_test_mail_btn)
         self.refresh_btn = QToolButton()
         self.refresh_btn.setObjectName("SecondaryButton")
         self.refresh_btn.setToolTip(tr("inbox.refresh_tooltip"))
@@ -198,14 +207,21 @@ class InboxPage(QWidget):
 
     def retranslate_ui(self) -> None:
         self.title.setText(tr("nav.inbox"))
-        self.subtitle.setText(tr("inbox.subtitle"))
+        self.subtitle.setText(
+            "TESTVERSION · Fiktives Postfach · Kein E-Mail-Versand"
+            if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1"
+            else tr("inbox.subtitle")
+        )
         self.search.setPlaceholderText(tr("inbox.search_placeholder"))
         self.refresh_btn.setText("↻")
         self.refresh_btn.setToolTip(tr("inbox.refresh_tooltip"))
         set_accessible_name(self.refresh_btn, tr("inbox.refresh_tooltip"))
         self.context_label.setText(tr("inbox.linked_application"))
         self.open_case_btn.setText(tr("inbox.open_application"))
-        self.account_chip.setText(tr("inbox.mirrored_account"))
+        self.account_chip.setText(
+            "FAKE-POSTFACH · TEST" if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1"
+            else tr("inbox.mirrored_account")
+        )
         self.empty_panel.set_texts(tr("inbox.empty_title"), tr("inbox.empty_body"))
         if hasattr(self.lifecycle, "retranslate"):
             self.lifecycle.retranslate()
@@ -259,7 +275,7 @@ class InboxPage(QWidget):
             actions.append((tr("lifecycle.draft_reply"), self._action_draft))
 
         # Interview actions only for real interview domain state
-        if kind == "interview" and case_id:
+        if kind == "interview" and case_id and status not in {"ambiguous", "review_required"}:
             actions.append((tr("lifecycle.interview_prep"), self._action_prep))
             actions.append((tr("lifecycle.calendar_proposal"), self._action_calendar))
 
@@ -315,6 +331,39 @@ class InboxPage(QWidget):
             self.refresh_btn.setEnabled(True)
             self._refreshing = False
 
+    def _add_test_mail(self) -> None:
+        if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") != "1":
+            return
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Fiktive Test-Mail hinzufügen")
+        form = QFormLayout(dlg)
+        sender = QLineEdit()
+        sender.setPlaceholderText("hr@beispiel.example.test")
+        subject = QLineEdit()
+        body = QTextEdit()
+        body.setMinimumHeight(140)
+        form.addRow("Absender", sender)
+        form.addRow("Betreff", subject)
+        form.addRow("Nachricht", body)
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(dlg.accept)
+        buttons.rejected.connect(dlg.reject)
+        form.addRow(buttons)
+        if dlg.exec() != QDialog.DialogCode.Accepted:
+            return
+        from desktop.fake_mail_demo import inject_demo_message
+
+        try:
+            inject_demo_message(
+                sender=sender.text(), subject=subject.text(), body=body.toPlainText()
+            )
+        except ValueError:
+            QMessageBox.warning(self, "Test-Mail", "Bitte Absender, Betreff und Nachricht eingeben.")
+            return
+        self.refresh()
+
     def _tick_spin(self) -> None:
         frames = ("↻", "⟳", "↺", "⟲")
         self._spin_phase = (self._spin_phase + 1) % len(frames)
@@ -336,7 +385,8 @@ class InboxPage(QWidget):
                 email.get("received_at") or email.get("created_at"),
                 lang=i18n.language,
             )
-            item = QListWidgetItem(f"{sender}\n{subject}\n{chip} · {when}")
+            category = email.get("category") or ""
+            item = QListWidgetItem(f"{sender}\n{subject}\n{category} · {chip} · {when}")
             item.setData(Qt.ItemDataRole.UserRole, email.get("id"))
             self.list.addItem(item)
         if self._emails:
@@ -464,6 +514,7 @@ class InboxPage(QWidget):
         )
 
     def _action_draft(self) -> None:
+        self.lifecycle.refresh()
         case_id = (self._selected or {}).get("case_id") or ""
         if case_id:
             # Select matching case row for lifecycle draft helper
@@ -472,10 +523,18 @@ class InboxPage(QWidget):
                 if item and item.text() == case_id:
                     self.lifecycle.cases.selectRow(r)
                     break
-        self.lifecycle.prepare_followup_draft()
+        self.lifecycle.prepare_followup_draft(source_email=self._selected)
 
     def _action_calendar(self) -> None:
-        self.lifecycle.prepare_calendar_proposal()
+        self.lifecycle.refresh()
+        case_id = (self._selected or {}).get("case_id") or ""
+        if case_id:
+            for r in range(self.lifecycle.cases.rowCount()):
+                item = self.lifecycle.cases.item(r, 4)
+                if item and item.text() == case_id:
+                    self.lifecycle.cases.selectRow(r)
+                    break
+        self.lifecycle.prepare_calendar_proposal(source_email=self._selected)
 
     def _action_prep(self) -> None:
         self.lifecycle.show_prep()

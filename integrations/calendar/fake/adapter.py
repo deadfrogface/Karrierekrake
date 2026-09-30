@@ -49,6 +49,10 @@ class FakeInProcessCalendarAdapter:
         del q
         return list(self._busy)
 
+    def seed_busy(self, intervals: list[BusyInterval]) -> None:
+        """Load opaque test availability without writing a real calendar."""
+        self._busy = list(intervals)
+
     def create_event(self, draft: CalendarEventDraft) -> CalendarEventRef:
         # Idempotent by client_request_id
         for existing in self._created:

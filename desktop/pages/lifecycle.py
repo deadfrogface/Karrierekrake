@@ -66,13 +66,13 @@ class LifecyclePage(QWidget):
         self.link_btn.clicked.connect(self.prepare_link_email)
         self.draft_btn = QPushButton()
         self.draft_btn.setObjectName("SecondaryButton")
-        self.draft_btn.clicked.connect(self.prepare_followup_draft)
+        self.draft_btn.clicked.connect(lambda: self.prepare_followup_draft())
         self.prep_btn = QPushButton()
         self.prep_btn.setObjectName("SecondaryButton")
         self.prep_btn.clicked.connect(self.show_prep)
         self.calendar_btn = QPushButton()
         self.calendar_btn.setObjectName("SecondaryButton")
-        self.calendar_btn.clicked.connect(self.prepare_calendar_proposal)
+        self.calendar_btn.clicked.connect(lambda: self.prepare_calendar_proposal())
 
         # Actions sit in a bottom footer (not a top primary wall)
         btn_row = footer_actions_layout(
@@ -342,7 +342,7 @@ class LifecyclePage(QWidget):
         )
         self.approval.setVisible(True)
 
-    def prepare_followup_draft(self) -> None:
+    def prepare_followup_draft(self, *, source_email: dict | None = None) -> None:
         case_id = self._selected_case_id()
         if not case_id:
             QMessageBox.information(self, tr("nav.guenther"), tr("lifecycle.select_case"))
@@ -352,11 +352,40 @@ class LifecyclePage(QWidget):
         if not case:
             return
         cfg = self.config_service.load()
-        draft = build_follow_up_draft(
-            case.to_dict(),
-            applicant_name=cfg.application.full_name,
+        if source_email:
+            from integrations.reply_draft import ReplyAction, build_action_draft
+            import os
+
+            category = (source_email.get("category") or "").lower()
+            proposed_slots = None
+            action = ReplyAction.GENERAL_REPLY
+            if (
+                category in {"interview", "interview_invite"}
+                and os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1"
+            ):
+                from desktop.fake_mail_demo import demo_freebusy
+                from integrations.calendar_scheduling import propose_ranked_slots
+
+                proposal = propose_ranked_slots(
+                    source_email.get("body_text") or "", case_id=case_id,
+                    freebusy=demo_freebusy(),
+                )
+                proposed_slots = [slot.start.isoformat() for slot in proposal.ranked_slots[:3]]
+                action = ReplyAction.PROPOSE_SLOTS
+            draft = build_action_draft(
+                action, case.to_dict(), applicant_name=cfg.application.full_name,
+                proposed_slots=proposed_slots,
+            )
+        else:
+            draft = build_follow_up_draft(
+                case.to_dict(), applicant_name=cfg.application.full_name,
+            )
+        import os
+
+        gate = SendGate(
+            allow_send=bool(cfg.settings.allow_employer_email_send)
+            and os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") != "1"
         )
-        gate = SendGate(allow_send=bool(cfg.settings.allow_employer_email_send))
         draft.draft_only = bool(cfg.settings.email_draft_only) or not gate.allow_send
         self._pending_draft = draft
         self._pending_calendar = None
@@ -372,7 +401,7 @@ class LifecyclePage(QWidget):
             )
         )
 
-    def prepare_calendar_proposal(self) -> None:
+    def prepare_calendar_proposal(self, *, source_email: dict | None = None) -> None:
         case_id = self._selected_case_id()
         if not case_id:
             QMessageBox.information(self, tr("nav.guenther"), tr("lifecycle.select_case"))
@@ -381,11 +410,41 @@ class LifecyclePage(QWidget):
         case = db.get_case(case_id)
         if not case:
             return
-        summary = (
-            f"{case.company} — {case.position}\n"
-            f"{tr('approval.calendar_body')}\n"
-            f"Status: {case.status}"
-        )
+        if source_email:
+            from integrations.calendar_scheduling import propose_ranked_slots
+            import os
+
+            freebusy = None
+            if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+                from desktop.fake_mail_demo import demo_freebusy
+
+                freebusy = demo_freebusy()
+
+            proposal = propose_ranked_slots(
+                source_email.get("body_text") or "", case_id=case_id,
+                freebusy=freebusy,
+            )
+            slots = proposal.ranked_slots
+            if slots:
+                summary = (
+                    f"{case.company} — {case.position}\n"
+                    + "\n".join(
+                        f"{slot.rank}. {slot.start.isoformat()} – {slot.end.isoformat()}"
+                        for slot in slots[:3]
+                    )
+                )
+            else:
+                summary = (
+                    f"{case.company} — {case.position}\n"
+                    f"Keine verlässlich erkennbaren freien Termine: {proposal.stop_reason or ', '.join(proposal.parse_errors)}. "
+                    "Bitte Einladung und Kalender manuell prüfen."
+                )
+        else:
+            summary = (
+                f"{case.company} — {case.position}\n"
+                f"{tr('approval.calendar_body')}\n"
+                f"Status: {case.status}"
+            )
         self._pending_calendar = {"case_id": case_id, "summary": summary}
         self._pending_draft = None
         self._pending_mail = None
@@ -411,7 +470,12 @@ class LifecyclePage(QWidget):
             return
         if self._pending_draft is not None:
             cfg = self.config_service.load()
-            gate = SendGate(allow_send=bool(cfg.settings.allow_employer_email_send))
+            import os
+
+            gate = SendGate(
+                allow_send=bool(cfg.settings.allow_employer_email_send)
+                and os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") != "1"
+            )
             draft = gate.approve(self._pending_draft)
             # Still draft-only unless send is enabled — no auto-send.
             result = gate.attempt_send(

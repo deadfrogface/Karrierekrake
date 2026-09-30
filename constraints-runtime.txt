@@ -71,7 +71,7 @@ MarkupSafe==3.0.3
 markdownify==0.13.1
 more-itertools==11.1.0
 numpy==1.26.3
-oauthlib==3.3.1
+oauthlib==4.0.0
 opentelemetry-api==1.44.0
 pandas==2.3.3
 pgeocode==0.5.0

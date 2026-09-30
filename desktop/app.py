@@ -112,6 +112,10 @@ def _try_notify_existing_instance() -> bool:
 
 
 def run() -> int:
+    global _INSTANCE_KEY, _INSTANCE_SERVER
+    if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+        _INSTANCE_KEY = SINGLE_INSTANCE_KEY + "-FakeMailDemo"
+        _INSTANCE_SERVER = LOCAL_SERVER_NAME + "-FakeMailDemo"
     QGuiApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
     )
@@ -193,6 +197,8 @@ def run() -> int:
         )
 
     window = MainWindow(config_service)
+    if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+        window.setWindowTitle("Karrierekrake – TESTVERSION: fiktives Postfach")
     QLocalServer.removeServer(_INSTANCE_SERVER)
     server = QLocalServer(app)
     server.listen(_INSTANCE_SERVER)
@@ -213,11 +219,25 @@ def run() -> int:
     app._karrierekrake_server = server  # type: ignore[attr-defined]
 
     window.show()
-    window.maybe_run_wizard()
+    if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+        window.navigate_to("nav.inbox")
+    else:
+        window.maybe_run_wizard()
     return app.exec()
 
 
 def main() -> int:
+    if "--fake-mail-demo-check" in sys.argv:
+        from desktop.fake_mail_demo import smoke_check
+
+        index = sys.argv.index("--fake-mail-demo-check")
+        if index + 1 >= len(sys.argv):
+            return 2
+        return smoke_check(Path(sys.argv[index + 1]))
+    if "--fake-mail-demo" in sys.argv:
+        from desktop.fake_mail_demo import launch
+
+        return launch()
     # Packaged worker mode: must run before GUI / single-instance lock.
     # Supervisor spawns ``Karrierekrake.exe --cv-import-child …`` when frozen;
     # without this branch the child opens the normal app, hits the lock, and
