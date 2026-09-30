@@ -681,6 +681,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Ohne Namen und Kontakt ist das Ergebnis nicht verlässlich. "
             "Bitte Profil manuell ausfüllen. Es wurde nichts übernommen."
         ),
+        "cv_import.error_incomplete": (
+            "Sprachen, Kenntnisse, Software oder Weiterbildungen wurden nicht vollständig erkannt. "
+            "Es wurde nichts übernommen. Bitte erneut versuchen oder manuell eintragen."
+        ),
         "cv_import.empty": (
             "Im Dokument wurde nichts erkannt. Trag das Profil manuell ein "
             "oder lies die Datei erneut ein."
@@ -1790,6 +1794,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "cv_import.error_unreliable": (
             "Without name and contact the result is not reliable. "
             "Please fill the profile manually. Nothing was applied."
+        ),
+        "cv_import.error_incomplete": (
+            "Languages, skills, software or certificates were not fully recognized. "
+            "Nothing was applied. Please retry or enter the missing details manually."
         ),
         "cv_import.empty": (
             "Nothing was found in the document. Enter the profile manually "

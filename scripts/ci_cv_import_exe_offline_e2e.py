@@ -636,6 +636,25 @@ def _preview_has_identity(payload: dict) -> bool:
     return has_email and has_person
 
 
+def _preview_qualification_counts(payload: dict) -> dict[str, int]:
+    """Exercise the real import filter and replace mapping, not just identity."""
+    from core.config import QualificationsConfig
+    from core.cv_parser import parsed_to_qualifications
+    from desktop.services.profile_merge import filter_parsed_for_import, replace_qualifications
+
+    parsed = payload.get("parsed") or {}
+    result = replace_qualifications(
+        QualificationsConfig(),
+        parsed_to_qualifications(filter_parsed_for_import(parsed)),
+    )
+    return {
+        "languages": len(result.languages),
+        "skills": len(result.skill_values()),
+        "software": len(result.software_values()),
+        "certificates": len(result.certificates),
+    }
+
+
 def _forbidden_in_user_copy(text: str) -> list[str]:
     banned = ("Qwen", "Docpick", "DET", "Phi-4", "GGUF", "llama.cpp", "LLM-CV")
     return [t for t in banned if t.lower() in (text or "").lower()]
@@ -766,12 +785,18 @@ def main(argv: list[str] | None = None) -> int:
             payload = _run_child_import(
                 exe, cv, out_json, local_appdata=local, timeout_s=args.import_timeout
             )
-            import_ok = bool(payload.get("ok")) and _preview_has_identity(payload)
+            qual_counts = _preview_qualification_counts(payload) if payload.get("ok") else {}
+            import_ok = (
+                bool(payload.get("ok")) and _preview_has_identity(payload)
+                and all(qual_counts.get(key, 0) > 0 for key in
+                        ("languages", "skills", "software", "certificates"))
+            )
             msg = str(payload.get("message") or "")
             forbidden = _forbidden_in_user_copy(msg) if not payload.get("ok") else []
             report["steps"]["import"] = {
                 **_import_report_slice(payload),
                 "ok": import_ok and not forbidden,
+                "qualification_counts": qual_counts,
                 "forbidden_tokens": forbidden,
             }
             if not report["steps"]["import"]["ok"]:
@@ -798,10 +823,16 @@ def main(argv: list[str] | None = None) -> int:
                 payload_en = _run_child_import(
                     exe, cv_en, out_en, local_appdata=local, timeout_s=args.import_timeout
                 )
-                en_ok = bool(payload_en.get("ok")) and _preview_has_identity(payload_en)
+                en_counts = _preview_qualification_counts(payload_en) if payload_en.get("ok") else {}
+                en_ok = (
+                    bool(payload_en.get("ok")) and _preview_has_identity(payload_en)
+                    and all(en_counts.get(key, 0) > 0 for key in
+                            ("languages", "skills", "software", "certificates"))
+                )
                 report["steps"]["import_en"] = {
                     **_import_report_slice(payload_en),
                     "ok": en_ok,
+                    "qualification_counts": en_counts,
                     "cv": str(cv_en),
                 }
                 if not en_ok:

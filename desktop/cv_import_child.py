@@ -72,6 +72,11 @@ _KIND_MESSAGES: dict[str, str] = {
         "Ohne Namen und Kontakt ist das Ergebnis nicht verlässlich. "
         "Bitte Profil manuell ausfüllen."
     ),
+    "incomplete_extract": (
+        "Sprachen, Kenntnisse, Software oder Weiterbildungen wurden trotz "
+        "entsprechender CV-Abschnitte nicht vollständig erkannt. "
+        "Es wurde nichts übernommen. Bitte erneut versuchen oder manuell eintragen."
+    ),
     "peak_rss_exceeded": (
         "Nicht genug Arbeitsspeicher für den Lebenslauf-Import auf diesem Gerät. "
         "Es wurde nichts übernommen."
