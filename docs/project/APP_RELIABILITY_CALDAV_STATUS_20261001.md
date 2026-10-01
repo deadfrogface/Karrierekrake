@@ -38,3 +38,11 @@ The frozen NV3 parser score remains 0.980; these tests are not a new independent
 - Calendar UI now performs real proposal/create flow; provider-wide appointment updates/deletion and an event timeline are not added in this change.
 - Loopback HTTPS Radicale test passed discovery, recurring-event expansion with EXDATE, event creation and duplicate retry using the actual python-caldav HTTP protocol. This exposed and fixed an invalid GET-method call in the retry path. Library event-body warnings are suppressed to protect calendar contents. External-provider compatibility still needs a dedicated account test.
 - Network portal availability, real OAuth grants and actual Qwen-generated letter/reply quality need live evidence. Existing gold and safety tests are not substituted for that evidence.
+
+## Stronger persistence evidence / test boundary
+
+The old acceptance script's Apply step only wrote personal YAML manually; it did not prove languages/skills/software/certificates persisted. It now runs the actual CvImportDialog preview/accept and ConfigService save/reload in CI Python, checking all four lists remain nonempty and unchanged across restart. This discovered an actual config-load bug: source-tagged real Excel/Communication/DE-C1 values could be wiped by old example-set cleanup. CV/manual provenance is now preserved; legacy unsourced example cleanup stays.
+
+The acceptance remains a hybrid test: extraction/start/restart execute the packaged EXE; dialog Apply and writing execute CI Python. The writer resolves the same GGUF materialized by the EXE. This does not prove clicking the writer UI in the packaged executable. Report modes explicitly distinguish these paths. No full packaged desktop UI-E2E claim.
+
+Account-task errors now use provider-neutral safe text instead of incorrectly labelling CalDAV/IMAP failures as Microsoft failures. These changes have targeted offscreen Qt/config tests.

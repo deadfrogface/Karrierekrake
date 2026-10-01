@@ -53,3 +53,10 @@ def message_for_microsoft_error(exc: BaseException) -> str:
             return tr("privacy.connect_ms_cancelled")
     detail = name  # type name only — never raw exception body (may leak URLs)
     return tr("privacy.connect_ms_failed", detail=detail)
+
+
+def message_for_account_error(exc: BaseException) -> str:
+    """Safe provider-neutral text for background account tasks."""
+    if "keyring_unavailable" in str(exc).lower():
+        return tr("privacy.connect_keyring")
+    return tr("integrations.connection_failed")

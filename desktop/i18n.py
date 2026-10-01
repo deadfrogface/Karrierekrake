@@ -2394,3 +2394,6 @@ TRANSLATIONS["en"].update({
     "calendar.write_disabled": "Calendar writing is disabled. Enable it in Settings.",
     "calendar.created": "Event created in the connected calendar.",
 })
+
+TRANSLATIONS["de"]["integrations.connection_failed"] = "Verbindung fehlgeschlagen. Bitte Serveradresse, Zugangsdaten, Berechtigungen und Netzwerk prüfen."
+TRANSLATIONS["en"]["integrations.connection_failed"] = "Connection failed. Check the server address, credentials, permissions and network."

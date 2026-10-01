@@ -767,11 +767,17 @@ def strip_example_placeholders(profile: SearchPreferences) -> SearchPreferences:
     }
     keyword_set = {k.lower() for k in profile.filters.desired_keywords}
 
-    if skill_set and skill_set <= EXAMPLE_SKILL_SET:
+    def only_placeholder_sources(items):
+        # Imported/manual values can legitimately equal old sample values.
+        # Never silently erase them during config reload.
+        return all(str(getattr(item, "source", "") or "").lower()
+                   in {"", "default", "demo", "example"} for item in items)
+
+    if skill_set and skill_set <= EXAMPLE_SKILL_SET and only_placeholder_sources(q.skills):
         q.skills = []
-    if software_set and software_set <= EXAMPLE_SOFTWARE_SET:
+    if software_set and software_set <= EXAMPLE_SOFTWARE_SET and only_placeholder_sources(q.software):
         q.software = []
-    if lang_set and lang_set <= EXAMPLE_LANGUAGE_SET | {"deutsch | c1", "englisch | b1"}:
+    if lang_set and lang_set <= EXAMPLE_LANGUAGE_SET | {"deutsch | c1", "englisch | b1"} and only_placeholder_sources(q.languages):
         q.languages = []
     if keyword_set and keyword_set <= EXAMPLE_KEYWORD_SET:
         profile.filters.desired_keywords = []

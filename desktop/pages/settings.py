@@ -1208,14 +1208,14 @@ class SettingsPage(QWidget):
             for button in controls:
                 button.setEnabled(True)
             if error:
-                from desktop.oauth_messages import message_for_microsoft_error
-                QMessageBox.warning(self, tr("privacy.tab"), message_for_microsoft_error(value))
+                from desktop.oauth_messages import message_for_account_error
+                QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(value))
             else:
                 try:
                     success(value)
                 except Exception as exc:
-                    from desktop.oauth_messages import message_for_microsoft_error
-                    QMessageBox.warning(self, tr("privacy.tab"), message_for_microsoft_error(exc))
+                    from desktop.oauth_messages import message_for_account_error
+                    QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(exc))
             if cleanup is not None:
                 cleanup()
             self._refresh_provider_status(self.config_service.load().settings)
