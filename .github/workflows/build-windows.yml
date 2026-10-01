@@ -155,9 +155,9 @@ jobs:
           path: |
             dist/Karrierekrake-Windows.zip
             dist/Karrierekrake-Windows.zip.json
-            dist/Karrierekrake.exe
             dist/build_metadata.txt
             dist/content_manifest.json
             artifacts/cv_import_exe_offline_e2e.json
           if-no-files-found: error
+          compression-level: 0
           retention-days: 30

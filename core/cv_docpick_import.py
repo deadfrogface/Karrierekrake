@@ -663,6 +663,8 @@ def _reroute_certs_software_skills(
     certs: list[dict[str, Any]],
     software: list[str],
     skills: list[str],
+    *,
+    source_text: str = "",
 ) -> tuple[list[dict[str, Any]], list[str], list[str]]:
     """Move misplaced tool names / soft skills out of certificates."""
     from core.cv_parser import _known_software_token_match, _looks_like_soft_skill
@@ -672,11 +674,17 @@ def _reroute_certs_software_skills(
     sk = list(skills)
     soft_l = {s.lower() for s in soft}
     sk_l = {s.lower() for s in sk}
+    cert_blob = " ".join(_explicit_section_body(source_text, "certificates").casefold().split())
     for c in certs:
         name = str(c.get("name") or "").strip()
         if not name:
             continue
         low = name.lower()
+        # A course explicitly listed under Weiterbildungen remains a course,
+        # even when its title contains a software product or a soft skill.
+        if cert_blob and " ".join(name.casefold().split()) in cert_blob:
+            kept.append(c)
+            continue
         if _known_software_token_match(low) or re.search(
             r"(?i)\b(tia\s*portal|minitab|qlik|excel|sap|jira|figma|docker)\b",
             name,
@@ -1259,7 +1267,9 @@ def _extraction_messages(text: str) -> list[dict[str, str]]:
     ]
 
 
-def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
+def _llm_extract(
+    text: str, *, transport: str = "http", messages: list[dict[str, str]] | None = None
+) -> dict[str, Any]:
     """Docpick schema extract via local Qwen (HTTP server or in-process).
 
     ``transport`` is ``http`` or ``inprocess`` from ``ensure_cv_llm_ready``.
@@ -1270,7 +1280,7 @@ def _llm_extract(text: str, *, transport: str = "http") -> dict[str, Any]:
     except ImportError as exc:
         raise CvImportError("docpick_missing", "docpick_missing") from exc
 
-    messages = _extraction_messages(text)
+    messages = messages if messages is not None else _extraction_messages(text)
     try:
         if transport == "http":
             from docpick.llm.vllm_provider import VLLMProvider
@@ -1329,6 +1339,127 @@ def _parse_extraction_json(raw_text: str, *, parse_llm_json) -> dict[str, Any]:
     except Exception:  # noqa: BLE001
         pass
     raise json.JSONDecodeError("llm_json_parse_failed", "", 0)
+
+
+_LIST_SECTION_HEADINGS = {
+    "languages": re.compile(r"(?im)^\s*(?:sprachen|languages?)\s*:?\s*$"),
+    "skills": re.compile(r"(?im)^\s*(?:kenntnisse|skills|core\s+skills|fachkenntnisse)\s*:?\s*$"),
+    "software": re.compile(r"(?im)^\s*(?:software|tools|edv|applications)\s*:?\s*$"),
+    "certificates": re.compile(r"(?im)^\s*(?:weiterbildungen?|certificates?|certifications?|training)\s*:?\s*$"),
+}
+_OTHER_SECTION_HEADING = re.compile(
+    r"(?i)^\s*(?:ausbildung|education|berufserfahrung|employment|"
+    r"professional\s+experience|führerschein|driving\s+licen[cs]e|"
+    r"berufsziel|profil|profile)\s*:?\s*$"
+)
+
+
+def _explicit_section_body(source: str, key: str) -> str:
+    """Locate labeled content for a Qwen retry; this does not parse CV facts."""
+    lines: list[str] = []
+    active = False
+    for line in source.splitlines():
+        if _LIST_SECTION_HEADINGS[key].fullmatch(line):
+            active = True
+            continue
+        if active and (
+            any(heading.fullmatch(line) for heading in _LIST_SECTION_HEADINGS.values())
+            or _OTHER_SECTION_HEADING.fullmatch(line)
+        ):
+            break
+        if active and line.strip():
+            lines.append(line.strip())
+    return "\n".join(lines)
+
+
+def _missing_explicit_lists(data: dict[str, Any], source: str) -> list[str]:
+    """Identify missing model arrays only when the PDF text has an explicit heading."""
+    return [
+        key for key in _LIST_SECTION_HEADINGS
+        if not data.get(key) and _explicit_section_body(source, key)
+    ]
+
+
+def _complete_explicit_lists(
+    data: dict[str, Any], source: str, *, transport: str
+) -> dict[str, Any]:
+    """One focused Qwen retry for omitted lists; never use the DET parser.
+
+    A field is accepted only when the item is evidenced in extracted PDF text.
+    The first response remains authoritative for all nonempty fields.
+    """
+    missing = _missing_explicit_lists(data, source)
+    if not missing:
+        return data
+
+    def _literal_in_source(value: str) -> bool:
+        return " ".join(value.casefold().split()) in " ".join(source.casefold().split())
+
+    field_spec = {
+        key: (
+            "array of objects with literal language and level strings"
+            if key == "languages" else "array of literal strings"
+        ) for key in missing
+    }
+    section_payload = {
+        key: _explicit_section_body(source, key)[:4000] for key in missing
+    }
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "Complete only the requested omitted CV fields. Output one JSON object "
+                "with exactly those keys. Copy entries as printed in the document; "
+                "do not infer or invent. Use [] when genuinely absent. /no_think"
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Fields: {json.dumps(field_spec, ensure_ascii=False)}\n"
+                f"Relevant document sections:\n"
+                f"{json.dumps(section_payload, ensure_ascii=False)}\nJSON:"
+            ),
+        },
+    ]
+    try:
+        recovered = _llm_extract(source, transport=transport, messages=messages)
+    except CvImportError:
+        recovered = {}
+
+    completed = dict(data)
+    for key in missing:
+        accepted = []
+        for item in recovered.get(key) or []:
+            if key == "languages":
+                if not isinstance(item, dict):
+                    continue
+                name = str(item.get("language") or "").strip()
+                level = str(item.get("level") or "").strip()
+                if not name or not _literal_in_source(name):
+                    continue
+                if level and not _literal_in_source(level):
+                    level = ""
+                accepted.append({"language": name, "level": level})
+            else:
+                value = str(item.get("name") or "") if isinstance(item, dict) else str(item)
+                value = value.strip()
+                if value and len(value) <= 160 and _literal_in_source(value):
+                    accepted.append(value)
+        if accepted:
+            completed[key] = (
+                accepted if key == "languages" else list(dict.fromkeys(accepted))
+            )
+    # Explicit sections must never disappear silently in a successful import.
+    still_missing = _missing_explicit_lists(completed, source)
+    if still_missing:
+        raise CvImportError(
+            "incomplete_extract",
+            "CV-Abschnitte nicht vollständig erkannt. Bitte Import erneut versuchen "
+            "oder Angaben manuell übernehmen.",
+            detail={"missing_sections": ",".join(still_missing)},
+        )
+    return completed
 
 
 def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict[str, Any]:
@@ -1471,7 +1602,9 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
         for s in (_strip_skill_level(_skill_text(x)) for x in (data.get("software") or []))
         if s
     ]
-    certs, software, skills = _reroute_certs_software_skills(certs, software, skills)
+    certs, software, skills = _reroute_certs_software_skills(
+        certs, software, skills, source_text=source_text
+    )
     if source_text:
         software = _enrich_software_from_text(software, source_text)
     return {
@@ -2365,6 +2498,7 @@ def import_cv_docpick(
 
     _progress("model")
     raw = _llm_extract(text, transport=transport)
+    raw = _complete_explicit_lists(raw, text, transport=transport)
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
     _enforce_timeout(t0, stage="after_model")

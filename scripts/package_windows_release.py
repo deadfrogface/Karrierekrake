@@ -86,6 +86,9 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
             arc = path.relative_to(dist).as_posix()
             zf.write(path, arcname=arc)
 
+    with zipfile.ZipFile(out_zip) as archive:
+        member_names = sorted(Path(i.filename).as_posix() for i in archive.infolist())
+
     meta = {
         "zip": str(out_zip),
         "zip_bytes": out_zip.stat().st_size,
@@ -93,9 +96,7 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
         "model_rel": CV_MODEL_REL.as_posix(),
         "model_embedded": True,
         "model_sha256": CV_MODEL_SHA256,
-        "members": sorted(
-            [Path(i.filename).as_posix() for i in zipfile.ZipFile(out_zip).infolist()]
-        ),
+        "members": member_names,
     }
     meta_path = out_zip.with_suffix(out_zip.suffix + ".json")
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
@@ -115,7 +116,7 @@ def main(argv: list[str] | None = None) -> int:
         "--stage-install",
         type=Path,
         default=None,
-        help="Also copy EXE+models into this fresh folder (CI install simulation)",
+        help="Also copy the standalone EXE into this fresh folder (CI install simulation)",
     )
     parser.add_argument(
         "--check-only",

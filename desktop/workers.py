@@ -65,6 +65,27 @@ class PipelineWorker(QObject):
             self.failed.emit(str(exc))
 
 
+class FunctionWorker(QObject):
+    """Run one bounded I/O operation; result handlers stay on the GUI thread."""
+    finished = Signal(object)
+    failed = Signal(object)
+
+    def __init__(self, operation):
+        super().__init__()
+        self.operation = operation
+        self._cancel = threading.Event()
+
+    def request_cancel(self):
+        self._cancel.set()
+
+    def run(self):
+        try:
+            result = None if self._cancel.is_set() else self.operation()
+            self.finished.emit(result)
+        except Exception as exc:
+            self.failed.emit(exc)
+
+
 class BrowserCheckWorker(QObject):
     finished = Signal(bool, str)
 

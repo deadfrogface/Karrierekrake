@@ -93,6 +93,7 @@ _FAILURE_TEXT_KEYS = {
     "llm_extract_failed": "cv_import.error_extract_failed",
     "llm_empty": "cv_import.error_extract_failed",
     "unreliable_extract": "cv_import.error_unreliable",
+    "incomplete_extract": "cv_import.error_incomplete",
 }
 
 
