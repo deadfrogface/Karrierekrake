@@ -54,6 +54,9 @@ def geo_ready(tmp_path, monkeypatch):
 
 @pytest.fixture
 def config_service(tmp_path, monkeypatch):
+    # These UI tests exercise offline geocoding, not router installation.
+    # Do not leave a network-using boot thread running into later socket guards.
+    monkeypatch.setattr("desktop.main_window.MainWindow._start_brouter_runtime", lambda self: None)
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     from desktop import paths as paths_mod
 
