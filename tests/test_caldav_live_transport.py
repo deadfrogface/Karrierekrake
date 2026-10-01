@@ -39,7 +39,8 @@ class Client:
     def put(self, url, data, headers):
         self.calls.append((url, data, headers))
         return self.response
-    def get(self, url):
+    def request(self, url, method):
+        assert method == "GET"
         return self.existing
 
 

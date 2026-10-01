@@ -21,7 +21,7 @@ No merge or public release claimed. Qwen3.5-4B remains the single production mod
 | Matching/search/mail/scheduling/gold first selection | 929 passed, 17 skipped | deterministic component/synthetic lifecycle behavior; skipped scenarios are not PASS |
 | UI/inbox/source guards and fake-provider E2E selection | 864 passed, 1 network test deselected | synthetic/component/Qt behavior, not real portal/account availability |
 | Text-quality/gold/response/GUI selection | 431 passed | gold rules, source grounding, refusal/approval behavior; no fresh live Qwen quality score |
-| Exact Windows pre-build selection on Linux/offscreen Qt | 1001 passed, no skips | new transport wiring and regressions including GUI heartbeat and explicit approval |
+| Exact Windows pre-build selection on Linux/offscreen Qt | 1002 passed, no skips | new transport wiring and regressions including GUI heartbeat and explicit approval |
 | Additional provider/settings/regression selection | 168 passed | credential/probe and import regression checks |
 | Privacy scan | PASS | tracked source scan |
 | Live Contentful public-board query | UNVERIFIED — URLError | execution environment could not access endpoint; not source success/failure evidence |
@@ -36,5 +36,5 @@ The frozen NV3 parser score remains 0.980; these tests are not a new independent
 
 - Microsoft Graph calendar's live client remains unimplemented; adapter currently requires injection. It fails explicitly, not silently switching providers.
 - Calendar UI now performs real proposal/create flow; provider-wide appointment updates/deletion and an event timeline are not added in this change.
-- CalDAV recurring events rely on python-caldav expansion; transport/interval tests use synthetic responses. Real-server compatibility must still be checked with a dedicated test account.
+- Loopback HTTPS Radicale test passed discovery, recurring-event expansion with EXDATE, event creation and duplicate retry using the actual python-caldav HTTP protocol. This exposed and fixed an invalid GET-method call in the retry path. Library event-body warnings are suppressed to protect calendar contents. External-provider compatibility still needs a dedicated account test.
 - Network portal availability, real OAuth grants and actual Qwen-generated letter/reply quality need live evidence. Existing gold and safety tests are not substituted for that evidence.

@@ -6,6 +6,7 @@ Every operation closes its HTTP session, including failed authentication.
 from __future__ import annotations
 
 from contextlib import contextmanager, suppress
+import logging
 from datetime import date, datetime, time, timedelta, timezone
 from urllib.parse import quote, urljoin, urlparse
 from zoneinfo import ZoneInfo
@@ -26,6 +27,9 @@ class LiveCaldavClient:
     @contextmanager
     def _session(self):
         from caldav import DAVClient
+        # Upstream compatibility warnings can include complete event bodies.
+        # Surface only the sanitized ProviderError/connection diagnostics.
+        logging.getLogger("caldav").setLevel(logging.CRITICAL + 1)
         factory = self._factory or DAVClient
         client = None
         try:
@@ -114,7 +118,7 @@ class LiveCaldavClient:
             response = client.put(url, ics, headers=headers)
             if response.status == 412 and not etag:
                 # A retry may find an already created event. Do not overwrite it.
-                existing = client.get(url)
+                existing = client.request(url, "GET")
                 existing_events = Calendar.from_ical(existing.raw).walk("VEVENT") if existing.status == 200 else []
                 keys = ("UID", "DTSTART", "DTEND", "SUMMARY", "DESCRIPTION", "LOCATION")
                 if len(existing_events) != 1 or any(str(existing_events[0].get(k, "")) != str(requested[0].get(k, "")) for k in keys):
