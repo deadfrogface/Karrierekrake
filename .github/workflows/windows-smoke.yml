@@ -39,6 +39,7 @@ jobs:
           tests/test_caldav_live_transport.py tests/test_caldav_protocol.py tests/test_calendar_ui_connection.py
           tests/test_provider_reliability.py tests/test_windows_acceptance_apply.py tests/test_cover_letter_gold.py
           tests/test_fake_mail_demo.py tests/test_fake_mail_integration_boundary.py tests/test_next06_fake_boundary.py
+          tests/test_fake_application_send.py tests/test_chip_card_polish.py
           tests/test_reply_safety_matrix.py tests/test_matcher.py
           tests/test_email_association.py
       - name: Summary

@@ -207,10 +207,6 @@ def _hover_cycle(chip) -> None:
     QApplication.sendEvent(chip, QEvent(QEvent.Type.Leave))
 
 
-@pytest.mark.skipif(
-    sys.platform == "win32",
-    reason="Offscreen Qt access violation on Windows CI while deleting hover animation",
-)
 def test_theme_switch_deletes_hover_animation_with_effect(qapp, monkeypatch):
     """Light → dark → light without restart, hover between switches.
 
@@ -261,10 +257,6 @@ def test_theme_switch_deletes_hover_animation_with_effect(qapp, monkeypatch):
     assert chip.graphicsEffect() is effect
 
 
-@pytest.mark.skipif(
-    sys.platform == "win32",
-    reason="Offscreen Qt access violation on Windows CI during theme switch + hover",
-)
 def test_theme_switch_restores_one_chip_shadow(qapp, monkeypatch):
     monkeypatch.setenv("KK_REDUCED_MOTION", "0")
     qapp.setStyleSheet(stylesheet_for("light"))
@@ -294,10 +286,6 @@ def test_theme_switch_restores_one_chip_shadow(qapp, monkeypatch):
     assert restored.color().alpha() > base_alpha
 
 
-@pytest.mark.skipif(
-    sys.platform == "win32",
-    reason="Offscreen Qt access violation on Windows CI during dark stylesheet + chip hover",
-)
 def test_reduced_motion_dark_hover_does_not_animate(qapp, monkeypatch):
     monkeypatch.setenv("KK_REDUCED_MOTION", "1")
     qapp.setStyleSheet(stylesheet_for("dark"))
@@ -351,3 +339,26 @@ def test_high_contrast_dark_chip_has_no_shadow(qapp):
     qapp.setStyleSheet(css)
     chip = TagChip("Nur Suche – nie bewerben", kind="neutral")
     assert chip.graphicsEffect() is None
+
+
+def test_chip_style_change_defers_effect_mutation(qapp, monkeypatch):
+    """Native stylesheet traversal must finish before effects are replaced."""
+    chip = TagChip("Python", kind="wanted")
+    polish = chip.property("_kk_polish")
+    calls = []
+    monkeypatch.setattr(polish, "sync_chip_shadow", lambda: calls.append("sync"))
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.StyleChange))
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.StyleChange))
+    assert calls == []
+    qapp.processEvents()
+    assert calls == ["sync"]
+    chip.deleteLater()
+    _flush_deferred_deletes()
+
+
+def test_pending_chip_style_sync_is_cancelled_on_delete(qapp):
+    chip = TagChip("Temporary", kind="wanted")
+    QApplication.sendEvent(chip, QEvent(QEvent.Type.StyleChange))
+    chip.deleteLater()
+    _flush_deferred_deletes()
+    qapp.processEvents()

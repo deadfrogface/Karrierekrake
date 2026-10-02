@@ -21,6 +21,7 @@ from PySide6.QtCore import (
     QObject,
     QPropertyAnimation,
     QSize,
+    QTimer,
     Qt,
 )
 from PySide6.QtGui import QColor, QCursor, QIcon, QPainter, QPixmap
@@ -33,7 +34,7 @@ from PySide6.QtWidgets import (
     QToolButton,
     QWidget,
 )
-from shiboken6 import delete as shiboken_delete
+from shiboken6 import delete as shiboken_delete, isValid
 
 from desktop.design_system.icons import try_qtawesome_icon
 
@@ -318,6 +319,12 @@ class _InteractivePolish(QObject):
         self._blur_anim: QPropertyAnimation | None = None
         self._y_anim: QPropertyAnimation | None = None
         self._color_anim: QPropertyAnimation | None = None
+        # StyleChange runs inside Qt's stylesheet repolish traversal. Changing
+        # graphics effects there invalidates the native traversal on Windows.
+        # A parent-owned timer also cancels pending work on widget destruction.
+        self._style_sync_timer = QTimer(self)
+        self._style_sync_timer.setSingleShot(True)
+        self._style_sync_timer.timeout.connect(self._sync_after_style_change)
         target.installEventFilter(self)
 
     @property
@@ -461,6 +468,10 @@ class _InteractivePolish(QObject):
         if self._target.graphicsEffect() is not None:
             self._target.setGraphicsEffect(None)
 
+    def _sync_after_style_change(self) -> None:
+        if isValid(self._target):
+            self.sync_chip_shadow()
+
     def sync_chip_shadow(self) -> None:
         """Light theme keeps one soft shadow. Dark theme drops it (stylesheet hover)."""
         if not self._chip or self._syncing:
@@ -526,7 +537,7 @@ class _InteractivePolish(QObject):
             return False
         et = event.type()
         if et == QEvent.Type.StyleChange and self._chip:
-            self.sync_chip_shadow()
+            self._style_sync_timer.start(0)
             return False
         if et == QEvent.Type.Enter:
             self._hover = True

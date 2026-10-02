@@ -33,9 +33,9 @@ def test_launcher_is_inside_zip_and_staged_install(tmp_path, monkeypatch):
     out = tmp_path / "test.zip"
     package.build_zip(dist, out)
     with zipfile.ZipFile(out) as archive:
-        assert archive.read(launcher.name).decode() == launcher.read_text()
+        assert archive.read(launcher.name) == launcher.read_bytes()
     package.stage_install_dir(dist, tmp_path / "install")
-    assert (tmp_path / "install" / launcher.name).read_text() == launcher.read_text()
+    assert (tmp_path / "install" / launcher.name).read_bytes() == launcher.read_bytes()
 
 
 def test_demo_calendar_approval_never_calls_live_session(monkeypatch):
