@@ -79,7 +79,10 @@ class FlowLayout(QLayout):
 
         for item in self._items:
             widget = item.widget()
-            if widget is not None and not widget.isVisible():
+            # A hidden ancestor does not remove a chip from the layout. During
+            # rebuild/show, isVisible() is false before Qt shows new children;
+            # skipping them caches a zero-height host and clips every label.
+            if widget is not None and widget.isHidden():
                 continue
             hint = item.sizeHint()
             # Cap ultra-long pills to the line width so text wraps instead of

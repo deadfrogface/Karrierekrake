@@ -101,7 +101,37 @@ def test_jobs_sort_does_not_discard_rows(qapp, config_service, monkeypatch):
 def test_jobs_search_intent_separated_from_filters(qapp, config_service):
     i18n.set_language("de")
     page = JobsPage(config_service)
-    assert page.search_intent_btn.text() == tr("jobs.open_search_intent")
-    assert "Suchparameter" in page.search_intent_btn.text()
+    assert page.search_intent_btn.text() == tr("search.settings")
+    assert "Sucheinstellungen" in page.search_intent_btn.text()
     assert page.lbl_filters.text() == tr("jobs.section_result_filters")
     assert "sort_match_desc" in TRANSLATIONS["de"] or "jobs.sort_match_desc" in TRANSLATIONS["de"]
+
+
+@pytest.mark.parametrize("has_results", [False, True])
+def test_search_settings_reachable_with_and_without_results(qapp, config_service, has_results):
+    from PySide6.QtWidgets import QVBoxLayout, QWidget
+
+    class Host(QWidget):
+        opened = 0
+
+        def open_search_intent(self):
+            self.opened += 1
+
+    cfg = config_service.load()
+    if has_results:
+        _seed(Database(cfg.db_path), score=95, distance=5.0, title="Settings test")
+    host = Host()
+    layout = QVBoxLayout(host)
+    page = JobsPage(config_service)
+    layout.addWidget(page)
+    page.min_match.setValue(0)
+    page.max_dist.setValue(500)
+    page.refresh()
+    host.show()
+    qapp.processEvents()
+    assert bool(page.table.rowCount()) == has_results
+    assert page.search_intent_btn.isVisible()
+    assert page.search_intent_btn.isEnabled()
+    page.search_intent_btn.click()
+    assert host.opened == 1
+    host.close()
