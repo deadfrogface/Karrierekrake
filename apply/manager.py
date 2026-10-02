@@ -226,11 +226,8 @@ class ApplicationManager:
         # This is independent of editable settings and force_submit.
         if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
             message = "TESTVERSION: Bewerbung nur lokal simuliert; nichts versendet oder hochgeladen."
-            self.db.save_application(ApplicationRecord(
-                job_id=job.id, company=job.company, position=job.title,
-                platform="fake_local", status=JobStatus.NEEDS_REVIEW.value,
-                result="simulated", error_message=message,
-            ))
+            from desktop.fake_mail_demo import simulate_application
+            simulate_application(self.db, job)
             return ApplyResult(success=True, dry_run_stopped=True,
                                submitted=False, error_message=message)
         settings = self.config.settings

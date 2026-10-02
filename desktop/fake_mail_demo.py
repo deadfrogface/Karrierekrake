@@ -125,6 +125,63 @@ def inject_demo_message(*, sender: str, subject: str, body: str) -> dict:
     return process_parsed_email(db, adapter.sync().messages[0].to_pipeline_payload())
 
 
+def simulate_application(db, job) -> list[dict]:
+    """Record a local attempt, then ingest responses without association hints.
+
+    The recruiter address is application receipt data, not a mail-to-case link.
+    Association is performed exclusively by process_parsed_email.
+    """
+    from datetime import datetime, timedelta
+    from zoneinfo import ZoneInfo
+    import hashlib
+    from core.case_pipeline import process_parsed_email
+    from core.lifecycle import CaseStatus
+    from core.models import ApplicationRecord, JobStatus
+    from integrations.mail.contracts import NormalizedEmail
+    from integrations.mail.registry import resolve_mail_adapter
+    from integrations.providers.enums import MailProvider
+
+    if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") != "1":
+        raise RuntimeError("simulation_requires_test_mode")
+    if not job.company.strip() or not job.title.strip():
+        raise ValueError("Firma und Stelle fehlen für die Simulation.")
+    adapter = resolve_mail_adapter(MailProvider.FAKE_INPROCESS)
+    db.upsert_job(job)
+    previous = [r for r in db.list_applications() if r.job_id == job.id and r.result == "simulated"]
+    if previous:
+        return []
+    reference = "TEST-" + uuid.uuid4().hex[:12]
+    domain = hashlib.sha256(job.company.casefold().encode()).hexdigest()[:16]
+    sender = f"recruiting@{domain}.example.test"
+    case = db.ensure_case_from_job(job, status=CaseStatus.APPLIED.value)
+    case.contact_email = sender
+    case.notes = (case.notes + "\nTESTVERSION: nur simuliert. Referenz " + reference).strip()
+    db.upsert_case(case)
+    db.save_application(ApplicationRecord(
+        job_id=job.id, company=job.company, position=job.title,
+        platform="fake_local", status=JobStatus.NEEDS_REVIEW.value,
+        result="simulated", error_message="TESTVERSION: nichts versendet oder hochgeladen.",
+    ))
+    first = (datetime.now(ZoneInfo("Europe/Berlin")) + timedelta(days=7)).replace(
+        hour=10, minute=0, second=0, microsecond=0)
+    second = first + timedelta(days=1, hours=4)
+    receipt = f"{job.company}: Ihre Bewerbung als {job.title}. Bewerbungsreferenz: {reference}."
+    messages = [
+        ("confirmation", "Eingangsbestätigung Ihrer Bewerbung", receipt + " Vielen Dank, wir haben Ihre Bewerbung erhalten."),
+        ("interview", "Einladung zum Vorstellungsgespräch", receipt +
+         f" Wir laden Sie zum Vorstellungsgespräch ein. Terminvorschlag: {first:%d.%m.%Y} um {first:%H:%M} Uhr oder {second:%d.%m.%Y} um {second:%H:%M} Uhr, Europe/Berlin."),
+    ]
+    adapter.seed([NormalizedEmail(
+        provider=MailProvider.FAKE_INPROCESS,
+        external_message_id=f"{reference}-{kind}",
+        provider_message_id=f"{reference}-{kind}",
+        sender=sender, subject=f"{subject} – {job.title}", body_text=body,
+    ) for kind, subject, body in messages])
+    # No case_id, association flags, known thread or pre-linked DB email rows.
+    return [process_parsed_email(db, mail.to_pipeline_payload())
+            for mail in adapter.sync().messages]
+
+
 def launch() -> int:
     configure_isolation()
     seed_demo()
