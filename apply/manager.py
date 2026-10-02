@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from pathlib import Path
 
@@ -221,6 +222,17 @@ class ApplicationManager:
         return None
 
     def prepare_and_apply(self, job: Job, *, force_submit: bool | None = None) -> ApplyResult:
+        # Test edition must never navigate to an ATS, upload files or submit.
+        # This is independent of editable settings and force_submit.
+        if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+            message = "TESTVERSION: Bewerbung nur lokal simuliert; nichts versendet oder hochgeladen."
+            self.db.save_application(ApplicationRecord(
+                job_id=job.id, company=job.company, position=job.title,
+                platform="fake_local", status=JobStatus.NEEDS_REVIEW.value,
+                result="simulated", error_message=message,
+            ))
+            return ApplyResult(success=True, dry_run_stopped=True,
+                               submitted=False, error_message=message)
         settings = self.config.settings
         mode = settings.mode
         submit = self._submit_allowed(settings, force_submit=force_submit)

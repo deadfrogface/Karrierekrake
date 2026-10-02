@@ -712,6 +712,9 @@ class JobsPage(QWidget):
             return
         url = job.application_url or job.url
         if url:
+            if __import__("os").environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+                QMessageBox.information(self, "TESTVERSION", "Echte Bewerbungsportale werden in der Testversion nicht geöffnet. Es wird nichts versendet.")
+                return
             webbrowser.open(url)
         else:
             QMessageBox.information(self, tr("nav.jobs"), tr("jobs.no_url"))

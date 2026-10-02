@@ -8,6 +8,8 @@ require an extra explicit review flag before any send attempt.
 
 from __future__ import annotations
 
+import os
+
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Iterable, Sequence
@@ -625,6 +627,10 @@ class SendGate:
         Never silently drop the draft. Never treats failed send as sent.
         """
         draft.auto_send = False
+        if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+            draft.sent = False
+            draft.send_error = "fake_demo: external send forbidden"
+            return draft
 
         if (draft.draft_only or self.draft_only) and not self.allow_send:
             draft.send_error = "draft_only: send disabled (approval path required)"
