@@ -6,12 +6,13 @@ Sending is NOT implied — drafts may stay local.
 
 from __future__ import annotations
 
+import hashlib
 import imaplib
 import ssl
 from dataclasses import dataclass
 from email import message_from_bytes
 from email.header import decode_header, make_header
-from email.utils import parseaddr
+from email.utils import parseaddr, parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 
@@ -63,6 +64,33 @@ def delete_imap_secret(*, token_dir: Path) -> None:
         delete_token(TOKEN_ACCOUNT_IMAP, fallback_dir=token_dir)
     except Exception:
         pass
+
+
+def validate_imap_secret(secret: dict[str, Any]) -> None:
+    """Authenticate without reading or sending mail before storing credentials."""
+    host, user = str(secret.get("host") or "").strip(), str(secret.get("username") or "").strip()
+    if not host or not user or not secret.get("password"):
+        raise ProviderError("generic_imap", "imap_endpoint_incomplete", reconnectable=True)
+    conn = None
+    try:
+        conn = imaplib.IMAP4_SSL(host, int(secret.get("port") or 993), timeout=20)
+        conn.login(user, str(secret["password"]))
+        status, _ = conn.noop()
+        if status != "OK":
+            raise ProviderError("generic_imap", "imap_probe_failed", reconnectable=True)
+    except ProviderError:
+        raise
+    except Exception:
+        raise ProviderError("generic_imap", "imap_auth_failed", reconnectable=True) from None
+    finally:
+        if conn is not None:
+            try:
+                conn.logout()
+            except Exception:
+                try:
+                    conn.shutdown()
+                except Exception:
+                    pass
 
 
 class GenericImapMailAdapter:
@@ -144,12 +172,13 @@ def _decode_header_value(raw: str | None) -> str:
 def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list[NormalizedEmail]:
     if not endpoint.host or not endpoint.username:
         raise ProviderError("generic_imap", "imap_endpoint_incomplete", reconnectable=True)
+    conn = None
     try:
         if endpoint.use_ssl:
-            conn = imaplib.IMAP4_SSL(endpoint.host, endpoint.port)
+            conn = imaplib.IMAP4_SSL(endpoint.host, endpoint.port, timeout=20)
         else:
             context = ssl.create_default_context()
-            conn = imaplib.IMAP4(endpoint.host, endpoint.port)
+            conn = imaplib.IMAP4(endpoint.host, endpoint.port, timeout=20)
             conn.starttls(ssl_context=context)
         password = str(secret.get("password") or secret.get("app_password") or "")
         if endpoint.oauth2:
@@ -163,8 +192,17 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
             if not password:
                 raise ProviderError("generic_imap", "imap_password_missing", reconnectable=True)
             conn.login(endpoint.username, password)
-        conn.select("INBOX", readonly=True)
-        typ, data = conn.search(None, "ALL")
+        typ, _ = conn.select("INBOX", readonly=True)
+        if typ != "OK":
+            raise ProviderError("generic_imap", "imap_select_failed", reconnectable=True)
+        _, validity_data = conn.response("UIDVALIDITY")
+        validity = (validity_data or [b""])[0]
+        if not validity or not bytes(validity).isdigit():
+            raise ProviderError("generic_imap", "imap_uidvalidity_missing", reconnectable=True)
+        namespace = hashlib.sha256(
+            f"{endpoint.host.lower()}:{endpoint.port}:{endpoint.username}:INBOX".encode()
+        ).hexdigest()[:24]
+        typ, data = conn.uid("search", None, "ALL")
         if typ != "OK":
             raise ProviderError("generic_imap", "imap_search_failed", reconnectable=True)
         ids = (data[0] or b"").split()
@@ -172,7 +210,7 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
         ids = ids[-50:]
         out: list[NormalizedEmail] = []
         for mid in ids:
-            typ, msg_data = conn.fetch(mid, "(RFC822)")
+            typ, msg_data = conn.uid("fetch", mid, "(BODY.PEEK[])")
             if typ != "OK" or not msg_data or not msg_data[0]:
                 continue
             raw = msg_data[0][1]
@@ -184,7 +222,7 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
             body = ""
             if msg.is_multipart():
                 for part in msg.walk():
-                    if part.get_content_type() == "text/plain":
+                    if part.get_content_type() == "text/plain" and part.get_content_disposition() != "attachment":
                         payload = part.get_payload(decode=True) or b""
                         body = payload.decode(part.get_content_charset() or "utf-8", errors="replace")
                         break
@@ -193,20 +231,25 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
                 if isinstance(payload, bytes):
                     body = payload.decode(msg.get_content_charset() or "utf-8", errors="replace")
             uid = mid.decode("ascii", errors="replace")
+            stable_id = f"imap:{namespace}:{validity.decode()}:{uid}"
+            try:
+                received = parsedate_to_datetime(msg.get("Date") or "").isoformat()
+            except (ValueError, TypeError, OverflowError):
+                received = ""
+            references = (msg.get("References") or msg.get("In-Reply-To") or msg.get("Message-ID") or "").split()
+            thread_id = f"imap:{namespace}:{references[0]}" if references else ""
             out.append(
                 NormalizedEmail(
                     provider=MailProvider.GENERIC_IMAP,
-                    external_message_id=f"imap:{endpoint.host}:{uid}",
+                    external_message_id=stable_id,
+                    internal_date=received,
+                    thread_id=thread_id,
                     subject=subject,
                     sender=sender,
                     body_text=body,
-                    provider_message_id=uid,
+                    provider_message_id=stable_id,
                 )
             )
-        try:
-            conn.logout()
-        except Exception:
-            pass
         return out
     except ProviderError:
         raise
@@ -214,6 +257,15 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
         raise ProviderError(
             "generic_imap", f"imap_runtime_error:{type(exc).__name__}", reconnectable=True
         ) from exc
+    finally:
+        if conn is not None:
+            try:
+                conn.logout()
+            except Exception:
+                try:
+                    conn.shutdown()
+                except Exception:
+                    pass
 
 
 _: type[MailProviderAdapter] = GenericImapMailAdapter  # type: ignore[assignment,misc]

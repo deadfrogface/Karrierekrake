@@ -454,22 +454,24 @@ def test_lifecycle_approval_click_marks_draft(qapp, config_service, monkeypatch)
     assert page._pending_draft is None  # cleared after flow
 
 
-def test_lifecycle_calendar_proposal_approval_visible(qapp, config_service, monkeypatch):
+def test_lifecycle_calendar_requires_connected_provider(qapp, config_service, monkeypatch):
     from core.database import Database
     from core.lifecycle import ApplicationCase
     from desktop.pages.lifecycle import LifecyclePage
 
     _accept_boxes(monkeypatch)
-    Database(config_service.load().db_path).upsert_case(
+    cfg = config_service.load()
+    cfg.settings.calendar_provider = "none"
+    config_service.save(cfg)
+    Database(cfg.db_path).upsert_case(
         ApplicationCase(id="case-cal", company="Acme", position="Payroll", status="interview")
     )
     page = LifecyclePage(config_service)
     page.refresh()
     page.cases.selectRow(0)
     page.prepare_calendar_proposal()
-    assert page.approval.current is not None
-    assert page.approval.current.kind.value == "calendar_proposal"
-    assert page.approval.approve_btn.isEnabled()
+    assert page._pending_calendar is None
+    assert page.approval.current is None
 
 
 def test_lifecycle_ambiguous_mail_needs_approval(qapp, config_service, monkeypatch):

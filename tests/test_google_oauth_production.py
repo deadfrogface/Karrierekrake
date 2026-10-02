@@ -65,7 +65,7 @@ def _probeable_gmail_service() -> MagicMock:
 
 def _probeable_calendar_service() -> MagicMock:
     svc = MagicMock(name="calendar_service")
-    svc.freebusy.return_value.query.return_value.execute.return_value = {"calendars": {}}
+    svc.freebusy.return_value.query.return_value.execute.return_value = {"calendars": {"primary": {"busy": []}}}
     return svc
 
 

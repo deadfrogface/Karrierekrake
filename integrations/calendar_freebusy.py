@@ -94,7 +94,12 @@ class GoogleFreeBusyProvider:
             raise
         windows: list[TimeWindow] = []
         calendars = (resp or {}).get("calendars") or {}
-        for _cal_id, payload in calendars.items():
+        if not isinstance(calendars, dict) or any(cid not in calendars for cid in q.calendar_ids):
+            raise RuntimeError("calendar_freebusy_unavailable")
+        for cid in q.calendar_ids:
+            payload = calendars[cid]
+            if not isinstance(payload, dict) or payload.get("errors"):
+                raise RuntimeError("calendar_freebusy_unavailable")
             for block in payload.get("busy") or []:
                 start = parse_iso_datetime(block.get("start"), default_tz="UTC")
                 end = parse_iso_datetime(block.get("end"), default_tz="UTC")

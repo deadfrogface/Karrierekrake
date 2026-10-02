@@ -34,7 +34,12 @@ jobs:
       - name: Offscreen Qt MainWindow smoke
         env:
           QT_QPA_PLATFORM: offscreen
-        run: python -m pytest -q tests/test_qt_smoke.py tests/test_pause_resume.py
+        run: >-
+          python -m pytest -q tests/test_qt_smoke.py tests/test_pause_resume.py
+          tests/test_caldav_live_transport.py tests/test_caldav_protocol.py tests/test_calendar_ui_connection.py
+          tests/test_provider_reliability.py tests/test_windows_acceptance_apply.py tests/test_cover_letter_gold.py
+          tests/test_reply_safety_matrix.py tests/test_matcher.py
+          tests/test_email_association.py
       - name: Summary
         if: always()
         shell: pwsh
@@ -331,12 +336,12 @@ jobs:
           path: |
             dist/Karrierekrake-Windows.zip
             dist/Karrierekrake-Windows.zip.json
-            dist/Karrierekrake.exe
             dist/build_metadata.txt
             dist/content_manifest.json
             dist/smoke_test_result.txt
             artifacts/cv_import_exe_offline_e2e.json
           if-no-files-found: warn
+          compression-level: 0
           retention-days: 14
       - name: Summary
         if: always()

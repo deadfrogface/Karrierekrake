@@ -2,18 +2,16 @@
 
 Supports discovery, busy intervals, conflict detection helpers, and
 create/update only after explicit approval. No auto-create.
-iCloud is a tested preset over CalDAV + app-specific password / OAuth
-as Apple currently documents for third-party clients — no scraping.
+iCloud has a CalDAV endpoint preset; live account compatibility requires
+an account test with an app-specific password. No scraping.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Protocol
-from urllib.parse import urljoin
-from xml.etree import ElementTree as ET
 
 from integrations.calendar.contracts import (
     BusyInterval,
@@ -175,15 +173,11 @@ class GenericCaldavCalendarAdapter:
     def _require_client(self) -> CaldavClient:
         if self._client is not None:
             return self._client
-        if not self.is_connected():
-            raise ProviderError(
-                self.provider.value, "caldav_not_configured", reconnectable=True
-            )
-        raise ProviderError(
-            self.provider.value,
-            "caldav_client_not_configured",
-            reconnectable=True,
-        )
+        from integrations.calendar.caldav.client import LiveCaldavClient
+        secret = load_caldav_secret(token_dir=self.token_dir)
+        if not secret:
+            raise ProviderError(self.provider.value, "caldav_not_configured", reconnectable=True)
+        return LiveCaldavClient(secret)
 
 
 def detect_busy_conflicts(

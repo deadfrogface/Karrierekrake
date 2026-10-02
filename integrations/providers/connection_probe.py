@@ -34,7 +34,7 @@ class ProbeResult:
 
 
 # Short-lived cache so Settings refresh does not hammer APIs.
-_PROBE_CACHE: dict[str, tuple[float, ProbeResult]] = {}
+_PROBE_CACHE: dict[tuple[str, str], tuple[float, ProbeResult]] = {}
 _PROBE_TTL_S = 45.0
 
 
@@ -42,22 +42,24 @@ def clear_probe_cache(provider: str | None = None) -> None:
     if provider is None:
         _PROBE_CACHE.clear()
         return
-    _PROBE_CACHE.pop(provider, None)
+    for key in list(_PROBE_CACHE):
+        if key[0] == provider:
+            _PROBE_CACHE.pop(key, None)
 
 
-def _cached(provider: str) -> ProbeResult | None:
+def _cached(provider: tuple[str, str]) -> ProbeResult | None:
     hit = _PROBE_CACHE.get(provider)
     if not hit:
         return None
     ts, result = hit
-    if time.time() - ts > _PROBE_TTL_S:
+    if time.monotonic() - ts > _PROBE_TTL_S:
         _PROBE_CACHE.pop(provider, None)
         return None
     return result
 
 
-def _store(provider: str, result: ProbeResult) -> ProbeResult:
-    _PROBE_CACHE[provider] = (time.time(), result)
+def _store(provider: tuple[str, str], result: ProbeResult) -> ProbeResult:
+    _PROBE_CACHE[provider] = (time.monotonic(), result)
     return result
 
 
@@ -68,8 +70,9 @@ def probe_google_gmail(
     force: bool = False,
 ) -> ProbeResult:
     provider = "google_gmail"
+    cache_key = (provider, str(token_dir.resolve()))
     if not force:
-        cached = _cached(provider)
+        cached = _cached(cache_key)
         if cached is not None:
             return cached
     log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="start")
@@ -81,7 +84,7 @@ def probe_google_gmail(
             payload = load_google_token(token_dir=token_dir)
             if not payload:
                 return _store(
-                    provider,
+                    cache_key,
                     ProbeResult(ConnectionState.DISCONNECTED, "no_token", provider),
                 )
             creds = creds_from_payload(payload)
@@ -89,6 +92,8 @@ def probe_google_gmail(
         profile = service.users().getProfile(userId="me").execute()
         # Never log email verbatim in detail beyond domain-safe marker.
         has_email = bool(profile.get("emailAddress"))
+        if not has_email:
+            raise RuntimeError("gmail_profile_empty")
         log_stage(
             DiagStage.API_PROBE,
             provider=provider,
@@ -96,13 +101,13 @@ def probe_google_gmail(
             detail=f"profile_ok email_present={has_email}",
         )
         log_stage(DiagStage.CONNECTED, provider=provider, ok=True, detail="probe_ok")
-        return _store(provider, ProbeResult(ConnectionState.PROBE_OK, "profile_ok", provider))
+        return _store(cache_key, ProbeResult(ConnectionState.PROBE_OK, "profile_ok", provider))
     except Exception as exc:
         detail = type(exc).__name__
         offline = detail in {"ConnectionError", "Timeout", "OSError", "URLError"}
         state = ConnectionState.OFFLINE if offline else ConnectionState.PROBE_FAILED
         log_stage(DiagStage.API_PROBE, provider=provider, ok=False, detail=detail)
-        return _store(provider, ProbeResult(state, detail, provider))
+        return _store(cache_key, ProbeResult(state, detail, provider))
 
 
 def probe_google_calendar(
@@ -112,8 +117,9 @@ def probe_google_calendar(
     force: bool = False,
 ) -> ProbeResult:
     provider = "google_calendar"
+    cache_key = (provider, str(token_dir.resolve()))
     if not force:
-        cached = _cached(provider)
+        cached = _cached(cache_key)
         if cached is not None:
             return cached
     log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="start")
@@ -127,15 +133,14 @@ def probe_google_calendar(
             payload = load_google_token(token_dir=token_dir)
             if not payload:
                 return _store(
-                    provider,
+                    cache_key,
                     ProbeResult(ConnectionState.DISCONNECTED, "no_token", provider),
                 )
-            scopes = " ".join(
-                str(s) for s in (payload.get("scopes") or payload.get("scope") or [])
-            )
+            raw_scopes = payload.get("scopes") or payload.get("scope") or []
+            scopes = raw_scopes if isinstance(raw_scopes, str) else " ".join(map(str, raw_scopes))
             if "calendar" not in scopes.lower() and "freebusy" not in scopes.lower():
                 return _store(
-                    provider,
+                    cache_key,
                     ProbeResult(ConnectionState.TOKEN_PRESENT, "calendar_scope_missing", provider),
                 )
             creds = creds_from_payload(payload)
@@ -146,16 +151,19 @@ def probe_google_calendar(
             "timeMax": (now + timedelta(minutes=30)).isoformat().replace("+00:00", "Z"),
             "items": [{"id": "primary"}],
         }
-        service.freebusy().query(body=body).execute()
+        response = service.freebusy().query(body=body).execute()
+        calendar = (response.get("calendars") or {}).get("primary")
+        if not isinstance(calendar, dict) or calendar.get("errors"):
+            raise RuntimeError("calendar_freebusy_unavailable")
         log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="freebusy_ok")
         log_stage(DiagStage.CONNECTED, provider=provider, ok=True, detail="probe_ok")
-        return _store(provider, ProbeResult(ConnectionState.PROBE_OK, "freebusy_ok", provider))
+        return _store(cache_key, ProbeResult(ConnectionState.PROBE_OK, "freebusy_ok", provider))
     except Exception as exc:
         detail = type(exc).__name__
         offline = detail in {"ConnectionError", "Timeout", "OSError", "URLError"}
         state = ConnectionState.OFFLINE if offline else ConnectionState.PROBE_FAILED
         log_stage(DiagStage.API_PROBE, provider=provider, ok=False, detail=detail)
-        return _store(provider, ProbeResult(state, detail, provider))
+        return _store(cache_key, ProbeResult(state, detail, provider))
 
 
 def probe_microsoft_graph(
@@ -166,8 +174,9 @@ def probe_microsoft_graph(
     force: bool = False,
 ) -> ProbeResult:
     """Probe Graph /me. graph_get(path) injectable for tests."""
+    cache_key = (provider, str(token_dir.resolve()))
     if not force:
-        cached = _cached(provider)
+        cached = _cached(cache_key)
         if cached is not None:
             return cached
     log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="start")
@@ -187,13 +196,13 @@ def probe_microsoft_graph(
             tok = load_ms_token(account, token_dir=token_dir)
             if not tok or not (tok.get("access_token") or tok.get("refresh_token")):
                 return _store(
-                    provider,
+                    cache_key,
                     ProbeResult(ConnectionState.DISCONNECTED, "no_token", provider),
                 )
             access = str(tok.get("access_token") or "")
             if not access:
                 return _store(
-                    provider,
+                    cache_key,
                     ProbeResult(ConnectionState.TOKEN_PRESENT, "access_token_missing", provider),
                 )
 
@@ -215,22 +224,24 @@ def probe_microsoft_graph(
             raise RuntimeError("graph_me_empty")
         log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="me_ok")
         log_stage(DiagStage.CONNECTED, provider=provider, ok=True, detail="probe_ok")
-        return _store(provider, ProbeResult(ConnectionState.PROBE_OK, "me_ok", provider))
+        return _store(cache_key, ProbeResult(ConnectionState.PROBE_OK, "me_ok", provider))
     except Exception as exc:
         detail = type(exc).__name__
         offline = detail in {"ConnectionError", "Timeout", "OSError", "URLError", "URLError"}
         state = ConnectionState.OFFLINE if offline else ConnectionState.PROBE_FAILED
         log_stage(DiagStage.API_PROBE, provider=provider, ok=False, detail=detail)
-        return _store(provider, ProbeResult(state, detail, provider))
+        return _store(cache_key, ProbeResult(state, detail, provider))
 
 
 def probe_imap(*, token_dir: Path, force: bool = False) -> ProbeResult:
     provider = "generic_imap"
+    cache_key = (provider, str(token_dir.resolve()))
     if not force:
-        cached = _cached(provider)
+        cached = _cached(cache_key)
         if cached is not None:
             return cached
     log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="start")
+    conn = None
     try:
         from integrations.mail.imap.adapter import load_imap_secret
         import imaplib
@@ -239,7 +250,7 @@ def probe_imap(*, token_dir: Path, force: bool = False) -> ProbeResult:
         secret = load_imap_secret(token_dir=token_dir)
         if not secret:
             return _store(
-                provider, ProbeResult(ConnectionState.DISCONNECTED, "no_secret", provider)
+                cache_key, ProbeResult(ConnectionState.DISCONNECTED, "no_secret", provider)
             )
         host = str(secret.get("host") or "")
         port = int(secret.get("port") or 993)
@@ -247,10 +258,10 @@ def probe_imap(*, token_dir: Path, force: bool = False) -> ProbeResult:
         password = str(secret.get("password") or secret.get("app_password") or "")
         if not host or not user:
             return _store(
-                provider,
+                cache_key,
                 ProbeResult(ConnectionState.DISCONNECTED, "incomplete", provider),
             )
-        conn = imaplib.IMAP4_SSL(host, port) if secret.get("use_ssl", True) else imaplib.IMAP4(host, port)
+        conn = imaplib.IMAP4_SSL(host, port, timeout=20) if secret.get("use_ssl", True) else imaplib.IMAP4(host, port, timeout=20)
         if not secret.get("use_ssl", True):
             conn.starttls(ssl_context=ssl.create_default_context())
         if secret.get("oauth2"):
@@ -260,30 +271,37 @@ def probe_imap(*, token_dir: Path, force: bool = False) -> ProbeResult:
         else:
             if not password:
                 return _store(
-                    provider,
+                    cache_key,
                     ProbeResult(ConnectionState.TOKEN_PRESENT, "password_missing", provider),
                 )
             conn.login(user, password)
         typ, _ = conn.noop()
-        try:
-            conn.logout()
-        except Exception:
-            pass
         if typ != "OK":
             raise RuntimeError("imap_noop_failed")
         log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="noop_ok")
         log_stage(DiagStage.CONNECTED, provider=provider, ok=True, detail="probe_ok")
-        return _store(provider, ProbeResult(ConnectionState.PROBE_OK, "noop_ok", provider))
+        return _store(cache_key, ProbeResult(ConnectionState.PROBE_OK, "noop_ok", provider))
     except Exception as exc:
         detail = type(exc).__name__
         log_stage(DiagStage.API_PROBE, provider=provider, ok=False, detail=detail)
-        return _store(provider, ProbeResult(ConnectionState.PROBE_FAILED, detail, provider))
+        return _store(cache_key, ProbeResult(ConnectionState.PROBE_FAILED, detail, provider))
+
+    finally:
+        if conn is not None:
+            try:
+                conn.logout()
+            except Exception:
+                try:
+                    conn.shutdown()
+                except Exception:
+                    pass
 
 
 def probe_caldav(*, token_dir: Path, client: Any | None = None, force: bool = False) -> ProbeResult:
     provider = "generic_caldav"
+    cache_key = (provider, str(token_dir.resolve()))
     if not force:
-        cached = _cached(provider)
+        cached = _cached(cache_key)
         if cached is not None:
             return cached
     log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="start")
@@ -294,21 +312,20 @@ def probe_caldav(*, token_dir: Path, client: Any | None = None, force: bool = Fa
                 raise RuntimeError("no_calendars")
             log_stage(DiagStage.API_PROBE, provider=provider, ok=True, detail="discover_ok")
             log_stage(DiagStage.CONNECTED, provider=provider, ok=True, detail="probe_ok")
-            return _store(provider, ProbeResult(ConnectionState.PROBE_OK, "discover_ok", provider))
+            return _store(cache_key, ProbeResult(ConnectionState.PROBE_OK, "discover_ok", provider))
         from integrations.calendar.caldav.adapter import load_caldav_secret
 
         secret = load_caldav_secret(token_dir=token_dir)
         if not secret:
             return _store(
-                provider, ProbeResult(ConnectionState.DISCONNECTED, "no_secret", provider)
+                cache_key, ProbeResult(ConnectionState.DISCONNECTED, "no_secret", provider)
             )
-        # Without an injected HTTP client, we only confirm secret presence —
-        # live discovery requires network client configured by harness.
-        return _store(
-            provider,
-            ProbeResult(ConnectionState.TOKEN_PRESENT, "client_required_for_live_probe", provider),
-        )
+        from integrations.calendar.caldav.client import LiveCaldavClient
+        cals = LiveCaldavClient(secret).discover_calendars()
+        if not cals:
+            raise RuntimeError("no_calendars")
+        return _store(cache_key, ProbeResult(ConnectionState.PROBE_OK, "discover_ok", provider))
     except Exception as exc:
         detail = type(exc).__name__
         log_stage(DiagStage.API_PROBE, provider=provider, ok=False, detail=detail)
-        return _store(provider, ProbeResult(ConnectionState.PROBE_FAILED, detail, provider))
+        return _store(cache_key, ProbeResult(ConnectionState.PROBE_FAILED, detail, provider))
