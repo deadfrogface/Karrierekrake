@@ -17,11 +17,11 @@ def main() -> int:
     )
     lines: list[str] = []
     for src in sources:
-        placeholder = src.source_id == "company_sites"
+        placeholder = False  # company_sites now fetches public Greenhouse/Lever boards
         try:
             ok, msg = src.health_check()
             status = SourceHealthStatus.from_outcome(
-                jobs_found=1 if ok and not placeholder else 0,
+                jobs_found=0,
                 error=None if ok else msg,
                 source_id=src.source_id,
                 placeholder=placeholder,
@@ -30,7 +30,7 @@ def main() -> int:
                 status = SourceHealthStatus.PLACEHOLDER
             elif ok and not placeholder:
                 # health_check success ≠ results; mark as health-ok diagnostic only
-                lines.append(f"{src.source_id}: HEALTH_OK ({msg}) [{status.value}]")
+                lines.append(f"{src.source_id}: HEALTH_OK ({msg}) [search results unverified]")
                 continue
             lines.append(f"{src.source_id}: {status.value} ({msg})")
         except Exception as exc:  # noqa: BLE001

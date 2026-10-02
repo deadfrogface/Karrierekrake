@@ -115,3 +115,16 @@ tzdata==2026.4
 tzlocal==5.4.4
 uritemplate==4.2.0
 urllib3==2.8.0
+
+# CalDAV discovery / recurring-event transport. Validate Windows wheel closure in CI.
+caldav==3.3.1
+dnspython==2.8.0
+icalendar-searcher==1.0.6
+niquests==3.21.2
+recurring-ical-events==3.8.2
+x-wr-timezone==2.0.1
+urllib3-future==2.25.901
+wassima==2.1.4
+jh2==5.0.15
+qh3==2.0.3
+click==8.5.0

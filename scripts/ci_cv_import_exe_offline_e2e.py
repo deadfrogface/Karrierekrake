@@ -6,7 +6,7 @@ Release gate (all must pass; any failure keeps the release blocked)::
     1. Fresh LOCALAPPDATA (no prior model / no internet required at runtime)
     2. Start app smoke (marker)
     3. Import CV via ``--cv-import-child`` → filled preview JSON
-    4. Persist profile fields into isolated config (Übernehmen simulation)
+    4. Apply via real Qt dialog and persist all fields (CI Python, not packaged UI)
     5. Restart smoke → profile still present
     6. Cover-letter / writing call with the same bundled model
     7. Record EXE size, start time, import time, peak RSS
@@ -501,55 +501,52 @@ def _smoke_start(exe: Path, local_appdata: Path, timeout_s: float) -> float:
     return time.perf_counter() - t0
 
 
-def _apply_preview_to_profile(preview: dict, config_root: Path) -> dict:
-    """Simulate Übernehmen: write personal fields into an isolated profile YAML."""
-    import yaml
+def _profile_snapshot(config_root: Path) -> dict:
+    """Read the normal config service; never a hand-written substitute profile."""
+    os.environ["LOCALAPPDATA"] = str(config_root)
+    from desktop.services import ConfigService
+    cfg = ConfigService().load()
+    q = cfg.profile.qualifications
+    return {"applicant": {"full_name": cfg.application.full_name,
+                          "email": cfg.application.email, "phone": cfg.application.phone,
+                          "city": cfg.application.city},
+            "qualification_counts": {key: len(getattr(q, key)) for key in
+                ("languages", "skills", "software", "certificates", "education", "work_experience")}}
 
+
+def _apply_preview_to_profile(preview: dict, config_root: Path) -> dict:
+    """Actual Qt dialog + config persistence in CI Python, not packaged-UI E2E."""
+    os.environ["LOCALAPPDATA"] = str(config_root)
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    from PySide6.QtWidgets import QApplication
+    from desktop.services import ConfigService
+    from desktop.widgets.cv_import_dialog import CvImportDialog
     parsed = preview.get("parsed") if isinstance(preview.get("parsed"), dict) else preview
-    personal = parsed.get("personal") if isinstance(parsed, dict) else {}
-    if not isinstance(personal, dict):
-        personal = {}
-    emails = parsed.get("emails") if isinstance(parsed, dict) else []
-    phones = parsed.get("phones") if isinstance(parsed, dict) else []
-    email = ""
-    if isinstance(emails, list) and emails:
-        email = str(emails[0])
-    elif personal.get("email"):
-        email = str(personal.get("email"))
-    phone = ""
-    if isinstance(phones, list) and phones:
-        phone = str(phones[0])
-    full_name = (
-        personal.get("full_name")
-        or " ".join(
-            str(x)
-            for x in (personal.get("first_name"), personal.get("last_name"))
-            if x
-        ).strip()
-        or personal.get("name")
-        or ""
-    )
-    cfg_dir = config_root / "Karrierekrake" / "config"
-    cfg_dir.mkdir(parents=True, exist_ok=True)
-    profile_path = cfg_dir / "profile.yaml"
-    payload = {
-        "applicant": {
-            "full_name": full_name,
-            "email": email,
-            "phone": phone,
-            "city": personal.get("city") or "",
-        },
-        "source": "cv_import_exe_offline_e2e",
-    }
-    profile_path.write_text(yaml.safe_dump(payload, allow_unicode=True), encoding="utf-8")
-    return payload
+    app = QApplication.instance() or QApplication([])
+    service = ConfigService()
+    cfg = service.load()
+    dialog = CvImportDialog(Path(parsed.get("source_path") or "synthetic.pdf"),
+                            cfg.profile.qualifications, cfg.application,
+                            settings=cfg.settings, autostart=False)
+    dialog._apply_parsed(parsed)
+    dialog._show_success()
+    if not dialog.preview.toPlainText().strip():
+        raise RuntimeError("cv_preview_empty")
+    dialog._accept()
+    if dialog.result_quals is None or dialog.result_application is None:
+        raise RuntimeError("cv_apply_failed")
+    cfg.profile.qualifications = dialog.result_quals
+    cfg.application = dialog.result_application
+    service.save(cfg)
+    snapshot = _profile_snapshot(config_root)
+    snapshot["apply_mode"] = "real_Qt_dialog_and_ConfigService_in_CI_Python"
+    dialog.deleteLater()
+    app.processEvents()
+    return snapshot
 
 
 def _reload_profile(config_root: Path) -> dict:
-    import yaml
-
-    path = config_root / "Karrierekrake" / "config" / "profile.yaml"
-    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return _profile_snapshot(config_root)
 
 
 def _cover_letter_same_model() -> dict:
@@ -601,6 +598,7 @@ def _cover_letter_same_model() -> dict:
     return {
         "ok": ok,
         "writing_ok": ok,
+        "execution_mode": "CI_Python_using_materialized_embedded_GGUF_not_packaged_writer_UI",
         "mode": mode,
         "model_path_basename": model.name,
         "wall_s": round(time.perf_counter() - t0, 3),
@@ -843,14 +841,17 @@ def main(argv: list[str] | None = None) -> int:
                 emit_smoke_report(args.out, report)
                 return 1
 
-        # 4: Übernehmen simulation
+        # 4: Actual dialog apply/persistence in CI Python; EXE import above.
         applied = _apply_preview_to_profile(payload, local)
         report["steps"]["apply"] = {
             "ok": bool(
                 applied.get("applicant", {}).get("full_name")
                 or applied.get("applicant", {}).get("email")
-            ),
+            ) and all(applied.get("qualification_counts", {}).get(key, 0) > 0
+                      for key in ("languages", "skills", "software", "certificates")),
             "applicant": applied.get("applicant"),
+            "qualification_counts": applied.get("qualification_counts"),
+            "mode": applied.get("apply_mode"),
         }
         if not report["steps"]["apply"]["ok"]:
             emit_smoke_report(args.out, report)
@@ -860,11 +861,13 @@ def main(argv: list[str] | None = None) -> int:
         try:
             restart_s = _smoke_start(exe, local, args.smoke_timeout)
             reloaded = _reload_profile(local)
-            same = reloaded.get("applicant") == applied.get("applicant")
+            same = (reloaded.get("applicant") == applied.get("applicant")
+                    and reloaded.get("qualification_counts") == applied.get("qualification_counts"))
             report["steps"]["restart"] = {
                 "ok": same,
                 "wall_s": round(restart_s, 3),
                 "applicant": (reloaded.get("applicant") or {}),
+                "qualification_counts": reloaded.get("qualification_counts"),
             }
             if not same:
                 emit_smoke_report(args.out, report)

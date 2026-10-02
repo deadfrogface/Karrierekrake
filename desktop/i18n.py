@@ -488,6 +488,14 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "kein automatischer Wechsel."
         ),
         "integrations.status.unknown": "Status: unbekannt",
+        "integrations.connect_caldav": 'CalDAV-Kalender verbinden',
+        "integrations.connect_imap": 'IMAP-Postfach verbinden',
+        "integrations.credentials_hint": 'Zugangsdaten werden im Passwortspeicher des Betriebssystems gespeichert. Falls nötig, nutze ein App-Passwort deines Anbieters.',
+        "integrations.server": 'Server',
+        "integrations.username": 'Benutzername',
+        "integrations.password": 'Passwort / App-Passwort',
+        "integrations.select_calendar": 'Kalender auswählen',
+        "integrations.status.checking": "Verbindung wird geprüft…",
         "integrations.status.none": "Status: nicht gewählt",
         "integrations.status.connected": "Status: verbunden",
         "integrations.status.not_connected": "Status: nicht verbunden (API-Probe fehlt oder fehlgeschlagen)",
@@ -1611,6 +1619,14 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "never auto-switch."
         ),
         "integrations.status.unknown": "Status: unknown",
+        "integrations.connect_caldav": 'Connect CalDAV calendar',
+        "integrations.connect_imap": 'Connect IMAP mailbox',
+        "integrations.credentials_hint": 'Credentials are saved in the operating system credential store. Use an app password if required by your provider.',
+        "integrations.server": 'Server',
+        "integrations.username": 'Username',
+        "integrations.password": 'Password / app password',
+        "integrations.select_calendar": 'Select calendar',
+        "integrations.status.checking": "Checking connection…",
         "integrations.status.none": "Status: not selected",
         "integrations.status.connected": "Status: connected",
         "integrations.status.not_connected": "Status: not connected (API probe missing or failed)",
@@ -2357,3 +2373,27 @@ def tr_show_more_entries(n: int) -> str:
     if int(n) == 1:
         return tr("profile.show_more_entry")
     return tr("profile.show_more_entries", n=int(n))
+
+TRANSLATIONS["de"].update({
+    "calendar.connect_first": "Bitte zuerst einen Kalender in den Einstellungen verbinden.",
+    "calendar.proposal_input": "Einladung oder gewünschte Termine mit Datum und Uhrzeit:",
+    "calendar.choose_slot": "Freien Termin auswählen:",
+    "calendar.no_slots": "Keine passenden freien Termine gefunden. Datum, Uhrzeit und Verfügbarkeit prüfen.",
+    "calendar.write_after_approval": "Der Termin wird erst nach Freigabe im verbundenen Kalender angelegt.",
+    "calendar.operation_failed": "Kalender konnte nicht geprüft oder aktualisiert werden. Verbindung prüfen und erneut versuchen.",
+    "calendar.write_disabled": "Kalenderschreiben ist deaktiviert. In den Einstellungen freigeben.",
+    "calendar.created": "Termin im verbundenen Kalender angelegt.",
+})
+TRANSLATIONS["en"].update({
+    "calendar.connect_first": "Connect a calendar in Settings first.",
+    "calendar.proposal_input": "Invitation or proposed dates including date and time:",
+    "calendar.choose_slot": "Choose an available time:",
+    "calendar.no_slots": "No suitable available times found. Check dates, times and availability.",
+    "calendar.write_after_approval": "The event is created in your connected calendar only after approval.",
+    "calendar.operation_failed": "The calendar could not be checked or updated. Check the connection and retry.",
+    "calendar.write_disabled": "Calendar writing is disabled. Enable it in Settings.",
+    "calendar.created": "Event created in the connected calendar.",
+})
+
+TRANSLATIONS["de"]["integrations.connection_failed"] = "Verbindung fehlgeschlagen. Bitte Serveradresse, Zugangsdaten, Berechtigungen und Netzwerk prüfen."
+TRANSLATIONS["en"]["integrations.connection_failed"] = "Connection failed. Check the server address, credentials, permissions and network."

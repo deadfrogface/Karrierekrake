@@ -62,6 +62,9 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "jobspy",
     "playwright",
     "llama_cpp",
+    # CalDAV transport and its TLS certificate store.
+    "caldav",
+    "wassima",
 )
 
 # Extra hiddenimports (third-party) that Analysis may need.

@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from pathlib import Path
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
+    QDialog,
+    QInputDialog,
     QButtonGroup,
     QCheckBox,
     QComboBox,
@@ -42,6 +45,7 @@ from desktop.widgets.confirm_dialog import build_confirm_box, confirm_action
 from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import IntentionalWheelSpinBox, apply_wheel_guard_to_spinboxes
 from desktop.workers import (
+    FunctionWorker,
     BrowserCheckWorker,
     BrowserRepairWorker,
     connect_queued,
@@ -352,6 +356,14 @@ class SettingsPage(QWidget):
         self.privacy_connect_ms_cal_btn = QPushButton()
         self.privacy_connect_ms_cal_btn.setObjectName("SecondaryButton")
         self.privacy_connect_ms_cal_btn.clicked.connect(self._connect_microsoft_calendar)
+        self.connect_caldav_btn = QPushButton()
+        self.connect_caldav_btn.setObjectName("SecondaryButton")
+        self.connect_caldav_btn.clicked.connect(lambda: self._connect_standard_account(calendar=True))
+        self.connect_imap_btn = QPushButton()
+        self.connect_imap_btn.setObjectName("SecondaryButton")
+        self.connect_imap_btn.clicked.connect(lambda: self._connect_standard_account(calendar=False))
+        oform.addWidget(self.connect_caldav_btn)
+        oform.addWidget(self.connect_imap_btn)
         self.privacy_disconnect_btn = QPushButton()
         self.privacy_disconnect_btn.setObjectName("SecondaryButton")
         self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_selected)
@@ -655,6 +667,8 @@ class SettingsPage(QWidget):
                 combo.setCurrentIndex(idx if idx >= 0 else 0)
             self.mail_status.setText(tr("integrations.status.unknown"))
             self.calendar_status.setText(tr("integrations.status.unknown"))
+        self.connect_caldav_btn.setText(tr("integrations.connect_caldav"))
+        self.connect_imap_btn.setText(tr("integrations.connect_imap"))
         self.privacy_connect_gmail_btn.setText(tr("privacy.connect_gmail"))
         self.privacy_connect_cal_btn.setText(tr("privacy.connect_calendar"))
         if hasattr(self, "privacy_connect_ms_mail_btn"):
@@ -1177,6 +1191,58 @@ class SettingsPage(QWidget):
         else:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.export_failed"))
 
+    def _run_account_task(self, operation, success, cleanup=None) -> None:
+        if getattr(self, "_account_task_active", False):
+            return
+        self._account_task_active = True
+        controls = [self.privacy_connect_gmail_btn, self.privacy_connect_cal_btn,
+                    self.privacy_connect_ms_mail_btn, self.privacy_connect_ms_cal_btn,
+                    self.privacy_disconnect_btn, self.connect_caldav_btn, self.connect_imap_btn]
+        for button in controls:
+            button.setEnabled(False)
+        self.mail_status.setText(tr("integrations.status.checking"))
+        self.calendar_status.setText(tr("integrations.status.checking"))
+
+        def done(value, error=False):
+            self._account_task_active = False
+            for button in controls:
+                button.setEnabled(True)
+            if error:
+                from desktop.oauth_messages import message_for_account_error
+                QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(value))
+            else:
+                try:
+                    success(value)
+                except Exception as exc:
+                    from desktop.oauth_messages import message_for_account_error
+                    QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(exc))
+            if cleanup is not None:
+                cleanup()
+            self._refresh_provider_status(self.config_service.load().settings)
+
+        worker = FunctionWorker(operation)
+        connect_queued(worker.finished, lambda value: done(value))
+        connect_queued(worker.failed, lambda error: done(error, True))
+        self._account_worker = worker
+        self._account_thread = start_worker(worker)
+
+    def _finish_google_connection(self, outcome, *, calendar_mode=None):
+        from desktop.oauth_messages import message_for_google_outcome
+        if outcome.service is not None and not outcome.denied_features:
+            cfg = self.config_service.load()
+            if calendar_mode is None:
+                cfg.settings.mail_provider = "google_gmail"
+            else:
+                cfg.settings.calendar_provider = "google_calendar"
+                cfg.settings.calendar_google_mode = calendar_mode
+                cfg.settings.calendar_freebusy_enabled = True
+            self.config_service.save(cfg)
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
+        elif outcome.credentials is not None and outcome.denied_features:
+            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
+        else:
+            QMessageBox.warning(self, tr("privacy.tab"), message_for_google_outcome(outcome))
+
     def _privacy_connect_gmail(self) -> None:
         if str(self.mail_provider.currentData() or "") != "google_gmail":
             QMessageBox.warning(
@@ -1197,7 +1263,7 @@ class SettingsPage(QWidget):
         creds = Path(settings.gmail_credentials_path)
         if not creds.is_file():
             creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
-        outcome = authorize_gmail(
+        self._run_account_task(lambda: authorize_gmail(
             credentials_path=creds,
             token_dir=self.config_service.dirs["config"],
             interactive=True,
@@ -1205,18 +1271,7 @@ class SettingsPage(QWidget):
             privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
             homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
             oauth_env=getattr(settings, "oauth_environment", None),
-        )
-        from desktop.oauth_messages import message_for_google_outcome
-
-        if outcome.service is not None and not outcome.denied_features:
-            app_cfg.settings.mail_provider = "google_gmail"
-            self.config_service.save(app_cfg)
-            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
-        elif outcome.credentials is not None and outcome.denied_features:
-            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
-        else:
-            QMessageBox.warning(self, tr("privacy.tab"), message_for_google_outcome(outcome))
-        self._refresh_provider_status(self.config_service.load().settings)
+        ), self._finish_google_connection)
 
     def _update_calendar_mode_rights(self) -> None:
         mode = str(self.calendar_google_mode.currentData() or "A").upper()
@@ -1254,7 +1309,7 @@ class SettingsPage(QWidget):
         creds = Path(settings.gmail_credentials_path)
         if not creds.is_file():
             creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
-        outcome = authorize_calendar_mode(
+        self._run_account_task(lambda: authorize_calendar_mode(
             mode,
             credentials_path=creds,
             token_dir=self.config_service.dirs["config"],
@@ -1263,143 +1318,101 @@ class SettingsPage(QWidget):
             privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
             homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
             oauth_env=getattr(settings, "oauth_environment", None),
-        )
-        if outcome.service is not None and not outcome.denied_features:
-            app_cfg.settings.calendar_provider = "google_calendar"
-            app_cfg.settings.calendar_google_mode = mode
-            app_cfg.settings.calendar_freebusy_enabled = True
-            self.config_service.save(app_cfg)
-            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
-        elif outcome.credentials is not None and outcome.denied_features:
-            QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.connect_partial"))
-        else:
-            from desktop.oauth_messages import message_for_google_outcome
+        ), lambda outcome: self._finish_google_connection(outcome, calendar_mode=mode))
 
-            QMessageBox.warning(self, tr("privacy.tab"), message_for_google_outcome(outcome))
-        self._refresh_provider_status(self.config_service.load().settings)
+    def _connect_standard_account(self, *, calendar: bool) -> None:
+        from desktop.widgets.provider_credentials import ProviderCredentialsDialog
+        dialog = ProviderCredentialsDialog(calendar=calendar, parent=self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+        secret = dialog.credentials()
+        token_dir = self.config_service.dirs["config"]
+
+        def verify():
+            if calendar:
+                from integrations.calendar.caldav.client import LiveCaldavClient
+                return LiveCaldavClient(secret).discover_calendars()
+            from integrations.mail.imap.adapter import validate_imap_secret
+            validate_imap_secret(secret)
+            return []
+
+        def finish(calendars):
+            from integrations.providers.connection_probe import clear_probe_cache
+            cfg = self.config_service.load()
+            if calendar:
+                from integrations.calendar.caldav.adapter import store_caldav_secret
+                chosen, ok = QInputDialog.getItem(self, tr("integrations.connect_caldav"),
+                    tr("integrations.select_calendar"), calendars, 0, False)
+                if not ok:
+                    return
+                secret["calendar_path"] = chosen
+                store_caldav_secret(secret, token_dir=token_dir)
+                cfg.settings.calendar_provider = "generic_caldav"
+                cfg.settings.calendar_freebusy_enabled = True
+                self.calendar_provider.setCurrentIndex(self.calendar_provider.findData("generic_caldav"))
+                clear_probe_cache("generic_caldav")
+            else:
+                from integrations.mail.imap.adapter import store_imap_secret
+                store_imap_secret(secret, token_dir=token_dir)
+                cfg.settings.mail_provider = "generic_imap"
+                self.mail_provider.setCurrentIndex(self.mail_provider.findData("generic_imap"))
+                clear_probe_cache("generic_imap")
+            self.config_service.save(cfg)
+            secret.clear()
+            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
+
+        self._run_account_task(verify, finish, cleanup=secret.clear)
 
     def _connect_microsoft_mail(self) -> None:
-        if str(self.mail_provider.currentData() or "") != "microsoft_graph":
-            QMessageBox.warning(
-                self, tr("privacy.tab"), tr("integrations.wrong_mail_provider")
-            )
-            return
-        app_cfg = self.config_service.load()
-        client_id = str(getattr(app_cfg.settings, "microsoft_client_id", "") or "")
-        if not client_id:
-            QMessageBox.warning(
-                self, tr("privacy.tab"), tr("integrations.microsoft_client_missing")
-            )
-            return
-        from integrations.mail.microsoft.oauth_pkce import (
-            TOKEN_ACCOUNT_MAIL,
-            mail_scopes,
-            run_local_pkce_login,
-            store_ms_token,
-        )
-        from integrations.providers.connection_probe import clear_probe_cache, probe_microsoft_graph
-        from integrations.providers.diagnostics import DiagStage, log_stage
-        from urllib.parse import urlparse
-
-        redirect = str(getattr(app_cfg.settings, "microsoft_redirect_uri", "") or "")
-        parsed = urlparse(redirect)
-        port = parsed.port or 8765
-        path = parsed.path or "/oauth/callback"
-        log_stage(DiagStage.AUTH_START, provider="microsoft_graph_mail", ok=True)
-        try:
-            tokens = run_local_pkce_login(
-                client_id=client_id,
-                scopes=mail_scopes(),
-                redirect_port=port,
-                redirect_path=path,
-                open_browser=True,
-            )
-            store_ms_token(TOKEN_ACCOUNT_MAIL, tokens, token_dir=self.config_service.dirs["config"])
-            clear_probe_cache("microsoft_graph_mail")
-            probe = probe_microsoft_graph(
-                provider="microsoft_graph_mail",
-                token_dir=self.config_service.dirs["config"],
-                force=True,
-            )
-            if not probe.connected:
-                QMessageBox.warning(
-                    self, tr("privacy.tab"), tr("integrations.probe_failed")
-                )
-                return
-            app_cfg.settings.mail_provider = "microsoft_graph"
-            self.config_service.save(app_cfg)
-            QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
-        except Exception as exc:  # noqa: BLE001
-            from desktop.oauth_messages import message_for_microsoft_error
-
-            QMessageBox.warning(
-                self,
-                tr("privacy.tab"),
-                message_for_microsoft_error(exc),
-            )
+        self._connect_microsoft(calendar=False)
 
     def _connect_microsoft_calendar(self) -> None:
-        if str(self.calendar_provider.currentData() or "") != "microsoft_graph":
-            QMessageBox.warning(
-                self, tr("privacy.tab"), tr("integrations.wrong_calendar_provider")
-            )
+        self._connect_microsoft(calendar=True)
+
+    def _connect_microsoft(self, *, calendar: bool) -> None:
+        selector = self.calendar_provider if calendar else self.mail_provider
+        if str(selector.currentData() or "") != "microsoft_graph":
+            key = "integrations.wrong_calendar_provider" if calendar else "integrations.wrong_mail_provider"
+            QMessageBox.warning(self, tr("privacy.tab"), tr(key))
             return
-        app_cfg = self.config_service.load()
-        client_id = str(getattr(app_cfg.settings, "microsoft_client_id", "") or "")
+        settings = self.config_service.load().settings
+        client_id = str(settings.microsoft_client_id or "")
         if not client_id:
-            QMessageBox.warning(
-                self, tr("privacy.tab"), tr("integrations.microsoft_client_missing")
-            )
+            QMessageBox.warning(self, tr("privacy.tab"), tr("integrations.microsoft_client_missing"))
             return
         from integrations.mail.microsoft.oauth_pkce import (
-            TOKEN_ACCOUNT_CALENDAR,
-            calendar_scopes,
-            run_local_pkce_login,
-            store_ms_token,
+            TOKEN_ACCOUNT_MAIL, TOKEN_ACCOUNT_CALENDAR, mail_scopes, calendar_scopes,
+            run_local_pkce_login, store_ms_token,
         )
         from integrations.providers.connection_probe import clear_probe_cache, probe_microsoft_graph
-        from integrations.providers.diagnostics import DiagStage, log_stage
         from urllib.parse import urlparse
+        redirect = urlparse(str(settings.microsoft_redirect_uri or ""))
+        port, path = redirect.port or 8765, redirect.path or "/oauth/callback"
+        token_dir = self.config_service.dirs["config"]
+        provider = "microsoft_graph_calendar" if calendar else "microsoft_graph_mail"
+        scopes = calendar_scopes(write=bool(settings.allow_calendar_write)) if calendar else mail_scopes()
+        account = TOKEN_ACCOUNT_CALENDAR if calendar else TOKEN_ACCOUNT_MAIL
 
-        redirect = str(getattr(app_cfg.settings, "microsoft_redirect_uri", "") or "")
-        parsed = urlparse(redirect)
-        port = parsed.port or 8765
-        path = parsed.path or "/oauth/callback"
-        write = bool(getattr(app_cfg.settings, "allow_calendar_write", False))
-        log_stage(DiagStage.AUTH_START, provider="microsoft_graph_calendar", ok=True)
-        try:
-            tokens = run_local_pkce_login(
-                client_id=client_id,
-                scopes=calendar_scopes(write=write),
-                redirect_port=port,
-                redirect_path=path,
-                open_browser=True,
-            )
-            store_ms_token(
-                TOKEN_ACCOUNT_CALENDAR, tokens, token_dir=self.config_service.dirs["config"]
-            )
-            clear_probe_cache("microsoft_graph_calendar")
-            probe = probe_microsoft_graph(
-                provider="microsoft_graph_calendar",
-                token_dir=self.config_service.dirs["config"],
-                force=True,
-            )
-            if not probe.connected:
-                QMessageBox.warning(
-                    self, tr("privacy.tab"), tr("integrations.probe_failed")
-                )
+        def connect():
+            tokens = run_local_pkce_login(client_id=client_id, scopes=scopes,
+                                         redirect_port=port, redirect_path=path, open_browser=True)
+            store_ms_token(account, tokens, token_dir=token_dir)
+            clear_probe_cache(provider)
+            return probe_microsoft_graph(provider=provider, token_dir=token_dir, force=True).connected
+
+        def finish(connected):
+            if not connected:
+                QMessageBox.warning(self, tr("privacy.tab"), tr("integrations.probe_failed"))
                 return
-            app_cfg.settings.calendar_provider = "microsoft_graph"
-            self.config_service.save(app_cfg)
+            cfg = self.config_service.load()
+            if calendar:
+                cfg.settings.calendar_provider = "microsoft_graph"
+            else:
+                cfg.settings.mail_provider = "microsoft_graph"
+            self.config_service.save(cfg)
             QMessageBox.information(self, tr("privacy.tab"), tr("privacy.connect_ok"))
-        except Exception as exc:  # noqa: BLE001
-            from desktop.oauth_messages import message_for_microsoft_error
 
-            QMessageBox.warning(
-                self,
-                tr("privacy.tab"),
-                message_for_microsoft_error(exc),
-            )
+        self._run_account_task(connect, finish)
 
     def _privacy_disconnect_selected(self) -> None:
         """Disconnect only the currently selected provider — no cross-provider wipe."""
@@ -1438,43 +1451,46 @@ class SettingsPage(QWidget):
         self._privacy_report(self._privacy_life().disconnect_google(revoke_remote=True))
 
     def _refresh_provider_status(self, settings) -> None:
-        from integrations.mail.registry import resolve_mail_adapter
-        from integrations.calendar.registry import resolve_calendar_adapter
-        from integrations.providers.connection_probe import ConnectionState
-
+        """Network probes must not stall opening or saving Settings."""
+        if getattr(self, "_provider_probe_active", False):
+            self._provider_probe_pending = deepcopy(settings)
+            return
+        self._provider_probe_active = True
+        snapshot = deepcopy(settings)
         token_dir = self.config_service.dirs["config"]
-        try:
-            mad = resolve_mail_adapter(
-                getattr(settings, "mail_provider", "none"),
-                token_dir=token_dir,
-                settings=settings,
-                allow_none=True,
-            )
-            if mad is None:
-                self.mail_status.setText(tr("integrations.status.none"))
-            elif mad.is_connected():
-                self.mail_status.setText(tr("integrations.status.connected"))
-            else:
-                # Token may exist but probe not OK — never show Verbunden.
-                self.mail_status.setText(tr("integrations.status.not_connected"))
-        except Exception:
-            self.mail_status.setText(tr("integrations.status.unknown"))
-        try:
-            cad = resolve_calendar_adapter(
-                getattr(settings, "calendar_provider", "none"),
-                token_dir=token_dir,
-                settings=settings,
-                allow_none=True,
-            )
-            if cad is None:
-                self.calendar_status.setText(tr("integrations.status.none"))
-            elif cad.is_connected():
-                self.calendar_status.setText(tr("integrations.status.connected"))
-            else:
-                self.calendar_status.setText(tr("integrations.status.not_connected"))
-        except Exception:
-            self.calendar_status.setText(tr("integrations.status.unknown"))
-        _ = ConnectionState  # reserved for richer status labels
+        self.mail_status.setText(tr("integrations.status.checking"))
+        self.calendar_status.setText(tr("integrations.status.checking"))
+
+        def probe():
+            from integrations.mail.registry import resolve_mail_adapter
+            from integrations.calendar.registry import resolve_calendar_adapter
+            values = []
+            for resolver, field in ((resolve_mail_adapter, "mail_provider"),
+                                    (resolve_calendar_adapter, "calendar_provider")):
+                try:
+                    adapter = resolver(getattr(snapshot, field, "none"), token_dir=token_dir,
+                                       settings=snapshot, allow_none=True)
+                    values.append("none" if adapter is None else
+                                  "connected" if adapter.is_connected() else "not_connected")
+                except Exception:
+                    values.append("unknown")
+            return values
+
+        def finish(values):
+            self._provider_probe_active = False
+            pending = getattr(self, "_provider_probe_pending", None)
+            self._provider_probe_pending = None
+            if pending is not None:
+                self._refresh_provider_status(pending)
+                return
+            for label, value in zip((self.mail_status, self.calendar_status), values):
+                label.setText(tr("integrations.status." + value))
+
+        worker = FunctionWorker(probe)
+        connect_queued(worker.finished, finish)
+        connect_queued(worker.failed, lambda _: finish(["unknown", "unknown"]))
+        self._provider_probe_worker = worker
+        self._provider_probe_thread = start_worker(worker)
 
     def _confirm_delete(self, body_key: str) -> bool:
         return confirm_action(

@@ -2,6 +2,9 @@
 
 -r requirements-runtime.txt
 pytest>=8.0
+pytest-qt>=4.5,<5
+# Loopback HTTPS CalDAV test server only; not a desktop runtime dependency.
+radicale==3.8.1
 # CI splits the Windows unit-tests job into equal-time shards (not a runtime dep).
 pytest-split>=0.11.0,<1
 pyinstaller>=6.3

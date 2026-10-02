@@ -371,6 +371,7 @@ def run_local_server_kwargs(
         {
             "port": port,
             "open_browser": open_browser,
+            "timeout_seconds": 180,
         }
     )
     return kw

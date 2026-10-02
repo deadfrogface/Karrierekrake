@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from PySide6.QtWidgets import (
     QComboBox,
+    QInputDialog,
     QHBoxLayout,
     QHeaderView,
     QLabel,
@@ -16,6 +17,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from copy import deepcopy
+
+from desktop.workers import FunctionWorker, connect_queued, start_worker
 from core.case_pipeline import refresh_follow_up_tasks
 from core.database import Database
 from core.lifecycle import CaseStatus
@@ -410,6 +414,77 @@ class LifecyclePage(QWidget):
         case = db.get_case(case_id)
         if not case:
             return
+        import os
+        if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+            self._prepare_fake_calendar_proposal(case_id, case, source_email)
+            return
+        cfg = self.config_service.load()
+        if str(cfg.settings.calendar_provider or "none") == "none":
+            QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.connect_first"))
+            return
+        messages = [m for m in db.list_inbox_emails(limit=200)
+                    if m.get("case_id") == case_id and m.get("association_confirmed")]
+        initial = str(messages[0].get("body_text") or "") if messages else ""
+        text, ok = QInputDialog.getMultiLineText(self, tr("lifecycle.calendar_proposal"),
+                                               tr("calendar.proposal_input"), initial)
+        if not ok or not text.strip():
+            return
+        settings = deepcopy(cfg.settings)
+        token_dir = self.config_service.dirs["config"]
+
+        def propose():
+            from integrations.calendar.session import CalendarSession
+            from integrations.calendar_scheduling import propose_ranked_slots
+            from core.scheduling_preferences import preferences_from_settings_config
+            session = CalendarSession(settings, token_dir=token_dir)
+            return propose_ranked_slots(text, case_id=case_id,
+                prefs=preferences_from_settings_config(settings), freebusy=session)
+
+        def prepared(proposal):
+            if not proposal.ranked_slots:
+                QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.no_slots"))
+                return
+            labels = [f"{slot.start.isoformat()} – {slot.end.isoformat()}" for slot in proposal.ranked_slots]
+            chosen, accepted = QInputDialog.getItem(self, tr("lifecycle.calendar_proposal"),
+                                                   tr("calendar.choose_slot"), labels, 0, False)
+            if not accepted:
+                return
+            from integrations.calendar_scheduling import select_slot
+            from integrations.calendar_write import draft_from_ranked_slot
+            proposal = select_slot(proposal, labels.index(chosen))
+            draft = draft_from_ranked_slot(proposal,
+                                          client_request_id=f"{case_id}:{chosen}")
+            draft.title = f"{case.company} — {case.position}"
+            summary = f"{draft.title}\n{chosen}\n{tr('calendar.write_after_approval')}"
+            self._pending_calendar = {"case_id": case_id, "summary": summary, "draft": draft}
+            self._pending_draft = None
+            self._pending_mail = None
+            self.approval.bind(calendar_proposal_approval(case_id=case_id, summary=summary))
+
+        self._calendar_task(propose, prepared)
+
+    def _calendar_task(self, operation, finished):
+        if getattr(self, "_calendar_active", False):
+            return
+        self._calendar_active = True
+        self.calendar_btn.setEnabled(False)
+        self.approval.approve_btn.setEnabled(False)
+
+        def done(value, failed=False):
+            self._calendar_active = False
+            self.calendar_btn.setEnabled(True)
+            self.approval.approve_btn.setEnabled(True)
+            if failed:
+                QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.operation_failed"))
+            else:
+                finished(value)
+
+        worker = FunctionWorker(operation)
+        connect_queued(worker.finished, lambda value: done(value))
+        connect_queued(worker.failed, lambda value: done(value, True))
+        self._calendar_worker = worker
+        self._calendar_thread = start_worker(worker)
+    def _prepare_fake_calendar_proposal(self, case_id, case, source_email):
         if source_email:
             from integrations.calendar_scheduling import propose_ranked_slots
             import os
@@ -452,6 +527,7 @@ class LifecyclePage(QWidget):
             calendar_proposal_approval(case_id=case_id, summary=summary, approved=False)
         )
 
+
     def _clear_approval(self) -> None:
         self._pending_draft = None
         self._pending_calendar = None
@@ -492,15 +568,34 @@ class LifecyclePage(QWidget):
             self._clear_approval()
             return
         if self._pending_calendar is not None:
-            # Proposal acknowledgement only — calendar write stays behind CalendarWriteGate.
-            QMessageBox.information(
-                self,
-                tr("lifecycle.calendar_proposal"),
-                tr("approval.calendar_ack")
-                + "\n\n"
-                + self._pending_calendar.get("summary", ""),
-            )
-            self._clear_approval()
+            import os
+            if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+                # Fake proposal approval must never invoke a live write transport.
+                QMessageBox.information(self, tr("lifecycle.calendar_proposal"),
+                                        "TESTVERSION: Vorschlag bestätigt; kein echter Termin angelegt.")
+                self._clear_approval()
+                return
+            pending = self._pending_calendar
+            cfg = self.config_service.load()
+            if not cfg.settings.allow_calendar_write:
+                QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.write_disabled"))
+                return
+            draft = pending["draft"]
+            draft.approved = True
+            settings = deepcopy(cfg.settings)
+            token_dir = self.config_service.dirs["config"]
+
+            def write():
+                from integrations.calendar.session import CalendarSession
+                return CalendarSession(settings, token_dir=token_dir).create_event(draft)
+
+            def written(external_id):
+                draft.created = True
+                draft.external_event_id = external_id
+                QMessageBox.information(self, tr("lifecycle.calendar_proposal"), tr("calendar.created"))
+                self._clear_approval()
+
+            self._calendar_task(write, written)
             return
 
     def show_prep(self) -> None:

@@ -25,3 +25,9 @@ Beim Start werden drei fiktive Bewerbungen angelegt und fünf Mails über `FakeI
 ## Grenzen
 
 Die fünf Startmails und alle selbst hinzugefügten Mails sind synthetisch. Der Fake-Kalender liefert nur Verfügbarkeit; es wird **kein** Termin in einen echten Kalender geschrieben und **keine** echte Mail verschickt. Im Demo-Modus verweigern Mail-/Kalender-Registries echte Provider. Der Test beweist weder echte Gmail-/Outlook-Anmeldung noch deren Synchronisierung. Der konkrete Termin liegt im Testkorpus; für spätere Tests nach diesem Datum muss die Einladung aktualisiert werden. Der normale App-Start ohne Test-Flag aktiviert die Fake-Provider nicht.
+
+## Integration von PR #111
+
+Alle Änderungen aus `9f706d1` sind im Testbranch integriert. PR #110 richtet sich ausschließlich an `test-only/fake-mail-demo-base-20261002`; niemals nach main mergen. Der zusätzliche Workflow `Fake mailbox test boundary` lehnt main als Ziel oder Push-Branch ab. main wurde nicht verändert.
+
+Der Launcher liegt jetzt auch im inneren Release-ZIP neben der EXE. Dieses ZIP vollständig entpacken und dort `Start-Fake-Mail-Testversion.cmd` ausführen. Kalenderfreigaben im Fake-Modus bleiben rein lokal und können keinen Live-Kalender aufrufen.

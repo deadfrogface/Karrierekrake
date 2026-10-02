@@ -95,3 +95,11 @@ def test_company_sites_live_fetch_optional():
         assert job.source == "company_sites"
         assert job.title
         assert job.url.startswith("http")
+
+
+def test_account_error_is_provider_neutral_and_never_leaks_credentials():
+    from desktop.oauth_messages import message_for_account_error
+    i18n.set_language("de")
+    msg = message_for_account_error(RuntimeError("password=SECRET https://user:pass@server"))
+    assert "Microsoft" not in msg and "SECRET" not in msg and "user:pass" not in msg
+    assert "Zugangsdaten" in msg

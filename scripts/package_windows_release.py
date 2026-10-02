@@ -62,6 +62,9 @@ def stage_install_dir(dist: Path, dest: Path) -> Path:
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
     shutil.copy2(dist / "Karrierekrake.exe", dest / "Karrierekrake.exe")
+    launcher = _ROOT / "Start-Fake-Mail-Testversion.cmd"
+    if launcher.is_file():
+        shutil.copy2(launcher, dest / launcher.name)
     (dest / "INSTALL.txt").write_text(INSTALL_TXT, encoding="utf-8")
     return dest / "Karrierekrake.exe"
 
@@ -82,9 +85,15 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
 
     with zipfile.ZipFile(out_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("INSTALL.txt", INSTALL_TXT)
+        launcher = _ROOT / "Start-Fake-Mail-Testversion.cmd"
+        if launcher.is_file():
+            zf.write(launcher, arcname=launcher.name)
         for path in members:
             arc = path.relative_to(dist).as_posix()
             zf.write(path, arcname=arc)
+
+    with zipfile.ZipFile(out_zip) as archive:
+        member_names = sorted(Path(i.filename).as_posix() for i in archive.infolist())
 
     meta = {
         "zip": str(out_zip),
@@ -93,9 +102,7 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
         "model_rel": CV_MODEL_REL.as_posix(),
         "model_embedded": True,
         "model_sha256": CV_MODEL_SHA256,
-        "members": sorted(
-            [Path(i.filename).as_posix() for i in zipfile.ZipFile(out_zip).infolist()]
-        ),
+        "members": member_names,
     }
     meta_path = out_zip.with_suffix(out_zip.suffix + ".json")
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
@@ -115,7 +122,7 @@ def main(argv: list[str] | None = None) -> int:
         "--stage-install",
         type=Path,
         default=None,
-        help="Also copy EXE+models into this fresh folder (CI install simulation)",
+        help="Also copy the standalone EXE into this fresh folder (CI install simulation)",
     )
     parser.add_argument(
         "--check-only",
