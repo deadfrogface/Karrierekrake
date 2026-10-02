@@ -99,6 +99,10 @@ class DashboardPage(QWidget):
         header_row.setSpacing(12)
         self.header = PageHeader()
         header_row.addWidget(self.header, stretch=1)
+        self.search_intent_btn = QPushButton()
+        self.search_intent_btn.setObjectName("SecondaryButton")
+        self.search_intent_btn.clicked.connect(self._open_search_intent)
+        header_row.addWidget(self.search_intent_btn)
         outer.addWidget(header_wrap)
 
         self.btn_search = QPushButton()
@@ -352,7 +356,16 @@ class DashboardPage(QWidget):
                 return
             self.search_requested.emit()
 
+    def _open_search_intent(self) -> None:
+        parent = self.window()
+        if hasattr(parent, "open_search_intent"):
+            parent.open_search_intent()
+        elif hasattr(parent, "navigate_to"):
+            parent.navigate_to("nav.search")
+
     def retranslate_ui(self) -> None:
+        self.search_intent_btn.setText(tr("search.settings"))
+        set_accessible_name(self.search_intent_btn, tr("search.settings"))
         self.header.set_texts(tr("dash.greeting"), tr("dash.greeting_sub"))
         self.queue_section.setText(tr("dash.section_queue"))
         self.kpi_section.setText(tr("dash.section_kpis"))
