@@ -65,6 +65,7 @@ class NormalizedEmail:
             "snippet": self.snippet,
             "body_text": self.body_text,
             "internal_date": self.internal_date,
+            "received_at": self.internal_date,
             "label_ids": list(self.label_ids),
         }
 

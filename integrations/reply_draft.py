@@ -8,6 +8,8 @@ require an extra explicit review flag before any send attempt.
 
 from __future__ import annotations
 
+import os
+
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Iterable, Sequence
@@ -286,7 +288,7 @@ def _build_confirm_interview(
     used = [k for k in ("company", "position", "contact_name", "contact_email") if getattr(facts, k)]
     when_line = ""
     if facts.interview_when:
-        when_line = f" am {facts.interview_when}"
+        when_line = f" am {human_slot(facts.interview_when)}"
         used.append("interview_when")
     else:
         blocking.append("unverified_interview_when")
@@ -315,6 +317,19 @@ def _build_confirm_interview(
     )
 
 
+def human_slot(value: str) -> str:
+    """Render a verified ISO time in its supplied timezone, without guessing."""
+    from datetime import datetime
+    try:
+        stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return value
+    days = ("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")
+    zone = stamp.strftime("%z")
+    zone_label = f" (UTC{zone[:3]}:{zone[3:]})" if zone else ""
+    return f"{days[stamp.weekday()]}, {stamp:%d.%m.%Y} um {stamp:%H:%M} Uhr{zone_label}"
+
+
 def _build_propose_slots(
     facts: VerifiedFacts, *, offer_phone: bool = False, general_note: str = ""
 ) -> ReplyDraft:
@@ -328,20 +343,23 @@ def _build_propose_slots(
         )
     else:
         used.append("proposed_slots")
-        lines = "\n".join(f"- {s}" for s in facts.proposed_slots)
-        slots_block = f"Gerne schlage ich folgende verifizierte Zeitfenster vor:\n{lines}"
+        lines = "\n".join(f"- {human_slot(s)}" for s in facts.proposed_slots)
+        if len(facts.proposed_slots) == 1:
+            slots_block = f"Der vorgeschlagene Termin am {human_slot(facts.proposed_slots[0])} passt mir gut. Gerne nehme ich diesen Termin wahr."
+        else:
+            slots_block = f"Für das Vorstellungsgespräch passen mir folgende Termine:\n{lines}"
     role = _role_line(facts)
     role_bit = f" {role}" if role else ""
     body = (
         f"{_greeting(facts)}\n\n"
         f"vielen Dank für Ihre Nachricht zur Bewerbung{role_bit}.\n"
-        f"{slots_block}\n\n"
+        f"{slots_block}\n\nBitte geben Sie mir eine kurze Rückmeldung zum Termin. Ich freue mich auf das Gespräch.\n\n"
         f"{_signoff(facts)}"
     )
     return _base_draft(
         action=ReplyAction.PROPOSE_SLOTS,
         facts=facts,
-        subject="Terminvorschläge",
+        subject=f"Vorstellungsgespräch – {facts.position}" if facts.position else "Terminvorschläge zum Vorstellungsgespräch",
         body=body,
         used=used,
         blocking=blocking,
@@ -359,7 +377,7 @@ def _build_reschedule(
     old = ""
     if facts.interview_when:
         old = (
-            f" Den bisherigen Termin am {facts.interview_when} "
+            f" Den bisherigen Termin am {human_slot(facts.interview_when)} "
             "kann ich leider nicht wahrnehmen."
         )
         used.append("interview_when")
@@ -367,8 +385,8 @@ def _build_reschedule(
         blocking.append("unverified_interview_when")
     if facts.proposed_slots:
         used.append("proposed_slots")
-        alt = "\n".join(f"- {s}" for s in facts.proposed_slots)
-        alt_block = f" Alternative verifizierte Zeitfenster:\n{alt}"
+        alt = "\n".join(f"- {human_slot(s)}" for s in facts.proposed_slots)
+        alt_block = f" Als Alternative passen mir folgende Termine:\n{alt}"
     else:
         blocking.append("unverified_slots")
         alt_block = " Bitte lassen Sie uns einen neuen Termin finden."
@@ -550,7 +568,7 @@ def _build_general(
         role_bit = f" {role}" if role else ""
         mid = (
             f"vielen Dank für Ihre Nachricht zur Bewerbung{role_bit}. "
-            "Ich melde mich bezogen auf den vorliegenden Fall."
+            "Gerne beantworte ich Ihre Rückfragen und freue mich auf die nächsten Schritte."
         )
     body = f"{_greeting(facts)}\n\n{mid}\n\n{_signoff(facts)}"
     return _base_draft(
@@ -625,6 +643,10 @@ class SendGate:
         Never silently drop the draft. Never treats failed send as sent.
         """
         draft.auto_send = False
+        if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+            draft.sent = False
+            draft.send_error = "fake_demo: external send forbidden"
+            return draft
 
         if (draft.draft_only or self.draft_only) and not self.allow_send:
             draft.send_error = "draft_only: send disabled (approval path required)"

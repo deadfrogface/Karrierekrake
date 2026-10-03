@@ -62,6 +62,9 @@ def stage_install_dir(dist: Path, dest: Path) -> Path:
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
     shutil.copy2(dist / "Karrierekrake.exe", dest / "Karrierekrake.exe")
+    launcher = _ROOT / "Start-Fake-Mail-Testversion.cmd"
+    if launcher.is_file():
+        shutil.copy2(launcher, dest / launcher.name)
     (dest / "INSTALL.txt").write_text(INSTALL_TXT, encoding="utf-8")
     return dest / "Karrierekrake.exe"
 
@@ -82,6 +85,9 @@ def build_zip(dist: Path, out_zip: Path) -> dict:
 
     with zipfile.ZipFile(out_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("INSTALL.txt", INSTALL_TXT)
+        launcher = _ROOT / "Start-Fake-Mail-Testversion.cmd"
+        if launcher.is_file():
+            zf.write(launcher, arcname=launcher.name)
         for path in members:
             arc = path.relative_to(dist).as_posix()
             zf.write(path, arcname=arc)

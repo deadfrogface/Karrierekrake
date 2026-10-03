@@ -38,6 +38,8 @@ jobs:
           python -m pytest -q tests/test_qt_smoke.py tests/test_pause_resume.py
           tests/test_caldav_live_transport.py tests/test_caldav_protocol.py tests/test_calendar_ui_connection.py
           tests/test_provider_reliability.py tests/test_windows_acceptance_apply.py tests/test_cover_letter_gold.py
+          tests/test_fake_mail_demo.py tests/test_fake_mail_integration_boundary.py tests/test_next06_fake_boundary.py
+          tests/test_fake_application_send.py tests/test_chip_card_polish.py
           tests/test_reply_safety_matrix.py tests/test_matcher.py
           tests/test_email_association.py
       - name: Summary
@@ -248,6 +250,22 @@ jobs:
           $env:QT_QPA_PLATFORM = "offscreen"
           # Windowed onefile: poll tokenized marker (do not trust process exit alone).
           & ".\scripts\ci_wait_exe_smoke.ps1" -ExePath (Resolve-Path "dist\Karrierekrake.exe") -LocalAppData $tmp.FullName
+      - name: Fake mailbox demo from packaged EXE (isolated profile)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tmp = New-Item -ItemType Directory -Path "$env:RUNNER_TEMP\kk-fake-mail-$([guid]::NewGuid())"
+          $env:LOCALAPPDATA = $tmp.FullName
+          $out = Join-Path $tmp.FullName "fake_mail_demo_check.json"
+          $exe = (Resolve-Path "dist\Karrierekrake.exe").Path
+          $process = Start-Process -FilePath $exe -ArgumentList @("--fake-mail-demo-check", $out) -PassThru
+          if (!$process.WaitForExit(180000)) { $process.Kill(); throw "Fake-mail EXE timed out" }
+          if ($process.ExitCode -ne 0 -or !(Test-Path $out)) { throw "Fake-mail EXE check failed" }
+          $check = Get-Content $out -Raw | ConvertFrom-Json
+          if ($check.message_count -ne 5 -or !$check.linked_interview -or !$check.draft_only -or !$check.isolated_db -or $check.available_slots.Count -ne 1) {
+            throw "Fake-mail lifecycle check failed"
+          }
+          Write-Host "Fake mail, classification, matching, slot and draft PASS"
       - name: Packaged CV-import child while instance lock held
         shell: pwsh
         run: |
@@ -334,6 +352,7 @@ jobs:
         with:
           name: Karrierekrake-Windows-Smoke
           path: |
+            Start-Fake-Mail-Testversion.cmd
             dist/Karrierekrake-Windows.zip
             dist/Karrierekrake-Windows.zip.json
             dist/build_metadata.txt

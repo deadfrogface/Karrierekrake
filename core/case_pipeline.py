@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from typing import Any, Iterable
 
 from core.database import Database
@@ -78,36 +79,32 @@ def process_parsed_email(
     payload["confidence"] = classification.confidence
 
     guenther_meta: dict[str, Any] = {}
-    try:
-        from core.config import load_config
-        from guenther.service import get_guenther_service
+    # Synthetic mail tests the deterministic sorting and association pipeline.
+    # The optional writing model has no authority over those labels.
+    if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") != "1":
+        try:
+            from core.config import load_config
+            from guenther.service import get_guenther_service
 
-        cfg = load_config()
-        # Günther writing assist is always on; get_guenther_service still no-ops if model missing.
-        g = get_guenther_service(
-            enabled=True,
-            model="qwen3.5-4b",
-        )
-        env = g.suggest_email_class(
-            payload.get("subject") or "",
-            payload.get("body_text") or "",
-            deterministic_category=classification.category,
-            deterministic_false_rejection_blocked=classification.false_rejection_blocked,
-        )
-        if env.ok and env.validated:
-            guenther_meta = {
-                "category": env.suggestion.get("category"),
-                "confidence": env.suggestion.get("confidence"),
-                "safety_notes": env.safety_notes,
-                "model_id": env.model_id,
-            }
-            if (
-                classification.false_rejection_blocked
-                or env.suggestion.get("false_rejection_risk")
-            ):
-                guenther_meta["status_write_blocked"] = True
-    except Exception:
-        logger.debug("guenther email assist skipped", exc_info=False)
+            cfg = load_config()
+            g = get_guenther_service(enabled=True, model="qwen3.5-4b")
+            env = g.suggest_email_class(
+                payload.get("subject") or "",
+                payload.get("body_text") or "",
+                deterministic_category=classification.category,
+                deterministic_false_rejection_blocked=classification.false_rejection_blocked,
+            )
+            if env.ok and env.validated:
+                guenther_meta = {
+                    "category": env.suggestion.get("category"),
+                    "confidence": env.suggestion.get("confidence"),
+                    "safety_notes": env.safety_notes,
+                    "model_id": env.model_id,
+                }
+                if classification.false_rejection_blocked or env.suggestion.get("false_rejection_risk"):
+                    guenther_meta["status_write_blocked"] = True
+        except Exception:
+            logger.debug("guenther email assist skipped", exc_info=False)
 
     cases = [c.to_dict() for c in db.list_cases(limit=2000)]
     proposed = associate_email(

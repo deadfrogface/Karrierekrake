@@ -114,3 +114,30 @@ def test_mode_chip_humanized(qapp, config_service, monkeypatch):
     page.refresh()
     assert "search_only" not in page.mode_chip.text()
     assert tr("settings.mode.search") in page.mode_chip.text() or page.mode_chip.text()
+
+
+@pytest.mark.parametrize("state", ["idle", "starting", "running", "cancelling"])
+def test_overview_search_settings_available_in_every_search_state(qapp, config_service, state):
+    from PySide6.QtWidgets import QVBoxLayout, QWidget
+
+    class Host(QWidget):
+        opened = 0
+
+        def open_search_intent(self):
+            self.opened += 1
+
+    host = Host()
+    layout = QVBoxLayout(host)
+    page = DashboardPage(config_service)
+    layout.addWidget(page)
+    page._search_state = state
+    page._sync_search_cta()
+    host.show()
+    qapp.processEvents()
+    assert page.search_intent_btn.isVisible()
+    assert page.search_intent_btn.isEnabled()
+    assert page.search_intent_btn.text() == tr("search.settings")
+    page.search_intent_btn.click()
+    assert host.opened == 1
+    assert page._search_state == state
+    host.close()

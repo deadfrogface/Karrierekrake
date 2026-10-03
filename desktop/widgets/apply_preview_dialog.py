@@ -7,6 +7,7 @@ Does not change submit or safety logic — only presentation and labels.
 
 from __future__ import annotations
 
+import os
 import webbrowser
 from typing import Iterable
 
@@ -349,6 +350,12 @@ class ApplyPreviewDialog(QDialog):
         root.addWidget(self._scroll, 1)
 
         # --- Footer actions ---
+        self.simulate_btn = QPushButton("Bewerbung simulieren (kein Versand)")
+        self.simulate_btn.setObjectName("PrimaryButton")
+        self.simulate_btn.setVisible(os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1")
+        self.simulate_btn.setEnabled(False)
+        self.simulate_btn.clicked.connect(self._simulate_application)
+        root.addWidget(self.simulate_btn)
         self.open_url_btn = QPushButton(tr("btn.open_manual"))
         self.open_url_btn.setObjectName("SecondaryButton")
         self.open_url_btn.clicked.connect(self._open_url)
@@ -555,9 +562,35 @@ class ApplyPreviewDialog(QDialog):
             QMessageBox.warning(self, self.windowTitle(), tr("cover.preview_required"))
             return
         QMessageBox.information(self, self.windowTitle(), tr("cover.saved") + f"\n{path}")
+        if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+            self.simulate_btn.setEnabled(True)
+            self.approve_btn.setEnabled(False)
+            return
+        self.accept()
+
+    def _simulate_application(self) -> None:
+        if os.environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") != "1" or not self.simulate_btn.isEnabled():
+            return
+        if not self._run_cover_guard():
+            self.simulate_btn.setEnabled(False)
+            return
+        from apply.manager import ApplicationManager
+        from core.database import Database
+        config = self._config_for_approval()
+        manager = ApplicationManager(config, Database(config.db_path))
+        approved = manager._matching_approved_cover(self._job)
+        if approved is None or hasattr(approved, "success") or approved[0] != self.cover_edit.toPlainText():
+            QMessageBox.warning(self, "TESTVERSION", "Bitte den aktuellen Entwurf zuerst bestätigen.")
+            self.simulate_btn.setEnabled(False)
+            return
+        manager.prepare_and_apply(self._job, force_submit=True)
+        QMessageBox.information(self, "TESTVERSION", "Bewerbung lokal simuliert. Passende Testmails stehen im Postfach. Nichts wurde versendet.")
         self.accept()
 
     def _open_url(self) -> None:
         url = self.preview.application_url
         if url:
+            if __import__("os").environ.get("KARRIEREKRAKE_FAKE_MAIL_DEMO") == "1":
+                QMessageBox.information(self, "TESTVERSION", "Echte Bewerbungsportale werden in der Testversion nicht geöffnet. Es wird nichts versendet.")
+                return
             webbrowser.open(url)

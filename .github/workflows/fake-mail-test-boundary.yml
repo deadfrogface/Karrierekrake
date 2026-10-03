@@ -1,0 +1,14 @@
+name: Fake mailbox test boundary
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+  push:
+    branches: [main, codex/fake-mail-demo-20260930]
+permissions:
+  contents: read
+jobs:
+  test-only-no-main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/check_fake_mail_branch_boundary.py
