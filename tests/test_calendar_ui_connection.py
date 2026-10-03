@@ -50,7 +50,7 @@ def test_calendar_proposal_then_explicit_write(qapp, qtbot, config_service, monk
     monkeypatch.setattr(QMessageBox, "information", lambda *a: None)
     monkeypatch.setattr(QMessageBox, "warning", lambda *a: None)
     monkeypatch.setattr(QInputDialog, "getMultiLineText", lambda *a: ("5 October 2026 at 10:00", True))
-    monkeypatch.setattr(QInputDialog, "getItem", lambda *a: (a[3][0], True))
+    monkeypatch.setattr("desktop.widgets.calendar_preview_dialog.CalendarPreviewDialog.exec", lambda self: self.DialogCode.Accepted)
     slot = RankedSlot(start=datetime(2026,10,5,10,tzinfo=timezone.utc), end=datetime(2026,10,5,11,tzinfo=timezone.utc), score=1, rank=1, explanations=(), modality="remote", timezone="UTC", ranking_version=1)
     def propose(text, **kw):
         assert hasattr(kw["freebusy"], "query")

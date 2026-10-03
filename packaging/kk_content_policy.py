@@ -25,6 +25,8 @@ ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
     ("config/application_profile.yaml.example", "config"),
     ("config/settings.yaml.example", "config"),
     ("assets/brand", "assets/brand"),
+    # Public installed-app identity; never a user token or service account key.
+    ("assets/oauth/desktop_client.json", "assets/oauth"),
     ("data/geo", "data/geo"),
     # Optional embed (slow onefile extract). Prefer sidecar next to EXE —
     # enabled only when KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE=1.
@@ -32,6 +34,9 @@ ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
     ("NOTICE", "."),
     ("LICENSE", "."),
 )
+
+# Private CI inputs provisioned before packaging, absent from a clean checkout.
+BUILD_PROVISIONED_DATAS = ("assets/oauth/desktop_client.json",)
 
 # First-party Python packages that may be collected as hiddenimports.
 ALLOWED_FIRST_PARTY_PREFIXES: tuple[str, ...] = (

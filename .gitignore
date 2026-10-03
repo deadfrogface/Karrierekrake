@@ -283,3 +283,6 @@ vendor/cv_model/
 vendor/cv_model/**
 *.gguf
 !tests/fixtures/**/*.gguf
+
+# Provision Google Desktop identity locally for packaged builds.
+/assets/oauth/desktop_client.json

@@ -306,13 +306,14 @@ def test_main_window_v2_nav_order(qapp, config_service, monkeypatch, tmp_path):
     primary = [k for k, _ in win._primary_nav]
     assert primary == [
         "nav.overview",
+        "nav.search",
         "nav.jobs",
         "nav.applications",
         "nav.inbox",
         "nav.profile",
     ]
     assert [k for k, _ in win._utility_nav] == ["nav.settings"]
-    # Search + logs preserved off primary nav
+    # Search is primary; logs remain available
     assert "nav.search" in win._page_index
     assert "nav.logs" in win._page_index
     # Legacy aliases

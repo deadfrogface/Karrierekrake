@@ -98,6 +98,10 @@ jobs:
           $len = (Get-Item $gguf).Length
           if ($len -lt 1000000000) { throw "bundled GGUF too small: $len" }
           Write-Host "bundled_model_bytes=$len"
+      - name: Provision Google Desktop client for EXE
+        env:
+          GOOGLE_DESKTOP_CLIENT_JSON: ${{ secrets.GOOGLE_DESKTOP_CLIENT_JSON }}
+        run: python scripts/prepare_google_desktop_client.py
       - name: Build onefile EXE (model + llama_cpp runtime bundled)
         env:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
@@ -225,7 +229,7 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-embedded
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-embedded --require-google-client-embedded
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
           Get-Content dist/content_manifest.json | Select-Object -First 40
       - name: Package Windows release zip (standalone EXE)
