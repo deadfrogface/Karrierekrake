@@ -275,6 +275,21 @@ def require_cv_model_embedded(exe: Path) -> list:
     return []
 
 
+def require_google_client_embedded(exe: Path) -> list:
+    from PyInstaller.archive.readers import CArchiveReader
+    from scripts.prepare_google_desktop_client import validate_client
+
+    name = "assets/oauth/desktop_client.json"
+    try:
+        reader = CArchiveReader(str(exe))
+        match = next(k for k in reader.toc if normalize_path(k) == name)
+        validate_client(reader.extract(match).decode("utf-8"))
+    except Exception:
+        return [PolicyHit(kind="google_client_missing_or_invalid", path=name,
+                          detail="EXE must embed a valid Google Desktop client")]
+    return []
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exe", type=Path, help="PyInstaller onefile EXE")
@@ -296,6 +311,7 @@ def main() -> int:
         help="Require dist/models/.../Qwen*.gguf next to the EXE (release default)",
     )
     parser.add_argument("--require-cv-model-embedded", action="store_true")
+    parser.add_argument("--require-google-client-embedded", action="store_true")
     args = parser.parse_args()
 
     if not any([args.exe, args.dist, args.toc_json]):
@@ -320,6 +336,11 @@ def main() -> int:
         if not args.exe:
             parser.error("--require-cv-model-embedded needs --exe")
         hits.extend(require_cv_model_embedded(args.exe))
+
+    if args.require_google_client_embedded:
+        if not args.exe:
+            parser.error("--require-google-client-embedded needs --exe")
+        hits.extend(require_google_client_embedded(args.exe))
 
     if args.manifest_out:
         gen_path = ROOT / "scripts" / "generate_content_manifest.py"
