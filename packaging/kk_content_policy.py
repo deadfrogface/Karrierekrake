@@ -35,6 +35,9 @@ ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
     ("LICENSE", "."),
 )
 
+# Private CI inputs provisioned before packaging, absent from a clean checkout.
+BUILD_PROVISIONED_DATAS = ("assets/oauth/desktop_client.json",)
+
 # First-party Python packages that may be collected as hiddenimports.
 ALLOWED_FIRST_PARTY_PREFIXES: tuple[str, ...] = (
     "app",

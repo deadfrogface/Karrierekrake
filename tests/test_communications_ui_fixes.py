@@ -126,3 +126,17 @@ def test_bundled_google_client_frozen_path(tmp_path, monkeypatch):
     from integrations.google_oauth import bundled_desktop_client_path
     monkeypatch.setattr(sys, "_MEIPASS", str(tmp_path), raising=False)
     assert bundled_desktop_client_path() == tmp_path / "assets/oauth/desktop_client.json"
+
+
+def test_only_google_accounts_can_be_connected(qapp, config_service):
+    page = SettingsPage(config_service)
+    from desktop.i18n import i18n
+    for language in ("de", "en"):
+        i18n.set_language(language)
+        page.retranslate_ui()
+        assert [page.mail_provider.itemData(i) for i in range(page.mail_provider.count())] == ["none", "google_gmail"]
+        assert [page.calendar_provider.itemData(i) for i in range(page.calendar_provider.count())] == ["google_calendar", "none"]
+        for removed in ("privacy_connect_ms_mail_btn", "privacy_connect_ms_cal_btn", "connect_caldav_btn", "connect_imap_btn"):
+            assert not hasattr(page, removed)
+    i18n.set_language("de")
+    page.close()

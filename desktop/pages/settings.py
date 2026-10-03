@@ -304,8 +304,6 @@ class SettingsPage(QWidget):
         for label, data in (
             ("integrations.mail.none", "none"),
             ("integrations.mail.google", "google_gmail"),
-            ("integrations.mail.microsoft", "microsoft_graph"),
-            ("integrations.mail.other", "generic_imap"),
         ):
             self.mail_provider.addItem(label, data)
         self.mail_status = QLabel()
@@ -322,8 +320,6 @@ class SettingsPage(QWidget):
         self.calendar_provider = QComboBox()
         for label, data in (
             ("integrations.calendar.google", "google_calendar"),
-            ("integrations.calendar.microsoft", "microsoft_graph"),
-            ("integrations.calendar.other", "generic_caldav"),
             ("integrations.calendar.none_explicit", "none"),
         ):
             self.calendar_provider.addItem(label, data)
@@ -355,28 +351,12 @@ class SettingsPage(QWidget):
         self.privacy_connect_cal_btn = QPushButton()
         self.privacy_connect_cal_btn.setObjectName("SecondaryButton")
         self.privacy_connect_cal_btn.clicked.connect(self._privacy_connect_calendar)
-        self.privacy_connect_ms_mail_btn = QPushButton()
-        self.privacy_connect_ms_mail_btn.setObjectName("SecondaryButton")
-        self.privacy_connect_ms_mail_btn.clicked.connect(self._connect_microsoft_mail)
-        self.privacy_connect_ms_cal_btn = QPushButton()
-        self.privacy_connect_ms_cal_btn.setObjectName("SecondaryButton")
-        self.privacy_connect_ms_cal_btn.clicked.connect(self._connect_microsoft_calendar)
-        self.connect_caldav_btn = QPushButton()
-        self.connect_caldav_btn.setObjectName("SecondaryButton")
-        self.connect_caldav_btn.clicked.connect(lambda: self._connect_standard_account(calendar=True))
-        self.connect_imap_btn = QPushButton()
-        self.connect_imap_btn.setObjectName("SecondaryButton")
-        self.connect_imap_btn.clicked.connect(lambda: self._connect_standard_account(calendar=False))
-        oform.addWidget(self.connect_caldav_btn)
-        oform.addWidget(self.connect_imap_btn)
         self.privacy_disconnect_btn = QPushButton()
         self.privacy_disconnect_btn.setObjectName("SecondaryButton")
         self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_selected)
         for btn in (
             self.privacy_connect_gmail_btn,
             self.privacy_connect_cal_btn,
-            self.privacy_connect_ms_mail_btn,
-            self.privacy_connect_ms_cal_btn,
             self.privacy_disconnect_btn,
         ):
             oform.addWidget(btn)
@@ -654,17 +634,13 @@ class SettingsPage(QWidget):
                     [
                         ("integrations.mail.none", "none"),
                         ("integrations.mail.google", "google_gmail"),
-                        ("integrations.mail.microsoft", "microsoft_graph"),
-                        ("integrations.mail.other", "generic_imap"),
-                    ],
+                                            ],
                 ),
                 (
                     self.calendar_provider,
                     [
                         ("integrations.calendar.google", "google_calendar"),
-                        ("integrations.calendar.microsoft", "microsoft_graph"),
-                        ("integrations.calendar.other", "generic_caldav"),
-                        ("integrations.calendar.none_explicit", "none"),
+                                                ("integrations.calendar.none_explicit", "none"),
                     ],
                 ),
             ):
@@ -676,13 +652,8 @@ class SettingsPage(QWidget):
                 combo.setCurrentIndex(idx if idx >= 0 else 0)
             self.mail_status.setText(tr("integrations.status.unknown"))
             self.calendar_status.setText(tr("integrations.status.unknown"))
-        self.connect_caldav_btn.setText(tr("integrations.connect_caldav"))
-        self.connect_imap_btn.setText(tr("integrations.connect_imap"))
         self.privacy_connect_gmail_btn.setText(tr("privacy.connect_gmail"))
         self.privacy_connect_cal_btn.setText(tr("privacy.connect_calendar"))
-        if hasattr(self, "privacy_connect_ms_mail_btn"):
-            self.privacy_connect_ms_mail_btn.setText(tr("integrations.connect_microsoft_mail"))
-            self.privacy_connect_ms_cal_btn.setText(tr("integrations.connect_microsoft_calendar"))
         self.privacy_export_btn.setText(tr("privacy.export"))
         self.privacy_disconnect_btn.setText(tr("integrations.disconnect_selected"))
         self.privacy_mail_btn.setText(tr("privacy.delete_mail"))
@@ -1205,8 +1176,7 @@ class SettingsPage(QWidget):
             return
         self._account_task_active = True
         controls = [self.privacy_connect_gmail_btn, self.privacy_connect_cal_btn,
-                    self.privacy_connect_ms_mail_btn, self.privacy_connect_ms_cal_btn,
-                    self.privacy_disconnect_btn, self.connect_caldav_btn, self.connect_imap_btn]
+                    self.privacy_disconnect_btn]
         for button in controls:
             button.setEnabled(False)
         self.mail_status.setText(tr("integrations.status.checking"))
