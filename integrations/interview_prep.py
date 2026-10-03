@@ -33,8 +33,8 @@ def build_interview_prep(
 ) -> InterviewPrep:
     prep = InterviewPrep(case_id=case_id, company=company or "", position=position or "")
     for ev in evidence or []:
-        support = str(ev.get("support") or ev.get("level") or "").upper()
-        claim = str(ev.get("claim") or ev.get("requirement") or ev.get("text") or "").strip()
+        support = str(ev.get("support") or ev.get("evidence_class") or ev.get("level") or "").upper()
+        claim = str(ev.get("claim") or ev.get("token") or ev.get("requirement") or ev.get("text") or "").strip()
         if not claim:
             continue
         item = PrepItem(
@@ -58,4 +58,11 @@ def build_interview_prep(
             "Lücken ehrlich ansprechen und Lernbereitschaft zeigen: "
             + "; ".join(g.claim for g in prep.gaps[:3])
         )
+    if not prep.talking_points:
+        prep.talking_points.extend([
+            "Bereiten Sie eine kurze Vorstellung Ihres beruflichen Werdegangs vor.",
+            "Wählen Sie ein konkretes Beispiel für eine erfolgreich gelöste Aufgabe und erklären Sie Ihren eigenen Beitrag.",
+            f"Was interessiert Sie an der Position {position or 'aus der Einladung'}?",
+            "Fragen an das Unternehmen: Aufgaben in den ersten Monaten, Zusammenarbeit im Team und Einarbeitung.",
+        ])
     return prep

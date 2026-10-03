@@ -444,14 +444,17 @@ class LifecyclePage(QWidget):
             if not proposal.ranked_slots:
                 QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.no_slots"))
                 return
-            labels = [f"{slot.start.isoformat()} – {slot.end.isoformat()}" for slot in proposal.ranked_slots]
-            chosen, accepted = QInputDialog.getItem(self, tr("lifecycle.calendar_proposal"),
-                                                   tr("calendar.choose_slot"), labels, 0, False)
-            if not accepted:
+            from desktop.widgets.calendar_preview_dialog import CalendarPreviewDialog
+            from integrations.reply_draft import human_slot
+            preview = CalendarPreviewDialog(proposal.ranked_slots,
+                title=f"{case.company} — {case.position}", parent=self)
+            if preview.exec() != preview.DialogCode.Accepted or preview.selected_index is None:
                 return
+            selected = proposal.ranked_slots[preview.selected_index]
+            chosen = human_slot(selected.start.isoformat()) + " – " + selected.end.strftime("%H:%M Uhr")
             from integrations.calendar_scheduling import select_slot
             from integrations.calendar_write import draft_from_ranked_slot
-            proposal = select_slot(proposal, labels.index(chosen))
+            proposal = select_slot(proposal, preview.selected_index)
             draft = draft_from_ranked_slot(proposal,
                                           client_request_id=f"{case_id}:{chosen}")
             draft.title = f"{case.company} — {case.position}"
@@ -501,13 +504,13 @@ class LifecyclePage(QWidget):
             )
             slots = proposal.ranked_slots
             if slots:
-                summary = (
-                    f"{case.company} — {case.position}\n"
-                    + "\n".join(
-                        f"{slot.rank}. {slot.start.isoformat()} – {slot.end.isoformat()}"
-                        for slot in slots[:3]
-                    )
-                )
+                from desktop.widgets.calendar_preview_dialog import CalendarPreviewDialog
+                from integrations.reply_draft import human_slot
+                preview = CalendarPreviewDialog(slots, title=f"{case.company} — {case.position}", parent=self)
+                if preview.exec() != preview.DialogCode.Accepted or preview.selected_index is None:
+                    return
+                selected = slots[preview.selected_index]
+                summary = f"{case.company} — {case.position}\n{human_slot(selected.start.isoformat())} – {selected.end:%H:%M} Uhr\nTESTVERSION: nur lokal simuliert."
             else:
                 summary = (
                     f"{case.company} — {case.position}\n"
@@ -598,7 +601,7 @@ class LifecyclePage(QWidget):
             self._calendar_task(write, written)
             return
 
-    def show_prep(self) -> None:
+    def show_prep(self, *, source_email: dict | None = None) -> None:
         case_id = self._selected_case_id()
         if not case_id:
             QMessageBox.information(self, tr("nav.guenther"), tr("lifecycle.select_case"))
@@ -613,6 +616,8 @@ class LifecyclePage(QWidget):
             job = db.get_job(case.job_id)
             if job:
                 match_reasons = list(job.match_reasons or [])
+                from core.matcher import score_job
+                evidence = list(score_job(job, self.config_service.load()).evidence or [])
         prep = build_interview_prep(
             case_id=case.id,
             company=case.company,
@@ -622,9 +627,13 @@ class LifecyclePage(QWidget):
         )
         from desktop.widgets.interview_prep_dialog import InterviewPrepDialog
 
-        dlg = InterviewPrepDialog(prep, parent=self)
+        if not source_email:
+            source_email = next((m for m in db.list_inbox_emails(limit=200)
+                                 if m.get("case_id") == case_id and m.get("association_confirmed")), None)
+        excerpt = (source_email or {}).get("body_text") or ""
+        dlg = InterviewPrepDialog(prep, email_excerpt=excerpt, parent=self)
         if dlg.exec() == dlg.DialogCode.Accepted and dlg.want_draft:
-            self.prepare_followup_draft()
+            self.prepare_followup_draft(source_email=source_email)
 
     def _on_guenther_action(self, kind: str) -> None:
         case_id = self._selected_case_id() or ""

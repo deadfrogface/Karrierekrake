@@ -537,7 +537,17 @@ class InboxPage(QWidget):
         self.lifecycle.prepare_calendar_proposal(source_email=self._selected)
 
     def _action_prep(self) -> None:
-        self.lifecycle.show_prep()
+        self.lifecycle.refresh()
+        case_id = (self._selected or {}).get("case_id") or ""
+        for row in range(self.lifecycle.cases.rowCount()):
+            item = self.lifecycle.cases.item(row, 4)
+            if item and item.text() == case_id:
+                self.lifecycle.cases.selectRow(row)
+                break
+        else:
+            QMessageBox.information(self, tr("nav.inbox"), tr("lifecycle.select_case"))
+            return
+        self.lifecycle.show_prep(source_email=self._selected)
 
     def _action_followups(self) -> None:
         self.lifecycle.generate_followups()
