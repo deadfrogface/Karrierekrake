@@ -1,12 +1,12 @@
 {salutation},
 
-hiermit bewerbe ich mich um die {position_phrase} bei {company_bei}.
+die {position_phrase} bei {company_bei} bietet mir die Möglichkeit, meine berufliche Erfahrung gezielt einzubringen.
 
 {experience_sentence}
 
 {skills}
 
-Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
+Gerne erläutere ich Ihnen in einem persönlichen Gespräch, wie ich Ihre Aufgaben mit meiner Erfahrung unterstützen kann.
 
 Mit freundlichen Grüßen
 {full_name}
