@@ -104,3 +104,25 @@ def test_interview_prep_receives_selected_email_and_job_evidence(qapp, config_se
     assert captured["excerpt"] == "Invitation for 7 October"
     assert captured["prep"].strengths[0].claim == "Service"
     page.close()
+
+
+def test_bundled_google_client_avoids_import_dialog(qapp, config_service, monkeypatch, tmp_path):
+    from integrations.google_oauth import bundled_desktop_client_path, load_client_config
+    bundled = tmp_path / "desktop_client.json"
+    bundled.write_text(json.dumps({"installed": {"client_id": "test.apps.googleusercontent.com"}}))
+    monkeypatch.setattr("integrations.google_oauth.bundled_desktop_client_path", lambda: bundled)
+    monkeypatch.setattr(QFileDialog, "getOpenFileName", lambda *a: pytest.fail("Unexpected file picker"))
+    page = SettingsPage(config_service)
+    assert page._google_client_path() == bundled
+    kind, config = load_client_config(page._google_client_path())
+    assert kind == "installed"
+    assert config["client_id"].endswith(".apps.googleusercontent.com")
+    assert not {"access_token", "refresh_token", "private_key"} & config.keys()
+    page.close()
+
+
+def test_bundled_google_client_frozen_path(tmp_path, monkeypatch):
+    import sys
+    from integrations.google_oauth import bundled_desktop_client_path
+    monkeypatch.setattr(sys, "_MEIPASS", str(tmp_path), raising=False)
+    assert bundled_desktop_client_path() == tmp_path / "assets/oauth/desktop_client.json"

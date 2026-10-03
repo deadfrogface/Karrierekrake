@@ -1280,6 +1280,10 @@ class SettingsPage(QWidget):
             candidate = self.config_service.dirs["root"] / candidate
         if candidate.is_file():
             return candidate
+        from integrations.google_oauth import bundled_desktop_client_path
+        bundled = bundled_desktop_client_path()
+        if bundled.is_file():
+            return bundled
         QMessageBox.information(self, "Google-Anmeldung einrichten", "Der Google-OAuth-Client fehlt. Wähle jetzt die Desktop-Client-JSON aus Google Cloud Console aus. Ohne gültige Client-ID kann Google keine Anmeldung starten.")
         if not self._import_google_client():
             return None
