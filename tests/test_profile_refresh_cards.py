@@ -361,3 +361,26 @@ def test_import_from_cv_shows_updated_message_after_reload(qapp, config_service,
     assert "Excel" not in skills
     assert "Französisch (A2)" in languages
     assert "Deutsch (C2)" not in languages
+
+
+def test_profile_chips_have_geometry_after_repeated_visible_refresh(qapp, config_service):
+    cfg = config_service.load()
+    cfg.profile.qualifications.skills = [SourcedText(value="Buchhaltung"), SourcedText(value="Kundenservice")]
+    cfg.profile.qualifications.languages = [LanguageEntry(language="Deutsch", level="C2")]
+    config_service.save(cfg)
+    page = ProfilePage(config_service)
+    page.resize(1200, 900)
+    page.load_from_config()
+    page.show()
+    qapp.processEvents()
+    for _ in range(3):
+        page.refresh_cards()
+        qapp.processEvents()
+        for flow in (page._skills_row, page._lang_row):
+            for index in range(flow.count()):
+                chip = flow.itemAt(index).widget()
+                assert chip.isVisible()
+                assert chip.width() > 10
+                assert chip.height() > 10
+                assert chip.geometry().intersects(chip.parentWidget().rect())
+    page.close()

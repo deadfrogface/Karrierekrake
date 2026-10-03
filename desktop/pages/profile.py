@@ -487,6 +487,7 @@ class ProfilePage(QWidget):
         # Clicks pass through to the expandable card surface.
         self._mark_decorative(chip)
         layout.addWidget(chip)
+        chip.show()
         return chip
 
     def _drawer_mapping(self) -> dict:

@@ -182,7 +182,6 @@ class JobsPage(QWidget):
         # Filters stay compact; primary filter CTA sits at the row's trailing edge
         primary.addStretch(1)
         primary.addWidget(self.more_filters_btn)
-        primary.addWidget(self.search_intent_btn)
         primary.addWidget(self.apply_btn)
 
         self.more_filters = QWidget()
@@ -295,7 +294,10 @@ class JobsPage(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(10)
-        layout.addWidget(self.header)
+        header_row = QHBoxLayout()
+        header_row.addWidget(self.header, 1)
+        header_row.addWidget(self.search_intent_btn)
+        layout.addLayout(header_row)
         layout.addWidget(self.lbl_filters)
         layout.addLayout(primary)
         layout.addLayout(toolbar)
@@ -402,8 +404,8 @@ class JobsPage(QWidget):
         self.apply_btn.setText(tr("btn.filter"))
         apply_button_icon(self.apply_btn, "filter", color="#ffffff")
         self.more_filters_btn.setText(tr("jobs.more_filters"))
-        self.search_intent_btn.setText(tr("jobs.open_search_intent"))
-        set_accessible_name(self.search_intent_btn, tr("jobs.open_search_intent"))
+        self.search_intent_btn.setText(tr("search.settings"))
+        set_accessible_name(self.search_intent_btn, tr("search.settings"))
         self.detail_prepare.setText(tr("btn.prepare_application"))
         apply_button_icon(self.detail_prepare, "apply", color="#ffffff")
         self.detail_open.setText(tr("btn.open_job"))
@@ -730,6 +732,4 @@ class JobsPage(QWidget):
         ApplyPreviewDialog(preview, self, config=cfg, job=job).exec()
 
     def open_search_intent(self) -> None:
-        parent = self.window()
-        if parent is not None and hasattr(parent, "open_search_intent"):
-            parent.open_search_intent()  # type: ignore[attr-defined]
+        self._open_search_intent()

@@ -484,6 +484,7 @@ def test_timeout_event_once_and_token_events_at_most_three(
     monkeypatch.setenv("KARRIEREKRAKE_CV_IMPORT_TIMEOUT_S", "95")
     phase = tmp_path / "phase.jsonl"
     monkeypatch.setenv("KARRIEREKRAKE_CV_PHASE_EVENTS", str(phase))
+    monkeypatch.setattr("core.cv_docpick_import._import_started_at", None)
     times = [index * (2.0 / 999) for index in range(1000)]
     cursor = {"i": 0}
 
