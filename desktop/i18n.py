@@ -484,9 +484,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Verbindung läuft direkt zu Google — kein Karrierekrake-Server."
         ),
         "integrations.no_fallback_hint": (
-            "Mail und Kalender sind unabhängig wählbar. "
-            "Bei Ausfall: Fehler anzeigen, neu verbinden oder Provider manuell wechseln — "
-            "kein automatischer Wechsel."
+            "Gmail und Google Kalender können unabhängig verbunden werden. "
+            "Bei Verbindungsproblemen bitte das betroffene Google-Konto neu verbinden."
         ),
         "integrations.status.unknown": "Status: unbekannt",
         "integrations.connect_caldav": 'CalDAV-Kalender verbinden',
@@ -1616,9 +1615,8 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
             "Connection goes directly to Google — no Karrierekrake server."
         ),
         "integrations.no_fallback_hint": (
-            "Mail and calendar are chosen independently. "
-            "On failure: show an error, reconnect, or change provider explicitly — "
-            "never auto-switch."
+            "Gmail and Google Calendar can be connected independently. "
+            "If the connection fails, reconnect the affected Google account."
         ),
         "integrations.status.unknown": "Status: unknown",
         "integrations.connect_caldav": 'Connect CalDAV calendar',

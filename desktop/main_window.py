@@ -146,6 +146,7 @@ class MainWindow(QMainWindow):
         # Hidden stack pages (preserved): Suche, Protokolle
         self._primary_nav: list[tuple[str, QWidget]] = [
             ("nav.overview", self.dashboard),
+            ("nav.search", self.search),
             ("nav.jobs", self.jobs),
             ("nav.applications", self.applications),
             ("nav.inbox", self.inbox),
@@ -158,7 +159,6 @@ class MainWindow(QMainWindow):
         self._nav_defs = [
             *self._primary_nav,
             *self._utility_nav,
-            ("nav.search", self.search),
             ("nav.logs", self.logs),
         ]
         self._page_index = {key: i for i, (key, _) in enumerate(self._nav_defs)}

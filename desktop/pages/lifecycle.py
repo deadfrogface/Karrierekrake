@@ -346,7 +346,7 @@ class LifecyclePage(QWidget):
         )
         self.approval.setVisible(True)
 
-    def prepare_followup_draft(self) -> None:
+    def prepare_followup_draft(self, *, source_email: dict | None = None) -> None:
         case_id = self._selected_case_id()
         if not case_id:
             QMessageBox.information(self, tr("nav.guenther"), tr("lifecycle.select_case"))
@@ -356,10 +356,38 @@ class LifecyclePage(QWidget):
         if not case:
             return
         cfg = self.config_service.load()
-        draft = build_follow_up_draft(
-            case.to_dict(),
-            applicant_name=cfg.application.full_name,
-        )
+        if source_email and (source_email.get("category") or "").lower() in {"interview", "interview_invite", "interview_reschedule"}:
+            if str(cfg.settings.calendar_provider or "none") == "none":
+                QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.connect_first"))
+                return
+            settings = deepcopy(cfg.settings)
+            def propose_reply():
+                from integrations.calendar.session import CalendarSession
+                from integrations.calendar_scheduling import propose_ranked_slots
+                from core.scheduling_preferences import preferences_from_settings_config
+                return propose_ranked_slots(source_email.get("body_text") or "", case_id=case_id,
+                    prefs=preferences_from_settings_config(settings),
+                    freebusy=CalendarSession(settings, token_dir=self.config_service.dirs["config"]))
+            def ready(proposal):
+                from integrations.reply_draft import ReplyAction, build_action_draft
+                if not proposal.ranked_slots:
+                    QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.no_slots"))
+                    return
+                draft = build_action_draft(ReplyAction.PROPOSE_SLOTS, case.to_dict(),
+                    applicant_name=cfg.application.full_name,
+                    proposed_slots=[slot.start.isoformat() for slot in proposal.ranked_slots[:3]])
+                self._bind_reply_draft(draft, case_id, cfg)
+            self._calendar_task(propose_reply, ready)
+            return
+        if source_email:
+            from integrations.reply_draft import ReplyAction, build_action_draft
+            draft = build_action_draft(ReplyAction.GENERAL_REPLY, case.to_dict(),
+                                      applicant_name=cfg.application.full_name)
+        else:
+            draft = build_follow_up_draft(case.to_dict(), applicant_name=cfg.application.full_name)
+        self._bind_reply_draft(draft, case_id, cfg)
+
+    def _bind_reply_draft(self, draft, case_id, cfg):
         gate = SendGate(allow_send=bool(cfg.settings.allow_employer_email_send))
         draft.draft_only = bool(cfg.settings.email_draft_only) or not gate.allow_send
         self._pending_draft = draft
@@ -376,7 +404,7 @@ class LifecyclePage(QWidget):
             )
         )
 
-    def prepare_calendar_proposal(self) -> None:
+    def prepare_calendar_proposal(self, *, source_email: dict | None = None) -> None:
         case_id = self._selected_case_id()
         if not case_id:
             QMessageBox.information(self, tr("nav.guenther"), tr("lifecycle.select_case"))
@@ -391,9 +419,12 @@ class LifecyclePage(QWidget):
             return
         messages = [m for m in db.list_inbox_emails(limit=200)
                     if m.get("case_id") == case_id and m.get("association_confirmed")]
-        initial = str(messages[0].get("body_text") or "") if messages else ""
-        text, ok = QInputDialog.getMultiLineText(self, tr("lifecycle.calendar_proposal"),
-                                               tr("calendar.proposal_input"), initial)
+        initial = str((source_email or (messages[0] if messages else {})).get("body_text") or "")
+        if source_email:
+            text, ok = initial, True
+        else:
+            text, ok = QInputDialog.getMultiLineText(self, tr("lifecycle.calendar_proposal"),
+                                                   tr("calendar.proposal_input"), initial)
         if not ok or not text.strip():
             return
         settings = deepcopy(cfg.settings)
@@ -411,14 +442,17 @@ class LifecyclePage(QWidget):
             if not proposal.ranked_slots:
                 QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.no_slots"))
                 return
-            labels = [f"{slot.start.isoformat()} – {slot.end.isoformat()}" for slot in proposal.ranked_slots]
-            chosen, accepted = QInputDialog.getItem(self, tr("lifecycle.calendar_proposal"),
-                                                   tr("calendar.choose_slot"), labels, 0, False)
-            if not accepted:
+            from desktop.widgets.calendar_preview_dialog import CalendarPreviewDialog
+            from integrations.reply_draft import human_slot
+            preview = CalendarPreviewDialog(proposal.ranked_slots,
+                title=f"{case.company} — {case.position}", parent=self)
+            if preview.exec() != preview.DialogCode.Accepted or preview.selected_index is None:
                 return
+            selected = proposal.ranked_slots[preview.selected_index]
+            chosen = human_slot(selected.start.isoformat()) + " – " + selected.end.strftime("%H:%M Uhr")
             from integrations.calendar_scheduling import select_slot
             from integrations.calendar_write import draft_from_ranked_slot
-            proposal = select_slot(proposal, labels.index(chosen))
+            proposal = select_slot(proposal, preview.selected_index)
             draft = draft_from_ranked_slot(proposal,
                                           client_request_id=f"{case_id}:{chosen}")
             draft.title = f"{case.company} — {case.position}"
@@ -510,7 +544,7 @@ class LifecyclePage(QWidget):
             self._calendar_task(write, written)
             return
 
-    def show_prep(self) -> None:
+    def show_prep(self, *, source_email: dict | None = None) -> None:
         case_id = self._selected_case_id()
         if not case_id:
             QMessageBox.information(self, tr("nav.guenther"), tr("lifecycle.select_case"))
@@ -525,6 +559,8 @@ class LifecyclePage(QWidget):
             job = db.get_job(case.job_id)
             if job:
                 match_reasons = list(job.match_reasons or [])
+                from core.matcher import score_job
+                evidence = list(score_job(job, self.config_service.load()).evidence or [])
         prep = build_interview_prep(
             case_id=case.id,
             company=case.company,
@@ -534,9 +570,13 @@ class LifecyclePage(QWidget):
         )
         from desktop.widgets.interview_prep_dialog import InterviewPrepDialog
 
-        dlg = InterviewPrepDialog(prep, parent=self)
+        if not source_email:
+            source_email = next((m for m in db.list_inbox_emails(limit=200)
+                                 if m.get("case_id") == case_id and m.get("association_confirmed")), None)
+        excerpt = (source_email or {}).get("body_text") or ""
+        dlg = InterviewPrepDialog(prep, email_excerpt=excerpt, parent=self)
         if dlg.exec() == dlg.DialogCode.Accepted and dlg.want_draft:
-            self.prepare_followup_draft()
+            self.prepare_followup_draft(source_email=source_email)
 
     def _on_guenther_action(self, kind: str) -> None:
         case_id = self._selected_case_id() or ""

@@ -101,10 +101,12 @@ def test_each_reply_scenario(row: dict):
     if exp.get("contains_position"):
         assert row["case"]["position"] in draft.body
     if exp.get("contains_when"):
-        assert row["case"]["interview_when"] in draft.body
+        from integrations.reply_draft import human_slot
+        assert human_slot(row["case"]["interview_when"]) in draft.body
     if exp.get("contains_slots"):
         for slot in row["case"].get("proposed_slots") or []:
-            assert slot in draft.body
+            from integrations.reply_draft import human_slot
+            assert human_slot(slot) in draft.body
 
     for token in exp.get("body_must_contain") or []:
         assert token in draft.body

@@ -453,6 +453,14 @@ def scopes_are_compatible(
 # ---------------------------------------------------------------------------
 
 
+def bundled_desktop_client_path() -> Path:
+    """Public desktop app identity, available in source and PyInstaller bundles."""
+    import sys
+
+    root = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[1]))
+    return root / "assets" / "oauth" / "desktop_client.json"
+
+
 def load_client_config(credentials_path: Path) -> tuple[str, dict] | tuple[None, None]:
     try:
         config = json.loads(Path(credentials_path).read_text(encoding="utf-8"))
@@ -814,6 +822,8 @@ def authorize_google(
                     reason="scope_upgrade_required" if need_incremental else "no_credentials",
                     migrated=migrated,
                 )
+            if not Path(credentials_path).is_file():
+                credentials_path = bundled_desktop_client_path()
             client_type, client_config = load_client_config(credentials_path)
             if not client_type or not client_config:
                 log_stage(DiagStage.ERROR, provider=provider, ok=False, detail="missing_client")

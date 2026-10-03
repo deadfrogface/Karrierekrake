@@ -70,6 +70,7 @@ _SETTINGS_NAV_KEYS = (
     "settings.nav.integrations",
     "settings.nav.privacy",
     "settings.nav.advanced",
+    "nav.search",
 )
 
 
@@ -303,8 +304,6 @@ class SettingsPage(QWidget):
         for label, data in (
             ("integrations.mail.none", "none"),
             ("integrations.mail.google", "google_gmail"),
-            ("integrations.mail.microsoft", "microsoft_graph"),
-            ("integrations.mail.other", "generic_imap"),
         ):
             self.mail_provider.addItem(label, data)
         self.mail_status = QLabel()
@@ -312,13 +311,15 @@ class SettingsPage(QWidget):
         oform.addWidget(self.lbl_mail_provider)
         oform.addWidget(self.mail_provider)
         oform.addWidget(self.mail_status)
+        self.google_client_btn = QPushButton("Google-Anmeldung einrichten …")
+        self.google_client_btn.setObjectName("SecondaryButton")
+        self.google_client_btn.clicked.connect(self._import_google_client)
+        oform.addWidget(self.google_client_btn)
 
         self.lbl_calendar_provider = QLabel()
         self.calendar_provider = QComboBox()
         for label, data in (
             ("integrations.calendar.google", "google_calendar"),
-            ("integrations.calendar.microsoft", "microsoft_graph"),
-            ("integrations.calendar.other", "generic_caldav"),
             ("integrations.calendar.none_explicit", "none"),
         ):
             self.calendar_provider.addItem(label, data)
@@ -350,28 +351,12 @@ class SettingsPage(QWidget):
         self.privacy_connect_cal_btn = QPushButton()
         self.privacy_connect_cal_btn.setObjectName("SecondaryButton")
         self.privacy_connect_cal_btn.clicked.connect(self._privacy_connect_calendar)
-        self.privacy_connect_ms_mail_btn = QPushButton()
-        self.privacy_connect_ms_mail_btn.setObjectName("SecondaryButton")
-        self.privacy_connect_ms_mail_btn.clicked.connect(self._connect_microsoft_mail)
-        self.privacy_connect_ms_cal_btn = QPushButton()
-        self.privacy_connect_ms_cal_btn.setObjectName("SecondaryButton")
-        self.privacy_connect_ms_cal_btn.clicked.connect(self._connect_microsoft_calendar)
-        self.connect_caldav_btn = QPushButton()
-        self.connect_caldav_btn.setObjectName("SecondaryButton")
-        self.connect_caldav_btn.clicked.connect(lambda: self._connect_standard_account(calendar=True))
-        self.connect_imap_btn = QPushButton()
-        self.connect_imap_btn.setObjectName("SecondaryButton")
-        self.connect_imap_btn.clicked.connect(lambda: self._connect_standard_account(calendar=False))
-        oform.addWidget(self.connect_caldav_btn)
-        oform.addWidget(self.connect_imap_btn)
         self.privacy_disconnect_btn = QPushButton()
         self.privacy_disconnect_btn.setObjectName("SecondaryButton")
         self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_selected)
         for btn in (
             self.privacy_connect_gmail_btn,
             self.privacy_connect_cal_btn,
-            self.privacy_connect_ms_mail_btn,
-            self.privacy_connect_ms_cal_btn,
             self.privacy_disconnect_btn,
         ):
             oform.addWidget(btn)
@@ -521,7 +506,10 @@ class SettingsPage(QWidget):
         self.change_place_btn.clicked.connect(self._change_place)
         sform.addRow(self.home_notice)
         sform.addRow(self.change_place_btn)
-        adv_layout.addWidget(search_box)
+        search_page, search_layout = _scroll_form()
+        search_layout.addWidget(src_box)
+        search_layout.addWidget(search_box)
+        search_layout.addStretch(1)
 
         br_box = QGroupBox()
         self.br_box = br_box
@@ -564,6 +552,7 @@ class SettingsPage(QWidget):
         adv_layout.addWidget(diag_box)
         adv_layout.addStretch(1)
         self.stack.addWidget(adv_page)
+        self.stack.addWidget(search_page)
         self._browser_busy = False
 
         self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
@@ -645,17 +634,13 @@ class SettingsPage(QWidget):
                     [
                         ("integrations.mail.none", "none"),
                         ("integrations.mail.google", "google_gmail"),
-                        ("integrations.mail.microsoft", "microsoft_graph"),
-                        ("integrations.mail.other", "generic_imap"),
-                    ],
+                                            ],
                 ),
                 (
                     self.calendar_provider,
                     [
                         ("integrations.calendar.google", "google_calendar"),
-                        ("integrations.calendar.microsoft", "microsoft_graph"),
-                        ("integrations.calendar.other", "generic_caldav"),
-                        ("integrations.calendar.none_explicit", "none"),
+                                                ("integrations.calendar.none_explicit", "none"),
                     ],
                 ),
             ):
@@ -667,13 +652,8 @@ class SettingsPage(QWidget):
                 combo.setCurrentIndex(idx if idx >= 0 else 0)
             self.mail_status.setText(tr("integrations.status.unknown"))
             self.calendar_status.setText(tr("integrations.status.unknown"))
-        self.connect_caldav_btn.setText(tr("integrations.connect_caldav"))
-        self.connect_imap_btn.setText(tr("integrations.connect_imap"))
         self.privacy_connect_gmail_btn.setText(tr("privacy.connect_gmail"))
         self.privacy_connect_cal_btn.setText(tr("privacy.connect_calendar"))
-        if hasattr(self, "privacy_connect_ms_mail_btn"):
-            self.privacy_connect_ms_mail_btn.setText(tr("integrations.connect_microsoft_mail"))
-            self.privacy_connect_ms_cal_btn.setText(tr("integrations.connect_microsoft_calendar"))
         self.privacy_export_btn.setText(tr("privacy.export"))
         self.privacy_disconnect_btn.setText(tr("integrations.disconnect_selected"))
         self.privacy_mail_btn.setText(tr("privacy.delete_mail"))
@@ -1196,8 +1176,7 @@ class SettingsPage(QWidget):
             return
         self._account_task_active = True
         controls = [self.privacy_connect_gmail_btn, self.privacy_connect_cal_btn,
-                    self.privacy_connect_ms_mail_btn, self.privacy_connect_ms_cal_btn,
-                    self.privacy_disconnect_btn, self.connect_caldav_btn, self.connect_imap_btn]
+                    self.privacy_disconnect_btn]
         for button in controls:
             button.setEnabled(False)
         self.mail_status.setText(tr("integrations.status.checking"))
@@ -1243,6 +1222,43 @@ class SettingsPage(QWidget):
         else:
             QMessageBox.warning(self, tr("privacy.tab"), message_for_google_outcome(outcome))
 
+    def _import_google_client(self) -> bool:
+        from PySide6.QtWidgets import QFileDialog
+        from integrations.google_oauth import load_client_config
+        from shutil import copyfile
+        selected, _ = QFileDialog.getOpenFileName(
+            self, "Google Desktop-OAuth-Client auswählen", "", "JSON (*.json)")
+        if not selected:
+            return False
+        kind, config = load_client_config(Path(selected))
+        if kind != "installed" or not config or not all(config.get(k) for k in ("client_id", "client_secret", "auth_uri", "token_uri")):
+            QMessageBox.warning(self, "Google-Anmeldung", "Bitte eine gültige Desktop-OAuth-Clientdatei auswählen. Web-Clients und Token-Dateien sind nicht geeignet.")
+            return False
+        destination = self.config_service.dirs["config"] / "google_desktop_client.json"
+        if Path(selected).resolve() != destination.resolve():
+            copyfile(selected, destination)
+        destination.chmod(0o600)
+        cfg = self.config_service.load()
+        cfg.settings.gmail_credentials_path = str(destination)
+        self.config_service.save(cfg)
+        return True
+
+    def _google_client_path(self):
+        cfg = self.config_service.load()
+        candidate = Path(cfg.settings.gmail_credentials_path)
+        if not candidate.is_file():
+            candidate = self.config_service.dirs["root"] / candidate
+        if candidate.is_file():
+            return candidate
+        from integrations.google_oauth import bundled_desktop_client_path
+        bundled = bundled_desktop_client_path()
+        if bundled.is_file():
+            return bundled
+        QMessageBox.information(self, "Google-Anmeldung einrichten", "Der Google-OAuth-Client fehlt. Wähle jetzt die Desktop-Client-JSON aus Google Cloud Console aus. Ohne gültige Client-ID kann Google keine Anmeldung starten.")
+        if not self._import_google_client():
+            return None
+        return Path(self.config_service.load().settings.gmail_credentials_path)
+
     def _privacy_connect_gmail(self) -> None:
         if str(self.mail_provider.currentData() or "") != "google_gmail":
             QMessageBox.warning(
@@ -1260,9 +1276,9 @@ class SettingsPage(QWidget):
 
         app_cfg = self.config_service.load()
         settings = app_cfg.settings
-        creds = Path(settings.gmail_credentials_path)
-        if not creds.is_file():
-            creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
+        creds = self._google_client_path()
+        if creds is None:
+            return
         self._run_account_task(lambda: authorize_gmail(
             credentials_path=creds,
             token_dir=self.config_service.dirs["config"],
@@ -1306,9 +1322,9 @@ class SettingsPage(QWidget):
         app_cfg = self.config_service.load()
         settings = app_cfg.settings
         settings.calendar_google_mode = mode
-        creds = Path(settings.gmail_credentials_path)
-        if not creds.is_file():
-            creds = self.config_service.dirs["root"] / settings.gmail_credentials_path
+        creds = self._google_client_path()
+        if creds is None:
+            return
         self._run_account_task(lambda: authorize_calendar_mode(
             mode,
             credentials_path=creds,
