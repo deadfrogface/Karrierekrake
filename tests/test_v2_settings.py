@@ -64,11 +64,11 @@ def test_settings_nav_i18n_keys():
     assert set(TRANSLATIONS["de"]) == set(TRANSLATIONS["en"])
 
 
-def test_settings_side_nav_has_six_sections(qapp, config_service):
+def test_settings_side_nav_has_seven_sections(qapp, config_service):
     i18n.set_language("de")
     page = SettingsPage(config_service)
-    assert page.nav.count() == 6
-    assert page.stack.count() == 6
+    assert page.nav.count() == 7
+    assert page.stack.count() == 7
     assert page.nav.item(1).text() == tr("settings.nav.automation")
     # Demo default: Automation selected
     assert page.nav.currentRow() == 1
