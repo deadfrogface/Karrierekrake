@@ -2438,8 +2438,8 @@ def _compose_shipped_letter(tmp_path, codes: list[str], skills: list[str], descr
     body = shipped.read_text(encoding="utf-8")
     assert "{skills}" in body
     assert "{skills}" in DEFAULT_TEMPLATE
-    assert "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich." in body
-    assert "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich." in DEFAULT_TEMPLATE
+    assert "Gerne erläutere ich Ihnen in einem persönlichen Gespräch, wie ich Ihre Aufgaben mit meiner Erfahrung unterstützen kann." in body
+    assert "Gerne erläutere ich Ihnen in einem persönlichen Gespräch, wie ich Ihre Aufgaben mit meiner Erfahrung unterstützen kann." in DEFAULT_TEMPLATE
     job = Job(
         id="brief-vorlage",
         title="Disponent",
@@ -2463,7 +2463,7 @@ def test_shipped_template_flags_class_c_at_the_end_of_the_skills_line(tmp_path):
     )
     assert letter.ok
     sentence = "Praktische Erfahrung habe ich mit Führerschein Klasse C."
-    closing = "Über die Möglichkeit eines persönlichen Gesprächs freue ich mich."
+    closing = "Gerne erläutere ich Ihnen in einem persönlichen Gespräch, wie ich Ihre Aufgaben mit meiner Erfahrung unterstützen kann."
     assert f"{sentence}\n\n{closing}" in letter.text
     screened = screen_cover_letter(
         letter.text,
@@ -2502,7 +2502,7 @@ def test_shipped_template_flags_class_c_between_other_skills(tmp_path):
     )
     assert not screened.ok
     assert sentence in screened.violations
-    assert all("persönlichen Gesprächs" not in item for item in screened.violations)
+    assert all("persönlichen Gespräch" not in item for item in screened.violations)
 
 
 def test_shipped_template_saves_when_class_c_is_confirmed(tmp_path):

@@ -10,7 +10,7 @@ from __future__ import annotations
 import webbrowser
 from typing import Iterable
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -140,6 +140,9 @@ class ApplyPreviewDialog(QDialog):
         self._config = config
         self._job = job
         self._prepared = None
+        self._rewrite_active = False
+        self._rewrite_closed = False
+        self.finished.connect(self._stop_rewrite_updates)
         if config is not None:
             self._prepared = self._build_prepared_check()
         self.setObjectName("ApplyPreviewDialog")
@@ -379,6 +382,11 @@ class ApplyPreviewDialog(QDialog):
         footer = QHBoxLayout()
         footer.setContentsMargins(0, 4, 0, 0)
         footer.setSpacing(10)
+        self.rewrite_btn = QPushButton("Anschreiben ausformulieren" if getattr(getattr(config, "settings", None), "language", "de") == "de" else "Refine cover letter")
+        self.rewrite_btn.setObjectName("SecondaryButton")
+        self.rewrite_btn.setVisible(can_approve)
+        self.rewrite_btn.clicked.connect(self._start_cover_rewrite)
+        footer.addWidget(self.rewrite_btn)
         footer.addWidget(self.open_url_btn)
         footer.addStretch(1)
         footer.addWidget(self.close_btn)
@@ -387,6 +395,60 @@ class ApplyPreviewDialog(QDialog):
 
         fit_dialog_to_screen(self, preferred_width=720, preferred_height=640)
         self._run_cover_guard()
+        if can_approve:
+            from core.cover_quality import local_writer_available
+            if local_writer_available():
+                QTimer.singleShot(0, self._start_cover_rewrite)
+
+    def _stop_rewrite_updates(self, *_args):
+        self._rewrite_closed = True
+
+    def _start_cover_rewrite(self):
+        if self._rewrite_active or self._rewrite_closed or self._config is None or self._job is None:
+            return
+        from core.cover_quality import rewrite_cover_letter
+        from desktop.workers import FunctionWorker, connect_queued, start_worker
+        self._rewrite_active = True
+        self._rewrite_seed = self.cover_edit.toPlainText()
+        self.rewrite_btn.setEnabled(False)
+        self.approve_btn.setEnabled(False)
+        self.status_chip.set_status("Anschreiben wird formuliert …" if self._config.settings.language == "de" else "Drafting cover letter …", kind="info")
+        from copy import deepcopy
+        config = deepcopy(self._config)
+        job = deepcopy(self._job)
+        worker = FunctionWorker(lambda: rewrite_cover_letter(job, config))
+        connect_queued(worker.finished, self._finish_cover_rewrite)
+        connect_queued(worker.failed, self._cover_rewrite_failed)
+        self._rewrite_worker = worker
+        self._rewrite_thread = start_worker(worker)
+
+    def _cover_rewrite_failed(self, _error):
+        from core.cover_quality import CoverRewrite
+        self._finish_cover_rewrite(CoverRewrite(False, reason="runtime_error"))
+
+    def _finish_cover_rewrite(self, result):
+        self._rewrite_active = False
+        if self._rewrite_closed:
+            return
+        self.rewrite_btn.setEnabled(True)
+        # A late model response must never overwrite the user's own edits.
+        if result.ok and self.cover_edit.toPlainText() == self._rewrite_seed:
+            import hashlib
+            self.preview.cover_letter_preview = result.text
+            self.preview.cover_letter_sha256 = hashlib.sha256(result.text.encode("utf-8")).hexdigest()
+            self.cover_edit.setPlainText(result.text)
+            self._run_cover_guard()
+        elif not result.ok:
+            self._run_cover_guard()
+            german = self._config.settings.language == "de"
+            self._guard_notice.setText(
+                "Der Entwurf konnte lokal nicht ausreichend ausformuliert und geprüft werden. Bitte die lokale Installation prüfen oder konkrete Tätigkeiten im Profil ergänzen."
+                if german else "The local draft could not be refined and verified. Check the local installation or add concrete responsibilities to your profile."
+            )
+            self._guard_notice.show()
+            self._mark_check_needed()
+        else:
+            self._run_cover_guard()
 
     def _apply_status_chip(self) -> None:
         preview = self.preview
@@ -497,7 +559,7 @@ class ApplyPreviewDialog(QDialog):
             and not self.preview.cover_refusal_code
         )
         self.approve_btn.setVisible(can)
-        self.approve_btn.setEnabled(can and not blocked)
+        self.approve_btn.setEnabled(can and not blocked and not self._rewrite_active)
 
     def _mark_check_needed(self) -> None:
         self.status_chip.set_status(tr("apps.preview_status_check"), kind="warn")

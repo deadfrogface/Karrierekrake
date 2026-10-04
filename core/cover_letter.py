@@ -1,6 +1,7 @@
 """Cover letter template rendering (no paid AI required).
 
-The product path is the template. It does not load Qwen, Phi, or Günther.
+The synchronous path is a verified seed template. The desktop preview refines
+it asynchronously with the shipped local model via core.cover_quality.
 A letter is written only when two distinct ad requirements are each backed
 by a distinct profile fact. The optional model hook runs only after that
 count, at most once more if the model text drops a reference. Experience
@@ -38,13 +39,13 @@ from core.text_normalize import clean_company, clean_text
 
 DEFAULT_TEMPLATE = """{salutation},
 
-hiermit bewerbe ich mich um die {position_phrase} bei {company_bei}.
+die {position_phrase} bei {company_bei} bietet mir die Möglichkeit, meine berufliche Erfahrung gezielt einzubringen.
 
 {experience_sentence}
 
 {skills}
 
-Über die Möglichkeit eines persönlichen Gesprächs freue ich mich.
+Gerne erläutere ich Ihnen in einem persönlichen Gespräch, wie ich Ihre Aufgaben mit meiner Erfahrung unterstützen kann.
 
 Mit freundlichen Grüßen
 {full_name}
@@ -2092,7 +2093,11 @@ def _bare_station(place: str, period: str, role: str, index: int) -> str:
     """A station without a task sentence. The second station uses another shape."""
     when = f" {period}" if period else ""
     if index == 0:
+        if period.startswith("seit "):
+            return f"Bei {place} arbeite ich{when} {role}."
         return f"Bei {place} war ich{when} {role} tätig."
+    if period.startswith("seit "):
+        return f"Bei {place} arbeite ich {period} {role}."
     if period:
         return f"Ich habe {period} bei {place} {role} gearbeitet."
     return f"Bei {place} habe ich {role} gearbeitet."
@@ -2101,6 +2106,8 @@ def _bare_station(place: str, period: str, role: str, index: int) -> str:
 def _station_with_nouns(place: str, period: str, role: str, nouns: list[str], index: int) -> str:
     listed = _noun_list(nouns)
     when = f" {period}" if period else ""
+    if period.startswith("seit "):
+        return f"Bei {place} arbeite ich{when} {role} und bin für {listed} zuständig."
     if index == 0:
         return f"Bei {place} war ich{when} {role} für {listed} zuständig."
     if period:

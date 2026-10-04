@@ -37,7 +37,7 @@ def deterministic_ready_as_is_hint(
         return False
     if re.search(r"\[[^\]]+\]", text):
         return False
-    if any(x in low for x in ("nan", "null", "none", "<think")):
+    if "<think" in low or re.search(r"(?<!\w)(?:nan|null|none)(?!\w)", low):
         return False
     if target_company and str(target_company).strip():
         co = str(target_company).strip().lower()

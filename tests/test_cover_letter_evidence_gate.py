@@ -2255,7 +2255,7 @@ def test_activity_field_opening_says_stelle():
     )
     result = compose_cover_letter(job, cfg)
     assert result.ok is True
-    assert "um die Stelle in der Rechnungsprüfung" in result.text
+    assert "die Stelle in der Rechnungsprüfung" in result.text
     assert "(m/w/d)" not in result.text
     assert "um die Position Rechnungsprüfung" not in result.text
     assert "Zu meinen Aufgaben gehörte dort: Belege erfassen." in result.text
