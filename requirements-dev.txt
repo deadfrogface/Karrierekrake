@@ -25,3 +25,6 @@ bandit>=1.7.9
 # Exact pin: constraints-runtime.txt. The Windows benchmark test imports it too.
 psutil>=5.9
 # Streamlit UI removed (ui/app.py deleted) — do not re-add for desktop builds
+
+# Legacy provider protocol regression tests; excluded from desktop releases.
+caldav==3.3.1
