@@ -399,19 +399,6 @@ def _smoke_test() -> int:
         from desktop.services import ConfigService
         from desktop.theme import stylesheet_for
 
-        # Exercise bundled CalDAV imports/certificates without contacting an account.
-        from integrations.calendar.caldav.client import LiveCaldavClient
-        from caldav import DAVClient
-        import recurring_ical_events
-        from icalendar import Calendar
-        from zoneinfo import ZoneInfo
-        ZoneInfo("Europe/Berlin")
-        LiveCaldavClient({"base_url": "https://calendar.example.org/",
-                         "username": "smoke", "password": "synthetic"})
-        dav = DAVClient(url="https://calendar.example.org/", timeout=1)
-        dav.close()
-        recurring_ical_events.of(Calendar.from_ical("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n"))
-        lines.append("caldav_runtime=ok (imports/TLS/recurrence; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)
         cfg_service = ConfigService()
         cfg = cfg_service.load()

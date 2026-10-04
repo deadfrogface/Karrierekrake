@@ -1,4 +1,4 @@
-﻿# -*- mode: python ; coding: utf-8 -*-
+# -*- mode: python ; coding: utf-8 -*-
 """PyInstaller spec for Karrierekrake desktop app (onefile, no bundled Chromium).
 
 Chromium is installed at runtime into %%LOCALAPPDATA%%\\Karrierekrake\\browsers
@@ -98,6 +98,9 @@ a = Analysis(
     cipher=block_cipher,
     noarchive=False,
 )
+
+# Hooks may add all Google service schemas; keep the two used offline.
+a.datas = type(a.datas)(item for item in a.datas if policy.release_data_allowed(str(item[0])))
 
 # Post-Analysis path gate (datas + binaries TOC names)
 _toc_paths = []

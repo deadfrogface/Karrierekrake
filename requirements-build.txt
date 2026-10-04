@@ -1,0 +1,5 @@
+# Release-only environment: no DSPy, AWS SDKs or legacy provider stack.
+-r requirements-runtime.txt
+pyinstaller>=6.3
+pytest>=8.0
+pytest-qt>=4.5,<5

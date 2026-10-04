@@ -53,6 +53,12 @@ ALLOWED_FIRST_PARTY_PREFIXES: tuple[str, ...] = (
 # First-party modules that must NEVER ship (even under allowed prefixes).
 EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
     "desktop.demo_data",
+    "integrations.calendar.caldav",
+    "integrations.calendar.microsoft",
+    "integrations.mail.imap",
+    "integrations.mail.microsoft",
+    "desktop.widgets.provider_credentials",
+    "llama_cpp.server",
     "benchmark",
     "tools",
     "tools.cover_opt",
@@ -67,9 +73,6 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
     "jobspy",
     "playwright",
     "llama_cpp",
-    # CalDAV transport and its TLS certificate store.
-    "caldav",
-    "wassima",
 )
 
 # Extra hiddenimports (third-party) that Analysis may need.
@@ -95,8 +98,6 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "docpick.llm.base",
     "llama_cpp",
     "llama_cpp.llama",
-    "llama_cpp.server",
-    "llama_cpp.server.app",
     # Lazy `import psutil` in core.cv_llm_runtime._psutil_cpu_count. Analysis of
     # app.py does not see a top-level import; these names force the bundle,
     # including the Windows extension the noconsole EXE must load.
@@ -107,6 +108,27 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
 
 # Always excluded from Analysis (dev / unused UI stacks).
 ANALYSIS_EXCLUDES: tuple[str, ...] = (
+    "integrations.calendar.caldav",
+    "integrations.calendar.microsoft",
+    "integrations.mail.imap",
+    "integrations.mail.microsoft",
+    "desktop.widgets.provider_credentials",
+    "llama_cpp.server",
+    "caldav",
+    "wassima",
+    "niquests",
+    "urllib3_future",
+    "qh3",
+    "jh2",
+    "icalendar_searcher",
+    "recurring_ical_events",
+    "x_wr_timezone",
+    "dspy",
+    "litellm",
+    "boto3",
+    "botocore",
+    "s3transfer",
+    "jmespath",
     "matplotlib",
     "tkinter",
     "pytest",
@@ -470,3 +492,12 @@ def require_bundled_cv_model(root: str) -> str:
             f"Production content policy: bundled CV model too small ({size} bytes) at {rel!r}"
         )
     return path
+
+
+def release_data_allowed(path: str) -> bool:
+    """Only Gmail/Calendar static discovery schemas belong in the release."""
+    norm = normalize_path(path).lower()
+    marker = "googleapiclient/discovery_cache/documents/"
+    if marker in norm:
+        return norm.rsplit("/", 1)[-1] in {"gmail.v1.json", "calendar.v3.json"}
+    return True
