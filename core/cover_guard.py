@@ -206,6 +206,10 @@ _STOP = frozenset(
         "taetigkeit",
         "erfahrungen",
         "erfahrung",
+        "praktische",
+        "praktischen",
+        "praktischer",
+        "praktisches",
         "stelle",
         "relevanten",
         "relevante",
@@ -626,6 +630,12 @@ def confirmed_profile_text(config: AppConfig) -> str:
         "certificates": quals.certificates,
         "driving_license": quals.driving_license,
     }
+    from core.cv_employment_evidence import with_source_duties
+
+    sections["work_experience"] = with_source_duties(
+        quals.work_experience or [], str(getattr(app, "cv_source_text", "") or ""),
+        cv_import=getattr(review, "source", "") == "cv",
+    )
     for name, entries in sections.items():
         if not section_confirmed(review, name):
             continue

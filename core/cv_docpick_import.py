@@ -1498,6 +1498,15 @@ def suggestion_to_parsed(data: dict[str, Any], *, source_text: str = "") -> dict
     if source_text:
         work = _repair_invented_heute(work, source_text)
         work = _repair_duty_as_title(work, source_text)
+        from core.cv_employment_evidence import station_source_duties
+
+        for entry in work:
+            if not entry.get("responsibilities"):
+                entry["responsibilities"] = station_source_duties(
+                    entry["title"], entry["company"], source_text,
+                    other_stations=[(other["title"], other["company"])
+                                    for other in work if other is not entry],
+                )
     edu = []
     for e in data.get("education") or []:
         if not isinstance(e, dict):

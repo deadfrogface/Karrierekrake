@@ -101,6 +101,8 @@ def test_preview_rewrite_runs_in_worker_and_keeps_manual_changes(applicant, monk
     monkeypatch.setattr("core.cover_quality.rewrite_cover_letter", rewrite)
     dialog._start_cover_rewrite()
     assert not dialog.approve_btn.isEnabled()
+    assert dialog.cover_edit.toPlainText() == ""
+    assert "erstellt" in dialog.cover_edit.placeholderText()
     qtbot.waitUntil(lambda: not dialog._rewrite_active, timeout=3000)
     assert calls == [False]
     assert dialog.cover_edit.toPlainText() == GOOD
