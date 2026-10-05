@@ -43,3 +43,27 @@ def test_inbox_import_runs_local_pipeline_and_premium_popup(qapp, qtbot, config_
     action = next(action for action in page.more_btn.menu().actions() if 'automatisch senden' in action.text())
     action.trigger()
     assert popups[-1] == PREMIUM_MESSAGE
+
+
+def test_persisted_sorted_mail_opens_with_details(qapp, qtbot, config_service):
+    from core.database import Database
+    from desktop.pages.inbox import InboxPage
+    db = Database(config_service.load().db_path)
+    db.save_email_message({'gmail_id': 'persisted', 'subject': 'Bewerbung erhalten',
+                          'sender': 'hr@example.org', 'body_text': 'Ihre Bewerbung ist bei uns eingegangen.',
+                          'category': 'confirmation', 'association_status': 'review_required'})
+    page = InboxPage(config_service)
+    qtbot.addWidget(page)
+    assert page._selected['gmail_id'] == 'persisted'
+    assert 'Ihre Bewerbung' in page.mail_body.toPlainText()
+
+
+def test_free_calendar_hides_google_permission_modes(qapp, qtbot, config_service, monkeypatch):
+    from desktop.pages.settings import SettingsPage
+    monkeypatch.setattr(SettingsPage, '_refresh_provider_status', lambda *a: None)
+    page = SettingsPage(config_service)
+    qtbot.addWidget(page)
+    page.calendar_provider.setCurrentIndex(page.calendar_provider.findData('local_ics'))
+    assert page.calendar_google_mode.isHidden()
+    page.calendar_provider.setCurrentIndex(page.calendar_provider.findData('google_calendar'))
+    assert not page.calendar_google_mode.isHidden()

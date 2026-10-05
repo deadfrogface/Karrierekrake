@@ -19,6 +19,8 @@ def sync_local_mail(db, *, token_dir, settings):
         saved = json.loads(db.get_meta(key) or '{}')
     except ValueError:
         saved = {}
+    if not isinstance(saved, dict):
+        saved = {}
     cursor = MailSyncCursor.from_dict(saved, provider=MailProvider.GENERIC_IMAP)
     result = adapter.sync(cursor=cursor)
     # Persist the cursor only after every message has been ingested; retries dedupe.

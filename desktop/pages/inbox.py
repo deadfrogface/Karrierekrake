@@ -217,7 +217,6 @@ class InboxPage(QWidget):
         self._spin_timer.timeout.connect(self._tick_spin)
 
         self.retranslate_ui()
-        self._clear_detail()
 
     def retranslate_ui(self) -> None:
         self.title.setText(tr("nav.inbox"))
@@ -331,6 +330,7 @@ class InboxPage(QWidget):
         dialog.resize(1000, 720)
         layout = QVBoxLayout(dialog)
         page = SettingsPage(self.config_service, dialog)
+        page.load_from_config()
         page.nav.setCurrentRow(3)
         layout.addWidget(page)
         dialog.exec()

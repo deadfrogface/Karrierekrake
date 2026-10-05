@@ -216,7 +216,12 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any], *, curs
             previous = json.loads(cursor_token) if cursor_token else {}
         except (ValueError, TypeError):
             pass
-        last = int(previous.get("uid", 0)) if previous.get("namespace") == namespace and previous.get("validity") == validity.decode() else 0
+        if not isinstance(previous, dict):
+            previous = {}
+        try:
+            last = max(0, int(previous.get("uid", 0))) if previous.get("namespace") == namespace and previous.get("validity") == validity.decode() else 0
+        except (ValueError, TypeError):
+            last = 0
         typ, data = conn.uid("search", None, "ALL")
         if typ != "OK":
             raise ProviderError("generic_imap", "imap_search_failed", reconnectable=True)

@@ -316,19 +316,17 @@ class SettingsPage(QWidget):
         self.google_client_btn = QPushButton("Google-OAuth · Premium, bald verfügbar")
         self.google_client_btn.setObjectName("SecondaryButton")
         self.google_client_btn.clicked.connect(lambda: self._premium("google_connection"))
-        oform.addWidget(self.google_client_btn)
         self.calendar_import_btn = QPushButton("Google / Samsung / Apple: Kalenderdatei importieren …")
         self.calendar_import_btn.clicked.connect(self._import_calendar_snapshot)
-        oform.addWidget(self.calendar_import_btn)
         premium_box = QGroupBox("Wird später integriert")
         premium_layout = QVBoxLayout(premium_box)
+        premium_layout.addWidget(self.google_client_btn)
         for label, feature in (("Antwort automatisch senden", "automatic_reply"),
                                ("Google Maps", "google_maps"),
                                ("ChatGPT / Gemini und weitere Cloud-Modelle", "cloud_models")):
             button = QPushButton(label + " · Premium")
             button.clicked.connect(lambda checked=False, selected=feature: self._premium(selected))
             premium_layout.addWidget(button)
-        oform.addWidget(premium_box)
 
         self.lbl_calendar_provider = QLabel()
         self.calendar_provider = QComboBox()
@@ -344,6 +342,7 @@ class SettingsPage(QWidget):
         oform.addWidget(self.lbl_calendar_provider)
         oform.addWidget(self.calendar_provider)
         oform.addWidget(self.calendar_status)
+        oform.addWidget(self.calendar_import_btn)
 
         self.lbl_calendar_mode = QLabel()
         self.calendar_google_mode = QComboBox()
@@ -356,6 +355,8 @@ class SettingsPage(QWidget):
         oform.addWidget(self.lbl_calendar_mode)
         oform.addWidget(self.calendar_google_mode)
         oform.addWidget(self.calendar_mode_rights)
+        self.calendar_provider.currentIndexChanged.connect(self._update_calendar_mode_visibility)
+        self._update_calendar_mode_visibility()
 
         self.provider_hint = QLabel()
         self.provider_hint.setWordWrap(True)
@@ -370,12 +371,10 @@ class SettingsPage(QWidget):
         self.privacy_disconnect_btn = QPushButton()
         self.privacy_disconnect_btn.setObjectName("SecondaryButton")
         self.privacy_disconnect_btn.clicked.connect(self._privacy_disconnect_selected)
-        for btn in (
-            self.privacy_connect_gmail_btn,
-            self.privacy_connect_cal_btn,
-            self.privacy_disconnect_btn,
-        ):
+        oform.insertWidget(3, self.privacy_connect_gmail_btn)
+        for btn in (self.privacy_connect_cal_btn, self.privacy_disconnect_btn):
             oform.addWidget(btn)
+        oform.addWidget(premium_box)
         integ_layout.addWidget(oauth_box)
 
         guenther_box = QGroupBox()
@@ -1323,6 +1322,11 @@ class SettingsPage(QWidget):
             homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
             oauth_env=getattr(settings, "oauth_environment", None),
         ), self._finish_google_connection)
+
+    def _update_calendar_mode_visibility(self) -> None:
+        visible = self.calendar_provider.currentData() == "google_calendar"
+        for widget in (self.lbl_calendar_mode, self.calendar_google_mode, self.calendar_mode_rights):
+            widget.setVisible(visible)
 
     def _update_calendar_mode_rights(self) -> None:
         mode = str(self.calendar_google_mode.currentData() or "A").upper()
