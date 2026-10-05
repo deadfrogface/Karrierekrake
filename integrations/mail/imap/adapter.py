@@ -10,6 +10,7 @@ import hashlib
 import json
 import imaplib
 import ssl
+import socket
 from dataclasses import dataclass
 from email import message_from_bytes
 from email.header import decode_header, make_header
@@ -47,6 +48,9 @@ class ImapEndpoint:
 
 def store_imap_secret(payload: dict[str, Any], *, token_dir: Path) -> None:
     """Persist IMAP credentials in keyring only (password or oauth token)."""
+    payload = dict(payload)
+    if str(payload.get("host", "")).casefold() == "imap.gmail.com" and payload.get("password"):
+        payload["password"] = "".join(str(payload["password"]).split())
     try:
         store_token(TOKEN_ACCOUNT_IMAP, payload, fallback_dir=token_dir)
     except KeyringUnavailable as exc:
@@ -74,19 +78,32 @@ def validate_imap_secret(secret: dict[str, Any]) -> None:
         raise ProviderError("generic_imap", "imap_endpoint_incomplete", reconnectable=True)
     conn = None
     try:
-        conn = imaplib.IMAP4_SSL(host, int(secret.get("port") or 993), timeout=20)
+        conn = imaplib.IMAP4_SSL(host, int(secret.get("port") or 993), timeout=20, ssl_context=ssl.create_default_context())
         if secret.get("oauth2"):
             auth = f"user={user}\x01auth=Bearer {secret['access_token']}\x01\x01"
             conn.authenticate("XOAUTH2", lambda _: auth.encode())
         else:
-            conn.login(user, str(secret["password"]))
+            password = str(secret["password"])
+            if host.casefold() == "imap.gmail.com":
+                # Google displays app passwords in four space-separated groups.
+                password = "".join(password.split())
+            conn.login(user, password)
         status, _ = conn.noop()
         if status != "OK":
             raise ProviderError("generic_imap", "imap_probe_failed", reconnectable=True)
     except ProviderError:
         raise
+    except ssl.SSLError:
+        raise ProviderError("generic_imap", "imap_tls_failed") from None
+    except (socket.timeout, TimeoutError):
+        raise ProviderError("generic_imap", "imap_timeout") from None
+    except imaplib.IMAP4.error:
+        reason = "gmail_app_password_required" if host.casefold() == "imap.gmail.com" else "imap_auth_failed"
+        raise ProviderError("generic_imap", reason) from None
+    except OSError:
+        raise ProviderError("generic_imap", "imap_network_failed") from None
     except Exception:
-        raise ProviderError("generic_imap", "imap_auth_failed", reconnectable=True) from None
+        raise ProviderError("generic_imap", "imap_probe_failed") from None
     finally:
         if conn is not None:
             try:
@@ -200,7 +217,7 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any], *, curs
         else:
             if not password:
                 raise ProviderError("generic_imap", "imap_password_missing", reconnectable=True)
-            conn.login(endpoint.username, password)
+            conn.login(endpoint.username, "".join(password.split()) if endpoint.host.casefold() == "imap.gmail.com" else password)
         typ, _ = conn.select("INBOX", readonly=True)
         if typ != "OK":
             raise ProviderError("generic_imap", "imap_select_failed", reconnectable=True)

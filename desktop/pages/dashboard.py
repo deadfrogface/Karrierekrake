@@ -404,14 +404,6 @@ class DashboardPage(QWidget):
         }.get(mode, tr("settings.mode.search"))
 
     def _compute_next_action(self, cfg, stats: dict) -> None:
-        titles = [t for t in (cfg.profile.jobs.desired_titles or []) if str(t).strip()]
-        if not titles:
-            self._next_action = "profile"
-            self.next_title.setText(tr("dash.next_profile_title"))
-            self.next_body.setText(tr("dash.next_profile_body"))
-            self.btn_primary.setText(tr("dash.next_profile_cta"))
-            self.hero.setVisible(True)
-            return
         replies = int(stats.get("replies_attention") or 0)
         if replies > 0:
             self._next_action = "inbox"

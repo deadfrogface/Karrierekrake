@@ -188,3 +188,33 @@ def test_snapshot_busy_parse_failure_not_empty_calendar(tmp_path):
     with pytest.raises(ProviderError):
         adapter.query_busy(query)
 
+
+
+@pytest.mark.parametrize("failure,reason", [
+    (TimeoutError(), "imap_timeout"),
+    (OSError("synthetic private text"), "imap_network_failed"),
+    (imap.imaplib.IMAP4.error("synthetic secret"), "gmail_app_password_required"),
+])
+def test_account_failure_is_actionable_without_leaking_server_text(monkeypatch, failure, reason):
+    from desktop.oauth_messages import message_for_account_error
+    def fail(*a, **kw):
+        raise failure
+    monkeypatch.setattr(imap.imaplib, "IMAP4_SSL", fail)
+    with pytest.raises(ProviderError, match=reason) as error:
+        imap.validate_imap_secret({"host": "imap.gmail.com", "username": "synthetic@example.org", "password": "synthetic"})
+    message = message_for_account_error(error.value)
+    assert message and "synthetic" not in message
+    assert not message.startswith("integrations.")
+
+
+def test_google_app_password_groups_are_normalized_and_connection_closed(monkeypatch, tmp_path):
+    calls, saved = [], []
+    box = NS(login=lambda user, password: calls.append(password), noop=lambda: ("OK", []), logout=lambda: calls.append("logout"))
+    monkeypatch.setattr(imap.imaplib, "IMAP4_SSL", lambda *a, **kw: box)
+    monkeypatch.setattr(imap, "store_token", lambda account, payload, **kw: saved.append(payload))
+    secret = {"host": "imap.gmail.com", "username": "synthetic@example.org", "password": "abcd efgh ijkl mnop"}
+    imap.validate_imap_secret(secret)
+    imap.store_imap_secret(secret, token_dir=tmp_path)
+    assert calls == ["abcdefghijklmnop", "logout"]
+    assert saved[0]["password"] == "abcdefghijklmnop"
+    assert secret["password"] == "abcd efgh ijkl mnop"

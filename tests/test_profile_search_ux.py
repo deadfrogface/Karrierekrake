@@ -12,7 +12,7 @@ pytest.importorskip("PySide6.QtWidgets")
 
 from PySide6.QtCore import QEvent, QPoint, QPointF, Qt
 from PySide6.QtGui import QWheelEvent
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox, QLabel, QPushButton, QWidget
 
 
 @pytest.fixture
@@ -288,11 +288,11 @@ def test_search_page_tab_order_and_long_german_labels(qapp, config_service):
     i18n.set_language("de")
     page = SearchPage(config_service)
     page.retranslate_ui()
-    assert "jetzt" in page.page_subtitle.text().lower()
+    assert "optional" in page.page_subtitle.text().lower()
     assert len(tr("search.strictness_strict")) > 20
     assert len(tr("search.strictness_explore")) > 20
     # Tab focus chain starts at list editors / radios — widgets accept focus.
-    assert page.target_roles.input.focusPolicy() != Qt.FocusPolicy.NoFocus
+    assert page.target_roles.focusPolicy() != Qt.FocusPolicy.NoFocus
     assert page.radius_km.focusPolicy() == Qt.FocusPolicy.StrongFocus
     assert page.salary_min.focusPolicy() == Qt.FocusPolicy.StrongFocus
 
@@ -349,3 +349,46 @@ def test_i18n_keys_parity_for_search(qapp):
     ):
         assert key in TRANSLATIONS["de"]
         assert key in TRANSLATIONS["en"]
+
+
+def test_optional_roles_survive_save_and_advanced_filters_stay_hidden(qapp, config_service, monkeypatch):
+    from desktop.pages.search import SearchPage
+    from core.search_intent import SearchIntent
+    _accept_messageboxes(monkeypatch)
+    cfg = config_service.load()
+    cfg.settings.search_mode = "explicit_titles"
+    cfg.profile.search_intent = SearchIntent(target_roles=["Controller"], excluded_roles=["Vertrieb"])
+    cfg.profile.jobs.desired_titles = ["Controller"]
+    config_service.save(cfg)
+    page = SearchPage(config_service)
+    page.load_from_config()
+    assert page.advanced_box.isHidden()
+    page.target_roles.clear()
+    page.save()
+    cfg = config_service.load()
+    assert cfg.profile.search_intent.target_roles == []
+    assert cfg.profile.jobs.desired_titles == []
+    assert cfg.settings.search_mode == "profile_discovery"
+    assert cfg.profile.search_intent.excluded_roles == ["Vertrieb"]
+    page.advanced_toggle.click()
+    assert not page.advanced_box.isHidden()
+
+
+def test_dashboard_without_roles_offers_search_or_pending_work(qapp):
+    from desktop.pages.dashboard import DashboardPage
+    from core.config import empty_app_config
+    from types import SimpleNamespace
+    page = SimpleNamespace(next_title=QLabel(), next_body=QLabel(), btn_primary=QPushButton(), hero=QWidget())
+    DashboardPage._compute_next_action(page, empty_app_config(), {})
+    assert page._next_action == "search"
+    DashboardPage._compute_next_action(page, empty_app_config(), {"needs_review": 2})
+    assert page._next_action == "review"
+
+
+
+def test_compact_search_preserves_terms_containing_commas(qapp):
+    from desktop.pages.search import CompactTerms
+    editor = CompactTerms("placeholder.skill")
+    terms = ["Vertrieb, international", "SAP"]
+    editor.set_items(terms)
+    assert editor.get_items() == terms

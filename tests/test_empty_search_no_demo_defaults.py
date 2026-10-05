@@ -45,3 +45,14 @@ def test_build_queries_uses_real_city():
     assert len(queries) == 1
     assert queries[0].keyword == "Controller"
     assert "München" in queries[0].location
+
+
+
+def test_legacy_explicit_mode_without_roles_uses_cv_discovery():
+    from core.config import ExperienceEntry
+    from app.main import resolve_search_titles
+    cfg = empty_app_config()
+    cfg.settings.search_mode = "explicit_titles"
+    cfg.profile.qualifications.work_experience = [ExperienceEntry(title="Teamkoordinator Kundenservice")]
+    assert resolve_search_titles(cfg)
+    assert cfg.profile.jobs.desired_titles == []

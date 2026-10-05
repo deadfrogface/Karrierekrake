@@ -59,4 +59,14 @@ def message_for_account_error(exc: BaseException) -> str:
     """Safe provider-neutral text for background account tasks."""
     if "keyring_unavailable" in str(exc).lower():
         return tr("privacy.connect_keyring")
-    return tr("integrations.connection_failed")
+    reason = str(exc).strip().lower()
+    messages = {
+        "gmail_app_password_required": "integrations.gmail_app_password",
+        "imap_auth_failed": "integrations.imap_auth_failed",
+        "imap_timeout": "integrations.imap_timeout",
+        "imap_network_failed": "integrations.imap_network_failed",
+        "imap_tls_failed": "integrations.imap_tls_failed",
+        "imap_endpoint_incomplete": "integrations.imap_incomplete",
+        "outlook_reconnect_required": "integrations.outlook_reconnect",
+    }
+    return tr(messages.get(reason, "integrations.connection_failed"))

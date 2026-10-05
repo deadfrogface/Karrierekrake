@@ -2397,3 +2397,41 @@ TRANSLATIONS["en"].update({
 
 TRANSLATIONS["de"]["integrations.connection_failed"] = "Verbindung fehlgeschlagen. Bitte Serveradresse, Zugangsdaten, Berechtigungen und Netzwerk prüfen."
 TRANSLATIONS["en"]["integrations.connection_failed"] = "Connection failed. Check the server address, credentials, permissions and network."
+
+
+TRANSLATIONS["de"].update({
+    "search.subtitle": "Passende Jobs anhand deines Lebenslaufs finden. Einen Wunschberuf kannst du optional angeben.",
+    "search.roles_skills": "Was möchtest du finden?",
+    "search.roles_optional": "Wunschberuf (optional)",
+    "search.terms_placeholder": "Optional – mehrere Begriffe mit Komma trennen",
+    "search.advanced": "Weitere Filter (optional)",
+})
+TRANSLATIONS["en"].update({
+    "search.subtitle": "Find suitable jobs based on your CV. A preferred job title is optional.",
+    "search.roles_skills": "What would you like to find?",
+    "search.roles_optional": "Preferred role (optional)",
+    "search.terms_placeholder": "Optional – separate multiple terms with commas",
+    "search.advanced": "More filters (optional)",
+})
+
+TRANSLATIONS["de"].update({
+    "integrations.gmail_app_password": "Google hat die Anmeldung abgelehnt. Für diese IMAP-Verbindung brauchst du ein Google-App-Passwort (16 Zeichen), nicht dein normales Google-Passwort. Aktiviere die Bestätigung in zwei Schritten und erstelle ein App-Passwort in deinem Google-Konto.",
+    "integrations.imap_auth_failed": "Das Postfach hat die Anmeldung abgelehnt. Prüfe die E-Mail-Adresse und das App-/E-Mail-Programm-Passwort. Bei WEB.DE muss IMAP aktiviert sein; T-Online benötigt ein separates Passwort für E-Mail-Programme.",
+    "integrations.imap_timeout": "Der Mailserver antwortet nicht rechtzeitig. Prüfe die Internetverbindung und versuche es erneut.",
+    "integrations.imap_network_failed": "Der Mailserver ist nicht erreichbar. Prüfe Internetverbindung, Firewall und Serveradresse.",
+    "integrations.imap_tls_failed": "Die sichere Verbindung zum Mailserver ist fehlgeschlagen. Prüfe Systemdatum und Zertifikate.",
+    "integrations.imap_incomplete": "E-Mail-Adresse oder Zugangsdaten fehlen. Fülle die Anmeldung vollständig aus.",
+    "integrations.outlook_reconnect": "Die Outlook-Anmeldung ist abgelaufen. Verbinde dein Postfach erneut.",
+})
+TRANSLATIONS["en"].update({
+    "integrations.gmail_app_password": "Google rejected sign-in. IMAP requires a 16-character Google app password, rather than your regular password. Enable two-step verification and create an app password in your Google account.",
+    "integrations.imap_auth_failed": "Sign-in was rejected. Check your email address and app password. WEB.DE requires IMAP to be enabled; T-Online requires a separate email-program password.",
+    "integrations.imap_timeout": "The mail server timed out. Check your internet connection and try again.",
+    "integrations.imap_network_failed": "The mail server is unreachable. Check your connection, firewall and server address.",
+    "integrations.imap_tls_failed": "The secure connection failed. Check the system date and certificates.",
+    "integrations.imap_incomplete": "Your email address or credentials are missing. Complete the sign-in fields.",
+    "integrations.outlook_reconnect": "Your Outlook sign-in expired. Reconnect your mailbox.",
+})
+
+TRANSLATIONS["de"]["search.active_filters"] = " · {count} aktiv"
+TRANSLATIONS["en"]["search.active_filters"] = " · {count} active"

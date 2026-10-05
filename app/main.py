@@ -90,7 +90,7 @@ def resolve_search_titles(config: AppConfig) -> list[str]:
     # Soft-migrate leftover alternatives if present in-memory.
     alts = [t for t in (config.profile.jobs.alternative_titles or []) if str(t).strip()]
     mode = str(getattr(config.settings, "search_mode", "") or "profile_discovery")
-    if mode == "explicit_titles":
+    if mode == "explicit_titles" and (desired or alts):
         return list(dict.fromkeys([*desired, *alts]))
     # Mode A — profile discovery: desired titles preferred but not required.
     if desired or alts:
