@@ -57,6 +57,32 @@ def test_real_grounding_and_reference_checks_accept_relevant_letter(applicant, m
     assert "UNTRUSTED" in calls[0][1]["content"]
 
 
+def test_writer_uses_existing_contract_parser_for_string_anchors(applicant, monkeypatch):
+    install_model(monkeypatch, GOOD)
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", lambda *a, **kw:
+        json.dumps(dict(body=GOOD, anchors_used=["SAP Business One"],
+                        invented_flag=False, confidence=" MEDIUM ")))
+    assert rewrite_cover_letter(*applicant).ok
+
+
+def test_writer_reports_invalid_contract_without_leaking_output(applicant, monkeypatch):
+    install_model(monkeypatch, GOOD)
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", lambda *a, **kw:
+        "private invalid model response")
+    result = rewrite_cover_letter(*applicant)
+    assert not result.ok
+    assert result.issues == ("invalid_writing_contract",)
+
+
+def test_writer_reports_exception_type_without_private_message(applicant, monkeypatch):
+    install_model(monkeypatch, GOOD)
+    def fail(*a, **kw):
+        raise RuntimeError("private CV text")
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", fail)
+    result = rewrite_cover_letter(*applicant)
+    assert result.issues == ("writer_exception_RuntimeError",)
+
+
 @pytest.mark.parametrize("body", [GOOD.replace("Westnetz", "Wrong Company"), GOOD.replace("SAP Business One", "Java"), "Hiermit bewerbe ich mich. " + GOOD, GOOD.replace("Zu meinen Aufgaben gehören", "Ich habe ein abgeschlossenes Studium in Elektrotechnik. Zu meinen Aufgaben gehören")])
 def test_unusable_model_output_never_replaces_seed(applicant, monkeypatch, body):
     calls = install_model(monkeypatch, body)

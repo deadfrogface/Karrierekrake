@@ -34,7 +34,7 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
     )
     from core.cv_llm_runtime import resolve_cv_model_path, chat_completion_inprocess
     from guenther.contracts import WritingSuggestion
-    from guenther.validation import extract_json_object
+    from guenther.validation import parse_contract
     from guenther.prompts import build_layers, SYSTEM_WRITE
     from guenther.intelligence.writing_validate import validate_writing_grounded
     from guenther.intelligence.quality_loop.critic import deterministic_ready_as_is_hint
@@ -99,7 +99,15 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
                 {"role": "system", "content": system},
                 {"role": "user", "content": verified + "\n" + external},
             ], model_path=model, temperature=0.2)
-            suggestion = WritingSuggestion.model_validate(extract_json_object(raw))
+            suggestion = parse_contract("writing", raw)
+            if not isinstance(suggestion, WritingSuggestion):
+                issues = ["invalid_writing_contract"]
+                errors = (
+                    " Liefere gültiges JSON im angegebenen Schema. confidence muss "
+                    "low, medium oder high sein; anchors_used enthält Objekte mit "
+                    "text und source=profile. Keine weiteren Felder."
+                )
+                continue
             suggestion, report = validate_writing_grounded(
                 suggestion, profile_text=profile, job_text=seed.description_used,
                 target_company=job.company, target_role=job.title,
@@ -123,8 +131,8 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
             if not screened.ok:
                 issues.append("unsupported_personal_claim")
             errors = " Überarbeite den Entwurf. Prüfhinweise: " + ", ".join(issues)
-        except Exception:
+        except Exception as exc:
             # Never expose CV text or model output through exception messages.
             errors = " Liefere gültiges JSON und ausschließlich belegte Aussagen."
-            issues = ["invalid_response_or_runtime_error"]
+            issues = ["writer_exception_" + type(exc).__name__]
     return CoverRewrite(False, reason="review_required", issues=tuple(issues))
