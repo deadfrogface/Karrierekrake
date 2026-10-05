@@ -128,14 +128,19 @@ def test_bundled_google_client_frozen_path(tmp_path, monkeypatch):
     assert bundled_desktop_client_path() == tmp_path / "assets/oauth/desktop_client.json"
 
 
-def test_only_google_accounts_can_be_connected(qapp, config_service):
+def test_free_standard_and_future_google_options_survive_translation(qapp, config_service):
     page = SettingsPage(config_service)
     from desktop.i18n import i18n
     for language in ("de", "en"):
         i18n.set_language(language)
         page.retranslate_ui()
-        assert [page.mail_provider.itemData(i) for i in range(page.mail_provider.count())] == ["none", "google_gmail"]
-        assert [page.calendar_provider.itemData(i) for i in range(page.calendar_provider.count())] == ["google_calendar", "none"]
+        assert [page.mail_provider.itemData(i) for i in range(page.mail_provider.count())] == ["none", "generic_imap", "google_gmail"]
+        assert [page.calendar_provider.itemData(i) for i in range(page.calendar_provider.count())] == ["generic_caldav", "local_ics", "google_calendar", "none"]
+        for combo, provider in ((page.mail_provider, "google_gmail"),
+                                (page.calendar_provider, "google_calendar")):
+            assert "Premium" in combo.itemText(combo.findData(provider))
+            assert combo.findData("microsoft_graph") == -1
+            assert combo.findData("fake_inprocess") == -1
         for removed in ("privacy_connect_ms_mail_btn", "privacy_connect_ms_cal_btn", "connect_caldav_btn", "connect_imap_btn"):
             assert not hasattr(page, removed)
     i18n.set_language("de")

@@ -399,6 +399,18 @@ def _smoke_test() -> int:
         from desktop.services import ConfigService
         from desktop.theme import stylesheet_for
 
+        # Exercise free protocol dependencies in the packaged EXE without accounts.
+        import recurring_ical_events
+        from icalendar import Calendar
+        from caldav import DAVClient
+        from integrations.mail.imap.outlook_auth import IMAP_SCOPE
+        from integrations.calendar.local_ics import LocalIcsCalendarAdapter
+        from integrations.calendar.caldav.client import LiveCaldavClient
+        from desktop.widgets.free_mail_credentials import FreeMailCredentialsDialog
+        recurring_ical_events.of(Calendar.from_ical("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n"))
+        dav = DAVClient(url="https://calendar.example.org/", timeout=1)
+        dav.close()
+        lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)
         cfg_service = ConfigService()
         cfg = cfg_service.load()

@@ -2125,33 +2125,25 @@ class Database:
             ).fetchall()
         return [dict(r) for r in rows]
 
-    def list_inbox_emails(self, *, limit: int = 200, query: str = "") -> list[dict[str, Any]]:
-        """Recent mailbox messages for Postfach (needs-review first, then newest)."""
+    def list_inbox_emails(self, *, limit: int = 200, query: str = "", category: str = "") -> list[dict[str, Any]]:
+        """Filter before pagination so older sorted mail remains discoverable."""
+        clauses, parameters = [], []
         q = (query or "").strip().lower()
+        if q:
+            clauses.append("(instr(lower(COALESCE(subject, '')), ?) > 0 OR instr(lower(COALESCE(sender, '')), ?) > 0 OR instr(lower(COALESCE(body_text, '')), ?) > 0)")
+            parameters.extend([q, q, q])
+        if category:
+            clauses.append("category = ?")
+            parameters.append(category)
+        where = "WHERE " + " AND ".join(clauses) if clauses else ""
+        parameters.append(int(limit))
         with self.connection() as conn:
             rows = conn.execute(
-                """
-                SELECT * FROM email_messages
-                ORDER BY
-                  CASE
-                    WHEN association_status IN ('ambiguous', 'review_required') THEN 0
-                    ELSE 1
-                  END,
+                f"""SELECT * FROM email_messages {where}
+                ORDER BY CASE WHEN association_status IN ('ambiguous', 'review_required') THEN 0 ELSE 1 END,
                   COALESCE(NULLIF(received_at, ''), created_at) DESC
-                LIMIT ?
-                """,
-                (int(limit),),
-            ).fetchall()
-        out = [dict(r) for r in rows]
-        if not q:
-            return out
-        return [
-            e
-            for e in out
-            if q in (e.get("subject") or "").lower()
-            or q in (e.get("sender") or "").lower()
-            or q in (e.get("body_text") or "").lower()
-        ]
+                LIMIT ?""", parameters).fetchall()
+        return [dict(row) for row in rows]
 
     def resolve_email_association(self, email_id: str, case_id: str) -> None:
         """Manual user confirmation — sets confirmed flag (rollback-safe)."""

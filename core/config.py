@@ -415,6 +415,8 @@ class SettingsConfig:
     gmail_sync_enabled: bool = False
     gmail_exclude_senders: list[str] = field(default_factory=list)
     calendar_freebusy_enabled: bool = False
+    # App-owned calendar export snapshot; contains no remote credentials.
+    local_calendar_path: str = ""
     # Google Calendar OAuth mode before connect: A = FreeBusy only, B = FreeBusy + owned events.
     calendar_google_mode: str = "A"
     gmail_credentials_path: str = "private/gmail_credentials.json"

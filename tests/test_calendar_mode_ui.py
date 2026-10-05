@@ -32,6 +32,7 @@ def test_settings_connect_uses_authorize_calendar_mode():
     import inspect
     from desktop.pages import settings as settings_mod
 
-    src = inspect.getsource(settings_mod.SettingsPage._privacy_connect_calendar)
+    src = inspect.getsource(settings_mod.SettingsPage._connect_google_calendar_later)
+    assert src.index("require_premium") < src.index("authorize_calendar_mode")
     assert "authorize_calendar_mode" in src
     assert "calendar_google_mode" in src

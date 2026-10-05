@@ -1,4 +1,4 @@
-# Release-only environment: no DSPy, AWS SDKs or legacy provider stack.
+# Release-only environment: no DSPy or AWS SDKs.
 -r requirements-runtime.txt
 pyinstaller>=6.3
 pytest>=8.0

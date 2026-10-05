@@ -143,10 +143,12 @@ def test_production_adapter_loads_secret_and_enforces_approval(monkeypatch, tmp_
 
 
 def test_google_calendar_does_not_use_empty_mock_without_credentials(monkeypatch, tmp_path):
+    from core.commercial.features import PremiumUnavailable
     from integrations.calendar.google.adapter import GoogleCalendarAdapter
     from integrations.calendar_freebusy import FreeBusyQuery, GoogleFreeBusyProvider
-    monkeypatch.setattr("integrations.google_oauth.load_google_token", lambda **kw: None)
-    with pytest.raises(ProviderError):
+    monkeypatch.setattr("integrations.google_oauth.load_google_token",
+                        lambda **kw: pytest.fail("Unreleased Premium must not load credentials"))
+    with pytest.raises(PremiumUnavailable, match="noch in Arbeit"):
         GoogleCalendarAdapter(token_dir=tmp_path).query_busy(FreeBusyQuery(START, END))
     service = NS(freebusy=lambda: NS(query=lambda **kw: NS(execute=lambda: {"calendars": {"primary": {"errors": [{"reason": "notFound"}]}}})))
     with pytest.raises(RuntimeError, match="calendar_freebusy_unavailable"):

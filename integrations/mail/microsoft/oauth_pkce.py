@@ -240,7 +240,7 @@ def run_local_pkce_login(
         httpd.server_close()
     except Exception:
         pass
-    if result["state"] and result["state"] != session.state:
+    if not result["state"] or result["state"] != session.state:
         raise ProviderError("microsoft_graph", "oauth_state_mismatch", reconnectable=True)
     if result["error"] or not result["code"]:
         raise ProviderError(

@@ -23,11 +23,11 @@ def test_google_discovery_schema_allowlist():
 
 def test_legacy_providers_and_llama_server_excluded_but_product_paths_retained():
     p = policy()
-    for name in ('integrations.mail.imap.adapter', 'integrations.mail.microsoft.oauth_pkce',
-                 'integrations.calendar.caldav.client', 'integrations.calendar.microsoft.adapter',
-                 'llama_cpp.server.app'):
+    for name in ('integrations.calendar.microsoft.adapter', 'llama_cpp.server.app'):
         assert not p.module_allowed(name)
-    for name in ('integrations.mail.google.adapter', 'integrations.calendar.google.adapter',
+    for name in ('integrations.mail.imap.adapter', 'integrations.mail.imap.outlook_auth',
+                 'integrations.mail.microsoft.oauth_pkce', 'integrations.calendar.local_ics',
+                 'integrations.calendar.caldav.client', 'integrations.mail.google.adapter', 'integrations.calendar.google.adapter',
                  'core.cv_llm_runtime', 'core.cover_quality', 'llama_cpp.llama'):
         assert p.module_allowed(name)
     assert 'llama_cpp' in p.ALLOWED_COLLECT_ALL_PACKAGES

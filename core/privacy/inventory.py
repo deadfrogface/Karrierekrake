@@ -165,10 +165,10 @@ DATA_INVENTORY: tuple[DataClassRecord, ...] = (
     DataClassRecord(
         id="calendar_freebusy",
         label="Calendar FreeBusy / Event-Entwürfe",
-        source="Google Calendar FreeBusy API; local scheduling proposals",
+        source="Local ICS import; iCloud CalDAV; Google Calendar (future Premium); local scheduling proposals",
         data_subjects="Applicant busy times; interview parties in drafts",
         purpose="Interview slot proposals (user-approved writes only)",
-        storage="Ephemeral in-memory FreeBusy; drafts may appear in lifecycle events; no dedicated FreeBusy table",
+        storage="AppData cache/calendar-snapshot.ics (local imported calendar copy); ephemeral FreeBusy; drafts may appear in lifecycle events",
         cloud_transfer="FreeBusy query to Google; event create only after explicit user approve",
         retention="Session / until disconnect / delete_calendar_cache clears cache dir + related lifecycle noise",
         pii="high",
@@ -177,7 +177,7 @@ DATA_INVENTORY: tuple[DataClassRecord, ...] = (
         security="No persistent FreeBusy store; OAuth in keyring",
         processor="Google Calendar",
         export_path="export.calendar_note",
-        notes="If a future FreeBusy disk cache is added, it MUST register here first.",
+        notes="Calendar snapshot may contain private event titles. Calendar cache deletion and delete_all remove the app-owned copy; user source files are untouched. Stale snapshots are rejected after seven days.",
     ),
     DataClassRecord(
         id="oauth_tokens",

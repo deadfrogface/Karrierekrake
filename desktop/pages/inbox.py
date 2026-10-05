@@ -6,8 +6,14 @@ six-button control wall.
 
 from __future__ import annotations
 
+from pathlib import Path
+from copy import deepcopy
+
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtWidgets import (
+    QComboBox,
+    QDialog,
+    QFileDialog,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -82,12 +88,19 @@ class InboxPage(QWidget):
         self.refresh_btn.setToolTip(tr("inbox.refresh_tooltip"))
         self.refresh_btn.clicked.connect(self._on_refresh)
         set_accessible_name(self.refresh_btn, tr("inbox.refresh_tooltip"))
+        self.connections_btn = QPushButton("Verbindungen …")
+        self.connections_btn.clicked.connect(self._open_connections)
+        self.import_btn = QPushButton("EML / MBOX importieren …")
+        self.import_btn.clicked.connect(self._import_local_mail)
+        header.addWidget(self.connections_btn)
+        header.addWidget(self.import_btn)
         header.addWidget(self.refresh_btn)
         self.refresh_error = QLabel()
         self.refresh_error.setObjectName("WarningLabel")
         self.refresh_error.hide()
-        header.addWidget(self.refresh_error)
+        self.refresh_error.setWordWrap(True)
         root.addLayout(header)
+        root.addWidget(self.refresh_error)
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
 
@@ -102,6 +115,16 @@ class InboxPage(QWidget):
         self.search.textChanged.connect(self._reload_list)
         search_bar.addWidget(self.search)
         left_l.addLayout(search_bar)
+        self.category_filter = QComboBox()
+        for label, category in (("Alle Nachrichten", ""), ("Bestätigungen", "confirmation"),
+                                ("Vorstellungsgespräche", "interview"), ("Absagen", "rejection"),
+                                ("Angebote", "offer"), ("Unterlagen angefordert", "document_request"),
+                                ("Tests / Aufgaben", "assessment"), ("Recruiter", "recruiter_outreach"),
+                                ("Klassifizierung prüfen", "review"), ("Sonstige", "other"),
+                                ("Werbung / Rauschen", "noise")):
+            self.category_filter.addItem(label, category)
+        self.category_filter.currentIndexChanged.connect(self._reload_list)
+        left_l.addWidget(self.category_filter)
         self.list = QListWidget()
         self.list.currentRowChanged.connect(self._on_select)
         left_l.addWidget(self.list, 1)
@@ -194,7 +217,6 @@ class InboxPage(QWidget):
         self._spin_timer.timeout.connect(self._tick_spin)
 
         self.retranslate_ui()
-        self._clear_detail()
 
     def retranslate_ui(self) -> None:
         self.title.setText(tr("nav.inbox"))
@@ -218,6 +240,11 @@ class InboxPage(QWidget):
         email = self._selected
         if not email:
             return
+        from core.commercial.features import PremiumFeature
+        from desktop.widgets.premium import show_premium
+        self._more_menu.addAction("Antwort automatisch senden · Premium",
+                                  lambda: show_premium(self, PremiumFeature.AUTOMATIC_REPLY))
+        self._more_menu.addSeparator()
         for label, slot in self._contextual_actions(email):
             if slot is self._on_primary:
                 continue  # primary lives on the bar
@@ -289,31 +316,86 @@ class InboxPage(QWidget):
         else:
             self.action_hint.setText("")
         self._rebuild_more_menu()
-        self.more_btn.setVisible(len(actions) > 1)
+        self.more_btn.setVisible(True)
 
     def refresh(self) -> None:
         self._reload_list()
         if hasattr(self.lifecycle, "refresh"):
             self.lifecycle.refresh()
 
+    def _open_connections(self):
+        from desktop.pages.settings import SettingsPage
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Kostenlose Verbindungen und Premium-Vorschau")
+        dialog.resize(1000, 720)
+        layout = QVBoxLayout(dialog)
+        page = SettingsPage(self.config_service, dialog)
+        page.load_from_config()
+        page.nav.setCurrentRow(3)
+        layout.addWidget(page)
+        dialog.exec()
+
+    def _import_local_mail(self):
+        path, _ = QFileDialog.getOpenFileName(self, "E-Mails lokal sortieren", "", "E-Mails (*.eml *.mbox *.mbx)")
+        if not path:
+            return
+        settings = self.config_service.load().settings
+        def operation():
+            from integrations.mail.local_sorter import import_mail_file
+            return import_mail_file(self._db(), Path(path), exclude_senders=settings.gmail_exclude_senders)
+        self._mail_task(operation, lambda result: QMessageBox.information(self, "E-Mail-Import", f"{result[0]} Nachrichten sortiert, {result[1]} bereits vorhanden."))
+
+    def _mail_task(self, operation, finished=None):
+        if self._refreshing:
+            return
+        from desktop.workers import FunctionWorker, connect_queued, start_worker
+        self._refreshing = True
+        self.refresh_btn.setEnabled(False)
+        self.import_btn.setEnabled(False)
+        self.connections_btn.setEnabled(False)
+        self.refresh_error.hide()
+        self._spin_timer.start()
+
+        def done(value, error=False):
+            self._refreshing = False
+            self._spin_timer.stop()
+            self.refresh_btn.setText("↻")
+            for button in (self.refresh_btn, self.import_btn, self.connections_btn):
+                button.setEnabled(True)
+            if error:
+                self.refresh_error.setText("E-Mail-Abruf/Import fehlgeschlagen. Verbindung prüfen und erneut versuchen. Bereits sortierte Nachrichten bleiben erhalten.")
+                self.refresh_error.show()
+            else:
+                self.refresh()
+                if finished:
+                    finished(value)
+
+        worker = FunctionWorker(operation)
+        connect_queued(worker.finished, lambda result: done(result))
+        connect_queued(worker.failed, lambda error: done(error, True))
+        self._mail_worker = worker
+        self._mail_thread = start_worker(worker)
+
     def _on_refresh(self) -> None:
         if self._refreshing:
             return
-        self._refreshing = True
-        self.refresh_btn.setEnabled(False)
-        self.refresh_error.hide()
-        self._spin_timer.start()
-        try:
+        cfg = self.config_service.load()
+        if cfg.settings.mail_provider == "generic_imap":
+            settings = deepcopy(cfg.settings)
+            def operation():
+                from integrations.mail.local_sorter import sync_local_mail
+                return sync_local_mail(self._db(), token_dir=self.config_service.dirs["config"], settings=settings)
+            def finished(result):
+                if result.partial:
+                    self.refresh_error.setText("50 Nachrichten lokal sortiert. Weitere vorhanden: erneut aktualisieren, um den nächsten Stapel zu laden.")
+                    self.refresh_error.show()
+            self._mail_task(operation, finished)
+        elif cfg.settings.mail_provider == "google_gmail":
+            from core.commercial.features import PremiumFeature
+            from desktop.widgets.premium import show_premium
+            show_premium(self, PremiumFeature.GOOGLE_CONNECTION)
+        else:
             self.refresh()
-        except Exception as exc:  # noqa: BLE001 — surface sync failures calmly
-            self.refresh_error.setText(tr("inbox.refresh_failed"))
-            self.refresh_error.setToolTip(str(exc))
-            self.refresh_error.show()
-        finally:
-            self._spin_timer.stop()
-            self.refresh_btn.setText("↻")
-            self.refresh_btn.setEnabled(True)
-            self._refreshing = False
 
     def _tick_spin(self) -> None:
         frames = ("↻", "⟳", "↺", "⟲")
@@ -325,7 +407,7 @@ class InboxPage(QWidget):
 
     def _reload_list(self) -> None:
         db = self._db()
-        self._emails = db.list_inbox_emails(limit=200, query=self.search.text())
+        self._emails = db.list_inbox_emails(limit=200, query=self.search.text(), category=self.category_filter.currentData() or "")
         self.list.clear()
         for email in self._emails:
             sender = (email.get("sender") or "—").split("<")[0].strip() or "—"
@@ -336,7 +418,10 @@ class InboxPage(QWidget):
                 email.get("received_at") or email.get("created_at"),
                 lang=i18n.language,
             )
-            item = QListWidgetItem(f"{sender}\n{subject}\n{chip} · {when}")
+            category = email.get("category") or "other"
+            index = self.category_filter.findData(category)
+            category_label = self.category_filter.itemText(index) if index >= 0 else "Klassifizierung prüfen"
+            item = QListWidgetItem(f"{sender}\n{subject}\n{category_label} · {chip} · {when}")
             item.setData(Qt.ItemDataRole.UserRole, email.get("id"))
             self.list.addItem(item)
         if self._emails:
