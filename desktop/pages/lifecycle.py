@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from PySide6.QtWidgets import (
     QComboBox,
+    QFileDialog,
     QInputDialog,
     QHBoxLayout,
     QHeaderView,
@@ -444,6 +445,8 @@ class LifecyclePage(QWidget):
                 return
             from desktop.widgets.calendar_preview_dialog import CalendarPreviewDialog
             from integrations.reply_draft import human_slot
+            if settings.calendar_provider == "local_ics":
+                QMessageBox.information(self, "Kalenderkopie", "Terminvorschläge basieren auf der zuletzt importierten Kalenderdatei. Zwischenzeitliche Änderungen sind nicht enthalten. Vor Übernahme im echten Kalender prüfen.")
             preview = CalendarPreviewDialog(proposal.ranked_slots,
                 title=f"{case.company} — {case.position}", parent=self)
             if preview.exec() != preview.DialogCode.Accepted or preview.selected_index is None:
@@ -456,7 +459,8 @@ class LifecyclePage(QWidget):
             draft = draft_from_ranked_slot(proposal,
                                           client_request_id=f"{case_id}:{chosen}")
             draft.title = f"{case.company} — {case.position}"
-            summary = f"{draft.title}\n{chosen}\n{tr('calendar.write_after_approval')}"
+            instruction = "Als ICS-Datei speichern und selbst in den Kalender importieren." if settings.calendar_provider == "local_ics" else tr("calendar.write_after_approval")
+            summary = f"{draft.title}\n{chosen}\n{instruction}"
             self._pending_calendar = {"case_id": case_id, "summary": summary, "draft": draft}
             self._pending_draft = None
             self._pending_mail = None
@@ -523,6 +527,16 @@ class LifecyclePage(QWidget):
         if self._pending_calendar is not None:
             pending = self._pending_calendar
             cfg = self.config_service.load()
+            if cfg.settings.calendar_provider == "local_ics":
+                path, _ = QFileDialog.getSaveFileName(self, "Termin als Kalenderdatei speichern", "interview.ics", "Kalenderdatei (*.ics)")
+                if not path:
+                    return
+                from pathlib import Path
+                from integrations.calendar_write import draft_to_ics
+                Path(path).write_text(draft_to_ics(pending["draft"]), encoding="utf-8")
+                QMessageBox.information(self, "Kalenderdatei gespeichert", "Den Termin in Google-, Samsung- oder Apple-Kalender importieren. Er wurde hier nur als Datei gespeichert; keine Einladung versendet.")
+                self._clear_approval()
+                return
             if not cfg.settings.allow_calendar_write:
                 QMessageBox.warning(self, tr("lifecycle.calendar_proposal"), tr("calendar.write_disabled"))
                 return

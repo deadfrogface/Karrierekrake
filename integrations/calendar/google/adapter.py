@@ -43,7 +43,7 @@ class GoogleCalendarAdapter:
         """NEXT-04: Verbunden only after successful FreeBusy probe."""
         from integrations.providers.connection_probe import probe_google_calendar
 
-        return probe_google_calendar(token_dir=self.token_dir).connected
+        return False  # Premium has not launched; do not probe saved credentials.
 
     def query_busy(self, q: FreeBusyQuery) -> list[BusyInterval]:
         provider = self._freebusy or GoogleFreeBusyProvider(self._service())
@@ -95,6 +95,8 @@ class GoogleCalendarAdapter:
         )
 
     def _service(self):
+        from core.commercial.features import PremiumFeature, require_premium
+        require_premium(PremiumFeature.GOOGLE_CONNECTION)
         from integrations.google_oauth import load_google_token, creds_from_payload, build_calendar_service
         payload = load_google_token(token_dir=self.token_dir)
         if not payload:

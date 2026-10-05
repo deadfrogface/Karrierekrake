@@ -1,5 +1,5 @@
 """Credential entry for standard IMAP and CalDAV accounts; never persists secrets."""
-from PySide6.QtWidgets import QDialog, QDialogButtonBox, QFormLayout, QLineEdit, QLabel, QVBoxLayout
+from PySide6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QFormLayout, QLineEdit, QLabel, QVBoxLayout
 from desktop.i18n import tr
 
 
@@ -22,6 +22,9 @@ class ProviderCredentialsDialog(QDialog):
         form.addRow(tr("integrations.username"), self.username)
         form.addRow(tr("integrations.password"), self.password)
         layout.addLayout(form)
+        self.allow_write = QCheckBox("Bestätigte Termine in iCloud eintragen dürfen")
+        self.allow_write.setVisible(calendar)
+        layout.addWidget(self.allow_write)
         self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)

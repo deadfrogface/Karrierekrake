@@ -128,3 +128,14 @@ is the default path — no scrape of login/paywall or LinkedIn as a required sou
 Karrierekrake ships a versioned DACH snapshot under `data/geo/` and may update
 directly from the documented mirrors. Public Nominatim is not used in production.
 
+
+### Free calendar protocol libraries
+
+The runtime uses python-caldav (GPL-3.0-or-later OR Apache-2.0), icalendar
+(BSD-2-Clause), and recurring-ical-events (LGPL-3.0-or-later) as unmodified
+installed dependencies. They provide CalDAV transport and RFC 5545 recurrence
+expansion; no source is vendored by this change.
+
+  https://github.com/python-caldav/caldav
+  https://github.com/collective/icalendar
+  https://github.com/niccokunzmann/python-recurring-ical-events

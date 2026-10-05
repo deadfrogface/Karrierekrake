@@ -7,6 +7,7 @@ Sending is NOT implied — drafts may stay local.
 from __future__ import annotations
 
 import hashlib
+import json
 import imaplib
 import ssl
 from dataclasses import dataclass
@@ -69,12 +70,16 @@ def delete_imap_secret(*, token_dir: Path) -> None:
 def validate_imap_secret(secret: dict[str, Any]) -> None:
     """Authenticate without reading or sending mail before storing credentials."""
     host, user = str(secret.get("host") or "").strip(), str(secret.get("username") or "").strip()
-    if not host or not user or not secret.get("password"):
+    if not host or not user or not (secret.get("password") or secret.get("access_token")):
         raise ProviderError("generic_imap", "imap_endpoint_incomplete", reconnectable=True)
     conn = None
     try:
         conn = imaplib.IMAP4_SSL(host, int(secret.get("port") or 993), timeout=20)
-        conn.login(user, str(secret["password"]))
+        if secret.get("oauth2"):
+            auth = f"user={user}\x01auth=Bearer {secret['access_token']}\x01\x01"
+            conn.authenticate("XOAUTH2", lambda _: auth.encode())
+        else:
+            conn.login(user, str(secret["password"]))
         status, _ = conn.noop()
         if status != "OK":
             raise ProviderError("generic_imap", "imap_probe_failed", reconnectable=True)
@@ -138,6 +143,8 @@ class GenericImapMailAdapter:
             raise ProviderError(
                 self.provider.value, "imap_not_configured", reconnectable=True
             )
+        from integrations.mail.imap.outlook_auth import refresh_outlook
+        secret = refresh_outlook(secret, token_dir=self.token_dir)
         endpoint = ImapEndpoint(
             host=str(secret.get("host") or ""),
             port=int(secret.get("port") or 993),
@@ -145,13 +152,15 @@ class GenericImapMailAdapter:
             use_ssl=bool(secret.get("use_ssl", True)),
             oauth2=bool(secret.get("oauth2", False)),
         )
-        messages = _fetch_imap_messages(endpoint, secret)
+        progress = {}
+        messages = _fetch_imap_messages(endpoint, secret, cursor_token=cursor.cursor_token if cursor else "", progress=progress)
         return MailSyncResult(
             provider=self.provider,
             mode="imap",
             fetched=len(messages),
             processed=len(messages),
-            new_cursor_token=(cursor.cursor_token if cursor else "") or "",
+            new_cursor_token=progress["cursor"],
+            partial=progress["partial"],
             messages=messages,
         )
 
@@ -169,7 +178,7 @@ def _decode_header_value(raw: str | None) -> str:
         return str(raw)
 
 
-def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list[NormalizedEmail]:
+def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any], *, cursor_token="", progress=None) -> list[NormalizedEmail]:
     if not endpoint.host or not endpoint.username:
         raise ProviderError("generic_imap", "imap_endpoint_incomplete", reconnectable=True)
     conn = None
@@ -202,34 +211,30 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
         namespace = hashlib.sha256(
             f"{endpoint.host.lower()}:{endpoint.port}:{endpoint.username}:INBOX".encode()
         ).hexdigest()[:24]
+        previous = {}
+        try:
+            previous = json.loads(cursor_token) if cursor_token else {}
+        except (ValueError, TypeError):
+            pass
+        last = int(previous.get("uid", 0)) if previous.get("namespace") == namespace and previous.get("validity") == validity.decode() else 0
         typ, data = conn.uid("search", None, "ALL")
         if typ != "OK":
             raise ProviderError("generic_imap", "imap_search_failed", reconnectable=True)
-        ids = (data[0] or b"").split()
-        # Cap for safety — full sync strategy is cursor-driven later.
-        ids = ids[-50:]
+        ids = sorted((mid for mid in (data[0] or b"").split() if int(mid) > last), key=int)
+        partial = len(ids) > 50
+        ids = ids[:50]
         out: list[NormalizedEmail] = []
         for mid in ids:
             typ, msg_data = conn.uid("fetch", mid, "(BODY.PEEK[])")
             if typ != "OK" or not msg_data or not msg_data[0]:
-                continue
-            raw = msg_data[0][1]
-            if not isinstance(raw, (bytes, bytearray)):
-                continue
+                raise ProviderError("generic_imap", "imap_fetch_failed")
+            raw = next((item[1] for item in msg_data if isinstance(item, tuple) and isinstance(item[1], bytes)), None)
+            if raw is None:
+                raise ProviderError("generic_imap", "imap_fetch_failed")
             msg = message_from_bytes(bytes(raw))
             subject = _decode_header_value(msg.get("Subject"))
             sender = parseaddr(msg.get("From") or "")[1]
-            body = ""
-            if msg.is_multipart():
-                for part in msg.walk():
-                    if part.get_content_type() == "text/plain" and part.get_content_disposition() != "attachment":
-                        payload = part.get_payload(decode=True) or b""
-                        body = payload.decode(part.get_content_charset() or "utf-8", errors="replace")
-                        break
-            else:
-                payload = msg.get_payload(decode=True) or b""
-                if isinstance(payload, bytes):
-                    body = payload.decode(msg.get_content_charset() or "utf-8", errors="replace")
+            body = message_body(msg)
             uid = mid.decode("ascii", errors="replace")
             stable_id = f"imap:{namespace}:{validity.decode()}:{uid}"
             try:
@@ -250,13 +255,15 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
                     provider_message_id=stable_id,
                 )
             )
+        if progress is not None:
+            progress.update(cursor=json.dumps({"namespace": namespace, "validity": validity.decode(), "uid": int(ids[-1]) if ids else last}), partial=partial)
         return out
     except ProviderError:
         raise
     except Exception as exc:
         raise ProviderError(
             "generic_imap", f"imap_runtime_error:{type(exc).__name__}", reconnectable=True
-        ) from exc
+        ) from None
     finally:
         if conn is not None:
             try:
@@ -269,3 +276,25 @@ def _fetch_imap_messages(endpoint: ImapEndpoint, secret: dict[str, Any]) -> list
 
 
 _: type[MailProviderAdapter] = GenericImapMailAdapter  # type: ignore[assignment,misc]
+
+
+def message_body(msg) -> str:
+    """Prefer plain text; ignore attachments and executable HTML content."""
+    parts = [part for part in msg.walk() if part.get_content_disposition() != "attachment"]
+    for kind in ("text/plain", "text/html"):
+        for part in parts:
+            if part.get_content_type() != kind:
+                continue
+            payload = part.get_payload(decode=True) or b""
+            try:
+                text = payload.decode(part.get_content_charset() or "utf-8", errors="replace")
+            except LookupError:
+                text = payload.decode("utf-8", errors="replace")
+            if kind == "text/html":
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(text, "html.parser")
+                for item in soup(["script", "style"]):
+                    item.decompose()
+                text = soup.get_text(" ", strip=True)
+            return text
+    return ""

@@ -53,11 +53,7 @@ ALLOWED_FIRST_PARTY_PREFIXES: tuple[str, ...] = (
 # First-party modules that must NEVER ship (even under allowed prefixes).
 EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
     "desktop.demo_data",
-    "integrations.calendar.caldav",
     "integrations.calendar.microsoft",
-    "integrations.mail.imap",
-    "integrations.mail.microsoft",
-    "desktop.widgets.provider_credentials",
     "llama_cpp.server",
     "benchmark",
     "tools",
@@ -69,6 +65,8 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 # Documented: tls_client (jobspy DLLs), jobspy, playwright Python driver only,
 # llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
+    "caldav",
+    "wassima",
     "tls_client",
     "jobspy",
     "playwright",
@@ -82,6 +80,8 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     "playwright",
     "yaml",
     "PySide6",
+    "caldav",
+    "wassima",
     "tls_client",
     "tls_client.cffi",
     "tls_client.dependencies",
@@ -108,21 +108,8 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
 
 # Always excluded from Analysis (dev / unused UI stacks).
 ANALYSIS_EXCLUDES: tuple[str, ...] = (
-    "integrations.calendar.caldav",
     "integrations.calendar.microsoft",
-    "integrations.mail.imap",
-    "integrations.mail.microsoft",
-    "desktop.widgets.provider_credentials",
     "llama_cpp.server",
-    "caldav",
-    "wassima",
-    "niquests",
-    "urllib3_future",
-    "qh3",
-    "jh2",
-    "icalendar_searcher",
-    "recurring_ical_events",
-    "x_wr_timezone",
     "dspy",
     "litellm",
     "boto3",

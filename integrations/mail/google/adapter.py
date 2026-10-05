@@ -44,11 +44,13 @@ class GoogleGmailAdapter:
             return probe_google_gmail(
                 token_dir=self.token_dir, service=self._service, force=False
             ).connected
-        return probe_google_gmail(token_dir=self.token_dir).connected
+        return False  # Premium has not launched; do not probe saved credentials.
 
     def _service_or_raise(self) -> Any:
         if self._service is not None:
             return self._service
+        from core.commercial.features import PremiumFeature, require_premium
+        require_premium(PremiumFeature.GOOGLE_CONNECTION)
         from pathlib import Path
 
         from integrations.gmail_auth import get_gmail_service

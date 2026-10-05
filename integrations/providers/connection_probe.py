@@ -261,6 +261,8 @@ def probe_imap(*, token_dir: Path, force: bool = False) -> ProbeResult:
                 cache_key,
                 ProbeResult(ConnectionState.DISCONNECTED, "incomplete", provider),
             )
+        from integrations.mail.imap.outlook_auth import refresh_outlook
+        secret = refresh_outlook(secret, token_dir=token_dir)
         conn = imaplib.IMAP4_SSL(host, port, timeout=20) if secret.get("use_ssl", True) else imaplib.IMAP4(host, port, timeout=20)
         if not secret.get("use_ssl", True):
             conn.starttls(ssl_context=ssl.create_default_context())

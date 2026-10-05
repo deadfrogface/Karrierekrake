@@ -16,6 +16,7 @@ class MailProvider(str, Enum):
 
 class CalendarProvider(str, Enum):
     NONE = "none"
+    LOCAL_ICS = "local_ics"
     GOOGLE_CALENDAR = "google_calendar"
     MICROSOFT_GRAPH = "microsoft_graph"
     GENERIC_CALDAV = "generic_caldav"

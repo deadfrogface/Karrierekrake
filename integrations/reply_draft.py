@@ -634,6 +634,10 @@ class SendGate:
         draft.binding_review_approved = True
         return draft
 
+    def attempt_automatic_send(self, draft: ReplyDraft, *, transport) -> ReplyDraft:
+        from core.commercial.features import PremiumFeature, require_premium
+        require_premium(PremiumFeature.AUTOMATIC_REPLY)
+
     def attempt_send(self, draft: ReplyDraft, *, transport) -> ReplyDraft:
         """Call transport(draft) only when approved and allow_send.
 

@@ -34,6 +34,11 @@ def resolve_calendar_adapter(
             reconnectable=False,
         )
 
+    if chosen is CalendarProvider.LOCAL_ICS:
+        from integrations.calendar.local_ics import LocalIcsCalendarAdapter
+
+        return LocalIcsCalendarAdapter(settings=settings, token_dir=token_dir)
+
     if chosen is CalendarProvider.GOOGLE_CALENDAR:
         from integrations.calendar.google.adapter import GoogleCalendarAdapter
 
