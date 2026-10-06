@@ -55,6 +55,8 @@ def test_real_grounding_and_reference_checks_accept_relevant_letter(applicant, m
     assert result.text.strip() == GOOD.strip()
     assert len(calls) == 1
     assert "UNTRUSTED" in calls[0][1]["content"]
+    assert "required_profile_references" in calls[0][1]["content"]
+    assert "required_task_phrases" in calls[0][1]["content"]
 
 
 def test_writer_uses_existing_contract_parser_for_string_anchors(applicant, monkeypatch):
@@ -151,3 +153,14 @@ def test_closed_preview_ignores_late_model_result(applicant, monkeypatch, qtbot)
     dialog.reject()
     dialog._finish_cover_rewrite(CoverRewrite(True, GOOD))
     assert dialog.cover_edit.toPlainText() == original
+
+
+def test_missing_references_retry_contains_concrete_verified_evidence(applicant, monkeypatch):
+    calls = install_model(monkeypatch, GOOD.replace("Westfalen Service GmbH", "bisherigen Arbeitgeber"))
+    result = rewrite_cover_letter(*applicant)
+    assert not result.ok
+    assert "missing_profile_references" in result.issues
+    assert len(calls) == 2
+    assert "Fehlende Belege" in calls[1][0]["content"]
+    assert "Westfalen Service GmbH" in calls[1][0]["content"]
+    assert "required_task_phrases" in calls[1][0]["content"]

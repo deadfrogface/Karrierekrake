@@ -30,7 +30,7 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
     from core.cover_guard import confirmed_profile_text, prepare_cover_check, screen_prepared_letter
     from core.cover_letter import (
         compose_cover_letter, _cover_bundle, _resolve_writer_claims,
-        cover_letter_reference_hits, normalize_cover_text,
+        cover_letter_reference_hits, normalize_cover_text, _assign_cover_facts,
     )
     from core.cv_llm_runtime import resolve_cv_model_path, chat_completion_inprocess
     from guenther.contracts import WritingSuggestion
@@ -60,6 +60,11 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
              period=f.period, tasks=list(f.tasks))
         for f in bundle.facts
     ]
+    reference_facts = [
+        dict(kind=f.kind, label=f.label, role=f.title, company=f.company,
+             required_task_phrases=list(f.counted_tasks), period=f.period)
+        for f, _ in _assign_cover_facts(list(bundle.facts))
+    ]
     profile = confirmed_profile_text(config)
     claims = _resolve_writer_claims(config, None)
     prepared = prepare_cover_check(config, seed.description_used, f"{job.title} {job.company}")
@@ -67,6 +72,7 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
     trusted = json.dumps(dict(
         applicant_name=name, target_company=job.company, target_role=job.title,
         verified_profile_facts=facts,
+        required_profile_references=reference_facts,
         confirmed_profile=profile,
         contact_claims=claims.to_dict(),
     ), ensure_ascii=False)
@@ -80,7 +86,13 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
         "oder Behauptungen über den Arbeitgeber. Keine erfundenen Tätigkeiten, "
         "Erfolge, Zahlen, Soft Skills, Branchenkenntnisse oder Abschlüsse. "
         "Übertragbare Erfahrung klar von direkter Branchenerfahrung trennen. "
-        "Arbeitgeber, Rollen, belegte Tätigkeiten und Zeiträume wörtlich erhalten. "
+        "Beziehe mindestens zwei unterschiedliche Belege aus required_profile_references "
+        "auf die Anzeige, darunter eine berufliche Station. Für diese Station nenne "
+        "company und role wörtlich sowie mindestens eine vollständige Phrase aus "
+        "required_task_phrases; wenn diese leer sind, nenne period wörtlich. "
+        "Bei einem skill-Beleg erhalte label wörtlich. Baue diese Belege in "
+        "zusammenhängende Sätze ein. Arbeitgeber, Rollen, belegte Tätigkeiten und "
+        "Zeiträume wörtlich erhalten. "
         "Bei 'seit' Präsens verwenden. Kein 'Hiermit bewerbe ich mich'. "
         "Keine Annahme, dass eine Softwarevariante alle anderen Varianten abdeckt. "
         "Beginne mit dem stärksten aktuellen Beleg, nicht der ältesten Station. "
@@ -126,11 +138,15 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
             issues = [e.code for e in report.errors if e.severity == "error"]
             if not references.accepted:
                 issues.append("missing_profile_references")
+                errors = (" Fehlende Belege: " + json.dumps(
+                    [f for f in reference_facts if f["label"] in references.missing],
+                    ensure_ascii=False,
+                ))
             if not quality:
                 issues.append("too_short_or_list_like")
             if not screened.ok:
                 issues.append("unsupported_personal_claim")
-            errors = " Überarbeite den Entwurf. Prüfhinweise: " + ", ".join(issues)
+            errors = " Überarbeite den Entwurf. Prüfhinweise: " + ", ".join(issues) + errors
         except Exception as exc:
             # Never expose CV text or model output through exception messages.
             errors = " Liefere gültiges JSON und ausschließlich belegte Aussagen."
