@@ -2262,6 +2262,61 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     },
 }
 
+
+TRANSLATIONS["de"].update({
+    "updates.title": "Programm-Updates",
+    "updates.startup": "Updates werden beim Start im Hintergrund geprüft.",
+    "updates.check": "Nach Updates suchen",
+    "updates.install": "Update herunterladen und installieren",
+    "updates.model_install": "KI-Modell herunterladen und installieren",
+    "updates.initial": "Erstinstallation: Das lokale KI-Modell fehlt. Lade es einmal herunter; spätere Programmupdates behalten es.",
+    "updates.rollback": "Das letzte Update ist fehlgeschlagen. Die vorherige Version wurde wiederhergestellt. Du kannst das Update erneut versuchen.",
+    "updates.legacy": "Automatische Updates sind im neuen Windows-Installationspaket verfügbar. Diese Version muss einmal manuell ersetzt werden.",
+    "updates.offline": "Updateprüfung nicht erreichbar. Bitte später erneut versuchen.",
+    "updates.failure": "Update fehlgeschlagen. Prüfe Internetverbindung, freien Speicher und Schreibrechte. Deine bisherige Version bleibt erhalten.",
+    "updates.checking": "Suche nach Updates …",
+    "updates.notice": "Update verfügbar – Einstellungen öffnen",
+    "updates.model_notice": "Lokale KI-Auswertung einrichten – Einstellungen öffnen",
+    "updates.model_missing": "Das lokale KI-Modell fehlt. Lade es einmal herunter, um Lebensläufe und Anschreiben lokal zu verarbeiten.",
+    "updates.current": "Du verwendest die aktuelle Version.",
+    "updates.confirm_title": "Update installieren",
+    "updates.confirm": "Das Update wird heruntergeladen. Anschließend wird Karrierekrake geschlossen und neu gestartet. Speichere vorher offene Änderungen. Jetzt fortfahren?",
+    "updates.downloading": "Update wird heruntergeladen und geprüft …",
+    "updates.launch_failed": "Installation konnte nicht gestartet werden. Deine bisherige Version bleibt erhalten.",
+    "updates.restarting": "Update geprüft. Karrierekrake wird für die Installation geschlossen …",
+    "updates.version": "Installierte Version: {version}",
+    "updates.development": "Entwicklungsversion",
+    "updates.available": "Neue Version verfügbar. Download: {megabytes} MB. Unveränderte Komponenten bleiben erhalten.",
+    "updates.progress": "Download: {percent} % ({done} / {total} MB) – danach wird das Update geprüft."
+})
+TRANSLATIONS["en"].update({
+    "updates.title": "Application updates",
+    "updates.startup": "Updates are checked in the background at startup.",
+    "updates.check": "Check for updates",
+    "updates.install": "Download and install update",
+    "updates.model_install": "Download and install local AI model",
+    "updates.initial": "First installation: download the local AI model once. Future app updates keep it.",
+    "updates.rollback": "The last update failed and the previous version was restored. You can retry the update.",
+    "updates.legacy": "Automatic updates are available in the new Windows installation package. Replace this version manually once.",
+    "updates.offline": "Update checks are unavailable. Please try again later.",
+    "updates.failure": "Update failed. Check your connection, free space and write permissions. Your current version is preserved.",
+    "updates.checking": "Checking for updates …",
+    "updates.notice": "Update available – open Settings",
+    "updates.model_notice": "Set up local AI processing – open Settings",
+    "updates.model_missing": "Download the local AI model once to process CVs and cover letters locally.",
+    "updates.current": "You are using the current version.",
+    "updates.confirm_title": "Install update",
+    "updates.confirm": "The update will download, then Karrierekrake will close and restart. Save any open changes first. Continue?",
+    "updates.downloading": "Downloading and verifying update …",
+    "updates.launch_failed": "The installer could not start. Your current version is preserved.",
+    "updates.restarting": "Update verified. Closing Karrierekrake to install …",
+    "updates.version": "Installed version: {version}",
+    "updates.development": "Development version",
+    "updates.available": "New version available. Download: {megabytes} MB. Unchanged components are retained.",
+    "updates.progress": "Download: {percent}% ({done} / {total} MB) – verification follows."
+})
+
+
 class TranslationService:
     """Simple dictionary-based i18n with live listeners."""
 

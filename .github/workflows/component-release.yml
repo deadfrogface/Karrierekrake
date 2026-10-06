@@ -1,0 +1,113 @@
+name: Publish component update
+on:
+  workflow_run:
+    workflows: [CI, Windows Smoke]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: component-release-main
+  cancel-in-progress: false
+jobs:
+  gate:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      publish: ${{ steps.gate.outputs.publish }}
+      sha: ${{ steps.gate.outputs.sha }}
+      sequence: ${{ steps.gate.outputs.sequence }}
+    steps:
+      - uses: actions/github-script@v7
+        id: gate
+        with:
+          script: |
+            const sha = context.payload.workflow_run.head_sha;
+            const repo = {...context.repo};
+            const main = await github.rest.repos.getBranch({...repo, branch: 'main'});
+            if (main.data.commit.sha !== sha) return;
+            const {data} = await github.rest.actions.listWorkflowRunsForRepo({...repo, head_sha: sha, event: 'push', per_page: 100});
+            for (const name of ['CI', 'Windows Smoke']) {
+              const latest = data.workflow_runs.filter(r => r.name === name).sort((a,b) => b.id-a.id)[0];
+              if (!latest || latest.status !== 'completed' || latest.conclusion !== 'success') return;
+            }
+            const sequence = Math.max(...data.workflow_runs.filter(r => ['CI','Windows Smoke'].includes(r.name)).map(r => r.id));
+            const tag = `update-${sequence}-${sha.slice(0,12)}`;
+            try {
+              const release = await github.rest.repos.getReleaseByTag({...repo, tag});
+              if (!release.data.draft) return;
+            }
+            catch (e) { if (e.status !== 404) throw e; }
+            core.setOutput('publish', 'true'); core.setOutput('sha', sha); core.setOutput('sequence', String(sequence));
+  build:
+    needs: gate
+    if: needs.gate.outputs.publish == 'true'
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install build dependencies
+        run: pip install -c constraints-runtime.txt -r requirements-build.txt
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: kk-cv-gguf-
+      - name: Prepare verified model and OAuth client
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GOOGLE_DESKTOP_CLIENT_JSON: ${{ secrets.GOOGLE_DESKTOP_CLIENT_JSON }}
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
+        run: |
+          python scripts/prepare_bundled_cv_model.py --allow-download
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/prepare_google_desktop_client.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build program without embedded model
+        env:
+          KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: '1'
+          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: '0'
+        run: |
+          python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --fail-on-empty --require-google-client-embedded
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/package_component_update.py --exe dist/Karrierekrake.exe --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf --out component-release --sequence ${{ needs.gate.outputs.sequence }} --commit ${{ needs.gate.outputs.sha }}
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test complete component installation offline
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python scripts/ci_cv_import_exe_offline_e2e.py --component-install --exe component-release/install/Karrierekrake.exe --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf --out component-release/acceptance.json --import-timeout 900
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Publish tested release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: ${{ needs.gate.outputs.sha }}
+          RELEASE_SEQUENCE: ${{ needs.gate.outputs.sequence }}
+        run: |
+          $main = gh api repos/deadfrogface/Karrierekrake/branches/main --jq '.commit.sha'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($main -ne $env:TARGET_SHA) { Write-Host 'Main advanced; skip superseded release'; exit 0 }
+          $tag = "update-$env:RELEASE_SEQUENCE-$($env:TARGET_SHA.Substring(0,12))"
+          $assets = @(Get-ChildItem component-release/*.bin | ForEach-Object { $_.FullName })
+          gh release view $tag --json isDraft 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --draft --target $env:TARGET_SHA --title "Karrierekrake Update $env:RELEASE_SEQUENCE" --notes 'Geprüftes Windows-Update. Bei Erstinstallation das Setup-ZIP entpacken und das KI-Modell einmal über den Updatebereich laden. Vorhandene Installationen laden nur veränderte Komponenten.'
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          gh release upload $tag @assets component-release/update-manifest.json component-release/Karrierekrake-Setup.zip component-release/acceptance.json --clobber
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $main = gh api repos/deadfrogface/Karrierekrake/branches/main --jq '.commit.sha'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($main -ne $env:TARGET_SHA) { Write-Host 'Main advanced; retain draft'; exit 0 }
+          gh release edit $tag --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

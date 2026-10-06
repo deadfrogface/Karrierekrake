@@ -732,6 +732,7 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Skip corrupt/EXE-only negative cases.",
     )
+    parser.add_argument("--component-install", action="store_true", help="Validate split EXE + model release instead of embedded standalone EXE")
     args = parser.parse_args(argv)
 
     exe = args.exe.resolve()
@@ -744,7 +745,13 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     from scripts.scan_release_artifact import require_cv_model_embedded
 
-    model_hits = require_cv_model_embedded(exe)
+    if args.component_install:
+        from core.app_updates import MODEL_PATH, digest
+        from core.cv_llm_runtime import CV_MODEL_SHA256
+        sidecar = exe.parent / MODEL_PATH
+        model_hits = [] if sidecar.is_file() and digest(sidecar) == CV_MODEL_SHA256 else ["sidecar_model_integrity_failed"]
+    else:
+        model_hits = require_cv_model_embedded(exe)
     if model_hits:
         print(f"FAIL: standalone EXE model gate: {model_hits}", flush=True)
         return 2
@@ -759,7 +766,8 @@ def main(argv: list[str] | None = None) -> int:
         "exe_bytes": exe.stat().st_size,
         "cv": str(cv),
         "install_dir": str(exe.parent),
-        "model_embedded": True,
+        "model_embedded": not args.component_install,
+        "component_install": args.component_install,
         "runner_cpu": runner,
         "steps": {},
     }
@@ -885,7 +893,15 @@ def main(argv: list[str] | None = None) -> int:
             # Import child materializes the embedded GGUF under this isolated
             # LOCALAPPDATA; writing must resolve the very same weight.
             try:
-                report["steps"]["cover_letter"] = _cover_letter_same_model()
+                if args.component_install:
+                    os.environ["KARRIEREKRAKE_CV_LLM_MODEL"] = str(sidecar)
+                try:
+                    report["steps"]["cover_letter"] = _cover_letter_same_model()
+                    if args.component_install:
+                        report["steps"]["cover_letter"]["execution_mode"] = "CI_Python_using_verified_install_sidecar_not_packaged_writer_UI"
+                finally:
+                    if args.component_install:
+                        os.environ.pop("KARRIEREKRAKE_CV_LLM_MODEL", None)
             except Exception as exc:  # noqa: BLE001
                 report["steps"]["cover_letter"] = {"ok": False, "error": str(exc)}
 

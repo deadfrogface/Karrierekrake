@@ -173,6 +173,9 @@ class SettingsPage(QWidget):
         self.appear_box = general_box  # back-compat attribute
         general_box.setLayout(self.general_form)
         general_layout.addWidget(general_box)
+        from desktop.widgets.update_panel import UpdatePanel
+        self.updates = UpdatePanel(self)
+        general_layout.addWidget(self.updates)
         general_layout.addStretch(1)
         self.stack.addWidget(general_page)
 
@@ -612,6 +615,7 @@ class SettingsPage(QWidget):
 
     def retranslate_ui(self) -> None:
         self.header.set_texts(tr("nav.settings"))
+        self.updates.retranslate()
         for i, key in enumerate(_SETTINGS_NAV_KEYS):
             item = self.nav.item(i)
             if item is not None:
