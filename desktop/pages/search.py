@@ -7,13 +7,17 @@ be silently copied into intent fields.
 
 from __future__ import annotations
 
+import csv
+import io
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QButtonGroup,
     QCheckBox,
     QComboBox,
     QFormLayout,
-    QGroupBox,
+    QFrame,
+    QLineEdit,
     QHBoxLayout,
     QLabel,
     QMessageBox,
@@ -34,9 +38,42 @@ from core.search_intent import (
 from desktop.design_system.polish import apply_button_icon, footer_actions_layout, polish_interactive
 from desktop.i18n import escape_mnemonic, tr
 from desktop.services import ConfigService
-from desktop.widgets import ListEditor
+from desktop.design_system.primitives import KkButton, ButtonVariant
 from desktop.widgets.scroll_page import wrap_scrollable
 from desktop.widgets.wheel_guard import IntentionalWheelDoubleSpinBox
+
+
+class SearchCard(QFrame):
+    """V2 card retaining a section heading for translation."""
+    def __init__(self):
+        super().__init__()
+        self.setObjectName("KkCard")
+        self.heading = QLabel(self)
+        self.heading.setObjectName("CardTitle")
+
+    def setTitle(self, text):
+        self.heading.setText(text)
+
+
+class CompactTerms(QLineEdit):
+    """Optional comma-separated terms without empty list boxes or add buttons."""
+    def __init__(self, placeholder, **kwargs):
+        super().__init__()
+        self.placeholder_key = placeholder
+        self.setObjectName("KkInput")
+        self.retranslate()
+
+    def retranslate(self):
+        self.setPlaceholderText(tr("search.terms_placeholder"))
+
+    def get_items(self):
+        terms = next(csv.reader([self.text()], skipinitialspace=True), [])
+        return list(dict.fromkeys(t.strip() for t in terms if t.strip()))
+
+    def set_items(self, items):
+        buffer = io.StringIO()
+        csv.writer(buffer, lineterminator="").writerow(items or [])
+        self.setText(buffer.getvalue())
 
 
 class SearchPage(QWidget):
@@ -65,14 +102,17 @@ class SearchPage(QWidget):
         layout.addWidget(self.page_subtitle)
 
         # --- Roles / skills / keywords ---
-        self.roles_box = QGroupBox()
+        self.roles_box = SearchCard()
         roles_form = QFormLayout(self.roles_box)
-        self.target_roles = ListEditor("placeholder.job_title", visible_rows=4)
-        self.mandatory_skills = ListEditor("placeholder.skill", visible_rows=3)
-        self.excluded_roles = ListEditor("placeholder.exclude", visible_rows=3)
-        self.excluded_skills = ListEditor("placeholder.exclude", visible_rows=2)
-        self.excluded_keywords = ListEditor("placeholder.exclude", visible_rows=2)
-        self.required_keywords = ListEditor("placeholder.add_entry", visible_rows=3)
+        roles_form.setContentsMargins(20, 16, 20, 16)
+        roles_form.setVerticalSpacing(12)
+        roles_form.addRow(self.roles_box.heading)
+        self.target_roles = CompactTerms("placeholder.job_title", visible_rows=4)
+        self.mandatory_skills = CompactTerms("placeholder.skill", visible_rows=3)
+        self.excluded_roles = CompactTerms("placeholder.exclude", visible_rows=3)
+        self.excluded_skills = CompactTerms("placeholder.exclude", visible_rows=2)
+        self.excluded_keywords = CompactTerms("placeholder.exclude", visible_rows=2)
+        self.required_keywords = CompactTerms("placeholder.add_entry", visible_rows=3)
         self.lbl_target_roles = QLabel()
         self.lbl_mandatory_skills = QLabel()
         self.lbl_excluded_roles = QLabel()
@@ -80,16 +120,24 @@ class SearchPage(QWidget):
         self.lbl_excluded_keywords = QLabel()
         self.lbl_required_keywords = QLabel()
         roles_form.addRow(self.lbl_target_roles, self.target_roles)
-        roles_form.addRow(self.lbl_mandatory_skills, self.mandatory_skills)
-        roles_form.addRow(self.lbl_excluded_roles, self.excluded_roles)
-        roles_form.addRow(self.lbl_excluded_skills, self.excluded_skills)
-        roles_form.addRow(self.lbl_excluded_keywords, self.excluded_keywords)
-        roles_form.addRow(self.lbl_required_keywords, self.required_keywords)
+        self.advanced_box = SearchCard()
+        advanced_form = QFormLayout(self.advanced_box)
+        advanced_form.setContentsMargins(20, 16, 20, 16)
+        advanced_form.setVerticalSpacing(12)
+        advanced_form.addRow(self.advanced_box.heading)
+        advanced_form.addRow(self.lbl_mandatory_skills, self.mandatory_skills)
+        advanced_form.addRow(self.lbl_excluded_roles, self.excluded_roles)
+        advanced_form.addRow(self.lbl_excluded_skills, self.excluded_skills)
+        advanced_form.addRow(self.lbl_excluded_keywords, self.excluded_keywords)
+        advanced_form.addRow(self.lbl_required_keywords, self.required_keywords)
         layout.addWidget(self.roles_box)
 
         # --- Work mode / geo / employment ---
-        self.conditions_box = QGroupBox()
+        self.conditions_box = SearchCard()
         cond_form = QFormLayout(self.conditions_box)
+        cond_form.setContentsMargins(20, 16, 20, 16)
+        cond_form.setVerticalSpacing(12)
+        cond_form.addRow(self.conditions_box.heading)
 
         self.remote_group = QButtonGroup(self)
         self.remote_group.setExclusive(True)
@@ -102,6 +150,7 @@ class SearchPage(QWidget):
         ):
             self.remote_group.addButton(btn, i)
         remote_row = QHBoxLayout()
+        remote_row.setSpacing(16)
         for btn in (
             self.remote_unset,
             self.remote_remote,
@@ -114,6 +163,7 @@ class SearchPage(QWidget):
         cond_form.addRow(self.lbl_remote, remote_row)
 
         self.radius_km = IntentionalWheelDoubleSpinBox()
+        self.radius_km.setObjectName("KkInput")
         self.radius_km.setRange(0, 500)
         self.radius_km.setSuffix(" km")
         self.radius_km.setSpecialValueText("—")
@@ -129,11 +179,12 @@ class SearchPage(QWidget):
             country_row.addWidget(cb)
         country_row.addStretch()
         self.lbl_countries = QLabel()
-        cond_form.addRow(self.lbl_countries, country_row)
+        advanced_form.addRow(self.lbl_countries, country_row)
 
         self.full_time = QCheckBox()
         self.part_time = QCheckBox()
         wt_row = QHBoxLayout()
+        wt_row.setSpacing(16)
         wt_row.addWidget(self.full_time)
         wt_row.addWidget(self.part_time)
         wt_row.addStretch()
@@ -148,9 +199,10 @@ class SearchPage(QWidget):
             emp_row.addWidget(cb)
         emp_row.addStretch()
         self.lbl_employment = QLabel()
-        cond_form.addRow(self.lbl_employment, emp_row)
+        advanced_form.addRow(self.lbl_employment, emp_row)
 
         self.salary_min = IntentionalWheelDoubleSpinBox()
+        self.salary_min.setObjectName("KkInput")
         self.salary_min.setRange(0, 500_000)
         self.salary_min.setSuffix(" €")
         self.salary_min.setSpecialValueText("—")
@@ -162,8 +214,9 @@ class SearchPage(QWidget):
         layout.addWidget(self.conditions_box)
 
         # --- Strictness (explicit; never invent BALANCED) ---
-        self.strictness_box = QGroupBox()
+        self.strictness_box = SearchCard()
         strict_form = QFormLayout(self.strictness_box)
+        strict_form.addRow(self.strictness_box.heading)
         self.strictness = QComboBox()
         self.strictness.setObjectName("KkInput")
         self.lbl_strictness = QLabel()
@@ -172,16 +225,22 @@ class SearchPage(QWidget):
         self.strictness_hint.setWordWrap(True)
         strict_form.addRow(self.lbl_strictness, self.strictness)
         strict_form.addRow(self.strictness_hint)
-        layout.addWidget(self.strictness_box)
+        advanced_form.addRow(self.strictness_box)
+        self.advanced_toggle = KkButton(variant=ButtonVariant.GHOST)
+        self.advanced_toggle.setCheckable(True)
+        self.advanced_toggle.toggled.connect(self.advanced_box.setVisible)
+        layout.addWidget(self.advanced_toggle)
+        layout.addWidget(self.advanced_box)
+        self.advanced_box.hide()
 
         self.review_banner = QLabel()
         self.review_banner.setObjectName("PageSubtitle")
         self.review_banner.setWordWrap(True)
         self.review_banner.setVisible(False)
-        layout.addWidget(self.review_banner)
+        advanced_form.addRow(self.review_banner)
 
         self.save_btn = QPushButton()
-        self.save_btn.setObjectName("PrimaryButton")
+        self.save_btn.setObjectName("KkPrimary")
         self.save_btn.clicked.connect(self.save)
         polish_interactive(self.save_btn)
         layout.addLayout(footer_actions_layout(self.save_btn))
@@ -193,7 +252,9 @@ class SearchPage(QWidget):
         self.page_title.setText(tr("nav.search"))
         self.page_subtitle.setText(tr("search.subtitle"))
         self.roles_box.setTitle(escape_mnemonic(tr("search.roles_skills")))
-        self.lbl_target_roles.setText(tr("search.target_roles"))
+        self.lbl_target_roles.setText(tr("search.roles_optional"))
+        self.advanced_toggle.setText(tr("search.advanced"))
+        self.advanced_box.setTitle(tr("search.advanced"))
         self.lbl_mandatory_skills.setText(tr("search.mandatory_skills"))
         self.lbl_excluded_roles.setText(tr("search.excluded_roles"))
         self.lbl_excluded_skills.setText(tr("search.excluded_skills"))
@@ -303,6 +364,8 @@ class SearchPage(QWidget):
         self.strictness.setCurrentIndex(idx if idx >= 0 else 0)
 
         review = list(intent.needs_user_review or [])
+        active = sum(bool(value) for value in (intent.mandatory_skills, intent.excluded_roles, intent.excluded_skills, intent.excluded_keywords, intent.required_keywords, intent.employment_types, intent.countries, intent.strictness))
+        self.advanced_toggle.setText(tr("search.advanced") + (tr("search.active_filters", count=active) if active else ""))
         if review:
             self.review_banner.setText(
                 tr("search.needs_review") + "\n• " + "\n• ".join(review[:8])
@@ -415,6 +478,8 @@ class SearchPage(QWidget):
         if errors:
             QMessageBox.warning(self, tr("nav.search"), "\n".join(errors))
             return
+        if not intent.target_roles:
+            cfg.settings.search_mode = "profile_discovery"
         self.config_service.save(cfg)
         self.load_from_config()
         QMessageBox.information(self, tr("nav.search"), tr("search.saved"))

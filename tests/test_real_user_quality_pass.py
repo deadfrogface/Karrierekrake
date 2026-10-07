@@ -268,11 +268,16 @@ def test_mode_a_discovery_without_desired_titles():
     assert all(q.max_results > 0 for q in queries)
 
 
-def test_mode_b_explicit_requires_titles():
+def test_legacy_explicit_mode_without_titles_falls_back_to_profile():
     cfg = _cfg()
     cfg.profile.jobs.desired_titles = []
     cfg.settings.search_mode = "explicit_titles"
-    assert resolve_search_titles(cfg) == []
+    cfg.profile.jobs.alternative_titles = []
+    expected = resolve_search_titles(cfg)
+    cfg.settings.search_mode = "profile_discovery"
+    assert expected == resolve_search_titles(cfg)
+    assert expected, "legacy mode must not force an optional desired role"
+    assert cfg.profile.jobs.desired_titles == []
 
 
 def test_jobs_per_search_max_terminates_with_finite_cap():

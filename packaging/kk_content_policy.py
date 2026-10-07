@@ -65,6 +65,7 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 # Documented: tls_client (jobspy DLLs), jobspy, playwright Python driver only,
 # llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
+    "keyring",
     "caldav",
     "wassima",
     "tls_client",
@@ -75,6 +76,10 @@ ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
 
 # Extra hiddenimports (third-party) that Analysis may need.
 ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
+    # Account secrets need the dynamically discovered Windows credential backend.
+    "keyring",
+    "keyring.backends.Windows",
+    "win32ctypes",
     "app.main",
     "browser.browser_manager",
     "playwright",
