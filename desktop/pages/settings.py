@@ -681,8 +681,8 @@ class SettingsPage(QWidget):
                 combo.setCurrentIndex(idx if idx >= 0 else 0)
             self.mail_status.setText(tr("integrations.status.unknown"))
             self.calendar_status.setText(tr("integrations.status.unknown"))
-        self.privacy_connect_gmail_btn.setText("E-Mail verbinden …")
-        self.privacy_connect_cal_btn.setText("Kalender verbinden …")
+        self.privacy_connect_gmail_btn.setText("E-Mail kostenlos verbinden …")
+        self.privacy_connect_cal_btn.setText("Kalender kostenlos verbinden / importieren …")
         self.privacy_export_btn.setText(tr("privacy.export"))
         self.privacy_disconnect_btn.setText(tr("integrations.disconnect_selected"))
         self.privacy_mail_btn.setText(tr("privacy.delete_mail"))
@@ -1289,11 +1289,12 @@ class SettingsPage(QWidget):
         return Path(self.config_service.load().settings.gmail_credentials_path)
 
     def _privacy_connect_gmail(self) -> None:
-        if self.mail_provider.currentData() in {"generic_imap", "none"}:
-            self._connect_free_mail()
-            return
-        self._premium("google_connection")
-        return
+        """Primary mail CTA is always the free, provider-neutral IMAP flow.
+
+        Direct Google OAuth remains a separate Premium preview and must never be
+        reached from the free connection button, regardless of combo state.
+        """
+        self._connect_free_mail()
 
     def _connect_google_mail_later(self) -> None:
         from core.commercial.features import PremiumFeature, require_premium
@@ -1340,13 +1341,14 @@ class SettingsPage(QWidget):
             self.calendar_mode_rights.setText(tr("integrations.calendar.mode_a_rights"))
 
     def _privacy_connect_calendar(self) -> None:
+        """Primary calendar CTA only exposes free/non-Google-API transports."""
         selected = self.calendar_provider.currentData()
         if selected == "generic_caldav":
             self._connect_icloud()
-        elif selected in {"local_ics", "none"}:
-            self._import_calendar_snapshot()
-        else:
-            self._premium("google_connection")
+            return
+        # Google/Samsung/Apple free mode is an ICS snapshot.  Even if the
+        # Premium Google item is selected, this button must not start OAuth.
+        self._import_calendar_snapshot()
 
     def _connect_google_calendar_later(self) -> None:
         from core.commercial.features import PremiumFeature, require_premium

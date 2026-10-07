@@ -121,7 +121,23 @@ def changed_components(manifest: dict, root: Path) -> list[str]:
             if current.get(name, {}).get('sha256') != item['sha256'] or not (root / item['path']).is_file()]
 
 
-def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: False, progress=lambda done, total: None) -> Path:
+def bootstrap_manifest(root: Path | None = None) -> dict:
+    """Return the installed manifest when it can bootstrap a missing model.
+
+    The public setup intentionally omits the large GGUF.  Therefore a fresh
+    install must be able to stage the model component from its *current*
+    manifest without waiting for a newer release.
+    """
+    root = root or install_root()
+    manifest = read_current(root)
+    tag = str(manifest.get('tag', ''))
+    validate_manifest(manifest, tag)
+    if (root / MODEL_PATH).is_file():
+        raise ValueError('model_already_installed')
+    return manifest
+
+
+def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: False, progress=lambda done, total: None, only_components: set[str] | None = None) -> Path:
     root = (root or install_root()).resolve()
     validate_manifest(manifest, manifest.get('tag', ''))
     if not (root / CURRENT).is_file():
@@ -136,6 +152,13 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
     stage = Path(tempfile.mkdtemp(prefix='.kk-update-', dir=root))
     try:
         changed = changed_components(manifest, root)
+        if only_components is not None:
+            unknown = set(only_components) - set(TARGETS)
+            if unknown:
+                raise ValueError('invalid_component_selection')
+            changed = [name for name in changed if name in only_components]
+        if not changed:
+            raise ValueError('no_components_to_install')
         required = sum(manifest['components'][n]['size'] for n in changed)
         backup_bytes = sum((root / TARGETS[n]).stat().st_size for n in changed if (root / TARGETS[n]).is_file())
         if shutil.disk_usage(root).free < required + backup_bytes + 100_000_000:
@@ -168,7 +191,12 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
                 raise ValueError('update_integrity_failed')
         # Every retained component must still match. No model download on UI changes.
         for name in set(TARGETS) - set(changed):
-            if digest(root / TARGETS[name]) != manifest['components'][name]['sha256']:
+            retained = root / TARGETS[name]
+            # A bootstrap install deliberately starts without the model.  Other
+            # retained components must still be present and match exactly.
+            if name == 'model' and not retained.is_file():
+                continue
+            if not retained.is_file() or digest(retained) != manifest['components'][name]['sha256']:
                 raise ValueError('installed_component_modified')
         (stage / CURRENT).write_text(json.dumps(manifest), encoding='utf-8')
         plan = {'root': str(root), 'files': [TARGETS[n] for n in changed] + [CURRENT],
