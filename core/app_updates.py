@@ -184,6 +184,9 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
 HELPER = r'''
 param([string]$Stage, [int]$ParentId)
 $ErrorActionPreference = 'Stop'
+# A pwsh -> Python -> powershell.exe launch can inherit incompatible PS7
+# modules. This fixed helper only needs modules shipped with its own shell.
+$env:PSModulePath = Join-Path $PSHOME 'Modules'
 $plan = Get-Content -LiteralPath (Join-Path $Stage 'plan.json') -Raw | ConvertFrom-Json
 $root = $plan.root
 $backup = Join-Path $Stage 'backup'
