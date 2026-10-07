@@ -149,7 +149,7 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
                     f for f in reference_facts if f["label"] in references.missing
                 ]
                 errors = (
-                    " ZWINGENDE KORREKTUR: Diese Belege fehlen im body: "
+                    " ZWINGENDE KORREKTUR: Fehlende Belege im body: "
                     + json.dumps(missing_refs, ensure_ascii=False)
                     + " Kopiere company, role und required_task_phrases bzw. bei "
                     "skill den label exakt in natürliche Sätze des body. "
