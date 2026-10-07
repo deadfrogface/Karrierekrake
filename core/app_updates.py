@@ -210,6 +210,8 @@ try {
   Start-Process -FilePath (Join-Path $root 'Karrierekrake.exe') -WorkingDirectory $root
   Remove-Item -LiteralPath $Stage -Recurse -Force -ErrorAction SilentlyContinue
 } catch {
+  # Emit only the stable error identifier, never paths or downloaded contents.
+  Write-Warning ('Update rollback: ' + $_.FullyQualifiedErrorId)
   [array]::Reverse($done)
   foreach ($entry in $done) {
     if ($entry.existed) { Copy-Item -LiteralPath $entry.old -Destination $entry.dest -Force }
