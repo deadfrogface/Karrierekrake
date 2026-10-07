@@ -39,7 +39,7 @@ class UpdatePanel(QFrame):
         self.version.setText(tr('updates.version', version=current.get('tag', tr('updates.development'))))
         self.managed = getattr(sys, 'frozen', False) and (updates.install_root() / updates.CURRENT).is_file()
         if self.managed and not (updates.install_root() / updates.MODEL_PATH).is_file():
-            self.manifest = updates.read_current(updates.install_root())
+            self.manifest = updates.bootstrap_manifest(updates.install_root())
             self.status.setText(tr('updates.initial'))
             self.install_button.setText(tr('updates.model_install'))
             self.install_button.show()
@@ -91,7 +91,7 @@ class UpdatePanel(QFrame):
                 self.status.setText(tr('updates.available', megabytes=f'{size / 1024**2:.0f}'))
                 self.available.emit(tr('updates.notice'))
             elif not (updates.install_root() / updates.MODEL_PATH).is_file():
-                self.manifest = updates.read_current(updates.install_root())
+                self.manifest = updates.bootstrap_manifest(updates.install_root())
                 self.install_button.setText(tr('updates.model_install'))
                 self.install_button.show()
                 self.status.setText(tr('updates.model_missing'))
@@ -119,4 +119,11 @@ class UpdatePanel(QFrame):
                 return
             self.status.setText(tr('updates.restarting'))
             QTimer.singleShot(0, self.restart_requested.emit)
-        self._run(lambda: updates.stage_update(self.manifest, cancelled=self.worker._cancel.is_set, progress=self.download_progress.emit), ready)
+        missing_model = self.managed and not (updates.install_root() / updates.MODEL_PATH).is_file()
+        only = {'model'} if missing_model else None
+        self._run(lambda: updates.stage_update(
+            self.manifest,
+            cancelled=self.worker._cancel.is_set,
+            progress=self.download_progress.emit,
+            only_components=only,
+        ), ready)
