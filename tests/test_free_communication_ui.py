@@ -4,20 +4,23 @@ from PySide6.QtWidgets import QMessageBox, QFileDialog
 from core.commercial.features import PREMIUM_MESSAGE
 
 
-def test_settings_premium_connect_clicks_never_start_worker(qapp, qtbot, config_service, monkeypatch):
+def test_free_connect_ctas_never_start_google_oauth(qapp, qtbot, config_service, monkeypatch):
     from desktop.pages.settings import SettingsPage
     monkeypatch.setattr(SettingsPage, '_refresh_provider_status', lambda *a: None)
     page = SettingsPage(config_service)
     qtbot.addWidget(page)
-    calls, workers = [], []
-    monkeypatch.setattr(QMessageBox, 'information', lambda parent, title, text: calls.append(text))
-    monkeypatch.setattr(page, '_run_account_task', lambda *a, **kw: workers.append(a))
+    calls = []
+    monkeypatch.setattr(page, '_connect_free_mail', lambda: calls.append('free_mail'))
+    monkeypatch.setattr(page, '_import_calendar_snapshot', lambda: calls.append('local_ics'))
+    monkeypatch.setattr(page, '_premium', lambda feature: calls.append(('premium', feature)))
+    # Persisted/selected Premium provider state must not turn the FREE CTAs into OAuth.
     page.mail_provider.setCurrentIndex(page.mail_provider.findData('google_gmail'))
     page.calendar_provider.setCurrentIndex(page.calendar_provider.findData('google_calendar'))
     page.privacy_connect_gmail_btn.click()
     page.privacy_connect_cal_btn.click()
+    assert calls == ['free_mail', 'local_ics']
     page.google_client_btn.click()
-    assert calls == [PREMIUM_MESSAGE] * 3 and not workers
+    assert calls[-1] == ('premium', 'google_connection')
     assert page.mail_provider.findData('generic_imap') >= 0
     assert page.calendar_provider.findData('local_ics') >= 0
     assert page.calendar_provider.findData('generic_caldav') >= 0
