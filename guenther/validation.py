@@ -97,6 +97,43 @@ def parse_contract(schema_name: str, payload: dict[str, Any] | str | None) -> Ba
             "match_status",
         }
         data = {k: v for k, v in data.items() if k in allowed}
+    if schema_name == "writing":
+        # Small local models often return the right writing payload with harmless
+        # schema drift. Normalize only representation; never manufacture evidence.
+        allowed_writing = {"subject", "body", "anchors_used", "invented_flag", "confidence"}
+        if not isinstance(data.get("body"), str):
+            for alias in ("text", "letter", "content"):
+                if isinstance(data.get(alias), str):
+                    data["body"] = data[alias]
+                    break
+        anchors = data.get("anchors_used")
+        if anchors is None:
+            data["anchors_used"] = []
+        elif isinstance(anchors, list):
+            fixed_anchors = []
+            for anchor in anchors[:30]:
+                if isinstance(anchor, str) and anchor.strip():
+                    fixed_anchors.append({"text": anchor.strip(), "source": "profile"})
+                elif isinstance(anchor, dict):
+                    item = dict(anchor)
+                    text = item.get("text") or item.get("claim") or item.get("quote")
+                    if isinstance(text, str) and text.strip():
+                        fixed_anchors.append({
+                            "text": text.strip()[:400],
+                            "source": item.get("source") if item.get("source") in {"profile", "cv", "job", "email", "evidence", "manual"} else "profile",
+                            "quote": str(item.get("quote") or "")[:400],
+                        })
+            data["anchors_used"] = fixed_anchors
+        else:
+            data["anchors_used"] = []
+        invented = data.get("invented_flag")
+        if isinstance(invented, str):
+            data["invented_flag"] = invented.strip().lower() in {"true", "1", "yes", "ja"}
+        elif not isinstance(invented, bool):
+            data["invented_flag"] = False
+        if data.get("confidence") not in {"low", "medium", "high"}:
+            data["confidence"] = "low"
+        data = {k: v for k, v in data.items() if k in allowed_writing}
     if schema_name == "email_class":
         allowed_email = {
             "category",
