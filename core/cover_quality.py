@@ -65,6 +65,10 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
              required_task_phrases=list(f.counted_tasks), period=f.period)
         for f, _ in _assign_cover_facts(list(bundle.facts))
     ]
+    # The deterministic checker requires two *distinct ad requirements*, not
+    # merely two profile facts. Tell the small local model exactly which
+    # references can satisfy that contract.
+    reference_facts = reference_facts[:3]
     profile = confirmed_profile_text(config)
     claims = _resolve_writer_claims(config, None)
     prepared = prepare_cover_check(config, seed.description_used, f"{job.title} {job.company}")
@@ -86,11 +90,14 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
         "oder Behauptungen über den Arbeitgeber. Keine erfundenen Tätigkeiten, "
         "Erfolge, Zahlen, Soft Skills, Branchenkenntnisse oder Abschlüsse. "
         "Übertragbare Erfahrung klar von direkter Branchenerfahrung trennen. "
-        "Beziehe mindestens zwei unterschiedliche Belege aus required_profile_references "
-        "auf die Anzeige, darunter eine berufliche Station. Für diese Station nenne "
+        "WICHTIG: Das Anschreiben wird automatisch geprüft. Verwende mindestens die "
+        "ersten zwei Einträge aus required_profile_references wortgetreu im body; "
+        "mindestens einer davon muss kind=station sein. Zwei Belege müssen zu zwei "
+        "verschiedenen Anforderungen der Anzeige gehören. Für jede Station nenne "
         "company und role wörtlich sowie mindestens eine vollständige Phrase aus "
         "required_task_phrases; wenn diese leer sind, nenne period wörtlich. "
-        "Bei einem skill-Beleg erhalte label wörtlich. Baue diese Belege in "
+        "Bei einem skill-Beleg erhalte label wörtlich. anchors_used ersetzt diese "
+        "Nennungen im body NICHT. Baue die Belege in "
         "zusammenhängende Sätze ein. Arbeitgeber, Rollen, belegte Tätigkeiten und "
         "Zeiträume wörtlich erhalten. "
         "Bei 'seit' Präsens verwenden. Kein 'Hiermit bewerbe ich mich'. "
@@ -138,10 +145,16 @@ def rewrite_cover_letter(job, config, *, source_text="") -> CoverRewrite:
             issues = [e.code for e in report.errors if e.severity == "error"]
             if not references.accepted:
                 issues.append("missing_profile_references")
-                errors = (" Fehlende Belege: " + json.dumps(
-                    [f for f in reference_facts if f["label"] in references.missing],
-                    ensure_ascii=False,
-                ))
+                missing_refs = [
+                    f for f in reference_facts if f["label"] in references.missing
+                ]
+                errors = (
+                    " ZWINGENDE KORREKTUR: Diese Belege fehlen im body: "
+                    + json.dumps(missing_refs, ensure_ascii=False)
+                    + " Kopiere company, role und required_task_phrases bzw. bei "
+                    "skill den label exakt in natürliche Sätze des body. "
+                    "Entferne keinen bereits gültigen Beleg."
+                )
             if not quality:
                 issues.append("too_short_or_list_like")
             if not screened.ok:
