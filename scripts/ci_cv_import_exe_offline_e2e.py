@@ -550,12 +550,14 @@ def _reload_profile(config_root: Path) -> dict:
 
 
 def _cover_letter_same_model() -> dict:
-    """Write a short cover letter with the same bundled GGUF (in-process)."""
+    """Exercise the production writer against the profile imported above."""
     from core.cv_llm_runtime import (
-        chat_completion_inprocess,
         ensure_cv_llm_ready,
         resolve_cv_model_path,
     )
+    from core.cover_quality import rewrite_cover_letter
+    from core.models import Job
+    from desktop.services import ConfigService
 
     mode = ensure_cv_llm_ready()
     model = resolve_cv_model_path()
@@ -564,28 +566,23 @@ def _cover_letter_same_model() -> dict:
     text = ""
     ok = False
     err = ""
+    issues = ()
     try:
-        text = chat_completion_inprocess(
-            [
-                {
-                    "role": "system",
-                    "content": (
-                        "Du schreibst kurze deutsche Anschreiben. "
-                        "Nur Fließtext, kein JSON. /no_think"
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        "Schreibe 3 Sätze Anschreiben: Mara König bewirbt sich als "
-                        "Teamkoordinatorin Kundenservice bei Beispiel GmbH. "
-                        "Nur Belege aus: Kundenservice, Münster. /no_think"
-                    ),
-                },
-            ],
-            model_path=model,
+        result = rewrite_cover_letter(
+            Job(id="release-cover", source="acceptance", title="Kundendienstleiter",
+                company="Beispiel GmbH",
+                description=(
+                    "Gesucht wird eine Kundendienstleitung für die Koordination des "
+                    "Kundenservice-Teams, Reklamationsbearbeitung, KPI-Reporting und "
+                    "Prozessoptimierung. Erfahrung im Kundenservice und "
+                    "Auftragsmanagement sowie Microsoft 365 sind erwünscht."
+                )),
+            ConfigService().load(),
         )
-        ok = len((text or "").strip()) >= 40
+        text = result.text
+        ok = result.ok
+        err = result.reason
+        issues = result.issues
     except Exception as exc:  # noqa: BLE001
         err = f"{type(exc).__name__}: {exc}"
         ok = False
@@ -603,6 +600,9 @@ def _cover_letter_same_model() -> dict:
         "model_path_basename": model.name,
         "wall_s": round(time.perf_counter() - t0, 3),
         "text_preview_len": len(text or ""),
+        "word_count": len(text.split()),
+        "writer_path": "core.cover_quality.rewrite_cover_letter",
+        "validator_issues": list(issues),
         "error": err,
         "llm_step": public_llm_step(llm_step),
     }

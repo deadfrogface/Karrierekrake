@@ -409,7 +409,13 @@ class ApplyPreviewDialog(QDialog):
         from core.cover_quality import rewrite_cover_letter
         from desktop.workers import FunctionWorker, connect_queued, start_worker
         self._rewrite_active = True
-        self._rewrite_seed = self.cover_edit.toPlainText()
+        self._rewrite_previous_text = self.cover_edit.toPlainText()
+        # A chronological template is an internal seed, not the finished
+        # application. Do not invite copying it while the writer is running.
+        self.cover_edit.clear()
+        self.cover_edit.setPlaceholderText("Dein individuelles Anschreiben wird erstellt …" if self._config.settings.language == "de" else "Creating your tailored cover letter …")
+        self._rewrite_seed = ""
+        self._guard_notice.hide()
         self.rewrite_btn.setEnabled(False)
         self.approve_btn.setEnabled(False)
         self.status_chip.set_status("Anschreiben wird formuliert …" if self._config.settings.language == "de" else "Drafting cover letter …", kind="info")
@@ -431,6 +437,7 @@ class ApplyPreviewDialog(QDialog):
         if self._rewrite_closed:
             return
         self.rewrite_btn.setEnabled(True)
+        self.cover_edit.setPlaceholderText("")
         # A late model response must never overwrite the user's own edits.
         if result.ok and self.cover_edit.toPlainText() == self._rewrite_seed:
             import hashlib
@@ -439,6 +446,8 @@ class ApplyPreviewDialog(QDialog):
             self.cover_edit.setPlainText(result.text)
             self._run_cover_guard()
         elif not result.ok:
+            if self.cover_edit.toPlainText() == self._rewrite_seed:
+                self.cover_edit.setPlainText(self._rewrite_previous_text)
             self._run_cover_guard()
             german = self._config.settings.language == "de"
             self._guard_notice.setText(

@@ -55,6 +55,34 @@ def test_real_grounding_and_reference_checks_accept_relevant_letter(applicant, m
     assert result.text.strip() == GOOD.strip()
     assert len(calls) == 1
     assert "UNTRUSTED" in calls[0][1]["content"]
+    assert "required_profile_references" in calls[0][1]["content"]
+    assert "required_task_phrases" in calls[0][1]["content"]
+
+
+def test_writer_uses_existing_contract_parser_for_string_anchors(applicant, monkeypatch):
+    install_model(monkeypatch, GOOD)
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", lambda *a, **kw:
+        json.dumps(dict(body=GOOD, anchors_used=["SAP Business One"],
+                        invented_flag=False, confidence=" MEDIUM ")))
+    assert rewrite_cover_letter(*applicant).ok
+
+
+def test_writer_reports_invalid_contract_without_leaking_output(applicant, monkeypatch):
+    install_model(monkeypatch, GOOD)
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", lambda *a, **kw:
+        "private invalid model response")
+    result = rewrite_cover_letter(*applicant)
+    assert not result.ok
+    assert result.issues == ("invalid_writing_contract",)
+
+
+def test_writer_reports_exception_type_without_private_message(applicant, monkeypatch):
+    install_model(monkeypatch, GOOD)
+    def fail(*a, **kw):
+        raise RuntimeError("private CV text")
+    monkeypatch.setattr("core.cv_llm_runtime.chat_completion_inprocess", fail)
+    result = rewrite_cover_letter(*applicant)
+    assert result.issues == ("writer_exception_RuntimeError",)
 
 
 @pytest.mark.parametrize("body", [GOOD.replace("Westnetz", "Wrong Company"), GOOD.replace("SAP Business One", "Java"), "Hiermit bewerbe ich mich. " + GOOD, GOOD.replace("Zu meinen Aufgaben gehören", "Ich habe ein abgeschlossenes Studium in Elektrotechnik. Zu meinen Aufgaben gehören")])
@@ -101,6 +129,8 @@ def test_preview_rewrite_runs_in_worker_and_keeps_manual_changes(applicant, monk
     monkeypatch.setattr("core.cover_quality.rewrite_cover_letter", rewrite)
     dialog._start_cover_rewrite()
     assert not dialog.approve_btn.isEnabled()
+    assert dialog.cover_edit.toPlainText() == ""
+    assert "erstellt" in dialog.cover_edit.placeholderText()
     qtbot.waitUntil(lambda: not dialog._rewrite_active, timeout=3000)
     assert calls == [False]
     assert dialog.cover_edit.toPlainText() == GOOD
@@ -123,3 +153,14 @@ def test_closed_preview_ignores_late_model_result(applicant, monkeypatch, qtbot)
     dialog.reject()
     dialog._finish_cover_rewrite(CoverRewrite(True, GOOD))
     assert dialog.cover_edit.toPlainText() == original
+
+
+def test_missing_references_retry_contains_concrete_verified_evidence(applicant, monkeypatch):
+    calls = install_model(monkeypatch, GOOD.replace("Westfalen Service GmbH", "bisherigen Arbeitgeber"))
+    result = rewrite_cover_letter(*applicant)
+    assert not result.ok
+    assert "missing_profile_references" in result.issues
+    assert len(calls) == 2
+    assert "Fehlende Belege" in calls[1][0]["content"]
+    assert "Westfalen Service GmbH" in calls[1][0]["content"]
+    assert "required_task_phrases" in calls[1][0]["content"]
