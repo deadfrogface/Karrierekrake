@@ -41,3 +41,32 @@ def test_first_install_offers_missing_model(qtbot, tmp_path, monkeypatch):
     qtbot.addWidget(panel)
     assert not panel.install_button.isHidden()
     assert 'KI-Modell' in panel.install_button.text()
+
+
+def test_missing_model_install_stages_only_model(qtbot, tmp_path, monkeypatch):
+    import sys
+    monkeypatch.setattr(sys, 'frozen', True, raising=False)
+    monkeypatch.setattr(u, 'install_root', lambda: tmp_path)
+    manifest = {
+        'tag': 'update-1-aaaaaaaaaaaa',
+        'protocol': 1,
+        'sequence': 1,
+        'components': {
+            'app': {'path': u.TARGETS['app'], 'size': 1, 'sha256': 'a' * 64,
+                    'parts': [{'size': 1, 'sha256': 'a' * 64,
+                               'url': 'https://github.com/deadfrogface/Karrierekrake/releases/download/update-1-aaaaaaaaaaaa/app-001.bin'}]},
+            'model': {'path': u.TARGETS['model'], 'size': 1, 'sha256': 'b' * 64,
+                      'parts': [{'size': 1, 'sha256': 'b' * 64,
+                                 'url': 'https://github.com/deadfrogface/Karrierekrake/releases/download/update-1-aaaaaaaaaaaa/model-001.bin'}]},
+        },
+    }
+    (tmp_path / u.CURRENT).write_text(json.dumps(manifest))
+    calls = []
+    monkeypatch.setattr(u, 'stage_update', lambda manifest, **kw: calls.append(kw.get('only_components')) or tmp_path)
+    monkeypatch.setattr(u, 'launch_installer', lambda stage: None)
+    monkeypatch.setattr('desktop.widgets.update_panel.confirm_action', lambda *a, **kw: True)
+    panel = UpdatePanel()
+    qtbot.addWidget(panel)
+    panel.install()
+    qtbot.waitUntil(lambda: not panel.busy, timeout=3000)
+    assert calls == [{'model'}]
