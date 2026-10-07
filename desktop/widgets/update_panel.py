@@ -1,10 +1,11 @@
 """Nonblocking update controls shared by startup and Settings."""
 import sys
 from PySide6.QtCore import QTimer, Signal
-from PySide6.QtWidgets import QFrame, QLabel, QMessageBox, QPushButton, QVBoxLayout
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout
 from core import app_updates as updates
 from desktop.i18n import tr
 from desktop.workers import FunctionWorker, connect_queued, start_worker
+from desktop.widgets.confirm_dialog import confirm_action
 
 
 class UpdatePanel(QFrame):
@@ -105,9 +106,9 @@ class UpdatePanel(QFrame):
     def install(self):
         if self.busy or not self.manifest:
             return
-        answer = QMessageBox.question(self, tr('updates.confirm_title'),
-            tr('updates.confirm'))
-        if answer != QMessageBox.StandardButton.Yes:
+        if not confirm_action(self, tr('updates.confirm_title'),
+                              tr('updates.confirm'),
+                              confirm_text=tr('updates.install')):
             return
         self.status.setText(tr('updates.downloading'))
         def ready(stage):
