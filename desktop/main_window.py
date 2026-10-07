@@ -217,6 +217,14 @@ class MainWindow(QMainWindow):
         content.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         content_layout = QVBoxLayout(content)
         content_layout.setContentsMargins(12, 12, 12, 12)
+        self.update_notice = QPushButton(tr("updates.notice"))
+        self.update_notice.setObjectName('KkPrimary')
+        self.update_notice.hide()
+        self.update_notice.clicked.connect(lambda: self.navigate_to('nav.settings'))
+        self.settings.updates.available.connect(self.update_notice.setText)
+        self.settings.updates.available.connect(lambda text: self.update_notice.show())
+        self.settings.updates.restart_requested.connect(self.force_quit)
+        content_layout.addWidget(self.update_notice)
         content_layout.addWidget(self.stack, 1)
         shell.addWidget(content, 1)
 
@@ -256,6 +264,7 @@ class MainWindow(QMainWindow):
         self._geo_preload_armed = True
         # Queued so show() returns before the loader thread is started.
         QTimer.singleShot(0, self._start_geo_preload)
+        QTimer.singleShot(1500, lambda: self.settings.updates.check(quiet=True) if not self._shutting_down else None)
 
     def _start_geo_preload(self) -> None:
         if self._shutting_down:
