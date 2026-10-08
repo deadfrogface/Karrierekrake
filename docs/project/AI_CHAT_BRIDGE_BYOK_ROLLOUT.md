@@ -12,14 +12,12 @@ This PR introduces an **offline-safe foundation**, not a finished external-AI in
 
 The pure functions in `core/ai_chat_bridge.py` implement prompt creation and marked-response parsing. UI integration is **not yet implemented**.
 
-## BYOK (second)
-- Local Qwen remains default. External AI requires separate opt-in for CV data transfer.
-- OpenAI, Anthropic, Gemini and Moonshot API credentials are **not** consumer chat subscriptions.
-- Store keys using OS credential storage; never store plaintext in app config, log or diagnostics.
-- Use official API endpoints and documented commercial terms. No embedded developer keys.
-- Add per-provider costs/usage disclosure and request timeouts, retries and rate limits.
-- Require a second PR for actual network clients, key-management UI and end-to-end tests.
-- Remote model outputs are untrusted; enforce existing evidence verification before draft approval.
+## Premium API (future)
+- No BYOK in free tier.
+- Premium API use needs a separately implemented managed service, subscription checks, quotas, and spending limits.
+- Do not place shared provider credentials in the desktop application.
+- External CV processing requires transparent user approval.
+- Premium API integration is not yet implemented.
 
 ## Quality bake-off
 Use the same verified profile and job text for local Qwen, ChatGPT, Claude, Gemini and Kimi.
