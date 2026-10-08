@@ -2,7 +2,8 @@
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
-from urllib.request import Request
+import http.client
+import ssl
 import ipaddress
 import socket
 import os
@@ -136,8 +137,6 @@ def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bo
     The destination is only replaced after the entire calendar validates.
     Returns False on HTTP 304.
     """
-    from urllib.error import HTTPError
-    import urllib.request
 
     def check_public_https(value):
         parsed = urlsplit(value)
@@ -148,18 +147,27 @@ def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bo
                 raise ValueError("Private Netzwerkadressen sind nicht erlaubt.")
 
     check_public_https(url)
-    class NoRedirect(urllib.request.HTTPRedirectHandler):
-        def redirect_request(self, request, fp, code, msg, headers, newurl):
-            raise ValueError("Kalender-Weiterleitungen sind nicht erlaubt.")
-    opener = urllib.request.build_opener(NoRedirect)
-    request = Request(url, headers={"User-Agent": "Karrierekrake/1.0", "Accept": "text/calendar"})
+    # Connect to the already-validated public address; no redirect or proxy
+    # may re-resolve the hostname to an internal IP.
+    parsed = urlsplit(url)
+    addresses = socket.getaddrinfo(parsed.hostname, 443, type=socket.SOCK_STREAM)
+    address = addresses[0][4][0]
+    class PinnedHTTPS(http.client.HTTPSConnection):
+        def connect(self):
+            raw = socket.create_connection((address, 443), timeout=self.timeout)
+            self.sock = self._context.wrap_socket(raw, server_hostname=parsed.hostname)
+    conn = PinnedHTTPS(parsed.hostname, 443, timeout=timeout, context=ssl.create_default_context())
     try:
-        with opener.open(request, timeout=timeout) as response:
-            data = response.read(MAX_BYTES + 1)
-    except HTTPError as exc:
-        if exc.code == 304:
-            return False
-        raise
+        path = parsed.path or "/"
+        if parsed.query:
+            path += "?" + parsed.query
+        conn.request("GET", path, headers={"User-Agent": "Karrierekrake/1.0", "Accept": "text/calendar"})
+        response = conn.getresponse()
+        if response.status != 200:
+            raise ValueError("Kalenderabruf fehlgeschlagen (HTTP %d)." % response.status)
+        data = response.read(MAX_BYTES + 1)
+    finally:
+        conn.close()
     if len(data) > MAX_BYTES:
         raise ValueError("Kalenderdatei ist größer als 20 MB.")
     destination = Path(destination)
