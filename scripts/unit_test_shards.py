@@ -332,7 +332,6 @@ def cmd_run(args: argparse.Namespace) -> int:
     return _stream_pytest(
         [
             "-vv" if args.group == 3 else "-q",
-            "--faulthandler-timeout=120" if args.group == 3 else "--faulthandler-timeout=600",
             *PYTEST_FILTERS,
             "--splits",
             str(args.splits),
