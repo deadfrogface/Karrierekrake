@@ -1,6 +1,11 @@
 """Local calendar snapshot for Google, Samsung and Apple exports; never writes."""
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
+from urllib.request import Request, urlopen
+import ipaddress
+import socket
+import os
 from zoneinfo import ZoneInfo
 
 from icalendar import Calendar
@@ -107,3 +112,49 @@ class LocalIcsCalendarAdapter:
         # Configuration cleanup is owned by the caller; remove only the app copy.
         if self.path.name == "calendar-snapshot.ics" and self.path.parent.name == "cache":
             self.path.unlink(missing_ok=True)
+
+
+def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bool:
+    """Fetch a user-supplied private HTTPS iCal feed; never send its URL to app servers.
+
+    Restrict DNS and redirect targets to public IPs to avoid local network access.
+    The destination is only replaced after the entire calendar validates.
+    Returns False on HTTP 304.
+    """
+    from urllib.error import HTTPError
+    from urllib.parse import urljoin
+    import urllib.request
+
+    def check_public_https(value):
+        parsed = urlsplit(value)
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password or parsed.port not in (None, 443):
+            raise ValueError("Nur öffentliche HTTPS-Kalenderadressen sind erlaubt.")
+        for info in socket.getaddrinfo(parsed.hostname, 443, type=socket.SOCK_STREAM):
+            if not ipaddress.ip_address(info[4][0]).is_global:
+                raise ValueError("Private Netzwerkadressen sind nicht erlaubt.")
+
+    check_public_https(url)
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, request, fp, code, msg, headers, newurl):
+            raise ValueError("Kalender-Weiterleitungen sind nicht erlaubt.")
+    opener = urllib.request.build_opener(NoRedirect)
+    request = Request(url, headers={"User-Agent": "Karrierekrake/1.0", "Accept": "text/calendar"})
+    try:
+        with opener.open(request, timeout=timeout) as response:
+            data = response.read(MAX_BYTES + 1)
+    except HTTPError as exc:
+        if exc.code == 304:
+            return False
+        raise
+    if len(data) > MAX_BYTES:
+        raise ValueError("Kalenderdatei ist größer als 20 MB.")
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_suffix(destination.suffix + ".tmp")
+    try:
+        temporary.write_bytes(data)
+        read_calendar(temporary)
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return True
