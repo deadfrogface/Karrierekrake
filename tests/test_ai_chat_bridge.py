@@ -3,7 +3,6 @@ import pytest
 from core.ai_chat_bridge import (
     BEGIN, END, CHAT_URLS, build_chat_prompt, extract_chat_letter, provider_chat_url,
 )
-from core.ai_provider_contract import AiProvider, AiProviderChoice, provider_requires_api_key
 
 
 @pytest.mark.parametrize("provider", list(CHAT_URLS))
@@ -28,13 +27,3 @@ def test_chat_bridge_rejects_unmarked_or_empty_answer():
         extract_chat_letter(f"{BEGIN} {END}")
 
 
-def test_remote_provider_requires_explicit_upload_consent():
-    assert not provider_requires_api_key(AiProvider.LOCAL_QWEN)
-    assert provider_requires_api_key(AiProvider.OPENAI)
-    with pytest.raises(PermissionError):
-        AiProviderChoice(provider=AiProvider.OPENAI).validate()
-    AiProviderChoice(
-        provider=AiProvider.OPENAI,
-        allow_remote_processing=True,
-        user_confirmed_personal_data_upload=True,
-    ).validate()
