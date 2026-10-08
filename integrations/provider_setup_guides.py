@@ -41,7 +41,21 @@ def guide_html(provider: str, service: str = "both") -> str:
         "freenet": "Prüfen, ob der gewählte Tarif IMAP und SMTP unterstützt.",
         "other": "IMAP-, SMTP-, CalDAV- und ICS-Angaben aus der offiziellen Anbieterhilfe übernehmen.",
     }
-    steps.insert(3, extra[provider])
+    from integrations.provider_verified_settings import CLICK_PATHS, MAIL_ENDPOINTS
+    steps.insert(1, CLICK_PATHS[provider])
+    steps.insert(4, extra[provider])
+    server_table = ""
+    if service in ("mail", "both") and provider in MAIL_ENDPOINTS:
+        incoming, in_port, outgoing, out_port, source = MAIL_ENDPOINTS[provider]
+        server_table = (
+            '<h2>Servereinstellungen laut Anbieter</h2>'
+            f'<p>IMAP: {escape(incoming)} — Port {in_port}, SSL/TLS</p>'
+            f'<p>SMTP: {escape(outgoing)} — Port {out_port}, STARTTLS</p>'
+            f'<p><a href="{escape(source, quote=True)}">Offizielle Quelle prüfen</a></p>'
+        )
+    illustration = ('<aside><b>Beispielablauf (schematisch, kein echter Screenshot):</b> '
+                    '① Konto öffnen → ② Zugriff aktivieren → ③ Anmeldemethode wählen '
+                    '→ ④ Verbindung in KarriereKrake prüfen.</aside>')
     rows = "".join(f"<li>{escape(step)}</li>" for step in steps)
     capabilities = []
     if service in ("mail", "both"):
@@ -69,7 +83,7 @@ def guide_html(provider: str, service: str = "both") -> str:
             '<style>body{font:16px system-ui;max-width:760px;margin:3rem auto;padding:0 1rem;line-height:1.65}'
             'li{margin:0.8rem 0}aside{background:#f2f3f5;padding:1rem;border-radius:8px}</style></head><body>'
             f'<h1>Wie richte ich {escape(name)} in KarriereKrake ein?</h1>'
-            + "".join(capabilities) + f'<ol>{rows}</ol>'
+            + "".join(capabilities) + server_table + illustration + f'<ol>{rows}</ol>'
             '<aside><b>Legende:</b> IMAP = E-Mails lesen; SMTP = E-Mails senden; '
             'CalDAV = Kalender synchronisieren; ICS = Kalenderdatei, häufig nur Import/Lesen; '
             'OAuth = sichere Anmeldung über den Anbieter.</aside>'
