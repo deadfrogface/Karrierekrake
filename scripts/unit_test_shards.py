@@ -331,7 +331,8 @@ def cmd_run(args: argparse.Namespace) -> int:
     junit = Path(args.junitxml)
     return _stream_pytest(
         [
-            "-q",
+            "-vv" if args.group == 3 else "-q",
+            "--faulthandler-timeout=120" if args.group == 3 else "--faulthandler-timeout=600",
             *PYTEST_FILTERS,
             "--splits",
             str(args.splits),
