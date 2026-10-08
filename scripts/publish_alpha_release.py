@@ -48,6 +48,12 @@ def windows_assets(folder: Path, commit: str) -> tuple[dict, list[Path]]:
     return manifest, assets
 
 
+def upload(tag: str, files: list[Path]) -> None:
+    if any(path.stat().st_size >= 2 * 1024**3 for path in files):
+        raise ValueError('release_asset_exceeds_github_limit')
+    gh('release', 'upload', tag, '--repo', REPOSITORY, *map(str, files), '--clobber')
+
+
 def notes() -> str:
     lines = [f'# {RELEASE_TITLE}', '', 'Gleicher Programmstand und Funktionsumfang auf Windows, macOS und Linux.',
              '', 'Lade nur das Paket für dein Betriebssystem herunter:', '',
@@ -57,7 +63,7 @@ def notes() -> str:
     lines.extend(f'- **{labels[target]}:** `{name}`' for target, name in ASSETS.items())
     lines += ['', 'Jedes Paket enthält ausschließlich die jeweilige Betriebssystem-Version.',
               'Die .bin- und Manifest-Dateien sind technische Update-Dateien. Windows lädt nur seine Komponenten; macOS/Linux wählen nur ihr eigenes Plattform-/Architektur-Paket.',
-              '', 'Windows: ZIP vollständig entpacken und Karrierekrake.exe starten; das lokale KI-Modell beim ersten Start im Updatebereich laden.',
+              '', 'Auf allen Systemen: das lokale KI-Modell beim ersten Start im Updatebereich einmal herunterladen; anschließend bleiben Import und Anschreiben lokal.',
               'macOS: Passendes DMG öffnen und die App in Programme ziehen. Die Alpha ist noch nicht mit Apple Developer ID notarisiert.',
               'Linux: Den gesamten Ordner entpacken und Karrierekrake starten. Den _internal-Ordner behalten.',
               '', 'macOS/Linux prüfen Updates automatisch; das heruntergeladene Paket wird zunächst manuell ersetzt.',
@@ -86,14 +92,14 @@ def publish(native_run: str, windows_run: str, commit: str) -> bool:
                '--title', RELEASE_TITLE, '--notes-file', str(body))
         else:
             gh('release', 'edit', tag, '--repo', REPOSITORY, '--title', RELEASE_TITLE, '--notes-file', str(body))
-        gh('release', 'upload', tag, '--repo', REPOSITORY, *map(str, files), '--clobber')
+        upload(tag, files)
         import shutil
         shutil.rmtree(windows)
         for target in ASSETS:
             folder = root / f'Karrierekrake-{target}'
             gh('run', 'download', native_run, '--repo', REPOSITORY, '--name', f'Karrierekrake-{target}', '--dir', str(folder))
-            files = manifests(root, tag, commit, targets=(target,))
-            gh('release', 'upload', tag, '--repo', REPOSITORY, *map(str, files), '--clobber')
+            files = manifests(root, tag, commit, targets=(target,), model=manifest['components']['model'])
+            upload(tag, files)
             shutil.rmtree(folder)
         if current_main() != commit:
             return False  # Leave superseded releases as drafts.

@@ -64,7 +64,8 @@ def test_native_panel_uses_native_checks_and_never_windows_installer(qtbot, tmp_
     monkeypatch.setattr(ui.updates, 'install_root', lambda: tmp_path)
     monkeypatch.setattr(ui.updates, 'check_for_update', lambda: pytest.fail('Windows update check'))
     _info, manifest, _url = release(target='linux-x86_64')
-    monkeypatch.setattr(n, 'check_for_update', lambda installed: manifest)
+    monkeypatch.setattr(n, 'check_for_update', lambda installed, **kwargs: manifest)
+    monkeypatch.setattr(ui.native_models, 'available', lambda: True)
     opened = []
     monkeypatch.setattr(ui.QDesktopServices, 'openUrl', lambda url: opened.append(url.toString()) or True)
     panel = ui.UpdatePanel()
@@ -102,3 +103,42 @@ def test_future_version_filename_stays_on_same_platform(monkeypatch):
     info['assets'][1]['browser_download_url'] = manifest['url']
     monkeypatch.setattr(n, '_json', lambda requested: manifest if requested == url else [info])
     assert n.check_for_update({'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': 1}) == manifest
+
+
+def test_first_setup_can_find_current_release_without_app_update(monkeypatch):
+    monkeypatch.setattr(n, 'runtime_target', lambda: 'macos-arm64')
+    info, manifest, url = release()
+    monkeypatch.setattr(n, '_json', lambda requested: manifest if requested == url else [info])
+    installed = {'target': 'macos-arm64', 'commit': 'b' * 40, 'sequence': 2}
+    assert n.check_for_update(installed) is None
+    assert n.check_for_update(installed, include_current=True) == manifest
+
+
+def test_native_first_setup_downloads_model_without_windows_installer(qtbot, tmp_path, monkeypatch):
+    from desktop.widgets import update_panel as ui
+    value = {'target': 'linux-x86_64', 'commit': 'a' * 40, 'sequence': 1}
+    monkeypatch.setattr(sys, 'platform', 'linux')
+    monkeypatch.setattr(n, 'current', lambda: value)
+    monkeypatch.setattr(ui.updates, 'install_root', lambda: tmp_path)
+    monkeypatch.setattr(ui.updates, 'launch_installer', lambda *a: pytest.fail('Windows installer'))
+    monkeypatch.setattr(ui.QDesktopServices, 'openUrl', lambda *a: pytest.fail('app download during model setup'))
+    ready = []
+    monkeypatch.setattr(ui.native_models, 'available', lambda: bool(ready))
+    _info, manifest, _url = release(target='linux-x86_64')
+    def check(installed, *, include_current):
+        assert include_current
+        return manifest
+    monkeypatch.setattr(n, 'check_for_update', check)
+    def download(received, **kwargs):
+        assert received == manifest
+        ready.append(True)
+        return tmp_path / 'model.gguf'
+    monkeypatch.setattr(ui.native_models, 'download', download)
+    panel = ui.UpdatePanel()
+    qtbot.addWidget(panel)
+    panel.install()  # Find the model in this platform's current release.
+    qtbot.waitUntil(lambda: not panel.busy)
+    panel.install()
+    qtbot.waitUntil(lambda: not panel.busy)
+    assert ready and panel.manifest is None
+    assert panel.install_button.isHidden()

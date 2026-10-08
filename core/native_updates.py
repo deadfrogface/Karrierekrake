@@ -42,7 +42,7 @@ def current() -> dict:
         return {}
 
 
-def check_for_update(installed: dict | None = None) -> dict | None:
+def check_for_update(installed: dict | None = None, *, include_current: bool = False) -> dict | None:
     installed = installed or current()
     target = installed.get('target')
     if target not in ASSETS or target != runtime_target():
@@ -78,6 +78,6 @@ def check_for_update(installed: dict | None = None) -> dict | None:
                 or type(manifest.get('sequence')) is not int
                 or type(manifest.get('size')) is not int or not 0 < manifest['size'] < 10_000_000_000):
             raise ValueError('invalid_native_release')
-        if manifest['sequence'] > installed['sequence'] and manifest['commit'] != installed['commit']:
+        if (manifest['sequence'] > installed['sequence'] and manifest['commit'] != installed['commit']) or (include_current and manifest['commit'] == installed['commit']):
             candidates.append(manifest)
     return max(candidates, key=lambda item: item['sequence']) if candidates else None

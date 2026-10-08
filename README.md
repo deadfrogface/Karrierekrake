@@ -28,17 +28,16 @@ Ein gemeinsamer Release **Karrierekrake Alpha 0.1** enthält separate Pakete fü
 
 ### Variante A: Fertiges Windows-Paket (empfohlen)
 
-1. Neueste **Release**-Datei `Karrierekrake-Windows.zip` herunterladen  
-   (enthält `Karrierekrake.exe` **und** den Ordner `models/` — beides gehört zusammen)
+1. **Release**-Datei `Karrierekrake-Alpha-0.1-Windows-x86_64.zip` herunterladen
 2. Zip **vollständig** entpacken und `Karrierekrake.exe` aus diesem Ordner starten  
-   (EXE nicht allein ohne `models/` verschieben — sonst schlägt der Lebenslauf-Import fehl)
+   Im Updatebereich das lokale KI-Modell einmal herunterladen; Programmupdates behalten es.
 3. Bei SmartScreen: „Weitere Informationen“ → trotzdem ausführen  
 4. Kurzer Assistent: Lebenslauf → Sucheinstellungen → Bereit  
 5. **Jobs finden**
 
 Profil & Daten: `%LOCALAPPDATA%\Karrierekrake`
 
-> Offline: Lebenslauf-Import und Anschreiben brauchen nach der Installation **kein Internet**.
+> Offline: Lebenslauf-Import und Anschreiben brauchen nach dem einmaligen Modelldownload **kein Internet**.
 
 ### Variante B: Aus dem Quellcode
 

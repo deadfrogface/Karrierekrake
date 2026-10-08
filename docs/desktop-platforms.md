@@ -22,7 +22,7 @@ Bei Systemen ohne grafische Sitzung kann die Desktop-App nicht geöffnet werden.
 
 Windows verwendet weiterhin `%LOCALAPPDATA%\Karrierekrake`. macOS verwendet `~/Library/Application Support/Karrierekrake`, Linux `$XDG_DATA_HOME/Karrierekrake` oder `~/.local/share/Karrierekrake`. Ein relatives `XDG_DATA_HOME` wird ignoriert. `KARRIEREKRAKE_DATA_DIR` kann einen absoluten isolierten Datenordner festlegen, beispielsweise für Tests.
 
-Das CV-Modell ist in den nativen Paketen enthalten. Der erste Lebenslauf-Import benötigt keinen Modelldownload. Browserautomation installiert Chromium auf Wunsch einmal in den Benutzerordner. Jobsuche und Anbieteranmeldung benötigen wie unter Windows Internet. Reale Google-/IMAP-/CalDAV-Anmeldungen benötigen weiterhin einen Test mit einem Nutzerkonto; CI benutzt keine echten Zugangsdaten.
+Das identische CV-Modell wird auf allen Systemen beim ersten Start im Updatebereich einmal separat heruntergeladen und mit SHA-256 geprüft. Es liegt im Benutzer-Datenordner und bleibt bei Programmupdates erhalten. Anschließend benötigt der Lebenslauf-Import kein Internet. Browserautomation installiert Chromium auf Wunsch einmal in den Benutzerordner. Jobsuche und Anbieteranmeldung benötigen wie unter Windows Internet. Reale Google-/IMAP-/CalDAV-Anmeldungen benötigen weiterhin einen Test mit einem Nutzerkonto; CI benutzt keine echten Zugangsdaten.
 
 Die Zeitplanung verwendet auf macOS einen LaunchAgent und auf Linux systemd-Benutzerdienste. Sie gilt für die angemeldete Benutzer-Sitzung und benötigt keine Administratorrechte. Ohne systemd-Benutzermanager meldet die Oberfläche einen Fehler. Vorhandene Programme/Tasks anderer Anwendungen werden nicht verändert. Die Windows-Aufgabenplanung bleibt bestehen.
 
@@ -30,11 +30,11 @@ Die Zeitplanung verwendet auf macOS einen LaunchAgent und auf Linux systemd-Benu
 
 Windows behält den vorhandenen Komponenten-Updater. macOS/Linux prüfen beim Start und über den Updateknopf auf neuere Pakete **derselben Plattform/Architektur**. „Update herunterladen“ öffnet den passenden GitHub-Download. Anschließend Karrierekrake schließen und das Programmpaket ersetzen. Die Daten liegen außerhalb des Programmpakets und bleiben erhalten.
 
-Noch kein automatischer Austausch, kein Rollback und keine Delta-Downloads auf macOS/Linux. Die nativen Pakete enthalten das lokale Modell, daher wird es mit einem vollständigen Paket erneut heruntergeladen. Windows-Manifeste oder PowerShell-Installer werden auf den neuen Plattformen nicht angewendet.
+Noch kein automatischer Austausch, kein Rollback und keine Delta-Downloads auf macOS/Linux. Die nativen Pakete enthalten ausschließlich das Programm; das bereits geladene Modell bleibt erhalten. Windows-Manifeste oder PowerShell-Installer werden auf den neuen Plattformen nicht angewendet.
 
 ## Build- und Release-Gates
 
-`Desktop Platforms` baut auf Ubuntu 22.04, macOS 14 ARM64 und macOS 15 Intel. Die Workflow-Matrix führt Plattform-/Updater-/Packaging-Regressionen aus, kompiliert das gepinnte llama.cpp ohne CPU-native Compileroptimierung, provisioniert das geprüfte GGUF und den registrierten Google-Desktop-Client, baut die native Anwendung und testet das **fertige Binary** mit Qt-Smoke sowie Offline-DE/EN-Lebenslauf-Import.
+`Desktop Platforms` baut auf Ubuntu 22.04, macOS 14 ARM64 und macOS 15 Intel. Die Workflow-Matrix führt Plattform-/Updater-/Packaging-Regressionen aus, kompiliert das gepinnte llama.cpp ohne CPU-native Compileroptimierung, provisioniert das geprüfte GGUF und den registrierten Google-Desktop-Client, baut die native Anwendung und testet das **fertige Binary** mit Qt-Smoke sowie Offline-DE/EN-Lebenslauf-Import mit dem verifizierten Modell im isolierten Benutzer-Datenordner (Zustand nach Ersteinrichtung). Einzelne Release-Dateien bleiben unter GitHubs 2-GiB-Grenze.
 
 `Publish component update` wartet auf CI, Windows Smoke **und** Desktop Platforms für denselben aktuellen main-Commit und baut anschließend die geprüften Windows-Komponenten als internes Artefakt. `Publish Karrierekrake Alpha` erstellt daraus und aus den passenden nativen Artefakten **einen** Release „Karrierekrake Alpha 0.1“. Der Release bleibt ein Entwurf, bis alle vier Downloads (Windows, Mac Apple Silicon, Mac Intel, Linux) und deren Update-Manifeste hochgeladen sind. Bei einem fehlgeschlagenen Build oder Upload erscheint kein unvollständiger öffentlicher Release. Alte öffentliche Windows-Releases bleiben erhalten.
 

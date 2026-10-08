@@ -67,6 +67,8 @@ def package(target: str, dist: Path, out: Path) -> Path:
             raise ValueError('native_app_missing')
         with tarfile.open(archive, 'w:gz', dereference=False) as bundle:
             bundle.add(app, arcname='Karrierekrake')
+    if archive.stat().st_size >= 2 * 1024**3:
+        raise ValueError('release_asset_exceeds_github_limit')
     shutil.copy2(ROOT / 'packaging' / METADATA, out / METADATA)
     return archive
 

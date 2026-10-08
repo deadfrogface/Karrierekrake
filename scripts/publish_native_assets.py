@@ -15,7 +15,7 @@ from core.native_updates import ASSETS, METADATA
 from core.release_identity import VERSION
 
 
-def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...] | None = None) -> list[Path]:
+def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...] | None = None, model: dict | None = None) -> list[Path]:
     if not re.fullmatch(r'update-[0-9]+-[a-f0-9]{12}', tag):
         raise ValueError('invalid_release_tag')
     outputs = []
@@ -33,6 +33,8 @@ def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...
         manifest = dict(current, protocol=1, tag=tag, size=archive.stat().st_size,
                         sha256=digest(archive),
                         url=f'https://github.com/{REPOSITORY}/releases/download/{tag}/{filename}')
+        if model is not None:
+            manifest['model'] = model
         path = artifacts / f'native-manifest-{target}.json'
         path.write_text(json.dumps(manifest, indent=2), encoding='utf-8')
         outputs.extend([archive, path])

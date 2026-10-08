@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -17,12 +18,20 @@ from scripts.ci_cv_import_exe_offline_e2e import (
 )
 
 
-def verify(exe: Path, output: Path) -> None:
+def verify(exe: Path, output: Path, model: Path) -> None:
     report = {'smoke': False, 'imports': {}}
     with tempfile.TemporaryDirectory(prefix='kk-native-') as isolated:
         root = Path(isolated)
         env = {key: value for key, value in os.environ.items()
                if not key.startswith(('KARRIEREKRAKE_CV_', 'KARRIEREKRAKE_LLM_'))}
+        from core.app_updates import digest
+        from core.cv_llm_runtime import CV_MODEL_REL, CV_MODEL_SHA256
+        if digest(model) != CV_MODEL_SHA256:
+            raise ValueError('native_acceptance_model_invalid')
+        destination = root / 'data' / CV_MODEL_REL
+        destination.parent.mkdir(parents=True)
+        shutil.copy2(model, destination)
+        report['model_provisioning'] = 'verified_user_data_model_after_initial_download'
         env.pop('LOCALAPPDATA', None)
         env.pop('KARRIEREKRAKE_MODELS_DIR', None)
         env.update(KARRIEREKRAKE_DATA_DIR=str(root / 'data'), QT_QPA_PLATFORM='offscreen',
@@ -53,5 +62,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--exe', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--model', type=Path, required=True)
     args = parser.parse_args()
-    verify(args.exe.resolve(), args.out)
+    verify(args.exe.resolve(), args.out, args.model.resolve())
