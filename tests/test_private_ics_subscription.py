@@ -7,7 +7,7 @@ import pytest
 from integrations.calendar import local_ics as ics
 
 
-VALID = b"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//KarriereKrake Test//EN\r\nEND:VCALENDAR\r\n"
+VALID = b"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Karrierekrake Test//EN\r\nEND:VCALENDAR\r\n"
 
 
 def test_rejects_insecure_or_private_feed(tmp_path):
