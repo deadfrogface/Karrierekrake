@@ -1495,8 +1495,7 @@ class SettingsPage(QWidget):
     def _import_calendar_snapshot(self):
         path, _ = QFileDialog.getOpenFileName(self, "Google / Samsung / Apple: Kalenderdatei", "", "Kalenderdateien (*.ics)")
         if not path:
-            # Without a file selection, offer a private read-only subscription.
-            self._connect_private_ics_feed()
+            # Cancelling file selection must not unexpectedly open another dialog.
             return
         destination = self.config_service.dirs["cache"] / "calendar-snapshot.ics"
 
