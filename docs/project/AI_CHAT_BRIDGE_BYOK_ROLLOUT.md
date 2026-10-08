@@ -6,7 +6,7 @@ This PR introduces an **offline-safe foundation**, not a finished external-AI in
 1. Explicit user selection of ChatGPT, Claude, Gemini or Kimi.
 2. Show precisely what verified CV/profile fields and job text would leave the PC.
 3. With consent, copy the prompt to the clipboard and open the provider's official website.
-4. User manually sends the prompt and pastes the response into KarriereKrake.
+4. User manually sends the prompt and pastes the response into Karrierekrake.
 5. Parse only the marked letter; run existing factual/quality guards and show editable preview.
 6. Never automatically submit an application, scrape a consumer chat page, reuse session cookies, or silently upload CVs.
 
