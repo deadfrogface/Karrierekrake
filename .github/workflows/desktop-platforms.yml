@@ -39,7 +39,7 @@ jobs:
           python-version: '3.12'
           cache: pip
       - name: Isolate platform test data
-        run: echo "KARRIEREKRAKE_DATA_DIR=$RUNNER_TEMP/kk-native-test-data" >> "$GITHUB_ENV"
+        run: echo "LOCALAPPDATA=$RUNNER_TEMP/kk-native-test-data" >> "$GITHUB_ENV"
       - name: Linux runtime libraries
         if: runner.os == 'Linux'
         run: |
