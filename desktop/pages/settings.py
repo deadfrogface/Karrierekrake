@@ -1341,14 +1341,26 @@ class SettingsPage(QWidget):
             self.calendar_mode_rights.setText(tr("integrations.calendar.mode_a_rights"))
 
     def _privacy_connect_calendar(self) -> None:
-        """Primary calendar CTA only exposes free/non-Google-API transports."""
+        """Free calendar: CalDAV or an explicit ICS import/subscription choice."""
         selected = self.calendar_provider.currentData()
         if selected == "generic_caldav":
             self._connect_icloud()
             return
-        # Google/Samsung/Apple free mode is an ICS snapshot.  Even if the
-        # Premium Google item is selected, this button must not start OAuth.
-        self._import_calendar_snapshot()
+        choice, accepted = QInputDialog.getItem(
+            self,
+            "Kostenloser Kalender",
+            "Wie möchtest du deinen Kalender verbinden?",
+            ["Privaten HTTPS-iCal-Link abonnieren (nur Lesen)",
+             "Lokale ICS-Datei importieren (nur Lesen)"],
+            0,
+            False,
+        )
+        if not accepted:
+            return
+        if choice.startswith("Privaten"):
+            self._connect_private_ics_feed()
+        else:
+            self._import_calendar_snapshot()
 
     def _connect_google_calendar_later(self) -> None:
         from core.commercial.features import PremiumFeature, require_premium
@@ -1462,9 +1474,40 @@ class SettingsPage(QWidget):
 
         self._run_account_task(verify, finished, cleanup=secret.clear)
 
+    def _connect_private_ics_feed(self):
+        from PySide6.QtWidgets import QInputDialog
+        url, ok = QInputDialog.getText(
+            self, "Privaten ICS-Kalender abonnieren",
+            "Privaten HTTPS-iCal-Link einfügen (nur Lesen, wie ein Passwort behandeln):"
+        )
+        if not ok or not url.strip():
+            return
+        url = url.strip()
+        destination = self.config_service.dirs["cache"] / "calendar-snapshot.ics"
+
+        def prepare():
+            from integrations.calendar.local_ics import refresh_private_ics
+            return refresh_private_ics(url, destination)
+
+        def finished(_):
+            cfg = self.config_service.load()
+            cfg.settings.local_calendar_path = str(destination)
+            cfg.settings.local_calendar_feed_url = url
+            cfg.settings.calendar_provider = "local_ics"
+            cfg.settings.calendar_freebusy_enabled = True
+            self.config_service.save(cfg)
+            self.calendar_provider.setCurrentIndex(self.calendar_provider.findData("local_ics"))
+            QMessageBox.information(
+                self, "Kalender abonniert",
+                "Privater ICS-Kalender verbunden (nur Lesen). Er wird bei Bedarf "
+                "spätestens nach sechs Stunden erneut abgerufen. Keine Google API."
+            )
+        self._run_account_task(prepare, finished)
+
     def _import_calendar_snapshot(self):
         path, _ = QFileDialog.getOpenFileName(self, "Google / Samsung / Apple: Kalenderdatei", "", "Kalenderdateien (*.ics)")
         if not path:
+            # Cancelling file selection must not unexpectedly open another dialog.
             return
         destination = self.config_service.dirs["cache"] / "calendar-snapshot.ics"
 
@@ -1481,6 +1524,7 @@ class SettingsPage(QWidget):
             os.replace(temporary, destination)
             cfg = self.config_service.load()
             cfg.settings.local_calendar_path = str(destination)
+            cfg.settings.local_calendar_feed_url = ""
             cfg.settings.calendar_provider = "local_ics"
             cfg.settings.calendar_freebusy_enabled = True
             self.config_service.save(cfg)

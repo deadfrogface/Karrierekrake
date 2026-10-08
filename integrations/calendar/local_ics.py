@@ -1,6 +1,12 @@
 """Local calendar snapshot for Google, Samsung and Apple exports; never writes."""
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
+import http.client
+import ssl
+import ipaddress
+import socket
+import os
 from zoneinfo import ZoneInfo
 
 from icalendar import Calendar
@@ -50,6 +56,7 @@ class LocalIcsCalendarAdapter:
 
     def __init__(self, *, settings, token_dir=None):
         self.path = Path(settings.local_calendar_path or '')
+        self.settings = settings
         self.timezone = getattr(settings, "scheduling_timezone", "Europe/Berlin")
 
     def identity(self):
@@ -57,10 +64,24 @@ class LocalIcsCalendarAdapter:
 
     def is_connected(self):
         try:
+            self._refresh_if_stale()
             read_calendar(self.path)
             return datetime.now(timezone.utc) - datetime.fromtimestamp(self.path.stat().st_mtime, timezone.utc) <= MAX_AGE
         except Exception:
             return False
+
+    def _refresh_if_stale(self):
+        url = getattr(self.settings, "local_calendar_feed_url", "")
+        if not url:
+            return
+        if self.path.is_file() and datetime.now(timezone.utc) - datetime.fromtimestamp(self.path.stat().st_mtime, timezone.utc) < timedelta(hours=6):
+            return
+        try:
+            refresh_private_ics(url, self.path)
+        except Exception:
+            # A stale snapshot is rejected by is_connected rather than silently
+            # treating the calendar as empty.
+            pass
 
     def query_busy(self, q):
         if q.time_min.tzinfo is None or q.time_max.tzinfo is None or not timedelta(0) < q.time_max - q.time_min <= timedelta(days=366):
@@ -107,3 +128,54 @@ class LocalIcsCalendarAdapter:
         # Configuration cleanup is owned by the caller; remove only the app copy.
         if self.path.name == "calendar-snapshot.ics" and self.path.parent.name == "cache":
             self.path.unlink(missing_ok=True)
+
+
+def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bool:
+    """Fetch a user-supplied private HTTPS iCal feed; never send its URL to app servers.
+
+    Restrict DNS and redirect targets to public IPs to avoid local network access.
+    The destination is only replaced after the entire calendar validates.
+    Rejects redirects and non-200 responses.
+    """
+
+    parsed = urlsplit(url)
+    if (parsed.scheme != "https" or not parsed.hostname or parsed.username
+            or parsed.password or parsed.port not in (None, 443)
+            or parsed.fragment):
+        raise ValueError("Nur öffentliche HTTPS-Kalenderadressen sind erlaubt.")
+    addresses = socket.getaddrinfo(parsed.hostname, 443, type=socket.SOCK_STREAM)
+    if not addresses:
+        raise ValueError("Kalenderhost konnte nicht aufgelöst werden.")
+    # Validate every DNS answer, then pin the connection to one checked IP.
+    for info in addresses:
+        if not ipaddress.ip_address(info[4][0]).is_global:
+            raise ValueError("Private Netzwerkadressen sind nicht erlaubt.")
+    address = addresses[0][4][0]
+    class PinnedHTTPS(http.client.HTTPSConnection):
+        def connect(self):
+            raw = socket.create_connection((address, 443), timeout=self.timeout)
+            self.sock = self._context.wrap_socket(raw, server_hostname=parsed.hostname)
+    conn = PinnedHTTPS(parsed.hostname, 443, timeout=timeout, context=ssl.create_default_context())
+    try:
+        path = parsed.path or "/"
+        if parsed.query:
+            path += "?" + parsed.query
+        conn.request("GET", path, headers={"User-Agent": "Karrierekrake/1.0", "Accept": "text/calendar"})
+        response = conn.getresponse()
+        if response.status != 200:
+            raise ValueError("Kalenderabruf fehlgeschlagen (HTTP %d)." % response.status)
+        data = response.read(MAX_BYTES + 1)
+    finally:
+        conn.close()
+    if len(data) > MAX_BYTES:
+        raise ValueError("Kalenderdatei ist größer als 20 MB.")
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_suffix(destination.suffix + ".tmp")
+    try:
+        temporary.write_bytes(data)
+        read_calendar(temporary)
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return True

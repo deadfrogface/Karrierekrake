@@ -417,6 +417,8 @@ class SettingsConfig:
     calendar_freebusy_enabled: bool = False
     # App-owned calendar export snapshot; contains no remote credentials.
     local_calendar_path: str = ""
+    # Private ICS subscription URL, stored locally and never sent to our servers.
+    local_calendar_feed_url: str = ""
     # Google Calendar OAuth mode before connect: A = FreeBusy only, B = FreeBusy + owned events.
     calendar_google_mode: str = "A"
     gmail_credentials_path: str = "private/gmail_credentials.json"
