@@ -322,6 +322,10 @@ def module_allowed(module: str) -> bool:
     name = module.strip()
     if not name:
         return False
+    # These shared libraries are loaded by ctypes, never Python imports.
+    # collect_submodules mistakes foreign .so files for extension modules.
+    if name == "tls_client.dependencies" or name.startswith("tls_client.dependencies."):
+        return False
     for excluded in EXCLUDED_FIRST_PARTY_MODULES:
         if name == excluded or name.startswith(excluded + "."):
             return False

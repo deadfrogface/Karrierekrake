@@ -370,3 +370,12 @@ def test_tls_dependency_isolated_by_platform_and_architecture(os_name, machine, 
         '/site-packages/tls_client/dependencies/' + name, os_name=os_name, machine=machine)]
     assert selected == [wanted]
     assert policy.native_dependency_allowed('/site-packages/PySide6/QtCore.so', os_name=os_name, machine=machine)
+
+
+def test_tls_shared_libraries_are_not_hidden_python_modules():
+    policy = _load_policy()
+    modules = ['tls_client.cffi', 'tls_client.sessions', 'tls_client.dependencies',
+               'tls_client.dependencies.tls-client-arm64',
+               'tls_client.dependencies.tls-client-x86',
+               'tls_client.dependencies.tls-client-amd64']
+    assert policy.filter_hiddenimports(modules) == modules[:2]
