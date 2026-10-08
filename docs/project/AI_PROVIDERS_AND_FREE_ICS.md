@@ -3,7 +3,7 @@
 ## Rules
 - Qwen 3.5 4B GGUF remains the default local/offline runtime. Never require a remote account.
 - Commercial third-party AI providers are optional. A ChatGPT/Claude/Gemini web subscription is **not** an API credential. Do not automate consumer websites, reuse browser cookies, or claim subscriptions cover third-party API traffic.
-- Implement provider-neutral AI transport only with explicitly authorized endpoints and user-owned API credentials (BYOK), stored in the OS credential vault. Never bundle a developer API key or route requests through a paid KarriereKrake server.
+- Implement provider-neutral AI transport only with explicitly authorized endpoints and user-owned API credentials (BYOK), stored in the OS credential vault. Never bundle a developer API key or route requests through a paid Karrierekrake server.
 - OpenAI: investigate official commercial ChatGPT subscription partner access; do not expose a button until approved.
 - Anthropic Claude: separate API key/billing unless official third-party delegated subscription access is documented and approved.
 - Google Gemini: use official Gemini API with user-owned key and consent, not Gemini CLI consumer login or unofficial Code Assist token reuse.
