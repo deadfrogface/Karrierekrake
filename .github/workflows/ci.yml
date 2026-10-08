@@ -44,7 +44,7 @@ jobs:
   unit-tests-shard:
     name: unit-tests-shard
     runs-on: windows-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:

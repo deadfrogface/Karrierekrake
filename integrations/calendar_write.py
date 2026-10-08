@@ -143,9 +143,33 @@ def draft_to_ics(draft: CalendarEventDraft) -> str:
                 "scheduled_at": draft.start,
                 "end": draft.end,
                 "description": draft.description,
+                "location": draft.location,
             }
         ]
     )
+
+
+def export_approved_ics(draft: CalendarEventDraft, destination: "Path") -> "Path":
+    """Explicit, offline export for importing into Outlook, iCloud or Google.
+
+    Export is not proof of calendar insertion; never set draft.created here.
+    """
+    from pathlib import Path
+
+    if not draft.approved:
+        raise PermissionError("Bitte den Termin vor dem Export bestätigen.")
+    from integrations.calendar_timezone import parse_iso_datetime
+
+    start = parse_iso_datetime(draft.start)
+    end = parse_iso_datetime(draft.end)
+    if start is None or end is None or end <= start:
+        raise ValueError("Ungültige Terminzeiten.")
+    path = Path(destination)
+    if path.suffix.lower() != ".ics":
+        raise ValueError("Nur .ics-Dateien sind erlaubt.")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(draft_to_ics(draft), encoding="utf-8", newline="")
+    return path
 
 
 class CalendarWriteGate:
