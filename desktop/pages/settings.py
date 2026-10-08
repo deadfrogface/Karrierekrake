@@ -365,7 +365,7 @@ class SettingsPage(QWidget):
         self.setup_provider = QComboBox()
         for key, details in PROVIDERS.items():
             self.setup_provider.addItem(details[0], key)
-        self.setup_guide_button = QPushButton("Wie richte ich diesen Anbieter in KarriereKrake ein?")
+        self.setup_guide_button = QPushButton("Wie richte ich diesen Anbieter in Karrierekrake ein?")
         self.setup_guide_button.clicked.connect(self._open_provider_setup_guide)
         oform.addWidget(QLabel("Anbieter-Anleitungen (E-Mail und Kalender)"))
         oform.addWidget(self.setup_provider)
