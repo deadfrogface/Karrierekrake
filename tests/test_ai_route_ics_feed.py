@@ -20,11 +20,11 @@ def test_external_ai_requires_explicit_consent_and_user_key(provider):
 
 
 @pytest.mark.parametrize("url", [
-    "http://calendar.google.com/private.ics",
+    "http://calendar.example.com/private.ics",
     "https://localhost/private.ics",
     "https://127.0.0.1/private.ics",
-    "https://user:pass@calendar.google.com/private.ics",
-    "https://calendar.google.com:8080/private.ics",
+    "https://user:pass@calendar.example.com/private.ics",
+    "https://calendar.example.com:8080/private.ics",
 ])
 def test_feed_rejects_unsafe_url(url):
     with pytest.raises(ValueError):
@@ -35,4 +35,4 @@ def test_feed_accepts_public_https_google_host():
     with patch("integrations.calendar.ics_feed.socket.getaddrinfo", return_value=[
         (2, 1, 6, "", ("142.250.1.1", 443))
     ]):
-        assert validate_feed_url("https://calendar.google.com/calendar/ical/secret/basic.ics").startswith("https://")
+        assert validate_feed_url("https://calendar.example.com/calendar/ical/secret/basic.ics").startswith("https://")
