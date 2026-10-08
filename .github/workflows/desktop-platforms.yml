@@ -32,13 +32,14 @@ jobs:
       # Compile portable kernels rather than inheriting the runner's CPU ISA.
       CMAKE_ARGS: '-DGGML_NATIVE=OFF -DGGML_METAL=OFF -DGGML_CUDA=OFF'
       CMAKE_BUILD_PARALLEL_LEVEL: '3'
-      KARRIEREKRAKE_DATA_DIR: ${{ runner.temp }}/kk-native-test-data
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: pip
+      - name: Isolate platform test data
+        run: echo "KARRIEREKRAKE_DATA_DIR=$RUNNER_TEMP/kk-native-test-data" >> "$GITHUB_ENV"
       - name: Linux runtime libraries
         if: runner.os == 'Linux'
         run: |
