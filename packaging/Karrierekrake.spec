@@ -15,6 +15,8 @@ from PyInstaller.utils.hooks import collect_all, collect_dynamic_libs, collect_s
 
 block_cipher = None
 ROOT = os.path.abspath(os.path.join(SPECPATH, ".."))
+sys.path.insert(0, ROOT)
+from core.release_identity import VERSION
 
 
 def _load_policy():
@@ -172,4 +174,6 @@ if _NATIVE:
         app = BUNDLE(collection, name="Karrierekrake.app", icon=_ICON,
                      bundle_identifier="com.karrierekrake.desktop",
                      info_plist={"CFBundleDisplayName": "Karrierekrake",
+                                 "CFBundleShortVersionString": VERSION.split("-")[0],
+                                 "CFBundleVersion": VERSION.split("-")[0],
                                  "NSHighResolutionCapable": True})
