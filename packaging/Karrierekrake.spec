@@ -65,6 +65,11 @@ for pkg in policy.ALLOWED_COLLECT_ALL_PACKAGES:
     except Exception:
         pass
 
+# TLS libraries use a nonstandard name without the lib prefix. Explicitly
+# collect them as binaries; foreign .so files are never Python modules.
+binaries += policy.filter_collect_all_binaries(collect_dynamic_libs(
+    "tls_client", search_patterns=["tls-client*.so", "tls-client*.dll", "tls-client*.dylib"]))
+
 # llama-cpp loads ggml/llama by path (llama_cpp/lib), not by import.
 # --report-llm-load in build-and-exe-smoke needs those DLLs in the EXE.
 try:
