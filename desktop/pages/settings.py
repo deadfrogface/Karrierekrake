@@ -361,6 +361,16 @@ class SettingsPage(QWidget):
         self.calendar_provider.currentIndexChanged.connect(self._update_calendar_mode_visibility)
         self._update_calendar_mode_visibility()
 
+        from integrations.provider_setup_guides import PROVIDERS
+        self.setup_provider = QComboBox()
+        for key, details in PROVIDERS.items():
+            self.setup_provider.addItem(details[0], key)
+        self.setup_guide_button = QPushButton("Wie richte ich diesen Anbieter in KarriereKrake ein?")
+        self.setup_guide_button.clicked.connect(self._open_provider_setup_guide)
+        oform.addWidget(QLabel("Anbieter-Anleitungen (E-Mail und Kalender)"))
+        oform.addWidget(self.setup_provider)
+        oform.addWidget(self.setup_guide_button)
+
         self.provider_hint = QLabel()
         self.provider_hint.setWordWrap(True)
         oform.addWidget(self.provider_hint)
@@ -1339,6 +1349,18 @@ class SettingsPage(QWidget):
             self.calendar_mode_rights.setText(tr("integrations.calendar.mode_b_rights"))
         else:
             self.calendar_mode_rights.setText(tr("integrations.calendar.mode_a_rights"))
+
+    def _open_provider_setup_guide(self) -> None:
+        """Open an offline HTML guide; no network or embedded browser required."""
+        from tempfile import gettempdir
+        from pathlib import Path
+        from PySide6.QtCore import QUrl
+        from PySide6.QtGui import QDesktopServices
+        from integrations.provider_setup_guides import guide_html
+        provider = str(self.setup_provider.currentData() or "other")
+        target = Path(gettempdir()) / ("karrierekrake-setup-" + provider + ".html")
+        target.write_text(guide_html(provider), encoding="utf-8")
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(target)))
 
     def _privacy_connect_calendar(self) -> None:
         """Primary calendar CTA only exposes free/non-Google-API transports."""
