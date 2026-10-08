@@ -51,7 +51,7 @@ jobs:
           pip install -c constraints-runtime.txt -r requirements-build.txt --no-binary llama-cpp-python
       - name: Platform regression tests
         run: |
-          python -m pytest -q tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
+          python -m pytest -q tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_alpha_release.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
           python scripts/privacy_scan.py
       - uses: actions/cache@v4
         with:
@@ -72,6 +72,9 @@ jobs:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: '1'
           KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: '1'
         run: python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
+      - name: Remove duplicate macOS collection after bundling
+        if: runner.os == 'macOS'
+        run: rm -rf dist/Karrierekrake
       - name: Actual native binary smoke and offline DE/EN import
         run: python scripts/ci_native_acceptance.py --exe ${{ matrix.exe }} --out native-release/acceptance.json
       - name: Package tested application

@@ -1,7 +1,7 @@
 name: Publish component update
 on:
   workflow_run:
-    workflows: [CI, Windows Smoke]
+    workflows: [CI, Windows Smoke, Desktop Platforms]
     types: [completed]
     branches: [main]
 permissions:
@@ -28,11 +28,11 @@ jobs:
             const main = await github.rest.repos.getBranch({...repo, branch: 'main'});
             if (main.data.commit.sha !== sha) return;
             const {data} = await github.rest.actions.listWorkflowRunsForRepo({...repo, head_sha: sha, event: 'push', per_page: 100});
-            for (const name of ['CI', 'Windows Smoke']) {
+            for (const name of ['CI', 'Windows Smoke', 'Desktop Platforms']) {
               const latest = data.workflow_runs.filter(r => r.name === name).sort((a,b) => b.id-a.id)[0];
               if (!latest || latest.status !== 'completed' || latest.conclusion !== 'success') return;
             }
-            const sequence = Math.max(...data.workflow_runs.filter(r => ['CI','Windows Smoke'].includes(r.name)).map(r => r.id));
+            const sequence = Math.max(...data.workflow_runs.filter(r => ['CI','Windows Smoke','Desktop Platforms'].includes(r.name)).map(r => r.id));
             const tag = `update-${sequence}-${sha.slice(0,12)}`;
             try {
               const release = await github.rest.repos.getReleaseByTag({...repo, tag});
@@ -45,7 +45,7 @@ jobs:
     if: needs.gate.outputs.publish == 'true'
     runs-on: windows-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,26 +88,15 @@ jobs:
         run: |
           python scripts/ci_cv_import_exe_offline_e2e.py --component-install --exe component-release/install/Karrierekrake.exe --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf --out component-release/acceptance.json --import-timeout 900
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Publish tested release assets
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TARGET_SHA: ${{ needs.gate.outputs.sha }}
-          RELEASE_SEQUENCE: ${{ needs.gate.outputs.sequence }}
-        run: |
-          $main = gh api repos/deadfrogface/Karrierekrake/branches/main --jq '.commit.sha'
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if ($main -ne $env:TARGET_SHA) { Write-Host 'Main advanced; skip superseded release'; exit 0 }
-          $tag = "update-$env:RELEASE_SEQUENCE-$($env:TARGET_SHA.Substring(0,12))"
-          $assets = @(Get-ChildItem component-release/*.bin | ForEach-Object { $_.FullName })
-          gh release view $tag --json isDraft 2>$null
-          if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --draft --target $env:TARGET_SHA --title "Karrierekrake Update $env:RELEASE_SEQUENCE" --notes 'Geprüftes Windows-Update. Bei Erstinstallation das Setup-ZIP entpacken und das KI-Modell einmal über den Updatebereich laden. Vorhandene Installationen laden nur veränderte Komponenten.'
-            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          }
-          gh release upload $tag @assets component-release/update-manifest.json component-release/Karrierekrake-Setup.zip component-release/acceptance.json --clobber
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $main = gh api repos/deadfrogface/Karrierekrake/branches/main --jq '.commit.sha'
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if ($main -ne $env:TARGET_SHA) { Write-Host 'Main advanced; retain draft'; exit 0 }
-          gh release edit $tag --draft=false --latest
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Upload verified Windows components for the common Alpha release
+        uses: actions/upload-artifact@v4
+        with:
+          name: Karrierekrake-windows-x86_64
+          path: |
+            component-release/*.bin
+            component-release/update-manifest.json
+            component-release/Karrierekrake-Alpha-0.1-Windows-x86_64.zip
+            component-release/acceptance.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

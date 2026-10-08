@@ -1,4 +1,4 @@
-# Karrierekrake
+# Karrierekrake Alpha 0.1
 
 <p align="center">
   <img src="assets/brand/logo.png" alt="Karrierekrake — FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK." width="520" />
@@ -15,12 +15,12 @@ Lokale Desktop-App für Windows, macOS und Linux.
 
 | System | Paket | Datenverzeichnis |
 |---|---|---|
-| Windows | `Karrierekrake-Setup.zip` | `%LOCALAPPDATA%\Karrierekrake` |
-| macOS Apple Silicon | `Karrierekrake-macOS-AppleSilicon.dmg` | `~/Library/Application Support/Karrierekrake` |
-| macOS Intel | `Karrierekrake-macOS-Intel.dmg` | `~/Library/Application Support/Karrierekrake` |
-| Linux x86_64 | `Karrierekrake-Linux-x86_64.tar.gz` | `$XDG_DATA_HOME/Karrierekrake` oder `~/.local/share/Karrierekrake` |
+| Windows | `Karrierekrake-Alpha-0.1-Windows-x86_64.zip` | `%LOCALAPPDATA%\Karrierekrake` |
+| macOS Apple Silicon | `Karrierekrake-Alpha-0.1-macOS-AppleSilicon.dmg` | `~/Library/Application Support/Karrierekrake` |
+| macOS Intel | `Karrierekrake-Alpha-0.1-macOS-Intel.dmg` | `~/Library/Application Support/Karrierekrake` |
+| Linux x86_64 | `Karrierekrake-Alpha-0.1-Linux-x86_64.tar.gz` | `$XDG_DATA_HOME/Karrierekrake` oder `~/.local/share/Karrierekrake` |
 
-Die nativen Pakete werden erst nach erfolgreichen Builds und Offline-Importtests veröffentlicht. Installation und Plattformgrenzen: [macOS/Linux](docs/desktop-platforms.md).
+Ein gemeinsamer Release **Karrierekrake Alpha 0.1** enthält separate Pakete für Windows, macOS und Linux. Er wird erst nach erfolgreichen Builds und Offline-Importtests auf allen drei Systemen öffentlich. Jedes Paket und jeder Updater lädt ausschließlich die jeweilige Plattformversion. Installation und Plattformgrenzen: [macOS/Linux](docs/desktop-platforms.md).
 
 ---
 

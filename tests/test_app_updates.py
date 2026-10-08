@@ -152,3 +152,11 @@ def test_download_cancel_cleans_staging(tmp_path, monkeypatch):
         u.stage_update(manifest(), tmp_path, cancelled=lambda: True)
     assert not list(tmp_path.glob('.kk-update-*'))
     assert (tmp_path / 'Karrierekrake.exe').read_bytes() == b'old app'
+
+
+@pytest.mark.parametrize('target', ['linux-x86_64', 'macos-arm64', 'macos-x86_64'])
+def test_windows_updater_refuses_foreign_platform_manifest(target):
+    value = manifest()
+    value['target'] = target
+    with pytest.raises(ValueError, match='wrong_update_platform'):
+        u.validate_manifest(value, value['tag'])

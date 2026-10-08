@@ -11,7 +11,7 @@ def artifacts(root, commit):
         folder = root / f'Karrierekrake-{target}'
         folder.mkdir()
         (folder / filename).write_bytes(b'tested native archive')
-        (folder / METADATA).write_text(json.dumps({'target': target, 'commit': commit, 'sequence': 123}))
+        (folder / METADATA).write_text(json.dumps({'target': target, 'commit': commit, 'sequence': 123, 'version': '0.1.0-alpha.1'}))
         (folder / 'acceptance.json').write_text(json.dumps({'ok': True}))
 
 
@@ -34,7 +34,7 @@ def test_failed_or_stale_build_cannot_publish(tmp_path, failure):
     artifacts(tmp_path, commit)
     folder = tmp_path / 'Karrierekrake-macos-arm64'
     if failure == 'wrong_commit':
-        (folder / METADATA).write_text(json.dumps({'target': 'macos-arm64', 'commit': 'b' * 40, 'sequence': 123}))
+        (folder / METADATA).write_text(json.dumps({'target': 'macos-arm64', 'commit': 'b' * 40, 'sequence': 123, 'version': '0.1.0-alpha.1'}))
     elif failure == 'failed_acceptance':
         (folder / 'acceptance.json').write_text(json.dumps({'ok': False}))
     else:

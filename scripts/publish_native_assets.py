@@ -12,18 +12,21 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from core.app_updates import REPOSITORY, digest
 from core.native_updates import ASSETS, METADATA
+from core.release_identity import VERSION
 
 
-def manifests(artifacts: Path, tag: str, commit: str) -> list[Path]:
+def manifests(artifacts: Path, tag: str, commit: str, *, targets: tuple[str, ...] | None = None) -> list[Path]:
     if not re.fullmatch(r'update-[0-9]+-[a-f0-9]{12}', tag):
         raise ValueError('invalid_release_tag')
     outputs = []
-    for target, filename in ASSETS.items():
+    for target in targets or tuple(ASSETS):
+        filename = ASSETS[target]
         folder = artifacts / f'Karrierekrake-{target}'
         archive = folder / filename
         current = json.loads((folder / METADATA).read_text(encoding='utf-8'))
         acceptance = json.loads((folder / 'acceptance.json').read_text(encoding='utf-8'))
         if (current.get('target') != target or current.get('commit') != commit
+                or current.get('version') != VERSION
                 or type(current.get('sequence')) is not int or current['sequence'] <= 0
                 or acceptance.get('ok') is not True or not archive.is_file()):
             raise ValueError('native_release_gate_failed')

@@ -39,7 +39,7 @@ class UpdatePanel(QFrame):
         layout.addWidget(self.version)
         self.native = native_updates.current() if sys.platform != 'win32' else {}
         current = updates.read_current(updates.install_root())
-        self.version.setText(tr('updates.version', version=current.get('tag', tr('updates.development'))))
+        self.version.setText(tr('updates.version', version=current.get('display_version', current.get('tag', tr('updates.development')))))
         self.managed = getattr(sys, 'frozen', False) and (updates.install_root() / updates.CURRENT).is_file()
         if self.managed and not (updates.install_root() / updates.MODEL_PATH).is_file():
             self.manifest = updates.bootstrap_manifest(updates.install_root())
@@ -50,7 +50,7 @@ class UpdatePanel(QFrame):
             self.status.setText(tr('updates.rollback'))
         if self.native:
             self.managed = True
-            self.version.setText(tr('updates.version', version=self.native['commit'][:12]))
+            self.version.setText(tr('updates.version', version=self.native.get('display_version', self.native['commit'][:12])))
             self.status.setText(tr('updates.native_ready'))
         elif not self.managed:
             self.status.setText(tr('updates.legacy'))
@@ -61,11 +61,11 @@ class UpdatePanel(QFrame):
         self.check_button.setText(tr('updates.check'))
         if self.native:
             self.install_button.setText(tr('updates.native_download'))
-            self.version.setText(tr('updates.version', version=self.native['commit'][:12]))
+            self.version.setText(tr('updates.version', version=self.native.get('display_version', self.native['commit'][:12])))
             return
         self.install_button.setText(tr('updates.model_install') if self.managed and not (updates.install_root() / updates.MODEL_PATH).is_file() else tr('updates.install'))
         current = updates.read_current(updates.install_root())
-        self.version.setText(tr('updates.version', version=current.get('tag', tr('updates.development'))))
+        self.version.setText(tr('updates.version', version=current.get('display_version', current.get('tag', tr('updates.development')))))
 
     def _run(self, operation, success, *, quiet=False):
         if self.busy:

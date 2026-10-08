@@ -10,6 +10,8 @@ remain in Git for development; they must not appear in dist/.
 
 from __future__ import annotations
 
+import platform
+import sys
 from typing import Iterable, NamedTuple
 
 POLICY_VERSION = 1
@@ -416,6 +418,29 @@ def scan_paths(paths: Iterable[str]) -> list[PolicyHit]:
     return hits
 
 
+def native_dependency_allowed(src: str, *, os_name: str | None = None, machine: str | None = None) -> bool:
+    """tls-client wheels contain every OS/CPU library; ship only the active one.
+
+    Match tls_client.cffi's library selection exactly. Foreign ELF files
+    otherwise cause macholib to fail while building a Mac application.
+    """
+    normalized = normalize_path(src).lower()
+    if '/tls_client/dependencies/' not in '/' + normalized:
+        return True
+    filename = normalized.rsplit('/', 1)[-1]
+    if not filename.startswith('tls-client') or not filename.endswith(('.dll', '.so', '.dylib')):
+        return True
+    os_name = os_name or sys.platform
+    machine = (machine or platform.machine()).lower()
+    if os_name == 'darwin':
+        suffix = '-arm64.dylib' if machine == 'arm64' else '-x86.dylib'
+    elif os_name == 'win32':
+        suffix = '-64.dll' if machine in {'amd64', 'x86_64'} else '-32.dll'
+    else:
+        suffix = '-arm64.so' if machine == 'aarch64' else '-x86.so' if 'x86' in machine else '-amd64.so'
+    return filename == 'tls-client' + suffix
+
+
 def filter_collect_all_datas(
     datas: list[tuple],
 ) -> list[tuple]:
@@ -425,7 +450,7 @@ def filter_collect_all_datas(
         src = str(item[0]) if item else ""
         dest = str(item[1]) if item and len(item) > 1 else ""
         combined = f"{src}|{dest}"
-        if path_has_forbidden_marker(combined):
+        if path_has_forbidden_marker(combined) or not native_dependency_allowed(src):
             continue
         if "chromium" in normalize_path(src).lower() and "playwright" in normalize_path(src).lower():
             continue
@@ -437,7 +462,7 @@ def filter_collect_all_binaries(binaries: list[tuple]) -> list[tuple]:
     out: list[tuple] = []
     for item in binaries:
         src = str(item[0]) if item else ""
-        if path_has_forbidden_marker(src):
+        if path_has_forbidden_marker(src) or not native_dependency_allowed(src):
             continue
         out.append(item)
     return out

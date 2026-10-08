@@ -355,3 +355,18 @@ def test_fail_on_empty_toc(tmp_path: Path):
         text=True,
     )
     assert proc.returncode == 1
+
+
+@pytest.mark.parametrize('os_name,machine,wanted', [
+    ('darwin', 'arm64', 'tls-client-arm64.dylib'),
+    ('darwin', 'x86_64', 'tls-client-x86.dylib'),
+    ('linux', 'x86_64', 'tls-client-x86.so'),
+    ('win32', 'AMD64', 'tls-client-64.dll'),
+])
+def test_tls_dependency_isolated_by_platform_and_architecture(os_name, machine, wanted):
+    libraries = ['tls-client-arm64.dylib', 'tls-client-x86.dylib', 'tls-client-x86.so',
+                 'tls-client-amd64.so', 'tls-client-arm64.so', 'tls-client-64.dll', 'tls-client-32.dll']
+    selected = [name for name in libraries if policy.native_dependency_allowed(
+        '/site-packages/tls_client/dependencies/' + name, os_name=os_name, machine=machine)]
+    assert selected == [wanted]
+    assert policy.native_dependency_allowed('/site-packages/PySide6/QtCore.so', os_name=os_name, machine=machine)

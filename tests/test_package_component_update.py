@@ -16,7 +16,7 @@ def test_package_keeps_model_out_of_exe_download_and_bootstrap_zip(tmp_path, mon
     assert (out / 'model-001.bin').read_bytes() == b'verified-model'
     assert (out / 'app-001.bin').read_bytes() == b'program'
     assert (out / 'install' / u.MODEL_PATH).is_file()
-    with zipfile.ZipFile(out / 'Karrierekrake-Setup.zip') as archive:
+    with zipfile.ZipFile(out / p.WINDOWS_ASSET) as archive:
         assert u.MODEL_PATH not in archive.namelist()
         assert json.loads(archive.read(u.CURRENT)) == manifest
         assert 'KI-Modell' in archive.read('INSTALL.txt').decode('utf-8')

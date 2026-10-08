@@ -4,9 +4,9 @@ Alle Desktop-Pakete verwenden dieselbe Python/PySide6-Anwendung, denselben CV-Im
 
 ## Pakete und Installation
 
-- **Apple Silicon:** `Karrierekrake-macOS-AppleSilicon.dmg`, gebaut auf macOS 14 / ARM64.
-- **Intel-Mac:** `Karrierekrake-macOS-Intel.dmg`, gebaut auf macOS 15 / x86_64.
-- **Linux:** `Karrierekrake-Linux-x86_64.tar.gz`, gebaut auf Ubuntu 22.04 / x86_64. Zunächst Ubuntu 22.04+ und darauf basierende Linux-Mint-Versionen; andere Distributionen sind nicht zugesichert.
+- **Apple Silicon:** `Karrierekrake-Alpha-0.1-macOS-AppleSilicon.dmg`, gebaut auf macOS 14 / ARM64.
+- **Intel-Mac:** `Karrierekrake-Alpha-0.1-macOS-Intel.dmg`, gebaut auf macOS 15 / x86_64.
+- **Linux:** `Karrierekrake-Alpha-0.1-Linux-x86_64.tar.gz`, gebaut auf Ubuntu 22.04 / x86_64. Zunächst Ubuntu 22.04+ und darauf basierende Linux-Mint-Versionen; andere Distributionen sind nicht zugesichert.
 
 macOS: Das passende DMG öffnen, Karrierekrake in „Programme“ ziehen und dort starten. Für diese erste Ausgabe sind keine Developer-ID-Zertifikate und keine Apple-Notarisierung eingerichtet. Ein macOS-Build auf GitHub ist kein Nachweis, dass Gatekeeper die heruntergeladene App ohne zusätzliche Benutzerfreigabe öffnet. Ältere macOS-Versionen sind nicht geprüft.
 
@@ -36,6 +36,10 @@ Noch kein automatischer Austausch, kein Rollback und keine Delta-Downloads auf m
 
 `Desktop Platforms` baut auf Ubuntu 22.04, macOS 14 ARM64 und macOS 15 Intel. Die Workflow-Matrix führt Plattform-/Updater-/Packaging-Regressionen aus, kompiliert das gepinnte llama.cpp ohne CPU-native Compileroptimierung, provisioniert das geprüfte GGUF und den registrierten Google-Desktop-Client, baut die native Anwendung und testet das **fertige Binary** mit Qt-Smoke sowie Offline-DE/EN-Lebenslauf-Import.
 
-`Publish native desktop packages` veröffentlicht alle drei Pakete erst, wenn dieser Build sowie CI und Windows Smoke auf demselben aktuellen `main`-Commit erfolgreich sind und der bestehende Komponenten-Workflow dessen öffentliche Release angelegt hat. Jeder Download erhält ein plattformspezifisches Manifest mit Commit, Sequenz, Größe und SHA-256. Fehlgeschlagene native Builds verhindern die Veröffentlichung der nativen Pakete; der bestehende Windows-Releasepfad bleibt unabhängig.
+`Publish component update` wartet auf CI, Windows Smoke **und** Desktop Platforms für denselben aktuellen main-Commit und baut anschließend die geprüften Windows-Komponenten als internes Artefakt. `Publish Karrierekrake Alpha` erstellt daraus und aus den passenden nativen Artefakten **einen** Release „Karrierekrake Alpha 0.1“. Der Release bleibt ein Entwurf, bis alle vier Downloads (Windows, Mac Apple Silicon, Mac Intel, Linux) und deren Update-Manifeste hochgeladen sind. Bei einem fehlgeschlagenen Build oder Upload erscheint kein unvollständiger öffentlicher Release. Alte öffentliche Windows-Releases bleiben erhalten.
 
-Lokale Quellcode-Smoke-Tests ersetzen diese nativen Build-Gates nicht. Noch ausstehende Live-Tests: Gatekeeper/Installation auf echten Macs, GUI-Sitzung auf Ubuntu/Mint, Schlüsselbundzugriff, Anbieterlogin, Browserautomation und Schreiben eines Anschreibens im verpackten Programm.
+Ein gemeinsamer Versionswert (`core/release_identity.py`) legt Titel, Programmversion und eindeutige Dateinamen fest. Die Core-Funktionen, das Modell und der Quellcode-Commit sind identisch. Pakete enthalten keine Anwendungsversion eines anderen Betriebssystems. Der Windows-Updater akzeptiert nur sein Komponentenmanifest und lädt nur dessen Programm-/Modellteile; macOS/Linux prüfen zusätzlich das tatsächliche Laufzeitsystem und die CPU-Architektur und fragen nur ihr eigenes Manifest ab. Die Mac-Architekturen bleiben getrennte Downloads, damit nicht beide heruntergeladen werden.
+
+Die macOS-Builds, der Qt-Start und der lokale Lebenslauf-Import werden auf echten macOS-GitHub-Runnern ausgeführt. Dafür ist kein Apple-Gerät des Entwicklers erforderlich. Die fehlende Developer-ID-Notarisierung kann beim Download weiterhin eine Gatekeeper-Freigabe erforderlich machen.
+
+Lokale Quellcode-Smoke-Tests ersetzen diese nativen Build-Gates nicht. Zusätzlich zu den GitHub-Tests bleiben für eine spätere breitere Freigabe noch interaktive Tests sinnvoll: Gatekeeper/Installation, GUI-Sitzung auf Ubuntu/Mint, Schlüsselbundzugriff, Anbieterlogin, Browserautomation und Schreiben eines Anschreibens im verpackten Programm.

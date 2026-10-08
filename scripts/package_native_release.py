@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -14,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from core.native_updates import ASSETS, METADATA
+from core.release_identity import DISPLAY_VERSION, VERSION
 
 
 def prepare(target: str, commit: str, sequence: int) -> dict:
@@ -31,7 +33,8 @@ def prepare(target: str, commit: str, sequence: int) -> dict:
                     shutil.copy2(source, iconset / f'icon_{size}x{size}{suffix}.png')
             subprocess.run(['iconutil', '-c', 'icns', str(iconset), '-o',
                             str(ROOT / 'packaging' / 'native-app.icns')], check=True)
-    metadata = {'target': target, 'commit': commit, 'sequence': sequence}
+    metadata = {'target': target, 'commit': commit, 'sequence': sequence,
+                'version': VERSION, 'display_version': DISPLAY_VERSION}
     (ROOT / 'packaging' / METADATA).write_text(json.dumps(metadata), encoding='utf-8')
     return metadata
 
@@ -48,7 +51,12 @@ def package(target: str, dist: Path, out: Path) -> Path:
         if stage.exists():
             shutil.rmtree(stage)
         stage.mkdir()
-        shutil.copytree(app, stage / app.name, symlinks=True)
+        def link_or_copy(source, destination):
+            try:
+                os.link(source, destination)
+            except OSError:
+                shutil.copy2(source, destination)
+        shutil.copytree(app, stage / app.name, symlinks=True, copy_function=link_or_copy)
         (stage / 'Applications').symlink_to('/Applications')
         subprocess.run(['hdiutil', 'create', '-volname', 'Karrierekrake', '-srcfolder', str(stage),
                         '-ov', '-format', 'UDZO', str(archive)], check=True)

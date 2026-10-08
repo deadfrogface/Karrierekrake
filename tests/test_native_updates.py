@@ -17,6 +17,7 @@ def release(target='macos-arm64', sequence=2):
 
 
 def test_new_native_release_is_platform_specific(monkeypatch):
+    monkeypatch.setattr(n, "runtime_target", lambda: "macos-arm64")
     info, manifest, url = release()
     monkeypatch.setattr(n, '_json', lambda requested: manifest if requested == url else [info])
     installed = {'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': 1}
@@ -33,6 +34,7 @@ def test_new_native_release_is_platform_specific(monkeypatch):
     {'sequence': '2'}, {'size': -1}, {'sha256': 'invalid'}, {'protocol': 9},
 ])
 def test_untrusted_native_manifest_rejected(monkeypatch, mutation):
+    monkeypatch.setattr(n, "runtime_target", lambda: "macos-arm64")
     info, manifest, url = release()
     manifest.update(mutation)
     monkeypatch.setattr(n, '_json', lambda requested: manifest if requested == url else [info])
@@ -43,6 +45,7 @@ def test_untrusted_native_manifest_rejected(monkeypatch, mutation):
 def test_packaged_native_identity_and_source_no_network(tmp_path, monkeypatch):
     monkeypatch.setattr(sys, 'frozen', True, raising=False)
     monkeypatch.setattr(sys, '_MEIPASS', str(tmp_path), raising=False)
+    monkeypatch.setattr(n, 'runtime_target', lambda: 'linux-x86_64')
     value = {'target': 'linux-x86_64', 'commit': 'a' * 40, 'sequence': 1}
     (tmp_path / n.METADATA).write_text(json.dumps(value))
     assert n.current() == value
@@ -54,6 +57,7 @@ def test_packaged_native_identity_and_source_no_network(tmp_path, monkeypatch):
 
 def test_native_panel_uses_native_checks_and_never_windows_installer(qtbot, tmp_path, monkeypatch):
     from desktop.widgets import update_panel as ui
+    monkeypatch.setattr(n, 'runtime_target', lambda: 'linux-x86_64')
     value = {'target': 'linux-x86_64', 'commit': 'a' * 40, 'sequence': 1}
     monkeypatch.setattr(sys, 'platform', 'linux')
     monkeypatch.setattr(n, 'current', lambda: value)
@@ -71,3 +75,30 @@ def test_native_panel_uses_native_checks_and_never_windows_installer(qtbot, tmp_
     panel.retranslate()
     panel.install()
     assert opened == [manifest['url']]
+
+
+@pytest.mark.parametrize('platform,machine,target', [
+    ('win32', 'AMD64', None), ('linux', 'x86_64', 'linux-x86_64'),
+    ('darwin', 'arm64', 'macos-arm64'), ('darwin', 'x86_64', 'macos-x86_64'),
+    ('linux', 'aarch64', None),
+])
+def test_runtime_platform_and_architecture(monkeypatch, platform, machine, target):
+    monkeypatch.setattr(sys, 'platform', platform)
+    monkeypatch.setattr(n.platform, 'machine', lambda: machine)
+    assert n.runtime_target() == target
+
+
+def test_wrong_platform_is_rejected_before_any_network(monkeypatch):
+    monkeypatch.setattr(n, 'runtime_target', lambda: 'linux-x86_64')
+    monkeypatch.setattr(n, '_json', lambda _: pytest.fail('wrong platform triggered a download'))
+    assert n.check_for_update({'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': 1}) is None
+
+
+
+def test_future_version_filename_stays_on_same_platform(monkeypatch):
+    monkeypatch.setattr(n, 'runtime_target', lambda: 'macos-arm64')
+    info, manifest, url = release()
+    manifest['url'] = manifest['url'].replace('Alpha-0.1-', 'Alpha-0.2-')
+    info['assets'][1]['browser_download_url'] = manifest['url']
+    monkeypatch.setattr(n, '_json', lambda requested: manifest if requested == url else [info])
+    assert n.check_for_update({'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': 1}) == manifest

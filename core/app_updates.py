@@ -43,6 +43,8 @@ def read_current(root: Path) -> dict:
 def validate_manifest(value: dict, tag: str) -> dict:
     if not isinstance(value, dict) or value.get('protocol') != PROTOCOL:
         raise ValueError('unsupported_update_protocol')
+    if value.get('target', 'windows-x86_64') != 'windows-x86_64':
+        raise ValueError('wrong_update_platform')
     if not re.fullmatch(r'update-[0-9]+-[a-f0-9]{12}', tag):
         raise ValueError('invalid_release_tag')
     if value.get('tag') != tag or type(value.get('sequence')) is not int or value['sequence'] <= 0:

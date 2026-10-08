@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from core.app_updates import CURRENT, MODEL_PATH, REPOSITORY, TARGETS, digest, validate_manifest
 from core.cv_llm_runtime import CV_MODEL_SHA256
+from core.release_identity import VERSION, DISPLAY_VERSION, WINDOWS_TARGET, WINDOWS_ASSET
 
 
 def build(exe: Path, model: Path, out: Path, *, sequence: int, commit: str) -> dict:
@@ -18,7 +19,7 @@ def build(exe: Path, model: Path, out: Path, *, sequence: int, commit: str) -> d
         raise ValueError('bundled_model_hash_mismatch')
     out.mkdir(parents=True, exist_ok=True)
     tag = f'update-{sequence}-{commit[:12]}'
-    manifest = {'protocol': 1, 'tag': tag, 'sequence': sequence, 'commit': commit, 'components': {}}
+    manifest = {'protocol': 1, 'tag': tag, 'sequence': sequence, 'commit': commit, 'version': VERSION, 'display_version': DISPLAY_VERSION, 'target': WINDOWS_TARGET, 'components': {}}
     for name, source in [('app', exe), ('model', model)]:
         parts = []
         with source.open('rb') as stream:
@@ -46,7 +47,7 @@ def build(exe: Path, model: Path, out: Path, *, sequence: int, commit: str) -> d
     shutil.copy2(model, model_target)
     (install / CURRENT).write_text(text, encoding='utf-8')
     (install / 'INSTALL.txt').write_text('Karrierekrake\nEntpacke den gesamten Ordner an einen beschreibbaren Ort und starte Karrierekrake.exe.\nBei Erstinstallation lade das KI-Modell über Einstellungen → Allgemein → KI-Modell herunterladen. Dafür ist einmal Internet nötig. Danach läuft es lokal; spätere Programmupdates behalten das Modell. Updates findest du unter Einstellungen → Allgemein.\nNutzerdaten liegen weiterhin unter %LOCALAPPDATA%\\Karrierekrake.\n', encoding='utf-8')
-    with zipfile.ZipFile(out / 'Karrierekrake-Setup.zip', 'w', compression=zipfile.ZIP_STORED) as archive:
+    with zipfile.ZipFile(out / WINDOWS_ASSET, 'w', compression=zipfile.ZIP_STORED) as archive:
         for file in sorted(install.rglob('*')):
             if file.is_file() and file.relative_to(install).as_posix() != MODEL_PATH:
                 archive.write(file, file.relative_to(install))
