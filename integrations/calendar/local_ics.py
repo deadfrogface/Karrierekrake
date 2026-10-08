@@ -55,6 +55,7 @@ class LocalIcsCalendarAdapter:
 
     def __init__(self, *, settings, token_dir=None):
         self.path = Path(settings.local_calendar_path or '')
+        self.settings = settings
         self.timezone = getattr(settings, "scheduling_timezone", "Europe/Berlin")
 
     def identity(self):
@@ -62,10 +63,24 @@ class LocalIcsCalendarAdapter:
 
     def is_connected(self):
         try:
+            self._refresh_if_stale()
             read_calendar(self.path)
             return datetime.now(timezone.utc) - datetime.fromtimestamp(self.path.stat().st_mtime, timezone.utc) <= MAX_AGE
         except Exception:
             return False
+
+    def _refresh_if_stale(self):
+        url = getattr(self.settings, "local_calendar_feed_url", "")
+        if not url:
+            return
+        if self.path.is_file() and datetime.now(timezone.utc) - datetime.fromtimestamp(self.path.stat().st_mtime, timezone.utc) < timedelta(hours=6):
+            return
+        try:
+            refresh_private_ics(url, self.path)
+        except Exception:
+            # A stale snapshot is rejected by is_connected rather than silently
+            # treating the calendar as empty.
+            pass
 
     def query_busy(self, q):
         if q.time_min.tzinfo is None or q.time_max.tzinfo is None or not timedelta(0) < q.time_max - q.time_min <= timedelta(days=366):
