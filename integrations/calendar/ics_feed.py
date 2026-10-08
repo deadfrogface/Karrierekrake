@@ -11,8 +11,6 @@ import urllib.request
 
 from integrations.calendar.local_ics import MAX_BYTES, read_calendar
 
-MAX_REDIRECTS = 0
-
 
 def validate_feed_url(url: str) -> str:
     parsed = urllib.parse.urlsplit(url.strip())
@@ -52,6 +50,12 @@ def fetch_ics_feed(url: str, destination, *, opener=None) -> None:
     import tempfile
 
     safe_url = validate_feed_url(url)
+    # The standard URL opener may resolve a different address after validation.
+    # Restrict subscriptions to Google's official public ICS host until a
+    # DNS-pinned transport is implemented for arbitrary providers.
+    hostname = urllib.parse.urlsplit(safe_url).hostname
+    if hostname not in {"calendar.google.com", "www.google.com"}:
+        raise ValueError("Automatischer ICS-Abruf unterstützt derzeit nur Google Calendar.")
     destination = Path(destination)
     client = opener or urllib.request.build_opener(NoRedirect())
     request = urllib.request.Request(safe_url, headers={"User-Agent": "Karrierekrake-ICS/1.0"})
