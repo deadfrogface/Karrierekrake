@@ -30,12 +30,40 @@ def guide_html(provider: str, service: str = "both") -> str:
         "Verbinde das Konto und führe einen Lese-Verbindungstest durch.",
         "Aktiviere Schreibzugriff nur nach ausdrücklicher Freigabe. Teste das Anlegen eines Termins oder den E-Mail-Versand separat.",
     ]
+    extra = {
+        "gmx": "E-Mail: IMAP im GMX-Konto aktivieren. Kalender: CalDAV-Zugriff mit dem Konto prüfen.",
+        "webde": "E-Mail: IMAP im WEB.DE-Konto aktivieren. Kalender: CalDAV-Zugriff mit dem Konto prüfen.",
+        "google": "E-Mail: offizielle OAuth-Anmeldung bevorzugen. Kalender: OAuth oder lesenden ICS-Export nutzen.",
+        "microsoft": "E-Mail und Kalender: Microsoft OAuth verwenden. Bei Firmenkonten kann Admin-Freigabe nötig sein.",
+        "icloud": "Apple Account: Zwei-Faktor-Authentifizierung und anwendungsspezifisches Passwort einrichten. Kalender über CalDAV.",
+        "t-online": "Für E-Mail-Programme ein separates E-Mail-Passwort im Telekom-Konto anlegen.",
+        "yahoo": "Kontosicherheit prüfen und, falls angeboten, ein App-Passwort erzeugen.",
+        "freenet": "Prüfen, ob der gewählte Tarif IMAP und SMTP unterstützt.",
+        "other": "IMAP-, SMTP-, CalDAV- und ICS-Angaben aus der offiziellen Anbieterhilfe übernehmen.",
+    }
+    steps.insert(3, extra[provider])
     rows = "".join(f"<li>{escape(step)}</li>" for step in steps)
     capabilities = []
     if service in ("mail", "both"):
         capabilities.append(f"<p><b>E-Mail:</b> {escape(mail)}</p>")
     if service in ("calendar", "both"):
         capabilities.append(f"<p><b>Kalender:</b> {escape(calendar)}</p>")
+    help_urls = {
+        "gmx": "https://hilfe.gmx.net/",
+        "webde": "https://hilfe.web.de/",
+        "google": "https://support.google.com/",
+        "microsoft": "https://support.microsoft.com/",
+        "icloud": "https://support.apple.com/de-de/",
+        "t-online": "https://www.telekom.de/hilfe",
+        "yahoo": "https://help.yahoo.com/",
+        "freenet": "https://kundenservice.freenet.de/",
+    }
+    link = help_urls.get(provider)
+    official_help = (
+        '<p><a href="' + escape(link, quote=True) +
+        '">Offizielle Anbieterhilfe (Internet erforderlich)</a></p>'
+        if link else ""
+    )
     return ('<!doctype html><html lang="de"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
             '<style>body{font:16px system-ui;max-width:760px;margin:3rem auto;padding:0 1rem;line-height:1.65}'
@@ -45,5 +73,9 @@ def guide_html(provider: str, service: str = "both") -> str:
             '<aside><b>Legende:</b> IMAP = E-Mails lesen; SMTP = E-Mails senden; '
             'CalDAV = Kalender synchronisieren; ICS = Kalenderdatei, häufig nur Import/Lesen; '
             'OAuth = sichere Anmeldung über den Anbieter.</aside>'
+            '<h2>Häufige Probleme</h2><p>Login fehlgeschlagen: Passwort, App-Passwort '
+            'und Zwei-Faktor-Einstellungen prüfen. Keine Termine: Kalenderauswahl '
+            'und Zeitzone kontrollieren. Senden fehlgeschlagen: SMTP-Freigabe prüfen.</p>'
+            + official_help +
             '<p><b>Hinweis:</b> Diese Anleitung beschreibt mögliche Verbindungswege, '
             'keinen bestätigten Live-Test. Einzelne Konten und Tarife können abweichen.</p></body></html>')
