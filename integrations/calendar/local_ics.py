@@ -2,7 +2,7 @@
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
-from urllib.request import Request, urlopen
+from urllib.request import Request
 import ipaddress
 import socket
 import os
@@ -137,7 +137,6 @@ def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bo
     Returns False on HTTP 304.
     """
     from urllib.error import HTTPError
-    from urllib.parse import urljoin
     import urllib.request
 
     def check_public_https(value):
