@@ -316,6 +316,10 @@ class SettingsPage(QWidget):
         oform.addWidget(self.lbl_mail_provider)
         oform.addWidget(self.mail_provider)
         oform.addWidget(self.mail_status)
+        self.mail_setup_guide_btn = QPushButton("Wie richte ich E-Mail in KarriereKrake ein?")
+        self.mail_setup_guide_btn.setObjectName("SecondaryButton")
+        self.mail_setup_guide_btn.clicked.connect(lambda: self._open_setup_guide("mail"))
+        oform.addWidget(self.mail_setup_guide_btn)
         self.google_client_btn = QPushButton("Google-OAuth · Premium, bald verfügbar")
         self.google_client_btn.setObjectName("SecondaryButton")
         self.google_client_btn.clicked.connect(lambda: self._premium("google_connection"))
@@ -345,6 +349,10 @@ class SettingsPage(QWidget):
         oform.addWidget(self.lbl_calendar_provider)
         oform.addWidget(self.calendar_provider)
         oform.addWidget(self.calendar_status)
+        self.calendar_setup_guide_btn = QPushButton("Wie richte ich Kalender in KarriereKrake ein?")
+        self.calendar_setup_guide_btn.setObjectName("SecondaryButton")
+        self.calendar_setup_guide_btn.clicked.connect(lambda: self._open_setup_guide("calendar"))
+        oform.addWidget(self.calendar_setup_guide_btn)
         oform.addWidget(self.calendar_import_btn)
 
         self.lbl_calendar_mode = QLabel()
@@ -1339,6 +1347,22 @@ class SettingsPage(QWidget):
             self.calendar_mode_rights.setText(tr("integrations.calendar.mode_b_rights"))
         else:
             self.calendar_mode_rights.setText(tr("integrations.calendar.mode_a_rights"))
+
+    def _open_setup_guide(self, kind: str) -> None:
+        """Open the bundled, offline HTML guide for the selected provider."""
+        import sys
+        from PySide6.QtCore import QUrl
+        from PySide6.QtGui import QDesktopServices
+        from desktop.services.provider_setup_guides import guide_filename
+
+        selection = (self.mail_provider if kind == "mail" else self.calendar_provider).currentData()
+        filename = guide_filename(kind, str(selection or "none"))
+        base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
+        target = (base / "desktop" / "resources" / "setup_guides" / filename).resolve()
+        if not target.is_file():
+            QMessageBox.warning(self, "Einrichtungshilfe", "Die Offline-Anleitung wurde nicht mitinstalliert.")
+            return
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(target)))
 
     def _privacy_connect_calendar(self) -> None:
         """Primary calendar CTA only exposes free/non-Google-API transports."""
