@@ -8,7 +8,7 @@ def test_every_provider_has_offline_html_guide(provider):
     assert "<!doctype html>" in page
     assert "<ol>" in page
     assert "Legende" in page
-    assert "KarriereKrake" in page
+    assert "Karrierekrake" in page
     assert "keinen bestätigten Live-Test" in page
 
 
