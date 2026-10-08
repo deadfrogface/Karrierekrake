@@ -1341,14 +1341,23 @@ class SettingsPage(QWidget):
             self.calendar_mode_rights.setText(tr("integrations.calendar.mode_a_rights"))
 
     def _privacy_connect_calendar(self) -> None:
-        """Primary calendar CTA only exposes free/non-Google-API transports."""
+        """Free calendar: CalDAV or an explicit ICS import/subscription choice."""
         selected = self.calendar_provider.currentData()
         if selected == "generic_caldav":
             self._connect_icloud()
             return
-        # Google/Samsung/Apple free mode is an ICS snapshot.  Even if the
-        # Premium Google item is selected, this button must not start OAuth.
-        self._import_calendar_snapshot()
+        choice = QMessageBox.question(
+            self, "Kostenloser Kalender",
+            "Privaten HTTPS-iCal-Link abonnieren?\n"
+            "Ja: Kalender automatisch lesen (ohne Google API).\n"
+            "Nein: lokale ICS-Datei importieren.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel,
+            QMessageBox.StandardButton.Yes,
+        )
+        if choice == QMessageBox.StandardButton.Yes:
+            self._connect_private_ics_feed()
+        elif choice == QMessageBox.StandardButton.No:
+            self._import_calendar_snapshot()
 
     def _connect_google_calendar_later(self) -> None:
         from core.commercial.features import PremiumFeature, require_premium
