@@ -1346,17 +1346,20 @@ class SettingsPage(QWidget):
         if selected == "generic_caldav":
             self._connect_icloud()
             return
-        choice = QMessageBox.question(
-            self, "Kostenloser Kalender",
-            "Privaten HTTPS-iCal-Link abonnieren?\n"
-            "Ja: Kalender automatisch lesen (ohne Google API).\n"
-            "Nein: lokale ICS-Datei importieren.",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel,
-            QMessageBox.StandardButton.Yes,
+        choice, accepted = QInputDialog.getItem(
+            self,
+            "Kostenloser Kalender",
+            "Wie möchtest du deinen Kalender verbinden?",
+            ["Privaten HTTPS-iCal-Link abonnieren (nur Lesen)",
+             "Lokale ICS-Datei importieren (nur Lesen)"],
+            0,
+            False,
         )
-        if choice == QMessageBox.StandardButton.Yes:
+        if not accepted:
+            return
+        if choice.startswith("Privaten"):
             self._connect_private_ics_feed()
-        elif choice == QMessageBox.StandardButton.No:
+        else:
             self._import_calendar_snapshot()
 
     def _connect_google_calendar_later(self) -> None:
