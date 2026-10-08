@@ -45,8 +45,9 @@ hidden = (
 hidden = policy.filter_hiddenimports(hidden)
 
 datas = policy.build_repo_datas(ROOT)
-_ICON = os.path.join(ROOT, "assets", "brand", "app.ico")
-if not os.path.isfile(_ICON):
+_ICON = (os.path.join(ROOT, "assets", "brand", "app.ico") if sys.platform == "win32"
+         else os.path.join(SPECPATH, "native-app.icns") if sys.platform == "darwin" else None)
+if _ICON is not None and not os.path.isfile(_ICON):
     _ICON = None
 binaries = []
 
@@ -139,13 +140,13 @@ if _hits:
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
+_NATIVE = sys.platform != "win32"
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
+    *([] if _NATIVE else [a.binaries, a.zipfiles, a.datas]),
     [],
+    exclude_binaries=_NATIVE,
     name="Karrierekrake",
     debug=False,
     bootloader_ignore_signals=False,
@@ -164,3 +165,11 @@ exe = EXE(
     entitlements_file=None,
     icon=_ICON,
 )
+
+if _NATIVE:
+    collection = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="Karrierekrake")
+    if sys.platform == "darwin":
+        app = BUNDLE(collection, name="Karrierekrake.app", icon=_ICON,
+                     bundle_identifier="com.karrierekrake.desktop",
+                     info_plist={"CFBundleDisplayName": "Karrierekrake",
+                                 "NSHighResolutionCapable": True})

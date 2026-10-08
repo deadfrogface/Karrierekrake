@@ -12,6 +12,7 @@ from pathlib import Path
 
 from desktop.branding import DATA_DIR_NAME
 from desktop.legacy_migration import migrate_legacy_appdata_if_needed
+from core.platform_paths import user_data_dir
 
 APP_NAME = DATA_DIR_NAME
 
@@ -24,11 +25,12 @@ def project_root() -> Path:
 
 
 def app_data_dir() -> Path:
-    base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
-    canonical = Path(base) / APP_NAME
+    canonical = user_data_dir()
     # Skip migration when tests/CI point LOCALAPPDATA at an isolated temp tree
     # that already is the intended root parent — still run migrate (cheap/idempotent).
-    path = migrate_legacy_appdata_if_needed(canonical)
+    path = (migrate_legacy_appdata_if_needed(canonical)
+            if (sys.platform == "win32" or os.environ.get("LOCALAPPDATA"))
+            and not os.environ.get("KARRIEREKRAKE_DATA_DIR") else canonical)
     path.mkdir(parents=True, exist_ok=True)
     return path
 

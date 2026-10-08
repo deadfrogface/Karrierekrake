@@ -11,8 +11,16 @@ Kein Cloud-Konto · kein Pflicht-KI-Abo · Daten bleiben auf Ihrem PC</p>
   <img src="docs/assets/screenshots/01-dashboard.png" alt="Dashboard" width="720" />
 </p>
 
-Lokale Windows-Desktop-App. Ausführdatei: `Karrierekrake.exe`.  
-Datenverzeichnis: `%LOCALAPPDATA%\Karrierekrake`
+Lokale Desktop-App für Windows, macOS und Linux.
+
+| System | Paket | Datenverzeichnis |
+|---|---|---|
+| Windows | `Karrierekrake-Setup.zip` | `%LOCALAPPDATA%\Karrierekrake` |
+| macOS Apple Silicon | `Karrierekrake-macOS-AppleSilicon.dmg` | `~/Library/Application Support/Karrierekrake` |
+| macOS Intel | `Karrierekrake-macOS-Intel.dmg` | `~/Library/Application Support/Karrierekrake` |
+| Linux x86_64 | `Karrierekrake-Linux-x86_64.tar.gz` | `$XDG_DATA_HOME/Karrierekrake` oder `~/.local/share/Karrierekrake` |
+
+Die nativen Pakete werden erst nach erfolgreichen Builds und Offline-Importtests veröffentlicht. Installation und Plattformgrenzen: [macOS/Linux](docs/desktop-platforms.md).
 
 ---
 

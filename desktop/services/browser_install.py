@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 from core.cv_llm_runtime import is_frozen
+from core.platform_paths import user_data_dir
 
 logger = logging.getLogger("karrierekrake")
 
@@ -36,8 +37,7 @@ def meipass_dir() -> Path | None:
 
 def appdata_browsers_dir() -> Path:
     """Canonical install location: %LOCALAPPDATA%\\Karrierekrake\\browsers."""
-    local = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
-    return Path(local) / "Karrierekrake" / BROWSERS_DIRNAME
+    return user_data_dir() / BROWSERS_DIRNAME
 
 
 def candidate_browsers_dirs() -> list[Path]:
@@ -48,8 +48,9 @@ def candidate_browsers_dirs() -> list[Path]:
         roots.append(Path(env))
     roots.append(appdata_browsers_dir())
     # Legacy locations (read-only fallback during migration)
-    local = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
-    roots.append(Path(local) / LEGACY_MS_PLAYWRIGHT)
+    if sys.platform == "win32" or os.environ.get("LOCALAPPDATA"):
+        local = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
+        roots.append(Path(local) / LEGACY_MS_PLAYWRIGHT)
     root = project_or_bundle_root()
     roots.append(root / LEGACY_MS_PLAYWRIGHT)
     roots.append(root / BROWSERS_DIRNAME)
@@ -74,12 +75,18 @@ def find_chromium_executable(browsers_dir: Path | None = None) -> Path | None:
     for base in dirs:
         if not base or not base.exists():
             continue
-        matches = sorted(base.glob("chromium-*/chrome-win*/chrome.exe"))
-        if matches:
-            return matches[-1]  # newest revision if multiple
-        matches = sorted(base.glob("chromium_headless_shell-*/chrome-win*/headless_shell.exe"))
-        if matches:
-            return matches[-1]
+        for pattern in (
+            "chromium-*/chrome-win*/chrome.exe",
+            "chromium-*/chrome-linux*/chrome",
+            "chromium-*/chrome-mac*/Chromium.app/Contents/MacOS/Chromium",
+            "chromium-*/chrome-mac*/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+            "chromium_headless_shell-*/chrome-win*/headless_shell.exe",
+            "chromium_headless_shell-*/chrome-linux*/headless_shell",
+            "chromium_headless_shell-*/chrome-mac*/headless_shell",
+        ):
+            matches = sorted(p for p in base.glob(pattern) if p.is_file())
+            if matches:
+                return matches[-1]
     return None
 
 

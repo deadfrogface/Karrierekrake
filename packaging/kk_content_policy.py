@@ -21,6 +21,7 @@ POLICY_VERSION = 1
 ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
     # (source relative to repo root, destination inside bundle)
     ("templates", "templates"),
+    ("packaging/native-current.json", "."),
     ("config/profile.yaml.example", "config"),
     ("config/application_profile.yaml.example", "config"),
     ("config/settings.yaml.example", "config"),
@@ -36,7 +37,7 @@ ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
 )
 
 # Private CI inputs provisioned before packaging, absent from a clean checkout.
-BUILD_PROVISIONED_DATAS = ("assets/oauth/desktop_client.json",)
+BUILD_PROVISIONED_DATAS = ("assets/oauth/desktop_client.json", "packaging/native-current.json")
 
 # First-party Python packages that may be collected as hiddenimports.
 ALLOWED_FIRST_PARTY_PREFIXES: tuple[str, ...] = (
@@ -79,6 +80,8 @@ ALLOWED_THIRD_PARTY_HIDDEN: tuple[str, ...] = (
     # Account secrets need the dynamically discovered Windows credential backend.
     "keyring",
     "keyring.backends.Windows",
+    "keyring.backends.macOS",
+    "keyring.backends.SecretService",
     "win32ctypes",
     "app.main",
     "browser.browser_manager",

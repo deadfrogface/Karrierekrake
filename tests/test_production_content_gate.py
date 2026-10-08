@@ -54,7 +54,7 @@ def test_policy_version_positive():
 
 
 def test_allowed_datas_exist_on_disk():
-    assert policy.BUILD_PROVISIONED_DATAS == ("assets/oauth/desktop_client.json",)
+    assert policy.BUILD_PROVISIONED_DATAS == ("assets/oauth/desktop_client.json", "packaging/native-current.json")
     assert set(policy.BUILD_PROVISIONED_DATAS) <= {rel for rel, _ in policy.ALLOWED_DATAS}
     for rel, _dest in policy.ALLOWED_DATAS:
         if rel in policy.BUILD_PROVISIONED_DATAS:

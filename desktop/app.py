@@ -13,7 +13,9 @@ if getattr(sys, "frozen", False) and os.environ.get("KARRIEREKRAKE_BOOT_DIAG", "
     "yes",
 }:
     try:
-        _diag = Path(os.environ.get("LOCALAPPDATA") or ".") / "Karrierekrake" / "logs"
+        from core.platform_paths import user_data_dir
+
+        _diag = user_data_dir() / "logs"
         _diag.mkdir(parents=True, exist_ok=True)
         (_diag / "boot.log").write_text(
             f"boot frozen exe={sys.executable} argv={sys.argv}\n",
@@ -350,6 +352,10 @@ def _smoke_result_paths() -> list[Path]:
     local = (os.environ.get("LOCALAPPDATA") or "").strip()
     if local:
         paths.append(Path(local) / DATA_DIR_NAME / "smoke_test_result.txt")
+    else:
+        from core.platform_paths import user_data_dir
+
+        paths.append(user_data_dir() / "smoke_test_result.txt")
     try:
         paths.append(Path(sys.executable).resolve().parent / "smoke_test_result.txt")
     except Exception:

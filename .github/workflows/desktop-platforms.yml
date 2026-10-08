@@ -1,0 +1,84 @@
+name: Desktop Platforms
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: desktop-platforms-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-22.04
+            target: linux-x86_64
+            exe: dist/Karrierekrake/Karrierekrake
+          - runner: macos-14
+            target: macos-arm64
+            exe: dist/Karrierekrake.app/Contents/MacOS/Karrierekrake
+          - runner: macos-15-intel
+            target: macos-x86_64
+            exe: dist/Karrierekrake.app/Contents/MacOS/Karrierekrake
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    env:
+      QT_QPA_PLATFORM: offscreen
+      # Compile portable kernels rather than inheriting the runner's CPU ISA.
+      CMAKE_ARGS: '-DGGML_NATIVE=OFF -DGGML_METAL=OFF -DGGML_CUDA=OFF'
+      CMAKE_BUILD_PARALLEL_LEVEL: '3'
+      KARRIEREKRAKE_DATA_DIR: ${{ runner.temp }}/kk-native-test-data
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Linux runtime libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libdbus-1-3
+      - name: Install native dependencies (compile pinned llama.cpp)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -c constraints-runtime.txt -r requirements-build.txt --no-binary llama-cpp-python
+      - name: Platform regression tests
+        run: |
+          python -m pytest -q tests/test_desktop_platforms.py tests/test_native_updates.py tests/test_native_schedule.py tests/test_publish_native_assets.py tests/test_windows_paths.py tests/test_product_rename_migration.py tests/test_browser_install.py tests/test_update_panel.py tests/test_app_updates.py tests/test_schedule_once_entrypoint.py tests/test_production_content_gate.py tests/test_privacy_scan.py
+          python scripts/privacy_scan.py
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/kk-cv-model-cache
+          key: kk-cv-gguf-${{ hashFiles('core/cv_llm_runtime.py') }}
+          restore-keys: kk-cv-gguf-
+      - name: Prepare verified model, OAuth client and build identity
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GOOGLE_DESKTOP_CLIENT_JSON: ${{ secrets.GOOGLE_DESKTOP_CLIENT_JSON }}
+          KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
+        run: |
+          python scripts/prepare_bundled_cv_model.py --allow-download
+          python scripts/prepare_google_desktop_client.py
+          python scripts/package_native_release.py --prepare --target ${{ matrix.target }} --commit ${{ github.sha }} --sequence ${{ github.run_id }}
+      - name: Build native application with offline model
+        env:
+          KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: '1'
+          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: '1'
+        run: python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
+      - name: Actual native binary smoke and offline DE/EN import
+        run: python scripts/ci_native_acceptance.py --exe ${{ matrix.exe }} --out native-release/acceptance.json
+      - name: Package tested application
+        run: python scripts/package_native_release.py --target ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Karrierekrake-${{ matrix.target }}
+          path: native-release/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

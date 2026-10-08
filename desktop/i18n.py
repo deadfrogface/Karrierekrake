@@ -2490,3 +2490,14 @@ TRANSLATIONS["en"].update({
 
 TRANSLATIONS["de"]["search.active_filters"] = " · {count} aktiv"
 TRANSLATIONS["en"]["search.active_filters"] = " · {count} active"
+
+TRANSLATIONS["de"].update({
+    "updates.native_ready": "Neue Versionen werden automatisch geprüft. Ein Update ersetzt das Programmpaket; Ihre Daten bleiben im Benutzerordner.",
+    "updates.native_available": "Eine neue Version ist verfügbar. Laden Sie das Paket herunter, schließen Sie Karrierekrake und ersetzen Sie die bisherige App.",
+    "updates.native_download": "Update herunterladen",
+})
+TRANSLATIONS["en"].update({
+    "updates.native_ready": "New versions are checked automatically. Replace the application package to update; your data stays in your user folder.",
+    "updates.native_available": "A new version is available. Download the package, close Karrierekrake and replace the previous app.",
+    "updates.native_download": "Download update",
+})
