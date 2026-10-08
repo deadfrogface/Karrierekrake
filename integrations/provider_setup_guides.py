@@ -6,7 +6,7 @@ from html import escape
 PROVIDERS = {
     "gmx": ("GMX", "IMAP/SMTP", "CalDAV", "Öffne die GMX-Einstellungen und aktiviere IMAP/POP3-Zugriff.", "Richte ein separates Mail-Passwort ein, falls dein Konto es verlangt."),
     "webde": ("WEB.DE", "IMAP/SMTP", "CalDAV", "Aktiviere den Zugriff über IMAP/POP3 in den WEB.DE-Einstellungen.", "Erstelle bei Bedarf ein anwendungsspezifisches Passwort."),
-    "google": ("Google / Gmail", "OAuth2 oder unterstütztes App-Passwort", "Google Calendar OAuth oder ICS (nur Lesen)", "Prüfe die Google-Kontosicherheit und wähle eine vom Konto unterstützte Anmeldemethode.", "Für direkte Kalendersynchronisierung benötigt KarriereKrake eine freigegebene OAuth-Verbindung."),
+    "google": ("Google / Gmail", "OAuth2 oder unterstütztes App-Passwort", "Google Calendar OAuth oder ICS (nur Lesen)", "Prüfe die Google-Kontosicherheit und wähle eine vom Konto unterstützte Anmeldemethode.", "Für direkte Kalendersynchronisierung benötigt Karrierekrake eine freigegebene OAuth-Verbindung."),
     "microsoft": ("Outlook / Hotmail / Microsoft 365", "OAuth2", "Microsoft Graph oder ICS (nur Lesen)", "Melde dich über die offizielle Microsoft-Anmeldung an; ein normales Passwort in IMAP reicht häufig nicht.", "Bei Firmenkonten kann eine Administratorfreigabe notwendig sein."),
     "icloud": ("Apple / iCloud", "IMAP/SMTP", "CalDAV", "Aktiviere Zwei-Faktor-Authentifizierung für deinen Apple Account.", "Erstelle ein anwendungsspezifisches Passwort für kompatible Drittanbieter-Apps."),
     "t-online": ("Telekom / T-Online", "IMAP/SMTP", "ICS falls angeboten", "Erstelle im Telekom-Konto ein separates E-Mail-Passwort.", "Trage dieses Passwort im Verbindungsdialog ein."),
@@ -26,7 +26,7 @@ def guide_html(provider: str, service: str = "both") -> str:
         f"Öffne die offiziellen Kontoeinstellungen von {name}.",
         first,
         second,
-        "Öffne KarriereKrake → Einstellungen → Integrationen und wähle den Anbieter.",
+        "Öffne Karrierekrake → Einstellungen → Integrationen und wähle den Anbieter.",
         "Verbinde das Konto und führe einen Lese-Verbindungstest durch.",
         "Aktiviere Schreibzugriff nur nach ausdrücklicher Freigabe. Teste das Anlegen eines Termins oder den E-Mail-Versand separat.",
     ]
@@ -55,7 +55,7 @@ def guide_html(provider: str, service: str = "both") -> str:
         )
     illustration = ('<aside><b>Beispielablauf (schematisch, kein echter Screenshot):</b> '
                     '① Konto öffnen → ② Zugriff aktivieren → ③ Anmeldemethode wählen '
-                    '→ ④ Verbindung in KarriereKrake prüfen.</aside>')
+                    '→ ④ Verbindung in Karrierekrake prüfen.</aside>')
     rows = "".join(f"<li>{escape(step)}</li>" for step in steps)
     capabilities = []
     if service in ("mail", "both"):
@@ -82,7 +82,7 @@ def guide_html(provider: str, service: str = "both") -> str:
             '<meta name="viewport" content="width=device-width, initial-scale=1">'
             '<style>body{font:16px system-ui;max-width:760px;margin:3rem auto;padding:0 1rem;line-height:1.65}'
             'li{margin:0.8rem 0}aside{background:#f2f3f5;padding:1rem;border-radius:8px}</style></head><body>'
-            f'<h1>Wie richte ich {escape(name)} in KarriereKrake ein?</h1>'
+            f'<h1>Wie richte ich {escape(name)} in Karrierekrake ein?</h1>'
             + "".join(capabilities) + server_table + illustration + f'<ol>{rows}</ol>'
             '<aside><b>Legende:</b> IMAP = E-Mails lesen; SMTP = E-Mails senden; '
             'CalDAV = Kalender synchronisieren; ICS = Kalenderdatei, häufig nur Import/Lesen; '
