@@ -135,22 +135,21 @@ def refresh_private_ics(url: str, destination: Path, *, timeout: int = 15) -> bo
 
     Restrict DNS and redirect targets to public IPs to avoid local network access.
     The destination is only replaced after the entire calendar validates.
-    Returns False on HTTP 304.
+    Rejects redirects and non-200 responses.
     """
 
-    def check_public_https(value):
-        parsed = urlsplit(value)
-        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password or parsed.port not in (None, 443):
-            raise ValueError("Nur öffentliche HTTPS-Kalenderadressen sind erlaubt.")
-        for info in socket.getaddrinfo(parsed.hostname, 443, type=socket.SOCK_STREAM):
-            if not ipaddress.ip_address(info[4][0]).is_global:
-                raise ValueError("Private Netzwerkadressen sind nicht erlaubt.")
-
-    check_public_https(url)
-    # Connect to the already-validated public address; no redirect or proxy
-    # may re-resolve the hostname to an internal IP.
     parsed = urlsplit(url)
+    if (parsed.scheme != "https" or not parsed.hostname or parsed.username
+            or parsed.password or parsed.port not in (None, 443)
+            or parsed.fragment):
+        raise ValueError("Nur öffentliche HTTPS-Kalenderadressen sind erlaubt.")
     addresses = socket.getaddrinfo(parsed.hostname, 443, type=socket.SOCK_STREAM)
+    if not addresses:
+        raise ValueError("Kalenderhost konnte nicht aufgelöst werden.")
+    # Validate every DNS answer, then pin the connection to one checked IP.
+    for info in addresses:
+        if not ipaddress.ip_address(info[4][0]).is_global:
+            raise ValueError("Private Netzwerkadressen sind nicht erlaubt.")
     address = addresses[0][4][0]
     class PinnedHTTPS(http.client.HTTPSConnection):
         def connect(self):
