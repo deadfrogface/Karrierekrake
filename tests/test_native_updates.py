@@ -99,7 +99,7 @@ def test_wrong_platform_is_rejected_before_any_network(monkeypatch):
 def test_future_version_filename_stays_on_same_platform(monkeypatch):
     monkeypatch.setattr(n, 'runtime_target', lambda: 'macos-arm64')
     info, manifest, url = release()
-    manifest['url'] = manifest['url'].replace('Alpha-0.1-', 'Alpha-0.2-')
+    manifest['url'] = manifest['url'].replace('Alpha-1.0-', 'Alpha-1.1-')
     info['assets'][1]['browser_download_url'] = manifest['url']
     monkeypatch.setattr(n, '_json', lambda requested: manifest if requested == url else [info])
     assert n.check_for_update({'target': 'macos-arm64', 'commit': 'a' * 40, 'sequence': 1}) == manifest

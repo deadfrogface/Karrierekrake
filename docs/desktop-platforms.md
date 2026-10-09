@@ -4,9 +4,9 @@ Alle Desktop-Pakete verwenden dieselbe Python/PySide6-Anwendung, denselben CV-Im
 
 ## Pakete und Installation
 
-- **Apple Silicon:** `Karrierekrake-Alpha-0.1-macOS-AppleSilicon.dmg`, gebaut auf macOS 14 / ARM64.
-- **Intel-Mac:** `Karrierekrake-Alpha-0.1-macOS-Intel.dmg`, gebaut auf macOS 15 / x86_64.
-- **Linux:** `Karrierekrake-Alpha-0.1-Linux-x86_64.tar.gz`, gebaut auf Ubuntu 22.04 / x86_64. Zunächst Ubuntu 22.04+ und darauf basierende Linux-Mint-Versionen; andere Distributionen sind nicht zugesichert.
+- **Apple Silicon:** `Karrierekrake-Alpha-1.0-macOS-AppleSilicon.dmg`, gebaut auf macOS 14 / ARM64.
+- **Intel-Mac:** `Karrierekrake-Alpha-1.0-macOS-Intel.dmg`, gebaut auf macOS 15 / x86_64.
+- **Linux:** `Karrierekrake-Alpha-1.0-Linux-x86_64.tar.gz`, gebaut auf Ubuntu 22.04 / x86_64. Zunächst Ubuntu 22.04+ und darauf basierende Linux-Mint-Versionen; andere Distributionen sind nicht zugesichert.
 
 macOS: Das passende DMG öffnen, Karrierekrake in „Programme“ ziehen und dort starten. Für diese erste Ausgabe sind keine Developer-ID-Zertifikate und keine Apple-Notarisierung eingerichtet. Ein macOS-Build auf GitHub ist kein Nachweis, dass Gatekeeper die heruntergeladene App ohne zusätzliche Benutzerfreigabe öffnet. Ältere macOS-Versionen sind nicht geprüft.
 
@@ -36,7 +36,7 @@ Noch kein automatischer Austausch, kein Rollback und keine Delta-Downloads auf m
 
 `Desktop Platforms` baut auf Ubuntu 22.04, macOS 14 ARM64 und macOS 15 Intel. Die Workflow-Matrix führt Plattform-/Updater-/Packaging-Regressionen aus, kompiliert das gepinnte llama.cpp ohne CPU-native Compileroptimierung, provisioniert das geprüfte GGUF und den registrierten Google-Desktop-Client, baut die native Anwendung und testet das **fertige Binary** mit Qt-Smoke sowie Offline-DE/EN-Lebenslauf-Import mit dem verifizierten Modell im isolierten Benutzer-Datenordner (Zustand nach Ersteinrichtung). Einzelne Release-Dateien bleiben unter GitHubs 2-GiB-Grenze.
 
-`Publish component update` wartet auf CI, Windows Smoke **und** Desktop Platforms für denselben aktuellen main-Commit und baut anschließend die geprüften Windows-Komponenten als internes Artefakt. `Publish Karrierekrake Alpha` erstellt daraus und aus den passenden nativen Artefakten **einen** Release „Karrierekrake Alpha 0.1“. Der Release bleibt ein Entwurf, bis alle vier Downloads (Windows, Mac Apple Silicon, Mac Intel, Linux) und deren Update-Manifeste hochgeladen sind. Bei einem fehlgeschlagenen Build oder Upload erscheint kein unvollständiger öffentlicher Release. Alte öffentliche Windows-Releases bleiben erhalten.
+`Publish component update` wartet auf CI, Windows Smoke **und** Desktop Platforms für denselben aktuellen main-Commit und baut anschließend die geprüften Windows-Komponenten als internes Artefakt. `Publish Karrierekrake Alpha` erstellt daraus und aus den passenden nativen Artefakten **einen** Release „Karrierekrake Alpha 1.0“. Der Release bleibt ein Entwurf, bis alle vier Downloads (Windows, Mac Apple Silicon, Mac Intel, Linux) und deren Update-Manifeste hochgeladen sind. Bei einem fehlgeschlagenen Build oder Upload erscheint kein unvollständiger öffentlicher Release. Alte öffentliche Windows-Releases bleiben erhalten.
 
 Ein gemeinsamer Versionswert (`core/release_identity.py`) legt Titel, Programmversion und eindeutige Dateinamen fest. Die Core-Funktionen, das Modell und der Quellcode-Commit sind identisch. Pakete enthalten keine Anwendungsversion eines anderen Betriebssystems. Der Windows-Updater akzeptiert nur sein Komponentenmanifest und lädt nur dessen Programm-/Modellteile; macOS/Linux prüfen zusätzlich das tatsächliche Laufzeitsystem und die CPU-Architektur und fragen nur ihr eigenes Manifest ab. Die Mac-Architekturen bleiben getrennte Downloads, damit nicht beide heruntergeladen werden.
 
