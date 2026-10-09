@@ -1,3 +1,5 @@
 """Karrierekrake desktop application package."""
 
-__version__ = "1.0.0"
+from core.release_identity import VERSION
+
+__version__ = VERSION

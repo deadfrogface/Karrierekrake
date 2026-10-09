@@ -280,7 +280,7 @@ def test_next_drawer_opens_at_top_with_first_input_focused(qapp, config_service)
     page._edit_section("skills")
 
 
-def test_wizard_completed_or_skipped_stays_done(qapp, config_service):
+def test_wizard_completion_persists_but_cancel_remains_pending(qapp, config_service):
     from desktop.services import ConfigService
     from desktop.wizard import FirstRunWizard
 
@@ -291,7 +291,7 @@ def test_wizard_completed_or_skipped_stays_done(qapp, config_service):
     again = ConfigService()
     assert not again.is_first_run()
 
-    # A fresh tree: skipping must persist the same way.
+    # A fresh tree: cancellation must remain resumable.
     root = Path(config_service.meta_path).parent
     meta = root / "meta.json"
     meta.write_text('{"first_run_completed": false}\n', encoding="utf-8")
@@ -299,8 +299,8 @@ def test_wizard_completed_or_skipped_stays_done(qapp, config_service):
     assert skipped_svc.is_first_run()
     skipped = FirstRunWizard(skipped_svc)
     skipped.reject()
-    assert not skipped_svc.is_first_run()
-    assert not ConfigService().is_first_run()
+    assert skipped_svc.is_first_run()
+    assert ConfigService().is_first_run()
 
 
 def test_wizard_not_shown_on_second_start(qapp, config_service, monkeypatch):

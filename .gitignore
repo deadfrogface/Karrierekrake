@@ -286,3 +286,8 @@ vendor/cv_model/**
 
 # Provision Google Desktop identity locally for packaged builds.
 /assets/oauth/desktop_client.json
+
+# Provisioned native build identity and release artifacts
+packaging/native-current.json
+native-release/
+packaging/native-app.icns

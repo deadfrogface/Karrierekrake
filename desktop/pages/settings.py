@@ -103,7 +103,10 @@ def _collapsible_host(title_btn: QToolButton, body: QWidget) -> QWidget:
     return host
 
 
-class SettingsPage(QWidget):
+from desktop.account_connections import AccountConnectionsMixin
+
+
+class SettingsPage(AccountConnectionsMixin, QWidget):
     appearance_changed = Signal()
     settings_saved = Signal()
 
@@ -311,26 +314,14 @@ class SettingsPage(QWidget):
             ("integrations.mail.google", "google_gmail"),
         ):
             self.mail_provider.addItem(label, data)
+        self.mail_provider.view().setRowHidden(self.mail_provider.findData("google_gmail"), True)
         self.mail_status = QLabel()
         self.mail_status.setWordWrap(True)
         oform.addWidget(self.lbl_mail_provider)
         oform.addWidget(self.mail_provider)
         oform.addWidget(self.mail_status)
-        self.google_client_btn = QPushButton("Google-OAuth · Premium, bald verfügbar")
-        self.google_client_btn.setObjectName("SecondaryButton")
-        self.google_client_btn.clicked.connect(lambda: self._premium("google_connection"))
         self.calendar_import_btn = QPushButton("Google / Samsung / Apple: Kalenderdatei importieren …")
         self.calendar_import_btn.clicked.connect(self._import_calendar_snapshot)
-        premium_box = QGroupBox("Wird später integriert")
-        premium_layout = QVBoxLayout(premium_box)
-        premium_layout.addWidget(self.google_client_btn)
-        for label, feature in (("Antwort automatisch senden", "automatic_reply"),
-                               ("Google Maps", "google_maps"),
-                               ("ChatGPT / Gemini und weitere Cloud-Modelle", "cloud_models")):
-            button = QPushButton(label + " · Premium")
-            button.clicked.connect(lambda checked=False, selected=feature: self._premium(selected))
-            premium_layout.addWidget(button)
-
         self.lbl_calendar_provider = QLabel()
         self.calendar_provider = QComboBox()
         for label, data in (
@@ -340,12 +331,13 @@ class SettingsPage(QWidget):
             ("integrations.calendar.none_explicit", "none"),
         ):
             self.calendar_provider.addItem(label, data)
+        self.calendar_provider.view().setRowHidden(self.calendar_provider.findData("google_calendar"), True)
         self.calendar_status = QLabel()
         self.calendar_status.setWordWrap(True)
         oform.addWidget(self.lbl_calendar_provider)
         oform.addWidget(self.calendar_provider)
         oform.addWidget(self.calendar_status)
-        oform.addWidget(self.calendar_import_btn)
+        self.calendar_import_btn.hide()  # Available through the calendar connection menu.
 
         self.lbl_calendar_mode = QLabel()
         self.calendar_google_mode = QComboBox()
@@ -367,9 +359,16 @@ class SettingsPage(QWidget):
             self.setup_provider.addItem(details[0], key)
         self.setup_guide_button = QPushButton("Wie richte ich diesen Anbieter in Karrierekrake ein?")
         self.setup_guide_button.clicked.connect(self._open_provider_setup_guide)
-        oform.addWidget(QLabel("Anbieter-Anleitungen (E-Mail und Kalender)"))
+        guide_toggle = QToolButton()
+        guide_toggle.setText("Anbieter-Anleitungen anzeigen")
+        guide_toggle.setCheckable(True)
+        oform.addWidget(guide_toggle)
         oform.addWidget(self.setup_provider)
         oform.addWidget(self.setup_guide_button)
+        self.setup_provider.hide()
+        self.setup_guide_button.hide()
+        guide_toggle.toggled.connect(self.setup_provider.setVisible)
+        guide_toggle.toggled.connect(self.setup_guide_button.setVisible)
 
         self.provider_hint = QLabel()
         self.provider_hint.setWordWrap(True)
@@ -387,7 +386,6 @@ class SettingsPage(QWidget):
         oform.insertWidget(3, self.privacy_connect_gmail_btn)
         for btn in (self.privacy_connect_cal_btn, self.privacy_disconnect_btn):
             oform.addWidget(btn)
-        oform.addWidget(premium_box)
         integ_layout.addWidget(oauth_box)
 
         guenther_box = QGroupBox()
@@ -422,14 +420,14 @@ class SettingsPage(QWidget):
         self.wizard_reopen_btn.clicked.connect(self._reopen_setup_wizard)
         gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
         gform.addRow(self.guenther_writer_status)
-        gform.addRow(self.guenther_hint)
+        self.guenther_hint.hide()
         gform.addRow(self.cv_import_title)
-        gform.addRow(self.cv_import_body)
+        self.cv_import_body.hide()
         gform.addRow(self.cv_import_status)
-        gform.addRow(self.local_llm_cv_parsing)
-        gform.addRow(self.local_llm_cv_hint)
-        gform.addRow(self.wizard_reopen_btn)
-        integ_layout.addWidget(guenther_box)
+        self.local_llm_cv_parsing.hide()
+        self.local_llm_cv_hint.hide()
+        general_layout.insertWidget(1, self.wizard_reopen_btn)
+        general_layout.insertWidget(4, guenther_box)
         integ_layout.addStretch(1)
         self.stack.addWidget(integ_page)
 
@@ -829,9 +827,9 @@ class SettingsPage(QWidget):
         # Günther is always on — no user toggle. Status only reflects model readiness.
         writer_ok = False
         try:
-            from guenther.model_manager import PRODUCTION_MODEL_ID, ModelManager
+            from core.cv_llm_runtime import resolve_cv_model_path
 
-            writer_ok = ModelManager().is_installed(PRODUCTION_MODEL_ID)
+            writer_ok = resolve_cv_model_path() is not None
         except Exception:
             writer_ok = False
         if writer_ok:
@@ -859,15 +857,25 @@ class SettingsPage(QWidget):
                 else tr("settings.cv_import_status_unavailable")
             )
 
+    def show_updates(self) -> None:
+        self.nav.setCurrentRow(0)
+        from PySide6.QtWidgets import QScrollArea
+        scroll = self.updates.parentWidget()
+        while scroll is not None and not isinstance(scroll, QScrollArea):
+            scroll = scroll.parentWidget()
+        if scroll is not None:
+            scroll.ensureWidgetVisible(self.updates)
+        self.updates.install_button.setFocus()
+
     def _reopen_setup_wizard(self) -> None:
         from desktop.wizard import FirstRunWizard
 
         wizard = FirstRunWizard(self.config_service, self, force=True)
-        if wizard.exec():
-            self.load_from_config()
-            parent = self.window()
-            if parent is not None and hasattr(parent, "refresh_all"):
-                parent.refresh_all()  # type: ignore[attr-defined]
+        wizard.exec()
+        self.load_from_config()
+        parent = self.window()
+        if parent is not None and hasattr(parent, "refresh_all"):
+            parent.refresh_all()  # type: ignore[attr-defined]
 
     def _open_diagnose_logs(self) -> None:
         parent = self.window()
@@ -1430,130 +1438,6 @@ class SettingsPage(QWidget):
         from core.commercial.features import PremiumFeature
         from desktop.widgets.premium import show_premium
         show_premium(self, PremiumFeature(feature))
-
-    def _connect_free_mail(self):
-        from desktop.widgets.free_mail_credentials import FreeMailCredentialsDialog
-        dialog = FreeMailCredentialsDialog(self)
-        if dialog.exec() != QDialog.DialogCode.Accepted:
-            return
-        secret = dialog.credentials()
-        token_dir = self.config_service.dirs["config"]
-
-        def connect():
-            from integrations.mail.imap.adapter import validate_imap_secret, store_imap_secret
-            if secret.get("oauth2"):
-                from integrations.mail.imap.outlook_auth import login_outlook
-                login_outlook(secret)
-            validate_imap_secret(secret)
-            store_imap_secret(secret, token_dir=token_dir)
-
-        def finished(_):
-            from integrations.providers.connection_probe import clear_probe_cache
-            cfg = self.config_service.load()
-            cfg.settings.mail_provider = "generic_imap"
-            cfg.settings.gmail_sync_enabled = False
-            self.config_service.save(cfg)
-            clear_probe_cache("generic_imap")
-            self.mail_provider.setCurrentIndex(self.mail_provider.findData("generic_imap"))
-            QMessageBox.information(self, "Kostenloser Sortierer", "Postfach verbunden. Im Posteingang auf Aktualisieren klicken. Nachrichten werden nur gelesen und lokal sortiert.")
-
-        self._run_account_task(connect, finished, cleanup=secret.clear)
-
-    def _connect_icloud(self):
-        from desktop.widgets.provider_credentials import ProviderCredentialsDialog
-        dialog = ProviderCredentialsDialog(calendar=True, parent=self)
-        dialog.setWindowTitle("Apple / iCloud verbinden")
-        dialog.server.setText("https://caldav.icloud.com/")
-        dialog.server.setReadOnly(True)
-        dialog.username.setPlaceholderText("Apple-ID")
-        dialog.password.setPlaceholderText("Anwendungsspezifisches Apple-Passwort (2FA)")
-        if dialog.exec() != QDialog.DialogCode.Accepted:
-            return
-        secret = dialog.credentials()
-        allow_write = dialog.allow_write.isChecked()
-        token_dir = self.config_service.dirs["config"]
-
-        def verify():
-            from integrations.calendar.caldav.client import LiveCaldavClient
-            return LiveCaldavClient(secret).discover_calendars()
-
-        def finished(calendars):
-            from integrations.calendar.caldav.adapter import store_caldav_secret
-            from integrations.providers.connection_probe import clear_probe_cache
-            selected, ok = QInputDialog.getItem(self, "iCloud-Kalender", "Kalender auswählen", calendars, 0, False)
-            if not ok:
-                return
-            secret['calendar_path'] = selected
-            store_caldav_secret(secret, token_dir=token_dir)
-            cfg = self.config_service.load()
-            cfg.settings.calendar_provider = "generic_caldav"
-            cfg.settings.allow_calendar_write = allow_write
-            cfg.settings.calendar_freebusy_enabled = True
-            self.config_service.save(cfg)
-            self.calendar_provider.setCurrentIndex(self.calendar_provider.findData("generic_caldav"))
-            clear_probe_cache("generic_caldav")
-            QMessageBox.information(self, "Apple / iCloud", "Kalender verbunden. Schreiben erfordert weiterhin Ihre ausdrückliche Freigabe.")
-
-        self._run_account_task(verify, finished, cleanup=secret.clear)
-
-    def _connect_private_ics_feed(self):
-        from PySide6.QtWidgets import QInputDialog
-        url, ok = QInputDialog.getText(
-            self, "Privaten ICS-Kalender abonnieren",
-            "Privaten HTTPS-iCal-Link einfügen (nur Lesen, wie ein Passwort behandeln):"
-        )
-        if not ok or not url.strip():
-            return
-        url = url.strip()
-        destination = self.config_service.dirs["cache"] / "calendar-snapshot.ics"
-
-        def prepare():
-            from integrations.calendar.local_ics import refresh_private_ics
-            return refresh_private_ics(url, destination)
-
-        def finished(_):
-            cfg = self.config_service.load()
-            cfg.settings.local_calendar_path = str(destination)
-            cfg.settings.local_calendar_feed_url = url
-            cfg.settings.calendar_provider = "local_ics"
-            cfg.settings.calendar_freebusy_enabled = True
-            self.config_service.save(cfg)
-            self.calendar_provider.setCurrentIndex(self.calendar_provider.findData("local_ics"))
-            QMessageBox.information(
-                self, "Kalender abonniert",
-                "Privater ICS-Kalender verbunden (nur Lesen). Er wird bei Bedarf "
-                "spätestens nach sechs Stunden erneut abgerufen. Keine Google API."
-            )
-        self._run_account_task(prepare, finished)
-
-    def _import_calendar_snapshot(self):
-        path, _ = QFileDialog.getOpenFileName(self, "Google / Samsung / Apple: Kalenderdatei", "", "Kalenderdateien (*.ics)")
-        if not path:
-            # Cancelling file selection must not unexpectedly open another dialog.
-            return
-        destination = self.config_service.dirs["cache"] / "calendar-snapshot.ics"
-
-        def prepare():
-            from integrations.calendar.local_ics import read_calendar
-            return read_calendar(path).to_ical()
-
-        def finished(data):
-            import os
-            from datetime import datetime
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            temporary = destination.with_suffix(".tmp")
-            temporary.write_bytes(data)
-            os.replace(temporary, destination)
-            cfg = self.config_service.load()
-            cfg.settings.local_calendar_path = str(destination)
-            cfg.settings.local_calendar_feed_url = ""
-            cfg.settings.calendar_provider = "local_ics"
-            cfg.settings.calendar_freebusy_enabled = True
-            self.config_service.save(cfg)
-            self.calendar_provider.setCurrentIndex(self.calendar_provider.findData("local_ics"))
-            QMessageBox.information(self, "Kalenderkopie importiert", "Stand: " + datetime.now().strftime("%d.%m.%Y %H:%M") + "\nKeine Live-Synchronisation. Nach Kalenderänderungen neu importieren; spätestens nach sieben Tagen.\nSamsung: den zugrunde liegenden Google-/anderen Kalender exportieren. Termine nur auf dem Telefon sind hier nicht automatisch verfügbar.")
-
-        self._run_account_task(prepare, finished)
 
     def _privacy_disconnect_selected(self) -> None:
         """Disconnect only the currently selected provider — no cross-provider wipe."""

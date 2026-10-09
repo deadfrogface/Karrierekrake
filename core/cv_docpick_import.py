@@ -1860,6 +1860,37 @@ def reset_private_commit_high_water() -> None:
     _private_commit_high_water = 0
 
 
+def _macos_physical_footprint_bytes() -> int:
+    """Read Darwin's physical footprint, excluding clean file-backed mappings.
+
+    proc_pid_rusage RUSAGE_INFO_V0 is available on both Mac architectures.
+    Keep a sampled high-water just as on Linux; failure remains unmeasured.
+    ABI: https://github.com/apple/darwin-xnu/blob/main/bsd/sys/resource.h
+    """
+    import ctypes
+
+    class RUsageInfoV0(ctypes.Structure):
+        _fields_ = [("uuid", ctypes.c_uint8 * 16)] + [
+            (name, ctypes.c_uint64) for name in (
+                "user_time", "system_time", "pkg_idle_wkups", "interrupt_wkups",
+                "pageins", "wired_size", "resident_size", "phys_footprint",
+                "proc_start_abstime", "proc_exit_abstime",
+            )
+        ]
+
+    try:
+        lib = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
+        query = lib.proc_pid_rusage
+        query.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_void_p]
+        query.restype = ctypes.c_int
+        usage = RUsageInfoV0()
+        if query(os.getpid(), 0, ctypes.byref(usage)) != 0:
+            return 0
+        return int(usage.phys_footprint)
+    except (OSError, AttributeError):
+        return 0
+
+
 def _self_rss_bytes() -> int:
     """Private committed memory for the in-app #69 gate, in bytes.
 
@@ -1875,9 +1906,14 @@ def _self_rss_bytes() -> int:
     Linux value is the anonymous RSS at this call. The import keeps the max
     of its phase samples; the kernel has no Rss_Anon peak. ``0`` means the
     read failed and is not a pass.
+
+    macOS: proc_pid_rusage physical footprint (sampled high-water), including
+    compressed private pages and excluding clean file-backed GGUF mappings.
     """
     if sys.platform == "win32":
         return _windows_peak_pagefile_bytes()
+    if sys.platform == "darwin":
+        return _macos_physical_footprint_bytes()
     return _linux_rss_anon_bytes("self")
 
 
@@ -1890,6 +1926,8 @@ def app_private_commit_bytes() -> int:
     """
     if sys.platform == "win32":
         return _windows_peak_pagefile_bytes()
+    if sys.platform == "darwin":
+        return _macos_physical_footprint_bytes()
     return _linux_rss_anon_bytes("self")
 
 
@@ -1897,6 +1935,8 @@ def peak_counter_name() -> str:
     """Fixed identifier of the counter ``_self_rss_bytes`` just read."""
     if sys.platform == "win32":
         return PEAK_COUNTER_PAGEFILE
+    if sys.platform == "darwin":
+        return "PhysicalFootprint"
     return PEAK_COUNTER_ANON
 
 

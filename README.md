@@ -1,4 +1,4 @@
-# Karrierekrake
+# Karrierekrake Alpha 0.1
 
 <p align="center">
   <img src="assets/brand/logo.png" alt="Karrierekrake — FINDE. BEWIRB. BEHALTE DEN ÜBERBLICK." width="520" />
@@ -11,8 +11,16 @@ Kein Cloud-Konto · kein Pflicht-KI-Abo · Daten bleiben auf Ihrem PC</p>
   <img src="docs/assets/screenshots/01-dashboard.png" alt="Dashboard" width="720" />
 </p>
 
-Lokale Windows-Desktop-App. Ausführdatei: `Karrierekrake.exe`.  
-Datenverzeichnis: `%LOCALAPPDATA%\Karrierekrake`
+Lokale Desktop-App für Windows, macOS und Linux.
+
+| System | Paket | Datenverzeichnis |
+|---|---|---|
+| Windows | `Karrierekrake-Alpha-0.1-Windows-x86_64.zip` | `%LOCALAPPDATA%\Karrierekrake` |
+| macOS Apple Silicon | `Karrierekrake-Alpha-0.1-macOS-AppleSilicon.dmg` | `~/Library/Application Support/Karrierekrake` |
+| macOS Intel | `Karrierekrake-Alpha-0.1-macOS-Intel.dmg` | `~/Library/Application Support/Karrierekrake` |
+| Linux x86_64 | `Karrierekrake-Alpha-0.1-Linux-x86_64.tar.gz` | `$XDG_DATA_HOME/Karrierekrake` oder `~/.local/share/Karrierekrake` |
+
+Ein gemeinsamer Release **Karrierekrake Alpha 0.1** enthält separate Pakete für Windows, macOS und Linux. Er wird erst nach erfolgreichen Builds und Offline-Importtests auf allen drei Systemen öffentlich. Jedes Paket und jeder Updater lädt ausschließlich die jeweilige Plattformversion. Installation und Plattformgrenzen: [macOS/Linux](docs/desktop-platforms.md).
 
 ---
 
@@ -20,17 +28,16 @@ Datenverzeichnis: `%LOCALAPPDATA%\Karrierekrake`
 
 ### Variante A: Fertiges Windows-Paket (empfohlen)
 
-1. Neueste **Release**-Datei `Karrierekrake-Windows.zip` herunterladen  
-   (enthält `Karrierekrake.exe` **und** den Ordner `models/` — beides gehört zusammen)
+1. **Release**-Datei `Karrierekrake-Alpha-0.1-Windows-x86_64.zip` herunterladen
 2. Zip **vollständig** entpacken und `Karrierekrake.exe` aus diesem Ordner starten  
-   (EXE nicht allein ohne `models/` verschieben — sonst schlägt der Lebenslauf-Import fehl)
+   Im Updatebereich das lokale KI-Modell einmal herunterladen; Programmupdates behalten es.
 3. Bei SmartScreen: „Weitere Informationen“ → trotzdem ausführen  
 4. Kurzer Assistent: Lebenslauf → Sucheinstellungen → Bereit  
 5. **Jobs finden**
 
 Profil & Daten: `%LOCALAPPDATA%\Karrierekrake`
 
-> Offline: Lebenslauf-Import und Anschreiben brauchen nach der Installation **kein Internet**.
+> Offline: Lebenslauf-Import und Anschreiben brauchen nach dem einmaligen Modelldownload **kein Internet**.
 
 ### Variante B: Aus dem Quellcode
 

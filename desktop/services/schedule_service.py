@@ -1,4 +1,4 @@
-"""Windows Task Scheduler helper for background runs."""
+"""Native per-user scheduling for Windows, macOS and Linux."""
 
 from __future__ import annotations
 
@@ -32,7 +32,9 @@ class ScheduleService:
         if not settings.run_automatically or settings.automation_paused:
             return self.remove_task()
         if sys.platform != "win32":
-            return False, "Task-Planer nur unter Windows verfügbar."
+            from desktop.services.native_schedule import sync
+
+            return sync(settings, self._python_command(), project_root())
 
         cmd = self._python_command()
         # schtasks wants a single command string
@@ -128,7 +130,9 @@ class ScheduleService:
 
     def remove_task(self) -> tuple[bool, str]:
         if sys.platform != "win32":
-            return True, "Task-Planer nur unter Windows verfügbar."
+            from desktop.services.native_schedule import remove
+
+            return remove()
         names = [
             TASK_NAME,
             f"{TASK_NAME}Evening",

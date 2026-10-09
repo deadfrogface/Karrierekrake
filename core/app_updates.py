@@ -43,6 +43,8 @@ def read_current(root: Path) -> dict:
 def validate_manifest(value: dict, tag: str) -> dict:
     if not isinstance(value, dict) or value.get('protocol') != PROTOCOL:
         raise ValueError('unsupported_update_protocol')
+    if value.get('target', 'windows-x86_64') != 'windows-x86_64':
+        raise ValueError('wrong_update_platform')
     if not re.fullmatch(r'update-[0-9]+-[a-f0-9]{12}', tag):
         raise ValueError('invalid_release_tag')
     if value.get('tag') != tag or type(value.get('sequence')) is not int or value['sequence'] <= 0:
@@ -71,6 +73,29 @@ def validate_manifest(value: dict, tag: str) -> dict:
         if type(component.get('size')) is not int or not 0 < component['size'] <= MAX_BYTES[name]:
             raise ValueError('invalid_update_size')
     return value
+
+
+def failure_code(error: Exception) -> str:
+    """Expose a useful stable cause, never exception text containing user paths."""
+    known = {
+        'insufficient_update_space', 'unsafe_install_target',
+        'installed_component_modified', 'update_part_integrity_failed',
+        'update_integrity_failed', 'update_size_mismatch', 'update_cancelled',
+        'managed_install_required', 'insecure_update_redirect',
+    }
+    if isinstance(error, (ValueError, RuntimeError, OSError)) and str(error) in known:
+        return str(error)
+    if isinstance(error, requests.HTTPError) and error.response is not None:
+        return f'http_{error.response.status_code}'
+    if isinstance(error, requests.Timeout):
+        return 'connection_timeout'
+    if isinstance(error, requests.ConnectionError):
+        return 'connection_failed'
+    if isinstance(error, PermissionError):
+        return 'write_permission_denied'
+    if isinstance(error, OSError) and error.errno == 28:
+        return 'insufficient_update_space'
+    return 'update_failed'
 
 
 def _get(url: str, *, stream=False):
@@ -142,6 +167,10 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
     validate_manifest(manifest, manifest.get('tag', ''))
     if not (root / CURRENT).is_file():
         raise ValueError('managed_install_required')
+    # Initial model setup belongs to the installed app, even if a newer app
+    # was found. Retained app hashes must not come from that newer release.
+    if only_components == {'model'} and not (root / MODEL_PATH).is_file():
+        manifest = bootstrap_manifest(root)
     # Fail before downloading if the user cannot write the installation folder.
     with tempfile.TemporaryFile(dir=root):
         pass

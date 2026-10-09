@@ -54,7 +54,7 @@ def test_policy_version_positive():
 
 
 def test_allowed_datas_exist_on_disk():
-    assert policy.BUILD_PROVISIONED_DATAS == ("assets/oauth/desktop_client.json",)
+    assert policy.BUILD_PROVISIONED_DATAS == ("assets/oauth/desktop_client.json", "packaging/native-current.json")
     assert set(policy.BUILD_PROVISIONED_DATAS) <= {rel for rel, _ in policy.ALLOWED_DATAS}
     for rel, _dest in policy.ALLOWED_DATAS:
         if rel in policy.BUILD_PROVISIONED_DATAS:
@@ -355,3 +355,27 @@ def test_fail_on_empty_toc(tmp_path: Path):
         text=True,
     )
     assert proc.returncode == 1
+
+
+@pytest.mark.parametrize('os_name,machine,wanted', [
+    ('darwin', 'arm64', 'tls-client-arm64.dylib'),
+    ('darwin', 'x86_64', 'tls-client-x86.dylib'),
+    ('linux', 'x86_64', 'tls-client-x86.so'),
+    ('win32', 'AMD64', 'tls-client-64.dll'),
+])
+def test_tls_dependency_isolated_by_platform_and_architecture(os_name, machine, wanted):
+    libraries = ['tls-client-arm64.dylib', 'tls-client-x86.dylib', 'tls-client-x86.so',
+                 'tls-client-amd64.so', 'tls-client-arm64.so', 'tls-client-64.dll', 'tls-client-32.dll']
+    selected = [name for name in libraries if policy.native_dependency_allowed(
+        '/site-packages/tls_client/dependencies/' + name, os_name=os_name, machine=machine)]
+    assert selected == [wanted]
+    assert policy.native_dependency_allowed('/site-packages/PySide6/QtCore.so', os_name=os_name, machine=machine)
+
+
+def test_tls_shared_libraries_are_not_hidden_python_modules():
+    policy = _load_policy()
+    modules = ['tls_client.cffi', 'tls_client.sessions', 'tls_client.dependencies',
+               'tls_client.dependencies.tls-client-arm64',
+               'tls_client.dependencies.tls-client-x86',
+               'tls_client.dependencies.tls-client-amd64']
+    assert policy.filter_hiddenimports(modules) == modules[:2]

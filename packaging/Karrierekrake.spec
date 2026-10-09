@@ -15,6 +15,8 @@ from PyInstaller.utils.hooks import collect_all, collect_dynamic_libs, collect_s
 
 block_cipher = None
 ROOT = os.path.abspath(os.path.join(SPECPATH, ".."))
+sys.path.insert(0, ROOT)
+from core.release_identity import VERSION
 
 
 def _load_policy():
@@ -45,8 +47,9 @@ hidden = (
 hidden = policy.filter_hiddenimports(hidden)
 
 datas = policy.build_repo_datas(ROOT)
-_ICON = os.path.join(ROOT, "assets", "brand", "app.ico")
-if not os.path.isfile(_ICON):
+_ICON = (os.path.join(ROOT, "assets", "brand", "app.ico") if sys.platform == "win32"
+         else os.path.join(SPECPATH, "native-app.icns") if sys.platform == "darwin" else None)
+if _ICON is not None and not os.path.isfile(_ICON):
     _ICON = None
 binaries = []
 
@@ -61,6 +64,11 @@ for pkg in policy.ALLOWED_COLLECT_ALL_PACKAGES:
         hidden += policy.filter_hiddenimports(pkg_hidden)
     except Exception:
         pass
+
+# TLS libraries use a nonstandard name without the lib prefix. Explicitly
+# collect them as binaries; foreign .so files are never Python modules.
+binaries += policy.filter_collect_all_binaries(collect_dynamic_libs(
+    "tls_client", search_patterns=["tls-client*.so", "tls-client*.dll", "tls-client*.dylib"]))
 
 # llama-cpp loads ggml/llama by path (llama_cpp/lib), not by import.
 # --report-llm-load in build-and-exe-smoke needs those DLLs in the EXE.
@@ -139,13 +147,13 @@ if _hits:
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
+_NATIVE = sys.platform != "win32"
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
+    *([] if _NATIVE else [a.binaries, a.zipfiles, a.datas]),
     [],
+    exclude_binaries=_NATIVE,
     name="Karrierekrake",
     debug=False,
     bootloader_ignore_signals=False,
@@ -164,3 +172,13 @@ exe = EXE(
     entitlements_file=None,
     icon=_ICON,
 )
+
+if _NATIVE:
+    collection = COLLECT(exe, a.binaries, a.datas, strip=False, upx=False, name="Karrierekrake")
+    if sys.platform == "darwin":
+        app = BUNDLE(collection, name="Karrierekrake.app", icon=_ICON,
+                     bundle_identifier="com.karrierekrake.desktop",
+                     info_plist={"CFBundleDisplayName": "Karrierekrake",
+                                 "CFBundleShortVersionString": VERSION.split("-")[0],
+                                 "CFBundleVersion": VERSION.split("-")[0],
+                                 "NSHighResolutionCapable": True})
