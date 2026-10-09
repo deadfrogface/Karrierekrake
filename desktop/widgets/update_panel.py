@@ -1,5 +1,6 @@
 """Nonblocking update controls shared by startup and Settings."""
 import sys
+import logging
 from PySide6.QtCore import QTimer, Signal
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout
 from core import app_updates as updates
@@ -67,8 +68,10 @@ class UpdatePanel(QFrame):
             self.check_button.setEnabled(self.managed)
             self.install_button.setEnabled(True)
             if failed:
-                self.status.setText(tr('updates.offline') if quiet else
-                                    tr('updates.failure'))
+                code = updates.failure_code(value)
+                logging.getLogger(__name__).warning('update_failed code=%s', code)
+                message = tr('updates.offline') if quiet else tr('updates.failure')
+                self.status.setText(message + '\n' + tr('updates.error_code', code=code))
             else:
                 success(value)
         self.worker = FunctionWorker(operation)
@@ -114,8 +117,10 @@ class UpdatePanel(QFrame):
         def ready(stage):
             try:
                 updates.launch_installer(stage)
-            except Exception:
-                self.status.setText(tr('updates.launch_failed'))
+            except Exception as error:
+                code = updates.failure_code(error)
+                logging.getLogger(__name__).warning('update_installer_failed code=%s', code)
+                self.status.setText(tr('updates.launch_failed') + '\n' + tr('updates.error_code', code=code))
                 return
             self.status.setText(tr('updates.restarting'))
             QTimer.singleShot(0, self.restart_requested.emit)

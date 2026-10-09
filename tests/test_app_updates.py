@@ -152,3 +152,21 @@ def test_download_cancel_cleans_staging(tmp_path, monkeypatch):
         u.stage_update(manifest(), tmp_path, cancelled=lambda: True)
     assert not list(tmp_path.glob('.kk-update-*'))
     assert (tmp_path / 'Karrierekrake.exe').read_bytes() == b'old app'
+
+
+def test_initial_model_setup_after_finding_newer_app_uses_installed_release(tmp_path, monkeypatch):
+    current = installed(tmp_path)
+    (tmp_path / u.MODEL_PATH).unlink()
+    newer = manifest(b'new app', sequence=2)
+    calls = []
+    def get(url, **kwargs):
+        calls.append(url)
+        return Response(b'model')
+    monkeypatch.setattr(u, '_get', get)
+    stage = u.stage_update(newer, tmp_path, only_components={'model'})
+    assert calls == [current['components']['model']['parts'][0]['url']]
+    assert (stage / u.MODEL_PATH).read_bytes() == b'model'
+    assert json.loads((stage / u.CURRENT).read_text()) == current
+    assert not (stage / u.TARGETS['app']).exists()
+    assert (tmp_path / u.TARGETS['app']).read_bytes() == b'old app'
+    assert not (tmp_path / u.MODEL_PATH).exists()

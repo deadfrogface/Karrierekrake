@@ -81,3 +81,22 @@ def test_missing_model_install_stages_only_model(qtbot, tmp_path, monkeypatch):
     panel.install()
     qtbot.waitUntil(lambda: not panel.busy, timeout=3000)
     assert calls == [{'model'}]
+
+
+def test_download_failure_shows_cause_and_allows_retry(qtbot, tmp_path, monkeypatch):
+    import sys
+    from desktop.i18n import tr
+    monkeypatch.setattr(sys, 'frozen', True, raising=False)
+    monkeypatch.setattr(u, 'install_root', lambda: tmp_path)
+    (tmp_path / u.CURRENT).write_text(json.dumps({'tag': 'old'}))
+    (tmp_path / u.MODEL_PATH).parent.mkdir(parents=True)
+    (tmp_path / u.MODEL_PATH).write_bytes(b'model')
+    panel = UpdatePanel()
+    qtbot.addWidget(panel)
+    def failed():
+        raise PermissionError('private user path should not appear')
+    panel._run(failed, lambda value: None)
+    qtbot.waitUntil(lambda: not panel.busy)
+    assert 'write_permission_denied' in panel.status.text()
+    assert 'private user path' not in panel.status.text()
+    assert panel.check_button.isEnabled() and panel.install_button.isEnabled()

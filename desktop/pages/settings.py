@@ -829,9 +829,9 @@ class SettingsPage(QWidget):
         # Günther is always on — no user toggle. Status only reflects model readiness.
         writer_ok = False
         try:
-            from guenther.model_manager import PRODUCTION_MODEL_ID, ModelManager
+            from core.cv_llm_runtime import resolve_cv_model_path
 
-            writer_ok = ModelManager().is_installed(PRODUCTION_MODEL_ID)
+            writer_ok = resolve_cv_model_path() is not None
         except Exception:
             writer_ok = False
         if writer_ok:
