@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
         self.update_notice = QPushButton(tr("updates.notice"))
         self.update_notice.setObjectName('KkPrimary')
         self.update_notice.hide()
-        self.update_notice.clicked.connect(lambda: self.navigate_to('nav.settings'))
+        self.update_notice.clicked.connect(self.open_updates)
         self.settings.updates.available.connect(self.update_notice.setText)
         self.settings.updates.available.connect(lambda text: self.update_notice.show())
         self.settings.updates.restart_requested.connect(self.force_quit)
@@ -736,9 +736,22 @@ class MainWindow(QMainWindow):
         event.accept()
         get_shutdown_manager().shutdown(reason="window_close")
 
+    def open_updates(self) -> None:
+        self.navigate_to('nav.settings')
+        self.settings.show_updates()
+
     def maybe_run_wizard(self) -> None:
-        if not self.config_service.is_first_run():
+        if getattr(self, "_wizard_active", False):
             return
-        wizard = FirstRunWizard(self.config_service, self)
-        if wizard.exec():
+        meta = self.config_service.load_meta()
+        # Old wizard dismissals marked incomplete setup as done. Offer the repaired flow once.
+        legacy = bool(meta.get("first_run_completed")) and not meta.get("setup_flow_version")
+        if not self.config_service.is_first_run() and not legacy:
+            return
+        self._wizard_active = True
+        try:
+            wizard = FirstRunWizard(self.config_service, self)
+            wizard.exec()
             self.refresh_all()
+        finally:
+            self._wizard_active = False

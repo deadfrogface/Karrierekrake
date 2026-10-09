@@ -1,49 +1,91 @@
 """Presets for free mailbox access; passwords leave the dialog only on approval."""
-from PySide6.QtWidgets import QComboBox, QDialog, QDialogButtonBox, QFormLayout, QLabel, QLineEdit, QVBoxLayout
+
+from PySide6.QtWidgets import (
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFormLayout,
+    QLabel,
+    QLineEdit,
+    QVBoxLayout,
+)
 
 
 class FreeMailCredentialsDialog(QDialog):
     PRESETS = (
-        ('Gmail', 'imap.gmail.com', 'Google-App-Passwort: zweistufige Bestätigung erforderlich. Falls nicht verfügbar: EML/MBOX importieren.'),
-        ('WEB.DE', 'imap.web.de', 'IMAP im WEB.DE-Konto aktivieren; bei 2FA ein anwendungsspezifisches Passwort verwenden.'),
-        ('T-Online', 'secureimap.t-online.de', 'Das separate Passwort für E-Mail-Programme verwenden, nicht das Telekom-Login-Passwort.'),
-        ('Outlook.com', 'outlook.office365.com', 'Outlook benötigt OAuth. Kostenlose IMAP-Anmeldung mit einer registrierten Microsoft-Desktop-App; alternativ EML/MBOX importieren.'),
+        (
+            "Gmail",
+            "imap.gmail.com",
+            "Google-App-Passwort: zweistufige Bestätigung erforderlich. Falls nicht verfügbar: EML/MBOX importieren.",
+        ),
+        (
+            "WEB.DE",
+            "imap.web.de",
+            "IMAP im WEB.DE-Konto aktivieren; bei 2FA ein anwendungsspezifisches Passwort verwenden.",
+        ),
+        (
+            "T-Online",
+            "secureimap.t-online.de",
+            "Das separate Passwort für E-Mail-Programme verwenden, nicht das Telekom-Login-Passwort.",
+        ),
+        (
+            "Outlook.com",
+            "outlook.office365.com",
+            "Outlook benötigt OAuth. Kostenlose IMAP-Anmeldung mit einer registrierten Microsoft-Desktop-App; alternativ EML/MBOX importieren.",
+        ),
+        (
+            "Anderer Anbieter",
+            "",
+            "Den IMAP-Server deines Anbieters und ein App-/E-Mail-Programm-Passwort eingeben. Verschlüsselte Verbindung über Port 993.",
+        ),
     )
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMinimumWidth(480)
-        self.setWindowTitle('E-Mail kostenlos verbinden')
+        self.setWindowTitle("E-Mail kostenlos verbinden")
         layout = QVBoxLayout(self)
         form = QFormLayout()
         self.provider = QComboBox()
         self.provider.addItems([p[0] for p in self.PRESETS])
+        self.server = QLineEdit()
+        self.server_label = QLabel("IMAP-Server (TLS, Port 993)")
+        form.addRow(self.server_label, self.server)
         self.username = QLineEdit()
         self.password = QLineEdit()
         self.password.setEchoMode(QLineEdit.EchoMode.Password)
         self.client_id = QLineEdit()
-        form.addRow('Anbieter', self.provider)
-        form.addRow('E-Mail-Adresse', self.username)
-        self.password_label = QLabel('App-/E-Mail-Programm-Passwort')
+        form.addRow("Anbieter", self.provider)
+        form.addRow("E-Mail-Adresse", self.username)
+        self.password_label = QLabel("App-/E-Mail-Programm-Passwort")
         form.addRow(self.password_label, self.password)
-        self.client_label = QLabel('Microsoft Desktop-Client-ID')
+        self.client_label = QLabel("Microsoft Desktop-Client-ID")
         form.addRow(self.client_label, self.client_id)
         layout.addLayout(form)
         self.hint = QLabel()
         self.hint.setWordWrap(True)
         self.hint.setOpenExternalLinks(True)
         layout.addWidget(self.hint)
-        layout.addWidget(QLabel('Ein Postfach gleichzeitig. Nachrichten werden nur gelesen und lokal sortiert.'))
-        self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        layout.addWidget(
+            QLabel(
+                "Ein Postfach gleichzeitig. Nachrichten werden nur gelesen und lokal sortiert."
+            )
+        )
+        self.buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
         layout.addWidget(self.buttons)
         self.provider.currentIndexChanged.connect(self._update)
-        for field in (self.username, self.password, self.client_id):
+        for field in (self.username, self.password, self.client_id, self.server):
             field.textChanged.connect(self._validate)
         self._update()
 
     def _update(self):
+        custom = self.provider.currentIndex() == 4
+        self.server_label.setVisible(custom)
+        self.server.setVisible(custom)
         outlook = self.provider.currentIndex() == 3
         for widget in (self.client_label, self.client_id):
             widget.setVisible(outlook)
@@ -56,15 +98,29 @@ class FreeMailCredentialsDialog(QDialog):
         self._validate()
 
     def _validate(self):
-        credential = self.client_id.text().strip() if self.provider.currentIndex() == 3 else self.password.text()
-        self.buttons.button(QDialogButtonBox.StandardButton.Ok).setEnabled(bool(self.username.text().strip() and credential))
+        credential = (
+            self.client_id.text().strip()
+            if self.provider.currentIndex() == 3
+            else self.password.text()
+        )
+        host_ok = (
+            bool(self.server.text().strip())
+            if self.provider.currentIndex() == 4
+            else True
+        )
+        self.buttons.button(QDialogButtonBox.StandardButton.Ok).setEnabled(
+            bool(self.username.text().strip() and credential and host_ok)
+        )
 
     def credentials(self):
         index = self.provider.currentIndex()
-        secret = dict(host=self.PRESETS[index][1], port=993, use_ssl=True, username=self.username.text().strip())
+        host = self.server.text().strip() if index == 4 else self.PRESETS[index][1]
+        secret = dict(
+            host=host, port=993, use_ssl=True, username=self.username.text().strip()
+        )
         if index == 3:
             secret.update(oauth2=True, client_id=self.client_id.text().strip())
         else:
-            secret['password'] = self.password.text()
+            secret["password"] = self.password.text()
         self.password.clear()
         return secret

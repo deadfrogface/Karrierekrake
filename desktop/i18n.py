@@ -2503,3 +2503,91 @@ TRANSLATIONS["en"].update({
     "updates.native_available": "A new version is available. Download the package, close Karrierekrake and replace the previous app.",
     "updates.native_download": "Download update",
 })
+
+TRANSLATIONS['de'].update({'setup.model.title': '1 · Lokale KI',
+ 'setup.model.body': 'Die lokale KI liest deinen Lebenslauf und hilft beim Schreiben. Lade das '
+                     'Modell hier herunter. Du kannst die Einrichtung auch ohne KI fortsetzen.',
+ 'setup.accounts.title': '4 · E-Mail und Kalender',
+ 'setup.accounts.body': 'Verbinde dein Postfach zum lokalen Sortieren und deinen Kalender für '
+                        'freie Termine. Gmail verwendet ein App-Passwort. Wenn dein Konto das '
+                        'nicht erlaubt, kannst du später EML/MBOX-Dateien importieren. Alle '
+                        'Verbindungen sind optional.',
+ 'setup.accounts.mail': 'Postfach verbinden · Gmail, Outlook und andere',
+ 'setup.accounts.calendar': 'Kalender verbinden oder importieren',
+ 'setup.accounts.status': 'Postfach: {mail}\nKalender: {calendar}',
+ 'setup.accounts.checking': 'Verbindung wird geprüft … Du kannst den Helfer jederzeit schließen.',
+ 'setup.browser.title': '5 · Browser-Komponente',
+ 'setup.browser.body': 'Einige Stellenquellen brauchen die Browser-Komponente. Prüfe sie hier und '
+                       'installiere sie bei Bedarf. Du kannst diesen Schritt überspringen.',
+ 'setup.browser.unchecked': 'Noch nicht geprüft',
+ 'setup.browser.check': 'Browser prüfen',
+ 'setup.browser.install': 'Browser-Komponente installieren',
+ 'setup.browser.busy': 'Browser-Komponente wird bearbeitet …',
+ 'setup.finish': 'Einrichtung abschließen',
+ 'setup.ready': 'bereit',
+ 'setup.pending': 'noch offen',
+ 'setup.summary': 'Lokale KI: {model}\n'
+                  'Lebenslauf: {cv}\n'
+                  'Suchort: {location}\n'
+                  'Postfach: {mail}\n'
+                  'Kalender: {calendar}\n'
+                  'Browser: {browser}\n'
+                  '\n'
+                  'Offene Schritte kannst du später über Einstellungen → Einrichtung fortsetzen '
+                  'erledigen.',
+ 'wizard.step_cv_title': '2 · Lebenslauf und Profil',
+ 'wizard.step_prefs_title': '3 · Stellensuche',
+ 'wizard.step_ready_title': '6 · Prüfen und abschließen'})
+
+TRANSLATIONS['en'].update({'setup.model.title': '1 · Local AI',
+ 'setup.model.body': 'Local AI reads your CV and helps with writing. Download the model here. You '
+                     'can continue setup without AI.',
+ 'setup.accounts.title': '4 · Mail and calendar',
+ 'setup.accounts.body': 'Connect your mailbox for local sorting and your calendar for '
+                        'availability. Gmail uses an app password. If your account does not allow '
+                        'this, you can import EML/MBOX files later. All connections are optional.',
+ 'setup.accounts.mail': 'Connect mailbox · Gmail, Outlook and others',
+ 'setup.accounts.calendar': 'Connect or import calendar',
+ 'setup.accounts.status': 'Mailbox: {mail}\nCalendar: {calendar}',
+ 'setup.accounts.checking': 'Checking connection … You can close setup at any time.',
+ 'setup.browser.title': '5 · Browser component',
+ 'setup.browser.body': 'Some job sources need the browser component. Check it here and install if '
+                       'needed. You can skip this step.',
+ 'setup.browser.unchecked': 'Not checked yet',
+ 'setup.browser.check': 'Check browser',
+ 'setup.browser.install': 'Install browser component',
+ 'setup.browser.busy': 'Working on browser component …',
+ 'setup.finish': 'Finish setup',
+ 'setup.ready': 'ready',
+ 'setup.pending': 'pending',
+ 'setup.summary': 'Local AI: {model}\n'
+                  'CV: {cv}\n'
+                  'Search location: {location}\n'
+                  'Mailbox: {mail}\n'
+                  'Calendar: {calendar}\n'
+                  'Browser: {browser}\n'
+                  '\n'
+                  'Complete pending steps later under Settings → Continue setup.',
+ 'wizard.step_cv_title': '2 · CV and profile',
+ 'wizard.step_prefs_title': '3 · Job search',
+ 'wizard.step_ready_title': '6 · Review and finish'})
+
+TRANSLATIONS['de'].update({'setup.back': 'Zurück',
+ 'setup.next': 'Weiter',
+ 'setup.model.card': 'Lokale KI herunterladen',
+ 'settings.guenther': 'Lokale KI',
+ 'settings.guenther_model.sole': 'Lokale KI (separater Download)',
+ 'settings.guenther_writer_unavailable': 'Lokale KI fehlt. Lade das Modell oben im '
+                                         'Download-Bereich herunter.',
+ 'updates.legacy': 'In dieser Installation steht der Modell-Download nicht zur Verfügung. '
+                   'Installiere das aktuelle Karrierekrake-Paket für dein Betriebssystem manuell.'})
+
+TRANSLATIONS['en'].update({'setup.back': 'Back',
+ 'setup.next': 'Next',
+ 'setup.model.card': 'Download local AI',
+ 'settings.guenther': 'Local AI',
+ 'settings.guenther_model.sole': 'Local AI (separate download)',
+ 'settings.guenther_writer_unavailable': 'Local AI is missing. Download the model in the download '
+                                         'section above.',
+ 'updates.legacy': 'Model download is unavailable in this installation. Install the current '
+                   'Karrierekrake package for your operating system.'})

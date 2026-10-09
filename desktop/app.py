@@ -215,7 +215,8 @@ def run() -> int:
     app._karrierekrake_server = server  # type: ignore[attr-defined]
 
     window.show()
-    window.maybe_run_wizard()
+    from PySide6.QtCore import QTimer
+    QTimer.singleShot(0, window.maybe_run_wizard)
     return app.exec()
 
 
