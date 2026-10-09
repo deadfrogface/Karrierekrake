@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import tempfile
 import urllib.error
@@ -266,35 +267,53 @@ class ModelManager:
             progress_cb(prog)
 
         try:
+            existing = part_path.stat().st_size if part_path.is_file() else 0
             req = urllib.request.Request(url, headers={"User-Agent": "Karrierekrake-Guenther/1.0"})
-            # Resume support
-            headers = {}
-            mode = "wb"
-            existing = 0
-            if part_path.is_file():
-                existing = part_path.stat().st_size
-                headers["Range"] = f"bytes={existing}-"
-                mode = "ab"
-            if headers:
-                for k, v in headers.items():
-                    req.add_header(k, v)
-            with urllib.request.urlopen(req, timeout=60) as resp, part_path.open(mode) as out:
-                total = resp.headers.get("Content-Length")
-                if total and not headers:
-                    prog.bytes_total = int(total)
+            if existing:
+                req.add_header("Range", f"bytes={existing}-")
+            try:
+                response = urllib.request.urlopen(req, timeout=60)
+            except urllib.error.HTTPError as exc:
+                # A complete/stale partial file may be outside the server's range.
+                if not existing or exc.code != 416:
+                    raise
+                exc.close()
+                existing = 0
+                req.remove_header("Range")
+                response = urllib.request.urlopen(req, timeout=60)
+            with response as resp:
+                status = resp.status
+                if status == 206:
+                    match = re.fullmatch(r"bytes ([0-9]+)-([0-9]+)/([0-9]+)",
+                                         resp.headers.get("Content-Range", ""))
+                    if not match or int(match[1]) != existing:
+                        raise ValueError("invalid_download_range")
+                    start_byte, end_byte, total_bytes = map(int, match.groups())
+                    if not start_byte <= end_byte < total_bytes:
+                        raise ValueError("invalid_download_range")
+                    prog.bytes_total = total_bytes
+                elif status == 200:
+                    # Ignoring Range means a full file: truncate, never append.
+                    existing = 0
+                    total = resp.headers.get("Content-Length")
+                    if total:
+                        prog.bytes_total = int(total)
+                else:
+                    raise ValueError("invalid_download_response")
                 prog.bytes_done = existing
-                while True:
-                    if cancel_check and cancel_check():
-                        prog.status = "cancelled"
-                        prog.message = "cancelled"
-                        return prog
-                    chunk = resp.read(1024 * 1024)
-                    if not chunk:
-                        break
-                    out.write(chunk)
-                    prog.bytes_done += len(chunk)
-                    if progress_cb:
-                        progress_cb(prog)
+                with part_path.open("ab" if existing else "wb") as out:
+                    while True:
+                        if cancel_check and cancel_check():
+                            prog.status = "cancelled"
+                            prog.message = "cancelled"
+                            return prog
+                        chunk = resp.read(1024 * 1024)
+                        if not chunk:
+                            break
+                        out.write(chunk)
+                        prog.bytes_done += len(chunk)
+                        if progress_cb:
+                            progress_cb(prog)
         except (urllib.error.URLError, OSError, ValueError) as exc:
             prog.status = "error"
             prog.message = "download_failed"
