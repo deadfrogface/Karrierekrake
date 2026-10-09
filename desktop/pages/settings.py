@@ -320,21 +320,8 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         oform.addWidget(self.lbl_mail_provider)
         oform.addWidget(self.mail_provider)
         oform.addWidget(self.mail_status)
-        self.google_client_btn = QPushButton("Google-OAuth · Premium, bald verfügbar")
-        self.google_client_btn.setObjectName("SecondaryButton")
-        self.google_client_btn.clicked.connect(lambda: self._premium("google_connection"))
         self.calendar_import_btn = QPushButton("Google / Samsung / Apple: Kalenderdatei importieren …")
         self.calendar_import_btn.clicked.connect(self._import_calendar_snapshot)
-        premium_box = QGroupBox("Wird später integriert")
-        premium_layout = QVBoxLayout(premium_box)
-        premium_layout.addWidget(self.google_client_btn)
-        for label, feature in (("Antwort automatisch senden", "automatic_reply"),
-                               ("Google Maps", "google_maps"),
-                               ("ChatGPT / Gemini und weitere Cloud-Modelle", "cloud_models")):
-            button = QPushButton(label + " · Premium")
-            button.clicked.connect(lambda checked=False, selected=feature: self._premium(selected))
-            premium_layout.addWidget(button)
-
         self.lbl_calendar_provider = QLabel()
         self.calendar_provider = QComboBox()
         for label, data in (
@@ -399,7 +386,6 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         oform.insertWidget(3, self.privacy_connect_gmail_btn)
         for btn in (self.privacy_connect_cal_btn, self.privacy_disconnect_btn):
             oform.addWidget(btn)
-        premium_box.hide()  # Unavailable integrations are not part of setup.
         integ_layout.addWidget(oauth_box)
 
         guenther_box = QGroupBox()

@@ -45,10 +45,19 @@ def verify(exe: Path, output: Path, model: Path) -> None:
         report['smoke'] = True
         for name in ['DE_01_Klassisch.pdf', 'EN_01_Classic_Resume.pdf']:
             result = root / f'{name}.json'
-            subprocess.run([str(exe), '--cv-import-child', '--cv',
+            child = subprocess.run([str(exe), '--cv-import-child', '--cv',
                             str(ROOT / 'tests' / 'fixtures' / 'cv_corpus' / name), '--out', str(result)],
-                           env=env, check=True, timeout=900)
+                           env=env, check=False, timeout=900)
+            if not result.is_file():
+                raise RuntimeError(f'native_cv_import_result_missing: exit={child.returncode}')
             payload = json.loads(result.read_text(encoding='utf-8'))
+            if child.returncode or not payload.get('ok'):
+                # Print only worker codes/counters, never profile contents or paths.
+                detail = payload.get('detail') or {}
+                safe = {key: detail[key] for key in ('exception_type', 'reason', 'stage',
+                        'counter', 'peak_bytes', 'budget_bytes') if key in detail}
+                raise RuntimeError(f"native_cv_import_failed: exit={child.returncode} "
+                                   f"kind={payload.get('kind')} detail={safe}")
             counts = _preview_qualification_counts(payload)
             if not _preview_has_identity(payload) or not counts['languages'] or not (counts['skills'] + counts['software']):
                 raise RuntimeError(f'native_cv_import_failed: {name}')

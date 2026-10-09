@@ -20,8 +20,8 @@ def test_free_connect_ctas_never_start_google_oauth(qapp, qtbot, config_service,
     page.privacy_connect_gmail_btn.click()
     page.privacy_connect_cal_btn.click()
     assert calls == ['free_mail', 'local_ics']
-    page.google_client_btn.click()
-    assert calls[-1] == ('premium', 'google_connection')
+    assert not hasattr(page, 'google_client_btn')
+    assert not any(isinstance(call, tuple) and call[0] == 'premium' for call in calls)
     assert page.mail_provider.findData('generic_imap') >= 0
     assert page.calendar_provider.findData('local_ics') >= 0
     assert page.calendar_provider.findData('generic_caldav') >= 0
