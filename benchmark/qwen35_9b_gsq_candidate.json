@@ -1,0 +1,15 @@
+{
+  "id": "qwen35-9b-gsq-q3km",
+  "base_model": "Qwen/Qwen3.5-9B",
+  "source_repo": "d-alistarh/Qwen3.5-9B-GSQ-Q3_K_M-GGUF",
+  "revision": "a357677adaa334316334b4efec461da3b0bb6ed0",
+  "filename": "qwen35-9b-gsq-q3km.gguf",
+  "bytes": 4259406816,
+  "sha256": "fec779ef5deb0cf2d1772fc0e2d0b8c33510262da5c10791bebf508fe5776d47",
+  "quantization": "GSQ Q3_K_M (partial GSQ; standard SSM quantization)",
+  "rco_verified": false,
+  "production": false,
+  "license": "Apache-2.0",
+  "checked_at": "2026-10-10",
+  "status": "EXPERIMENTAL_GSQ_ONLY_NOT_REQUESTED_GSQ_RCO"
+}
