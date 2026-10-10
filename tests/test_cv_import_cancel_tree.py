@@ -71,7 +71,7 @@ def test_extract_spawn_arms_job_limit_at_the_child_budget(
     assert seen["kwargs"]["enforce_memory_bytes"] == job_enforce_memory_bytes(
         child_budget=budget, app_private=app_private
     )
-    assert seen["kwargs"]["enforce_memory_bytes"] == 3_300_000_000 - app_private
+    assert seen["kwargs"]["enforce_memory_bytes"] == 4_500_000_000 - app_private
 
 
 def test_extract_spawn_skips_job_limit_without_physical_i3(
@@ -123,7 +123,7 @@ def test_cancel_during_blocked_call_kills_process_tree(tmp_path: Path) -> None:
 
 
 def _gguf_path() -> Path | None:
-    candidate = Path("/tmp/karrierekrake-models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf")
+    candidate = Path("/tmp/karrierekrake-models/qwen3.8-27b-gsq-rco/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf")
     if candidate.is_file():
         return candidate
     try:
@@ -321,14 +321,14 @@ def test_high_app_share_does_not_start_the_child(
 
     monkeypatch.setattr(
         "desktop.cv_import_supervisor._read_app_private_bytes",
-        lambda: 3_300_000_000,
+        lambda: 4_500_000_000,
     )
     with caplog.at_level("INFO"):
         result = CvImportSupervisor(Path("cv.pdf"), spawn=spawn).run_once()
     assert result.kind == "memory_budget_app_share"
     assert result.attempts == 1
     assert spawned == []
-    assert "app_private=3300000000" in caplog.text
+    assert "app_private=4500000000" in caplog.text
     assert "child_budget=0" in caplog.text
 
 
@@ -418,7 +418,7 @@ def test_spawn_inherits_budget_and_parent_does_not_keep_it(monkeypatch: pytest.M
     result = CvImportSupervisor(Path("cv.pdf"), spawn=spawn).run_once()
     assert result.ok is True
     assert seen["app"] == "200000000"
-    assert seen["budget"] == str(3_300_000_000 - 200_000_000)
+    assert seen["budget"] == str(4_500_000_000 - 200_000_000)
     assert os.environ.get("KARRIEREKRAKE_CV_APP_PRIVATE_BYTES") is None
     assert os.environ.get("KARRIEREKRAKE_CV_CHILD_BUDGET_BYTES") is None
 
@@ -532,7 +532,7 @@ def test_job_memory_limit_maps_like_the_gate(
         monkeypatch,
         tmp_path,
         caplog,
-        app_private=3_300_000_000 - smaller_budget,
+        app_private=4_500_000_000 - smaller_budget,
         code=1,
         port_hit=True,
     )
@@ -556,7 +556,7 @@ def test_job_memory_limit_maps_like_the_gate(
         monkeypatch,
         tmp_path,
         caplog,
-        app_private=3_300_000_000 - smaller_budget,
+        app_private=4_500_000_000 - smaller_budget,
         code=-1073741801,  # signed 0xC0000017
         port_hit=False,
     )

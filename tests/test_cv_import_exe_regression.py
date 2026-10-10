@@ -123,7 +123,7 @@ def test_ensure_cv_llm_ready_inprocess_when_model_present(
 ) -> None:
     from core import cv_llm_runtime as rt
 
-    model = tmp_path / "Qwen3.5-4B-Q4_K_M.gguf"
+    model = tmp_path / "Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf"
     model.write_bytes(b"fake")
     monkeypatch.setattr(rt, "http_llm_available", lambda *a, **k: False)
     monkeypatch.setattr(rt, "resolve_cv_model_path", lambda: model)
@@ -158,8 +158,8 @@ def test_packaging_policy_allows_docpick() -> None:
     assert "psutil._pswindows" in hidden
     assert "llama_cpp" in mod.ALLOWED_COLLECT_ALL_PACKAGES
     assert mod.datas_entry_allowed(
-        "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
-        "models/qwen3.5-4b",
+        "vendor/cv_model/qwen3.8-27b-gsq-rco/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf",
+        "models/qwen3.8-27b-gsq-rco",
     )
 
 
@@ -194,7 +194,7 @@ def test_resolve_cv_model_prefers_vendor_bundle(
 ) -> None:
     from core import cv_llm_runtime as rt
 
-    vendor = tmp_path / "vendor" / "cv_model" / "qwen3.5-4b"
+    vendor = tmp_path / "vendor" / "cv_model" / "qwen3.8-27b-gsq-rco"
     vendor.mkdir(parents=True)
     gguf = vendor / rt.CV_MODEL_FILENAME
     gguf.write_bytes(b"fake-gguf")
@@ -216,7 +216,7 @@ def test_resolve_sidecar_skips_appdata_copy_when_frozen(
     from core import cv_llm_runtime as rt
 
     exe_dir = tmp_path / "dist"
-    sidecar = exe_dir / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+    sidecar = exe_dir / "models" / "qwen3.8-27b-gsq-rco" / rt.CV_MODEL_FILENAME
     sidecar.parent.mkdir(parents=True)
     sidecar.write_bytes(b"sidecar-gguf")
     meipass = tmp_path / "_internal"
@@ -247,10 +247,10 @@ def test_resolve_meipass_still_materializes(
     from core import cv_llm_runtime as rt
 
     meipass = tmp_path / "_internal"
-    embedded = meipass / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+    embedded = meipass / "models" / "qwen3.8-27b-gsq-rco" / rt.CV_MODEL_FILENAME
     embedded.parent.mkdir(parents=True)
     embedded.write_bytes(b"embedded-gguf")
-    durable = tmp_path / "AppData" / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+    durable = tmp_path / "AppData" / "models" / "qwen3.8-27b-gsq-rco" / rt.CV_MODEL_FILENAME
 
     monkeypatch.delenv("KARRIEREKRAKE_CV_LLM_MODEL", raising=False)
     monkeypatch.setattr(rt, "is_frozen", lambda: True)
@@ -277,7 +277,7 @@ def test_resolve_stale_env_falls_through_to_sidecar(
     from core import cv_llm_runtime as rt
 
     exe_dir = tmp_path / "install"
-    sidecar = exe_dir / "models" / "qwen3.5-4b" / rt.CV_MODEL_FILENAME
+    sidecar = exe_dir / "models" / "qwen3.8-27b-gsq-rco" / rt.CV_MODEL_FILENAME
     sidecar.parent.mkdir(parents=True)
     sidecar.write_bytes(b"sidecar-gguf")
     monkeypatch.setenv("KARRIEREKRAKE_CV_LLM_MODEL", str(tmp_path / "gone.gguf"))
@@ -288,13 +288,13 @@ def test_resolve_stale_env_falls_through_to_sidecar(
     assert rt.resolve_cv_model_path() == sidecar
 
 
-def test_package_windows_release_rejects_exe_without_embedded_model(tmp_path: Path) -> None:
+def test_package_windows_release_rejects_missing_sidecar(tmp_path: Path) -> None:
     from scripts import package_windows_release as pkg
 
     dist = tmp_path / "dist"
     dist.mkdir()
     (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
-    with pytest.raises(SystemExit, match="Standalone EXE model gate failed"):
+    with pytest.raises(SystemExit, match="Release model gate failed"):
         pkg.require_release_layout(dist)
 
 
@@ -304,10 +304,13 @@ def test_package_windows_release_stages_install(tmp_path: Path) -> None:
     dist = tmp_path / "dist"
     dist.mkdir()
     (dist / "Karrierekrake.exe").write_bytes(b"MZ-fake")
+    model = dist / pkg.CV_MODEL_REL
+    model.parent.mkdir(parents=True)
+    model.write_bytes(b"GGUF-test")
     install = tmp_path / "install"
     exe = pkg.stage_install_dir(dist, install)
     assert exe.is_file()
-    assert not (install / "models").exists()
+    assert (install / pkg.CV_MODEL_REL).read_bytes() == b"GGUF-test"
     assert (install / "INSTALL.txt").is_file()
 
 

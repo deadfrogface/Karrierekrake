@@ -38,9 +38,9 @@ PFLEGE_JOB = (
 def test_production_catalog_tournament_provenance():
     from guenther.model_manager import HISTORICAL_MODEL_CATALOG
 
-    prod = MODEL_CATALOG["qwen3.5-4b"]
-    assert prod["filename"] == "Qwen3.5-4B-Q4_K_M.gguf"
-    assert prod["sha256"] == "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+    prod = MODEL_CATALOG["qwen3.8-27b-gsq-rco"]
+    assert prod["filename"] == "Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf"
+    assert prod["sha256"] == "f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c"
     assert prod["license"] == "Apache-2.0"
     assert "qwen3-1.7b" not in MODEL_CATALOG
     assert "qwen3-1.7b" in HISTORICAL_MODEL_CATALOG
@@ -174,7 +174,7 @@ def test_routing_architecture_phi_only():
     a = resolve_model_for_capability(
         architecture=ArchitectureMode.PHI_ALL, capability="email_class"
     )
-    assert a.model_id == "qwen3.5-4b"
+    assert a.model_id == "qwen3.8-27b-gsq-rco"
     b_light = resolve_model_for_capability(
         architecture=ArchitectureMode.TWO_TIER, capability="email_class"
     )
@@ -182,8 +182,8 @@ def test_routing_architecture_phi_only():
         architecture=ArchitectureMode.TWO_TIER, capability="writing"
     )
     # NEXT-02: TWO_TIER no longer routes to Qwen — sole production Phi.
-    assert b_light.model_id == "qwen3.5-4b"
-    assert b_strong.model_id == "qwen3.5-4b"
+    assert b_light.model_id == "qwen3.8-27b-gsq-rco"
+    assert b_strong.model_id == "qwen3.8-27b-gsq-rco"
 
 
 def test_interview_empty_tps_with_direct_evidence_errors():

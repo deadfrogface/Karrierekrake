@@ -1078,7 +1078,7 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             cfg.settings.allow_employer_email_send = self.allow_employer_email_send.isChecked()
         # Günther is always enabled — no UI toggle; persist True for callers/tests.
         cfg.settings.guenther_enabled = True
-        cfg.settings.guenther_model = "qwen3.5-4b"
+        cfg.settings.guenther_model = "qwen3.8-27b-gsq-rco"
         cfg.settings.guenther_heuristic_fallback = False
         if hasattr(self, "mail_provider"):
             cfg.settings.mail_provider = str(self.mail_provider.currentData() or "none")

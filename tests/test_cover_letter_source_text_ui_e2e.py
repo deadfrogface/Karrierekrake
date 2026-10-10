@@ -100,7 +100,7 @@ def _stub_extract_parsed() -> dict:
         "uncertain_items": [],
         "source_text": SOURCE_CV,
         "source_path": "fixture_cv.pdf",
-        "pipeline": "docpick_qwen35_4b",
+        "pipeline": "docpick_qwen38_27b_gsq_rco",
         "intelligence_status": "docpick_qwen35",
     }
 

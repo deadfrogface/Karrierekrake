@@ -15,17 +15,17 @@ from core.cv_docpick_import import (
 )
 
 
-def test_peak_rss_hard_gate_is_3_3gb_bytes_not_12_gb() -> None:
-    """Merge gate is ≤ 3_300_000_000 bytes — RETIRED_NOT_A_PASS soft 12 GB must not be the default."""
+def test_peak_rss_budget_is_4_5gb_bytes_not_12_gb() -> None:
+    """Merge gate is ≤ 4_500_000_000 bytes — RETIRED_NOT_A_PASS soft 12 GB must not be the default."""
     from core.cv_docpick_import import (
         CV_IMPORT_PEAK_RSS_BYTES_MAX,
         CV_IMPORT_PEAK_RSS_GB_MAX,
         CV_IMPORT_PEAK_RSS_MB_MAX,
     )
 
-    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
-    assert abs(CV_IMPORT_PEAK_RSS_MB_MAX - (3_300_000_000 / (1024.0 * 1024.0))) < 1e-9
-    assert abs(CV_IMPORT_PEAK_RSS_GB_MAX - (3_300_000_000 / (1024.0 ** 3))) < 1e-9
+    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 4_500_000_000
+    assert abs(CV_IMPORT_PEAK_RSS_MB_MAX - (4_500_000_000 / (1024.0 * 1024.0))) < 1e-9
+    assert abs(CV_IMPORT_PEAK_RSS_GB_MAX - (4_500_000_000 / (1024.0 ** 3))) < 1e-9
     assert CV_IMPORT_PEAK_RSS_BYTES_MAX < RETIRED_SOFT_12GB_DECIMAL_BYTES  # RETIRED_NOT_A_PASS
 
 

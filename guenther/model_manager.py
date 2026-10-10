@@ -1,6 +1,6 @@
 """Model catalog + download manager (checksum, resumable, atomic, disk check).
 
-ONE-MODEL dual-use (2026-09): sole production weight is Qwen3.5-4B for CV extract
+ONE-MODEL dual-use (2026-09): sole production weight is Qwen3.8-27B GSQ-RCO for CV extract
 AND Anschreiben/PHI_WRITE-path. Phi-4-mini retained as historical benchmark only.
 """
 
@@ -26,32 +26,32 @@ from core.security.model_integrity import (
 from guenther.privacy import log_event
 
 # Sole production LLM for CV import + writing (one GGUF on disk).
-PRODUCTION_MODEL_ID = "qwen3.5-4b"
+PRODUCTION_MODEL_ID = "qwen3.8-27b-gsq-rco"
 
 # No weights in git — catalog metadata only.
 MODEL_CATALOG: dict[str, dict] = {
     PRODUCTION_MODEL_ID: {
-        "display_name": "Karrierekrake lokal (Qwen3.5-4B)",
+        "display_name": "Karrierekrake lokal (Qwen3.8-27B GSQ-RCO)",
         "license": "Apache-2.0",
-        "approx_bytes": 2_741_000_000,
-        "ram_gb_min": 5.0,
+        "approx_bytes": 8_422_841_472,
+        "ram_gb_min": 15.0,
         "tier": "standard",
-        "filename": "Qwen3.5-4B-Q4_K_M.gguf",
-        # Official Qwen/Qwen3.5-4B-GGUF resolve often returns 401 unauthenticated.
-        # Unsloth mirror is public and pins the same LFS oid / SHA-256.
+        "filename": "Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf",
         "url": (
-            "https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/"
-            "Qwen3.5-4B-Q4_K_M.gguf"
+            "https://huggingface.co/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF/resolve/"
+            "d562806dbafae37109975e970aae91b43e73b440/"
+            "Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf"
         ),
-        "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
-        "source_repo": "unsloth/Qwen3.5-4B-GGUF",
-        "base_model": "Qwen/Qwen3.5-4B",
+        "sha256": "f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c",
+        "source_repo": "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF",
+        "revision": "d562806dbafae37109975e970aae91b43e73b440",
+        "base_model": "Qwen/Qwen3.8-27B",
         "upstream_license": "Apache-2.0",
-        "quant": "Q4_K_M",
+        "quant": "IQ2_XS",
+        "compression": "GSQ-RCO",
         "notes": (
-            "SOLE production model for CV extract + Anschreiben (one-model dual-use). "
-            "No second local weight. No DET. No cloud. "
-            "Weights mirrored from Qwen3.5-4B-GGUF (same SHA-256)."
+            "One local model for CV extraction and writing. DASLab GSQ-RCO IQ2_XS. "
+            "Laptop latency and quality require physical-device qualification."
         ),
         "role": "primary",
         "deferred": False,
@@ -75,7 +75,7 @@ HISTORICAL_MODEL_CATALOG: dict[str, dict] = {
         "sha256": "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2",
         "source_repo": "bartowski/microsoft_Phi-4-mini-instruct-GGUF",
         "base_model": "microsoft/Phi-4-mini-instruct",
-        "notes": "HISTORICAL writing/extract bakeoff only — superseded by qwen3.5-4b dual-use",
+        "notes": "HISTORICAL writing/extract bakeoff only — superseded by qwen3.8-27b-gsq-rco dual-use",
         "role": "historical",
         "production": False,
     },
@@ -112,7 +112,7 @@ HISTORICAL_MODEL_CATALOG: dict[str, dict] = {
         "sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
         "source_repo": "Qwen/Qwen3-4B-GGUF",
         "base_model": "Qwen/Qwen3-4B",
-        "notes": "HISTORICAL only — different from Qwen3.5-4B production",
+        "notes": "HISTORICAL only — different from Qwen3.8-27B GSQ-RCO production",
         "role": "historical",
         "production": False,
     },

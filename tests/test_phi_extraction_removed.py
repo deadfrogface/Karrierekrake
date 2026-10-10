@@ -91,7 +91,7 @@ def _stub_docpick_offline(monkeypatch):
         text = p.read_text(encoding="utf-8") if p.is_file() else ""
         parsed = parse_cv_text(text)
         parsed["source_path"] = str(path)
-        parsed["pipeline"] = "docpick_qwen35_4b"
+        parsed["pipeline"] = "docpick_qwen38_27b_gsq_rco"
         parsed["intelligence_status"] = "docpick_qwen35"
         parsed["phi_invoked"] = False
         parsed["phi_extract_call_count"] = 0
@@ -153,7 +153,7 @@ def test_05_validator_error_never_calls_phi(tmp_path, phi_spy):
         parsed = import_cv_canonical(p, guenther_enabled=True, guenther_service=phi_spy)
     _assert_no_phi(parsed, phi_spy)
     # Production Docpick import must not depend on DET verify/repair.
-    assert parsed.get("pipeline") == "docpick_qwen35_4b"
+    assert parsed.get("pipeline") == "docpick_qwen38_27b_gsq_rco"
 
 
 def test_06_missing_required_fields_never_calls_phi(tmp_path, phi_spy):
@@ -190,7 +190,7 @@ def test_08b_import_never_calls_det_parse_cv_text(tmp_path, phi_spy, monkeypatch
 
     def _fake_docpick(_path):
         return {
-            "pipeline": "docpick_qwen35_4b",
+            "pipeline": "docpick_qwen38_27b_gsq_rco",
             "intelligence_status": "docpick_qwen35",
             "phi_invoked": False,
             "phi_extract_call_count": 0,
@@ -202,7 +202,7 @@ def test_08b_import_never_calls_det_parse_cv_text(tmp_path, phi_spy, monkeypatch
     monkeypatch.setattr("core.cv_docpick_import.import_cv_docpick", _fake_docpick)
     with patch("core.cv_parser.parse_cv_text", side_effect=AssertionError("DET must not run")):
         parsed = import_cv_canonical(p, guenther_enabled=True, guenther_service=phi_spy)
-    assert parsed.get("pipeline") == "docpick_qwen35_4b"
+    assert parsed.get("pipeline") == "docpick_qwen38_27b_gsq_rco"
     _assert_no_phi(parsed, phi_spy)
 
 def test_09_legacy_enable_phi_fallback_config_ignored(tmp_path, phi_spy, monkeypatch):

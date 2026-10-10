@@ -1,10 +1,10 @@
-"""Local Docpick + Qwen3.5-4B CV extraction (productive path).
+"""Local Docpick + Qwen3.8-27B GSQ-RCO CV extraction (productive path).
 
 Uses:
 - ``core.cv_extract`` (pypdf / python-docx) for PDF/DOCX→text in packaged builds
 - Optional Docling when ``KARRIEREKRAKE_CV_USE_DOCLING=1`` (eval harnesses only)
 - Docpick schema prompt + JSON parse (Apache-2.0)
-- Local Qwen3.5-4B-Q4_K_M via existing OpenAI-compatible server **or** in-process
+- Local Qwen3.8-27B GSQ-RCO IQ2_XS via existing OpenAI-compatible server **or** in-process
   llama-cpp (same model — end users must not start a developer server by hand)
 
 No DET. No silent fallback to the legacy rule parser.
@@ -942,19 +942,15 @@ _ENV_LLM_MAX_TOKENS = "KARRIEREKRAKE_CV_LLM_MAX_TOKENS"
 # Wall-clock budgets (secondary). Peak-RSS is the hard merge gate.
 CV_IMPORT_BUDGET_WARM_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_WARM_S", "60"))
 CV_IMPORT_BUDGET_COLD_S = float(os.environ.get("KARRIEREKRAKE_CV_BUDGET_COLD_S", "90"))
-# Hard private-commit gate for target hardware: Intel Core i3 (11th gen), 8 GB RAM.
-# RETIRED_NOT_A_PASS: former soft 12 GB/12000 MB ceiling is not a pass condition.
-# Ship evidence = Windows Job Object PeakJobMemoryUsed ≤ 3_300_000_000 bytes
-# (process group: App + Docling + Qwen/llama.cpp + ALL import children) on the
-# physical i3 laptop (`KARRIEREKRAKE_PHYSICAL_I3_8GB=1`).
-# In-app gate samples count private commit only. File-backed mmap pages (the
-# GGUF) must not count: Windows uses PeakPagefileUsage; Linux uses Anonymous
-# RSS from smaps_rollup. PeakJobMemoryUsed is still logged for diagnostics
-# and for the outer laptop harness, but on GitHub-hosted runners it charges
-# the mapped GGUF (~2.7 GiB) and is not the private-commit gate.
-# Agent-VM / GHA numbers are NOT ship evidence. No automatic Phi fallback.
+# Provisional 27B runtime private-commit budget for 16 GB installed RAM.
+# This is a bounded runtime setting, not measured physical-laptop ship evidence.
+# Mapped 8.42 GB GGUF pages do not count as private anonymous commit. Windows
+# uses PeakPagefileUsage; Linux uses Anonymous RSS from smaps_rollup. Leave
+# room for the mapped weights and OS; validate total residency on both laptops.
+# The historical physical i3/8 GB harness in hardware_peak_gate retains its
+# original 3.3 GB limit and is not qualification for this new 16 GB target.
 CV_IMPORT_PEAK_RSS_BYTES_MAX = int(
-    os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX", "3300000000")
+    os.environ.get("KARRIEREKRAKE_CV_PEAK_RSS_BYTES_MAX", "4500000000")
 )
 # Derived MiB/GiB helpers for logs (primary compare is always BYTES).
 CV_IMPORT_PEAK_RSS_MB_MAX = CV_IMPORT_PEAK_RSS_BYTES_MAX / (1024.0 * 1024.0)
@@ -2004,7 +2000,7 @@ def fresh_app_child_budget_bytes() -> int:
 
 
 def child_budget_for_app_private(app_private: int) -> int:
-    """``3_300_000_000`` minus the app's private commit. Never negative."""
+    """``4_500_000_000`` minus the app's private commit. Never negative."""
     remaining = CV_IMPORT_PEAK_RSS_BYTES_MAX - max(0, int(app_private))
     return remaining if remaining > 0 else 0
 
@@ -2346,7 +2342,7 @@ def _enforce_peak_rss(*, stage: str, include_llama_server: bool = True) -> None:
     file-backed pages.
 
     The limit is the child budget from import start (group cap minus the
-    app's private commit), not the raw 3_300_000_000 group cap. A sample
+    app's private commit), not the raw 4_500_000_000 group cap. A sample
     over the fresh-app child budget is ``peak_rss_exceeded``. A sample over
     only the current child budget is ``memory_budget_app_share``.
     """
@@ -2455,7 +2451,7 @@ def import_cv_docpick(
     progress: Any | None = None,
     should_cancel: Any | None = None,
 ) -> dict[str, Any]:
-    """Productive CV import via shipped cv_extract + Docpick + local Qwen3.5-4B.
+    """Productive CV import via shipped cv_extract + Docpick + local Qwen3.8-27B GSQ-RCO.
 
     Raises ``CvImportError`` on failure. Never calls DET ``parse_cv_text``.
 
@@ -2532,7 +2528,7 @@ def import_cv_docpick(
 
     transport = ensure_cv_llm_ready()
     include_llama = transport == "http"
-    # Peak gate before expensive work — hard fail if already over 3_300_000_000 bytes.
+    # Peak gate before expensive work — hard fail if already over 4_500_000_000 bytes.
     _enforce_peak_rss(stage="preflight", include_llama_server=include_llama)
     if _cancelled():
         raise CvImportError("cancelled", "Import abgebrochen.")
@@ -2574,7 +2570,7 @@ def import_cv_docpick(
     parsed["raw_text_preview"] = text[:500]
     parsed["document_backend"] = "docling" if _want_docling() else "cv_extract"
     parsed["llm_transport"] = transport
-    parsed["pipeline"] = "docpick_qwen35_4b"
+    parsed["pipeline"] = "docpick_qwen38_27b_gsq_rco"
     parsed["intelligence_status"] = "docpick_qwen35"
     parsed["intelligence_notes"] = []
     parsed["phi_invoked"] = False

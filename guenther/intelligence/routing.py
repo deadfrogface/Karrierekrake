@@ -1,4 +1,4 @@
-"""Architecture routing — sole production model is Qwen3.5-4B.
+"""Architecture routing — sole production model is Qwen3.8-27B GSQ-RCO.
 
 Historical mode names (PHI_ALL, TWO_TIER, …) are aliases and all resolve to
 the same production weight. No Phi runtime path.

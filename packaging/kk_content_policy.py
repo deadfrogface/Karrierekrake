@@ -33,7 +33,7 @@ ALLOWED_DATAS: tuple[tuple[str, str], ...] = (
     ("data/geo", "data/geo"),
     # Optional embed (slow onefile extract). Prefer sidecar next to EXE —
     # enabled only when KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE=1.
-    # ("vendor/cv_model/qwen3.5-4b", "models/qwen3.5-4b"),
+    # ("vendor/cv_model/qwen3.8-27b-gsq-rco", "models/qwen3.8-27b-gsq-rco"),
     ("NOTICE", "."),
     ("LICENSE", "."),
 )
@@ -352,7 +352,7 @@ def filter_hiddenimports(modules: Iterable[str]) -> list[str]:
 def datas_entry_allowed(src: str, dest: str = "") -> bool:
     """Allowlist check for a PyInstaller datas tuple source path."""
     norm = normalize_path(src)
-    allowed = list(ALLOWED_DATAS) + [("vendor/cv_model/qwen3.5-4b", "models/qwen3.5-4b")]
+    allowed = list(ALLOWED_DATAS) + [("vendor/cv_model/qwen3.8-27b-gsq-rco", "models/qwen3.8-27b-gsq-rco")]
     # Absolute or relative: match against allowed source suffixes
     for allowed_src, allowed_dest in allowed:
         allowed_norm = normalize_path(allowed_src)
@@ -481,7 +481,7 @@ def build_repo_datas(root: str) -> list[tuple[str, str]]:
     embed = (os.environ.get("KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE") or "").strip().lower()
     if embed in {"1", "true", "yes"}:
         # Optional: embed GGUF into onefile (slow cold extract). Prefer sidecar.
-        entries.append(("vendor/cv_model/qwen3.5-4b", "models/qwen3.5-4b"))
+        entries.append(("vendor/cv_model/qwen3.8-27b-gsq-rco", "models/qwen3.8-27b-gsq-rco"))
     for rel, dest in entries:
         src = os.path.join(root, *rel.split("/"))
         if os.path.exists(src):
@@ -503,7 +503,7 @@ def require_bundled_cv_model(root: str) -> str:
     flag = (os.environ.get("KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL") or "").strip().lower()
     if flag not in {"1", "true", "yes"}:
         return ""
-    rel = "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf"
+    rel = "vendor/cv_model/qwen3.8-27b-gsq-rco/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf"
     path = os.path.join(root, *rel.split("/"))
     if not os.path.isfile(path):
         raise SystemExit(

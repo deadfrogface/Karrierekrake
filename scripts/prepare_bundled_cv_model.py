@@ -2,12 +2,12 @@
 """Prepare the production GGUF under vendor/cv_model for PyInstaller datas.
 
 Never commits weights. Copies (or hardlinks) from a local source into
-``vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf`` and verifies SHA-256.
+``vendor/cv_model/qwen3.8-27b-gsq-rco/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf`` and verifies SHA-256.
 
 Source resolution order:
 1. ``--src`` / ``KARRIEREKRAKE_CV_LLM_MODEL``
-2. ``KARRIEREKRAKE_MODELS_DIR/qwen3.5-4b/...``
-3. ``/tmp/karrierekrake-models/qwen3.5-4b/...``
+2. ``KARRIEREKRAKE_MODELS_DIR/qwen3.8-27b-gsq-rco/...``
+3. ``/tmp/karrierekrake-models/qwen3.8-27b-gsq-rco/...``
 4. HuggingFace download only when ``--allow-download`` (build machines / CI)
 
 Usage::
@@ -40,13 +40,11 @@ from core.cv_llm_runtime import (  # noqa: E402
 
 VENDOR_REL = Path("vendor") / "cv_model" / CV_MODEL_DIRNAME / CV_MODEL_FILENAME
 
-# Official Qwen repo is gated (anonymous HTTP 401). Prefer the public Unsloth
-# mirror first; it pins the same LFS oid / SHA-256 as our production weight.
-# Optional HF_TOKEN / HUGGING_FACE_HUB_TOKEN still unlocks the official URL.
-DOWNLOAD_URLS = (
-    f"https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/{CV_MODEL_FILENAME}",
-    f"https://huggingface.co/Qwen/Qwen3.5-4B-GGUF/resolve/main/{CV_MODEL_FILENAME}",
-)
+# Use the exact production artifact and immutable revision, including its hash.
+from guenther.model_manager import MODEL_CATALOG, PRODUCTION_MODEL_ID  # noqa: E402
+
+DOWNLOAD_URLS = (MODEL_CATALOG[PRODUCTION_MODEL_ID]["url"],)
+
 
 
 def _sha256(path: Path) -> str:
