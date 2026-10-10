@@ -1,6 +1,6 @@
 """Hardware tier detection — LIGHT / STANDARD / POWER.
 
-Sole production model is Qwen3.5-4B. Insufficient RAM → GUENTHER_UNAVAILABLE,
+Sole production model is Qwen3.8-27B GSQ-RCO. Insufficient RAM → GUENTHER_UNAVAILABLE,
 not another LLM weight.
 """
 
@@ -10,7 +10,9 @@ import os
 from dataclasses import dataclass
 from enum import Enum
 
-from guenther.model_manager import PRODUCTION_MODEL_ID
+from guenther.model_manager import MODEL_CATALOG, PRODUCTION_MODEL_ID
+
+MIN_MODEL_RAM_GIB = float(MODEL_CATALOG[PRODUCTION_MODEL_ID]["ram_gb_min"])
 
 
 class HardwareTier(str, Enum):
@@ -49,8 +51,8 @@ def detect_hardware() -> HardwareProfile:
         cpu = int(os.cpu_count() or 2)
     except Exception:
         cpu = 2
-    # Qwen3.5-4B Q4_K_M ~2.6GB disk; peak RSS Agent-VM ~5–6GB observed.
-    if ram < 5.0:
+    # 8.42 GB mmap weights plus runtime/context and OS; latency is unqualified.
+    if ram < MIN_MODEL_RAM_GIB:
         return HardwareProfile(
             tier=HardwareTier.LIGHT,
             ram_gb=ram,
@@ -58,7 +60,7 @@ def detect_hardware() -> HardwareProfile:
             recommended_model_id=PRODUCTION_MODEL_ID,
             notes=("ram_below_min_for_qwen",),
         )
-    if ram < 8.0:
+    if ram < 16.0:
         return HardwareProfile(
             tier=HardwareTier.LIGHT,
             ram_gb=ram,
@@ -82,7 +84,7 @@ def detect_hardware() -> HardwareProfile:
 
 
 def resolve_production_model(preferred: str = "auto") -> str:
-    """Always return the sole dual-use production model (Qwen3.5-4B)."""
+    """Always return the sole dual-use production model (Qwen3.8-27B GSQ-RCO)."""
     _ = preferred  # legacy settings values are coerced
     return PRODUCTION_MODEL_ID
 
@@ -94,10 +96,10 @@ def graceful_model_fallback(tier: HardwareTier, preferred: str) -> str:
 
 
 def can_run_phi(tier: HardwareTier, ram_gb: float | None = None) -> bool:
-    """Legacy name: gate for loading the sole production GGUF (~5 GB+ RAM)."""
-    if ram_gb is not None and ram_gb < 5.0:
+    """Legacy name: gate for loading the sole production GGUF (16 GB installed RAM target)."""
+    if ram_gb is not None and ram_gb < MIN_MODEL_RAM_GIB:
         return False
-    if tier == HardwareTier.LIGHT and ram_gb is not None and ram_gb < 8.0:
+    if tier == HardwareTier.LIGHT and ram_gb is not None and ram_gb < MIN_MODEL_RAM_GIB:
         return False
     return True
 

@@ -15,12 +15,12 @@ from guenther.prompts import SYSTEM_EXTRACT, SYSTEM_WRITE
 
 
 def test_sole_production_is_qwen_not_phi():
-    assert PRODUCTION_MODEL_ID == "qwen3.5-4b"
-    assert list(MODEL_CATALOG.keys()) == ["qwen3.5-4b"]
+    assert PRODUCTION_MODEL_ID == "qwen3.8-27b-gsq-rco"
+    assert list(MODEL_CATALOG.keys()) == ["qwen3.8-27b-gsq-rco"]
     assert "phi4-mini" not in MODEL_CATALOG
     assert "phi4-mini" in HISTORICAL_MODEL_CATALOG
     assert not is_production_model("phi4-mini")
-    assert is_production_model("qwen3.5-4b")
+    assert is_production_model("qwen3.8-27b-gsq-rco")
 
 
 def test_historical_phi_not_installable(tmp_path: Path):
@@ -44,8 +44,8 @@ def test_settings_migrate_phi_to_qwen(tmp_path: Path, monkeypatch):
     # Simulate load_config coercion
     raw = str(s.guenther_model or "").strip().lower()
     if raw in {"", "auto", "phi4-mini", "phi-4-mini", "qwen3-4b", "qwen3-1.7b"}:
-        s.guenther_model = "qwen3.5-4b"
-    assert s.guenther_model == "qwen3.5-4b"
+        s.guenther_model = "qwen3.8-27b-gsq-rco"
+    assert s.guenther_model == "qwen3.8-27b-gsq-rco"
 
 
 def test_write_prompt_is_not_phi_persona():

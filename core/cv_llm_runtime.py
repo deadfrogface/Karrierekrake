@@ -6,7 +6,7 @@ import child loads the bundled GGUF in-process via ``llama-cpp-python`` (same
 model, same prompts — not a different-model fallback).
 
 Release layout (offline after fresh install):
-1. Model next to the EXE: ``<exe_dir>/models/qwen3.5-4b/<file>.gguf``
+1. Model next to the EXE: ``<exe_dir>/models/qwen3.8-27b-gsq-rco/<file>.gguf``
 2. Or inside the frozen bundle (``sys._MEIPASS``) when datas were packaged
 3. AppData / cache only as optional override — never required for a clean install
 
@@ -24,12 +24,12 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-CV_MODEL_FILENAME = "Qwen3.5-4B-Q4_K_M.gguf"
-CV_MODEL_DIRNAME = "qwen3.5-4b"
+CV_MODEL_FILENAME = "Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf"
+CV_MODEL_DIRNAME = "qwen3.8-27b-gsq-rco"
 CV_MODEL_REL = Path("models") / CV_MODEL_DIRNAME / CV_MODEL_FILENAME
 
 # Expected size / checksum for release verification (not a silent download gate).
-CV_MODEL_SHA256 = "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+CV_MODEL_SHA256 = "f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c"
 
 
 def is_frozen() -> bool:
@@ -843,6 +843,8 @@ def _construct_llama(llama_cls: Any, **kwargs: Any) -> tuple[Any, str]:
     kwargs["use_mlock"] = False
     with contextlib.redirect_stderr(blob):
         llm = llama_cls(**kwargs)
+    from core.local_chat_template import configure_non_thinking_chat
+    configure_non_thinking_chat(llm)
     return llm, blob.getvalue()
 
 

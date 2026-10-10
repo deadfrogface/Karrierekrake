@@ -86,7 +86,7 @@ def process_parsed_email(
         # Günther writing assist is always on; get_guenther_service still no-ops if model missing.
         g = get_guenther_service(
             enabled=True,
-            model="qwen3.5-4b",
+            model="qwen3.8-27b-gsq-rco",
         )
         env = g.suggest_email_class(
             payload.get("subject") or "",

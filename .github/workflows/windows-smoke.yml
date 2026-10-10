@@ -90,9 +90,9 @@ jobs:
           $cache = Join-Path $env:RUNNER_TEMP "kk-cv-model-cache"
           New-Item -ItemType Directory -Force -Path $cache | Out-Null
           $env:KARRIEREKRAKE_MODELS_DIR = $cache
-          python scripts/prepare_bundled_cv_model.py --allow-download
+          python scripts/prepare_bundled_cv_model.py --allow-download --also-sidecar dist
           if ($LASTEXITCODE -ne 0) { throw "prepare_bundled_cv_model failed" }
-          $gguf = "vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf"
+          $gguf = "vendor/cv_model/qwen3.8-27b-gsq-rco/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf"
           if (!(Test-Path $gguf)) { throw "bundled GGUF missing after prepare" }
           $len = (Get-Item $gguf).Length
           if ($len -lt 1000000000) { throw "bundled GGUF too small: $len" }
@@ -101,10 +101,10 @@ jobs:
         env:
           GOOGLE_DESKTOP_CLIENT_JSON: ${{ secrets.GOOGLE_DESKTOP_CLIENT_JSON }}
         run: python scripts/prepare_google_desktop_client.py
-      - name: Build onefile EXE (model + llama_cpp runtime bundled)
+      - name: Build EXE with local model sidecar and bundled llama_cpp runtime
         env:
           KARRIEREKRAKE_REQUIRE_BUNDLED_CV_MODEL: "1"
-          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: "1"
+          KARRIEREKRAKE_EMBED_CV_MODEL_IN_EXE: "0"
           KARRIEREKRAKE_MODELS_DIR: ${{ runner.temp }}/kk-cv-model-cache
         run: |
           python -m PyInstaller --noconfirm --clean packaging/Karrierekrake.spec
@@ -118,7 +118,8 @@ jobs:
           sha256=$hash
           python=3.12
           console=false
-          cv_model_embedded=1
+          cv_model_embedded=0
+          cv_model_sidecar=1
           "@ | Set-Content dist\build_metadata.txt
           Get-Content dist\build_metadata.txt
           # Fail if this is a console subsystem EXE (users must not see a terminal).
@@ -228,10 +229,10 @@ jobs:
         shell: pwsh
         run: |
           python scripts/generate_content_manifest.py --exe dist/Karrierekrake.exe --out dist/content_manifest.json
-          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-embedded --require-google-client-embedded
+          python scripts/scan_release_artifact.py --exe dist/Karrierekrake.exe --dist dist --manifest-out dist/content_manifest.json --fail-on-empty --require-cv-model-sidecar --require-google-client-embedded
           if ($LASTEXITCODE -ne 0) { Write-Error "Production content gate FAILED"; exit 1 }
           Get-Content dist/content_manifest.json | Select-Object -First 40
-      - name: Package Windows release zip (standalone EXE)
+      - name: Package complete offline Windows installation
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
@@ -274,7 +275,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/ci_release_env_gate.py --self-test
           if ($LASTEXITCODE -ne 0) { Write-Error "Release env self-test failed"; exit 1 }
-          # Fresh LOCALAPPDATA, no model env overrides — must use embedded GGUF.
+          # Fresh LOCALAPPDATA, no model env overrides — must use shipped sidecar GGUF.
           Remove-Item Env:KARRIEREKRAKE_CV_LLM_MODEL -ErrorAction SilentlyContinue
           Remove-Item Env:KARRIEREKRAKE_MODELS_DIR -ErrorAction SilentlyContinue
           Remove-Item Env:HTTP_PROXY,Env:HTTPS_PROXY,Env:http_proxy,Env:https_proxy -ErrorAction SilentlyContinue
@@ -282,7 +283,7 @@ jobs:
           # Run from staged install dir (simulates zip extract), not the build dist tree.
           $exe = Join-Path $env:INSTALL_DIR "Karrierekrake.exe"
           if (!(Test-Path $exe)) { Write-Error "INSTALL_DIR EXE missing: $exe"; exit 1 }
-          python scripts/ci_cv_import_exe_offline_e2e.py `
+          python scripts/ci_cv_import_exe_offline_e2e.py --component-install `
             --exe $exe `
             --cv tests/fixtures/cv_corpus/DE_01_Klassisch.pdf `
             --cv-en tests/fixtures/cv_corpus/EN_01_Classic_Resume.pdf `

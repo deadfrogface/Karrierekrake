@@ -18,7 +18,7 @@ def test_google_discovery_schema_allowlist():
     assert not p.release_data_allowed(prefix + 'compute.v1.json')
     assert not p.release_data_allowed(prefix.replace('/', '\\') + 'drive.v3.json')
     assert p.release_data_allowed('assets/oauth/desktop_client.json')
-    assert p.release_data_allowed('models/qwen3.5-4b/model.gguf')
+    assert p.release_data_allowed('models/qwen3.8-27b-gsq-rco/model.gguf')
 
 
 def test_legacy_providers_and_llama_server_excluded_but_product_paths_retained():

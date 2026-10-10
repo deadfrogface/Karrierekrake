@@ -1,4 +1,4 @@
-"""Canonical CV import pipeline — Docpick + local Qwen3.5-4B (no DET).
+"""Canonical CV import pipeline — Docpick + local Qwen3.8-27B GSQ-RCO (no DET).
 
 FILE → cv_extract text (shipped) → Docpick schema LLM → preview/approval/persist.
 Docling is eval-only via ``KARRIEREKRAKE_CV_USE_DOCLING=1`` (not in Windows EXE).
@@ -184,7 +184,7 @@ def import_cv_canonical(
     document_backend: str = "docling",
     split_phi_passes: bool = True,
 ) -> dict[str, Any]:
-    """Canonical CV import — Docpick + Qwen3.5-4B only (no DET, no PHI_EXTRACT).
+    """Canonical CV import — Docpick + Qwen3.8-27B GSQ-RCO only (no DET, no PHI_EXTRACT).
 
     ``guenther_*`` / ``split_phi_passes`` accepted for old callers but ignored.
     ``document_backend`` is ignored: production uses ``cv_extract``; Docling only

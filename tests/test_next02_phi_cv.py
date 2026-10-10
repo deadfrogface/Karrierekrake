@@ -28,18 +28,18 @@ from guenther.validation import validate_cv_extract
 
 PHI_SHA = "01999f17c39cc3074afae5e9c539bc82d45f2dd7faa3917c66cbef76fce8c0c2"
 PHI_FILE = "microsoft_Phi-4-mini-instruct-Q4_K_M.gguf"
-QWEN_SHA = "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
-QWEN_FILE = "Qwen3.5-4B-Q4_K_M.gguf"
+QWEN_SHA = "f0ae5006da0ce6225935339e4e989369f94de95d2263cf969519f8420c9ae02c"
+QWEN_FILE = "Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf"
 
 
 def test_exactly_one_production_llm():
     assert list(MODEL_CATALOG.keys()) == [PRODUCTION_MODEL_ID]
-    assert PRODUCTION_MODEL_ID == "qwen3.5-4b"
+    assert PRODUCTION_MODEL_ID == "qwen3.8-27b-gsq-rco"
     meta = MODEL_CATALOG[PRODUCTION_MODEL_ID]
     assert meta["filename"] == QWEN_FILE
     assert meta["sha256"] == QWEN_SHA
-    assert meta["quant"] == "Q4_K_M"
-    assert meta["base_model"] == "Qwen/Qwen3.5-4B"
+    assert meta["quant"] == "IQ2_XS"
+    assert meta["base_model"] == "Qwen/Qwen3.8-27B"
     assert meta.get("production") is True
 
 
@@ -67,12 +67,12 @@ def test_model_manager_rejects_historical_install(tmp_path):
 
 def test_no_model_fallback_on_light_hardware(monkeypatch):
     monkeypatch.setenv("KARRIEREKRAKE_RAM_GB", "4")
-    assert resolve_production_model("qwen3-1.7b") == "qwen3.5-4b"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3.5-4b"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "qwen3.5-4b"
-    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "qwen3.5-4b"
+    assert resolve_production_model("qwen3-1.7b") == "qwen3.8-27b-gsq-rco"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "phi4-mini") == "qwen3.8-27b-gsq-rco"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "auto") == "qwen3.8-27b-gsq-rco"
+    assert graceful_model_fallback(HardwareTier.LIGHT, "qwen3-4b") == "qwen3.8-27b-gsq-rco"
     hw = detect_hardware()
-    assert hw.recommended_model_id == "qwen3.5-4b"
+    assert hw.recommended_model_id == "qwen3.8-27b-gsq-rco"
 
 
 def test_routing_always_phi():
@@ -81,11 +81,11 @@ def test_routing_always_phi():
             d = resolve_model_for_capability(
                 architecture=mode, capability=cap, model_pref="qwen3-1.7b"
             )
-            assert d.model_id == "qwen3.5-4b"
+            assert d.model_id == "qwen3.8-27b-gsq-rco"
             d2 = resolve_model_for_capability(
                 architecture=mode, capability=cap, model_pref="auto"
             )
-            assert d2.model_id == "qwen3.5-4b"
+            assert d2.model_id == "qwen3.8-27b-gsq-rco"
 
 
 def test_guenther_unavailable_no_heuristic_substitute(tmp_path, monkeypatch):
@@ -147,14 +147,14 @@ def test_reconcile_phi_fills_gaps_only_when_grounded():
         "education": ["Ausbildung Industriekaufmann"],
         "certificates": [],
         "languages": [],
-        "_model_id": "qwen3.5-4b",
+        "_model_id": "qwen3.8-27b-gsq-rco",
     }
     out = reconcile_phi_into_parsed(parsed, suggestion, cv_text=cv)
     titles = [w["title"] for w in out["work_experience"]]
     assert "Sachbearbeiter" in titles
     assert "NotInText" not in titles
     assert out["education"]
-    assert out.get("phi_model_id") == "qwen3.5-4b"
+    assert out.get("phi_model_id") == "qwen3.8-27b-gsq-rco"
 
 
 def test_import_cv_canonical_never_calls_phi_extract(tmp_path, monkeypatch):
@@ -169,7 +169,7 @@ def test_import_cv_canonical_never_calls_phi_extract(tmp_path, monkeypatch):
     def _fake_docpick(path):
         return {
             "source_path": str(path),
-            "pipeline": "docpick_qwen35_4b",
+            "pipeline": "docpick_qwen38_27b_gsq_rco",
             "intelligence_status": "docpick_qwen35",
             "phi_invoked": False,
             "phi_extract_call_count": 0,
@@ -185,7 +185,7 @@ def test_import_cv_canonical_never_calls_phi_extract(tmp_path, monkeypatch):
         validated=True,
         provider_status="ready",
         fallback_reason="",
-        model_id="qwen3.5-4b",
+        model_id="qwen3.8-27b-gsq-rco",
         safety_notes=[],
         suggestion={
             "skills": [],
@@ -218,7 +218,7 @@ def test_import_cv_canonical_missing_model_still_parses(tmp_path, monkeypatch):
     def _fake_docpick(path):
         return {
             "source_path": str(path),
-            "pipeline": "docpick_qwen35_4b",
+            "pipeline": "docpick_qwen38_27b_gsq_rco",
             "intelligence_status": "docpick_qwen35",
             "phi_invoked": False,
             "phi_extract_call_count": 0,
@@ -234,7 +234,7 @@ def test_import_cv_canonical_missing_model_still_parses(tmp_path, monkeypatch):
         validated=False,
         provider_status="model_missing",
         fallback_reason="guenther_unavailable_model_missing",
-        model_id="qwen3.5-4b",
+        model_id="qwen3.8-27b-gsq-rco",
         safety_notes=["GUENTHER_UNAVAILABLE", "no_model_fallback"],
         suggestion={},
     )
@@ -272,7 +272,7 @@ def test_settings_defaults_phi_only():
     from core.config import SettingsConfig
 
     s = SettingsConfig()
-    assert s.guenther_model == "qwen3.5-4b"
+    assert s.guenther_model == "qwen3.8-27b-gsq-rco"
     assert s.guenther_heuristic_fallback is False
     assert s.guenther_enabled is True
 

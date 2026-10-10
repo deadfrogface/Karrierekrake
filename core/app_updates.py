@@ -16,9 +16,9 @@ REPOSITORY = 'deadfrogface/Karrierekrake'
 API = f'https://api.github.com/repos/{REPOSITORY}/releases/latest'
 PROTOCOL = 1
 CURRENT = 'update-current.json'
-MODEL_PATH = 'models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf'
+MODEL_PATH = 'models/qwen3.8-27b-gsq-rco/Qwen3.8-27B-GSQ-RCO-IQ2_XS.gguf'
 TARGETS = {'app': 'Karrierekrake.exe', 'model': MODEL_PATH}
-MAX_BYTES = {'app': 2_000_000_000, 'model': 8_000_000_000}
+MAX_BYTES = {'app': 2_000_000_000, 'model': 16_000_000_000}
 
 
 def digest(path: Path) -> str:
@@ -57,7 +57,7 @@ def validate_manifest(value: dict, tag: str) -> dict:
         if component.get('path') != TARGETS[name]:
             raise ValueError('invalid_update_target')
         parts = component.get('parts')
-        if not isinstance(parts, list) or not 1 <= len(parts) <= 8:
+        if not isinstance(parts, list) or not 1 <= len(parts) <= 16:
             raise ValueError('invalid_update_parts')
         for index, part in enumerate(parts, 1):
             asset = f'{name}-{index:03d}.bin'

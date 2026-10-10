@@ -27,10 +27,10 @@ def validate(manifest: dict) -> dict:
         raise ValueError('invalid_model_release')
     model = manifest.get('model', {})
     if (model.get('path') != MODEL_PATH or model.get('sha256') != CV_MODEL_SHA256
-            or type(model.get('size')) is not int or not 0 < model['size'] <= 8_000_000_000):
+            or type(model.get('size')) is not int or not 0 < model['size'] <= 16_000_000_000):
         raise ValueError('invalid_model_component')
     parts = model.get('parts', [])
-    if not isinstance(parts, list) or not 1 <= len(parts) <= 8:
+    if not isinstance(parts, list) or not 1 <= len(parts) <= 16:
         raise ValueError('invalid_model_parts')
     for index, part in enumerate(parts, 1):
         url = f'https://github.com/{REPOSITORY}/releases/download/{tag}/model-{index:03d}.bin'

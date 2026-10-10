@@ -84,8 +84,8 @@ def test_peak_rss_above_3_3gb_hard_fails(monkeypatch: pytest.MonkeyPatch) -> Non
     from core.cv_docpick_import import reset_private_commit_high_water
 
     reset_private_commit_high_water()
-    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 3_300_000_000
-    assert CV_IMPORT_PEAK_RSS_MB_MAX == 3_300_000_000 / (1024.0 * 1024.0)
+    assert CV_IMPORT_PEAK_RSS_BYTES_MAX == 4_500_000_000
+    assert CV_IMPORT_PEAK_RSS_MB_MAX == 4_500_000_000 / (1024.0 * 1024.0)
 
 
 def test_peak_rss_above_budget_soft_on_ci(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -113,11 +113,11 @@ def test_child_budget_is_never_negative() -> None:
     assert CV_IMPORT_FRESH_APP_PRIVATE_BYTES == 167_272_448
     assert CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES == 1_698_168_832
     fresh = fresh_app_child_budget_bytes()
-    assert fresh == 3_300_000_000 - 167_272_448
-    assert child_budget_for_app_private(3_300_000_000) == 0
-    assert child_budget_for_app_private(4_000_000_000) == 0
-    assert child_budget_for_app_private(-1) == 3_300_000_000
-    allowed, budget = child_start_allowed(3_200_000_000)
+    assert fresh == 4_500_000_000 - 167_272_448
+    assert child_budget_for_app_private(4_500_000_000) == 0
+    assert child_budget_for_app_private(5_000_000_000) == 0
+    assert child_budget_for_app_private(-1) == 4_500_000_000
+    allowed, budget = child_start_allowed(4_400_000_000)
     assert budget == 100_000_000
     assert budget < CV_IMPORT_CHILD_MIN_AFTER_LOAD_BYTES
     assert allowed is False

@@ -74,6 +74,8 @@ class LlamaCppProvider(LocalAIProvider):
                 n_batch=512,
                 verbose=False,
             )
+            from core.local_chat_template import configure_non_thinking_chat
+            configure_non_thinking_chat(self._llm)
             self._model_id = model_id
             self._status = ProviderStatus.READY
             log_event("model_loaded", model_id=model_id, provider=self.provider_id)
