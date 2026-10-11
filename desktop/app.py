@@ -28,6 +28,11 @@ _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
+# Model verification must never open a GUI or acquire its single-instance lock.
+if "--model-probe" in sys.argv:
+    from core.model_probe import main as _model_probe_main
+    raise SystemExit(_model_probe_main([a for a in sys.argv[1:] if a != "--model-probe"]))
+
 # High-DPI before QApplication
 os.environ.setdefault("QT_ENABLE_HIGHDPI_SCALING", "1")
 os.environ.setdefault("QT_AUTO_SCREEN_SCALE_FACTOR", "1")

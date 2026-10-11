@@ -141,9 +141,12 @@ def check_for_update(root: Path | None = None) -> dict | None:
 
 
 def changed_components(manifest: dict, root: Path) -> list[str]:
+    from guenther.setup_models import selected_model_path
+    selected = selected_model_path() is not None
     current = read_current(root).get('components', {})
     return [name for name, item in manifest['components'].items()
-            if current.get(name, {}).get('sha256') != item['sha256'] or not (root / item['path']).is_file()]
+            if not (name == 'model' and selected)
+            and (current.get(name, {}).get('sha256') != item['sha256'] or not (root / item['path']).is_file())]
 
 
 def bootstrap_manifest(root: Path | None = None) -> dict:
@@ -220,6 +223,9 @@ def stage_update(manifest: dict, root: Path | None = None, *, cancelled=lambda: 
                 raise ValueError('update_integrity_failed')
         # Every retained component must still match. No model download on UI changes.
         for name in set(TARGETS) - set(changed):
+            from guenther.setup_models import selected_model_path
+            if name == 'model' and selected_model_path() is not None:
+                continue  # Setup models are independently verified and live in user data.
             retained = root / TARGETS[name]
             # A bootstrap install deliberately starts without the model.  Other
             # retained components must still be present and match exactly.

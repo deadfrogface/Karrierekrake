@@ -112,6 +112,11 @@ def resolve_cv_model_path() -> Path | None:
             p.name,
         )
 
+    from guenther.setup_models import selected_model_id, selected_model_path
+    if selected_model_id() is not None:
+        # A selected but missing model must not silently revert to another weight.
+        return selected_model_path()
+
     meipass = _meipass_dir()
     for bundled in bundled_cv_model_candidates():
         if not bundled.is_file():
@@ -1111,6 +1116,8 @@ def _run_chat_completion_inprocess(
             n_batch=512,
             verbose=False,
         )
+        from core.local_chat_template import configure_non_thinking_chat
+        configure_non_thinking_chat(llm)
         try:
             llm.verbose = False
         except (AttributeError, TypeError):
@@ -1223,6 +1230,7 @@ def _run_chat_completion_inprocess(
                 messages=messages,
                 temperature=float(temperature),
                 max_tokens=budget,
+                response_format={"type": "json_object"},
             ):
                 if not saw_chunk:
                     saw_chunk = True

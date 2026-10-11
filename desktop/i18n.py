@@ -2591,3 +2591,44 @@ TRANSLATIONS['en'].update({'setup.back': 'Back',
                                          'section above.',
  'updates.legacy': 'Model download is unavailable in this installation. Install the current '
                    'Karrierekrake package for your operating system.'})
+
+TRANSLATIONS['de'].update({
+    'setup.model.body': 'Karrierekrake prüft kurz dein Gerät und empfiehlt eine passende lokale KI. Mit einem Klick wird sie heruntergeladen und getestet. Deine Daten bleiben auf diesem Gerät.',
+    'setup.model.specs': '{ram} GB RAM · {free} GB frei · {cores} CPU-Kerne',
+    'setup.model.recommended': 'Empfohlen: {name}\nDownload: {size} GB. Die Empfehlung berücksichtigt RAM, CPU und freien Speicher.',
+    'setup.model.download': 'Empfohlenes Modell herunterladen',
+    'setup.model.recheck': 'Gerät erneut prüfen',
+    'setup.model.retry': 'Erneut versuchen',
+    'setup.model.optional': 'Nach dem Download prüfen wir, ob das Modell auf deinem Gerät geladen werden kann. Du kannst die KI auch später einrichten.',
+    'setup.model.insufficient': 'Aktuell ist zu wenig RAM oder Speicherplatz frei. Schließe andere Programme oder schaffe Platz und prüfe erneut. Du kannst die Einrichtung ohne KI fortsetzen.',
+    'setup.model.specs_failed': 'Das Gerät konnte nicht geprüft werden. Öffne die Einrichtung später erneut.',
+    'setup.model.downloading': 'Modell wird heruntergeladen …',
+    'setup.model.verifying': 'Download wird geprüft …',
+    'setup.model.testing': 'Modell wird auf deinem Gerät getestet …',
+    'setup.model.ready': '{name} ist geprüft und einsatzbereit. Du kannst mit der Einrichtung fortfahren.',
+    'setup.model.failed': 'Der Download konnte nicht abgeschlossen werden. Prüfe Internetverbindung und Speicherplatz und versuche es erneut.',
+    'setup.model.probe_failed': 'Das Modell konnte auf diesem Gerät nicht geladen werden. Es wurde nicht aktiviert. Du kannst erneut versuchen oder die Einrichtung ohne KI fortsetzen.',
+    'setup.model.cancelling': 'Abbruch wird ausgeführt …',
+    'setup.model.cancelled': 'Download abgebrochen. Du kannst ihn später fortsetzen.',
+})
+TRANSLATIONS['en'].update({
+    'setup.model.body': 'Karrierekrake briefly checks your device and recommends suitable local AI. One click downloads and tests it. Your data stays on this device.',
+    'setup.model.specs': '{ram} GB RAM · {free} GB available · {cores} CPU cores',
+    'setup.model.recommended': 'Recommended: {name}\nDownload: {size} GB. The recommendation considers RAM, CPU and free disk space.',
+    'setup.model.download': 'Download recommended model',
+    'setup.model.recheck': 'Check device again',
+    'setup.model.retry': 'Try again',
+    'setup.model.optional': 'After downloading, we test whether the model loads on your device. You can also set up AI later.',
+    'setup.model.insufficient': 'Not enough RAM or disk space is currently available. Close other programs or free some space, then check again. You can continue setup without AI.',
+    'setup.model.specs_failed': 'The device check failed. Please reopen setup later.',
+    'setup.model.downloading': 'Downloading model …',
+    'setup.model.verifying': 'Verifying download …',
+    'setup.model.testing': 'Testing model on your device …',
+    'setup.model.ready': '{name} is verified and ready. You can continue setup.',
+    'setup.model.failed': 'Download could not finish. Check your connection and disk space, then try again.',
+    'setup.model.probe_failed': 'The model could not load on this device and was not activated. Retry or continue setup without AI.',
+    'setup.model.cancelling': 'Cancelling …',
+    'setup.model.cancelled': 'Download cancelled. You can resume it later.',
+})
+TRANSLATIONS['de']['updates.legacy'] = 'Programmupdates musst du in dieser Installation manuell installieren. Die lokale KI kannst du im Einrichtungsassistenten oder im Bereich „Lokale KI“ herunterladen.'
+TRANSLATIONS['en']['updates.legacy'] = 'App updates are unavailable in this installation. Download local AI through setup or the Local AI section.'

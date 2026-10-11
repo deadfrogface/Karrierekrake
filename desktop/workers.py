@@ -250,8 +250,8 @@ def connect_queued(signal, slot) -> None:
         captured_kwargs = kwargs
         hub.invoke.emit(lambda: slot(*captured_args, **captured_kwargs))
 
-    # The sender signal owns the callback. A process-wide callback list would
-    # retain every completed worker and its page/dialog for the entire session.
+    # The sender owns this callback. Keeping every callback on the global hub
+    # would retain completed setup workers and their widgets indefinitely.
     signal.connect(_forward)
 
 

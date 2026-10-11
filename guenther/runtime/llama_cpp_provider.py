@@ -29,9 +29,9 @@ class LlamaCppProvider(LocalAIProvider):
 
     def _probe(self) -> None:
         try:
-            import llama_cpp  # noqa: F401
-
-            self._status = ProviderStatus.MODEL_MISSING
+            from importlib.util import find_spec
+            self._status = (ProviderStatus.MODEL_MISSING if find_spec("llama_cpp") is not None
+                            else ProviderStatus.NOT_INSTALLED)
         except Exception:
             self._status = ProviderStatus.NOT_INSTALLED
 
@@ -60,20 +60,25 @@ class LlamaCppProvider(LocalAIProvider):
             return self._status
         try:
             from core.local_model_lock import hold_production_model
-            from llama_cpp import Llama
+            from core.native_library_loading import quiet_native_loader
+            with quiet_native_loader():
+                from llama_cpp import Llama
 
             self._status = ProviderStatus.LOADING
             # Hold exclusive lock for the lifetime of the loaded weight so a
             # concurrent CV-import child cannot also map the same GGUF.
             self._model_lock_cm = hold_production_model(role="writing", timeout_s=60.0)
             self._model_lock_cm.__enter__()
-            self._llm = Llama(
-                model_path=str(path),
-                n_ctx=4096,
-                n_threads=max(2, (__import__("os").cpu_count() or 2)),
-                n_batch=512,
-                verbose=False,
-            )
+            from core.cv_llm_runtime import resolve_cv_llm_thread_plan
+            threads, batch_threads, _, _, _ = resolve_cv_llm_thread_plan()
+            with quiet_native_loader():
+                self._llm = Llama(
+                    model_path=str(path), n_ctx=4096,
+                    n_threads=threads, n_threads_batch=batch_threads,
+                    n_batch=512, verbose=False,
+                )
+            from core.local_chat_template import configure_non_thinking_chat
+            configure_non_thinking_chat(self._llm)
             self._model_id = model_id
             self._status = ProviderStatus.READY
             log_event("model_loaded", model_id=model_id, provider=self.provider_id)
@@ -172,6 +177,7 @@ class LlamaCppProvider(LocalAIProvider):
                     {"role": "user", "content": user},
                 ],
                 **kwargs,
+                response_format={"type": "json_object"},
             )
             text = out["choices"][0]["message"]["content"]
             parsed = extract_json_object(text)

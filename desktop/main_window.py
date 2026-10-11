@@ -744,8 +744,11 @@ class MainWindow(QMainWindow):
         if getattr(self, "_wizard_active", False):
             return
         meta = self.config_service.load_meta()
-        # Old wizard dismissals marked incomplete setup as done. Offer the repaired flow once.
-        legacy = bool(meta.get("first_run_completed")) and not meta.get("setup_flow_version")
+        # Offer the device-aware setup once to users of earlier setup versions.
+        version = meta.get("setup_flow_version", 0)
+        legacy = bool(meta.get("first_run_completed")) and (
+            not isinstance(version, int) or version < 3
+        )
         if not self.config_service.is_first_run() and not legacy:
             return
         self._wizard_active = True

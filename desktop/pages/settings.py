@@ -424,12 +424,10 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         self.wizard_reopen_btn.setObjectName("SecondaryButton")
         self.wizard_reopen_btn.clicked.connect(self._reopen_setup_wizard)
         gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
-        self.device_check_btn = QPushButton("Gerät prüfen und Modell empfehlen")
-        self.device_check_btn.clicked.connect(self._check_device)
-        self.device_check_result = QLabel()
-        self.device_check_result.setWordWrap(True)
-        gform.addRow(self.device_check_btn)
-        gform.addRow(self.device_check_result)
+        from desktop.widgets.model_setup_panel import ModelSetupPanel
+        self.model_setup = ModelSetupPanel(self)
+        self.model_setup.model_ready.connect(self._model_setup_ready)
+        gform.addRow(self.model_setup)
         gform.addRow(self.guenther_writer_status)
         self.guenther_hint.hide()
         gform.addRow(self.cv_import_title)
@@ -835,6 +833,10 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
     def _refresh_guenther_status_labels(self) -> None:
         if not hasattr(self, "guenther_writer_status"):
             return
+        from guenther.setup_models import SETUP_MODEL_CATALOG, selected_model_id
+        mid = selected_model_id()
+        if mid and hasattr(self, "guenther_model_fixed"):
+            self.guenther_model_fixed.setText(SETUP_MODEL_CATALOG[mid]["display_name"])
         # Günther is always on — no user toggle. Status only reflects model readiness.
         writer_ok = False
         try:
@@ -849,16 +851,16 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             self.guenther_writer_status.setText(tr("settings.guenther_writer_unavailable"))
         cv_ok = False
         try:
-            from core.cv_llm_runtime import llama_cpp_importable, resolve_cv_model_path
+            from core.cv_llm_runtime import resolve_cv_model_path
+            from importlib.util import find_spec
 
             model_ok = resolve_cv_model_path() is not None
             try:
-                import docpick  # noqa: F401
-
-                docpick_ok = True
+                docpick_ok = find_spec("docpick") is not None
             except Exception:
                 docpick_ok = False
-            cv_ok = bool(model_ok and docpick_ok and llama_cpp_importable())
+            # Status rendering must not load optional native DLLs on the UI thread.
+            cv_ok = bool(model_ok and docpick_ok and find_spec("llama_cpp") is not None)
         except Exception:
             cv_ok = False
         if hasattr(self, "cv_import_status"):
@@ -867,6 +869,13 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
                 if cv_ok
                 else tr("settings.cv_import_status_unavailable")
             )
+
+    def _model_setup_ready(self, model_id):
+        cfg = self.config_service.load()
+        cfg.settings.guenther_model = model_id
+        self.config_service.save(cfg)
+        self._refresh_guenther_status_labels()
+        self.settings_saved.emit()
 
     def show_updates(self) -> None:
         self.nav.setCurrentRow(0)
@@ -1043,21 +1052,8 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         )
 
     def _check_device(self) -> None:
-        from guenther.device_check import check_device
-        from guenther.model_manager import default_models_dir
-
-        self.device_check_btn.setEnabled(False)
-        worker = FunctionWorker(lambda: check_device(default_models_dir()))
-
-        def done(result=None, error=None):
-            self.device_check_btn.setEnabled(True)
-            self.device_check_result.setText(result.message() if result else
-                                            "Geräteprüfung fehlgeschlagen. Bitte erneut versuchen.")
-
-        connect_queued(worker.finished, done)
-        connect_queued(worker.failed, lambda error: done(error=error))
-        self._device_worker = worker
-        self._device_thread = start_worker(worker)
+        if not self.model_setup.busy:
+            self.model_setup.refresh_recommendation()
 
     def _save_dry_run(self, enabled: bool) -> None:
         """Apply this setting immediately for subsequent runs."""
@@ -1113,7 +1109,8 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             cfg.settings.allow_employer_email_send = self.allow_employer_email_send.isChecked()
         # Günther is always enabled — no UI toggle; persist True for callers/tests.
         cfg.settings.guenther_enabled = True
-        cfg.settings.guenther_model = "qwen3.5-4b"
+        from guenther.hardware import resolve_production_model
+        cfg.settings.guenther_model = resolve_production_model(cfg.settings.guenther_model)
         cfg.settings.guenther_heuristic_fallback = False
         if hasattr(self, "mail_provider"):
             cfg.settings.mail_provider = str(self.mail_provider.currentData() or "none")
