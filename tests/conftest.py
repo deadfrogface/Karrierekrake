@@ -65,3 +65,16 @@ def _default_memory_keyring(monkeypatch: pytest.MonkeyPatch):
     backend = _MemoryKeyringBackend()
     monkeypatch.setattr(secure_tokens, "_keyring", lambda: backend)
     yield backend
+
+
+@pytest.fixture(autouse=True)
+def _offline_qt_runtime(request, monkeypatch):
+    """UI smoke must not download routing maps for every temporary window.
+
+    Routing installation/lifecycle has its own tests. Qt UI tests exercise the
+    real window, providers and workers, but do not provision Java/map data.
+    """
+    if "qapp" in request.fixturenames:
+        from desktop.main_window import MainWindow
+
+        monkeypatch.setattr(MainWindow, "_start_brouter_runtime", lambda self: None)
