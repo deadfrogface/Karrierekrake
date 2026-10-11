@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements-ci.txt
+          pip install --no-compile -c constraints-runtime.txt -r requirements-ci.txt
       - name: Offscreen Qt MainWindow smoke
         env:
           QT_QPA_PLATFORM: offscreen
@@ -50,10 +50,9 @@ jobs:
         shell: pwsh
         run: Add-Content $env:GITHUB_STEP_SUMMARY "## QT SMOKE`nSee job result"
 
-  build-and-exe-smoke:
-    name: build-and-exe-smoke
+  exe-smoke-worker:
+    name: exe-smoke-worker
     runs-on: windows-latest
-    needs: [qt-smoke]
     steps:
       - uses: actions/checkout@v4
       - name: Runner CPU
@@ -375,3 +374,20 @@ jobs:
             Add-Content $env:GITHUB_STEP_SUMMARY "### Offline CV metrics"
             Get-Content artifacts/cv_import_exe_offline_e2e.json | Add-Content $env:GITHUB_STEP_SUMMARY
           }
+
+  # Preserve the existing required check and require BOTH independent jobs.
+  # Building can overlap Qt tests; a failed/skipped/cancelled Qt job can never
+  # produce a green build-and-exe-smoke check or a publishable workflow.
+  build-and-exe-smoke:
+    name: build-and-exe-smoke
+    needs: [qt-smoke, exe-smoke-worker]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Qt and packaged EXE acceptance
+        env:
+          QT_RESULT: ${{ needs.qt-smoke.result }}
+          EXE_RESULT: ${{ needs.exe-smoke-worker.result }}
+        run: |
+          test "$QT_RESULT" = success
+          test "$EXE_RESULT" = success

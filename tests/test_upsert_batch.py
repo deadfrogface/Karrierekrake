@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+from contextlib import ExitStack
 import sqlite3
 import threading
 import time
@@ -92,12 +93,20 @@ def test_upsert_jobs_matches_single_upserts_row_for_row(tmp_path: Path, monkeypa
     sequence[499] = _job(499, id="cross", status=JobStatus.APPLYING.value, source_job_id="cross")
     sequence[500] = _job(500, id="cross", status=JobStatus.NEW.value, source_job_id="cross-b")
 
-    for db in (single, batched):
-        for job in copy.deepcopy(seeds):
-            db.upsert_job(job)
-    for job in copy.deepcopy(sequence):
-        single.upsert_job(job)
-    written = batched.upsert_jobs(copy.deepcopy(sequence))
+    # Keep idle readers open, just like the running GUI. Otherwise each single
+    # write closes the last connection, checkpoints/removes WAL and recreates
+    # it on the next call (especially expensive on Windows). Writers still use
+    # the real separate connections, synchronous=NORMAL and individual commits.
+    with ExitStack() as readers:
+        observers = [readers.enter_context(db.connection()) for db in (single, batched)]
+        for db in (single, batched):
+            for job in copy.deepcopy(seeds):
+                db.upsert_job(job)
+        for job in copy.deepcopy(sequence):
+            single.upsert_job(job)
+            # A separate reader must see each commit, not only the final batch.
+            assert observers[0].execute("SELECT 1 FROM jobs WHERE id = ?", (job.id,)).fetchone()
+        written = batched.upsert_jobs(copy.deepcopy(sequence))
     assert written == 1000
 
     assert _rows(single) == _rows(batched)
