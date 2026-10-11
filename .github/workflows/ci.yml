@@ -69,6 +69,19 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -c constraints-runtime.txt -r requirements-ci.txt
+      - name: Collect the same suite the shards run
+        if: matrix.group == 1
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONUTF8: "1"
+        run: python scripts/unit_test_shards.py collect --output collected-unit-tests.txt
+      - name: Upload collection
+        if: always() && matrix.group == 1
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests-collected
+          path: collected-unit-tests.txt
+          if-no-files-found: error
       - name: Pytest shard (exclude network + cv corpus dedicated job)
         env:
           QT_QPA_PLATFORM: offscreen
@@ -87,40 +100,9 @@ jobs:
           path: junit-unit-${{ matrix.group }}.xml
           if-no-files-found: error
 
-  unit-tests-collect:
-    name: unit-tests-collect
-    runs-on: windows-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: |
-            requirements-runtime.txt
-            requirements-ci.txt
-            requirements-dev.txt
-            constraints-runtime.txt
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements-ci.txt
-      - name: Collect the same suite the shards run
-        env:
-          QT_QPA_PLATFORM: offscreen
-          PYTHONUTF8: "1"
-        run: python scripts/unit_test_shards.py collect --output collected-unit-tests.txt
-      - name: Upload collection
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-tests-collected
-          path: collected-unit-tests.txt
-          if-no-files-found: error
-
   unit-tests:
     name: unit-tests
-    needs: [unit-tests-shard, unit-tests-collect]
+    needs: [unit-tests-shard]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -134,7 +116,7 @@ jobs:
       - name: Compare collected node ids with shard JUnit
         env:
           SHARD_RESULT: ${{ needs.unit-tests-shard.result }}
-          COLLECT_RESULT: ${{ needs.unit-tests-collect.result }}
+          COLLECT_RESULT: ${{ needs.unit-tests-shard.result }}
         run: >
           python3 scripts/unit_test_shards.py check
           --artifacts unit-test-artifacts

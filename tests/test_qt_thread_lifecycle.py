@@ -108,3 +108,25 @@ def test_spec_defaults_to_windowed_production_exe() -> None:
     assert match, "FORCE_CONSOLE must use explicit membership check, not bool(non-empty)"
     allowed = ast.literal_eval(match.group(1))
     assert allowed == {"1", "true", "yes"}
+
+
+def test_queued_connection_releases_completed_sender_and_receiver(qapp):
+    import gc
+    import weakref
+    from PySide6.QtCore import QObject, Signal
+
+    class Sender(QObject):
+        ping = Signal()
+
+    class Receiver:
+        def handle(self):
+            pass
+
+    sender = Sender()
+    receiver = Receiver()
+    retained = weakref.ref(receiver)
+    connect_queued(sender.ping, receiver.handle)
+    sender.ping.disconnect()
+    del sender, receiver
+    gc.collect()
+    assert retained() is None, 'completed account tasks must not retain pages forever'

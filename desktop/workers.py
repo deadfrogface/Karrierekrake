@@ -199,7 +199,6 @@ class _GuiDispatchHub(QObject):
 
     def __init__(self) -> None:
         super().__init__()
-        self._forwards: list = []
         self.invoke.connect(self._execute, Qt.ConnectionType.QueuedConnection)
 
     @Slot(object)
@@ -251,7 +250,8 @@ def connect_queued(signal, slot) -> None:
         captured_kwargs = kwargs
         hub.invoke.emit(lambda: slot(*captured_args, **captured_kwargs))
 
-    hub._forwards.append(_forward)
+    # The sender signal owns the callback. A process-wide callback list would
+    # retain every completed worker and its page/dialog for the entire session.
     signal.connect(_forward)
 
 
