@@ -7,10 +7,15 @@ device-dependent choices; Phi-4-mini remains a historical benchmark only.
 from __future__ import annotations
 
 import json
+import errno
+import http.client
 import os
 import re
 import shutil
+import socket
+import ssl
 import tempfile
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
@@ -24,6 +29,41 @@ from core.security.model_integrity import (
     verify_file_sha256,
 )
 from guenther.privacy import log_event
+
+DOWNLOAD_TIMEOUT = 60
+DOWNLOAD_ATTEMPTS = 3
+DOWNLOAD_RETRY_DELAY = 1.0
+
+
+def download_failure_code(exc: Exception) -> str:
+    """Expose only a fixed diagnostic code, never paths or signed URLs."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return f"http_{exc.code}"
+    reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
+    if isinstance(reason, ssl.SSLError):
+        return "tls_failed"
+    if isinstance(reason, TimeoutError):
+        return "connection_timeout"
+    if isinstance(reason, socket.gaierror):
+        return "dns_failed"
+    if isinstance(reason, PermissionError):
+        return "write_permission_denied"
+    if isinstance(reason, OSError) and reason.errno == errno.ENOSPC:
+        return "insufficient_disk"
+    if isinstance(reason, (http.client.IncompleteRead, ConnectionError)):
+        return "connection_interrupted"
+    if isinstance(exc, ValueError):
+        return "invalid_download_response"
+    return "download_failed"
+
+
+def _retryable_download_error(exc: Exception) -> bool:
+    if isinstance(exc, urllib.error.HTTPError):
+        return exc.code in {408, 429, 500, 502, 503, 504}
+    reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
+    return (not isinstance(reason, ssl.SSLError)
+            and isinstance(reason, (TimeoutError, ConnectionError,
+                                    socket.gaierror, http.client.IncompleteRead)))
 
 # Legacy default; setup selection takes precedence for both runtime paths.
 PRODUCTION_MODEL_ID = "qwen3.5-4b"
@@ -272,59 +312,81 @@ class ModelManager:
         if progress_cb:
             progress_cb(prog)
 
-        try:
-            existing = part_path.stat().st_size if part_path.is_file() else 0
-            req = urllib.request.Request(url, headers={"User-Agent": "Karrierekrake-Guenther/1.0"})
-            if existing:
-                req.add_header("Range", f"bytes={existing}-")
+        for attempt in range(DOWNLOAD_ATTEMPTS):
+            if cancel_check and cancel_check():
+                prog.status, prog.message = "cancelled", "cancelled"
+                return prog
             try:
-                response = urllib.request.urlopen(req, timeout=15)
-            except urllib.error.HTTPError as exc:
-                # A complete/stale partial file may be outside the server's range.
-                if not existing or exc.code != 416:
-                    raise
-                exc.close()
-                existing = 0
-                req.remove_header("Range")
-                response = urllib.request.urlopen(req, timeout=15)
-            with response as resp:
-                status = resp.status
-                if status == 206:
-                    match = re.fullmatch(r"bytes ([0-9]+)-([0-9]+)/([0-9]+)",
-                                         resp.headers.get("Content-Range", ""))
-                    if not match or int(match[1]) != existing:
-                        raise ValueError("invalid_download_range")
-                    start_byte, end_byte, total_bytes = map(int, match.groups())
-                    if not start_byte <= end_byte < total_bytes:
-                        raise ValueError("invalid_download_range")
-                    prog.bytes_total = total_bytes
-                elif status == 200:
-                    # Ignoring Range means a full file: truncate, never append.
+                existing = part_path.stat().st_size if part_path.is_file() else 0
+                req = urllib.request.Request(url, headers={"User-Agent": "Karrierekrake-Guenther/1.0"})
+                if existing:
+                    req.add_header("Range", f"bytes={existing}-")
+                try:
+                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT)
+                except urllib.error.HTTPError as exc:
+                    # A complete/stale partial file may be outside the server's range.
+                    if not existing or exc.code != 416:
+                        raise
+                    exc.close()
                     existing = 0
-                    total = resp.headers.get("Content-Length")
-                    if total:
-                        prog.bytes_total = int(total)
-                else:
-                    raise ValueError("invalid_download_response")
-                prog.bytes_done = existing
-                with part_path.open("ab" if existing else "wb") as out:
-                    while True:
+                    req.remove_header("Range")
+                    response = urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT)
+                with response as resp:
+                    status = resp.status
+                    if status == 206:
+                        match = re.fullmatch(r"bytes ([0-9]+)-([0-9]+)/([0-9]+)",
+                                             resp.headers.get("Content-Range", ""))
+                        if not match or int(match[1]) != existing:
+                            raise ValueError("invalid_download_range")
+                        start_byte, end_byte, total_bytes = map(int, match.groups())
+                        if not start_byte <= end_byte < total_bytes:
+                            raise ValueError("invalid_download_range")
+                        prog.bytes_total = total_bytes
+                    elif status == 200:
+                        # Ignoring Range means a full file: truncate, never append.
+                        existing = 0
+                        total = resp.headers.get("Content-Length")
+                        if total:
+                            prog.bytes_total = int(total)
+                    else:
+                        raise ValueError("invalid_download_response")
+                    prog.bytes_done = existing
+                    with part_path.open("ab" if existing else "wb") as out:
+                        while True:
+                            if cancel_check and cancel_check():
+                                prog.status = "cancelled"
+                                prog.message = "cancelled"
+                                return prog
+                            chunk = resp.read(1024 * 1024)
+                            if not chunk:
+                                if prog.bytes_done < prog.bytes_total:
+                                    raise http.client.IncompleteRead(b"", prog.bytes_total - prog.bytes_done)
+                                break
+                            out.write(chunk)
+                            prog.bytes_done += len(chunk)
+                            if progress_cb:
+                                progress_cb(prog)
+                break
+            except (urllib.error.URLError, OSError, ValueError, http.client.HTTPException) as exc:
+                code = download_failure_code(exc)
+                if attempt + 1 < DOWNLOAD_ATTEMPTS and _retryable_download_error(exc):
+                    log_event("model_download_retry", model_id=model_id, reason=code,
+                              attempt=attempt + 1, bytes_saved=prog.bytes_done)
+                    prog.status, prog.message = "retrying", code
+                    if progress_cb:
+                        progress_cb(prog)
+                    # Cancellable backoff; the next request resumes from the .part file.
+                    deadline = time.monotonic() + DOWNLOAD_RETRY_DELAY * (attempt + 1)
+                    while time.monotonic() < deadline:
                         if cancel_check and cancel_check():
-                            prog.status = "cancelled"
-                            prog.message = "cancelled"
+                            prog.status, prog.message = "cancelled", "cancelled"
                             return prog
-                        chunk = resp.read(1024 * 1024)
-                        if not chunk:
-                            break
-                        out.write(chunk)
-                        prog.bytes_done += len(chunk)
-                        if progress_cb:
-                            progress_cb(prog)
-        except (urllib.error.URLError, OSError, ValueError) as exc:
-            prog.status = "error"
-            prog.message = "download_failed"
-            log_event("model_download_failed", model_id=model_id, err=type(exc).__name__)
-            return prog
+                        time.sleep(min(.1, max(0, deadline - time.monotonic())))
+                    prog.status, prog.message = "downloading", ""
+                    continue
+                prog.status, prog.message = "error", code
+                log_event("model_download_failed", model_id=model_id, reason=code)
+                return prog
 
         prog.status = "verifying"
         if progress_cb:

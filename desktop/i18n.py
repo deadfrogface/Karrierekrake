@@ -2632,3 +2632,38 @@ TRANSLATIONS['en'].update({
 })
 TRANSLATIONS['de']['updates.legacy'] = 'Programmupdates musst du in dieser Installation manuell installieren. Die lokale KI kannst du im Einrichtungsassistenten oder im Bereich „Lokale KI“ herunterladen.'
 TRANSLATIONS['en']['updates.legacy'] = 'App updates are unavailable in this installation. Download local AI through setup or the Local AI section.'
+
+TRANSLATIONS['de'].update({
+    'setup.model.retrying': 'Die Verbindung wurde unterbrochen. Der Download wird automatisch fortgesetzt …',
+    'setup.model.failed': 'Der Modell-Download ist fehlgeschlagen. Fehlercode: download_failed. Bereits geladene Daten bleiben für einen erneuten Versuch erhalten.',
+    'setup.model.error.timeout': 'Der Modellserver hat nicht rechtzeitig geantwortet (connection_timeout). Versuche es erneut; der Download wird fortgesetzt.',
+    'setup.model.error.interrupted': 'Die Verbindung zum Modellserver wurde unterbrochen (connection_interrupted). Versuche es erneut; der Download wird fortgesetzt.',
+    'setup.model.error.dns': 'Der Modellserver konnte nicht gefunden werden (dns_failed). Prüfe Verbindung, DNS oder VPN und versuche es erneut.',
+    'setup.model.error.tls': 'Die sichere Verbindung zum Modellserver konnte nicht geprüft werden (tls_failed). Prüfe Datum/Uhrzeit und HTTPS-Filter von Antivirus oder Proxy.',
+    'setup.model.error.disk': 'Auf dem Laufwerk für die Modelle ist zu wenig Speicherplatz frei (insufficient_disk). Schaffe Platz und versuche es erneut.',
+    'setup.model.error.permission': 'Die Modelldatei konnte nicht gespeichert werden (write_permission_denied). Prüfe Schreibrechte und ob ein Antivirus den Zugriff blockiert.',
+    'setup.model.error.checksum': 'Die heruntergeladene Datei ist beschädigt (checksum_mismatch). Sie wurde verworfen. Starte den Download erneut.',
+    'setup.model.error.response': 'Der Modellserver hat eine ungültige Download-Antwort geliefert (invalid_download_response). Versuche es später erneut.',
+    'setup.model.error.http': 'Der Modellserver hat den Download mit HTTP {status} abgelehnt. Versuche es später erneut; bei HTTP 401/403 prüfe auch Proxy oder Netzwerkfilter.',
+})
+TRANSLATIONS['en'].update({
+    'setup.model.retrying': 'The connection was interrupted. Resuming the download automatically …',
+    'setup.model.failed': 'Model download failed. Error code: download_failed. Downloaded data is retained for another attempt.',
+    'setup.model.error.timeout': 'The model server did not respond in time (connection_timeout). Retry to resume the download.',
+    'setup.model.error.interrupted': 'The connection to the model server was interrupted (connection_interrupted). Retry to resume the download.',
+    'setup.model.error.dns': 'The model server could not be found (dns_failed). Check your connection, DNS or VPN, then retry.',
+    'setup.model.error.tls': 'The secure connection to the model server could not be verified (tls_failed). Check date/time and antivirus or proxy HTTPS filtering.',
+    'setup.model.error.disk': 'The model drive has insufficient disk space (insufficient_disk). Free some space and retry.',
+    'setup.model.error.permission': 'The model file could not be saved (write_permission_denied). Check write permissions and antivirus blocking.',
+    'setup.model.error.checksum': 'The downloaded file is corrupt (checksum_mismatch) and was discarded. Start the download again.',
+    'setup.model.error.response': 'The model server returned an invalid download response (invalid_download_response). Retry later.',
+    'setup.model.error.http': 'The model server rejected the download with HTTP {status}. Retry later; for HTTP 401/403 also check proxy or network filters.',
+})
+TRANSLATIONS['de'].update({
+    'logs.event.model_failed': 'Der KI-Modell-Download oder Ladetest ist fehlgeschlagen. Die genaue Ursache steht unten.',
+    'logs.event.model_installed': 'Das KI-Modell wurde heruntergeladen und die Prüfsumme bestätigt.',
+})
+TRANSLATIONS['en'].update({
+    'logs.event.model_failed': 'AI model download or load test failed. See the exact cause below.',
+    'logs.event.model_installed': 'AI model download completed and its checksum was verified.',
+})
