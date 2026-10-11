@@ -69,6 +69,7 @@ def test_force_submit_true_with_dry_run_stays_dry(tmp_path: Path, monkeypatch):
         encoding="utf-8",
         newline="",
     )
+    monkeypatch.setattr("apply.manager.time.sleep", lambda seconds: (_ for _ in ()).throw(AssertionError("Dry-run must not sleep")))
     mgr.prepare_and_apply(job, force_submit=True)
     assert captured.get("submit") is False
     assert captured.get("dry_run") is True

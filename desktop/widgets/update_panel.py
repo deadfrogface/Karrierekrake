@@ -14,6 +14,10 @@ from desktop.widgets.confirm_dialog import confirm_action
 from desktop.workers import FunctionWorker, connect_queued, start_worker
 
 
+def _model_available():
+    return native_models.available() or (updates.install_root() / updates.MODEL_PATH).is_file()
+
+
 class UpdatePanel(QFrame):
     available = Signal(str)
     restart_requested = Signal()
@@ -46,7 +50,7 @@ class UpdatePanel(QFrame):
         current = updates.read_current(updates.install_root())
         self.version.setText(tr('updates.version', version=current.get('display_version', current.get('tag', tr('updates.development')))))
         self.managed = getattr(sys, 'frozen', False) and (updates.install_root() / updates.CURRENT).is_file()
-        if self.managed and not (updates.install_root() / updates.MODEL_PATH).is_file():
+        if self.managed and not _model_available():
             self.manifest = updates.bootstrap_manifest(updates.install_root())
             self.status.setText(tr('updates.initial'))
             self.install_button.setText(tr('updates.model_install'))
@@ -71,7 +75,7 @@ class UpdatePanel(QFrame):
             self.install_button.setText(tr('updates.native_download') if native_models.available() else tr('updates.model_install'))
             self.version.setText(tr('updates.version', version=self.native.get('display_version', self.native['commit'][:12])))
             return
-        self.install_button.setText(tr('updates.model_install') if self.managed and not (updates.install_root() / updates.MODEL_PATH).is_file() else tr('updates.install'))
+        self.install_button.setText(tr('updates.model_install') if self.managed and not _model_available() else tr('updates.install'))
         current = updates.read_current(updates.install_root())
         self.version.setText(tr('updates.version', version=current.get('display_version', current.get('tag', tr('updates.development')))))
 
@@ -103,7 +107,7 @@ class UpdatePanel(QFrame):
         if self.native:
             self._check_native(quiet=quiet)
             return
-        if not (updates.install_root() / updates.MODEL_PATH).is_file():
+        if not _model_available():
             self.available.emit(tr('updates.model_notice'))
         self.status.setText(tr('updates.checking'))
         def result(manifest):
@@ -111,10 +115,15 @@ class UpdatePanel(QFrame):
             self.install_button.setVisible(bool(manifest))
             if manifest:
                 names = updates.changed_components(manifest, updates.install_root())
+                if not names:
+                    self.manifest = None
+                    self.install_button.hide()
+                    self.status.setText(tr('updates.current'))
+                    return
                 size = sum(manifest['components'][n]['size'] for n in names)
                 self.status.setText(tr('updates.available', megabytes=f'{size / 1024**2:.0f}'))
                 self.available.emit(tr('updates.notice'))
-            elif not (updates.install_root() / updates.MODEL_PATH).is_file():
+            elif not _model_available():
                 self.manifest = updates.bootstrap_manifest(updates.install_root())
                 self.install_button.setText(tr('updates.model_install'))
                 self.install_button.show()
@@ -176,8 +185,9 @@ class UpdatePanel(QFrame):
                 return
             self.status.setText(tr('updates.restarting'))
             QTimer.singleShot(0, self.restart_requested.emit)
-        missing_model = self.managed and not (updates.install_root() / updates.MODEL_PATH).is_file()
-        only = {'model'} if missing_model else None
+        from guenther.setup_models import selected_model_path
+        missing_model = self.managed and not _model_available()
+        only = {'app'} if selected_model_path() else {'model'} if missing_model else None
         self._run(lambda: updates.stage_update(
             self.manifest,
             cancelled=self.worker._cancel.is_set,

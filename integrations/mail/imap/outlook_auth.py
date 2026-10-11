@@ -6,11 +6,11 @@ from integrations.providers.enums import ProviderError
 IMAP_SCOPE = 'https://outlook.office.com/IMAP.AccessAsUser.All'
 
 
-def login_outlook(secret):
+def login_outlook(secret, *, cancelled=None):
     from integrations.mail.microsoft.oauth_pkce import run_local_pkce_login
     tokens = run_local_pkce_login(client_id=secret['client_id'],
         scopes=[IMAP_SCOPE, 'offline_access'], redirect_host='localhost',
-        redirect_port=8765, redirect_path='/oauth/callback', open_browser=True)
+        redirect_port=8765, redirect_path='/oauth/callback', open_browser=True, cancelled=cancelled)
     secret.update(tokens)
     secret['expires_at'] = time.time() + int(tokens.get('expires_in', 3600))
     return secret

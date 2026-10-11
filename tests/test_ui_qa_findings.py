@@ -366,3 +366,17 @@ def test_cancelled_gui_search_keeps_review_counter(tmp_path):
     )
     assert stats.get("cancelled") is True
     assert Database(cfg.db_path).dashboard_stats()["needs_review"] == before
+
+
+def test_unchanged_theme_does_not_repolish_every_widget(qapp, monkeypatch):
+    from unittest.mock import Mock
+    from desktop.theme import apply_theme
+    qapp.setProperty('kk_palette_theme', None)
+    original = qapp.setStyleSheet
+    calls = Mock(wraps=original)
+    monkeypatch.setattr(qapp, 'setStyleSheet', calls)
+    assert apply_theme(qapp, 'dark') == 'dark'
+    assert apply_theme(qapp, 'dark') == 'dark'
+    assert calls.call_count == 1
+    assert apply_theme(qapp, 'light') == 'light'
+    assert calls.call_count == 2

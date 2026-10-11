@@ -1040,14 +1040,16 @@ def load_config(
             settings.microsoft_client_id = env_ms
 
     # Günther writing help is always on (no user disable switch).
-    # Migrate legacy model prefs → sole production Qwen (never block on Phi).
+    # Preserve device setup choices while migrating old model preferences.
     settings.guenther_enabled = True
     raw_model = str(getattr(settings, "guenther_model", "") or "").strip().lower()
     if raw_model in {"", "auto", "phi4-mini", "phi-4-mini", "qwen3-4b", "qwen3-1.7b"}:
         settings.guenther_model = "qwen3.5-4b"
     elif raw_model != "qwen3.5-4b":
+        from guenther.setup_models import SETUP_MODEL_CATALOG
         # Unknown legacy id — coerce to sole production weight.
-        settings.guenther_model = "qwen3.5-4b"
+        if raw_model not in SETUP_MODEL_CATALOG:
+            settings.guenther_model = "qwen3.5-4b"
     settings.guenther_heuristic_fallback = False
 
     # NEXT-03: coerce legacy Google flags → explicit providers (no token wipe).

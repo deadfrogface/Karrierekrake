@@ -83,9 +83,12 @@ class BaseApplier(ABC):
         return last_result or ApplyResult(success=False, error_message="All retry attempts exhausted")
 
     def _human_type(self, locator, text: str) -> None:
-        for char in text:
-            locator.type(char)
-            time.sleep(random.uniform(0.03, 0.08))
+        # Playwright fill dispatches input/change without a per-character delay.
+        # Keep a single typing fallback for controls that reject fill.
+        try:
+            locator.fill(text)
+        except Exception:
+            locator.type(text)
 
     def _random_pause(self, min_s: float = 0.5, max_s: float = 2.0) -> None:
         time.sleep(random.uniform(min_s, max_s))

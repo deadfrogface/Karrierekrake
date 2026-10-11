@@ -292,19 +292,20 @@ class ReadyStepPage(QWizardPage):
 class ModelStepPage(QWizardPage):
     def __init__(self):
         super().__init__()
-        from desktop.widgets.update_panel import UpdatePanel
+        from desktop.widgets.model_setup_panel import ModelSetupPanel
 
         self.setTitle(tr("setup.model.title"))
         layout = QVBoxLayout(self)
         hint = QLabel(tr("setup.model.body"))
         hint.setWordWrap(True)
         layout.addWidget(hint)
-        self.updates = UpdatePanel(self)
-        self.updates.title.setText(tr("setup.model.card"))
-        self.updates.check_button.hide()
-        self.updates.version.hide()
+        self.updates = ModelSetupPanel(self)
+        self.updates.state_changed.connect(self.completeChanged.emit)
         layout.addWidget(self.updates)
         layout.addStretch()
+
+    def isComplete(self):
+        return not self.updates.busy
 
 
 class IntegrationsStepPage(AccountConnectionsMixin, QWizardPage):
@@ -494,7 +495,7 @@ class FirstRunWizard(QWizard):
         self.addPage(self.integrations)
         self.addPage(self.browser)
         self.addPage(self.ready)
-        self.model.updates.restart_requested.connect(self._restart)
+        self.model.updates.model_ready.connect(self._save_model_selection)
         self.retranslate_ui()
         meta = config_service.load_meta()
         draft = meta.get("setup_draft", {})
@@ -543,7 +544,15 @@ class FirstRunWizard(QWizard):
                 page.retranslate_ui()
 
     def accept(self) -> None:
+        if self.model.updates.busy:
+            return
         self.integrations._closed = True
+        worker = getattr(self.integrations, "_account_worker", None)
+        if worker is not None:
+            try:
+                worker.request_cancel()
+            except RuntimeError:
+                pass
         self.browser._closed = True
         cfg = self.config_service.load()
         cfg = self.config_service.apply_safe_defaults(cfg)
@@ -569,6 +578,11 @@ class FirstRunWizard(QWizard):
         self.config_service.mark_first_run_done()
         super().accept()
 
+    def _save_model_selection(self, model_id):
+        cfg = self.config_service.load()
+        cfg.settings.guenther_model = model_id
+        self.config_service.save(cfg)
+
     def _restart(self):
         # Windows model installation needs an application restart. Do not mark setup complete.
         self.reject()
@@ -579,7 +593,14 @@ class FirstRunWizard(QWizard):
             parent.force_quit()
 
     def reject(self) -> None:
+        self.model.updates.shutdown()
         self.integrations._closed = True
+        worker = getattr(self.integrations, "_account_worker", None)
+        if worker is not None:
+            try:
+                worker.request_cancel()
+            except RuntimeError:
+                pass
         self.browser._closed = True
         meta = self.config_service.load_meta()
         meta["setup_page"] = max(0, self.currentId())

@@ -70,6 +70,42 @@ def candidate_browsers_dirs() -> list[Path]:
     return out
 
 
+def find_system_browser() -> Path | None:
+    """Find an installed Chromium-compatible browser without starting a driver.
+
+    Stock Firefox cannot speak Playwright's patched Firefox protocol. OAuth
+    continues to use the OS default browser, including Firefox.
+    """
+    import shutil
+
+    candidates: list[Path] = []
+    if sys.platform == "win32":
+        for base in (os.environ.get("PROGRAMFILES", r"C:\Program Files"),
+                     os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)"),
+                     os.environ.get("LOCALAPPDATA", "")):
+            if base:
+                for relative in ("Microsoft/Edge/Application/msedge.exe",
+                                 "Google/Chrome/Application/chrome.exe",
+                                 "BraveSoftware/Brave-Browser/Application/brave.exe",
+                                 "Vivaldi/Application/vivaldi.exe"):
+                    candidates.append(Path(base) / relative)
+    elif sys.platform == "darwin":
+        for root in (Path("/Applications"), Path.home() / "Applications"):
+            for app, binary in (("Microsoft Edge", "Microsoft Edge"),
+                                ("Google Chrome", "Google Chrome"),
+                                ("Brave Browser", "Brave Browser"),
+                                ("Chromium", "Chromium")):
+                candidates.append(root / f"{app}.app/Contents/MacOS/{binary}")
+    else:
+        for binary in ("microsoft-edge", "microsoft-edge-stable", "google-chrome",
+                       "google-chrome-stable", "chromium", "chromium-browser",
+                       "brave-browser", "vivaldi"):
+            executable = shutil.which(binary)
+            if executable:
+                candidates.append(Path(executable))
+    return next((path for path in candidates if path.is_file()), None)
+
+
 def find_chromium_executable(browsers_dir: Path | None = None) -> Path | None:
     dirs = [browsers_dir] if browsers_dir else candidate_browsers_dirs()
     for base in dirs:
@@ -116,6 +152,8 @@ def configure_playwright_browsers_path() -> Path:
 
 
 def playwright_available() -> bool:
+    if find_system_browser():
+        return True
     configure_playwright_browsers_path()
     if find_chromium_executable():
         return True
@@ -131,7 +169,7 @@ def playwright_available() -> bool:
 
 def browser_status_detail() -> str:
     configure_playwright_browsers_path()
-    exe = find_chromium_executable()
+    exe = find_system_browser() or find_chromium_executable()
     if exe:
         return f"OK: {exe}"
     return f"missing (expected under {preferred_browsers_dir()})"
@@ -194,7 +232,7 @@ def _run_playwright_install(browsers_path: Path) -> tuple[bool, str]:
 def check_browser() -> tuple[bool, str]:
     """Verify optional Chromium install is present (no download)."""
     configure_playwright_browsers_path()
-    exe = find_chromium_executable()
+    exe = find_system_browser() or find_chromium_executable()
     if exe:
         return True, f"Browser-Komponente gefunden:\n{exe}"
     return False, (

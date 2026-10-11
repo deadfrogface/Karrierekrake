@@ -815,6 +815,14 @@ def _note_phase_budget(
 ) -> None:
     if watch is None:
         return
+    if event.get("phase") == "generation_start":
+        begin = getattr(watch, "begin_repair", None)
+        if callable(begin):
+            try:
+                begin(float(event["timeout_s"]))
+            except (KeyError, TypeError, ValueError):
+                pass
+        return
     if "timeout_s" in event:
         adopt = getattr(watch, "adopt_initial", None)
         if callable(adopt):

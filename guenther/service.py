@@ -48,7 +48,7 @@ class GuentherService:
         quality_loop_mode: str = "plan_draft",
     ) -> None:
         self.enabled = enabled
-        # Coerce any legacy Phi/auto pref to sole Qwen production model.
+        # Preserve setup selection; migrate legacy Phi/auto preferences.
         self.model_pref = resolve_production_model(model)
         self.architecture = (
             architecture
@@ -93,8 +93,6 @@ class GuentherService:
             self._last_unavailable_reason = "disabled"
             return ProviderStatus.UNAVAILABLE
         mid = resolve_production_model(model_id or self._route_model("cv_extract"))
-        if mid != PRODUCTION_MODEL_ID:
-            mid = PRODUCTION_MODEL_ID
         if self.provider.provider_id == "llama_cpp" and not self.manager.is_installed(mid):
             self._last_unavailable_reason = "model_missing"
             return ProviderStatus.MODEL_MISSING
@@ -132,7 +130,7 @@ class GuentherService:
             "provider": self.provider.provider_id,
             "provider_status": self.provider.status().value,
             "model_pref": self.model_pref,
-            "production_model": PRODUCTION_MODEL_ID,
+            "production_model": resolve_production_model(self.model_pref),
             "architecture": self.architecture.value,
             "enable_repair": self.enable_repair,
             "hardware_tier": self.hardware.tier.value,

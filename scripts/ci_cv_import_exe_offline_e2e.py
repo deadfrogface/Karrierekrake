@@ -322,6 +322,23 @@ def _clear_network_env() -> None:
         os.environ.pop(key, None)
 
 
+def _stop_import_tree(proc: subprocess.Popen) -> None:
+    """Reap only this invocation, including PyInstaller's onefile child."""
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       timeout=10, check=False)
+    else:
+        import signal
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    if proc.poll() is None:
+        proc.kill()
+    proc.wait(timeout=10)
+
+
 def _run_child_import(
     exe: Path,
     cv: Path,
@@ -329,6 +346,7 @@ def _run_child_import(
     *,
     local_appdata: Path,
     timeout_s: float,
+    env_override: dict[str, str] | None = None,
 ) -> dict:
     env = os.environ.copy()
     env["LOCALAPPDATA"] = str(local_appdata)
@@ -338,6 +356,8 @@ def _run_child_import(
     env.pop("KARRIEREKRAKE_MODELS_DIR", None)
     # Force in-process: pretend no HTTP server.
     env["KARRIEREKRAKE_CV_LLM_BASE"] = "http://127.0.0.1:1/v1"
+    if env_override is not None:
+        env = env_override.copy()
     err_log = out.with_suffix(out.suffix + ".stderr.txt")
     cmd = [
         str(exe),
@@ -355,25 +375,26 @@ def _run_child_import(
             stdout=subprocess.DEVNULL,
             stderr=err_fh,
             env=env,
+            start_new_session=os.name != "nt",
         )
-        deadline = time.time() + timeout_s
-        while time.time() < deadline:
-            if out.is_file() and out.stat().st_size > 0:
-                break
-            if proc.poll() is not None and out.is_file():
-                break
-            time.sleep(0.5)
-        else:
-            proc.kill()
-            raise RuntimeError(f"child import timed out after {timeout_s}s")
-        # Give writer a moment to flush.
-        time.sleep(0.2)
-        if proc.poll() is None:
+        try:
+            deadline = time.monotonic() + timeout_s
+            while time.monotonic() < deadline:
+                if out.is_file() and out.stat().st_size > 0:
+                    break
+                if proc.poll() is not None:
+                    break
+                time.sleep(0.5)
+            else:
+                raise RuntimeError(f"child import timed out after {timeout_s}s")
+            # Wait for the worker to close its report before reading it.
             try:
                 proc.wait(timeout=30)
             except subprocess.TimeoutExpired:
-                proc.kill()
-                proc.wait(timeout=5)
+                _stop_import_tree(proc)
+        finally:
+            if proc.poll() is None:
+                _stop_import_tree(proc)
     elapsed = time.perf_counter() - t0
     if not out.is_file():
         try:

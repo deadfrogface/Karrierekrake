@@ -1,7 +1,7 @@
 """Hardware tier detection — LIGHT / STANDARD / POWER.
 
-Sole production model is Qwen3.5-4B. Insufficient RAM → GUENTHER_UNAVAILABLE,
-not another LLM weight.
+Legacy tier detection plus resolution of the setup-selected local model.
+The setup recommendation also considers currently free RAM and disk space.
 """
 
 from __future__ import annotations
@@ -82,8 +82,13 @@ def detect_hardware() -> HardwareProfile:
 
 
 def resolve_production_model(preferred: str = "auto") -> str:
-    """Always return the sole dual-use production model (Qwen3.5-4B)."""
-    _ = preferred  # legacy settings values are coerced
+    """Use the setup selection for both CV and writing; migrate old preferences."""
+    from guenther.setup_models import SETUP_MODEL_CATALOG, selected_model_id
+    selected = selected_model_id()
+    if selected:
+        return selected
+    if preferred in SETUP_MODEL_CATALOG:
+        return preferred
     return PRODUCTION_MODEL_ID
 
 

@@ -1,7 +1,7 @@
 """Model catalog + download manager (checksum, resumable, atomic, disk check).
 
-ONE-MODEL dual-use (2026-09): sole production weight is Qwen3.5-4B for CV extract
-AND Anschreiben/PHI_WRITE-path. Phi-4-mini retained as historical benchmark only.
+One active local model serves CV extraction and writing. Setup adds pinned
+device-dependent choices; Phi-4-mini remains a historical benchmark only.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from core.security.model_integrity import (
 )
 from guenther.privacy import log_event
 
-# Sole production LLM for CV import + writing (one GGUF on disk).
+# Legacy default; setup selection takes precedence for both runtime paths.
 PRODUCTION_MODEL_ID = "qwen3.5-4b"
 
 # No weights in git — catalog metadata only.
@@ -120,7 +120,13 @@ HISTORICAL_MODEL_CATALOG: dict[str, dict] = {
 
 
 def is_production_model(model_id: str) -> bool:
-    return model_id == PRODUCTION_MODEL_ID
+    from guenther.setup_models import SETUP_MODEL_CATALOG
+    return model_id == PRODUCTION_MODEL_ID or model_id in SETUP_MODEL_CATALOG
+
+
+def installable_catalog() -> dict[str, dict]:
+    from guenther.setup_models import SETUP_MODEL_CATALOG
+    return {**MODEL_CATALOG, **SETUP_MODEL_CATALOG}
 
 
 @dataclass
@@ -135,7 +141,7 @@ class DownloadProgress:
 @dataclass
 class ModelManager:
     models_dir: Path
-    catalog: dict[str, dict] = field(default_factory=lambda: dict(MODEL_CATALOG))
+    catalog: dict[str, dict] = field(default_factory=installable_catalog)
 
     def __post_init__(self) -> None:
         self.models_dir = Path(self.models_dir)
@@ -272,7 +278,7 @@ class ModelManager:
             if existing:
                 req.add_header("Range", f"bytes={existing}-")
             try:
-                response = urllib.request.urlopen(req, timeout=60)
+                response = urllib.request.urlopen(req, timeout=15)
             except urllib.error.HTTPError as exc:
                 # A complete/stale partial file may be outside the server's range.
                 if not existing or exc.code != 416:
@@ -280,7 +286,7 @@ class ModelManager:
                 exc.close()
                 existing = 0
                 req.remove_header("Range")
-                response = urllib.request.urlopen(req, timeout=60)
+                response = urllib.request.urlopen(req, timeout=15)
             with response as resp:
                 status = resp.status
                 if status == 206:

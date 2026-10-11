@@ -44,7 +44,7 @@ def test_cancel_resumes_draft_and_does_not_complete(qapp, config_service):
     resumed.back()
     assert resumed.currentId() == 1
     resumed.accept()
-    assert config_service.load_meta()["setup_flow_version"] == 2
+    assert config_service.load_meta()["setup_flow_version"] == 3
     assert "setup_draft" not in config_service.load_meta()
 
 

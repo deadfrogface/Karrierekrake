@@ -60,6 +60,8 @@ def message_for_account_error(exc: BaseException) -> str:
     if "keyring_unavailable" in str(exc).lower():
         return tr("privacy.connect_keyring")
     reason = str(exc).strip().lower()
+    if any(value in reason for value in ("oauth_cancelled", "oauth_timeout", "access_denied")):
+        return tr("privacy.connect_cancelled")
     messages = {
         "gmail_app_password_required": "integrations.gmail_app_password",
         "imap_auth_failed": "integrations.imap_auth_failed",

@@ -609,10 +609,16 @@ def dark_palette():
 def apply_theme(app, preference: str, *, high_contrast: bool | None = None) -> str:
     """Apply palette + stylesheet for *preference*; returns the resolved theme."""
     theme = resolve_theme(preference)
+    css = stylesheet_for(preference, high_contrast=high_contrast)
+    # Reapplying identical QSS repolishes every widget, including hidden pages.
+    # Settings/language refreshes frequently call here without a theme change.
+    if app.property("kk_palette_theme") == theme and app.styleSheet() == css:
+        return theme
     style = app.style()
     if theme == "dark":
         app.setPalette(dark_palette())
     elif style is not None:
         app.setPalette(style.standardPalette())
-    app.setStyleSheet(stylesheet_for(preference, high_contrast=high_contrast))
+    app.setStyleSheet(css)
+    app.setProperty("kk_palette_theme", theme)
     return theme

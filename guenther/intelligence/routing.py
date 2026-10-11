@@ -1,4 +1,4 @@
-"""Architecture routing — sole production model is Qwen3.5-4B.
+"""Architecture routing — one active device-selected model for both roles.
 
 Historical mode names (PHI_ALL, TWO_TIER, …) are aliases and all resolve to
 the same production weight. No Phi runtime path.
@@ -58,13 +58,16 @@ def resolve_model_for_capability(
     capability: str,
     model_pref: str = "auto",
 ) -> RoutingDecision:
-    """Always route to the sole production Qwen weight. Legacy prefs coerced."""
+    """Keep supported setup preferences; migrate historical aliases."""
     mode = (
         architecture
         if isinstance(architecture, ArchitectureMode)
         else ArchitectureMode(str(architecture))
     )
     pref = (model_pref or "auto").strip().lower()
+    from guenther.setup_models import SETUP_MODEL_CATALOG
+    if pref in SETUP_MODEL_CATALOG:
+        return RoutingDecision(mode, pref, capability, "setup_selected_model")
     if pref in {"phi4-mini", "phi-4-mini", "qwen3-1.7b", "qwen3-4b", "qwen_only"}:
         return RoutingDecision(
             mode, PRIMARY_MODEL, capability, "legacy_pref_coerced_to_qwen"

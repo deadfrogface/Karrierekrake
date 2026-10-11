@@ -1,0 +1,9 @@
+# Test environment: no prompt optimizer, packaging tools or security scanners.
+-r requirements-runtime.txt
+pytest>=8.0
+pytest-qt>=4.5,<5
+pytest-split>=0.11.0,<1
+radicale==3.8.1
+hypothesis>=6.100.0
+freezegun>=1.5.0
+jsonschema>=4.22

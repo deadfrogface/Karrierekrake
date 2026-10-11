@@ -86,6 +86,22 @@ class ImportDeadlineWatch:
         if self.max_tokens is None and int(value) > 0:
             self.max_tokens = int(value)
 
+    def begin_repair(self, timeout_s: float) -> None:
+        """Restart progress counters for the one omitted-fields repair.
+
+        Preserve the import origin, ceiling and any explicit time limit.
+        Otherwise reset counts would look like a stall to the supervisor.
+        """
+        if not self.env_locked:
+            self.limit_s = min(self.ceiling_s, max(self.limit_s, float(timeout_s)))
+        self.max_tokens = self.n_prompt = None
+        self.tokens_done = self.prompt_tokens_done = 0
+        self.generation_started_at = self.last_progress_at = None
+        self.first_block_s = None
+        self._rate_tokens = None
+        self._prompt_refined = self._gen_refined = False
+
+
     def note_n_prompt(self, value: int) -> None:
         if self.n_prompt is None and int(value) > 0:
             self.n_prompt = int(value)

@@ -52,6 +52,7 @@ class ApplicationManager:
         self.page = page
         self.applied_this_run = 0
         self.failed_this_run = 0
+        self._last_submission_at: float | None = None
         # Fail-closed submit gate: snapshot at manager creation. A mid-run settings
         # escalate (dry_run off / auto-submit on) must never open this gate.
         # Tightening safety live still closes submit via _submit_allowed().
@@ -358,6 +359,10 @@ class ApplicationManager:
         applier = applier_cls(
             self.page, dry_run=effective_dry_run, submit=effective_submit
         )
+        if effective_submit and self._last_submission_at is not None:
+            remaining = settings.delay_between_applications_seconds - (time.monotonic() - self._last_submission_at)
+            if remaining > 0:
+                time.sleep(remaining)
         result = applier.apply(
             job,
             cv_path if cv_path is not None and cv_path.is_file() else None,
@@ -422,5 +427,8 @@ class ApplicationManager:
             self.db.ensure_case_from_job(job, status=case_status)
         except Exception:
             logger.exception("Failed to upsert ApplicationCase for job %s", job.id)
-        time.sleep(max(1, settings.delay_between_applications_seconds))
+        # Enforce spacing before the next real submission; no delay after the
+        # final application, a preview, failure or cancelled attempt.
+        if result.submitted:
+            self._last_submission_at = time.monotonic()
         return result

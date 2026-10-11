@@ -232,7 +232,7 @@ class ConfigService:
     def mark_first_run_done(self) -> None:
         meta = self.load_meta()
         meta["first_run_completed"] = True
-        meta["setup_flow_version"] = 2
+        meta["setup_flow_version"] = 3
         meta.pop("setup_page", None)
         meta.pop("setup_draft", None)
         self.save_meta(meta)

@@ -742,6 +742,7 @@ def authorize_google(
     privacy_policy_url: str = "",
     homepage_url: str = "",
     oauth_env: str | None = None,
+    cancelled=None,
 ) -> AuthOutcome:
     """Authorize the given product features with least-privilege scopes."""
     from integrations.providers.diagnostics import DiagStage, log_stage
@@ -864,7 +865,15 @@ def authorize_google(
                 include_granted_scopes=True,
             )
             log_stage(DiagStage.BROWSER_OPEN, provider=provider, ok=True, detail=f"port={port}")
-            creds = flow.run_local_server(**server_kw)
+            from integrations.oauth_callback import OAuthCancelled, run_google_callback
+            from google_auth_oauthlib.flow import WSGITimeoutError
+            try:
+                if cancelled is None:
+                    creds = flow.run_local_server(**server_kw)
+                else:
+                    creds = run_google_callback(flow, cancelled=cancelled, **server_kw)
+            except (TimeoutError, WSGITimeoutError, OAuthCancelled):
+                return AuthOutcome(reason="cancelled", migrated=migrated)
             log_stage(DiagStage.CALLBACK, provider=provider, ok=True, detail="local_server_done")
             log_stage(DiagStage.TOKEN_EXCHANGE, provider=provider, ok=True, detail="installed_app_flow")
 

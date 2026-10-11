@@ -187,6 +187,7 @@ def run_local_pkce_login(
     redirect_path: str = "/oauth/callback",
     open_browser: bool = True,
     timeout_s: float = 180.0,
+    cancelled=None,
 ) -> dict[str, Any]:
     """System-browser PKCE login with local callback listener (no embedded WebView)."""
     import http.server
@@ -229,24 +230,26 @@ def run_local_pkce_login(
         ok=True,
         detail=f"port={redirect_port}",
     )
-    httpd = socketserver.TCPServer((redirect_host, redirect_port), Handler)
-    httpd.timeout = 1.0
-    stop_at = time.time() + timeout_s
-    if open_browser:
-        open_system_browser(auth_url)
-    while time.time() < stop_at and not result["code"] and not result["error"]:
-        httpd.handle_request()
-    try:
-        httpd.server_close()
-    except Exception:
-        pass
-    if not result["state"] or result["state"] != session.state:
+    if cancelled and cancelled():
+        raise ProviderError("microsoft_graph", "oauth_cancelled", reconnectable=True)
+    # Close the callback listener even if opening the browser or handling a
+    # request fails. Otherwise retry hits an occupied port.
+    with socketserver.TCPServer((redirect_host, redirect_port), Handler) as httpd:
+        httpd.timeout = 0.25
+        stop_at = time.monotonic() + timeout_s
+        if open_browser:
+            open_system_browser(auth_url)
+        while time.monotonic() < stop_at and not result["code"] and not result["error"]:
+            if cancelled and cancelled():
+                raise ProviderError("microsoft_graph", "oauth_cancelled", reconnectable=True)
+            httpd.handle_request()
+    if not result["code"] and not result["error"]:
+        raise ProviderError("microsoft_graph", "oauth_timeout", reconnectable=True)
+    if not result["state"] or not secrets.compare_digest(result["state"], session.state):
         raise ProviderError("microsoft_graph", "oauth_state_mismatch", reconnectable=True)
-    if result["error"] or not result["code"]:
-        raise ProviderError(
-            "microsoft_graph",
-            f"oauth_callback_failed:{result['error'] or 'timeout'}",
-            reconnectable=True,
-        )
+    if result["error"]:
+        raise ProviderError("microsoft_graph", "oauth_callback_failed:" + result["error"], reconnectable=True)
+    if cancelled and cancelled():
+        raise ProviderError("microsoft_graph", "oauth_cancelled", reconnectable=True)
     return exchange_code_pkce(client_id=client_id, session=session, code=result["code"])
 

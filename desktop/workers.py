@@ -78,6 +78,9 @@ class FunctionWorker(QObject):
     def request_cancel(self):
         self._cancel.set()
 
+    def is_cancelled(self) -> bool:
+        return self._cancel.is_set()
+
     def run(self):
         try:
             result = None if self._cancel.is_set() else self.operation()
@@ -196,7 +199,6 @@ class _GuiDispatchHub(QObject):
 
     def __init__(self) -> None:
         super().__init__()
-        self._forwards: list = []
         self.invoke.connect(self._execute, Qt.ConnectionType.QueuedConnection)
 
     @Slot(object)
@@ -248,7 +250,8 @@ def connect_queued(signal, slot) -> None:
         captured_kwargs = kwargs
         hub.invoke.emit(lambda: slot(*captured_args, **captured_kwargs))
 
-    hub._forwards.append(_forward)
+    # The sender owns this callback. Keeping every callback on the global hub
+    # would retain completed setup workers and their widgets indefinitely.
     signal.connect(_forward)
 
 

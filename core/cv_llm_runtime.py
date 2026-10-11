@@ -112,6 +112,11 @@ def resolve_cv_model_path() -> Path | None:
             p.name,
         )
 
+    from guenther.setup_models import selected_model_id, selected_model_path
+    if selected_model_id() is not None:
+        # A selected but missing model must not silently revert to another weight.
+        return selected_model_path()
+
     meipass = _meipass_dir()
     for bundled in bundled_cv_model_candidates():
         if not bundled.is_file():
@@ -809,6 +814,26 @@ def format_llama_build_report(system_info: str, lib_names: list[str]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def llama_build_report_valid(text: str, *, machine: str | None = None) -> bool:
+    """Validate fixed CPU kernels for this architecture, without loading weights."""
+    if machine is None:
+        import platform
+        machine = platform.machine()
+    features = next((line for line in text.splitlines()
+                     if line.startswith('llama_cpu_features=')), '')
+    if machine.lower() in {'arm64', 'aarch64'}:
+        if 'NEON = 1' not in features:
+            return False
+    elif machine.lower() in {'x86_64', 'amd64'}:
+        if 'AVX2 = 1' not in features:
+            return False
+    else:
+        return False
+    return ('AMX_INT8 = 1' not in features and 'AVX512 = 1' not in features
+            and 'llama_cpu_all_variants=0' in text
+            and 'llama_runtime_isa=fixed' in text)
+
+
 def llama_build_report_text() -> str:
     """CPU features of the llama build this process actually loaded."""
     import llama_cpp
@@ -1111,6 +1136,8 @@ def _run_chat_completion_inprocess(
             n_batch=512,
             verbose=False,
         )
+        from core.local_chat_template import configure_non_thinking_chat
+        configure_non_thinking_chat(llm)
         try:
             llm.verbose = False
         except (AttributeError, TypeError):
@@ -1147,6 +1174,8 @@ def _run_chat_completion_inprocess(
 
             # One formula evaluation, using the token counts above. The env
             # var overrides it. No second tokenization and no remaining time.
+            is_repair = (import_deadline._chosen_import_timeout_s is not None
+                         and import_deadline.import_started_at() is not None)
             chosen_timeout_s = import_deadline.choose_import_timeout_s(
                 prompt_tokens=n_prompt,
                 max_tokens=budget,
@@ -1154,6 +1183,9 @@ def _run_chat_completion_inprocess(
                 physical=physical,
                 reserve=reserve,
             )
+            if is_repair:
+                from core.cv_phase_events import append_phase_event
+                append_phase_event({"phase": "generation_start", "timeout_s": chosen_timeout_s})
             config_line = cv_llm_config_line(
                 n_ctx=n_ctx,
                 n_threads=n_threads,
@@ -1223,6 +1255,7 @@ def _run_chat_completion_inprocess(
                 messages=messages,
                 temperature=float(temperature),
                 max_tokens=budget,
+                response_format={"type": "json_object"},
             ):
                 if not saw_chunk:
                     saw_chunk = True

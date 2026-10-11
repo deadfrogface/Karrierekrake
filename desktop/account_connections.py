@@ -26,8 +26,10 @@ class AccountConnectionsMixin:
             if secret.get("oauth2"):
                 from integrations.mail.imap.outlook_auth import login_outlook
 
-                login_outlook(secret)
+                login_outlook(secret, cancelled=lambda: self._account_worker.is_cancelled())
             validate_imap_secret(secret)
+            if self._account_worker.is_cancelled():
+                raise RuntimeError("oauth_cancelled")
             store_imap_secret(secret, token_dir=token_dir)
 
         def finished(_):

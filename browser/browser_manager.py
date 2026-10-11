@@ -1,6 +1,6 @@
 """Playwright browser manager with persistent profile.
 
-Uses bundled Chromium when present (packaged EXE). Never requires
+Uses installed Chromium-compatible browsers first, then bundled Chromium. Never requires
 ``python -m playwright`` from a frozen executable.
 """
 
@@ -72,6 +72,8 @@ class BrowserManager:
     def get_page(self):
         if self._page and not self._page.is_closed():
             return self._page
+        if self._context is not None:
+            self.close()
         try:
             from playwright.sync_api import sync_playwright
         except ImportError as exc:
@@ -95,7 +97,10 @@ class BrowserManager:
             ignore_default_args=["--enable-automation"],
         )
 
-        chromium = _resolve_chromium_executable()
+        from desktop.services.browser_install import find_system_browser
+
+        system_browser = find_system_browser()
+        chromium = str(system_browser) if system_browser else _resolve_chromium_executable()
         if chromium:
             launch_kwargs["executable_path"] = chromium
         else:
@@ -122,7 +127,10 @@ class BrowserManager:
                 self._context = self._playwright.chromium.launch_persistent_context(**launch_kwargs)
             else:
                 raise
-        self._page = self._context.new_page()
+        self._context.set_default_timeout(5000)
+        self._context.set_default_navigation_timeout(30000)
+        pages = self._context.pages
+        self._page = pages[0] if pages else self._context.new_page()
         try:
             # Best-effort: remember Chromium PID for shutdown diagnostics
             browser = getattr(self._context, "browser", None)
