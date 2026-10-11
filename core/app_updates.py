@@ -250,6 +250,9 @@ $ErrorActionPreference = 'Stop'
 # A pwsh -> Python -> powershell.exe launch can inherit incompatible PS7
 # modules. This fixed helper only needs modules shipped with its own shell.
 $env:PSModulePath = Join-Path $PSHOME 'Modules'
+# The old onefile process removes its _MEI directory on exit. Both the
+# successful restart and rollback must unpack an independent application.
+$env:PYINSTALLER_RESET_ENVIRONMENT = '1'
 $plan = Get-Content -LiteralPath (Join-Path $Stage 'plan.json') -Raw | ConvertFrom-Json
 $root = $plan.root
 $backup = Join-Path $Stage 'backup'
@@ -295,6 +298,8 @@ def launch_installer(stage: Path) -> None:
     helper = stage / 'install.ps1'
     helper.write_text(HELPER, encoding='utf-8-sig')
     powershell = Path(os.environ['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe'
+    env = os.environ.copy()
+    env['PYINSTALLER_RESET_ENVIRONMENT'] = '1'
     subprocess.Popen([str(powershell), '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass',
                       '-File', str(helper), '-Stage', str(stage), '-ParentId', str(os.getpid())],
-                     creationflags=subprocess.CREATE_NO_WINDOW, close_fds=True)
+                     creationflags=subprocess.CREATE_NO_WINDOW, close_fds=True, env=env)
