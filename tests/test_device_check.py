@@ -16,5 +16,14 @@ def test_laptop_recommends_fast_ready_model_without_switching():
 
 def test_disk_space_and_ram_reserve_are_enforced():
     result = recommend(total_gib=16, available_gib=14, physical_cores=2, free_disk_gb=4)
-    assert len(result.fitting) == 1
     assert result.fitting[0].ready
+    assert all(c.disk_gb + 0.5 <= 4 for c in result.fitting)
+    assert not any('27B' in c.name for c in result.fitting)
+
+
+def test_smaller_daslab_models_fit_without_a_27b_recommendation():
+    result = recommend(total_gib=16, available_gib=12, physical_cores=2, free_disk_gb=100)
+    assert any('4B GSQ' in c.name for c in result.fitting)
+    assert any('8B GSQ' in c.name for c in result.fitting)
+    assert not any('27B' in c.name for c in result.fitting)
+    assert all(not c.ready for c in result.fitting if 'DASLab' in c.name)
