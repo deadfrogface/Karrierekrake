@@ -278,12 +278,12 @@ def _report_physical_cores() -> int:
 def _report_llm_load() -> int:
     """Write the bundled llama CPU line. Windowed EXE: CI reads the file.
 
-    ``AMX_INT8 = 1`` or ``AVX512 = 1`` means this is not the pinned AVX2
-    wheel (native kernels of a newer build machine). Exit 1 in that case.
+    Validate fixed AVX2 kernels on x86 and NEON on ARM. Runner-only AVX512
+    or AMX kernels fail the portable CPU check.
     Model-buffer names are logged by the import (``cv_llm_load``) when a
     GGUF is loaded; this flag does not load weights.
     """
-    from core.cv_llm_runtime import llama_build_report_text
+    from core.cv_llm_runtime import llama_build_report_text, llama_build_report_valid
 
     idx = sys.argv.index("--report-llm-load")
     text = llama_build_report_text()
@@ -292,18 +292,7 @@ def _report_llm_load() -> int:
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(text, encoding="utf-8")
     print(text, end="" if text.endswith("\n") else "\n", flush=True)
-    features = ""
-    for line in text.splitlines():
-        if line.startswith("llama_cpu_features="):
-            features = line
-            break
-    if "AVX2 = 1" not in features:
-        return 1
-    if "AMX_INT8 = 1" in features or "AVX512 = 1" in features:
-        return 1
-    if "llama_cpu_all_variants=0" not in text:
-        return 1
-    return 0
+    return 0 if llama_build_report_valid(text) else 1
 
 
 def _run_cv_import_child() -> int:

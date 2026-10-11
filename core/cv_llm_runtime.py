@@ -814,6 +814,26 @@ def format_llama_build_report(system_info: str, lib_names: list[str]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def llama_build_report_valid(text: str, *, machine: str | None = None) -> bool:
+    """Validate fixed CPU kernels for this architecture, without loading weights."""
+    if machine is None:
+        import platform
+        machine = platform.machine()
+    features = next((line for line in text.splitlines()
+                     if line.startswith('llama_cpu_features=')), '')
+    if machine.lower() in {'arm64', 'aarch64'}:
+        if 'NEON = 1' not in features:
+            return False
+    elif machine.lower() in {'x86_64', 'amd64'}:
+        if 'AVX2 = 1' not in features:
+            return False
+    else:
+        return False
+    return ('AMX_INT8 = 1' not in features and 'AVX512 = 1' not in features
+            and 'llama_cpu_all_variants=0' in text
+            and 'llama_runtime_isa=fixed' in text)
+
+
 def llama_build_report_text() -> str:
     """CPU features of the llama build this process actually loaded."""
     import llama_cpp

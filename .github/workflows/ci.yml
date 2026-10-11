@@ -74,13 +74,13 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
           PYTHONUTF8: "1"
-        run: python scripts/unit_test_shards.py collect --output collected-unit-tests.txt
+        run: python scripts/unit_test_shards.py collect --output "${{ runner.temp }}/collected-unit-tests.txt"
       - name: Upload collection
         if: always() && matrix.group == 1
         uses: actions/upload-artifact@v4
         with:
           name: unit-tests-collected
-          path: collected-unit-tests.txt
+          path: ${{ runner.temp }}/collected-unit-tests.txt
           if-no-files-found: error
       - name: Pytest shard (exclude network + cv corpus dedicated job)
         env:
