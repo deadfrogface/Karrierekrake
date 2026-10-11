@@ -42,6 +42,8 @@ def test_repair_refuses_if_driver_is_exe(monkeypatch, tmp_path):
 
 
 def test_check_browser_finds_fake_chrome(monkeypatch, tmp_path):
+    # Isolate bundled-browser discovery from browsers installed on CI runners.
+    monkeypatch.setattr(bi, "find_system_browser", lambda: None)
     chrome = tmp_path / "chromium-999" / "chrome-win64" / "chrome.exe"
     chrome.parent.mkdir(parents=True)
     chrome.write_bytes(b"fake")
