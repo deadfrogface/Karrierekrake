@@ -114,3 +114,12 @@ def test_consent_auto_check_skips_bare_required_checkbox():
     assert "privacy" in src
     assert "consent" in src or "datenschutz" in src
     assert "input[type='checkbox'][required]" not in src
+
+
+def test_fast_fill_has_no_character_delay(monkeypatch):
+    from unittest.mock import Mock
+    element = _FakeEl()
+    applier = _DummyApplier(_FakePage({}))
+    monkeypatch.setattr('apply.base.time.sleep', Mock(side_effect=AssertionError('artificial delay')))
+    applier._human_type(element, 'A long application field ' * 30)
+    assert element.filled == 'A long application field ' * 30

@@ -71,6 +71,7 @@ def authorize_gmail(
     privacy_policy_url: str = "",
     homepage_url: str = "",
     oauth_env: str | None = None,
+    cancelled=None,
 ) -> AuthOutcome:
     """Authorize readonly Gmail access. Fail-safe on revoked/corrupt tokens."""
     if not gmail_libs_available():
@@ -85,6 +86,7 @@ def authorize_gmail(
         privacy_policy_url=privacy_policy_url,
         homepage_url=homepage_url,
         oauth_env=oauth_env,
+        cancelled=cancelled,
     )
     if outcome.credentials is not None and outcome.service is None:
         if goa.Feature.GMAIL_READ not in outcome.denied_features:
@@ -132,6 +134,7 @@ def authorize_calendar_freebusy(
     homepage_url: str = "",
     oauth_env: str | None = None,
     include_gmail: bool = False,
+    cancelled=None,
 ) -> AuthOutcome:
     """Calendar FreeBusy only (or incremental add onto Gmail when include_gmail)."""
     if not gmail_libs_available():
@@ -148,6 +151,7 @@ def authorize_calendar_freebusy(
         privacy_policy_url=privacy_policy_url,
         homepage_url=homepage_url,
         oauth_env=oauth_env,
+        cancelled=cancelled,
     )
     if outcome.credentials is not None and goa.Feature.CALENDAR_SLOT_FINDING not in outcome.denied_features:
         try:
@@ -184,6 +188,7 @@ def authorize_calendar_event_write(
     privacy_policy_url: str = "",
     homepage_url: str = "",
     oauth_env: str | None = None,
+    cancelled=None,
 ) -> AuthOutcome:
     """Incremental upgrade for event write — only after feature activation."""
     if not gmail_libs_available():
@@ -197,6 +202,7 @@ def authorize_calendar_event_write(
         privacy_policy_url=privacy_policy_url,
         homepage_url=homepage_url,
         oauth_env=oauth_env,
+        cancelled=cancelled,
     )
     if outcome.credentials is not None and goa.Feature.CALENDAR_EVENT_WRITE not in outcome.denied_features:
         try:
@@ -217,6 +223,7 @@ def authorize_calendar_mode(
     privacy_policy_url: str = "",
     homepage_url: str = "",
     oauth_env: str | None = None,
+    cancelled=None,
 ) -> AuthOutcome:
     """Mode A = FreeBusy only; Mode B = FreeBusy + owned event write (re-consent).
 
@@ -238,6 +245,7 @@ def authorize_calendar_mode(
             privacy_policy_url=privacy_policy_url,
             homepage_url=homepage_url,
             oauth_env=oauth_env,
+            cancelled=cancelled,
         )
         if outcome.credentials is not None:
             try:
@@ -254,4 +262,5 @@ def authorize_calendar_mode(
         privacy_policy_url=privacy_policy_url,
         homepage_url=homepage_url,
         oauth_env=oauth_env,
+        cancelled=cancelled,
     )

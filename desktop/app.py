@@ -417,6 +417,12 @@ def _smoke_test() -> int:
         recurring_ical_events.of(Calendar.from_ical("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n"))
         dav = DAVClient(url="https://calendar.example.org/", timeout=1)
         dav.close()
+        import random
+        import secrets
+
+        random.Random(0).random()
+        secrets.token_urlsafe(16)
+        lines.append("stdlib_runtime=ok (random/secrets)")
         lines.append("free_protocol_runtime=ok (IMAP/CalDAV/ICS imports; no live account)")
         app = QApplication.instance() or QApplication(sys.argv)
         cfg_service = ConfigService()

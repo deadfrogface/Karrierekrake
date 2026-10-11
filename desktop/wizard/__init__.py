@@ -544,6 +544,12 @@ class FirstRunWizard(QWizard):
 
     def accept(self) -> None:
         self.integrations._closed = True
+        worker = getattr(self.integrations, "_account_worker", None)
+        if worker is not None:
+            try:
+                worker.request_cancel()
+            except RuntimeError:
+                pass
         self.browser._closed = True
         cfg = self.config_service.load()
         cfg = self.config_service.apply_safe_defaults(cfg)
@@ -580,6 +586,12 @@ class FirstRunWizard(QWizard):
 
     def reject(self) -> None:
         self.integrations._closed = True
+        worker = getattr(self.integrations, "_account_worker", None)
+        if worker is not None:
+            try:
+                worker.request_cancel()
+            except RuntimeError:
+                pass
         self.browser._closed = True
         meta = self.config_service.load_meta()
         meta["setup_page"] = max(0, self.currentId())

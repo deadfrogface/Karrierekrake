@@ -68,6 +68,9 @@ EXCLUDED_FIRST_PARTY_MODULES: tuple[str, ...] = (
 # Documented: tls_client (jobspy DLLs), jobspy, playwright Python driver only,
 # llama_cpp (native libllama / ggml for offline CV import + writing).
 ALLOWED_COLLECT_ALL_PACKAGES: tuple[str, ...] = (
+    # Explicit stdlib closure for the downloaded/frozen application.
+    "random",
+    "secrets",
     "keyring",
     "caldav",
     "wassima",

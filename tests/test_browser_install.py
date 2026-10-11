@@ -81,3 +81,26 @@ def test_repair_browser_never_uses_frozen_sys_executable(monkeypatch, tmp_path):
     assert calls, msg
     assert calls[0][0] != str(tmp_path / "Karrierekrake.exe")
     assert "-m" not in calls[0]
+
+
+def test_installed_edge_skips_browser_download(monkeypatch, tmp_path):
+    edge = tmp_path / "Microsoft/Edge/Application/msedge.exe"
+    edge.parent.mkdir(parents=True)
+    edge.touch()
+    monkeypatch.setattr(bi.sys, "platform", "win32")
+    monkeypatch.setenv("PROGRAMFILES", str(tmp_path))
+    monkeypatch.setenv("PROGRAMFILES(X86)", str(tmp_path / "absent"))
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path / "absent"))
+    monkeypatch.setattr(bi, "repair_browser", lambda: (_ for _ in ()).throw(AssertionError("download")))
+    assert bi.find_system_browser() == edge
+    assert bi.playwright_available()
+    assert bi.install_chromium()[0]
+
+
+def test_linux_path_browser_detected(monkeypatch, tmp_path):
+    import shutil
+    chrome = tmp_path / "chromium"
+    chrome.touch()
+    monkeypatch.setattr(bi.sys, "platform", "linux")
+    monkeypatch.setattr(shutil, "which", lambda name: str(chrome) if name == "chromium" else None)
+    assert bi.find_system_browser() == chrome

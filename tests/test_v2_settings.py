@@ -99,3 +99,13 @@ def test_settings_controls_still_present(qapp, config_service):
     assert page.danger_box.isHidden()
     page.safety_toggle.setChecked(True)
     assert not page.apply_box.isHidden()
+
+
+def test_dry_run_click_persists_without_save(qapp, config_service):
+    page = SettingsPage(config_service)
+    page.load_from_config()
+    before = config_service.load().settings.dry_run
+    page.dry_run.click()
+    assert config_service.load().settings.dry_run is not before
+    page.load_from_config()
+    assert page.dry_run.isChecked() is not before

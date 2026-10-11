@@ -22,10 +22,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements.txt
+          pip install -c constraints-runtime.txt -r requirements-ci.txt
       - name: Privacy scan
         run: python scripts/privacy_scan.py
       - name: Production content gate (unit)
@@ -55,19 +60,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements.txt
-      - name: i3 8GB hard peak RSS gate
-        if: matrix.group == 1
-        env:
-          QT_QPA_PLATFORM: offscreen
-        run: >
-          python -m pytest -q
-          tests/test_i3_peak_gate.py
-          tests/test_local_llm_cv_gate.py
-          tests/test_cv_import_async.py
+          pip install -c constraints-runtime.txt -r requirements-ci.txt
       - name: Pytest shard (exclude network + cv corpus dedicated job)
         env:
           QT_QPA_PLATFORM: offscreen
@@ -96,10 +97,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -c constraints-runtime.txt -r requirements-ci.txt
       - name: Collect the same suite the shards run
         env:
           QT_QPA_PLATFORM: offscreen
@@ -152,10 +158,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements.txt
+          pip install -c constraints-runtime.txt -r requirements-ci.txt
       - name: CV corpus script
         run: python scripts/run_cv_corpus.py | Tee-Object -FilePath cv_corpus_matrix.txt
       - name: CV Sollwerte corpus (10 PDFs, production path)
@@ -190,10 +201,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements.txt
+          pip install -c constraints-runtime.txt -r requirements-ci.txt
       - name: DB / reset / dashboard tests
         run: >
           python -m pytest -q
@@ -216,10 +232,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements.txt
+          pip install -c constraints-runtime.txt -r requirements-ci.txt
       - name: Salary / profile / pause / pipeline / dry-run / sources
         env:
           QT_QPA_PLATFORM: offscreen
@@ -251,10 +272,15 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -c constraints-runtime.txt -r requirements.txt
+          pip install -c constraints-runtime.txt -r requirements-ci.txt
       - name: Lifecycle E2E factory + matrix
         env:
           QT_QPA_PLATFORM: offscreen
@@ -295,6 +321,11 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: |
+            requirements-runtime.txt
+            requirements-ci.txt
+            requirements-dev.txt
+            constraints-runtime.txt
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip

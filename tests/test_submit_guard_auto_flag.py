@@ -171,3 +171,31 @@ def test_partial_ats_never_gets_submit_under_full_auto(tmp_path: Path, monkeypat
     mgr.prepare_and_apply(job)
     assert captured.get("submit") is False
     assert captured.get("dry_run") is True
+
+
+def test_submission_spacing_only_before_second_submission(tmp_path, monkeypatch):
+    from unittest.mock import Mock
+    mgr = _mgr(tmp_path, mode=OperatingMode.FULLY_AUTOMATIC.value,
+               dry_run=False, auto_submit=True)
+    delay = Mock()
+    monkeypatch.setattr('apply.manager.time.sleep', delay)
+    monkeypatch.setattr('apply.manager.time.monotonic', lambda: 100.0)
+
+    class Stub:
+        def __init__(self, page, **kwargs):
+            pass
+
+        def apply(self, *args):
+            return ApplyResult(success=True, submitted=True)
+
+    monkeypatch.setattr('apply.manager.APPLIERS', {'greenhouse': Stub})
+    monkeypatch.setattr('apply.manager.ATSDetector.detect', staticmethod(lambda url: 'greenhouse'))
+    for number in (1, 2):
+        job = Job(id=f'spacing-{number}', source='indeed', title='Buchhalter', company=f'ACME {number}',
+                  url=f'https://boards.greenhouse.io/acme/jobs/{number}',
+                  application_url=f'https://boards.greenhouse.io/acme/jobs/{number}',
+                  status=JobStatus.NEW.value, ats_type='greenhouse', match_score=90)
+        _seed_approval(mgr.config, job)
+        assert mgr.prepare_and_apply(job).submitted
+        assert delay.call_count == number - 1
+    delay.assert_called_once_with(mgr.config.settings.delay_between_applications_seconds)

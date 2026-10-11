@@ -78,6 +78,9 @@ class FunctionWorker(QObject):
     def request_cancel(self):
         self._cancel.set()
 
+    def is_cancelled(self) -> bool:
+        return self._cancel.is_set()
+
     def run(self):
         try:
             result = None if self._cancel.is_set() else self.operation()

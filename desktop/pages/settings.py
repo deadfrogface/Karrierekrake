@@ -199,6 +199,7 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             self.mode_group.addButton(btn, i)
             mode_layout.addWidget(btn)
         self.dry_run = QCheckBox()
+        self.dry_run.clicked.connect(self._save_dry_run)
         mode_layout.addWidget(self.dry_run)
         auto_layout.addWidget(mode_box)
 
@@ -320,6 +321,10 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         oform.addWidget(self.lbl_mail_provider)
         oform.addWidget(self.mail_provider)
         oform.addWidget(self.mail_status)
+        self.account_cancel_btn = QPushButton("Anmeldung abbrechen")
+        self.account_cancel_btn.hide()
+        self.account_cancel_btn.clicked.connect(self._cancel_account_task)
+        oform.addWidget(self.account_cancel_btn)
         self.calendar_import_btn = QPushButton("Google / Samsung / Apple: Kalenderdatei importieren …")
         self.calendar_import_btn.clicked.connect(self._import_calendar_snapshot)
         self.lbl_calendar_provider = QLabel()
@@ -419,6 +424,12 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         self.wizard_reopen_btn.setObjectName("SecondaryButton")
         self.wizard_reopen_btn.clicked.connect(self._reopen_setup_wizard)
         gform.addRow(self.lbl_guenther_model, self.guenther_model_fixed)
+        self.device_check_btn = QPushButton("Gerät prüfen und Modell empfehlen")
+        self.device_check_btn.clicked.connect(self._check_device)
+        self.device_check_result = QLabel()
+        self.device_check_result.setWordWrap(True)
+        gform.addRow(self.device_check_btn)
+        gform.addRow(self.device_check_result)
         gform.addRow(self.guenther_writer_status)
         self.guenther_hint.hide()
         gform.addRow(self.cv_import_title)
@@ -1031,6 +1042,30 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             tr("settings.browser_ok") if playwright_available() else tr("settings.browser_missing")
         )
 
+    def _check_device(self) -> None:
+        from guenther.device_check import check_device
+        from guenther.model_manager import default_models_dir
+
+        self.device_check_btn.setEnabled(False)
+        worker = FunctionWorker(lambda: check_device(default_models_dir()))
+
+        def done(result=None, error=None):
+            self.device_check_btn.setEnabled(True)
+            self.device_check_result.setText(result.message() if result else
+                                            "Geräteprüfung fehlgeschlagen. Bitte erneut versuchen.")
+
+        connect_queued(worker.finished, done)
+        connect_queued(worker.failed, lambda error: done(error=error))
+        self._device_worker = worker
+        self._device_thread = start_worker(worker)
+
+    def _save_dry_run(self, enabled: bool) -> None:
+        """Apply this setting immediately for subsequent runs."""
+        cfg = self.config_service.load()
+        cfg.settings.dry_run = enabled
+        self.config_service.save(cfg)
+        self.settings_saved.emit()
+
     def save(self) -> None:
         cfg = self.config_service.load()
         old_lang = (cfg.settings.language or "de").lower()
@@ -1218,10 +1253,18 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
         else:
             QMessageBox.warning(self, tr("privacy.tab"), tr("privacy.export_failed"))
 
+    def _cancel_account_task(self) -> None:
+        worker = getattr(self, "_account_worker", None)
+        if worker is not None:
+            worker.request_cancel()
+        self.account_cancel_btn.setEnabled(False)
+
     def _run_account_task(self, operation, success, cleanup=None) -> None:
         if getattr(self, "_account_task_active", False):
             return
         self._account_task_active = True
+        self.account_cancel_btn.setEnabled(True)
+        self.account_cancel_btn.show()
         controls = [self.privacy_connect_gmail_btn, self.privacy_connect_cal_btn,
                     self.privacy_disconnect_btn]
         for button in controls:
@@ -1231,20 +1274,24 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
 
         def done(value, error=False):
             self._account_task_active = False
+            self.account_cancel_btn.hide()
             for button in controls:
                 button.setEnabled(True)
-            if error:
-                from desktop.oauth_messages import message_for_account_error
-                QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(value))
-            else:
-                try:
-                    success(value)
-                except Exception as exc:
+            try:
+                if error:
                     from desktop.oauth_messages import message_for_account_error
-                    QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(exc))
-            if cleanup is not None:
-                cleanup()
-            self._refresh_provider_status(self.config_service.load().settings)
+                    QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(value))
+                elif not worker.is_cancelled():
+                    success(value)
+            except Exception as exc:
+                from desktop.oauth_messages import message_for_account_error
+                QMessageBox.warning(self, tr("privacy.tab"), message_for_account_error(exc))
+            finally:
+                try:
+                    if cleanup is not None:
+                        cleanup()
+                finally:
+                    self._refresh_provider_status(self.config_service.load().settings)
 
         worker = FunctionWorker(operation)
         connect_queued(worker.finished, lambda value: done(value))
@@ -1344,6 +1391,7 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
             homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
             oauth_env=getattr(settings, "oauth_environment", None),
+            cancelled=lambda: self._account_worker.is_cancelled(),
         ), self._finish_google_connection)
 
     def _update_calendar_mode_visibility(self) -> None:
@@ -1432,6 +1480,7 @@ class SettingsPage(AccountConnectionsMixin, QWidget):
             privacy_policy_url=getattr(settings, "oauth_privacy_policy_url", "") or "",
             homepage_url=getattr(settings, "oauth_homepage_url", "") or "",
             oauth_env=getattr(settings, "oauth_environment", None),
+            cancelled=lambda: self._account_worker.is_cancelled(),
         ), lambda outcome: self._finish_google_connection(outcome, calendar_mode=mode))
 
     def _premium(self, feature):
