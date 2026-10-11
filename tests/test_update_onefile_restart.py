@@ -10,6 +10,8 @@ import pytest
 
 @pytest.mark.skipif(sys.platform != 'win32', reason='Windows onefile installer')
 def test_model_install_restarts_after_old_extraction_is_removed(tmp_path):
+    # Unit-test shards omit packaging tools; Windows Smoke installs them.
+    pytest.importorskip('PyInstaller', reason='requires the packaging environment')
     # A tiny real frozen program runs the production installer. Unlike a
     # mocked Start-Process, this catches inherited _PYI_* state and DLL loss.
     source = tmp_path / 'restart_fixture.py'
@@ -41,7 +43,7 @@ else:
                     '--onefile', '--name', 'Karrierekrake', '--paths', str(repo),
                     '--distpath', str(tmp_path / 'dist'), '--workpath', str(tmp_path / 'build'),
                     '--specpath', str(tmp_path), str(source)], check=True,
-                   capture_output=True, timeout=180)
+                   timeout=180)
     root = tmp_path / 'dist'
     proc = subprocess.Popen([str(root / 'Karrierekrake.exe')],
                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
