@@ -1,6 +1,9 @@
 """One-click setup download with an offline recommendation and isolated probe."""
 from __future__ import annotations
 
+import re
+import logging
+
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QProgressBar, QVBoxLayout
 
@@ -10,6 +13,25 @@ from guenther.setup_models import (
     SETUP_MODEL_CATALOG, inspect_setup_device, install_recommended_model,
     selected_model_id, selected_model_path,
 )
+
+
+def model_failure_text(error):
+    from guenther.model_manager import download_failure_code
+
+    code = download_failure_code(error) if isinstance(error, OSError) else str(error)
+    messages = {
+        "connection_timeout": "timeout", "connection_interrupted": "interrupted",
+        "dns_failed": "dns", "tls_failed": "tls",
+        "insufficient_disk": "disk", "write_permission_denied": "permission",
+        "checksum_mismatch": "checksum", "invalid_download_response": "response",
+    }
+    if "probe" in code:
+        return tr("setup.model.probe_failed")
+    if re.fullmatch(r"http_[1-5][0-9]{2}", code):
+        return tr("setup.model.error.http", status=code[5:])
+    if code in messages:
+        return tr("setup.model.error." + messages[code])
+    return tr("setup.model.failed")
 
 
 class ModelSetupPanel(QFrame):
@@ -108,8 +130,9 @@ class ModelSetupPanel(QFrame):
                 self.status.setText(tr("setup.model.cancelled"))
                 self.install_button.setEnabled(True)
             elif failed:
-                key = "setup.model.probe_failed" if "probe" in str(value) else "setup.model.failed"
-                self.status.setText(tr(key))
+                self.status.setText(model_failure_text(value))
+                logging.getLogger("karrierekrake").error(
+                    "model_setup_failed model_id=%s reason=%s", mid, model_failure_text(value))
                 self.install_button.setEnabled(True)
                 self.install_button.setText(tr("setup.model.retry"))
             else:
@@ -133,10 +156,13 @@ class ModelSetupPanel(QFrame):
     def _show_progress(self, progress):
         if self._closed or not self.busy:
             return
-        if progress.status in {"checking", "verifying", "testing"}:
+        if progress.status == "retrying":
+            self.status.setText(tr("setup.model.retrying"))
+        elif progress.status in {"checking", "verifying", "testing"}:
             self.progress_bar.setRange(0, 0)
             self.status.setText(tr("setup.model.testing" if progress.status == "testing" else "setup.model.verifying"))
         elif progress.status == "downloading":
+            self.status.setText(tr("setup.model.downloading"))
             self.progress_bar.setRange(0, 100)
             self.progress_bar.setValue(int(100 * progress.bytes_done / progress.bytes_total)
                                        if progress.bytes_total else 0)

@@ -23,9 +23,9 @@ from desktop.i18n import tr
 from desktop.services import ConfigService
 
 _LEVEL_RE = re.compile(
-    r"^(?P<ts>\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(?:,\d+)?)\s+"
+    r"^(?P<ts>(?:\d{4}-\d{2}-\d{2}[ T])?\d{2}:\d{2}:\d{2}(?:,\d+)?)\s+"
     r"(?P<level>DEBUG|INFO|WARNING|ERROR|CRITICAL)\s+"
-    r"(?P<logger>[\w.]+)?\s*:?\s*(?P<msg>.*)$"
+    r"(?P<msg>.*)$"
 )
 
 
@@ -41,7 +41,13 @@ def _humanize_line(line: str) -> tuple[str, str]:
     msg = (m.group("msg") or "").strip()
     ts = m.group("ts")
     lower = msg.lower()
-    if "captcha" in lower:
+    if "model_setup_failed" in lower or "model_download_failed" in lower:
+        plain = tr("logs.event.model_failed")
+    elif "model_download_retry" in lower:
+        plain = tr("setup.model.retrying")
+    elif "model_installed" in lower:
+        plain = tr("logs.event.model_installed")
+    elif "captcha" in lower:
         plain = tr("logs.event.captcha")
     elif "needs_review" in lower or "needs review" in lower:
         plain = tr("logs.event.review")
@@ -154,3 +160,9 @@ class LogsPage(QWidget):
             self._tech_lines.append(tech)
         if self.events.count() == 0:
             self.events.addItem(tr("logs.empty"))
+        else:
+            # Show details immediately, selecting the most recent error first.
+            row = next((i for i in range(len(self._tech_lines) - 1, -1, -1)
+                        if re.search(r"\b(ERROR|CRITICAL)\b|model_(setup|download)_failed",
+                                     self._tech_lines[i])), len(self._tech_lines) - 1)
+            self.events.setCurrentRow(row)
