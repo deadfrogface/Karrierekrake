@@ -135,3 +135,65 @@ def test_worker_exit_without_report_fails_immediately(tmp_path, monkeypatch):
     with pytest.raises(RuntimeError, match="exit=7"):
         _run_child_import(Path(sys.executable), tmp_path / "cv.pdf", tmp_path / "out.json",
                           local_appdata=tmp_path, timeout_s=30)
+
+
+def test_native_import_keeps_isolated_data_and_blocked_network(tmp_path, monkeypatch):
+    """The native gate must not fall back to Windows paths or HTTP inference."""
+    import json
+    real_popen = subprocess.Popen
+    report = tmp_path / 'out.json'
+    code = (
+        "import json,os; from pathlib import Path; "
+        f"Path({str(report)!r}).write_text(json.dumps(dict(os.environ)))"
+    )
+    monkeypatch.setattr(subprocess, 'Popen', lambda _cmd, **kw: real_popen(
+        [sys.executable, '-c', code], **kw))
+    isolated = {
+        'KARRIEREKRAKE_DATA_DIR': str(tmp_path / 'native-data'),
+        'KARRIEREKRAKE_CV_LLM_BASE': 'http://127.0.0.1:1/v1',
+        'HTTPS_PROXY': 'http://127.0.0.1:1',
+    }
+    payload = _run_child_import(Path(sys.executable), tmp_path / 'cv.pdf', report,
+                                local_appdata=tmp_path, timeout_s=5, env_override=isolated)
+    assert payload['_exit_code'] == 0
+    for key, value in isolated.items():
+        assert payload[key] == value
+    assert 'LOCALAPPDATA' not in payload
+    assert isolated == {key: payload[key] for key in isolated}
+
+
+@pytest.mark.parametrize('avx2', [True, False])
+def test_native_gate_checks_bundled_backend_before_bounded_import(tmp_path, monkeypatch, avx2):
+    from scripts import ci_native_acceptance as native
+    from core import app_updates, cv_llm_runtime
+
+    model = tmp_path / 'model.gguf'
+    model.write_bytes(b'model')
+    monkeypatch.setattr(app_updates, 'digest', lambda _: cv_llm_runtime.CV_MODEL_SHA256)
+    calls = []
+    def run(cmd, *, env, **kwargs):
+        if '--smoke-test' in cmd:
+            (Path(env['KARRIEREKRAKE_DATA_DIR']) / 'smoke_test_result.txt').write_text('SMOKE_TEST_OK')
+        else:
+            Path(cmd[-1]).write_text(f'llama_cpu_features=AVX2 = {int(avx2)}')
+    def child(exe, cv_path, result, **kwargs):
+        calls.append((cv_path.name, kwargs))
+        return {'ok': True, '_exit_code': 0, '_wall_s': 10}
+    monkeypatch.setattr(native.subprocess, 'run', run)
+    monkeypatch.setattr(native, '_run_child_import', child)
+    monkeypatch.setattr(native, '_preview_has_identity', lambda _: True)
+    monkeypatch.setattr(native, '_preview_qualification_counts', lambda _: dict(languages=1, skills=1, software=0))
+    output = tmp_path / 'acceptance.json'
+    if not avx2:
+        with pytest.raises(RuntimeError, match='native_backend_avx2_missing'):
+            native.verify(Path('app'), output, model, require_avx2=True)
+        assert not calls
+        assert not output.exists()
+    else:
+        native.verify(Path('app'), output, model, require_avx2=True)
+        assert [name for name, _ in calls] == ['DE_01_Klassisch.pdf', 'EN_01_Classic_Resume.pdf']
+        for _, kwargs in calls:
+            assert kwargs['timeout_s'] == 900
+            assert kwargs['env_override']['HTTPS_PROXY'] == 'http://127.0.0.1:1'
+            assert 'LOCALAPPDATA' not in kwargs['env_override']
+        assert output.is_file()

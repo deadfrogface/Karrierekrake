@@ -346,6 +346,7 @@ def _run_child_import(
     *,
     local_appdata: Path,
     timeout_s: float,
+    env_override: dict[str, str] | None = None,
 ) -> dict:
     env = os.environ.copy()
     env["LOCALAPPDATA"] = str(local_appdata)
@@ -355,6 +356,8 @@ def _run_child_import(
     env.pop("KARRIEREKRAKE_MODELS_DIR", None)
     # Force in-process: pretend no HTTP server.
     env["KARRIEREKRAKE_CV_LLM_BASE"] = "http://127.0.0.1:1/v1"
+    if env_override is not None:
+        env = env_override.copy()
     err_log = out.with_suffix(out.suffix + ".stderr.txt")
     cmd = [
         str(exe),

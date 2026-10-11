@@ -25,12 +25,15 @@ jobs:
           - runner: macos-15-intel
             target: macos-x86_64
             exe: dist/Karrierekrake.app/Contents/MacOS/Karrierekrake
+            # Fixed Haswell baseline; never inherit runner-only AVX512/AMX.
+            cpu_flags: '-DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_FMA=ON -DGGML_F16C=ON -DGGML_BMI2=ON -DGGML_BLAS=OFF'
+            acceptance_flags: '--require-avx2'
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
     env:
       QT_QPA_PLATFORM: offscreen
       # Compile portable kernels rather than inheriting the runner's CPU ISA.
-      CMAKE_ARGS: '-DGGML_NATIVE=OFF -DGGML_METAL=OFF -DGGML_CUDA=OFF'
+      CMAKE_ARGS: '-DGGML_NATIVE=OFF -DGGML_METAL=OFF -DGGML_CUDA=OFF ${{ matrix.cpu_flags }}'
       CMAKE_BUILD_PARALLEL_LEVEL: '3'
     steps:
       - uses: actions/checkout@v4
@@ -48,6 +51,8 @@ jobs:
       - name: Install native dependencies (compile pinned llama.cpp)
         run: |
           python -m pip install --upgrade pip
+          # A cached locally-built wheel may predate this target's CMAKE_ARGS.
+          pip cache remove llama_cpp_python || true
           pip install -c constraints-runtime.txt -r requirements-build.txt --no-binary llama-cpp-python
       - name: Platform regression tests
         run: |
@@ -76,7 +81,8 @@ jobs:
         if: runner.os == 'macOS'
         run: rm -rf dist/Karrierekrake
       - name: Actual native binary smoke and offline DE/EN import
-        run: python scripts/ci_native_acceptance.py --exe ${{ matrix.exe }} --out native-release/acceptance.json --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf
+        timeout-minutes: 33
+        run: python scripts/ci_native_acceptance.py --exe ${{ matrix.exe }} --out native-release/acceptance.json --model vendor/cv_model/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf ${{ matrix.acceptance_flags }}
       - name: Package tested application
         run: python scripts/package_native_release.py --target ${{ matrix.target }}
       - uses: actions/upload-artifact@v4
