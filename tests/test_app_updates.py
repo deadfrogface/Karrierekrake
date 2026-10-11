@@ -178,3 +178,19 @@ def test_initial_model_setup_after_finding_newer_app_uses_installed_release(tmp_
     assert not (stage / u.TARGETS['app']).exists()
     assert (tmp_path / u.TARGETS['app']).read_bytes() == b'old app'
     assert not (tmp_path / u.MODEL_PATH).exists()
+
+
+def test_installer_restart_does_not_reuse_deleted_onefile_directory(tmp_path, monkeypatch):
+    monkeypatch.setattr(sys, 'platform', 'win32')
+    monkeypatch.setattr(sys, 'frozen', True, raising=False)
+    monkeypatch.setenv('SystemRoot', str(tmp_path))
+    monkeypatch.setenv('_PYI_APPLICATION_HOME_DIR', 'old-deleted-extraction')
+    monkeypatch.delenv('PYINSTALLER_RESET_ENVIRONMENT', raising=False)
+    monkeypatch.setattr(subprocess, 'CREATE_NO_WINDOW', 0x08000000, raising=False)
+    launches = []
+    monkeypatch.setattr(subprocess, 'Popen', lambda argv, **kw: launches.append((argv, kw)))
+    u.launch_installer(tmp_path)
+    assert launches[0][1]['env']['PYINSTALLER_RESET_ENVIRONMENT'] == '1'
+    # Do not change the running application's environment or its workers.
+    assert u.os.environ.get('PYINSTALLER_RESET_ENVIRONMENT') != '1'
+    assert "$env:PYINSTALLER_RESET_ENVIRONMENT = '1'" in (tmp_path / 'install.ps1').read_text(encoding='utf-8-sig')
